@@ -32,7 +32,7 @@ namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
     [DataContract]
-    public class WizardSettings : BaseSettings<WizardSettings>
+    public class WizardSettings : ISettings
     {
         [DataMember(Name = "Analytics")]
         public bool Analytics { get; set; }
@@ -40,13 +40,13 @@ namespace ASC.Web.Core.Utility.Settings
         [DataMember(Name = "Completed")]
         public bool Completed { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{9A925891-1F92-4ed7-B277-D6F649739F06}"); }
         }
 
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new WizardSettings
             {

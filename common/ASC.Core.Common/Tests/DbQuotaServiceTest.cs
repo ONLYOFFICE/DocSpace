@@ -39,8 +39,15 @@ namespace ASC.Core.Common.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
+    class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
     {
+        public DbOptionsManager DbOptionsManager { get; }
+
+        public DbQuotaServiceTest(DbOptionsManager dbOptionsManager)
+        {
+            DbOptionsManager = dbOptionsManager;
+        }
+
         [OneTimeSetUp]
         public void ClearData()
         {
@@ -136,7 +143,7 @@ namespace ASC.Core.Common.Tests
         private void DeleteQuotaRow(TenantQuotaRow row)
         {
             var d = new SqlDelete(DbQuotaService.tenants_quotarow).Where("tenant", row.Tenant).Where("path", row.Path);
-            using var dbManager = new DbManager("core");
+            var dbManager = DbOptionsManager.Value;
             dbManager.ExecuteNonQuery(d);
         }
     }

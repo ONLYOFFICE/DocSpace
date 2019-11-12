@@ -28,46 +28,57 @@ using System;
 using System.IO;
 using System.Linq;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Web.Studio.Utility;
+using ASC.Core.Common.Settings;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     public class TenantLogoManager
     {
-        private static readonly ICache Cache = AscCache.Memory;
-        private static readonly ICacheNotify<TenantLogoCacheItem> CacheNotify;
-
-        private static string CacheKey
+        private string CacheKey
         {
-            get { return "letterlogodata" + TenantProvider.CurrentTenantID; }
+            get { return "letterlogodata" + TenantManager.GetCurrentTenant().TenantId; }
         }
 
-        public static bool WhiteLabelEnabled
+        public bool WhiteLabelEnabled
         {
             get;
             private set;
         }
 
+        public ICache Cache { get; }
+        public ICacheNotify<TenantLogoCacheItem> CacheNotify { get; }
 
-        static TenantLogoManager()
+        public TenantLogoManager(
+            TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
+            SettingsManager settingsManager,
+            TenantInfoSettingsHelper tenantInfoSettingsHelper,
+            TenantManager tenantManager,
+            IConfiguration configuration,
+            ICacheNotify<TenantLogoCacheItem> cacheNotify)
         {
-            var hideSettings = (ConfigurationManager.AppSettings["web.hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
+            TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+            SettingsManager = settingsManager;
+            TenantInfoSettingsHelper = tenantInfoSettingsHelper;
+            TenantManager = tenantManager;
+            Configuration = configuration;
+            var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-            CacheNotify = new KafkaCache<TenantLogoCacheItem>();
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+            Cache = AscCache.Memory;
+            CacheNotify = cacheNotify;
         }
 
-
-        public static string GetFavicon(bool general, bool timeParam)
+        public string GetFavicon(bool general, bool timeParam)
         {
             string faviconPath;
+            var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-                faviconPath = tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
+                faviconPath = TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, general);
                 if (timeParam)
                 {
                     var now = DateTime.Now;
@@ -76,59 +87,59 @@ namespace ASC.Web.Core.WhiteLabel
             }
             else
             {
-                faviconPath = TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
+                faviconPath = TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.Favicon, general);
             }
 
             return faviconPath;
         }
 
-        public static string GetTopLogo(bool general)//LogoLightSmall
+        public string GetTopLogo(bool general)//LogoLightSmall
         {
+            var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-
-                return tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
+                return TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, general);
             }
-            return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
+            return TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LightSmall, general);
         }
 
-        public static string GetLogoDark(bool general)
+        public string GetLogoDark(bool general)
         {
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-                return tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, general);
+                var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+                return TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, general);
             }
 
             /*** simple scheme ***/
-            var tenantInfoSettings = TenantInfoSettings.Load();
-            return tenantInfoSettings.GetAbsoluteCompanyLogoPath();
+            return TenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(SettingsManager.Load<TenantInfoSettings>());
             /***/
         }
 
-        public static string GetLogoDocsEditor(bool general)
+        public string GetLogoDocsEditor(bool general)
         {
+            var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-                return tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
+                return TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, general);
             }
-            return TenantWhiteLabelSettings.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
+            return TenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, general);
         }
 
-        public static string GetLogoText()
+        public string GetLogoText()
         {
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.LoadForDefaultTenant();
+                var tenantWhiteLabelSettings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
 
-                return tenantWhiteLabelSettings.LogoText ?? TenantWhiteLabelSettings.DefaultLogoText;
+                return tenantWhiteLabelSettings.GetLogoText(SettingsManager) ?? TenantWhiteLabelSettings.DefaultLogoText;
             }
             return TenantWhiteLabelSettings.DefaultLogoText;
         }
 
-        public static bool IsRetina(HttpRequest request)
+        public bool IsRetina(HttpRequest request)
         {
             var isRetina = false;
             if (request != null)
@@ -145,45 +156,63 @@ namespace ASC.Web.Core.WhiteLabel
             return isRetina;
         }
 
-        public static bool WhiteLabelPaid
+        public bool WhiteLabelPaid
         {
             get
             {
-                return CoreContext.TenantManager.GetTenantQuota(TenantProvider.CurrentTenantID).WhiteLabel;
+                return TenantManager.GetTenantQuota(TenantManager.GetCurrentTenant().TenantId).WhiteLabel;
             }
         }
+
+        public TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        public SettingsManager SettingsManager { get; }
+        public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+        public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
         /// <summary>
         /// Get logo stream or null in case of default logo
         /// </summary>
-        public static Stream GetWhitelabelMailLogo()
+        public Stream GetWhitelabelMailLogo()
         {
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-                return tenantWhiteLabelSettings.GetWhitelabelLogoData(WhiteLabelLogoTypeEnum.Dark, true);
+                var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+                return TenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, true);
             }
 
             /*** simple scheme ***/
-            var tenantInfoSettings = TenantInfoSettings.Load();
-            return tenantInfoSettings.GetStorageLogoData();
+            return TenantInfoSettingsHelper.GetStorageLogoData(SettingsManager.Load<TenantInfoSettings>());
             /***/
         }
 
 
-        public static byte[] GetMailLogoDataFromCache()
+        public byte[] GetMailLogoDataFromCache()
         {
             return Cache.Get<byte[]>(CacheKey);
         }
 
-        public static void InsertMailLogoDataToCache(byte[] data)
+        public void InsertMailLogoDataToCache(byte[] data)
         {
             Cache.Insert(CacheKey, data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
         }
 
-        public static void RemoveMailLogoDataFromCache()
+        public void RemoveMailLogoDataFromCache()
         {
             CacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public static class TenantLogoManagerExtension
+    {
+        public static IServiceCollection AddTenantLogoManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantLogoManager>();
+
+            return services
+                .AddTenantWhiteLabelSettingsService()
+                .AddTenantInfoSettingsService()
+                .AddTenantManagerService();
         }
     }
 }

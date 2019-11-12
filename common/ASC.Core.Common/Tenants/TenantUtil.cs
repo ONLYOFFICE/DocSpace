@@ -25,27 +25,24 @@
 
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Tenants
 {
     public class TenantUtil
     {
-        public static string GetBaseDomain(string hostedRegion)
-        {
-            var baseHost = CoreContext.Configuration.BaseDomain;
+        public TenantManager TenantManager { get; }
 
-            if (string.IsNullOrEmpty(hostedRegion) || string.IsNullOrEmpty(baseHost) || !baseHost.Contains("."))
-            {
-                return baseHost;
-            }
-            var subdomain = baseHost.Remove(baseHost.IndexOf('.') + 1);
-            return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
+        public TenantUtil(TenantManager tenantManager)
+        {
+            TenantManager = tenantManager;
         }
 
 
-        public static DateTime DateTimeFromUtc(DateTime utc)
+        public DateTime DateTimeFromUtc(DateTime utc)
         {
-            return DateTimeFromUtc(CoreContext.TenantManager.GetCurrentTenant().TimeZone, utc);
+            return DateTimeFromUtc(TenantManager.GetCurrentTenant().TimeZone, utc);
         }
 
         public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
@@ -64,9 +61,9 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static DateTime DateTimeToUtc(DateTime local)
+        public DateTime DateTimeToUtc(DateTime local)
         {
-            return DateTimeToUtc(CoreContext.TenantManager.GetCurrentTenant().TimeZone, local);
+            return DateTimeToUtc(TenantManager.GetCurrentTenant().TimeZone, local);
         }
 
         public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
@@ -87,14 +84,24 @@ namespace ASC.Core.Tenants
         }
 
 
-        public static DateTime DateTimeNow()
+        public DateTime DateTimeNow()
         {
-            return DateTimeNow(CoreContext.TenantManager.GetCurrentTenant().TimeZone);
+            return DateTimeNow(TenantManager.GetCurrentTenant().TimeZone);
         }
 
         public static DateTime DateTimeNow(TimeZoneInfo timeZone)
         {
             return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+        }
+    }
+
+    public static class TenantUtilExtention
+    {
+        public static IServiceCollection AddTenantUtilService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantUtil>();
+
+            return services.AddTenantManagerService();
         }
     }
 }

@@ -32,11 +32,17 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Web;
+using ASC.Common.Caching;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using JWT;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -87,8 +93,16 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public GosUslugiLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public GosUslugiLoginProvider(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -112,7 +126,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
         }
 
@@ -209,7 +223,7 @@ namespace ASC.FederatedLogin.LoginProviders
                 throw new Exception("userinfo is incorrect");
             }
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Id = oid,
                 FirstName = userInfo.Value<string>("firstName"),

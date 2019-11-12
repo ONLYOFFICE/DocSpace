@@ -28,6 +28,7 @@ using System;
 using ASC.Notify.Engine;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Model
 {
@@ -36,11 +37,12 @@ namespace ASC.Notify.Model
         private readonly Context ctx;
         private readonly InterceptorStorage interceptors = new InterceptorStorage();
         private readonly INotifySource notifySource;
+        public IServiceScope ServiceScope { get; }
 
-
-        public NotifyClientImpl(Context context, INotifySource notifySource)
+        public NotifyClientImpl(Context context, INotifySource notifySource, IServiceScope serviceScope)
         {
             this.notifySource = notifySource ?? throw new ArgumentNullException("notifySource");
+            ServiceScope = serviceScope;
             ctx = context ?? throw new ArgumentNullException("context");
         }
 
@@ -72,28 +74,13 @@ namespace ASC.Notify.Model
         public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
         {
             var subscriptionSource = notifySource.GetSubscriptionProvider();
-            var recipients = subscriptionSource.GetRecipients(tenantId, action, objectID);
+            var recipients = subscriptionSource.GetRecipients(action, objectID);
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
 
         public void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args)
         {
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, checkSubscription, args);
-        }
-
-
-
-        public INotifyClient RegisterSendMethod(Action<DateTime> method, string cron)
-        {
-            ctx.NotifyEngine.RegisterSendMethod(method, cron);
-            return this;
-        }
-
-        public INotifyClient UnregisterSendMethod(Action<DateTime> method)
-        {
-            ctx.NotifyEngine.UnregisterSendMethod(method);
-            return this;
-
         }
 
         public void BeginSingleRecipientEvent(string name)
@@ -133,7 +120,7 @@ namespace ASC.Notify.Model
         private void SendAsync(NotifyRequest request)
         {
             request.Interceptors = interceptors.GetAll();
-            ctx.NotifyEngine.QueueRequest(request);
+            ctx.NotifyEngine.QueueRequest(request, ServiceScope);
         }
 
         private NotifyRequest CreateRequest(INotifyAction action, string objectID, IRecipient recipient, ITagValue[] args, string[] senders, bool checkSubsciption)

@@ -28,9 +28,7 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
-    using ASC.Common.Utils;
     using ASC.Core.Billing;
-    using ASC.Core.Data;
     using NUnit.Framework;
 
     [TestFixture]
@@ -41,15 +39,14 @@ namespace ASC.Core.Common.Tests
 
         public TariffServiceTest()
         {
-            var cs = ConfigurationManager.ConnectionStrings["core"];
-            tariffService = new TariffService(cs, new DbQuotaService(cs), new DbTenantService(cs));
+            tariffService = new TariffService(null, null, null, null, null, null, null, null);
         }
 
 
         [Test]
         public void TestShoppingUriBatch()
         {
-            using var bc = new BillingClient(true);
+            using var bc = new BillingClient(true, null, null);
             var result = bc.GetPaymentUrls("0", new[] { "12", "13", "14", "0", "-2" });
             Assert.AreEqual(5, result.Count);
         }

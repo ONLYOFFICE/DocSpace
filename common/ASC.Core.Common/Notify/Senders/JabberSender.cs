@@ -30,13 +30,23 @@ using System.Text.RegularExpressions;
 using ASC.Common.Logging;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
 {
     public class JabberSender : INotifySender
     {
-        private readonly JabberServiceClient service = new JabberServiceClient();
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
+
+        public IServiceProvider ServiceProvider { get; }
+
+        public JabberSender(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+            log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+        }
 
         public void Init(IDictionary<string, string> properties)
         {
@@ -52,6 +62,8 @@ namespace ASC.Core.Notify.Senders
             }
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var service = scope.ServiceProvider.GetService<JabberServiceClient>();
                 service.SendMessage(m.Tenant, null, m.To, text, m.Subject);
             }
             catch (Exception e)
@@ -60,6 +72,15 @@ namespace ASC.Core.Notify.Senders
                        e.Message, e.StackTrace, e.InnerException != null ? e.InnerException.Message : string.Empty);
             }
             return NoticeSendResult.OK;
+        }
+    }
+
+    public static class JabberSenderExtension
+    {
+        public static IServiceCollection AddJabberSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<JabberSender>();
+            return services.AddJabberServiceClient();
         }
     }
 }

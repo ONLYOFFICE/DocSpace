@@ -28,14 +28,15 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
     [DataContract]
-    public class WebItemSettings : BaseSettings<WebItemSettings>
+    public class WebItemSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C888CF56-585B-4c78-9E64-FE1093649A62}"); }
         }
@@ -43,29 +44,27 @@ namespace ASC.Web.Core.Utility.Settings
         [DataMember(Name = "Settings")]
         public List<WebItemOption> SettingsCollection { get; set; }
 
-
         public WebItemSettings()
         {
             SettingsCollection = new List<WebItemOption>();
         }
 
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             var settings = new WebItemSettings();
-            WebItemManager.Instance.GetItemsAll().ForEach(w =>
+            var webItemManager = serviceProvider.GetService<WebItemManager>();
+            webItemManager.GetItemsAll().ForEach(w =>
             {
-                var opt = new WebItemOption()
+                var opt = new WebItemOption
                 {
                     ItemID = w.ID,
-                    SortOrder = WebItemManager.GetSortOrder(w),
+                    SortOrder = webItemManager.GetSortOrder(w),
                     Disabled = false,
                 };
                 settings.SettingsCollection.Add(opt);
             });
             return settings;
         }
-
 
         [Serializable]
         [DataContract]

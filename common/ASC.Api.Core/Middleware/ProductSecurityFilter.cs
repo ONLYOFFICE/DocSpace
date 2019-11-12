@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -18,6 +20,10 @@ namespace ASC.Api.Core.Middleware
         private static readonly IDictionary<string, Guid> products;
         private readonly ILog log;
 
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public AuthContext AuthContext { get; }
 
         static ProductSecurityFilter()
         {
@@ -47,9 +53,18 @@ namespace ASC.Api.Core.Middleware
         }
 
 
-        public ProductSecurityFilter(LogManager logManager)
+        public ProductSecurityFilter(
+            IOptionsMonitor<ILog> options,
+            UserManager userManager,
+            TenantManager tenantManager,
+            WebItemSecurity webItemSecurity,
+            AuthContext authContext)
         {
-            log = logManager.Get("Api");
+            log = options.CurrentValue;
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            WebItemSecurity = webItemSecurity;
+            AuthContext = authContext;
         }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
@@ -58,7 +73,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            if (!SecurityContext.IsAuthenticated) return;
+            if (!AuthContext.IsAuthenticated) return;
 
             if (context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor)
             {
@@ -69,10 +84,10 @@ namespace ASC.Api.Core.Middleware
                     {
                         CallContext.SetData("asc.web.product_id", pid);
                     }
-                    if (!WebItemSecurity.IsAvailableForMe(CoreContext.TenantManager.GetCurrentTenant(context.HttpContext), pid))
+                    if (!WebItemSecurity.IsAvailableForMe(pid))
                     {
                         context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                        log.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, SecurityContext.CurrentAccount);
+                        log.WarnFormat("Product {0} denied for user {1}", controllerActionDescriptor.ControllerName, AuthContext.CurrentAccount);
                     }
                 }
             }
@@ -103,6 +118,18 @@ namespace ASC.Api.Core.Middleware
                 return products[name];
             }
             return default;
+        }
+    }
+
+    public static class ProductSecurityFilterExtension
+    {
+        public static IServiceCollection AddProductSecurityFilter(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddWebItemSecurity()
+                .AddAuthContextService();
         }
     }
 }

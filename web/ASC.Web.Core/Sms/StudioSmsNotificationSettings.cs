@@ -30,49 +30,80 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.SMS
 {
     [Serializable]
     [DataContract]
-    public class StudioSmsNotificationSettings : BaseSettings<StudioSmsNotificationSettings>
+    public class StudioSmsNotificationSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new StudioSmsNotificationSettings { EnableSetting = false, };
         }
 
         [DataMember(Name = "Enable")]
         public bool EnableSetting { get; set; }
+    }
 
+    public class StudioSmsNotificationSettingsHelper
+    {
+        public TenantExtra TenantExtra { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public SetupInfo SetupInfo { get; }
+        public SettingsManager SettingsManager { get; }
 
-        public static bool Enable
+        public StudioSmsNotificationSettingsHelper(
+            TenantExtra tenantExtra,
+            CoreBaseSettings coreBaseSettings,
+            SetupInfo setupInfo,
+            SettingsManager settingsManager)
         {
-            get { return Load().EnableSetting && SmsProviderManager.Enabled(); }
-            set
-            {
-                var settings = Load();
-                settings.EnableSetting = value;
-                settings.Save();
-            }
+            TenantExtra = tenantExtra;
+            CoreBaseSettings = coreBaseSettings;
+            SetupInfo = setupInfo;
+            SettingsManager = settingsManager;
         }
 
-        public static bool IsVisibleSettings
+        public bool IsVisibleSettings()
         {
-            get
+            var quota = TenantExtra.GetTenantQuota();
+            return CoreBaseSettings.Standalone
+                    || ((!quota.Trial || SetupInfo.SmsTrial)
+                        && !quota.NonProfit
+                        && !quota.Free
+                        && !quota.Open);
+        }
+
+        public bool Enable
+        {
+            get { return SettingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && SmsProviderManager.Enabled(); }
+            set
             {
-                var quota = TenantExtra.GetTenantQuota();
-                return CoreContext.Configuration.Standalone
-                       || ((!quota.Trial || SetupInfo.SmsTrial)
-                           && !quota.NonProfit
-                           && !quota.Free
-                           && !quota.Open);
+                var settings = SettingsManager.Load<StudioSmsNotificationSettings>();
+                settings.EnableSetting = value;
+                SettingsManager.Save<StudioSmsNotificationSettings>(settings);
             }
+        }
+    }
+
+    public static class StudioSmsNotificationSettingsExtension
+    {
+        public static IServiceCollection AddStudioSmsNotificationSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioSmsNotificationSettingsHelper>();
+
+            return services
+                .AddTenantExtraService()
+                .AddCoreBaseSettingsService()
+                .AddSetupInfo();
         }
     }
 }

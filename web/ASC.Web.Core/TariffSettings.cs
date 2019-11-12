@@ -33,7 +33,7 @@ namespace ASC.Web.Studio.UserControls.Management
 {
     [Serializable]
     [DataContract]
-    public class TariffSettings : BaseSettings<TariffSettings>
+    public class TariffSettings : ISettings
     {
         private static readonly CultureInfo CultureInfo = CultureInfo.CreateSpecificCulture("en-US");
 
@@ -49,7 +49,7 @@ namespace ASC.Web.Studio.UserControls.Management
         [DataMember(Name = "LicenseAccept")]
         public string LicenseAcceptSetting { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TariffSettings
             {
@@ -60,59 +60,60 @@ namespace ASC.Web.Studio.UserControls.Management
             };
         }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{07956D46-86F7-433b-A657-226768EF9B0D}"); }
         }
 
-        public static bool HideRecommendation
-        {
-            get { return LoadForCurrentUser().HideBuyRecommendationSetting; }
-            set
-            {
-                var tariffSettings = LoadForCurrentUser();
-                tariffSettings.HideBuyRecommendationSetting = value;
-                tariffSettings.SaveForCurrentUser();
-            }
-        }
+        //TODO: Need to be returned when needed
+        //public bool HideRecommendation
+        //{
+        //    get { return LoadForCurrentUser().HideBuyRecommendationSetting; }
+        //    set
+        //    {
+        //        var tariffSettings = LoadForCurrentUser();
+        //        tariffSettings.HideBuyRecommendationSetting = value;
+        //        tariffSettings.SaveForCurrentUser();
+        //    }
+        //}
 
-        public static bool HideNotify
-        {
-            get { return LoadForCurrentUser().HideNotifySetting; }
-            set
-            {
-                var tariffSettings = LoadForCurrentUser();
-                tariffSettings.HideNotifySetting = value;
-                tariffSettings.SaveForCurrentUser();
-            }
-        }
+        //public bool HideNotify
+        //{
+        //    get { return LoadForCurrentUser().HideNotifySetting; }
+        //    set
+        //    {
+        //        var tariffSettings = LoadForCurrentUser();
+        //        tariffSettings.HideNotifySetting = value;
+        //        tariffSettings.SaveForCurrentUser();
+        //    }
+        //}
 
-        public static bool HidePricingPage
-        {
-            get { return Load().HidePricingPageForUsers; }
-            set
-            {
-                var tariffSettings = Load();
-                tariffSettings.HidePricingPageForUsers = value;
-                tariffSettings.Save();
-            }
-        }
+        //public bool HidePricingPage
+        //{
+        //    get { return Load().HidePricingPageForUsers; }
+        //    set
+        //    {
+        //        var tariffSettings = Load();
+        //        tariffSettings.HidePricingPageForUsers = value;
+        //        tariffSettings.Save();
+        //    }
+        //}
 
-        public static bool LicenseAccept
-        {
-            get
-            {
-                return !DateTime.MinValue.ToString(CultureInfo).Equals(LoadForDefaultTenant().LicenseAcceptSetting);
-            }
-            set
-            {
-                var tariffSettings = LoadForDefaultTenant();
-                if (DateTime.MinValue.ToString(CultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
-                {
-                    tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(CultureInfo);
-                    tariffSettings.SaveForDefaultTenant();
-                }
-            }
-        }
+        //public bool LicenseAccept
+        //{
+        //    get
+        //    {
+        //        return !DateTime.MinValue.ToString(CultureInfo).Equals(LoadForDefaultTenant().LicenseAcceptSetting);
+        //    }
+        //    set
+        //    {
+        //        var tariffSettings = LoadForDefaultTenant();
+        //        if (DateTime.MinValue.ToString(CultureInfo).Equals(tariffSettings.LicenseAcceptSetting))
+        //        {
+        //            tariffSettings.LicenseAcceptSetting = DateTime.UtcNow.ToString(CultureInfo);
+        //            tariffSettings.SaveForDefaultTenant();
+        //        }
+        //    }
+        //}
     }
 }

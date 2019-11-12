@@ -75,8 +75,6 @@ namespace ASC.Core.Tenants
 
         public DateTime VersionChanged { get; set; }
 
-        public string TenantDomain { get { return GetTenantDomain(); } }
-
         public string HostedRegion { get; set; }
 
         public string Name { get; set; }
@@ -132,7 +130,7 @@ namespace ASC.Core.Tenants
 
         public override string ToString()
         {
-            return TenantDomain ?? TenantAlias;
+            return TenantAlias;
         }
 
 
@@ -155,9 +153,9 @@ namespace ASC.Core.Tenants
             }
         }
 
-        public string GetTenantDomain(bool allowMappedDomain = true)
+        public string GetTenantDomain(CoreSettings coreSettings, bool allowMappedDomain = true)
         {
-            var baseHost = TenantUtil.GetBaseDomain(HostedRegion);
+            var baseHost = coreSettings.GetBaseDomain(HostedRegion);
 
             if (string.IsNullOrEmpty(baseHost) && !string.IsNullOrEmpty(HostedRegion))
             {

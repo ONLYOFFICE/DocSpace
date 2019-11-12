@@ -40,14 +40,14 @@ namespace ASC.Common.Tests.Security.Authorizing
         {
             var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
 
-            var subjects = new List<ISubject>(azMan.GetSubjects(null, Domain.roleNET, null, null));
+            var subjects = new List<ISubject>(azMan.GetSubjects(Domain.roleNET, null, null));
             Assert.IsNotNull(subjects);
             CollectionAssert.Contains(subjects, Domain.roleNET);
             CollectionAssert.Contains(subjects, Domain.roleAVS);
             CollectionAssert.Contains(subjects, Constants.Everyone);
             Assert.AreEqual(3, subjects.Count);
 
-            subjects = new List<ISubject>(azMan.GetSubjects(null, Domain.accountValery, null, null));
+            subjects = new List<ISubject>(azMan.GetSubjects(Domain.accountValery, null, null));
             Assert.IsNotNull(subjects);
             CollectionAssert.Contains(subjects, Domain.accountValery);
             CollectionAssert.Contains(subjects, Domain.roleNET);
@@ -56,7 +56,7 @@ namespace ASC.Common.Tests.Security.Authorizing
             CollectionAssert.Contains(subjects, Constants.User);
             Assert.AreEqual(5, subjects.Count);
 
-            subjects = new List<ISubject>(azMan.GetSubjects(null, Domain.accountLev, null, null));
+            subjects = new List<ISubject>(azMan.GetSubjects(Domain.accountLev, null, null));
             Assert.IsNotNull(subjects);
             CollectionAssert.Contains(subjects, Domain.accountLev);
             CollectionAssert.Contains(subjects, Domain.roleAdministration);
@@ -66,14 +66,14 @@ namespace ASC.Common.Tests.Security.Authorizing
             CollectionAssert.Contains(subjects, Constants.User);
             Assert.AreEqual(6, subjects.Count);
 
-            subjects = new List<ISubject>(azMan.GetSubjects(null, Domain.accountAlient, null, null));
+            subjects = new List<ISubject>(azMan.GetSubjects(Domain.accountAlient, null, null));
             Assert.IsNotNull(subjects);
             CollectionAssert.Contains(subjects, Domain.accountAlient);
             CollectionAssert.Contains(subjects, Constants.Everyone);
             CollectionAssert.Contains(subjects, Constants.User);
             Assert.AreEqual(3, subjects.Count);
 
-            subjects = new List<ISubject>(azMan.GetSubjects(null, Domain.accountMessangerService, null, null));
+            subjects = new List<ISubject>(azMan.GetSubjects(Domain.accountMessangerService, null, null));
             Assert.IsNotNull(subjects);
             CollectionAssert.Contains(subjects, Domain.accountMessangerService);
             CollectionAssert.Contains(subjects, Constants.Everyone);
@@ -86,49 +86,49 @@ namespace ASC.Common.Tests.Security.Authorizing
         {
 
             var azMan = new AzManager(Domain.RoleProvider, Domain.PermissionProvider);
-            var acl = azMan.GetAzManagerAcl(null, Constants.Admin, Domain.actionAddUser, null, null);
+            var acl = azMan.GetAzManagerAcl(Constants.Admin, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Constants.Everyone, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Constants.Everyone, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Constants.Owner, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Constants.Owner, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Constants.Self, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Constants.Self, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Constants.User, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Constants.User, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.roleAVS, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.roleAVS, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.roleHR, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.roleHR, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.roleNET, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.roleNET, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.roleAdministration, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.roleAdministration, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountAlient, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountAlient, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountAnton, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountAnton, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountKat, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountKat, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountLev, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountLev, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountNik, Domain.actionAddUser, null, null);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountValery, Domain.actionAddUser, null, null);
+            acl = azMan.GetAzManagerAcl(Domain.accountValery, Domain.actionAddUser, null, null);
             Assert.IsFalse(acl.IsAllow);
         }
 
@@ -147,32 +147,32 @@ namespace ASC.Common.Tests.Security.Authorizing
             Domain.PermissionProvider.SetObjectAcesInheritance(c2Id, false);
             Domain.PermissionProvider.AddAce(Constants.Owner, Domain.actionAddUser, c1Id, AceType.Allow);
 
-            var acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c1Id, sop);
+            var acl = azMan.GetAzManagerAcl(Domain.accountNik, Domain.actionAddUser, c1Id, sop);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c2Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountNik, Domain.actionAddUser, c2Id, sop);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountAnton, Domain.actionAddUser, c1Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountAnton, Domain.actionAddUser, c1Id, sop);
             Assert.IsFalse(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountAnton, Domain.actionAddUser, c2Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountAnton, Domain.actionAddUser, c2Id, sop);
             Assert.IsFalse(acl.IsAllow);
 
             Domain.PermissionProvider.SetObjectAcesInheritance(c2Id, true);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c2Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountNik, Domain.actionAddUser, c2Id, sop);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountAnton, Domain.actionAddUser, c1Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountAnton, Domain.actionAddUser, c1Id, sop);
             Assert.IsFalse(acl.IsAllow);
 
             Domain.PermissionProvider.SetObjectAcesInheritance(c1Id, true);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountNik, Domain.actionAddUser, c2Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountNik, Domain.actionAddUser, c2Id, sop);
             Assert.IsTrue(acl.IsAllow);
 
-            acl = azMan.GetAzManagerAcl(null, Domain.accountLev, Domain.actionAddUser, c2Id, sop);
+            acl = azMan.GetAzManagerAcl(Domain.accountLev, Domain.actionAddUser, c2Id, sop);
             Assert.IsFalse(acl.IsAllow);
         }
     }

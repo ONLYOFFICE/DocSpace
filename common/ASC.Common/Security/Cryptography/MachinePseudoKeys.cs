@@ -29,20 +29,22 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using ASC.Common.Security;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Security.Cryptography
 {
-    public static class MachinePseudoKeys
+    public class MachinePseudoKeys
     {
-        private static readonly byte[] confkey = null;
+        private readonly byte[] confkey = null;
 
-        static MachinePseudoKeys()
+        public MachinePseudoKeys(IConfiguration configuration)
         {
-            var key = ConfigurationManager.AppSettings["core:machinekey"];
+            var key = configuration["core:machinekey"];
             if (string.IsNullOrEmpty(key))
             {
-                key = ConfigurationManager.AppSettings["asc:common.machinekey"];
+                key = configuration["asc:common.machinekey"];
             }
             if (!string.IsNullOrEmpty(key))
             {
@@ -51,7 +53,7 @@ namespace ASC.Security.Cryptography
         }
 
 
-        public static byte[] GetMachineConstant()
+        public byte[] GetMachineConstant()
         {
             if (confkey != null)
             {
@@ -63,7 +65,7 @@ namespace ASC.Security.Cryptography
             return BitConverter.GetBytes(fi.CreationTime.ToOADate());
         }
 
-        public static byte[] GetMachineConstant(int bytesCount)
+        public byte[] GetMachineConstant(int bytesCount)
         {
             var cnst = Enumerable.Repeat<byte>(0, sizeof(int)).Concat(GetMachineConstant()).ToArray();
             var icnst = BitConverter.ToInt32(cnst, cnst.Length - sizeof(int));
@@ -71,6 +73,15 @@ namespace ASC.Security.Cryptography
             var buff = new byte[bytesCount];
             rnd.NextBytes(buff);
             return buff;
+        }
+    }
+    public static class MachinePseudoKeysExtension
+    {
+        public static IServiceCollection AddMachinePseudoKeysService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MachinePseudoKeys>();
+
+            return services;
         }
     }
 }

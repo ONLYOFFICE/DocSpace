@@ -30,6 +30,8 @@ using System.Security.Claims;
 using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Core
 {
@@ -37,12 +39,12 @@ namespace ASC.Api.Core
     {
         public HttpContext HttpContext { get; set; }
         private Tenant tenant;
-        public Tenant Tenant { get { return tenant ?? (tenant = CoreContext.TenantManager.GetCurrentTenant(HttpContext)); } }
+        public Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant(HttpContext)); } }
 
-        public ApiContext(HttpContext httpContext)
+        public ApiContext(IHttpContextAccessor httpContextAccessor, SecurityContext securityContext, TenantManager tenantManager)
         {
-            if (httpContext == null) return;
-            HttpContext = httpContext;
+            if (httpContextAccessor == null || httpContextAccessor.HttpContext == null) return;
+            HttpContext = httpContextAccessor.HttpContext;
 
             Count = 0;
             var query = HttpContext.Request.Query;
@@ -80,6 +82,9 @@ namespace ASC.Api.Core
             {
                 UpdatedSince = Convert.ToDateTime(updatedSince);
             }
+
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
         }
 
         public string[] Fields { get; set; }
@@ -192,6 +197,10 @@ namespace ASC.Api.Core
                 }
             }
         }
+
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+
         public ApiContext SetCount(int count)
         {
             HttpContext.Items[nameof(Count)] = count;
@@ -214,13 +223,8 @@ namespace ASC.Api.Core
             var id = HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
             if (Guid.TryParse(id?.Value, out var userId))
             {
-                _ = SecurityContext.AuthenticateMe(Tenant.TenantId, userId);
+                _ = SecurityContext.AuthenticateMe(userId);
             }
-        }
-
-        public static implicit operator ApiContext(HttpContext httpContext)
-        {
-            return new ApiContext(httpContext);
         }
     }
 
@@ -261,6 +265,19 @@ namespace ASC.Api.Core
         public static bool Check(this ApiContext context, string field)
         {
             return context == null || context.Fields == null || (context.Fields != null && context.Fields.Contains(field));
+        }
+    }
+
+    public static class ApiContextConfigExtension
+    {
+        public static IServiceCollection AddApiContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<ApiContext>();
+
+            return services
+                .AddTenantManagerService()
+                .AddHttpContextAccessor()
+                .AddSecurityContextService();
         }
     }
 }

@@ -34,6 +34,7 @@ using System.Threading;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify;
@@ -41,11 +42,14 @@ using ASC.Notify.Engine;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 using Google.Protobuf;
-
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -56,15 +60,16 @@ namespace ASC.Web.Studio.Core.Notify
         private static readonly object locker = new object();
         private static readonly Regex urlReplacer = new Regex(@"(<a [^>]*href=(('(?<url>[^>']*)')|(""(?<url>[^>""]*)""))[^>]*>)|(<img [^>]*src=(('(?<url>(?![data:|cid:])[^>']*)')|(""(?<url>(?![data:|cid:])[^>""]*)""))[^/>]*/?>)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex textileLinkReplacer = new Regex(@"""(?<text>[\w\W]+?)"":""(?<link>[^""]+)""", RegexOptions.Singleline | RegexOptions.Compiled);
-
-        public static void Configure()
+        private static IServiceProvider ServiceProvider { get; set; }
+        public static void Configure(IServiceProvider serviceProvider)
         {
             lock (locker)
             {
                 if (!configured)
                 {
                     configured = true;
-
+                    ServiceProvider = serviceProvider;
+                    WorkContext.NotifyStartUp(serviceProvider);
                     WorkContext.NotifyContext.NotifyClientRegistration += NotifyClientRegisterCallback;
                     WorkContext.NotifyContext.NotifyEngine.BeforeTransferRequest += BeforeTransferRequest;
                 }
@@ -80,10 +85,12 @@ namespace ASC.Web.Studio.Core.Notify
                 "Web.UrlAbsoluter",
                 InterceptorPlace.MessageSend,
                 InterceptorLifetime.Global,
-                (r, p) =>
+                (r, p, scope) =>
                 {
                     if (r != null && r.CurrentMessage != null && r.CurrentMessage.ContentType == Pattern.HTMLContentType)
                     {
+                        var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+
                         var body = r.CurrentMessage.Body;
 
                         body = urlReplacer.Replace(body, m =>
@@ -91,8 +98,8 @@ namespace ASC.Web.Studio.Core.Notify
                             var url = m.Groups["url"].Value;
                             var ind = m.Groups["url"].Index - m.Index;
                             return string.IsNullOrEmpty(url) && ind > 0 ?
-                                m.Value.Insert(ind, CommonLinkUtility.GetFullAbsolutePath(string.Empty)) :
-                                m.Value.Replace(url, CommonLinkUtility.GetFullAbsolutePath(url));
+                                m.Value.Insert(ind, commonLinkUtility.GetFullAbsolutePath(string.Empty)) :
+                                m.Value.Replace(url, commonLinkUtility.GetFullAbsolutePath(url));
                         });
 
                         body = textileLinkReplacer.Replace(body, m =>
@@ -100,8 +107,8 @@ namespace ASC.Web.Studio.Core.Notify
                             var url = m.Groups["link"].Value;
                             var ind = m.Groups["link"].Index - m.Index;
                             return string.IsNullOrEmpty(url) && ind > 0 ?
-                                m.Value.Insert(ind, CommonLinkUtility.GetFullAbsolutePath(string.Empty)) :
-                                m.Value.Replace(url, CommonLinkUtility.GetFullAbsolutePath(url));
+                                m.Value.Insert(ind, commonLinkUtility.GetFullAbsolutePath(string.Empty)) :
+                                m.Value.Replace(url, commonLinkUtility.GetFullAbsolutePath(url));
                         });
 
                         r.CurrentMessage.Body = body;
@@ -118,13 +125,17 @@ namespace ASC.Web.Studio.Core.Notify
                 "ProductSecurityInterceptor",
                  InterceptorPlace.DirectSend,
                  InterceptorLifetime.Global,
-                 (r, p) =>
+                 (r, p, scope) =>
                  {
                      try
                      {
+                         //fix
+                         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                         var webItemSecurity = scope.ServiceProvider.GetService<WebItemSecurity>();
+                         var userManager = scope.ServiceProvider.GetService<UserManager>();
                          // culture
                          var u = Constants.LostUser;
-                         var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                         var tenant = tenantManager.GetCurrentTenant();
 
                          if (32 <= r.Recipient.ID.Length)
                          {
@@ -138,18 +149,18 @@ namespace ASC.Web.Studio.Core.Notify
 
                              if (guid != default)
                              {
-                                 u = CoreContext.UserManager.GetUsers(tenant.TenantId, guid);
+                                 u = userManager.GetUsers(guid);
                              }
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByEmail(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByEmail(r.Recipient.ID);
                          }
 
                          if (Constants.LostUser.Equals(u))
                          {
-                             u = CoreContext.UserManager.GetUserByUserName(tenant.TenantId, r.Recipient.ID);
+                             u = userManager.GetUserByUserName(r.Recipient.ID);
                          }
 
                          if (!Constants.LostUser.Equals(u))
@@ -172,7 +183,7 @@ namespace ASC.Web.Studio.Core.Notify
                              }
                              if (productId != Guid.Empty && productId != new Guid("f4d98afdd336433287783c6945c81ea0") /* ignore people product */)
                              {
-                                 return !WebItemSecurity.IsAvailableForUser(tenant, productId, u.ID);
+                                 return !webItemSecurity.IsAvailableForUser(productId, u.ID);
                              }
                          }
 
@@ -186,7 +197,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         LogManager.GetLogger("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -200,7 +211,7 @@ namespace ASC.Web.Studio.Core.Notify
                 "WhiteLabelInterceptor",
                  InterceptorPlace.MessageSend,
                  InterceptorLifetime.Global,
-                 (r, p) =>
+                 (r, p, scope) =>
                  {
                      try
                      {
@@ -217,7 +228,7 @@ namespace ASC.Web.Studio.Core.Notify
                      }
                      catch (Exception error)
                      {
-                         LogManager.GetLogger("ASC").Error(error);
+                         scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue.Error(error);
                      }
                      return false;
                  });
@@ -227,74 +238,88 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request)
+        private static void BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
         {
             var aid = Guid.Empty;
             var aname = string.Empty;
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant();
+            var authContext = serviceScope.ServiceProvider.GetService<AuthContext>();
+            var userManager = serviceScope.ServiceProvider.GetService<UserManager>();
+            var displayUserSettingsHelper = serviceScope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
 
-            if (SecurityContext.IsAuthenticated)
+            if (authContext.IsAuthenticated)
             {
-                aid = SecurityContext.CurrentAccount.ID;
-                var user = CoreContext.UserManager.GetUsers(tenant.TenantId, aid);
-                if (CoreContext.UserManager.UserExists(user))
+                aid = authContext.CurrentAccount.ID;
+                var user = userManager.GetUsers(aid);
+                if (userManager.UserExists(user))
                 {
-                    aname = user.DisplayUserName(false)
+                    aname = user.DisplayUserName(false, displayUserSettingsHelper)
                         .Replace(">", "&#62")
                         .Replace("<", "&#60");
                 }
             }
+            using var scope = ServiceProvider.CreateScope();
+            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+            var webItemManagerSecurity = scope.ServiceProvider.GetService<WebItemManagerSecurity>();
+            var webItemManager = scope.ServiceProvider.GetService<WebItemManager>();
+            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+            var tenantLogoManager = scope.ServiceProvider.GetService<TenantLogoManager>();
+            var additionalWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<AdditionalWhiteLabelSettingsHelper>();
+            var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
+            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
-            //TODOL httpContext
-            CommonLinkUtility.GetLocationByRequest(tenant, out var product, out var module, null);
+            commonLinkUtility.GetLocationByRequest(out var product, out var module);
             if (product == null && CallContext.GetData("asc.web.product_id") != null)
             {
-                product = WebItemManager.Instance[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
+                product = webItemManager[(Guid)CallContext.GetData("asc.web.product_id")] as IProduct;
             }
 
             var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if ((TenantExtra.Enterprise || CoreContext.Configuration.CustomMode) && !MailWhiteLabelSettings.Instance.IsDefault)
+            if ((tenantExtra.Enterprise || coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(settingsManager, configuration))
             {
-                logoText = TenantLogoManager.GetLogoText();
+                logoText = tenantLogoManager.GetLogoText();
             }
 
             request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
             request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetUserProfile(tenant.TenantId, aid))));
-            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, CommonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
+            request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetUserProfile(aid))));
+            request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
             request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
             request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));
-            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, CommonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
-            request.Arguments.Add(new TagValue(CommonTags.DateTime, TenantUtil.DateTimeNow()));
+            request.Arguments.Add(new TagValue(CommonTags.ProductUrl, commonLinkUtility.GetFullAbsolutePath(product != null ? product.StartURL : "~")));
+            request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
-            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetMyStaff())));
-            request.Arguments.Add(new TagValue(CommonTags.HelpLink, CommonLinkUtility.GetHelpLink(false)));
+            request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
+            request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
             request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance));
+            request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
 
             if (!request.Arguments.Any(x => CommonTags.SendFrom.Equals(x.Tag)))
             {
                 request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
             }
 
-            AddLetterLogo(request);
+            AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
         }
 
-        private static void AddLetterLogo(NotifyRequest request)
+        private static void AddLetterLogo(NotifyRequest request, TenantExtra tenantExtra, TenantLogoManager tenantLogoManager, CoreBaseSettings coreBaseSettings, CommonLinkUtility commonLinkUtility, ILog Log)
         {
-            if (TenantExtra.Enterprise || CoreContext.Configuration.CustomMode)
+            if (tenantExtra.Enterprise || coreBaseSettings.CustomMode)
             {
                 try
                 {
-                    var logoData = TenantLogoManager.GetMailLogoDataFromCache();
+                    var logoData = tenantLogoManager.GetMailLogoDataFromCache();
 
                     if (logoData == null)
                     {
-                        var logoStream = TenantLogoManager.GetWhitelabelMailLogo();
+                        var logoStream = tenantLogoManager.GetWhitelabelMailLogo();
                         logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
 
                         if (logoData != null)
-                            TenantLogoManager.InsertMailLogoDataToCache(logoData);
+                            tenantLogoManager.InsertMailLogoDataToCache(logoData);
                     }
 
                     if (logoData != null)
@@ -313,11 +338,11 @@ namespace ASC.Web.Studio.Core.Notify
                 }
                 catch (Exception error)
                 {
-                    LogManager.GetLogger("ASC").Error(error);
+                    Log.Error(error);
                 }
             }
 
-            var logoUrl = CommonLinkUtility.GetFullAbsolutePath(TenantLogoManager.GetLogoDark(true));
+            var logoUrl = commonLinkUtility.GetFullAbsolutePath(tenantLogoManager.GetLogoDark(true));
 
             request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
         }
@@ -339,6 +364,27 @@ namespace ASC.Web.Studio.Core.Notify
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "onlyoffice_logo", "dark_general.png");
 
             return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
+        }
+    }
+
+    public static class NotifyConfigurationExtension
+    {
+        public static IServiceCollection AddNotifyConfiguration(this IServiceCollection services)
+        {
+            return services
+                .AddTenantManagerService()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddDisplayUserSettingsService()
+                .AddTenantExtraService()
+                .AddWebItemManagerSecurity()
+                .AddWebItemManager()
+                .AddTenantLogoManagerService()
+                .AddTenantUtilService()
+                .AddCoreBaseSettingsService()
+                .AddAdditionalWhiteLabelSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddMailWhiteLabelSettingsService();
         }
     }
 }

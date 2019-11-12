@@ -31,6 +31,8 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using ASC.Common.Data.Sql;
+using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Common.Data
 {
@@ -52,17 +54,14 @@ namespace ASC.Common.Data
         }
 
 
-        public MultiRegionalDbManager(string dbId)
+        public MultiRegionalDbManager(IConfiguration configuration, DbOptionsManager optionsManager, string dbId)
         {
             const StringComparison cmp = StringComparison.InvariantCultureIgnoreCase;
             DatabaseId = dbId;
-            databases = Utils.ConfigurationManager.ConnectionStrings
+            databases = configuration.GetConnectionStrings()
                                             .Where(c => c.Name.Equals(dbId, cmp) || c.Name.StartsWith(dbId + ".", cmp))
-                                            .Select(
-                                                c =>
-                                                HttpContext.Current != null
-                                                    ? DbManager.FromHttpContext(c.Name)
-                                                    : new DbManager(c.Name))
+                                            .Select(c => optionsManager.Get(c.Name))
+                                            .Cast<IDbManager>()
                                             .ToList();
             localDb = databases.SingleOrDefault(db => db.DatabaseId.Equals(dbId, cmp));
         }
@@ -81,11 +80,6 @@ namespace ASC.Common.Data
                 disposed = true;
                 databases.ForEach(db => db.Dispose());
             }
-        }
-
-        public static MultiRegionalDbManager FromHttpContext(string databaseId)
-        {
-            return new MultiRegionalDbManager(databaseId);
         }
 
         public IDbTransaction BeginTransaction(IsolationLevel isolationLevel)
@@ -177,6 +171,11 @@ namespace ASC.Common.Data
         public IDbTransaction BeginTransaction()
         {
             return localDb.BeginTransaction();
+        }
+
+        public ISqlDialect GetSqlDialect(string databaseId)
+        {
+            return localDb.GetSqlDialect(databaseId);
         }
     }
 }

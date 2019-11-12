@@ -6,16 +6,24 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Notify
 {
     public class StudioNotifyServiceHelper
     {
-        private readonly ICacheNotify<NotifyItem> cache;
+        public ICacheNotify<NotifyItem> Cache { get; }
+        public StudioNotifyHelper StudioNotifyHelper { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
 
-        public StudioNotifyServiceHelper()
+        public StudioNotifyServiceHelper(StudioNotifyHelper studioNotifyHelper, AuthContext authContext, TenantManager tenantManager, ICacheNotify<NotifyItem> cache)
         {
-            cache = new KafkaCache<NotifyItem>();
+            StudioNotifyHelper = studioNotifyHelper;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            Cache = cache;
         }
 
         public void SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args)
@@ -43,10 +51,10 @@ namespace ASC.Web.Core.Notify
             SendNoticeToAsync(action, objectID, new[] { recipient }, null, false, args);
         }
 
-        public void SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args)
+        public void SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
         {
             var subscriptionSource = StudioNotifyHelper.NotifySource.GetSubscriptionProvider();
-            var recipients = subscriptionSource.GetRecipients(tenantId, action, objectID);
+            var recipients = subscriptionSource.GetRecipients(action, objectID);
 
             SendNoticeToAsync(action, objectID, recipients, null, false, args);
         }
@@ -60,8 +68,8 @@ namespace ASC.Web.Core.Notify
         {
             var item = new NotifyItem
             {
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                UserId = SecurityContext.CurrentAccount.ID.ToString(),
+                TenantId = TenantManager.GetCurrentTenant().TenantId,
+                UserId = AuthContext.CurrentAccount.ID.ToString(),
                 Action = (NotifyAction)action,
                 CheckSubsciption = checkSubsciption
             };
@@ -98,7 +106,21 @@ namespace ASC.Web.Core.Notify
 
             item.Tags.AddRange(args.Select(r => new Tag { Tag_ = r.Tag, Value = r.Value.ToString() }));
 
-            cache.Publish(item, CacheNotifyAction.Any);
+            Cache.Publish(item, CacheNotifyAction.Any);
+        }
+    }
+
+    public static class StudioNotifyServiceHelperExtension
+    {
+        public static IServiceCollection AddStudioNotifyServiceHelper(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifyServiceHelper>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services
+                .AddAuthContextService()
+                .AddStudioNotifyHelperService()
+                .AddTenantManagerService();
         }
     }
 }

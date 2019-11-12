@@ -33,15 +33,15 @@ namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class UserPhotoThumbnailSettings : BaseSettings<UserPhotoThumbnailSettings>
+    public class UserPhotoThumbnailSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{CC3AA821-43CA-421B-BDCD-81FB6D3361CF}"); }
         }
-
         public UserPhotoThumbnailSettings()
         {
+
         }
 
         public UserPhotoThumbnailSettings(Point point, Size size)
@@ -65,7 +65,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsDefault")]
         public bool IsDefault { get; private set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new UserPhotoThumbnailSettings
             {

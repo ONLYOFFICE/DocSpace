@@ -29,37 +29,50 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Configuration;
-using ASC.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioNotifyServiceSender
     {
-        private readonly INotifyClient client;
-        private readonly ICacheNotify<NotifyItem> cache;
-
         private static string EMailSenderName { get { return Constants.NotifyEMailSenderSysName; } }
 
-        public StudioNotifyServiceSender()
+        public IServiceProvider ServiceProvider { get; }
+        public IConfiguration Configuration { get; }
+
+        public StudioNotifyServiceSender(IServiceProvider serviceProvider, IConfiguration configuration, ICacheNotify<NotifyItem> cache)
         {
-            client = WorkContext.NotifyContext.NotifyService.RegisterClient(StudioNotifyHelper.NotifySource);
-            cache = new KafkaCache<NotifyItem>();
             cache.Subscribe(OnMessage, CacheNotifyAction.Any);
+            ServiceProvider = serviceProvider;
+            Configuration = configuration;
         }
 
         public void OnMessage(NotifyItem item)
         {
-            CoreContext.TenantManager.SetCurrentTenant(item.TenantId);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var authContext = scope.ServiceProvider.GetService<AuthContext>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+            var displayUserSettings = scope.ServiceProvider.GetService<DisplayUserSettings>();
+
+            tenantManager.SetCurrentTenant(item.TenantId);
             CultureInfo culture = null;
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+
+            var tenant = tenantManager.GetCurrentTenant(false);
+
             if (tenant != null)
             {
                 culture = tenant.GetCulture();
@@ -67,8 +80,8 @@ namespace ASC.Web.Studio.Core.Notify
 
             if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
             {
-                SecurityContext.AuthenticateMe(item.TenantId, userId);
-                var user = CoreContext.UserManager.GetUsers(item.TenantId, userId);
+                securityContext.AuthenticateMe(Guid.Parse(item.UserId));
+                var user = userManager.GetUsers(userId);
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
                     culture = CultureInfo.GetCultureInfo(user.CultureName);
@@ -95,60 +108,91 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void RegisterSendMethod()
         {
-            var cron = ConfigurationManager.AppSettings["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
+            var cron = Configuration["core:notify:cron"] ?? "0 0 5 ? * *"; // 5am every day
 
-            if (ConfigurationManager.AppSettings["core:notify:tariff"] != "false")
+            using var scope = ServiceProvider.CreateScope();
+            var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
+            var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+
+            if (Configuration["core:notify:tariff"] != "false")
             {
-                if (TenantExtra.Enterprise)
+                if (tenantExtra.Enterprise)
                 {
-                    client.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
+                    WorkContext.RegisterSendMethod(SendEnterpriseTariffLetters, cron);
                 }
-                else if (TenantExtra.Opensource)
+                else if (tenantExtra.Opensource)
                 {
-                    client.RegisterSendMethod(SendOpensourceTariffLetters, cron);
+                    WorkContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
                 }
-                else if (TenantExtra.Saas)
+                else if (tenantExtra.Saas)
                 {
-                    if (CoreContext.Configuration.Personal)
+                    if (coreBaseSettings.Personal)
                     {
-                        client.RegisterSendMethod(SendLettersPersonal, cron);
+                        WorkContext.RegisterSendMethod(SendLettersPersonal, cron);
                     }
                     else
                     {
-                        client.RegisterSendMethod(SendSaasTariffLetters, cron);
+                        WorkContext.RegisterSendMethod(SendSaasTariffLetters, cron);
                     }
                 }
             }
 
-            if (!CoreContext.Configuration.Personal)
+            if (!coreBaseSettings.Personal)
             {
-                client.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+                WorkContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
             }
         }
 
         public void SendSaasTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendSaasLetters(client, EMailSenderName, scheduleDate);
+            //remove client
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendSaasLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendEnterpriseTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendEnterpriseLetters(client, EMailSenderName, scheduleDate);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendOpensourceTariffLetters(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendOpensourceLetters(client, EMailSenderName, scheduleDate);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendLettersPersonal(DateTime scheduleDate)
         {
-            StudioPeriodicNotify.SendPersonalLetters(client, EMailSenderName, scheduleDate);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
         }
 
         public void SendMsgWhatsNew(DateTime scheduleDate)
         {
-            StudioWhatsNewNotify.SendMsgWhatsNew(scheduleDate, client);
+            using var scope = ServiceProvider.CreateScope();
+            scope.ServiceProvider.GetService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        }
+    }
+
+    public static class ServiceLauncherExtension
+    {
+        public static IServiceCollection AddStudioNotifyServiceSender(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioNotifyServiceSender>();
+
+            return services
+                .AddStudioPeriodicNotify()
+                .AddStudioWhatsNewNotify()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddStudioNotifyHelperService()
+                .AddDisplayUserSettingsService()
+                .AddTenantExtraService()
+                .AddCoreBaseSettingsService()
+                ;
         }
     }
 }

@@ -29,16 +29,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core.Tenants;
 using Autofac;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Common.Configuration
 {
     public class Consumer : IDictionary<string, string>
     {
-        private static readonly ICacheNotify<ConsumerCacheItem> Cache = new KafkaCache<ConsumerCacheItem>();
-
         public bool CanSet { get; private set; }
 
         public int Order { get; private set; }
@@ -75,7 +73,13 @@ namespace ASC.Core.Common.Configuration
             }
         }
 
-        private static readonly bool OnlyDefault;
+        private readonly bool OnlyDefault;
+
+        public TenantManager TenantManager { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public CoreSettings CoreSettings { get; set; }
+        public IConfiguration Configuration { get; }
+        public ICacheNotify<ConsumerCacheItem> Cache { get; }
 
         public bool IsSet
         {
@@ -84,18 +88,40 @@ namespace ASC.Core.Common.Configuration
 
         static Consumer()
         {
-            OnlyDefault = ConfigurationManager.AppSettings["core:default-consumers"] == "true";
+
         }
 
         public Consumer()
         {
+        }
+
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache)
+        {
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            Cache = cache;
+            OnlyDefault = configuration["core:default-consumers"] == "true";
             Name = "";
             Order = int.MaxValue;
             Props = new Dictionary<string, string>();
             Additional = new Dictionary<string, string>();
         }
 
-        public Consumer(string name, int order, Dictionary<string, string> additional)
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> additional)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -103,7 +129,14 @@ namespace ASC.Core.Common.Configuration
             Additional = additional;
         }
 
-        public Consumer(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+        public Consumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -194,11 +227,11 @@ namespace ASC.Core.Common.Configuration
 
             if (!OnlyDefault && CanSet)
             {
-                var tenant = CoreContext.Configuration.Standalone
+                var tenant = CoreBaseSettings.Standalone
                                  ? Tenant.DEFAULT_TENANT
-                                 : CoreContext.TenantManager.GetCurrentTenant().TenantId;
+                                 : TenantManager.GetCurrentTenant().TenantId;
 
-                value = CoreContext.Configuration.GetSetting(GetSettingsKey(name), tenant);
+                value = CoreSettings.GetSetting(GetSettingsKey(name), tenant);
             }
 
             if (string.IsNullOrEmpty(value))
@@ -232,10 +265,10 @@ namespace ASC.Core.Common.Configuration
                 return;
             }
 
-            var tenant = CoreContext.Configuration.Standalone
+            var tenant = CoreBaseSettings.Standalone
                              ? Tenant.DEFAULT_TENANT
-                             : CoreContext.TenantManager.GetCurrentTenant().TenantId;
-            CoreContext.Configuration.SaveSetting(GetSettingsKey(name), value, tenant);
+                             : TenantManager.GetCurrentTenant().TenantId;
+            CoreSettings.SaveSetting(GetSettingsKey(name), value, tenant);
         }
 
         protected virtual string GetSettingsKey(string name)
@@ -257,14 +290,37 @@ namespace ASC.Core.Common.Configuration
 
         }
 
-        public DataStoreConsumer(string name, int order, Dictionary<string, string> additional)
-            : base(name, order, additional)
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+        {
+
+        }
+
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
         {
             Init(additional);
         }
 
-        public DataStoreConsumer(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : base(name, order, props, additional)
+        public DataStoreConsumer(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
             Init(additional);
         }
@@ -300,26 +356,23 @@ namespace ASC.Core.Common.Configuration
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.Name, fromConfig.Order, props, additional);
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
         }
 
         public object Clone()
         {
-            return new DataStoreConsumer(Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 
     public class ConsumerFactory
     {
-        public static IEnumerable<Consumer> Consumers { get; private set; }
-
         private static IContainer Builder { get; set; }
 
         static ConsumerFactory()
         {
             var container = ConsumerConfigLoader.LoadConsumers("consumers");
             Builder = container.Build();
-            Consumers = Builder.Resolve<IEnumerable<Consumer>>();
         }
 
         public static Consumer GetByName(string name)

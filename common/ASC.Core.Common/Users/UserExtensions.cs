@@ -38,24 +38,24 @@ namespace ASC.Core.Users
             return tenant != null && tenant.OwnerId.Equals(ui.ID);
         }
 
-        public static bool IsMe(this UserInfo ui)
+        public static bool IsMe(this UserInfo ui, AuthContext authContext)
         {
-            return ui != null && ui.ID == SecurityContext.CurrentAccount.ID;
+            return ui != null && ui.ID == authContext.CurrentAccount.ID;
         }
 
-        public static bool IsAdmin(this UserInfo ui, Tenant tenant)
+        public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
         {
-            return ui != null && CoreContext.UserManager.IsUserInGroup(tenant, ui.ID, Constants.GroupAdmin.ID);
+            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
         }
 
-        public static bool IsVisitor(this UserInfo ui, Tenant tenant)
+        public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
         {
-            return ui != null && CoreContext.UserManager.IsUserInGroup(tenant, ui.ID, Constants.GroupVisitor.ID);
+            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
         }
 
-        public static bool IsOutsider(this UserInfo ui, Tenant tenant)
+        public static bool IsOutsider(this UserInfo ui, UserManager userManager)
         {
-            return IsVisitor(ui, tenant) && ui.ID == Constants.OutsideUser.ID;
+            return IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
         }
 
         public static bool IsLDAP(this UserInfo ui)

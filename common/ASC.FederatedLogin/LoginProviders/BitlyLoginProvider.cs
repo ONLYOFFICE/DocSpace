@@ -30,7 +30,12 @@ using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using ASC.Common.Caching;
+using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -58,12 +63,18 @@ namespace ASC.FederatedLogin.LoginProviders
 
         public BitlyLoginProvider() { }
 
-        public BitlyLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public BitlyLoginProvider(
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
         }
 
-        public bool ValidateKeys()
+        public bool ValidateKeys(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility)
         {
             try
             {

@@ -25,8 +25,6 @@
 
 
 using System;
-using ASC.Core;
-using ASC.Core.Users;
 
 namespace ASC.Web.Studio.Core.Statistic
 {
@@ -41,11 +39,6 @@ namespace ASC.Web.Studio.Core.Statistic
         public virtual DateTime? LastVisitTime { get; set; }
 
         public virtual Guid UserID { get; set; }
-
-        public virtual UserInfo User
-        {
-            get { return CoreContext.UserManager.GetUsers(UserID); }
-        }
 
         public virtual Guid ProductID { get; set; }
 

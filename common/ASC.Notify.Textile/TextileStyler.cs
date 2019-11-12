@@ -24,7 +24,6 @@
 */
 
 
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,8 +35,10 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Notify.Textile.Resources;
+using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Textile;
 using Textile.Blocks;
 
@@ -47,12 +48,29 @@ namespace ASC.Notify.Textile
     {
         private static readonly Regex VelocityArguments = new Regex(NVelocityPatternFormatter.NoStylePreffix + "(?<arg>.*?)" + NVelocityPatternFormatter.NoStyleSuffix, RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
 
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+        public MailWhiteLabelSettingsHelper MailWhiteLabelSettingsHelper { get; }
+
         static TextileStyler()
         {
             const string file = "ASC.Notify.Textile.Resources.style.css";
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(file);
             using var reader = new StreamReader(stream);
             BlockAttributesParser.Styler = new StyleReader(reader.ReadToEnd().Replace("\n", "").Replace("\r", ""));
+        }
+
+        public TextileStyler(
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration,
+            InstanceCrypto instanceCrypto,
+            MailWhiteLabelSettingsHelper mailWhiteLabelSettingsHelper)
+        {
+            CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
+            InstanceCrypto = instanceCrypto;
+            MailWhiteLabelSettingsHelper = mailWhiteLabelSettingsHelper;
         }
 
         public void ApplyFormating(NoticeMessage message)
@@ -83,7 +101,7 @@ namespace ASC.Notify.Textile
                                    .Replace("%CONTENT%", output.GetFormattedText())
                                    .Replace("%LOGO%", logoImg)
                                    .Replace("%LOGOTEXT%", logoText)
-                                   .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettings.DefaultMailSiteUrl : mailSettings.SiteUrl)
+                                   .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
                                    .Replace("%FOOTER%", footerContent)
                                    .Replace("%FOOTERSOCIAL%", footerSocialContent)
                                    .Replace("%TEXTFOOTER%", unsubscribeText);
@@ -114,17 +132,17 @@ namespace ASC.Notify.Textile
             return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
-        private static string GetLogoImg(NoticeMessage message)
+        private string GetLogoImg(NoticeMessage message)
         {
             string logoImg;
 
-            if (CoreContext.Configuration.Personal && !CoreContext.Configuration.CustomMode)
+            if (CoreBaseSettings.Personal && !CoreBaseSettings.CustomMode)
             {
                 logoImg = "https://static.onlyoffice.com/media/newsletters/images-v10/mail_logo.png";
             }
             else
             {
-                logoImg = ConfigurationManager.AppSettings["web.logo.mail"];
+                logoImg = Configuration["web:logo:mail"];
                 if (string.IsNullOrEmpty(logoImg))
                 {
                     var logo = message.GetArgument("LetterLogo");
@@ -142,9 +160,9 @@ namespace ASC.Notify.Textile
             return logoImg;
         }
 
-        private static string GetLogoText(NoticeMessage message)
+        private string GetLogoText(NoticeMessage message)
         {
-            var logoText = ConfigurationManager.AppSettings["web.logotext.mail"];
+            var logoText = Configuration["web:logotext:mail"];
 
             if (string.IsNullOrEmpty(logoText))
             {
@@ -168,7 +186,7 @@ namespace ASC.Notify.Textile
             return mailWhiteLabelTag == null ? null : mailWhiteLabelTag.Value as MailWhiteLabelSettings;
         }
 
-        private static void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
+        private void InitFooter(NoticeMessage message, MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
         {
             footerContent = string.Empty;
             footerSocialContent = string.Empty;
@@ -201,7 +219,7 @@ namespace ASC.Notify.Textile
             }
         }
 
-        private static void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
+        private void InitCommonFooter(MailWhiteLabelSettings settings, out string footerContent, out string footerSocialContent)
         {
             footerContent = string.Empty;
             footerSocialContent = string.Empty;
@@ -210,9 +228,9 @@ namespace ASC.Notify.Textile
             {
                 footerContent =
                     NotifyTemplateResource.FooterCommon
-                                          .Replace("%SUPPORTURL%", MailWhiteLabelSettings.DefaultMailSupportUrl)
-                                          .Replace("%SALESEMAIL%", MailWhiteLabelSettings.DefaultMailSalesEmail)
-                                          .Replace("%DEMOURL%", MailWhiteLabelSettings.DefaultMailDemotUrl);
+                                          .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
+                                          .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
+                                          .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
 
             }
@@ -235,7 +253,7 @@ namespace ASC.Notify.Textile
                 footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
         }
 
-        private static string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var withoutUnsubscribe = message.GetArgument("WithoutUnsubscribe");
 
@@ -248,7 +266,7 @@ namespace ASC.Notify.Textile
             if (string.IsNullOrEmpty(rootPath))
                 return string.Empty;
 
-            var unsubscribeLink = CoreContext.Configuration.CustomMode && CoreContext.Configuration.Personal
+            var unsubscribeLink = CoreBaseSettings.CustomMode && CoreBaseSettings.Personal
                                       ? GetSiteUnsubscribeLink(message, settings)
                                       : GetPortalUnsubscribeLink(message, settings);
 
@@ -258,7 +276,7 @@ namespace ASC.Notify.Textile
             return string.Format(NotifyTemplateResource.TextForFooterWithUnsubscribeLink, rootPath, unsubscribeLink);
         }
 
-        private static string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var unsubscribeLinkArgument = message.GetArgument("ProfileUrl");
 
@@ -273,25 +291,25 @@ namespace ASC.Notify.Textile
             return GetSiteUnsubscribeLink(message, settings);
         }
 
-        private static string GetSiteUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
+        private string GetSiteUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)
         {
             var mail = message.Recipient.Addresses.FirstOrDefault(r => r.Contains("@"));
 
             if (string.IsNullOrEmpty(mail))
                 return string.Empty;
 
-            var format = CoreContext.Configuration.CustomMode
+            var format = CoreBaseSettings.CustomMode
                              ? "{0}/unsubscribe/{1}"
                              : "{0}/Unsubscribe.aspx?id={1}";
 
             var site = settings == null
-                           ? MailWhiteLabelSettings.DefaultMailSiteUrl
+                           ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl
                            : settings.SiteUrl;
 
             return string.Format(format,
                                  site,
                                  WebEncoders.Base64UrlEncode(
-                                     Security.Cryptography.InstanceCrypto.Encrypt(
+                                     InstanceCrypto.Encrypt(
                                          Encoding.UTF8.GetBytes(mail.ToLowerInvariant()))));
         }
     }

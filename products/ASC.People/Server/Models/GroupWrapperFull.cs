@@ -28,33 +28,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
     [DataContract(Name = "group", Namespace = "")]
     public class GroupWrapperFull
     {
-        public GroupWrapperFull(GroupInfo group, bool includeMembers, ApiContext context)
-        {
-            Id = group.ID;
-            Category = group.CategoryID;
-            Parent = group.Parent != null ? group.Parent.ID : Guid.Empty;
-            Name = group.Name;
-            Manager = EmployeeWraper.Get(CoreContext.UserManager.GetUsers(context.Tenant.TenantId, CoreContext.UserManager.GetDepartmentManager(context.Tenant.TenantId, group.ID)), context);
-
-            if (includeMembers)
-            {
-                Members = new List<EmployeeWraper>(CoreContext.UserManager.GetUsersByGroup(context.Tenant, group.ID).Select(r => EmployeeWraper.Get(r, context)));
-            }
-        }
-
-        private GroupWrapperFull()
-        {
-        }
-
         [DataMember(Order = 5)]
         public string Description { get; set; }
 
@@ -75,6 +58,7 @@ namespace ASC.Web.Api.Models
 
         [DataMember(Order = 10, EmitDefaultValue = false)]
         public List<EmployeeWraper> Members { get; set; }
+        public UserManager UserManager { get; }
 
         public static GroupWrapperFull GetSample()
         {
@@ -87,6 +71,49 @@ namespace ASC.Web.Api.Models
                 Parent = Guid.NewGuid(),
                 Members = new List<EmployeeWraper> { EmployeeWraper.GetSample() }
             };
+        }
+    }
+
+    public class GroupWraperFullHelper
+    {
+        public UserManager UserManager { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+
+        public GroupWraperFullHelper(UserManager userManager, EmployeeWraperHelper employeeWraperHelper)
+        {
+            UserManager = userManager;
+            EmployeeWraperHelper = employeeWraperHelper;
+        }
+
+        public GroupWrapperFull Get(GroupInfo group, bool includeMembers)
+        {
+            var result = new GroupWrapperFull
+            {
+                Id = group.ID,
+                Category = group.CategoryID,
+                Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
+                Name = group.Name,
+                Manager = EmployeeWraperHelper.Get(UserManager.GetUsers(UserManager.GetDepartmentManager(group.ID)))
+            };
+
+            if (includeMembers)
+            {
+                result.Members = new List<EmployeeWraper>(UserManager.GetUsersByGroup(group.ID).Select(EmployeeWraperHelper.Get));
+            }
+
+            return result;
+        }
+    }
+
+    public static class GroupWraperFullExtension
+    {
+        public static IServiceCollection AddGroupWraperFull(this IServiceCollection services)
+        {
+            services.TryAddScoped<GroupWraperFullHelper>();
+
+            return services
+                .AddUserManagerService()
+                .AddEmployeeWraper();
         }
     }
 }

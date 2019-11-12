@@ -35,10 +35,13 @@ using System.Text;
 using System.Threading;
 using System.Web;
 using System.Xml.Linq;
-using ASC.Common.Utils;
 using ASC.Core.Billing;
+using ASC.Core.Caching;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 
 
@@ -46,20 +49,24 @@ namespace ASC.Core
 {
     public class PaymentManager
     {
-        private readonly CoreConfiguration config;
+        private readonly CoreSettings config;
         private readonly IQuotaService quotaService;
         private readonly ITariffService tariffService;
         private readonly string partnerUrl;
         private readonly string partnerKey;
 
+        public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
 
-        public PaymentManager(CoreConfiguration config, IQuotaService quotaService, ITariffService tariffService)
+        public PaymentManager(CoreSettings config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService, IConfiguration configuration)
         {
             this.config = config;
+            TenantManager = tenantManager;
             this.quotaService = quotaService;
             this.tariffService = tariffService;
-            partnerUrl = (ConfigurationManager.AppSettings["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
-            partnerKey = (ConfigurationManager.AppSettings["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
+            Configuration = configuration;
+            partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
+            partnerKey = (Configuration["core:machinekey"] ?? "C5C1F4E85A3A43F5B3202C24D97351DF");
         }
 
 
@@ -100,7 +107,7 @@ namespace ASC.Core
 
         public Uri GetShoppingUri(int quotaId, bool forCurrentTenant = true, string affiliateId = null, string currency = null, string language = null, string customerId = null)
         {
-            return tariffService.GetShoppingUri(forCurrentTenant ? CoreContext.TenantManager.GetCurrentTenant().TenantId : (int?)null, quotaId, affiliateId, currency, language, customerId);
+            return tariffService.GetShoppingUri(forCurrentTenant ? TenantManager.GetCurrentTenant().TenantId : (int?)null, quotaId, affiliateId, currency, language, customerId);
         }
 
         public Uri GetShoppingUri(int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null)
@@ -113,7 +120,7 @@ namespace ASC.Core
             var trial = quotaService.GetTenantQuotas().FirstOrDefault(q => q.Trial);
             if (trial != null)
             {
-                var uri = ConfigurationManager.AppSettings["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
+                var uri = Configuration["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
                 uri += uri.Contains('?') ? "&" : "?";
                 uri += "FIRSTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
                     "&LASTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
@@ -151,7 +158,7 @@ namespace ASC.Core
             }
 
             var now = DateTime.UtcNow;
-            var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(CoreContext.TenantManager.GetCurrentTenant().TenantAlias);
+            var actionUrl = "/partnerapi/ActivateKey?code=" + HttpUtility.UrlEncode(key) + "&portal=" + HttpUtility.UrlEncode(TenantManager.GetCurrentTenant().TenantAlias);
             using var webClient = new WebClient();
             webClient.Headers.Add("Authorization", GetPartnerAuthHeader(actionUrl));
             try
@@ -167,7 +174,7 @@ namespace ASC.Core
                 }
                 throw;
             }
-            tariffService.ClearCache(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            tariffService.ClearCache(TenantManager.GetCurrentTenant().TenantId);
 
             var timeout = DateTime.UtcNow - now - TimeSpan.FromSeconds(5);
             if (TimeSpan.Zero < timeout)
@@ -175,7 +182,7 @@ namespace ASC.Core
                 // clear tenant cache
                 Thread.Sleep(timeout);
             }
-            CoreContext.TenantManager.GetTenant(CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            TenantManager.GetTenant(TenantManager.GetCurrentTenant().TenantId);
         }
 
         private string GetPartnerAuthHeader(string url)
@@ -208,6 +215,20 @@ namespace ASC.Core
             public string exceptionMessage = null;
             public string exceptionType = null;
             public string stackTrace = null;
+        }
+    }
+
+    public static class PaymentManagerExtension
+    {
+        public static IServiceCollection AddPaymentManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PaymentManager>();
+
+            return services
+                .AddCoreSettingsService()
+                .AddTenantManagerService()
+                .AddQuotaService()
+                .AddTariffService();
         }
     }
 }

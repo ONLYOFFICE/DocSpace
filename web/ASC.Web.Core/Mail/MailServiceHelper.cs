@@ -32,46 +32,83 @@ using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
-using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mail
 {
-    public static class MailServiceHelper
+    public class MailServiceHelperStorage
+    {
+        public ICacheNotify<MailServiceHelperCache> CacheNotify { get; }
+        public ICache Cache { get; }
+        public MailServiceHelperStorage(ICacheNotify<MailServiceHelperCache> cacheNotify)
+        {
+            Cache = AscCache.Memory;
+            CacheNotify = cacheNotify;
+            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
+
+        public void Remove()
+        {
+            CacheNotify.Publish(new MailServiceHelperCache() { Key = MailServiceHelper.CacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public class MailServiceHelper
     {
         public const string ConnectionStringFormat = "Server={0};Database={1};User ID={2};Password={3};Pooling=True;Character Set=utf8";
         public const string MailServiceDbId = "mailservice";
-        public static readonly string DefaultDatabase = GetDefaultDatabase();
+        public readonly string DefaultDatabase;
         public const string DefaultUser = "mail_admin";
         public const string DefaultPassword = "Isadmin123";
         public const string DefaultProtocol = "http";
         public const int DefaultPort = 8081;
         public const string DefaultVersion = "v1";
 
-        private static readonly ICacheNotify<MailServiceHelperCache> CacheNotify;
-        private static readonly ICache Cache = AscCache.Memory;
-        private const string CacheKey = "mailserverinfo";
+        internal const string CacheKey = "mailserverinfo";
 
-        static MailServiceHelper()
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+        public IConfiguration Configuration { get; }
+        public DbRegistry DbRegistry { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public MailServiceHelperStorage MailServiceHelperStorage { get; }
+        public DbOptionsManager DbOptions { get; }
+        public ICache Cache { get; }
+
+        public MailServiceHelper(
+            UserManager userManager,
+            AuthContext authContext,
+            IConfiguration configuration,
+            DbRegistry dbRegistry,
+            CoreBaseSettings coreBaseSettings,
+            MailServiceHelperStorage mailServiceHelperStorage,
+            DbOptionsManager dbOptions)
         {
-            CacheNotify = new KafkaCache<MailServiceHelperCache>();
-            CacheNotify.Subscribe(r => Cache.Remove(r.Key), CacheNotifyAction.Remove);
+            UserManager = userManager;
+            AuthContext = authContext;
+            Configuration = configuration;
+            DbRegistry = dbRegistry;
+            CoreBaseSettings = coreBaseSettings;
+            MailServiceHelperStorage = mailServiceHelperStorage;
+            DbOptions = dbOptions;
+            Cache = mailServiceHelperStorage.Cache;
+            DefaultDatabase = GetDefaultDatabase();
         }
 
-        private static string GetDefaultDatabase()
+        private string GetDefaultDatabase()
         {
-            var value = ConfigurationManager.AppSettings["mail:database-name"];
+            var value = Configuration["mail:database-name"];
             return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
         }
 
-        private static DbManager GetDb()
+        private DbManager GetDb()
         {
-            return new DbManager("webstudio");
+            return DbOptions.Get("webstudio");
         }
 
-        private static DbManager GetDb(string dbid, string connectionString)
+        private DbManager GetDb(string dbid, string connectionString)
         {
             var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
 
@@ -82,33 +119,33 @@ namespace ASC.Web.Core.Mail
 
             DbRegistry.RegisterDatabase(connectionSettings.Name, connectionSettings);
 
-            return new DbManager(connectionSettings.Name);
+            return DbOptions.Get(connectionSettings.Name);
         }
 
-        private static void DemandPermission()
+        private void DemandPermission()
         {
-            if (!CoreContext.Configuration.Standalone)
+            if (!CoreBaseSettings.Standalone)
                 throw new NotSupportedException("Method for server edition only.");
 
-            if (!CoreContext.UserManager.IsUserInGroup(CoreContext.TenantManager.GetCurrentTenant(), SecurityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+            if (!UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
                 throw new SecurityException();
         }
 
 
-        public static bool IsMailServerAvailable()
+        public bool IsMailServerAvailable()
         {
             return _GetMailServerInfo() != null;
         }
 
 
-        public static MailServerInfo GetMailServerInfo()
+        public MailServerInfo GetMailServerInfo()
         {
             DemandPermission();
 
             return _GetMailServerInfo();
         }
 
-        private static MailServerInfo _GetMailServerInfo()
+        private MailServerInfo _GetMailServerInfo()
         {
             var cachedData = Cache.Get<Tuple<MailServerInfo>>(CacheKey);
 
@@ -138,7 +175,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static string[] GetDataFromExternalDatabase(string dbid, string connectionString, string ip)
+        public string[] GetDataFromExternalDatabase(string dbid, string connectionString, string ip)
         {
             DemandPermission();
 
@@ -176,7 +213,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public static void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
+        public void UpdateDataFromInternalDatabase(string hostname, MailServerInfo mailServer)
         {
             DemandPermission();
 
@@ -286,7 +323,7 @@ namespace ASC.Web.Core.Mail
 
             transaction.Commit();
 
-            CacheNotify.Publish(new MailServiceHelperCache() { Key = CacheKey }, CacheNotifyAction.Remove);
+            MailServiceHelperStorage.Remove();
         }
     }
 

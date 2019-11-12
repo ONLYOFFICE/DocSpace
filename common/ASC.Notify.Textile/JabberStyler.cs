@@ -28,8 +28,10 @@ using System;
 using System.Text.RegularExpressions;
 using System.Web;
 using ASC.Common.Notify.Patterns;
+using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Notify.Textile
 {
@@ -42,6 +44,15 @@ namespace ASC.Notify.Textile
         static readonly Regex ClosedTagsReplacer = new Regex(@"</(p|div)>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
         static readonly Regex TagReplacer = new Regex(@"<(.|\n)*?>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled | RegexOptions.Singleline);
         static readonly Regex MultiLineBreaksReplacer = new Regex(@"(?:\r\n|\r(?!\n)|(?!<\r)\n){3,}", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
+
+        public JabberStyler(CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        {
+            CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
+        }
 
         public void ApplyFormating(NoticeMessage message)
         {

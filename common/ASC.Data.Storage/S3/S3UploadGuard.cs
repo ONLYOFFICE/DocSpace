@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
-using ASC.Common.DependencyInjection;
 using ASC.Core;
 
 namespace ASC.Data.Storage.S3
@@ -43,6 +42,15 @@ namespace ASC.Data.Storage.S3
         private string region;
         private bool configErrors;
         private bool configured;
+
+        public CoreSettings CoreSettings { get; }
+        public Configuration.Storage Storage { get; }
+
+        public S3UploadGuard(CoreSettings coreSettings, Configuration.Storage storage)
+        {
+            CoreSettings = coreSettings;
+            Storage = storage;
+        }
 
         public void DeleteExpiredUploadsAsync(TimeSpan trustInterval)
         {
@@ -118,8 +126,7 @@ namespace ASC.Data.Storage.S3
         {
             if (!configured)
             {
-                var config = CommonServiceProvider.GetService<Configuration.Storage>();
-                var handler = config.GetHandler("s3");
+                var handler = Storage.GetHandler("s3");
                 if (handler != null)
                 {
                     var props = handler.GetProperties();
@@ -128,7 +135,7 @@ namespace ASC.Data.Storage.S3
                     secretAccessKey = props["secretaccesskey"];
                     region = props["region"];
                 }
-                configErrors = string.IsNullOrEmpty(CoreContext.Configuration.BaseDomain) //localhost
+                configErrors = string.IsNullOrEmpty(CoreSettings.BaseDomain) //localhost
                                 || string.IsNullOrEmpty(accessKey)
                                 || string.IsNullOrEmpty(secretAccessKey)
                                 || string.IsNullOrEmpty(bucket)

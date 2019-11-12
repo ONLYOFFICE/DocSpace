@@ -30,14 +30,34 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
     public abstract class BaseStorage : IDataStore
     {
+        protected ILog Log { get; set; }
+
+        public BaseStorage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> options)
+        {
+            TenantManager = tenantManager;
+            PathUtils = pathUtils;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            HttpContextAccessor = httpContextAccessor;
+            Options = options;
+            Log = options.CurrentValue;
+        }
+
         #region IDataStore Members
 
         internal string _modulename;
@@ -91,7 +111,7 @@ namespace ASC.Data.Storage
                 var expireString = expire.TotalMinutes.ToString(CultureInfo.InvariantCulture);
 
                 int currentTenantId;
-                var currentTenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                var currentTenant = TenantManager.GetCurrentTenant(false);
                 if (currentTenant != null)
                 {
                     currentTenantId = currentTenant.TenantId;
@@ -193,6 +213,12 @@ namespace ASC.Data.Storage
         }
 
         public virtual bool IsSupportChunking { get { return false; } }
+
+        public TenantManager TenantManager { get; }
+        public PathUtils PathUtils { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
         #endregion
 
@@ -305,7 +331,7 @@ namespace ASC.Data.Storage
             CopyDirectory(string.Empty, dir, newdomain, newdir);
         }
 
-        public virtual IDataStore Configure(IDictionary<string, string> props)
+        public virtual IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
             return this;
         }

@@ -29,12 +29,18 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security;
+using ASC.Common.Data;
+using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -46,6 +52,7 @@ namespace ASC.Core
         private readonly ITariffService tariffService;
         private readonly TenantManager clientTenantManager;
         private readonly DbSettingsManager settingsManager;
+        private readonly CoreSettings coreSettings;
 
         public string Region
         {
@@ -59,18 +66,37 @@ namespace ASC.Core
             private set;
         }
 
-        public HostedSolution(ConnectionStringSettings connectionString)
-            : this(connectionString, null)
+        public HostedSolution(
+            IConfiguration configuration,
+            TenantDomainValidator tenantDomainValidator,
+            TimeZoneConverter timeZoneConverter,
+            DbRegistry dbRegistry,
+            ConnectionStringSettings connectionString,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, options, null)
         {
         }
 
-        public HostedSolution(ConnectionStringSettings connectionString, string region)
+        //TODO:fix
+        public HostedSolution(
+            IConfiguration configuration,
+            TenantDomainValidator tenantDomainValidator,
+            TimeZoneConverter timeZoneConverter,
+            DbRegistry dbRegistry,
+            ConnectionStringSettings connectionString,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options,
+            string region)
         {
-            tenantService = new DbTenantService(connectionString);
-            userService = new DbUserService(connectionString);
-            quotaService = new DbQuotaService(connectionString);
-            tariffService = new TariffService(connectionString, quotaService, tenantService);
-            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService);
+            tenantService = new DbTenantService(null, null, null);
+            var baseSettings = new CoreBaseSettings(configuration);
+            coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
+
+            userService = new DbUserService(null);
+            quotaService = new DbQuotaService(null);
+            tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
+            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             Region = region ?? string.Empty;
             DbId = connectionString.Name;
@@ -137,7 +163,7 @@ namespace ASC.Core
                 Calls = ri.Calls
             };
 
-            tenant = tenantService.SaveTenant(tenant);
+            tenant = tenantService.SaveTenant(coreSettings, tenant);
 
             // create user
             var user = new UserInfo
@@ -156,14 +182,14 @@ namespace ASC.Core
 
             // save tenant owner
             tenant.OwnerId = user.ID;
-            tenant = tenantService.SaveTenant(tenant);
+            tenant = tenantService.SaveTenant(coreSettings, tenant);
 
-            settingsManager.SaveSettings(new TenantAnalyticsSettings { Analytics = ri.Analytics }, tenant.TenantId);
+            settingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            return tenantService.SaveTenant(tenant);
+            return tenantService.SaveTenant(coreSettings, tenant);
         }
 
         public void RemoveTenant(Tenant tenant)
@@ -171,27 +197,27 @@ namespace ASC.Core
             tenantService.RemoveTenant(tenant.TenantId);
         }
 
-        public string CreateAuthenticationCookie(int tenantId, string login, string password)
+        public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, string login, string password)
         {
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
             var u = userService.GetUser(tenantId, login, passwordhash);
-            return u != null ? CreateAuthenticationCookie(tenantId, u.ID, login, passwordhash) : null;
+            return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, u.ID, login, passwordhash) : null;
         }
 
-        public string CreateAuthenticationCookie(int tenantId, Guid userId)
+        public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {
             var u = userService.GetUser(tenantId, userId);
             var password = userService.GetUserPassword(tenantId, userId);
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
-            return u != null ? CreateAuthenticationCookie(tenantId, userId, u.Email, passwordhash) : null;
+            return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, userId, u.Email, passwordhash) : null;
         }
 
-        private string CreateAuthenticationCookie(int tenantId, Guid userId, string login, string passwordhash)
+        private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId, string login, string passwordhash)
         {
             var tenantSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
             var userSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId);
-            return CookieStorage.EncryptCookie(tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
+            return cookieStorage.EncryptCookie(tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
         }
 
         public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)

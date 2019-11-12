@@ -33,9 +33,9 @@ namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class UserHelpTourSettings : BaseSettings<UserHelpTourSettings>
+    public class UserHelpTourSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{DF4B94B7-42C8-4fce-AAE2-D479F3B39BDD}"); }
         }
@@ -46,27 +46,13 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsNewUser")]
         public bool IsNewUser { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new UserHelpTourSettings
             {
                 ModuleHelpTour = new Dictionary<Guid, int>(),
                 IsNewUser = false
             };
-        }
-    }
-
-    public class UserHelpTourHelper
-    {
-        public static bool IsNewUser
-        {
-            get { return UserHelpTourSettings.LoadForCurrentUser().IsNewUser; }
-            set
-            {
-                var settings = UserHelpTourSettings.LoadForCurrentUser();
-                settings.IsNewUser = value;
-                settings.SaveForCurrentUser();
-            }
         }
     }
 }

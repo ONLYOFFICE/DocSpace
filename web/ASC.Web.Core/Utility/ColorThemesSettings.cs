@@ -27,16 +27,17 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
-using ASC.Common.DependencyInjection;
 using ASC.Core.Common.Settings;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
     [DataContract]
-    public class ColorThemesSettings : BaseSettings<ColorThemesSettings>
+    public class ColorThemesSettings : ISettings
     {
         public const string ThemeFolderTemplate = "<theme_folder>";
         private const string DefaultName = "pure-orange";
@@ -48,7 +49,7 @@ namespace ASC.Web.Core.Utility
         [DataMember(Name = "FirstRequest")]
         public bool FirstRequest { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new ColorThemesSettings
             {
@@ -57,35 +58,48 @@ namespace ASC.Web.Core.Utility
             };
         }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{AB5B3C97-A972-475C-BB13-71936186C4E6}"); }
         }
+    }
 
-        public static string GetThemeFolderName(string path)
+    public class ColorThemesSettingsHelper
+    {
+        public SettingsManager SettingsManager { get; }
+        public IHostEnvironment HostEnvironment { get; }
+
+        public ColorThemesSettingsHelper(
+            SettingsManager settingsManager,
+            IHostEnvironment hostEnvironment)
+        {
+            SettingsManager = settingsManager;
+            HostEnvironment = hostEnvironment;
+        }
+
+        public string GetThemeFolderName(IUrlHelper urlHelper, string path)
         {
             var folderName = GetColorThemesSettings();
-            var resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, folderName);
+            var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, folderName);
 
             //TODO check
-            var urlHelper = CommonServiceProvider.GetService<IUrlHelper>();
             if (!urlHelper.IsLocalUrl(resolvedPath))
                 resolvedPath = urlHelper.Action(resolvedPath);
 
             try
             {
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
             }
             catch (Exception)
             {
-                resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, "default");
+                resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, "default");
 
                 if (!urlHelper.IsLocalUrl(resolvedPath))
                     resolvedPath = urlHelper.Action(resolvedPath);
 
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
 
                 if (!File.Exists(filePath))
                     throw new FileNotFoundException("", path);
@@ -94,38 +108,47 @@ namespace ASC.Web.Core.Utility
             return resolvedPath;
         }
 
-        public static string GetColorThemesSettings()
+        public string GetColorThemesSettings()
         {
-            var colorTheme = Load();
+            var colorTheme = SettingsManager.Load<ColorThemesSettings>();
             var colorThemeName = colorTheme.ColorThemeName;
 
             if (colorTheme.FirstRequest)
             {
                 colorTheme.FirstRequest = false;
-                colorTheme.Save();
+                SettingsManager.Save(colorTheme);
             }
 
             return colorThemeName;
         }
 
-        public static void SaveColorTheme(string theme)
+        public void SaveColorTheme(string theme)
         {
             var settings = new ColorThemesSettings { ColorThemeName = theme, FirstRequest = false };
-            var path = "/skins/" + ThemeFolderTemplate;
-            var resolvedPath = path.ToLower().Replace(ThemeFolderTemplate, theme);
+            var path = "/skins/" + ColorThemesSettings.ThemeFolderTemplate;
+            var resolvedPath = path.ToLower().Replace(ColorThemesSettings.ThemeFolderTemplate, theme);
 
             try
             {
-                var filePath = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, resolvedPath);
+                var filePath = Path.Combine(HostEnvironment.ContentRootPath, resolvedPath);
                 if (Directory.Exists(filePath))
                 {
-                    settings.Save();
+                    SettingsManager.Save(settings);
                 }
             }
             catch (Exception)
             {
 
             }
+        }
+    }
+
+    public static class ColorThemesSettingsHelperExtension
+    {
+        public static IServiceCollection AddColorThemesSettingsHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<ColorThemesSettingsHelper>();
+            return services.AddSettingsManagerService();
         }
     }
 }

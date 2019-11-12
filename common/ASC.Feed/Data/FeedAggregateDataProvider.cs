@@ -33,29 +33,45 @@ using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace ASC.Feed.Data
 {
     public class FeedAggregateDataProvider
     {
-        public static DateTime GetLastTimeAggregate(string key)
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public TenantUtil TenantUtil { get; }
+        public DbOptionsManager DbOptionsManager { get; }
+
+        public FeedAggregateDataProvider(DbOptionsManager dbOptionsManager)
+        {
+            DbOptionsManager = dbOptionsManager;
+        }
+        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbOptionsManager dbOptionsManager)
+        {
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            TenantUtil = tenantUtil;
+            DbOptionsManager = dbOptionsManager;
+        }
+
+        public DateTime GetLastTimeAggregate(string key)
         {
             var q = new SqlQuery("feed_last")
                 .Select("last_date")
                 .Where("last_key", key);
 
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             var value = db.ExecuteScalar<DateTime>(q);
             return value != default ? value.AddSeconds(1) : value;
         }
 
-        public static void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value)
+        public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value)
         {
-            using (var db = new DbManager(Constants.FeedDbId))
-            {
-                db.ExecuteNonQuery(new SqlInsert("feed_last", true).InColumnValue("last_key", key).InColumnValue("last_date", value));
-            }
+            var db = GetDb();
+            db.ExecuteNonQuery(new SqlInsert("feed_last", true).InColumnValue("last_key", key).InColumnValue("last_date", value));
 
             const int feedsPortionSize = 1000;
             var aggregatedDate = DateTime.UtcNow;
@@ -75,9 +91,9 @@ namespace ASC.Feed.Data
             }
         }
 
-        private static void SaveFeedsPortion(IEnumerable<FeedRow> feeds, DateTime aggregatedDate)
+        private void SaveFeedsPortion(IEnumerable<FeedRow> feeds, DateTime aggregatedDate)
         {
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             var i = new SqlInsert("feed_aggregate", true)
 .InColumns("id", "tenant", "product", "module", "author", "modified_by", "group_id", "created_date",
@@ -112,14 +128,14 @@ namespace ASC.Feed.Data
             tx.Commit();
         }
 
-        public static void RemoveFeedAggregate(DateTime fromTime)
+        public void RemoveFeedAggregate(DateTime fromTime)
         {
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             using var command = db.Connection.CreateCommand();
             using var tx = db.Connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             command.Transaction = tx;
             command.CommandTimeout = 60 * 60; // a hour
-            var dialect = DbRegistry.GetSqlDialect(Constants.FeedDbId);
+            var dialect = db.GetSqlDialect(Constants.FeedDbId);
             if (dialect.SupportMultiTableUpdate)
             {
                 command.ExecuteNonQuery("delete from feed_aggregate, feed_users using feed_aggregate, feed_users where id = feed_id and aggregated_date < @date", new { date = fromTime });
@@ -132,7 +148,7 @@ namespace ASC.Feed.Data
             tx.Commit();
         }
 
-        public static List<FeedResultItem> GetFeeds(FeedApiFilter filter)
+        public List<FeedResultItem> GetFeeds(FeedApiFilter filter)
         {
             var filterOffset = filter.Offset;
             var filterLimit = filter.Max > 0 && filter.Max < 1000 ? filter.Max : 1000;
@@ -164,15 +180,15 @@ namespace ASC.Feed.Data
             return feeds.Take(filterLimit).SelectMany(group => group.Value).ToList();
         }
 
-        private static List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
+        private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
         {
             var query = new SqlQuery("feed_aggregate a")
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
-                .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("a.tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where(
-                    !Exp.Eq("a.modified_by", SecurityContext.CurrentAccount.ID) &
-                    Exp.Eq("u.user_id", SecurityContext.CurrentAccount.ID)
+                    !Exp.Eq("a.modified_by", AuthContext.CurrentAccount.ID) &
+                    Exp.Eq("u.user_id", AuthContext.CurrentAccount.ID)
                 )
                 .OrderBy("a.modified_date", false)
                 .SetFirstResult(filter.Offset)
@@ -211,29 +227,30 @@ namespace ASC.Feed.Data
                 query.Where(exp);
             }
 
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             var news = db
-.ExecuteList(query)
-.ConvertAll(r => new FeedResultItem(
-Convert.ToString(r[0]),
-Convert.ToString(r[1]),
-new Guid(Convert.ToString(r[2])),
-new Guid(Convert.ToString(r[3])),
-Convert.ToString(r[4]),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
+                        .ExecuteList(query)
+                        .ConvertAll(r => new FeedResultItem(
+                        Convert.ToString(r[0]),
+                        Convert.ToString(r[1]),
+                        new Guid(Convert.ToString(r[2])),
+                        new Guid(Convert.ToString(r[3])),
+                        Convert.ToString(r[4]),
+                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
+                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
+                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7])),
+                        TenantUtil));
             return news;
         }
 
-        public static int GetNewFeedsCount(DateTime lastReadedTime)
+        public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
         {
             var q = new SqlQuery("feed_aggregate a")
                 .Select("id")
-                .Where("a.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
-                .Where(!Exp.Eq("a.modified_by", SecurityContext.CurrentAccount.ID))
+                .Where("a.tenant", tenantManager.GetCurrentTenant().TenantId)
+                .Where(!Exp.Eq("a.modified_by", authContext.CurrentAccount.ID))
                 .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
-                .Where("u.user_id", SecurityContext.CurrentAccount.ID)
+                .Where("u.user_id", authContext.CurrentAccount.ID)
                 .SetMaxResults(1001);
 
             if (1 < lastReadedTime.Year)
@@ -241,13 +258,13 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
                 q.Where(Exp.Ge("a.aggregated_date", lastReadedTime));
             }
 
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             return db.ExecuteList(q).Count();
         }
 
         public IEnumerable<int> GetTenants(TimeInterval interval)
         {
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             var q = new SqlQuery("feed_aggregate")
 .Select("tenant")
 .Where(Exp.Between("aggregated_date", interval.From, interval.To))
@@ -255,43 +272,46 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
             return db.ExecuteList(q).ConvertAll(r => Convert.ToInt32(r[0]));
         }
 
-        public static FeedResultItem GetFeedItem(string id)
+        public FeedResultItem GetFeedItem(string id, TenantUtil tenantUtil)
         {
             var query = new SqlQuery("feed_aggregate a")
                 .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
                 .Where("a.id", id);
 
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             var news = db
-.ExecuteList(query)
-.ConvertAll(r => new FeedResultItem(
-Convert.ToString(r[0]),
-Convert.ToString(r[1]),
-new Guid(Convert.ToString(r[2])),
-new Guid(Convert.ToString(r[3])),
-Convert.ToString(r[4]),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
-TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
+                    .ExecuteList(query)
+                    .ConvertAll(r => new FeedResultItem(
+                    Convert.ToString(r[0]),
+                    Convert.ToString(r[1]),
+                    new Guid(Convert.ToString(r[2])),
+                    new Guid(Convert.ToString(r[3])),
+                    Convert.ToString(r[4]),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
+                    tenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7])),
+                    tenantUtil));
 
             return news.FirstOrDefault();
         }
 
-        public static void RemoveFeedItem(string id)
+        public void RemoveFeedItem(string id)
         {
-            using var db = new DbManager(Constants.FeedDbId);
+            var db = GetDb();
             using var command = db.Connection.CreateCommand();
             using var tx = db.Connection.BeginTransaction(IsolationLevel.ReadUncommitted);
             command.Transaction = tx;
             command.CommandTimeout = 60 * 60; // a hour
 
-            var dialect = DbRegistry.GetSqlDialect(Constants.FeedDbId);
+            var dialect = db.GetSqlDialect(Constants.FeedDbId);
 
             command.ExecuteNonQuery(new SqlDelete("feed_users").Where("feed_id", id), dialect);
             command.ExecuteNonQuery(new SqlDelete("feed_aggregate").Where("id", id), dialect);
 
             tx.Commit();
         }
+
+        private IDbManager GetDb() => DbOptionsManager.Get(Constants.FeedDbId);
     }
 
 
@@ -305,9 +325,10 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
             string groupId,
             DateTime createdDate,
             DateTime modifiedDate,
-            DateTime aggregatedDate)
+            DateTime aggregatedDate,
+            TenantUtil tenantUtil)
         {
-            var now = TenantUtil.DateTimeFromUtc(DateTime.UtcNow);
+            var now = tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
 
             Json = json;
             Module = module;
@@ -351,19 +372,31 @@ TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7]))));
 
         public DateTime AggregatedDate { get; private set; }
 
-        public FeedMin ToFeedMin()
+        public FeedMin ToFeedMin(UserManager userManager)
         {
             var feedMin = JsonConvert.DeserializeObject<FeedMin>(Json);
-            feedMin.Author = new FeedMinUser { UserInfo = CoreContext.UserManager.GetUsers(feedMin.AuthorId) };
+            feedMin.Author = new FeedMinUser { UserInfo = userManager.GetUsers(feedMin.AuthorId) };
             feedMin.CreatedDate = CreatedDate;
 
             if (feedMin.Comments == null) return feedMin;
 
             foreach (var comment in feedMin.Comments)
             {
-                comment.Author = new FeedMinUser { UserInfo = CoreContext.UserManager.GetUsers(comment.AuthorId) };
+                comment.Author = new FeedMinUser { UserInfo = userManager.GetUsers(comment.AuthorId) };
             }
             return feedMin;
+        }
+    }
+
+    public static class FeedAggregateDataProviderExtension
+    {
+        public static IServiceCollection AddFeedAggregateDataProvider(this IServiceCollection services)
+        {
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddDbManagerService();
         }
     }
 }

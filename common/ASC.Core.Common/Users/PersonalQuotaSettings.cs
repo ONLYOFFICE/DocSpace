@@ -32,17 +32,18 @@ namespace ASC.Core.Tenants
 {
     [Serializable]
     [DataContract]
-    public class PersonalQuotaSettings : BaseSettings<PersonalQuotaSettings>
+    public class PersonalQuotaSettings : ISettings
     {
         [DataMember(Name = "MaxSpace")]
         public long MaxSpace { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C634A747-C39B-4517-8698-B3B39BF2BD8E}"); }
         }
 
-        public override ISettings GetDefault()
+
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new PersonalQuotaSettings
             {

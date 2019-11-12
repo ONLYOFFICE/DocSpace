@@ -26,6 +26,8 @@
 
 using System;
 using System.Web;
+using ASC.Common.Utils;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -48,9 +50,9 @@ namespace ASC.FederatedLogin.Profile
             return profile.AppendCacheProfile(uri, memoryCache);
         }
 
-        public static LoginProfile GetProfile(this Uri uri, HttpContext context, IMemoryCache memoryCache)
+        public static LoginProfile GetProfile(this Uri uri, HttpContext context, IMemoryCache memoryCache, Signature signature, InstanceCrypto instanceCrypto)
         {
-            var profile = new LoginProfile();
+            var profile = new LoginProfile(signature, instanceCrypto);
             var queryString = HttpUtility.ParseQueryString(uri.Query);
             if (!string.IsNullOrEmpty(queryString[LoginProfile.QuerySessionParamName]) && context != null && context.Session != null)
             {

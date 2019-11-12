@@ -30,7 +30,7 @@ using System.Data.Common;
 
 namespace ASC.Common.Data.AdoProxy
 {
-    class ProxyContext
+    internal class ProxyContext
     {
         private readonly Action<ExecutedEventArgs> executedEvent;
 
