@@ -57,7 +57,7 @@ namespace ASC.Core.Data
 
         public void ValidateDomain(string domain)
         {
-            using var db = GetDb();
+            var db = GetDb();
             ValidateDomain(db, domain, Tenant.DEFAULT_TENANT, true);
         }
 
@@ -121,7 +121,7 @@ namespace ASC.Core.Data
         {
             if (t == null) throw new ArgumentNullException("tenant");
 
-            using (var db = GetDb())
+            var db = GetDb();
             using (var tx = db.BeginTransaction())
             {
                 if (!string.IsNullOrEmpty(t.MappedDomain))
@@ -222,7 +222,7 @@ namespace ASC.Core.Data
         {
             var postfix = auto ? "_auto_deleted" : "_deleted";
 
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             var alias = db.ExecuteScalar<string>(new SqlQuery("tenants_tenants").Select("alias").Where("id", id));
             var count = db.ExecuteScalar<int>(new SqlQuery("tenants_tenants").SelectCount().Where(Exp.Like("alias", alias + postfix, SqlLike.StartWith)));

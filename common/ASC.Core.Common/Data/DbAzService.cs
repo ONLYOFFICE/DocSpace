@@ -81,7 +81,7 @@ namespace ASC.Core.Data
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using (var db = GetDb())
+            var db = GetDb();
             using (var tx = db.BeginTransaction())
             {
                 if (!ExistEscapeRecord(db, r))
@@ -102,7 +102,7 @@ namespace ASC.Core.Data
         public void RemoveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             if (ExistEscapeRecord(db, r))
             {
