@@ -56,6 +56,7 @@ namespace ASC.Web.Api.Controllers
             try
             {
                 var token = SecurityContext.AuthenticateMe(user.ID);
+                CookiesManager.SetCookies(CookiesType.AuthKey, token);
                 var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData
