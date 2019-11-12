@@ -27,9 +27,12 @@
 using System;
 using System.Linq;
 using ASC.Common.Security.Authentication;
+using ASC.Core.Caching;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -37,16 +40,20 @@ namespace ASC.Core
     {
         private readonly IUserService userService;
 
+        public UserManager UserManager { get; }
+        public UserFormatter UserFormatter { get; }
 
-        public AuthManager(IUserService service)
+        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
         {
-            this.userService = service;
+            userService = service;
+            UserManager = userManager;
+            UserFormatter = userFormatter;
         }
 
 
         public IUserAccount[] GetUserAccounts(Tenant tenant)
         {
-            return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
+            return UserManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.TenantId, u)).ToArray();
         }
 
         public void SetUserPassword(int tenantId, Guid userID, string password)
@@ -64,14 +71,25 @@ namespace ASC.Core
             var s = ASC.Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
             if (s != null) return s;
 
-            var u = CoreContext.UserManager.GetUsers(tenantId, id);
+            var u = UserManager.GetUsers(id);
             return !Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : ASC.Core.Configuration.Constants.Guest;
         }
 
 
         private IUserAccount ToAccount(int tenantId, UserInfo u)
         {
-            return new UserAccount(u, tenantId);
+            return new UserAccount(u, tenantId, UserFormatter);
+        }
+    }
+    public static class AuthManagerExtension
+    {
+        public static IServiceCollection AddAuthManager(this IServiceCollection services)
+        {
+            services.TryAddScoped<AuthManager>();
+            return services
+                .AddUserService()
+                .AddUserFormatter()
+                .AddUserManagerService();
         }
     }
 }

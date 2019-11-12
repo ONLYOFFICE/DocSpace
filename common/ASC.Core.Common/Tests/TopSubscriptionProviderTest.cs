@@ -30,6 +30,7 @@ using System.Linq;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 
 namespace ASC.Core.Common.Tests
@@ -50,10 +51,16 @@ namespace ASC.Core.Common.Tests
         private IRecipient testRec;
         private IRecipient testRec2;
         private NotifyAction nAction;
+        private IServiceProvider serviceProvider;
 
         [OneTimeSetUp]
         public void CreateProviders()
         {
+            using var scope = serviceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var subscriptionManager = scope.ServiceProvider.GetService<SubscriptionManager>();
+            tenantManager.SetCurrentTenant(tenant);
+
             tenant = new Tenants.Tenant(0, "teamlab");
             sourceId = "6045b68c-2c2e-42db-9e53-c272e814c4ad";
             actionId = "NewCommentForTask";
@@ -62,11 +69,9 @@ namespace ASC.Core.Common.Tests
             testRec = new DirectRecipient("ff0c4e13-1831-43c2-91ce-7b7beb56179b", null); //Oliver Khan
             testRec2 = new DirectRecipient("0017794f-aeb7-49a5-8817-9e870e02bd3f", null); //Якутова Юлия
 
-
-            recProvider = new RecipientProviderImpl();
-            var directSubProvider = new DirectSubscriptionProvider(sourceId, CoreContext.SubscriptionManager, recProvider);
+            recProvider = scope.ServiceProvider.GetService<RecipientProviderImpl>();
+            var directSubProvider = new DirectSubscriptionProvider(sourceId, subscriptionManager, recProvider);
             subProvider = new TopSubscriptionProvider(recProvider, directSubProvider);
-            CoreContext.TenantManager.SetCurrentTenant(tenant);
         }
 
         [Test]
@@ -81,17 +86,17 @@ namespace ASC.Core.Common.Tests
                 IRecipient[] res;
 
                 //GetRecipients
-                res = subProvider.GetRecipients(tenant.TenantId, nAction, objectId);
+                res = subProvider.GetRecipients(nAction, objectId);
                 var cnt = res.Count();
 
                 //Subscribe
                 subProvider.Subscribe(nAction, objectId, testRec);
-                res = subProvider.GetRecipients(tenant.TenantId, nAction, objectId);
+                res = subProvider.GetRecipients(nAction, objectId);
                 Assert.AreEqual(cnt + 1, res.Count());
 
                 //UnSubscribe
-                subProvider.UnSubscribe(tenant, nAction, testRec);
-                res = subProvider.GetRecipients(tenant.TenantId, nAction, objectId);
+                subProvider.UnSubscribe(nAction, testRec);
+                res = subProvider.GetRecipients(nAction, objectId);
                 Assert.AreEqual(cnt, res.Count());
 
                 string[] objs;
@@ -100,34 +105,34 @@ namespace ASC.Core.Common.Tests
 
                 //Получаем подписки юзера
                 //for (int i = 0; i < 6; i++) subProvider.Subscribe(nAction, new Random().Next().ToString(), testRec2);
-                objs = subProvider.GetSubscriptions(tenant, nAction, testRec2);
+                objs = subProvider.GetSubscriptions(nAction, testRec2);
                 Assert.AreNotEqual(0, objs.Count());
                 CollectionAssert.AllItemsAreUnique(objs);
 
                 //Получаем список групп к которым он принадлежит
-                var parents = recProvider.GetGroups(tenant, testRec2);
+                var parents = recProvider.GetGroups(testRec2);
                 Assert.AreNotEqual(0, parents.Count());
                 otdel = parents.First();
                 everyone = parents.Last();
 
-                var objsGroup = subProvider.GetSubscriptions(tenant, nAction, otdel);
+                var objsGroup = subProvider.GetSubscriptions(nAction, otdel);
                 CollectionAssert.AllItemsAreUnique(objsGroup);
 
                 //Подписываем весь отдел на объект
                 rndObj = string.Concat("TestObject#", new Random().Next().ToString());
                 subProvider.Subscribe(nAction, rndObj, otdel);
                 //Проверяем подписался ли юзер вместе со всем отделом двумя способами.
-                Assert.AreEqual(objsGroup.Count() + 1, subProvider.GetSubscriptions(tenant, nAction, otdel).Count());
-                Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(tenant, nAction, testRec2).Count());
-                Assert.AreEqual(true, subProvider.IsSubscribed(tenant, nAction, testRec2, rndObj));
+                Assert.AreEqual(objsGroup.Count() + 1, subProvider.GetSubscriptions(nAction, otdel).Count());
+                Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(nAction, testRec2).Count());
+                Assert.AreEqual(true, subProvider.IsSubscribed(null, nAction, testRec2, rndObj));
 
                 //Подписываем Everybody
                 rndObj2 = string.Concat("TestObject#", new Random().Next().ToString());
-                objs = subProvider.GetSubscriptions(tenant, nAction, testRec2);
+                objs = subProvider.GetSubscriptions(nAction, testRec2);
                 subProvider.Subscribe(nAction, rndObj2, everyone);
                 //Проверяем подписался ли user двумя способами.
-                Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(tenant, nAction, testRec2).Count());
-                Assert.AreEqual(true, subProvider.IsSubscribed(tenant, nAction, testRec2, rndObj2));
+                Assert.AreEqual(objs.Count() + 1, subProvider.GetSubscriptions(nAction, testRec2).Count());
+                Assert.AreEqual(true, subProvider.IsSubscribed(null, nAction, testRec2, rndObj2));
 
             }
             finally

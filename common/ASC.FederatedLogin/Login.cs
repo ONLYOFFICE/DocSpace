@@ -31,10 +31,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using ASC.Common.Utils;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.FederatedLogin.Profile;
-
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
@@ -51,12 +52,16 @@ namespace ASC.FederatedLogin
         private readonly RequestDelegate _next;
         private IWebHostEnvironment WebHostEnvironment { get; }
         private IMemoryCache MemoryCache { get; }
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
 
-        public Login(RequestDelegate next, IWebHostEnvironment webHostEnvironment, IMemoryCache memoryCache)
+        public Login(RequestDelegate next, IWebHostEnvironment webHostEnvironment, IMemoryCache memoryCache, Signature signature, InstanceCrypto instanceCrypto)
         {
             _next = next;
             WebHostEnvironment = webHostEnvironment;
             MemoryCache = memoryCache;
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
         }
 
 
@@ -89,7 +94,7 @@ namespace ASC.FederatedLogin
             {
                 try
                 {
-                    var profile = ProviderManager.Process(Auth, context, _params);
+                    var profile = ProviderManager.Process(Auth, Signature, InstanceCrypto, context, _params);
                     if (profile != null)
                     {
                         await SendClientData(context, profile);
@@ -101,7 +106,7 @@ namespace ASC.FederatedLogin
                 }
                 catch (Exception ex)
                 {
-                    await SendClientData(context, LoginProfile.FromError(ex));
+                    await SendClientData(context, LoginProfile.FromError(Signature, InstanceCrypto, ex));
                 }
             }
             else

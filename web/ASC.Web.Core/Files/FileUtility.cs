@@ -31,12 +31,19 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
-    public static class FileUtility
+    public class FileUtility
     {
+        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbOptionsManager dbOptions)
+        {
+            Configuration = configuration;
+            FilesLinkUtility = filesLinkUtility;
+            DbOptions = dbOptions;
+        }
+
         #region method
 
         public static string GetFileExtension(string fileName)
@@ -56,7 +63,7 @@ namespace ASC.Web.Core.Files
             return extension == null ? string.Empty : extension.Trim().ToLower();
         }
 
-        public static string GetInternalExtension(string fileName)
+        public string GetInternalExtension(string fileName)
         {
             var extension = GetFileExtension(fileName);
             return InternalExtension.TryGetValue(GetFileTypeByExtention(extension), out var internalExtension)
@@ -64,7 +71,7 @@ namespace ASC.Web.Core.Files
                        : extension;
         }
 
-        public static string GetGoogleDownloadableExtension(string googleExtension)
+        public string GetGoogleDownloadableExtension(string googleExtension)
         {
             googleExtension = GetFileExtension(googleExtension);
             if (googleExtension.Equals(".gdraw")) return ".pdf";
@@ -97,47 +104,47 @@ namespace ASC.Web.Core.Files
             return FileType.Unknown;
         }
 
-        public static bool CanImageView(string fileName)
+        public bool CanImageView(string fileName)
         {
             return ExtsImagePreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanMediaView(string fileName)
+        public bool CanMediaView(string fileName)
         {
             return ExtsMediaPreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanWebView(string fileName)
+        public bool CanWebView(string fileName)
         {
             return ExtsWebPreviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanWebEdit(string fileName)
+        public bool CanWebEdit(string fileName)
         {
             return ExtsWebEdited.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanWebReview(string fileName)
+        public bool CanWebReview(string fileName)
         {
             return ExtsWebReviewed.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanWebRestrictedEditing(string fileName)
+        public bool CanWebRestrictedEditing(string fileName)
         {
             return ExtsWebRestrictedEditing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanWebComment(string fileName)
+        public bool CanWebComment(string fileName)
         {
             return ExtsWebCommented.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanCoAuhtoring(string fileName)
+        public bool CanCoAuhtoring(string fileName)
         {
             return ExtsCoAuthoring.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
 
-        public static bool CanIndex(string fileName)
+        public bool CanIndex(string fileName)
         {
             return extsIndexing.Contains(GetFileExtension(fileName), StringComparer.CurrentCultureIgnoreCase);
         }
@@ -146,9 +153,9 @@ namespace ASC.Web.Core.Files
 
         #region member
 
-        private static Dictionary<string, List<string>> _extsConvertible;
+        private Dictionary<string, List<string>> _extsConvertible;
 
-        public static Dictionary<string, List<string>> ExtsConvertible
+        public Dictionary<string, List<string>> ExtsConvertible
         {
             get
             {
@@ -160,7 +167,7 @@ namespace ASC.Web.Core.Files
                     const string databaseId = "files";
                     const string tableTitle = "files_converts";
 
-                    using var dbManager = new DbManager(databaseId);
+                    var dbManager = DbOptions.Get(databaseId);
                     var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
 
                     var list = dbManager.ExecuteList(sqlQuery);
@@ -182,9 +189,9 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        private static List<string> _extsUploadable;
+        private List<string> _extsUploadable;
 
-        public static List<string> ExtsUploadable
+        public List<string> ExtsUploadable
         {
             get
             {
@@ -200,51 +207,55 @@ namespace ASC.Web.Core.Files
             }
         }
 
-        private static readonly List<string> extsWebPreviewed = (ConfigurationManager.AppSettings["files.docservice.viewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsWebEdited = (ConfigurationManager.AppSettings["files.docservice.edited-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsWebReviewed = (ConfigurationManager.AppSettings["files.docservice.reviewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsWebRestrictedEditing = (ConfigurationManager.AppSettings["files.docservice.formfilling-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsWebCommented = (ConfigurationManager.AppSettings["files.docservice.commented-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsMustConvert = (ConfigurationManager.AppSettings["files.docservice.convert-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-        private static readonly List<string> extsIndexing = (ConfigurationManager.AppSettings["files.index.formats"] ?? "").Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        private List<string> extsWebPreviewed { get => (Configuration["files.docservice.viewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsWebEdited { get => (Configuration["files.docservice.edited-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsWebReviewed { get => (Configuration["files.docservice.reviewed-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsWebRestrictedEditing { get => (Configuration["files.docservice.formfilling-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsWebCommented { get => (Configuration["files.docservice.commented-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsMustConvert { get => (Configuration["files.docservice.convert-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        private List<string> extsIndexing { get => (Configuration["files.index.formats"] ?? "").Split(new[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
 
-        public static List<string> ExtsImagePreviewed { get; } = (ConfigurationManager.AppSettings["files.viewed-images"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        public List<string> ExtsImagePreviewed { get => (Configuration["files.viewed-images"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
 
-        public static List<string> ExtsMediaPreviewed { get; } = (ConfigurationManager.AppSettings["files.viewed-media"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        public List<string> ExtsMediaPreviewed { get => (Configuration["files.viewed-media"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
 
-        public static List<string> ExtsWebPreviewed
+        public List<string> ExtsWebPreviewed
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebPreviewed; }
         }
 
-        public static List<string> ExtsWebEdited
+        public List<string> ExtsWebEdited
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebEdited; }
         }
 
-        public static List<string> ExtsWebEncrypt { get; } = (ConfigurationManager.AppSettings["files.docservice.encrypted-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        public List<string> ExtsWebEncrypt { get => (Configuration["files.docservice.encrypted-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
 
-        public static List<string> ExtsWebReviewed
+        public List<string> ExtsWebReviewed
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebReviewed; }
         }
 
-        public static List<string> ExtsWebRestrictedEditing
+        public List<string> ExtsWebRestrictedEditing
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebRestrictedEditing; }
         }
 
-        public static List<string> ExtsWebCommented
+        public List<string> ExtsWebCommented
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceApiUrl) ? new List<string>() : extsWebCommented; }
         }
 
-        public static List<string> ExtsMustConvert
+        public List<string> ExtsMustConvert
         {
             get { return string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl) ? new List<string>() : extsMustConvert; }
         }
 
-        public static List<string> ExtsCoAuthoring { get; } = (ConfigurationManager.AppSettings["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        public List<string> ExtsCoAuthoring { get => (Configuration["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
+        public IConfiguration Configuration { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public DbRegistry DbRegistry { get; }
+        public DbOptionsManager DbOptions { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {
@@ -311,12 +322,15 @@ namespace ASC.Web.Core.Files
                 ".gdoc"
             };
 
-        public static readonly Dictionary<FileType, string> InternalExtension = new Dictionary<FileType, string>
+        public Dictionary<FileType, string> InternalExtension
+        {
+            get => new Dictionary<FileType, string>
             {
-                { FileType.Document, ConfigurationManager.AppSettings["files.docservice.internal-doc"] ?? ".docx" },
-                { FileType.Spreadsheet, ConfigurationManager.AppSettings["files.docservice.internal-xls"] ?? ".xlsx" },
-                { FileType.Presentation, ConfigurationManager.AppSettings["files.docservice.internal-ppt"] ?? ".pptx" }
+                { FileType.Document, Configuration["files.docservice.internal-doc"] ?? ".docx" },
+                { FileType.Spreadsheet, Configuration["files.docservice.internal-xls"] ?? ".xlsx" },
+                { FileType.Presentation, Configuration["files.docservice.internal-ppt"] ?? ".pptx" }
             };
+        }
 
         public enum CsvDelimiter
         {
@@ -327,13 +341,12 @@ namespace ASC.Web.Core.Files
             Comma = 4,
             Space = 5
         }
+        public string SignatureSecret { get => GetSignatureSecret(); }
+        public string SignatureHeader { get => GetSignatureHeader(); }
 
-        public static readonly string SignatureSecret = GetSignatureSecret();
-        public static readonly string SignatureHeader = GetSignatureHeader();
-
-        private static string GetSignatureSecret()
+        private string GetSignatureSecret()
         {
-            var result = ConfigurationManager.AppSettings["files.docservice.secret"] ?? "";
+            var result = Configuration["files.docservice.secret"] ?? "";
 
             var regex = new Regex(@"^\s+$");
 
@@ -343,9 +356,9 @@ namespace ASC.Web.Core.Files
             return result;
         }
 
-        private static string GetSignatureHeader()
+        private string GetSignatureHeader()
         {
-            var result = (ConfigurationManager.AppSettings["files.docservice.secret.header"] ?? "").Trim();
+            var result = (Configuration["files.docservice.secret.header"] ?? "").Trim();
             if (string.IsNullOrEmpty(result))
                 result = "Authorization";
             return result;

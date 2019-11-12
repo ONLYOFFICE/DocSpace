@@ -27,8 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Core;
+using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.VoipService.Twilio;
@@ -37,9 +40,13 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID)
-            : base(tenantID)
+        public VoipDao(int tenantID, DbOptionsManager dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+            : base(dbOptions, tenantID)
         {
+            AuthContext = authContext;
+            TenantUtil = tenantUtil;
+            SecurityContext = securityContext;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
         public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -286,12 +293,12 @@ namespace ASC.VoipService.Dao
 
         #region Converters
 
-        private static VoipPhone ToPhone(object[] r)
+        private VoipPhone ToPhone(object[] r)
         {
-            return GetProvider().GetPhone(r);
+            return GetProvider(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetPhone(r);
         }
 
-        private static VoipCall ToCall(object[] r)
+        private VoipCall ToCall(object[] r)
         {
             var call = new VoipCall
             {
@@ -331,9 +338,9 @@ namespace ASC.VoipService.Dao
             get { return ConsumerFactory.GetByName("twilio"); }
         }
 
-        public static TwilioProvider GetProvider()
+        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"]);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, baseCommonLinkUtility);
         }
 
         public static bool ConfigSettingsExist
@@ -344,6 +351,12 @@ namespace ASC.VoipService.Dao
                        !string.IsNullOrEmpty(Consumer["twilioAuthToken"]);
             }
         }
+
+        public AuthContext AuthContext { get; }
+        public TenantUtil TenantUtil { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         #endregion
     }

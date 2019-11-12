@@ -32,14 +32,16 @@ using System.Runtime.Serialization;
 using System.Xml;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.PublicResources;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class PeopleNamesSettings : BaseSettings<PeopleNamesSettings>
+    public class PeopleNamesSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("47F34957-6A70-4236-9681-C8281FB762FA"); }
         }
@@ -51,7 +53,7 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "ItemId")]
         public string ItemID { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new PeopleNamesSettings { ItemID = PeopleNamesItem.DefaultID };
         }
@@ -182,31 +184,37 @@ namespace ASC.Web.Core.Users
 
         private static readonly List<PeopleNamesItem> items = new List<PeopleNamesItem>();
 
+        public CustomNamingPeople(SettingsManager settingsManager)
+        {
+            SettingsManager = settingsManager;
+        }
 
-        public static PeopleNamesItem Current
+        public PeopleNamesItem Current
         {
             get
             {
-                var settings = PeopleNamesSettings.Load();
+                var settings = SettingsManager.Load<PeopleNamesSettings>();
                 return PeopleNamesItem.CustomID.Equals(settings.ItemID, StringComparison.InvariantCultureIgnoreCase) && settings.Item != null ?
                     settings.Item :
                     GetPeopleNames(settings.ItemID);
             }
         }
 
+        public PeopleNamesSettings PeopleNamesSettings { get; }
+        public SettingsManager SettingsManager { get; }
 
-        public static string Substitute<T>(string resourceKey) where T : class
+        public string Substitute<T>(string resourceKey) where T : class
         {
             var text = (string)typeof(T).GetProperty(resourceKey, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).GetValue(null, null);
             return Substitute(text);
         }
 
-        public static string Substitute(string text)
+        public string Substitute(string text)
         {
             return SubstituteGuest(SubstituteUserPost(SubstituteRegDate(SubstituteGroupHead(SubstitutePost(SubstituteGroup(SubstituteUser(text)))))));
         }
 
-        public static Dictionary<string, string> GetSchemas()
+        public Dictionary<string, string> GetSchemas()
         {
             Load();
 
@@ -215,11 +223,11 @@ namespace ASC.Web.Core.Users
             return dict;
         }
 
-        public static PeopleNamesItem GetPeopleNames(string schemaId)
+        public PeopleNamesItem GetPeopleNames(string schemaId)
         {
             if (PeopleNamesItem.CustomID.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase))
             {
-                var settings = PeopleNamesSettings.Load();
+                var settings = SettingsManager.Load<PeopleNamesSettings>();
                 return settings.Item ??
                     new PeopleNamesItem
                     {
@@ -242,24 +250,24 @@ namespace ASC.Web.Core.Users
             return items.Find(i => i.Id.Equals(schemaId, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public static void SetPeopleNames(string schemaId)
+        public void SetPeopleNames(string schemaId)
         {
-            var settings = PeopleNamesSettings.Load();
+            var settings = SettingsManager.Load<PeopleNamesSettings>();
             settings.ItemID = schemaId;
-            settings.Save();
+            SettingsManager.Save(settings);
         }
 
-        public static void SetPeopleNames(PeopleNamesItem custom)
+        public void SetPeopleNames(PeopleNamesItem custom)
         {
-            var settings = PeopleNamesSettings.Load();
+            var settings = SettingsManager.Load<PeopleNamesSettings>();
             custom.Id = PeopleNamesItem.CustomID;
             settings.ItemID = PeopleNamesItem.CustomID;
             settings.Item = custom;
-            settings.Save();
+            SettingsManager.Save(settings);
         }
 
 
-        private static void Load()
+        private void Load()
         {
             if (loaded)
             {
@@ -291,7 +299,7 @@ namespace ASC.Web.Core.Users
             }
         }
 
-        private static string SubstituteUser(string text)
+        private string SubstituteUser(string text)
         {
             var item = Current;
             if (item != null)
@@ -305,7 +313,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstituteGroup(string text)
+        private string SubstituteGroup(string text)
         {
             var item = Current;
             if (item != null)
@@ -319,7 +327,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstituteGuest(string text)
+        private string SubstituteGuest(string text)
         {
             var item = Current;
             if (item != null)
@@ -333,7 +341,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstitutePost(string text)
+        private string SubstitutePost(string text)
         {
             var item = Current;
             if (item != null)
@@ -345,7 +353,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstituteGroupHead(string text)
+        private string SubstituteGroupHead(string text)
         {
             var item = Current;
             if (item != null)
@@ -357,7 +365,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstituteRegDate(string text)
+        private string SubstituteRegDate(string text)
         {
             var item = Current;
             if (item != null)
@@ -369,7 +377,7 @@ namespace ASC.Web.Core.Users
             return text;
         }
 
-        private static string SubstituteUserPost(string text)
+        private string SubstituteUserPost(string text)
         {
             var item = Current;
             if (item != null)
@@ -379,6 +387,16 @@ namespace ASC.Web.Core.Users
                     .Replace("{!userpost}", item.UserPostCaption.ToLower());
             }
             return text;
+        }
+    }
+
+    public static class CustomNamingPeopleExtension
+    {
+        public static IServiceCollection AddCustomNamingPeopleService(this IServiceCollection services)
+        {
+            services.TryAddScoped<CustomNamingPeople>();
+
+            return services.AddSettingsManagerService();
         }
     }
 }

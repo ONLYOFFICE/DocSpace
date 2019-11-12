@@ -32,6 +32,9 @@ using ASC.Notify.Channels;
 using ASC.Notify.Engine;
 using ASC.Notify.Model;
 using ASC.Notify.Sinks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -65,11 +68,14 @@ namespace ASC.Notify
 
         public event Action<Context, INotifyClient> NotifyClientRegistration;
 
+        private ILog Log { get; set; }
 
-        public Context()
+        public Context(IServiceProvider serviceProvider)
         {
-            NotifyEngine = new NotifyEngine(this);
-            DispatchEngine = new DispatchEngine(this);
+            var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+            Log = options.CurrentValue;
+            NotifyEngine = new NotifyEngine(this, serviceProvider);
+            DispatchEngine = new DispatchEngine(this, serviceProvider.GetService<IConfiguration>(), options);
         }
 
 
@@ -98,10 +104,10 @@ namespace ASC.Notify
             }
         }
 
-        INotifyClient INotifyRegistry.RegisterClient(INotifySource source)
+        INotifyClient INotifyRegistry.RegisterClient(INotifySource source, IServiceScope serviceScope)
         {
             //ValidateNotifySource(source);
-            var client = new NotifyClientImpl(this, source);
+            var client = new NotifyClientImpl(this, source, serviceScope);
             NotifyClientRegistration?.Invoke(this, client);
             return client;
         }
@@ -128,7 +134,7 @@ namespace ASC.Notify
                     }
                     catch (Exception error)
                     {
-                        LogManager.GetLogger("ASC.Notify").ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
+                        Log.ErrorFormat("Source: {0}, action: {1}, sender: {2}, error: {3}", source.ID, a.ID, s, error);
                     }
                 }
             }

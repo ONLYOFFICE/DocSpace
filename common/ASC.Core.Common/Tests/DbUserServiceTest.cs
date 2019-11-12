@@ -35,7 +35,7 @@ namespace ASC.Core.Common.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class DbUserServiceTest : DbBaseTest<DbUserService>
+    class DbUserServiceTest : DbBaseTest<DbUserService>
     {
         [OneTimeSetUp]
         public void ClearData()

@@ -25,20 +25,27 @@
 
 
 using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.MessagingSystem
 {
     public class MessagePolicy
     {
-        private static readonly string[] secretIps =
-            ConfigurationManager.AppSettings["messaging.secret-ips"] == null
-                ? new string[] { }
-                : ConfigurationManager.AppSettings["messaging.secret-ips"]
-                      .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        private readonly IEnumerable<string> secretIps;
 
-        public static bool Check(EventMessage message)
+        public MessagePolicy(IConfiguration configuration)
+        {
+            secretIps =
+                configuration["messaging.secret-ips"] == null
+                ? new string[] { }
+                : configuration["messaging.secret-ips"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public bool Check(EventMessage message)
         {
             if (message == null) return false;
             if (string.IsNullOrEmpty(message.IP)) return true;
@@ -53,6 +60,16 @@ namespace ASC.MessagingSystem
 
             var portIdx = ip.IndexOf(':');
             return portIdx > -1 ? ip.Substring(0, portIdx) : ip;
+        }
+    }
+
+    public static class MessagePolicyExtension
+    {
+        public static IServiceCollection AddMessagePolicyService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MessagePolicy>();
+
+            return services;
         }
     }
 }

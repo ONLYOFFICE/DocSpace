@@ -24,25 +24,30 @@
 */
 
 
-#region usings
-
 using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-
-#endregion
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Security.Cryptography
 {
-    public static class InstanceCrypto
+    public class InstanceCrypto
     {
-        public static string Encrypt(string data)
+        public MachinePseudoKeys MachinePseudoKeys { get; }
+
+        public InstanceCrypto(MachinePseudoKeys machinePseudoKeys)
+        {
+            MachinePseudoKeys = machinePseudoKeys;
+        }
+
+        public string Encrypt(string data)
         {
             return Convert.ToBase64String(Encrypt(Encoding.UTF8.GetBytes(data)));
         }
 
-        public static byte[] Encrypt(byte[] data)
+        public byte[] Encrypt(byte[] data)
         {
             var hasher = Rijndael.Create();
             hasher.Key = EKey();
@@ -55,12 +60,12 @@ namespace ASC.Security.Cryptography
             return ms.ToArray();
         }
 
-        public static string Decrypt(string data)
+        public string Decrypt(string data)
         {
             return Encoding.UTF8.GetString(Decrypt(Convert.FromBase64String(data)));
         }
 
-        public static byte[] Decrypt(byte[] data)
+        public byte[] Decrypt(byte[] data)
         {
             var hasher = Rijndael.Create();
             hasher.Key = EKey();
@@ -76,9 +81,20 @@ namespace ASC.Security.Cryptography
             return newBuffer;
         }
 
-        private static byte[] EKey()
+        private byte[] EKey()
         {
             return MachinePseudoKeys.GetMachineConstant(32);
+        }
+    }
+    public static class InstanceCryptoExtension
+    {
+        public static IServiceCollection AddInstanceCryptoService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<InstanceCrypto>();
+
+            return services
+                .AddHttpContextAccessor()
+                .AddMachinePseudoKeysService();
         }
     }
 }

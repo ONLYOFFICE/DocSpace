@@ -26,19 +26,17 @@
 
 using System;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Text.RegularExpressions;
-using ASC.Common.Utils;
-using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Core.Utility
 {
     [Serializable]
     [DataContract]
-    public sealed class PasswordSettings : BaseSettings<PasswordSettings>
+    public sealed class PasswordSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("aa93a4d1-012d-4ccd-895a-e094e809c840"); }
         }
@@ -69,66 +67,21 @@ namespace ASC.Web.Core.Utility
         [DataMember]
         public bool SpecSymbols { get; set; }
 
-        private static PasswordSettings _default;
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IConfiguration configuration)
         {
-            if (_default == null)
-            {
-                _default = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
+            var def = new PasswordSettings { MinLength = 6, UpperCase = false, Digits = false, SpecSymbols = false };
 
-                if (int.TryParse(ConfigurationManager.AppSettings["web.password.min"], out var defaultMinLength))
-                {
-                    _default.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
-                }
+            if (int.TryParse(configuration["web.password.min"], out var defaultMinLength))
+            {
+                def.MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }
 
-            return _default;
+            return def;
         }
 
-
-        public static bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            var pwdBuilder = new StringBuilder();
-
-            if (CoreContext.Configuration.CustomMode)
-            {
-                pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
-
-                if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
-
-                if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*[A-Z])");
-
-                if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
-
-                pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
-            }
-            else
-            {
-                pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
-
-                if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
-
-                if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*\p{Lu})");
-
-                if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[\W])");
-
-                pwdBuilder.Append(@".");
-            }
-
-            pwdBuilder.Append(@"{");
-            pwdBuilder.Append(passwordSettings.MinLength);
-            pwdBuilder.Append(@",");
-            pwdBuilder.Append(MaxLength);
-            pwdBuilder.Append(@"}$");
-
-            return new Regex(pwdBuilder.ToString()).IsMatch(password);
+            return GetDefault(serviceProvider.GetService<IConfiguration>());
         }
     }
 }

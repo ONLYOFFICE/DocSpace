@@ -25,8 +25,9 @@
 
 
 using System;
-
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Action = ASC.Common.Security.Authorizing.Action;
 using AuthConst = ASC.Common.Security.Authorizing.Constants;
 
@@ -34,17 +35,31 @@ namespace ASC.Core.Users
 {
     public sealed class Constants
     {
-        public static int MaxEveryoneCount
+        public Constants(IConfiguration configuration)
+        {
+            Configuration = configuration;
+            NamingPoster = new UserInfo
+            {
+                ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
+                FirstName = configuration["core:system:poster:name"] ?? "ONLYOFFICE Poster",
+                LastName = string.Empty,
+                ActivationStatus = EmployeeActivationStatus.Activated
+            };
+        }
+
+        public int MaxEveryoneCount
         {
             get
             {
-                if (!int.TryParse(ConfigurationManager.AppSettings["core:users"], out var count))
+                if (!int.TryParse(Configuration["core:users"], out var count))
                 {
                     count = 10000;
                 }
                 return count;
             }
         }
+
+        public IConfiguration Configuration { get; }
 
 
         #region system group and category groups
@@ -100,13 +115,7 @@ namespace ASC.Core.Users
             ActivationStatus = EmployeeActivationStatus.Activated
         };
 
-        public static readonly UserInfo NamingPoster = new UserInfo
-        {
-            ID = new Guid("{17097D73-2D1E-4B36-AA07-AEB34AF993CD}"),
-            FirstName = ConfigurationManager.AppSettings["core:system:poster:name"] ?? "ONLYOFFICE Poster",
-            LastName = string.Empty,
-            ActivationStatus = EmployeeActivationStatus.Activated
-        };
+        public UserInfo NamingPoster { get; }
 
         public static readonly GroupInfo LostGroupInfo = new GroupInfo
         {
@@ -132,5 +141,14 @@ namespace ASC.Core.Users
             "Edit categories and groups");
 
         #endregion
+    }
+
+    public static class ConstantsConfigFactory
+    {
+        public static IServiceCollection AddConstantsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<Constants>();
+            return services;
+        }
     }
 }

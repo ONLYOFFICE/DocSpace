@@ -33,9 +33,9 @@ namespace ASC.Core.Notify
     public class NotifyServiceClient : INotifyService
     {
         private readonly ICacheNotify<NotifyMessage> cacheNotify;
-        public NotifyServiceClient()
+        public NotifyServiceClient(ICacheNotify<NotifyMessage> cacheNotify)
         {
-            cacheNotify = new KafkaCache<NotifyMessage>();
+            this.cacheNotify = cacheNotify;
         }
 
         public void SendNotifyMessage(NotifyMessage m)

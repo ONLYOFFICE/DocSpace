@@ -6,9 +6,9 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using ASC.Common.DependencyInjection;
 using ASC.Common.Utils;
 using CommandLine;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Resource.Manager
@@ -26,13 +26,12 @@ namespace ASC.Resource.Manager
             var startup = new Startup();
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
-            CommonServiceProvider.Init(serviceProvider);
-            ConfigurationManager.Init(serviceProvider);
+            var ResourceData = serviceProvider.GetService<ResourceData>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
             var enabledSettings = new EnabledSettings();
-            Action<string, string, string, string, string, string> export = null;
+            Action<ResourceData, string, string, string, string, string, string> export = null;
 
             try
             {
@@ -63,7 +62,7 @@ namespace ASC.Resource.Manager
                     return;
                 }
 
-                enabledSettings = ConfigurationManager.GetSetting<EnabledSettings>("enabled");
+                enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
 
@@ -134,11 +133,11 @@ namespace ASC.Resource.Manager
             {
                 if (!string.IsNullOrEmpty(culture))
                 {
-                    export(projectName, moduleName, fileName, culture, exportPath, key);
+                    export(ResourceData, projectName, moduleName, fileName, culture, exportPath, key);
                 }
                 else
                 {
-                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(projectName, moduleName, fileName, c, exportPath, key));
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(ResourceData, projectName, moduleName, fileName, c, exportPath, key));
                 }
             }
         }

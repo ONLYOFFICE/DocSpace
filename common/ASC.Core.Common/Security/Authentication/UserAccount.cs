@@ -52,10 +52,10 @@ namespace ASC.Core.Security.Authentication
         public string Email { get; private set; }
 
 
-        public UserAccount(UserInfo info, int tenant)
+        public UserAccount(UserInfo info, int tenant, UserFormatter userFormatter)
         {
             ID = info.ID;
-            Name = UserFormatter.GetUserName(info);
+            Name = userFormatter.GetUserName(info);
             FirstName = info.FirstName;
             LastName = info.LastName;
             Title = info.Title;

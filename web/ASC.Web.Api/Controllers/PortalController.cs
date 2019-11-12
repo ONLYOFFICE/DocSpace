@@ -7,12 +7,15 @@ using ASC.Core.Billing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
+using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -23,25 +26,47 @@ namespace ASC.Web.Api.Controllers
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
-
-        public LogManager LogManager { get; }
-
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public PaymentManager PaymentManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        public UrlShortener UrlShortener { get; }
+        public PermissionContext PermissionContext { get; }
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public ILog Log { get; }
 
 
-        public PortalController(LogManager logManager,
+        public PortalController(
+            IOptionsMonitor<ILog> options,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            PaymentManager paymentManager,
+            CommonLinkUtility commonLinkUtility,
+            UrlShortener urlShortener,
+            PermissionContext permissionContext
+            )
         {
-            LogManager = logManager;
+            Log = options.CurrentValue;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            PaymentManager = paymentManager;
+            CommonLinkUtility = commonLinkUtility;
+            UrlShortener = urlShortener;
+            PermissionContext = permissionContext;
         }
 
         [Read("")]
@@ -53,14 +78,14 @@ namespace ASC.Web.Api.Controllers
         [Read("users/{userID}")]
         public UserInfo GetUser(Guid userID)
         {
-            return CoreContext.UserManager.GetUsers(Tenant.TenantId, userID);
+            return UserManager.GetUsers(userID);
         }
 
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            SecurityContext.DemandPermissions(Tenant, Constants.Action_AddRemoveUser);
-            return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, string.Empty, ConfirmType.LinkInvite, (int)employeeType)
+            PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
                    + $"&emplType={employeeType:d}";
         }
 
@@ -69,11 +94,11 @@ namespace ASC.Web.Api.Controllers
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(link);
+                return UrlShortener.Instance.GetShortenLink(link, CommonLinkUtility);
             }
             catch (Exception ex)
             {
-                LogManager.Get("ASC.Web").Error("getshortenlink", ex);
+                Log.Error("getshortenlink", ex);
                 return link;
             }
         }
@@ -83,7 +108,7 @@ namespace ASC.Web.Api.Controllers
         public double GetUsedSpace()
         {
             return Math.Round(
-                CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
+                TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant.TenantId))
                            .Where(q => !string.IsNullOrEmpty(q.Tag) && new Guid(q.Tag) != Guid.Empty)
                            .Sum(q => q.Counter) / 1024f / 1024f / 1024f, 2);
         }
@@ -92,19 +117,19 @@ namespace ASC.Web.Api.Controllers
         [Read("userscount")]
         public long GetUsersCount()
         {
-            return CoreContext.UserManager.GetUserNames(Tenant, EmployeeStatus.Active).Count();
+            return UserManager.GetUserNames(EmployeeStatus.Active).Count();
         }
 
         [Read("tariff")]
         public Tariff GetTariff()
         {
-            return CoreContext.PaymentManager.GetTariff(Tenant.TenantId);
+            return PaymentManager.GetTariff(Tenant.TenantId);
         }
 
         [Read("quota")]
         public TenantQuota GetQuota()
         {
-            return CoreContext.TenantManager.GetTenantQuota(Tenant.TenantId);
+            return TenantManager.GetTenantQuota(Tenant.TenantId);
         }
 
         [Read("quota/right")]
@@ -113,7 +138,7 @@ namespace ASC.Web.Api.Controllers
             var usedSpace = GetUsedSpace();
             var needUsersCount = GetUsersCount();
 
-            return CoreContext.TenantManager.GetTenantQuotas().OrderBy(r => r.Price)
+            return TenantManager.GetTenantQuotas().OrderBy(r => r.Price)
                               .FirstOrDefault(quota =>
                                               quota.ActiveUsers > needUsersCount
                                               && quota.MaxTotalSize > usedSpace
@@ -124,7 +149,27 @@ namespace ASC.Web.Api.Controllers
         [Read("path")]
         public string GetFullAbsolutePath(string virtualPath)
         {
-            return CommonLinkUtility.GetFullAbsolutePath(ApiContext.HttpContext, virtualPath);
+            return CommonLinkUtility.GetFullAbsolutePath(virtualPath);
+        }
+    }
+
+    public static class PortalControllerExtension
+    {
+        public static IServiceCollection AddPortalController(this IServiceCollection services)
+        {
+            return services
+                .AddUrlShortener()
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddEmailValidationKeyProviderService()
+                .AddPaymentManagerService()
+                .AddCommonLinkUtilityService()
+                .AddPermissionContextService();
         }
     }
 }

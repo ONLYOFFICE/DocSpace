@@ -27,17 +27,29 @@
 using System;
 using ASC.Core.Tenants;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
-    public static class FileSizeComment
+    public class FileSizeComment
     {
-        public static string FileSizeExceptionString
+        public TenantExtra TenantExtra { get; }
+        public SetupInfo SetupInfo { get; }
+
+        public FileSizeComment(TenantExtra tenantExtra, SetupInfo setupInfo)
         {
-            get { return GetFileSizeExceptionString(SetupInfo.MaxUploadSize); }
+            TenantExtra = tenantExtra;
+            SetupInfo = setupInfo;
         }
 
-        public static string FileImageSizeExceptionString
+        public string FileSizeExceptionString
+        {
+            get { return GetFileSizeExceptionString(TenantExtra.MaxUploadSize); }
+        }
+
+        public string FileImageSizeExceptionString
         {
             get { return GetFileSizeExceptionString(SetupInfo.MaxImageUploadSize); }
         }
@@ -55,7 +67,7 @@ namespace ASC.Web.Studio.Core
         /// <summary>
         /// The maximum file size is exceeded (25 MB).
         /// </summary>
-        public static Exception FileSizeException
+        public Exception FileSizeException
         {
             get { return new TenantQuotaException(FileSizeExceptionString); }
         }
@@ -63,7 +75,7 @@ namespace ASC.Web.Studio.Core
         /// <summary>
         /// The maximum file size is exceeded (1 MB).
         /// </summary>
-        public static Exception FileImageSizeException
+        public Exception FileImageSizeException
         {
             get { return new TenantQuotaException(FileImageSizeExceptionString); }
         }
@@ -82,7 +94,7 @@ namespace ASC.Web.Studio.Core
         /// Get note about maximum file size
         /// </summary>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote()
+        public string GetFileSizeNote()
         {
             return GetFileSizeNote(true);
         }
@@ -92,7 +104,7 @@ namespace ASC.Web.Studio.Core
         /// </summary>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote(bool withHtmlStrong)
+        public string GetFileSizeNote(bool withHtmlStrong)
         {
             return GetFileSizeNote(Resource.FileSizeNote, withHtmlStrong);
         }
@@ -103,11 +115,11 @@ namespace ASC.Web.Studio.Core
         /// <param name="note">Resource fromat of note</param>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 25 MB</returns>
-        public static string GetFileSizeNote(string note, bool withHtmlStrong)
+        public string GetFileSizeNote(string note, bool withHtmlStrong)
         {
             return
                 string.Format(note,
-                              FilesSizeToString(SetupInfo.MaxUploadSize),
+                              FilesSizeToString(TenantExtra.MaxUploadSize),
                               withHtmlStrong ? "<strong>" : string.Empty,
                               withHtmlStrong ? "</strong>" : string.Empty);
         }
@@ -118,7 +130,7 @@ namespace ASC.Web.Studio.Core
         /// <param name="note">Resource fromat of note</param>
         /// <param name="withHtmlStrong">Highlight a word about size</param>
         /// <returns>Note: the file size cannot exceed 1 MB</returns>
-        public static string GetFileImageSizeNote(string note, bool withHtmlStrong)
+        public string GetFileImageSizeNote(string note, bool withHtmlStrong)
         {
             return
                 string.Format(note,
@@ -145,6 +157,18 @@ namespace ASC.Web.Studio.Core
                 resultSize /= Math.Pow(1024d, power);
             }
             return string.Format("{0:#,0.##} {1}", resultSize, sizeNames[power]);
+        }
+    }
+
+    public static class FileSizeCommentExtension
+    {
+        public static IServiceCollection AddFileSizeCommentService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileSizeComment>();
+
+            return services
+                .AddTenantExtraService()
+                .AddSetupInfo();
         }
     }
 }

@@ -26,10 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
@@ -44,10 +44,14 @@ namespace ASC.Core.Data
         private static TimeZoneInfo defaultTimeZone;
         private List<string> forbiddenDomains;
 
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString)
-            : base(connectionString, null)
+        public DbTenantService(DbOptionsManager dbOptionsManager, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
+            : base(dbOptionsManager, null)
         {
+            TenantDomainValidator = tenantDomainValidator;
+            TimeZoneConverter = timeZoneConverter;
         }
 
 
@@ -113,7 +117,7 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public Tenant SaveTenant(Tenant t)
+        public Tenant SaveTenant(CoreSettings coreSettings, Tenant t)
         {
             if (t == null) throw new ArgumentNullException("tenant");
 
@@ -122,7 +126,7 @@ namespace ASC.Core.Data
             {
                 if (!string.IsNullOrEmpty(t.MappedDomain))
                 {
-                    var baseUrl = TenantUtil.GetBaseDomain(t.HostedRegion);
+                    var baseUrl = coreSettings.GetBaseDomain(t.HostedRegion);
 
                     if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                     {

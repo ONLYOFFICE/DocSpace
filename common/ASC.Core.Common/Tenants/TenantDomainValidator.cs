@@ -26,8 +26,7 @@
 
 using System;
 using System.Text.RegularExpressions;
-
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Tenants
 {
@@ -36,20 +35,20 @@ namespace ASC.Core.Tenants
         private static readonly Regex ValidDomain = new Regex("^[a-z0-9]([a-z0-9-]){1,98}[a-z0-9]$",
                                                               RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-        private static readonly int MinLength;
+        private readonly int MinLength;
         private const int MaxLength = 100;
 
-        static TenantDomainValidator()
+        public TenantDomainValidator(IConfiguration configuration)
         {
             MinLength = 6;
 
-            if (int.TryParse(ConfigurationManager.AppSettings["web:alias:min"], out var defaultMinLength))
+            if (int.TryParse(configuration["web:alias:min"], out var defaultMinLength))
             {
                 MinLength = Math.Max(1, Math.Min(MaxLength, defaultMinLength));
             }
         }
 
-        public static void ValidateDomainLength(string domain)
+        public void ValidateDomainLength(string domain)
         {
             if (string.IsNullOrEmpty(domain))
             {

@@ -30,6 +30,8 @@ using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -37,15 +39,18 @@ namespace ASC.Core
     {
         private readonly IAzService service;
 
-        public AuthorizationManager(IAzService service)
+        private TenantManager TenantManager { get; }
+
+        public AuthorizationManager(IAzService service, TenantManager tenantManager)
         {
             this.service = service;
+            TenantManager = tenantManager;
         }
 
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId)
         {
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
             return aces
                 .Where(a => a.ActionId == actionId && (a.SubjectId == subjectId || subjectId == Guid.Empty))
                 .ToList();
@@ -53,7 +58,7 @@ namespace ASC.Core
 
         public IEnumerable<AzRecord> GetAces(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
         {
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
             return FilterAces(aces, subjectId, actionId, objectId)
                 .ToList();
         }
@@ -66,7 +71,7 @@ namespace ASC.Core
             }
 
             var result = new List<AzRecord>();
-            var aces = service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
+            var aces = service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
             result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
             var inherits = new List<AzRecord>();
@@ -84,12 +89,12 @@ namespace ASC.Core
 
         public void AddAce(AzRecord r)
         {
-            service.SaveAce(CoreContext.TenantManager.GetCurrentTenant().TenantId, r);
+            service.SaveAce(TenantManager.GetCurrentTenant().TenantId, r);
         }
 
         public void RemoveAce(AzRecord r)
         {
-            service.RemoveAce(CoreContext.TenantManager.GetCurrentTenant().TenantId, r);
+            service.RemoveAce(TenantManager.GetCurrentTenant().TenantId, r);
         }
 
         public void RemoveAllAces(ISecurityObjectId id)
@@ -102,7 +107,7 @@ namespace ASC.Core
 
         private IEnumerable<AzRecord> GetAcesInternal()
         {
-            return service.GetAces(CoreContext.TenantManager.GetCurrentTenant().TenantId, default);
+            return service.GetAces(TenantManager.GetCurrentTenant().TenantId, default);
         }
 
         private IEnumerable<AzRecord> DistinctAces(IEnumerable<AzRecord> inheritAces)
@@ -121,6 +126,17 @@ namespace ASC.Core
             return aces is AzRecordStore store ?
                 store.Get(objId).Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty)) :
                 aces.Where(a => (a.SubjectId == subjectId || subjectId == Guid.Empty) && (a.ActionId == actionId || actionId == Guid.Empty) && a.ObjectId == objId);
+        }
+    }
+
+    public static class AuthorizationManagerConfigExtension
+    {
+        public static IServiceCollection AddAuthorizationManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<AuthorizationManager>();
+            return services
+                .AddAzService()
+                .AddTenantManagerService();
         }
     }
 }

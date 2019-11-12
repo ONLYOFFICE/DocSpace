@@ -25,6 +25,7 @@
 
 
 using ASC.Notify.Engine;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify
 {
@@ -36,6 +37,6 @@ namespace ASC.Notify
 
         InterceptorLifetime Lifetime { get; }
 
-        bool PreventSend(NotifyRequest request, InterceptorPlace place);
+        bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope);
     }
 }

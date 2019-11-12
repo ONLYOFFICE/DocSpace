@@ -36,9 +36,10 @@ namespace ASC.Common.Tests.Security.Cryptography
     [TestFixture]
     public class EmailValidationKeyPairProvider_Test
     {
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; set; }
+
         public void PasswordDerivedBytes_Test()
         {
-
             var randBytes = new byte[5];
             new Random(10032010).NextBytes(randBytes);
 

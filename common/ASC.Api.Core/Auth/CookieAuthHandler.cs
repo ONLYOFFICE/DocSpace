@@ -4,7 +4,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using ASC.Core;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -15,12 +15,14 @@ namespace ASC.Api.Core.Auth
         public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
-
-        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpContextAccessor httpContextAccessor)
+        //
+        public CookieAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, SecurityContext securityContext)
             : this(options, logger, encoder, clock)
         {
-
+            SecurityContext = securityContext;
         }
+
+        public SecurityContext SecurityContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -32,6 +34,14 @@ namespace ASC.Api.Core.Auth
                      AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)) :
                      AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString()))
                      );
+        }
+    }
+
+    public static class CookieAuthHandlerExtension
+    {
+        public static IServiceCollection AddCookieAuthHandler(this IServiceCollection services)
+        {
+            return services.AddSecurityContextService();
         }
     }
 }

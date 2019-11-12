@@ -29,39 +29,63 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Tenants;
+using ASC.Core.Common.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
 {
-    public static class IPSecurity
+    public class IPSecurity
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC.IPSecurity");
+        private readonly ILog Log;
 
-        private static bool? _ipSecurityEnabled;
+        public bool IpSecurityEnabled { get; }
 
-        public static bool IpSecurityEnabled
+        public IConfiguration Configuration { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public IPRestrictionsService IPRestrictionsService { get; }
+        public SettingsManager SettingsManager { get; }
+
+        private readonly string CurrentIpForTest;
+
+        public IPSecurity(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            IPRestrictionsService iPRestrictionsService,
+            SettingsManager settingsManager,
+            IOptionsMonitor<ILog> options)
         {
-            get
-            {
-                if (_ipSecurityEnabled.HasValue) return _ipSecurityEnabled.Value;
-                var hideSettings = (ConfigurationManager.AppSettings["web.hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
-                return (_ipSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase)).Value;
-            }
+            Log = options.Get("ASC.IPSecurity");
+            Configuration = configuration;
+            HttpContextAccessor = httpContextAccessor;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            IPRestrictionsService = iPRestrictionsService;
+            SettingsManager = settingsManager;
+            CurrentIpForTest = configuration["ipsecurity:test"];
+            var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
+            IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
         }
 
-        private static readonly string CurrentIpForTest = ConfigurationManager.AppSettings["ipsecurity.test"];
-
-        public static bool Verify(HttpContext httpContext, Tenant tenant)
+        public bool Verify()
         {
+            var tenant = TenantManager.GetCurrentTenant();
+            var settings = SettingsManager.Load<IPRestrictionsSettings>();
+
             if (!IpSecurityEnabled) return true;
 
-            if (httpContext == null) return true;
+            if (HttpContextAccessor?.HttpContext == null) return true;
 
-            if (tenant == null || SecurityContext.CurrentAccount.ID == tenant.OwnerId) return true;
+            if (tenant == null || AuthContext.CurrentAccount.ID == tenant.OwnerId) return true;
 
             string requestIps = null;
             try
@@ -72,7 +96,7 @@ namespace ASC.IPSecurity
 
                 if (string.IsNullOrWhiteSpace(requestIps = CurrentIpForTest))
                 {
-                    var request = httpContext.Request;
+                    var request = HttpContextAccessor.HttpContext.Request;
                     requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
                 }
 
@@ -91,7 +115,7 @@ namespace ASC.IPSecurity
                 return false;
             }
 
-            Log.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, httpContext.Request.GetDisplayUrl());
+            Log.InfoFormat("Restricted from IP-address: {0}. Tenant: {1}. Request to: {2}", requestIps ?? "", tenant, HttpContextAccessor.HttpContext.Request.GetDisplayUrl());
             return false;
         }
 
@@ -114,6 +138,21 @@ namespace ASC.IPSecurity
         {
             var portIdx = ip.IndexOf(':');
             return portIdx > 0 ? ip.Substring(0, portIdx) : ip;
+        }
+    }
+
+    public static class IPSecurityExtension
+    {
+        public static IServiceCollection AddIPSecurityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPSecurity>();
+
+            return services
+                .AddIPRestrictionsService()
+                .AddSettingsManagerService()
+                .AddHttpContextAccessor()
+                .AddAuthContextService()
+                .AddTenantManagerService();
         }
     }
 }

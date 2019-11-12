@@ -7,6 +7,7 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
@@ -16,16 +17,42 @@ namespace ASC.Web.Api.Controllers
     [AllowAnonymous]
     public class AuthenticationController : ControllerBase
     {
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public AuthContext AuthContext { get; }
+        public AuthManager AuthManager { get; }
+
+        public AuthenticationController(
+            UserManager userManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            AuthContext authContext,
+            AuthManager authManager)
+        {
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            AuthContext = authContext;
+            AuthManager = authManager;
+        }
+
         [Create(false)]
         public AuthenticationTokenData AuthenticateMe([FromBody]AuthModel auth)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = GetUser(tenant.TenantId, auth.UserName, auth.Password);
 
             try
             {
-                var token = SecurityContext.AuthenticateMe(tenant.TenantId, user.ID);
-                var expires = TenantCookieSettings.GetExpiresTime(tenant.TenantId);
+                var token = SecurityContext.AuthenticateMe(user.ID);
+                var expires = TenantCookieSettingsHelper.GetExpiresTime(tenant.TenantId);
 
                 return new AuthenticationTokenData
                 {
@@ -43,17 +70,17 @@ namespace ASC.Web.Api.Controllers
         [Create("confirm", false)]
         public ValidationResult CheckConfirm([FromBody]EmailValidationKeyModel model)
         {
-            return model.Validate();
+            return model.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
         }
 
-        private static UserInfo GetUser(int tenantId, string userName, string password)
+        private UserInfo GetUser(int tenantId, string userName, string password)
         {
-            var user = CoreContext.UserManager.GetUsers(
+            var user = UserManager.GetUsers(
                         tenantId,
                         userName,
                         Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            if (user == null || !CoreContext.UserManager.UserExists(user))
+            if (user == null || !UserManager.UserExists(user))
             {
                 throw new Exception("user not found");
             }
@@ -87,6 +114,21 @@ namespace ASC.Web.Api.Controllers
                 Tfa = false,
                 TfaKey = null
             };
+        }
+    }
+
+    public static class AuthenticationControllerExtension
+    {
+        public static IServiceCollection AddAuthenticationController(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddTenantCookieSettingsService()
+                .AddEmailValidationKeyProviderService()
+                .AddAuthContextService()
+                .AddAuthManager();
         }
     }
 }

@@ -35,42 +35,47 @@ using System.Resources;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace TMResourceData
 {
     public class DBResourceManager : ResourceManager
     {
         public static bool WhiteLableEnabled = false;
-        public static bool ResourcesFromDataBase { get; private set; }
-        private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
         private readonly ConcurrentDictionary<string, ResourceSet> resourceSets = new ConcurrentDictionary<string, ResourceSet>();
-
-        static DBResourceManager()
-        {
-            ResourcesFromDataBase = string.Equals(ConfigurationManager.AppSettings["resources:from-db"], "true");
-        }
 
         public DBResourceManager(string filename, Assembly assembly)
                     : base(filename, assembly)
         {
         }
-
-
-        public static void PatchAssemblies()
+        public DBResourceManager(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
+                    : base(filename, assembly)
         {
-            AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(a.LoadedAssembly);
-            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(a));
+            Configuration = configuration;
+            Option = option;
+            OptionsDbManager = optionsDbManager;
         }
 
-        public static void PatchAssembly(Assembly a, bool onlyAsc = true)
+
+        public static void PatchAssemblies(IOptionsMonitor<ILog> option)
         {
+            AppDomain.CurrentDomain.AssemblyLoad += (_, a) => PatchAssembly(option, a.LoadedAssembly);
+            Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => PatchAssembly(option, a));
+        }
+
+        public static void PatchAssembly(IOptionsMonitor<ILog> option, Assembly a, bool onlyAsc = true)
+        {
+            var log = option.CurrentValue;
+
             if (!onlyAsc || Accept(a))
             {
                 var types = new Type[0];
@@ -123,6 +128,9 @@ namespace TMResourceData
             get { return typeof(DBResourceSet); }
         }
 
+        public IConfiguration Configuration { get; }
+        public IOptionsMonitor<ILog> Option { get; }
+        public DbOptionsManager OptionsDbManager { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
@@ -130,7 +138,7 @@ namespace TMResourceData
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(invariant, culture, BaseName);
+                set = new DBResourceSet(Configuration, Option, OptionsDbManager, invariant, culture, BaseName);
                 resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
@@ -141,29 +149,19 @@ namespace TMResourceData
         {
             private const string NEUTRAL_CULTURE = "Neutral";
 
-            private static readonly TimeSpan cacheTimeout = TimeSpan.FromMinutes(120); // for performance
+            private readonly TimeSpan cacheTimeout = TimeSpan.FromMinutes(120); // for performance
             private readonly object locker = new object();
             private readonly MemoryCache cache;
             private readonly ResourceSet invariant;
             private readonly string culture;
             private readonly string filename;
+            private readonly ILog log;
 
+            public IConfiguration Configuration { get; }
+            public IOptionsMonitor<ILog> Option { get; }
+            public DbOptionsManager OptionsDbManager { get; }
 
-            static DBResourceSet()
-            {
-                try
-                {
-                    var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
-                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(ConfigurationManager.AppSettings["resources:cache-timeout"] ?? defaultValue));
-                }
-                catch (Exception err)
-                {
-                    log.Error(err);
-                }
-            }
-
-
-            public DBResourceSet(ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
             {
                 if (culture == null)
                 {
@@ -172,6 +170,21 @@ namespace TMResourceData
                 if (string.IsNullOrEmpty(filename))
                 {
                     throw new ArgumentNullException("filename");
+                }
+
+                Configuration = configuration;
+                Option = option;
+                OptionsDbManager = optionsDbManager;
+                log = option.CurrentValue;
+
+                try
+                {
+                    var defaultValue = ((int)cacheTimeout.TotalMinutes).ToString();
+                    cacheTimeout = TimeSpan.FromMinutes(Convert.ToInt32(configuration["resources:cache-timeout"] ?? defaultValue));
+                }
+                catch (Exception err)
+                {
+                    log.Error(err);
                 }
 
                 this.invariant = invariant;
@@ -196,11 +209,6 @@ namespace TMResourceData
                 if (invariant != null && result == null)
                 {
                     result = invariant.GetString(name, ignoreCase);
-                }
-
-                if (WhiteLableEnabled)
-                {
-                    result = WhiteLabelHelper.ReplaceLogo(name, result);
                 }
 
                 return result;
@@ -249,9 +257,9 @@ namespace TMResourceData
                 return dic;
             }
 
-            private static Dictionary<string, string> LoadResourceSet(string filename, string culture)
+            private Dictionary<string, string> LoadResourceSet(string filename, string culture)
             {
-                using var dbManager = DbManager.FromHttpContext("tmresource");
+                var dbManager = OptionsDbManager.Get("tmresource");
                 var q = new SqlQuery("res_data d")
 .Select("d.title", "d.textvalue")
 .InnerJoin("res_files f", Exp.EqColumns("f.id", "d.fileid"))
@@ -265,13 +273,21 @@ namespace TMResourceData
 
     public class WhiteLabelHelper
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Resources");
-        private static readonly ConcurrentDictionary<int, string> whiteLabelDictionary = new ConcurrentDictionary<int, string>();
-        private static readonly string replPattern = ConfigurationManager.AppSettings["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
-        public static string DefaultLogoText = "";
+        private readonly ILog log;
+        private readonly ConcurrentDictionary<int, string> whiteLabelDictionary;
+        public string DefaultLogoText;
 
+        public IConfiguration Configuration { get; }
 
-        public static void SetNewText(int tenantId, string newText)
+        public WhiteLabelHelper(IConfiguration configuration, IOptionsMonitor<ILog> option)
+        {
+            log = option.Get("ASC.Resources");
+            whiteLabelDictionary = new ConcurrentDictionary<int, string>();
+            DefaultLogoText = "";
+            Configuration = configuration;
+        }
+
+        public void SetNewText(int tenantId, string newText)
         {
             try
             {
@@ -283,7 +299,7 @@ namespace TMResourceData
             }
         }
 
-        public static void RestoreOldText(int tenantId)
+        public void RestoreOldText(int tenantId)
         {
             try
             {
@@ -295,18 +311,22 @@ namespace TMResourceData
             }
         }
 
-        internal static string ReplaceLogo(string resourceName, string resourceValue)
+        internal string ReplaceLogo(TenantManager tenantManager, IHttpContextAccessor httpContextAccessor, string resourceName, string resourceValue)
         {
             if (string.IsNullOrEmpty(resourceValue))
             {
                 return resourceValue;
             }
+            if (!DBResourceManager.WhiteLableEnabled)
+            {
+                return resourceValue;
+            }
 
-            if (HttpContext.Current != null) //if in Notify Service or other process without HttpContext
+            if (httpContextAccessor.HttpContext != null) //if in Notify Service or other process without HttpContext
             {
                 try
                 {
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                    var tenant = tenantManager.GetCurrentTenant(false);
                     if (tenant == null) return resourceValue;
 
                     if (whiteLabelDictionary.TryGetValue(tenant.TenantId, out var newText))
@@ -323,6 +343,7 @@ namespace TMResourceData
                             newTextReplacement = newTextReplacement.Replace("{", "{{").Replace("}", "}}");
                         }
 
+                        var replPattern = Configuration["resources:whitelabel-text.replacement.pattern"] ?? "(?<=[^@/\\\\]|^)({0})(?!\\.com)";
                         var pattern = string.Format(replPattern, DefaultLogoText);
                         //Hack for resource strings with mails looked like ...@onlyoffice... or with website http://www.onlyoffice.com link or with the https://www.facebook.com/pages/OnlyOffice/833032526736775
 
@@ -336,6 +357,15 @@ namespace TMResourceData
             }
 
             return resourceValue;
+        }
+    }
+
+    public static class WhiteLabelHelperExtension
+    {
+        public static IServiceCollection AddWhiteLabelHelperService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WhiteLabelHelper>();
+            return services;
         }
     }
 }

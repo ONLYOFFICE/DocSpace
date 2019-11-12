@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Resource.Manager
 {
@@ -18,7 +19,7 @@ namespace ASC.Resource.Manager
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
-            services.AddSingleton(Configuration);
+            services.TryAddSingleton(Configuration);
         }
     }
 }

@@ -35,24 +35,30 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using ASC.Common.Logging;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
     public class BillingClient : ClientBase<IService>, IDisposable
     {
-        private readonly static ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
         private readonly bool test;
 
+        private string Security { get; set; }
+        private string PartnersProduct { get; set; }
 
-        public BillingClient()
-            : this(false)
+        public BillingClient(IConfiguration configuration, IOptionsMonitor<ILog> option)
+            : this(false, configuration, option)
         {
         }
 
-        public BillingClient(bool test)
+        public BillingClient(bool test, IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             this.test = test;
+            Security = configuration["core:payment:security"];
+            PartnersProduct = configuration["core:payment:partners-product"];
+            log = option.CurrentValue;
         }
 
 
@@ -229,8 +235,8 @@ namespace ASC.Core.Billing
             {
                 return Request("SetPartnerStatus",
                                partnerId.Replace("-", ""),
-                               Tuple.Create("Security", ConfigurationManager.AppSettings["core:payment:security"]),
-                               Tuple.Create("ProductId", ConfigurationManager.AppSettings["core:payment:partners-product"]),
+                               Tuple.Create("Security", Security),
+                               Tuple.Create("ProductId", PartnersProduct),
                                Tuple.Create("Status", setAuthorized ? "1" : "0"),
                                Tuple.Create("RecreateSKey", "0"),
                                Tuple.Create("Renewal", (!setAuthorized || startDate == default || startDate == DateTime.MinValue

@@ -31,31 +31,63 @@ using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin
 {
-    public class AccountLinker
+    public class AccountLinkerStorage
     {
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<LinkerCacheItem> notify = new KafkaCache<LinkerCacheItem>();
-        private readonly string dbid;
+        private readonly ICache cache;
+        private readonly ICacheNotify<LinkerCacheItem> notify;
 
-
-        static AccountLinker()
+        public AccountLinkerStorage(ICacheNotify<LinkerCacheItem> notify)
         {
+            cache = AscCache.Memory;
+            this.notify = notify;
             notify.Subscribe((c) => cache.Remove(c.Obj), CacheNotifyAction.Remove);
         }
 
+        public void RemoveFromCache(string obj)
+        {
+            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+        }
+        public List<LoginProfile> GetFromCache(string obj, Func<string, List<LoginProfile>> fromDb)
+        {
+            var profiles = cache.Get<List<LoginProfile>>(obj);
+            if (profiles == null)
+            {
+                cache.Insert(obj, profiles = fromDb(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
+            }
+            return profiles;
+        }
+    }
 
-        public AccountLinker(string dbid)
+    public class AccountLinker
+    {
+
+        private readonly string dbid;
+
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+        public DbOptionsManager DbOptions { get; }
+        public AccountLinkerStorage AccountLinkerStorage { get; }
+
+        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
             this.dbid = dbid;
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
+            DbOptions = dbOptions;
+            AccountLinkerStorage = accountLinkerStorage;
         }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
-            return GetLinkedObjects(new LoginProfile { Id = id, Provider = provider });
+            return GetLinkedObjects(new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public IEnumerable<string> GetLinkedObjects(LoginProfile profile)
@@ -65,7 +97,7 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            using var db = new DbManager(dbid);
+            var db = DbOptions.Get(dbid);
             var query = new SqlQuery("account_links")
 .Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
             return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
@@ -78,47 +110,40 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
         {
-            var profiles = cache.Get<List<LoginProfile>>(obj);
-            if (profiles == null)
-            {
-                cache.Insert(obj, profiles = GetLinkedProfilesFromDB(obj), DateTime.UtcNow + TimeSpan.FromMinutes(10));
-            }
-            return profiles;
+            return AccountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
         }
 
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            using var db = new DbManager(dbid);
+            var db = DbOptions.Get(dbid);
             var query = new SqlQuery("account_links")
 .Select("profile").Where("id", obj);
-            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString((string)x[0]));
+            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
         }
 
         public void AddLink(string obj, LoginProfile profile)
         {
-            using (var db = new DbManager(dbid))
-            {
-                db.ExecuteScalar<int>(
-                    new SqlInsert("account_links", true)
-                        .InColumnValue("id", obj)
-                        .InColumnValue("uid", profile.HashId)
-                        .InColumnValue("provider", profile.Provider)
-                        .InColumnValue("profile", profile.ToSerializedString())
-                        .InColumnValue("linked", DateTime.UtcNow)
-                    );
-            }
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            var db = DbOptions.Get(dbid);
+            db.ExecuteScalar<int>(
+                new SqlInsert("account_links", true)
+                    .InColumnValue("id", obj)
+                    .InColumnValue("uid", profile.HashId)
+                    .InColumnValue("provider", profile.Provider)
+                    .InColumnValue("profile", profile.ToSerializedString())
+                    .InColumnValue("linked", DateTime.UtcNow)
+                );
+            AccountLinkerStorage.RemoveFromCache(obj);
         }
 
         public void AddLink(string obj, string id, string provider)
         {
-            AddLink(obj, new LoginProfile { Id = id, Provider = provider });
+            AddLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public void RemoveLink(string obj, string id, string provider)
         {
-            RemoveLink(obj, new LoginProfile { Id = id, Provider = provider });
+            RemoveLink(obj, new LoginProfile(Signature, InstanceCrypto) { Id = id, Provider = provider });
         }
 
         public void RemoveLink(string obj, LoginProfile profile)
@@ -133,11 +158,21 @@ namespace ASC.FederatedLogin
             if (!string.IsNullOrEmpty(provider)) sql.Where("provider", provider);
             if (!string.IsNullOrEmpty(hashId)) sql.Where("uid", hashId);
 
-            using (var db = new DbManager(dbid))
-            {
-                db.ExecuteScalar<int>(sql);
-            }
-            notify.Publish(new LinkerCacheItem { Obj = obj }, CacheNotifyAction.Remove);
+            var db = DbOptions.Get(dbid);
+            db.ExecuteScalar<int>(sql);
+
+            AccountLinkerStorage.RemoveFromCache(obj);
+        }
+    }
+
+    public static class AccountLinkerStorageExtension
+    {
+        public static IServiceCollection AddAccountLinkerStorageService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<AccountLinkerStorage>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services;
         }
     }
 }

@@ -27,82 +27,104 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    class StudioNotifyHelper
+    public class StudioNotifyHelper
     {
-        public static readonly string Helplink;
+        public readonly string Helplink;
 
-        public static readonly StudioNotifySource NotifySource;
+        public readonly StudioNotifySource NotifySource;
 
-        public static readonly ISubscriptionProvider SubscriptionProvider;
+        public readonly ISubscriptionProvider SubscriptionProvider;
 
-        public static readonly IRecipientProvider RecipientsProvider;
+        public readonly IRecipientProvider RecipientsProvider;
 
 
-        static StudioNotifyHelper()
+        private UserManager UserManager { get; }
+        private SetupInfo SetupInfo { get; }
+        private TenantManager TenantManager { get; }
+        private ILog Log { get; }
+
+        public StudioNotifyHelper(
+            StudioNotifySource studioNotifySource,
+            UserManager userManager,
+            SettingsManager settingsManager,
+            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+            CommonLinkUtility commonLinkUtility,
+            SetupInfo setupInfo,
+            TenantManager tenantManager,
+            IOptionsMonitor<ILog> option)
         {
-            Helplink = CommonLinkUtility.GetHelpLink(false);
-            NotifySource = new StudioNotifySource();
+            Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
+            NotifySource = studioNotifySource;
+            UserManager = userManager;
+            SetupInfo = setupInfo;
+            TenantManager = tenantManager;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
+            Log = option.CurrentValue;
         }
 
 
-        public static IEnumerable<UserInfo> GetRecipients(Tenant tenant, bool toadmins, bool tousers, bool toguests)
+        public IEnumerable<UserInfo> GetRecipients(bool toadmins, bool tousers, bool toguests)
         {
             if (toadmins)
             {
                 if (tousers)
                 {
                     if (toguests)
-                        return CoreContext.UserManager.GetUsers(tenant);
+                        return UserManager.GetUsers();
 
-                    return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User);
+                    return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
                 }
 
                 if (toguests)
                     return
-                        CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID)
-                                   .Concat(CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor));
+                        UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
+                                   .Concat(UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
 
-                return CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupAdmin.ID);
+                return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID);
             }
 
             if (tousers)
             {
                 if (toguests)
-                    return CoreContext.UserManager.GetUsers(tenant)
-                                      .Where(u => !CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                    return UserManager.GetUsers()
+                                      .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
 
-                return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Constants.GroupAdmin.ID));
+                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
+                                  .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
             }
 
             if (toguests)
-                return CoreContext.UserManager.GetUsers(tenant, EmployeeStatus.Default, EmployeeType.Visitor);
+                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
 
             return new List<UserInfo>();
         }
 
-        public static IRecipient ToRecipient(int tenantId, Guid userId)
+        public IRecipient ToRecipient(Guid userId)
         {
-            return RecipientsProvider.GetRecipient(tenantId, userId.ToString());
+            return RecipientsProvider.GetRecipient(userId.ToString());
         }
 
-        public static IRecipient[] RecipientFromEmail(string email, bool checkActivation)
+        public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
         {
             return RecipientFromEmail(new[] { email }, checkActivation);
         }
 
-        public static IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
+        public IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
         {
             var res = new List<IRecipient>();
 
@@ -116,7 +138,7 @@ namespace ASC.Web.Studio.Core.Notify
         }
 
 
-        public static string GetNotifyAnalytics(int tenantId, INotifyAction action, bool toowner, bool toadmins,
+        public string GetNotifyAnalytics(INotifyAction action, bool toowner, bool toadmins,
                                                 bool tousers, bool toguests)
         {
             if (string.IsNullOrEmpty(SetupInfo.NotifyAnalyticsUrl))
@@ -131,28 +153,28 @@ namespace ASC.Web.Studio.Core.Notify
 
             return string.Format("<img src=\"{0}\" width=\"1\" height=\"1\"/>",
                                  string.Format(SetupInfo.NotifyAnalyticsUrl,
-                                               tenantId,
+                                               TenantManager.GetCurrentTenant().TenantId,
                                                target,
                                                action.ID));
         }
 
 
-        public static bool IsSubscribedToNotify(Tenant tenant, Guid userId, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(Guid userId, INotifyAction notifyAction)
         {
-            return IsSubscribedToNotify(tenant, ToRecipient(tenant.TenantId, userId), notifyAction);
+            return IsSubscribedToNotify(ToRecipient(userId), notifyAction);
         }
 
-        public static bool IsSubscribedToNotify(Tenant tenant, IRecipient recipient, INotifyAction notifyAction)
+        public bool IsSubscribedToNotify(IRecipient recipient, INotifyAction notifyAction)
         {
-            return recipient != null && SubscriptionProvider.IsSubscribed(tenant, notifyAction, recipient, null);
+            return recipient != null && SubscriptionProvider.IsSubscribed(Log, notifyAction, recipient, null);
         }
 
-        public static void SubscribeToNotify(int tenantId, Guid userId, INotifyAction notifyAction, bool subscribe)
+        public void SubscribeToNotify(Guid userId, INotifyAction notifyAction, bool subscribe)
         {
-            SubscribeToNotify(ToRecipient(tenantId, userId), notifyAction, subscribe);
+            SubscribeToNotify(ToRecipient(userId), notifyAction, subscribe);
         }
 
-        public static void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
+        public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
         {
             if (recipient == null) return;
 
@@ -164,6 +186,22 @@ namespace ASC.Web.Studio.Core.Notify
             {
                 SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
             }
+        }
+    }
+
+    public static class StudioNotifyHelperExtension
+    {
+        public static IServiceCollection AddStudioNotifyHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifyHelper>();
+
+            return services
+                .AddStudioNotifySourceService()
+                .AddUserManagerService()
+                .AddAdditionalWhiteLabelSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddTenantManagerService()
+                .AddSetupInfo();
         }
     }
 }

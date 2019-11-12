@@ -11,7 +11,6 @@
 #endregion
 
 #region Using Statements
-using System;
 using System.Text.RegularExpressions;
 #endregion
 

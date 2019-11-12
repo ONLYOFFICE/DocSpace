@@ -32,17 +32,17 @@ namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class EmailActivationSettings : BaseSettings<EmailActivationSettings>
+    public class EmailActivationSettings : ISettings
     {
         [DataMember(Name = "Show")]
         public bool Show { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{85987929-1339-48EB-B06D-B9D097BDACF6}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new EmailActivationSettings { Show = true };
         }

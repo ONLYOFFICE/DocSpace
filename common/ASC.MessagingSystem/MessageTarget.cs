@@ -28,6 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
@@ -35,7 +38,16 @@ namespace ASC.MessagingSystem
     {
         private IEnumerable<string> _items;
 
-        public static MessageTarget Create<T>(T value)
+        public ILog Log { get; set; }
+        public IOptionsMonitor<ILog> Option { get; }
+
+        public MessageTarget(IOptionsMonitor<ILog> option)
+        {
+            Log = option.Get("ASC.Messaging");
+            Option = option;
+        }
+
+        public MessageTarget Create<T>(T value)
         {
             try
             {
@@ -50,20 +62,20 @@ namespace ASC.MessagingSystem
                     res.Add(value.ToString());
                 }
 
-                return new MessageTarget
+                return new MessageTarget(Option)
                 {
                     _items = res.Distinct()
                 };
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC.Messaging").Error("EventMessageTarget exception", e);
+                Log.Error("EventMessageTarget exception", e);
                 return null;
             }
 
         }
 
-        public static MessageTarget Parse(string value)
+        public MessageTarget Parse(string value)
         {
             if (string.IsNullOrEmpty(value)) return null;
 
@@ -71,7 +83,7 @@ namespace ASC.MessagingSystem
 
             if (!items.Any()) return null;
 
-            return new MessageTarget
+            return new MessageTarget(Option)
             {
                 _items = items
             };
@@ -80,6 +92,16 @@ namespace ASC.MessagingSystem
         public override string ToString()
         {
             return string.Join(",", _items);
+        }
+    }
+
+    public static class MessageTargetExtension
+    {
+        public static IServiceCollection AddMessageTargetService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<MessageTarget>();
+
+            return services;
         }
     }
 }

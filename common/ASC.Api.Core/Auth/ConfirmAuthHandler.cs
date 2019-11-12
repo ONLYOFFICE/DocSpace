@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 using ASC.Core;
 using ASC.Security.Cryptography;
-
+using ASC.Web.Studio.Core;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -20,6 +21,36 @@ namespace ASC.Api.Core.Auth
         public ConfirmAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock) : base(options, logger, encoder, clock)
         {
         }
+        public ConfirmAuthHandler(
+            IOptionsMonitor<AuthenticationSchemeOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock,
+            SecurityContext securityContext,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            SetupInfo setupInfo,
+            TenantManager tenantManager,
+            UserManager userManager,
+            AuthManager authManager,
+            AuthContext authContext) :
+            base(options, logger, encoder, clock)
+        {
+            SecurityContext = securityContext;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            SetupInfo = setupInfo;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            AuthManager = authManager;
+            AuthContext = authContext;
+        }
+
+        public SecurityContext SecurityContext { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public SetupInfo SetupInfo { get; }
+        public TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        public AuthManager AuthManager { get; }
+        public AuthContext AuthContext { get; }
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
@@ -35,7 +66,7 @@ namespace ASC.Api.Core.Auth
             EmailValidationKeyProvider.ValidationResult checkKeyResult;
             try
             {
-                checkKeyResult = emailValidationKeyModel.Validate();
+                checkKeyResult = emailValidationKeyModel.Validate(EmailValidationKeyProvider, AuthContext, TenantManager, UserManager, AuthManager);
             }
             catch (ArgumentNullException)
             {
@@ -53,7 +84,7 @@ namespace ASC.Api.Core.Auth
                 {
                     if (emailValidationKeyModel.UiD.HasValue && !emailValidationKeyModel.UiD.Equals(Guid.Empty))
                     {
-                        SecurityContext.AuthenticateMe(CoreContext.TenantManager.GetCurrentTenant().TenantId, emailValidationKeyModel.UiD.Value, claims);
+                        SecurityContext.AuthenticateMe(emailValidationKeyModel.UiD.Value, claims);
                     }
                     else
                     {
@@ -73,6 +104,21 @@ namespace ASC.Api.Core.Auth
             };
 
             return Task.FromResult(result);
+        }
+    }
+
+    public static class ConfirmAuthHandlerExtension
+    {
+        public static IServiceCollection AddConfirmAuthHandler(this IServiceCollection services)
+        {
+            return services
+                .AddSecurityContextService()
+                .AddEmailValidationKeyProviderService()
+                .AddSetupInfo()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddAuthManager()
+                .AddAuthContextService();
         }
     }
 }

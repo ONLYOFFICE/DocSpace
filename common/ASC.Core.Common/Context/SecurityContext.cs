@@ -32,7 +32,6 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading;
 using System.Web;
-using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
@@ -44,46 +43,73 @@ using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
-    public static class SecurityContext
+    public class SecurityContext
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Core");
+        private readonly ILog log;
 
 
-        public static IAccount CurrentAccount
+        public IAccount CurrentAccount
         {
-            get { return Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
+            get => AuthContext.CurrentAccount;
         }
 
-        public static bool IsAuthenticated
+        public bool IsAuthenticated
         {
-            get { return CurrentAccount.IsAuthenticated; }
+            get => AuthContext.IsAuthenticated;
         }
 
-        public static IPermissionResolver PermissionResolver { get; private set; }
+        private UserManager UserManager { get; }
+        private AuthManager Authentication { get; }
+        private AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private UserFormatter UserFormatter { get; }
+        private CookieStorage CookieStorage { get; }
+        public TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
 
-
-        static SecurityContext()
+        public SecurityContext(
+            IHttpContextAccessor httpContextAccessor,
+            UserManager userManager,
+            AuthManager authentication,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            UserFormatter userFormatter,
+            CookieStorage cookieStorage,
+            TenantCookieSettingsHelper tenantCookieSettingsHelper,
+            IOptionsMonitor<ILog> options
+            )
         {
-            var azManager = new AzManager(new RoleProvider(), new PermissionProvider());
-            PermissionResolver = new PermissionResolver(azManager);
+            log = options.CurrentValue;
+            UserManager = userManager;
+            Authentication = authentication;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            UserFormatter = userFormatter;
+            CookieStorage = cookieStorage;
+            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
-        public static string AuthenticateMe(string login, string password)
+        public string AuthenticateMe(string login, string password)
         {
             if (login == null) throw new ArgumentNullException("login");
             if (password == null) throw new ArgumentNullException("password");
 
-            var tenantid = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-            var u = CoreContext.UserManager.GetUsers(tenantid, login, Hasher.Base64Hash(password, HashAlg.SHA256));
+            var tenantid = TenantManager.GetCurrentTenant().TenantId;
+            var u = UserManager.GetUsers(tenantid, login, Hasher.Base64Hash(password, HashAlg.SHA256));
 
-            return AuthenticateMe(new UserAccount(u, tenantid));
+            return AuthenticateMe(new UserAccount(u, tenantid, UserFormatter));
         }
 
-        public static bool AuthenticateMe(string cookie)
+        public bool AuthenticateMe(string cookie)
         {
             if (!string.IsNullOrEmpty(cookie))
             {
@@ -92,9 +118,9 @@ namespace ASC.Core
                 {
                     var ipFrom = string.Empty;
                     var address = string.Empty;
-                    if (HttpContext.Current != null)
+                    if (HttpContextAccessor?.HttpContext != null)
                     {
-                        var request = HttpContext.Current.Request;
+                        var request = HttpContextAccessor?.HttpContext.Request;
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                         address = "for " + request.GetUrlRewriter();
                     }
@@ -102,12 +128,12 @@ namespace ASC.Core
                 }
                 else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var login, out var password, out var indexTenant, out var expire, out var indexUser))
                 {
-                    if (tenant != CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                    if (tenant != TenantManager.GetCurrentTenant().TenantId)
                     {
                         return false;
                     }
 
-                    var settingsTenant = TenantCookieSettings.GetForTenant(tenant);
+                    var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
                     if (indexTenant != settingsTenant.Index)
                     {
                         return false;
@@ -122,13 +148,13 @@ namespace ASC.Core
                     {
                         if (userid != Guid.Empty)
                         {
-                            var settingsUser = TenantCookieSettings.GetForUser(userid);
+                            var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
                             if (indexUser != settingsUser.Index)
                             {
                                 return false;
                             }
 
-                            AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant));
+                            AuthenticateMe(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
                         }
                         else
                         {
@@ -156,9 +182,9 @@ namespace ASC.Core
                 {
                     var ipFrom = string.Empty;
                     var address = string.Empty;
-                    if (HttpContext.Current != null)
+                    if (HttpContextAccessor?.HttpContext != null)
                     {
-                        var request = HttpContext.Current.Request;
+                        var request = HttpContextAccessor?.HttpContext.Request;
                         address = "for " + request.GetUrlRewriter();
                         ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
                     }
@@ -168,7 +194,7 @@ namespace ASC.Core
             return false;
         }
 
-        public static string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
+        public string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
         {
             if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
 
@@ -183,9 +209,9 @@ namespace ASC.Core
 
             if (account is IUserAccount)
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
 
-                var u = CoreContext.UserManager.GetUsers(tenant.TenantId, account.ID);
+                var u = UserManager.GetUsers(account.ID);
 
                 if (u.ID == Users.Constants.LostUser.ID)
                 {
@@ -199,19 +225,19 @@ namespace ASC.Core
                 // for LDAP users only
                 if (u.Sid != null)
                 {
-                    if (!CoreContext.TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
+                    if (!TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
                     {
                         throw new BillingException("Your tariff plan does not support this option.", "Ldap");
                     }
                 }
-                if (CoreContext.UserManager.IsUserInGroup(tenant, u.ID, Users.Constants.GroupAdmin.ID))
+                if (UserManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
                 {
                     roles.Add(Role.Administrators);
                 }
                 roles.Add(Role.Users);
 
-                account = new UserAccount(u, CoreContext.TenantManager.GetCurrentTenant().TenantId);
-                cookie = CookieStorage.EncryptCookie(CoreContext.TenantManager.GetCurrentTenant().TenantId, account.ID);
+                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
+                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
             }
 
             var claims = new List<Claim>
@@ -225,67 +251,129 @@ namespace ASC.Core
             {
                 claims.AddRange(additionalClaims);
             }
-
-            Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
+            AuthContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
 
             return cookie;
         }
 
-        public static string AuthenticateMe(int tenantId, Guid userId, List<Claim> additionalClaims = null)
+        public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
         {
-            return AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenantId, userId), additionalClaims);
+            return AuthenticateMe(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId), additionalClaims);
         }
 
-        public static void Logout()
+        public void Logout()
         {
-            Principal = null;
+            AuthContext.Principal = null;
         }
 
-        public static void SetUserPassword(int tenantId, Guid userID, string password)
+        public void SetUserPassword(Guid userID, string password)
         {
-            CoreContext.Authentication.SetUserPassword(tenantId, userID, password);
+            Authentication.SetUserPassword(TenantManager.GetCurrentTenant().TenantId, userID, password);
+        }
+    }
+
+    public class PermissionContext
+    {
+        public IPermissionResolver PermissionResolver { get; private set; }
+        public AuthContext AuthContext { get; }
+
+        public PermissionContext(IPermissionResolver permissionResolver, AuthContext authContext)
+        {
+            PermissionResolver = permissionResolver;
+            AuthContext = authContext;
         }
 
-
-        public static bool CheckPermissions(Tenant tenant, params IAction[] actions)
+        public bool CheckPermissions(params IAction[] actions)
         {
-            return PermissionResolver.Check(tenant, CurrentAccount, actions);
+            return PermissionResolver.Check(AuthContext.CurrentAccount, actions);
         }
 
-        public static bool CheckPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
+        public bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
         {
-            return CheckPermissions(tenant, securityObject, null, actions);
+            return CheckPermissions(securityObject, null, actions);
         }
 
-        public static bool CheckPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            return PermissionResolver.Check(tenant, CurrentAccount, objectId, securityObjProvider, actions);
+            return PermissionResolver.Check(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
         }
 
-        public static void DemandPermissions(Tenant tenant, params IAction[] actions)
+        public void DemandPermissions(params IAction[] actions)
         {
-            PermissionResolver.Demand(tenant, CurrentAccount, actions);
+            PermissionResolver.Demand(AuthContext.CurrentAccount, actions);
         }
 
-        public static void DemandPermissions(Tenant tenant, ISecurityObject securityObject, params IAction[] actions)
+        public void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)
         {
-            DemandPermissions(tenant, securityObject, null, actions);
+            DemandPermissions(securityObject, null, actions);
         }
 
-        public static void DemandPermissions(Tenant tenant, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+        public void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
         {
-            PermissionResolver.Demand(tenant, CurrentAccount, objectId, securityObjProvider, actions);
+            PermissionResolver.Demand(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
+        }
+    }
+
+    public class AuthContext
+    {
+        private IHttpContextAccessor HttpContextAccessor { get; }
+
+        public AuthContext(IHttpContextAccessor httpContextAccessor)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
-
-        private static ClaimsPrincipal Principal
+        public IAccount CurrentAccount
         {
-            get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContext.Current?.User;
+            get { return Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
+        }
+
+        public bool IsAuthenticated
+        {
+            get { return CurrentAccount.IsAuthenticated; }
+        }
+
+        internal ClaimsPrincipal Principal
+        {
+            get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
             set
             {
                 Thread.CurrentPrincipal = value;
-                if (HttpContext.Current != null) HttpContext.Current.User = value;
+                if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
             }
+        }
+    }
+
+    public static class AuthContextConfigExtension
+    {
+        public static IServiceCollection AddSecurityContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SecurityContext>();
+
+            return services
+                .AddCookieStorageService()
+                .AddTenantCookieSettingsService()
+                .AddAuthManager()
+                .AddUserFormatter()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddHttpContextAccessor();
+        }
+        public static IServiceCollection AddAuthContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<AuthContext>();
+            return services
+                .AddHttpContextAccessor();
+        }
+
+        public static IServiceCollection AddPermissionContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PermissionContext>();
+
+            return services
+                .AddAuthContextService()
+                .AddPermissionResolverService();
         }
     }
 }

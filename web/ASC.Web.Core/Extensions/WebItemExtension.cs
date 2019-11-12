@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Web.Core.Utility.Skins;
 
 namespace ASC.Web.Core
@@ -67,28 +66,28 @@ namespace ASC.Web.Core
             return sysname;
         }
 
-        public static string GetDisabledIconAbsoluteURL(this IWebItem item)
+        public static string GetDisabledIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.DisabledIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.DisabledIconFileName, item.ID);
         }
 
-        public static string GetSmallIconAbsoluteURL(this IWebItem item)
+        public static string GetSmallIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.SmallIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.SmallIconFileName, item.ID);
         }
 
-        public static string GetIconAbsoluteURL(this IWebItem item)
+        public static string GetIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.IconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.IconFileName, item.ID);
         }
 
-        public static string GetLargeIconAbsoluteURL(this IWebItem item)
+        public static string GetLargeIconAbsoluteURL(this IWebItem item, WebImageSupplier webImageSupplier)
         {
             if (item == null || item.Context == null || string.IsNullOrEmpty(item.Context.LargeIconFileName)) return string.Empty;
-            return WebImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
+            return webImageSupplier.GetAbsoluteWebPath(item.Context.LargeIconFileName, item.ID);
         }
 
         public static List<string> GetUserOpportunities(this IWebItem item)
@@ -112,14 +111,14 @@ namespace ASC.Web.Core
         }
 
 
-        public static bool IsDisabled(this IWebItem item, Tenant tenant)
+        public static bool IsDisabled(this IWebItem item, WebItemSecurity webItemSecurity, AuthContext authContext)
         {
-            return item.IsDisabled(tenant, SecurityContext.CurrentAccount.ID);
+            return item.IsDisabled(authContext.CurrentAccount.ID, webItemSecurity);
         }
 
-        public static bool IsDisabled(this IWebItem item, Tenant tenant, Guid userID)
+        public static bool IsDisabled(this IWebItem item, Guid userID, WebItemSecurity webItemSecurity)
         {
-            return item != null && (!WebItemSecurity.IsAvailableForUser(tenant, item.ID, userID) || !item.Visible);
+            return item != null && (!webItemSecurity.IsAvailableForUser(item.ID, userID) || !item.Visible);
         }
 
         public static bool IsSubItem(this IWebItem item)
