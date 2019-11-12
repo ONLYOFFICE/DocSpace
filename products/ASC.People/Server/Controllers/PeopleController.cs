@@ -170,15 +170,13 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraper> GetByStatus(EmployeeStatus status)
         {
             if (CoreBaseSettings.Personal) throw new Exception("Method not available");
-            var query = UserManager.GetUsers(status).AsEnumerable();
+            Guid? groupId = null;
             if ("group".Equals(ApiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(ApiContext.FilterValue))
             {
-                var groupId = new Guid(ApiContext.FilterValue);
-                //Filter by group
-                query = query.Where(x => UserManager.IsUserInGroup(x.ID, groupId));
+                groupId = new Guid(ApiContext.FilterValue);
                 ApiContext.SetDataFiltered();
             }
-            return query.Select(EmployeeWraperFullHelper.GetFull);
+            return GetFullByFilter(status, groupId, null, null, null);
         }
 
         [Read("@self")]
