@@ -5,6 +5,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ namespace ASC.Web.Api.Controllers
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public AuthContext AuthContext { get; }
         public AuthManager AuthManager { get; }
+        public CookiesManager CookiesManager { get; }
 
         public AuthenticationController(
             UserManager userManager,
@@ -32,7 +34,8 @@ namespace ASC.Web.Api.Controllers
             TenantCookieSettingsHelper tenantCookieSettingsHelper,
             EmailValidationKeyProvider emailValidationKeyProvider,
             AuthContext authContext,
-            AuthManager authManager)
+            AuthManager authManager,
+            CookiesManager cookiesManager)
         {
             UserManager = userManager;
             TenantManager = tenantManager;
@@ -41,6 +44,7 @@ namespace ASC.Web.Api.Controllers
             EmailValidationKeyProvider = emailValidationKeyProvider;
             AuthContext = authContext;
             AuthManager = authManager;
+            CookiesManager = cookiesManager;
         }
 
         [Create(false)]
@@ -64,6 +68,13 @@ namespace ASC.Web.Api.Controllers
             {
                 throw new Exception("User authentication failed");
             }
+        }
+
+        [Create("logout")]
+        public void Logout()
+        {
+            CookiesManager.ClearCookies(CookiesType.AuthKey);
+            CookiesManager.ClearCookies(CookiesType.SocketIO);
         }
 
         [AllowAnonymous]
