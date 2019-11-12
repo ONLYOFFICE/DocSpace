@@ -1,0 +1,8 @@
+/*
+Any global style for all stories
+It can also be an scss file, however,
+you have to go to `webpack.config.js` file
+and enable the options in there
+*/
+@import '../node_modules/bootstrap/dist/css/bootstrap.css';
+@import '../node_modules/react-toastify/dist/ReactToastify.min.css';

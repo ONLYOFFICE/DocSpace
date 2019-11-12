@@ -1801,8 +1801,15 @@ asap@~2.0.6:
   resolved "https://registry.yarnpkg.com/asap/-/asap-2.0.6.tgz#e50347611d7e690943208bbdafebcbc2fb866d46"
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
+"asc-web-common@file:../../../packages/asc-web-common":
+  version "1.0.0"
+  dependencies:
+    axios "^0.19.0"
+    history "4.9.0"
+    universal-cookie "^4.0.2"
+
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.152"
+  version "1.0.166"
   dependencies:
     email-addresses "^3.0.3"
     moment "^2.24.0"
