@@ -1,5 +1,4 @@
 import axios from "axios";
-import history from "../../history";
 import { AUTH_KEY } from "../../helpers/constants.js";
 
 const PREFIX = "api";
@@ -31,13 +30,11 @@ client.interceptors.response.use(
   },
   error => {
     if (error.response.status === 401) {
-      //place your reentry code
-      history.push("/login/error=unauthorized");
+      window.location.href = "/login/error=unauthorized";
     }
 
     if (error.response.status === 502) {
-      //toastr.error(error.response);
-      history.push(`/error/${error.response.status}`);
+      window.location.href = `/error/${error.response.status}`;
     }
 
     return error;
@@ -45,11 +42,10 @@ client.interceptors.response.use(
 );
 
 export function setAuthorizationToken(token) {
+  client.defaults.withCredentials = true;
   if (token) {
-    client.defaults.withCredentials = true;
     localStorage.setItem(AUTH_KEY, true);
   } else {
-    client.defaults.withCredentials = false;
     localStorage.clear();
   }
 }
