@@ -414,7 +414,7 @@ class PureAccessRights extends Component {
                         size="big"
                         role="owner"
                         userName={owner.userName}
-                        source={owner.avatarSmall}
+                        source={owner.avatar}
                       />
                       <div className="avatar_body">
                         <Text.Body
