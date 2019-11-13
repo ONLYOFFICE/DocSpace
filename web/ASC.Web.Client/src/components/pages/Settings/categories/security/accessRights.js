@@ -131,6 +131,7 @@ class PureAccessRights extends Component {
 
     this.state = {
       showSelector: false,
+      showFullAdminSelector: false,
       options: [],
       isLoading: false,
       selectedOptions: []
@@ -150,9 +151,9 @@ class PureAccessRights extends Component {
       .finally(() => this.onLoading(false));
   }
 
-  onChangeAdmin = (userIds, isAdmin) => {
+  onChangeAdmin = (userIds, isAdmin, productId) => {
     this.onLoading(true);
-    const { changeAdmins, productId } = this.props;
+    const { changeAdmins } = this.props;
     const newFilter = this.onAdminsFilter();
 
     changeAdmins(userIds, productId, isAdmin, newFilter)
@@ -171,9 +172,32 @@ class PureAccessRights extends Component {
       selectedOptions: []
     });
 
+  onShowFullAdminGroupSelector = () => {
+    this.setState({
+      showFullAdminSelector: !this.state.showFullAdminSelector,
+      options: this.props.options, //?
+      selectedOptions: [] //?
+    });
+  };
+
   onSelect = selected => {
-    this.onChangeAdmin(selected.map(user => user.key), true);
+    const { productId } = this.props;
+    this.onChangeAdmin(
+      selected.map(user => user.key),
+      true,
+      productId
+    );
     this.onShowGroupSelector();
+    this.setState({ selectedOptions: selected });
+  };
+
+  onSelectFullAdmin = selected => {
+    this.onChangeAdmin(
+      selected.map(user => user.key),
+      true,
+      "00000000-0000-0000-0000-000000000000"
+    );
+    this.onShowFullAdminGroupSelector();
     this.setState({ selectedOptions: selected });
   };
 
@@ -271,6 +295,30 @@ class PureAccessRights extends Component {
       .finally(this.onLoading(false));
   };
 
+  onChangeOwner = () => {
+    toastr.warning("onChangeOwner");
+  };
+
+  onSelectPage = page => {
+    //console.log("onSelectPage", page.key);
+    /*
+    const { history } = this.props;
+    switch (page) {
+      case 0:
+        history.push("/owner");
+        break;
+      case 1:
+        history.push("/admins");
+        break;
+      case 2:
+        history.push("/modules");
+        break;
+      default:
+        break;
+    }
+    */
+  };
+
   filterUserSelectorOptions = (options, template) =>
     options.filter(option => option.label.indexOf(template) > -1);
 
@@ -330,7 +378,13 @@ class PureAccessRights extends Component {
 
   render() {
     const { t, owner, admins, filter } = this.props;
-    const { showSelector, options, selectedOptions, isLoading } = this.state;
+    const {
+      showSelector,
+      options,
+      selectedOptions,
+      isLoading,
+      showFullAdminSelector
+    } = this.state;
 
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
     const countElements = filter.total;
@@ -339,7 +393,10 @@ class PureAccessRights extends Component {
 
     return (
       <MainContainer>
-        <TabContainer isDisabled={isLoading}>
+        <TabContainer
+          /*selectedItem={2}*/ isDisabled={isLoading}
+          onSelect={this.onSelectPage}
+        >
           {[
             {
               key: "0",
@@ -390,6 +447,13 @@ class PureAccessRights extends Component {
                       </Text.Body>
                     </ProjectsBody>
                   </BodyContainer>
+                  <Button
+                    size="medium"
+                    primary={true}
+                    label="Change portal owner"
+                    isDisabled={isLoading}
+                    onClick={this.onChangeOwner}
+                  />
                 </>
               )
             },
@@ -398,7 +462,7 @@ class PureAccessRights extends Component {
               title: "Admins settings",
               content: (
                 <ToggleContentContainer>
-                  <div style={{ display: "flex" }}>
+                  <div style={{ display: "flex", width: "fit-content" }}>
                     <Button
                       className="button_style"
                       size="medium"
@@ -407,13 +471,48 @@ class PureAccessRights extends Component {
                       isDisabled={isLoading}
                       onClick={this.onShowGroupSelector}
                     />
+                    <div style={{ right: 180 }} className="advanced-selector">
+                      <AdvancedSelector
+                        displayType="dropdown"
+                        isOpen={showSelector}
+                        placeholder="placeholder"
+                        options={options}
+                        onSearchChanged={this.onSearchUsers}
+                        //groups={groups}
+                        isMultiSelect={true}
+                        buttonLabel="Add members"
+                        onSelect={this.onSelect}
+                        onCancel={this.onShowGroupSelector}
+                        onAddNewClick={() => console.log("onAddNewClick")}
+                        selectAllLabel="selectorSelectAllText"
+                        selectedOptions={selectedOptions}
+                      />
+                    </div>
+
                     <Button
                       size="medium"
                       primary={true}
                       label="Set portal admin"
                       isDisabled={isLoading}
-                      onClick={() => toastr.info("Set portal admin")}
+                      onClick={this.onShowFullAdminGroupSelector}
                     />
+                    <div style={{ right: 160 }} className="advanced-selector">
+                      <AdvancedSelector
+                        displayType="dropdown"
+                        isOpen={showFullAdminSelector}
+                        placeholder="placeholder"
+                        options={options}
+                        onSearchChanged={this.onSearchUsers}
+                        //groups={groups}
+                        isMultiSelect={true}
+                        buttonLabel="Add members"
+                        onSelect={this.onSelectFullAdmin}
+                        onCancel={this.onShowFullAdminGroupSelector}
+                        onAddNewClick={() => console.log("onAddNewClick")}
+                        selectAllLabel="selectorSelectAllText"
+                        selectedOptions={selectedOptions}
+                      />
+                    </div>
                   </div>
 
                   {countElements > 25 ? (
@@ -425,81 +524,70 @@ class PureAccessRights extends Component {
                     />
                   ) : null}
 
-                  <div className="advanced-selector">
-                    <AdvancedSelector
-                      displayType="dropdown"
-                      isOpen={showSelector}
-                      placeholder="placeholder"
-                      options={options}
-                      onSearchChanged={this.onSearchUsers}
-                      //groups={groups}
-                      isMultiSelect={true}
-                      buttonLabel="Add members"
-                      onSelect={this.onSelect}
-                      onCancel={this.onShowGroupSelector}
-                      onAddNewClick={() => console.log("onAddNewClick")}
-                      selectAllLabel="selectorSelectAllText"
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
                   <div className="wrapper">
-                    <div className="height">
-                      <RowContainer manualHeight={`${admins.length * 50}px`}>
-                        {admins.map(user => {
-                          const element = (
-                            <Avatar
-                              size="small"
-                              role={getUserRole(user)}
-                              userName={user.displayName}
-                              source={user.avatarSmall}
-                            />
-                          );
-                          const nameColor =
-                            user.status === "pending" ? "#A3A9AE" : "#333333";
+                    <RowContainer manualHeight={`${admins.length * 50}px`}>
+                      {admins.map(user => {
+                        const element = (
+                          <Avatar
+                            size="small"
+                            role={getUserRole(user)}
+                            userName={user.displayName}
+                            source={user.avatar}
+                          />
+                        );
+                        const nameColor =
+                          user.status === "pending" ? "#A3A9AE" : "#333333";
 
-                          return (
-                            <Row
-                              key={user.id}
-                              status={user.status}
-                              data={user}
-                              element={element}
-                            >
-                              <RowContent disableSideInfo={true}>
-                                <Link
-                                  containerWidth="120px"
-                                  type="page"
-                                  title={user.displayName}
-                                  isBold={true}
-                                  fontSize={15}
-                                  color={nameColor}
-                                  href={user.profileUrl}
-                                >
-                                  {user.displayName}
-                                </Link>
-                                <div style={{ maxWidth: 120 }} />
-                                {!user.isOwner ? (
-                                  <IconButton
-                                    className="remove_icon"
-                                    size="16"
-                                    isDisabled={isLoading}
-                                    onClick={this.onChangeAdmin.bind(
-                                      this,
-                                      [user.id],
-                                      false
-                                    )}
-                                    iconName={"CatalogTrashIcon"}
-                                    isFill={true}
-                                    isClickable={false}
-                                  />
-                                ) : (
-                                  <div />
-                                )}
-                              </RowContent>
-                            </Row>
-                          );
-                        })}
-                      </RowContainer>
-                    </div>
+                        return (
+                          <Row
+                            key={user.id}
+                            status={user.status}
+                            data={user}
+                            element={element}
+                          >
+                            <RowContent disableSideInfo={true}>
+                              <Link
+                                containerWidth="120px"
+                                type="page"
+                                title={user.displayName}
+                                isBold={true}
+                                fontSize={15}
+                                color={nameColor}
+                                href={user.profileUrl}
+                              >
+                                {user.displayName}
+                              </Link>
+                              <div style={{ maxWidth: 120 }} />
+
+                              <Text.Body>
+                                {user.isAdmin
+                                  ? "Full access"
+                                  : "People module admin"}
+                              </Text.Body>
+
+                              {!user.isOwner ? (
+                                <IconButton
+                                  className="remove_icon"
+                                  size="16"
+                                  isDisabled={isLoading}
+                                  onClick={this.onChangeAdmin.bind(
+                                    this,
+                                    [user.id],
+                                    false,
+                                    "00000000-0000-0000-0000-000000000000"
+                                  )}
+                                  iconName={"CatalogTrashIcon"}
+                                  isFill={true}
+                                  isClickable={false}
+                                />
+                              ) : (
+                                <div />
+                              )}
+                            </RowContent>
+                          </Row>
+                        );
+                      })}
+                    </RowContainer>
                   </div>
 
                   {countElements > 25 ? (
@@ -610,8 +698,12 @@ const AccessRights = props => {
 };
 
 function mapStateToProps(state) {
-  const { admins, options, owner } = state.settings.accessRight;
-  const { filter } = state.settings;
+  const {
+    admins,
+    options,
+    owner,
+    filter
+  } = state.settings.security.accessRight;
 
   return {
     admins,
@@ -636,7 +728,6 @@ AccessRights.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default connect(
-  mapStateToProps,
-  { changeAdmins, fetchPeople }
-)(withRouter(AccessRights));
+export default connect(mapStateToProps, { changeAdmins, fetchPeople })(
+  withRouter(AccessRights)
+);

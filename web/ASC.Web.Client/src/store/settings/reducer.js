@@ -4,13 +4,15 @@ import Filter from "./filter";
 
 const initialState = {
 
-  accessRight: {
-    options: [],
-    admins: [],
-    owner: {}
+  security: {
+    accessRight: {
+      options: [],
+      admins: [],
+      owner: {},
+      filter: Filter.getDefault()
+    }
   },
   
-  filter: Filter.getDefault(),
   greetingSettings: ''
 };
 
@@ -18,27 +20,36 @@ const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_USERS:
       return Object.assign({}, state, {
-        accessRight: Object.assign({}, state.accessRight, {
-          options: action.options
+        security: Object.assign({}, state.security, {
+          accessRight: Object.assign({}, state.security.accessRight, {
+            options: action.options
+          })          
         })
       });
     case SET_ADMINS:
-      return Object.assign({}, state, {
-        accessRight: Object.assign({}, state.accessRight, {
-          admins: action.admins
-        })
-      });
+        return Object.assign({}, state, {
+          security: Object.assign({}, state.security, {
+            accessRight: Object.assign({}, state.security.accessRight, {
+              admins: action.admins
+            })          
+          })
+        });
     case SET_OWNER:
-      return Object.assign({}, state, {
-        accessRight: Object.assign({}, state.accessRight, {
-          owner: action.owner
-        })
-      });
-
-      case SET_FILTER:
-          return Object.assign({}, state, {
-            filter: action.filter
-          });
+        return Object.assign({}, state, {
+          security: Object.assign({}, state.security, {
+            accessRight: Object.assign({}, state.security.accessRight, {
+              owner: action.owner
+            })          
+          })
+        });
+    case SET_FILTER:
+        return Object.assign({}, state, {
+          security: Object.assign({}, state.security, {
+            accessRight: Object.assign({}, state.security.accessRight, {
+              filter: action.filter
+            })          
+          })
+        });
     case SET_GREETING_SETTINGS:
       return Object.assign({}, state, {
         greetingSettings: action.title
