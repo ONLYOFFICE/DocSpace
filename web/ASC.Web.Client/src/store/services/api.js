@@ -18,6 +18,16 @@ export function login(userName, password) {
   });
 }
 
+export function logout() {
+  return request({
+    method: "post",
+    url: "/authentication/logout"
+  }).then((data) => {
+    setAuthorizationToken();
+    return Promise.resolve();
+  });
+}
+
 export function getModulesList() {
   return request({
     method: "get",
