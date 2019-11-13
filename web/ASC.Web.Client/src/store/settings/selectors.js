@@ -1,24 +1,4 @@
-import { filter, differenceBy } from "lodash";
-
-export function getUsers(users, ownerId) {
-  return filter(users, function(f) {
-    return f.id !== ownerId;
-  });
-}
-
-/*export function getAdmins(users) {
-  const newArray = [];
-  users.map(user => {
-    if (user.listAdminModules !== undefined) {
-      if (!user.listAdminModules.includes("people")) {
-        newArray.push(user);
-      }
-    } else {
-      newArray.push(user);
-    }
-  });
-  return newArray.filter(user => !user.isVisitor);
-}*/
+import { differenceBy } from "lodash";
 
 export function getSelectorOptions(users) {
   return users.map(user => {
@@ -34,3 +14,11 @@ export function getUserOptions(users, admins) {
   const sorted = differenceBy(users, admins, "id");
   return sorted.filter(user => !user.isVisitor);
 }
+
+export const getUserRole = user => {
+  if (user.isOwner) return "owner";
+  else if (user.isAdmin) return "admin";
+  else if (user.listAdminModules !== undefined && user.listAdminModules.includes("people")) return "admin";
+  else if (user.isVisitor) return "guest";
+  else return "user";
+};

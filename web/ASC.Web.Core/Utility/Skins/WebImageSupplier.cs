@@ -25,40 +25,53 @@
 
 
 using System;
-using ASC.Common.Utils;
 using ASC.Data.Storage;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility.Skins
 {
-    public static class WebImageSupplier
+    public class WebImageSupplier
     {
-        private static string FolderName { get; } = ConfigurationManager.AppSettings["web:images"];
+        private string FolderName { get; }
+        public WebItemManager WebItemManager { get; }
+        public WebPath WebPath { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public static string GetAbsoluteWebPath(string imgFileName)
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        {
+            WebItemManager = webItemManager;
+            WebPath = webPath;
+            HttpContextAccessor = httpContextAccessor;
+            FolderName = configuration["web:images"];
+        }
+
+        public string GetAbsoluteWebPath(string imgFileName)
         {
             return GetAbsoluteWebPath(imgFileName, Guid.Empty);
         }
 
-        public static string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
+        public string GetAbsoluteWebPath(string imgFileName, Guid moduleID)
         {
             return GetImageAbsoluteWebPath(imgFileName, moduleID);
         }
 
-        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext)
+        public string GetImageFolderAbsoluteWebPath()
         {
-            return GetImageFolderAbsoluteWebPath(httpContext, Guid.Empty);
+            return GetImageFolderAbsoluteWebPath(Guid.Empty);
         }
 
-        public static string GetImageFolderAbsoluteWebPath(HttpContext httpContext, Guid moduleID)
+        public string GetImageFolderAbsoluteWebPath(Guid moduleID)
         {
-            if (httpContext == null) return string.Empty;
+            if (HttpContextAccessor?.HttpContext == null) return string.Empty;
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
             return WebPath.GetPath(currentThemePath.ToLower());
         }
 
-        private static string GetImageAbsoluteWebPath(string fileName, Guid partID)
+        private string GetImageAbsoluteWebPath(string fileName, Guid partID)
         {
             if (string.IsNullOrEmpty(fileName))
             {
@@ -68,13 +81,13 @@ namespace ASC.Web.Core.Utility.Skins
             return WebPath.GetPath(filepath.ToLower());
         }
 
-        private static string GetPartImageFolderRel(Guid partID)
+        private string GetPartImageFolderRel(Guid partID)
         {
             var folderName = FolderName;
             string itemFolder = null;
             if (!Guid.Empty.Equals(partID))
             {
-                var product = WebItemManager.Instance[partID];
+                var product = WebItemManager[partID];
                 if (product != null && product.Context != null)
                 {
                     itemFolder = GetAppThemeVirtualPath(product) + "/default/images";
@@ -85,7 +98,7 @@ namespace ASC.Web.Core.Utility.Skins
             return folderName.TrimStart('~').ToLowerInvariant();
         }
 
-        private static string GetAppThemeVirtualPath(IWebItem webitem)
+        private string GetAppThemeVirtualPath(IWebItem webitem)
         {
             if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
             {
@@ -96,6 +109,19 @@ namespace ASC.Web.Core.Utility.Skins
                           webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf("/")) :
                           webitem.StartURL.TrimEnd('/');
             return dir + "/app_themes";
+        }
+    }
+
+    public static class WebImageSupplierExtension
+    {
+        public static IServiceCollection AddWebImageSupplierService(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebImageSupplier>();
+
+            return services
+                .AddWebPathService()
+                .AddHttpContextAccessor()
+                .AddWebItemManager();
         }
     }
 }

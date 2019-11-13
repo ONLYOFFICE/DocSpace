@@ -104,7 +104,7 @@ class SectionBodyContent extends React.PureComponent {
           )}
         </AvatarWrapper>
         <ProfileInfo profile={profile} updateProfileCulture={updateProfileCulture} isSelf={isSelf} isAdmin={isAdmin} t={t} cultures={settings.cultures} culture={settings.culture} />
-        {isSelf && (
+        {(isSelf && false) && (
           <ToggleWrapper isSelf={true} >
             <ToggleContent label={t('Subscriptions')} isOpen={true} >
               <Text.Body as="span">

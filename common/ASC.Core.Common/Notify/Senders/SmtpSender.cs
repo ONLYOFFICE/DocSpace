@@ -28,13 +28,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using MailKit;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace ASC.Core.Notify.Senders
@@ -50,7 +53,9 @@ namespace ASC.Core.Notify.Senders
 <body>{0}</body>
 </html>";
 
-        protected ILog Log { get; private set; }
+        protected ILog Log { get; set; }
+        public IConfiguration Configuration { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         private string _host;
         private int _port;
@@ -59,9 +64,13 @@ namespace ASC.Core.Notify.Senders
         protected bool _useCoreSettings;
         const int NETWORK_TIMEOUT = 30000;
 
-        public SmtpSender()
+        public SmtpSender(
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<ILog> options)
         {
-            Log = LogManager.GetLogger("ASC.Notify");
+            Log = options.Get("ASC.Notify");
+            Configuration = serviceProvider.GetService<IConfiguration>();
+            ServiceProvider = serviceProvider;
         }
 
         public virtual void Init(IDictionary<string, string> properties)
@@ -84,9 +93,10 @@ namespace ASC.Core.Notify.Senders
             }
         }
 
-        private void InitUseCoreSettings()
+        private void InitUseCoreSettings(CoreConfiguration configuration)
         {
-            var s = CoreContext.Configuration.SmtpSettings;
+            var s = configuration.SmtpSettings;
+
             _host = s.Host;
             _port = s.Port;
             _ssl = s.EnableSSL;
@@ -97,7 +107,11 @@ namespace ASC.Core.Notify.Senders
 
         public virtual NoticeSendResult Send(NotifyMessage m)
         {
-            CoreContext.TenantManager.SetCurrentTenant(m.Tenant);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(m.Tenant);
+            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
             var smtpClient = GetSmtpClient();
             var result = NoticeSendResult.TryOnceAgain;
             try
@@ -105,7 +119,7 @@ namespace ASC.Core.Notify.Senders
                 try
                 {
                     if (_useCoreSettings)
-                        InitUseCoreSettings();
+                        InitUseCoreSettings(configuration);
 
                     var mail = BuildMailMessage(m);
 
@@ -263,8 +277,8 @@ namespace ASC.Core.Notify.Senders
 
         private MailKit.Net.Smtp.SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = ConfigurationManager.AppSettings["mail:certificate-permit"] != null &&
-                                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail:certificate-permit"]);
+            var sslCertificatePermit = Configuration["mail:certificate-permit"] != null &&
+                                    Convert.ToBoolean(Configuration["mail:certificate-permit"]);
 
             var smtpClient = new MailKit.Net.Smtp.SmtpClient
             {
@@ -301,6 +315,17 @@ namespace ASC.Core.Notify.Senders
             {
                 return null;
             }
+        }
+    }
+
+    public static class SmtpSenderExtension
+    {
+        public static IServiceCollection AddSmtpSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<SmtpSender>();
+            return services
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

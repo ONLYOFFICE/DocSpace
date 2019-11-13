@@ -36,7 +36,7 @@ using ASC.Common.Data.Sql.Expressions;
 
 namespace ASC.Resource.Manager
 {
-    public static class ResourceData
+    public class ResourceData
     {
         private const string Dbid = "tmresource";
         private const string ResDataTable = "res_data";
@@ -47,17 +47,24 @@ namespace ASC.Resource.Manager
         private const string ResAuthorsLangTable = "res_authorslang";
         private const string ResAuthorsFileTable = "res_authorsfile";
 
-        public static DateTime GetLastUpdate()
+        public DbOptionsManager DbOptionsManager { get; }
+
+        public ResourceData(DbOptionsManager dbOptionsManager)
         {
-            using var dbManager = new DbManager(Dbid);
+            DbOptionsManager = dbOptionsManager;
+        }
+
+        public DateTime GetLastUpdate()
+        {
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResFilesTable).SelectMax("LastUpdate");
 
             return dbManager.ExecuteScalar<DateTime>(sql);
         }
 
-        public static List<ResCulture> GetListLanguages(int fileId, string title)
+        public List<ResCulture> GetListLanguages(int fileId, string title)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResCultureTable)
 .Select("res_cultures.title", "res_cultures.value", "res_cultures.available")
 .LeftOuterJoin("res_data", Exp.EqColumns("res_cultures.title", "res_data.cultureTitle"))
@@ -71,9 +78,9 @@ namespace ASC.Resource.Manager
             return language;
         }
 
-        public static Dictionary<ResCulture, List<string>> GetCulturesWithAuthors()
+        public Dictionary<ResCulture, List<string>> GetCulturesWithAuthors()
         {
-            using var dbManager = new DbManager("tmresource");
+            var dbManager = GetDb();
             var sql = new SqlQuery("res_authorslang ral")
 .Select(new[] { "ral.authorLogin", "rc.title", "rc.value" })
 .InnerJoin("res_cultures rc", Exp.EqColumns("rc.title", "ral.cultureTitle"))
@@ -85,17 +92,17 @@ namespace ASC.Resource.Manager
                             .ToDictionary(r => r.Key, r => r.ToList());
         }
 
-        public static void AddCulture(string cultureTitle, string name)
+        public void AddCulture(string cultureTitle, string name)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sqlInsert = new SqlInsert(ResCultureTable);
             sqlInsert.InColumnValue("title", cultureTitle).InColumnValue("value", name);
             dbManager.ExecuteNonQuery(sqlInsert);
         }
 
-        public static void AddResource(string cultureTitle, string resType, DateTime date, ResWord word, bool isConsole, string authorLogin, bool updateIfExist = true)
+        public void AddResource(string cultureTitle, string resType, DateTime date, ResWord word, bool isConsole, string authorLogin, bool updateIfExist = true)
         {
-            using var db = new DbManager(Dbid);
+            var db = GetDb();
             var resData = db.ExecuteScalar<string>(GetQuery(ResDataTable, cultureTitle, word));
             var resReserve = db.ExecuteScalar<string>(GetQuery(ResReserveTable, cultureTitle, word));
 
@@ -157,23 +164,23 @@ namespace ASC.Resource.Manager
             }
         }
 
-        public static void EditEnglish(ResWord word)
+        public void EditEnglish(ResWord word)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var update = new SqlUpdate(ResDataTable);
             update.Set("textvalue", word.ValueFrom).Where("fileID", word.ResFile.FileID).Where("title", word.Title).Where("cultureTitle", "Neutral");
             dbManager.ExecuteNonQuery(update);
         }
 
-        public static void AddComment(ResWord word)
+        public void AddComment(ResWord word)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sqlUpdate = new SqlUpdate(ResDataTable);
             sqlUpdate.Set("description", word.TextComment).Where("title", word.Title).Where("fileID", word.ResFile.FileID).Where("cultureTitle", "Neutral");
             dbManager.ExecuteNonQuery(sqlUpdate);
         }
 
-        public static int AddFile(string fileName, string projectName, string moduleName)
+        public int AddFile(string fileName, string projectName, string moduleName)
         {
             var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
 
@@ -182,7 +189,7 @@ namespace ASC.Resource.Manager
                 fileName = fileNameWithoutExtension.Split('.')[0] + Path.GetExtension(fileName);
             }
 
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResFilesTable)
 .SelectCount()
 .Where("resName", fileName)
@@ -211,9 +218,9 @@ namespace ASC.Resource.Manager
         }
 
 
-        public static IEnumerable<ResCulture> GetCultures()
+        public IEnumerable<ResCulture> GetCultures()
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResCultureTable);
             sql.Select("title", "value", "available")
                .OrderBy("title", true);
@@ -221,9 +228,9 @@ namespace ASC.Resource.Manager
             return dbManager.ExecuteList(sql).ConvertAll(GetCultureFromDB);
         }
 
-        public static void SetCultureAvailable(string title)
+        public void SetCultureAvailable(string title)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlUpdate(ResCultureTable);
             sql.Set("available", true).Where("title", title);
             dbManager.ExecuteNonQuery(sql);
@@ -234,9 +241,9 @@ namespace ASC.Resource.Manager
             return new ResCulture { Title = (string)r[0], Value = (string)r[1], Available = (bool)r[2] };
         }
 
-        public static List<ResFile> GetAllFiles()
+        public List<ResFile> GetAllFiles()
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResFilesTable);
 
             return dbManager.ExecuteList(sql.SelectAll()).Select(r => new ResFile
@@ -248,9 +255,9 @@ namespace ASC.Resource.Manager
             }).ToList();
         }
 
-        public static IEnumerable<ResWord> GetListResWords(ResCurrent current, string search)
+        public IEnumerable<ResWord> GetListResWords(ResCurrent current, string search)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var exist = new SqlQuery(ResDataTable + " rd3")
 .Select("rd3.title")
 .Where("rd3.fileid = rd1.fileid")
@@ -304,9 +311,9 @@ namespace ASC.Resource.Manager
             }).OrderBy(r => r.ValueFrom);
         }
 
-        public static List<ResWord> GetListResWords(ResFile resFile, string to, string search)
+        public List<ResWord> GetListResWords(ResFile resFile, string to, string search)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable)
 .Select("title", "fileid", "textValue", "description", "flag", "link")
 .InnerJoin(ResFilesTable, Exp.EqColumns(ResFilesTable + ".ID", ResDataTable + ".fileID"))
@@ -326,9 +333,9 @@ namespace ASC.Resource.Manager
             return dbManager.ExecuteList(sql).ConvertAll(GetWord);
         }
 
-        public static void GetListModules(ResCurrent currentData)
+        public void GetListModules(ResCurrent currentData)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var notExist = new SqlQuery(ResDataTable + " rd1")
 .Select("1")
 .Where("rd1.fileid = rd.fileid")
@@ -363,25 +370,25 @@ namespace ASC.Resource.Manager
             });
         }
 
-        public static void LockModules(string projectName, string modules)
+        public void LockModules(string projectName, string modules)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sqlUpdate = new SqlUpdate(ResFilesTable);
             sqlUpdate.Set("isLock", 1).Where("projectName", projectName).Where(Exp.In("moduleName", modules.Split(',')));
             dbManager.ExecuteNonQuery(sqlUpdate);
         }
 
-        public static void UnLockModules()
+        public void UnLockModules()
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sqlUpdate = new SqlUpdate(ResFilesTable);
             sqlUpdate.Set("isLock", 0);
             dbManager.ExecuteNonQuery(sqlUpdate);
         }
 
-        public static void AddLink(string resource, string fileName, string page)
+        public void AddLink(string resource, string fileName, string page)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var query = new SqlQuery(ResDataTable);
             query.Select(ResDataTable + ".id")
                  .InnerJoin(ResFilesTable, Exp.EqColumns(ResFilesTable + ".id", ResDataTable + ".fileid"))
@@ -394,9 +401,9 @@ namespace ASC.Resource.Manager
             dbManager.ExecuteNonQuery(update);
         }
 
-        public static void GetResWordByKey(ResWord word, string to)
+        public void GetResWordByKey(ResWord word, string to)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable)
 .Select("textvalue", "description", "link")
 .Where("fileID", word.ResFile.FileID)
@@ -424,9 +431,9 @@ namespace ASC.Resource.Manager
             word.ResFile.FileName = dbManager.ExecuteScalar<string>(sql);
         }
 
-        public static void GetValueByKey(ResWord word, string to)
+        public void GetValueByKey(ResWord word, string to)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable);
             sql.Select("textvalue")
                .Where("fileID", word.ResFile.FileID)
@@ -436,7 +443,7 @@ namespace ASC.Resource.Manager
             word.ValueTo = dbManager.ExecuteScalar<string>(sql) ?? "";
         }
 
-        private static void GetValue(ResWord word, string to, IList<object> r)
+        private void GetValue(ResWord word, string to, IList<object> r)
         {
             word.ValueFrom = (string)r[0] ?? "";
             word.TextComment = (string)r[1] ?? "";
@@ -447,18 +454,18 @@ namespace ASC.Resource.Manager
             word.Link = !string.IsNullOrEmpty((string)r[2]) ? string.Format("http://{0}-translator.teamlab{1}{2}", to, dom, r[2]) : "";
         }
 
-        public static List<Author> GetListAuthors()
+        public List<Author> GetListAuthors()
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResAuthorsTable)
 .Select("login", "password", "isAdmin");
 
             return dbManager.ExecuteList(sql).ConvertAll(r => new Author { Login = (string)r[0], Password = (string)r[1], IsAdmin = Convert.ToBoolean(r[2]) });
         }
 
-        public static Author GetAuthor(string login)
+        public Author GetAuthor(string login)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResAuthorsTable)
 .Select("login", "password", "isAdmin")
 .Where("login", login);
@@ -505,9 +512,9 @@ namespace ASC.Resource.Manager
             return author;
         }
 
-        public static void CreateAuthor(Author author, IEnumerable<string> languages, string modules)
+        public void CreateAuthor(Author author, IEnumerable<string> languages, string modules)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sqlInsert = new SqlInsert(ResAuthorsTable, true)
 .InColumnValue("login", author.Login)
 .InColumnValue("password", author.Password)
@@ -546,9 +553,9 @@ namespace ASC.Resource.Manager
             }
         }
 
-        public static List<ResWord> SearchAll(string projectName, string moduleName, string languageTo, string searchText, string searchType)
+        public List<ResWord> SearchAll(string projectName, string moduleName, string languageTo, string searchText, string searchType)
         {
-            using var dbManager = new DbManager(Dbid);
+            var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable)
 .Select("title", "fileid", "textValue", "resName", "moduleName", "projectName")
 .InnerJoin(ResFilesTable, Exp.EqColumns(ResFilesTable + ".ID", ResDataTable + ".fileID"))
@@ -569,9 +576,9 @@ namespace ASC.Resource.Manager
             return dbManager.ExecuteList(sql).ConvertAll(GetSearchWord);
         }
 
-        public static void UpdateHashTable(ref Hashtable table, DateTime date)
+        public void UpdateHashTable(ref Hashtable table, DateTime date)
         {
-            using var dbManager = new DbManager("tmresourceTrans");
+            var dbManager = GetDb("tmresourceTrans");
             var sql = new SqlQuery(ResDataTable)
 .Select(ResDataTable + ".textValue", ResDataTable + ".title", ResFilesTable + ".ResName", ResDataTable + ".cultureTitle")
 .InnerJoin(ResFilesTable, Exp.EqColumns(ResFilesTable + ".id", ResDataTable + ".fileID"))
@@ -590,6 +597,10 @@ namespace ASC.Resource.Manager
             }
         }
 
+        private IDbManager GetDb(string dbId = null)
+        {
+            return DbOptionsManager.Get(dbId ?? Dbid);
+        }
 
         private static ResWord GetWord(IList<object> r)
         {

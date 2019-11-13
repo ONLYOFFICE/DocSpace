@@ -35,8 +35,11 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -48,6 +51,8 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
+        public IServiceProvider ServiceProvider { get; }
+
         static StorageUploader()
         {
             Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
@@ -56,7 +61,12 @@ namespace ASC.Data.Storage
             Locker = new object();
         }
 
-        public static void Start(int tenantId, StorageSettings newStorageSettings)
+        public StorageUploader(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
         {
             if (TokenSource.Token.IsCancellationRequested) return;
 
@@ -67,7 +77,7 @@ namespace ASC.Data.Storage
                 migrateOperation = Cache.Get<MigrateOperation>(GetCacheKey(tenantId));
                 if (migrateOperation != null) return;
 
-                migrateOperation = new MigrateOperation(tenantId, newStorageSettings);
+                migrateOperation = new MigrateOperation(ServiceProvider, tenantId, newStorageSettings, storageFactoryConfig);
                 Cache.Insert(GetCacheKey(tenantId), migrateOperation, DateTime.MaxValue);
             }
 
@@ -108,42 +118,56 @@ namespace ASC.Data.Storage
     [DataContract]
     public class MigrateOperation : ProgressBase
     {
-        private static readonly ILog Log;
+        private readonly ILog Log;
         private static readonly string ConfigPath;
-        private static readonly IEnumerable<string> Modules;
+        private readonly IEnumerable<string> Modules;
         private readonly StorageSettings settings;
         private readonly int tenantId;
 
         static MigrateOperation()
         {
-            Log = LogManager.GetLogger("ASC");
             ConfigPath = "";
-            Modules = StorageFactory.GetModuleList(ConfigPath, true);
         }
 
-        public MigrateOperation(int tenantId, StorageSettings settings)
+        public MigrateOperation(IServiceProvider serviceProvider, int tenantId, StorageSettings settings, StorageFactoryConfig storageFactoryConfig)
         {
+            ServiceProvider = serviceProvider;
             this.tenantId = tenantId;
             this.settings = settings;
+            StorageFactoryConfig = storageFactoryConfig;
+            Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
             StepCount = Modules.Count();
+            Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
         }
+
+        public IServiceProvider ServiceProvider { get; }
+        public StorageFactoryConfig StorageFactoryConfig { get; }
 
         protected override void DoJob()
         {
             try
             {
                 Log.DebugFormat("Tenant: {0}", tenantId);
-                var tenant = CoreContext.TenantManager.GetTenant(tenantId);
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
-                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
+                using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
+
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var storageFactory = scope.ServiceProvider.GetService<StorageFactory>();
+                var options = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>();
+                var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
+                var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+
+                securityContext.AuthenticateMe(tenant.OwnerId);
 
                 foreach (var module in Modules)
                 {
-                    var oldStore = StorageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = StorageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, settings.DataStoreConsumer);
-                    var domains = StorageFactory.GetDomainList(ConfigPath, module).ToList();
+                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
+                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
+                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(oldStore, store);
+                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, oldStore, store);
 
                     string[] files;
                     foreach (var domain in domains)
@@ -174,9 +198,9 @@ namespace ASC.Data.Storage
                     StepDone();
                 }
 
-                settings.Save();
+                settingsManager.Save(settings);
                 tenant.SetStatus(TenantStatus.Active);
-                CoreContext.TenantManager.SaveTenant(tenant);
+                tenantManager.SaveTenant(tenant);
             }
             catch (Exception e)
             {

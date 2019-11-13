@@ -29,30 +29,38 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
-    internal class IPRestrictionsRepository
+    public class IPRestrictionsRepository
     {
         private const string dbId = "core";
 
+        public DbOptionsManager DbOptions { get; }
 
-        public static List<IPRestriction> Get(int tenant)
+        public IPRestrictionsRepository(DbOptionsManager dbOptions)
         {
-            using var db = new DbManager(dbId);
+            DbOptions = dbOptions;
+        }
+
+        public List<IPRestriction> Get(int tenant)
+        {
+            var db = DbOptions.Get(dbId);
             return db
 .ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
 .ConvertAll(r => new IPRestriction
 {
-Id = Convert.ToInt32(r[0]),
-Ip = Convert.ToString(r[1]),
-TenantId = tenant,
+    Id = Convert.ToInt32(r[0]),
+    Ip = Convert.ToString(r[1]),
+    TenantId = tenant,
 });
         }
 
-        public static List<string> Save(IEnumerable<string> ips, int tenant)
+        public List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            using var db = new DbManager(dbId);
+            var db = DbOptions.Get(dbId);
             using var tx = db.BeginTransaction();
             var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
             db.ExecuteNonQuery(d);
@@ -69,6 +77,15 @@ TenantId = tenant,
 
             tx.Commit();
             return ipsList;
+        }
+    }
+    public static class IPRestrictionsRepositoryExtension
+    {
+        public static IServiceCollection AddIPRestrictionsRepositoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IPRestrictionsRepository>();
+
+            return services.AddDbManagerService();
         }
     }
 }

@@ -38,41 +38,80 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
-    internal class DbSettingsManager
+    public class DbSettingsManagerCache
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        public ICache Cache { get; }
+        public ICacheNotify<SettingsCacheItem> Notify { get; }
 
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<SettingsCacheItem> notify;
+        public DbSettingsManagerCache(ICacheNotify<SettingsCacheItem> notify)
+        {
+            Cache = AscCache.Memory;
+            Notify = notify;
+            Notify.Subscribe((i) => Cache.Remove(i.Key), CacheNotifyAction.Remove);
+        }
+
+        public void Remove(string key)
+        {
+            Notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public class DbSettingsManager
+    {
+        private readonly ILog log;
 
         private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
         private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
         private readonly string dbId;
 
+        private ICache Cache { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private DbSettingsManagerCache DbSettingsManagerCache { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        private DbManager DbManager { get; }
+
+        public DbSettingsManager(
+            IServiceProvider serviceProvider,
+            DbSettingsManagerCache dbSettingsManagerCache,
+            DbOptionsManager optionsDbManager,
+            IOptionsMonitor<ILog> option,
+            AuthContext authContext, TenantManager tenantManager) : this(null)
+        {
+            ServiceProvider = serviceProvider;
+            DbSettingsManagerCache = dbSettingsManagerCache;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            Cache = dbSettingsManagerCache.Cache;
+            DbManager = optionsDbManager.Value;
+            log = option.CurrentValue;
+        }
 
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
             dbId = connectionString != null ? connectionString.Name : "default";
         }
 
-        static DbSettingsManager()
+        private int TenantID
         {
-            notify = new KafkaCache<SettingsCacheItem>();
-            notify.Subscribe((i) => cache.Remove(i.Key), CacheNotifyAction.Remove);
+            get { return TenantManager.GetCurrentTenant().TenantId; }
         }
-
+        //
+        private Guid CurrentUserID
+        {
+            get { return AuthContext.CurrentAccount.ID; }
+        }
 
         public bool SaveSettings<T>(T settings, int tenantId) where T : ISettings
         {
             return SaveSettingsFor(settings, tenantId, Guid.Empty);
-        }
-
-        public bool SaveSettingsFor<T>(T settings, Guid userId) where T : class, ISettings
-        {
-            return SaveSettingsFor(settings, CoreContext.TenantManager.GetCurrentTenant().TenantId, userId);
         }
 
         public T LoadSettings<T>(int tenantId) where T : class, ISettings
@@ -80,21 +119,15 @@ namespace ASC.Core.Data
             return LoadSettingsFor<T>(tenantId, Guid.Empty);
         }
 
-        public T LoadSettingsFor<T>(Guid userId) where T : class, ISettings
+        public void ClearCache<T>(int tenantId) where T : class, ISettings
         {
-            return LoadSettingsFor<T>(CoreContext.TenantManager.GetCurrentTenant().TenantId, userId);
-        }
-
-        public void ClearCache<T>() where T : class, ISettings
-        {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
             var settings = LoadSettings<T>(tenantId);
             var key = settings.ID.ToString() + tenantId + Guid.Empty;
-            notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
+            DbSettingsManagerCache.Remove(key);
         }
 
 
-        private bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
+        public bool SaveSettingsFor<T>(T settings, int tenantId, Guid userId) where T : ISettings
         {
             if (settings == null) throw new ArgumentNullException("settings");
             try
@@ -102,32 +135,34 @@ namespace ASC.Core.Data
                 var key = settings.ID.ToString() + tenantId + userId;
                 var data = Serialize(settings);
 
-                using (var db = GetDbManager())
-                {
-                    var defaultData = Serialize(settings.GetDefault());
+                var db = DbManager;
+                var def = (T)settings.GetDefault(ServiceProvider);
 
-                    ISqlInstruction i;
-                    if (data.SequenceEqual(defaultData))
-                    {
-                        // remove default settings
-                        i = new SqlDelete("webstudio_settings")
-                            .Where("id", settings.ID.ToString())
-                            .Where("tenantid", tenantId)
-                            .Where("userid", userId.ToString());
-                    }
-                    else
-                    {
-                        i = new SqlInsert("webstudio_settings", true)
-                            .InColumnValue("id", settings.ID.ToString())
-                            .InColumnValue("userid", userId.ToString())
-                            .InColumnValue("tenantid", tenantId)
-                            .InColumnValue("data", data);
-                    }
-                    notify.Publish(new SettingsCacheItem { Key = key }, CacheNotifyAction.Remove);
-                    db.ExecuteNonQuery(i);
+                var defaultData = Serialize(def);
+
+                ISqlInstruction i;
+                if (data.SequenceEqual(defaultData))
+                {
+                    // remove default settings
+                    i = new SqlDelete("webstudio_settings")
+                        .Where("id", settings.ID.ToString())
+                        .Where("tenantid", tenantId)
+                        .Where("userid", userId.ToString());
+                }
+                else
+                {
+                    i = new SqlInsert("webstudio_settings", true)
+                        .InColumnValue("id", settings.ID.ToString())
+                        .InColumnValue("userid", userId.ToString())
+                        .InColumnValue("tenantid", tenantId)
+                        .InColumnValue("data", data);
                 }
 
-                cache.Insert(key, settings, expirationTimeout);
+                DbSettingsManagerCache.Remove(key);
+
+                db.ExecuteNonQuery(i);
+
+                Cache.Insert(key, settings, expirationTimeout);
                 return true;
             }
             catch (Exception ex)
@@ -139,50 +174,104 @@ namespace ASC.Core.Data
 
         internal T LoadSettingsFor<T>(int tenantId, Guid userId) where T : class, ISettings
         {
-            var settingsInstance = (ISettings)Activator.CreateInstance<T>();
+            var settingsInstance = Activator.CreateInstance<T>();
             var key = settingsInstance.ID.ToString() + tenantId + userId;
+            var def = (T)settingsInstance.GetDefault(ServiceProvider);
 
             try
             {
-                var settings = cache.Get<T>(key);
+                var settings = Cache.Get<T>(key);
                 if (settings != null) return settings;
 
-                using (var db = GetDbManager())
-                {
-                    var q = new SqlQuery("webstudio_settings")
-                        .Select("data")
-                        .Where("id", settingsInstance.ID.ToString())
-                        .Where("tenantid", tenantId)
-                        .Where("userid", userId.ToString());
+                var db = DbManager;
+                var q = new SqlQuery("webstudio_settings")
+                    .Select("data")
+                    .Where("id", settingsInstance.ID.ToString())
+                    .Where("tenantid", tenantId)
+                    .Where("userid", userId.ToString());
 
-                    var result = db.ExecuteScalar<object>(q);
-                    if (result != null)
-                    {
-                        var data = result is string ? Encoding.UTF8.GetBytes((string)result) : (byte[])result;
-                        settings = Deserialize<T>(data);
-                    }
-                    else
-                    {
-                        settings = (T)settingsInstance.GetDefault();
-                    }
+                var result = db.ExecuteScalar<object>(q);
+                if (result != null)
+                {
+                    var data = result is string ? Encoding.UTF8.GetBytes((string)result) : (byte[])result;
+                    settings = Deserialize<T>(data);
+                }
+                else
+                {
+                    settings = def;
                 }
 
-                cache.Insert(key, settings, expirationTimeout);
+                Cache.Insert(key, settings, expirationTimeout);
                 return settings;
             }
             catch (Exception ex)
             {
                 log.Error(ex);
             }
-            return (T)settingsInstance.GetDefault();
+            return def;
+        }
+
+        public T Load<T>() where T : class, ISettings
+        {
+            return LoadSettings<T>(TenantID);
+        }
+
+        public T LoadForCurrentUser<T>() where T : class, ISettings
+        {
+            return LoadForUser<T>(CurrentUserID);
+        }
+
+        public T LoadForUser<T>(Guid userId) where T : class, ISettings
+        {
+            return LoadSettingsFor<T>(TenantID, userId);
+        }
+
+        public T LoadForDefaultTenant<T>() where T : class, ISettings
+        {
+            return LoadForTenant<T>(Tenant.DEFAULT_TENANT);
+        }
+
+        public T LoadForTenant<T>(int tenantId) where T : class, ISettings
+        {
+            return LoadSettings<T>(tenantId);
+        }
+
+        public virtual bool Save<T>(T data) where T : class, ISettings
+        {
+            return SaveSettings(data, TenantID);
+        }
+
+        public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
+        {
+            return SaveForUser<T>(data, CurrentUserID);
+        }
+
+        public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
+        {
+            return SaveSettingsFor(data, TenantID, userId);
+        }
+
+        public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
+        {
+            return SaveForTenant<T>(data, Tenant.DEFAULT_TENANT);
+        }
+
+        public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
+        {
+            return SaveSettings<T>(data, tenantId);
+        }
+
+        public void ClearCache<T>() where T : class, ISettings
+        {
+            ClearCache<T>(TenantID);
         }
 
         private T Deserialize<T>(byte[] data)
         {
             using var stream = new MemoryStream(data);
             var settings = data[0] == 0
-? new BinaryFormatter().Deserialize(stream)
-: GetJsonSerializer(typeof(T)).ReadObject(stream);
+                            ? new BinaryFormatter().Deserialize(stream)
+                            : GetJsonSerializer(typeof(T)).ReadObject(stream);
             return (T)settings;
         }
 
@@ -191,11 +280,6 @@ namespace ASC.Core.Data
             using var stream = new MemoryStream();
             GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
             return stream.ToArray();
-        }
-
-        private IDbManager GetDbManager()
-        {
-            return DbManager.FromHttpContext(dbId);
         }
 
         private DataContractJsonSerializer GetJsonSerializer(Type type)
@@ -208,6 +292,17 @@ namespace ASC.Core.Data
                 }
                 return jsonSerializers[type];
             }
+        }
+    }
+
+    public static class DbSettingsManagerExtension
+    {
+        public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbSettingsManagerCache>();
+            services.TryAddScoped<DbSettingsManager>();
+
+            return services.AddDbManagerService();
         }
     }
 }

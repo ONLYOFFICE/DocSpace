@@ -28,20 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using ASC.Common.DependencyInjection;
-using ASC.Data.Storage;
 using Microsoft.AspNetCore.Hosting;
 
 namespace ASC.Web.Core.Utility.Skins
 {
     public class WebSkin
     {
-        public static string BaseCSSFileAbsoluteWebPath
-        {
-            get { return WebPath.GetPath("/skins/default/common_style.css"); }
-        }
-
-
         private static readonly HashSet<string> BaseCultureCss = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
 
         public static bool HasCurrentCultureCssFile
@@ -49,11 +41,11 @@ namespace ASC.Web.Core.Utility.Skins
             get { return BaseCultureCss.Contains(CultureInfo.CurrentCulture.Name); }
         }
 
-        static WebSkin()
+        public WebSkin(IWebHostEnvironment webHostEnvironment)
         {
             try
             {
-                var dir = Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, "~/skins/default/");
+                var dir = Path.Combine(webHostEnvironment.ContentRootPath, "~/skins/default/");
                 if (!Directory.Exists(dir)) return;
 
                 foreach (var f in Directory.GetFiles(dir, "common_style.*.css"))

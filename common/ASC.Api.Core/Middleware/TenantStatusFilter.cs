@@ -4,6 +4,8 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -11,10 +13,13 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public TenantStatusFilter(LogManager logManager)
+        public TenantStatusFilter(IOptionsMonitor<ILog> options, TenantManager tenantManager)
         {
-            log = logManager.Get("Api");
+            log = options.CurrentValue;
+            TenantManager = tenantManager;
         }
+
+        public TenantManager TenantManager { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -22,7 +27,7 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            var tenant = TenantManager.GetCurrentTenant(false);
             if (tenant == null)
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
@@ -36,6 +41,15 @@ namespace ASC.Api.Core.Middleware
                 log.WarnFormat("Tenant {0} is not removed or suspended", tenant.TenantId);
                 return;
             }
+        }
+    }
+
+    public static class TenantStatusFilterExtension
+    {
+        public static IServiceCollection AddTenantStatusFilter(this IServiceCollection services)
+        {
+            return services
+                .AddTenantManagerService();
         }
     }
 }

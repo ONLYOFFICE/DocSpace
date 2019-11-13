@@ -34,8 +34,11 @@ using System.Web;
 
 using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
+using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -45,15 +48,14 @@ namespace ASC.Core
         private readonly ITenantService tenantService;
         private readonly IQuotaService quotaService;
         private readonly ITariffService tariffService;
-        private readonly List<string> thisCompAddresses = new List<string>();
+        private static List<string> thisCompAddresses = new List<string>();
 
+        private HttpContext HttpContext { get; }
+        private CoreBaseSettings CoreBaseSettings { get; }
+        private CoreSettings CoreSettings { get; }
 
-        public TenantManager(ITenantService tenantService, IQuotaService quotaService, ITariffService tariffService)
+        static TenantManager()
         {
-            this.tenantService = tenantService;
-            this.quotaService = quotaService;
-            this.tariffService = tariffService;
-
             thisCompAddresses.Add("localhost");
             thisCompAddresses.Add(Dns.GetHostName().ToLowerInvariant());
             thisCompAddresses.AddRange(Dns.GetHostAddresses("localhost").Select(a => a.ToString()));
@@ -65,6 +67,22 @@ namespace ASC.Core
             {
                 // ignore
             }
+        }
+
+        public TenantManager(
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings)
+        {
+            this.tenantService = tenantService;
+            this.quotaService = quotaService;
+            this.tariffService = tariffService;
+            CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
+            HttpContext = httpContextAccessor?.HttpContext;
         }
 
 
@@ -90,7 +108,7 @@ namespace ASC.Core
             var isAlias = false;
             if (t == null)
             {
-                var baseUrl = CoreContext.Configuration.BaseDomain;
+                var baseUrl = CoreSettings.BaseDomain;
                 if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     isAlias = true;
@@ -101,7 +119,7 @@ namespace ASC.Core
             {
                 t = tenantService.GetTenant(domain);
             }
-            if (t == null && CoreContext.Configuration.Standalone && !isAlias)
+            if (t == null && CoreBaseSettings.Standalone && !isAlias)
             {
                 t = tenantService.GetTenantForStandaloneWithoutAlias(domain);
             }
@@ -125,7 +143,7 @@ namespace ASC.Core
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            var newTenant = tenantService.SaveTenant(tenant);
+            var newTenant = tenantService.SaveTenant(CoreSettings, tenant);
             if (CallContext.GetData(CURRENT_TENANT) is Tenant) SetCurrentTenant(newTenant);
 
             return newTenant;
@@ -171,7 +189,7 @@ namespace ASC.Core
 
         public Tenant GetCurrentTenant(bool throwIfNotFound)
         {
-            return GetCurrentTenant(throwIfNotFound, ASC.Common.HttpContext.Current);
+            return GetCurrentTenant(throwIfNotFound, HttpContext);
         }
 
         public void SetCurrentTenant(Tenant tenant)
@@ -179,9 +197,9 @@ namespace ASC.Core
             if (tenant != null)
             {
                 CallContext.SetData(CURRENT_TENANT, tenant);
-                if (ASC.Common.HttpContext.Current != null)
+                if (HttpContext != null)
                 {
-                    ASC.Common.HttpContext.Current.Items[CURRENT_TENANT] = tenant;
+                    HttpContext.Items[CURRENT_TENANT] = tenant;
                 }
                 Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
                 Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
@@ -262,6 +280,22 @@ namespace ASC.Core
         public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
         {
             return quotaService.FindTenantQuotaRows(query).ToList();
+        }
+    }
+
+    public static class TenantManagerConfigExtension
+    {
+        public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantManager>();
+
+            return services
+                .AddHttpContextAccessor()
+                .AddTenantService()
+                .AddQuotaService()
+                .AddTariffService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

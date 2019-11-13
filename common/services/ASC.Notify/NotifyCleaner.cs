@@ -30,19 +30,25 @@ using System.Threading.Tasks;
 using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
     public class NotifyCleaner
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Notify");
+        private readonly ILog log;
         private readonly ManualResetEvent stop = new ManualResetEvent(false);
         public NotifyServiceCfg NotifyServiceCfg { get; }
+        public IServiceProvider ServiceProvider { get; }
         public CancellationTokenSource CancellationTokenSource { get; }
 
-        public NotifyCleaner(NotifyServiceCfg notifyServiceCfg)
+        public NotifyCleaner(IOptions<NotifyServiceCfg> notifyServiceCfg, IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
-            NotifyServiceCfg = notifyServiceCfg;
+            log = options.Get("ASC.Notify");
+            NotifyServiceCfg = notifyServiceCfg.Value;
+            ServiceProvider = serviceProvider;
             CancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -66,7 +72,8 @@ namespace ASC.Notify
                 try
                 {
                     var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
-                    using var db = new DbManager(NotifyServiceCfg.ConnectionStringName);
+                    using var scope = ServiceProvider.CreateScope();
+                    using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(NotifyServiceCfg.ConnectionStringName);
                     using var d1 = db.Connection.CreateCommand("delete from notify_info where modify_date < ? and state = 4", date);
                     using var d2 = db.Connection.CreateCommand("delete from notify_queue where creation_date < ?", date);
                     d1.CommandTimeout = 60 * 60; // hour
@@ -90,6 +97,16 @@ namespace ASC.Notify
                     break;
                 }
             }
+        }
+    }
+
+    public static class NotifyCleanerExtension
+    {
+        public static IServiceCollection AddNotifyCleaner(this IServiceCollection services)
+        {
+            services.TryAddSingleton<NotifyCleaner>();
+
+            return services;
         }
     }
 }

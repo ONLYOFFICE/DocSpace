@@ -29,24 +29,110 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading.Tasks;
+
 using ASC.Common.Data.AdoProxy;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
-using ASC.Common.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Data
 {
+    public class DbOptionsManager : OptionsManager<DbManager>, IDisposable
+    {
+        private Dictionary<string, DbManager> Pairs { get; set; }
+
+        public DbOptionsManager(IOptionsFactory<DbManager> factory) : base(factory)
+        {
+            Pairs = new Dictionary<string, DbManager>();
+        }
+
+        public override DbManager Get(string name)
+        {
+            var result = base.Get(name);
+            if (!Pairs.ContainsKey(name))
+            {
+                Pairs.Add(name, result);
+            }
+            return result;
+        }
+
+        public void Dispose()
+        {
+            foreach (var v in Pairs)
+            {
+                v.Value.Dispose();
+            }
+        }
+    }
+    public class ConfigureDbManager : IConfigureNamedOptions<DbManager>
+    {
+        private DbRegistry DbRegistry { get; }
+        private IOptionsMonitor<ILog> Option { get; }
+        private IHttpContextAccessor HttpContextAccessor { get; }
+
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<ILog> option)
+        {
+            DbRegistry = dbRegistry;
+            Option = option;
+        }
+
+        public ConfigureDbManager(DbRegistry dbRegistry, IOptionsMonitor<ILog> option, IHttpContextAccessor httpContextAccessor) : this(dbRegistry, option)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
+
+        public void Configure(string name, DbManager dbManager)
+        {
+            dbManager.DbRegistry = DbRegistry;
+            dbManager.DatabaseId = string.IsNullOrEmpty(name) ? "default" : name;
+            dbManager.Logger = Option.Get("ASC.SQL");
+
+            if (dbManager.Logger.IsDebugEnabled)
+            {
+                dbManager.ProxyContext = new ProxyContext(a =>
+                {
+                    dbManager.Logger.DebugWithProps(a.SqlMethod,
+    new KeyValuePair<string, object>("duration", a.Duration.TotalMilliseconds),
+    new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(a.Sql)),
+    new KeyValuePair<string, object>("sqlParams", RemoveWhiteSpaces(a.SqlParameters))
+    );
+                });
+            }
+
+            if (HttpContextAccessor != null)
+            {
+                dbManager.HttpContextAccessor = HttpContextAccessor;
+            }
+        }
+
+        public void Configure(DbManager dbManager)
+        {
+            Configure("default", dbManager);
+        }
+
+        private string RemoveWhiteSpaces(string str)
+        {
+            return !string.IsNullOrEmpty(str) ?
+                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
+                string.Empty;
+        }
+    }
+
+
     public class DbManager : IDbManager
     {
-        private readonly ILog logger = LogManager.GetLogger("ASC.SQL");
-        private readonly ProxyContext proxyContext;
-        private readonly bool shared;
+        public ILog Logger { get; internal set; }
+        public IHttpContextAccessor HttpContextAccessor { get; internal set; }
+        internal ProxyContext ProxyContext { get; set; }
 
         private DbCommand command;
         private ISqlDialect dialect;
         private volatile bool disposed;
 
-        private readonly int? commandTimeout;
+        public int? CommandTimeout { get; set; }
 
         private DbCommand Command
         {
@@ -62,16 +148,20 @@ namespace ASC.Common.Data
                     command = OpenConnection().CreateCommand();
                 }
 
-                if (commandTimeout.HasValue)
+                if (CommandTimeout.HasValue)
                 {
-                    command.CommandTimeout = commandTimeout.Value;
+                    command.CommandTimeout = CommandTimeout.Value;
                 }
 
                 return command;
             }
         }
 
-        public string DatabaseId { get; private set; }
+        public string DatabaseId
+        {
+            get;
+            set;
+        }
 
         public bool InTransaction
         {
@@ -83,26 +173,11 @@ namespace ASC.Common.Data
             get { return Command.Connection; }
         }
 
+        public DbRegistry DbRegistry { get; internal set; }
 
-        public DbManager(string databaseId, int? commandTimeout = null)
-            : this(databaseId, true, commandTimeout)
+        public DbManager()
         {
-        }
 
-        public DbManager(string databaseId, bool shared, int? commandTimeout = null)
-        {
-            DatabaseId = databaseId ?? throw new ArgumentNullException(nameof(databaseId));
-            this.shared = shared;
-
-            if (logger.IsDebugEnabled)
-            {
-                proxyContext = new ProxyContext(AdoProxyExecutedEventHandler);
-            }
-
-            if (commandTimeout.HasValue)
-            {
-                this.commandTimeout = commandTimeout;
-            }
         }
 
         #region IDisposable Members
@@ -124,22 +199,6 @@ namespace ASC.Common.Data
 
         #endregion
 
-        public static IDbManager FromHttpContext(string databaseId)
-        {
-            if (HttpContext.Current != null)
-            {
-                if (!(DisposableHttpContext.Current[databaseId] is DbManager dbManager) || dbManager.disposed)
-                {
-                    var localDbManager = new DbManager(databaseId);
-                    var dbManagerAdapter = new DbManagerProxy(localDbManager);
-                    DisposableHttpContext.Current[databaseId] = localDbManager;
-                    return dbManagerAdapter;
-                }
-                return new DbManagerProxy(dbManager);
-            }
-            return new DbManager(databaseId);
-        }
-
         private DbConnection OpenConnection()
         {
             var connection = GetConnection();
@@ -150,12 +209,12 @@ namespace ASC.Common.Data
         private DbConnection GetConnection()
         {
             CheckDispose();
-            string key = null;
             DbConnection connection;
-            if (shared && HttpContext.Current != null)
+            string key = null;
+            if (HttpContextAccessor?.HttpContext != null)
             {
                 key = string.Format("Connection {0}|{1}", GetDialect(), DbRegistry.GetConnectionString(DatabaseId));
-                connection = DisposableHttpContext.Current[key] as DbConnection;
+                connection = HttpContextAccessor.HttpContext.Items[key] as DbConnection;
                 if (connection != null)
                 {
                     var state = ConnectionState.Closed;
@@ -179,11 +238,11 @@ namespace ASC.Common.Data
                 }
             }
             connection = DbRegistry.CreateDbConnection(DatabaseId);
-            if (proxyContext != null)
+            if (ProxyContext != null)
             {
-                connection = new DbConnectionProxy(connection, proxyContext);
+                connection = new DbConnectionProxy(connection, ProxyContext);
             }
-            if (shared && HttpContext.Current != null) DisposableHttpContext.Current[key] = connection;
+            if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.Items[key] = connection;
             return connection;
         }
 
@@ -304,107 +363,21 @@ namespace ASC.Common.Data
             return dialect ?? (dialect = DbRegistry.GetSqlDialect(DatabaseId));
         }
 
-        private void AdoProxyExecutedEventHandler(ExecutedEventArgs a)
+        public ISqlDialect GetSqlDialect(string databaseId)
         {
-            logger.DebugWithProps(a.SqlMethod,
-                new KeyValuePair<string, object>("duration", a.Duration.TotalMilliseconds),
-                new KeyValuePair<string, object>("sql", RemoveWhiteSpaces(a.Sql)),
-                new KeyValuePair<string, object>("sqlParams", RemoveWhiteSpaces(a.SqlParameters))
-                );
-        }
-
-        private string RemoveWhiteSpaces(string str)
-        {
-            return !string.IsNullOrEmpty(str) ?
-                str.Replace(Environment.NewLine, " ").Replace("\n", "").Replace("\r", "").Replace("\t", " ") :
-                string.Empty;
+            return DbRegistry.GetSqlDialect(databaseId);
         }
     }
 
-    public class DbManagerProxy : IDbManager
+    public static class DbManagerExtension
     {
-        private DbManager dbManager { get; set; }
-
-        public DbManagerProxy(DbManager dbManager)
+        public static IServiceCollection AddDbManagerService(this IServiceCollection services)
         {
-            this.dbManager = dbManager;
-        }
+            services.TryAddScoped<DbOptionsManager>();
+            services.TryAddScoped<DbManager>();
+            services.AddScoped<IConfigureOptions<DbManager>, ConfigureDbManager>();
 
-        public void Dispose()
-        {
-            if (HttpContext.Current == null)
-            {
-                dbManager.Dispose();
-            }
-        }
-
-        public DbConnection Connection { get { return dbManager.Connection; } }
-        public string DatabaseId { get { return dbManager.DatabaseId; } }
-        public bool InTransaction { get { return dbManager.InTransaction; } }
-
-        public IDbTransaction BeginTransaction()
-        {
-            return dbManager.BeginTransaction();
-        }
-
-        public IDbTransaction BeginTransaction(IsolationLevel isolationLevel)
-        {
-            return dbManager.BeginTransaction(isolationLevel);
-        }
-
-        public IDbTransaction BeginTransaction(bool nestedIfAlreadyOpen)
-        {
-            return dbManager.BeginTransaction(nestedIfAlreadyOpen);
-        }
-
-        public List<object[]> ExecuteList(string sql, params object[] parameters)
-        {
-            return dbManager.ExecuteList(sql, parameters);
-        }
-
-        public List<object[]> ExecuteList(ISqlInstruction sql)
-        {
-            return dbManager.ExecuteList(sql);
-        }
-
-        public Task<List<object[]>> ExecuteListAsync(ISqlInstruction sql)
-        {
-            return dbManager.ExecuteListAsync(sql);
-        }
-
-        public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<IDataRecord, T> converter)
-        {
-            return dbManager.ExecuteList(sql, converter);
-        }
-
-        public List<T> ExecuteList<T>(ISqlInstruction sql, Converter<object[], T> converter)
-        {
-            return dbManager.ExecuteList<T>(sql, converter);
-        }
-
-        public T ExecuteScalar<T>(string sql, params object[] parameters)
-        {
-            return dbManager.ExecuteScalar<T>(sql, parameters);
-        }
-
-        public T ExecuteScalar<T>(ISqlInstruction sql)
-        {
-            return dbManager.ExecuteScalar<T>(sql);
-        }
-
-        public int ExecuteNonQuery(string sql, params object[] parameters)
-        {
-            return dbManager.ExecuteNonQuery(sql, parameters);
-        }
-
-        public int ExecuteNonQuery(ISqlInstruction sql)
-        {
-            return dbManager.ExecuteNonQuery(sql);
-        }
-
-        public int ExecuteBatch(IEnumerable<ISqlInstruction> batch)
-        {
-            return dbManager.ExecuteBatch(batch);
+            return services.AddDbRegistryService();
         }
     }
 }

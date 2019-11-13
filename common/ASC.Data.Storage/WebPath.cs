@@ -30,30 +30,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using ASC.Common;
-using ASC.Common.DependencyInjection;
+using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
-using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
-    public static class WebPath
+    public class WebPathSettings
     {
-        private static readonly IEnumerable<Appender> Appenders;
-        private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
+        private readonly IEnumerable<Appender> Appenders;
 
 
-        static WebPath()
+        public WebPathSettings(Configuration.Storage storage)
         {
-            var section = CommonServiceProvider.GetService<Configuration.Storage>();
+            var section = storage;
             if (section != null)
             {
                 Appenders = section.Appender;
             }
         }
 
-        public static string GetRelativePath(string absolutePath)
+        public string GetRelativePath(HttpContext httpContext, IOptionsMonitor<ILog> options, string absolutePath)
         {
             if (!Uri.IsWellFormedUriString(absolutePath, UriKind.Absolute))
             {
@@ -65,12 +68,12 @@ namespace ASC.Data.Storage
             {
                 return absolutePath;
             }
-            return SecureHelper.IsSecure() && !string.IsNullOrEmpty(appender.AppendSecure) ?
+            return SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure) ?
                 absolutePath.Remove(0, appender.AppendSecure.Length) :
                 absolutePath.Remove(0, appender.Append.Length);
         }
 
-        public static string GetPath(string relativePath)
+        public string GetPath(HttpContext httpContext, IOptionsMonitor<ILog> options, string relativePath)
         {
             if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
             {
@@ -79,19 +82,6 @@ namespace ASC.Data.Storage
 
             var result = relativePath;
             var ext = Path.GetExtension(relativePath).ToLowerInvariant();
-
-            if (CoreContext.Configuration.Standalone && StaticUploader.CanUpload())
-            {
-                try
-                {
-                    result = CdnStorageSettings.Load().DataStore.GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                    if (!string.IsNullOrEmpty(result)) return result;
-                }
-                catch (Exception)
-                {
-
-                }
-            }
 
             if (Appenders.Any())
             {
@@ -134,7 +124,7 @@ namespace ASC.Data.Storage
                 else
                 {
                     //TODO HostingEnvironment.IsHosted
-                    if (SecureHelper.IsSecure() && !string.IsNullOrEmpty(appender.AppendSecure))
+                    if (SecureHelper.IsSecure(httpContext, options) && !string.IsNullOrEmpty(appender.AppendSecure))
                     {
                         result = string.Format("{0}/{1}", appender.AppendSecure.TrimEnd('/'), relativePath.TrimStart('/'));
                     }
@@ -148,16 +138,73 @@ namespace ASC.Data.Storage
             //To LOWER! cause Amazon is CASE SENSITIVE!
             return result.ToLowerInvariant();
         }
+    }
 
-        public static bool Exists(string relativePath)
+    public class WebPath
+    {
+        private static readonly IDictionary<string, bool> Existing = new ConcurrentDictionary<string, bool>();
+
+        public WebPathSettings WebPathSettings { get; }
+        public StaticUploader StaticUploader { get; }
+        public SettingsManager SettingsManager { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public IHostEnvironment HostEnvironment { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IOptionsMonitor<ILog> Options { get; }
+
+        public WebPath(
+            WebPathSettings webPathSettings,
+            StaticUploader staticUploader,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper,
+            IHttpContextAccessor httpContextAccessor,
+            IHostEnvironment hostEnvironment,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<ILog> options)
+        {
+            WebPathSettings = webPathSettings;
+            StaticUploader = staticUploader;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
+            HttpContextAccessor = httpContextAccessor;
+            HostEnvironment = hostEnvironment;
+            CoreBaseSettings = coreBaseSettings;
+            Options = options;
+        }
+
+        public string GetPath(string relativePath)
+        {
+            if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
+            {
+                throw new ArgumentException(string.Format("bad path format {0} remove '~'", relativePath), "relativePath");
+            }
+
+            if (CoreBaseSettings.Standalone && StaticUploader.CanUpload())
+            {
+                try
+                {
+                    var result = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>()).GetInternalUri("", relativePath, TimeSpan.Zero, null).AbsoluteUri.ToLower();
+                    if (!string.IsNullOrEmpty(result)) return result;
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+
+            return WebPathSettings.GetPath(HttpContextAccessor.HttpContext, Options, relativePath);
+        }
+
+        public bool Exists(string relativePath)
         {
             var path = GetPath(relativePath);
             if (!Existing.ContainsKey(path))
             {
-                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContext.Current != null)
+                if (Uri.IsWellFormedUriString(path, UriKind.Relative) && HttpContextAccessor?.HttpContext != null)
                 {
                     //Local
-                    Existing[path] = File.Exists(Path.Combine(CommonServiceProvider.GetService<IWebHostEnvironment>().ContentRootPath, path));
+                    Existing[path] = File.Exists(Path.Combine(HostEnvironment.ContentRootPath, path));
                 }
                 if (Uri.IsWellFormedUriString(path, UriKind.Absolute))
                 {
@@ -168,7 +215,7 @@ namespace ASC.Data.Storage
             return Existing[path];
         }
 
-        private static bool CheckWebPath(string path)
+        private bool CheckWebPath(string path)
         {
             try
             {
@@ -181,6 +228,27 @@ namespace ASC.Data.Storage
             {
                 return false;
             }
+        }
+    }
+
+    public static class WebPathExtension
+    {
+        public static IServiceCollection AddWebPathService(this IServiceCollection services)
+        {
+            services.TryAddScoped<WebPath>();
+
+            return services
+                .AddStaticUploaderService()
+                .AddCdnStorageSettingsService()
+                .AddWebPathSettingsService()
+                .AddCoreBaseSettingsService()
+                .AddHttpContextAccessor();
+        }
+        public static IServiceCollection AddWebPathSettingsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<WebPathSettings>();
+
+            return services.AddStorage();
         }
     }
 }

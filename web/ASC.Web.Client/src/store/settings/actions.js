@@ -1,15 +1,15 @@
 import * as api from "../services/api";
 import axios from "axios";
-import {
-  getUsers,
-  //getAdmins,
-  getSelectorOptions,
-  getUserOptions
-} from "./selectors";
+import { getSelectorOptions, getUserOptions } from "./selectors";
+import Filter from "./filter";
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
 export const SET_OWNER = "SET_OWNER";
+export const SET_FILTER = "SET_FILTER";
+export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
+export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
+export const SET_LOGO_URLS = "SET_LOGO_URLS";
 
 export function setUsers(options) {
   return {
@@ -19,7 +19,6 @@ export function setUsers(options) {
 }
 
 export function setAdmins(admins) {
-  console.log(admins)
   return {
     type: SET_ADMINS,
     admins
@@ -33,41 +32,40 @@ export function setOwner(owner) {
   };
 }
 
-
-export function getListUsers() {
-  return (dispatch, getState) => {
-    return api.getUserList().then(users => {
-      const { auth } = getState();
-      const { /*settings,*/ modules } = auth;
-      //const { ownerId } = settings;
-      //const convertedUsers = getUsers(users, ownerId);
-      //const withoutAdmins = getAdmins(convertedUsers);
-      //const options = getSelectorOptions(withoutAdmins);
-
-      api.getProductAdminsList(modules[0].id).then(admins => {
-        const options = getUserOptions(users, admins);
-        const newOptions = getSelectorOptions(options);
-        dispatch(setUsers(newOptions));
-      });
-    });
+export function setFilter(filter) {
+  return {
+    type: SET_FILTER,
+    filter
   };
 }
 
-export function getListAdmins(productId) {
-  return (dispatch, getState) => {
-    return api.getProductAdminsList(productId).then(admins => {
-      const { auth } = getState();
-      const { settings } = auth;
-      const { ownerId } = settings;
-      const convertedAdmins = getUsers(admins, ownerId);
-
-      dispatch(setAdmins(convertedAdmins));
-    });
+export function setLogoText(text) {
+  return {
+    type: SET_LOGO_TEXT,
+    text
   };
 }
 
-export function changeAdmins(userIds, productId, isAdmin) {
-  return (dispatch, getState) => {
+export function setLogoSizes(sizes) {
+  return {
+    type: SET_LOGO_SIZES,
+    sizes
+  };
+}
+
+export function setLogoUrls(urls) {
+  return {
+    type: SET_LOGO_URLS,
+    urls
+  };
+}
+
+export function changeAdmins(userIds, productId, isAdmin, filter) {
+  let filterData = filter && filter.clone();
+  if (!filterData) {
+    filterData = Filter.getDefault();
+  }
+  return dispatch => {
     return axios
       .all(
         userIds.map(userId =>
@@ -75,30 +73,79 @@ export function changeAdmins(userIds, productId, isAdmin) {
         )
       )
       .then(() =>
-        axios.all([api.getUserList(), api.getProductAdminsList(productId)])
+        axios.all([
+          api.getUserList(filterData),
+          api.getListAdmins(filterData),
+          api.getAdmins(false)
+        ])
       )
       .then(
-        axios.spread((users, admins) => {
-          const { auth } = getState();
-          const { settings } = auth;
-          const { ownerId } = settings;
-
-          //const convertedUsers = getUsers(users, ownerId);
-          //const withoutAdmins = getAdmins(convertedUsers);
-          //const options = getSelectorOptions(withoutAdmins);
-
-          const options = getUserOptions(users, admins);
+        axios.spread((users, filterAdmins, admins) => {
+          const options = getUserOptions(users, filterAdmins);
           const newOptions = getSelectorOptions(options);
+          filterData.total = admins.length;
+
           dispatch(setUsers(newOptions));
-          const convertedAdmins = getUsers(admins, ownerId);
-          dispatch(setAdmins(convertedAdmins));
+          dispatch(setAdmins(filterAdmins));
+          dispatch(setFilter(filterData));
         })
       );
   };
 }
 
-export function getUserById(userId) {
+export function fetchPeople(filter) {
+  let filterData = filter && filter.clone();
+  if (!filterData) {
+    filterData = Filter.getDefault();
+  }
+
   return dispatch => {
-    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
+    return axios
+      .all([
+        api.getUserList(filterData),
+        api.getListAdmins(filterData),
+        api.getAdmins(true)
+      ])
+      .then(
+        axios.spread((users, filterAdmins, admins) => {
+          const options = getUserOptions(users, admins);
+          const newOptions = getSelectorOptions(options);
+          filterData.total = admins.length;
+
+          const owner = admins.find(x => x.isOwner);
+
+          dispatch(setAdmins(filterAdmins));
+          dispatch(setUsers(newOptions));
+          dispatch(setFilter(filterData));
+          dispatch(setOwner(owner));
+        })
+      );
   };
 }
+
+export function getWhiteLabelLogoText() {
+  return dispatch => {
+    return api.getLogoText()
+    .then(res => {
+      dispatch(setLogoText(res));
+    });
+  };
+};
+
+export function getWhiteLabelLogoSizes() {
+  return dispatch => {
+    return api.getLogoSizes()
+    .then(res => {
+      dispatch(setLogoSizes(res));
+    });
+  };
+};
+
+export function getWhiteLabelLogoUrls() {
+  return dispatch => {
+    return api.getLogoUrls()
+    .then(res => {
+      dispatch(setLogoUrls(Object.values(res)));
+    });
+  };
+};

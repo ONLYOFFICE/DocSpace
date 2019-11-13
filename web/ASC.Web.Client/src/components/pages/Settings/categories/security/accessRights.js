@@ -7,9 +7,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   changeAdmins,
-  getListAdmins,
-  getListUsers,
-  getUserById
+  fetchPeople
 } from "../../../../../store/settings/actions";
 import {
   Text,
@@ -21,20 +19,23 @@ import {
   Link,
   RadioButtonGroup,
   Paging,
-  SelectorAddButton,
   IconButton,
   AdvancedSelector,
   toastr,
-  RequestLoader
+  RequestLoader,
+  FilterInput,
+  Button,
+  TabContainer
 } from "asc-web-components";
+import { getUserRole } from "../../../../../store/settings/selectors";
 
 const MainContainer = styled.div`
-  padding: 16px 16px 16px 24px;
+  padding-bottom: 16px;
   width: 100%;
 
   .page_loader {
     position: fixed;
-    left: 48%;
+    left: 50%;
   }
 `;
 
@@ -60,7 +61,7 @@ const RadioButtonContainer = styled.div`
 `;
 
 const HeaderContainer = styled.div`
-  margin-bottom: 16px;
+  margin: 40px 0 16px 0;
 `;
 
 const BodyContainer = styled.div`
@@ -102,12 +103,21 @@ const ToggleContentContainer = styled.div`
     margin-top: 16px;
   }
 
+  .remove_icon {
+    margin-left: 120px;
+  }
+
+  .button_style {
+    margin-right: 16px;
+  }
+
   .advanced-selector {
     position: relative;
   }
 
-  .selector-button {
-    max-width: 34px;
+  .filter_container {
+    margin-bottom: 50px;
+    margin-top: 16px;
   }
 `;
 
@@ -121,6 +131,7 @@ class PureAccessRights extends Component {
 
     this.state = {
       showSelector: false,
+      showFullAdminSelector: false,
       options: [],
       isLoading: false,
       selectedOptions: []
@@ -128,38 +139,26 @@ class PureAccessRights extends Component {
   }
 
   componentDidMount() {
-    const {
-      getListAdmins,
-      getListUsers,
-      getUserById,
-      ownerId,
-      productId
-    } = this.props;
+    const { fetchPeople } = this.props;
+    this.onLoading(true);
 
-    getUserById(ownerId).catch(error => {
-      toastr.error(error);
-      //console.log("accessRights getUserById", error);
-    });
+    const newFilter = this.onAdminsFilter();
 
-    getListUsers().catch(error => {
-      toastr.error(error);
-      //console.log("accessRights getListAdmins", error);
-    });
-
-    getListAdmins(productId).catch(error => {
-      toastr.error(error);
-      //console.log("accessRights getListAdmins", error);
-    });
+    fetchPeople(newFilter)
+      .catch(error => {
+        toastr.error(error);
+      })
+      .finally(() => this.onLoading(false));
   }
 
-  onChangeAdmin = (userIds, isAdmin) => {
+  onChangeAdmin = (userIds, isAdmin, productId) => {
     this.onLoading(true);
-    const { changeAdmins, productId } = this.props;
+    const { changeAdmins } = this.props;
+    const newFilter = this.onAdminsFilter();
 
-    changeAdmins(userIds, productId, isAdmin)
+    changeAdmins(userIds, productId, isAdmin, newFilter)
       .catch(error => {
         toastr.error("accessRights onChangeAdmin", error);
-        //console.log("accessRights onChangeAdmin", error)
       })
       .finally(() => {
         this.onLoading(false);
@@ -173,41 +172,502 @@ class PureAccessRights extends Component {
       selectedOptions: []
     });
 
+  onShowFullAdminGroupSelector = () => {
+    this.setState({
+      showFullAdminSelector: !this.state.showFullAdminSelector,
+      options: this.props.options, //?
+      selectedOptions: [] //?
+    });
+  };
+
   onSelect = selected => {
-    this.onChangeAdmin(selected.map(user => user.key), true);
+    const { productId } = this.props;
+    this.onChangeAdmin(
+      selected.map(user => user.key),
+      true,
+      productId
+    );
     this.onShowGroupSelector();
     this.setState({ selectedOptions: selected });
   };
 
+  onSelectFullAdmin = selected => {
+    this.onChangeAdmin(
+      selected.map(user => user.key),
+      true,
+      "00000000-0000-0000-0000-000000000000"
+    );
+    this.onShowFullAdminGroupSelector();
+    this.setState({ selectedOptions: selected });
+  };
+
   onSearchUsers = template => {
-    this.onLoading(true);
     this.setState({
       options: this.filterUserSelectorOptions(this.props.options, template)
     });
-    this.onLoading(false);
+  };
+
+  onChangePage = pageItem => {
+    const { filter, fetchPeople } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = pageItem.key;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onChangePageSize = pageItem => {
+    const { filter, fetchPeople } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.pageCount = pageItem.key;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onPrevClick = e => {
+    const { filter, fetchPeople } = this.props;
+
+    if (!filter.hasPrev()) {
+      e.preventDefault();
+      return;
+    }
+    const newFilter = filter.clone();
+    newFilter.page--;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onNextClick = e => {
+    const { filter, fetchPeople } = this.props;
+
+    if (!filter.hasNext()) {
+      e.preventDefault();
+      return;
+    }
+    const newFilter = filter.clone();
+    newFilter.page++;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
+  onLoading = status => {
+    this.setState({ isLoading: status });
+  };
+
+  onAdminsFilter = () => {
+    const { filter } = this.props;
+
+    const newFilter = filter.clone();
+    newFilter.page = 0;
+    newFilter.role = "admin";
+
+    return newFilter;
+  };
+
+  onFilter = data => {
+    const { filter, fetchPeople } = this.props;
+
+    const search = data.inputValue || null;
+    const sortBy = data.sortId;
+    const sortOrder =
+      data.sortDirection === "desc" ? "descending" : "ascending";
+
+    const newFilter = filter.clone();
+
+    newFilter.sortBy = sortBy;
+    newFilter.sortOrder = sortOrder;
+    newFilter.page = 0;
+    newFilter.role = "admin";
+    newFilter.search = search;
+    this.onLoading(true);
+    fetchPeople(newFilter)
+      .catch(res => console.log(res))
+      .finally(this.onLoading(false));
+  };
+
+  onChangeOwner = () => {
+    toastr.warning("onChangeOwner");
+  };
+
+  onSelectPage = page => {
+    //console.log("onSelectPage", page.key);
+    /*
+    const { history } = this.props;
+    switch (page) {
+      case 0:
+        history.push("/owner");
+        break;
+      case 1:
+        history.push("/admins");
+        break;
+      case 2:
+        history.push("/modules");
+        break;
+      default:
+        break;
+    }
+    */
   };
 
   filterUserSelectorOptions = (options, template) =>
     options.filter(option => option.label.indexOf(template) > -1);
 
-  onLoading = status => {
-    console.log("onLoading status", status);
-    this.setState({ isLoading: status });
+  pageItems = () => {
+    const { t, filter } = this.props;
+    if (filter.total < filter.pageCount) return [];
+    const totalPages = Math.ceil(filter.total / filter.pageCount);
+    return [...Array(totalPages).keys()].map(item => {
+      return {
+        key: item,
+        label: t("PageOfTotalPage", { page: item + 1, totalPage: totalPages })
+      };
+    });
+  };
+
+  countItems = () => [
+    { key: 25, label: this.props.t("CountPerPage", { count: 25 }) },
+    { key: 50, label: this.props.t("CountPerPage", { count: 50 }) },
+    { key: 100, label: this.props.t("CountPerPage", { count: 100 }) }
+  ];
+
+  selectedPageItem = () => {
+    const { filter, t } = this.props;
+    const pageItems = this.pageItems();
+
+    const emptyPageSelection = {
+      key: 0,
+      label: t("PageOfTotalPage", { page: 1, totalPage: 1 })
+    };
+
+    return pageItems.find(x => x.key === filter.page) || emptyPageSelection;
+  };
+
+  selectedCountItem = () => {
+    const { filter, t } = this.props;
+
+    const emptyCountSelection = {
+      key: 0,
+      label: t("CountPerPage", { count: 25 })
+    };
+
+    const countItems = this.countItems();
+
+    return (
+      countItems.find(x => x.key === filter.pageCount) || emptyCountSelection
+    );
+  };
+
+  getSortData = () => {
+    const { t } = this.props;
+
+    return [
+      { key: "firstname", label: t("ByFirstNameSorting") },
+      { key: "lastname", label: t("ByLastNameSorting") }
+    ];
   };
 
   render() {
-    const { t, owner, admins } = this.props;
-    const { showSelector, options, selectedOptions, isLoading } = this.state;
-    const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
+    const { t, owner, admins, filter } = this.props;
+    const {
+      showSelector,
+      options,
+      selectedOptions,
+      isLoading,
+      showFullAdminSelector
+    } = this.state;
 
-    const countItems = [
-      { key: 25, label: t("CountPerPage", { count: 25 }) },
-      { key: 50, label: t("CountPerPage", { count: 50 }) },
-      { key: 100, label: t("CountPerPage", { count: 100 }) }
-    ];
+    const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
+    const countElements = filter.total;
+
+    //console.log("accessRight render");
 
     return (
       <MainContainer>
+        <TabContainer
+          /*selectedItem={2}*/ isDisabled={isLoading}
+          onSelect={this.onSelectPage}
+        >
+          {[
+            {
+              key: "0",
+              title: "Owner settings",
+              content: (
+                <>
+                  <HeaderContainer>
+                    <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
+                  </HeaderContainer>
+
+                  <BodyContainer>
+                    <AvatarContainer>
+                      <Avatar
+                        className="avatar_wrapper"
+                        size="big"
+                        role="owner"
+                        userName={owner.userName}
+                        source={owner.avatarSmall}
+                      />
+                      <div className="avatar_body">
+                        <Text.Body
+                          className="avatar_text"
+                          fontSize={16}
+                          isBold={true}
+                        >
+                          {owner.displayName}
+                        </Text.Body>
+                        {owner.groups &&
+                          owner.groups.map(group => (
+                            <Link
+                              fontSize={12}
+                              key={group.id}
+                              href={owner.profileUrl}
+                            >
+                              {group.name}
+                            </Link>
+                          ))}
+                      </div>
+                    </AvatarContainer>
+                    <ProjectsBody>
+                      <Text.Body className="portal_owner" fontSize={12}>
+                        {t("AccessRightsOwnerCan")}:
+                      </Text.Body>
+                      <Text.Body fontSize={12}>
+                        {OwnerOpportunities.map((item, key) => (
+                          <li key={key}>{item};</li>
+                        ))}
+                      </Text.Body>
+                    </ProjectsBody>
+                  </BodyContainer>
+                  <Button
+                    size="medium"
+                    primary={true}
+                    label="Change portal owner"
+                    isDisabled={isLoading}
+                    onClick={this.onChangeOwner}
+                  />
+                </>
+              )
+            },
+            {
+              key: "1",
+              title: "Admins settings",
+              content: (
+                <ToggleContentContainer>
+                  <div style={{ display: "flex", width: "fit-content" }}>
+                    <Button
+                      className="button_style"
+                      size="medium"
+                      primary={true}
+                      label="Set people admin"
+                      isDisabled={isLoading}
+                      onClick={this.onShowGroupSelector}
+                    />
+                    <div style={{ right: 180 }} className="advanced-selector">
+                      <AdvancedSelector
+                        displayType="dropdown"
+                        isOpen={showSelector}
+                        placeholder="placeholder"
+                        options={options}
+                        onSearchChanged={this.onSearchUsers}
+                        //groups={groups}
+                        isMultiSelect={true}
+                        buttonLabel="Add members"
+                        onSelect={this.onSelect}
+                        onCancel={this.onShowGroupSelector}
+                        onAddNewClick={() => console.log("onAddNewClick")}
+                        selectAllLabel="selectorSelectAllText"
+                        selectedOptions={selectedOptions}
+                      />
+                    </div>
+
+                    <Button
+                      size="medium"
+                      primary={true}
+                      label="Set portal admin"
+                      isDisabled={isLoading}
+                      onClick={this.onShowFullAdminGroupSelector}
+                    />
+                    <div style={{ right: 160 }} className="advanced-selector">
+                      <AdvancedSelector
+                        displayType="dropdown"
+                        isOpen={showFullAdminSelector}
+                        placeholder="placeholder"
+                        options={options}
+                        onSearchChanged={this.onSearchUsers}
+                        //groups={groups}
+                        isMultiSelect={true}
+                        buttonLabel="Add members"
+                        onSelect={this.onSelectFullAdmin}
+                        onCancel={this.onShowFullAdminGroupSelector}
+                        onAddNewClick={() => console.log("onAddNewClick")}
+                        selectAllLabel="selectorSelectAllText"
+                        selectedOptions={selectedOptions}
+                      />
+                    </div>
+                  </div>
+
+                  {countElements > 25 ? (
+                    <FilterInput
+                      className="filter_container"
+                      getFilterData={() => []}
+                      getSortData={this.getSortData}
+                      onFilter={this.onFilter}
+                    />
+                  ) : null}
+
+                  <div className="wrapper">
+                    <RowContainer manualHeight={`${admins.length * 50}px`}>
+                      {admins.map(user => {
+                        const element = (
+                          <Avatar
+                            size="small"
+                            role={getUserRole(user)}
+                            userName={user.displayName}
+                            source={user.avatar}
+                          />
+                        );
+                        const nameColor =
+                          user.status === "pending" ? "#A3A9AE" : "#333333";
+
+                        return (
+                          <Row
+                            key={user.id}
+                            status={user.status}
+                            data={user}
+                            element={element}
+                          >
+                            <RowContent disableSideInfo={true}>
+                              <Link
+                                containerWidth="120px"
+                                type="page"
+                                title={user.displayName}
+                                isBold={true}
+                                fontSize={15}
+                                color={nameColor}
+                                href={user.profileUrl}
+                              >
+                                {user.displayName}
+                              </Link>
+                              <div style={{ maxWidth: 120 }} />
+
+                              <Text.Body>
+                                {user.isAdmin
+                                  ? "Full access"
+                                  : "People module admin"}
+                              </Text.Body>
+
+                              {!user.isOwner ? (
+                                <IconButton
+                                  className="remove_icon"
+                                  size="16"
+                                  isDisabled={isLoading}
+                                  onClick={this.onChangeAdmin.bind(
+                                    this,
+                                    [user.id],
+                                    false,
+                                    "00000000-0000-0000-0000-000000000000"
+                                  )}
+                                  iconName={"CatalogTrashIcon"}
+                                  isFill={true}
+                                  isClickable={false}
+                                />
+                              ) : (
+                                <div />
+                              )}
+                            </RowContent>
+                          </Row>
+                        );
+                      })}
+                    </RowContainer>
+                  </div>
+
+                  {countElements > 25 ? (
+                    <div className="wrapper">
+                      <Paging
+                        previousLabel={t("PreviousPage")}
+                        nextLabel={t("NextPage")}
+                        openDirection="top"
+                        countItems={this.countItems()}
+                        pageItems={this.pageItems()}
+                        displayItems={false}
+                        selectedPageItem={this.selectedPageItem()}
+                        selectedCountItem={this.selectedCountItem()}
+                        onSelectPage={this.onChangePage}
+                        onSelectCount={this.onChangePageSize}
+                        previousAction={this.onPrevClick}
+                        nextAction={this.onNextClick}
+                        disablePrevious={!filter.hasPrev()}
+                        disableNext={!filter.hasNext()}
+                      />
+                    </div>
+                  ) : null}
+                </ToggleContentContainer>
+              )
+            },
+            {
+              key: "2",
+              title: "Portals settings",
+              content: (
+                <ToggleContentContainer>
+                  <ToggleContent
+                    className="toggle_content"
+                    label={t("People")}
+                    isOpen={true}
+                  >
+                    <ProjectsContainer>
+                      <RadioButtonContainer>
+                        <Text.Body>
+                          {t("AccessRightsAccessToProduct", {
+                            product: t("People")
+                          })}
+                          :
+                        </Text.Body>
+                        <RadioButtonGroup
+                          name="selectGroup"
+                          selected="allUsers"
+                          options={[
+                            {
+                              value: "allUsers",
+                              label: t("AccessRightsAllUsers", {
+                                users: t("Employees")
+                              })
+                            },
+                            {
+                              value: "usersFromTheList",
+                              label: t("AccessRightsUsersFromList", {
+                                users: t("Employees")
+                              })
+                            }
+                          ]}
+                          className="display-block"
+                        />
+                      </RadioButtonContainer>
+                      <ProjectsBody>
+                        <Text.Body className="projects_margin" fontSize={12}>
+                          {t("AccessRightsProductUsersCan", {
+                            category: t("People")
+                          })}
+                        </Text.Body>
+                        <Text.Body fontSize={12}>
+                          <li>{t("ViewProfilesAndGroups")}</li>
+                        </Text.Body>
+                      </ProjectsBody>
+                    </ProjectsContainer>
+                  </ToggleContent>
+                </ToggleContentContainer>
+              )
+            }
+          ]}
+        </TabContainer>
         <RequestLoader
           visible={isLoading}
           zIndex={256}
@@ -218,192 +678,6 @@ class PureAccessRights extends Component {
           fontColor={"#999"}
           className="page_loader"
         />
-        <HeaderContainer>
-          <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
-        </HeaderContainer>
-
-        <BodyContainer>
-          <AvatarContainer>
-            <Avatar
-              className="avatar_wrapper"
-              size="big"
-              role="owner"
-              userName={owner.userName}
-              source={owner.avatar}
-            />
-            <div className="avatar_body">
-              <Text.Body className="avatar_text" fontSize={16} isBold={true}>
-                {owner.displayName}
-              </Text.Body>
-              {owner.groups &&
-                owner.groups.map(group => (
-                  <Link fontSize={12} key={group.id} href={owner.profileUrl}>
-                    {group.name}
-                  </Link>
-                ))}
-            </div>
-          </AvatarContainer>
-          <ProjectsBody>
-            <Text.Body className="portal_owner" fontSize={12}>
-              {t("AccessRightsOwnerCan")}:
-            </Text.Body>
-            <Text.Body fontSize={12}>
-              {OwnerOpportunities.map((item, key) => (
-                <li key={key}>{item};</li>
-              ))}
-            </Text.Body>
-          </ProjectsBody>
-        </BodyContainer>
-
-        <ToggleContentContainer>
-          <ToggleContent
-            className="toggle_content"
-            label={t("AdminSettings")}
-            isOpen={true}
-          >
-            <SelectorAddButton
-              className="selector-button"
-              isDisabled={isLoading}
-              //title={showGroupSelectorButtonTitle}
-              onClick={this.onShowGroupSelector}
-            />
-            <div className="advanced-selector">
-              <AdvancedSelector
-                displayType="dropdown"
-                isOpen={showSelector}
-                placeholder="placeholder"
-                options={options}
-                onSearchChanged={this.onSearchUsers}
-                //groups={groups}
-                isMultiSelect={true}
-                buttonLabel="Add members"
-                onSelect={this.onSelect}
-                onCancel={this.onShowGroupSelector}
-                onAddNewClick={() => console.log("onAddNewClick")}
-                selectAllLabel="selectorSelectAllText"
-                selectedOptions={selectedOptions}
-              />
-            </div>
-            <div className="wrapper">
-              <RowContainer manualHeight={`${admins.length * 50}px`}>
-                {admins.map(user => {
-                  const element = (
-                    <Avatar
-                      size="small"
-                      role="admin"
-                      userName={user.displayName}
-                      source={user.avatarSmall}
-                    />
-                  );
-                  const nameColor =
-                    user.status === "pending" ? "#A3A9AE" : "#333333";
-
-                  return (
-                    <Row
-                      key={user.id}
-                      status={user.status}
-                      data={user}
-                      element={element}
-                    >
-                      <RowContent disableSideInfo={true}>
-                        <Link
-                          containerWidth="120px"
-                          type="page"
-                          title={user.displayName}
-                          isBold={true}
-                          fontSize={15}
-                          color={nameColor}
-                          href={user.profileUrl}
-                        >
-                          {user.displayName}
-                        </Link>
-
-                        <div style={{ maxWidth: 120 }} />
-                        <div style={{ marginLeft: "60px" }}>
-                          <IconButton
-                            size="16"
-                            isDisabled={isLoading}
-                            onClick={this.onChangeAdmin.bind(
-                              this,
-                              [user.id],
-                              false
-                            )}
-                            iconName={"CatalogTrashIcon"}
-                            isFill={true}
-                            isClickable={false}
-                          />
-                        </div>
-                      </RowContent>
-                    </Row>
-                  );
-                })}
-              </RowContainer>
-            </div>
-            {admins.length > 25 ? (
-              <div className="wrapper">
-                <Paging
-                  previousLabel={t("PreviousPage")}
-                  nextLabel={t("NextPage")}
-                  openDirection="top"
-                  displayItems={false}
-                  countItems={countItems}
-                  selectedPageItem={{ label: "1 of 1" }}
-                  selectedCountItem={{ label: "25 per page" }}
-                  previousAction={() => console.log("previousAction")}
-                  nextAction={() => console.log("nextAction")}
-                  onSelectPage={a => console.log(a)}
-                  onSelectCount={a => console.log(a)}
-                  //pageItems={pageItems}
-                  //disablePrevious={!filter.hasPrev()}
-                  //disableNext={!filter.hasNext()}
-                />
-              </div>
-            ) : null}
-          </ToggleContent>
-
-          <ToggleContent
-            className="toggle_content"
-            label={t("People")}
-            isOpen={true}
-          >
-            <ProjectsContainer>
-              <RadioButtonContainer>
-                <Text.Body>
-                  {t("AccessRightsAccessToProduct", { product: t("People") })}:
-                </Text.Body>
-                <RadioButtonGroup
-                  name="selectGroup"
-                  selected="allUsers"
-                  options={[
-                    {
-                      value: "allUsers",
-                      label: t("AccessRightsAllUsers", {
-                        users: t("Employees")
-                      })
-                    },
-                    {
-                      value: "usersFromTheList",
-                      label: t("AccessRightsUsersFromList", {
-                        users: t("Employees")
-                      })
-                    }
-                  ]}
-                  className="display-block"
-                />
-              </RadioButtonContainer>
-              <ProjectsBody>
-                <Text.Body className="projects_margin" fontSize={12}>
-                  {t("AccessRightsProductUsersCan", {
-                    category: t("People")
-                  })}
-                </Text.Body>
-                <Text.Body fontSize={12}>
-                  <li>{t("ViewProfilesAndGroups")}</li>
-                </Text.Body>
-              </ProjectsBody>
-            </ProjectsContainer>
-          </ToggleContent>
-        </ToggleContentContainer>
       </MainContainer>
     );
   }
@@ -424,24 +698,25 @@ const AccessRights = props => {
 };
 
 function mapStateToProps(state) {
-  const { ownerId } = state.auth.settings;
-  const { admins, options, owner } = state.settings.accessRight;
-
-  //console.log("ADSelector options", users);
+  const {
+    admins,
+    options,
+    owner,
+    filter
+  } = state.settings.security.accessRight;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
-    ownerId,
-    options
+    options,
+    filter
   };
 }
 
 AccessRights.defaultProps = {
   admins: [],
   productId: "",
-  ownerId: "",
   owner: {},
   options: []
 };
@@ -449,12 +724,10 @@ AccessRights.defaultProps = {
 AccessRights.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
-  ownerId: PropTypes.string,
   owner: PropTypes.object,
   options: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default connect(
-  mapStateToProps,
-  { getUserById, changeAdmins, getListAdmins, getListUsers }
-)(withRouter(AccessRights));
+export default connect(mapStateToProps, { changeAdmins, fetchPeople })(
+  withRouter(AccessRights)
+);

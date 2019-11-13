@@ -32,14 +32,14 @@ namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
     [DataContract]
-    public class TfaAppAuthSettings : BaseSettings<TfaAppAuthSettings>
+    public class TfaAppAuthSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{822CA059-AA8F-4588-BEE3-6CD2AA920CDB}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TfaAppAuthSettings { EnableSetting = false, };
         }
@@ -47,17 +47,6 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "Enable")]
         public bool EnableSetting { get; set; }
 
-
-        public static bool Enable
-        {
-            get { return Load().EnableSetting; }
-            set
-            {
-                var settings = Load();
-                settings.EnableSetting = value;
-                settings.Save();
-            }
-        }
 
         public static bool IsVisibleSettings
         {

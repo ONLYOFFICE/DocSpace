@@ -27,37 +27,40 @@
 using System;
 using System.Text.RegularExpressions;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Mobile
 {
     public class MobileDetector
     {
-        private static readonly Regex uaMobileRegex;
+        private readonly Regex uaMobileRegex;
 
         private static readonly ICache cache = AscCache.Memory;
 
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public static bool IsMobile(HttpContext httpContext)
+        public bool IsMobile()
         {
-            return IsRequestMatchesMobile(httpContext);
+            return IsRequestMatchesMobile();
         }
 
 
-        static MobileDetector()
+        public MobileDetector(IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
-            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["mobile:regex"]))
+            if (!string.IsNullOrEmpty(configuration["mobile:regex"]))
             {
-                uaMobileRegex = new Regex(ConfigurationManager.AppSettings["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
+                uaMobileRegex = new Regex(configuration["mobile:regex"], RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.Compiled);
             }
+
+            HttpContextAccessor = httpContextAccessor;
         }
 
 
-        public static bool IsRequestMatchesMobile(HttpContext httpContext)
+        public bool IsRequestMatchesMobile()
         {
             bool? result = false;
-            var ua = httpContext.Request.Headers["User-Agent"].ToString();
+            var ua = HttpContextAccessor.HttpContext.Request.Headers["User-Agent"].ToString();
             var regex = uaMobileRegex;
             if (!string.IsNullOrEmpty(ua) && regex != null)
             {

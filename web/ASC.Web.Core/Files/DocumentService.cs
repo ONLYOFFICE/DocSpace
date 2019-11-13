@@ -95,6 +95,7 @@ namespace ASC.Web.Core.Files
         /// <exception>
         /// </exception>
         public static int GetConvertedUri(
+            FileUtility fileUtility,
             string documentConverterUrl,
             string documentUri,
             string fromExtension,
@@ -147,7 +148,7 @@ namespace ASC.Web.Core.Files
                 JsonWebToken.JsonSerializer = new JwtSerializer();
                 var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
                 //todo: remove old scheme
-                request.Headers.Add(FileUtility.SignatureHeader, "Bearer " + token);
+                request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
                 token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
                 body.Token = token;
@@ -223,7 +224,7 @@ namespace ASC.Web.Core.Files
         /// <param name="signatureSecret">Secret key to generate the token</param>
         /// <param name="version">server version</param>
         /// <returns>Response</returns>
-        public static CommandResultTypes CommandRequest(
+        public static CommandResultTypes CommandRequest(FileUtility fileUtility,
             string documentTrackerUrl,
             CommandMethod method,
             string documentRevisionId,
@@ -257,7 +258,7 @@ namespace ASC.Web.Core.Files
                 JsonWebToken.JsonSerializer = new JwtSerializer();
                 var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
                 //todo: remove old scheme
-                request.Headers.Add(FileUtility.SignatureHeader, "Bearer " + token);
+                request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
                 token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
                 body.Token = token;
@@ -302,7 +303,7 @@ namespace ASC.Web.Core.Files
             return (CommandResultTypes)jResponse.Value<int>("error");
         }
 
-        public static string DocbuilderRequest(
+        public static string DocbuilderRequest(FileUtility fileUtility,
             string docbuilderUrl,
             string requestKey,
             string scriptUrl,
@@ -338,7 +339,7 @@ namespace ASC.Web.Core.Files
                 JsonWebToken.JsonSerializer = new JwtSerializer();
                 var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
                 //todo: remove old scheme
-                request.Headers.Add(FileUtility.SignatureHeader, "Bearer " + token);
+                request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
                 token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
                 body.Token = token;

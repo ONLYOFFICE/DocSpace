@@ -43,15 +43,6 @@ namespace ASC.Common.Web
             this.ctx = ctx ?? throw new ArgumentNullException();
         }
 
-        public static DisposableHttpContext Current
-        {
-            get
-            {
-                if (Common.HttpContext.Current == null) throw new NotSupportedException("Avaliable in web request only.");
-                return new DisposableHttpContext(Common.HttpContext.Current);
-            }
-        }
-
         public object this[string key]
         {
             get { return Items.ContainsKey(key) ? Items[key] : null; }

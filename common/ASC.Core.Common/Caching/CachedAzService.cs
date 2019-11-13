@@ -27,39 +27,79 @@
 using System;
 using System.Collections.Generic;
 using ASC.Common.Caching;
+using ASC.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
-    public class CachedAzService : IAzService
+    class AzServiceCache
     {
-        private readonly IAzService service;
-        private readonly ICache cache;
-        private readonly ICacheNotify<AzRecordCache> cacheNotify;
+        internal ICache Cache { get; }
+        internal ICacheNotify<AzRecordCache> CacheNotify { get; }
 
-
-        public TimeSpan CacheExpiration { get; set; }
-
-
-        public CachedAzService(IAzService service)
+        public AzServiceCache(ICacheNotify<AzRecordCache> cacheNotify)
         {
-            this.service = service ?? throw new ArgumentNullException("service");
-            cache = AscCache.Memory;
-            CacheExpiration = TimeSpan.FromMinutes(10);
+            CacheNotify = cacheNotify;
+            Cache = AscCache.Memory;
 
-            cacheNotify = new KafkaCache<AzRecordCache>();
             cacheNotify.Subscribe((r) => UpdateCache(r, true), CacheNotifyAction.Remove);
             cacheNotify.Subscribe((r) => UpdateCache(r, false), CacheNotifyAction.InsertOrUpdate);
+        }
+
+        private void UpdateCache(AzRecord r, bool remove)
+        {
+            var aces = Cache.Get<AzRecordStore>(GetKey(r.Tenant));
+            if (aces != null)
+            {
+                lock (aces)
+                {
+                    if (remove)
+                    {
+                        aces.Remove(r);
+                    }
+                    else
+                    {
+                        aces.Add(r);
+                    }
+                }
+            }
+        }
+
+        public static string GetKey(int tenant)
+        {
+            return "acl" + tenant.ToString();
+        }
+    }
+
+    class CachedAzService : IAzService
+    {
+        private readonly IAzService service;
+
+        private readonly ICacheNotify<AzRecordCache> cacheNotify;
+
+        private ICache Cache { get; }
+
+        private TimeSpan CacheExpiration { get; set; }
+
+
+        public CachedAzService(DbAzService service, AzServiceCache azServiceCache)
+        {
+            this.service = service ?? throw new ArgumentNullException("service");
+            Cache = azServiceCache.Cache;
+            cacheNotify = azServiceCache.CacheNotify;
+            CacheExpiration = TimeSpan.FromMinutes(10);
         }
 
 
         public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
         {
-            var key = GetKey(tenant);
-            var aces = cache.Get<AzRecordStore>(key);
+            var key = AzServiceCache.GetKey(tenant);
+            var aces = Cache.Get<AzRecordStore>(key);
             if (aces == null)
             {
                 var records = service.GetAces(tenant, default);
-                cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
+                Cache.Insert(key, aces = new AzRecordStore(records), DateTime.UtcNow.Add(CacheExpiration));
             }
             return aces;
         }
@@ -76,30 +116,18 @@ namespace ASC.Core.Caching
             service.RemoveAce(tenant, r);
             cacheNotify.Publish(r, CacheNotifyAction.Remove);
         }
+    }
 
-
-        private string GetKey(int tenant)
+    public static class AzConfigExtension
+    {
+        public static IServiceCollection AddAzService(this IServiceCollection services)
         {
-            return "acl" + tenant.ToString();
-        }
+            services.TryAddScoped<DbAzService>();
+            services.TryAddScoped<IAzService, CachedAzService>();
+            services.TryAddSingleton<AzServiceCache>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
-        private void UpdateCache(AzRecord r, bool remove)
-        {
-            var aces = cache.Get<AzRecordStore>(GetKey(r.Tenant));
-            if (aces != null)
-            {
-                lock (aces)
-                {
-                    if (remove)
-                    {
-                        aces.Remove(r);
-                    }
-                    else
-                    {
-                        aces.Add(r);
-                    }
-                }
-            }
+            return services;
         }
     }
 }

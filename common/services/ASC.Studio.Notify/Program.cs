@@ -2,11 +2,7 @@
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Data.Storage.Configuration;
 using ASC.Notify;
-using ASC.Web.Core;
-using ASC.Web.Studio.Core.Notify;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -41,18 +37,11 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    services.AddWebItemManager();
-                    services.AddSingleton<StudioNotifyServiceSender>();
-                    services.AddHostedService<ServiceLauncher>();
-                    services.AddHttpContextAccessor()
-                            .AddStorage()
-                            .AddLogManager();
+                    services.AddLogManager<LogNLog>("ASC.Notify", "ASC.Notify.Messages");
 
-                    var serviceProvider = services.BuildServiceProvider();
-                    ConfigurationManager.Init(serviceProvider);
-                    CommonServiceProvider.Init(serviceProvider);
-                    serviceProvider.UseWebItemManager();
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+                    services.AddHostedService<ServiceLauncher>();
+                    services.AddServiceLauncher();
                 })
                 .UseConsoleLifetime()
                 .Build();

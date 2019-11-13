@@ -28,53 +28,77 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using ASC.Common.Caching;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Sms
 {
-    public static class SmsKeyStorage
+    public class SmsKeyStorageCache
     {
-        public static readonly int KeyLength;
-        public static readonly TimeSpan StoreInterval;
-        public static readonly int AttemptCount;
-        private static readonly object KeyLocker = new object();
-        private static readonly ICacheNotify<SmsKeyCacheKey> KeyCacheNotify;
-        private static readonly ICache KeyCache = AscCache.Memory;
-        private static readonly ICache CheckCache = AscCache.Memory;
+        public ICacheNotify<SmsKeyCacheKey> KeyCacheNotify { get; }
+        public ICache KeyCache { get; }
+        public ICache CheckCache { get; }
 
-        static SmsKeyStorage()
+        public SmsKeyStorageCache(ICacheNotify<SmsKeyCacheKey> keyCacheNotify)
         {
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keylength"], out KeyLength))
+            CheckCache = AscCache.Memory;
+            KeyCache = AscCache.Memory;
+            KeyCacheNotify = keyCacheNotify;
+            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
+        }
+
+        public void RemoveFromCache(string cacheKey)
+        {
+            KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, CacheNotifyAction.Remove);
+        }
+    }
+
+    public class SmsKeyStorage
+    {
+        public readonly int KeyLength;
+        public readonly TimeSpan StoreInterval;
+        public readonly int AttemptCount;
+        private static readonly object KeyLocker = new object();
+        public ICache KeyCache { get; }
+        public ICache CheckCache { get; }
+
+        public TenantManager TenantManager { get; }
+        public SmsKeyStorageCache SmsKeyStorageCache { get; }
+
+        public SmsKeyStorage(TenantManager tenantManager, IConfiguration configuration, SmsKeyStorageCache smsKeyStorageCache)
+        {
+            KeyCache = smsKeyStorageCache.KeyCache;
+            CheckCache = smsKeyStorageCache.CheckCache;
+
+            TenantManager = tenantManager;
+            SmsKeyStorageCache = smsKeyStorageCache;
+            if (!int.TryParse(configuration["sms:keylength"], out KeyLength))
             {
                 KeyLength = 6;
             }
 
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keystore"], out var store))
+            if (!int.TryParse(configuration["sms:keystore"], out var store))
             {
                 store = 10;
             }
             StoreInterval = TimeSpan.FromMinutes(store);
 
-            if (!int.TryParse(ConfigurationManager.AppSettings["sms:keycount"], out AttemptCount))
+            if (!int.TryParse(configuration["sms:keycount"], out AttemptCount))
             {
                 AttemptCount = 5;
             }
-
-            KeyCacheNotify = new KafkaCache<SmsKeyCacheKey>();
-            KeyCacheNotify.Subscribe(r => KeyCache.Remove(r.Key), CacheNotifyAction.Remove);
         }
 
-        private static string BuildCacheKey(string phone)
+        private string BuildCacheKey(string phone)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            var tenant = TenantManager.GetCurrentTenant(false);
             var tenantCache = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
             return "smskey" + phone + tenantCache;
         }
 
 
-        public static bool GenerateKey(string phone, out string key)
+        public bool GenerateKey(string phone, out string key)
         {
             if (string.IsNullOrEmpty(phone))
             {
@@ -99,7 +123,7 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public static bool ExistsKey(string phone)
+        public bool ExistsKey(string phone)
         {
             if (string.IsNullOrEmpty(phone))
             {
@@ -115,7 +139,7 @@ namespace ASC.Web.Core.Sms
         }
 
 
-        public static Result ValidateKey(string phone, string key)
+        public Result ValidateKey(string phone, string key)
         {
             key = (key ?? string.Empty).Trim();
             if (string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(key))
@@ -140,7 +164,7 @@ namespace ASC.Web.Core.Sms
                     return Result.Invalide;
 
                 var createDate = phoneKeys[key];
-                KeyCacheNotify.Publish(new SmsKeyCacheKey { Key = cacheKey }, CacheNotifyAction.Remove);
+                SmsKeyStorageCache.RemoveFromCache(cacheKey);
                 if (createDate.Add(StoreInterval) < DateTime.UtcNow)
                     return Result.Timeout;
 

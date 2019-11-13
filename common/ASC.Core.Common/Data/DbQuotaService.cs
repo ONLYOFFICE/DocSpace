@@ -26,22 +26,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    public class DbQuotaService : DbBaseService, IQuotaService
+    class DbQuotaService : DbBaseService, IQuotaService
     {
         private const string tenants_quota = "tenants_quota";
         internal const string tenants_quotarow = "tenants_quotarow";
 
-
-        public DbQuotaService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbQuotaService(DbOptionsManager dbOptionsManager)
+            : base(dbOptionsManager, "tenant")
         {
         }
 
@@ -109,7 +108,7 @@ namespace ASC.Core.Data
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)
 .Select("counter")

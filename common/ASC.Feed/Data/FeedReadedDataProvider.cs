@@ -37,6 +37,16 @@ namespace ASC.Feed.Data
     {
         private const string dbId = Constants.FeedDbId;
 
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public DbOptionsManager DbOptionsManager { get; }
+
+        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbOptionsManager dbOptionsManager)
+        {
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            DbOptionsManager = dbOptionsManager;
+        }
 
         public DateTime GetTimeReaded()
         {
@@ -105,19 +115,19 @@ namespace ASC.Feed.Data
         }
 
 
-        private static DbManager GetDb()
+        private DbManager GetDb()
         {
-            return new DbManager(dbId);
+            return DbOptionsManager.Get(dbId);
         }
 
-        private static int GetTenant()
+        private int GetTenant()
         {
-            return CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
 
-        private static Guid GetUser()
+        private Guid GetUser()
         {
-            return SecurityContext.CurrentAccount.ID;
+            return AuthContext.CurrentAccount.ID;
         }
     }
 }

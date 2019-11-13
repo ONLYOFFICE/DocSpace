@@ -29,19 +29,37 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Security.Authorizing
 {
     class PermissionProvider : IPermissionProvider
     {
+        private AuthorizationManager AuthorizationManager { get; }
+
+        public PermissionProvider(AuthorizationManager authorizationManager)
+        {
+            AuthorizationManager = authorizationManager;
+        }
+
         public IEnumerable<Ace> GetAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider secObjProvider)
         {
             if (subject == null) throw new ArgumentNullException("subject");
             if (action == null) throw new ArgumentNullException("action");
 
-            return CoreContext.AuthorizationManager
+            return AuthorizationManager
                 .GetAcesWithInherits(subject.ID, action.ID, objectId, secObjProvider)
                 .Select(r => new Ace(r.ActionId, r.Reaction));
+        }
+    }
+
+    public static class PermissionProviderConfigExtension
+    {
+        public static IServiceCollection AddPermissionProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped(typeof(IPermissionProvider), typeof(PermissionProvider));
+            return services.AddAuthorizationManagerService();
         }
     }
 }

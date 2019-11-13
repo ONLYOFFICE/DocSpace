@@ -23,21 +23,18 @@
  *
 */
 
-
-using ASC.Core.Tenants;
-
 namespace ASC.Notify.Recipients
 {
     public interface IRecipientProvider
     {
-        IRecipient GetRecipient(int tenantId, string id);
+        IRecipient GetRecipient(string id);
 
-        IRecipient[] GetGroupEntries(Tenant tenant, IRecipientsGroup group);
+        IRecipient[] GetGroupEntries(IRecipientsGroup group);
 
-        IRecipientsGroup[] GetGroups(Tenant tenant, IRecipient recipient);
+        IRecipientsGroup[] GetGroups(IRecipient recipient);
 
-        string[] GetRecipientAddresses(int tenantId, IDirectRecipient recipient, string senderName);
+        string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName);
 
-        IDirectRecipient FilterRecipientAddresses(int tenantId, IDirectRecipient recipient);
+        IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient);
     }
 }

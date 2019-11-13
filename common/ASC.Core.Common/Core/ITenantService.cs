@@ -44,7 +44,7 @@ namespace ASC.Core
 
         Tenant GetTenantForStandaloneWithoutAlias(string ip);
 
-        Tenant SaveTenant(Tenant tenant);
+        Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant);
 
         void RemoveTenant(int id, bool auto = false);
 

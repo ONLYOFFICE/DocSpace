@@ -30,6 +30,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.IPSecurity;
@@ -37,7 +38,8 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -47,20 +49,53 @@ namespace ASC.Web.Core.Users
     public sealed class UserManagerWrapper
     {
         public StudioNotifyService StudioNotifyService { get; }
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public MessageService MessageService { get; }
+        public CustomNamingPeople CustomNamingPeople { get; }
+        public TenantUtil TenantUtil { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IPSecurity.IPSecurity IPSecurity { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public SettingsManager SettingsManager { get; }
 
-        public UserManagerWrapper(StudioNotifyService studioNotifyService)
+        public UserManagerWrapper(
+            StudioNotifyService studioNotifyService,
+            UserManager userManager,
+            SecurityContext securityContext,
+            AuthContext authContext,
+            MessageService messageService,
+            CustomNamingPeople customNamingPeople,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            IPSecurity.IPSecurity iPSecurity,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            SettingsManager settingsManager
+            )
         {
             StudioNotifyService = studioNotifyService;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            AuthContext = authContext;
+            MessageService = messageService;
+            CustomNamingPeople = customNamingPeople;
+            TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
+            IPSecurity = iPSecurity;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            SettingsManager = settingsManager;
         }
 
-        private static bool TestUniqueUserName(string uniqueName, int tenantId)
+        private bool TestUniqueUserName(string uniqueName)
         {
             if (string.IsNullOrEmpty(uniqueName))
                 return false;
-            return Equals(CoreContext.UserManager.GetUserByUserName(tenantId, uniqueName), Constants.LostUser);
+            return Equals(UserManager.GetUserByUserName(uniqueName), Constants.LostUser);
         }
 
-        private static string MakeUniqueName(int tenantId, UserInfo userInfo)
+        private string MakeUniqueName(UserInfo userInfo)
         {
             if (string.IsNullOrEmpty(userInfo.Email))
                 throw new ArgumentException(Resource.ErrorEmailEmpty, "userInfo");
@@ -68,20 +103,20 @@ namespace ASC.Web.Core.Users
             var uniqueName = new MailAddress(userInfo.Email).User;
             var startUniqueName = uniqueName;
             var i = 0;
-            while (!TestUniqueUserName(uniqueName, tenantId))
+            while (!TestUniqueUserName(uniqueName))
             {
                 uniqueName = string.Format("{0}{1}", startUniqueName, (++i).ToString(CultureInfo.InvariantCulture));
             }
             return uniqueName;
         }
 
-        public static bool CheckUniqueEmail(int tenantId, Guid userId, string email)
+        public bool CheckUniqueEmail(Guid userId, string email)
         {
-            var foundUser = CoreContext.UserManager.GetUserByEmail(tenantId, email);
+            var foundUser = UserManager.GetUserByEmail(email);
             return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
         }
 
-        public UserInfo AddUser(Tenant tenant, UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+        public UserInfo AddUser(UserInfo userInfo, string password, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
         {
             if (userInfo == null) throw new ArgumentNullException("userInfo");
 
@@ -90,28 +125,28 @@ namespace ASC.Web.Core.Users
 
             CheckPasswordPolicy(password);
 
-            if (!CheckUniqueEmail(tenant.TenantId, userInfo.ID, userInfo.Email))
+            if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
                 throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             if (makeUniqueName)
             {
-                userInfo.UserName = MakeUniqueName(tenant.TenantId, userInfo);
+                userInfo.UserName = MakeUniqueName(userInfo);
             }
             if (!userInfo.WorkFromDate.HasValue)
             {
                 userInfo.WorkFromDate = TenantUtil.DateTimeNow();
             }
 
-            if (!CoreContext.Configuration.Personal && !fromInviteLink)
+            if (!CoreBaseSettings.Personal && !fromInviteLink)
             {
                 userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
             }
 
-            var newUserInfo = CoreContext.UserManager.SaveUserInfo(tenant, userInfo, isVisitor);
-            SecurityContext.SetUserPassword(tenant.TenantId, newUserInfo.ID, password);
+            var newUserInfo = UserManager.SaveUserInfo(userInfo, isVisitor);
+            SecurityContext.SetUserPassword(newUserInfo.ID, password);
 
-            if (CoreContext.Configuration.Personal)
+            if (CoreBaseSettings.Personal)
             {
-                StudioNotifyService.SendUserWelcomePersonal(tenant.TenantId, newUserInfo);
+                StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
                 return newUserInfo;
             }
 
@@ -126,12 +161,12 @@ namespace ASC.Web.Core.Users
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoAddedAfterInvite(tenant.TenantId, newUserInfo);
+                        StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                     }
 
                     if (fromInviteLink)
                     {
-                        StudioNotifyService.SendEmailActivationInstructions(tenant.TenantId, newUserInfo, newUserInfo.Email);
+                        StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                     }
                 }
                 else
@@ -139,11 +174,11 @@ namespace ASC.Web.Core.Users
                     //Send user invite
                     if (isVisitor)
                     {
-                        StudioNotifyService.GuestInfoActivation(tenant.TenantId, newUserInfo);
+                        StudioNotifyService.GuestInfoActivation(newUserInfo);
                     }
                     else
                     {
-                        StudioNotifyService.UserInfoActivation(tenant.TenantId, newUserInfo);
+                        StudioNotifyService.UserInfoActivation(newUserInfo);
                     }
 
                 }
@@ -151,7 +186,7 @@ namespace ASC.Web.Core.Users
 
             if (isVisitor)
             {
-                CoreContext.UserManager.AddUserIntoGroup(tenant, newUserInfo.ID, Constants.GroupVisitor.ID);
+                UserManager.AddUserIntoGroup(newUserInfo.ID, Constants.GroupVisitor.ID);
             }
 
             return newUserInfo;
@@ -159,31 +194,72 @@ namespace ASC.Web.Core.Users
 
         #region Password
 
-        public static void CheckPasswordPolicy(string password)
+        public void CheckPasswordPolicy(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception(Resource.ErrorPasswordEmpty);
 
-            var passwordSettingsObj = PasswordSettings.Load();
+            var passwordSettingsObj = SettingsManager.Load<PasswordSettings>();
 
-            if (!PasswordSettings.CheckPasswordRegex(passwordSettingsObj, password))
+            if (!CheckPasswordRegex(passwordSettingsObj, password))
                 throw new Exception(GenerateErrorMessage(passwordSettingsObj));
         }
+        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        {
+            var pwdBuilder = new StringBuilder();
 
-        public UserInfo SendUserPassword(int tenantId, string email, MessageService messageService, HttpContext context)
+            if (CoreBaseSettings.CustomMode)
+            {
+                pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
+
+                if (passwordSettings.Digits)
+                    pwdBuilder.Append(@"(?=.*\d)");
+
+                if (passwordSettings.UpperCase)
+                    pwdBuilder.Append(@"(?=.*[A-Z])");
+
+                if (passwordSettings.SpecSymbols)
+                    pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
+
+                pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
+            }
+            else
+            {
+                pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
+
+                if (passwordSettings.Digits)
+                    pwdBuilder.Append(@"(?=.*\d)");
+
+                if (passwordSettings.UpperCase)
+                    pwdBuilder.Append(@"(?=.*\p{Lu})");
+
+                if (passwordSettings.SpecSymbols)
+                    pwdBuilder.Append(@"(?=.*[\W])");
+
+                pwdBuilder.Append(@".");
+            }
+
+            pwdBuilder.Append(@"{");
+            pwdBuilder.Append(passwordSettings.MinLength);
+            pwdBuilder.Append(@",");
+            pwdBuilder.Append(PasswordSettings.MaxLength);
+            pwdBuilder.Append(@"}$");
+
+            return new Regex(pwdBuilder.ToString()).IsMatch(password);
+        }
+
+        public UserInfo SendUserPassword(string email)
         {
             email = (email ?? "").Trim();
             if (!email.TestEmailRegex()) throw new ArgumentNullException("email", Resource.ErrorNotCorrectEmail);
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
-            var settings = IPRestrictionsSettings.Load();
-            if (settings.Enable && !IPSecurity.IPSecurity.Verify(context, tenant))
+            if (!IPSecurity.Verify())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
 
-            var userInfo = CoreContext.UserManager.GetUserByEmail(tenantId, email);
-            if (!CoreContext.UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
+            var userInfo = UserManager.GetUserByEmail(email);
+            if (!UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
             {
                 throw new Exception(string.Format(Resource.ErrorUserNotFoundByEmail, email));
             }
@@ -200,19 +276,19 @@ namespace ASC.Web.Core.Users
                 throw new Exception(Resource.CouldNotRecoverPasswordForSsoUser);
             }
 
-            StudioNotifyService.UserPasswordChange(tenantId, userInfo);
+            StudioNotifyService.UserPasswordChange(userInfo);
 
-            var displayUserName = userInfo.DisplayUserName(false);
-            messageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
+            var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
+            MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
 
             return userInfo;
         }
 
         private const string Noise = "1234567890mnbasdflkjqwerpoiqweyuvcxnzhdkqpsdk_-()=";
 
-        public static string GeneratePassword()
+        public string GeneratePassword()
         {
-            var ps = PasswordSettings.Load();
+            var ps = SettingsManager.Load<PasswordSettings>();
 
             var maxLength = PasswordSettings.MaxLength
                             - (ps.Digits ? 1 : 0)
@@ -257,10 +333,10 @@ namespace ASC.Web.Core.Users
             return error.ToString();
         }
 
-        public static string GetPasswordHelpMessage()
+        public string GetPasswordHelpMessage()
         {
             var info = new StringBuilder();
-            var passwordSettings = PasswordSettings.Load();
+            var passwordSettings = SettingsManager.Load<PasswordSettings>();
             info.AppendFormat("{0} ", Resource.ErrorPasswordMessageStart);
             info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
             if (passwordSettings.UpperCase)
@@ -282,6 +358,26 @@ namespace ASC.Web.Core.Users
                                    + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
             const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
             return new Regex(pattern, options).IsMatch(email);
+        }
+    }
+    public static class UserManagerWrapperExtension
+    {
+        public static IServiceCollection AddUserManagerWrapperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<UserManagerWrapper>();
+
+            return services
+                .AddIPSecurityService()
+                .AddTenantUtilService()
+                .AddCustomNamingPeopleService()
+                .AddSettingsManagerService()
+                .AddStudioNotifyServiceService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddMessageServiceService()
+                .AddDisplayUserSettingsService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

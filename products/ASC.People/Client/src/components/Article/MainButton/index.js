@@ -34,6 +34,7 @@ class PureArticleMainButtonContent extends React.Component {
     render() {
         console.log("People ArticleMainButtonContent render");
         const { isAdmin, settings, t } = this.props;
+        const { dialogVisible } = this.state;
         return (
             isAdmin ?
                 <>
@@ -74,11 +75,13 @@ class PureArticleMainButtonContent extends React.Component {
                             onClick={this.onNotImplementedClick.bind(this, "Import people action")}
                         />
                     </MainButton>
-                    <InviteDialog
-                        visible={this.state.dialogVisible}
-                        onClose={this.onInvitationDialogClick}
-                        onCloseButton={this.onInvitationDialogClick}
-                    />
+                    {dialogVisible &&
+                        <InviteDialog
+                            visible={dialogVisible}
+                            onClose={this.onInvitationDialogClick}
+                            onCloseButton={this.onInvitationDialogClick}
+                        />
+                    }
                 </>
                 :
                 <></>
@@ -91,7 +94,7 @@ const ArticleMainButtonContentContainer = withTranslation()(PureArticleMainButto
 const ArticleMainButtonContent = (props) => {
     const { language } = props;
     i18n.changeLanguage(language);
-    return (<I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>); 
+    return (<I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>);
 };
 
 ArticleMainButtonContent.propTypes = {

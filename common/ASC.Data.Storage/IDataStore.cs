@@ -302,7 +302,7 @@ namespace ASC.Data.Storage
 #pragma warning restore 1591
 
 
-        IDataStore Configure(IDictionary<string, string> props);
+        IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props);
         IDataStore SetQuotaController(IQuotaController controller);
 
         string SavePrivate(string domain, string path, Stream stream, DateTime expires);

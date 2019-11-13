@@ -32,46 +32,34 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ASC.Common.Caching;
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
-    class TariffService : DbBaseService, ITariffService
+    public class TariffServiceStorage
     {
-        private const int DEFAULT_TRIAL_PERIOD = 30;
-        private static readonly TimeSpan DEFAULT_CACHE_EXPIRATION = TimeSpan.FromMinutes(5);
-        private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+        public ICache Cache { get; }
+        public ICacheNotify<TariffCacheItem> Notify { get; }
 
-        private readonly static ICache cache;
-        private readonly static ICacheNotify<TariffCacheItem> notify;
-        private readonly static bool billingConfigured = false;
-
-        private static readonly ILog log = LogManager.GetLogger("ASC");
-        private readonly IQuotaService quotaService;
-        private readonly ITenantService tenantService;
-        private readonly CoreConfiguration config;
-        private readonly bool test;
-        private readonly int paymentDelay;
-
-
-        public TimeSpan CacheExpiration { get; set; }
-
-
-        static TariffService()
+        public TariffServiceStorage(ICacheNotify<TariffCacheItem> notify)
         {
-            cache = AscCache.Memory;
-            notify = new KafkaCache<TariffCacheItem>();
-            notify.Subscribe((i) =>
+            Cache = AscCache.Memory;
+            Notify = notify;
+            Notify.Subscribe((i) =>
             {
-                cache.Remove(GetTariffCacheKey(i.TenantId));
-                cache.Remove(GetBillingUrlCacheKey(i.TenantId));
-                cache.Remove(GetBillingPaymentCacheKey(i.TenantId, DateTime.MinValue, DateTime.MaxValue)); // clear all payments
+                Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
+                Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
+                Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId, DateTime.MinValue, DateTime.MaxValue)); // clear all payments
             }, CacheNotifyAction.Remove);
 
             //TODO: Change code of WCF -> not supported in .NET standard/.Net Core
@@ -89,24 +77,65 @@ namespace ASC.Core.Billing
                 log.Error(err);
             }*/
         }
+    }
+
+    public class TariffService : DbBaseService, ITariffService
+    {
+        private readonly ICache cache;
+        private readonly ICacheNotify<TariffCacheItem> notify;
+
+        private const int DEFAULT_TRIAL_PERIOD = 30;
+        private static readonly TimeSpan DEFAULT_CACHE_EXPIRATION = TimeSpan.FromMinutes(5);
+        private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
+
+        private readonly static bool billingConfigured = false;
+
+        private readonly ILog log;
+        private readonly IQuotaService quotaService;
+        private readonly ITenantService tenantService;
+        private readonly bool test;
+        private readonly int paymentDelay;
 
 
-        public TariffService(System.Configuration.ConnectionStringSettings connectionString, IQuotaService quotaService, ITenantService tenantService)
-            : base(connectionString, "tenant")
+        public TimeSpan CacheExpiration { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
+        public TariffServiceStorage TariffServiceStorage { get; }
+        public IOptionsMonitor<ILog> Options { get; }
+
+        public TariffService(
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            DbOptionsManager dbOptionsManager,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : base(dbOptionsManager, "tenant")
         {
+            log = options.CurrentValue;
             this.quotaService = quotaService;
             this.tenantService = tenantService;
-            config = new CoreConfiguration(tenantService);
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            TariffServiceStorage = tariffServiceStorage;
+            Options = options;
+            CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
-            test = ConfigurationManager.AppSettings["core:payment:test"] == "true";
-            int.TryParse(ConfigurationManager.AppSettings["core:payment:delay"], out paymentDelay);
+            test = configuration["core:payment:test"] == "true";
+            int.TryParse(configuration["core:payment:delay"], out paymentDelay);
+
+            cache = TariffServiceStorage.Cache;
+            notify = TariffServiceStorage.Notify;
         }
 
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
             //single tariff for all portals
-            if (CoreContext.Configuration.Standalone)
+            if (CoreBaseSettings.Standalone)
                 tenantId = -1;
 
             var key = GetTariffCacheKey(tenantId);
@@ -178,24 +207,24 @@ namespace ASC.Core.Billing
                 if (tenant != null)
                 {
                     tenant.VersionChanged = DateTime.UtcNow;
-                    tenantService.SaveTenant(tenant);
+                    tenantService.SaveTenant(CoreSettings, tenant);
                 }
             }
 
             ClearCache(tenantId);
         }
 
-        private static string GetTariffCacheKey(int tenantId)
+        internal static string GetTariffCacheKey(int tenantId)
         {
             return string.Format("{0}:{1}", tenantId, "tariff");
         }
 
-        private static string GetBillingUrlCacheKey(int tenantId)
+        internal static string GetBillingUrlCacheKey(int tenantId)
         {
             return string.Format("{0}:{1}", tenantId, "billing:urls");
         }
 
-        private static string GetBillingPaymentCacheKey(int tenantId, DateTime from, DateTime to)
+        internal static string GetBillingPaymentCacheKey(int tenantId, DateTime from, DateTime to)
         {
             return string.Format("{0}:{1}:{2}-{3}", tenantId, "billing:payments", from.ToString("yyyyMMddHHmmss"), to.ToString("yyyyMMddHHmmss"));
         }
@@ -386,7 +415,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             var inserted = false;
             if (!Equals(bi, GetBillingInfo(tenant)))
             {
-                using var db = GetDb();
+                var db = GetDb();
                 using var tx = db.BeginTransaction();
                 // last record is not the same
                 var q = new SqlQuery("tenants_tariff").SelectCount().Where("tenant", tenant).Where("tariff", bi.Item1).Where("stamp", bi.Item2);
@@ -409,7 +438,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
                 if (t != null)
                 {
                     // update tenant.LastModified to flush cache in documents
-                    tenantService.SaveTenant(t);
+                    tenantService.SaveTenant(CoreSettings, t);
                 }
             }
             return inserted;
@@ -418,7 +447,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         public void DeleteDefaultBillingInfo()
         {
             const int tenant = Tenant.DEFAULT_TENANT;
-            using (var db = GetDb())
+            var db = GetDb();
             {
                 db.ExecuteNonQuery(new SqlUpdate("tenants_tariff")
                                        .Set("tenant", -2)
@@ -477,7 +506,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             {
                 tariff.State = TariffState.NotPaid;
 
-                if ((q == null || !q.Trial) && config.Standalone)
+                if ((q == null || !q.Trial) && CoreBaseSettings.Standalone)
                 {
                     if (q != null)
                     {
@@ -513,7 +542,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         {
             try
             {
-                return new BillingClient(test);
+                return new BillingClient(test, Configuration, Options);
             }
             catch (InvalidOperationException ioe)
             {
@@ -531,17 +560,17 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private string GetPortalId(int tenant)
         {
-            return config.GetKey(tenant);
+            return CoreSettings.GetKey(tenant);
         }
 
         private string GetAffiliateId(int tenant)
         {
-            return config.GetAffiliateId(tenant);
+            return CoreSettings.GetAffiliateId(tenant);
         }
 
         private TimeSpan GetCacheExpiration()
         {
-            if (config.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
+            if (CoreBaseSettings.Standalone && CacheExpiration < STANDALONE_CACHE_EXPIRATION)
             {
                 CacheExpiration = CacheExpiration.Add(TimeSpan.FromSeconds(30));
             }
@@ -550,13 +579,13 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         private void ResetCacheExpiration()
         {
-            if (config.Standalone)
+            if (CoreBaseSettings.Standalone)
             {
                 CacheExpiration = DEFAULT_CACHE_EXPIRATION;
             }
         }
 
-        private static void LogError(Exception error)
+        private void LogError(Exception error)
         {
             if (error is BillingNotFoundException)
             {
@@ -577,6 +606,16 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
                     log.Error(error.Message);
                 }
             }
+        }
+    }
+
+    public static class TariffConfigExtension
+    {
+        public static IServiceCollection AddTariffService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<TariffServiceStorage>();
+            services.TryAddScoped<ITariffService, TariffService>();
+            return services;
         }
     }
 }

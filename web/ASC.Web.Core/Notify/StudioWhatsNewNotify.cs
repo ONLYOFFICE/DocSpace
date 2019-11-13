@@ -37,21 +37,35 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Feed;
 using ASC.Feed.Data;
-using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
+using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
 {
     public class StudioWhatsNewNotify
     {
-        public static void SendMsgWhatsNew(DateTime scheduleDate, INotifyClient client)
-        {
-            var log = LogManager.GetLogger("ASC.Notify.WhatsNew");
+        public IServiceProvider ServiceProvider { get; }
+        public IConfiguration Confuguration { get; }
 
-            if (WebItemManager.Instance.GetItemsAll<IProduct>().Count == 0)
+        public StudioWhatsNewNotify(IServiceProvider serviceProvider, IConfiguration confuguration)
+        {
+            ServiceProvider = serviceProvider;
+            Confuguration = confuguration;
+        }
+
+        public void SendMsgWhatsNew(DateTime scheduleDate)
+        {
+            var log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify");
+            var WebItemManager = ServiceProvider.GetService<WebItemManager>();
+
+            if (WebItemManager.GetItemsAll<IProduct>().Count == 0)
             {
                 log.Info("No products. Return from function");
                 return;
@@ -59,46 +73,62 @@ namespace ASC.Web.Studio.Core.Notify
 
             log.Info("Start send whats new.");
 
-            var products = WebItemManager.Instance.GetItemsAll().ToDictionary(p => p.GetSysName());
+            var products = WebItemManager.GetItemsAll().ToDictionary(p => p.GetSysName());
 
-            foreach (var tenantid in GetChangedTenants(scheduleDate))
+            foreach (var tenantid in GetChangedTenants(ServiceProvider.GetService<FeedAggregateDataProvider>(), scheduleDate))
             {
                 try
                 {
-                    var tenant = CoreContext.TenantManager.GetTenant(tenantid);
+                    using var scope = ServiceProvider.CreateScope();
+                    var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                    var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
+
+                    var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
                         !TimeToSendWhatsNew(TenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
-                        TariffState.NotPaid <= CoreContext.PaymentManager.GetTariff(tenantid).State)
+                        TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
                     {
                         continue;
                     }
 
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    tenantManager.SetCurrentTenant(tenant);
 
-                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.TenantDomain, tenantid);
-                    foreach (var user in CoreContext.UserManager.GetUsers(tenant))
+                    var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
+                    var userManager = scope.ServiceProvider.GetService<UserManager>();
+                    var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                    var authContext = scope.ServiceProvider.GetService<AuthContext>();
+                    var authentication = scope.ServiceProvider.GetService<AuthManager>();
+                    var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
+                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                    var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+                    var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();
+                    var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
+                    var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+
+                    log.InfoFormat("Start send whats new in {0} ({1}).", tenant.GetTenantDomain(coreSettings), tenantid);
+                    foreach (var user in userManager.GetUsers())
                     {
-                        if (!StudioNotifyHelper.IsSubscribedToNotify(tenant, user, Actions.SendWhatsNew))
+                        if (!studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
                         {
                             continue;
                         }
 
-                        SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(tenant.TenantId, user.ID));
+                        securityContext.AuthenticateMe(authentication.GetAccountByID(tenant.TenantId, user.ID));
 
                         var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
-                        var feeds = FeedAggregateDataProvider.GetFeeds(new FeedApiFilter
+                        var feeds = feedAggregateDataProvider.GetFeeds(new FeedApiFilter
                         {
                             From = scheduleDate.Date.AddDays(-1),
                             To = scheduleDate.Date.AddSeconds(-1),
                             Max = 100,
                         });
 
-                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin());
+                        var feedMinWrappers = feeds.ConvertAll(f => f.ToFeedMin(userManager));
 
                         var feedMinGroupedWrappers = feedMinWrappers
                             .Where(f =>
@@ -117,10 +147,10 @@ namespace ASC.Web.Studio.Core.Notify
                             g => g.Select(f => new WhatsNewUserActivity
                             {
                                 Date = f.CreatedDate,
-                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName() : string.Empty,
-                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                UserName = f.Author != null && f.Author.UserInfo != null ? f.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                UserAbsoluteURL = f.Author != null && f.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(f.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                 Title = HtmlUtil.GetText(f.Title, 512),
-                                URL = CommonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
+                                URL = commonLinkUtility.GetFullAbsolutePath(f.ItemUrl),
                                 BreadCrumbs = new string[0],
                                 Action = getWhatsNewActionText(f)
                             }).ToList());
@@ -140,10 +170,10 @@ namespace ASC.Web.Studio.Core.Notify
                                         new WhatsNewUserActivity
                                         {
                                             Date = prawbc.CreatedDate,
-                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName() : string.Empty,
-                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                            UserName = prawbc.Author != null && prawbc.Author.UserInfo != null ? prawbc.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                            UserAbsoluteURL = prawbc.Author != null && prawbc.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(prawbc.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                             Title = HtmlUtil.GetText(prawbc.Title, 512),
-                                            URL = CommonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
+                                            URL = commonLinkUtility.GetFullAbsolutePath(prawbc.ItemUrl),
                                             BreadCrumbs = new string[0],
                                             Action = getWhatsNewActionText(prawbc)
                                         });
@@ -160,10 +190,10 @@ namespace ASC.Web.Studio.Core.Notify
                                     new WhatsNewUserActivity
                                     {
                                         Date = ls.CreatedDate,
-                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName() : string.Empty,
-                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? CommonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL()) : string.Empty,
+                                        UserName = ls.Author != null && ls.Author.UserInfo != null ? ls.Author.UserInfo.DisplayUserName(displayUserSettingsHelper) : string.Empty,
+                                        UserAbsoluteURL = ls.Author != null && ls.Author.UserInfo != null ? commonLinkUtility.GetFullAbsolutePath(ls.Author.UserInfo.GetUserProfilePageURL(commonLinkUtility)) : string.Empty,
                                         Title = HtmlUtil.GetText(ls.Title, 512),
-                                        URL = CommonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
+                                        URL = commonLinkUtility.GetFullAbsolutePath(ls.ItemUrl),
                                         BreadCrumbs = i == 0 ? new string[1] { gr.Key } : new string[0],
                                         Action = getWhatsNewActionText(ls)
                                     });
@@ -238,17 +268,17 @@ namespace ASC.Web.Studio.Core.Notify
             return "";
         }
 
-        private static IEnumerable<int> GetChangedTenants(DateTime date)
+        private static IEnumerable<int> GetChangedTenants(FeedAggregateDataProvider feedAggregateDataProvider, DateTime date)
         {
-            return new FeedAggregateDataProvider().GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+            return feedAggregateDataProvider.GetTenants(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
         }
 
-        private static bool TimeToSendWhatsNew(DateTime currentTime)
+        private bool TimeToSendWhatsNew(DateTime currentTime)
         {
             var hourToSend = 7;
-            if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.whatsnew-time"]))
+            if (!string.IsNullOrEmpty(Confuguration["web:whatsnew-time"]))
             {
-                if (int.TryParse(ConfigurationManager.AppSettings["web.whatsnew-time"], out var hour))
+                if (int.TryParse(Confuguration["web:whatsnew-time"], out var hour))
                 {
                     hourToSend = hour;
                 }
@@ -270,6 +300,31 @@ namespace ASC.Web.Studio.Core.Notify
             public string UserAbsoluteURL { get; set; }
             public DateTime Date { get; set; }
             public string Action { get; set; }
+        }
+    }
+
+    public static class StudioWhatsNewNotifyExtension
+    {
+        public static IServiceCollection AddStudioWhatsNewNotify(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioWhatsNewNotify>();
+
+            return services
+                .AddWebItemManager()
+                .AddFeedAggregateDataProvider()
+
+                .AddTenantManagerService()
+                .AddPaymentManagerService()
+                .AddStudioNotifyHelperService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddAuthContextService()
+                .AddAuthManager()
+                .AddTenantUtilService()
+                .AddCommonLinkUtilityService()
+                .AddDisplayUserSettingsService()
+                .AddCoreSettingsService()
+                ;
         }
     }
 }

@@ -27,24 +27,27 @@
 using System;
 
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Notify.Messages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Engine
 {
     public class DispatchEngine
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Notify");
-        private static readonly ILog logMessages = LogManager.GetLogger("ASC.Notify.Messages");
+        private readonly ILog log;
+        private readonly ILog logMessages;
 
         private readonly Context context;
         private readonly bool logOnly;
 
 
-        public DispatchEngine(Context context)
+        public DispatchEngine(Context context, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
+            log = options.Get("ASC.Notify");
+            logMessages = options.Get("ASC.Notify.Messages");
             this.context = context ?? throw new ArgumentNullException("context");
-            logOnly = "log".Equals(ConfigurationManager.AppSettings["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
+            logOnly = "log".Equals(configuration["core:notify:postman"], StringComparison.InvariantCultureIgnoreCase);
             log.DebugFormat("LogOnly: {0}", logOnly);
         }
 

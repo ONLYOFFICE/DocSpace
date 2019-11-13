@@ -38,7 +38,7 @@ namespace ASC.Api.Core
     [TypeConverter(typeof(ApiDateTimeTypeConverter))]
     public class ApiDateTime : IComparable<ApiDateTime>, IComparable
     {
-        private static readonly string[] Formats = new[]
+        internal static readonly string[] Formats = new[]
                                                        {
                                                            "o",
                                                            "yyyy'-'MM'-'dd'T'HH'-'mm'-'ss'.'fffffffK",
@@ -50,19 +50,20 @@ namespace ASC.Api.Core
                                                        };
 
         public ApiDateTime()
-            : this(null)
+            : this(null, null)
         {
         }
 
-        public ApiDateTime(DateTime? dateTime)
-            : this(dateTime, null)
+        public ApiDateTime(TenantManager tenantManager, DateTime? dateTime)
+            : this(tenantManager, dateTime, null)
         {
         }
 
-        public ApiDateTime(DateTime? dateTime, TimeZoneInfo timeZone)
+        public ApiDateTime(TenantManager tenantManager, DateTime? dateTime, TimeZoneInfo timeZone)
         {
             if (dateTime.HasValue && dateTime.Value > DateTime.MinValue && dateTime.Value < DateTime.MaxValue)
             {
+                TenantManager = tenantManager;
                 SetDate(dateTime.Value, timeZone);
             }
             else
@@ -78,12 +79,12 @@ namespace ASC.Api.Core
             TimeZoneOffset = offset;
         }
 
-        public static ApiDateTime Parse(string data)
+        public static ApiDateTime Parse(string data, TenantManager tenantManager)
         {
-            return Parse(data, null);
+            return Parse(data, null, tenantManager);
         }
 
-        public static ApiDateTime Parse(string data, TimeZoneInfo tz)
+        public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager)
         {
             if (string.IsNullOrEmpty(data)) throw new ArgumentNullException("data");
 
@@ -102,7 +103,7 @@ namespace ASC.Api.Core
                 {
                     if (tz == null)
                     {
-                        tz = GetTimeZoneInfo();
+                        tz = GetTimeZoneInfo(tenantManager);
                     }
                     tzOffset = tz.GetUtcOffset(dateTime);
                     dateTime = dateTime.Subtract(tzOffset);
@@ -121,7 +122,7 @@ namespace ASC.Api.Core
 
             if (timeZone == null)
             {
-                timeZone = GetTimeZoneInfo();
+                timeZone = GetTimeZoneInfo(TenantManager);
             }
 
             //Hack
@@ -148,12 +149,12 @@ namespace ASC.Api.Core
 
         }
 
-        private static TimeZoneInfo GetTimeZoneInfo()
+        private static TimeZoneInfo GetTimeZoneInfo(TenantManager tenantManager)
         {
             var timeZone = TimeZoneInfo.Local;
             try
             {
-                timeZone = CoreContext.TenantManager.GetCurrentTenant().TimeZone;
+                timeZone = tenantManager.GetCurrentTenant().TimeZone;
             }
             catch (Exception)
             {
@@ -169,17 +170,17 @@ namespace ASC.Api.Core
             return dateString + offsetString;
         }
 
-        public static explicit operator ApiDateTime(DateTime d)
+        public static ApiDateTime FromDate(TenantManager tenantManager, DateTime d)
         {
-            var date = new ApiDateTime(d);
+            var date = new ApiDateTime(tenantManager, d);
             return date;
         }
 
-        public static explicit operator ApiDateTime(DateTime? d)
+        public static ApiDateTime FromDate(TenantManager tenantManager, DateTime? d)
         {
             if (d.HasValue)
             {
-                var date = new ApiDateTime(d);
+                var date = new ApiDateTime(tenantManager, d);
                 return date;
             }
             return null;
@@ -235,7 +236,7 @@ namespace ASC.Api.Core
 
         public int CompareTo(DateTime other)
         {
-            return this.CompareTo(new ApiDateTime(other));
+            return CompareTo(new ApiDateTime(TenantManager, other));
         }
 
         public int CompareTo(ApiDateTime other)
@@ -286,6 +287,7 @@ namespace ASC.Api.Core
 
         public DateTime UtcTime { get; private set; }
         public TimeSpan TimeZoneOffset { get; private set; }
+        public TenantManager TenantManager { get; }
 
         public static ApiDateTime GetSample()
         {
@@ -306,11 +308,11 @@ namespace ASC.Api.Core
         {
             if (value is string)
             {
-                return ApiDateTime.Parse((string)value);
+                return ApiDateTime.Parse((string)value, null);
             }
             if (value is DateTime)
             {
-                return new ApiDateTime((DateTime)value);
+                return new ApiDateTime(null, (DateTime)value);
             }
             return base.ConvertFrom(context, culture, value);
         }
@@ -332,8 +334,14 @@ namespace ASC.Api.Core
             {
                 if (reader.ValueType.Name == "String")
                 {
-                    DateTime.TryParseExact(reader.Value?.ToString(), "o", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var result);
-                    return new ApiDateTime(result, TimeSpan.Zero);
+                    if (DateTime.TryParseExact(reader.Value?.ToString(), ApiDateTime.Formats, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var result))
+                    {
+                        return new ApiDateTime(result, TimeSpan.Zero);
+                    }
+                    else
+                    {
+                        return new ApiDateTime();
+                    }
                 }
                 else if (reader.ValueType.Name == "DateTime")
                 {

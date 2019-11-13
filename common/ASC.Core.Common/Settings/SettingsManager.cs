@@ -24,23 +24,38 @@
 */
 
 
-using System.Configuration;
+using System;
+using ASC.Common.Data;
+using ASC.Common.Logging;
 using ASC.Core.Data;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Settings
 {
-    internal class SettingsManager : DbSettingsManager
+    public class SettingsManager : DbSettingsManager
     {
-        public static SettingsManager Instance { get; private set; }
-
-        private SettingsManager(ConnectionStringSettings connectionString)
-            : base(connectionString)
+        public SettingsManager(
+            IServiceProvider serviceProvider,
+            DbSettingsManagerCache dbSettingsManagerCache,
+            DbOptionsManager optionsDbManager,
+            IOptionsMonitor<ILog> option,
+            AuthContext authContext,
+            TenantManager tenantManager)
+            : base(serviceProvider, dbSettingsManagerCache, optionsDbManager, option, authContext, tenantManager)
         {
+
         }
+    }
 
-        static SettingsManager()
+    public static class SettingsManagerExtention
+    {
+        public static IServiceCollection AddSettingsManagerService(this IServiceCollection services)
         {
-            Instance = new SettingsManager(null);
+            services.TryAddScoped<SettingsManager>();
+
+            return services.AddDbSettingsManagerService();
         }
     }
 }

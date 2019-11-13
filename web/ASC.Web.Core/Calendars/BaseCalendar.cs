@@ -34,10 +34,12 @@ namespace ASC.Web.Core.Calendars
 {
     public abstract class BaseCalendar : ICalendar, ICloneable
     {
-        public BaseCalendar()
+        public BaseCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter)
         {
             this.Context = new CalendarContext();
             this.SharingOptions = new SharingOptions();
+            AuthContext = authContext;
+            TimeZoneConverter = timeZoneConverter;
         }
 
         #region ICalendar Members
@@ -59,6 +61,8 @@ namespace ASC.Web.Core.Calendars
         public virtual TimeZoneInfo TimeZone { get; set; }
 
         public virtual CalendarContext Context { get; set; }
+        public AuthContext AuthContext { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
         #endregion
 
@@ -94,7 +98,7 @@ namespace ASC.Web.Core.Calendars
             sb.AppendLine("END:VTIMEZONE");
 
             //events
-            foreach (var e in LoadEvents(SecurityContext.CurrentAccount.ID, DateTime.MinValue, DateTime.MaxValue))
+            foreach (var e in LoadEvents(AuthContext.CurrentAccount.ID, DateTime.MinValue, DateTime.MaxValue))
             {
                 if (e is BaseEvent && e.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length == 0)
                     (e as BaseEvent).TimeZone = TimeZone;

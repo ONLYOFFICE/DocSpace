@@ -27,12 +27,15 @@
 using System;
 using System.Text;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
@@ -46,25 +49,32 @@ namespace ASC.Security.Cryptography
             Expired
         }
 
-        private static readonly ILog log = LogManager.GetLogger("ASC.KeyValidation.EmailSignature");
+        private readonly ILog log;
         private static readonly DateTime _from = new DateTime(2010, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-        internal static readonly TimeSpan ValidInterval;
+        internal readonly TimeSpan ValidInterval;
 
-        static EmailValidationKeyProvider()
+        public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
+
+        public EmailValidationKeyProvider(TenantManager tenantManager, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
-            if (!TimeSpan.TryParse(ConfigurationManager.AppSettings["email:validinterval"], out var validInterval))
+            TenantManager = tenantManager;
+            Configuration = configuration;
+            if (!TimeSpan.TryParse(configuration["email:validinterval"], out var validInterval))
             {
                 validInterval = TimeSpan.FromDays(7);
             }
 
             ValidInterval = validInterval;
-        }
-        public static string GetEmailKey(string email)
-        {
-            return GetEmailKey(CoreContext.TenantManager.GetCurrentTenant().TenantId, email);
+            log = options.CurrentValue;
         }
 
-        public static string GetEmailKey(int tenantId, string email)
+        public string GetEmailKey(string email)
+        {
+            return GetEmailKey(TenantManager.GetCurrentTenant().TenantId, email);
+        }
+
+        public string GetEmailKey(int tenantId, string email)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
 
@@ -75,12 +85,12 @@ namespace ASC.Security.Cryptography
             return string.Format("{0}.{1}", ms, DoStringFromBytes(hash));
         }
 
-        private static string FormatEmail(int tenantId, string email)
+        private string FormatEmail(int tenantId, string email)
         {
             if (email == null) throw new ArgumentNullException("email");
             try
             {
-                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, ConfigurationManager.AppSettings["core:machinekey"]);
+                return string.Format("{0}|{1}|{2}", email.ToLowerInvariant(), tenantId, Configuration["core:machinekey"]);
             }
             catch (Exception e)
             {
@@ -89,25 +99,25 @@ namespace ASC.Security.Cryptography
             }
         }
 
-        public static ValidationResult ValidateEmailKey(string email, string key)
+        public ValidationResult ValidateEmailKey(string email, string key)
         {
             return ValidateEmailKey(email, key, TimeSpan.MaxValue);
         }
 
-        public static ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
+        public ValidationResult ValidateEmailKey(string email, string key, TimeSpan validInterval)
         {
             var result = ValidateEmailKeyInternal(email, key, validInterval);
-            log.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, CoreContext.TenantManager.GetCurrentTenant().TenantId);
+            log.DebugFormat("validation result: {0}, source: {1} with key: {2} interval: {3} tenant: {4}", result, email, key, validInterval, TenantManager.GetCurrentTenant().TenantId);
             return result;
         }
 
 
-        private static ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
+        private ValidationResult ValidateEmailKeyInternal(string email, string key, TimeSpan validInterval)
         {
             if (string.IsNullOrEmpty(email)) throw new ArgumentNullException("email");
             if (key == null) throw new ArgumentNullException("key");
 
-            email = FormatEmail(CoreContext.TenantManager.GetCurrentTenant().TenantId, email);
+            email = FormatEmail(TenantManager.GetCurrentTenant().TenantId, email);
             var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length != 2) return ValidationResult.Invalid;
 
@@ -146,48 +156,48 @@ namespace ASC.Security.Cryptography
         public ConfirmType? Type { get; set; }
         public int? P { get; set; }
 
-        public ValidationResult Validate()
+        public ValidationResult Validate(EmailValidationKeyProvider provider, AuthContext authContext, TenantManager tenantManager, UserManager userManager, AuthManager authentication)
         {
             ValidationResult checkKeyResult;
 
             switch (Type)
             {
                 case ConfirmType.EmpInvite:
-                    checkKeyResult = ValidateEmailKey(Email + Type + (int)EmplType, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + (int)EmplType, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.LinkInvite:
-                    checkKeyResult = ValidateEmailKey(Type.ToString() + (int)EmplType, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Type.ToString() + (int)EmplType, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.EmailChange:
-                    checkKeyResult = ValidateEmailKey(Email + Type + SecurityContext.CurrentAccount.ID, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + authContext.CurrentAccount.ID, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.PasswordChange:
                     var hash = string.Empty;
 
                     if (P == 1)
                     {
-                        var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                        hash = CoreContext.Authentication.GetUserPasswordHash(tenantId, UiD.Value);
+                        var tenantId = tenantManager.GetCurrentTenant().TenantId;
+                        hash = authentication.GetUserPasswordHash(tenantId, UiD.Value);
                     }
 
-                    checkKeyResult = ValidateEmailKey(Email + Type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + UiD, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + (string.IsNullOrEmpty(hash) ? string.Empty : Hasher.Base64Hash(hash)) + UiD, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.Activation:
-                    checkKeyResult = ValidateEmailKey(Email + Type + UiD, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.ProfileRemove:
                     // validate UiD
                     if (P == 1)
                     {
-                        var user = CoreContext.UserManager.GetUsers(UiD.GetValueOrDefault());
-                        if (user == null || user.Status == EmployeeStatus.Terminated || SecurityContext.IsAuthenticated && SecurityContext.CurrentAccount.ID != UiD)
+                        var user = userManager.GetUsers(UiD.GetValueOrDefault());
+                        if (user == null || user.Status == EmployeeStatus.Terminated || authContext.IsAuthenticated && authContext.CurrentAccount.ID != UiD)
                             return ValidationResult.Invalid;
                     }
 
-                    checkKeyResult = ValidateEmailKey(Email + Type + UiD, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD, Key, provider.ValidInterval);
                     break;
                 default:
-                    checkKeyResult = ValidateEmailKey(Email + Type, Key, ValidInterval);
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type, Key, provider.ValidInterval);
                     break;
             }
 
@@ -231,5 +241,16 @@ namespace ASC.Security.Cryptography
 
         public void Deconstruct(out string key, out string email, out EmployeeType? employeeType, out Guid? userId, out ConfirmType? confirmType, out int? p)
             => (key, email, employeeType, userId, confirmType, p) = (Key, Email, EmplType, UiD, Type, P);
+    }
+
+    public static class EmailValidationKeyProviderExtension
+    {
+        public static IServiceCollection AddEmailValidationKeyProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<EmailValidationKeyProvider>();
+
+            return services
+                .AddTenantManagerService();
+        }
     }
 }

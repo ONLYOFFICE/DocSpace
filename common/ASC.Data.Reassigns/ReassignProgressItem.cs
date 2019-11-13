@@ -30,7 +30,6 @@ using ASC.Common.Logging;
 //using System.Web;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.MessagingSystem;
 //using ASC.Web.CRM.Core;
@@ -41,6 +40,9 @@ using ASC.Web.Studio.Core.Notify;
 //using Autofac;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
 {
@@ -63,17 +65,19 @@ namespace ASC.Data.Reassigns
         public bool IsCompleted { get; set; }
         public Guid FromUser { get; }
         public Guid ToUser { get; }
-
-        public MessageService MessageService { get; }
+        public IServiceProvider ServiceProvider { get; }
         public QueueWorkerRemove QueueWorkerRemove { get; }
-        public StudioNotifyService StudioNotifyService { get; }
 
-        public ReassignProgressItem(HttpContext context, MessageService messageService, QueueWorkerReassign queueWorkerReassign, QueueWorkerRemove queueWorkerRemove, StudioNotifyService studioNotifyService, int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
+        public ReassignProgressItem(
+            IServiceProvider serviceProvider,
+            HttpContext context,
+            QueueWorkerReassign queueWorkerReassign,
+            QueueWorkerRemove queueWorkerRemove,
+            int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
         {
+            ServiceProvider = serviceProvider;
             _context = context;
-            MessageService = messageService;
             QueueWorkerRemove = queueWorkerRemove;
-            StudioNotifyService = studioNotifyService;
             _httpHeaders = QueueWorker.GetHttpHeaders(context.Request);
 
             _tenantId = tenantId;
@@ -94,15 +98,27 @@ namespace ASC.Data.Reassigns
 
         public void RunJob()
         {
-            var logger = LogManager.GetLogger("ASC.Web");
+            var logger = ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Web");
+
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenant = tenantManager.SetCurrentTenant(_tenantId);
+
+            var coreSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
+            var messageService = scope.ServiceProvider.GetService<MessageService>();
+            var studioNotifyService = scope.ServiceProvider.GetService<StudioNotifyService>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var userPhotoManager = scope.ServiceProvider.GetService<UserPhotoManager>();
+            var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
+            var messageTarget = scope.ServiceProvider.GetService<MessageTarget>();
 
             try
             {
                 Percentage = 0;
                 Status = ProgressStatus.Started;
 
-                var tenant = CoreContext.TenantManager.SetCurrentTenant(_tenantId);
-                SecurityContext.AuthenticateMe(_tenantId, _currentUserId);
+                securityContext.AuthenticateMe(_currentUserId);
 
                 logger.InfoFormat("reassignment of data from {0} to {1}", FromUser, ToUser);
 
@@ -116,7 +132,7 @@ namespace ASC.Data.Reassigns
                 Percentage = 66;
                 //_projectsReassign.Reassign(_fromUserId, _toUserId);
 
-                if (!CoreContext.Configuration.CustomMode)
+                if (!coreSettings.CustomMode)
                 {
                     logger.Info("reassignment of data from crm");
 
@@ -131,14 +147,14 @@ namespace ASC.Data.Reassigns
                     //}
                 }
 
-                SendSuccessNotify();
+                SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
                 Percentage = 100;
                 Status = ProgressStatus.Done;
 
                 if (_deleteProfile)
                 {
-                    DeleteUserProfile(tenant);
+                    DeleteUserProfile(userManager, userPhotoManager, messageService, messageTarget, displayUserSettingsHelper);
                 }
             }
             catch (Exception ex)
@@ -146,7 +162,7 @@ namespace ASC.Data.Reassigns
                 logger.Error(ex);
                 Status = ProgressStatus.Failed;
                 Error = ex.Message;
-                SendErrorNotify(ex.Message);
+                SendErrorNotify(userManager, studioNotifyService, ex.Message);
             }
             finally
             {
@@ -160,43 +176,54 @@ namespace ASC.Data.Reassigns
             return MemberwiseClone();
         }
 
-        private void SendSuccessNotify()
+        private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = userManager.GetUsers(FromUser);
+            var toUser = userManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsCompleted(_tenantId, _currentUserId, fromUser, toUser);
+            studioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
 
-            var fromUserName = fromUser.DisplayUserName(false);
-            var toUserName = toUser.DisplayUserName(false);
+            var fromUserName = fromUser.DisplayUserName(false, displayUserSettingsHelper);
+            var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+                messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
             else
-                MessageService.Send(MessageAction.UserDataReassigns, MessageTarget.Create(FromUser), fromUserName, toUserName);
+                messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
 
-        private void SendErrorNotify(string errorMessage)
+        private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
         {
-            var fromUser = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var toUser = CoreContext.UserManager.GetUsers(_tenantId, ToUser);
+            var fromUser = userManager.GetUsers(FromUser);
+            var toUser = userManager.GetUsers(ToUser);
 
-            StudioNotifyService.SendMsgReassignsFailed(_tenantId, _currentUserId, fromUser, toUser, errorMessage);
+            studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
         }
 
-        private void DeleteUserProfile(Tenant tenant)
+        private void DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            var user = CoreContext.UserManager.GetUsers(_tenantId, FromUser);
-            var userName = user.DisplayUserName(false);
+            var user = userManager.GetUsers(FromUser);
+            var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
-            UserPhotoManager.RemovePhoto(tenant, user.ID);
-            CoreContext.UserManager.DeleteUser(tenant, user.ID);
+            userPhotoManager.RemovePhoto(user.ID);
+            userManager.DeleteUser(user.ID);
             QueueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
             if (_httpHeaders != null)
-                MessageService.Send(_httpHeaders, MessageAction.UserDeleted, MessageTarget.Create(FromUser), new[] { userName });
+                messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
             else
-                MessageService.Send(MessageAction.UserDeleted, MessageTarget.Create(FromUser), userName);
+                messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+        }
+    }
+
+    public static class ReassignProgressItemExtension
+    {
+        public static IServiceCollection AddReassignProgressItemService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
+            services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();
+            services.AddSingleton<IConfigureOptions<ProgressQueue<ReassignProgressItem>>, ConfigureProgressQueue<ReassignProgressItem>>(); ;
+            return services;
         }
     }
 }

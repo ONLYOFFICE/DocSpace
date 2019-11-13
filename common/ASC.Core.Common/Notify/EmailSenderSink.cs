@@ -33,6 +33,8 @@ using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify
 {
@@ -42,11 +44,13 @@ namespace ASC.Core.Notify
         private readonly INotifySender sender;
 
 
-        public EmailSenderSink(INotifySender sender)
+        public EmailSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
             this.sender = sender ?? throw new ArgumentNullException("sender");
+            ServiceProvider = serviceProvider;
         }
 
+        public IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
@@ -88,12 +92,16 @@ namespace ASC.Core.Notify
                 CreationDate = DateTime.UtcNow.Ticks,
             };
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
+
+            var tenant = tenantManager.GetCurrentTenant(false);
             m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
-            var from = MailAddressUtils.Create(CoreContext.Configuration.SmtpSettings.SenderAddress, CoreContext.Configuration.SmtpSettings.SenderDisplayName);
+            var from = MailAddressUtils.Create(configuration.SmtpSettings.SenderAddress, configuration.SmtpSettings.SenderDisplayName);
             var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-            if ((CoreContext.Configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(CoreContext.Configuration.SmtpSettings.SenderDisplayName)) &&
+            if ((configuration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(configuration.SmtpSettings.SenderDisplayName)) &&
                 fromTag != null && fromTag.Value != null)
             {
                 try
@@ -120,7 +128,7 @@ namespace ASC.Core.Notify
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
+                    ServiceProvider.GetService<IOptionsMonitor<ILog>>().Get("ASC.Notify").Error("Error creating reply to tag for: " + replyTag.Value, e);
                 }
             }
 

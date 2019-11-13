@@ -25,12 +25,8 @@
 
 
 using System;
-using System.Diagnostics;
-using System.Linq;
 using ASC.Api.Core;
 using ASC.Api.Settings.Smtp;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Configuration;
@@ -43,6 +39,8 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Settings
 {
@@ -50,30 +48,48 @@ namespace ASC.Api.Settings
     [ApiController]
     public class SmtpSettingsController : ControllerBase
     {
-        private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
+        //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
 
         public Tenant Tenant { get { return ApiContext.Tenant; } }
 
         public ApiContext ApiContext { get; }
-
-        public LogManager LogManager { get; }
-
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public PermissionContext PermissionContext { get; }
+        public TenantManager TenantManager { get; }
+        public CoreSettings CoreSettings { get; }
+        public CoreConfiguration CoreConfiguration { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
 
 
-        public SmtpSettingsController(LogManager logManager,
+        public SmtpSettingsController(
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            SecurityContext securityContext,
+            PermissionContext permissionContext,
+            TenantManager tenantManager,
+            CoreSettings coreSettings,
+            CoreConfiguration coreConfiguration,
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration)
         {
-            LogManager = logManager;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            PermissionContext = permissionContext;
+            TenantManager = tenantManager;
+            CoreSettings = coreSettings;
+            CoreConfiguration = coreConfiguration;
+            CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
         }
 
 
@@ -82,7 +98,7 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings, true);
+            var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings, true);
 
             return settings;
         }
@@ -97,11 +113,11 @@ namespace ASC.Api.Settings
             if (smtpSettings == null)
                 throw new ArgumentNullException("smtpSettings");
 
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var settingConfig = ToSmtpSettingsConfig(smtpSettings);
 
-            CoreContext.Configuration.SmtpSettings = settingConfig;
+            CoreConfiguration.SmtpSettings = settingConfig;
 
             var settings = ToSmtpSettings(settingConfig, true);
 
@@ -113,80 +129,81 @@ namespace ASC.Api.Settings
         {
             CheckSmtpPermissions();
 
-            if (!CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
+            if (!CoreConfiguration.SmtpSettings.IsDefaultSettings)
             {
-                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-                CoreContext.Configuration.SmtpSettings = null;
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+                CoreConfiguration.SmtpSettings = null;
             }
 
-            var current = CoreContext.Configuration.Standalone ? CoreContext.Configuration.SmtpSettings : SmtpSettings.Empty;
+            var current = CoreBaseSettings.Standalone ? CoreConfiguration.SmtpSettings : SmtpSettings.Empty;
 
             return ToSmtpSettings(current, true);
         }
 
-        [Read("smtp/test")]
-        public SmtpOperationStatus TestSmtpSettings()
-        {
-            CheckSmtpPermissions();
+        //[Read("smtp/test")]
+        //public SmtpOperationStatus TestSmtpSettings()
+        //{
+        //    CheckSmtpPermissions();
 
-            var settings = ToSmtpSettings(CoreContext.Configuration.SmtpSettings);
+        //    var settings = ToSmtpSettings(CoreConfiguration.SmtpSettings);
 
-            var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID);
+        //    //add resolve
+        //    var smtpTestOp = new SmtpOperation(settings, Tenant.TenantId, SecurityContext.CurrentAccount.ID, UserManager, SecurityContext, TenantManager, Configuration);
 
-            SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
+        //    SMTPTasks.QueueTask(smtpTestOp.RunJob, smtpTestOp.GetDistributedTask());
 
-            return ToSmtpOperationStatus();
-        }
+        //    return ToSmtpOperationStatus();
+        //}
 
-        [Read("smtp/test/status")]
-        public SmtpOperationStatus GetSmtpOperationStatus()
-        {
-            CheckSmtpPermissions();
+        //[Read("smtp/test/status")]
+        //public SmtpOperationStatus GetSmtpOperationStatus()
+        //{
+        //    CheckSmtpPermissions();
 
-            return ToSmtpOperationStatus();
-        }
+        //    return ToSmtpOperationStatus();
+        //}
 
-        private SmtpOperationStatus ToSmtpOperationStatus()
-        {
-            var operations = SMTPTasks.GetTasks().ToList();
+        //private SmtpOperationStatus ToSmtpOperationStatus()
+        //{
+        //    var operations = SMTPTasks.GetTasks().ToList();
 
-            foreach (var o in operations)
-            {
-                if (!string.IsNullOrEmpty(o.InstanseId) &&
-                    Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
-                    continue;
+        //    foreach (var o in operations)
+        //    {
+        //        if (!string.IsNullOrEmpty(o.InstanseId) &&
+        //            Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
+        //            continue;
 
-                o.SetProperty(SmtpOperation.PROGRESS, 100);
-                SMTPTasks.RemoveTask(o.Id);
-            }
+        //        o.SetProperty(SmtpOperation.PROGRESS, 100);
+        //        SMTPTasks.RemoveTask(o.Id);
+        //    }
 
-            var operation =
-                operations
-                    .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
+        //    var operation =
+        //        operations
+        //            .FirstOrDefault(t => t.GetProperty<int>(SmtpOperation.OWNER) == Tenant.TenantId);
 
-            if (operation == null)
-            {
-                return null;
-            }
+        //    if (operation == null)
+        //    {
+        //        return null;
+        //    }
 
-            if (DistributedTaskStatus.Running < operation.Status)
-            {
-                operation.SetProperty(SmtpOperation.PROGRESS, 100);
-                SMTPTasks.RemoveTask(operation.Id);
-            }
+        //    if (DistributedTaskStatus.Running < operation.Status)
+        //    {
+        //        operation.SetProperty(SmtpOperation.PROGRESS, 100);
+        //        SMTPTasks.RemoveTask(operation.Id);
+        //    }
 
-            var result = new SmtpOperationStatus
-            {
-                Id = operation.Id,
-                Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
-                Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
-                Status = operation.GetProperty<string>(SmtpOperation.RESULT),
-                Error = operation.GetProperty<string>(SmtpOperation.ERROR),
-                Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
-            };
+        //    var result = new SmtpOperationStatus
+        //    {
+        //        Id = operation.Id,
+        //        Completed = operation.GetProperty<bool>(SmtpOperation.FINISHED),
+        //        Percents = operation.GetProperty<int>(SmtpOperation.PROGRESS),
+        //        Status = operation.GetProperty<string>(SmtpOperation.RESULT),
+        //        Error = operation.GetProperty<string>(SmtpOperation.ERROR),
+        //        Source = operation.GetProperty<string>(SmtpOperation.SOURCE)
+        //    };
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public static SmtpSettings ToSmtpSettingsConfig(SmtpSettingsWrapper settingsWrapper)
         {
@@ -229,6 +246,25 @@ namespace ASC.Api.Settings
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "Smtp");
             }
+        }
+    }
+
+    public static class SmtpSettingsControllerExtension
+    {
+        public static IServiceCollection AddSmtpSettingsController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddPermissionContextService()
+                .AddTenantManagerService()
+                .AddCoreSettingsService()
+                .AddCoreConfigurationService()
+                .AddCoreBaseSettingsService()
+                ;
         }
     }
 }

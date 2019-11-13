@@ -26,6 +26,15 @@ const StyledAside = styled(Container)`
   transition: transform 0.3s ease-in-out;
   width: ${props => (props.scale ? "100%" : "320px")};
   z-index: ${props => props.zIndex};
+
+  &.modal-dialog-aside {
+    padding-bottom: 64px;
+
+    .modal-dialog-aside-footer {
+      position: fixed;
+      bottom: 16px;
+    }
+  }
 `;
 
 const Aside = React.memo(props => {

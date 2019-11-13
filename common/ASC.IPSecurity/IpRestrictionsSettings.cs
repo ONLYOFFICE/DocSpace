@@ -32,17 +32,17 @@ namespace ASC.IPSecurity
 {
     [Serializable]
     [DataContract]
-    public class IPRestrictionsSettings : BaseSettings<IPRestrictionsSettings>
+    public class IPRestrictionsSettings : ISettings
     {
         [DataMember(Name = "Enable")]
         public bool Enable { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{2EDDDF64-F792-4498-A638-2E3E6EBB13C9}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new IPRestrictionsSettings { Enable = false };
         }

@@ -27,28 +27,39 @@
 using System;
 using System.Linq;
 using System.Security;
+using ASC.Common.Data;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
 {
     public static class BlockchainLoginProvider
     {
-        public static void UpdateData(string account)
+        public static void UpdateData(
+            string account,
+            UserManager userManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            DbOptionsManager dbOptions,
+            AccountLinkerStorage accountLinkerStorage)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
-            var user = CoreContext.UserManager.GetUsers(tenant.TenantId, SecurityContext.CurrentAccount.ID);
-            if (!SecurityContext.IsAuthenticated || user.IsVisitor(tenant)) throw new SecurityException();
+            var tenant = tenantManager.GetCurrentTenant();
+            var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
+            if (!securityContext.IsAuthenticated || user.IsVisitor(userManager)) throw new SecurityException();
 
-            var loginProfile = new LoginProfile
+            var loginProfile = new LoginProfile(signature, instanceCrypto)
             {
                 Provider = ProviderConstants.Blockchain,
             };
 
-            var linker = new AccountLinker("webstudio");
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -61,14 +72,14 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress()
+        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
-            return GetAddress(SecurityContext.CurrentAccount.ID);
+            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto, dbOptions, accountLinkerStorage);
         }
 
-        public static string GetAddress(Guid userId)
+        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
-            var linker = new AccountLinker("webstudio");
+            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
             if (profile == null) return null;
 

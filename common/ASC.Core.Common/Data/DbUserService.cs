@@ -26,9 +26,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
-
+using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
@@ -37,10 +36,10 @@ using ASC.Security.Cryptography;
 
 namespace ASC.Core.Data
 {
-    public class DbUserService : DbBaseService, IUserService
+    class DbUserService : DbBaseService, IUserService
     {
-        public DbUserService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbUserService(DbOptionsManager dbOptionsManager)
+            : base(dbOptionsManager, "tenant")
         {
         }
 
@@ -213,7 +212,7 @@ namespace ASC.Core.Data
             user.LastModified = DateTime.UtcNow;
             user.Tenant = tenant;
 
-            using (var db = GetDb())
+            var db = GetDb();
             using (var tx = db.BeginTransaction())
             {
                 user.UserName = user.UserName.Trim();

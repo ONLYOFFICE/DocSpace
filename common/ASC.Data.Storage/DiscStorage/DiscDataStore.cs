@@ -31,6 +31,9 @@ using System.Linq;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage.DiscStorage
 {
@@ -39,9 +42,7 @@ namespace ASC.Data.Storage.DiscStorage
         private const int BufferSize = 8192;
         private readonly Dictionary<string, MappedPath> _mappedPaths = new Dictionary<string, MappedPath>();
 
-
-
-        public DiscDataStore(string tenant, Handler handlerConfig, Module moduleConfig)
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
             _tenant = tenant;
             //Fill map path
@@ -49,10 +50,10 @@ namespace ASC.Data.Storage.DiscStorage
             _dataList = new DataList(moduleConfig);
             foreach (var domain in moduleConfig.Domain)
             {
-                _mappedPaths.Add(domain.Name, new MappedPath(tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
+                _mappedPaths.Add(domain.Name, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, domain.Path, handlerConfig.GetProperties()));
             }
             //Add default
-            _mappedPaths.Add(string.Empty, new MappedPath(tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
+            _mappedPaths.Add(string.Empty, new MappedPath(PathUtils, tenant, moduleConfig.AppendTenantId, PathUtils.Normalize(moduleConfig.Path), handlerConfig.GetProperties()));
 
             //Make expires
             _domainsExpires =
@@ -60,6 +61,17 @@ namespace ASC.Data.Storage.DiscStorage
                     ToDictionary(x => x.Name,
                                  y => y.Expires);
             _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+            return this;
+        }
+
+        public DiscDataStore(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
+        {
         }
 
         public string GetPhysicalPath(string domain, string path)
@@ -124,7 +136,7 @@ namespace ASC.Data.Storage.DiscStorage
 
         public override Uri Save(string domain, string path, Stream stream)
         {
-            LogManager.GetLogger("ASC").Debug("Save " + path);
+            Log.Debug("Save " + path);
             var buffered = stream.GetBuffered();
             if (QuotaController != null)
             {

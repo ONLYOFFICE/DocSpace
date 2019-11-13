@@ -25,93 +25,12 @@
 
 
 using System;
-using System.Runtime.Serialization;
-using ASC.Core.Tenants;
 
 namespace ASC.Core.Common.Settings
 {
     public interface ISettings
     {
         Guid ID { get; }
-        ISettings GetDefault();
-    }
-
-    [Serializable]
-    [DataContract]
-    public abstract class BaseSettings<T> : ISettings where T : class, ISettings
-    {
-        private static int TenantID
-        {
-            get { return CoreContext.TenantManager.GetCurrentTenant().TenantId; }
-        }
-
-        private static Guid CurrentUserID
-        {
-            get { return SecurityContext.CurrentAccount.ID; }
-        }
-
-        private static SettingsManager SettingsManagerInstance
-        {
-            get { return SettingsManager.Instance; }
-        }
-
-        public static T Load()
-        {
-            return SettingsManagerInstance.LoadSettings<T>(TenantID);
-        }
-
-        public static T LoadForCurrentUser()
-        {
-            return LoadForUser(CurrentUserID);
-        }
-
-        public static T LoadForUser(Guid userId)
-        {
-            return SettingsManagerInstance.LoadSettingsFor<T>(TenantID, userId);
-        }
-
-        public static T LoadForDefaultTenant()
-        {
-            return LoadForTenant(Tenant.DEFAULT_TENANT);
-        }
-
-        public static T LoadForTenant(int tenantId)
-        {
-            return SettingsManagerInstance.LoadSettings<T>(tenantId);
-        }
-
-        public virtual bool Save()
-        {
-            return SettingsManagerInstance.SaveSettings(this, TenantID);
-        }
-
-        public bool SaveForCurrentUser()
-        {
-            return SaveForUser(CurrentUserID);
-        }
-
-        public bool SaveForUser(Guid userId)
-        {
-            return SettingsManagerInstance.SaveSettingsFor(this, userId);
-        }
-
-        public bool SaveForDefaultTenant()
-        {
-            return SaveForTenant(Tenant.DEFAULT_TENANT);
-        }
-
-        public bool SaveForTenant(int tenantId)
-        {
-            return SettingsManagerInstance.SaveSettings(this, tenantId);
-        }
-
-        public void ClearCache()
-        {
-            SettingsManagerInstance.ClearCache<T>();
-        }
-
-        public abstract Guid ID { get; }
-
-        public abstract ISettings GetDefault();
+        ISettings GetDefault(IServiceProvider serviceProvider);
     }
 }

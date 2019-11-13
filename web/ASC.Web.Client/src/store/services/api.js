@@ -1,5 +1,6 @@
 import { request, setAuthorizationToken } from "./client";
 import axios from "axios";
+import Filter from "../settings/filter";
 
 export function login(userName, password) {
   const data = {
@@ -17,12 +18,22 @@ export function login(userName, password) {
   });
 }
 
+export function logout() {
+  return request({
+    method: "post",
+    url: "/authentication/logout"
+  }).then((data) => {
+    setAuthorizationToken();
+    return Promise.resolve();
+  });
+}
+
 export function getModulesList() {
   return request({
     method: "get",
     url: "/modules"
   }).then(modules => {
-    return axios.all(
+    return modules && axios.all(
       modules.map(m =>
         request({
           method: "get",
@@ -156,10 +167,25 @@ export function getUserList() {
   });
 }
 
-export function getProductAdminsList(productId) {
+export function getListAdmins(filter = Filter.getDefault()) {
+  const filterParams = filter.toUrlParams();
+  const params =
+    "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
   return request({
     method: "get",
-    url: `/settings/security/administrator/${productId}`
+    url: `/people/filter.json?${filterParams}&${params}`
+  });
+}
+
+export function getAdmins(isParams) {
+  let params = "&fields";
+  if (isParams) {
+    params =
+      "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
+  }
+  return request({
+    method: "get",
+    url: `/people/filter.json?isadministrator=true&${params}`
   });
 }
 
@@ -178,7 +204,7 @@ export function changeProductAdmin(userId, productId, administrator) {
 export function getUserById(userId) {
   return request({
     method: "get",
-    url: `/people/${userId}`,
+    url: `/people/${userId}`
   });
 }
 
@@ -201,5 +227,25 @@ export function restoreGreetingSettings() {
   return request({
     method: "post",
     url: `/settings/greetingsettings/restore.json`
+  });
+}
+
+export function getLogoText() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logotext.json`
+  });
+}
+export function getLogoSizes() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/sizes.json`
+  });
+}
+
+export function getLogoUrls() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logos.json`
   });
 }

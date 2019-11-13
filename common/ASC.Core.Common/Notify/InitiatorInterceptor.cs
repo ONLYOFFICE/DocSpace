@@ -34,7 +34,7 @@ namespace ASC.Notify
     {
         public InitiatorInterceptor(params IRecipient[] initiators)
             : base("Sys.InitiatorInterceptor", InterceptorPlace.GroupSend | InterceptorPlace.DirectSend, InterceptorLifetime.Call,
-                (r, p) => (initiators ?? Enumerable.Empty<IRecipient>()).Any(recipient => r.Recipient.Equals(recipient)))
+                (r, p, scope) => (initiators ?? Enumerable.Empty<IRecipient>()).Any(recipient => r.Recipient.Equals(recipient)))
         {
         }
     }

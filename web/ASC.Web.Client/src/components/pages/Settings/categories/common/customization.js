@@ -60,9 +60,9 @@ class Customization extends React.Component {
          isLoadedData: false,
          isLoading: false,
          timezones,
-         timezone: findSelectedItemByKey(timezones, portalTimeZoneId),
+         timezone: findSelectedItemByKey(timezones, portalTimeZoneId || timezones[0]),
          languages,
-         language: findSelectedItemByKey(languages, portalLanguage),
+         language: findSelectedItemByKey(languages, portalLanguage || languages[0]),
          greetingTitle: greetingSettings,
          isLoadingGreetingSave: false,
          isLoadingGreetingRestore: false,
@@ -83,8 +83,8 @@ class Customization extends React.Component {
             .then(() => getPortalTimezones())
             .then(() => {
                const timezones = mapTimezonesToArray(this.props.rawTimezones);
-               const timezone = findSelectedItemByKey(timezones, portalTimeZoneId);
-               const language = findSelectedItemByKey(languages, portalLanguage);
+               const timezone = findSelectedItemByKey(timezones, portalTimeZoneId) || timezones[0];
+               const language = findSelectedItemByKey(languages, portalLanguage) || languages[0];
 
                this.setState({ languages, language, timezones, timezone });
             });

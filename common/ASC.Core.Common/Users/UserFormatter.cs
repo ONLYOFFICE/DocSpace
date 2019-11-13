@@ -28,8 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
-
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Users
 {
@@ -39,33 +40,25 @@ namespace ASC.Core.Users
         private static bool forceFormatChecked;
         private static string forceFormat;
 
-
-        public UserFormatter()
-            : this(DisplayUserNameFormat.Default)
+        public UserFormatter(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
-        public UserFormatter(DisplayUserNameFormat format)
-        {
-            this.format = format;
-        }
-
-
-        public static string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
+        public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
         {
             if (userInfo == null) throw new ArgumentNullException("userInfo");
             return string.Format(GetUserDisplayFormat(format), userInfo.FirstName, userInfo.LastName);
         }
 
-        public static string GetUserName(string firstName, string lastName)
+        public string GetUserName(string firstName, string lastName)
         {
-
             if (string.IsNullOrEmpty(firstName) || string.IsNullOrEmpty("lastName")) throw new ArgumentException();
 
             return string.Format(GetUserDisplayFormat(DisplayUserNameFormat.Default), firstName, lastName);
         }
 
-        public static string GetUserName(UserInfo userInfo)
+        public string GetUserName(UserInfo userInfo)
         {
             return GetUserName(userInfo, DisplayUserNameFormat.Default);
         }
@@ -107,17 +100,17 @@ namespace ASC.Core.Users
             { "default", new Dictionary<DisplayUserNameFormat, string>{ {DisplayUserNameFormat.Default, "{0} {1}" }, { DisplayUserNameFormat.FirstLast, "{0} {1}" }, { DisplayUserNameFormat.LastFirst, "{1}, {0}" } } },
         };
 
-        private static string GetUserDisplayFormat()
+        private string GetUserDisplayFormat()
         {
             return GetUserDisplayFormat(DisplayUserNameFormat.Default);
         }
 
 
-        private static string GetUserDisplayFormat(DisplayUserNameFormat format)
+        private string GetUserDisplayFormat(DisplayUserNameFormat format)
         {
             if (!forceFormatChecked)
             {
-                forceFormat = ConfigurationManager.AppSettings["core:user-display-format"];
+                forceFormat = Configuration["core:user-display-format"];
                 if (string.IsNullOrEmpty(forceFormat)) forceFormat = null;
                 forceFormatChecked = true;
             }
@@ -145,9 +138,19 @@ namespace ASC.Core.Users
 
         public static Regex UserNameRegex = new Regex(@"(?s)^(?!.*[:\/]).*$");
 
+        public IConfiguration Configuration { get; }
+
         public static bool IsValidUserName(string firstName, string lastName)
         {
             return UserNameRegex.IsMatch(firstName + lastName);
+        }
+    }
+    public static class UserFormatterExtension
+    {
+        public static IServiceCollection AddUserFormatter(this IServiceCollection services)
+        {
+            services.TryAddSingleton<UserFormatter>();
+            return services;
         }
     }
 }
