@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { isAdmin } from "../store/auth/selectors";
 import { Error404 } from "../components/pages/Error";
 import { PageLayout, Loader } from "asc-web-components";
-//import Cookies from 'universal-cookie';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     const { isAuthenticated, isLoaded, isAdmin, restricted } = rest;

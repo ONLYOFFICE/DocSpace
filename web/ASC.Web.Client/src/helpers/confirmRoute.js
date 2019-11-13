@@ -5,7 +5,6 @@ import { getObjectByLocation } from "./../helpers/converters";
 import { PageLayout, Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import Cookies from "universal-cookie";
 import { AUTH_KEY } from "./constants";
 import { checkConfirmLink } from "../store/services/api";
 
