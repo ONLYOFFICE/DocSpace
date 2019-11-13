@@ -1,5 +1,4 @@
 import axios from "axios";
-import Cookies from "universal-cookie";
 import history from "../../../history";
 import { AUTH_KEY } from "../../../constants";
 
@@ -46,27 +45,12 @@ client.interceptors.response.use(
 );
 
 export function setAuthorizationToken(token) {
-  const cookies = new Cookies();
-
   if (token) {
-    client.defaults.headers.common['Authorization'] = token;
-    localStorage.setItem(AUTH_KEY, token);
-
-    const current = new Date();
-    const nextYear = new Date();
-
-    nextYear.setFullYear(current.getFullYear() + 1);
-
-    cookies.set(AUTH_KEY, token, {
-      path: "/",
-      expires: nextYear
-    });
+    client.defaults.withCredentials = true;
+    localStorage.setItem(AUTH_KEY, true);
   } else {
+    client.defaults.withCredentials = false;
     localStorage.clear();
-    delete client.defaults.headers.common['Authorization'];
-    cookies.remove(AUTH_KEY, {
-      path: "/"
-    });
   }
 }
 
@@ -84,8 +68,13 @@ const checkResponseError = (res) => {
 export const request = function(options) {
   const onSuccess = function(response) {
     checkResponseError(response);
-    return response.data.response;
+    return response.data
+      ? response.data.hasOwnProperty("total")
+        ? { total: +response.data.total, items: response.data.response }
+        : response.data.response
+      : null;
   };
+
   const onError = function(error) {
     console.error("Request Failed:", error.config);
     if (error.response) {
