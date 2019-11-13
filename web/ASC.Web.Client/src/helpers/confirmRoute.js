@@ -5,7 +5,7 @@ import { getObjectByLocation } from "./../helpers/converters";
 import { PageLayout, Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-//import { AUTH_KEY } from "./constants";
+import { AUTH_KEY } from "./constants";
 import { checkConfirmLink } from "../store/services/api";
 
 class ConfirmRoute extends React.Component {
@@ -20,8 +20,7 @@ class ConfirmRoute extends React.Component {
   componentDidMount() {
     const { forUnauthorized, history } = this.props;
 
-    if (forUnauthorized)
-      //TODO: Remove cookie getting after setup on server
+    if (forUnauthorized && localStorage.getItem(AUTH_KEY))
       return history.push(`/error=Access error. You should be unauthorized for performing this action`);
 
     const { location, isAuthenticated } = this.props;
