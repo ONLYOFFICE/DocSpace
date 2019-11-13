@@ -29,9 +29,12 @@ using System.Globalization;
 using System.IO;
 
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
-using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.CustomNavigation
 {
@@ -109,7 +112,20 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
         private const string Base64Start = "data:image/png;base64,";
 
-        public static string SaveTmpLogo(int tenantId, string tmpLogoPath)
+        public UserPhotoManager UserPhotoManager { get; }
+        public StorageFactory StorageFactory { get; }
+        public TenantManager TenantManager { get; }
+        public ILog Log { get; set; }
+
+        public StorageHelper(UserPhotoManager userPhotoManager, StorageFactory storageFactory, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+        {
+            UserPhotoManager = userPhotoManager;
+            StorageFactory = storageFactory;
+            TenantManager = tenantManager;
+            Log = options.CurrentValue;
+        }
+
+        public string SaveTmpLogo(string tmpLogoPath)
         {
             if (string.IsNullOrEmpty(tmpLogoPath)) return null;
 
@@ -126,27 +142,26 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
                 var fileName = Path.GetFileName(tmpLogoPath);
 
-                data = UserPhotoManager.GetTempPhotoData(tenantId, fileName);
+                data = UserPhotoManager.GetTempPhotoData(fileName);
 
-                UserPhotoManager.RemoveTempPhoto(tenantId, fileName);
+                UserPhotoManager.RemoveTempPhoto(fileName);
 
                 return SaveLogo(fileName, data);
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static void DeleteLogo(string logoPath)
+        public void DeleteLogo(string logoPath)
         {
             if (string.IsNullOrEmpty(logoPath)) return;
 
             try
             {
-                var store = StorageFactory.GetStorage(
-                    TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);
+                var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), StorageName);
 
                 var fileName = Path.GetFileName(logoPath);
 
@@ -157,18 +172,29 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error(e);
+                Log.Error(e);
             }
         }
 
-        private static string SaveLogo(string fileName, byte[] data)
+        private string SaveLogo(string fileName, byte[] data)
         {
-            var store = StorageFactory.GetStorage(
-                TenantProvider.CurrentTenantID.ToString(CultureInfo.InvariantCulture), StorageName);
+            var store = StorageFactory.GetStorage(TenantManager.GetCurrentTenant().TenantId.ToString(CultureInfo.InvariantCulture), StorageName);
 
             using var stream = new MemoryStream(data);
             stream.Seek(0, SeekOrigin.Begin);
             return store.Save(fileName, stream).ToString();
+        }
+    }
+
+    public static class StorageHelperExtension
+    {
+        public static IServiceCollection AddStorageHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StorageHelper>();
+            return services
+                .AddUserPhotoManagerService()
+                .AddStorageFactoryService()
+                .AddTenantManagerService();
         }
     }
 }

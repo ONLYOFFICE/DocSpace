@@ -26,17 +26,20 @@
 
 using System;
 using System.Runtime.Serialization;
+using System.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
     [Serializable]
     [DataContract]
-    public class DisplayUserSettings : BaseSettings<DisplayUserSettings>
+    public class DisplayUserSettings : ISettings
     {
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
         }
@@ -44,37 +47,64 @@ namespace ASC.Web.Core.Users
         [DataMember(Name = "IsDisableGettingStarted")]
         public bool IsDisableGettingStarted { get; set; }
 
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new DisplayUserSettings
             {
                 IsDisableGettingStarted = false,
             };
         }
+    }
 
-        public static string GetFullUserName(int tenantId, Guid userID, bool withHtmlEncode = true)
+    public class DisplayUserSettingsHelper
+    {
+        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter)
         {
-            return GetFullUserName(CoreContext.UserManager.GetUsers(tenantId, userID), withHtmlEncode);
+            UserManager = userManager;
+            UserFormatter = userFormatter;
         }
 
-        public static string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
+        public UserManager UserManager { get; }
+        public UserFormatter UserFormatter { get; }
+
+        public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
+        {
+            return GetFullUserName(UserManager.GetUsers(userID), withHtmlEncode);
+        }
+
+        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
         {
             return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
         }
 
-        public static string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
+        public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
         {
             if (userInfo == null)
             {
                 return string.Empty;
             }
-            if (!userInfo.ID.Equals(Guid.Empty) && !CoreContext.UserManager.UserExists(userInfo))
+            if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
             {
                 return "profile removed";
             }
             var result = UserFormatter.GetUserName(userInfo, format);
-            return withHtmlEncode ? result.HtmlEncode() : result;
+            return withHtmlEncode ? HtmlEncode(result) : result;
+        }
+        public string HtmlEncode(string str)
+        {
+            return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
+        }
+    }
+
+    public static class DisplayUserSettingsExtention
+    {
+        public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DisplayUserSettingsHelper>();
+
+            return services
+                .AddUserFormatter()
+                .AddUserManagerService();
         }
     }
 }

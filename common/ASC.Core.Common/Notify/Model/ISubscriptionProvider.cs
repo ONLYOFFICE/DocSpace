@@ -27,20 +27,19 @@
 using System;
 using System.Linq;
 using ASC.Common.Logging;
-using ASC.Core.Tenants;
 using ASC.Notify.Recipients;
 
 namespace ASC.Notify.Model
 {
     public interface ISubscriptionProvider
     {
-        string[] GetSubscriptions(Tenant tenant, INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
+        string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
 
-        string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient);
+        string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient);
 
-        IRecipient[] GetRecipients(int tenantId, INotifyAction action, string objectID);
+        IRecipient[] GetRecipients(INotifyAction action, string objectID);
 
-        object GetSubscriptionRecord(Tenant tenant, INotifyAction action, IRecipient recipient, string objectID);
+        object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID);
 
         bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID);
 
@@ -52,20 +51,20 @@ namespace ASC.Notify.Model
 
         void UnSubscribe(INotifyAction action);
 
-        void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient);
+        void UnSubscribe(INotifyAction action, IRecipient recipient);
 
         void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames);
     }
 
     public static class SubscriptionProviderHelper
     {
-        public static bool IsSubscribed(this ISubscriptionProvider provider, Tenant tenant, INotifyAction action, IRecipient recipient, string objectID)
+        public static bool IsSubscribed(this ISubscriptionProvider provider, ILog log, INotifyAction action, IRecipient recipient, string objectID)
         {
             var result = false;
 
             try
             {
-                var subscriptionRecord = provider.GetSubscriptionRecord(tenant, action, recipient, objectID);
+                var subscriptionRecord = provider.GetSubscriptionRecord(action, recipient, objectID);
                 if (subscriptionRecord != null)
                 {
                     var properties = subscriptionRecord.GetType().GetProperties();
@@ -81,7 +80,7 @@ namespace ASC.Notify.Model
             }
             catch (Exception exception)
             {
-                LogManager.GetLogger("ASC").Error(exception);
+                log.Error(exception);
             }
 
             return result;

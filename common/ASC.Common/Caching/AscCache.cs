@@ -33,11 +33,36 @@ using Google.Protobuf;
 
 namespace ASC.Common.Caching
 {
+    public class AscCacheNotify
+    {
+        public ICacheNotify<AscCacheItem> CacheNotify { get; }
+
+        public AscCacheNotify(ICacheNotify<AscCacheItem> cacheNotify)
+        {
+            CacheNotify = cacheNotify;
+
+            CacheNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
+        }
+
+        public void ClearCache()
+        {
+            CacheNotify.Publish(new AscCacheItem { Id = ByteString.CopyFrom(Guid.NewGuid().ToByteArray()) }, CacheNotifyAction.Any);
+        }
+
+        private static void OnClearCache()
+        {
+            var keys = MemoryCache.Default.Select(r => r.Key).ToList();
+
+            foreach (var k in keys)
+            {
+                _ = MemoryCache.Default.Remove(k);
+            }
+        }
+    }
+
     public class AscCache : ICache
     {
         public static readonly ICache Memory;
-
-        public readonly ICacheNotify<AscCacheItem> KafkaNotify;
 
         static AscCache()
         {
@@ -46,16 +71,6 @@ namespace ASC.Common.Caching
 
         private AscCache()
         {
-            KafkaNotify = new KafkaCache<AscCacheItem>();
-
-            try
-            {
-                KafkaNotify.Subscribe((item) => { OnClearCache(); }, CacheNotifyAction.Any);
-            }
-            catch (Exception)
-            {
-
-            }
         }
 
         public T Get<T>(string key) where T : class
@@ -142,24 +157,9 @@ namespace ASC.Common.Caching
             }
         }
 
-        public void ClearCache()
-        {
-            KafkaNotify.Publish(new AscCacheItem() { Id = ByteString.CopyFrom(Guid.NewGuid().ToByteArray()) }, CacheNotifyAction.Any);
-        }
-
         private MemoryCache GetCache()
         {
             return MemoryCache.Default;
-        }
-
-        private static void OnClearCache()
-        {
-            var keys = MemoryCache.Default.Select(r => r.Key).ToList();
-
-            foreach (var k in keys)
-            {
-                MemoryCache.Default.Remove(k);
-            }
         }
     }
 }

@@ -35,10 +35,13 @@ using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.Security;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
+using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using Google.Authenticator;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -49,6 +52,8 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "Code")]
         private string code;
 
+        public Signature Signature { get; }
+
         public string Code
         {
             get { return Signature.Read<string>(code); }
@@ -58,27 +63,48 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "IsUsed")]
         public bool IsUsed { get; set; }
 
-        public BackupCode(string code)
+        public BackupCode(Signature signature, string code)
         {
+            Signature = signature;
             Code = code;
             IsUsed = false;
         }
     }
 
-    public static class TfaManager
+    public class TfaManager
     {
         private static readonly TwoFactorAuthenticator Tfa = new TwoFactorAuthenticator();
         private static readonly ICache Cache = AscCache.Memory;
 
-        public static SetupCode GenerateSetupCode(this UserInfo user, int size)
+        public SettingsManager SettingsManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public CookiesManager CookiesManager { get; }
+        public SetupInfo SetupInfo { get; }
+        public Signature Signature { get; }
+
+        public TfaManager(
+            SettingsManager settingsManager,
+            SecurityContext securityContext,
+            CookiesManager cookiesManager,
+            SetupInfo setupInfo,
+            Signature signature)
+        {
+            SettingsManager = settingsManager;
+            SecurityContext = securityContext;
+            CookiesManager = cookiesManager;
+            SetupInfo = setupInfo;
+            Signature = signature;
+        }
+
+        public SetupCode GenerateSetupCode(UserInfo user, int size)
         {
             return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), size, size, true);
         }
 
-        public static bool ValidateAuthCode(this UserInfo user, int tenantId, string code, bool checkBackup = true)
+        public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)
         {
             if (!TfaAppAuthSettings.IsVisibleSettings
-                || !TfaAppAuthSettings.Enable)
+                || !SettingsManager.Load<TfaAppAuthSettings>().EnableSetting)
             {
                 return false;
             }
@@ -98,9 +124,9 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!Tfa.ValidateTwoFactorPIN(GenerateAccessToken(user), code))
             {
-                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(user.ID).Any(x => x.Code == code && !x.IsUsed))
+                if (checkBackup && TfaAppUserSettings.BackupCodesForUser(SettingsManager, user.ID).Any(x => x.Code == code && !x.IsUsed))
                 {
-                    TfaAppUserSettings.DisableCodeForUser(user.ID, code);
+                    TfaAppUserSettings.DisableCodeForUser(SettingsManager, user.ID, code);
                 }
                 else
                 {
@@ -112,20 +138,20 @@ namespace ASC.Web.Studio.Core.TFA
 
             if (!SecurityContext.IsAuthenticated)
             {
-                var cookiesKey = SecurityContext.AuthenticateMe(tenantId, user.ID);
-                //CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
+                var cookiesKey = SecurityContext.AuthenticateMe(user.ID);
+                CookiesManager.SetCookies(CookiesType.AuthKey, cookiesKey);
             }
 
-            if (!TfaAppUserSettings.EnableForUser(user.ID))
+            if (!TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
             {
-                user.GenerateBackupCodes();
+                GenerateBackupCodes(user);
                 return true;
             }
 
             return false;
         }
 
-        public static IEnumerable<BackupCode> GenerateBackupCodes(this UserInfo user)
+        public IEnumerable<BackupCode> GenerateBackupCodes(UserInfo user)
         {
             var count = SetupInfo.TfaAppBackupCodeCount;
             var length = SetupInfo.TfaAppBackupCodeLength;
@@ -148,17 +174,34 @@ namespace ASC.Web.Studio.Core.TFA
                         result.Append(alphabet[b % (alphabet.Length)]);
                     }
 
-                    list.Add(new BackupCode(result.ToString()));
+                    list.Add(new BackupCode(Signature, result.ToString()));
                 }
             }
+            var settings = SettingsManager.LoadForCurrentUser<TfaAppUserSettings>();
+            settings.CodesSetting = list;
+            SettingsManager.SaveForCurrentUser(settings);
 
-            TfaAppUserSettings.BackupCodes = list;
             return list;
         }
 
-        private static string GenerateAccessToken(UserInfo user)
+        private string GenerateAccessToken(UserInfo user)
         {
-            return Signature.Create(TfaAppUserSettings.GetSalt(user.ID)).Substring(0, 10);
+            return Signature.Create(TfaAppUserSettings.GetSalt(SettingsManager, user.ID)).Substring(0, 10);
+        }
+    }
+
+    public static class TfaManagerExtension
+    {
+        public static IServiceCollection AddTfaManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TfaManager>();
+
+            return services
+                .AddSettingsManagerService()
+                .AddSetupInfo()
+                .AddSignatureService()
+                .AddCookiesManagerService()
+                .AddSecurityContextService();
         }
     }
 }

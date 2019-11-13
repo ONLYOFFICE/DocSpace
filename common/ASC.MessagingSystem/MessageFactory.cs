@@ -31,19 +31,31 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
-    static class MessageFactory
+    public class MessageFactory
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
         private const string userAgentHeader = "User-Agent";
         private const string forwardedHeader = "X-Forwarded-For";
         private const string hostHeader = "Host";
         private const string refererHeader = "Referer";
 
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
 
-        public static EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
+        public MessageFactory(AuthContext authContext, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+        {
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            log = options.CurrentValue;
+        }
+
+        public EventMessage Create(HttpRequest request, string initiator, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
@@ -52,9 +64,9 @@ namespace ASC.MessagingSystem
                     IP = request != null ? request.Headers[forwardedHeader].ToString() ?? request.GetUserHostAddress() : null,
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
-                    UserId = SecurityContext.CurrentAccount.ID,
-                    Page = request?.GetTypedHeaders().Referer.ToString(),
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
+                    UserId = AuthContext.CurrentAccount.ID,
+                    Page = request?.GetTypedHeaders().Referer?.ToString(),
                     Action = action,
                     Description = description,
                     Target = target,
@@ -68,15 +80,15 @@ namespace ASC.MessagingSystem
             }
         }
 
-        public static EventMessage Create(MessageUserData userData, Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
+        public EventMessage Create(MessageUserData userData, Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
                 var message = new EventMessage
                 {
                     Date = DateTime.UtcNow,
-                    TenantId = userData == null ? CoreContext.TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
-                    UserId = userData == null ? SecurityContext.CurrentAccount.ID : userData.UserId,
+                    TenantId = userData == null ? TenantManager.GetCurrentTenant().TenantId : userData.TenantId,
+                    UserId = userData == null ? AuthContext.CurrentAccount.ID : userData.UserId,
                     Action = action,
                     Description = description,
                     Target = target
@@ -103,7 +115,7 @@ namespace ASC.MessagingSystem
             }
         }
 
-        public static EventMessage Create(string initiator, MessageAction action, MessageTarget target, params string[] description)
+        public EventMessage Create(string initiator, MessageAction action, MessageTarget target, params string[] description)
         {
             try
             {
@@ -111,7 +123,7 @@ namespace ASC.MessagingSystem
                 {
                     Initiator = initiator,
                     Date = DateTime.UtcNow,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
+                    TenantId = TenantManager.GetCurrentTenant().TenantId,
                     Action = action,
                     Description = description,
                     Target = target
@@ -123,7 +135,15 @@ namespace ASC.MessagingSystem
                 return null;
             }
         }
-
-
+    }
+    public static class MessageFactoryExtension
+    {
+        public static IServiceCollection AddMessageFactoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MessageFactory>();
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService();
+        }
     }
 }

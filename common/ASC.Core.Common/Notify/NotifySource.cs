@@ -66,17 +66,21 @@ namespace ASC.Core.Notify
             get;
             private set;
         }
+        public UserManager UserManager { get; }
+        public SubscriptionManager SubscriptionManager { get; }
 
-
-        public NotifySource(string id)
+        public NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
         {
             if (string.IsNullOrEmpty(id)) throw new ArgumentNullException("id");
 
             ID = id;
+            UserManager = userManager;
+            RecipientsProvider = recipientsProvider;
+            SubscriptionManager = subscriptionManager;
         }
 
-        public NotifySource(Guid id)
-            : this(id.ToString())
+        public NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
         {
         }
 
@@ -112,40 +116,12 @@ namespace ASC.Core.Notify
 
         public IRecipientProvider GetRecipientsProvider()
         {
-            LazyInitializeProviders();
-            return RecipientsProvider;
+            return CreateRecipientsProvider();
         }
 
         public ISubscriptionProvider GetSubscriptionProvider()
         {
-            LazyInitializeProviders();
-            return SubscriprionProvider;
-        }
-
-        protected void LazyInitializeProviders()
-        {
-            if (!initialized)
-            {
-                lock (syncRoot)
-                {
-                    if (!initialized)
-                    {
-                        RecipientsProvider = CreateRecipientsProvider();
-                        if (RecipientsProvider == null)
-                        {
-                            throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
-                        }
-
-                        SubscriprionProvider = CreateSubscriptionProvider();
-                        if (SubscriprionProvider == null)
-                        {
-                            throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
-                        }
-
-                        initialized = true;
-                    }
-                }
-            }
+            return CreateSubscriptionProvider();
         }
 
 
@@ -156,13 +132,14 @@ namespace ASC.Core.Notify
 
         protected virtual ISubscriptionProvider CreateSubscriptionProvider()
         {
-            var subscriptionProvider = new DirectSubscriptionProvider(ID, CoreContext.SubscriptionManager, RecipientsProvider);
-            return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders);
+            var subscriptionProvider = new DirectSubscriptionProvider(ID, SubscriptionManager, RecipientsProvider);
+            return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders) ??
+                throw new NotifyException(string.Format("Provider {0} not instanced.", "ISubscriprionProvider"));
         }
 
         protected virtual IRecipientProvider CreateRecipientsProvider()
         {
-            return new RecipientProviderImpl();
+            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException(string.Format("Provider {0} not instanced.", "IRecipientsProvider"));
         }
     }
 }

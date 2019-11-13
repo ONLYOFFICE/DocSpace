@@ -26,29 +26,45 @@
 
 using System;
 using System.Linq;
+using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Threading.Progress
 {
-    public class ProgressQueue : WorkerQueue<IProgressItem>
+    public class ProgressQueueOptionsManager<T> : OptionsManager<ProgressQueue<T>> where T : class, IProgressItem
     {
-        private readonly bool removeAfterCompleted;
-
-
-        public ProgressQueue(int workerCount, TimeSpan waitInterval) :
-            this(workerCount, waitInterval, false)
+        public ProgressQueueOptionsManager(IOptionsFactory<ProgressQueue<T>> factory) : base(factory)
         {
         }
+    }
 
-
-        public ProgressQueue(int workerCount, TimeSpan waitInterval, bool removeAfterCompleted)
-            : base(workerCount, waitInterval, 0, false)
+    public class ConfigureProgressQueue<T> : IConfigureOptions<ProgressQueue<T>> where T : class, IProgressItem
+    {
+        public ConfigureProgressQueue(IOptionsMonitor<ILog> log)
         {
-            this.removeAfterCompleted = removeAfterCompleted;
-            Start(x => x.RunJob());
+            Log = log;
         }
 
-        public override void Add(IProgressItem item)
+        public IOptionsMonitor<ILog> Log { get; }
+
+        public void Configure(ProgressQueue<T> queue)
+        {
+            queue.log = Log.Get("ASC.WorkerQueue");
+            queue.Start(x => x.RunJob());
+        }
+    }
+
+    public class ProgressQueue<T> : WorkerQueue<T> where T : class, IProgressItem
+    {
+        public bool removeAfterCompleted;
+
+        public ProgressQueue()
+        {
+
+        }
+
+        public override void Add(T item)
         {
             if (GetStatus(item.Id) == null)
             {
@@ -56,9 +72,9 @@ namespace ASC.Common.Threading.Progress
             }
         }
 
-        public IProgressItem GetStatus(object id)
+        public T GetStatus(object id)
         {
-            IProgressItem item;
+            T item;
             lock (SynchRoot)
             {
                 item = GetItems().Where(x => Equals(x.Id, id)).SingleOrDefault();
@@ -68,7 +84,7 @@ namespace ASC.Common.Threading.Progress
                     {
                         Remove(item);
                     }
-                    return item.Clone() as IProgressItem;
+                    return (T)item.Clone();
                 }
             }
             return item;
@@ -92,7 +108,7 @@ namespace ASC.Common.Threading.Progress
             }
         }
 
-        protected override WorkItem<IProgressItem> Selector()
+        protected override WorkItem<T> Selector()
         {
             return Items
                 .Where(x => !x.IsProcessed && !x.IsCompleted)
@@ -100,17 +116,17 @@ namespace ASC.Common.Threading.Progress
                 .FirstOrDefault();
         }
 
-        protected override void PostComplete(WorkItem<IProgressItem> item)
+        protected override void PostComplete(WorkItem<T> item)
         {
             item.IsCompleted = true;
         }
 
-        protected override void ErrorLimit(WorkItem<IProgressItem> item)
+        protected override void ErrorLimit(WorkItem<T> item)
         {
             PostComplete(item);
         }
 
-        protected override void Error(WorkItem<IProgressItem> workItem, Exception exception)
+        protected override void Error(WorkItem<T> workItem, Exception exception)
         {
             workItem.Item.Error = exception;
             workItem.Item.IsCompleted = true;

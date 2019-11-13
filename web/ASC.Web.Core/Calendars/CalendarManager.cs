@@ -26,7 +26,7 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.Core.Tenants;
+using ASC.Core;
 
 namespace ASC.Web.Core.Calendars
 {
@@ -88,22 +88,22 @@ namespace ASC.Web.Core.Calendars
             }
         }
 
-        public BaseCalendar GetCalendarForUser(Tenant tenant, Guid userId, string calendarId)
+        public BaseCalendar GetCalendarForUser(Guid userId, string calendarId, UserManager userManager)
         {
-            return GetCalendarsForUser(tenant, userId).Find(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
+            return GetCalendarsForUser(userId, userManager).Find(c => string.Equals(c.Id, calendarId, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        public List<BaseCalendar> GetCalendarsForUser(Tenant tenant, Guid userId)
+        public List<BaseCalendar> GetCalendarsForUser(Guid userId, UserManager userManager)
         {
             var cals = new List<BaseCalendar>();
             foreach (var h in _calendarProviders)
             {
                 var list = h(userId);
                 if (list != null)
-                    cals.AddRange(list.FindAll(c => c.SharingOptions.PublicForItem(tenant, userId)));
+                    cals.AddRange(list.FindAll(c => c.SharingOptions.PublicForItem(userId, userManager)));
             }
 
-            cals.AddRange(_calendars.FindAll(c => c.SharingOptions.PublicForItem(tenant, userId)));
+            cals.AddRange(_calendars.FindAll(c => c.SharingOptions.PublicForItem(userId, userManager)));
             return cals;
         }
 

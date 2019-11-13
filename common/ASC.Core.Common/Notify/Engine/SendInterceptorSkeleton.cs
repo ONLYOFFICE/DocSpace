@@ -25,12 +25,13 @@
 
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
 {
     public class SendInterceptorSkeleton : ISendInterceptor
     {
-        private readonly Func<NotifyRequest, InterceptorPlace, bool> method;
+        private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> method;
 
 
         public string Name { get; internal set; }
@@ -40,7 +41,7 @@ namespace ASC.Notify.Engine
         public InterceptorLifetime Lifetime { get; internal set; }
 
 
-        public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, bool> sendInterceptor)
+        public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
         {
             if (string.IsNullOrEmpty("name")) throw new ArgumentNullException("name");
             if (string.IsNullOrEmpty("sendInterceptor")) throw new ArgumentNullException("sendInterceptor");
@@ -51,9 +52,9 @@ namespace ASC.Notify.Engine
             Lifetime = lifetime;
         }
 
-        public bool PreventSend(NotifyRequest request, InterceptorPlace place)
+        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
         {
-            return method(request, place);
+            return method(request, place, serviceScope);
         }
     }
 }

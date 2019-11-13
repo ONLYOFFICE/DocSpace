@@ -33,18 +33,24 @@ namespace ASC.Web.Core.Helpers
 {
     public class AuthorizationHelper
     {
-        public static bool ProcessBasicAuthorization(HttpContext context)
+        public AuthorizationHelper(IHttpContextAccessor httpContextAccessor, UserManager userManager, SecurityContext securityContext)
         {
-            return ProcessBasicAuthorization(context, out _);
+            HttpContextAccessor = httpContextAccessor;
+            UserManager = userManager;
+            SecurityContext = securityContext;
         }
 
-        public static bool ProcessBasicAuthorization(HttpContext context, out string authCookie)
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+
+        public bool ProcessBasicAuthorization(out string authCookie)
         {
             authCookie = null;
             try
             {
                 //Try basic
-                var authorization = context.Request.Headers["Authorization"].ToString();
+                var authorization = HttpContextAccessor.HttpContext.Request.Headers["Authorization"].ToString();
                 if (string.IsNullOrEmpty(authorization))
                 {
                     return false;
@@ -56,7 +62,7 @@ namespace ASC.Web.Core.Helpers
                     var arr = Encoding.ASCII.GetString(Convert.FromBase64String(authorization.Substring(6))).Split(new[] { ':' });
                     var username = arr[0];
                     var password = arr[1];
-                    var u = CoreContext.UserManager.GetUserByEmail(CoreContext.TenantManager.GetCurrentTenant(context).TenantId, username);
+                    var u = UserManager.GetUserByEmail(username);
                     if (u != null && u.ID != ASC.Core.Users.Constants.LostUser.ID)
                     {
                         authCookie = SecurityContext.AuthenticateMe(u.Email, password);

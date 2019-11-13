@@ -107,7 +107,7 @@ namespace ASC.Security.Cryptography
                 HashAlg.SHA1 => SHA1.Create(),
                 HashAlg.SHA256 => SHA256.Create(),
                 HashAlg.SHA512 => SHA512.Create(),
-                _ => SHA256.Create(),
+                _ => SHA256.Create()
             };
         }
 

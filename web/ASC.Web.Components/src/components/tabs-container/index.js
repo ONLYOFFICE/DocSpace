@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Text } from "../text";
+import Scrollbar from "../scrollbar";
 
 const NavItem = styled.div`
   position: relative;
@@ -12,13 +13,14 @@ const NavItem = styled.div`
 const Label = styled.div`
   height: 32px;
   border-radius: 16px;
-  min-width: 80px;
+  min-width: fit-content;
   margin-right: 8px;
   width: fit-content;
 
   .title_style {
     text-align: center;
     margin: 7px 15px 7px 15px;
+    overflow: hidden;
   }
 
   ${props => (props.isDisabled ? `pointer-events: none;` : ``)}
@@ -71,20 +73,22 @@ class TabContainer extends Component {
     const { isDisabled, children } = this.props;
     return (
       <>
-        <NavItem>
-          {children.map((item, index) => (
-            <Label
-              onClick={this.titleClick.bind(this, index, item)}
-              key={item.key}
-              selected={this.state.activeTab === index}
-              isDisabled={isDisabled}
-            >
-              <Text.Body className="title_style" fontSize={13}>
-                {item.title}
-              </Text.Body>
-            </Label>
-          ))}
-        </NavItem>
+        <Scrollbar style={{ width: "100%", height: 50 }}>
+          <NavItem className="className_items">
+            {children.map((item, index) => (
+              <Label
+                onClick={this.titleClick.bind(this, index, item)}
+                key={item.key}
+                selected={this.state.activeTab === index}
+                isDisabled={isDisabled}
+              >
+                <Text.Body className="title_style" fontSize={13}>
+                  {item.title}
+                </Text.Body>
+              </Label>
+            ))}
+          </NavItem>
+        </Scrollbar>
         <BodyContainer>{children[this.state.activeTab].content}</BodyContainer>
       </>
     );

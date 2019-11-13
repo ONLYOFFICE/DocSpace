@@ -27,17 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core.Tenants;
+using ASC.Core;
 using ASC.Web.Core.WebZones;
 
 using Autofac;
-
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
 {
@@ -51,16 +49,10 @@ namespace ASC.Web.Core
 
     public class WebItemManager
     {
-        private static readonly ILog log;
+        private readonly ILog log;
 
         private readonly Dictionary<Guid, IWebItem> items = new Dictionary<Guid, IWebItem>();
-        private static readonly List<string> disableItem;
-
-        static WebItemManager()
-        {
-            log = LogManager.GetLogger("ASC.Web");
-            disableItem = (ConfigurationManager.AppSettings["web:disabled-items"] ?? "").Split(",").ToList();
-        }
+        private readonly List<string> disableItem;
 
         public static Guid CommunityProductID
         {
@@ -112,19 +104,8 @@ namespace ASC.Web.Core
             get { return new Guid("{46CFA73A-F320-46CF-8D5B-CD82E1D67F26}"); }
         }
 
-        private static WebItemManager instance;
-        public static WebItemManager Instance
-        {
-            get
-            {
-                return instance ?? (instance = CommonServiceProvider.GetService<WebItemManager>());
-            }
-            internal set
-            {
-                instance = value;
-            }
-        }
         public IContainer Container { get; }
+        public IConfiguration Configuration { get; }
 
         public IWebItem this[Guid id]
         {
@@ -135,9 +116,13 @@ namespace ASC.Web.Core
             }
         }
 
-        public WebItemManager(IContainer container)
+        public WebItemManager(IContainer container, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Container = container;
+            Configuration = configuration;
+            log = options.Get("ASC.Web");
+            disableItem = (Configuration["web:disabled-items"] ?? "").Split(",").ToList();
+            LoadItems();
         }
 
         public void LoadItems()
@@ -192,47 +177,12 @@ namespace ASC.Web.Core
             }
         }
 
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone)
-        {
-            return GetItems(tenant, webZone, ItemAvailableState.Normal);
-        }
-
-        public List<IWebItem> GetItems(Tenant tenant, WebZoneType webZone, ItemAvailableState avaliableState)
-        {
-            var copy = items.Values.ToList();
-            var list = copy.Where(item =>
-                {
-                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(tenant))
-                    {
-                        return false;
-                    }
-                    var attribute = (WebZoneAttribute)Attribute.GetCustomAttribute(item.GetType(), typeof(WebZoneAttribute), true);
-                    return attribute != null && (attribute.Type & webZone) != 0;
-                }).ToList();
-
-            list.Sort((x, y) => GetSortOrder(x).CompareTo(GetSortOrder(y)));
-            return list;
-        }
-
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID)
-        {
-            return GetSubItems(tenant, parentItemID, ItemAvailableState.Normal);
-        }
-
-        public List<IWebItem> GetSubItems(Tenant tenant, Guid parentItemID, ItemAvailableState avaliableState)
-        {
-            return GetItems(tenant, WebZoneType.All, avaliableState).OfType<IModule>()
-                                                            .Where(p => p.ProjectId == parentItemID)
-                                                            .Cast<IWebItem>()
-                                                            .ToList();
-        }
-
         public Guid GetParentItemID(Guid itemID)
         {
             return this[itemID] is IModule m ? m.ProjectId : Guid.Empty;
         }
 
-        public static int GetSortOrder(IWebItem item)
+        public int GetSortOrder(IWebItem item)
         {
             return item != null && item.Context != null ? item.Context.DefaultSortOrder : 0;
         }
@@ -255,24 +205,69 @@ namespace ASC.Web.Core
         }
     }
 
+    public class WebItemManagerSecurity
+    {
+        public WebItemSecurity WebItemSecurity { get; }
+        public AuthContext AuthContext { get; }
+        public WebItemManager WebItemManager { get; }
+
+        public WebItemManagerSecurity(WebItemSecurity webItemSecurity, AuthContext authContext, WebItemManager webItemManager)
+        {
+            WebItemSecurity = webItemSecurity;
+            AuthContext = authContext;
+            WebItemManager = webItemManager;
+        }
+
+        public List<IWebItem> GetItems(WebZoneType webZone)
+        {
+            return GetItems(webZone, ItemAvailableState.Normal);
+        }
+
+        public List<IWebItem> GetItems(WebZoneType webZone, ItemAvailableState avaliableState)
+        {
+            var copy = WebItemManager.GetItemsAll().ToList();
+            var list = copy.Where(item =>
+                {
+                    if ((avaliableState & ItemAvailableState.Disabled) != ItemAvailableState.Disabled && item.IsDisabled(WebItemSecurity, AuthContext))
+                    {
+                        return false;
+                    }
+                    var attribute = (WebZoneAttribute)Attribute.GetCustomAttribute(item.GetType(), typeof(WebZoneAttribute), true);
+                    return attribute != null && (attribute.Type & webZone) != 0;
+                }).ToList();
+
+            list.Sort((x, y) => WebItemManager.GetSortOrder(x).CompareTo(WebItemManager.GetSortOrder(y)));
+            return list;
+        }
+
+        public List<IWebItem> GetSubItems(Guid parentItemID)
+        {
+            return GetSubItems(parentItemID, ItemAvailableState.Normal);
+        }
+
+        public List<IWebItem> GetSubItems(Guid parentItemID, ItemAvailableState avaliableState)
+        {
+            return GetItems(WebZoneType.All, avaliableState).OfType<IModule>()
+                                                            .Where(p => p.ProjectId == parentItemID)
+                                                            .Cast<IWebItem>()
+                                                            .ToList();
+        }
+    }
+
     public static class WebItemManagerExtension
     {
         public static IServiceCollection AddWebItemManager(this IServiceCollection services)
         {
-            services.AddSingleton<WebItemManager>();
+            services.TryAddSingleton<WebItemManager>();
             return services;
         }
-        public static IApplicationBuilder UseWebItemManager(this IApplicationBuilder applicationBuilder)
+        public static IServiceCollection AddWebItemManagerSecurity(this IServiceCollection services)
         {
-            UseWebItemManager(applicationBuilder.ApplicationServices);
-            return applicationBuilder;
-        }
-        public static IServiceProvider UseWebItemManager(this IServiceProvider serviceProvider)
-        {
-            var webItemManager = serviceProvider.GetService<WebItemManager>();
-            WebItemManager.Instance = webItemManager;
-            webItemManager.LoadItems();
-            return serviceProvider;
+            services.TryAddScoped<WebItemManagerSecurity>();
+            return services
+                .AddAuthContextService()
+                .AddWebItemSecurity()
+                .AddWebItemManager();
         }
     }
 }

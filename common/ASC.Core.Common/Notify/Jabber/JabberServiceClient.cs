@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using ASC.Core.Common.Notify.Jabber;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify.Jabber
 {
@@ -36,6 +38,17 @@ namespace ASC.Core.Notify.Jabber
         private static readonly TimeSpan Timeout = TimeSpan.FromMinutes(2);
 
         private static DateTime lastErrorTime = default;
+
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+
+        public JabberServiceClient(UserManager userManager, AuthContext authContext, TenantManager tenantManager)
+        {
+            UserManager = userManager;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+        }
 
         private static bool IsServiceProbablyNotAvailable()
         {
@@ -190,7 +203,7 @@ namespace ASC.Core.Notify.Jabber
             {
                 if (IsServiceProbablyNotAvailable()) throw new Exception();
                 using var service = GetService();
-                service.Ping(SecurityContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
+                service.Ping(AuthContext.CurrentAccount.ID.ToString(), GetCurrentTenantId(), GetCurrentUserName(), state);
             }
             catch (Exception error)
             {
@@ -198,14 +211,14 @@ namespace ASC.Core.Notify.Jabber
             }
         }
 
-        private static int GetCurrentTenantId()
+        private int GetCurrentTenantId()
         {
-            return CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            return TenantManager.GetCurrentTenant().TenantId;
         }
 
-        private static string GetCurrentUserName()
+        private string GetCurrentUserName()
         {
-            return CoreContext.UserManager.GetUsers(GetCurrentTenantId(), SecurityContext.CurrentAccount.ID).UserName;
+            return UserManager.GetUsers(AuthContext.CurrentAccount.ID).UserName;
         }
 
         private static void ProcessError(Exception error)
@@ -224,6 +237,18 @@ namespace ASC.Core.Notify.Jabber
         private JabberServiceClientWcf GetService()
         {
             return new JabberServiceClientWcf();
+        }
+    }
+
+    public static class JabberServiceClientExtension
+    {
+        public static IServiceCollection AddJabberServiceClient(this IServiceCollection services)
+        {
+            services.TryAddScoped<JabberServiceClient>();
+            return services
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddTenantManagerService();
         }
     }
 }

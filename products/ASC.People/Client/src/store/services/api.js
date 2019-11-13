@@ -1,4 +1,4 @@
-import { request } from "./client";
+import { request, setAuthorizationToken } from "./client";
 import axios from "axios";
 import Filter from "../people/filter";
 
@@ -291,5 +291,15 @@ export function deleteGroup(id) {
   return request({
     method: "delete",
     url: `/group/${id}.json`
+  });
+}
+
+export function logout() {
+  return request({
+    method: "post",
+    url: "/authentication/logout"
+  }).then((data) => {
+    setAuthorizationToken();
+    return Promise.resolve();
   });
 }

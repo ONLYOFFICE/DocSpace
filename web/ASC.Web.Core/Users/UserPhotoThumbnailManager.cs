@@ -27,46 +27,46 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using ASC.Core.Tenants;
+using ASC.Core.Common.Settings;
 
 namespace ASC.Web.Core.Users
 {
     public class UserPhotoThumbnailManager
     {
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, int x, int y, int width, int height, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, int x, int y, int width, int height, Guid userId)
         {
-            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(x, y, width, height), userId);
+            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(x, y, width, height), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, Point point, Size size, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, Point point, Size size, Guid userId)
         {
-            return SaveThumbnails(tenantId, new UserPhotoThumbnailSettings(point, size), userId);
+            return SaveThumbnails(userPhotoManager, settingsManager, new UserPhotoThumbnailSettings(point, size), userId);
         }
 
-        public static List<ThumbnailItem> SaveThumbnails(int tenantId, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
+        public static List<ThumbnailItem> SaveThumbnails(UserPhotoManager userPhotoManager, SettingsManager settingsManager, UserPhotoThumbnailSettings thumbnailSettings, Guid userId)
         {
             if (thumbnailSettings.Size.IsEmpty) return null;
 
-            var thumbnailsData = new ThumbnailsData(userId);
+            var thumbnailsData = new ThumbnailsData(userId, userPhotoManager);
 
             var resultBitmaps = new List<ThumbnailItem>();
 
-            var img = thumbnailsData.MainImgBitmap(tenantId);
+            var img = thumbnailsData.MainImgBitmap();
 
             if (img == null) return null;
 
-            foreach (var thumbnail in thumbnailsData.ThumbnailList(tenantId))
+            foreach (var thumbnail in thumbnailsData.ThumbnailList())
             {
                 thumbnail.Bitmap = GetBitmap(img, thumbnail.Size, thumbnailSettings);
 
                 resultBitmaps.Add(thumbnail);
             }
 
-            thumbnailsData.Save(tenantId, resultBitmaps);
+            thumbnailsData.Save(resultBitmaps);
 
-            thumbnailSettings.SaveForUser(userId);
+            settingsManager.SaveForUser(thumbnailSettings, userId);
 
-            return thumbnailsData.ThumbnailList(tenantId);
+            return thumbnailsData.ThumbnailList();
         }
 
         public static Bitmap GetBitmap(Image mainImg, Size size, UserPhotoThumbnailSettings thumbnailSettings)
@@ -107,60 +107,62 @@ namespace ASC.Web.Core.Users
     public class ThumbnailsData
     {
         private Guid UserId { get; set; }
+        public UserPhotoManager UserPhotoManager { get; }
 
-        public ThumbnailsData(Guid userId)
+        public ThumbnailsData(Guid userId, UserPhotoManager userPhotoManager)
         {
             UserId = userId;
+            UserPhotoManager = userPhotoManager;
         }
 
-        public Bitmap MainImgBitmap(int tenantId)
+        public Bitmap MainImgBitmap()
         {
-            return UserPhotoManager.GetPhotoBitmap(tenantId, UserId);
+            return UserPhotoManager.GetPhotoBitmap(UserId);
         }
 
-        public string MainImgUrl(Tenant tenant)
+        public string MainImgUrl()
         {
-            return UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, UserId);
+            return UserPhotoManager.GetPhotoAbsoluteWebPath(UserId);
         }
 
-        public List<ThumbnailItem> ThumbnailList(int tenantId)
+        public List<ThumbnailItem> ThumbnailList()
         {
             return new List<ThumbnailItem>
                 {
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.RetinaFotoSize,
-                            ImgUrl = UserPhotoManager.GetRetinaPhotoURL(tenantId, UserId)
+                            ImgUrl = UserPhotoManager.GetRetinaPhotoURL(UserId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MaxFotoSize,
-                            ImgUrl = UserPhotoManager.GetMaxPhotoURL(tenantId, UserId)
+                            ImgUrl = UserPhotoManager.GetMaxPhotoURL(UserId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.BigFotoSize,
-                            ImgUrl = UserPhotoManager.GetBigPhotoURL(tenantId, UserId)
+                            ImgUrl = UserPhotoManager.GetBigPhotoURL(UserId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.MediumFotoSize,
-                            ImgUrl = UserPhotoManager.GetMediumPhotoURL(tenantId, UserId)
+                            ImgUrl = UserPhotoManager.GetMediumPhotoURL(UserId)
                         },
                     new ThumbnailItem
                         {
                             Size = UserPhotoManager.SmallFotoSize,
-                            ImgUrl = UserPhotoManager.GetSmallPhotoURL(tenantId, UserId)
+                            ImgUrl = UserPhotoManager.GetSmallPhotoURL(UserId)
                         }
             };
         }
 
-        public void Save(int tenantId, List<ThumbnailItem> bitmaps)
+        public void Save(List<ThumbnailItem> bitmaps)
         {
             foreach (var item in bitmaps)
             {
-                using var mainImgBitmap = MainImgBitmap(tenantId);
-                UserPhotoManager.SaveThumbnail(tenantId, UserId, item.Bitmap, mainImgBitmap.RawFormat);
+                using var mainImgBitmap = MainImgBitmap();
+                UserPhotoManager.SaveThumbnail(UserId, item.Bitmap, mainImgBitmap.RawFormat);
             }
         }
     }

@@ -39,9 +39,12 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
-using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
+using ASC.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
@@ -49,8 +52,8 @@ namespace ASC.Data.Storage.S3
     public class S3Storage : BaseStorage
     {
         private readonly List<string> _domains = new List<string>();
-        private readonly Dictionary<string, S3CannedACL> _domainsAcl;
-        private readonly S3CannedACL _moduleAcl;
+        private Dictionary<string, S3CannedACL> _domainsAcl;
+        private S3CannedACL _moduleAcl;
         private string _accessKeyId = "";
         private string _bucket = "";
         private string _recycleDir = "";
@@ -63,36 +66,14 @@ namespace ASC.Data.Storage.S3
         private string _distributionId = string.Empty;
         private string _subDir = string.Empty;
 
-        public S3Storage(string tenant)
+        public S3Storage(
+            TenantManager tenantManager,
+            PathUtils pathUtils,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> options)
+            : base(tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options)
         {
-            _tenant = tenant;
-            _modulename = string.Empty;
-            _dataList = null;
-
-            //Make expires
-            _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
-
-            _domainsAcl = new Dictionary<string, S3CannedACL>();
-            _moduleAcl = S3CannedACL.PublicRead;
-        }
-
-        public S3Storage(string tenant, Handler handlerConfig, Module moduleConfig)
-        {
-            _tenant = tenant;
-            _modulename = moduleConfig.Name;
-            _dataList = new DataList(moduleConfig);
-            _domains.AddRange(
-                moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
-
-            //Make expires
-            _domainsExpires =
-                moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).
-                    ToDictionary(x => x.Name,
-                                 y => y.Expires);
-            _domainsExpires.Add(string.Empty, moduleConfig.Expires);
-
-            _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
-            _moduleAcl = GetS3Acl(moduleConfig.Acl);
         }
 
         private S3CannedACL GetDomainACL(string domain)
@@ -121,12 +102,12 @@ namespace ASC.Data.Storage.S3
 
         public Uri GetUriInternal(string path)
         {
-            return new Uri(SecureHelper.IsSecure() ? _bucketSSlRoot : _bucketRoot, path);
+            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, path);
         }
 
         public Uri GetUriShared(string domain, string path)
         {
-            return new Uri(SecureHelper.IsSecure() ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
+            return new Uri(SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? _bucketSSlRoot : _bucketRoot, MakePath(domain, path));
         }
 
         public override Uri GetInternalUri(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
@@ -145,7 +126,7 @@ namespace ASC.Data.Storage.S3
                 BucketName = _bucket,
                 Expires = DateTime.UtcNow.Add(expire),
                 Key = MakePath(domain, path),
-                Protocol = SecureHelper.IsSecure() ? Protocol.HTTPS : Protocol.HTTP,
+                Protocol = SecureHelper.IsSecure(HttpContextAccessor?.HttpContext, Options) ? Protocol.HTTPS : Protocol.HTTP,
                 Verb = HttpVerb.GET
             };
 
@@ -792,11 +773,11 @@ namespace ASC.Data.Storage.S3
 
         public override string GetUploadedUrl(string domain, string directoryPath)
         {
-            if (HttpContext.Current != null)
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                var buket = HttpContext.Current.Request.Query["bucket"].FirstOrDefault();
-                var key = HttpContext.Current.Request.Query["key"].FirstOrDefault();
-                var etag = HttpContext.Current.Request.Query["etag"].FirstOrDefault();
+                var buket = HttpContextAccessor?.HttpContext.Request.Query["bucket"].FirstOrDefault();
+                var key = HttpContextAccessor?.HttpContext.Request.Query["key"].FirstOrDefault();
+                var etag = HttpContextAccessor?.HttpContext.Request.Query["etag"].FirstOrDefault();
                 var destkey = MakePath(domain, directoryPath) + "/";
 
                 if (!string.IsNullOrEmpty(buket) && !string.IsNullOrEmpty(key) && string.Equals(buket, _bucket) &&
@@ -804,9 +785,9 @@ namespace ASC.Data.Storage.S3
                 {
                     var domainpath = key.Substring(MakePath(domain, string.Empty).Length);
                     var skipQuota = false;
-                    if (HttpContext.Current.Session != null)
+                    if (HttpContextAccessor?.HttpContext.Session != null)
                     {
-                        HttpContext.Current.Session.TryGetValue(etag, out var isCounted);
+                        HttpContextAccessor.HttpContext.Session.TryGetValue(etag, out var isCounted);
                         skipQuota = isCounted != null;
                     }
                     //Add to quota controller
@@ -817,7 +798,7 @@ namespace ASC.Data.Storage.S3
                             var size = GetFileSize(domain, domainpath);
                             QuotaUsedAdd(domain, size);
 
-                            if (HttpContext.Current.Session != null)
+                            if (HttpContextAccessor?.HttpContext.Session != null)
                             {
                                 //TODO:
                                 //HttpContext.Current.Session.Add(etag, size); 
@@ -988,8 +969,35 @@ namespace ASC.Data.Storage.S3
         }
 
 
-        public override IDataStore Configure(IDictionary<string, string> props)
+        public override IDataStore Configure(string tenant, Handler handlerConfig, Module moduleConfig, IDictionary<string, string> props)
         {
+            _tenant = tenant;
+
+            if (moduleConfig != null)
+            {
+                _modulename = moduleConfig.Name;
+                _dataList = new DataList(moduleConfig);
+                _domains.AddRange(moduleConfig.Domain.Select(x => string.Format("{0}/", x.Name)));
+
+                //Make expires
+                _domainsExpires = moduleConfig.Domain.Where(x => x.Expires != TimeSpan.Zero).ToDictionary(x => x.Name, y => y.Expires);
+                _domainsExpires.Add(string.Empty, moduleConfig.Expires);
+
+                _domainsAcl = moduleConfig.Domain.ToDictionary(x => x.Name, y => GetS3Acl(y.Acl));
+                _moduleAcl = GetS3Acl(moduleConfig.Acl);
+            }
+            else
+            {
+                _modulename = string.Empty;
+                _dataList = null;
+
+                //Make expires
+                _domainsExpires = new Dictionary<string, TimeSpan> { { string.Empty, TimeSpan.Zero } };
+
+                _domainsAcl = new Dictionary<string, S3CannedACL>();
+                _moduleAcl = S3CannedACL.PublicRead;
+            }
+
             _accessKeyId = props["acesskey"];
             _secretAccessKeyId = props["secretaccesskey"];
             _bucket = props["bucket"];

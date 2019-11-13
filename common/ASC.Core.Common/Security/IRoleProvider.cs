@@ -26,13 +26,12 @@
 
 using System.Collections.Generic;
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Tenants;
 
 namespace ASC.Common.Security
 {
     public interface IRoleProvider
     {
-        List<IRole> GetRoles(Tenant tenant, ISubject account);
-        bool IsSubjectInRole(Tenant tenant, ISubject account, IRole role);
+        List<IRole> GetRoles(ISubject account);
+        bool IsSubjectInRole(ISubject account, IRole role);
     }
 }

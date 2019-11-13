@@ -27,6 +27,7 @@
 using ASC.Notify.Channels;
 using ASC.Notify.Model;
 using ASC.Notify.Sinks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify
 {
@@ -38,6 +39,6 @@ namespace ASC.Notify
 
         ISenderChannel GetSender(string senderName);
 
-        INotifyClient RegisterClient(INotifySource source);
+        INotifyClient RegisterClient(INotifySource source, IServiceScope serviceScope);
     }
 }

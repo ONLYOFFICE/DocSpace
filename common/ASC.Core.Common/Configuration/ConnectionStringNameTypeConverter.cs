@@ -23,24 +23,19 @@
  *
 */
 
-
-using System;
-using System.ComponentModel;
-using System.Globalization;
-using ASC.Common.Data;
-
 namespace ASC.Core.Configuration
 {
-    class ConnectionStringNameTypeConverter : TypeConverter
-    {
-        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-        {
-            return sourceType == typeof(string);
-        }
+    //todo: remove
+    //class ConnectionStringNameTypeConverter : TypeConverter
+    //{
+    //    public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+    //    {
+    //        return sourceType == typeof(string);
+    //    }
 
-        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
-        {
-            return DbRegistry.GetConnectionString((string)value);
-        }
-    }
+    //    public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+    //    {
+    //        return DbRegistry.GetConnectionString((string)value);
+    //    }
+    //}
 }

@@ -29,6 +29,7 @@ using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Messages;
 using ASC.Notify.Sinks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Notify
 {
@@ -38,18 +39,23 @@ namespace ASC.Core.Notify
         private readonly INotifySender sender;
 
 
-        public JabberSenderSink(INotifySender sender)
+        public JabberSenderSink(INotifySender sender, IServiceProvider serviceProvider)
         {
             this.sender = sender ?? throw new ArgumentNullException("sender");
+            ServiceProvider = serviceProvider;
         }
 
+        public IServiceProvider ServiceProvider { get; }
 
         public override SendResponse ProcessMessage(INoticeMessage message)
         {
             try
             {
+                using var scope = ServiceProvider.CreateScope();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                 var result = SendResult.OK;
-                var username = CoreContext.UserManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
+                var username = userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
                 if (string.IsNullOrEmpty(username))
                 {
                     result = SendResult.IncorrectRecipient;
@@ -66,7 +72,7 @@ namespace ASC.Core.Notify
                         CreationDate = DateTime.UtcNow.Ticks,
                     };
 
-                    var tenant = CoreContext.TenantManager.GetCurrentTenant(false);
+                    var tenant = tenantManager.GetCurrentTenant(false);
                     m.Tenant = tenant == null ? Tenant.DEFAULT_TENANT : tenant.TenantId;
 
                     sender.Send(m);

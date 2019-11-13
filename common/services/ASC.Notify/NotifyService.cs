@@ -29,23 +29,31 @@ using System.Reflection;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
     public class NotifyService : INotifyService, IDisposable
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
 
         private readonly ICacheNotify<NotifyMessage> cacheNotify;
 
         private readonly DbWorker db;
 
-        public NotifyService(DbWorker db)
+        public IServiceProvider ServiceProvider { get; }
+
+        public NotifyService(DbWorker db, IServiceProvider serviceProvider, ICacheNotify<NotifyMessage> cacheNotify, IOptionsMonitor<ILog> options)
         {
             this.db = db;
-            cacheNotify = new KafkaCache<NotifyMessage>();
+            ServiceProvider = serviceProvider;
+            this.cacheNotify = cacheNotify;
+            log = options.CurrentValue;
         }
 
         public void Start()
@@ -87,14 +95,30 @@ namespace ASC.Notify
                 throw new Exception("Method not found.");
             }
 
-            CoreContext.TenantManager.SetCurrentTenant(tenant);
-            TenantWhiteLabelSettings.Apply(tenant);
+            using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var tenantWhiteLabelSettingsHelper = scope.ServiceProvider.GetService<TenantWhiteLabelSettingsHelper>();
+            var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            tenantManager.SetCurrentTenant(tenant);
+            tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
             methodInfo.Invoke(instance, parameters);
         }
 
         public void Dispose()
         {
             cacheNotify.Unsubscribe(CacheNotifyAction.InsertOrUpdate);
+        }
+    }
+
+    public static class NotifyServiceExtension
+    {
+        public static IServiceCollection AddNotifyService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<NotifyService>();
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services
+                .AddDbWorker();
         }
     }
 }

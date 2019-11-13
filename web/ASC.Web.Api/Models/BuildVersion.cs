@@ -25,7 +25,9 @@
 
 
 using System.Runtime.Serialization;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Settings
 {
@@ -40,20 +42,24 @@ namespace ASC.Api.Settings
 
         [DataMember(EmitDefaultValue = false)]
         public string MailServer { get; set; }
+        public IConfiguration Configuration { get; }
 
-        public static BuildVersion GetCurrentBuildVersion()
+        public BuildVersion(IConfiguration configuration)
         {
-            return new BuildVersion
-            {
-                CommunityServer = GetCommunityVersion(),
-                DocumentServer = GetDocumentVersion(),
-                MailServer = GetMailServerVersion()
-            };
+            Configuration = configuration;
         }
 
-        private static string GetCommunityVersion()
+        public BuildVersion GetCurrentBuildVersion()
         {
-            return ConfigurationManager.AppSettings["version:number"] ?? "8.5.0";
+            CommunityServer = GetCommunityVersion();
+            DocumentServer = GetDocumentVersion();
+            MailServer = GetMailServerVersion();
+            return this;
+        }
+
+        private string GetCommunityVersion()
+        {
+            return Configuration["version:number"] ?? "8.5.0";
         }
 
         private static string GetDocumentVersion()
@@ -88,6 +94,16 @@ namespace ASC.Api.Settings
             }
 
             return null;*/
+        }
+    }
+
+    public static class BuildVersionExtension
+    {
+        public static IServiceCollection AddBuildVersionService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<BuildVersion>();
+
+            return services;
         }
     }
 }

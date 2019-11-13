@@ -27,18 +27,31 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage
 {
-    class PathUtils
+    public class PathUtils
     {
-        private static string StorageRoot { get; }
-        static PathUtils()
+        private string StorageRoot { get; }
+        public IConfiguration Configuration { get; }
+        public IHostEnvironment HostEnvironment { get; }
+        public IWebHostEnvironment WebHostEnvironment { get; }
+
+        public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment)
         {
-            StorageRoot = ConfigurationManager.AppSettings[Constants.STORAGE_ROOT_PARAM];
+            Configuration = configuration;
+            HostEnvironment = hostEnvironment;
+            StorageRoot = Configuration[Constants.STORAGE_ROOT_PARAM];
+        }
+
+        public PathUtils(IConfiguration configuration, IHostEnvironment hostEnvironment, IWebHostEnvironment webHostEnvironment) : this(configuration, hostEnvironment)
+        {
+            WebHostEnvironment = webHostEnvironment;
         }
 
         public static string Normalize(string path, bool addTailingSeparator = false)
@@ -52,7 +65,7 @@ namespace ASC.Data.Storage
             return addTailingSeparator && 0 < path.Length ? path + Path.DirectorySeparatorChar : path;
         }
 
-        public static string ResolveVirtualPath(string module, string domain)
+        public string ResolveVirtualPath(string module, string domain)
         {
             var url = string.Format("~/storage/{0}/{1}/",
                                  module,
@@ -60,21 +73,19 @@ namespace ASC.Data.Storage
             return ResolveVirtualPath(url);
         }
 
-        //TODO
-        public static string ResolveVirtualPath(string virtPath, bool addTrailingSlash = true)
+        public string ResolveVirtualPath(string virtPath, bool addTrailingSlash = true)
         {
             if (virtPath == null)
             {
                 virtPath = "";
             }
 
-            var webHostEnvironment = CommonServiceProvider.GetService<IWebHostEnvironment>();
             if (virtPath.StartsWith("~") && !Uri.IsWellFormedUriString(virtPath, UriKind.Absolute))
             {
                 var rootPath = "/";
-                if (!string.IsNullOrEmpty(webHostEnvironment.WebRootPath) && webHostEnvironment.WebRootPath.Length > 1)
+                if (!string.IsNullOrEmpty(WebHostEnvironment.WebRootPath) && WebHostEnvironment.WebRootPath.Length > 1)
                 {
-                    rootPath = webHostEnvironment.WebRootPath.Trim('/');
+                    rootPath = WebHostEnvironment.WebRootPath.Trim('/');
                 }
                 virtPath = virtPath.Replace("~", rootPath);
             }
@@ -89,11 +100,9 @@ namespace ASC.Data.Storage
             return virtPath.Replace("//", "/");
         }
 
-        public static string ResolvePhysicalPath(string physPath, IDictionary<string, string> storageConfig)
+        public string ResolvePhysicalPath(string physPath, IDictionary<string, string> storageConfig)
         {
             physPath = Normalize(physPath, false).TrimStart('~');
-
-            var webHostEnvironment = CommonServiceProvider.GetService<IWebHostEnvironment>();
 
             if (physPath.Contains(Constants.STORAGE_ROOT_PARAM))
             {
@@ -102,9 +111,19 @@ namespace ASC.Data.Storage
 
             if (!Path.IsPathRooted(physPath))
             {
-                physPath = Path.GetFullPath(Path.Combine(webHostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
+                physPath = Path.GetFullPath(Path.Combine(HostEnvironment.ContentRootPath, physPath.Trim(Path.DirectorySeparatorChar)));
             }
             return physPath;
+        }
+    }
+
+    public static class PathUtilsExtension
+    {
+        public static IServiceCollection AddPathUtilsService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<PathUtils>();
+
+            return services;
         }
     }
 }

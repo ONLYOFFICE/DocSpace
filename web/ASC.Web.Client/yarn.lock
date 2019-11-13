@@ -1809,7 +1809,7 @@ asap@~2.0.6:
     universal-cookie "^4.0.2"
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.166"
+  version "1.0.168"
   dependencies:
     email-addresses "^3.0.3"
     moment "^2.24.0"

@@ -32,8 +32,9 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core.Common.Notify.Jabber;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
@@ -41,28 +42,38 @@ namespace ASC.Core.Notify.Signalr
     public class SignalrServiceClient
     {
         private static readonly TimeSpan Timeout;
-        private static readonly ILog Log;
+        private readonly ILog Log;
         private static DateTime lastErrorTime;
-        public static readonly bool EnableSignalr;
-        private static readonly string CoreMachineKey;
-        private static readonly string Url;
-        private static readonly bool JabberReplaceDomain;
-        private static readonly string JabberReplaceFromDomain;
-        private static readonly string JabberReplaceToDomain;
+        public readonly bool EnableSignalr;
+        private readonly string CoreMachineKey;
+        private readonly string Url;
+        private readonly bool JabberReplaceDomain;
+        private readonly string JabberReplaceFromDomain;
+        private readonly string JabberReplaceToDomain;
 
         private readonly string hub;
+
+        public TenantManager TenantManager { get; }
+        public CoreSettings CoreSettings { get; }
 
         static SignalrServiceClient()
         {
             Timeout = TimeSpan.FromSeconds(1);
-            Log = LogManager.GetLogger("ASC");
-            CoreMachineKey = ConfigurationManager.AppSettings["core:machinekey"];
-            Url = ConfigurationManager.AppSettings["web:hub:internal"];
+        }
+
+        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<ILog> options)
+        {
+            Log = options.CurrentValue;
+            this.hub = hub.Trim('/');
+            TenantManager = tenantManager;
+            CoreSettings = coreSettings;
+            CoreMachineKey = configuration["core:machinekey"];
+            Url = configuration["web:hub:internal"];
             EnableSignalr = !string.IsNullOrEmpty(Url);
 
             try
             {
-                var replaceSetting = ConfigurationManager.AppSettings["jabber:replace-domain"];
+                var replaceSetting = configuration["jabber:replace-domain"];
                 if (!string.IsNullOrEmpty(replaceSetting))
                 {
                     JabberReplaceDomain = true;
@@ -79,11 +90,6 @@ namespace ASC.Core.Notify.Signalr
             }
         }
 
-        public SignalrServiceClient(string hub)
-        {
-            this.hub = hub.Trim('/');
-        }
-
         public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
             string domain)
         {
@@ -91,12 +97,12 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
                 var tenant = tenantId == -1
-                    ? CoreContext.TenantManager.GetTenant(domain)
-                    : CoreContext.TenantManager.GetTenant(tenantId);
+                    ? TenantManager.GetTenant(domain)
+                    : TenantManager.GetTenant(tenantId);
                 var isTenantUser = callerUserName == string.Empty;
                 var message = new MessageClass
                 {
-                    UserName = isTenantUser ? tenant.GetTenantDomain() : callerUserName,
+                    UserName = isTenantUser ? tenant.GetTenantDomain(CoreSettings) : callerUserName,
                     Text = messageText
                 };
 
@@ -114,11 +120,11 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
 
-                var tenant = CoreContext.TenantManager.GetTenant(domain);
+                var tenant = TenantManager.GetTenant(domain);
 
                 var message = new MessageClass
                 {
-                    UserName = tenant.GetTenantDomain(),
+                    UserName = tenant.GetTenantDomain(CoreSettings),
                     Text = chatRoomName
                 };
 
@@ -138,7 +144,7 @@ namespace ASC.Core.Notify.Signalr
 
                 if (tenantId == -1)
                 {
-                    tenantId = CoreContext.TenantManager.GetTenant(domain).TenantId;
+                    tenantId = TenantManager.GetTenant(domain).TenantId;
                 }
 
                 MakeRequest("setState", new { tenantId, from, state });
@@ -167,7 +173,7 @@ namespace ASC.Core.Notify.Signalr
             {
                 domain = ReplaceDomain(domain);
 
-                var tenant = CoreContext.TenantManager.GetTenant(domain);
+                var tenant = TenantManager.GetTenant(domain);
 
                 MakeRequest("sendUnreadCounts", new { tenantId = tenant.TenantId, unreadCounts });
             }
@@ -253,7 +259,7 @@ namespace ASC.Core.Notify.Signalr
         {
             try
             {
-                var numberRoom = CoreContext.TenantManager.GetCurrentTenant().TenantId + numberId;
+                var numberRoom = TenantManager.GetCurrentTenant().TenantId + numberId;
                 MakeRequest("reload", new { numberRoom, agentId });
             }
             catch (Exception error)
@@ -341,7 +347,7 @@ namespace ASC.Core.Notify.Signalr
             return string.Format("{0}/controller/{1}/{2}", Url.TrimEnd('/'), hub, method);
         }
 
-        public static string CreateAuthToken(string pkey = "socketio")
+        public string CreateAuthToken(string pkey = "socketio")
         {
             using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(CoreMachineKey));
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");

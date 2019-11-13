@@ -28,32 +28,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
+
 using UAParser;
+
 using IsolationLevel = System.Data.IsolationLevel;
 
 namespace ASC.MessagingSystem.DbSender
 {
-    internal class MessagesRepository
+    public class MessagesRepository
     {
-        private const string MessagesDbId = "default";
         private static DateTime lastSave = DateTime.UtcNow;
-        private static readonly TimeSpan CacheTime;
-        private static readonly IDictionary<string, EventMessage> Cache;
+        private readonly TimeSpan CacheTime;
+        private readonly IDictionary<string, EventMessage> Cache;
         private static Parser Parser { get; set; }
-        private static readonly Timer Timer;
-        private static bool timerStarted;
+        public DbRegistry DbRegistry { get; }
+
+        private readonly Timer Timer;
+        private bool timerStarted;
 
         private const string LoginEventsTable = "login_events";
         private const string AuditEventsTable = "audit_events";
-        private static readonly Timer ClearTimer;
+        private readonly Timer ClearTimer;
 
-        static MessagesRepository()
+        public ILog Log { get; set; }
+        public IServiceProvider ServiceProvider { get; }
+
+        public MessagesRepository(IServiceProvider serviceProvider, IOptionsMonitor<ILog> options)
         {
             CacheTime = TimeSpan.FromMinutes(1);
             Cache = new Dictionary<string, EventMessage>();
@@ -63,14 +74,17 @@ namespace ASC.MessagingSystem.DbSender
 
             ClearTimer = new Timer(DeleteOldEvents);
             ClearTimer.Change(new TimeSpan(0), TimeSpan.FromDays(1));
+            Log = options.CurrentValue;
+            ServiceProvider = serviceProvider;
         }
 
-        public static void Add(EventMessage message)
+        public void Add(EventMessage message)
         {
             // messages with action code < 2000 are related to login-history
             if ((int)message.Action < 2000)
             {
-                using var db = DbManager.FromHttpContext(MessagesDbId);
+                using var scope = ServiceProvider.CreateScope();
+                using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
                 AddLoginEvent(message, db);
                 return;
             }
@@ -91,7 +105,7 @@ namespace ASC.MessagingSystem.DbSender
 
         }
 
-        private static void FlushCache(object state)
+        private void FlushCache(object state)
         {
             List<EventMessage> events = null;
 
@@ -110,7 +124,8 @@ namespace ASC.MessagingSystem.DbSender
 
             if (events == null) return;
 
-            using var db = DbManager.FromHttpContext(MessagesDbId);
+            using var scope = ServiceProvider.CreateScope();
+            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
             using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
@@ -141,7 +156,7 @@ namespace ASC.MessagingSystem.DbSender
                     }
                     catch (Exception e)
                     {
-                        LogManager.GetLogger("ASC").Error("FlushCache " + message.Id, e);
+                        Log.Error("FlushCache " + message.Id, e);
                     }
                 }
 
@@ -245,8 +260,8 @@ namespace ASC.MessagingSystem.DbSender
                        : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
         }
 
-
-        private static void DeleteOldEvents(object state)
+        //TODO: move to external service
+        private void DeleteOldEvents(object state)
         {
             try
             {
@@ -255,13 +270,13 @@ namespace ASC.MessagingSystem.DbSender
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Messaging").Error(ex.Message, ex);
+                Log.Error(ex.Message, ex);
             }
         }
 
-        private static void GetOldEvents(string table, string settings)
+        private void GetOldEvents(string table, string settings)
         {
-            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.LoadForDefaultTenant().ID, TenantAuditSettings.MaxLifeTime);
+            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.Guid, TenantAuditSettings.MaxLifeTime);
             var query = new SqlQuery(table + " t1")
                 .Select("t1.id")
                 .Select(sqlQueryLimit)
@@ -274,7 +289,8 @@ namespace ASC.MessagingSystem.DbSender
 
             do
             {
-                using var dbManager = new DbManager(MessagesDbId, 180000);
+                using var scope = ServiceProvider.CreateScope();
+                var dbManager = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
                 ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
 
                 if (!ids.Any()) return;

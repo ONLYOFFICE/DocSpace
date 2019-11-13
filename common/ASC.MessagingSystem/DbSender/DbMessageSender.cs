@@ -26,22 +26,27 @@
 
 using System;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem.DbSender
 {
     public class DbMessageSender : IMessageSender
     {
-        private readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
 
-        private static bool MessagingEnabled
+        public DbMessageSender(IConfiguration configuration, MessagesRepository messagesRepository, IOptionsMonitor<ILog> options)
         {
-            get
-            {
-                var setting = ConfigurationManager.AppSettings["messaging:enabled"];
-                return !string.IsNullOrEmpty(setting) && setting == "true";
-            }
+            var setting = configuration["messaging:enabled"];
+            MessagingEnabled = !string.IsNullOrEmpty(setting) && setting == "true";
+            MessagesRepository = messagesRepository;
+            log = options.Get("ASC.Messaging");
         }
+
+        private MessagesRepository MessagesRepository { get; }
+        private bool MessagingEnabled { get; }
 
 
         public void Send(EventMessage message)
@@ -58,6 +63,17 @@ namespace ASC.MessagingSystem.DbSender
             {
                 log.Error("Failed to send a message", ex);
             }
+        }
+    }
+
+    public static class DbMessageSenderExtension
+    {
+        public static IServiceCollection AddDbMessageSenderService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DbMessageSender>();
+            services.TryAddSingleton<MessagesRepository>();
+
+            return services;
         }
     }
 }

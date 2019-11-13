@@ -31,25 +31,39 @@ using ASC.Common.Logging;
 using ASC.MessagingSystem.DbSender;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
 {
     public class MessageService
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
         private readonly IMessageSender sender;
         private readonly HttpRequest request;
 
+        private MessageFactory MessageFactory { get; }
+        private MessagePolicy MessagePolicy { get; }
 
-        public MessageService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public MessageService(
+            IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            MessageFactory messageFactory,
+            DbMessageSender sender,
+            MessagePolicy messagePolicy,
+            IOptionsMonitor<ILog> options)
         {
             if (configuration["messaging:enabled"] != "true")
             {
                 return;
             }
 
-            sender = new DbMessageSender();
+            this.sender = sender;
+            MessagePolicy = messagePolicy;
             request = httpContextAccessor?.HttpContext?.Request;
+            MessageFactory = messageFactory;
+            log = options.CurrentValue;
         }
 
         #region HttpRequest
@@ -270,6 +284,20 @@ namespace ASC.MessagingSystem
             if (!MessagePolicy.Check(message)) return;
 
             sender.Send(message);
+        }
+    }
+
+    public static class MessageServiceExtension
+    {
+        public static IServiceCollection AddMessageServiceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MessageService>();
+
+            return services
+                .AddMessagePolicyService()
+                .AddHttpContextAccessor()
+                .AddDbMessageSenderService()
+                .AddMessageFactoryService();
         }
     }
 }

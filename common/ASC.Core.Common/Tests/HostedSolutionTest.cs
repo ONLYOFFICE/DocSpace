@@ -30,15 +30,17 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using ASC.Common.Utils;
     using ASC.Core.Tenants;
+    using Microsoft.Extensions.Configuration;
     using NUnit.Framework;
 
     [TestFixture]
     public class HostedSolutionTest
     {
+        private IConfiguration Configuration { get; set; }
         [Test]
         public void FindTenants()
         {
-            var h = new HostedSolution(ConfigurationManager.ConnectionStrings["core"]);
+            var h = new HostedSolution(null, null, null, null, Configuration.GetConnectionStrings("core"), null, null);
             var tenants = h.FindTenants("76ff727b-f987-4871-9834-e63d4420d6e9");
             Assert.AreNotEqual(0, tenants.Count);
         }
@@ -53,13 +55,13 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void RegionsTest()
         {
-            var regionSerice = new MultiRegionHostedSolution("site");
+            var regionSerice = new MultiRegionHostedSolution("site", null, null, null, null, null, null, null, null);
 
             var t1 = regionSerice.GetTenant("teamlab.com", 50001);
-            Assert.AreEqual("alias_test2.teamlab.com", t1.TenantDomain);
+            Assert.AreEqual("alias_test2.teamlab.com", t1.GetTenantDomain(null));
 
             var t2 = regionSerice.GetTenant("teamlab.eu.com", 50001);
-            Assert.AreEqual("tscherb.teamlab.eu.com", t2.TenantDomain);
+            Assert.AreEqual("tscherb.teamlab.eu.com", t2.GetTenantDomain(null));
         }
     }
 }

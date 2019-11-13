@@ -36,15 +36,15 @@ namespace ASC.Common.Threading
 
         public DistributedTaskCache DistributedTaskCache { get; internal set; }
 
-        public string InstanseId
+        public string InstanceId
         {
             get
             {
-                return DistributedTaskCache.InstanseId;
+                return DistributedTaskCache.InstanceId;
             }
             set
             {
-                DistributedTaskCache.InstanseId = value;
+                DistributedTaskCache.InstanceId = value;
             }
         }
         public string Id

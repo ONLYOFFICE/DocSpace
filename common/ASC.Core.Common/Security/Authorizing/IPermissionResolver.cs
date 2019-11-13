@@ -25,18 +25,17 @@
 
 
 using ASC.Common.Security.Authorizing;
-using ASC.Core.Tenants;
 
 namespace ASC.Common.Security
 {
     public interface IPermissionResolver
     {
-        bool Check(Tenant tenant, ISubject subject, params IAction[] actions);
+        bool Check(ISubject subject, params IAction[] actions);
 
-        bool Check(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
+        bool Check(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
 
-        void Demand(Tenant tenant, ISubject subject, params IAction[] actions);
+        void Demand(ISubject subject, params IAction[] actions);
 
-        void Demand(Tenant tenant, ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
+        void Demand(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions);
     }
 }

@@ -26,8 +26,14 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Caching;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -66,8 +72,15 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public YandexLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public YandexLoginProvider(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -79,7 +92,7 @@ namespace ASC.FederatedLogin.LoginProviders
             return RequestProfile(accessToken);
         }
 
-        private static LoginProfile RequestProfile(string accessToken)
+        private LoginProfile RequestProfile(string accessToken)
         {
             var yandexProfile = RequestHelper.PerformRequest(YandexProfileUrl + "?format=json&oauth_token=" + accessToken);
             var loginProfile = ProfileFromYandex(yandexProfile);
@@ -87,12 +100,12 @@ namespace ASC.FederatedLogin.LoginProviders
             return loginProfile;
         }
 
-        private static LoginProfile ProfileFromYandex(string strProfile)
+        private LoginProfile ProfileFromYandex(string strProfile)
         {
             var jProfile = JObject.Parse(strProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 EMail = jProfile.Value<string>("default_email"),
                 Id = jProfile.Value<string>("id"),

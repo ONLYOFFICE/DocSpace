@@ -3,12 +3,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using Confluent.Kafka;
 
 using Google.Protobuf;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
 {
@@ -24,26 +25,20 @@ namespace ASC.Common.Caching
         private ProtobufDeserializer<T> ValueDeserializer { get; } = new ProtobufDeserializer<T>();
         private ProtobufSerializer<AscCacheItem> KeySerializer { get; } = new ProtobufSerializer<AscCacheItem>();
         private ProtobufDeserializer<AscCacheItem> KeyDeserializer { get; } = new ProtobufDeserializer<AscCacheItem>();
-        private IProducer<AscCacheItem, T> Producer { get; }
+        private IProducer<AscCacheItem, T> Producer { get; set; }
         private Guid Key { get; set; }
-        public KafkaCache()
+
+        public KafkaCache(IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
-            Log = LogManager.GetLogger("ASC");
+            Log = options.CurrentValue;
             Cts = new ConcurrentDictionary<string, CancellationTokenSource>();
             Actions = new ConcurrentDictionary<string, Action<T>>();
             Key = Guid.NewGuid();
 
-            var settings = ConfigurationManager.GetSetting<KafkaSettings>("kafka");
+            var settings = configuration.GetSetting<KafkaSettings>("kafka");
             if (settings != null && !string.IsNullOrEmpty(settings.BootstrapServers))
             {
                 ClientConfig = new ClientConfig { BootstrapServers = settings.BootstrapServers };
-
-                var config = new ProducerConfig(ClientConfig);
-                Producer = new ProducerBuilder<AscCacheItem, T>(config)
-                .SetErrorHandler((_, e) => Log.Error(e))
-                .SetKeySerializer(KeySerializer)
-                .SetValueSerializer(ValueSerializer)
-                .Build();
             }
             else
             {
@@ -62,6 +57,15 @@ namespace ASC.Common.Caching
 
             try
             {
+                if (Producer == null)
+                {
+                    Producer = new ProducerBuilder<AscCacheItem, T>(new ProducerConfig(ClientConfig))
+                    .SetErrorHandler((_, e) => Log.Error(e))
+                    .SetKeySerializer(KeySerializer)
+                    .SetValueSerializer(ValueSerializer)
+                    .Build();
+                }
+
                 var channelName = GetChannelName(cacheNotifyAction);
 
                 if (Actions.TryGetValue(channelName, out var onchange))
@@ -171,7 +175,7 @@ namespace ASC.Common.Caching
         {
             if (!disposedValue)
             {
-                if (disposing)
+                if (disposing && Producer != null)
                 {
                     Producer.Dispose();
                 }

@@ -25,8 +25,6 @@
 
 
 using System;
-using System.IO;
-using ASC.Data.Storage;
 //using ASC.Web.Core.Client.HttpHandlers;
 using ASC.Web.Core.WebZones;
 
@@ -62,12 +60,5 @@ namespace ASC.Web.Core
         Guid IWebItem.ID { get { return ProductID; } }
 
         public abstract string ApiURL { get; }
-
-        //public virtual ClientScriptLocalization ClientScriptLocalization { get; protected set; }
-
-        public string GetResourcePath(string relativePath)
-        {
-            return WebPath.GetPath(Path.Combine(StartURL, relativePath));
-        }
     }
 }

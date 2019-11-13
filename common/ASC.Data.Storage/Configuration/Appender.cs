@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Utils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Data.Storage.Configuration
 {
-    public static class StorageConfigFactory
+    public static class StorageConfigExtension
     {
         public static IServiceCollection AddStorage(this IServiceCollection services)
         {
-            return services.AddSingleton(r => ConfigurationManager.GetSetting<Storage>("Storage"));
+            services.TryAddSingleton(r => r.GetService<IConfiguration>().GetSetting<Storage>("Storage"));
+            return services;
         }
     }
 

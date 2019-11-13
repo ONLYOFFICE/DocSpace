@@ -29,7 +29,6 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
-    using ASC.Common.Utils;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
     using ASC.Core.Users;
@@ -44,7 +43,7 @@ namespace ASC.Core.Common.Tests
 
         public DbTenantServiceTest()
         {
-            userService = new DbUserService(ConfigurationManager.ConnectionStrings["core"]);
+            userService = new DbUserService(null);
         }
 
 
@@ -72,8 +71,8 @@ namespace ASC.Core.Common.Tests
             t2.TrustedDomains.Add(null);
             t2.TrustedDomains.Add("microsoft");
 
-            Service.SaveTenant(t1);
-            Service.SaveTenant(t2);
+            Service.SaveTenant(null, t1);
+            Service.SaveTenant(null, t2);
 
             var tenants = Service.GetTenants(default);
             CollectionAssert.Contains(tenants.ToList(), t1);
@@ -83,7 +82,7 @@ namespace ASC.Core.Common.Tests
             CompareTenants(t, t1);
 
             t1.Version = 2;
-            Service.SaveTenant(t1);
+            Service.SaveTenant(null, t1);
             t = Service.GetTenant(t1.TenantId);
             CompareTenants(t, t1);
 
@@ -98,7 +97,7 @@ namespace ASC.Core.Common.Tests
 
 
             t1 = new Tenant("nct5nct5");
-            Service.SaveTenant(t1);
+            Service.SaveTenant(null, t1);
 
             var user = new UserInfo
             {
@@ -135,7 +134,7 @@ namespace ASC.Core.Common.Tests
             ValidateDomain("abcdef", null);
 
             var t = new Tenant("nct5nct5") { MappedDomain = "nct5nct6" };
-            t = Service.SaveTenant(t);
+            t = Service.SaveTenant(null, t);
             ValidateDomain("nct5nct5", typeof(TenantAlreadyExistsException));
             ValidateDomain("NCT5NCT5", typeof(TenantAlreadyExistsException));
             ValidateDomain("nct5nct6", typeof(TenantAlreadyExistsException));
@@ -151,7 +150,7 @@ namespace ASC.Core.Common.Tests
             }
 
             t.MappedDomain = "abc.defg";
-            _ = Service.SaveTenant(t);
+            _ = Service.SaveTenant(null, t);
             Service.RemoveTenant(Tenant);
         }
 
@@ -182,7 +181,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(t1.PaymentId, t2.PaymentId);
             Assert.AreEqual(t1.Status, t2.Status);
             Assert.AreEqual(t1.TenantAlias, t2.TenantAlias);
-            Assert.AreEqual(t1.TenantDomain, t2.TenantDomain);
+            Assert.AreEqual(t1.GetTenantDomain(null), t2.GetTenantDomain(null));
             Assert.AreEqual(t1.TenantId, t2.TenantId);
             Assert.AreEqual(t1.TrustedDomains, t2.TrustedDomains);
             Assert.AreEqual(t1.TrustedDomainsType, t2.TrustedDomainsType);

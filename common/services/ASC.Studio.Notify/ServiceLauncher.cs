@@ -24,13 +24,13 @@
 */
 
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ASC.Common.Data;
 using ASC.Web.Core;
 using ASC.Web.Studio.Core.Notify;
-
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Notify
@@ -39,17 +39,18 @@ namespace ASC.Notify
     {
         public WebItemManager WebItemManager { get; }
         public StudioNotifyServiceSender StudioNotifyServiceSender { get; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender)
+        public ServiceLauncher(WebItemManager webItemManager, StudioNotifyServiceSender studioNotifyServiceSender, IServiceProvider serviceProvider)
         {
             WebItemManager = webItemManager;
             StudioNotifyServiceSender = studioNotifyServiceSender;
+            ServiceProvider = serviceProvider;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            DbRegistry.Configure();
-            NotifyConfiguration.Configure();
+            NotifyConfiguration.Configure(ServiceProvider);
             WebItemManager.LoadItems();
 
             StudioNotifyServiceSender.RegisterSendMethod();
@@ -60,6 +61,20 @@ namespace ASC.Notify
         public Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    public static class ServiceLauncherExtension
+    {
+        public static IServiceCollection AddServiceLauncher(this IServiceCollection services)
+        {
+            services.TryAddSingleton<StudioNotifyServiceSender>();
+
+            return services
+                .AddWebItemManager()
+                .AddStudioNotifyServiceSender()
+                .AddNotifyConfiguration()
+                ;
         }
     }
 }

@@ -24,19 +24,21 @@
 */
 
 
+using ASC.Core;
 using ASC.Core.Notify;
-using ASC.Core.Tenants;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.PublicResources;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
-    class StudioNotifySource : NotifySource
+    public class StudioNotifySource : NotifySource
     {
-        public StudioNotifySource()
-            : base("asc.web.studio")
+        public StudioNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : base("asc.web.studio", userManager, recipientsProvider, subscriptionManager)
         {
         }
 
@@ -182,14 +184,14 @@ namespace ASC.Web.Studio.Core.Notify
                 this.provider = provider;
             }
 
-            public object GetSubscriptionRecord(Tenant tenant, INotifyAction action, IRecipient recipient, string objectID)
+            public object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID)
             {
-                return provider.GetSubscriptionRecord(tenant, GetAdminAction(action), recipient, objectID);
+                return provider.GetSubscriptionRecord(GetAdminAction(action), recipient, objectID);
             }
 
-            public string[] GetSubscriptions(Tenant tenant, INotifyAction action, IRecipient recipient, bool checkSubscription = true)
+            public string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscription = true)
             {
-                return provider.GetSubscriptions(tenant, GetAdminAction(action), recipient, checkSubscription);
+                return provider.GetSubscriptions(GetAdminAction(action), recipient, checkSubscription);
             }
 
             public void Subscribe(INotifyAction action, string objectID, IRecipient recipient)
@@ -197,9 +199,9 @@ namespace ASC.Web.Studio.Core.Notify
                 provider.Subscribe(GetAdminAction(action), objectID, recipient);
             }
 
-            public void UnSubscribe(Tenant tenant, INotifyAction action, IRecipient recipient)
+            public void UnSubscribe(INotifyAction action, IRecipient recipient)
             {
-                provider.UnSubscribe(tenant, GetAdminAction(action), recipient);
+                provider.UnSubscribe(GetAdminAction(action), recipient);
             }
 
             public void UnSubscribe(INotifyAction action)
@@ -222,14 +224,14 @@ namespace ASC.Web.Studio.Core.Notify
                 provider.UpdateSubscriptionMethod(GetAdminAction(action), recipient, senderNames);
             }
 
-            public IRecipient[] GetRecipients(int tenantId, INotifyAction action, string objectID)
+            public IRecipient[] GetRecipients(INotifyAction action, string objectID)
             {
-                return provider.GetRecipients(tenantId, GetAdminAction(action), objectID);
+                return provider.GetRecipients(GetAdminAction(action), objectID);
             }
 
-            public string[] GetSubscriptionMethod(Tenant tenant, INotifyAction action, IRecipient recipient)
+            public string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient)
             {
-                return provider.GetSubscriptionMethod(tenant, GetAdminAction(action), recipient);
+                return provider.GetSubscriptionMethod(GetAdminAction(action), recipient);
             }
 
             public bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID)
@@ -253,6 +255,19 @@ namespace ASC.Web.Studio.Core.Notify
                     return action;
                 }
             }
+        }
+    }
+
+    public static class StudioNotifySourceExtension
+    {
+        public static IServiceCollection AddStudioNotifySourceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StudioNotifySource>();
+
+            return services
+                .AddUserManagerService()
+                .AddRecipientProviderImplService()
+                .AddSubscriptionManagerService();
         }
     }
 }

@@ -28,25 +28,37 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Common.Module;
 using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
     class TariffSyncService : ITariffSyncService, IServiceController
     {
-        private readonly static ILog log = LogManager.GetLogger("ASC");
+        private readonly ILog log;
         private readonly TariffSyncServiceSection config;
         private readonly IDictionary<int, IEnumerable<TenantQuota>> quotaServices = new Dictionary<int, IEnumerable<TenantQuota>>();
         private Timer timer;
 
 
-        public TariffSyncService()
+        public TariffSyncService(
+            IServiceProvider serviceProvider,
+            IConfiguration configuration,
+            DbQuotaService dbQuotaService,
+            IOptionsMonitor<ILog> options)
         {
             config = TariffSyncServiceSection.GetSection();
+            ServiceProvider = serviceProvider;
+            Configuration = configuration;
+            DbQuotaService = dbQuotaService;
+            log = options.CurrentValue;
         }
 
 
@@ -57,9 +69,9 @@ namespace ASC.Core.Billing
             {
                 if (!quotaServices.ContainsKey(version))
                 {
-                    var cs = ConfigurationManager.ConnectionStrings[config.ConnectionStringName + version] ??
-                             ConfigurationManager.ConnectionStrings[config.ConnectionStringName];
-                    quotaServices[version] = new DbQuotaService(cs).GetTenantQuotas();
+                    var cs = Configuration.GetConnectionStrings(config.ConnectionStringName + version) ??
+                             Configuration.GetConnectionStrings(config.ConnectionStringName);
+                    quotaServices[version] = DbQuotaService.GetTenantQuotas();
                 }
                 return quotaServices[version];
             }
@@ -71,6 +83,10 @@ namespace ASC.Core.Billing
         {
             get { return "Tariffs synchronizer"; }
         }
+
+        public IServiceProvider ServiceProvider { get; }
+        public IConfiguration Configuration { get; }
+        public DbQuotaService DbQuotaService { get; }
 
         public void Start()
         {
@@ -94,31 +110,55 @@ namespace ASC.Core.Billing
         {
             try
             {
-                var tenant = CoreContext.TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
-                if (tenant != null)
-                {
-                    using var wcfClient = new TariffSyncClient();
-                    var quotaService = new DbQuotaService(ConfigurationManager.ConnectionStrings[config.ConnectionStringName]);
+                var scope = ServiceProvider.CreateScope();
+                var tariffSync = scope.ServiceProvider.GetService<TariffSync>();
+                tariffSync.Sync();
 
-                    var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
-                    // save new
-                    foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreContext.Configuration.GetKey(tenant.TenantId)))
-                    {
-                        quotaService.SaveTenantQuota(tariff);
-                        oldtariffs.Remove(tariff.Id);
-                    }
-
-                    // remove old
-                    foreach (var tariff in oldtariffs.Values)
-                    {
-                        tariff.Visible = false;
-                        quotaService.SaveTenantQuota(tariff);
-                    }
-                }
             }
             catch (Exception error)
             {
                 log.Error(error);
+            }
+        }
+    }
+
+    class TariffSync
+    {
+        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry, CoreSettings coreSettings, DbQuotaService dbQuotaService)
+        {
+            TenantManager = tenantManager;
+            DbRegistry = dbRegistry;
+            CoreSettings = coreSettings;
+            DbQuotaService = dbQuotaService;
+        }
+
+        public TenantManager TenantManager { get; }
+        public DbRegistry DbRegistry { get; }
+        public CoreSettings CoreSettings { get; }
+        public DbQuotaService DbQuotaService { get; }
+
+        public void Sync()
+        {
+            var tenant = TenantManager.GetTenants(false).OrderByDescending(t => t.Version).FirstOrDefault();
+            if (tenant != null)
+            {
+                using var wcfClient = new TariffSyncClient();
+                var quotaService = DbQuotaService;
+
+                var oldtariffs = quotaService.GetTenantQuotas().ToDictionary(t => t.Id);
+                // save new
+                foreach (var tariff in wcfClient.GetTariffs(tenant.Version, CoreSettings.GetKey(tenant.TenantId)))
+                {
+                    quotaService.SaveTenantQuota(tariff);
+                    oldtariffs.Remove(tariff.Id);
+                }
+
+                // remove old
+                foreach (var tariff in oldtariffs.Values)
+                {
+                    tariff.Visible = false;
+                    quotaService.SaveTenantQuota(tariff);
+                }
             }
         }
     }

@@ -26,29 +26,31 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Utils;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class ProviderManager
     {
-        public static ILoginProvider GetLoginProvider(string providerType)
+        public static ILoginProvider GetLoginProvider(string providerType, Signature signature, InstanceCrypto instanceCrypto)
         {
             return providerType == ProviderConstants.OpenId
-                ? new OpenIdLoginProvider()
+                ? new OpenIdLoginProvider(signature, instanceCrypto)
                 : ConsumerFactory.GetByName(providerType) as ILoginProvider;
         }
 
-        public static LoginProfile Process(string providerType, HttpContext context, IDictionary<string, string> @params)
+        public static LoginProfile Process(string providerType, Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IDictionary<string, string> @params)
         {
-            return GetLoginProvider(providerType).ProcessAuthoriztion(context, @params);
+            return GetLoginProvider(providerType, signature, instanceCrypto).ProcessAuthoriztion(context, @params);
         }
 
-        public static LoginProfile GetLoginProfile(string providerType, string accessToken)
+        public static LoginProfile GetLoginProfile(string providerType, string accessToken, Signature signature, InstanceCrypto instanceCrypto)
         {
-            var consumer = GetLoginProvider(providerType);
+            var consumer = GetLoginProvider(providerType, signature, instanceCrypto);
             if (consumer == null) throw new ArgumentException("Unknown provider type", "providerType");
 
             try
@@ -57,7 +59,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(signature, instanceCrypto, ex);
             }
         }
     }
