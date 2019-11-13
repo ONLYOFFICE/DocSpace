@@ -7,6 +7,7 @@
 **/node_modules/
 **/storybook-static/
 /web/ASC.Web.Components/dist
+/web/ASC.Web.Common/dist
 /build/deploy
 *.log
 /packages/asc-web-components
