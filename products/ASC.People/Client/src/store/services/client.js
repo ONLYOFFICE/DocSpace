@@ -1,5 +1,6 @@
 import axios from "axios";
 import { AUTH_KEY } from "../../helpers/constants.js";
+//import { toastr } from "asc-web-components";
 
 const PREFIX = "api";
 const VERSION = "2.0";
@@ -22,6 +23,9 @@ client.interceptors.response.use(
     return response;
   },
   error => {
+    if(error.isAxiosError)
+      return error;
+
     if (error.response.status === 401) {
       window.location.href = "/login/error=unauthorized";
     }
@@ -44,9 +48,17 @@ export function setAuthorizationToken(token) {
 }
 
 const checkResponseError = res => {
-  if (res && res.data && res.data.error) {
+  if(!res) return;
+
+  if (res.data && res.data.error) {
     console.error(res.data.error);
     throw new Error(res.data.error.message);
+  }
+
+  if(res.isAxiosError && res.message) {
+    console.error(res.message);
+    //toastr.error(res.message);
+    throw new Error(res.message);
   }
 };
 
@@ -57,11 +69,14 @@ const checkResponseError = res => {
 export const request = function(options) {
   const onSuccess = function(response) {
     checkResponseError(response);
-    return response.data
-      ? response.data.hasOwnProperty("total")
-        ? { total: +response.data.total, items: response.data.response }
-        : response.data.response
-      : null;
+    
+    if(!response || !response.data || response.isAxiosError)
+      return null;
+
+    if(response.data.hasOwnProperty("total"))
+      return { total: +response.data.total, items: response.data.response };
+
+    return response.data.response;
   };
   const onError = function(error) {
     console.error("Request Failed:", error.config);
