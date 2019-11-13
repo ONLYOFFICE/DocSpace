@@ -1,8 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-//import Cookies from "universal-cookie";
-import setAuthorizationToken from "./store/services/setAuthorizationToken";
 import { AUTH_KEY } from "./helpers/constants";
 import store from "./store/store";
 import "./custom.scss";
@@ -11,11 +9,9 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { setIsLoaded, getUserInfo } from "./store/auth/actions";
 
-//var token = new Cookies().get(AUTH_KEY);
 const token = localStorage.getItem(AUTH_KEY);
 
 if (token) {
-  setAuthorizationToken(token);
   store.dispatch(getUserInfo);
 }
 else {

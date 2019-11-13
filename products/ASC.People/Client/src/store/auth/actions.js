@@ -73,7 +73,7 @@ export async function getUserInfo(dispatch) {
 
 export function logout() {
   return dispatch => {
-    setAuthorizationToken();
-    return dispatch(setLogout());
-  };
-}
+      return api.logout()
+          .then(() => dispatch(setLogout()));
+  }
+};

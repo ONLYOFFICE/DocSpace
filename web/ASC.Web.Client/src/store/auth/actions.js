@@ -140,14 +140,11 @@ export function login(user, pass) {
 };
 
 
-export function logout(dispatch = null) {
-    return dispatch ? () => {
-        setAuthorizationToken();
-        return Promise.resolve(dispatch(setLogout()));
-    } : dispatch => {
-        setAuthorizationToken();
-        return Promise.resolve(dispatch(setLogout()));
-    };
+export function logout() {
+    return dispatch => {
+        return api.logout()
+            .then(() => dispatch(setLogout()));
+    }
 };
 
 export function getConfirmationInfo(token, type) {
