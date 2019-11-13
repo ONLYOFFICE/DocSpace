@@ -33,7 +33,7 @@ export function getModulesList() {
     method: "get",
     url: "/modules"
   }).then(modules => {
-    return axios.all(
+    return modules && axios.all(
       modules.map(m =>
         request({
           method: "get",
