@@ -7,7 +7,9 @@ export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
 export const SET_OWNER = "SET_OWNER";
 export const SET_FILTER = "SET_FILTER";
-export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
+export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
+export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
+export const SET_LOGO_URLS = "SET_LOGO_URLS";
 
 export function setUsers(options) {
   return {
@@ -37,10 +39,24 @@ export function setFilter(filter) {
   };
 }
 
-export function setGreetingSettings(title) {
+export function setLogoText(text) {
   return {
-    type: SET_GREETING_SETTINGS,
-    title
+    type: SET_LOGO_TEXT,
+    text
+  };
+}
+
+export function setLogoSizes(sizes) {
+  return {
+    type: SET_LOGO_SIZES,
+    sizes
+  };
+}
+
+export function setLogoUrls(urls) {
+  return {
+    type: SET_LOGO_URLS,
+    urls
   };
 }
 
@@ -107,18 +123,29 @@ export function fetchPeople(filter) {
   };
 }
 
-export function setGreetingTitle(greetingTitle) {
+export function getWhiteLabelLogoText() {
   return dispatch => {
-    return api.setGreetingSettings(greetingTitle).then(res => {
-      dispatch(setGreetingSettings(greetingTitle));
+    return api.getLogoText()
+    .then(res => {
+      dispatch(setLogoText(res));
     });
   };
-}
+};
 
-export function restoreGreetingTitle() {
+export function getWhiteLabelLogoSizes() {
   return dispatch => {
-    return api.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
+    return api.getLogoSizes()
+    .then(res => {
+      dispatch(setLogoSizes(res));
     });
   };
-}
+};
+
+export function getWhiteLabelLogoUrls() {
+  return dispatch => {
+    return api.getLogoUrls()
+    .then(res => {
+      dispatch(setLogoUrls(Object.values(res)));
+    });
+  };
+};

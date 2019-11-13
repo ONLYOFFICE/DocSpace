@@ -93,6 +93,7 @@
         "GreetingTitle",
         "RestoreDefaultButton",
         "SuccessfullySaveGreetingSettingsMessage",
+        "ChangeLogoButton",
         "Employees"
       ],
       "FeedResource": [
@@ -107,6 +108,16 @@
       "AuditResource": [
         "LoginHistoryNav",
         "AuditTrailNav"
+      ],
+      "WhiteLabelResource": [
+        "LogoSettings",
+        "CompanyNameForCanvasLogo",
+        "UseAsLogoButton",
+        "LogoLightSmall",
+        "LogoDark",
+        "LogoFavicon",
+        "BrowserNoCanvasSupport",
+        "LogoDocsEditor"
       ],
       "UserControlsCommonResource": [
         "NextPage",

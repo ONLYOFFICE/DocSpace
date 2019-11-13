@@ -229,3 +229,23 @@ export function restoreGreetingSettings() {
     url: `/settings/greetingsettings/restore.json`
   });
 }
+
+export function getLogoText() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logotext.json`
+  });
+}
+export function getLogoSizes() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/sizes.json`
+  });
+}
+
+export function getLogoUrls() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logos.json`
+  });
+}

@@ -1,9 +1,15 @@
 
-import { SET_USERS, SET_ADMINS, SET_OWNER, SET_GREETING_SETTINGS, SET_FILTER } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS } from "./actions";
 import Filter from "./filter";
 
 const initialState = {
-
+  common: {
+    whiteLabel: {
+      logoSizes: [],
+      logoText: null,
+      logoUrls: []
+    }
+  },
   security: {
     accessRight: {
       options: [],
@@ -12,8 +18,6 @@ const initialState = {
       filter: Filter.getDefault()
     }
   },
-  
-  greetingSettings: ''
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -23,37 +27,55 @@ const peopleReducer = (state = initialState, action) => {
         security: Object.assign({}, state.security, {
           accessRight: Object.assign({}, state.security.accessRight, {
             options: action.options
-          })          
+          })
         })
       });
     case SET_ADMINS:
-        return Object.assign({}, state, {
-          security: Object.assign({}, state.security, {
-            accessRight: Object.assign({}, state.security.accessRight, {
-              admins: action.admins
-            })          
-          })
-        });
-    case SET_OWNER:
-        return Object.assign({}, state, {
-          security: Object.assign({}, state.security, {
-            accessRight: Object.assign({}, state.security.accessRight, {
-              owner: action.owner
-            })          
-          })
-        });
-    case SET_FILTER:
-        return Object.assign({}, state, {
-          security: Object.assign({}, state.security, {
-            accessRight: Object.assign({}, state.security.accessRight, {
-              filter: action.filter
-            })          
-          })
-        });
-    case SET_GREETING_SETTINGS:
       return Object.assign({}, state, {
-        greetingSettings: action.title
+        security: Object.assign({}, state.security, {
+          accessRight: Object.assign({}, state.security.accessRight, {
+            admins: action.admins
+          })
+        })
       });
+    case SET_OWNER:
+      return Object.assign({}, state, {
+        security: Object.assign({}, state.security, {
+          accessRight: Object.assign({}, state.security.accessRight, {
+            owner: action.owner
+          })
+        })
+      });
+    case SET_FILTER:
+      return Object.assign({}, state, {
+        security: Object.assign({}, state.security, {
+          accessRight: Object.assign({}, state.security.accessRight, {
+            filter: action.filter
+          })
+        })
+      });
+
+    case SET_LOGO_TEXT:
+      return Object.assign({}, state, {
+        common: {
+          ...state.common, whiteLabel: { ...state.common.whiteLabel, logoText: action.text }
+        }
+      });
+
+    case SET_LOGO_SIZES:
+      return Object.assign({}, state, {
+        common: {
+          ...state.common, whiteLabel: { ...state.common.whiteLabel, logoSizes: action.sizes, }
+        }
+      });
+
+    case SET_LOGO_URLS:
+      return Object.assign({}, state, {
+        common: {
+          ...state.common, whiteLabel: { ...state.common.whiteLabel, logoUrls: action.urls }
+        }
+      });
+
     default:
       return state;
   }
