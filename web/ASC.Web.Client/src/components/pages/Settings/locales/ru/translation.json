@@ -47,7 +47,16 @@
   "GreetingTitle": "Заголовок",
   "RestoreDefaultButton": "Настройки по умолчанию",
   "SuccessfullySaveGreetingSettingsMessage": "Настройки страницы приветствия успешно сохранены",
-
+  "LogoSettings": "Настройки логотипа портала",
+  "LogoUploadRecommendation": "Рекомендуется использовать изображения в формате <1>PNG</1> с прозрачным фоном",
+  "CompanyNameForCanvasLogo": "Название компании",
+  "UseAsLogoButton": "Использовать как логотип",
+  "LogoLightSmall": "Логотип для шапки портала",
+  "LogoDark": "Логотип для страницы \"О программе\" и страницы входа ",
+  "LogoFavicon": "Иконка сайта",
+  "LogoDocsEditor": "Логотип для шапки редакторов",
+  "ChangeLogoButton": "Сменить логотип",
+  "BrowserNoCanvasSupport": "Ваш браузер не поддерживает тег HTML5 canvas.",
 
 
   "ViewProfilesAndGroups": "Просматривать профили и группы",

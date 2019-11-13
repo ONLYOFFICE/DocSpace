@@ -170,7 +170,7 @@ export function getUserList() {
 export function getListAdmins(filter = Filter.getDefault()) {
   const filterParams = filter.toUrlParams();
   const params =
-    "fields=id,displayName,groups,name,avatarSmall,isOwner,profileUrl,listAdminModules";
+    "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
   return request({
     method: "get",
     url: `/people/filter.json?${filterParams}&${params}`
@@ -181,7 +181,7 @@ export function getAdmins(isParams) {
   let params = "&fields";
   if (isParams) {
     params =
-      "fields=id,displayName,groups,name,avatarSmall,isOwner,profileUrl,listAdminModules";
+      "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
   }
   return request({
     method: "get",
@@ -227,5 +227,25 @@ export function restoreGreetingSettings() {
   return request({
     method: "post",
     url: `/settings/greetingsettings/restore.json`
+  });
+}
+
+export function getLogoText() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logotext.json`
+  });
+}
+export function getLogoSizes() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/sizes.json`
+  });
+}
+
+export function getLogoUrls() {
+  return request({
+    method: "get",
+    url: `/settings/whitelabel/logos.json`
   });
 }

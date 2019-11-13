@@ -20,8 +20,7 @@ class ConfirmRoute extends React.Component {
   componentDidMount() {
     const { forUnauthorized, history } = this.props;
 
-    if (forUnauthorized && new Cookies().get(AUTH_KEY))
-      //TODO: Remove cookie getting after setup on server
+    if (forUnauthorized && localStorage.getItem(AUTH_KEY))
       return history.push(`/error=Access error. You should be unauthorized for performing this action`);
 
     const { location, isAuthenticated } = this.props;
