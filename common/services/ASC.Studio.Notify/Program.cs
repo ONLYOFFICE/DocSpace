@@ -33,7 +33,8 @@ namespace ASC.Studio.Notify
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true);
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {

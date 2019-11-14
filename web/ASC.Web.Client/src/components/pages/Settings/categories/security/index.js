@@ -10,7 +10,7 @@ const Security = () => {
   return (
     <Switch>
       <Route
-        exact
+        //exact
         path={[`${basePath}/accessrights`, basePath]}
         component={AccessRightsSettings}
       />
