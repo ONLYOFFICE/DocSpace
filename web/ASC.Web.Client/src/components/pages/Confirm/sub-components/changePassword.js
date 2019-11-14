@@ -95,6 +95,7 @@ class Form extends React.PureComponent {
       }
 
       changePassword(userId, password, key)
+        .then(() => this.props.logout())
         .then(() => {
           history.push("/");
           toastr.success(this.props.t("ChangePasswordSuccess"));
