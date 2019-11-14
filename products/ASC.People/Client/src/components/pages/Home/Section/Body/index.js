@@ -468,7 +468,7 @@ class SectionBodyContent extends React.PureComponent {
 
     return users.length > 0 ? (
       <>
-        <RowContainer>
+        <RowContainer useReactWindow={false}>
           {users.map(user => {
             const contextOptions = this.getUserContextOptions(user, viewer);
             const contextOptionsProps = !contextOptions.length
