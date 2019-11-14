@@ -177,18 +177,6 @@ export function getListAdmins(filter = Filter.getDefault()) {
   });
 }
 
-export function getAdmins(isParams) {
-  let params = "&fields";
-  if (isParams) {
-    params =
-      "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
-  }
-  return request({
-    method: "get",
-    url: `/people/filter.json?isadministrator=true&${params}`
-  });
-}
-
 export function changeProductAdmin(userId, productId, administrator) {
   return request({
     method: "put",
