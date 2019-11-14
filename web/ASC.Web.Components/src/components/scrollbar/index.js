@@ -36,8 +36,12 @@ const Scrollbar = React.forwardRef((props, ref) => {
     <div {...props} style={{ ...style, ...thumbH }} />
   );
 
+  const renderView = ({ style, ...props }) => (
+    <div {...props} style={{paddingRight: '16px', ...style}} />
+  );
+
   return (
-    <Scrollbars renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} ref={ref} />
+    <Scrollbars renderView={renderView} renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} ref={ref} />
   );
 });
 
