@@ -8,7 +8,8 @@ import {
   ArticleBodyContent
 } from "./Article";
 import { SectionHeaderContent } from './Section';
-import { setCurrentProductId } from '../../../../store/auth/actions';
+import { store } from 'asc-web-common';
+const { setCurrentProductId } = store.auth.actions;
 
 const Layout = ({ currentProductId, setCurrentProductId, language, children }) => {
 

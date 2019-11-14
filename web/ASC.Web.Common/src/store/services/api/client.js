@@ -1,11 +1,10 @@
 import axios from "axios";
-import history from "../../../history";
 import { AUTH_KEY } from "../../../constants";
+//import { toastr } from "asc-web-components";
 
 const PREFIX = "api";
 const VERSION = "2.0";
 const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
-
 
 /**
  * @description axios instance for ajax requests
@@ -13,31 +12,26 @@ const baseURL = `${window.location.origin}/${PREFIX}/${VERSION}`;
 
 const client = axios.create({
   baseURL: baseURL,
-  responseType: 'json',
-  timeout: 30000, // default is `0` (no timeout)
+  responseType: "json",
+  timeout: 30000 // default is `0` (no timeout)
 });
 
 setAuthorizationToken(localStorage.getItem(AUTH_KEY));
 
-/**
-  * @description if any of the API gets 401 status code, this method 
-   calls getAuthToken method to renew accessToken
-  * updates the error configuration and retries all failed requests 
-  again
-*/
 client.interceptors.response.use(
   response => {
     return response;
   },
   error => {
+    if(error.isAxiosError)
+      return error;
+
     if (error.response.status === 401) {
-      //place your reentry code
-      history.push("/login/error=unauthorized");
+      window.location.href = "/login/error=unauthorized";
     }
 
     if (error.response.status === 502) {
-      //toastr.error(error.response);
-      history.push(`/error/${error.response.status}`);
+      window.location.href = `/error/${error.response.status}`;
     }
 
     return error;
@@ -45,21 +39,28 @@ client.interceptors.response.use(
 );
 
 export function setAuthorizationToken(token) {
+  client.defaults.withCredentials = true;
   if (token) {
-    client.defaults.withCredentials = true;
     localStorage.setItem(AUTH_KEY, true);
   } else {
-    client.defaults.withCredentials = false;
     localStorage.clear();
   }
 }
 
-const checkResponseError = (res) => {
-  if (res && res.data && res.data.error) {
-      console.error(res.data.error);
-      throw new Error(res.data.error.message);
+const checkResponseError = res => {
+  if(!res) return;
+
+  if (res.data && res.data.error) {
+    console.error(res.data.error);
+    throw new Error(res.data.error.message);
   }
-}
+
+  if(res.isAxiosError && res.message) {
+    console.error(res.message);
+    //toastr.error(res.message);
+    throw new Error(res.message);
+  }
+};
 
 /**
  * @description wrapper for making ajax requests
@@ -68,13 +69,15 @@ const checkResponseError = (res) => {
 export const request = function(options) {
   const onSuccess = function(response) {
     checkResponseError(response);
-    return response.data
-      ? response.data.hasOwnProperty("total")
-        ? { total: +response.data.total, items: response.data.response }
-        : response.data.response
-      : null;
-  };
+    
+    if(!response || !response.data || response.isAxiosError)
+      return null;
 
+    if(response.data.hasOwnProperty("total"))
+      return { total: +response.data.total, items: response.data.response };
+
+    return response.data.response;
+  };
   const onError = function(error) {
     console.error("Request Failed:", error.config);
     if (error.response) {

@@ -2,9 +2,10 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { AUTH_KEY } from './constants';
 import { connect } from "react-redux";
-import { isAdmin } from "../store/auth/selectors";
 import { Error404 } from "../components/pages/Error";
 import { PageLayout, Loader } from "asc-web-components";
+import { store } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
     const { isAuthenticated, isLoaded, isAdmin, restricted } = rest;

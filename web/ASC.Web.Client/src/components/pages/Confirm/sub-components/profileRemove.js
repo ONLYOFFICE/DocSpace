@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { deleteSelf } from './../../../../store/services/api';
-import { logout } from '../../../../store/auth/actions';
+import { store } from 'asc-web-common';
+const { logout } = store.auth.actions;
 
 const ProfileRemoveContainer = styled.div`
     display: flex;

@@ -6,7 +6,8 @@ import store from './store/store';
 import './custom.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { getUserInfo, getPortalSettings } from './store/auth/actions';
+import { store as commonStore } from 'asc-web-common';
+const { getUserInfo, getPortalSettings } = commonStore.auth.actions;
 
 const token = localStorage.getItem(AUTH_KEY);
 

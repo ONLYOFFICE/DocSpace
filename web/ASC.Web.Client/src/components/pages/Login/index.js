@@ -21,12 +21,14 @@ import {
   HelpButton
 } from "asc-web-components";
 import { connect } from "react-redux";
-import { login } from "../../../store/auth/actions";
+//import { login } from "../../../store/auth/actions";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { sendInstructionsToChangePassword } from "../../../store/services/api";
 import SubModalDialog from "./sub-components/modal-dialog";
+import { store } from 'asc-web-common';
+const { login } = store.auth.actions;
 
 const FormContainer = styled(Container)`
   margin-top: 70px;
