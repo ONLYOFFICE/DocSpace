@@ -13,10 +13,12 @@ using ASC.Employee.Core.Controllers;
 using ASC.Web.Core.Users;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +59,8 @@ namespace ASC.People
 
             var builder = services.AddMvc(config =>
             {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
                 config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
                 config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));

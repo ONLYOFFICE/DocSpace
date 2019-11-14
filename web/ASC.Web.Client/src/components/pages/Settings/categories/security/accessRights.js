@@ -129,12 +129,24 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
+    const url = props.history.location.pathname;
+    const newUrl = url.split("/");
+    const activeStatus = newUrl[newUrl.length - 1];
+
+    let selectedTab = 0;
+    if (activeStatus === "admins") {
+      selectedTab = 1;
+    } else if (activeStatus === "modules") {
+      selectedTab = 2;
+    }
+
     this.state = {
       showSelector: false,
       showFullAdminSelector: false,
       options: [],
       isLoading: false,
-      selectedOptions: []
+      selectedOptions: [],
+      selectedTab
     };
   }
 
@@ -175,8 +187,8 @@ class PureAccessRights extends Component {
   onShowFullAdminGroupSelector = () => {
     this.setState({
       showFullAdminSelector: !this.state.showFullAdminSelector,
-      options: this.props.options, //?
-      selectedOptions: [] //?
+      options: this.props.options,
+      selectedOptions: []
     });
   };
 
@@ -300,23 +312,21 @@ class PureAccessRights extends Component {
   };
 
   onSelectPage = page => {
-    //console.log("onSelectPage", page.key);
-    /*
     const { history } = this.props;
-    switch (page) {
-      case 0:
-        history.push("/owner");
+
+    switch (page.key) {
+      case "0":
+        history.push("/settings/security/accessrights/owner");
         break;
-      case 1:
-        history.push("/admins");
+      case "1":
+        history.push("/settings/security/accessrights/admins");
         break;
-      case 2:
-        history.push("/modules");
+      case "2":
+        history.push("/settings/security/accessrights/modules");
         break;
       default:
         break;
     }
-    */
   };
 
   filterUserSelectorOptions = (options, template) =>
@@ -383,7 +393,8 @@ class PureAccessRights extends Component {
       options,
       selectedOptions,
       isLoading,
-      showFullAdminSelector
+      showFullAdminSelector,
+      selectedTab
     } = this.state;
 
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
@@ -394,7 +405,8 @@ class PureAccessRights extends Component {
     return (
       <MainContainer>
         <TabContainer
-          /*selectedItem={2}*/ isDisabled={isLoading}
+          selectedItem={selectedTab}
+          isDisabled={isLoading}
           onSelect={this.onSelectPage}
         >
           {[
@@ -414,7 +426,7 @@ class PureAccessRights extends Component {
                         size="big"
                         role="owner"
                         userName={owner.userName}
-                        source={owner.avatarSmall}
+                        source={owner.avatar}
                       />
                       <div className="avatar_body">
                         <Text.Body

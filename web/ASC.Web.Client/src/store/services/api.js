@@ -33,7 +33,7 @@ export function getModulesList() {
     method: "get",
     url: "/modules"
   }).then(modules => {
-    return axios.all(
+    return modules && axios.all(
       modules.map(m =>
         request({
           method: "get",
@@ -174,18 +174,6 @@ export function getListAdmins(filter = Filter.getDefault()) {
   return request({
     method: "get",
     url: `/people/filter.json?${filterParams}&${params}`
-  });
-}
-
-export function getAdmins(isParams) {
-  let params = "&fields";
-  if (isParams) {
-    params =
-      "fields=id,displayName,groups,name,avatar,avatarSmall,isOwner,isAdmin,profileUrl,listAdminModules";
-  }
-  return request({
-    method: "get",
-    url: `/people/filter.json?isadministrator=true&${params}`
   });
 }
 

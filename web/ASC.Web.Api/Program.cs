@@ -35,7 +35,8 @@ namespace ASC.Web.Api
                     .AddJsonFile("autofac.products.json")
                     .AddJsonFile("storage.json")
                     .AddJsonFile("kafka.json")
-                    .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true);
+                    .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddEnvironmentVariables();
             });
     }
 }
