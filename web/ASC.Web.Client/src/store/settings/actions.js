@@ -103,11 +103,10 @@ export function fetchPeople(filter) {
           const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
           const owner = getOwner(admins.items);
-          filterData.total = admins.total;
 
           dispatch(setAdmins(admins.items));
           dispatch(setUsers(newOptions));
-          dispatch(setFilter(filterData));
+          dispatch(setFilter(admins.total));
           dispatch(setOwner(owner));
         })
       );
