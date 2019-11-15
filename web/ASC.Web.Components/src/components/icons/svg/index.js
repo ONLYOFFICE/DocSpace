@@ -61,8 +61,6 @@ import OrigCopyIcon from './copy.react.svg';
 import OrigShareEmailIcon from './share.e-mail.react.svg';
 import OrigShareGooglePlusIcon from './share.google.plus.react.svg';
 import OrigSendClockIcon from './send.clock.react.svg';
-import OrigShareFacebookIcon from './share.facebook.react.svg';
-import OrigShareTwitterIcon from './share.twitter.react.svg';
 import OrigAccessNoneIcon from './access.none.react.svg';
 import OrigTimeTrackingNotBilledIcon from './time.tracking.not.billed.react.svg';
 import OrigAccessFormIcon from './access.form.react.svg';
@@ -141,6 +139,10 @@ import OrigToggleButtonIcon from './toggle.button.react.svg';
 
 import OrigQuestionIcon from './question.react.svg';
 
+import OrigShareGoogleIcon from './share.google.react.svg';
+import OrigShareFacebookIcon from './share.facebook.react.svg';
+import OrigShareTwitterIcon from './share.twitter.react.svg';
+import OrigShareLinkedInIcon from './share.linkedin.react.svg';
 
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
@@ -619,17 +621,9 @@ export const ShareEmailIcon = createStyledIcon(
   OrigShareEmailIcon,
   'ShareEmailIcon'
 );
-export const ShareFacebookIcon = createStyledIcon(
-  OrigShareFacebookIcon,
-  'ShareFacebookIcon'
-);
 export const ShareGooglePlusIcon = createStyledIcon(
   OrigShareGooglePlusIcon,
   'ShareGooglePlusIcon'
-);
-export const ShareTwitterIcon = createStyledIcon(
-  OrigShareTwitterIcon,
-  'ShareTwitterIcon'
 );
 export const SkypeIcon = createStyledIcon(
   OrigSkypeIcon,
@@ -692,4 +686,23 @@ export const QuestionIcon = createStyledIcon(
   OrigQuestionIcon,
   'ToggleButtonIcon',
   "rect"
+);
+
+export const ShareGoogleIcon = createStyledIcon(
+  OrigShareGoogleIcon,
+  'ShareGoogleIcon'
+);
+
+export const ShareFacebookIcon = createStyledIcon(
+  OrigShareFacebookIcon,
+  'ShareFacebookIcon'
+);
+export const ShareTwitterIcon = createStyledIcon(
+  OrigShareTwitterIcon,
+  'ShareTwitterIcon'
+);
+
+export const ShareLinkedInIcon = createStyledIcon(
+  OrigShareLinkedInIcon,
+  'ShareLinkedInIcon'
 );
