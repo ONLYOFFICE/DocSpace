@@ -57,6 +57,9 @@ namespace ASC.Api.Settings
         [DataMember(EmitDefaultValue = false)]
         public string GreetingSettings { get; set; }
 
+        [DataMember(EmitDefaultValue = false)]
+        public Guid OwnerId { get; set; }
+
         public static SettingsWrapper GetSample()
         {
             return new SettingsWrapper
@@ -66,7 +69,8 @@ namespace ASC.Api.Settings
                 TrustedDomains = new List<string> { "mydomain.com" },
                 UtcHoursOffset = -8.5,
                 UtcOffset = TimeSpan.FromHours(-8.5),
-                GreetingSettings = "Web Office Applications"
+                GreetingSettings = "Web Office Applications",
+                OwnerId = new Guid()
             };
         }
     }

@@ -1,6 +1,6 @@
 import * as api from "../services/api";
 import axios from "axios";
-import { getSelectorOptions, getUserOptions, getOwner } from "./selectors";
+import { getSelectorOptions, getUserOptions } from "./selectors";
 import Filter from "./filter";
 
 export const SET_USERS = "SET_USERS";
@@ -89,6 +89,12 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
   };
 }
 
+export function getPortalOwner(userId) {
+  return dispatch => {
+    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
+  };
+}
+
 export function fetchPeople(filter) {
   let filterData = filter && filter.clone();
   if (!filterData) {
@@ -102,13 +108,11 @@ export function fetchPeople(filter) {
         axios.spread((users, admins) => {
           const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
-          const owner = getOwner(admins.items);
           filterData.total = admins.total;
 
           dispatch(setAdmins(admins.items));
           dispatch(setUsers(newOptions));
           dispatch(setFilter(filterData));
-          dispatch(setOwner(owner));
         })
       );
   };
