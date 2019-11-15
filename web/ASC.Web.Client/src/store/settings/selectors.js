@@ -26,7 +26,3 @@ export const getUserRole = user => {
   else if (user.isVisitor) return "guest";
   else return "user";
 };
-
-export const getOwner = admins => {
-  return admins.find(x => x.isOwner);
-};

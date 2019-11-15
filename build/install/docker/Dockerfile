@@ -31,6 +31,7 @@ RUN apt-get -y update && \
     apt-get install -yq openjdk-8-jre-headless && \
     wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add - && \
     apt-get install -yq apt-transport-https && \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF && \
     echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | tee /etc/apt/sources.list.d/mono-official.list && \
     echo "deb https://artifacts.elastic.co/packages/6.x/apt stable main" | tee -a /etc/apt/sources.list.d/elastic-6.x.list && \
     apt-get -y update && \
@@ -50,9 +51,24 @@ RUN apt-get -y update && \
     tar xzf kafka_2.12-2.2.1.tgz && \
     rm kafka_2.12-2.2.1.tgz && \
     echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d && \
-    apt-get install -yq libgdiplus python-certbot-nginx htop nano dnsutils python3-pip multiarch-support iproute2 ffmpeg jq git yarn dotnet-sdk-3.0 supervisor mysql-client mysql-server
+    apt-get install -yq libgdiplus \
+                        python-certbot-nginx \
+                        htop \
+                        nano \
+                        dnsutils \
+                        python3-pip \
+                        multiarch-support \ 
+                        iproute2 \
+                        ffmpeg \
+                        jq \ 
+                        git \ 
+                        yarn \
+                        dotnet-sdk-3.0 \
+                        supervisor \
+                        mysql-client \
+                        mysql-server
 
-RUN git clone https://github.com/ONLYOFFICE/CommunityServer-AspNetCore.git /app/onlyoffice/src/
+RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
 
 RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \

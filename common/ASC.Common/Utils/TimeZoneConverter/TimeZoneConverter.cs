@@ -51,9 +51,9 @@ namespace ASC.Common.Utils
         public TimeZoneConverter(IConfiguration configuration, IOptionsMonitor<ILog> option)
         {
             Log = option.CurrentValue;
+            Configuration = configuration;
             InitMapZones();
             InitTranslations();
-            Configuration = configuration;
         }
 
         private void InitMapZones()
@@ -197,7 +197,7 @@ namespace ASC.Common.Utils
         {
             try
             {
-                _isR7 = Configuration["core.r7office"] == "true";
+                _isR7 = Configuration["core:r7office"] == "true";
 
                 if (!_isR7)
                 {
