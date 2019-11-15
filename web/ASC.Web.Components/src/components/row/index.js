@@ -1,17 +1,17 @@
-import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
-
-import Checkbox from '../checkbox'
-import ContextMenuButton from '../context-menu-button'
-import { tablet } from '../../utils/device';
+import React from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import isEqual from "lodash/isEqual";
+import Checkbox from "../checkbox";
+import ContextMenuButton from "../context-menu-button";
+import { tablet } from "../../utils/device";
 
 const StyledRow = styled.div`
   cursor: default;
-    
+
   min-height: 50px;
   width: 100%;
-  border-bottom: 1px solid #ECEEF1;
+  border-bottom: 1px solid #eceef1;
 
   display: flex;
   flex-direction: row;
@@ -55,38 +55,61 @@ const StyledOptionButton = styled.div`
 `;
 
 // eslint-disable-next-line react/display-name
-const Row = props => {
-  const changeCheckbox = (e) => {
-    props.onSelect && props.onSelect(e.target.checked, props.data);
-  };
 
-  const getOptions = () => props.contextOptions;
-  //console.log("Row render");
-  const { checked, element, children, contextOptions } = props;
+class Row extends React.Component {
+  shouldComponentUpdate(nextProps) {
+    return !isEqual(this.props, nextProps);
+  }
 
-  return (
-    <StyledRow {...props}>
-      {Object.prototype.hasOwnProperty.call(props, 'checked') &&
-        <StyledCheckbox>
-          <Checkbox isChecked={checked} onChange={changeCheckbox} />
-        </StyledCheckbox>
-      }
-      {Object.prototype.hasOwnProperty.call(props, 'element') &&
-        <StyledElement>
-          {element}
-        </StyledElement>
-      }
-      <StyledContent>
-        {children}
-      </StyledContent>
-      <StyledOptionButton>
-        {Object.prototype.hasOwnProperty.call(props, 'contextOptions') && contextOptions.length > 0 &&
-          <ContextMenuButton directionX='right' getData={getOptions} />
-        }
-      </StyledOptionButton>
-    </StyledRow>
-  );
-};
+  render() {
+    //console.log("Row render");
+    const {
+      checked,
+      element,
+      children,
+      data,
+      contextOptions,
+      onSelect
+    } = this.props;
+
+    const renderCheckbox = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "checked"
+    );
+
+    const renderElement = Object.prototype.hasOwnProperty.call(
+      this.props,
+      "element"
+    );
+
+    const renderContext =
+      Object.prototype.hasOwnProperty.call(this.props, "contextOptions") &&
+      contextOptions.length > 0;
+
+    const changeCheckbox = e => {
+      onSelect && onSelect(e.target.checked, data);
+    };
+
+    const getOptions = () => contextOptions;
+
+    return (
+      <StyledRow {...this.props}>
+        {renderCheckbox && (
+          <StyledCheckbox>
+            <Checkbox isChecked={checked} onChange={changeCheckbox} />
+          </StyledCheckbox>
+        )}
+        {renderElement && <StyledElement>{element}</StyledElement>}
+        <StyledContent>{children}</StyledContent>
+        <StyledOptionButton>
+          {renderContext && (
+            <ContextMenuButton directionX="right" getData={getOptions} />
+          )}
+        </StyledOptionButton>
+      </StyledRow>
+    );
+  }
+}
 
 Row.propTypes = {
   checked: PropTypes.bool,
