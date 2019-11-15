@@ -14,7 +14,7 @@ Button is used for sign up with help social networks.
 #### Usage
 
 ```js
-<SocialButton icon={icon} label={label}/>
+<SocialButton iconName={"SocialButtonGoogleIcon"} label={"Sign up with Google"}/>
 ```
 
 #### Properties
