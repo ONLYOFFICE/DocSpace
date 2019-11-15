@@ -68,7 +68,7 @@ RUN apt-get -y update && \
                         mysql-client \
                         mysql-server
 
-RUN git clone https://github.com/ONLYOFFICE/CommunityServer-AspNetCore.git /app/onlyoffice/src/
+RUN git clone https://github.com/ONLYOFFICE/AppServer.git /app/onlyoffice/src/
 
 RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
