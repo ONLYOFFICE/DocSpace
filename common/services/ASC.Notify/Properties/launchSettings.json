@@ -13,7 +13,9 @@
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "$STORAGE_ROOT": "../../../../../../Data"
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "notify",
+        "log__dir": "../../../Logs"
       }
     },
     "ASC.Notify": {
@@ -21,7 +23,9 @@
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "$STORAGE_ROOT": "../../../../../../Data"
+        "$STORAGE_ROOT": "../../../Data",
+        "log__name": "notify",
+        "log__dir": "../../../Logs"
       },
       "applicationUrl": "http://localhost:5005/"
     }
