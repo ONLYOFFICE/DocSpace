@@ -1,6 +1,6 @@
 import * as api from "../../store/services/api";
 import { setGroups, fetchPeople } from "../people/actions";
-import history from "../../history";
+import { history } from "asc-web-common";
 
 export const SET_GROUP = "SET_GROUP";
 export const CLEAN_GROUP = "CLEAN_GROUP";

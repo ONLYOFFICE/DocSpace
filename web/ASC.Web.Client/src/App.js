@@ -6,7 +6,7 @@ import Login from "./components/pages/Login";
 import PrivateRoute from "./helpers/privateRoute";
 import PublicRoute from "./helpers/publicRoute";
 import { Error404 } from "./components/pages/Error";
-import history from './history';
+import { history } from "asc-web-common";
 
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));

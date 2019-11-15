@@ -14,7 +14,7 @@ import {
   HelpButton
 } from "asc-web-components";
 import styled from 'styled-components';
-import history from "../../../../../../history";
+import { history } from "asc-web-common";
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;

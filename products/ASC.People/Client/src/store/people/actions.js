@@ -1,6 +1,6 @@
 import * as api from "../services/api";
 import Filter from "./filter";
-import history from "../../history";
+import { history } from "asc-web-common";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,

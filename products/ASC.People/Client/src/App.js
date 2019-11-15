@@ -10,7 +10,7 @@ import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import { Error404 } from "./components/pages/Error";
 import Reassign from './components/pages/Reassign';
-import history from './history';
+import { history } from "asc-web-common";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
