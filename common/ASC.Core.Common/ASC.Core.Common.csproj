@@ -44,8 +44,6 @@
     <None Remove="protos\UserPhotoCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="AWSSDK.CloudFront" Version="3.3.101.64" />
     <PackageReference Include="AWSSDK.Core" Version="3.3.103.62" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.106.4" />
@@ -55,6 +53,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.4.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.0-rc3.final" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\NotifyMessage.proto" />

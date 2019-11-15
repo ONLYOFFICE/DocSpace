@@ -40,12 +40,66 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
+    public class User
+    {
+        public int Tenant { get; set; }
+        public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public Guid Id { get; set; }
+        public bool? Sex { get; set; }
+        public DateTime? Bithdate { get; set; }
+        public EmployeeStatus Status { get; set; }
+        public EmployeeActivationStatus Activation_Status { get; set; }
+        public string Email { get; set; }
+        public DateTime? WorkFromDate { get; set; }
+        public DateTime? TerminatedDate { get; set; }
+        public string Title { get; set; }
+        public string Culture { get; set; }
+        public string Contacts { get; set; }
+        public string Phone { get; set; }
+        public MobilePhoneActivationStatus Phone_Activation { get; set; }
+        public string Location { get; set; }
+        public string Notes { get; set; }
+        public string Sid { get; set; }
+        public string sso_name_id { get; set; }
+        public string sso_session_id { get; set; }
+        public bool removed { get; set; }
+        public DateTime create_on { get; set; }
+        public DateTime last_modified { get; set; }
+    }
+
+    public class UserContext : DbContext
+    {
+        public DbSet<User> Core_User { get; set; }
+
+        public UserContext()
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var factory = new ConsoleLoggerFactory();
+            factory.AddProvider(new ConsoleLoggerProvider());
+            optionsBuilder.UseLoggerFactory(factory);
+
+            optionsBuilder.UseMySql("Server=localhost;Database=onlyoffice;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none");
+        }
+    }
+
+
+
+
+
+
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -82,6 +136,7 @@ namespace ASC.Employee.Core.Controllers
         public SettingsManager SettingsManager { get; }
         public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public UserContext UserContext { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -116,7 +171,8 @@ namespace ASC.Employee.Core.Controllers
             SettingsManager settingsManager,
             IOptionsMonitor<ILog> option,
             EmployeeWraperFullHelper employeeWraperFullHelper,
-            EmployeeWraperHelper employeeWraperHelper)
+            EmployeeWraperHelper employeeWraperHelper,
+            UserContext userContext)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -150,6 +206,7 @@ namespace ASC.Employee.Core.Controllers
             SettingsManager = settingsManager;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
+            UserContext = userContext;
         }
 
         [Read("info")]
@@ -164,6 +221,44 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraper> GetAll()
         {
             return GetByStatus(EmployeeStatus.Active);
+        }
+
+        [Read("1")]
+        public IEnumerable<EmployeeWraperFull> GetAll1()
+        {
+            var tenantId = Tenant.TenantId;
+            var r1 = UserContext.Core_User.Where(r => r.Tenant == tenantId);
+            var r2 = UserContext.Core_User.Where(r => r.Tenant == tenantId).Count();
+            ApiContext.SetCount(r2);
+            //var r2 = UserManager.GetUsers(true, null, new List<List<Guid>>(), new List<Guid>(), null, null, null, true, 0, 0, out int _);
+            return r1.Select(r => new UserInfo()
+            {
+                ActivationStatus = r.Activation_Status,
+                BirthDate = r.Bithdate,
+                CreateDate = r.create_on,
+                CultureName = r.Culture,
+                Email = r.Email,
+                FirstName = r.FirstName,
+                ID = r.Id,
+                LastModified = r.last_modified,
+                LastName = r.LastName,
+                Location = r.Location,
+                MobilePhone = r.Phone,
+                MobilePhoneActivationStatus = r.Phone_Activation,
+                Notes = r.Notes,
+                Removed = r.removed,
+                Sex = r.Sex,
+                Sid = r.Sid,
+                SsoNameId = r.sso_name_id,
+                SsoSessionId = r.sso_session_id,
+                Status = r.Status,
+                Tenant = r.Tenant,
+                TerminatedDate = r.TerminatedDate,
+                Title = r.Title,
+                UserName = r.UserName,
+                WorkFromDate = r.WorkFromDate
+            }).Select(EmployeeWraperFullHelper.GetFull);
+            //return GetByStatus(EmployeeStatus.Active);
         }
 
         [Read("status/{status}")]
@@ -1578,6 +1673,8 @@ namespace ASC.Employee.Core.Controllers
     {
         public static IServiceCollection AddPeopleController(this IServiceCollection services)
         {
+            services.TryAddScoped<UserContext>();
+
             return services
                 .AddMessageTargetService()
                 .AddAccountLinkerStorageService()

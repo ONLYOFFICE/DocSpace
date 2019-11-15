@@ -26,12 +26,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Text;
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users
 {
+    [Table("core_user")]
     [Serializable]
     public sealed class UserInfo : IDirectRecipient, ICloneable
     {
@@ -57,6 +59,7 @@ namespace ASC.Core.Users
 
         public EmployeeStatus Status { get; set; }
 
+        [Column("activation_status")]
         public EmployeeActivationStatus ActivationStatus { get; set; }
 
         public DateTime? TerminatedDate { get; set; }
@@ -84,17 +87,24 @@ namespace ASC.Core.Users
             get { return ActivationStatus.HasFlag(EmployeeActivationStatus.Activated); }
         }
 
+        [Column("culture")]
         public string CultureName { get; set; }
 
+        [Column("phone")]
         public string MobilePhone { get; set; }
 
+        [Column("phone_activation")]
         public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
 
         public string Sid { get; set; } // LDAP user identificator
 
+        [Column("sso_name_id")]
         public string SsoNameId { get; set; } // SSO SAML user identificator
+
+        [Column("sso_session_id")]
         public string SsoSessionId { get; set; } // SSO SAML user session identificator
 
+        [Column("create_on")]
         public DateTime CreateDate { get; set; }
 
         public override string ToString()

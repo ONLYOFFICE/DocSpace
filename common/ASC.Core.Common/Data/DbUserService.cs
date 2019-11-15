@@ -30,12 +30,117 @@ using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Data
 {
+    class EFUserService : DbContext, IUserService
+    {
+        public DbSet<UserInfo> Core_User { get; set; }
+
+        public EFUserService()
+        {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var factory = new ConsoleLoggerFactory();
+            factory.AddProvider(new ConsoleLoggerProvider());
+            optionsBuilder.UseLoggerFactory(factory);
+
+            optionsBuilder.UseMySql("Server=localhost;Database=onlyoffice;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none");
+        }
+
+        public Group GetGroup(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserInfo GetUser(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserInfo GetUser(int tenant, string login, string passwordHash)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetUserPassword(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetUserPhoto(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveGroup(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveUser(int tenant, Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Group SaveGroup(int tenant, Group group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserInfo SaveUser(int tenant, UserInfo user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserGroupRef SaveUserGroupRef(int tenant, UserGroupRef r)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetUserPassword(int tenant, Guid id, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetUserPhoto(int tenant, Guid id, byte[] photo)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     class DbUserService : DbBaseService, IUserService
     {
         public DbUserService(DbOptionsManager dbOptionsManager)
