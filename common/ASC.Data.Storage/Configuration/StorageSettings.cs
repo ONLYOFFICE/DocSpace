@@ -47,7 +47,7 @@ namespace ASC.Data.Storage.Configuration
             ServiceProvider = serviceProvider;
             serviceProvider.GetService<ICacheNotify<ConsumerCacheItem>>().Subscribe((i) =>
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
 
                 var storageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
                 var storageSettings = scope.ServiceProvider.GetService<SettingsManager>();
