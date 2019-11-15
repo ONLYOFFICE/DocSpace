@@ -1,8 +1,10 @@
 import * as api from "../../store/services/api";
-import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
 import { fetchPeople } from "../people/actions";
-import { setCurrentUser } from "../auth/actions";
+import { store } from 'asc-web-common';
+const { setCurrentUser } = store.auth.actions;
+const { isMe } = store.auth.selectors;
+
 
 export const SET_PROFILE = 'SET_PROFILE';
 export const CLEAN_PROFILE = 'CLEAN_PROFILE';

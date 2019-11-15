@@ -13,6 +13,7 @@ export const GET_PORTAL_CULTURES = 'GET_PORTAL_CULTURES';
 export const SET_PORTAL_LANGUAGE_AND_TIME = 'SET_PORTAL_LANGUAGE_AND_TIME';
 export const GET_TIMEZONES = 'GET_TIMEZONES';
 export const SET_CURRENT_PRODUCT_ID = 'SET_CURRENT_PRODUCT_ID';
+export const SET_CURRENT_PRODUCT_HOME_PAGE = 'SET_CURRENT_PRODUCT_HOME_PAGE';
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
 
 export function setCurrentUser(user) {
@@ -98,6 +99,13 @@ export function setCurrentProductId(currentProductId) {
   };
 }
 
+export function setCurrentProductHomePage(homepage) {
+  return {
+      type: SET_CURRENT_PRODUCT_HOME_PAGE,
+      homepage
+  };
+}
+
 export function setGreetingSettings(title) {
   return {
       type: SET_GREETING_SETTINGS,
@@ -122,8 +130,7 @@ export function getModules(dispatch) {
 
 const loadInitInfo = (dispatch) => {
   return getPortalSettings(dispatch)
-      .then(() => getModules(dispatch))
-      .then(() => dispatch(setIsLoaded(true)));
+      .then(() => getModules(dispatch));
 }
 
 export function getUserInfo(dispatch) {

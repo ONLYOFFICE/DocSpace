@@ -9,8 +9,6 @@ import isEqual from "lodash/isEqual";
 import { store } from 'asc-web-common';
 const { logout } = store.auth.actions;
 
-//import { isAdmin } from "../../store/auth/selectors";
-
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);

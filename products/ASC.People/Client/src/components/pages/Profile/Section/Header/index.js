@@ -13,7 +13,6 @@ import {
   AvatarEditor
 } from "asc-web-components";
 import { withRouter } from "react-router";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { getUserStatus, toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { withTranslation } from 'react-i18next';
 import { resendUserInvites } from "../../../../../store/services/api";
@@ -30,6 +29,8 @@ import {
   deleteUser
 } from "../../../../../store/services/api";
 import styled from 'styled-components';
+import { store } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
 
 const wrapperStyle = {
   display: "flex",

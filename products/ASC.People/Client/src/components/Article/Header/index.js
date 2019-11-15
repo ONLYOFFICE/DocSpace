@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Text } from 'asc-web-components';
-import { getCurrentModule } from '../../../store/auth/selectors';
+import { store } from 'asc-web-common';
+const { getCurrentModule } = store.auth.selectors;
 
 const ArticleHeaderContent = ({currentModuleName}) => {
   return <Text.MenuHeader>{currentModuleName}</Text.MenuHeader>;

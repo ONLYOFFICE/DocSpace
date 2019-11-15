@@ -14,7 +14,6 @@ import {
   getSelectedGroup,
   getSelectionIds
 } from "../../../../../store/people/selectors";
-import { isAdmin } from "../../../../../store/auth/selectors";
 import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
@@ -31,6 +30,8 @@ import {
   deleteUsers
 } from "../../../../../store/services/api";
 import { deleteGroup } from "../../../../../store/group/actions";
+import { store } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
 
 const StyledContainer = styled.div`
   .group-button-menu-container {

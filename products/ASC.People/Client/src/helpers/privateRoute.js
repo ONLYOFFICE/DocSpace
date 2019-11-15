@@ -4,8 +4,9 @@ import PropTypes from "prop-types";
 import { Route } from "react-router-dom";
 import ExternalRedirect from '../helpers/externalRedirect';
 import { PageLayout, Loader } from "asc-web-components";
-import { isAdmin, isMe } from "../store/auth/selectors";
 import { Error404 } from "../components/pages/Error";
+import { store } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated, isLoaded, isAdmin, restricted, allowForMe, currentUser, computedMatch } = rest;

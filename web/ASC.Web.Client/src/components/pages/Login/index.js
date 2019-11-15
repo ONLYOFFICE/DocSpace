@@ -21,7 +21,6 @@ import {
   HelpButton
 } from "asc-web-components";
 import { connect } from "react-redux";
-//import { login } from "../../../store/auth/actions";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";

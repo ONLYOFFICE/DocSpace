@@ -7,15 +7,17 @@ import './custom.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { store as commonStore } from 'asc-web-common';
-const { getUserInfo, getPortalSettings } = commonStore.auth.actions;
+const { getUserInfo, getPortalSettings, setIsLoaded } = commonStore.auth.actions;
 
 const token = localStorage.getItem(AUTH_KEY);
 
 if(!token) {
-    store.dispatch(getPortalSettings);
+    getPortalSettings(store.dispatch)
+        .then(() => store.dispatch(setIsLoaded(true)));
 }
 else if (!window.location.pathname.includes("confirm/EmailActivation")) {
-    store.dispatch(getUserInfo);
+    getUserInfo(store.dispatch)
+        .then(() => store.dispatch(setIsLoaded(true)));
 }
 
 ReactDOM.render(

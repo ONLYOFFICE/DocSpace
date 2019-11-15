@@ -30,7 +30,6 @@ import {
   getUserStatus,
   getUserRole
 } from "../../../../../store/people/selectors";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import {
   resendUserInvites,
@@ -39,6 +38,9 @@ import {
   deleteUser
 } from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
+import { store } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
+
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
