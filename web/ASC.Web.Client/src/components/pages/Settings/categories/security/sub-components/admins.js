@@ -25,7 +25,6 @@ import {
   RequestLoader
 } from "asc-web-components";
 import { getUserRole } from "../../../../../../store/settings/selectors";
-import { isArrayEqual } from "../../../utils/isArrayEqual";
 import isEmpty from "lodash/isEmpty";
 
 const ToggleContentContainer = styled.div`
@@ -77,8 +76,6 @@ class PureAdminsSettings extends Component {
     const { admins, options } = this.props;
 
     if (isEmpty(admins, true) || isEmpty(options, true)) {
-      console.log("Admins && options isEmpty");
-
       const { fetchPeople } = this.props;
 
       this.onLoading(true);
@@ -94,32 +91,6 @@ class PureAdminsSettings extends Component {
           })
         );
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { admins } = this.props;
-    const {
-      isLoading,
-      showSelector,
-      showFullAdminSelector,
-      options,
-      allOptions,
-      selectedOptions
-    } = this.state;
-
-    if (
-      isArrayEqual(admins, nextProps.admins) &&
-      isArrayEqual(this.props.options, nextProps.options) &&
-      isLoading === nextState.isLoading &&
-      showSelector === nextState.showSelector &&
-      showFullAdminSelector === nextState.showFullAdminSelector &&
-      isArrayEqual(options, nextState.options) &&
-      isArrayEqual(selectedOptions, nextState.selectedOptions) &&
-      isArrayEqual(allOptions, options)
-    ) {
-      return false;
-    }
-    return true;
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {
