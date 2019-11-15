@@ -79,7 +79,7 @@ namespace ASC.Web.Api
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.AddLogManager<LogNLog>("ASC.Api", "ASC.Web");
+            services.AddNLogManager("ASC.Api", "ASC.Web");
 
             services.Configure<DbManager>(r => { });
             services.Configure<DbManager>("default", r => { });

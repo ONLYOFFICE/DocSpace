@@ -114,7 +114,7 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.AddLogManager<LogNLog>("ASC.Api", "ASC.Web");
+            services.AddNLogManager("ASC.Api", "ASC.Web");
 
             services
                 .AddPeopleController()

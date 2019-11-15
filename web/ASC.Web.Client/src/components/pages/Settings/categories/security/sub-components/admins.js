@@ -25,8 +25,7 @@ import {
   RequestLoader
 } from "asc-web-components";
 import { getUserRole } from "../../../../../../store/settings/selectors";
-
-import { isArrayEqual } from "../../../utils/isArrayEqual";
+import isEmpty from "lodash/isEmpty";
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
@@ -66,6 +65,7 @@ class PureAdminsSettings extends Component {
     this.state = {
       showSelector: false,
       showFullAdminSelector: false,
+      allOptions: [],
       options: [],
       isLoading: false,
       selectedOptions: []
@@ -73,34 +73,24 @@ class PureAdminsSettings extends Component {
   }
 
   componentDidMount() {
-    const { fetchPeople } = this.props;
-    this.onLoading(true);
-
-    const newFilter = this.onAdminsFilter();
-
-    fetchPeople(newFilter)
-      .catch(error => {
-        toastr.error(error);
-      })
-      .finally(() => this.onLoading(false));
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
     const { admins, options } = this.props;
-    const { isLoading, showSelector, showFullAdminSelector } = this.state;
 
-    //options, selectedOptions ???
+    if (isEmpty(admins, true) || isEmpty(options, true)) {
+      const { fetchPeople } = this.props;
 
-    if (
-      isArrayEqual(admins, nextProps.admins) &&
-      isArrayEqual(options, nextProps.options) &&
-      isLoading === nextState.isLoading &&
-      showSelector === nextState.showSelector &&
-      showFullAdminSelector === nextState.showFullAdminSelector
-    ) {
-      return false;
+      this.onLoading(true);
+      const newFilter = this.onAdminsFilter();
+      fetchPeople(newFilter)
+        .catch(error => {
+          toastr.error(error);
+        })
+        .finally(() =>
+          this.setState({
+            isLoading: false,
+            allOptions: this.props.options
+          })
+        );
     }
-    return true;
   }
 
   onChangeAdmin = (userIds, isAdmin, productId) => {
@@ -117,12 +107,13 @@ class PureAdminsSettings extends Component {
       });
   };
 
-  onShowGroupSelector = () =>
+  onShowGroupSelector = () => {
     this.setState({
       showSelector: !this.state.showSelector,
       options: this.props.options,
       selectedOptions: []
     });
+  };
 
   onShowFullAdminGroupSelector = () => {
     this.setState({
@@ -154,10 +145,11 @@ class PureAdminsSettings extends Component {
   };
 
   onSearchUsers = template => {
-    //dispatch
-    this.setState({
-      options: this.filterUserSelectorOptions(this.props.options, template)
-    });
+    const options = this.filterUserSelectorOptions(
+      this.state.allOptions,
+      template
+    );
+    this.setState({ options: options });
   };
 
   onChangePage = pageItem => {
@@ -331,161 +323,155 @@ class PureAdminsSettings extends Component {
           fontColor={"#999"}
           className="page_loader"
         />
-        {!isLoading
-          ? (console.log("123123123"),
-            (
-              <ToggleContentContainer>
-                <div className="buttons_container">
-                  <Button
-                    className="button_style"
-                    size="medium"
-                    primary={true}
-                    label="Set people admin"
-                    isDisabled={isLoading}
-                    onClick={this.onShowGroupSelector}
-                  />
-                  <div style={{ right: 180 }} className="advanced-selector">
-                    <AdvancedSelector
-                      displayType="dropdown"
-                      isOpen={showSelector}
-                      placeholder="placeholder"
-                      options={options}
-                      onSearchChanged={this.onSearchUsers}
-                      //groups={groups}
-                      isMultiSelect={true}
-                      buttonLabel="Add members"
-                      onSelect={this.onSelect}
-                      onCancel={this.onShowGroupSelector}
-                      onAddNewClick={() => console.log("onAddNewClick")}
-                      selectAllLabel="selectorSelectAllText"
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
 
-                  <Button
-                    size="medium"
-                    primary={true}
-                    label="Set portal admin"
-                    isDisabled={isLoading}
-                    onClick={this.onShowFullAdminGroupSelector}
-                  />
-                  <div style={{ right: 160 }} className="advanced-selector">
-                    <AdvancedSelector
-                      displayType="dropdown"
-                      isOpen={showFullAdminSelector}
-                      placeholder="placeholder"
-                      options={options}
-                      onSearchChanged={this.onSearchUsers}
-                      //groups={groups}
-                      isMultiSelect={true}
-                      buttonLabel="Add members"
-                      onSelect={this.onSelectFullAdmin}
-                      onCancel={this.onShowFullAdminGroupSelector}
-                      onAddNewClick={() => console.log("onAddNewClick")}
-                      selectAllLabel="selectorSelectAllText"
-                      selectedOptions={selectedOptions}
-                    />
-                  </div>
-                </div>
+        <ToggleContentContainer>
+          <div className="buttons_container">
+            <Button
+              className="button_style"
+              size="medium"
+              primary={true}
+              label="Set people admin"
+              isDisabled={isLoading}
+              onClick={this.onShowGroupSelector}
+            />
+            <div style={{ right: 180 }} className="advanced-selector">
+              <AdvancedSelector
+                displayType="dropdown"
+                isOpen={showSelector}
+                placeholder="placeholder"
+                options={options}
+                onSearchChanged={this.onSearchUsers}
+                //groups={groups}
+                isMultiSelect={true}
+                buttonLabel="Add members"
+                onSelect={this.onSelect}
+                onCancel={this.onShowGroupSelector}
+                onAddNewClick={() => console.log("onAddNewClick")}
+                selectAllLabel="selectorSelectAllText"
+                selectedOptions={selectedOptions}
+              />
+            </div>
 
-                {countElements > 25 ? (
-                  <FilterInput
-                    className="filter_container"
-                    getFilterData={() => []}
-                    getSortData={this.getSortData}
-                    onFilter={this.onFilter}
-                  />
-                ) : null}
+            <Button
+              size="medium"
+              primary={true}
+              label="Set portal admin"
+              isDisabled={isLoading}
+              onClick={this.onShowFullAdminGroupSelector}
+            />
+            <div style={{ right: 160 }} className="advanced-selector">
+              <AdvancedSelector
+                displayType="dropdown"
+                isOpen={showFullAdminSelector}
+                placeholder="placeholder"
+                options={options}
+                onSearchChanged={this.onSearchUsers}
+                //groups={groups}
+                isMultiSelect={true}
+                buttonLabel="Add members"
+                onSelect={this.onSelectFullAdmin}
+                onCancel={this.onShowFullAdminGroupSelector}
+                onAddNewClick={() => console.log("onAddNewClick")}
+                selectAllLabel="selectorSelectAllText"
+                selectedOptions={selectedOptions}
+              />
+            </div>
+          </div>
 
-                <div className="wrapper">
-                  <RowContainer manualHeight={`${admins.length * 50}px`}>
-                    {admins.map(user => {
-                      const element = (
-                        <Avatar
-                          size="small"
-                          role={getUserRole(user)}
-                          userName={user.displayName}
-                          source={user.avatar}
+          {countElements > 25 ? (
+            <FilterInput
+              className="filter_container"
+              getFilterData={() => []}
+              getSortData={this.getSortData}
+              onFilter={this.onFilter}
+            />
+          ) : null}
+
+          <div className="wrapper">
+            <RowContainer manualHeight={`${admins.length * 50}px`}>
+              {admins.map(user => {
+                const element = (
+                  <Avatar
+                    size="small"
+                    role={getUserRole(user)}
+                    userName={user.displayName}
+                    source={user.avatar}
+                  />
+                );
+                const nameColor =
+                  user.status === "pending" ? "#A3A9AE" : "#333333";
+
+                return (
+                  <Row
+                    key={user.id}
+                    status={user.status}
+                    data={user}
+                    element={element}
+                  >
+                    <RowContent disableSideInfo={true}>
+                      <Link
+                        containerWidth="120px"
+                        type="page"
+                        title={user.displayName}
+                        isBold={true}
+                        fontSize={15}
+                        color={nameColor}
+                        href={user.profileUrl}
+                      >
+                        {user.displayName}
+                      </Link>
+                      <div style={{ maxWidth: 120 }} />
+
+                      <Text.Body>
+                        {user.isAdmin ? "Full access" : "People module admin"}
+                      </Text.Body>
+
+                      {!user.isOwner ? (
+                        <IconButton
+                          className="remove_icon"
+                          size="16"
+                          isDisabled={isLoading}
+                          onClick={this.onChangeAdmin.bind(
+                            this,
+                            [user.id],
+                            false,
+                            "00000000-0000-0000-0000-000000000000"
+                          )}
+                          iconName={"CatalogTrashIcon"}
+                          isFill={true}
+                          isClickable={false}
                         />
-                      );
-                      const nameColor =
-                        user.status === "pending" ? "#A3A9AE" : "#333333";
+                      ) : (
+                        <div />
+                      )}
+                    </RowContent>
+                  </Row>
+                );
+              })}
+            </RowContainer>
+          </div>
 
-                      return (
-                        <Row
-                          key={user.id}
-                          status={user.status}
-                          data={user}
-                          element={element}
-                        >
-                          <RowContent disableSideInfo={true}>
-                            <Link
-                              containerWidth="120px"
-                              type="page"
-                              title={user.displayName}
-                              isBold={true}
-                              fontSize={15}
-                              color={nameColor}
-                              href={user.profileUrl}
-                            >
-                              {user.displayName}
-                            </Link>
-                            <div style={{ maxWidth: 120 }} />
-
-                            <Text.Body>
-                              {user.isAdmin
-                                ? "Full access"
-                                : "People module admin"}
-                            </Text.Body>
-
-                            {!user.isOwner ? (
-                              <IconButton
-                                className="remove_icon"
-                                size="16"
-                                isDisabled={isLoading}
-                                onClick={this.onChangeAdmin.bind(
-                                  this,
-                                  [user.id],
-                                  false,
-                                  "00000000-0000-0000-0000-000000000000"
-                                )}
-                                iconName={"CatalogTrashIcon"}
-                                isFill={true}
-                                isClickable={false}
-                              />
-                            ) : (
-                              <div />
-                            )}
-                          </RowContent>
-                        </Row>
-                      );
-                    })}
-                  </RowContainer>
-                </div>
-
-                {countElements > 25 ? (
-                  <div className="wrapper">
-                    <Paging
-                      previousLabel={t("PreviousPage")}
-                      nextLabel={t("NextPage")}
-                      openDirection="top"
-                      countItems={this.countItems()}
-                      pageItems={this.pageItems()}
-                      displayItems={false}
-                      selectedPageItem={this.selectedPageItem()}
-                      selectedCountItem={this.selectedCountItem()}
-                      onSelectPage={this.onChangePage}
-                      onSelectCount={this.onChangePageSize}
-                      previousAction={this.onPrevClick}
-                      nextAction={this.onNextClick}
-                      disablePrevious={!filter.hasPrev()}
-                      disableNext={!filter.hasNext()}
-                    />
-                  </div>
-                ) : null}
-              </ToggleContentContainer>
-            ))
-          : null}
+          {countElements > 25 ? (
+            <div className="wrapper">
+              <Paging
+                previousLabel={t("PreviousPage")}
+                nextLabel={t("NextPage")}
+                openDirection="top"
+                countItems={this.countItems()}
+                pageItems={this.pageItems()}
+                displayItems={false}
+                selectedPageItem={this.selectedPageItem()}
+                selectedCountItem={this.selectedCountItem()}
+                onSelectPage={this.onChangePage}
+                onSelectCount={this.onChangePageSize}
+                previousAction={this.onPrevClick}
+                nextAction={this.onNextClick}
+                disablePrevious={!filter.hasPrev()}
+                disableNext={!filter.hasNext()}
+              />
+            </div>
+          ) : null}
+        </ToggleContentContainer>
       </>
     );
   }

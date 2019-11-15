@@ -14,8 +14,8 @@ import {
   Button,
   RequestLoader
 } from "asc-web-components";
-
 import { isArrayEqual } from "../../../utils/isArrayEqual";
+import isEmpty from "lodash/isEmpty";
 
 const HeaderContainer = styled.div`
   margin: 40px 0 16px 0;
@@ -65,14 +65,16 @@ class PureOwnerSettings extends Component {
   }
 
   componentDidMount() {
-    const { getPortalOwner, ownerId } = this.props;
-    this.onLoading(true);
+    const { owner, getPortalOwner, ownerId } = this.props;
 
-    getPortalOwner(ownerId)
-      .catch(error => {
-        toastr.error(error);
-      })
-      .finally(() => this.onLoading(false));
+    if (isEmpty(owner, true)) {
+      this.onLoading(true);
+      getPortalOwner(ownerId)
+        .catch(error => {
+          toastr.error(error);
+        })
+        .finally(() => this.onLoading(false));
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
