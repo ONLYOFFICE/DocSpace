@@ -44,7 +44,7 @@ namespace ASC.Web.Studio
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            services.AddLogManager<LogNLog>("ASC.Api", "ASC.Web");
+            services.AddNLogManager("ASC.Api", "ASC.Web");
 
             services.Configure<DbManager>(r => { });
             services.Configure<DbManager>("default", r => { });

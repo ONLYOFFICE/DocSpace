@@ -2,24 +2,16 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Text } from '../text';
-import { mobile } from '../../utils/device'
-
-const EmptyContentContainer = styled.div`
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
 
 const EmptyContentBody = styled.div`
+  margin: 0 auto;
+  padding: 50px 0;
+  
 	display: grid;
 	grid-template-areas: 
     "img header"
     "img desc"
     "img button";
-	grid-template-rows: auto auto auto;
-  grid-template-columns: 150px 1fr;
   min-width: 320px;
   max-width: 742px;
 
@@ -42,38 +34,35 @@ const EmptyContentBody = styled.div`
     padding-top: 10px;
   }
 
-  @media (max-height: 400px) and (orientation: landscape){
-    padding: 20px;
+  @media (orientation: portrait) {
+    @media (max-width: 700px) {
+      .ec-image {
+        height: 21vw;
+      }
 
-    .ec-image {
-      height: 40vh;
+      .ec-header {
+        font-size: 3.5vw;
+      }
+
+      .ec-desc {
+        font-size: 2.4vw;
+      }
     }
 
-    .ec-header {
-      font-size: 18px;
-    }
+    @media (max-width: 480px) {
+      .ec-image {
+        display: none;
+      }
 
-    .ec-desc {
-      font-size: 2.25vw; 
+      .ec-header {
+        font-size: 4.75vw;
+      }
+
+      .ec-desc {
+        font-size: 3.7vw; 
+      }
     }
   }
-
-  @media ${mobile} {
-    grid-template-areas: 
-    "header"
-    "desc"
-    "button";
-    grid-template-columns: 1fr;
-    padding: 20px;
-
-    .ec-image {
-      display: none;
-    }
-
-    .ec-header {
-      font-size: 18px;
-    }
-  } 
 `;
 
 const EmptyContentImage = styled.img.attrs(props => ({
@@ -86,7 +75,7 @@ const EmptyContentImage = styled.img.attrs(props => ({
 const EmptyScreenContainer = props => {
   const { imageSrc, imageAlt, headerText, descriptionText, buttons } = props;
   return (
-    <EmptyContentContainer>
+
       <EmptyContentBody {...props}>
 
         <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image"/>
@@ -106,7 +95,6 @@ const EmptyScreenContainer = props => {
         )}
 
       </EmptyContentBody>
-    </EmptyContentContainer>
   );
 };
 

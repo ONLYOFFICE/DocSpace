@@ -26,9 +26,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
+using ASC.Common.Utils;
 using log4net.Config;
 using log4net.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -344,6 +347,40 @@ namespace ASC.Common.Logging
         }
     }
 
+    public class NLogSettings
+    {
+        public string Name { get; set; }
+        public string Dir { get; set; }
+    }
+
+    public class ConfigureLogNLog : IConfigureOptions<LogNLog>
+    {
+        public ConfigureLogNLog(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        public void Configure(LogNLog options)
+        {
+            LogManager.Configuration = new NLog.Config.XmlLoggingConfiguration(Path.Combine(Configuration["pathToConf"], "nlog.config"), true);
+
+            var settings = Configuration.GetSetting<NLogSettings>("log");
+            if (!string.IsNullOrEmpty(settings.Name))
+            {
+                LogManager.Configuration.Variables["name"] = settings.Name;
+            }
+
+            if (!string.IsNullOrEmpty(settings.Dir))
+            {
+                LogManager.Configuration.Variables["dir"] = settings.Dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+            }
+
+            NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
+        }
+    }
+
     public class LogNLog : ILog
     {
         private NLog.ILogger loger;
@@ -376,22 +413,6 @@ namespace ASC.Common.Logging
         public bool IsFatalEnabled { get; private set; }
 
         public bool IsTraceEnabled { get; private set; }
-
-        static LogNLog()
-        {
-            var args = Environment.GetCommandLineArgs();
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                if (args[i] == "--log" && !string.IsNullOrEmpty(args[i + 1]))
-                {
-                    NLog.LogManager.Configuration.Variables["svcName"] = args[i + 1].Trim().Trim('"');
-                }
-            }
-
-            NLog.Targets.Target.Register<SelfCleaningTarget>("SelfCleaning");
-        }
-
 
         public void Trace(object message)
         {
@@ -815,6 +836,12 @@ namespace ASC.Common.Logging
 
             services.TryAddSingleton(typeof(IOptionsMonitor<ILog>), typeof(LogManager<T>));
             return services;
+        }
+
+        public static IServiceCollection AddNLogManager(this IServiceCollection services, params string[] additionalLoggers)
+        {
+            services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
+            return services.AddLogManager<LogNLog>(additionalLoggers);
         }
     }
 }

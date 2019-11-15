@@ -50,7 +50,7 @@ namespace ASC.Web.Studio.Core.Quota
 
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
-            var scope = ServiceProvider.CreateScope();
+            using var scope = ServiceProvider.CreateScope();
             var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
             tenantManager.SetCurrentTenant(TenantId);
 

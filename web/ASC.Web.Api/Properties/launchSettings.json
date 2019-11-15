@@ -15,7 +15,9 @@
       "launchUrl": "api/modules",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "$STORAGE_ROOT": "../../../../../Data"
+        "$STORAGE_ROOT": "../../Data",
+        "log__name": "api",
+        "log__dir": "../../Logs"
       }
     },
     "ASC.Web.Api": {
@@ -25,7 +27,9 @@
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "$STORAGE_ROOT": "../../../../../Data"
+        "$STORAGE_ROOT": "../../Data",
+        "log__name": "api",
+        "log__dir": "../../Logs"
       }
     }
   }
