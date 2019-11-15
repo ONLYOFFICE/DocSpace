@@ -12,6 +12,14 @@ import clone from 'lodash/clone';
 
 const StyledFilterInput = styled.div`
     width: 100%;
+
+    &:after {
+        content: " ";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
 `;
 const StyledSearchInput = styled.div`
     display: block;
