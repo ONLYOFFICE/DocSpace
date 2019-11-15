@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
@@ -25,6 +26,11 @@ namespace ASC.Studio.Notify
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"appsettings.services.json", true)
@@ -33,11 +39,12 @@ namespace ASC.Studio.Notify
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true);
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddLogManager<LogNLog>("ASC.Notify", "ASC.Notify.Messages");
+                    services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();

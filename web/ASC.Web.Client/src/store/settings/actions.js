@@ -73,23 +73,25 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
         )
       )
       .then(() =>
-        axios.all([
-          api.getUserList(filterData),
-          api.getListAdmins(filterData),
-          api.getAdmins(false)
-        ])
+        axios.all([api.getUserList(filterData), api.getListAdmins(filterData)])
       )
       .then(
-        axios.spread((users, filterAdmins, admins) => {
-          const options = getUserOptions(users, filterAdmins);
+        axios.spread((users, admins) => {
+          const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
-          filterData.total = admins.length;
+          filterData.total = admins.total;
 
           dispatch(setUsers(newOptions));
-          dispatch(setAdmins(filterAdmins));
+          dispatch(setAdmins(admins.items));
           dispatch(setFilter(filterData));
         })
       );
+  };
+}
+
+export function getPortalOwner(userId) {
+  return dispatch => {
+    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
   };
 }
 
@@ -101,23 +103,16 @@ export function fetchPeople(filter) {
 
   return dispatch => {
     return axios
-      .all([
-        api.getUserList(filterData),
-        api.getListAdmins(filterData),
-        api.getAdmins(true)
-      ])
+      .all([api.getUserList(filterData), api.getListAdmins(filterData)])
       .then(
-        axios.spread((users, filterAdmins, admins) => {
-          const options = getUserOptions(users, admins);
+        axios.spread((users, admins) => {
+          const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
-          filterData.total = admins.length;
+          filterData.total = admins.total;
 
-          const owner = admins.find(x => x.isOwner);
-
-          dispatch(setAdmins(filterAdmins));
+          dispatch(setAdmins(admins.items));
           dispatch(setUsers(newOptions));
           dispatch(setFilter(filterData));
-          dispatch(setOwner(owner));
         })
       );
   };

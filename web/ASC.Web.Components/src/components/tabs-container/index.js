@@ -67,8 +67,15 @@ class TabContainer extends Component {
     }
   };
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { activeTab } = this.state;
+    if (activeTab !== nextState.activeTab) {
+      return true;
+    } else return false;
+  }
+
   render() {
-    //console.log('Tab container render');
+    //console.log("Tabs container render");
 
     const { isDisabled, children } = this.props;
     return (

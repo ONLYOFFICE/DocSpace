@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using ASC.Common.DependencyInjection;
@@ -31,19 +32,25 @@ namespace ASC.Notify
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true);
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
 
-                    services.AddLogManager<LogNLog>("ASC.Notify", "ASC.Notify.Messages");
+                    services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
                     services.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();

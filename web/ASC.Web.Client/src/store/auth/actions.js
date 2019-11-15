@@ -166,10 +166,7 @@ export function createConfirmUser(registerData, loginData, key) {
 };
 
 export function changePassword(userId, password, key) {
-    return dispatch => {
-        return api.changePassword(userId, password, key)
-            .then(() => logout(dispatch));
-    }
+    return () => api.changePassword(userId, password, key)
 }
 
 export function changeEmail(userId, email, key) {

@@ -110,7 +110,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-                var scope = ServiceProvider.CreateScope();
+                using var scope = ServiceProvider.CreateScope();
                 var tariffSync = scope.ServiceProvider.GetService<TariffSync>();
                 tariffSync.Sync();
 

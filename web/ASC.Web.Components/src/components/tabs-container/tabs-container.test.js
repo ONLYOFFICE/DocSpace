@@ -154,3 +154,9 @@ describe("<TabContainer />", () => {
     expect(wrapper.state.activeTab).toEqual(2);
   });
 });
+
+it("TabsContainer not re-render test", () => {
+  const wrapper = mount(<TabContainer>{array_items}</TabContainer>).instance();
+  const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
+  expect(shouldUpdate).toBe(false);
+});
