@@ -1,13 +1,18 @@
-import React from "react";
+import React, { memo } from "react";
 import { withRouter } from "react-router";
 // import { useTranslation } from 'react-i18next';
 import { connect } from "react-redux";
 import styled from 'styled-components';
-import { Text, Button, Avatar, RowContainer, Icons, toastr } from 'asc-web-components';
+import { Text, Button, Avatar, toastr } from 'asc-web-components';
+import { toEmployeeWrapper } from "../../../../../store/people/selectors";
+import { FixedSizeList as List, areEqual } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 
 const LoadCsvWrapper = styled.div`
   margin-top: 24px;
+  margin-bottom: 24px;
   width: 100%;
+  height: 400px;
   max-width: 1024px;
 `;
 
@@ -34,7 +39,7 @@ const StyledFileInput = styled.div`
 const StyledFieldContainer = styled.div`
   position: relative;
 
-  @media (min-width:769px) {
+  @media (min-width:768px) {
     margin-top: 14px;
   }
 `;
@@ -65,7 +70,7 @@ const StyledField = styled.div`
 const StyledProgress = styled.div`
   position: absolute;
   max-width: 100%;
-  width: ${props => props.progress && `${props.progress}%`};
+  width: ${props => props.completed && `${props.completed}%`};
   height: 100%;
   top: 0px;
   background-color: #7ACE9B;
@@ -73,12 +78,12 @@ const StyledProgress = styled.div`
   border-radius: 3px;
   z-index: -1;
   transition-property: width;
-  transition-duration: 2s;
+  transition-duration: 1s;
 `;
 
-class ImportRow extends React.Component {
+class ImportRow extends React.PureComponent {
   render() {
-    const { items, completion } = this.props;
+    const { items, completed } = this.props;
 
     const fullName = items[0] + ' ' + items[1];
     const firstName = items[0];
@@ -93,7 +98,7 @@ class ImportRow extends React.Component {
         <StyledField style={{ display: 'inline-block' }}>{firstName}</StyledField>
         <StyledField style={{ display: 'inline-block' }}>{lastName}</StyledField>
         <StyledField style={{ display: 'block' }}>{email}</StyledField>
-        <StyledProgress progress={completion || 0} />
+        <StyledProgress completed={completed} />
       </StyledFieldContainer>
     )
   }
@@ -129,61 +134,109 @@ class SectionBodyContent extends React.Component {
 
   processData = (csv) => {
     const allTextLines = csv.split(/\r\n|\n/);
-
-    const t0 = performance.now();
-
     const splittedLines = allTextLines.map(line => line.split(','));
     const filteredLines = splittedLines.filter(line => (line[0].length > 0) && line);
-
-    const t1 = performance.now();
-    toastr.success(`Parse lines took ${(t1 - t0).toFixed(0)} milliseconds.`);
 
     this.setState({
       splittedLines: filteredLines
     });
   }
 
-  createRows = rows => rows.map(data => (<ImportRow items={data} />));
+  createRows = rows => rows.map(data => {
+    return (
+      <ImportRow items={data} />
+    );
+  });
 
-  setCompleted = value => this.setState({ completion: value });
+  renderRow = memo(({ data, index, style }) => {
+    return (
+      <div style={style}>
+        {data[index]}
+      </div>
+    )
+  }, areEqual);
+
+  prepareUsersData = data => {
+    const { splittedLines } = this.state;
+    const rawUsers = splittedLines || data;
+
+    const preparedUsers = rawUsers.map(user => {
+      const userObj = {};
+
+      userObj.firstName = user[0];
+      userObj.lastName = user[1];
+      userObj.email = user[2];
+
+      return toEmployeeWrapper(userObj);
+    });
+
+    return preparedUsers;
+  }
+
+  runImport = users => {
+    // Use with axios
+  }
+
+  onImportClick = () => {
+    const users = this.prepareUsersData();
+    this.runImport(users);
+  }
 
   render() {
     const { splittedLines, completion } = this.state;
     // const { t } = useTranslation();
-    const t0 = performance.now();
-
     const rows = this.createRows(splittedLines);
 
-    const t1 = performance.now();
-    splittedLines.length && toastr.success(`Render rows took ${(t1 - t0).toFixed(0)} milliseconds.`);
+    const renderList = ({ height, width }) => {
+      const itemHeight = (width < 768) ? 56 : 36;
+      return (
+        <List
+          className="List"
+          height={height}
+          width={width}
+          itemSize={itemHeight}
+          itemCount={rows.length}
+          itemData={rows}
+        >
+          {this.renderRow}
+        </List>
+      )
+    }
 
     return (
       <>
         <Text.Body fontSize={18} >
-          Select data source
+          Functionality at development stage.
         </Text.Body>
         <br />
         <Text.Body fontSize={14} >
-          Functionality at development stage. <br />
           Files are formatted according to CSV RFC rules. <br />
           Column Order: FirstName, LastName, Email. <br />
           Comma delimiter, strings in unix format. <br />
         </Text.Body>
         <SelectSourceWrapper>
           <StyledFileInput>
-            <Button size='big' primary={true} scale={true} label="Upload CSV" />
-            <input type="file" name="file" onChange={(e) => this.getAsText(e.target.files[0])} accept='.csv' />
+            <Button size='big' primary={true} scale={true} label="Upload CSV" isDisabled={true} />
+            {false &&
+              <input type="file" name="file" onChange={(e) => this.getAsText(e.target.files[0])} accept='.csv' />
+            }
           </StyledFileInput>
         </SelectSourceWrapper>
         <br />
         <Text.Body fontSize={14} >
           Ready for import: {`${splittedLines.length} of ${splittedLines.length}`}
         </Text.Body>
+        <div style={{ position: 'relative', width: '100%', height: '30px' }}>
+          <StyledProgress completed={completion} />
+        </div>
         <LoadCsvWrapper>
-          <RowContainer manualHeight='400px'>
-            {rows}
-          </RowContainer>
+          <AutoSizer>
+            {renderList}
+          </AutoSizer>
         </LoadCsvWrapper>
+        <StyledFileInput>
+          <Button size='big' primary={true} scale={true} onClick={this.onImportClick} isDisabled={true} label="Start import" />
+        </StyledFileInput>
       </>
     );
   }
@@ -194,4 +247,8 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(withRouter(SectionBodyContent));
+export default connect(
+  mapStateToProps,
+  {
+  }
+)(withRouter(SectionBodyContent));
