@@ -3,5 +3,6 @@ import * as people from './people';
 import * as user from './user';
 import * as settings from './settings';
 import * as modules from './modules';
+import * as portal from './portal';
 
-export default { Filter, people, user, settings, modules };
+export default { Filter, people, user, settings, modules, portal };

@@ -125,3 +125,11 @@ export function getUserList(filter = Filter.getDefault()) {
       url: `/people/${userId}`
     });
   }
+
+  export function resendUserInvites(userIds) {
+    return request({
+      method: "put",
+      url: "/people/invite",
+      data: { userIds }
+    });
+  }

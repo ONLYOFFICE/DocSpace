@@ -32,14 +32,14 @@ import {
 } from "../../../../../store/people/selectors";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import {
-  resendUserInvites,
   sendInstructionsToDelete,
   sendInstructionsToChangePassword,
   deleteUser
 } from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
-import { store } from 'asc-web-common';
+import { store, api } from 'asc-web-common';
 const { isAdmin, isMe } = store.auth.selectors;
+const { resendUserInvites } = api.people;
 
 
 class SectionBodyContent extends React.PureComponent {

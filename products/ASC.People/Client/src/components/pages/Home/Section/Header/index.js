@@ -26,12 +26,12 @@ import {
   typeGuest
 } from "../../../../../helpers/../helpers/customNames";
 import {
-  resendUserInvites,
   deleteUsers
 } from "../../../../../store/services/api";
 import { deleteGroup } from "../../../../../store/group/actions";
-import { store } from 'asc-web-common';
+import { store, api } from 'asc-web-common';
 const { isAdmin } = store.auth.selectors;
+const { resendUserInvites } = api.people;
 
 const StyledContainer = styled.div`
   .group-button-menu-container {

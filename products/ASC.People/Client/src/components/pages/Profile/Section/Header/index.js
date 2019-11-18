@@ -15,7 +15,6 @@ import {
 import { withRouter } from "react-router";
 import { getUserStatus, toEmployeeWrapper } from "../../../../../store/people/selectors";
 import { withTranslation } from 'react-i18next';
-import { resendUserInvites } from "../../../../../store/services/api";
 import { EmployeeStatus } from "../../../../../helpers/constants";
 import { updateUserStatus, fetchPeople } from "../../../../../store/people/actions";
 import { fetchProfile } from '../../../../../store/profile/actions';
@@ -29,8 +28,9 @@ import {
   deleteUser
 } from "../../../../../store/services/api";
 import styled from 'styled-components';
-import { store } from 'asc-web-common';
+import { store, api } from 'asc-web-common';
 const { isAdmin, isMe } = store.auth.selectors;
+const { resendUserInvites } = api.people;
 
 const wrapperStyle = {
   display: "flex",

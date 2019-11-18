@@ -173,14 +173,6 @@ export function updateUserType(type, userIds) {
   });
 }
 
-export function resendUserInvites(userIds) {
-  return request({
-    method: "put",
-    url: "/people/invite",
-    data: { userIds }
-  });
-}
-
 export function sendInstructionsToDelete() {
   return request({
     method: "put",
@@ -259,14 +251,6 @@ export function getInvitationLink(isGuest) {
         );
         return Promise.resolve(link);
       });
-}
-
-export function getShortenedLink(link) {
-  return request({
-    method: "put",
-    url: "/portal/getshortenlink.json",
-    data: link
-  });
 }
 
 export function createGroup(groupName, groupManager, members) {
