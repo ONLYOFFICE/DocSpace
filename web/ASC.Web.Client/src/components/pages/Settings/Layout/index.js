@@ -16,7 +16,7 @@ const Layout = ({ currentProductId, setCurrentProductId, language, children }) =
   useEffect(() => {
     currentProductId !== 'settings' && setCurrentProductId('settings');
     i18n.changeLanguage(language);
-  }, [language]);
+  }, [language, currentProductId, setCurrentProductId]);
 
   return (
     <I18nextProvider i18n={i18n}>
