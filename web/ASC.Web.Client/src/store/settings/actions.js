@@ -1,7 +1,7 @@
-import * as api from "../services/api";
+import { api } from "asc-web-common";
 import axios from "axios";
 import { getSelectorOptions, getUserOptions } from "./selectors";
-import Filter from "./filter";
+const { Filter } = api;
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
@@ -69,11 +69,11 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
     return axios
       .all(
         userIds.map(userId =>
-          api.changeProductAdmin(userId, productId, isAdmin)
+          api.people.changeProductAdmin(userId, productId, isAdmin)
         )
       )
       .then(() =>
-        axios.all([api.getUserList(filterData), api.getListAdmins(filterData)])
+        axios.all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
       )
       .then(
         axios.spread((users, admins) => {
@@ -91,7 +91,7 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
 
 export function getPortalOwner(userId) {
   return dispatch => {
-    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
+    return api.people.getUserById(userId).then(owner => dispatch(setOwner(owner)));
   };
 }
 
@@ -103,7 +103,7 @@ export function fetchPeople(filter) {
 
   return dispatch => {
     return axios
-      .all([api.getUserList(filterData), api.getListAdmins(filterData)])
+      .all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
       .then(
         axios.spread((users, admins) => {
           const options = getUserOptions(users.items, admins.items);
@@ -120,7 +120,7 @@ export function fetchPeople(filter) {
 
 export function getWhiteLabelLogoText() {
   return dispatch => {
-    return api.getLogoText()
+    return api.settings.getLogoText()
     .then(res => {
       dispatch(setLogoText(res));
     });
@@ -129,7 +129,7 @@ export function getWhiteLabelLogoText() {
 
 export function getWhiteLabelLogoSizes() {
   return dispatch => {
-    return api.getLogoSizes()
+    return api.settings.getLogoSizes()
     .then(res => {
       dispatch(setLogoSizes(res));
     });
@@ -138,7 +138,7 @@ export function getWhiteLabelLogoSizes() {
 
 export function getWhiteLabelLogoUrls() {
   return dispatch => {
-    return api.getLogoUrls()
+    return api.settings.getLogoUrls()
     .then(res => {
       dispatch(setLogoUrls(Object.values(res)));
     });

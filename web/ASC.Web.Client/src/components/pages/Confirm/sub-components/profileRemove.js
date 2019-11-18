@@ -5,9 +5,9 @@ import { Button, PageLayout, Text } from 'asc-web-components';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { deleteSelf } from './../../../../store/services/api';
-import { store } from 'asc-web-common';
+import { store, api } from 'asc-web-common';
 const { logout } = store.auth.actions;
+const { deleteSelf } = api.people;
 
 const ProfileRemoveContainer = styled.div`
     display: flex;

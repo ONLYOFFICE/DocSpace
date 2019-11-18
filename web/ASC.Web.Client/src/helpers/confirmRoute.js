@@ -6,7 +6,8 @@ import { PageLayout, Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { AUTH_KEY } from "./constants";
-import { checkConfirmLink } from "../store/services/api";
+import { api } from "asc-web-common";
+const { checkConfirmLink } = api.user;
 
 class ConfirmRoute extends React.Component {
   constructor(props) {

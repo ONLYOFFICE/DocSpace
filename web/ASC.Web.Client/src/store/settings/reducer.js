@@ -1,6 +1,7 @@
 
 import { SET_USERS, SET_ADMINS, SET_OWNER, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS } from "./actions";
-import Filter from "./filter";
+import { api } from "asc-web-common";
+const { Filter } = api;
 
 const initialState = {
   common: {

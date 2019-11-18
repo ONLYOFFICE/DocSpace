@@ -24,10 +24,10 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { sendInstructionsToChangePassword } from "../../../store/services/api";
 import SubModalDialog from "./sub-components/modal-dialog";
-import { store } from 'asc-web-common';
-const { login } = store.auth.actions;
+import { store, api } from 'asc-web-common';
+const { login, setIsLoaded } = store.auth.actions;
+const { sendInstructionsToChangePassword } = api.people;
 
 const FormContainer = styled(Container)`
   margin-top: 70px;
@@ -93,7 +93,7 @@ const mdOptions = { size: 6, offset: 3 };
 
 const Form = props => {
   const { t } = useTranslation("translation", { i18n });
-  const { login, match, history, language, greetingTitle } = props;
+  const { login, setIsLoaded, match, history, language, greetingTitle } = props;
   const { params } = match;
   const [identifier, setIdentifier] = useState(params.confirmedEmail || "");
   const [identifierValid, setIdentifierValid] = useState(true);
@@ -153,6 +153,7 @@ const Form = props => {
       () => {
         //console.log("auth success", match, location, history);
         setIsLoading(false);
+        setIsLoaded(true);
         history.push("/");
       },
       error => {
@@ -161,7 +162,7 @@ const Form = props => {
         setIsLoading(false);
       }
     );
-  }, [errorText, history, identifier, login, password]);
+  }, [errorText, history, identifier, login, setIsLoaded, password]);
 
   const onKeyPress = useCallback(
     event => {
@@ -353,5 +354,5 @@ function mapStateToProps(state) {
 
 export default connect(
   mapStateToProps,
-  { login }
+  { login, setIsLoaded }
 )(withRouter(LoginForm));
