@@ -1,5 +1,5 @@
 
-import { SET_USERS, SET_ADMINS, SET_OWNER, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS } from "./actions";
+import { SET_USERS, SET_ADMINS, SET_OWNER, SET_OPTIONS, SET_FILTER, SET_LOGO_TEXT, SET_LOGO_SIZES, SET_LOGO_URLS } from "./actions";
 import Filter from "./filter";
 
 const initialState = {
@@ -13,6 +13,7 @@ const initialState = {
   security: {
     accessRight: {
       options: [],
+      users: [],
       admins: [],
       owner: {},
       filter: Filter.getDefault()
@@ -22,11 +23,19 @@ const initialState = {
 
 const peopleReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_USERS:
+    case SET_OPTIONS:
       return Object.assign({}, state, {
         security: Object.assign({}, state.security, {
           accessRight: Object.assign({}, state.security.accessRight, {
             options: action.options
+          })
+        })
+      });
+    case SET_USERS:
+      return Object.assign({}, state, {
+        security: Object.assign({}, state.security, {
+          accessRight: Object.assign({}, state.security.accessRight, {
+            users: action.users
           })
         })
       });

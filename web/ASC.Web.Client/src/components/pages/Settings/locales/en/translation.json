@@ -58,8 +58,10 @@
     "LogoDocsEditor": "Logo for the editors header",
     "ChangeLogoButton": "Change Logo",
     "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
-
-
+    "AccessRightsChangeOwnerText": "To change the Portal owner please choose the Name of the new Portal owner below.",
+    "ChooseOwner": "Choose owner",
+    "DnsChangeMsg": "A link to confirm the operation has been sent to {{email}} (the email address of the portal owner).",
+    "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
 
 
     "ViewProfilesAndGroups": "View profiles and groups",

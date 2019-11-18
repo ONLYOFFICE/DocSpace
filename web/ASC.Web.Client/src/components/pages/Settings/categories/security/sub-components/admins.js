@@ -22,11 +22,18 @@ import {
   toastr,
   FilterInput,
   Button,
-  RequestLoader
+  RequestLoader,
+  Loader
 } from "asc-web-components";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
+const AdminsContainer = styled.div`
+  .hidden-icon {
+    position: fixed;
+    visibility: hidden;
+  }
+`;
 const ToggleContentContainer = styled.div`
   .buttons_container {
     display: flex;
@@ -53,7 +60,6 @@ const ToggleContentContainer = styled.div`
   }
 
   .filter_container {
-    margin-bottom: 50px;
     margin-top: 16px;
   }
 `;
@@ -68,17 +74,15 @@ class PureAdminsSettings extends Component {
       allOptions: [],
       options: [],
       isLoading: false,
+      showLoader: true,
       selectedOptions: []
     };
   }
 
   componentDidMount() {
-    const { admins, options } = this.props;
+    const { admins, options, fetchPeople } = this.props;
 
     if (isEmpty(admins, true) || isEmpty(options, true)) {
-      const { fetchPeople } = this.props;
-
-      this.onLoading(true);
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
         .catch(error => {
@@ -86,10 +90,12 @@ class PureAdminsSettings extends Component {
         })
         .finally(() =>
           this.setState({
-            isLoading: false,
+            showLoader: false,
             allOptions: this.props.options
           })
         );
+    } else {
+      this.setState({ showLoader: false });
     }
   }
 
@@ -304,7 +310,8 @@ class PureAdminsSettings extends Component {
       options,
       selectedOptions,
       isLoading,
-      showFullAdminSelector
+      showFullAdminSelector,
+      showLoader
     } = this.state;
 
     const countElements = filter.total;
@@ -312,167 +319,176 @@ class PureAdminsSettings extends Component {
     console.log("Admins render_");
 
     return (
-      <>
-        <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize={16}
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize={12}
-          fontColor={"#999"}
-          className="page_loader"
-        />
+      /*TODO: delete after resolve icon button problem*/
+      <AdminsContainer>
+        <IconButton className="hidden-icon" iconName="SearchIcon" />
 
-        <ToggleContentContainer>
-          <div className="buttons_container">
-            <Button
-              className="button_style"
-              size="medium"
-              primary={true}
-              label="Set people admin"
-              isDisabled={isLoading}
-              onClick={this.onShowGroupSelector}
+        {showLoader ? (
+          <Loader className="pageLoader" type="rombs" size={40} />
+        ) : (
+          <>
+            <RequestLoader
+              visible={isLoading}
+              zIndex={256}
+              loaderSize={16}
+              loaderColor={"#999"}
+              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+              fontSize={12}
+              fontColor={"#999"}
+              className="page_loader"
             />
-            <div style={{ right: 180 }} className="advanced-selector">
-              <AdvancedSelector
-                displayType="dropdown"
-                isOpen={showSelector}
-                placeholder="placeholder"
-                options={options}
-                onSearchChanged={this.onSearchUsers}
-                //groups={groups}
-                isMultiSelect={true}
-                buttonLabel="Add members"
-                onSelect={this.onSelect}
-                onCancel={this.onShowGroupSelector}
-                onAddNewClick={() => console.log("onAddNewClick")}
-                selectAllLabel="selectorSelectAllText"
-                selectedOptions={selectedOptions}
-              />
-            </div>
 
-            <Button
-              size="medium"
-              primary={true}
-              label="Set portal admin"
-              isDisabled={isLoading}
-              onClick={this.onShowFullAdminGroupSelector}
-            />
-            <div style={{ right: 160 }} className="advanced-selector">
-              <AdvancedSelector
-                displayType="dropdown"
-                isOpen={showFullAdminSelector}
-                placeholder="placeholder"
-                options={options}
-                onSearchChanged={this.onSearchUsers}
-                //groups={groups}
-                isMultiSelect={true}
-                buttonLabel="Add members"
-                onSelect={this.onSelectFullAdmin}
-                onCancel={this.onShowFullAdminGroupSelector}
-                onAddNewClick={() => console.log("onAddNewClick")}
-                selectAllLabel="selectorSelectAllText"
-                selectedOptions={selectedOptions}
-              />
-            </div>
-          </div>
-
-          {countElements > 25 ? (
-            <FilterInput
-              className="filter_container"
-              getFilterData={() => []}
-              getSortData={this.getSortData}
-              onFilter={this.onFilter}
-            />
-          ) : null}
-
-          <div className="wrapper">
-            <RowContainer manualHeight={`${admins.length * 50}px`}>
-              {admins.map(user => {
-                const element = (
-                  <Avatar
-                    size="small"
-                    role={getUserRole(user)}
-                    userName={user.displayName}
-                    source={user.avatar}
+            <ToggleContentContainer>
+              <div className="buttons_container">
+                <Button
+                  className="button_style"
+                  size="medium"
+                  primary={true}
+                  label="Set people admin"
+                  isDisabled={isLoading}
+                  onClick={this.onShowGroupSelector}
+                />
+                <div style={{ right: 180 }} className="advanced-selector">
+                  <AdvancedSelector
+                    displayType="dropdown"
+                    isOpen={showSelector}
+                    placeholder="placeholder"
+                    options={options}
+                    onSearchChanged={this.onSearchUsers}
+                    //groups={groups}
+                    isMultiSelect={true}
+                    buttonLabel="Add members"
+                    onSelect={this.onSelect}
+                    onCancel={this.onShowGroupSelector}
+                    onAddNewClick={() => console.log("onAddNewClick")}
+                    selectAllLabel="selectorSelectAllText"
+                    selectedOptions={selectedOptions}
                   />
-                );
-                const nameColor =
-                  user.status === "pending" ? "#A3A9AE" : "#333333";
+                </div>
 
-                return (
-                  <Row
-                    key={user.id}
-                    status={user.status}
-                    data={user}
-                    element={element}
-                  >
-                    <RowContent disableSideInfo={true}>
-                      <Link
-                        containerWidth="120px"
-                        type="page"
-                        title={user.displayName}
-                        isBold={true}
-                        fontSize={15}
-                        color={nameColor}
-                        href={user.profileUrl}
-                      >
-                        {user.displayName}
-                      </Link>
-                      <div style={{ maxWidth: 120 }} />
+                <Button
+                  size="medium"
+                  primary={true}
+                  label="Set portal admin"
+                  isDisabled={isLoading}
+                  onClick={this.onShowFullAdminGroupSelector}
+                />
+                <div style={{ right: 160 }} className="advanced-selector">
+                  <AdvancedSelector
+                    displayType="dropdown"
+                    isOpen={showFullAdminSelector}
+                    placeholder="placeholder"
+                    options={options}
+                    onSearchChanged={this.onSearchUsers}
+                    //groups={groups}
+                    isMultiSelect={true}
+                    buttonLabel="Add members"
+                    onSelect={this.onSelectFullAdmin}
+                    onCancel={this.onShowFullAdminGroupSelector}
+                    onAddNewClick={() => console.log("onAddNewClick")}
+                    selectAllLabel="selectorSelectAllText"
+                    selectedOptions={selectedOptions}
+                  />
+                </div>
+              </div>
 
-                      <Text.Body>
-                        {user.isAdmin ? "Full access" : "People module admin"}
-                      </Text.Body>
-
-                      {!user.isOwner ? (
-                        <IconButton
-                          className="remove_icon"
-                          size="16"
-                          isDisabled={isLoading}
-                          onClick={this.onChangeAdmin.bind(
-                            this,
-                            [user.id],
-                            false,
-                            "00000000-0000-0000-0000-000000000000"
-                          )}
-                          iconName={"CatalogTrashIcon"}
-                          isFill={true}
-                          isClickable={false}
-                        />
-                      ) : (
-                        <div />
-                      )}
-                    </RowContent>
-                  </Row>
-                );
-              })}
-            </RowContainer>
-          </div>
-
-          {countElements > 25 ? (
-            <div className="wrapper">
-              <Paging
-                previousLabel={t("PreviousPage")}
-                nextLabel={t("NextPage")}
-                openDirection="top"
-                countItems={this.countItems()}
-                pageItems={this.pageItems()}
-                displayItems={false}
-                selectedPageItem={this.selectedPageItem()}
-                selectedCountItem={this.selectedCountItem()}
-                onSelectPage={this.onChangePage}
-                onSelectCount={this.onChangePageSize}
-                previousAction={this.onPrevClick}
-                nextAction={this.onNextClick}
-                disablePrevious={!filter.hasPrev()}
-                disableNext={!filter.hasNext()}
+              <FilterInput
+                className="filter_container"
+                getFilterData={() => []}
+                getSortData={this.getSortData}
+                onFilter={this.onFilter}
               />
-            </div>
-          ) : null}
-        </ToggleContentContainer>
-      </>
+
+              <div className="wrapper">
+                <RowContainer manualHeight={`${admins.length * 50}px`}>
+                  {admins.map(user => {
+                    const element = (
+                      <Avatar
+                        size="small"
+                        role={getUserRole(user)}
+                        userName={user.displayName}
+                        source={user.avatar}
+                      />
+                    );
+                    const nameColor =
+                      user.status === "pending" ? "#A3A9AE" : "#333333";
+
+                    return (
+                      <Row
+                        key={user.id}
+                        status={user.status}
+                        data={user}
+                        element={element}
+                      >
+                        <RowContent disableSideInfo={true}>
+                          <Link
+                            containerWidth="120px"
+                            type="page"
+                            title={user.displayName}
+                            isBold={true}
+                            fontSize={15}
+                            color={nameColor}
+                            href={user.profileUrl}
+                          >
+                            {user.displayName}
+                          </Link>
+                          <div style={{ maxWidth: 120 }} />
+
+                          <Text.Body>
+                            {user.isAdmin
+                              ? "Full access"
+                              : "People module admin"}
+                          </Text.Body>
+
+                          {!user.isOwner ? (
+                            <IconButton
+                              className="remove_icon"
+                              size="16"
+                              isDisabled={isLoading}
+                              onClick={this.onChangeAdmin.bind(
+                                this,
+                                [user.id],
+                                false,
+                                "00000000-0000-0000-0000-000000000000"
+                              )}
+                              iconName={"CatalogTrashIcon"}
+                              isFill={true}
+                              isClickable={false}
+                            />
+                          ) : (
+                            <div />
+                          )}
+                        </RowContent>
+                      </Row>
+                    );
+                  })}
+                </RowContainer>
+              </div>
+
+              {countElements > 25 ? (
+                <div className="wrapper">
+                  <Paging
+                    previousLabel={t("PreviousPage")}
+                    nextLabel={t("NextPage")}
+                    openDirection="top"
+                    countItems={this.countItems()}
+                    pageItems={this.pageItems()}
+                    displayItems={false}
+                    selectedPageItem={this.selectedPageItem()}
+                    selectedCountItem={this.selectedCountItem()}
+                    onSelectPage={this.onChangePage}
+                    onSelectCount={this.onChangePageSize}
+                    previousAction={this.onPrevClick}
+                    nextAction={this.onNextClick}
+                    disablePrevious={!filter.hasPrev()}
+                    disableNext={!filter.hasNext()}
+                  />
+                </div>
+              ) : null}
+            </ToggleContentContainer>
+          </>
+        )}
+      </AdminsContainer>
     );
   }
 }

@@ -5,18 +5,37 @@ import { withRouter } from "react-router";
 import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { getPortalOwner } from "../../../../../../store/settings/actions";
+import {
+  getPortalOwner,
+  fetchPeople
+} from "../../../../../../store/settings/actions";
 import {
   Text,
   Avatar,
   Link,
   toastr,
   Button,
-  RequestLoader
+  RequestLoader,
+  AdvancedSelector,
+  Loader
 } from "asc-web-components";
-import { isArrayEqual } from "../../../utils/isArrayEqual";
 import isEmpty from "lodash/isEmpty";
 
+const OwnerContainer = styled.div`
+  .link_style {
+    margin-right: 16px;
+  }
+  .text-body_wrapper {
+    margin-bottom: 16px;
+  }
+  .advanced-selector {
+    position: relative;
+  }
+  .text-body_inline {
+    display: inline-flex;
+    margin-left: 16px;
+  }
+`;
 const HeaderContainer = styled.div`
   margin: 40px 0 16px 0;
 `;
@@ -60,44 +79,90 @@ class PureOwnerSettings extends Component {
     super(props);
 
     this.state = {
-      isLoading: false
+      isLoading: false,
+      showSelector: false,
+      options: [],
+      allOptions: [],
+      showLoader: true,
+      selectedOptions: [],
+      selectedOwner: null
     };
   }
 
   componentDidMount() {
-    const { owner, getPortalOwner, ownerId } = this.props;
+    const {
+      owner,
+      getPortalOwner,
+      ownerId,
+      options,
+      fetchPeople,
+      filter
+    } = this.props;
 
     if (isEmpty(owner, true)) {
-      this.onLoading(true);
       getPortalOwner(ownerId)
         .catch(error => {
           toastr.error(error);
         })
-        .finally(() => this.onLoading(false));
+        .finally(() => this.setState({ showLoader: false }));
     }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { owner, ownerId } = this.props;
-    if (
-      ownerId === nextProps.ownerId &&
-      this.state.isLoading === nextState.isLoading &&
-      isArrayEqual(owner, nextProps.owner)
-    ) {
-      return false;
+    if (isEmpty(options, true)) {
+      const newFilter = filter.clone();
+      fetchPeople(newFilter)
+        .catch(error => {
+          toastr.error(error);
+        })
+        .finally(() =>
+          this.setState({
+            showLoader: false,
+            allOptions: this.props.options
+          })
+        );
     }
-    return true;
+    this.setState({ showLoader: false });
   }
 
   onChangeOwner = () => {
-    toastr.warning("onChangeOwner");
+    const { t, owner } = this.props;
+    toastr.success(t("DnsChangeMsg", { email: owner.email }));
   };
 
   onLoading = status => this.setState({ isLoading: status });
 
+  onShowSelector = status => {
+    this.setState({
+      options: this.props.options,
+      showSelector: status,
+      selectedOptions: []
+    });
+  };
+
+  onSearchUsers = template => {
+    const options = this.filterUserSelectorOptions(
+      this.state.allOptions,
+      template
+    );
+    this.setState({ options: options });
+  };
+
+  onSelect = selected => {
+    this.onShowSelector(false);
+    this.setState({ selectedOwner: selected[0], selectedOptions: selected });
+  };
+
+  filterUserSelectorOptions = (options, template) =>
+    options.filter(option => option.label.indexOf(template) > -1);
+
   render() {
     const { t, owner } = this.props;
-    const { isLoading } = this.state;
+    const {
+      isLoading,
+      showLoader,
+      showSelector,
+      options,
+      selectedOptions,
+      selectedOwner
+    } = this.state;
 
     const OwnerOpportunities = t("AccessRightsOwnerOpportunities").split("|");
 
@@ -105,59 +170,111 @@ class PureOwnerSettings extends Component {
 
     return (
       <>
-        <RequestLoader
-          visible={isLoading}
-          zIndex={256}
-          loaderSize={16}
-          loaderColor={"#999"}
-          label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-          fontSize={12}
-          fontColor={"#999"}
-          className="page_loader"
-        />
-        <HeaderContainer>
-          <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
-        </HeaderContainer>
-
-        <BodyContainer>
-          <AvatarContainer>
-            <Avatar
-              className="avatar_wrapper"
-              size="big"
-              role="owner"
-              userName={owner.userName}
-              source={owner.avatar}
+        {showLoader ? (
+          <Loader className="pageLoader" type="rombs" size={40} />
+        ) : (
+          <OwnerContainer>
+            <RequestLoader
+              visible={isLoading}
+              zIndex={256}
+              loaderSize={16}
+              loaderColor={"#999"}
+              label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
+              fontSize={12}
+              fontColor={"#999"}
+              className="page_loader"
             />
-            <div className="avatar_body">
-              <Text.Body className="avatar_text" fontSize={16} isBold={true}>
-                {owner.displayName}
-              </Text.Body>
-              {owner.groups &&
-                owner.groups.map(group => (
-                  <Link fontSize={12} key={group.id} href={owner.profileUrl}>
-                    {group.name}
-                  </Link>
-                ))}
+            <HeaderContainer>
+              <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
+            </HeaderContainer>
+
+            <BodyContainer>
+              <AvatarContainer>
+                <Avatar
+                  className="avatar_wrapper"
+                  size="big"
+                  role="owner"
+                  userName={owner.userName}
+                  source={owner.avatar}
+                />
+                <div className="avatar_body">
+                  <Text.Body
+                    className="avatar_text"
+                    fontSize={16}
+                    isBold={true}
+                  >
+                    {owner.displayName}
+                  </Text.Body>
+                  {owner.groups &&
+                    owner.groups.map(group => (
+                      <Link
+                        fontSize={12}
+                        key={group.id}
+                        href={owner.profileUrl}
+                      >
+                        {group.name}
+                      </Link>
+                    ))}
+                </div>
+              </AvatarContainer>
+              <ProjectsBody>
+                <Text.Body className="portal_owner" fontSize={12}>
+                  {t("AccessRightsOwnerCan")}:
+                </Text.Body>
+                <Text.Body fontSize={12}>
+                  {OwnerOpportunities.map((item, key) => (
+                    <li key={key}>{item};</li>
+                  ))}
+                </Text.Body>
+              </ProjectsBody>
+            </BodyContainer>
+
+            <Text.Body fontSize={12} className="text-body_wrapper">
+              {t("AccessRightsChangeOwnerText")}
+            </Text.Body>
+
+            <Link
+              className="link_style"
+              isHovered={true}
+              onClick={this.onShowSelector.bind(this, !showSelector)}
+            >
+              {selectedOwner ? selectedOwner.label : t("ChooseOwner")}
+            </Link>
+
+            <Button
+              size="medium"
+              primary={true}
+              label="Change portal owner"
+              isDisabled={!isLoading ? selectedOwner === null : false}
+              onClick={this.onChangeOwner}
+            />
+            <Text.Body
+              className="text-body_inline"
+              fontSize={12}
+              color="#A3A9AE"
+            >
+              {t("AccessRightsChangeOwnerConfirmText")}
+            </Text.Body>
+
+            <div className="advanced-selector">
+              <AdvancedSelector
+                displayType="dropdown"
+                isOpen={showSelector}
+                placeholder="placeholder"
+                options={options}
+                onSearchChanged={this.onSearchUsers}
+                //groups={groups}
+                isMultiSelect={true}
+                buttonLabel="Add members"
+                onSelect={this.onSelect}
+                onCancel={this.onShowSelector.bind(this, false)}
+                onAddNewClick={() => console.log("onAddNewClick")}
+                selectAllLabel="selectorSelectAllText"
+                selectedOptions={selectedOptions}
+              />
             </div>
-          </AvatarContainer>
-          <ProjectsBody>
-            <Text.Body className="portal_owner" fontSize={12}>
-              {t("AccessRightsOwnerCan")}:
-            </Text.Body>
-            <Text.Body fontSize={12}>
-              {OwnerOpportunities.map((item, key) => (
-                <li key={key}>{item};</li>
-              ))}
-            </Text.Body>
-          </ProjectsBody>
-        </BodyContainer>
-        <Button
-          size="medium"
-          primary={true}
-          label="Change portal owner"
-          isDisabled={isLoading}
-          onClick={this.onChangeOwner}
-        />
+          </OwnerContainer>
+        )}
       </>
     );
   }
@@ -178,9 +295,13 @@ const OwnerSettings = props => {
 };
 
 function mapStateToProps(state) {
+  const { owner, users, filter } = state.settings.security.accessRight;
+
   return {
     ownerId: state.auth.settings.ownerId,
-    owner: state.settings.security.accessRight.owner
+    owner,
+    options: users,
+    filter
   };
 }
 
@@ -192,6 +313,6 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object
 };
 
-export default connect(mapStateToProps, { getPortalOwner })(
+export default connect(mapStateToProps, { getPortalOwner, fetchPeople })(
   withRouter(OwnerSettings)
 );
