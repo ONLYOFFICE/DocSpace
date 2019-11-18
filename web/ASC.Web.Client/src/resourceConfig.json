@@ -52,7 +52,9 @@
         "DeleteProfileConfirmation",
         "DeleteProfileConfirmationInfo",
         "ChangePasswordSuccess",
-        "Remember"
+        "Remember",
+        "ConfirmOwnerPortalTitle",
+        "ConfirmOwnerPortalSuccessMessage"
       ]
     },
     "Settings": {
