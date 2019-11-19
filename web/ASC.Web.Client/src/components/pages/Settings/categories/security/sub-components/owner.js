@@ -7,7 +7,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   getPortalOwner,
-  fetchPeople
+  getUsersOptions
 } from "../../../../../../store/settings/actions";
 import {
   Text,
@@ -33,7 +33,9 @@ const OwnerContainer = styled.div`
   }
   .text-body_inline {
     display: inline-flex;
-    margin-left: 16px;
+  }
+  .button_offset {
+    margin-right: 16px;
   }
 `;
 const HeaderContainer = styled.div`
@@ -95,8 +97,7 @@ class PureOwnerSettings extends Component {
       getPortalOwner,
       ownerId,
       options,
-      fetchPeople,
-      filter
+      getUsersOptions
     } = this.props;
 
     if (isEmpty(owner, true)) {
@@ -107,8 +108,7 @@ class PureOwnerSettings extends Component {
         .finally(() => this.setState({ showLoader: false }));
     }
     if (isEmpty(options, true)) {
-      const newFilter = filter.clone();
-      fetchPeople(newFilter)
+      getUsersOptions()
         .catch(error => {
           toastr.error(error);
         })
@@ -242,6 +242,7 @@ class PureOwnerSettings extends Component {
             </Link>
 
             <Button
+              className="button_offset"
               size="medium"
               primary={true}
               label="Change portal owner"
@@ -295,13 +296,12 @@ const OwnerSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const { owner, users, filter } = state.settings.security.accessRight;
+  const { owner, users } = state.settings.security.accessRight;
 
   return {
     ownerId: state.auth.settings.ownerId,
     owner,
-    options: users,
-    filter
+    options: users
   };
 }
 
@@ -313,6 +313,6 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object
 };
 
-export default connect(mapStateToProps, { getPortalOwner, fetchPeople })(
+export default connect(mapStateToProps, { getPortalOwner, getUsersOptions })(
   withRouter(OwnerSettings)
 );

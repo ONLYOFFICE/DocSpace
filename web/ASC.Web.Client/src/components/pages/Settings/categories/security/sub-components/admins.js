@@ -7,6 +7,7 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
   changeAdmins,
+  getUpdateListAdmin,
   fetchPeople
 } from "../../../../../../store/settings/actions";
 import {
@@ -159,30 +160,32 @@ class PureAdminsSettings extends Component {
   };
 
   onChangePage = pageItem => {
-    const { filter, fetchPeople } = this.props;
+    const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
     newFilter.page = pageItem.key;
     this.onLoading(true);
-    fetchPeople(newFilter)
+
+    getUpdateListAdmin(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onChangePageSize = pageItem => {
-    const { filter, fetchPeople } = this.props;
+    const { filter, getUpdateListAdmin } = this.props;
 
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.pageCount = pageItem.key;
     this.onLoading(true);
-    fetchPeople(newFilter)
+
+    getUpdateListAdmin(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onPrevClick = e => {
-    const { filter, fetchPeople } = this.props;
+    const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasPrev()) {
       e.preventDefault();
@@ -191,13 +194,13 @@ class PureAdminsSettings extends Component {
     const newFilter = filter.clone();
     newFilter.page--;
     this.onLoading(true);
-    fetchPeople(newFilter)
+    getUpdateListAdmin(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
 
   onNextClick = e => {
-    const { filter, fetchPeople } = this.props;
+    const { filter, getUpdateListAdmin } = this.props;
 
     if (!filter.hasNext()) {
       e.preventDefault();
@@ -206,7 +209,8 @@ class PureAdminsSettings extends Component {
     const newFilter = filter.clone();
     newFilter.page++;
     this.onLoading(true);
-    fetchPeople(newFilter)
+
+    getUpdateListAdmin(newFilter)
       .catch(res => console.log(res))
       .finally(() => this.onLoading(false));
   };
@@ -226,7 +230,7 @@ class PureAdminsSettings extends Component {
   };
 
   onFilter = data => {
-    const { filter, fetchPeople } = this.props;
+    const { filter, getUpdateListAdmin } = this.props;
 
     const search = data.inputValue || null;
     const sortBy = data.sortId;
@@ -241,7 +245,8 @@ class PureAdminsSettings extends Component {
     newFilter.role = "admin";
     newFilter.search = search;
     this.onLoading(true);
-    fetchPeople(newFilter)
+
+    getUpdateListAdmin(newFilter)
       .catch(res => console.log(res))
       .finally(this.onLoading(false));
   };
@@ -538,6 +543,8 @@ AdminsSettings.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object)
 };
 
-export default connect(mapStateToProps, { changeAdmins, fetchPeople })(
-  withRouter(AdminsSettings)
-);
+export default connect(mapStateToProps, {
+  changeAdmins,
+  fetchPeople,
+  getUpdateListAdmin
+})(withRouter(AdminsSettings));
