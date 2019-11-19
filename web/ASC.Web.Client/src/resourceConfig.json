@@ -52,7 +52,9 @@
         "DeleteProfileConfirmation",
         "DeleteProfileConfirmationInfo",
         "ChangePasswordSuccess",
-        "Remember"
+        "Remember",
+        "ConfirmOwnerPortalTitle",
+        "ConfirmOwnerPortalSuccessMessage"
       ]
     },
     "Settings": {
@@ -94,7 +96,10 @@
         "RestoreDefaultButton",
         "SuccessfullySaveGreetingSettingsMessage",
         "ChangeLogoButton",
-        "Employees"
+        "Employees",
+        "AccessRightsChangeOwnerText",
+        "DnsChangeMsg",
+        "AccessRightsChangeOwnerConfirmText"
       ],
       "FeedResource": [
         "ProjectsProduct",
@@ -122,6 +127,9 @@
       "UserControlsCommonResource": [
         "NextPage",
         "PreviousPage"
+      ],
+      "ResourceJS": [
+        "ChooseOwner"
       ]
     }
   },

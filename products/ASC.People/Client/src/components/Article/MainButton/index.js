@@ -73,7 +73,7 @@ class PureArticleMainButtonContent extends React.Component {
                         <DropDownItem
                             icon="ImportIcon"
                             label={t('ImportPeople')}
-                            onClick={this.onNotImplementedClick.bind(this, "Import people action")}
+                            onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/import`)}
                         />
                     </MainButton>
                     {dialogVisible &&

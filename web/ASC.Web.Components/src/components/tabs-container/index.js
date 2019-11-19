@@ -21,6 +21,13 @@ const Label = styled.div`
     text-align: center;
     margin: 7px 15px 7px 15px;
     overflow: hidden;
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
   }
 
   ${props => (props.isDisabled ? `pointer-events: none;` : ``)}

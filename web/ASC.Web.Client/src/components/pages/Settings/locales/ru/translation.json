@@ -57,6 +57,10 @@
   "LogoDocsEditor": "Логотип для шапки редакторов",
   "ChangeLogoButton": "Сменить логотип",
   "BrowserNoCanvasSupport": "Ваш браузер не поддерживает тег HTML5 canvas.",
+  "AccessRightsChangeOwnerText": "Чтобы сменить владельца портала, выберите имя нового владельца портала ниже.",
+  "ChooseOwner": "Выбрать владельца",
+  "DnsChangeMsg": "Ссылка для подтверждения операции была отправлена на {{email}} (адрес электронной почты владельца портала).",
+  "AccessRightsChangeOwnerConfirmText": "Изменения будут применены после подтверждения по электронной почте.",
 
 
   "ViewProfilesAndGroups": "Просматривать профили и группы",

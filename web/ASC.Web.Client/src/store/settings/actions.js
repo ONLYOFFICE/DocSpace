@@ -6,15 +6,23 @@ const { Filter } = api;
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
 export const SET_OWNER = "SET_OWNER";
+export const SET_OPTIONS = "SET_OPTIONS";
 export const SET_FILTER = "SET_FILTER";
 export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
 export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
 export const SET_LOGO_URLS = "SET_LOGO_URLS";
 
-export function setUsers(options) {
+export function setOptions(options) {
+  return {
+    type: SET_OPTIONS,
+    options
+  };
+}
+
+export function setUsers(users) {
   return {
     type: SET_USERS,
-    options
+    users
   };
 }
 
@@ -81,7 +89,7 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
           const newOptions = getSelectorOptions(options);
           filterData.total = admins.total;
 
-          dispatch(setUsers(newOptions));
+          dispatch(setOptions(newOptions));
           dispatch(setAdmins(admins.items));
           dispatch(setFilter(filterData));
         })
@@ -108,13 +116,39 @@ export function fetchPeople(filter) {
         axios.spread((users, admins) => {
           const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
+        const usersOptions = getSelectorOptions(users.items);
           filterData.total = admins.total;
 
+        dispatch(setUsers(usersOptions));
           dispatch(setAdmins(admins.items));
-          dispatch(setUsers(newOptions));
+        dispatch(setOptions(newOptions));
           dispatch(setFilter(filterData));
         })
       );
+  };
+}
+
+export function getUpdateListAdmin(filter) {
+  let filterData = filter && filter.clone();
+  if (!filterData) {
+    filterData = Filter.getDefault();
+  }
+  return dispatch => {
+    return api.getListAdmins(filterData).then(admins => {
+      filterData.total = admins.total;
+
+      dispatch(setAdmins(admins.items));
+      dispatch(setFilter(filterData));
+    });
+  };
+}
+
+export function getUsersOptions() {
+  return dispatch => {
+    return api.people.getUserList().then(users => {
+      const usersOptions = getSelectorOptions(users.items);
+      dispatch(setUsers(usersOptions));
+    });
   };
 }
 
@@ -125,7 +159,7 @@ export function getWhiteLabelLogoText() {
       dispatch(setLogoText(res));
     });
   };
-};
+}
 
 export function getWhiteLabelLogoSizes() {
   return dispatch => {
@@ -134,7 +168,7 @@ export function getWhiteLabelLogoSizes() {
       dispatch(setLogoSizes(res));
     });
   };
-};
+}
 
 export function getWhiteLabelLogoUrls() {
   return dispatch => {
@@ -143,4 +177,4 @@ export function getWhiteLabelLogoUrls() {
       dispatch(setLogoUrls(Object.values(res)));
     });
   };
-};
+}

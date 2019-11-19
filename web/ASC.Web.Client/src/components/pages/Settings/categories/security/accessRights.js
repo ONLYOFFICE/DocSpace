@@ -73,7 +73,6 @@ class PureAccessRights extends Component {
     return true;
   }
 
-
   render() {
     const { isLoading, selectedTab } = this.state;
 

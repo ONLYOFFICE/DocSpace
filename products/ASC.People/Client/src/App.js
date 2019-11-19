@@ -10,6 +10,7 @@ import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import { Error404 } from "./components/pages/Error";
 import Reassign from './components/pages/Reassign';
+import Import from './components/pages/Import';
 import { history } from "asc-web-common";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
@@ -54,6 +55,11 @@ const App = ({ settings }) => {
             <PrivateRoute
               path={`${homepage}/reassign/:userId`}
               component={Reassign}
+              restricted
+            />
+            <PrivateRoute
+              path={`${homepage}/import`}
+              component={Import}
               restricted
             />
             <PrivateRoute component={Error404} />
