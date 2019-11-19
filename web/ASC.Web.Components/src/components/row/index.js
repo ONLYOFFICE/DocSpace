@@ -58,6 +58,9 @@ const StyledOptionButton = styled.div`
 
 class Row extends React.Component {
   shouldComponentUpdate(nextProps) {
+    if (this.props.needForUpdate) {
+      return this.props.needForUpdate(this.props, nextProps);
+    }
     return !isEqual(this.props, nextProps);
   }
 
@@ -117,7 +120,8 @@ Row.propTypes = {
   children: PropTypes.element,
   data: PropTypes.object,
   contextOptions: PropTypes.array,
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  needForUpdate: PropTypes.func
 };
 
 export default Row;
