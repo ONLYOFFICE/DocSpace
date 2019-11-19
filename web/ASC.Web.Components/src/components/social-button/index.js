@@ -5,58 +5,79 @@ import { Text } from '../text';
 import isEqual from "lodash/isEqual";
 import { Icons } from "../icons";
 
-const StyledSocialButton = styled.div`
-  position: absolute;
+// eslint-disable-next-line no-unused-vars
+const ButtonWrapper = ({label, iconName, isDisabled,  ...props}) => <button type="button" {...props}></button>;
+
+ButtonWrapper.propTypes = {
+  label: PropTypes.string,
+  iconName: PropTypes.string,
+  tabIndex: PropTypes.number,
+  isDisabled: PropTypes.bool,
+  onClick: PropTypes.func,
+};
+
+const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
+  disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
+  tabIndex: props.tabIndex
+}))`
+  font-family: 'Open Sans', sans-serif;
+  border: none;
+  display: inline-block;
+  font-weight: 600;
+  text-decoration: none;
   margin: 20px 0 0 20px;
+  padding: 0;
   border-radius: 2px;
   width: 201px;
-  height: 40px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;  
+  height: 40px;  
+  text-align: left; 
+  touch-callout: none;
+  -o-touch-callout: none;
+  -moz-touch-callout: none;
+  -webkit-touch-callout: none;
+  stroke: none;
+
+  &:focus {
+    outline: none
+  }
 
   ${props =>
-    !props.isDisabled &&
-    css`
-      background: #FFFFFF;
-      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.24), 0px 0px 1px rgba(0, 0, 0, 0.12);
-      color: rgba(0, 0, 0, 0.54);
+    !props.isDisabled ?
+      css`
+        background: #FFFFFF;
+        box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.24), 0px 0px 1px rgba(0, 0, 0, 0.12);
+        color: rgba(0, 0, 0, 0.54);
 
-      :hover, :active {
-        cursor: pointer;
-        box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.24), 0px 0px 2px rgba(0, 0, 0, 0.12);
-      }
+        :hover, :active {
+          cursor: pointer;
+          box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.24), 0px 0px 2px rgba(0, 0, 0, 0.12);
+        }
 
-      :hover {
-        background: #FFFFFF;    
-      }
+        :hover {
+          background: #FFFFFF;    
+        }
 
-      :active {
-        background: #EEEEEE;  
-        border: none;  
-      }
-    `
+        :active {
+          background: #EEEEEE;  
+          border: none;  
+        }
+      `
+      :
+      css`
+        box-shadow: none;
+        background: rgba(0, 0, 0, 0.08);
+        color: rgba(0, 0, 0, 0.4);
+
+        svg path {
+          fill: rgba(0, 0, 0, 0.4);        
+        } 
+      `
   };
 
-  ${props =>
-    props.isDisabled &&
-    css`
-      box-shadow: none;
-      background: rgba(0, 0, 0, 0.08);
-      color: rgba(0, 0, 0, 0.4);
-
-      svg path {
-        fill: rgba(0, 0, 0, 0.4);        
-      } 
-  `}
-
-  .text-on-button {  
-    position: absolute;
+  .social_button_text {  
     width: 142px;
     height: 16px;
-    left: 50px;
-    right: 9px;
-    top: 12px;
+    margin: 12px 9px 12px 10px;
     font-family: Roboto, 'Open Sans', sans-serif, Arial;
     font-style: normal;
     font-weight: 500;
@@ -69,20 +90,14 @@ const StyledSocialButton = styled.div`
     white-space: nowrap;
   }
 
-  .picture-of-button svg {
-    position: absolute;
+  svg {
+    margin: 11px;
     width: 18px;
     height: 18px;
-    margin-top: 11px;
-    margin-left: 11px;
     min-width: 18px;
     min-height: 18px;
   }
 `;
-
-const SocialButtonIcon = ({ iconName }) => {
-  return <div className="picture-of-button">{React.createElement(Icons[iconName], {})}</div>;
-};
 
 class SocialButton extends React.Component {
 
@@ -94,10 +109,10 @@ class SocialButton extends React.Component {
     const {label, iconName} = this.props;  
     return (
       <StyledSocialButton {...this.props}>
-        <SocialButtonIcon iconName={iconName}/>
+        {React.createElement(Icons[iconName], {})}
 
         {label && (
-          <Text.Body as="span" className="text-on-button">{label}</Text.Body>
+          <Text.Body as="span" className="social_button_text">{label}</Text.Body>
         )}
       </StyledSocialButton>
     );
