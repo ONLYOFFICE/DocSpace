@@ -9,24 +9,9 @@ import {
   PAGE,
   PAGE_COUNT
 } from "./constants";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { Filter } = api;
-
-export function getObjectByLocation(location) {
-  if (!location.search || !location.search.length) return null;
-
-  const searchUrl = location.search.substring(1);
-  const object = JSON.parse(
-    '{"' +
-      decodeURI(searchUrl)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"') +
-      '"}'
-  );
-
-  return object;
-}
+const { getObjectByLocation } = utils;
 
 export function getFilterByLocation(location) {
   const urlFilter = getObjectByLocation(location);

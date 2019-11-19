@@ -1,4 +1,4 @@
-import { toUrlParams } from "../../../../utils/converter";
+import { toUrlParams } from "../../../../utils";
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
