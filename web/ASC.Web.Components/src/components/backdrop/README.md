@@ -1,20 +1,23 @@
 # Backdrop
 
-#### Description
-
 Background for displaying modal dialogs
 
-#### Usage
+### Usage
 
 ```js
-import { Backdrop } from 'asc-web-components';
-
-<Backdrop visible={false} />
+import { Backdrop } from "asc-web-components";
 ```
 
-#### Properties
+```jsx
+<Backdrop 
+  visible={true} 
+  zIndex={1} 
+/>
+```
 
-| Props           | Type                      | Required | Values | Default | Description                                      |
-| --------------- | ------------------------- | :------: | -------| ------- | ------------------------------------------------ |
-| `visible`       | `bool`                    |          |        |  false  | Display or not                                   |
-| `zIndex`        | `number`                  |          |        |   100   | CSS z-index                                      |
+### Properties
+
+| Props     |   Type   | Required | Values | Default | Description    |
+| --------- | :------: | :------: | :----: | :-----: | -------------- |
+| `visible` |  `bool`  |    -     |   -    | `false` | Display or not |
+| `zIndex`  | `number` |    -     |   -    |  `100`  | CSS z-index    |
