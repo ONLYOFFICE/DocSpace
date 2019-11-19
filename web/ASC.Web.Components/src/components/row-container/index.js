@@ -10,6 +10,7 @@ import ContextMenu from '../context-menu';
 const StyledRowContainer = styled.div`
   height: ${props => props.useReactWindow ? props.manualHeight ? props.manualHeight : '100%' : 'auto'};
   margin: 16px 0;
+  position: relative;
 `;
 
 class RowContainer extends React.PureComponent {
