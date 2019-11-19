@@ -9,7 +9,8 @@ import {
   PAGE,
   PAGE_COUNT
 } from "./constants";
-import Filter from "../store/people/filter";
+import { api } from "asc-web-common";
+const { Filter } = api;
 
 export function getObjectByLocation(location) {
   if (!location.search || !location.search.length) return null;

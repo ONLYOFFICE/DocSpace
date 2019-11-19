@@ -5,7 +5,6 @@ import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarE
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
-import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -15,8 +14,9 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
-import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
 import styled from "styled-components";
+import { api } from "asc-web-common";
+const {sendInstructionsToChangePassword, sendInstructionsToChangeEmail, createThumbnailsAvatar, loadAvatar, deleteAvatar} = api.people;
 
 const Table = styled.table`
   width: 100%;

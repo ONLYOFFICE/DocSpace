@@ -22,13 +22,17 @@ export function getUserList(filter = Filter.getDefault()) {
     });
   }
 
-  export function createUser(data, key) {
-    return request({
+  export function createUser(data, confirmKey = null) {
+    const options = {
       method: "post",
       url: "/people",
-      data: data,
-      headers: { confirm: key }
-    });
+      data: data
+    };
+
+    if(confirmKey)
+      options.headers = { confirm: confirmKey };
+
+    return request(options);
   }
 
   export function changePassword(userId, password, key) {
@@ -131,5 +135,89 @@ export function getUserList(filter = Filter.getDefault()) {
       method: "put",
       url: "/people/invite",
       data: { userIds }
+    });
+  }
+
+  export function updateUserCulture(id, cultureName) {
+    return request({
+      method: "put",
+      url: `/people/${id}/culture`,
+      data: { cultureName }
+    });
+  }
+
+  export function loadAvatar(profileId, data) {
+    return request({
+      method: "post",
+      url: `/people/${profileId}/photo`,
+      data
+    });
+  }
+
+  export function createThumbnailsAvatar(profileId, data) {
+    return request({
+      method: "post",
+      url: `/people/${profileId}/photo/thumbnails.json`,
+      data
+    });
+  }
+
+  export function deleteAvatar(profileId) {
+    return request({
+      method: "delete",
+      url: `/people/${profileId}/photo`
+    });
+  }
+
+  export function updateUserStatus(status, userIds) {
+    return request({
+      method: "put",
+      url: `/people/status/${status}`,
+      data: { userIds }
+    });
+  }
+
+  export function updateUserType(type, userIds) {
+    return request({
+      method: "put",
+      url: `/people/type/${type}`,
+      data: { userIds }
+    });
+  }
+
+  export function sendInstructionsToDelete() {
+    return request({
+      method: "put",
+      url: "/people/self/delete.json"
+    });
+  }
+
+  export function sendInstructionsToChangeEmail(userId, email) {
+    return request({
+      method: "post",
+      url: "/people/email.json",
+      data: { userId, email }
+    });
+  }
+
+  export function deleteUser(userId) {
+    return request({
+      method: "delete",
+      url: `/people/${userId}.json`
+    });
+  }
+
+  export function deleteUsers(userIds) {
+    return request({
+      method: "put",
+      url: "/people/delete.json",
+      data: { userIds }
+    });
+  }
+
+  export function getSelectorUserList() {
+    return request({
+      method: "get",
+      url: "/people/filter.json?fields=id,displayName,groups"
     });
   }

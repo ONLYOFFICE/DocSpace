@@ -11,12 +11,15 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { store as commonStore } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
-const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage } = commonStore.auth.actions;
+const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures, getPortalInviteLinks } = commonStore.auth.actions;
 
 const token = localStorage.getItem(AUTH_KEY);
 
 if (token) {
   getUserInfo(store.dispatch)
+  .then(() => getPortalPasswordSettings(store.dispatch))
+  .then(() => getPortalCultures(store.dispatch))
+  .then(() => store.dispatch(getPortalInviteLinks()))
   .then(() => fetchGroups(store.dispatch))
   .then(() => {
     var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");

@@ -14,7 +14,11 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
-import { createThumbnailsAvatar, loadAvatar } from "../../../../../store/services/api";
+import { api } from "asc-web-common";
+const {
+  createThumbnailsAvatar,
+  loadAvatar
+} = api.people;
 
 class CreateUserForm extends React.Component {
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { Trans } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../../helpers/customNames';
-import { sendInstructionsToChangeEmail } from "../../../../../../store/services/api";
 import {
   Text,
   TextInput,
@@ -15,7 +14,7 @@ import {
 } from "asc-web-components";
 import styled from 'styled-components';
 import { history, api } from "asc-web-common";
-const { resendUserInvites } = api.people;
+const { resendUserInvites, sendInstructionsToChangeEmail } = api.people;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;

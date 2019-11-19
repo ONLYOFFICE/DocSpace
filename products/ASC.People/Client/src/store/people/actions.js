@@ -1,6 +1,4 @@
-import * as api from "../services/api";
-import Filter from "./filter";
-import { history } from "asc-web-common";
+import { api, history } from "asc-web-common";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,
@@ -14,6 +12,7 @@ import {
   PAGE_COUNT,
   EmployeeStatus
 } from "../../helpers/constants";
+const { Filter } = api;
 
 export const SET_GROUPS = "SET_GROUPS";
 export const SET_USERS = "SET_USERS";
@@ -141,7 +140,7 @@ export function setSelectorUsers(users) {
 
 export function fetchSelectorUsers() {
   return dispatch => {
-    api.getSelectorUserList().then(data => {
+    api.people.getSelectorUserList().then(data => {
       const users = data.items;
       return dispatch(setSelectorUsers(users));
     });
@@ -149,7 +148,7 @@ export function fetchSelectorUsers() {
 }
 
 export function fetchGroups(dispatchFunc = null) {
-  return api.getGroupList().then(groups => {
+  return api.groups.getGroupList().then(groups => {
     return dispatchFunc
       ? dispatchFunc(setGroups(groups))
       : Promise.resolve(dispatch => dispatch(setGroups(groups)));
@@ -178,7 +177,7 @@ function fetchPeopleByFilter(dispatch, filter) {
     filterData.employeeStatus = EmployeeStatus.Active;
   }
 
-  return api.getUserList(filterData).then(data => {
+  return api.people.getUserList(filterData).then(data => {
     filterData.total = data.total;
     dispatch(setFilter(filterData));
     dispatch({
@@ -191,7 +190,7 @@ function fetchPeopleByFilter(dispatch, filter) {
 
 export function updateUserStatus(status, userIds) {
   return dispatch => {
-    return api.updateUserStatus(status, userIds).then(users => {
+    return api.people.updateUserStatus(status, userIds).then(users => {
       users.forEach(user => {
         dispatch(setUser(user));
       });
@@ -201,7 +200,7 @@ export function updateUserStatus(status, userIds) {
 
 export function updateUserType(type, userIds) {
   return dispatch => {
-    return api.updateUserType(type, userIds).then(users => {
+    return api.people.updateUserType(type, userIds).then(users => {
       users.forEach(user => {
         dispatch(setUser(user));
       });
