@@ -62,6 +62,9 @@
     "ChooseOwner": "Choose owner",
     "DnsChangeMsg": "A link to confirm the operation has been sent to {{email}} (the email address of the portal owner).",
     "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
+    "NotFoundTitle": "No results matching your search could be found",
+    "NotFoundDescription": "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
+    "ClearButton": "Reset filter",
 
 
     "ViewProfilesAndGroups": "View profiles and groups",
