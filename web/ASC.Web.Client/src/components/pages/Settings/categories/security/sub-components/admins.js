@@ -24,7 +24,9 @@ import {
   FilterInput,
   Button,
   RequestLoader,
-  Loader
+  Loader,
+  EmptyScreenContainer,
+  Icons
 } from "asc-web-components";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
@@ -251,6 +253,17 @@ class PureAdminsSettings extends Component {
       .finally(this.onLoading(false));
   };
 
+  onResetFilter = () => {
+    const { getUpdateListAdmin, filter } = this.props;
+
+    const newFilter = filter.clone(true);
+
+    this.onLoading(true);
+    getUpdateListAdmin(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
   filterUserSelectorOptions = (options, template) =>
     options.filter(option => option.label.indexOf(template) > -1);
 
@@ -323,7 +336,7 @@ class PureAdminsSettings extends Component {
 
     console.log("Admins render_");
 
-    return (
+    return admins.length > 0 ? (
       /*TODO: delete after resolve icon button problem*/
       <AdminsContainer>
         <IconButton className="hidden-icon" iconName="SearchIcon" />
@@ -494,7 +507,22 @@ class PureAdminsSettings extends Component {
           </>
         )}
       </AdminsContainer>
-    );
+    ) : !showLoader ? (
+      <EmptyScreenContainer
+        imageSrc="products/people/images/empty_screen_filter.png"
+        imageAlt="Empty Screen Filter image"
+        headerText={t("NotFoundTitle")}
+        descriptionText={t("NotFoundDescription")}
+        buttons={
+          <>
+            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+              {t("ClearButton")}
+            </Link>
+          </>
+        }
+      />
+    ) : null;
   }
 }
 

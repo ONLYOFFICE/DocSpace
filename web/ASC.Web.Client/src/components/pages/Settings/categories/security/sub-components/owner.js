@@ -86,7 +86,6 @@ class PureOwnerSettings extends Component {
       options: [],
       allOptions: [],
       showLoader: true,
-      selectedOptions: [],
       selectedOwner: null
     };
   }
@@ -132,8 +131,7 @@ class PureOwnerSettings extends Component {
   onShowSelector = status => {
     this.setState({
       options: this.props.options,
-      showSelector: status,
-      selectedOptions: []
+      showSelector: status
     });
   };
 
@@ -147,7 +145,7 @@ class PureOwnerSettings extends Component {
 
   onSelect = selected => {
     this.onShowSelector(false);
-    this.setState({ selectedOwner: selected[0], selectedOptions: selected });
+    this.setState({ selectedOwner: selected });
   };
 
   filterUserSelectorOptions = (options, template) =>
@@ -160,7 +158,6 @@ class PureOwnerSettings extends Component {
       showLoader,
       showSelector,
       options,
-      selectedOptions,
       selectedOwner
     } = this.state;
 
@@ -265,13 +262,11 @@ class PureOwnerSettings extends Component {
                 options={options}
                 onSearchChanged={this.onSearchUsers}
                 //groups={groups}
-                isMultiSelect={true}
                 buttonLabel="Add members"
                 onSelect={this.onSelect}
                 onCancel={this.onShowSelector.bind(this, false)}
                 onAddNewClick={() => console.log("onAddNewClick")}
                 selectAllLabel="selectorSelectAllText"
-                selectedOptions={selectedOptions}
               />
             </div>
           </OwnerContainer>
