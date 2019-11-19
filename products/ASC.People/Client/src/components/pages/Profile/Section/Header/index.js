@@ -18,14 +18,13 @@ import {
   toEmployeeWrapper
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
-import { EmployeeStatus } from "../../../../../helpers/constants";
 import {
   updateUserStatus,
   fetchPeople
 } from "../../../../../store/people/actions";
 import { fetchProfile } from "../../../../../store/profile/actions";
 import styled from "styled-components";
-import { store, api } from "asc-web-common";
+import { store, api, constants } from "asc-web-common";
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
@@ -37,6 +36,7 @@ const {
   deleteAvatar,
   deleteUser
 } = api.people;
+const { EmployeeStatus } = constants;
 
 const wrapperStyle = {
   display: "flex",

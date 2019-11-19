@@ -5,9 +5,9 @@ import { getObjectByLocation } from "./../helpers/converters";
 import { PageLayout, Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { AUTH_KEY } from "./constants";
-import { api } from "asc-web-common";
+import { api, constants } from "asc-web-common";
 const { checkConfirmLink } = api.user;
+const { AUTH_KEY } = constants;
 
 class ConfirmRoute extends React.Component {
   constructor(props) {

@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { AUTH_KEY } from './helpers/constants';
 import store from './store/store';
 import './custom.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { store as commonStore } from 'asc-web-common';
+import { store as commonStore, constants } from 'asc-web-common';
 const { getUserInfo, getPortalSettings, setIsLoaded } = commonStore.auth.actions;
+const { AUTH_KEY } = constants;
+
 
 const token = localStorage.getItem(AUTH_KEY);
 

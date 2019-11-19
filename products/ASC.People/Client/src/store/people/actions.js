@@ -1,4 +1,4 @@
-import { api, history } from "asc-web-common";
+import { api, history, constants } from "asc-web-common";
 import config from "../../../package.json";
 import {
   EMPLOYEE_STATUS,
@@ -9,9 +9,9 @@ import {
   SORT_BY,
   SORT_ORDER,
   PAGE,
-  PAGE_COUNT,
-  EmployeeStatus
+  PAGE_COUNT
 } from "../../helpers/constants";
+const { EmployeeStatus } = constants;
 const { Filter } = api;
 
 export const SET_GROUPS = "SET_GROUPS";

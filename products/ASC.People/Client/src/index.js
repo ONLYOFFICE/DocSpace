@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { AUTH_KEY } from "./helpers/constants";
 import store from "./store/store";
 import { fetchGroups, fetchPeople } from "./store/people/actions";
 import config from "../package.json";
@@ -9,9 +8,10 @@ import "./custom.scss";
 import App from "./App";
 
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore } from "asc-web-common";
+import { store as commonStore, constants } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures, getPortalInviteLinks } = commonStore.auth.actions;
+const { AUTH_KEY } = constants;
 
 const token = localStorage.getItem(AUTH_KEY);
 

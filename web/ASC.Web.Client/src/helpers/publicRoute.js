@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { AUTH_KEY } from './constants';
+import { constants } from 'asc-web-common';
+const { AUTH_KEY } = constants;
 
 export const PublicRoute = ({ component: Component, ...rest }) => {
     const token = localStorage.getItem(AUTH_KEY);
