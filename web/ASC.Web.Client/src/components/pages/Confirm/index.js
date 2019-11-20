@@ -13,6 +13,7 @@ const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
+const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 const Error404 = lazy(() => import("../Error"));
 
 const Confirm = ({ match, language }) => {
@@ -60,6 +61,11 @@ const Confirm = ({ match, language }) => {
             exact
             path={`${match.path}/PhoneActivation`}
             component={ChangePhoneForm}
+          />
+          <Route
+            exact
+            path={`${match.path}/ownerchange`}
+            component={ChangeOwnerForm}
           />
           <Route component={Error404} />
         </Switch>

@@ -273,6 +273,7 @@ const Form = props => {
           />
           <TooltipStyle>
             <HelpButton
+              HelpButtonHeaderContent={t('CookieSettingsTitle')}
               tooltipContent={
                 <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
               }
