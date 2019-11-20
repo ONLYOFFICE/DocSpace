@@ -1,26 +1,35 @@
 # Checkbox
 
-#### Description
-
 Custom checkbox input
 
-#### Usage
+### Usage
 
 ```js
-import { Checkbox } from 'asc-web-components';
-
-<Checkbox value="text" onChange={event => alert(event.target.value)}/>
+import { Checkbox } from "asc-web-components";
 ```
 
-#### Properties
+```jsx
+<Checkbox
+  id="id"
+  name="name"
+  value="value"
+  label="label"
+  isChecked={false}
+  isIndeterminate={false}
+  isDisabled={false}
+  onChange={() => {}}
+/>
+```
 
-| Props                  | Type     | Required | Values                       | Default | Description                                                                                            |
-| ---------------------- | -------- | :------: | ---------------------------- | ------- | ------------------------------------------------------------------------------------------------------ |
-| `id`                   | `string` |    -     | -                            | -       | Used as HTML `id` property                              
-| `name`                 | `string` |    -     | -                            | -       | Used as HTML `name` property                            
-| `value`                | `string` |    -    | -                            | -       | Value of the input      
-| `label`                | `string` |    -    | -                            | -       | Label of the input  
-| `isChecked`                | `bool` |    -    | -                            | -       | The checked property sets the checked state of a checkbox.         
-| `isIndeterminate`                | `bool` |    -    | -                            | -       | If true, this state is shown as a rectangle in the checkbox 
-| `isDisabled`                | `bool` |    -    | -                            | -       | Disables the Checkbox input 
-| `onChange`                | `func` |    ✅    | -                            | -       | Will be triggered whenever an CheckboxInput is clicked                           
+### Properties
+
+| Props             |   Type   | Required | Values | Default | Description                                                 |
+| ----------------- | :------: | :------: | :----: | :-----: | ----------------------------------------------------------- |
+| `id`              | `string` |    -     |   -    |    -    | Used as HTML `id` property                                  |
+| `name`            | `string` |    -     |   -    |    -    | Used as HTML `name` property                                |
+| `value`           | `string` |    -     |   -    |    -    | Value of the input                                          |
+| `label`           | `string` |    -     |   -    |    -    | Label of the input                                          |
+| `isChecked`       |  `bool`  |    -     |   -    | `false` | The checked property sets the checked state of a checkbox   |
+| `isIndeterminate` |  `bool`  |    -     |   -    |    -    | If true, this state is shown as a rectangle in the checkbox |
+| `isDisabled`      |  `bool`  |    -     |   -    |    -    | Disables the Checkbox input                                 |
+| `onChange`        |  `func`  |    ✅    |   -    |    -    | Will be triggered whenever an CheckboxInput is clicked      |
