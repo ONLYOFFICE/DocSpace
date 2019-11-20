@@ -1,18 +1,14 @@
 # GroupButtonsMenu
 
-## Usage
+Menu for group actions on a page.
+
+### Usage
 
 ```js
 import { GroupButtonsMenu } from "asc-web-components";
 ```
 
-#### Description
-
-Menu for group actions on a page.
-
-#### Usage
-
-```js
+```jsx
 const menuItems = [
   {
     label: "Select",
@@ -38,7 +34,9 @@ const menuItems = [
     onClick: () => console.log("Menu item 2 action")
   }
 ];
+```
 
+```jsx
 <GroupButtonsMenu
   checked={false}
   menuItems={menuItems}
@@ -48,19 +46,19 @@ const menuItems = [
   onClose={() => console.log("Close action")}
   onChange={() => console.log("Toggle action")}
   selected={menuItems[0].label}
-/>;
+/>
 ```
 
-#### Properties
+### Properties
 
-| Props        | Type       | Required | Values | Default  | Description                      |
-| ------------ | ---------- | :------: | ------ | -------- | -------------------------------- |
-| `checked`    | `bool`     |    -     | -      | `false`  | Sets initial value of checkbox   |
-| `selected`   | `string`   |    -     | -      | `Select` | Selected header value            |
-| `menuItems`  | `array`    |    -     | -      | -        | Button collection                |
-| `visible`    | `bool`     |    -     | -      | -        | Sets menu visibility             |
-| `moreLabel`  | `string`   |    -     | -      | `More`   | Label for more button            |
-| `closeTitle` | `string`   |    -     | -      | `Close`  | Title for close menu button      |
-| `onClick`    | `function` |    -     | -      | -        | onClick action on GroupButton`s  |
-| `onClose`    | `function` |    -     | -      | -        | onClose action if menu closing   |
-| `onChange`   | `function` |    -     | -      | -        | onChange action on use selecting |
+| Props        |    Type    | Required | Values | Default  | Description                      |
+| ------------ | :--------: | :------: | :----: | :------: | -------------------------------- |
+| `checked`    |   `bool`   |    -     |   -    | `false`  | Sets initial value of checkbox   |
+| `selected`   |  `string`  |    -     |   -    | `Select` | Selected header value            |
+| `menuItems`  |  `array`   |    -     |   -    |    -     | Button collection                |
+| `visible`    |   `bool`   |    -     |   -    |    -     | Sets menu visibility             |
+| `moreLabel`  |  `string`  |    -     |   -    |  `More`  | Label for more button            |
+| `closeTitle` |  `string`  |    -     |   -    | `Close`  | Title for close menu button      |
+| `onClick`    | `function` |    -     |   -    |    -     | onClick action on GroupButton`s  |
+| `onClose`    | `function` |    -     |   -    |    -     | onClose action if menu closing   |
+| `onChange`   | `function` |    -     |   -    |    -     | onChange action on use selecting |
