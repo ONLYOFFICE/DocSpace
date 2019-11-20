@@ -53,8 +53,8 @@ const Label = styled.div`
 
   ${props =>
     props.isDisabled && props.selected
-      ? `background-color: #A3A9AE
-       .title_style {color: #fff}`
+      ? `background-color: #ECEEF1
+       .title_style {color: #D0D5DA}`
       : ``}
 `;
 
