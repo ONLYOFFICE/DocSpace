@@ -20,4 +20,24 @@ describe('<SocialButton />', () => {
 
     expect(shouldUpdate).toBe(false);
   });
+
+  it('disabled click test', () => {
+    const testClick = jest.fn();
+
+    const wrapper = mount(<SocialButton iconName={'ShareGoogleIcon'} label={"Test Caption"} onClick={testClick} isDisabled={true}/>);
+
+    wrapper.simulate('click');
+
+    expect(testClick).toHaveBeenCalledTimes(0);
+  });
+
+  it('click test', () => {
+    const testClick = jest.fn();
+
+    const wrapper = mount(<SocialButton iconName={'ShareGoogleIcon'} label={"Test Caption"} onClick={testClick} isDisabled={false}/>);
+
+    wrapper.simulate('click');
+
+    expect(testClick).toHaveBeenCalledTimes(1);
+  });
 });

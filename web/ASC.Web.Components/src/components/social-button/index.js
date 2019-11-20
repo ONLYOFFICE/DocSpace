@@ -17,7 +17,7 @@ ButtonWrapper.propTypes = {
 };
 
 const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
-  disabled: props.isDisabled || props.isLoading ? 'disabled' : '',
+  disabled: props.isDisabled ? 'disabled' : '',
   tabIndex: props.tabIndex
 }))`
   font-family: 'Open Sans', sans-serif;
@@ -75,6 +75,7 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   };
 
   .social_button_text {  
+    position: absolute;
     width: 142px;
     height: 16px;
     margin: 12px 9px 12px 10px;
