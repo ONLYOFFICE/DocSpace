@@ -177,6 +177,7 @@ class Customization extends React.Component {
                         className='margin-top'
                         labelText={`${t("Language")}:`}
                         tooltipContent={tooltipLanguage}
+                        HelpButtonHeaderContent={t("Language")}
                         isVertical={true}>
                         <ComboBox
                            id='comboBoxLanguage'

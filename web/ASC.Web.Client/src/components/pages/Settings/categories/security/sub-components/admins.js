@@ -336,7 +336,7 @@ class PureAdminsSettings extends Component {
 
     console.log("Admins render_");
 
-    return admins.length > 0 ? (
+    return (
       /*TODO: delete after resolve icon button problem*/
       <AdminsContainer>
         <IconButton className="hidden-icon" iconName="SearchIcon" />
@@ -417,73 +417,73 @@ class PureAdminsSettings extends Component {
                 onFilter={this.onFilter}
               />
 
-              <div className="wrapper">
-                <RowContainer manualHeight={`${admins.length * 50}px`}>
-                  {admins.map(user => {
-                    const element = (
-                      <Avatar
-                        size="small"
-                        role={getUserRole(user)}
-                        userName={user.displayName}
-                        source={user.avatar}
-                      />
-                    );
-                    const nameColor =
-                      user.status === "pending" ? "#A3A9AE" : "#333333";
+              {admins.length > 0 ? (
+                <div className="wrapper">
+                  <RowContainer manualHeight={`${admins.length * 50}px`}>
+                    {admins.map(user => {
+                      const element = (
+                        <Avatar
+                          size="small"
+                          role={getUserRole(user)}
+                          userName={user.displayName}
+                          source={user.avatar}
+                        />
+                      );
+                      const nameColor =
+                        user.status === "pending" ? "#A3A9AE" : "#333333";
 
-                    return (
-                      <Row
-                        key={user.id}
-                        status={user.status}
-                        data={user}
-                        element={element}
-                      >
-                        <RowContent disableSideInfo={true}>
-                          <Link
-                            containerWidth="120px"
-                            type="page"
-                            title={user.displayName}
-                            isBold={true}
-                            fontSize={15}
-                            color={nameColor}
-                            href={user.profileUrl}
-                          >
-                            {user.displayName}
-                          </Link>
-                          <div style={{ maxWidth: 120 }} />
+                      return (
+                        <Row
+                          key={user.id}
+                          status={user.status}
+                          data={user}
+                          element={element}
+                        >
+                          <RowContent disableSideInfo={true}>
+                            <Link
+                              containerWidth="120px"
+                              type="page"
+                              title={user.displayName}
+                              isBold={true}
+                              fontSize={15}
+                              color={nameColor}
+                              href={user.profileUrl}
+                            >
+                              {user.displayName}
+                            </Link>
+                            <div style={{ maxWidth: 120 }} />
 
-                          <Text.Body>
-                            {user.isAdmin
-                              ? "Full access"
-                              : "People module admin"}
-                          </Text.Body>
+                            <Text.Body>
+                              {user.isAdmin
+                                ? "Full access"
+                                : "People module admin"}
+                            </Text.Body>
 
-                          {!user.isOwner ? (
-                            <IconButton
-                              className="remove_icon"
-                              size="16"
-                              isDisabled={isLoading}
-                              onClick={this.onChangeAdmin.bind(
-                                this,
-                                [user.id],
-                                false,
-                                "00000000-0000-0000-0000-000000000000"
-                              )}
-                              iconName={"CatalogTrashIcon"}
-                              isFill={true}
-                              isClickable={false}
-                            />
-                          ) : (
-                            <div />
-                          )}
-                        </RowContent>
-                      </Row>
-                    );
-                  })}
-                </RowContainer>
-              </div>
-
-              {countElements > 25 ? (
+                            {!user.isOwner ? (
+                              <IconButton
+                                className="remove_icon"
+                                size="16"
+                                isDisabled={isLoading}
+                                onClick={this.onChangeAdmin.bind(
+                                  this,
+                                  [user.id],
+                                  false,
+                                  "00000000-0000-0000-0000-000000000000"
+                                )}
+                                iconName={"CatalogTrashIcon"}
+                                isFill={true}
+                                isClickable={false}
+                              />
+                            ) : (
+                              <div />
+                            )}
+                          </RowContent>
+                        </Row>
+                      );
+                    })}
+                  </RowContainer>
+                </div>
+              ) : countElements > 25 ? (
                 <div className="wrapper">
                   <Paging
                     previousLabel={t("PreviousPage")}
@@ -502,27 +502,34 @@ class PureAdminsSettings extends Component {
                     disableNext={!filter.hasNext()}
                   />
                 </div>
-              ) : null}
+              ) : (
+                <EmptyScreenContainer
+                  imageSrc="products/people/images/empty_screen_filter.png"
+                  imageAlt="Empty Screen Filter image"
+                  headerText={t("NotFoundTitle")}
+                  descriptionText={t("NotFoundDescription")}
+                  buttons={
+                    <>
+                      <Icons.CrossIcon
+                        size="small"
+                        style={{ marginRight: "4px" }}
+                      />
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onResetFilter}
+                      >
+                        {t("ClearButton")}
+                      </Link>
+                    </>
+                  }
+                />
+              )}
             </ToggleContentContainer>
           </>
         )}
       </AdminsContainer>
-    ) : !showLoader ? (
-      <EmptyScreenContainer
-        imageSrc="products/people/images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        buttons={
-          <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-              {t("ClearButton")}
-            </Link>
-          </>
-        }
-      />
-    ) : null;
+    );
   }
 }
 
