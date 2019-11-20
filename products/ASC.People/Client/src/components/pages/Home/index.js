@@ -52,7 +52,7 @@ class PureHome extends React.Component {
     if (headerVisible || selected === "close") {
       newState.isHeaderVisible = headerVisible;
       if (selected === "close") {
-        setSelected({ selected: "none" });
+        setSelected("none");
       }
     }
 
@@ -111,7 +111,7 @@ class PureHome extends React.Component {
           fontColor={"#999"}
         />
         <PageLayout
-          withBodyScroll={false}
+          withBodyScroll={true}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}

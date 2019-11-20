@@ -30,3 +30,4 @@ Displays content as row.
 | `contextOptions` | `array`    | -        |        | ` `     | Required to host the ContextMenuButton component. It is always located near the right border of the container, regardless of the contents of the child elements. If there is no value, the occupied space is distributed among the other child elements. |
 | `data`           | `object`   | -        |        | ` `     | Current row item information.                              | 
 | `onSelect`       | `function` | -        |        | ` `     | Event when selecting row element. Returns data value.      |
+| `needForUpdate`  | `function` | -        |        | ` `     | Custom shouldComponentUpdate function                      |

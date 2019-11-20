@@ -6,6 +6,8 @@ import { Icons } from "../../icons";
 
 const StyledSectionToggler = styled.div`
   height: 64px;
+  position: fixed;
+  bottom: 0;
   display: none;
 
   @media ${tablet} {
@@ -19,6 +21,7 @@ const StyledSectionToggler = styled.div`
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     border-radius: 48px;
     cursor: pointer;
+    background: #fff;
   }
 `;
 

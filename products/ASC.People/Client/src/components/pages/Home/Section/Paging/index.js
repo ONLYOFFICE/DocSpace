@@ -116,10 +116,12 @@ const SectionPagingContent = ({
 
   console.log("SectionPagingContent render", filter);
 
-  return (
+  return filter.total < filter.pageCount ? (
+    <></>
+  ) : (
     <Paging
-      previousLabel={t('PreviousPage')}
-      nextLabel={t('NextPage')}
+      previousLabel={t("PreviousPage")}
+      nextLabel={t("NextPage")}
       pageItems={pageItems}
       onSelectPage={onChangePage}
       countItems={countItems}
