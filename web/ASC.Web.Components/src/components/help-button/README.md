@@ -51,7 +51,9 @@ HelpButton is used for a action on a page.
 
 #### Properties
 
-| Props            | Type               | Required | Values                     | Default | Description       |
-| ---------------- | ------------------ | :------: | -------------------------- | ------- | ----------------- |
-| `tooltipContent` | `object or string` |    ✅    | -                          | -       | Tooltip content   |
-| `place`          | `string`           |    -     | `top, right, bottom, left` | `top`   | Tooltip placement |
+| Props                     | Type               | Required | Values                     | Default | Description                                      |
+| ------------------------- | ------------------ | :------: | -------------------------- | ------- | ------------------------------------------------ |
+| `tooltipContent`          | `object or string` |    ✅    | -                          | -       | Tooltip content                                  |
+| `place`                   | `string`           |    -     | `top, right, bottom, left` | `top`   | Tooltip placement                                |
+| `displayType`             | `oneOf`            |    -     | `dropdown, aside, auto`    | `auto`  | Tooltip display type                             |
+| `HelpButtonHeaderContent` | `string`           |    -     | -                          | -       | Tooltip header content (tooltip opened in aside) |

@@ -11,6 +11,7 @@ import {
   PAGE,
   PAGE_COUNT
 } from "../../helpers/constants";
+import unionBy from 'lodash/unionBy';
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 
@@ -189,12 +190,15 @@ function fetchPeopleByFilter(dispatch, filter) {
 }
 
 export function updateUserStatus(status, userIds) {
-  return dispatch => {
+  return (dispatch, getState) => {
     return api.people.updateUserStatus(status, userIds).then(users => {
-      users.forEach(user => {
-        dispatch(setUser(user));
+      const { people } = getState();
+      const { users: currentUsers } = people;
+
+      const newUsers = unionBy(users, currentUsers, "id");
+
+      dispatch(setUsers(newUsers));
       });
-    });
   };
 }
 

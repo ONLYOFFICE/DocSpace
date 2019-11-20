@@ -1,5 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import withReadme from 'storybook-readme/with-readme';
+import Readme from './README.md';
 import Section from '../../../.storybook/decorators/section';
 import RowContainer from '.';
 import Row from '../row';
@@ -45,6 +47,7 @@ const fillFakeData = (n) => {
 const fakeData = fillFakeData(20);
 
 storiesOf('Components|RowContainer', module)
+  .addDecorator(withReadme(Readme))
   .add('base', () => {
     return (
       <Section>
@@ -71,7 +74,7 @@ storiesOf('Components|RowContainer', module)
                     </>
                     {user.isHead
                       ? <Link containerWidth='120px' type='page' title='Head of department' fontSize={12} color={sideInfoColor} >Head of department</Link>
-                      : <div containerWidth='120px'></div>
+                      : <div></div>
                     }
                     <Link containerWidth='160px' type='action' title={user.department} fontSize={12} color={sideInfoColor} >{user.department}</Link>
                     <Link type='page' title={user.mobilePhone} fontSize={12} color={sideInfoColor} >{user.mobilePhone}</Link>

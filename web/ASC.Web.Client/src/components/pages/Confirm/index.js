@@ -64,7 +64,7 @@ const Confirm = ({ match, language }) => {
           />
           <Route
             exact
-            path={`${match.path}/OwnerChange`}
+            path={`${match.path}/ownerchange`}
             component={ChangeOwnerForm}
           />
           <Route component={Error404} />

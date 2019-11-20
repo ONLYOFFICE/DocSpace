@@ -24,7 +24,9 @@ import {
   FilterInput,
   Button,
   RequestLoader,
-  Loader
+  Loader,
+  EmptyScreenContainer,
+  Icons
 } from "asc-web-components";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
@@ -251,6 +253,17 @@ class PureAdminsSettings extends Component {
       .finally(this.onLoading(false));
   };
 
+  onResetFilter = () => {
+    const { getUpdateListAdmin, filter } = this.props;
+
+    const newFilter = filter.clone(true);
+
+    this.onLoading(true);
+    getUpdateListAdmin(newFilter)
+      .catch(res => console.log(res))
+      .finally(() => this.onLoading(false));
+  };
+
   filterUserSelectorOptions = (options, template) =>
     options.filter(option => option.label.indexOf(template) > -1);
 
@@ -404,73 +417,73 @@ class PureAdminsSettings extends Component {
                 onFilter={this.onFilter}
               />
 
-              <div className="wrapper">
-                <RowContainer manualHeight={`${admins.length * 50}px`}>
-                  {admins.map(user => {
-                    const element = (
-                      <Avatar
-                        size="small"
-                        role={getUserRole(user)}
-                        userName={user.displayName}
-                        source={user.avatar}
-                      />
-                    );
-                    const nameColor =
-                      user.status === "pending" ? "#A3A9AE" : "#333333";
+              {admins.length > 0 ? (
+                <div className="wrapper">
+                  <RowContainer manualHeight={`${admins.length * 50}px`}>
+                    {admins.map(user => {
+                      const element = (
+                        <Avatar
+                          size="small"
+                          role={getUserRole(user)}
+                          userName={user.displayName}
+                          source={user.avatar}
+                        />
+                      );
+                      const nameColor =
+                        user.status === "pending" ? "#A3A9AE" : "#333333";
 
-                    return (
-                      <Row
-                        key={user.id}
-                        status={user.status}
-                        data={user}
-                        element={element}
-                      >
-                        <RowContent disableSideInfo={true}>
-                          <Link
-                            containerWidth="120px"
-                            type="page"
-                            title={user.displayName}
-                            isBold={true}
-                            fontSize={15}
-                            color={nameColor}
-                            href={user.profileUrl}
-                          >
-                            {user.displayName}
-                          </Link>
-                          <div style={{ maxWidth: 120 }} />
+                      return (
+                        <Row
+                          key={user.id}
+                          status={user.status}
+                          data={user}
+                          element={element}
+                        >
+                          <RowContent disableSideInfo={true}>
+                            <Link
+                              containerWidth="120px"
+                              type="page"
+                              title={user.displayName}
+                              isBold={true}
+                              fontSize={15}
+                              color={nameColor}
+                              href={user.profileUrl}
+                            >
+                              {user.displayName}
+                            </Link>
+                            <div style={{ maxWidth: 120 }} />
 
-                          <Text.Body>
-                            {user.isAdmin
-                              ? "Full access"
-                              : "People module admin"}
-                          </Text.Body>
+                            <Text.Body>
+                              {user.isAdmin
+                                ? "Full access"
+                                : "People module admin"}
+                            </Text.Body>
 
-                          {!user.isOwner ? (
-                            <IconButton
-                              className="remove_icon"
-                              size="16"
-                              isDisabled={isLoading}
-                              onClick={this.onChangeAdmin.bind(
-                                this,
-                                [user.id],
-                                false,
-                                "00000000-0000-0000-0000-000000000000"
-                              )}
-                              iconName={"CatalogTrashIcon"}
-                              isFill={true}
-                              isClickable={false}
-                            />
-                          ) : (
-                            <div />
-                          )}
-                        </RowContent>
-                      </Row>
-                    );
-                  })}
-                </RowContainer>
-              </div>
-
-              {countElements > 25 ? (
+                            {!user.isOwner ? (
+                              <IconButton
+                                className="remove_icon"
+                                size="16"
+                                isDisabled={isLoading}
+                                onClick={this.onChangeAdmin.bind(
+                                  this,
+                                  [user.id],
+                                  false,
+                                  "00000000-0000-0000-0000-000000000000"
+                                )}
+                                iconName={"CatalogTrashIcon"}
+                                isFill={true}
+                                isClickable={false}
+                              />
+                            ) : (
+                              <div />
+                            )}
+                          </RowContent>
+                        </Row>
+                      );
+                    })}
+                  </RowContainer>
+                </div>
+              ) : countElements > 25 ? (
                 <div className="wrapper">
                   <Paging
                     previousLabel={t("PreviousPage")}
@@ -489,7 +502,29 @@ class PureAdminsSettings extends Component {
                     disableNext={!filter.hasNext()}
                   />
                 </div>
-              ) : null}
+              ) : (
+                <EmptyScreenContainer
+                  imageSrc="products/people/images/empty_screen_filter.png"
+                  imageAlt="Empty Screen Filter image"
+                  headerText={t("NotFoundTitle")}
+                  descriptionText={t("NotFoundDescription")}
+                  buttons={
+                    <>
+                      <Icons.CrossIcon
+                        size="small"
+                        style={{ marginRight: "4px" }}
+                      />
+                      <Link
+                        type="action"
+                        isHovered={true}
+                        onClick={this.onResetFilter}
+                      >
+                        {t("ClearButton")}
+                      </Link>
+                    </>
+                  }
+                />
+              )}
             </ToggleContentContainer>
           </>
         )}

@@ -18,7 +18,8 @@ Container for rows
 
 #### Properties
 
-| Props          | Type     | Required | Values | Default | Description                                                     |
-| -------------- | -------- | :------: | ------ | ------- | --------------------------------------------------------------- |
-| `manualHeight` | `string` |    -     |        | -       | Allows you to set fixed block height for Row                    |
-| `itemHeight`   | `number` |    -     |        | 50      | Height of one Row element. Required for scroll to work properly |
+| Props            | Type     | Required | Values | Default | Description                                                     |
+| ---------------- | -------- | :------: | ------ | ------- | --------------------------------------------------------------- |
+| `manualHeight`   | `string` |    -     |        | -       | Allows you to set fixed block height for Row                    |
+| `itemHeight`     | `number` |    -     |        | 50      | Height of one Row element. Required for scroll to work properly |
+| `useReactWindow` | `bool`   |    -     |        | true    | Use react-window for efficiently rendering large lists          |

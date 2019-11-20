@@ -506,6 +506,7 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
 
+              HelpButtonHeaderContent={t("Mail")}
               tooltipContent={
                 <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                   The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p style={{height: "0", visibility: "hidden"}}>You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
@@ -583,6 +584,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
 
               tooltipContent={tooltipTypeContent}
+              HelpButtonHeaderContent={t('UserType')}
             />
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
