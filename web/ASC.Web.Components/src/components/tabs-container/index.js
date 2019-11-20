@@ -4,6 +4,12 @@ import styled from "styled-components";
 import { Text } from "../text";
 import Scrollbar from "../scrollbar";
 
+const TabsContainer = styled.div`
+  .scrollbar {
+    width: 100% !important;
+    height: 50px !important;
+  }
+`;
 const NavItem = styled.div`
   position: relative;
   white-space: nowrap;
@@ -60,40 +66,73 @@ class TabContainer extends Component {
   constructor(props) {
     super(props);
 
+    this.arrayRefs = [];
+    const countElements = props.children.length;
+
+    let item = countElements;
+    while (item !== 0) {
+      this.arrayRefs.push(React.createRef());
+      item--;
+    }
+
     this.state = {
       activeTab: this.props.selectedItem
     };
+
+    this.scrollRef = React.createRef();
   }
 
-  titleClick = (index, item) => {
+  titleClick = (index, item, ref) => {
     if (this.state.activeTab !== index) {
       this.setState({ activeTab: index });
       let newItem = Object.assign({}, item);
       delete newItem.content;
       this.props.onSelect && this.props.onSelect(newItem);
+
+      const position = ref.current.offsetLeft - 40;
+      this.scrollRef.current.scrollLeft(position);
     }
   };
 
   shouldComponentUpdate(nextProps, nextState) {
     const { activeTab } = this.state;
-    if (activeTab !== nextState.activeTab) {
-      return true;
-    } else return false;
+    const { isDisabled } = this.props;
+    if (
+      activeTab === nextState.activeTab &&
+      isDisabled === nextProps.isDisabled
+    ) {
+      return false;
+    }
+    return true;
   }
 
   render() {
     //console.log("Tabs container render");
 
     const { isDisabled, children } = this.props;
+    const { activeTab } = this.state;
+
     return (
-      <>
-        <Scrollbar style={{ width: "100%", height: 50 }}>
+      <TabsContainer>
+        <Scrollbar
+          values={this.onScrollFrame}
+          autoHide
+          autoHideTimeout={1000}
+          className="scrollbar"
+          ref={this.scrollRef}
+        >
           <NavItem className="className_items">
             {children.map((item, index) => (
               <Label
-                onClick={this.titleClick.bind(this, index, item)}
+                ref={this.arrayRefs[index]}
+                onClick={this.titleClick.bind(
+                  this,
+                  index,
+                  item,
+                  this.arrayRefs[index]
+                )}
                 key={item.key}
-                selected={this.state.activeTab === index}
+                selected={activeTab === index}
                 isDisabled={isDisabled}
               >
                 <Text.Body className="title_style" fontSize={13}>
@@ -103,8 +142,8 @@ class TabContainer extends Component {
             ))}
           </NavItem>
         </Scrollbar>
-        <BodyContainer>{children[this.state.activeTab].content}</BodyContainer>
-      </>
+        <BodyContainer>{children[activeTab].content}</BodyContainer>
+      </TabsContainer>
     );
   }
 }
