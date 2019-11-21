@@ -68,6 +68,7 @@ class UpdateUserForm extends React.Component {
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
+    this.mainFieldsContainerRef = React.createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -151,6 +152,13 @@ class UpdateUserForm extends React.Component {
       lastName: !profile.lastName,
     };
     const hasError = errors.firstName || errors.lastName;
+
+    if (hasError) {
+      const element = this.mainFieldsContainerRef.current;
+      const parent = element.closest(".scroll-body");
+      (parent || window).scrollTo(0, element.offsetTop);
+    }
+
     this.setState({ errors: errors });
     return !hasError;
   }
@@ -333,6 +341,7 @@ class UpdateUserForm extends React.Component {
       visibleAvatarEditor: true,
     });
   }
+
   onLoadFileAvatar(file) {
     let data = new FormData();
     let _this = this;
@@ -355,6 +364,7 @@ class UpdateUserForm extends React.Component {
       })
       .catch((error) => toastr.error(error));
   }
+
   onSaveAvatar(isUpdate, result) {
     if(isUpdate){
       createThumbnailsAvatar(this.state.profile.id, {
@@ -385,6 +395,7 @@ class UpdateUserForm extends React.Component {
       .catch((error) => toastr.error(error));
     }
   }
+
   onCloseAvatarEditor() {
     this.setState({
       visibleAvatarEditor: false,
@@ -496,7 +507,7 @@ class UpdateUserForm extends React.Component {
               unknownError    ={t("unknownError")}
             />
           </AvatarContainer>
-          <MainFieldsContainer>
+          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
             <TextChangeField
               labelText={`${t("Email")}:`}
               inputName="email"
