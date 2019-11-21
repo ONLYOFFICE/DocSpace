@@ -155,7 +155,7 @@ class Customization extends React.Component {
             <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
                "In case you cannot find your language in the list of the
                available ones, feel free to write to us at
-         <Link href="mailto:documentation@onlyoffice.com" isHovered={true}>
+               <Link href={`mailto:${supportEmail}`} isHovered={true}>
                   {{ supportEmail }}
                </Link> to take part in the translation and get up to 1 year free of
                charge."
