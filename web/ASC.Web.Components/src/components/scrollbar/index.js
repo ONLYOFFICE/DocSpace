@@ -42,7 +42,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
   );
 
   const renderView = ({ style, ...props }) => (
-    <div {...props} style={{ ...style, ...view}} />
+    <div {...props} style={{ ...style, ...view}} className={"scroll-body"} />
   );
 
   return (
