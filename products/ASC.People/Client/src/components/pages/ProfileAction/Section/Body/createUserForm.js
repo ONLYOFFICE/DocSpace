@@ -46,6 +46,7 @@ class CreateUserForm extends React.Component {
     this.createAvatar = this.createAvatar.bind(this);
     this.onLoadFileAvatar = this.onLoadFileAvatar.bind(this);
 
+    this.mainFieldsContainerRef = React.createRef();
   }
 
   createAvatar(userId,userName){
@@ -62,6 +63,7 @@ class CreateUserForm extends React.Component {
     })
     .catch((error) => toastr.error(error));
   }
+
   openAvatarEditor(){
     let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
     let _this = this;
@@ -81,6 +83,7 @@ class CreateUserForm extends React.Component {
       visibleAvatarEditor: true,
     });
   }
+
   onLoadFileAvatar(file) {
     let data = new FormData();
     let _this = this;
@@ -104,6 +107,7 @@ class CreateUserForm extends React.Component {
       })
       .catch((error) => toastr.error(error));
   }
+
   onSaveAvatar(isUpdate, result, file){
     var stateCopy = Object.assign({}, this.state);
 
@@ -117,6 +121,7 @@ class CreateUserForm extends React.Component {
     }
     this.setState(stateCopy);
   }
+
   onCloseAvatarEditor(){
     this.setState({
       visibleAvatarEditor: false,
@@ -193,12 +198,19 @@ class CreateUserForm extends React.Component {
     const { profile } = this.state;
     const emailRegex = /.+@.+\..+/;
     const errors = {
-      firstName: !profile.firstName,
-      lastName: !profile.lastName,
-      email: !emailRegex.test(profile.email),
-      password: profile.passwordType === "temp" && !profile.password
+      firstName: !profile.firstName.trim(),
+      lastName: !profile.lastName.trim(),
+      email: !emailRegex.test(profile.email.trim()),
+      password: profile.passwordType === "temp" && !profile.password.trim()
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
+
+    if (hasError) {
+      const element = this.mainFieldsContainerRef.current;
+      const parent = element.closest(".scroll-body");
+      (parent || window).scrollTo(0, element.offsetTop);
+    }
+
     this.setState({ errors: errors });
     return !hasError;
   }
@@ -322,9 +334,8 @@ class CreateUserForm extends React.Component {
               maxSizeFileError={t("maxSizeFileError")}
               unknownError    ={t("unknownError")}
             />
-           
           </AvatarContainer>
-          <MainFieldsContainer>
+          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
             <TextField
               isRequired={true}
               hasError={errors.firstName}
@@ -480,6 +491,7 @@ class CreateUserForm extends React.Component {
     );
   };
 }
+
 const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
