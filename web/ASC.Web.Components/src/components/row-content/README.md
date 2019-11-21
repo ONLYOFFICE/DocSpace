@@ -1,28 +1,14 @@
 # RowContent
 
-## Usage
+Required for formatted output of elements inside Row
+
+### Usage
 
 ```js
 import { RowContent } from "asc-web-components";
 ```
 
-#### Description
-
-Required for formatted output of elements inside Row.
-
-To correctly display components inside RowContent, you must specify them in a certain order.
-
-The first and second specified components will be interpreted as Main elements.
-First will be MainTitle and second MainIcons.
-All subsequent components will be located on the right and are considered SideElements.
-
-**_Consider location of components in advance, since when viewing in tablet mode, the markup will shift SideElements to second line._**
-
-Each not main child can take containerWidth property for task of width of child's container.
-
-#### Usage
-
-```js
+```jsx
 <RowContent>
   <Link type="page" title="Demo" isBold={true} fontSize={15} color="#333333">
     Demo
@@ -58,10 +44,20 @@ Each not main child can take containerWidth property for task of width of child'
 </RowContent>
 ```
 
-#### Properties
+To correctly display components inside RowContent, you must specify them in a certain order.
 
-| Props             | Type     | Required | Values | Default | Description                            |
-| ----------------- | -------- | :------: | ------ | ------- | -------------------------------------- |
-| `children`        | `node`   |    ✅    | -      | -       | Components displayed inside RowContent |
-| `containerWidth`  | `string` |    -     | -      | `100px` | For task of width of child's container |
-| `disableSideInfo` | `bool`   |    -     | -      | `false` | If you do not need SideElements        |
+The first and second specified components will be interpreted as Main elements.
+First will be MainTitle and second MainIcons.
+All subsequent components will be located on the right and are considered SideElements.
+
+**_Consider location of components in advance, since when viewing in tablet mode, the markup will shift SideElements to second line._**
+
+Each not main child can take containerWidth property for task of width of child's container.
+
+### Properties
+
+| Props             |   Type   | Required | Values | Default | Description                            |
+| ----------------- | :------: | :------: | :----: | :-----: | -------------------------------------- |
+| `children`        |  `node`  |    ✅    |   -    |    -    | Components displayed inside RowContent |
+| `containerWidth`  | `string` |    -     |   -    | `100px` | For task of width of child's container |
+| `disableSideInfo` |  `bool`  |    -     |   -    | `false` | If you do not need SideElements        |
