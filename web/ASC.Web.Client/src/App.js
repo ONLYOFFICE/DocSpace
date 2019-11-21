@@ -3,10 +3,9 @@ import { Router, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import StudioLayout from "./components/Layout/index";
 import Login from "./components/pages/Login";
-import PrivateRoute from "./helpers/privateRoute";
 import PublicRoute from "./helpers/publicRoute";
 import { Error404 } from "./components/pages/Error";
-import { history } from "asc-web-common";
+import { history, PrivateRoute } from "asc-web-common";
 
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));

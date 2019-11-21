@@ -33,7 +33,11 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-values": "^0.3.3",
-    "styled-components": "^4.3.2"
+    "react-router-dom": "5.0.1",
+    "react-redux": "7.1.1",
+    "react-i18next": "10.12.2",
+    "styled-components": "^4.3.2",
+    "asc-web-components": "file:../../packages/asc-web-components"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -93,7 +97,11 @@
     "storybook-readme": "^5.0.8",
     "styled-components": "^4.3.2",
     "svg-inline-loader": "^0.8.0",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.7.2",
+    "asc-web-components": "file:../../packages/asc-web-components",
+    "react-router-dom": "5.0.1",
+    "react-redux": "7.1.1",
+    "react-i18next": "10.12.2"
   },
   "dependencies": {
     "lodash": "4.17.15",
