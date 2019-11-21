@@ -148,8 +148,8 @@ class UpdateUserForm extends React.Component {
   validate() {
     const { profile } = this.state;
     const errors = {
-      firstName: !profile.firstName,
-      lastName: !profile.lastName,
+      firstName: !profile.firstName.trim(),
+      lastName: !profile.lastName.trim(),
     };
     const hasError = errors.firstName || errors.lastName;
 

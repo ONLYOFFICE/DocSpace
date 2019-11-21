@@ -198,10 +198,10 @@ class CreateUserForm extends React.Component {
     const { profile } = this.state;
     const emailRegex = /.+@.+\..+/;
     const errors = {
-      firstName: !profile.firstName,
-      lastName: !profile.lastName,
-      email: !emailRegex.test(profile.email),
-      password: profile.passwordType === "temp" && !profile.password
+      firstName: !profile.firstName.trim(),
+      lastName: !profile.lastName.trim(),
+      email: !emailRegex.test(profile.email.trim()),
+      password: profile.passwordType === "temp" && !profile.password.trim()
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
 
