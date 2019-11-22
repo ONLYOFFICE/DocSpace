@@ -1,24 +1,27 @@
 # Icons
 
-## Usage
+List of all available icons
+
+### Usage
 
 ```js
-import { ExportIcon } from 'asc-web-components';
-
-<ExportIcon />;
+import { Icons } from "asc-web-components";
 ```
 
-#### Description
+```jsx
+<Icons.NavLogoIcon
+  color="#333333"
+  isfill={false}
+  isStroke={false}
+  size="small"
+/>
+```
 
-List of all available icons.
+### Properties
 
-#### Properties
-
-| Props   | Type     | Required | Values                                            | Default  | Description                                                                                            |
-| ------- | -------- | :------: | ------------------------------------------------- | -------  | ------------------------------------------------------------------------------------------------------ |
-| `size`  | `string` |          | 'small', 'medium', 'big' ,'scale'                 | 'medium' | Specifies the icon size                                                                                |
-| `color` | `string` |          |                                                   | 'black'  | Specifies the icon color                                                                               |
-
-#### Where to use
-
-Main use cases are:
+| Props      |   Type   | Required |              Values               | Default  | Description               |
+| ---------- | :------: | :------: | :-------------------------------: | :------: | ------------------------- |
+| `size`     | `string` |    -     | `small`, `medium`, `big` ,`scale` | `medium` | Specifies the icon size   |
+| `color`    | `string` |    -     |                 -                 | `black`  | Specifies the icon color  |
+| `isfill`   |  `bool`  |    -     |                 -                 |    -     | Specifies the icon fill   |
+| `isStroke` |  `bool`  |    -     |                 -                 |    -     | Specifies the icon stroke |

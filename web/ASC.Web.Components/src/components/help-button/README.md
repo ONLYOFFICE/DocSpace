@@ -1,24 +1,20 @@
-# Buttons: HelpButton
+# HelpButton
 
-## Usage
+HelpButton is used for a action on a page
+
+### Usage
 
 ```js
 import { HelpButton } from "asc-web-components";
 ```
 
-#### Description
-
-HelpButton is used for a action on a page.
-
-#### Usage base
-
-```js
+```jsx
 <HelpButton tooltipContent={<Text.Body>Tooltip content</Text.Body>} />
 ```
 
 #### Usage with link
 
-```js
+```jsx
 <HelpButton
   tooltipContent={
     <Text.Body>
@@ -31,9 +27,9 @@ HelpButton is used for a action on a page.
 />
 ```
 
-#### Usage
+#### Usage with aside
 
-```js
+```jsx
 <HelpButton
   tooltipContent={
     <>
@@ -49,11 +45,11 @@ HelpButton is used for a action on a page.
 />
 ```
 
-#### Properties
+### Properties
 
-| Props                     | Type               | Required | Values                     | Default | Description                                      |
-| ------------------------- | ------------------ | :------: | -------------------------- | ------- | ------------------------------------------------ |
-| `tooltipContent`          | `object or string` |    ✅    | -                          | -       | Tooltip content                                  |
-| `place`                   | `string`           |    -     | `top, right, bottom, left` | `top`   | Tooltip placement                                |
-| `displayType`             | `oneOf`            |    -     | `dropdown, aside, auto`    | `auto`  | Tooltip display type                             |
-| `HelpButtonHeaderContent` | `string`           |    -     | -                          | -       | Tooltip header content (tooltip opened in aside) |
+| Props                     |       Type        | Required |              Values              | Default | Description                                      |
+| ------------------------- | :---------------: | :------: | :------------------------------: | :-----: | ------------------------------------------------ |
+| `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
+| `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
+| `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
+| `HelpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |

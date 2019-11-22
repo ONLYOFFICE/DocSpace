@@ -36,8 +36,8 @@ const StyledComponent = styled.div`
       margin-bottom: 70px;
    }
 
-   .input-width {
-      width: 500px;
+   .field-container-width {
+      max-width: 500px;
    }
 
    .dropdown-item-width {
@@ -156,7 +156,7 @@ class Customization extends React.Component {
             <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
                "In case you cannot find your language in the list of the
                available ones, feel free to write to us at
-         <Link href="mailto:documentation@onlyoffice.com" isHovered={true}>
+               <Link href={`mailto:${supportEmail}`} isHovered={true}>
                   {{ supportEmail }}
                </Link> to take part in the translation and get up to 1 year free of
                charge."
@@ -175,7 +175,7 @@ class Customization extends React.Component {
                      <Text.Body fontSize={16}>{t('StudioTimeLanguageSettings')}</Text.Body>
                      <FieldContainer
                         id='fieldContainerLanguage'
-                        className='margin-top'
+                        className='margin-top field-container-width'
                         labelText={`${t("Language")}:`}
                         tooltipContent={tooltipLanguage}
                         HelpButtonHeaderContent={t("Language")}
@@ -187,15 +187,15 @@ class Customization extends React.Component {
                            onSelect={this.onLanguageSelect}
                            isDisabled={isLoading}
                            noBorder={false}
-                           scaled={false}
+                           scaled={true}
                            scaledOptions={true}
                            dropDownMaxHeight={300}
-                           size='huge'
                         />
                      </FieldContainer>
 
                      <FieldContainer
                         id='fieldContainerTimezone'
+                        className='field-container-width'
                         labelText={`${t("TimeZone")}:`}
                         isVertical={true}>
                         <ComboBox
@@ -205,10 +205,9 @@ class Customization extends React.Component {
                            onSelect={this.onTimezoneSelect}
                            isDisabled={isLoading}
                            noBorder={false}
-                           scaled={false}
+                           scaled={true}
                            scaledOptions={true}
                            dropDownMaxHeight={300}
-                           size='huge'
                            className='dropdown-item-width'
                         />
                      </FieldContainer>
@@ -227,11 +226,10 @@ class Customization extends React.Component {
                      <Text.Body fontSize={16}>{t('GreetingSettingsTitle')}</Text.Body>
                      <FieldContainer
                         id='fieldContainerWelcomePage'
-                        className='margin-top'
+                        className='margin-top field-container-width'
                         labelText={`${t("GreetingTitle")}:`}
                         isVertical={true}>
                         <TextInput
-                           className='input-width'
                            scale={true}
                            value={greetingTitle}
                            onChange={this.onChangeGreetingTitle}

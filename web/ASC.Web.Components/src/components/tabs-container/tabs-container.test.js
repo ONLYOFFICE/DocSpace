@@ -130,33 +130,14 @@ describe("<TabContainer />", () => {
     expect(wrapper).toExist();
   });
 
-  it("TabContainer check Compare dates function", () => {
-    const item = [
-      {
-        key: "0",
-        title: "Title1",
-        content: (
-          <div>
-            <div>
-              <button>BUTTON</button>
-            </div>
-            <div>
-              <button>BUTTON</button>
-            </div>
-          </div>
-        )
-      }
-    ];
+  it("TabsContainer not re-render test", () => {
     const wrapper = mount(
       <TabContainer>{array_items}</TabContainer>
     ).instance();
-    wrapper.titleClick(2, item);
-    expect(wrapper.state.activeTab).toEqual(2);
+    const shouldUpdate = wrapper.shouldComponentUpdate(
+      wrapper.props,
+      wrapper.state
+    );
+    expect(shouldUpdate).toBe(false);
   });
-});
-
-it("TabsContainer not re-render test", () => {
-  const wrapper = mount(<TabContainer>{array_items}</TabContainer>).instance();
-  const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
-  expect(shouldUpdate).toBe(false);
 });

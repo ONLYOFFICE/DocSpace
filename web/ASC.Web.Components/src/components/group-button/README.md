@@ -1,14 +1,21 @@
 # GroupButton
 
-## Usage
+Base Button is used for a group action on a page
+
+### Usage
 
 ```js
 import { GroupButton } from "asc-web-components";
 ```
 
-#### Description
-
-Base Button is used for a group action on a page.
+```jsx
+<GroupButton
+  label="Group button"
+  disabled={false}
+  isDropdown={false}
+  opened={false}
+/>
+```
 
 It can be used as selector with checkbox for this following properties are combined: *isDropdown*, *isSeparator*.
 
@@ -18,21 +25,10 @@ It can be used as selector with checkbox for this following properties are combi
 
 For health of checkbox, button inherits part of properties of this component.
 
-#### Usage
-
-```js
-<GroupButton
-  label="Group button"
-  disabled={false}
-  isDropdown={false}
-  opened={false}
-/>
-```
-
-#### Properties
+### Properties
 
 | Props               | Type     | Required | Values | Default        | Description                                           |
-| ------------------- | -------- | :------: | ------ | -------------- | ----------------------------------------------------- |
+| ------------------- | :------: | :------: | :----: | :------------: | ----------------------------------------------------- |
 | `label`             | `string` |    -     | -      | `Group button` | Value of the group button                             |
 | `disabled`          | `bool`   |    -     | -      | `false`        | Tells when the button should present a disabled state |
 | `isDropdown`        | `bool`   |    -     | -      | `false`        | Tells when the button should present a dropdown state |
