@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import { Icons } from "../icons";
 import { Text } from "../text";
 
-const ToggleContainer = styled.label`
+const ToggleButtonContainer = styled.label`
   position: absolute;
   -webkit-appearance: none;
   display: flex;
@@ -67,26 +67,26 @@ class ToggleButton extends Component {
   }
 
   render() {
-    const { isDisabled, label, onChange } = this.props;
+    const { isDisabled, label, onChange, id, className } = this.props;
     const colorProps = isDisabled ? { color: "#A3A9AE" } : {};
 
     //console.log("ToggleButton render");
 
     return (
-      <ToggleContainer isDisabled={isDisabled}>
+      <ToggleButtonContainer id={id} className={className} isDisabled={isDisabled}>
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
           disabled={isDisabled}
           onChange={onChange}
         />
-        <ToggleIcon {...this.props} />
+        <ToggleIcon isChecked={this.state.checked} />
         {label && (
           <Text.Body className="toggleText" as="span" {...colorProps}>
             {label}
           </Text.Body>
         )}
-      </ToggleContainer>
+      </ToggleButtonContainer>
     );
   }
 }
@@ -95,7 +95,9 @@ ToggleButton.propTypes = {
   isChecked: PropTypes.bool.isRequired,
   isDisabled: PropTypes.bool,
   onChange: PropTypes.func,
-  label: PropTypes.string
+  label: PropTypes.string,
+  id: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default ToggleButton;

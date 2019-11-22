@@ -91,20 +91,15 @@ class DropDown extends React.PureComponent {
       const rects = this.dropDownRef.current.getBoundingClientRect();
       const container = {width: window.innerWidth, height: window.innerHeight};
       
-      const left = rects.x < rects.width;
-      const right = rects.x + rects.width > container.width;
-
-      const top = rects.y + rects.height > container.height;
-      const bottom = rects.y < rects.height;
+      const left = rects.left < 0;
+      const right = rects.right > container.width;
 
       let newDirection = {};
       
       newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;
-      newDirection.directionY = top ? 'top' : bottom ? 'bottom' : this.props.directionY;
 
       this.setState({
         directionX: newDirection.directionX,
-        directionY: newDirection.directionY,
         width: rects.width
       });
     }
