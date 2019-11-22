@@ -80,7 +80,7 @@ class ToggleButton extends Component {
           disabled={isDisabled}
           onChange={onChange}
         />
-        <ToggleIcon {...this.props} />
+        <ToggleIcon isChecked={this.state.checked} />
         {label && (
           <Text.Body className="toggleText" as="span" {...colorProps}>
             {label}
