@@ -4,7 +4,7 @@ export function isAdmin(user) {
 }
 
 export function isMe(user, userName) {
-    return userName === "@self" || userName === user.userName;
+    return userName === "@self" || user && userName === user.userName;
 }
 
 export function getCurrentModule(modules, currentModuleId) {
