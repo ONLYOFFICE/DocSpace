@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { PageLayout, Loader } from "asc-web-components";
 import { isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
+import { Error401, Error404 } from "../errors"
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -50,22 +51,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         return <Component {...props} />;
 
       if (restricted) {
-        <Redirect
-          to={{
-            pathname: "/error=401",
-            state: { from: props.location }
-          }}
-        />;
+        return <Error401 />;
       }
 
-      return (
-        <Redirect
-          to={{
-            pathname: "/error=404",
-            state: { from: props.location }
-          }}
-        />
-      );
+      return <Error404 />;
     },
     [
       token,
