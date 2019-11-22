@@ -163,7 +163,7 @@ export function logout() {
 export function getConfirmationInfo(token, type) {
   return dispatch => {
     return api.settings
-      .getPasswordSettings(token)
+      .getPortalPasswordSettings(token)
       .then(settings => dispatch(setPasswordSettings(settings)))
       .then(() => dispatch(setIsConfirmLoaded(true)));
   };
