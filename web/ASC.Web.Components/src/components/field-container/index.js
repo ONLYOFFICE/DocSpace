@@ -47,9 +47,8 @@ const verticalCss = css`
 
 const Container = styled.div`
   .field-label-icon {
-    width: 110px;
     min-width: 110px;
-    display: flex;
+    display: inline-flex;
   }
   ${props => (props.vertical ? verticalCss : horizontalCss)}
 
