@@ -33,11 +33,14 @@
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-values": "^0.3.3",
+    "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-redux": "7.1.1",
+    "i18next": "17.0.12",
     "react-i18next": "10.12.2",
     "styled-components": "^4.3.2",
-    "asc-web-components": "file:../../packages/asc-web-components"
+    "asc-web-components": "file:../../packages/asc-web-components",
+    "reactstrap": "8.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -99,9 +102,12 @@
     "svg-inline-loader": "^0.8.0",
     "prop-types": "^15.7.2",
     "asc-web-components": "file:../../packages/asc-web-components",
+    "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-redux": "7.1.1",
-    "react-i18next": "10.12.2"
+    "i18next": "17.0.12",
+    "react-i18next": "10.12.2",
+    "reactstrap": "8.0.1"
   },
   "dependencies": {
     "lodash": "4.17.15",
