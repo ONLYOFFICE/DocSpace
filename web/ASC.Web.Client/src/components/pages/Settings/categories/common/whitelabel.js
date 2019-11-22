@@ -21,13 +21,10 @@ const StyledComponent = styled.div`
 
    .field-container {
       margin-top: 45px;
-      & > div {
-         min-width: 435px
-      }
    }
 
    .input-width {
-      width: 500px;
+      max-width: 500px;
    }
    
    .border-img {
@@ -223,6 +220,7 @@ class WhiteLabel extends React.Component {
                            onChange={this.onChangeCompanyName}
                            isDisabled={!isPortalPaid}
                            isReadOnly={!isPortalPaid}
+                           scale={true}
                         />
                         {
                            isPortalPaid &&
