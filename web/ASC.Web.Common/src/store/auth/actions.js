@@ -272,8 +272,8 @@ export function restoreGreetingTitle() {
   };
 }
 
-export function getPortalPasswordSettings(dispatch) {
-  return api.settings.getPortalPasswordSettings().then(settings => {
+export function getPortalPasswordSettings(dispatch, confirmKey = null) {
+  return api.settings.getPortalPasswordSettings(confirmKey).then(settings => {
     dispatch(setPasswordSettings(settings));
   });
 }

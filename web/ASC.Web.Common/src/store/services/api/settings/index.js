@@ -14,11 +14,16 @@ export function getSettings() {
     });
   }
   
-  export function getPortalPasswordSettings() {
-    return request({
+  export function getPortalPasswordSettings(confirmKey = null) {
+    const options = {
       method: "get",
       url: "/settings/security/password"
-    });
+    };
+
+    if(confirmKey)
+      options.headers = { confirm: confirmKey };
+
+    return request(options);
   }
 
   export function getPortalTimezones() {
