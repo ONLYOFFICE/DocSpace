@@ -208,7 +208,7 @@ const Form = props => {
           <Card className="login-card">
             <CardImg
               className="card-img"
-              src="~/images/dark_general.png"
+              src="images/dark_general.png"
               alt="Logo"
               top
             />
