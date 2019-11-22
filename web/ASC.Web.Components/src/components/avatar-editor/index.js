@@ -105,6 +105,9 @@ class AvatarEditor extends React.Component {
                     />
                 ]}
                 onClose={this.onClose}
+                className={this.props.className}
+                id={this.props.id}
+                style={this.props.style}
             />
         );
     }
@@ -127,7 +130,10 @@ AvatarEditor.propTypes = {
     onLoadFileError: PropTypes.func,
     unknownTypeError: PropTypes.string,
     unknownError: PropTypes.string,
-    displayType: PropTypes.oneOf(['auto', 'modal', 'aside'])
+    displayType: PropTypes.oneOf(['auto', 'modal', 'aside']),
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 AvatarEditor.defaultProps = {
