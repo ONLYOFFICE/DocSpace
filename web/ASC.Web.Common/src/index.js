@@ -4,3 +4,4 @@ export { default as history } from './history';
 export * from './components';
 export * as constants  from './constants';
 export * as utils from './utils';
+export * from './components/errors';
