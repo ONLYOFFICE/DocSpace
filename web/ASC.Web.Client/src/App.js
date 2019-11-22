@@ -2,10 +2,10 @@ import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import StudioLayout from "./components/Layout/index";
-import Login from "./components/pages/Login";
-import PublicRoute from "./helpers/publicRoute";
+//import Login from "./components/pages/Login";
+//import PublicRoute from "./helpers/publicRoute";
 import { Error404 } from "./components/pages/Error";
-import { history, PrivateRoute } from "asc-web-common";
+import { history, PrivateRoute, PublicRoute, Login } from "asc-web-common";
 
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));
