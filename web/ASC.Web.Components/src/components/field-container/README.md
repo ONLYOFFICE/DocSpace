@@ -24,3 +24,4 @@ import { FieldContainer } from "asc-web-components";
 | `labelText`               |     `string`      |    -     |   -    |    -    | Field label text                                 |
 | `tooltipContent`          | `object`,`string` |    ✅    |   -    |    -    | Tooltip content                                  |
 | `HelpButtonHeaderContent` |     `string`      |    -     |   -    |    -    | Tooltip header content (tooltip opened in aside) |
+| `horLabelWidth`           |     `string`      |    -     |   -    | `110px` | Label width in horizontal alignment              |
