@@ -37,17 +37,17 @@ const MainContainer = styled.div`
   flex-direction: column;
 
   .group-name_container {
-    width: 320px;
+    max-width: 320px;
   }
 
   .head_container {
     position: relative;
-    width: 320px;
+    max-width: 320px;
   }
 
   .members_container {
     position: relative;
-    width: 320px;
+    max-width: 320px;
   }
 
   .search_container {
@@ -76,7 +76,7 @@ const MainContainer = styled.div`
 
   @media ${utils.device.tablet} {
     .search_container {
-      width: 320px;
+      max-width: 320px;
     }
   }
 `;
