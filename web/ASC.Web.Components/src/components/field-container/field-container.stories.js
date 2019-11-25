@@ -28,7 +28,7 @@ storiesOf("Components|FieldContainer", module)
               labelText={text("labelText", "Name:")}
               horLabelWidth={text("horLabelWidth", "110px")}
               tooltipContent={text("tooltipContent", "Paste you tooltip content here")}
-              HelpButtonHeaderContent={text("HelpButtonHeaderContent", "Tooltip header")}
+              helpButtonHeaderContent={text("helpButtonHeaderContent", "Tooltip header")}
               place="top"
             >
               <TextInput

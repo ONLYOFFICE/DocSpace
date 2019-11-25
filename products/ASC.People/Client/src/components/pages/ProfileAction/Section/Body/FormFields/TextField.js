@@ -22,7 +22,7 @@ class TextField extends React.Component {
       inputAutoFocussed,
       inputTabIndex,
       tooltipContent,
-      HelpButtonHeaderContent
+      helpButtonHeaderContent
     } = this.props;
 
     return (
@@ -31,7 +31,7 @@ class TextField extends React.Component {
         hasError={hasError}
         labelText={labelText}
         tooltipContent={tooltipContent}
-        HelpButtonHeaderContent={HelpButtonHeaderContent}
+        helpButtonHeaderContent={helpButtonHeaderContent}
       >
         <TextInput
           name={inputName}

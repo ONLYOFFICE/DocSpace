@@ -85,7 +85,7 @@ class FieldContainer extends React.Component {
       children,
       tooltipContent,
       place,
-      HelpButtonHeaderContent,
+      helpButtonHeaderContent,
       horLabelWidth
     } = this.props;
 
@@ -103,7 +103,7 @@ class FieldContainer extends React.Component {
             <HelpButton
               tooltipContent={tooltipContent}
               place={place}
-              HelpButtonHeaderContent={HelpButtonHeaderContent}
+              helpButtonHeaderContent={helpButtonHeaderContent}
             />
           )}
         </div>
@@ -128,7 +128,7 @@ FieldContainer.propTypes = {
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
-  HelpButtonHeaderContent: PropTypes.string,
+  helpButtonHeaderContent: PropTypes.string,
   horLabelWidth: PropTypes.string
 };
 

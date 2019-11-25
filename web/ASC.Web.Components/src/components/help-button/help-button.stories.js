@@ -36,7 +36,7 @@ storiesOf("Components|Buttons", module)
           />
           <HelpButton
             displayType="aside"
-            HelpButtonHeaderContent="Aside position HelpButton"
+            helpButtonHeaderContent="Aside position HelpButton"
             tooltipContent={
               <Text.Body>
                 You tooltip content with{" "}
@@ -51,7 +51,7 @@ storiesOf("Components|Buttons", module)
           />
           <HelpButton
             displayType="auto"
-            HelpButtonHeaderContent="Auto position HelpButton"
+            helpButtonHeaderContent="Auto position HelpButton"
             tooltipContent={
               <>
                 <p>You can put every thing here</p>
