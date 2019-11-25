@@ -202,19 +202,15 @@ class Calendar extends Component {
         selectedDate: dateInNextMonth,
         openToDate: dateInNextMonth
       });
-    } else if (
-      this.compareDates(dateInCurrentMonth, this.state.selectedDate) !== 0
-    ) {
+    } else {
       newState = this.mapPropsToState({
         ...this.state,
         selectedDate: dateInCurrentMonth
       });
     }
 
-    if (newState) {
-      this.setState(newState);
-      this.props.onChange && this.props.onChange(newState.selectedDate);
-    }
+    this.setState(newState);
+    this.props.onChange && this.props.onChange(newState.selectedDate);
   };
 
   getListMonth = (minDate, maxDate, openToDate, months) => {

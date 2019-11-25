@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { StringValue } from 'react-values';
-import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text, select, number, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import TextInput from '.';
@@ -42,6 +42,8 @@ storiesOf('Components|Input', module)
             withBorder={boolean('withBorder', true)}
             mask={text("mask", null)}
             value={value}
+            errorMessage={text("errorMessage", "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit")}
+            errorColor={color('errorColor', "#C96C27")}
             onChange={e => { 
               set(e.target.value);
             }}
