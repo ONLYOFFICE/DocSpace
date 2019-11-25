@@ -4,12 +4,11 @@ import styled from "styled-components";
 import { Text } from "../text";
 import Scrollbar from "../scrollbar";
 
-const TabsContainer = styled.div`
-  .scrollbar {
-    width: 100% !important;
-    height: 50px !important;
-  }
+const StyledScrollbar = styled(Scrollbar)`
+  width: 100% !important;
+  height: 50px !important;
 `;
+
 const NavItem = styled.div`
   position: relative;
   white-space: nowrap;
@@ -76,7 +75,8 @@ class TabContainer extends Component {
     }
 
     this.state = {
-      activeTab: this.props.selectedItem
+      activeTab: this.props.selectedItem,
+      onScrollHide: true
     };
 
     this.scrollRef = React.createRef();
@@ -106,11 +106,12 @@ class TabContainer extends Component {
   };
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { activeTab } = this.state;
+    const { activeTab, onScrollHide } = this.state;
     const { isDisabled } = this.props;
     if (
       activeTab === nextState.activeTab &&
-      isDisabled === nextProps.isDisabled
+      isDisabled === nextProps.isDisabled &&
+      onScrollHide === nextState.onScrollHide
     ) {
       return false;
     }
@@ -122,11 +123,6 @@ class TabContainer extends Component {
     if (activeTab !== 0 && this.arrayRefs[activeTab].current !== null) {
       this.secondFunction(activeTab);
     }
-    console.log("this.scrollRef", this.scrollRef);
-    console.log(
-      "componentDidMount scroll",
-      this.scrollRef.current.getClientWidth()
-    ); //get main container width)
   }
 
   setTabPosition = (index, currentRef) => {
@@ -134,7 +130,6 @@ class TabContainer extends Component {
     const scrollLeft = this.scrollRef.current.getScrollLeft(); // get scroll position relative to left side
     const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
     const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
-    //console.log("containerWidth", containerWidth);
     const currentTabWidth = currentRef.current.offsetWidth;
     const marginRight = 8;
 
@@ -177,22 +172,6 @@ class TabContainer extends Component {
     }
   };
 
-  /*firstFunction = () => {
-    let prevIndex = index - 1;
-    let widthBlocksInContainer = 0;
-    while (prevIndex !== -1) {
-      widthBlocksInContainer += arrayOfWidths[prevIndex] + marginRight;
-      prevIndex--;
-    }
-
-    const difference = containerWidth - widthBlocksInContainer;
-    const currentContainerWidth = currentTabWidth;
-
-    this.scrollRef.current.scrollLeft(
-      difference * -1 + currentContainerWidth + marginRight
-    );
-  }*/
-
   secondFunction = index => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const marginRight = 8;
@@ -207,23 +186,35 @@ class TabContainer extends Component {
     this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
   };
 
+  onMouseEnter = () => {
+    this.setState({ onScrollHide: false });
+  };
+
+  onMouseLeave = () => {
+    this.setState({ onScrollHide: true });
+  };
+
   render() {
     //console.log("Tabs container render");
 
     const { isDisabled, children } = this.props;
-    const { activeTab } = this.state;
+    const { activeTab, onScrollHide } = this.state;
 
     return (
-      <TabsContainer>
-        <Scrollbar
-          //values={this.onScrollFrame}
-          //autoHide
-          //autoHideTimeout={1000}
-          stype="mediumBlack"
+      <>
+        <StyledScrollbar
+          autoHide={onScrollHide}
+          autoHideDuration={500}
+          autoHideTimeout={1000}
+          stype="preMediumBlack"
           className="scrollbar"
           ref={this.scrollRef}
         >
-          <NavItem className="className_items">
+          <NavItem
+            onMouseMove={this.onMouseEnter}
+            onMouseLeave={this.onMouseLeave}
+            className="className_items"
+          >
             {children.map((item, index) => (
               <Label
                 ref={this.arrayRefs[index]}
@@ -243,9 +234,9 @@ class TabContainer extends Component {
               </Label>
             ))}
           </NavItem>
-        </Scrollbar>
+        </StyledScrollbar>
         <BodyContainer>{children[activeTab].content}</BodyContainer>
-      </TabsContainer>
+      </>
     );
   }
 }
