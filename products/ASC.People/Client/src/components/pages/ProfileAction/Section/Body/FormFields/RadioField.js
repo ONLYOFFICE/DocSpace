@@ -22,7 +22,7 @@ class RadioField extends React.Component {
       radioOnChange,
 
       tooltipContent,
-      HelpButtonHeaderContent
+      helpButtonHeaderContent
     } = this.props;
 
     return (
@@ -31,7 +31,7 @@ class RadioField extends React.Component {
         hasError={hasError}
         labelText={labelText}
         tooltipContent={tooltipContent}
-        HelpButtonHeaderContent={HelpButtonHeaderContent}
+        helpButtonHeaderContent={helpButtonHeaderContent}
       >
         <RadioButtonGroup
           name={radioName}

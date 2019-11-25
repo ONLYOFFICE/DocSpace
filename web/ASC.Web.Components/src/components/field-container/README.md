@@ -23,5 +23,5 @@ import { FieldContainer } from "asc-web-components";
 | `hasError`                |      `bool`       |    -     |   -    | `false` | Indicates that the field is incorrect            |
 | `labelText`               |     `string`      |    -     |   -    |    -    | Field label text                                 |
 | `tooltipContent`          | `object`,`string` |    -     |   -    |    -    | Tooltip content                                  |
-| `HelpButtonHeaderContent` |     `string`      |    -     |   -    |    -    | Tooltip header content (tooltip opened in aside) |
+| `helpButtonHeaderContent` |     `string`      |    -     |   -    |    -    | Tooltip header content (tooltip opened in aside) |
 | `horLabelWidth`           |     `string`      |    -     |   -    | `110px` | Label width in horizontal alignment              |

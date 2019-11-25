@@ -33,7 +33,7 @@ class TextChangeField extends React.Component {
       buttonTabIndex,
 
       tooltipContent,
-      HelpButtonHeaderContent
+      helpButtonHeaderContent
     } = this.props;
 
     return (
@@ -42,7 +42,7 @@ class TextChangeField extends React.Component {
         hasError={hasError}
         labelText={labelText}
         tooltipContent={tooltipContent}
-        HelpButtonHeaderContent={HelpButtonHeaderContent}
+        helpButtonHeaderContent={helpButtonHeaderContent}
       >
         <InputContainer>
           <TextInput

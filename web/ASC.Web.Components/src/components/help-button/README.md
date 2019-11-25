@@ -52,4 +52,4 @@ import { HelpButton } from "asc-web-components";
 | `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
 | `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
 | `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
-| `HelpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |
+| `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |

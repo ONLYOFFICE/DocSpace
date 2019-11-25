@@ -125,7 +125,7 @@ class HelpButton extends React.Component {
       offsetRight,
       offsetLeft,
       zIndex,
-      HelpButtonHeaderContent
+      helpButtonHeaderContent
     } = this.props;
 
     return (
@@ -157,11 +157,11 @@ class HelpButton extends React.Component {
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
                 {
-                  HelpButtonHeaderContent &&
+                  helpButtonHeaderContent &&
                   <Header>
                     <HeaderText>
                       <Text.Body isBold={true} fontSize={21}>
-                        {HelpButtonHeaderContent}
+                        {helpButtonHeaderContent}
                       </Text.Body>
                     </HeaderText>
                   </Header>
@@ -181,7 +181,7 @@ HelpButton.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
@@ -189,7 +189,7 @@ HelpButton.propTypes = {
   offsetLeft: PropTypes.number,
   zIndex: PropTypes.number,
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
-  HelpButtonHeaderContent: PropTypes.string
+  helpButtonHeaderContent: PropTypes.string
 };
 
 HelpButton.defaultProps = {
