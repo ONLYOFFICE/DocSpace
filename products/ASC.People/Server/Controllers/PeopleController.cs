@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
-
 using ASC.Api.Core;
 using ASC.Common.Data;
 using ASC.Common.Logging;
@@ -16,6 +15,7 @@ using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
@@ -40,66 +40,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
 {
-    public class User
-    {
-        public int Tenant { get; set; }
-        public string UserName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Guid Id { get; set; }
-        public bool? Sex { get; set; }
-        public DateTime? Bithdate { get; set; }
-        public EmployeeStatus Status { get; set; }
-        public EmployeeActivationStatus Activation_Status { get; set; }
-        public string Email { get; set; }
-        public DateTime? WorkFromDate { get; set; }
-        public DateTime? TerminatedDate { get; set; }
-        public string Title { get; set; }
-        public string Culture { get; set; }
-        public string Contacts { get; set; }
-        public string Phone { get; set; }
-        public MobilePhoneActivationStatus Phone_Activation { get; set; }
-        public string Location { get; set; }
-        public string Notes { get; set; }
-        public string Sid { get; set; }
-        public string sso_name_id { get; set; }
-        public string sso_session_id { get; set; }
-        public bool removed { get; set; }
-        public DateTime create_on { get; set; }
-        public DateTime last_modified { get; set; }
-    }
-
-    public class UserContext : DbContext
-    {
-        public DbSet<User> Core_User { get; set; }
-
-        public UserContext()
-        {
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var factory = new ConsoleLoggerFactory();
-            factory.AddProvider(new ConsoleLoggerProvider());
-            optionsBuilder.UseLoggerFactory(factory);
-
-            optionsBuilder.UseMySql("Server=localhost;Database=onlyoffice;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none");
-        }
-    }
-
-
-
-
-
-
     [DefaultRoute]
     [ApiController]
     public class PeopleController : ControllerBase
@@ -136,7 +82,7 @@ namespace ASC.Employee.Core.Controllers
         public SettingsManager SettingsManager { get; }
         public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public UserContext UserContext { get; }
+        public EFUserService EFUserService { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -172,7 +118,7 @@ namespace ASC.Employee.Core.Controllers
             IOptionsMonitor<ILog> option,
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
-            UserContext userContext)
+            EFUserService eFUserService)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -206,7 +152,7 @@ namespace ASC.Employee.Core.Controllers
             SettingsManager = settingsManager;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
-            UserContext = userContext;
+            EFUserService = eFUserService;
         }
 
         [Read("info")]
@@ -221,44 +167,6 @@ namespace ASC.Employee.Core.Controllers
         public IEnumerable<EmployeeWraper> GetAll()
         {
             return GetByStatus(EmployeeStatus.Active);
-        }
-
-        [Read("1")]
-        public IEnumerable<EmployeeWraperFull> GetAll1()
-        {
-            var tenantId = Tenant.TenantId;
-            var r1 = UserContext.Core_User.Where(r => r.Tenant == tenantId);
-            var r2 = UserContext.Core_User.Where(r => r.Tenant == tenantId).Count();
-            ApiContext.SetCount(r2);
-            //var r2 = UserManager.GetUsers(true, null, new List<List<Guid>>(), new List<Guid>(), null, null, null, true, 0, 0, out int _);
-            return r1.Select(r => new UserInfo()
-            {
-                ActivationStatus = r.Activation_Status,
-                BirthDate = r.Bithdate,
-                CreateDate = r.create_on,
-                CultureName = r.Culture,
-                Email = r.Email,
-                FirstName = r.FirstName,
-                ID = r.Id,
-                LastModified = r.last_modified,
-                LastName = r.LastName,
-                Location = r.Location,
-                MobilePhone = r.Phone,
-                MobilePhoneActivationStatus = r.Phone_Activation,
-                Notes = r.Notes,
-                Removed = r.removed,
-                Sex = r.Sex,
-                Sid = r.Sid,
-                SsoNameId = r.sso_name_id,
-                SsoSessionId = r.sso_session_id,
-                Status = r.Status,
-                Tenant = r.Tenant,
-                TerminatedDate = r.TerminatedDate,
-                Title = r.Title,
-                UserName = r.UserName,
-                WorkFromDate = r.WorkFromDate
-            }).Select(EmployeeWraperFullHelper.GetFull);
-            //return GetByStatus(EmployeeStatus.Active);
         }
 
         [Read("status/{status}")]
@@ -363,7 +271,7 @@ namespace ASC.Employee.Core.Controllers
                 }
 
                 list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
-                                       (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Contacts != null && x.Contacts.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
+                                       (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
                 return list.Select(EmployeeWraperFullHelper.GetFull);
             }
@@ -442,7 +350,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(EmployeeWraperHelper.Get);
         }
 
-        private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+        private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             var isAdmin = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(UserManager) ||
@@ -482,10 +390,9 @@ namespace ASC.Employee.Core.Controllers
                 includeGroups.Add(adminGroups);
             }
 
-            var users = UserManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total);
+            var users = UserManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total, out var count);
 
-            ApiContext.SetTotalCount(total)
-                .SetCount(users.Count);
+            ApiContext.SetTotalCount(total).SetCount(count);
 
             return users;
         }
@@ -1585,19 +1492,19 @@ namespace ASC.Employee.Core.Controllers
 
             if (contacts == null) return;
 
-            if (user.Contacts == null)
+            if (user.ContactsList == null)
             {
-                user.Contacts = new List<string>();
+                user.ContactsList = new List<string>();
             }
             else
             {
-                user.Contacts.Clear();
+                user.ContactsList.Clear();
             }
 
             foreach (var contact in contacts.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
-                user.Contacts.Add(contact.Type);
-                user.Contacts.Add(contact.Value);
+                user.ContactsList.Add(contact.Type);
+                user.ContactsList.Add(contact.Value);
             }
         }
 
@@ -1606,18 +1513,18 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             if (contacts == null) return;
 
-            if (user.Contacts == null)
+            if (user.ContactsList == null)
             {
-                user.Contacts = new List<string>();
+                user.ContactsList = new List<string>();
             }
 
             foreach (var contact in contacts)
             {
-                var index = user.Contacts.IndexOf(contact.Type);
+                var index = user.ContactsList.IndexOf(contact.Type);
                 if (index != -1)
                 {
                     //Remove existing
-                    user.Contacts.RemoveRange(index, 2);
+                    user.ContactsList.RemoveRange(index, 2);
                 }
             }
         }
@@ -1673,8 +1580,6 @@ namespace ASC.Employee.Core.Controllers
     {
         public static IServiceCollection AddPeopleController(this IServiceCollection services)
         {
-            services.TryAddScoped<UserContext>();
-
             return services
                 .AddMessageTargetService()
                 .AddAccountLinkerStorageService()

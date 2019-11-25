@@ -29,9 +29,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Security;
-using ASC.Common.Data;
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
@@ -68,22 +66,16 @@ namespace ASC.Core
 
         public HostedSolution(
             IConfiguration configuration,
-            TenantDomainValidator tenantDomainValidator,
-            TimeZoneConverter timeZoneConverter,
-            DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options)
-            : this(configuration, tenantDomainValidator, timeZoneConverter, dbRegistry, connectionString, tariffServiceStorage, options, null)
+            : this(configuration, connectionString, tariffServiceStorage, options, null)
         {
         }
 
         //TODO:fix
         public HostedSolution(
             IConfiguration configuration,
-            TenantDomainValidator tenantDomainValidator,
-            TimeZoneConverter timeZoneConverter,
-            DbRegistry dbRegistry,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
@@ -93,7 +85,7 @@ namespace ASC.Core
             var baseSettings = new CoreBaseSettings(configuration);
             coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new DbUserService(null);
+            userService = new EFUserService();
             quotaService = new DbQuotaService(null);
             tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);

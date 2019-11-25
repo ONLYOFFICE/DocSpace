@@ -26,14 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Text;
 using ASC.Notify.Recipients;
 
 namespace ASC.Core.Users
 {
-    [Table("core_user")]
     [Serializable]
     public sealed class UserInfo : IDirectRecipient, ICloneable
     {
@@ -59,7 +57,6 @@ namespace ASC.Core.Users
 
         public EmployeeStatus Status { get; set; }
 
-        [Column("activation_status")]
         public EmployeeActivationStatus ActivationStatus { get; set; }
 
         public DateTime? TerminatedDate { get; set; }
@@ -70,7 +67,18 @@ namespace ASC.Core.Users
 
         public string Email { get; set; }
 
-        public List<string> Contacts { get; set; }
+        private string contacts;
+        public string Contacts
+        {
+            get => contacts;
+            set
+            {
+                contacts = value;
+                _ = ContactsFromString(contacts);
+            }
+        }
+
+        public List<string> ContactsList { get; set; }
 
         public string Location { get; set; }
 
@@ -87,24 +95,18 @@ namespace ASC.Core.Users
             get { return ActivationStatus.HasFlag(EmployeeActivationStatus.Activated); }
         }
 
-        [Column("culture")]
         public string CultureName { get; set; }
 
-        [Column("phone")]
         public string MobilePhone { get; set; }
 
-        [Column("phone_activation")]
         public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
 
         public string Sid { get; set; } // LDAP user identificator
 
-        [Column("sso_name_id")]
         public string SsoNameId { get; set; } // SSO SAML user identificator
 
-        [Column("sso_session_id")]
         public string SsoSessionId { get; set; } // SSO SAML user session identificator
 
-        [Column("create_on")]
         public DateTime CreateDate { get; set; }
 
         public override string ToString()
@@ -120,6 +122,11 @@ namespace ASC.Core.Users
         public override bool Equals(object obj)
         {
             return obj is UserInfo ui && ID.Equals(ui.ID);
+        }
+
+        public bool Equals(UserInfo obj)
+        {
+            return obj != null && ID.Equals(obj.ID);
         }
 
         public CultureInfo GetCulture()
@@ -156,9 +163,9 @@ namespace ASC.Core.Users
 
         internal string ContactsToString()
         {
-            if (Contacts == null || Contacts.Count == 0) return null;
+            if (ContactsList == null || ContactsList.Count == 0) return null;
             var sBuilder = new StringBuilder();
-            foreach (var contact in Contacts)
+            foreach (var contact in ContactsList)
             {
                 sBuilder.AppendFormat("{0}|", contact);
             }
@@ -169,16 +176,16 @@ namespace ASC.Core.Users
         {
             if (string.IsNullOrEmpty(contacts)) return this;
 
-            if (Contacts == null)
+            if (ContactsList == null)
             {
-                Contacts = new List<string>();
+                ContactsList = new List<string>();
             }
             else
             {
-                Contacts.Clear();
+                ContactsList.Clear();
             }
 
-            Contacts.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
+            ContactsList.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
 
             return this;
         }

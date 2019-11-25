@@ -285,15 +285,15 @@ namespace ASC.Web.Api.Models
 
         private void FillConacts(EmployeeWraperFull employeeWraperFull, UserInfo userInfo)
         {
-            if (userInfo.Contacts == null) return;
+            if (userInfo.ContactsList == null) return;
 
             var contacts = new List<Contact>();
 
-            for (var i = 0; i < userInfo.Contacts.Count; i += 2)
+            for (var i = 0; i < userInfo.ContactsList.Count; i += 2)
             {
-                if (i + 1 < userInfo.Contacts.Count)
+                if (i + 1 < userInfo.ContactsList.Count)
                 {
-                    contacts.Add(new Contact(userInfo.Contacts[i], userInfo.Contacts[i + 1]));
+                    contacts.Add(new Contact(userInfo.ContactsList[i], userInfo.ContactsList[i + 1]));
                 }
             }
 

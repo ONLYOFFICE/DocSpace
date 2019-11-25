@@ -118,9 +118,21 @@ namespace ASC.Core
             return users.ToArray();
         }
 
-        public List<UserInfo> GetUsers(bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        public IQueryable<UserInfo> GetUsers(
+            bool isAdmin,
+            EmployeeStatus? employeeStatus,
+            List<List<Guid>> includeGroups,
+            List<Guid> excludeGroups,
+            EmployeeActivationStatus? activationStatus,
+            string text,
+            string sortBy,
+            bool sortOrderAsc,
+            long limit,
+            long offset,
+            out int total,
+            out int count)
         {
-            return UserService.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total);
+            return UserService.GetUsers(Tenant.TenantId, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
         }
 
         public DateTime GetMaxUsersLastModified()

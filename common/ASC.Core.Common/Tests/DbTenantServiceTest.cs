@@ -38,12 +38,12 @@ namespace ASC.Core.Common.Tests
     [TestFixture]
     public class DbTenantServiceTest : DbBaseTest<DbTenantService>
     {
-        private readonly DbUserService userService;
+        private readonly EFUserService userService;
 
 
         public DbTenantServiceTest()
         {
-            userService = new DbUserService(null);
+            userService = new EFUserService();
         }
 
 

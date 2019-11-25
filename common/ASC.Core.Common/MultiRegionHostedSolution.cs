@@ -230,14 +230,14 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, Options, name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, name);
                     }
                 }
 
-                regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage, Options);
+                regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage, Options);
+                    regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
                 }
             }
             else
@@ -249,16 +249,16 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, Options, name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage, Options);
+                    regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, dbConnectionStrings, TariffServiceStorage, Options);
+                        regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
                     }
                 }
                 else
@@ -283,10 +283,10 @@ namespace ASC.Core
 
                                     if (!regions.ContainsKey(string.Empty))
                                     {
-                                        regions[string.Empty] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, Options, cs.Name);
+                                        regions[string.Empty] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, cs.Name);
                                     }
 
-                                    regions[cs.Name] = new HostedSolution(Configuraion, TenantDomainValidator, TimeZoneConverter, DbRegistry, cs, TariffServiceStorage, Options, cs.Name);
+                                    regions[cs.Name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, cs.Name);
                                 });
                         }
                         catch (DbException) { }

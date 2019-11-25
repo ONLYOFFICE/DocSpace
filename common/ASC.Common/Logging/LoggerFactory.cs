@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
 namespace ASC.Common.Logging
@@ -53,7 +54,20 @@ namespace ASC.Common.Logging
         }
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            var a = 0;
+            if (eventId.Id == 20101)
+            {
+                var keyValuePairs = state as IEnumerable<KeyValuePair<string, object>>;
+
+                foreach (var a in keyValuePairs)
+                {
+                    var key = a.Key;
+
+                    if (key == "commandText")
+                    {
+                        var value = a.Value;
+                    }
+                }
+            }
         }
     }
 }

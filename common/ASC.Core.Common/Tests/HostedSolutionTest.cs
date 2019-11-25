@@ -40,7 +40,7 @@ namespace ASC.Core.Common.Tests
         [Test]
         public void FindTenants()
         {
-            var h = new HostedSolution(null, null, null, null, Configuration.GetConnectionStrings("core"), null, null);
+            var h = new HostedSolution(null, Configuration.GetConnectionStrings("core"), null, null);
             var tenants = h.FindTenants("76ff727b-f987-4871-9834-e63d4420d6e9");
             Assert.AreNotEqual(0, tenants.Count);
         }
