@@ -73,7 +73,11 @@ class ToggleButton extends Component {
     //console.log("ToggleButton render");
 
     return (
-      <ToggleButtonContainer id={id} className={className} isDisabled={isDisabled}>
+      <ToggleButtonContainer
+        id={id}
+        className={className}
+        isDisabled={isDisabled}
+      >
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
@@ -96,7 +100,7 @@ ToggleButton.propTypes = {
   isDisabled: PropTypes.bool,
   onChange: PropTypes.func,
   label: PropTypes.string,
-  id: PropTypes.string,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string
 };
 

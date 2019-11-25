@@ -352,7 +352,7 @@ class ProfileInfo extends React.PureComponent {
                   offsetLeft={50}
                   offsetRight={0}
                   tooltipContent={tooltipLanguage}
-                  HelpButtonHeaderContent={t('Language')}
+                  helpButtonHeaderContent={t('Language')}
                 />
               </TooltipIcon>
 

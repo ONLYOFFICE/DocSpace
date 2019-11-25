@@ -443,35 +443,70 @@ class UpdateUserForm extends React.Component {
     const contacts = getUserContacts(profile.contacts);
     const tooltipTypeContent = 
       <>
-        <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
-        <Table>
-          <tbody>
-            <tr>
-              <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
-            </tr>
-            <tr>
-              <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
-            </tr>
-            <tr>
-              <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
-            </tr>
-            <tr>
-              <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
-            </tr>
-            <tr>
-              <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
-            </tr>
-          </tbody>
-        </Table>
+        <Text.Body 
+          style={{paddingBottom: 17}} 
+          fontSize={13}>
+            {t("ProfileTypePopupHelper")}
+        </Text.Body>
+
+        <Text.Body fontSize={12}>
+          <Table>
+            <tbody>
+              <tr>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("ProductsAndInstruments_Products")}
+                  </Text.Body>
+                </Th>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("Employee")}
+                    </Text.Body>
+                  </Th>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("GuestCaption")}
+                  </Text.Body>
+                </Th>
+              </tr>
+              <tr>
+                <Td>{t("Mail")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("DocumentsProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
+              </tr>
+              <tr>
+                <Td>{t("ProjectsProduct")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("CommunityProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
+              </tr>
+              <tr>
+                <Td>{t("People")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("Message")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
+              </tr>
+              <tr>
+                <Td>{t("Calendar")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
+              </tr>            
+            </tbody>
+          </Table>
+        </Text.Body>
         <Link 
           color="#316DAA" 
           isHovered={true} 
@@ -517,11 +552,18 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
 
-              HelpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
-                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p style={{height: "0", visibility: "hidden"}}>You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
-                </Trans>
+                <Text.Body fontSize={13}>                  
+                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                    The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
+                    <p style={{marginTop: "1rem"/*, height: "0", visibility: "hidden"*/}}>
+                      You can create a new mail on the domain as the primary.
+                      In this case, you must set a one-time password so that the user can log in to the portal for the first time.
+                    </p>
+                    The main e-mail can be used as a login when logging in to the portal.
+                  </Trans>
+                </Text.Body>
               }
             />
             <TextChangeField
@@ -595,7 +637,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
 
               tooltipContent={tooltipTypeContent}
-              HelpButtonHeaderContent={t('UserType')}
+              helpButtonHeaderContent={t('UserType')}
             />
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}

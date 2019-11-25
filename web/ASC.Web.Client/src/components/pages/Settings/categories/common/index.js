@@ -1,9 +1,8 @@
-import React, { lazy } from "react";
+import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-
-const CustomizationSettings = lazy(() => import("./customization"));
-const WhiteLabel = lazy(() => import("./whitelabel"));
+import CustomizationSettings from "./customization";
+import WhiteLabel from "./whitelabel";
 
 const Common = ({ match }) => {
   const basePath = '/settings/common';
@@ -15,13 +14,11 @@ const Common = ({ match }) => {
         path={[`${basePath}/customization`, '/common', match.path]}
         component={CustomizationSettings}
       />
-
       <Route
         exact
         path={`${basePath}/whitelabel`}
         component={WhiteLabel}
       />
-
     </Switch>
   );
 };
