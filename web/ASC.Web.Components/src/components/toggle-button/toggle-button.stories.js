@@ -17,6 +17,8 @@ storiesOf("Components|Input", module)
         <BooleanValue>
           {({ value, toggle }) => (
             <ToggleButton
+              id={text("id", "toggle id")}
+              className={text("className", "toggle className")}
               isChecked={value}
               isDisabled={boolean("isDisabled", false)}
               label={text("label", "label text")}
