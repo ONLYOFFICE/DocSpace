@@ -33,6 +33,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
@@ -42,18 +43,23 @@ namespace ASC.Core.Data
         public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
         public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
 
-        public EFUserService()
+        public UserDbContext UserDbContext { get; set; }
+        public IOptionsSnapshot<UserDbContext> ConfigureOptions { get; }
+
+        public EFUserService(IOptionsSnapshot<UserDbContext> configureOptions)
         {
             FromUserToUserInfo = r => r;
 
             FromDbGroupToGroup = r => r;
 
             FromUserGroupToUserGroupRef = r => r;
+
+            UserDbContext = configureOptions.Value;
+            ConfigureOptions = configureOptions;
         }
 
         public Group GetGroup(int tenant, Guid id)
         {
-            using var UserDbContext = new UserDbContext();
             return GetGroupQuery(UserDbContext, tenant, default)
                 .Where(r => r.Id == id)
                 .Select(FromDbGroupToGroup)
@@ -62,7 +68,6 @@ namespace ASC.Core.Data
 
         public IDictionary<Guid, Group> GetGroups(int tenant, DateTime from)
         {
-            using var UserDbContext = new UserDbContext();
             return GetGroupQuery(UserDbContext, tenant, from)
                 .Select(FromDbGroupToGroup)
                 .ToDictionary(r => r.Id, r => r);
@@ -70,7 +75,6 @@ namespace ASC.Core.Data
 
         public UserInfo GetUser(int tenant, Guid id)
         {
-            using var UserDbContext = new UserDbContext();
             return GetUserQuery(UserDbContext, tenant, default)
                 .Where(r => r.Id == id)
                 .Select(FromUserToUserInfo)
@@ -80,7 +84,6 @@ namespace ASC.Core.Data
         public UserInfo GetUser(int tenant, string login, string passwordHash)
         {
             if (string.IsNullOrEmpty(login)) throw new ArgumentNullException("login");
-            using var UserDbContext = new UserDbContext();
             var q = UserDbContext.Users
                 .Where(r => !r.Removed)
                 .Where(r => r.UserSecurity.PwdHash == passwordHash);
@@ -104,7 +107,6 @@ namespace ASC.Core.Data
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
-            using var UserDbContext = new UserDbContext();
             var q = UserDbContext.UserGroups.Where(r => true);
 
             if (tenant != Tenant.DEFAULT_TENANT)
@@ -122,7 +124,6 @@ namespace ASC.Core.Data
 
         public string GetUserPassword(int tenant, Guid id)
         {
-            using var UserDbContext = new UserDbContext();
             var h2 = UserDbContext.UserSecurity
                 .Where(r => r.Tenant == tenant)
                 .Select(r => r.PwdHashSha512)
@@ -133,7 +134,6 @@ namespace ASC.Core.Data
 
         public byte[] GetUserPhoto(int tenant, Guid id)
         {
-            using var UserDbContext = new UserDbContext();
             var photo = UserDbContext.Photos
                 .Where(r => r.Tenant == tenant)
                 .Where(r => r.UserId == id)
@@ -145,7 +145,6 @@ namespace ASC.Core.Data
 
         public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
         {
-            using var UserDbContext = new UserDbContext();
             return GetUserQuery(UserDbContext, tenant, from)
                 .Select(FromUserToUserInfo)
                 .ToDictionary(r => r.ID, r => r);
@@ -184,7 +183,7 @@ namespace ASC.Core.Data
 
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
         {
-            using var UserDbContext = new UserDbContext();
+            using var UserDbContext = ConfigureOptions.Value;
             total = UserDbContext.Users.Where(r => r.Tenant == tenant).Count();
             return UserDbContext.Users.Where(r => r.Tenant == tenant).Select(FromUserToUserInfo);
         }
@@ -199,7 +198,6 @@ namespace ASC.Core.Data
         {
             var ids = CollectGroupChilds(tenant, id);
 
-            using var UserDbContext = new UserDbContext();
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
             UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
@@ -236,8 +234,6 @@ namespace ASC.Core.Data
 
         public void RemoveUser(int tenant, Guid id, bool immediate)
         {
-            using var UserDbContext = new UserDbContext();
-
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
             UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id));
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id));
@@ -280,7 +276,6 @@ namespace ASC.Core.Data
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType, bool immediate)
         {
-            using var UserDbContext = new UserDbContext();
             var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == userId && r.GroupId == groupId && r.RefType == refType);
             if (immediate)
             {
@@ -307,10 +302,9 @@ namespace ASC.Core.Data
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
-            using var userDbContext = new UserDbContext();
             var dbGroup = (DbGroup)group;
-            userDbContext.Groups.Add(dbGroup);
-            userDbContext.SaveChanges();
+            UserDbContext.Groups.Add(dbGroup);
+            UserDbContext.SaveChanges();
 
             return dbGroup;
         }
@@ -327,16 +321,15 @@ namespace ASC.Core.Data
             user.UserName = user.UserName.Trim();
             user.Email = user.Email.Trim();
 
-            using var userDbContext = new UserDbContext();
-            var count = userDbContext.Users.Where(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed).Count();
+            var count = UserDbContext.Users.Where(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed).Count();
 
             if (count != 0)
             {
                 throw new ArgumentOutOfRangeException("Duplicate username.");
             }
 
-            userDbContext.Users.Add(user);
-            userDbContext.SaveChanges();
+            UserDbContext.Users.Add(user);
+            UserDbContext.SaveChanges();
 
             return user;
         }
@@ -348,12 +341,11 @@ namespace ASC.Core.Data
             r.LastModified = DateTime.UtcNow;
             r.Tenant = tenant;
 
-            using var userDbContext = new UserDbContext();
-            userDbContext.UserGroups.Add(r);
+            UserDbContext.UserGroups.Add(r);
 
-            var user = userDbContext.Users.First(a => a.Tenant == tenant && a.Id == r.UserId);
+            var user = UserDbContext.Users.First(a => a.Tenant == tenant && a.Id == r.UserId);
             user.LastModified = r.LastModified;
-            userDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
 
             return r;
         }
@@ -363,17 +355,15 @@ namespace ASC.Core.Data
             var h1 = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
             var h2 = !string.IsNullOrEmpty(password) ? Crypto.GetV(password, 1, true) : null;
 
-            using var userDbContext = new UserDbContext();
-            var us = userDbContext.UserSecurity.FirstOrDefault(r => r.UserId == id);
+            var us = UserDbContext.UserSecurity.FirstOrDefault(r => r.UserId == id);
             us.PwdHash = h1;
             us.PwdHashSha512 = h2;
-            userDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
         }
 
         public void SetUserPhoto(int tenant, Guid id, byte[] photo)
         {
-            using var userDbContext = new UserDbContext();
-            var userPhoto = userDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
+            var userPhoto = UserDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
             if (photo != null && photo.Length != 0)
             {
                 if (userPhoto == null)
@@ -392,10 +382,10 @@ namespace ASC.Core.Data
             }
             else if (userPhoto != null)
             {
-                userDbContext.Photos.Remove(userPhoto);
+                UserDbContext.Photos.Remove(userPhoto);
             }
 
-            userDbContext.SaveChanges();
+            UserDbContext.SaveChanges();
         }
 
         private IQueryable<User> GetUserQuery(UserDbContext UserDbContext, int tenant, DateTime from)
@@ -512,7 +502,6 @@ namespace ASC.Core.Data
 
         private List<Guid> CollectGroupChilds(int tenant, Guid id)
         {
-            using var UserDbContext = new UserDbContext();
             var result = new List<Guid>();
 
             var childs = UserDbContext.Groups

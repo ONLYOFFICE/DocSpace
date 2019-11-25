@@ -35,6 +35,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
@@ -308,7 +309,7 @@ namespace ASC.Web.Api.Models
     {
         public static IServiceCollection AddEmployeeWraperFull(this IServiceCollection services)
         {
-            services.AddScoped<EmployeeWraperFullHelper>();
+            services.TryAddScoped<EmployeeWraperFullHelper>();
 
             return services
                 .AddTenantManagerService()

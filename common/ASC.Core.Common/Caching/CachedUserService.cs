@@ -35,6 +35,7 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
@@ -477,6 +478,7 @@ namespace ASC.Core.Caching
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.AddCoreSettingsService();
+            services.TryAddScoped<IConfigureOptions<UserDbContext>, ConfigureDbContext>();
             services.TryAddScoped<UserDbContext>();
             services.TryAddScoped<EFUserService>();
             services.TryAddScoped<IUserService, CachedUserService>();

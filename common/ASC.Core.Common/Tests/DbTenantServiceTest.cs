@@ -43,7 +43,7 @@ namespace ASC.Core.Common.Tests
 
         public DbTenantServiceTest()
         {
-            userService = new EFUserService();
+            userService = new EFUserService(null);
         }
 
 

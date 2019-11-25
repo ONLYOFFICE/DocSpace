@@ -85,7 +85,7 @@ namespace ASC.Core
             var baseSettings = new CoreBaseSettings(configuration);
             coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new EFUserService();
+            userService = new EFUserService(null);
             quotaService = new DbQuotaService(null);
             tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
