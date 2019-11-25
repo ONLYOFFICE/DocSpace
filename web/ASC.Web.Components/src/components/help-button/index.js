@@ -156,13 +156,16 @@ class HelpButton extends React.Component {
             <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
-                <Header>
-                  <HeaderText>
-                    <Text.Body isBold={true} fontSize={21}>
-                      {HelpButtonHeaderContent}
-                    </Text.Body>
-                  </HeaderText>
-                </Header>
+                {
+                  HelpButtonHeaderContent &&
+                  <Header>
+                    <HeaderText>
+                      <Text.Body isBold={true} fontSize={21}>
+                        {HelpButtonHeaderContent}
+                      </Text.Body>
+                    </HeaderText>
+                  </Header>
+                }
                 <Body>{tooltipContent}</Body>
               </Content>
             </Aside>
