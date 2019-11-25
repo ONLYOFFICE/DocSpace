@@ -100,10 +100,11 @@ class TextInput extends React.Component {
 
     render() {
         // console.log(`TextInput render id=${this.props.id}`);
-        const {scale, size, errorMessage, errorColor} = this.props;
+        const {scale, size, errorMessage, errorColor, hasError} = this.props;
         return (
         <>
             <StyledInput {...this.props} />
+            {hasError ? 
             <Text.Body fontSize={10} color={errorColor}>
               <ErrorLabel
                 scale={scale}
@@ -112,6 +113,7 @@ class TextInput extends React.Component {
                 {errorMessage}
               </ErrorLabel>
             </Text.Body>
+            : null}
         </>);
     }
 }
