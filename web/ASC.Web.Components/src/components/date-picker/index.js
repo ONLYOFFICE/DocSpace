@@ -350,7 +350,7 @@ class DatePicker extends Component {
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          onFocus={this.onClick.bind(this, true)}
+          //onFocus={this.onClick.bind(this, true)}
           iconName={"CalendarIcon"}
           onIconClick={this.onClick.bind(this, !isOpen)}
           value={value}

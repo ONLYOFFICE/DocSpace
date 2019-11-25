@@ -28,7 +28,7 @@ const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {.
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
-  height: 96%;
+  height: 90%;
   border: none;
   outline: none;
   resize: none;

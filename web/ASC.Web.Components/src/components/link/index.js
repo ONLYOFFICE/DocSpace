@@ -87,7 +87,7 @@ Link.propTypes = {
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
-  children: PropTypes.string,
+  children: PropTypes.any,
   className: PropTypes.string
 };
 

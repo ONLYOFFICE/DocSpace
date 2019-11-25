@@ -1,62 +1,85 @@
 # TabContainer
 
-#### Description
-
 Custom Tabs menu
 
-#### Usage
+### Usage
 
 ```js
-import { TabContainer } from 'asc-web-components';
+import { TabContainer } from "asc-web-components";
+```
 
+```js
 const array_items = [
-    {
-        key: "0",
-        title: "Title1",
-        content:
-            <div >
-                <div> <button>BUTTON</button> </div>
-                <div> <button>BUTTON</button> </div>
-                <div> <button>BUTTON</button> </div>
-            </div>
-    },
-    {
-        key: "1",
-        title: "Title2",
-        content:
-            <div >
-                <div> <label>LABEL</label> </div>
-                <div> <label>LABEL</label> </div>
-                <div> <label>LABEL</label> </div>
-            </div>
-    },
-    {
-        key: "2",
-        title: "Title3",
-        content:
-            <div>
-                <div> <input></input> </div>
-                <div> <input></input> </div>
-                <div> <input></input> </div>
-            </div>
-    }
+  {
+    key: "0",
+    title: "Title1",
+    content: (
+      <div>
+        <div>
+          <button>BUTTON</button>
+        </div>
+        <div>
+          <button>BUTTON</button>
+        </div>
+        <div>
+          <button>BUTTON</button>
+        </div>
+      </div>
+    )
+  },
+  {
+    key: "1",
+    title: "Title2",
+    content: (
+      <div>
+        <div>
+          <label>LABEL</label>
+        </div>
+        <div>
+          <label>LABEL</label>
+        </div>
+        <div>
+          <label>LABEL</label>
+        </div>
+      </div>
+    )
+  },
+  {
+    key: "2",
+    title: "Title3",
+    content: (
+      <div>
+        <div>
+          <input></input>
+        </div>
+        <div>
+          <input></input>
+        </div>
+        <div>
+          <input></input>
+        </div>
+      </div>
+    )
+  }
 ];
+```
 
+```jsx
 <TabContainer>{array_items}</TabContainer>
 ```
 
-#### TabContainer Properties
+### TabContainer Properties
 
-| Props      | Type        | Required | Values                                    | Default      | Description           |
-| ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
-| `isDisabled`                | `boolean` |    -    | -                            | -       | Disable the TabContainer
-| `selectedItem`             | `number`            |    -     | -                            | 0       | Selected title of tabs container   |
-| `onSelect`             | `func`            |    -     | -                            | -       | Triggered when a title is selected  |
+| Props          |   Type    | Required | Values | Default | Description                        |
+| -------------- | :-------: | :------: | :----: | :-----: | ---------------------------------- |
+| `isDisabled`   | `boolean` |    -     |   -    |    -    | Disable the TabContainer           |
+| `selectedItem` | `number`  |    -     |   -    |   `0`   | Selected title of tabs container   |
+| `onSelect`     |  `func`   |    -     |   -    |    -    | Triggered when a title is selected |
 
-#### Array Items Properties
+### Array Items Properties
 
-| Props      | Type        | Required | Values                                    | Default      | Description           |
-| ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
-| `id`                | `string` |    true    | -                            | -       | Index of object array 
-| `title`                | `string` |    true    | -                            | -       | Tabs title         
-| `content`                | `object` |    true   | -                            | -       | Content in Tab
+| Props     |   Type   | Required | Values | Default | Description           |
+| --------- | :------: | :------: | :----: | :-----: | --------------------- |
+| `id`      | `string` |    ✅    |   -    |    -    | Index of object array |
+| `title`   | `string` |    ✅    |   -    |    -    | Tabs title            |
+| `content` | `object` |    ✅    |   -    |    -    | Content in Tab        |

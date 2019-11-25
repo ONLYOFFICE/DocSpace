@@ -167,6 +167,72 @@ const scrollArrayItems = [
         <input />
       </div>
     )
+  },
+  {
+    key: "tab6",
+    title: "short container",
+    content: (
+      <div>
+        <button>button</button>
+        <button>button</button>
+        <button>button</button>
+      </div>
+    )
+  },
+  {
+    key: "tab7",
+    title: "Very long tabs-container field",
+    content: (
+      <div>
+        <label>label</label>
+        <label>label</label>
+        <label>label</label>
+      </div>
+    )
+  },
+  {
+    key: "tab8",
+    title: "tab container",
+    content: (
+      <div>
+        <input />
+        <input />
+        <input />
+      </div>
+    )
+  },
+  {
+    key: "tab9",
+    title: "Short___",
+    content: (
+      <div>
+        <input />
+        <input />
+        <input />
+      </div>
+    )
+  },
+  {
+    key: "tab10",
+    title: "Short__2",
+    content: (
+      <div>
+        <input />
+        <input />
+        <input />
+      </div>
+    )
+  },
+  {
+    key: "tab11",
+    title: "TabsContainer",
+    content: (
+      <div>
+        <input />
+        <input />
+        <input />
+      </div>
+    )
   }
 ];
 
@@ -189,8 +255,65 @@ storiesOf("Components|TabContainer", module)
           <h5 style={{ marginTop: 100, marginBottom: 20 }}>
             TabsContainer with auto scroll:
           </h5>
-          <TabContainer isDisabled={boolean("isDisabled", false)}>
+          <TabContainer
+            isDisabled={boolean("isDisabled", false)}
+            selectedItem={3}
+          >
             {scrollArrayItems}
+          </TabContainer>
+        </div>
+
+        <div style={{ marginTop: 32, maxWidth: 430 }}>
+          <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+            TabsContainer with auto scroll:
+          </h5>
+          <TabContainer
+            isDisabled={boolean("isDisabled", false)}
+            selectedItem={5}
+          >
+            {[{
+              key: "tab0",
+              title: "Title00000000",
+              content: <label>LABEL</label>
+            },
+            {
+              key: "tab1",
+              title: "Title00000001",
+              content: <label>LABEL</label>
+            },
+            {
+              key: "tab2",
+              title: "Title00000002",
+              content: <label>LABEL</label>
+            },{
+              key: "tab3",
+              title: "Title00000003",
+              content: <label>LABEL</label>
+            },{
+              key: "tab4",
+              title: "Title00000004",
+              content: <label>LABEL</label>
+            },{
+              key: "tab5",
+              title: "Title00000005",
+              content: <label>LABEL</label>
+            },{
+              key: "tab6",
+              title: "Title00000006",
+              content: <label>LABEL</label>
+            },{
+              key: "tab7",
+              title: "Title00000007",
+              content: <label>LABEL</label>
+            },{
+              key: "tab8",
+              title: "Title00000008",
+              content: <label>LABEL</label>
+            },{
+              key: "tab9",
+              title: "Title00000009",
+              content: <label>LABEL</label>
+            }]}
           </TabContainer>
         </div>
       </Section>
