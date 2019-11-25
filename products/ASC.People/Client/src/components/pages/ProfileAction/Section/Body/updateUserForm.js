@@ -443,33 +443,67 @@ class UpdateUserForm extends React.Component {
     const contacts = getUserContacts(profile.contacts);
     const tooltipTypeContent = 
       <>
-        <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}
+        <Text.Body 
+          style={{paddingBottom: 17}} 
+          fontSize={13}>
+            {t("ProfileTypePopupHelper")}
+        </Text.Body>
+
+        <Text.Body fontSize={12}>
           <Table>
             <tbody>
               <tr>
-                <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("ProductsAndInstruments_Products")}
+                  </Text.Body>
+                </Th>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("Employee")}
+                    </Text.Body>
+                  </Th>
+                <Th>
+                  <Text.Body isBold fontSize={13}>
+                    {t("GuestCaption")}
+                  </Text.Body>
+                </Th>
               </tr>
               <tr>
-                <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
+                <Td>{t("Mail")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
+                <Td>{t("DocumentsProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
               </tr>
               <tr>
-                <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
+                <Td>{t("ProjectsProduct")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
+                <Td>{t("CommunityProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
               </tr>
               <tr>
-                <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
+                <Td>{t("People")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
               </tr>
               <tr>
-                <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
+                <Td>{t("Message")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
               </tr>
               <tr>
-                <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
-              </tr>
+                <Td>{t("Calendar")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
+              </tr>            
             </tbody>
           </Table>
         </Text.Body>
