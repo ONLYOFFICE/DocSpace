@@ -19,25 +19,5 @@ namespace ASC.Core.Common.EF
 
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
-
-        public static implicit operator UserGroupRef(UserGroup userGroup) => new UserGroupRef
-        {
-            GroupId = userGroup.GroupId,
-            UserId = userGroup.UserId,
-            Tenant = userGroup.Tenant,
-            RefType = userGroup.RefType,
-            LastModified = userGroup.LastModified,
-            Removed = userGroup.Removed
-        };
-
-        public static implicit operator UserGroup(UserGroupRef userGroup) => new UserGroupRef
-        {
-            GroupId = userGroup.GroupId,
-            UserId = userGroup.UserId,
-            Tenant = userGroup.Tenant,
-            RefType = userGroup.RefType,
-            LastModified = userGroup.LastModified,
-            Removed = userGroup.Removed
-        };
     }
 }

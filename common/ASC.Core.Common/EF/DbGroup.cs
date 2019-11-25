@@ -16,29 +16,5 @@ namespace ASC.Core.Common.EF
 
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
-
-        public static implicit operator Group(DbGroup group) => new Group
-        {
-            Id = group.Id,
-            Name = group.Name,
-            CategoryId = group.CategoryId,
-            ParentId = group.ParentId,
-            Sid = group.Sid,
-            Removed = group.Removed,
-            LastModified = group.LastModified,
-            Tenant = group.Tenant
-        };
-
-        public static implicit operator DbGroup(Group group) => new DbGroup
-        {
-            Id = group.Id,
-            Name = group.Name,
-            CategoryId = group.CategoryId,
-            ParentId = group.ParentId,
-            Sid = group.Sid,
-            Removed = group.Removed,
-            LastModified = group.LastModified,
-            Tenant = group.Tenant
-        };
     }
 }

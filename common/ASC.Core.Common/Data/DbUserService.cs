@@ -40,19 +40,118 @@ namespace ASC.Core.Data
     public class EFUserService : IUserService
     {
         public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
+        public Func<UserInfo, User> FromUserInfoToUser { get; set; }
         public Expression<Func<DbGroup, Group>> FromDbGroupToGroup { get; set; }
+        public Func<Group, DbGroup> FromGroupToDbGroup { get; set; }
         public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
+        public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
         public UserDbContext UserDbContext { get; set; }
         public IOptionsSnapshot<UserDbContext> ConfigureOptions { get; }
 
         public EFUserService(IOptionsSnapshot<UserDbContext> configureOptions)
         {
-            FromUserToUserInfo = r => r;
+            FromUserToUserInfo = user => new UserInfo
+            {
+                ActivationStatus = user.ActivationStatus,
+                BirthDate = user.Birthdate,
+                CreateDate = user.CreateOn,
+                CultureName = user.Culture,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                ID = user.Id,
+                LastModified = user.LastModified,
+                LastName = user.LastName,
+                Location = user.Location,
+                MobilePhone = user.Phone,
+                MobilePhoneActivationStatus = user.PhoneActivation,
+                Notes = user.Notes,
+                Removed = user.Removed,
+                Sex = user.Sex,
+                Sid = user.Sid,
+                SsoNameId = user.SsoNameId,
+                SsoSessionId = user.SsoSessionId,
+                Status = user.Status,
+                Tenant = user.Tenant,
+                TerminatedDate = user.TerminatedDate,
+                Title = user.Title,
+                UserName = user.UserName,
+                WorkFromDate = user.WorkFromDate,
+                Contacts = user.Contacts
+            };
 
-            FromDbGroupToGroup = r => r;
+            FromUserInfoToUser = user => new User
+            {
+                ActivationStatus = user.ActivationStatus,
+                Birthdate = user.BirthDate,
+                CreateOn = user.CreateDate,
+                Culture = user.CultureName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                Id = user.ID,
+                LastModified = user.LastModified,
+                LastName = user.LastName,
+                Location = user.Location,
+                Phone = user.MobilePhone,
+                PhoneActivation = user.MobilePhoneActivationStatus,
+                Notes = user.Notes,
+                Removed = user.Removed,
+                Sex = user.Sex,
+                Sid = user.Sid,
+                SsoNameId = user.SsoNameId,
+                SsoSessionId = user.SsoSessionId,
+                Status = user.Status,
+                Tenant = user.Tenant,
+                TerminatedDate = user.TerminatedDate,
+                Title = user.Title,
+                UserName = user.UserName,
+                WorkFromDate = user.WorkFromDate,
+                Contacts = user.Contacts
+            };
 
-            FromUserGroupToUserGroupRef = r => r;
+            FromDbGroupToGroup = group => new Group
+            {
+                Id = group.Id,
+                Name = group.Name,
+                CategoryId = group.CategoryId,
+                ParentId = group.ParentId,
+                Sid = group.Sid,
+                Removed = group.Removed,
+                LastModified = group.LastModified,
+                Tenant = group.Tenant
+            };
+
+            FromGroupToDbGroup = group => new DbGroup
+            {
+                Id = group.Id,
+                Name = group.Name,
+                CategoryId = group.CategoryId,
+                ParentId = group.ParentId,
+                Sid = group.Sid,
+                Removed = group.Removed,
+                LastModified = group.LastModified,
+                Tenant = group.Tenant
+            };
+
+            FromUserGroupToUserGroupRef = userGroup => new UserGroupRef
+            {
+                GroupId = userGroup.GroupId,
+                UserId = userGroup.UserId,
+                Tenant = userGroup.Tenant,
+                RefType = userGroup.RefType,
+                LastModified = userGroup.LastModified,
+                Removed = userGroup.Removed
+            };
+
+            FromUserGroupRefToUserGroup = userGroup => new UserGroup
+            {
+                GroupId = userGroup.GroupId,
+                UserId = userGroup.UserId,
+                Tenant = userGroup.Tenant,
+                RefType = userGroup.RefType,
+                LastModified = userGroup.LastModified,
+                Removed = userGroup.Removed
+            };
 
             UserDbContext = configureOptions.Value;
             ConfigureOptions = configureOptions;
@@ -176,7 +275,7 @@ namespace ASC.Core.Data
                 q = q.Take((int)limit);
             }
 
-            count = q.Count();
+            count = 1;// q.Count();
 
             return q.Select(FromUserToUserInfo);
         }
@@ -302,11 +401,11 @@ namespace ASC.Core.Data
             group.LastModified = DateTime.UtcNow;
             group.Tenant = tenant;
 
-            var dbGroup = (DbGroup)group;
+            var dbGroup = FromGroupToDbGroup(group);
             UserDbContext.Groups.Add(dbGroup);
             UserDbContext.SaveChanges();
 
-            return dbGroup;
+            return group;
         }
 
         public UserInfo SaveUser(int tenant, UserInfo user)
@@ -328,7 +427,7 @@ namespace ASC.Core.Data
                 throw new ArgumentOutOfRangeException("Duplicate username.");
             }
 
-            UserDbContext.Users.Add(user);
+            UserDbContext.Users.Add(FromUserInfoToUser(user));
             UserDbContext.SaveChanges();
 
             return user;
@@ -341,7 +440,7 @@ namespace ASC.Core.Data
             r.LastModified = DateTime.UtcNow;
             r.Tenant = tenant;
 
-            UserDbContext.UserGroups.Add(r);
+            UserDbContext.UserGroups.Add(FromUserGroupRefToUserGroup(r));
 
             var user = UserDbContext.Users.First(a => a.Tenant == tenant && a.Id == r.UserId);
             user.LastModified = r.LastModified;
