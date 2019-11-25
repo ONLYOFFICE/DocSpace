@@ -47,7 +47,6 @@ class ProfileRemove extends React.PureComponent {
             isLoading: false,
             isProfileDeleted: true
           });
-          //setAuthorizationToken();
           console.log('success delete', res)
           return logout()
         })
