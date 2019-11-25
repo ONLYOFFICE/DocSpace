@@ -214,7 +214,7 @@ class FilterInput extends React.Component {
         const filterArr = Array.from(Array.from(this.filterWrapper.current.children).find(x => x.id === 'filter-items-container').children);
         const filterButton = Array.from(Array.from(this.filterWrapper.current.children).find(x => x.id != 'filter-items-container').children)[0];
 
-        if (fullWidth <= this.minWidth) {
+        if (fullWidth <= this.minWidth && fullWidth > 0) {
             this.setState({
                 openFilterItems: [],
                 hideFilterItems: cloneObjectsArray(currentFilterItems)
