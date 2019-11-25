@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import i18n from "../../i18n";
@@ -90,17 +89,17 @@ class PureAccessRights extends Component {
             {
               key: "0",
               title: "Owner settings",
-              content: <Route component={OwnerSettings} />
+              content: <OwnerSettings />
             },
             {
               key: "1",
               title: "Admins settings",
-              content: <Route component={AdminsSettings} />
+              content: <AdminsSettings />
             },
             {
               key: "2",
               title: "Portals settings",
-              content: <Route component={ModulesSettings} />
+              content: <ModulesSettings />
             }
           ]}
         </TabContainer>
