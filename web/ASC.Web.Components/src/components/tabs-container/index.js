@@ -204,19 +204,15 @@ class TabContainer extends Component {
       <>
         <StyledScrollbar
           autoHide={onScrollHide}
-          autoHideDuration={500}
-          autoHideTimeout={1000}
           stype="preMediumBlack"
           className="scrollbar"
           ref={this.scrollRef}
         >
-          <NavItem
-            onMouseMove={this.onMouseEnter}
-            onMouseLeave={this.onMouseLeave}
-            className="className_items"
-          >
+          <NavItem className="className_items">
             {children.map((item, index) => (
               <Label
+                onMouseMove={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
                 ref={this.arrayRefs[index]}
                 onClick={this.titleClick.bind(
                   this,
