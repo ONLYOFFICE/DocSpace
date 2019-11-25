@@ -1,4 +1,4 @@
-import { default as api } from "../services/api";
+import { default as api } from "../../api";
 
 export const LOGIN_POST = "LOGIN_POST";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";

@@ -25,9 +25,8 @@ import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import SubModalDialog from "./sub-components/modal-dialog";
-//import { store, api } from 'asc-web-common';
-import { login, setIsLoaded } from "../../store/auth/actions";  //store.auth.actions;
-import { sendInstructionsToChangePassword } from "../../store/services/api/people"; //api.people;
+import { login, setIsLoaded } from "../../store/auth/actions";
+import { sendInstructionsToChangePassword } from "../../api/people";
 
 const FormContainer = styled(Container)`
   margin-top: 70px;

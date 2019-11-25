@@ -1,6 +1,5 @@
 import axios from "axios";
-import { AUTH_KEY } from "../../../constants";
-//import { toastr } from "asc-web-components";
+import { AUTH_KEY } from "../constants";
 
 const PREFIX = "api";
 const VERSION = "2.0";
