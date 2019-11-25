@@ -181,7 +181,7 @@ HelpButton.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
   offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
