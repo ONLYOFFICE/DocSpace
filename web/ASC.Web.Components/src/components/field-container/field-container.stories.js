@@ -25,6 +25,7 @@ storiesOf("Components|FieldContainer", module)
             isRequired={boolean("isRequired", false)}
             hasError={boolean("hasError", false)}
             labelText={text("labelText", "Name:")}
+            horLabelWidth={text("horLabelWidth", "110px")}
           >
             <TextInput
               value={value}
