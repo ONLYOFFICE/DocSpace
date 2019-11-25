@@ -50,8 +50,9 @@ export default function createStyledIcon(Component, displayName, fillPath="*", s
       )
     }
     render() {
+      const { isfill, isStroke, color, stroke, fillPath, strokePath, ...props } = this.props;
       
-      var svg = ReactDOMServer.renderToString(<Component {...this.props}></Component>);
+      var svg = ReactDOMServer.renderToString(<Component {...props}></Component>);
       const matchResult = svg.match(/\s*mask id="(\w*)"\s/);
 
       if(matchResult != null){
@@ -62,7 +63,7 @@ export default function createStyledIcon(Component, displayName, fillPath="*", s
           return reactComponent;
         }
       }
-      return (<Component {...this.props}></Component>);
+      return (<Component {...props}></Component>);
     }
   }
   
