@@ -5,57 +5,71 @@ import { tablet } from "../../utils/device";
 import Label from "../label";
 import HelpButton from "../help-button";
 
-const horizontalCss = css`
-  display: flex;
-  flex-direction: row;
-  align-items: start;
-  margin: 0 0 16px 0;
+function getHorizontalCss(labelWidth) {
+  return css`
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    margin: 0 0 16px 0;
 
-  .field-label {
-    line-height: 32px;
-    margin: 0;
-    position: relative;
-  }
-  .field-body {
-    flex-grow: 1;
-  }
-  .icon-button {
-    position: relative;
-    line-height: 24px;
-    margin: 2px 0 0 4px;
-  }
-`;
-const verticalCss = css`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin: 0 0 16px 0;
+    .field-label {
+      line-height: 32px;
+      margin: 0;
+      position: relative;
+    }
+    .field-label-icon {
+      display: inline-flex;
+      min-width: ${labelWidth};
+      width: ${labelWidth};
+    }
+    .field-body {
+      flex-grow: 1;
+    }
+    .icon-button {
+      position: relative;
+      line-height: 24px;
+      margin: 2px 0 0 4px;
+    }
+  `;
+}
 
-  .field-label {
-    line-height: unset;
-    margin: 0 0 4px 0;
-  }
-  .field-body {
-    width: 100%;
-  }
-  .icon-button {
-    position: relative;
-    line-height: unset;
-    margin: -4px 0 0 4px;
-  }
-`;
+function getVerticalCss() {
+  return css`
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin: 0 0 16px 0;
+
+    .field-label {
+      line-height: unset;
+      margin: 0 0 4px 0;
+    }
+    .field-label-icon {
+      display: inline-flex;
+      width: 100%;
+    }
+    .field-body {
+      width: 100%;
+    }
+    .icon-button {
+      position: relative;
+      line-height: unset;
+      margin: -4px 0 0 4px;
+    }
+  `;
+}
 
 const Container = styled.div`
-  .field-label-icon {
-    min-width: 110px;
-    display: inline-flex;
-  }
-  ${props => (props.vertical ? verticalCss : horizontalCss)}
+  ${props =>
+    props.vertical
+      ? getVerticalCss()
+      : getHorizontalCss(props.horLabelWidth)}
 
   @media ${tablet} {
-    ${verticalCss}
+    ${getVerticalCss()}
   }
 `;
+
 class FieldContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -71,11 +85,12 @@ class FieldContainer extends React.Component {
       children,
       tooltipContent,
       place,
-      HelpButtonHeaderContent
+      HelpButtonHeaderContent,
+      horLabelWidth
     } = this.props;
 
     return (
-      <Container vertical={isVertical} className={className}>
+      <Container vertical={isVertical} horLabelWidth={horLabelWidth} className={className} >
         <div className="field-label-icon">
           <Label
             isRequired={isRequired}
@@ -113,11 +128,13 @@ FieldContainer.propTypes = {
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
-  HelpButtonHeaderContent: PropTypes.string
+  HelpButtonHeaderContent: PropTypes.string,
+  horLabelWidth: PropTypes.string
 };
 
-FieldContainer.defaultProps ={
-  place: "bottom"
+FieldContainer.defaultProps = {
+  place: "bottom",
+  horLabelWidth: "110px"
 }
 
 export default FieldContainer;
