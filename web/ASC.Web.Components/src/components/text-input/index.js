@@ -100,12 +100,12 @@ class TextInput extends React.Component {
 
     render() {
         // console.log(`TextInput render id=${this.props.id}`);
-        const {scale, size, errorMessage, errorColor, hasError} = this.props;
+        const {scale, size, errorMessage, color, hasError} = this.props;
         return (
         <>
             <StyledInput {...this.props} />
             {hasError ? 
-            <Text.Body fontSize={10} color={errorColor}>
+            <Text.Body fontSize={10} color={color}>
               <ErrorLabel
                 scale={scale}
                 size={size}
@@ -143,7 +143,7 @@ TextInput.propTypes = {
     hasWarning: PropTypes.bool,
     autoComplete: PropTypes.string,
     errorMessage: PropTypes.string,
-    errorColor: PropTypes.string
+    color: PropTypes.string
 }
 
 TextInput.defaultProps = {
@@ -158,7 +158,7 @@ TextInput.defaultProps = {
     autoComplete: 'off',
     withBorder: true,
     keepCharPositions: false,
-    errorColor: "#C96C27"
+    color: "#C96C27"
 }
 
 export default TextInput
