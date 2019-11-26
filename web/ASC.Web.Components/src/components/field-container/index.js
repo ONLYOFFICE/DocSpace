@@ -65,7 +65,9 @@ const Container = styled.div`
     max-width: ${props => (props.maxwidth ? props.maxwidth : "293px")}
   }
   ${props =>
-    props.vertical ? getVerticalCss() : getHorizontalCss(props.horLabelWidth)}
+    props.vertical
+      ? getVerticalCss()
+      : getHorizontalCss(props.maxLabelWidth)}
 
   @media ${tablet} {
     ${getVerticalCss()}
@@ -88,7 +90,7 @@ class FieldContainer extends React.Component {
       tooltipContent,
       place,
       helpButtonHeaderContent,
-      horLabelWidth,
+      maxLabelWidth,
       errorMessage,
       errorColor,
       errorMessageWidth
@@ -97,7 +99,7 @@ class FieldContainer extends React.Component {
     return (
       <Container
         vertical={isVertical}
-        horLabelWidth={horLabelWidth}
+        maxLabelWidth={maxLabelWidth}
         className={className}
         maxwidth={errorMessageWidth}
       >
@@ -146,7 +148,7 @@ FieldContainer.propTypes = {
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
   helpButtonHeaderContent: PropTypes.string,
-  horLabelWidth: PropTypes.string,
+  maxLabelWidth: PropTypes.string,
   errorMessage: PropTypes.string,
   errorColor: PropTypes.string,
   errorMessageWidth: PropTypes.string
@@ -154,7 +156,7 @@ FieldContainer.propTypes = {
 
 FieldContainer.defaultProps = {
   place: "bottom",
-  horLabelWidth: "110px",
+  maxLabelWidth: "110px",
   errorColor: "#C96C27",
   errorMessageWidth: "293px"
 };

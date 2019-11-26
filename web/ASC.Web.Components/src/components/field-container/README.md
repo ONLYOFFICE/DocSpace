@@ -24,7 +24,7 @@ import { FieldContainer } from "asc-web-components";
 | `labelText`               |     `string`      |    -     |   -    |     -     | Field label text                                 |
 | `tooltipContent`          | `object`,`string` |    -     |   -    |     -     | Tooltip content                                  |
 | `helpButtonHeaderContent` |     `string`      |    -     |   -    |     -     | Tooltip header content (tooltip opened in aside) |
-| `horLabelWidth`           |     `string`      |    -     |   -    |  `110px`  | Label width in horizontal alignment              |
+| `maxLabelWidth`           |     `string`      |    -     |   -    |  `110px`  | Max label width in horizontal alignment          |
 | `errorMessage`            |     `string`      |    -     |   -    |     -     | Error message text                               |
 | `errorColor`              |     `string`      |    -     |   -    | `#C96C27` | Error text color                                 |
 | `errorMessageWidth`       |     `string`      |    -     |   -    |  `320px`  | Error text width                                 |
