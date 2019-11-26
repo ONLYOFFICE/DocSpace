@@ -26,7 +26,7 @@ addDecorator(addReadme);
 addParameters({
   options:
   {
-    name: 'ASC Storybook',
+    name: 'ASC Web Common Storybook',
     sortStoriesByKind: true,
     showAddonPanel: true,
     addonPanelInRight: true

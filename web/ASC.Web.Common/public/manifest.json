@@ -1,6 +1,6 @@
 {
-  "short_name": "ASC Web Components Storybook",
-  "name": "ASC Storybook",
+  "short_name": "ASC Web Common Storybook",
+  "name": "ASC Web Common Storybook",
   "icons": [
     {
       "src": "favicon.ico",
