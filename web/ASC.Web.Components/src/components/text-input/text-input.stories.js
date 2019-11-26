@@ -42,8 +42,6 @@ storiesOf('Components|Input', module)
             withBorder={boolean('withBorder', true)}
             mask={text("mask", null)}
             value={value}
-            errorMessage={text("errorMessage", "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit")}
-            errorColor={color('errorColor', "#C96C27")}
             onChange={e => { 
               set(e.target.value);
             }}
