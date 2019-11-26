@@ -4,27 +4,27 @@ import { PageLayout, Loader } from "asc-web-components";
 
 export class ExternalRedirect extends Component {
   constructor(props) {
-    super();
-    this.state = {
-      location: props.to
-    };
+    super(props);
   }
 
   componentDidMount() {
-    window.location.replace(this.state.location);
+    const { to } = this.props;
+    to && window.location.replace(to);
   }
 
   render() {
-    return <PageLayout
-                sectionBodyContent={
-                    <Loader className="pageLoader" type="rombs" size={40} />
-                }
-            />
+    return (
+      <PageLayout
+        sectionBodyContent={
+          <Loader className="pageLoader" type="rombs" size={40} />
+        }
+      />
+    );
   }
 }
 
 ExternalRedirect.propTypes = {
   to: PropTypes.string
-}
+};
 
 export default ExternalRedirect;
