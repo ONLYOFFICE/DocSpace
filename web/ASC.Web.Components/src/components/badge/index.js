@@ -40,7 +40,10 @@ Badge.propTypes = {
   borderRadius: PropTypes.string,
   padding: PropTypes.string,
   maxWidth: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Badge.defaultProps = {
