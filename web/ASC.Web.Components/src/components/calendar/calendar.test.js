@@ -316,4 +316,28 @@ describe("Calendar tests:", () => {
     expect(wrapper2.props).toBe(wrapper2.props);
     expect(wrapper2.state).toBe(wrapper2.state);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });
