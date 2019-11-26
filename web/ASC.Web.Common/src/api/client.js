@@ -22,10 +22,8 @@ client.interceptors.response.use(
     return response;
   },
   error => {
-    if(error.isAxiosError)
-      return error;
-
     if (error.response.status === 401) {
+      setAuthorizationToken();
       window.location.href = "/login/error=unauthorized";
     }
 
