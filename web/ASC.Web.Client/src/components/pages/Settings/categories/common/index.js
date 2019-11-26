@@ -1,25 +1,29 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Route, Switch } from "react-router-dom";
 import { withRouter } from "react-router";
-import CustomizationSettings from "./customization";
-import WhiteLabel from "./whitelabel";
+import { Loader } from "asc-web-components";
+
+const CustomizationSettings = lazy(() => import("./customization"));
+const WhiteLabel = lazy(() => import("./whitelabel"));
 
 const Common = ({ match }) => {
   const basePath = '/settings/common';
 
   return (
-    <Switch>
-      <Route
-        exact
-        path={[`${basePath}/customization`, '/common', match.path]}
-        component={CustomizationSettings}
-      />
-      <Route
-        exact
-        path={`${basePath}/whitelabel`}
-        component={WhiteLabel}
-      />
-    </Switch>
+    <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
+      <Switch>
+        <Route
+          exact
+          path={[`${basePath}/customization`, '/common', match.path]}
+          component={CustomizationSettings}
+        />
+        <Route
+          exact
+          path={`${basePath}/whitelabel`}
+          component={WhiteLabel}
+        />
+      </Switch>
+    </Suspense>
   );
 };
 

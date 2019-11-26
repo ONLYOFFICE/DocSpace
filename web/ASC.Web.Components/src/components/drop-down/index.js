@@ -22,7 +22,7 @@ const StyledDropdown = styled.div`
     ${props => (props.directionY === 'bottom' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
     ${props => (props.directionX === 'right' && css`right: ${props => props.manualX ? props.manualX : '0px'};`)}
     ${props => (props.directionX === 'left' && css`left: ${props => props.manualX ? props.manualX : '0px'};`)}
-    z-index: 1000;
+    z-index: 150;
     margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
     margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
     display: ${props => (props.isOpen || props.opened ? 'block' : 'none')};

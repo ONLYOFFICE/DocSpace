@@ -11,7 +11,7 @@ const StyledHeader = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: none;
-  z-index: 200;
+  z-index: 185;
   position: absolute;
   width: 100vw;
 
