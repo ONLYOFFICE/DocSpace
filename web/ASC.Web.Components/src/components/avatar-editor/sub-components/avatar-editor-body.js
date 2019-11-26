@@ -229,7 +229,11 @@ class AvatarEditorBody extends React.Component {
 
     handleScale = e => {
         const scale = parseFloat(e.target.value);
-        this.setState({ scale })
+        this.setState({ scale });
+        this.props.onSizeChange({
+            width: this.setEditorRef.current.getImage().width,
+            height: this.setEditorRef.current.getImage().height
+        });
     };
     onImageReady() {
         this.setState({
