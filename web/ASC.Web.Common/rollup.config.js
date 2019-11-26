@@ -25,7 +25,7 @@ const configureRollupPlugins = (options = {}) => [
       license: pkg.license,
       main: pkg.main,
       module: pkg.module,
-      peerDependencies: pkg.peerDependencies
+      peerDependencies: { ...pkg.peerDependencies, "asc-web-components": "file:../asc-web-components"}
     },
     outputFolder: '../../packages/asc-web-common'
   }),
