@@ -33,7 +33,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
@@ -47,9 +46,9 @@ namespace ASC.Core.Data
         public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
         public UserDbContext UserDbContext { get; set; }
-        public IOptionsSnapshot<UserDbContext> ConfigureOptions { get; }
+        public UserDbContextManager UserDbContextManager { get; }
 
-        public EFUserService(IOptionsSnapshot<UserDbContext> configureOptions)
+        public EFUserService(UserDbContextManager userDbContextManager)
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -153,8 +152,8 @@ namespace ASC.Core.Data
                 Removed = userGroup.Removed
             };
 
-            UserDbContext = configureOptions.Value;
-            ConfigureOptions = configureOptions;
+            UserDbContextManager = userDbContextManager;
+            UserDbContext = UserDbContextManager.Value;
         }
 
         public Group GetGroup(int tenant, Guid id)
@@ -251,12 +250,12 @@ namespace ASC.Core.Data
 
         public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
         {
-            var UserDbContext = new UserDbContext();
-            var totalQuery = UserDbContext.Users.Where(r => r.Tenant == tenant);
+            var userDbContext = UserDbContextManager.GetNew();
+            var totalQuery = userDbContext.Users.Where(r => r.Tenant == tenant);
             totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
             total = totalQuery.Count();
 
-            var q = GetUserQuery(UserDbContext, tenant, default);
+            var q = GetUserQuery(userDbContext, tenant, default);
 
             q = GetUserQueryForFilter(q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
@@ -275,16 +274,16 @@ namespace ASC.Core.Data
                 q = q.Take((int)limit);
             }
 
-            count = 1;// q.Count();
+            count = q.Count();
 
             return q.Select(FromUserToUserInfo);
         }
 
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
         {
-            using var UserDbContext = ConfigureOptions.Value;
-            total = UserDbContext.Users.Where(r => r.Tenant == tenant).Count();
-            return UserDbContext.Users.Where(r => r.Tenant == tenant).Select(FromUserToUserInfo);
+            var userDbContext = UserDbContextManager.GetNew();
+            total = userDbContext.Users.Where(r => r.Tenant == tenant).Count();
+            return userDbContext.Users.Where(r => r.Tenant == tenant).Select(FromUserToUserInfo);
         }
 
 

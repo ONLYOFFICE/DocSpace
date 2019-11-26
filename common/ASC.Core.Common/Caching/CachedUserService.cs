@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
@@ -478,8 +479,12 @@ namespace ASC.Core.Caching
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.AddCoreSettingsService();
+
+            services.AddLoggerService();
+            services.TryAddScoped<UserDbContextManager>();
             services.TryAddScoped<IConfigureOptions<UserDbContext>, ConfigureDbContext>();
             services.TryAddScoped<UserDbContext>();
+
             services.TryAddScoped<EFUserService>();
             services.TryAddScoped<IUserService, CachedUserService>();
             services.TryAddSingleton<UserServiceCache>();

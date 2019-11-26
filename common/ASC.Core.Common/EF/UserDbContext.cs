@@ -1,17 +1,71 @@
-﻿using ASC.Common.Logging;
+﻿using System;
+using System.Collections.Generic;
+using ASC.Common.Logging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
+    public class UserDbContextManager : OptionsManager<UserDbContext>, IDisposable
+    {
+        private Dictionary<string, UserDbContext> Pairs { get; set; }
+        private List<UserDbContext> AsyncList { get; set; }
+
+        public IOptionsFactory<UserDbContext> Factory { get; }
+
+        public UserDbContextManager(IOptionsFactory<UserDbContext> factory) : base(factory)
+        {
+            Pairs = new Dictionary<string, UserDbContext>();
+            AsyncList = new List<UserDbContext>();
+            Factory = factory;
+        }
+
+        public override UserDbContext Get(string name)
+        {
+            var result = base.Get(name);
+
+            if (!Pairs.ContainsKey(name))
+            {
+                Pairs.Add(name, result);
+            }
+
+            return result;
+        }
+
+        public UserDbContext GetNew(string name = "default")
+        {
+            var result = Factory.Create(name);
+
+            AsyncList.Add(result);
+
+            return result;
+        }
+
+        public void Dispose()
+        {
+            foreach (var v in Pairs)
+            {
+                v.Value.Dispose();
+            }
+        }
+    }
+
     public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
     {
+        public EFLoggerFactory LoggerFactory { get; }
+        public IConfiguration Configuration { get; }
+
+        public ConfigureDbContext(EFLoggerFactory loggerFactory, IConfiguration configuration)
+        {
+            LoggerFactory = loggerFactory;
+            Configuration = configuration;
+        }
+
         public void Configure(string name, BaseDbContext context)
         {
-            var factory = new ConsoleLoggerFactory();
-            factory.AddProvider(new ConsoleLoggerProvider());
-            context.LoggerFactory = factory;
+            context.LoggerFactory = LoggerFactory;
         }
 
         public void Configure(BaseDbContext context)
@@ -23,10 +77,12 @@ namespace ASC.Core.Common.EF
     public class BaseDbContext : DbContext
     {
         internal ILoggerFactory LoggerFactory { get; set; }
+        internal IConfiguration Configuration { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
+            optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.UseMySql("Server=localhost;Database=onlyoffice;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none");
         }
     }
