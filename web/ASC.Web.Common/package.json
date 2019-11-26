@@ -3,46 +3,34 @@
   "version": "1.0.1",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
-  "main": "dist/asc-web-common.js",
-  "module": "dist/asc-web-common.esm.js",
-  "jsnext:main": "dist/asc-web-common.es.js",
   "files": [
     "dist",
     "README.md",
     "LICENSE",
     "package.json"
   ],
-  "engines": {
-    "node": ">=8",
-    "npm": ">=5"
-  },
+  "main": "dist/asc-web-common.js",
+  "module": "dist/asc-web-common.esm.js",
+  "jsnext:main": "dist/asc-web-common.es.js",
   "scripts": {
     "build": "rimraf dist && cross-env NODE_ENV=production rollup -c",
-    "start": "cross-env NODE_ENV=development rollup -c -w",
-    "prepare": "yarn run build",
-    "lint": "eslint .",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "storybook": "start-storybook -p 6007 -s ./public",
     "build:storybook": "build-storybook -c .storybook -o storybook-static -s public",
-    "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: common: bump version\""
+    "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: common: bump version\"",
+    "lint": "eslint .",
+    "prepare": "yarn run build",
+    "start": "cross-env NODE_ENV=development rollup -c -w",
+    "storybook": "start-storybook -p 6007 -s ./public",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
   },
-  "peerDependencies": {
-    "asc-web-components": "file:../../packages/asc-web-components",
-    "i18next": "17.0.12",
-    "prop-types": "^15.7.2",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
-    "react-i18next": "10.12.2",
-    "react-redux": "7.1.1",
-    "react-router": "5.0.1",
-    "react-router-dom": "5.0.1",
-    "react-values": "^0.3.3",
-
-    "bootstrap": "^4.3.1",
-    "reactstrap": "8.0.1",
-    "styled-components": "^4.3.2"
+  "dependencies": {
+    "axios": "^0.19.0",
+    "history": "4.9.0",
+    "lodash": "4.17.15",
+    "lodash-es": "4.17.15",
+    "moment": "^2.24.0",
+    "universal-cookie": "^4.0.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -75,6 +63,7 @@
     "babel-plugin-inline-react-svg": "^1.1.0",
     "babel-plugin-transform-dynamic-import": "^2.1.0",
     "babel-plugin-transform-rename-import": "^2.3.0",
+    "bootstrap": "^4.3.1",
     "cross-env": "^5.2.0",
     "css-loader": "^3.2.0",
     "enzyme": "^3.10.0",
@@ -94,8 +83,6 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
-
-    "bootstrap": "^4.3.1",
     "reactstrap": "8.0.1",
     "rollup": "^1.21.1",
     "rollup-plugin-babel": "^4.3.3",
@@ -113,15 +100,26 @@
     "styled-components": "^4.3.2",
     "svg-inline-loader": "^0.8.0"
   },
-  "dependencies": {
-    "axios": "^0.19.0",
-    "history": "4.9.0",
-    "lodash": "4.17.15",
-    "lodash-es": "4.17.15",
-    "moment": "^2.24.0",
-    "universal-cookie": "^4.0.2"
+  "peerDependencies": {
+    "asc-web-components": "file:../../packages/asc-web-components",
+    "bootstrap": "^4.3.1",
+    "i18next": "17.0.12",
+    "prop-types": "^15.7.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-i18next": "10.12.2",
+    "react-redux": "7.1.1",
+    "react-router": "5.0.1",
+    "react-router-dom": "5.0.1",
+    "react-values": "^0.3.3",
+    "reactstrap": "8.0.1",
+    "styled-components": "^4.3.2"
   },
   "resolutions": {
     "js-yaml": "3.13.1"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
   }
 }
