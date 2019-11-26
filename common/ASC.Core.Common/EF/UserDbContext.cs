@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -54,6 +56,7 @@ namespace ASC.Core.Common.EF
 
     public class ConfigureDbContext : IConfigureNamedOptions<BaseDbContext>
     {
+        const string baseName = "default";
         public EFLoggerFactory LoggerFactory { get; }
         public IConfiguration Configuration { get; }
 
@@ -66,24 +69,25 @@ namespace ASC.Core.Common.EF
         public void Configure(string name, BaseDbContext context)
         {
             context.LoggerFactory = LoggerFactory;
+            context.ConnectionStringSettings = Configuration.GetConnectionStrings(name) ?? Configuration.GetConnectionStrings(baseName);
         }
 
         public void Configure(BaseDbContext context)
         {
-            Configure("default", context);
+            Configure(baseName, context);
         }
     }
 
     public class BaseDbContext : DbContext
     {
         internal ILoggerFactory LoggerFactory { get; set; }
-        internal IConfiguration Configuration { get; set; }
+        internal ConnectionStringSettings ConnectionStringSettings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLoggerFactory(LoggerFactory);
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseMySql("Server=localhost;Database=onlyoffice;User ID=dev;Password=dev;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none");
+            optionsBuilder.UseMySql(ConnectionStringSettings.ConnectionString);
         }
     }
 
