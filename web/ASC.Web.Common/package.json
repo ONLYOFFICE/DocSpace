@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-common.js",
@@ -26,21 +26,21 @@
     "test:coverage": "jest --coverage",
     "storybook": "start-storybook -p 6006 -s ./public",
     "build:storybook": "build-storybook -c .storybook -o storybook-static -s public",
-    "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: components: bump version\""
+    "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: common: bump version\""
   },
   "peerDependencies": {
+    "asc-web-components": "file:../../packages/asc-web-components",
+    "i18next": "17.0.12",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
-    "react-values": "^0.3.3",
+    "react-i18next": "10.12.2",
+    "react-redux": "7.1.1",
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
-    "react-redux": "7.1.1",
-    "i18next": "17.0.12",
-    "react-i18next": "10.12.2",
-    "styled-components": "^4.3.2",
-    "asc-web-components": "file:../../packages/asc-web-components",
-    "reactstrap": "8.0.1"
+    "react-values": "^0.3.3",
+    "reactstrap": "8.0.1",
+    "styled-components": "^4.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -66,6 +66,7 @@
     "@svgr/webpack": "^4.3.2",
     "@testing-library/react": "^8.0.8",
     "@types/jest": "^24.0.17",
+    "asc-web-components": "file:../../packages/asc-web-components",
     "babel-eslint": "^10.0.2",
     "babel-jest": "^24.8.0",
     "babel-loader": "^8.0.6",
@@ -78,13 +79,20 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.3.0",
     "eslint-plugin-react": "^7.14.3",
+    "i18next": "17.0.12",
     "jest": "^24.8.0",
     "jest-enzyme": "^7.1.0",
     "jest-junit": "^8.0.0",
     "postcss": "^7.0.17",
+    "prop-types": "^15.7.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
+    "react-i18next": "10.12.2",
+    "react-redux": "7.1.1",
+    "react-router": "5.0.1",
+    "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
+    "reactstrap": "8.0.1",
     "rollup": "^1.21.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-cleanup": "^3.1.1",
@@ -99,23 +107,15 @@
     "rollup-plugin-url": "^2.2.2",
     "storybook-readme": "^5.0.8",
     "styled-components": "^4.3.2",
-    "svg-inline-loader": "^0.8.0",
-    "prop-types": "^15.7.2",
-    "asc-web-components": "file:../../packages/asc-web-components",
-    "react-router": "5.0.1",
-    "react-router-dom": "5.0.1",
-    "react-redux": "7.1.1",
-    "i18next": "17.0.12",
-    "react-i18next": "10.12.2",
-    "reactstrap": "8.0.1"
+    "svg-inline-loader": "^0.8.0"
   },
   "dependencies": {
+    "axios": "^0.19.0",
+    "history": "4.9.0",
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
-    "universal-cookie": "^4.0.2",
-    "history": "4.9.0",
-    "axios": "^0.19.0"
+    "universal-cookie": "^4.0.2"
   },
   "resolutions": {
     "js-yaml": "3.13.1"
