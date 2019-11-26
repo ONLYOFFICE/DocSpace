@@ -26,7 +26,7 @@ storiesOf("Components|FieldContainer", module)
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
-              horLabelWidth={text("horLabelWidth", "110px")}
+              maxLabelWidth={text("maxLabelWidth", "110px")}
               tooltipContent={text("tooltipContent", "Paste you tooltip content here")}
               helpButtonHeaderContent={text("helpButtonHeaderContent", "Tooltip header")}
               place="top"

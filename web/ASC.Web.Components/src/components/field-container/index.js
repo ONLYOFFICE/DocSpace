@@ -63,7 +63,7 @@ const Container = styled.div`
   ${props =>
     props.vertical
       ? getVerticalCss()
-      : getHorizontalCss(props.horLabelWidth)}
+      : getHorizontalCss(props.maxLabelWidth)}
 
   @media ${tablet} {
     ${getVerticalCss()}
@@ -86,11 +86,11 @@ class FieldContainer extends React.Component {
       tooltipContent,
       place,
       helpButtonHeaderContent,
-      horLabelWidth
+      maxLabelWidth
     } = this.props;
 
     return (
-      <Container vertical={isVertical} horLabelWidth={horLabelWidth} className={className} >
+      <Container vertical={isVertical} maxLabelWidth={maxLabelWidth} className={className} >
         <div className="field-label-icon">
           <Label
             isRequired={isRequired}
@@ -129,12 +129,12 @@ FieldContainer.propTypes = {
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
   helpButtonHeaderContent: PropTypes.string,
-  horLabelWidth: PropTypes.string
+  maxLabelWidth: PropTypes.string
 };
 
 FieldContainer.defaultProps = {
   place: "bottom",
-  horLabelWidth: "110px"
+  maxLabelWidth: "110px"
 }
 
 export default FieldContainer;
