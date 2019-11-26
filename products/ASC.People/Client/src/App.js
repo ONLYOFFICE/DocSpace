@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Router, Switch } from "react-router-dom";
+import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PeopleLayout from "./components/Layout/index";
 import Home from "./components/pages/Home";
@@ -24,6 +24,7 @@ const App = ({ settings }) => {
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
           <Switch>
+            <Redirect exact from="/" to={`${homepage}`} />
             <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={Home} />
             <PrivateRoute
               path={`${homepage}/view/:userId`}

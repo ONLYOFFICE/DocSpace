@@ -95,7 +95,7 @@ const authReducer = (state = initialState, action) => {
           });
       case LOGOUT:
           return Object.assign({}, initialState, {
-              settings: { greetingSettings: state.settings.greetingSettings, culture: state.settings.culture }
+              settings: state.settings
           });
       default:
           return state;
