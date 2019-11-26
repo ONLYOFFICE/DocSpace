@@ -449,7 +449,7 @@ class UpdateUserForm extends React.Component {
             {t("ProfileTypePopupHelper")}
         </Text.Body>
 
-        <Text.Body fontSize={12}>
+        <Text.Body fontSize={12} as="div">
           <Table>
             <tbody>
               <tr>
@@ -554,10 +554,10 @@ class UpdateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text.Body fontSize={13}>                  
+                <Text.Body fontSize={13} as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
-                    <p style={{marginTop: "1rem"/*, height: "0", visibility: "hidden"*/}}>
+                    <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>
                       You can create a new mail on the domain as the primary.
                       In this case, you must set a one-time password so that the user can log in to the portal for the first time.
                     </p>
