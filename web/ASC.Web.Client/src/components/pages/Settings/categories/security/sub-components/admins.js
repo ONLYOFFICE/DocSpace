@@ -31,12 +31,6 @@ import {
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
-const AdminsContainer = styled.div`
-  .hidden-icon {
-    position: fixed;
-    visibility: hidden;
-  }
-`;
 const ToggleContentContainer = styled.div`
   .buttons_container {
     display: flex;
@@ -337,10 +331,7 @@ class PureAdminsSettings extends Component {
     console.log("Admins render_");
 
     return (
-      /*TODO: delete after resolve icon button problem*/
-      <AdminsContainer>
-        <IconButton className="hidden-icon" iconName="SearchIcon" />
-
+      <>
         {showLoader ? (
           <Loader className="pageLoader" type="rombs" size={40} />
         ) : (
@@ -528,7 +519,7 @@ class PureAdminsSettings extends Component {
             </ToggleContentContainer>
           </>
         )}
-      </AdminsContainer>
+      </>
     );
   }
 }

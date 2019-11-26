@@ -106,66 +106,289 @@ const scrollArrayItems = [
     key: "tab0",
     title: "First long tab container",
     content: (
-      <div>
-        <button>button</button>
-        <button>button</button>
-        <button>button</button>
-      </div>
+      <>
+        <label>Tab_0 Tab_0 Tab_0</label>
+        <br />
+        <label>Tab_0 Tab_0 Tab_0</label>
+        <br />
+        <label>Tab_0 Tab_0 Tab_0</label>
+      </>
     )
   },
   {
     key: "tab1",
     title: "Short",
     content: (
-      <div>
-        <label>label</label>
-        <label>label</label>
-        <label>label</label>
-      </div>
+      <>
+        <label>Tab_1 Tab_1 Tab_1</label>
+        <br />
+        <label>Tab_1 Tab_1 Tab_1</label>
+        <br />
+        <label>Tab_1 Tab_1 Tab_1</label>
+      </>
     )
   },
   {
     key: "tab2",
-    title: "Third long tab container",
+    title: "Second long tab container",
     content: (
-      <div>
-        <input />
-        <input />
-        <input />
-      </div>
+      <>
+        <label>Tab_2 Tab_2 Tab_2</label>
+        <br />
+        <label>Tab_2 Tab_2 Tab_2</label>
+        <br />
+        <label>Tab_2 Tab_2 Tab_2</label>
+      </>
     )
   },
   {
     key: "tab3",
     title: "Short2",
     content: (
-      <div>
-        <input />
-        <input />
-        <input />
-      </div>
+      <>
+        <label>Tab_3 Tab_3 Tab_3</label>
+        <br />
+        <label>Tab_3 Tab_3 Tab_3</label>
+        <br />
+        <label>Tab_3 Tab_3 Tab_3</label>
+      </>
     )
   },
   {
     key: "tab4",
-    title: "Third long tab container",
+    title: "Third long tab container header",
     content: (
-      <div>
-        <input />
-        <input />
-        <input />
-      </div>
+      <>
+        <label>Tab_4 Tab_4 Tab_4</label>
+        <br />
+        <label>Tab_4 Tab_4 Tab_4</label>
+        <br />
+        <label>Tab_4 Tab_4 Tab_4</label>
+      </>
     )
   },
   {
     key: "tab5",
     title: "Short3",
     content: (
-      <div>
-        <input />
-        <input />
-        <input />
-      </div>
+      <>
+        <label>Tab_5 Tab_5 Tab_5</label>
+        <br />
+        <label>Tab_5 Tab_5 Tab_5</label>
+        <br />
+        <label>Tab_5 Tab_5 Tab_5</label>
+      </>
+    )
+  },
+  {
+    key: "tab6",
+    title: "tab container",
+    content: (
+      <>
+        <label>Tab_6 Tab_6 Tab_6</label>
+        <br />
+        <label>Tab_6 Tab_6 Tab_6</label>
+        <br />
+        <label>Tab_6 Tab_6 Tab_6</label>
+      </>
+    )
+  },
+  {
+    key: "tab7",
+    title: "Very long tabs-container field",
+    content: (
+      <>
+        <label>Tab_7 Tab_7 Tab_7</label>
+        <br />
+        <label>Tab_7 Tab_7 Tab_7</label>
+        <br />
+        <label>Tab_7 Tab_7 Tab_7</label>
+      </>
+    )
+  },
+  {
+    key: "tab8",
+    title: "tab container",
+    content: (
+      <>
+        <label>Tab_8 Tab_8 Tab_8</label>
+        <br />
+        <label>Tab_8 Tab_8 Tab_8</label>
+        <br />
+        <label>Tab_8 Tab_8 Tab_8</label>
+      </>
+    )
+  },
+  {
+    key: "tab9",
+    title: "Short_04",
+    content: (
+      <>
+        <label>Tab_9 Tab_9 Tab_9</label>
+        <br />
+        <label>Tab_9 Tab_9 Tab_9</label>
+        <br />
+        <label>Tab_9 Tab_9 Tab_9</label>
+      </>
+    )
+  },
+  {
+    key: "tab10",
+    title: "Short__05",
+    content: (
+      <>
+        <label>Tab_10 Tab_10 Tab_10</label>
+        <br />
+        <label>Tab_10 Tab_10 Tab_10</label>
+        <br />
+        <label>Tab_10 Tab_10 Tab_10</label>
+      </>
+    )
+  },
+  {
+    key: "tab11",
+    title: "TabsContainer",
+    content: (
+      <>
+        <label>Tab_11 Tab_11 Tab_11</label>
+        <br />
+        <label>Tab_11 Tab_11 Tab_11</label>
+        <br />
+        <label>Tab_11 Tab_11 Tab_11</label>
+      </>
+    )
+  }
+];
+
+const tabsItems = [
+  {
+    key: "tab0",
+    title: "Title00000000",
+    content: (
+      <>
+        <label>Tab_0 Tab_0 Tab_0</label>
+        <br />
+        <label>Tab_0 Tab_0 Tab_0</label>
+        <br />
+        <label>Tab_0 Tab_0 Tab_0</label>
+      </>
+    )
+  },
+  {
+    key: "tab1",
+    title: "Title00000001",
+    content: (
+      <>
+        <label>Tab_1 Tab_1 Tab_1</label>
+        <br />
+        <label>Tab_1 Tab_1 Tab_1</label>
+        <br />
+        <label>Tab_1 Tab_1 Tab_1</label>
+      </>
+    )
+  },
+  {
+    key: "tab2",
+    title: "Title00000002",
+    content: (
+      <>
+        <label>Tab_2 Tab_2 Tab_2</label>
+        <br />
+        <label>Tab_2 Tab_2 Tab_2</label>
+        <br />
+        <label>Tab_2 Tab_2 Tab_2</label>
+      </>
+    )
+  },
+  {
+    key: "tab3",
+    title: "Title00000003",
+    content: (
+      <>
+        <label>Tab_3 Tab_3 Tab_3</label>
+        <br />
+        <label>Tab_3 Tab_3 Tab_3</label>
+        <br />
+        <label>Tab_3 Tab_3 Tab_3</label>
+      </>
+    )
+  },
+  {
+    key: "tab4",
+    title: "Title00000004",
+    content: (
+      <>
+        <label>Tab_4 Tab_4 Tab_4</label>
+        <br />
+        <label>Tab_4 Tab_4 Tab_4</label>
+        <br />
+        <label>Tab_4 Tab_4 Tab_4</label>
+      </>
+    )
+  },
+  {
+    key: "tab5",
+    title: "Title00000005",
+    content: (
+      <>
+        <label>Tab_5 Tab_5 Tab_5</label>
+        <br />
+        <label>Tab_5 Tab_5 Tab_5</label>
+        <br />
+        <label>Tab_5 Tab_5 Tab_5</label>
+      </>
+    )
+  },
+  {
+    key: "tab6",
+    title: "Title00000006",
+    content: (
+      <>
+        <label>Tab_6 Tab_6 Tab_6</label>
+        <br />
+        <label>Tab_6 Tab_6 Tab_6</label>
+        <br />
+        <label>Tab_6 Tab_6 Tab_6</label>
+      </>
+    )
+  },
+  {
+    key: "tab7",
+    title: "Title00000007",
+    content: (
+      <>
+        <label>Tab_7 Tab_7 Tab_7</label>
+        <br />
+        <label>Tab_7 Tab_7 Tab_7</label>
+        <br />
+        <label>Tab_7 Tab_7 Tab_7</label>
+      </>
+    )
+  },
+  {
+    key: "tab8",
+    title: "Title00000008",
+    content: (
+      <>
+        <label>Tab_8 Tab_8 Tab_8</label>
+        <br />
+        <label>Tab_8 Tab_8 Tab_8</label>
+        <br />
+        <label>Tab_8 Tab_8 Tab_8</label>
+      </>
+    )
+  },
+  {
+    key: "tab9",
+    title: "Title00000009",
+    content: (
+      <>
+        <label>Tab_9 Tab_9 Tab_9</label>
+        <br />
+        <label>Tab_9 Tab_9 Tab_9</label>
+        <br />
+        <label>Tab_9 Tab_9 Tab_9</label>
+      </>
     )
   }
 ];
@@ -187,10 +410,25 @@ storiesOf("Components|TabContainer", module)
 
         <div style={{ marginTop: 32, maxWidth: 430 }}>
           <h5 style={{ marginTop: 100, marginBottom: 20 }}>
-            TabsContainer with auto scroll:
+            Autoscrolling with different tab widths:
           </h5>
-          <TabContainer isDisabled={boolean("isDisabled", false)}>
+          <TabContainer
+            isDisabled={boolean("isDisabled", false)}
+            selectedItem={3}
+          >
             {scrollArrayItems}
+          </TabContainer>
+        </div>
+
+        <div style={{ marginTop: 32, maxWidth: 430 }}>
+          <h5 style={{ marginTop: 100, marginBottom: 20 }}>
+            Autoscrolling with the same tabs width:
+          </h5>
+          <TabContainer
+            isDisabled={boolean("isDisabled", false)}
+            selectedItem={5}
+          >
+            {tabsItems}
           </TabContainer>
         </div>
       </Section>

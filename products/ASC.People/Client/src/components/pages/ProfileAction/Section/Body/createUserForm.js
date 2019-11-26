@@ -367,11 +367,18 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={3}
 
-              HelpButtonHeaderContent={t("Mail")}
+              helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
-                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p className="tooltip_email" style={{marginTop: "1rem", marginBottom: "1rem"}} >You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
-                </Trans>
+                <Text.Body fontSize={13}>
+                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                    The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
+                    <p className="tooltip_email" style={{marginTop: "1rem", marginBottom: "1rem"}} >
+                      You can create a new mail on the domain as the primary.
+                      In this case, you must set a one-time password so that the user can log in to the portal for the first time.
+                    </p>
+                    The main e-mail can be used as a login when logging in to the portal.
+                  </Trans>
+                </Text.Body>
               }
             />
             <PasswordField

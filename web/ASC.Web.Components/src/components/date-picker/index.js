@@ -378,7 +378,7 @@ class DatePicker extends Component {
                 <Content>
                   <Header>
                     <HeaderText>
-                      <Text.Body isBold={true} fontSize={21}>
+                      <Text.Body isBold={true} fontSize={20}>
                         {calendarHeaderContent}
                       </Text.Body>
                     </HeaderText>

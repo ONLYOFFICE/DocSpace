@@ -8,7 +8,7 @@ import Readme from "./README.md";
 import ToggleButton from ".";
 import Section from "../../../.storybook/decorators/section";
 
-storiesOf("Components|Input", module)
+storiesOf("Components|Buttons", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add("toggle button", () => {
@@ -17,6 +17,8 @@ storiesOf("Components|Input", module)
         <BooleanValue>
           {({ value, toggle }) => (
             <ToggleButton
+              id={text("id", "toggle id")}
+              className={text("className", "toggle className")}
               isChecked={value}
               isDisabled={boolean("isDisabled", false)}
               label={text("label", "label text")}

@@ -33,7 +33,7 @@ const ComboBoxMonthStyle = styled.div`
   ${props =>
     props.size === "base"
       ? `width: 172px; max-width: 172px;`
-      : `width: 205px; max-width: 205px;`}
+      : `width: 205px; max-width: 196px;`}
 `;
 
 const ComboBoxDateStyle = styled.div`
@@ -49,7 +49,7 @@ const CalendarContainer = styled.div`
 `;
 
 const CalendarStyle = styled.div`
-  ${props => (props.size === "base" ? "width: 260px;" : `width: 294px;`)}
+  ${props => (props.size === "base" ? "width: 265px;" : `width: 289px;`)}
 
   box-sizing: content-box;
   ${props =>
@@ -92,7 +92,7 @@ const CalendarStyle = styled.div`
 `;
 
 const Month = styled.div`
-  width: ${props => (props.size === "base" ? "267px" : "303px")};
+  width: ${props => (props.size === "base" ? "267px" : "295px")};
 `;
 
 class Calendar extends Component {
@@ -202,19 +202,15 @@ class Calendar extends Component {
         selectedDate: dateInNextMonth,
         openToDate: dateInNextMonth
       });
-    } else if (
-      this.compareDates(dateInCurrentMonth, this.state.selectedDate) !== 0
-    ) {
+    } else {
       newState = this.mapPropsToState({
         ...this.state,
         selectedDate: dateInCurrentMonth
       });
     }
 
-    if (newState) {
-      this.setState(newState);
-      this.props.onChange && this.props.onChange(newState.selectedDate);
-    }
+    this.setState(newState);
+    this.props.onChange && this.props.onChange(newState.selectedDate);
   };
 
   getListMonth = (minDate, maxDate, openToDate, months) => {

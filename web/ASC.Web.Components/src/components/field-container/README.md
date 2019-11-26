@@ -22,5 +22,6 @@ import { FieldContainer } from "asc-web-components";
 | `isRequired`              |      `bool`       |    -     |   -    | `false` | Indicates that the field is required to fill     |
 | `hasError`                |      `bool`       |    -     |   -    | `false` | Indicates that the field is incorrect            |
 | `labelText`               |     `string`      |    -     |   -    |    -    | Field label text                                 |
-| `tooltipContent`          | `object`,`string` |    ✅    |   -    |    -    | Tooltip content                                  |
-| `HelpButtonHeaderContent` |     `string`      |    -     |   -    |    -    | Tooltip header content (tooltip opened in aside) |
+| `tooltipContent`          | `object`,`string` |    -     |   -    |    -    | Tooltip content                                  |
+| `helpButtonHeaderContent` |     `string`      |    -     |   -    |    -    | Tooltip header content (tooltip opened in aside) |
+| `horLabelWidth`           |     `string`      |    -     |   -    | `110px` | Label width in horizontal alignment              |

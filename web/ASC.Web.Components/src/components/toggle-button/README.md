@@ -18,9 +18,11 @@ import { ToggleButton } from "asc-web-components";
 
 #### Properties
 
-| Props        |   Type   | Required | Values | Default | Description                                                    |
-| ------------ | :------: | :------: | :----: | :-----: | -------------------------------------------------------------- |
-| `label`      | `string` |    -     |   -    |    -    | Label of the input                                             |
-| `isChecked`  |  `bool`  |    -     |   -    |    -    | The checked property sets the checked state of a ToggleButton. |
-| `isDisabled` |  `bool`  |    -     |   -    |    -    | Disables the ToggleButton                                      |
-| `onChange`   |  `func`  |    ✅    |   -    |    -    | Will be triggered whenever an ToggleButton is clicked          |
+| Props        |        Type        | Required | Values | Default | Description                                                    |
+| ------------ | :----------------: | :------: | :----: | :-----: | -------------------------------------------------------------- |
+| `label`      |      `string`      |    -     |   -    |    -    | Label of the input                                             |
+| `isChecked`  |       `bool`       |    -     |   -    |    -    | The checked property sets the checked state of a ToggleButton. |
+| `isDisabled` |       `bool`       |    -     |   -    |    -    | Disables the ToggleButton                                      |
+| `onChange`   |       `func`       |    ✅    |   -    |    -    | Will be triggered whenever an ToggleButton is clicked          |
+| `className`  |      `string`      |    -     |   -    |    -    | Class name                                                     |
+| `id`         | `string`, `number` |    -     |   -    |    -    | Set component id                                               |

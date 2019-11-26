@@ -4,12 +4,11 @@ import styled from "styled-components";
 import { Text } from "../text";
 import Scrollbar from "../scrollbar";
 
-const TabsContainer = styled.div`
-  .scrollbar {
-    width: 100% !important;
-    height: 50px !important;
-  }
+const StyledScrollbar = styled(Scrollbar)`
+  width: 100% !important;
+  height: 50px !important;
 `;
+
 const NavItem = styled.div`
   position: relative;
   white-space: nowrap;
@@ -76,7 +75,8 @@ class TabContainer extends Component {
     }
 
     this.state = {
-      activeTab: this.props.selectedItem
+      activeTab: this.props.selectedItem,
+      onScrollHide: true
     };
 
     this.scrollRef = React.createRef();
@@ -89,41 +89,130 @@ class TabContainer extends Component {
       delete newItem.content;
       this.props.onSelect && this.props.onSelect(newItem);
 
-      const position = ref.current.offsetLeft - 40;
-      this.scrollRef.current.scrollLeft(position);
+      this.setTabPosition(index, ref);
     }
   };
 
+  getWidthElements = () => {
+    const arrayWidths = [];
+    const length = this.arrayRefs.length - 1;
+    let widthItem = 0;
+    while (length + 1 !== widthItem) {
+      arrayWidths.push(this.arrayRefs[widthItem].current.offsetWidth);
+      widthItem++;
+    }
+
+    return arrayWidths;
+  };
+
   shouldComponentUpdate(nextProps, nextState) {
-    const { activeTab } = this.state;
+    const { activeTab, onScrollHide } = this.state;
     const { isDisabled } = this.props;
     if (
       activeTab === nextState.activeTab &&
-      isDisabled === nextProps.isDisabled
+      isDisabled === nextProps.isDisabled &&
+      onScrollHide === nextState.onScrollHide
     ) {
       return false;
     }
     return true;
   }
 
+  componentDidMount() {
+    const { activeTab } = this.state;
+    if (activeTab !== 0 && this.arrayRefs[activeTab].current !== null) {
+      this.secondFunction(activeTab);
+    }
+  }
+
+  setTabPosition = (index, currentRef) => {
+    const arrayOfWidths = this.getWidthElements(); //get tabs widths
+    const scrollLeft = this.scrollRef.current.getScrollLeft(); // get scroll position relative to left side
+    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
+    const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
+    const currentTabWidth = currentRef.current.offsetWidth;
+    const marginRight = 8;
+
+    //get tabs of left side
+    let leftTabs = 0;
+    let leftFullWidth = 0;
+    while (leftTabs !== index) {
+      leftTabs++;
+      leftFullWidth += arrayOfWidths[leftTabs] + marginRight;
+    }
+    leftFullWidth += arrayOfWidths[0] + marginRight;
+
+    //get tabs of right side
+    let rightTabs = this.arrayRefs.length - 1;
+    let rightFullWidth = 0;
+    while (rightTabs !== index - 1) {
+      rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
+      rightTabs--;
+    }
+
+    //Out of range of left side
+    if (leftFullWidth > containerWidth + scrollLeft) {
+      let prevIndex = index - 1;
+      let widthBlocksInContainer = 0;
+      while (prevIndex !== -1) {
+        widthBlocksInContainer += arrayOfWidths[prevIndex] + marginRight;
+        prevIndex--;
+      }
+
+      const difference = containerWidth - widthBlocksInContainer;
+      const currentContainerWidth = currentTabWidth;
+
+      this.scrollRef.current.scrollLeft(
+        difference * -1 + currentContainerWidth + marginRight
+      );
+    }
+    //Out of range of left side
+    else if (rightFullWidth > staticScroll - scrollLeft) {
+      this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+    }
+  };
+
+  secondFunction = index => {
+    const arrayOfWidths = this.getWidthElements(); //get tabs widths
+    const marginRight = 8;
+    let rightTabs = this.arrayRefs.length - 1;
+    let rightFullWidth = 0;
+    while (rightTabs !== index - 1) {
+      rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
+      rightTabs--;
+    }
+
+    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
+    this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+  };
+
+  onMouseEnter = () => {
+    this.setState({ onScrollHide: false });
+  };
+
+  onMouseLeave = () => {
+    this.setState({ onScrollHide: true });
+  };
+
   render() {
     //console.log("Tabs container render");
 
     const { isDisabled, children } = this.props;
-    const { activeTab } = this.state;
+    const { activeTab, onScrollHide } = this.state;
 
     return (
-      <TabsContainer>
-        <Scrollbar
-          values={this.onScrollFrame}
-          autoHide
-          autoHideTimeout={1000}
+      <>
+        <StyledScrollbar
+          autoHide={onScrollHide}
+          stype="preMediumBlack"
           className="scrollbar"
           ref={this.scrollRef}
         >
           <NavItem className="className_items">
             {children.map((item, index) => (
               <Label
+                onMouseMove={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
                 ref={this.arrayRefs[index]}
                 onClick={this.titleClick.bind(
                   this,
@@ -141,9 +230,9 @@ class TabContainer extends Component {
               </Label>
             ))}
           </NavItem>
-        </Scrollbar>
+        </StyledScrollbar>
         <BodyContainer>{children[activeTab].content}</BodyContainer>
-      </TabsContainer>
+      </>
     );
   }
 }

@@ -25,6 +25,8 @@ class AvatarEditor extends React.Component {
         this.onLoadFileError = this.onLoadFileError.bind(this);
         this.onLoadFile = this.onLoadFile.bind(this);
         this.onPositionChange = this.onPositionChange.bind(this);
+        this.onSizeChange = this.onSizeChange.bind(this);
+
         this.onDeleteImage = this.onDeleteImage.bind(this);
     }
 
@@ -39,6 +41,9 @@ class AvatarEditor extends React.Component {
             isContainsFile: false
         })
         if (typeof this.props.onDeleteImage === 'function') this.props.onDeleteImage();
+    }
+    onSizeChange(data){
+        this.setState(data);
     }
     onPositionChange(data) {
         this.setState(data);
@@ -83,6 +88,7 @@ class AvatarEditor extends React.Component {
                     <AvatarEditorBody
                         onImageChange={this.onImageChange}
                         onPositionChange={this.onPositionChange}
+                        onSizeChange={this.onSizeChange}
                         onLoadFileError={this.onLoadFileError}
                         onLoadFile={this.onLoadFile}
                         deleteImage={this.onDeleteImage}
