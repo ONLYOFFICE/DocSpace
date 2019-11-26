@@ -24,7 +24,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "storybook": "start-storybook -p 6006 -s ./public",
+    "storybook": "start-storybook -p 6007 -s ./public",
     "build:storybook": "build-storybook -c .storybook -o storybook-static -s public",
     "bump": "yarn version --no-git-tag-version --patch && git add ./package.json && git commit -m \"web: common: bump version\""
   },
@@ -39,6 +39,8 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
+
+    "bootstrap": "^4.3.1",
     "reactstrap": "8.0.1",
     "styled-components": "^4.3.2"
   },
@@ -92,6 +94,8 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
+
+    "bootstrap": "^4.3.1",
     "reactstrap": "8.0.1",
     "rollup": "^1.21.1",
     "rollup-plugin-babel": "^4.3.3",
