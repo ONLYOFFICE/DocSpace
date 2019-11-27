@@ -148,4 +148,28 @@ describe('<ContextMenuButton />', () => {
 
     expect(wrapper).toExist(false);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <ContextMenuButton {...baseProps} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <ContextMenuButton {...baseProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <ContextMenuButton {...baseProps} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });
