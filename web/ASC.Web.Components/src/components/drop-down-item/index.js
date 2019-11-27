@@ -122,7 +122,10 @@ DropDownItem.propTypes = {
   icon: PropTypes.string,
   noHover: PropTypes.bool,
   onClick: PropTypes.func,
-  children: PropTypes.any
+  children: PropTypes.any,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 DropDownItem.defaultProps = {
