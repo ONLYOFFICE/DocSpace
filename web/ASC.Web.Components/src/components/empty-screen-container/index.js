@@ -103,7 +103,10 @@ EmptyScreenContainer.propTypes = {
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
   descriptionText: PropTypes.string,
-  buttons: PropTypes.any
+  buttons: PropTypes.any,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default EmptyScreenContainer;
