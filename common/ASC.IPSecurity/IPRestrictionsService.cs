@@ -27,27 +27,50 @@
 using System;
 using System.Collections.Generic;
 using ASC.Common.Caching;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
-    public class IPRestrictionsService
+    public class IPRestrictionsServiceCache
     {
         private const string cacheKey = "iprestrictions";
-        private static readonly ICache cache = AscCache.Memory;
-        private static readonly ICacheNotify<IPRestrictionItem> notify;
-        private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
+        public ICache Cache { get; set; }
 
+        public ICacheNotify<IPRestrictionItem> Notify { get; }
 
-        static IPRestrictionsService()
+        public IPRestrictionsServiceCache(ICacheNotify<IPRestrictionItem> notify)
         {
-            notify = new KafkaCache<IPRestrictionItem>();
-            notify.Subscribe((r) => cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            Cache = AscCache.Memory;
+            notify.Subscribe((r) => Cache.Remove(GetCacheKey(r.TenantId)), CacheNotifyAction.Any);
+            Notify = notify;
         }
 
-
-        public static IEnumerable<IPRestriction> Get(int tenant)
+        public static string GetCacheKey(int tenant)
         {
-            var key = GetCacheKey(tenant);
+            return cacheKey + tenant;
+        }
+    }
+    public class IPRestrictionsService
+    {
+        private readonly ICache cache;
+        private readonly ICacheNotify<IPRestrictionItem> notify;
+        private static readonly TimeSpan timeout = TimeSpan.FromMinutes(5);
+
+        public IPRestrictionsRepository IPRestrictionsRepository { get; }
+
+        public IPRestrictionsService(
+            IPRestrictionsRepository iPRestrictionsRepository,
+            IPRestrictionsServiceCache iPRestrictionsServiceCache)
+        {
+            IPRestrictionsRepository = iPRestrictionsRepository;
+            cache = iPRestrictionsServiceCache.Cache;
+            notify = iPRestrictionsServiceCache.Notify;
+        }
+
+        public IEnumerable<IPRestriction> Get(int tenant)
+        {
+            var key = IPRestrictionsServiceCache.GetCacheKey(tenant);
             var restrictions = cache.Get<List<IPRestriction>>(key);
             if (restrictions == null)
             {
@@ -56,16 +79,22 @@ namespace ASC.IPSecurity
             return restrictions;
         }
 
-        public static IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
+        public IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
         {
             var restrictions = IPRestrictionsRepository.Save(ips, tenant);
             notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);
             return restrictions;
         }
+    }
 
-        private static string GetCacheKey(int tenant)
+    public static class IPRestrictionsServiceExtension
+    {
+        public static IServiceCollection AddIPRestrictionsService(this IServiceCollection services)
         {
-            return cacheKey + tenant;
+            services.TryAddScoped<IPRestrictionsService>();
+            services.TryAddSingleton<IPRestrictionsServiceCache>();
+
+            return services.AddIPRestrictionsRepositoryService();
         }
     }
 }

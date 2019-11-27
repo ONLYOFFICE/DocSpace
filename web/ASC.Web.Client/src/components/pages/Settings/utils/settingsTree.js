@@ -13,7 +13,13 @@ export const settingsTree = [
                 icon: '',
                 link: 'customization',
                 tKey: 'Customization',
-            }
+            },
+            {
+                key: '0-2',
+                icon: '',
+                link: 'whitelabel',
+                tKey: 'WhiteLabel',
+            },
         ]
     },
     {

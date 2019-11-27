@@ -80,9 +80,20 @@ class ArticleBodyContent extends React.Component {
     const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
     const arrayOfParams = resultPath.split('/');
 
+    let link = "";
+    const selectedItem = arrayOfParams[arrayOfParams.length - 1];
+    if(selectedItem === "owner" || selectedItem === "admins" || selectedItem === "modules") {
+      link = `/${resultPath}`;
+    }
+    else if(selectedItem === "accessrights") {
+      link = `/${resultPath}/owner`;
+    }
+
     const key = getKeyByLink(arrayOfParams, settingsTree);
-    const rightKey = selectKeyOfTreeElement(key[0], settingsTree)
-    const link = getSelectedLinkByKey(rightKey[0], settingsTree);
+    const rightKey = selectKeyOfTreeElement([key], settingsTree)
+    if(link === "") {
+      link = getSelectedLinkByKey(rightKey[0], settingsTree) 
+    }
 
     const path = match.path + link;
     history.push(path);

@@ -35,6 +35,9 @@ using ASC.Common.Data.Sql.Expressions;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
 using Google.Protobuf.Collections;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace ASC.Notify
@@ -44,17 +47,20 @@ namespace ASC.Notify
         private readonly string dbid;
         private readonly object syncRoot = new object();
 
+        public IServiceProvider ServiceProvider { get; }
         public NotifyServiceCfg NotifyServiceCfg { get; }
 
-        public DbWorker(NotifyServiceCfg notifyServiceCfg)
+        public DbWorker(IServiceProvider serviceProvider, IOptions<NotifyServiceCfg> notifyServiceCfg)
         {
-            NotifyServiceCfg = notifyServiceCfg;
+            ServiceProvider = serviceProvider;
+            NotifyServiceCfg = notifyServiceCfg.Value;
             dbid = NotifyServiceCfg.ConnectionStringName;
         }
 
         public int SaveMessage(NotifyMessage m)
         {
-            using var db = GetDb();
+            using var scope = ServiceProvider.CreateScope();
+            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
             using var tx = db.BeginTransaction(IsolationLevel.ReadCommitted);
             var i = new SqlInsert("notify_queue")
 .InColumns("notify_id", "tenant_id", "sender", "reciever", "subject", "content_type", "content", "sender_type", "creation_date", "reply_to", "attachments")
@@ -76,7 +82,8 @@ namespace ASC.Notify
         {
             lock (syncRoot)
             {
-                using var db = GetDb();
+                using var scope = ServiceProvider.CreateScope();
+                using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
                 using var tx = db.BeginTransaction();
                 var q = new SqlQuery("notify_queue q")
 .InnerJoin("notify_info i", Exp.EqColumns("q.notify_id", "i.notify_id"))
@@ -126,14 +133,16 @@ namespace ASC.Notify
 
         public void ResetStates()
         {
-            using var db = GetDb();
+            using var scope = ServiceProvider.CreateScope();
+            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
             var u = new SqlUpdate("notify_info").Set("state", 0).Where("state", 1);
             db.ExecuteNonQuery(u);
         }
 
         public void SetState(int id, MailSendingState result)
         {
-            using var db = GetDb();
+            using var scope = ServiceProvider.CreateScope();
+            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
             using var tx = db.BeginTransaction();
             if (result == MailSendingState.Sended)
             {
@@ -160,11 +169,16 @@ namespace ASC.Notify
             }
             tx.Commit();
         }
+    }
 
-
-        private DbManager GetDb()
+    public static class DbWorkerExtension
+    {
+        public static IServiceCollection AddDbWorker(this IServiceCollection services)
         {
-            return new DbManager(dbid);
+            services.TryAddSingleton<DbWorker>();
+
+            return services
+                .AddDbManagerService();
         }
     }
 }

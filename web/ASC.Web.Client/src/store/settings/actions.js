@@ -1,19 +1,28 @@
-import * as api from "../services/api";
+import { api } from "asc-web-common";
 import axios from "axios";
 import { getSelectorOptions, getUserOptions } from "./selectors";
-import Filter from "./filter";
+const { Filter } = api;
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
 export const SET_OWNER = "SET_OWNER";
-
+export const SET_OPTIONS = "SET_OPTIONS";
 export const SET_FILTER = "SET_FILTER";
-export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
+export const SET_LOGO_TEXT = "SET_LOGO_TEXT";
+export const SET_LOGO_SIZES = "SET_LOGO_SIZES";
+export const SET_LOGO_URLS = "SET_LOGO_URLS";
 
-export function setUsers(options) {
+export function setOptions(options) {
+  return {
+    type: SET_OPTIONS,
+    options
+  };
+}
+
+export function setUsers(users) {
   return {
     type: SET_USERS,
-    options
+    users
   };
 }
 
@@ -38,10 +47,24 @@ export function setFilter(filter) {
   };
 }
 
-export function setGreetingSettings(title) {
+export function setLogoText(text) {
   return {
-    type: SET_GREETING_SETTINGS,
-    title
+    type: SET_LOGO_TEXT,
+    text
+  };
+}
+
+export function setLogoSizes(sizes) {
+  return {
+    type: SET_LOGO_SIZES,
+    sizes
+  };
+}
+
+export function setLogoUrls(urls) {
+  return {
+    type: SET_LOGO_URLS,
+    urls
   };
 }
 
@@ -54,27 +77,29 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
     return axios
       .all(
         userIds.map(userId =>
-          api.changeProductAdmin(userId, productId, isAdmin)
+          api.people.changeProductAdmin(userId, productId, isAdmin)
         )
       )
       .then(() =>
-        axios.all([
-          api.getUserList(filterData),
-          api.getListAdmins(filterData),
-          api.getAdmins()
-        ])
+        axios.all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
       )
       .then(
-        axios.spread((users, filterAdmins, admins) => {
-          const options = getUserOptions(users, filterAdmins);
+        axios.spread((users, admins) => {
+          const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
-          filterData.total = admins.length;
+          filterData.total = admins.total;
 
-          dispatch(setUsers(newOptions));
-          dispatch(setAdmins(filterAdmins));
+          dispatch(setOptions(newOptions));
+          dispatch(setAdmins(admins.items));
           dispatch(setFilter(filterData));
         })
       );
+  };
+}
+
+export function getPortalOwner(userId) {
+  return dispatch => {
+    return api.people.getUserById(userId).then(owner => dispatch(setOwner(owner)));
   };
 }
 
@@ -86,40 +111,70 @@ export function fetchPeople(filter) {
 
   return dispatch => {
     return axios
-      .all([
-        api.getUserList(filterData),
-        api.getListAdmins(filterData),
-        api.getAdmins()
-      ])
+      .all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
       .then(
-        axios.spread((users, filterAdmins, admins) => {
-          const options = getUserOptions(users, admins);
+        axios.spread((users, admins) => {
+          const options = getUserOptions(users.items, admins.items);
           const newOptions = getSelectorOptions(options);
-          filterData.total = admins.length;
+        const usersOptions = getSelectorOptions(users.items);
+          filterData.total = admins.total;
 
-          const owner = admins.find(x => x.isOwner);
-
-          dispatch(setAdmins(filterAdmins));
-          dispatch(setUsers(newOptions));
+        dispatch(setUsers(usersOptions));
+          dispatch(setAdmins(admins.items));
+        dispatch(setOptions(newOptions));
           dispatch(setFilter(filterData));
-          dispatch(setOwner(owner));
         })
       );
   };
 }
 
-export function setGreetingTitle(greetingTitle) {
+export function getUpdateListAdmin(filter) {
+  let filterData = filter && filter.clone();
+  if (!filterData) {
+    filterData = Filter.getDefault();
+  }
   return dispatch => {
-    return api.setGreetingSettings(greetingTitle).then(res => {
-      dispatch(setGreetingSettings(greetingTitle));
+    return api.getListAdmins(filterData).then(admins => {
+      filterData.total = admins.total;
+
+      dispatch(setAdmins(admins.items));
+      dispatch(setFilter(filterData));
     });
   };
 }
 
-export function restoreGreetingTitle() {
+export function getUsersOptions() {
   return dispatch => {
-    return api.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
+    return api.people.getUserList().then(users => {
+      const usersOptions = getSelectorOptions(users.items);
+      dispatch(setUsers(usersOptions));
+    });
+  };
+}
+
+export function getWhiteLabelLogoText() {
+  return dispatch => {
+    return api.settings.getLogoText()
+    .then(res => {
+      dispatch(setLogoText(res));
+    });
+  };
+}
+
+export function getWhiteLabelLogoSizes() {
+  return dispatch => {
+    return api.settings.getLogoSizes()
+    .then(res => {
+      dispatch(setLogoSizes(res));
+    });
+  };
+}
+
+export function getWhiteLabelLogoUrls() {
+  return dispatch => {
+    return api.settings.getLogoUrls()
+    .then(res => {
+      dispatch(setLogoUrls(Object.values(res)));
     });
   };
 }

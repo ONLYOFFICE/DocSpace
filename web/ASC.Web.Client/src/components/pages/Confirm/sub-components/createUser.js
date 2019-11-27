@@ -5,8 +5,9 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
-import { getConfirmationInfo, createConfirmUser, logout, login } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
+import { store } from 'asc-web-common';
+const { getConfirmationInfo, createConfirmUser, logout, login } = store.auth.actions;
 
 const inputWidth = '400px';
 

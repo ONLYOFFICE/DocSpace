@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
 {
@@ -49,7 +50,7 @@ namespace ASC.Notify.Engine
             Name = name;
         }
 
-        public bool PreventSend(NotifyRequest request, InterceptorPlace place)
+        public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
         {
             var sendTo = request.Recipient;
             if (!sendedTo.Exists(rec => Equals(rec, sendTo)))

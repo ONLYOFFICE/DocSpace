@@ -27,9 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Web;
+using ASC.Common.Caching;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -58,7 +64,15 @@ namespace ASC.FederatedLogin.LoginProviders
         public override string Scopes { get { return "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email"; } }
 
         public GoogleLoginProvider() { }
-        public GoogleLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null) : base(name, order, props, additional) { }
+        public GoogleLoginProvider(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {
@@ -79,19 +93,19 @@ namespace ASC.FederatedLogin.LoginProviders
                                                           : null);
         }
 
-        private static LoginProfile RequestProfile(string accessToken)
+        private LoginProfile RequestProfile(string accessToken)
         {
             var googleProfile = RequestHelper.PerformRequest(GoogleUrlProfile + "?personFields=" + HttpUtility.UrlEncode(ProfileFields), headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
             var loginProfile = ProfileFromGoogle(googleProfile);
             return loginProfile;
         }
 
-        private static LoginProfile ProfileFromGoogle(string googleProfile)
+        private LoginProfile ProfileFromGoogle(string googleProfile)
         {
             var jProfile = JObject.Parse(googleProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Id = jProfile.Value<string>("resourceName").Replace("people/", ""),
                 Provider = ProviderConstants.Google,

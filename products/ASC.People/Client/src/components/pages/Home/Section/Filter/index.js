@@ -4,7 +4,6 @@ import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
-import { isAdmin } from "../../../../../store/auth/selectors";
 import { withTranslation } from "react-i18next";
 import {
   typeGuest,
@@ -13,6 +12,8 @@ import {
 } from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
+import { store } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
 
 const getEmployeeStatus = filterValues => {
   const employeeStatus = result(

@@ -26,10 +26,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
@@ -44,16 +44,20 @@ namespace ASC.Core.Data
         private static TimeZoneInfo defaultTimeZone;
         private List<string> forbiddenDomains;
 
+        private TenantDomainValidator TenantDomainValidator { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
 
-        public DbTenantService(ConnectionStringSettings connectionString)
-            : base(connectionString, null)
+        public DbTenantService(DbOptionsManager dbOptionsManager, TenantDomainValidator tenantDomainValidator, TimeZoneConverter timeZoneConverter)
+            : base(dbOptionsManager, null)
         {
+            TenantDomainValidator = tenantDomainValidator;
+            TimeZoneConverter = timeZoneConverter;
         }
 
 
         public void ValidateDomain(string domain)
         {
-            using var db = GetDb();
+            var db = GetDb();
             ValidateDomain(db, domain, Tenant.DEFAULT_TENANT, true);
         }
 
@@ -113,16 +117,16 @@ namespace ASC.Core.Data
                 .FirstOrDefault();
         }
 
-        public Tenant SaveTenant(Tenant t)
+        public Tenant SaveTenant(CoreSettings coreSettings, Tenant t)
         {
             if (t == null) throw new ArgumentNullException("tenant");
 
-            using (var db = GetDb())
+            var db = GetDb();
             using (var tx = db.BeginTransaction())
             {
                 if (!string.IsNullOrEmpty(t.MappedDomain))
                 {
-                    var baseUrl = TenantUtil.GetBaseDomain(t.HostedRegion);
+                    var baseUrl = coreSettings.GetBaseDomain(t.HostedRegion);
 
                     if (baseUrl != null && t.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -218,7 +222,7 @@ namespace ASC.Core.Data
         {
             var postfix = auto ? "_auto_deleted" : "_deleted";
 
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             var alias = db.ExecuteScalar<string>(new SqlQuery("tenants_tenants").Select("alias").Where("id", id));
             var count = db.ExecuteScalar<int>(new SqlQuery("tenants_tenants").SelectCount().Where(Exp.Like("alias", alias + postfix, SqlLike.StartWith)));

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from 'reactstrap';
+import PropTypes from "prop-types";
 import styled from 'styled-components';
 
 const ErrorFrame = styled(Container)`
@@ -49,6 +50,8 @@ const ErrorContainer = ({children}) => {
     );
 };
 
-
+ErrorContainer.propTypes = {
+    children: PropTypes.any
+  };
 
 export default ErrorContainer;

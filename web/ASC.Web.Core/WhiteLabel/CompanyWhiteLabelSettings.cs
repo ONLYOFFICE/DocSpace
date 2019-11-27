@@ -28,13 +28,14 @@ using System;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
 namespace ASC.Web.Core.WhiteLabel
 {
     [Serializable]
     [DataContract]
-    public class CompanyWhiteLabelSettings : BaseSettings<CompanyWhiteLabelSettings>
+    public class CompanyWhiteLabelSettings : ISettings
     {
         [DataMember(Name = "CompanyName")]
         public string CompanyName { get; set; }
@@ -54,35 +55,39 @@ namespace ASC.Web.Core.WhiteLabel
         [DataMember(Name = "IsLicensor")]
         public bool IsLicensor { get; set; }
 
-        public bool IsDefault
+        public bool IsDefault(CoreSettings coreSettings)
         {
-            get
-            {
-                if (!(GetDefault() is CompanyWhiteLabelSettings defaultSettings)) return false;
+            if (!(GetDefault(coreSettings) is CompanyWhiteLabelSettings defaultSettings)) return false;
 
-                return CompanyName == defaultSettings.CompanyName &&
-                       Site == defaultSettings.Site &&
-                       Email == defaultSettings.Email &&
-                       Address == defaultSettings.Address &&
-                       Phone == defaultSettings.Phone &&
-                       IsLicensor == defaultSettings.IsLicensor;
-            }
+            return CompanyName == defaultSettings.CompanyName &&
+                    Site == defaultSettings.Site &&
+                    Email == defaultSettings.Email &&
+                    Address == defaultSettings.Address &&
+                    Phone == defaultSettings.Phone &&
+                    IsLicensor == defaultSettings.IsLicensor;
         }
 
         #region ISettings Members
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
         }
 
         private static CompanyWhiteLabelSettings _default;
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             if (_default != null) return _default;
 
-            var settings = CoreContext.Configuration.GetSetting("CompanyWhiteLabelSettings");
+            return GetDefault(serviceProvider.GetService<CoreSettings>());
+        }
+
+        public ISettings GetDefault(CoreSettings coreSettings)
+        {
+            if (_default != null) return _default;
+
+            var settings = coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
             _default = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings() : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
 
@@ -91,12 +96,9 @@ namespace ASC.Web.Core.WhiteLabel
 
         #endregion
 
-        public static CompanyWhiteLabelSettings Instance
+        public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
         {
-            get
-            {
-                return LoadForDefaultTenant();
-            }
+            return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
         }
     }
 }

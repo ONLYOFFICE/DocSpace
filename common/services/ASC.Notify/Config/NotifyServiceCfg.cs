@@ -27,9 +27,25 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using ASC.Core.Notify.Senders;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify.Config
 {
+    public class ConfigureNotifyServiceCfg : IConfigureOptions<NotifyServiceCfg>
+    {
+        public ConfigureNotifyServiceCfg(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
+        public IServiceProvider ServiceProvider { get; }
+
+        public void Configure(NotifyServiceCfg options)
+        {
+            options.Init(ServiceProvider);
+        }
+    }
+
     public class NotifyServiceCfg
     {
         public string ConnectionStringName { get; set; }
@@ -39,7 +55,7 @@ namespace ASC.Notify.Config
         public List<NotifyServiceCfgSender> Senders { get; set; }
         public List<NotifyServiceCfgScheduler> Schedulers { get; set; }
 
-        public void Init()
+        public void Init(IServiceProvider serviceProvider)
         {
             ServerRoot = string.IsNullOrEmpty(ServerRoot) ? "http://*/" : ServerRoot;
 
@@ -49,7 +65,7 @@ namespace ASC.Notify.Config
             {
                 try
                 {
-                    s.Init();
+                    s.Init(serviceProvider);
                 }
                 catch (Exception)
                 {
@@ -93,9 +109,9 @@ namespace ASC.Notify.Config
         public Dictionary<string, string> Properties { get; set; }
         public INotifySender NotifySender { get; set; }
 
-        public void Init()
+        public void Init(IServiceProvider serviceProvider)
         {
-            var sender = (INotifySender)Activator.CreateInstance(System.Type.GetType(Type, true));
+            var sender = (INotifySender)serviceProvider.GetService(System.Type.GetType(Type, true));
             sender.Init(Properties);
             NotifySender = sender;
         }

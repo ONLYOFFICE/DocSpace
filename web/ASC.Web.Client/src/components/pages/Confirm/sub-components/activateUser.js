@@ -5,9 +5,11 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
-import { EmployeeActivationStatus } from './../../../../helpers/constants';
-import { getConfirmationInfo, activateConfirmUser } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
+import { store, constants } from 'asc-web-common';
+const { getConfirmationInfo, activateConfirmUser } = store.auth.actions;
+const { EmployeeActivationStatus } = constants;
+
 
 const inputWidth = '400px';
 

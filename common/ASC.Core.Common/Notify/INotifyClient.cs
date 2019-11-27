@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
@@ -50,11 +49,6 @@ namespace ASC.Notify
         void SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args);
 
         void SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, string[] senderNames, bool checkSubsciption, params ITagValue[] args);
-
-        INotifyClient RegisterSendMethod(Action<DateTime> method, string cron);
-
-        INotifyClient UnregisterSendMethod(Action<DateTime> method);
-
 
         void BeginSingleRecipientEvent(string name);
 

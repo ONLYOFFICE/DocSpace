@@ -31,37 +31,50 @@ using System.Security.Cryptography;
 using System.Text;
 
 using ASC.Common.Logging;
-using ASC.Common.Utils;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
 {
-    public static class LicenseReader
+    public class LicenseReader
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
-        private static readonly string LicensePath;
-        private static readonly string LicensePathTemp;
+        private readonly ILog Log;
+        private readonly string LicensePath;
+        private readonly string LicensePathTemp;
 
         public const string CustomerIdKey = "CustomerId";
         public const int MaxUserCount = 10000;
 
-
-        static LicenseReader()
+        public LicenseReader(
+            UserManager userManager,
+            TenantManager tenantManager,
+            PaymentManager paymentManager,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> options)
         {
-            LicensePath = ConfigurationManager.AppSettings["license:file:path"];
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            PaymentManager = paymentManager;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            LicensePath = Configuration["license:file:path"];
             LicensePathTemp = LicensePath + ".tmp";
+            Log = options.CurrentValue;
         }
 
-
-        public static string CustomerId
+        public string CustomerId
         {
-            get { return CoreContext.Configuration.GetSetting(CustomerIdKey); }
-            private set { CoreContext.Configuration.SaveSetting(CustomerIdKey, value); }
+            get { return CoreSettings.GetSetting(CustomerIdKey); }
+            private set { CoreSettings.SaveSetting(CustomerIdKey, value); }
         }
 
-        private static Stream GetLicenseStream(bool temp = false)
+        private Stream GetLicenseStream(bool temp = false)
         {
             var path = temp ? LicensePathTemp : LicensePath;
             if (!File.Exists(path)) throw new BillingNotFoundException("License not found");
@@ -69,17 +82,17 @@ namespace ASC.Core.Billing
             return File.OpenRead(path);
         }
 
-        public static void RejectLicense()
+        public void RejectLicense()
         {
             if (File.Exists(LicensePathTemp))
                 File.Delete(LicensePathTemp);
             if (File.Exists(LicensePath))
                 File.Delete(LicensePath);
 
-            CoreContext.PaymentManager.DeleteDefaultTariff();
+            PaymentManager.DeleteDefaultTariff();
         }
 
-        public static void RefreshLicense()
+        public void RefreshLicense()
         {
             try
             {
@@ -119,7 +132,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        public static DateTime SaveLicenseTemp(Stream licenseStream)
+        public DateTime SaveLicenseTemp(Stream licenseStream)
         {
             try
             {
@@ -159,7 +172,7 @@ namespace ASC.Core.Billing
             }
         }
 
-        private static DateTime Validate(License license)
+        private DateTime Validate(License license)
         {
             if (string.IsNullOrEmpty(license.CustomerId)
                 || string.IsNullOrEmpty(license.Signature))
@@ -175,16 +188,16 @@ namespace ASC.Core.Billing
             if (license.ActiveUsers.Equals(default) || license.ActiveUsers < 1)
                 license.ActiveUsers = MaxUserCount;
 
-            if (license.ActiveUsers < CoreContext.UserManager.GetUsers(CoreContext.TenantManager.GetCurrentTenant(), EmployeeStatus.Default, EmployeeType.User).Length)
+            if (license.ActiveUsers < UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User).Length)
             {
                 throw new LicenseQuotaException("License quota", license.OriginalLicense);
             }
 
             if (license.PortalCount <= 0)
             {
-                license.PortalCount = CoreContext.TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
+                license.PortalCount = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT).CountPortals;
             }
-            var activePortals = CoreContext.TenantManager.GetTenants().Count();
+            var activePortals = TenantManager.GetTenants().Count();
             if (activePortals > 1 && license.PortalCount < activePortals)
             {
                 throw new LicensePortalException("License portal count", license.OriginalLicense);
@@ -193,13 +206,13 @@ namespace ASC.Core.Billing
             return license.DueDate.Date;
         }
 
-        private static void LicenseToDB(License license)
+        private void LicenseToDB(License license)
         {
             Validate(license);
 
             CustomerId = license.CustomerId;
 
-            var defaultQuota = CoreContext.TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
+            var defaultQuota = TenantManager.GetTenantQuota(Tenant.DEFAULT_TENANT);
 
             var quota = new TenantQuota(-1000)
             {
@@ -219,12 +232,13 @@ namespace ASC.Core.Billing
                 Trial = license.Trial,
                 CountPortals = license.PortalCount,
             };
-            CoreContext.TenantManager.SaveTenantQuota(quota);
+
+            TenantManager.SaveTenantQuota(quota);
 
             if (defaultQuota.CountPortals != license.PortalCount)
             {
                 defaultQuota.CountPortals = license.PortalCount;
-                CoreContext.TenantManager.SaveTenantQuota(defaultQuota);
+                TenantManager.SaveTenantQuota(defaultQuota);
             }
 
             var tariff = new Tariff
@@ -233,17 +247,17 @@ namespace ASC.Core.Billing
                 DueDate = license.DueDate,
             };
 
-            CoreContext.PaymentManager.SetTariff(-1, tariff);
+            PaymentManager.SetTariff(-1, tariff);
 
             if (!string.IsNullOrEmpty(license.AffiliateId))
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant();
+                var tenant = TenantManager.GetCurrentTenant();
                 tenant.AffiliateId = license.AffiliateId;
-                CoreContext.TenantManager.SaveTenant(tenant);
+                TenantManager.SaveTenant(tenant);
             }
         }
 
-        private static void LogError(Exception error)
+        private void LogError(Exception error)
         {
             if (error is BillingNotFoundException)
             {
@@ -264,7 +278,7 @@ namespace ASC.Core.Billing
 
         private static DateTime _date = DateTime.MinValue;
 
-        public static DateTime VersionReleaseDate
+        public DateTime VersionReleaseDate
         {
             get
             {
@@ -273,8 +287,8 @@ namespace ASC.Core.Billing
                 _date = DateTime.MaxValue;
                 try
                 {
-                    var versionDate = ConfigurationManager.AppSettings["version:release:date"];
-                    var sign = ConfigurationManager.AppSettings["version:release:sign"];
+                    var versionDate = Configuration["version:release:date"];
+                    var sign = Configuration["version:release:sign"];
 
                     if (!sign.StartsWith("ASC "))
                     {
@@ -291,7 +305,7 @@ namespace ASC.Core.Billing
                     var date = splitted[1];
                     var orighash = splitted[2];
 
-                    var skey = ConfigurationManager.AppSettings["core:machinekey"];
+                    var skey = Configuration["core:machinekey"];
 
                     using (var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey)))
                     {
@@ -310,10 +324,30 @@ namespace ASC.Core.Billing
                 }
                 catch (Exception ex)
                 {
-                    LogManager.GetLogger("WebStudio").Error("VersionReleaseDate", ex);
+                    Log.Error("VersionReleaseDate", ex);
                 }
                 return _date;
             }
+        }
+
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public PaymentManager PaymentManager { get; }
+        public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
+    }
+
+    public static class LicenseReaderExtension
+    {
+        public static IServiceCollection AddLicenseReaderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<LicenseReader>();
+
+            return services
+                .AddUserManagerService()
+                .AddPaymentManagerService()
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

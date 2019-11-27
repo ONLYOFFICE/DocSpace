@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="UAParser" Version="3.1.42" />
+    <PackageReference Include="UAParser" Version="3.1.43" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -28,12 +29,17 @@ namespace ASC.Web.Studio
                     }
                     config.SetBasePath(path);
                     config
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                        {
+                            {"pathToConf", path}
+                        })
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true);
+                        .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                        .AddEnvironmentVariables();
                 });
     }
 }

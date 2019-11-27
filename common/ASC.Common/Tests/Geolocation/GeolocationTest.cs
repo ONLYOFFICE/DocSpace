@@ -36,7 +36,7 @@ namespace ASC.Common.Tests.Geolocation
         [Test]
         public void GetIPGeolocationTest()
         {
-            var helper = new GeolocationHelper("db");
+            var helper = new GeolocationHelper(null, null, "db");
             var info = helper.GetIPGeolocation("62.213.10.13");
             Assert.AreEqual("Nizhny Novgorod", info.City);
             Assert.AreEqual("062.213.011.127", info.IPEnd);

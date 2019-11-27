@@ -8,6 +8,7 @@ using Autofac;
 using Autofac.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Common.DependencyInjection
 {
@@ -73,7 +74,7 @@ namespace ASC.Common.DependencyInjection
 
             var container = builder.Build();
 
-            services.AddSingleton(container);
+            services.TryAddSingleton(container);
 
             return container;
 

@@ -22,5 +22,9 @@
   "DeleteProfileConfirmation": "Attention! You are about to delete your account.",
   "DeleteProfileConfirmationInfo": "By clicking the \"Delete my account\" button you agree with our Privacy policy.",
   "DeleteProfileSuccessMessage": "Your account has been successfully deleted.",
-  "DeleteProfileSuccessMessageInfo": "See our Privacy policy to learn more about deleting your account and data accociated with it."
+  "DeleteProfileSuccessMessageInfo": "See our Privacy policy to learn more about deleting your account and data accociated with it.",
+  "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
+  "SaveButton": "Save",
+  "CancelButton": "Cancel",
+  "ConfirmOwnerPortalSuccessMessage": "Владелец портала был успешно изменен. {0} Через 10 секунд вы будете перенаправлены {1} сюда {2}"
 }

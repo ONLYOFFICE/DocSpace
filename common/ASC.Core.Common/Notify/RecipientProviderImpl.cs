@@ -27,29 +27,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify
 {
     public class RecipientProviderImpl : IRecipientProvider
     {
-        public virtual IRecipient GetRecipient(int tenantId, string id)
+        public UserManager UserManager { get; }
+
+        public RecipientProviderImpl(UserManager userManager) =>
+            (UserManager) = (userManager);
+        public virtual IRecipient GetRecipient(string id)
         {
             if (TryParseGuid(id, out var recID))
             {
-                var user = CoreContext.UserManager.GetUsers(tenantId, recID);
+                var user = UserManager.GetUsers(recID);
                 if (user.ID != Constants.LostUser.ID) return new DirectRecipient(user.ID.ToString(), user.ToString());
 
-                var group = CoreContext.UserManager.GetGroupInfo(tenantId, recID);
+                var group = UserManager.GetGroupInfo(recID);
                 if (group.ID != Constants.LostGroupInfo.ID) return new RecipientsGroup(group.ID.ToString(), group.Name);
             }
             return null;
         }
 
-        public virtual IRecipient[] GetGroupEntries(Tenant tenant, IRecipientsGroup group)
+        public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
         {
             if (group == null) throw new ArgumentNullException("group");
 
@@ -57,17 +61,17 @@ namespace ASC.Core.Notify
             var groupID = Guid.Empty;
             if (TryParseGuid(group.ID, out groupID))
             {
-                var coreGroup = CoreContext.UserManager.GetGroupInfo(tenant.TenantId, groupID);
+                var coreGroup = UserManager.GetGroupInfo(groupID);
                 if (coreGroup.ID != Constants.LostGroupInfo.ID)
                 {
-                    var users = CoreContext.UserManager.GetUsersByGroup(tenant, coreGroup.ID);
+                    var users = UserManager.GetUsersByGroup(coreGroup.ID);
                     Array.ForEach(users, u => result.Add(new DirectRecipient(u.ID.ToString(), u.ToString())));
                 }
             }
             return result.ToArray();
         }
 
-        public virtual IRecipientsGroup[] GetGroups(Tenant tenant, IRecipient recipient)
+        public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
 
@@ -76,7 +80,7 @@ namespace ASC.Core.Notify
             {
                 if (recipient is IRecipientsGroup)
                 {
-                    var group = CoreContext.UserManager.GetGroupInfo(tenant.TenantId, recID);
+                    var group = UserManager.GetGroupInfo(recID);
                     while (group != null && group.Parent != null)
                     {
                         result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
@@ -85,7 +89,7 @@ namespace ASC.Core.Notify
                 }
                 else if (recipient is IDirectRecipient)
                 {
-                    foreach (var group in CoreContext.UserManager.GetUserGroups(tenant, recID, IncludeType.Distinct))
+                    foreach (var group in UserManager.GetUserGroups(recID, IncludeType.Distinct))
                     {
                         result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
                     }
@@ -94,13 +98,13 @@ namespace ASC.Core.Notify
             return result.ToArray();
         }
 
-        public virtual string[] GetRecipientAddresses(int tenantId, IDirectRecipient recipient, string senderName)
+        public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
         {
             if (recipient == null) throw new ArgumentNullException("recipient");
 
             if (TryParseGuid(recipient.ID, out var userID))
             {
-                var user = CoreContext.UserManager.GetUsers(tenantId, userID);
+                var user = UserManager.GetUsers(userID);
                 if (user.ID != Constants.LostUser.ID)
                 {
                     if (senderName == ASC.Core.Configuration.Constants.NotifyEMailSenderSysName) return new[] { user.Email };
@@ -116,7 +120,7 @@ namespace ASC.Core.Notify
         /// </summary>
         /// <param name="recipient"></param>
         /// <returns></returns>
-        public IDirectRecipient FilterRecipientAddresses(int tenantId, IDirectRecipient recipient)
+        public IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient)
         {
             //Check activation
             if (recipient.CheckActivation)
@@ -126,7 +130,7 @@ namespace ASC.Core.Notify
                 {
                     //Filtering only missing users and users who activated already
                     var filteredAddresses = from address in recipient.Addresses
-                                            let user = CoreContext.UserManager.GetUserByEmail(tenantId, address)
+                                            let user = UserManager.GetUserByEmail(address)
                                             where user.ID == Constants.LostUser.ID || (user.IsActive && (user.Status & EmployeeStatus.Default) == user.Status)
                                             select address;
 
@@ -151,6 +155,17 @@ namespace ASC.Core.Notify
                 catch (OverflowException) { }
             }
             return false;
+        }
+    }
+
+    public static class RecipientProviderImplExtension
+    {
+        public static IServiceCollection AddRecipientProviderImplService(this IServiceCollection services)
+        {
+            services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
+
+            return services
+                .AddUserManagerService();
         }
     }
 }

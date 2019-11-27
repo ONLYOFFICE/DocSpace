@@ -27,7 +27,8 @@
         "PasswordRecoveryTitle",
         "MessageSendPasswordRecoveryInstructionsOnEmail",
         "RememberHelper",
-        "LoadingDescription"
+        "LoadingDescription",
+        "CookieSettingsTitle"
       ]
     },
     "Confirm": {
@@ -52,7 +53,9 @@
         "DeleteProfileConfirmation",
         "DeleteProfileConfirmationInfo",
         "ChangePasswordSuccess",
-        "Remember"
+        "Remember",
+        "ConfirmOwnerPortalTitle",
+        "ConfirmOwnerPortalSuccessMessage"
       ]
     },
     "Settings": {
@@ -93,7 +96,11 @@
         "GreetingTitle",
         "RestoreDefaultButton",
         "SuccessfullySaveGreetingSettingsMessage",
-        "Employees"
+        "ChangeLogoButton",
+        "Employees",
+        "AccessRightsChangeOwnerText",
+        "DnsChangeMsg",
+        "AccessRightsChangeOwnerConfirmText"
       ],
       "FeedResource": [
         "ProjectsProduct",
@@ -108,9 +115,22 @@
         "LoginHistoryNav",
         "AuditTrailNav"
       ],
+      "WhiteLabelResource": [
+        "LogoSettings",
+        "CompanyNameForCanvasLogo",
+        "UseAsLogoButton",
+        "LogoLightSmall",
+        "LogoDark",
+        "LogoFavicon",
+        "BrowserNoCanvasSupport",
+        "LogoDocsEditor"
+      ],
       "UserControlsCommonResource": [
         "NextPage",
         "PreviousPage"
+      ],
+      "ResourceJS": [
+        "ChooseOwner"
       ]
     }
   },

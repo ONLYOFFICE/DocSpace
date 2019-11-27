@@ -47,7 +47,23 @@
   "GreetingTitle": "Заголовок",
   "RestoreDefaultButton": "Настройки по умолчанию",
   "SuccessfullySaveGreetingSettingsMessage": "Настройки страницы приветствия успешно сохранены",
-
+  "LogoSettings": "Настройки логотипа портала",
+  "LogoUploadRecommendation": "Рекомендуется использовать изображения в формате <1>PNG</1> с прозрачным фоном",
+  "CompanyNameForCanvasLogo": "Название компании",
+  "UseAsLogoButton": "Использовать как логотип",
+  "LogoLightSmall": "Логотип для шапки портала",
+  "LogoDark": "Логотип для страницы \"О программе\" и страницы входа ",
+  "LogoFavicon": "Иконка сайта",
+  "LogoDocsEditor": "Логотип для шапки редакторов",
+  "ChangeLogoButton": "Сменить логотип",
+  "BrowserNoCanvasSupport": "Ваш браузер не поддерживает тег HTML5 canvas.",
+  "AccessRightsChangeOwnerText": "Чтобы сменить владельца портала, выберите имя нового владельца портала ниже.",
+  "ChooseOwner": "Выбрать владельца",
+  "DnsChangeMsg": "Ссылка для подтверждения операции была отправлена на {{email}} (адрес электронной почты владельца портала).",
+  "AccessRightsChangeOwnerConfirmText": "Изменения будут применены после подтверждения по электронной почте.",
+  "NotFoundTitle": "Результатов, соответствующих заданным критериям, не найдено",
+  "NotFoundDescription": "В данном разделе нет людей, соответствующих фильтру. Пожалуйста, выберите другие параметры или очистите фильтр, чтобы просмотреть всех людей в этом разделе.",
+  "ClearButton": "Сбросить фильтр",
 
 
   "ViewProfilesAndGroups": "Просматривать профили и группы",
@@ -68,5 +84,7 @@
   "Culture_ru-RU": "Русский (Россия)",
   "LearnMore":  "Подробнее...",
   "CountPerPage": "{{count}} на странице",
-  "PageOfTotalPage": "{{page}} из {{totalPage}}"
+  "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "ByFirstNameSorting": "По имени",
+  "ByLastNameSorting": "По фамилии"
 }

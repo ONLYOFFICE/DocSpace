@@ -45,8 +45,8 @@ class PageLayout extends React.PureComponent {
       isArticleAvailable = isArticleHeaderAvailable || isArticleMainButtonAvailable || isArticleBodyAvailable,
       isSectionHeaderAvailable = !!props.sectionHeaderContent,
       isSectionFilterAvailable = !!props.sectionFilterContent,
-      isSectionBodyAvailable = !!props.sectionBodyContent,
       isSectionPagingAvailable = !!props.sectionPagingContent,
+      isSectionBodyAvailable = !!props.sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
       isSectionAvailable = isSectionHeaderAvailable || isSectionFilterAvailable || isSectionBodyAvailable || isSectionPagingAvailable || isArticleAvailable,
       isBackdropAvailable = isArticleAvailable;
 
@@ -154,17 +154,19 @@ class PageLayout extends React.PureComponent {
             {this.state.isSectionHeaderAvailable && (
               <SectionHeader>{this.state.sectionHeaderContent}</SectionHeader>
             )}
-            {this.state.isSectionFilterAvailable && (
-              <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
-            )}
+
             {this.state.isSectionBodyAvailable && (
-              <SectionBody withScroll={this.props.withBodyScroll}>
+              <SectionBody withScroll={this.props.withBodyScroll} pinned={this.state.isArticlePinned}>
+                {this.state.isSectionFilterAvailable && (
+                  <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
+                )}
                 {this.state.sectionBodyContent}
+                {this.state.isSectionPagingAvailable && (
+                  <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
+                )}
               </SectionBody>
             )}
-            {this.state.isSectionPagingAvailable && (
-              <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
-            )}
+
             {this.state.isArticleAvailable && (
               <SectionToggler
                 visible={!this.state.isArticlePinned}

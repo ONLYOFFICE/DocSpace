@@ -48,8 +48,23 @@
     "GreetingTitle": "Title",
     "RestoreDefaultButton": "Restore to Default",
     "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",
-
-
+    "LogoSettings": "Portal Logo Settings",
+    "LogoUploadRecommendation": "We recommended that you use images in <1>PNG</1> format with transparent background",
+    "CompanyNameForCanvasLogo": "Company name",
+    "UseAsLogoButton": "Use as logo",
+    "LogoLightSmall": "Logo for the portal header",
+    "LogoDark": "Logo for the About/Login page",
+    "LogoFavicon": "Favicon",
+    "LogoDocsEditor": "Logo for the editors header",
+    "ChangeLogoButton": "Change Logo",
+    "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
+    "AccessRightsChangeOwnerText": "To change the Portal owner please choose the Name of the new Portal owner below.",
+    "ChooseOwner": "Choose owner",
+    "DnsChangeMsg": "A link to confirm the operation has been sent to {{email}} (the email address of the portal owner).",
+    "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
+    "NotFoundTitle": "No results matching your search could be found",
+    "NotFoundDescription": "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
+    "ClearButton": "Reset filter",
 
 
     "ViewProfilesAndGroups": "View profiles and groups",
@@ -69,5 +84,7 @@
     "Culture_ru-RU": "Russian (Russia)",
     "LearnMore": "Learn more...",
     "CountPerPage": "{{count}} per page",
-    "PageOfTotalPage": "{{page}} of {{totalPage}}"
+    "PageOfTotalPage": "{{page}} of {{totalPage}}",
+    "ByFirstNameSorting": "By first name",
+    "ByLastNameSorting": "By last name"
 }

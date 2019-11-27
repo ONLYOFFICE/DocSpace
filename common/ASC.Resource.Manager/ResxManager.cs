@@ -35,7 +35,7 @@ namespace ASC.Resource.Manager
 {
     public class ResxManager
     {
-        public static void Export(string project, string module, string fName, string language, string exportPath, string key = null)
+        public static void Export(ResourceData resourceData, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -45,7 +45,7 @@ namespace ASC.Resource.Manager
                 Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
-            var words = ResourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
+            var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
 
             if (!words.Any())
             {

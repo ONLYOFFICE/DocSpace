@@ -36,8 +36,12 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
 {
@@ -49,6 +53,11 @@ namespace ASC.Data.Storage
         private static readonly ICache Cache;
         private static readonly object Locker;
 
+        public IServiceProvider ServiceProvider { get; }
+        public TenantManager TenantManager { get; }
+        public SettingsManager SettingsManager { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
+
         static StaticUploader()
         {
             Scheduler = new LimitedConcurrencyLevelTaskScheduler(4);
@@ -57,13 +66,25 @@ namespace ASC.Data.Storage
             TokenSource = new CancellationTokenSource();
         }
 
-        public static string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
+        public StaticUploader(
+            IServiceProvider serviceProvider,
+            TenantManager tenantManager,
+            SettingsManager settingsManager,
+            StorageSettingsHelper storageSettingsHelper)
+        {
+            ServiceProvider = serviceProvider;
+            TenantManager = tenantManager;
+            SettingsManager = settingsManager;
+            StorageSettingsHelper = storageSettingsHelper;
+        }
+
+        public string UploadFile(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
             if (TokenSource.Token.IsCancellationRequested) return null;
             if (!CanUpload()) return null;
             if (!File.Exists(mappedPath)) return null;
 
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             UploadOperation uploadOperation;
             var key = GetCacheKey(tenantId.ToString(), relativePath);
 
@@ -75,7 +96,7 @@ namespace ASC.Data.Storage
                     return !string.IsNullOrEmpty(uploadOperation.Result) ? uploadOperation.Result : string.Empty;
                 }
 
-                uploadOperation = new UploadOperation(tenantId, relativePath, mappedPath);
+                uploadOperation = new UploadOperation(ServiceProvider, tenantId, relativePath, mappedPath);
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
@@ -85,13 +106,16 @@ namespace ASC.Data.Storage
             return uploadOperation.Result;
         }
 
-        public static Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
+        public Task<string> UploadFileAsync(string relativePath, string mappedPath, Action<string> onComplete = null)
         {
-            var tenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+            var tenantId = TenantManager.GetCurrentTenant().TenantId;
             var task = new Task<string>(() =>
             {
-                CoreContext.TenantManager.SetCurrentTenant(tenantId);
-                return UploadFile(relativePath, mappedPath, onComplete);
+                using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(tenantId);
+                var staticUploader = scope.ServiceProvider.GetService<StaticUploader>();
+                return staticUploader.UploadFile(relativePath, mappedPath, onComplete);
             }, TaskCreationOptions.LongRunning);
 
             task.ConfigureAwait(false);
@@ -101,12 +125,12 @@ namespace ASC.Data.Storage
             return task;
         }
 
-        public static async void UploadDir(string relativePath, string mappedPath)
+        public async void UploadDir(string relativePath, string mappedPath)
         {
             if (!CanUpload()) return;
             if (!Directory.Exists(mappedPath)) return;
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var key = typeof(UploadOperationProgress).FullName + tenant.TenantId;
             UploadOperationProgress uploadOperation;
 
@@ -115,23 +139,23 @@ namespace ASC.Data.Storage
                 uploadOperation = Cache.Get<UploadOperationProgress>(key);
                 if (uploadOperation != null) return;
 
-                uploadOperation = new UploadOperationProgress(relativePath, mappedPath);
+                uploadOperation = new UploadOperationProgress(this, relativePath, mappedPath);
                 Cache.Insert(key, uploadOperation, DateTime.MaxValue);
             }
 
 
             tenant.SetStatus(TenantStatus.Migrating);
-            CoreContext.TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
 
             await uploadOperation.RunJobAsync();
 
             tenant.SetStatus(Core.Tenants.TenantStatus.Active);
-            CoreContext.TenantManager.SaveTenant(tenant);
+            TenantManager.SaveTenant(tenant);
         }
 
-        public static bool CanUpload()
+        public bool CanUpload()
         {
-            var current = CdnStorageSettings.Load().DataStoreConsumer;
+            var current = StorageSettingsHelper.DataStoreConsumer(SettingsManager.Load<CdnStorageSettings>());
             if (current == null || !current.IsSet || (string.IsNullOrEmpty(current["cnamessl"]) && string.IsNullOrEmpty(current["cname"])))
             {
                 return false;
@@ -162,14 +186,17 @@ namespace ASC.Data.Storage
 
     public class UploadOperation
     {
-        private static readonly ILog Log = LogManager.GetLogger("ASC");
+        private readonly ILog Log;
         private readonly int tenantId;
         private readonly string path;
         private readonly string mappedPath;
         public string Result { get; private set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public UploadOperation(int tenantId, string path, string mappedPath)
+        public UploadOperation(IServiceProvider serviceProvider, int tenantId, string path, string mappedPath)
         {
+            ServiceProvider = serviceProvider;
+            Log = ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
             this.tenantId = tenantId;
             this.path = path.TrimStart('/');
             this.mappedPath = mappedPath;
@@ -180,11 +207,17 @@ namespace ASC.Data.Storage
         {
             try
             {
-                var tenant = CoreContext.TenantManager.GetTenant(tenantId);
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
-                SecurityContext.AuthenticateMe(tenant.TenantId, tenant.OwnerId);
+                using var scope = ServiceProvider.CreateScope();
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var tenant = tenantManager.GetTenant(tenantId);
+                tenantManager.SetCurrentTenant(tenant);
 
-                var dataStore = CdnStorageSettings.Load().DataStore;
+                var SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var SettingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+                var StorageSettingsHelper = scope.ServiceProvider.GetService<StorageSettingsHelper>();
+                SecurityContext.AuthenticateMe(tenant.OwnerId);
+
+                var dataStore = StorageSettingsHelper.DataStore(SettingsManager.Load<CdnStorageSettings>());
 
                 if (File.Exists(mappedPath))
                 {
@@ -195,7 +228,7 @@ namespace ASC.Data.Storage
                     }
 
                     Result = dataStore.GetInternalUri("", path, TimeSpan.Zero, null).AbsoluteUri.ToLower();
-                    LogManager.GetLogger("ASC").DebugFormat("UploadFile {0}", Result);
+                    Log.DebugFormat("UploadFile {0}", Result);
                     return Result;
                 }
             }
@@ -214,8 +247,12 @@ namespace ASC.Data.Storage
         private readonly string mappedPath;
         private readonly IEnumerable<string> directoryFiles;
 
-        public UploadOperationProgress(string relativePath, string mappedPath)
+        public IServiceProvider ServiceProvider { get; }
+        public StaticUploader StaticUploader { get; }
+
+        public UploadOperationProgress(StaticUploader staticUploader, string relativePath, string mappedPath)
         {
+            StaticUploader = staticUploader;
             this.relativePath = relativePath;
             this.mappedPath = mappedPath;
 
@@ -248,6 +285,18 @@ namespace ASC.Data.Storage
                 var filePath = file.Substring(mappedPath.TrimEnd('/').Length);
                 StaticUploader.UploadFileAsync(Path.Combine(relativePath, filePath), file, (res) => StepDone()).Wait();
             }
+        }
+    }
+
+    public static class StaticUploaderExtension
+    {
+        public static IServiceCollection AddStaticUploaderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<StaticUploader>();
+
+            return services
+                .AddTenantManagerService()
+                .AddCdnStorageSettingsService();
         }
     }
 }

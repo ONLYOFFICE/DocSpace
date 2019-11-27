@@ -1,12 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+
 using ASC.Common.DependencyInjection;
-using ASC.Common.Utils;
+using ASC.Common.Logging;
+using ASC.Core.Common;
+using ASC.Core.Notify.Senders;
 using ASC.Notify.Config;
-using ASC.Web.Core;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
 {
@@ -26,32 +32,39 @@ namespace ASC.Notify
                     config.SetBasePath(path);
                     var env = hostContext.Configuration.GetValue("ENVIRONMENT", "Production");
                     config
+                        .AddInMemoryCollection(new Dictionary<string, string>
+                            {
+                                {"pathToConf", path }
+                            }
+                        )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile("autofac.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
-                        .AddJsonFile($"kafka.{env}.json", true);
+                        .AddJsonFile($"kafka.{env}.json", true)
+                        .AddEnvironmentVariables();
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-                    services.AddWebItemManager();
 
-                    var serviceProvider = services.BuildServiceProvider();
-                    ConfigurationManager.Init(serviceProvider);
-                    CommonServiceProvider.Init(serviceProvider);
-                    serviceProvider.UseWebItemManager();
+                    services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
-                    var c = ConfigurationManager.GetSetting<NotifyServiceCfg>("notify");
-                    c.Init();
-                    services.AddSingleton(c);
-                    services.AddSingleton<DbWorker>();
-                    services.AddSingleton<NotifyCleaner>();
-                    services.AddSingleton<NotifySender>();
-                    services.AddSingleton<NotifyService>();
+                    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
+                    services.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
+
+                    services.TryAddSingleton<CommonLinkUtilitySettings>();
+                    services.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
+
+                    services.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
+
+                    services
+                    .AddJabberSenderService()
+                    .AddSmtpSenderService()
+                    .AddAWSSenderService();
                 })
                 .UseConsoleLifetime()
                 .Build();

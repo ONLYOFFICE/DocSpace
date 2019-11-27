@@ -2,9 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
-import { getCultures, setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/auth/actions';
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
+import { store } from 'asc-web-common';
+const { getPortalCultures, setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -35,8 +36,8 @@ const StyledComponent = styled.div`
       margin-bottom: 70px;
    }
 
-   .input-width {
-      width: 500px;
+   .field-container-width {
+      max-width: 500px;
    }
 
    .dropdown-item-width {
@@ -71,12 +72,12 @@ class Customization extends React.Component {
 
 
    componentDidMount() {
-      const { getCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
+      const { getPortalCultures, portalLanguage, portalTimeZoneId, t, getPortalTimezones } = this.props;
       const { timezones, languages } = this.state;
 
       if (!timezones.length && !languages.length) {
          let languages;
-         getCultures()
+         getPortalCultures()
             .then(() => {
                languages = mapCulturesToArray(this.props.rawCultures, t);
             })
@@ -155,7 +156,7 @@ class Customization extends React.Component {
             <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
                "In case you cannot find your language in the list of the
                available ones, feel free to write to us at
-         <Link href="mailto:documentation@onlyoffice.com" isHovered={true}>
+               <Link href={`mailto:${supportEmail}`} isHovered={true}>
                   {{ supportEmail }}
                </Link> to take part in the translation and get up to 1 year free of
                charge."
@@ -174,9 +175,10 @@ class Customization extends React.Component {
                      <Text.Body fontSize={16}>{t('StudioTimeLanguageSettings')}</Text.Body>
                      <FieldContainer
                         id='fieldContainerLanguage'
-                        className='margin-top'
+                        className='margin-top field-container-width'
                         labelText={`${t("Language")}:`}
                         tooltipContent={tooltipLanguage}
+                        helpButtonHeaderContent={t("Language")}
                         isVertical={true}>
                         <ComboBox
                            id='comboBoxLanguage'
@@ -185,15 +187,15 @@ class Customization extends React.Component {
                            onSelect={this.onLanguageSelect}
                            isDisabled={isLoading}
                            noBorder={false}
-                           scaled={false}
+                           scaled={true}
                            scaledOptions={true}
                            dropDownMaxHeight={300}
-                           size='huge'
                         />
                      </FieldContainer>
 
                      <FieldContainer
                         id='fieldContainerTimezone'
+                        className='field-container-width'
                         labelText={`${t("TimeZone")}:`}
                         isVertical={true}>
                         <ComboBox
@@ -203,10 +205,9 @@ class Customization extends React.Component {
                            onSelect={this.onTimezoneSelect}
                            isDisabled={isLoading}
                            noBorder={false}
-                           scaled={false}
+                           scaled={true}
                            scaledOptions={true}
                            dropDownMaxHeight={300}
-                           size='huge'
                            className='dropdown-item-width'
                         />
                      </FieldContainer>
@@ -225,11 +226,10 @@ class Customization extends React.Component {
                      <Text.Body fontSize={16}>{t('GreetingSettingsTitle')}</Text.Body>
                      <FieldContainer
                         id='fieldContainerWelcomePage'
-                        className='margin-top'
+                        className='margin-top field-container-width'
                         labelText={`${t("GreetingTitle")}:`}
                         isVertical={true}>
                         <TextInput
-                           className='input-width'
                            scale={true}
                            value={greetingTitle}
                            onChange={this.onChangeGreetingTitle}
@@ -279,6 +279,6 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-   getCultures, setLanguageAndTime, getPortalTimezones,
+   getPortalCultures, setLanguageAndTime, getPortalTimezones,
    setGreetingTitle, restoreGreetingTitle
 })(withTranslation()(Customization));

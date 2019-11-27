@@ -1,101 +1,244 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Text } from "../text";
+import Scrollbar from "../scrollbar";
 
-const TabsContainer = styled.div``;
+const StyledScrollbar = styled(Scrollbar)`
+  width: 100% !important;
+  height: 50px !important;
+`;
 
 const NavItem = styled.div`
   position: relative;
   white-space: nowrap;
+  display: flex;
 `;
 
-const TitleStyle = css`
-  width: 80px;
+const Label = styled.div`
   height: 32px;
   border-radius: 16px;
-`;
+  min-width: fit-content;
+  margin-right: 8px;
+  width: fit-content;
 
-const Label = styled.label`
-  margin:0;
-  min-width: 80px;
-  position: relative;
-  background-repeat: no-repeat;
-  p {text-align: center; margin-top: 6px;}
-  margin-right: 5px;
-  label {margin:0}
+  .title_style {
+    text-align: center;
+    margin: 7px 15px 7px 15px;
+    overflow: hidden;
 
-  ${props => props.isDisabled ? `pointer-events: none;` : ``}
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
 
-  ${props => props.selected ?
-    `${TitleStyle}
-    cursor: default;
-    background-color: #265A8F;
-    p {color: #fff}` :
-    `
+  ${props => (props.isDisabled ? `pointer-events: none;` : ``)}
+
+  ${props =>
+    props.selected
+      ? `cursor: default
+         background-color: #265A8F
+         .title_style {
+           color: #fff
+          }`
+      : `
     &:hover{
-      ${TitleStyle}
       cursor: pointer;
       background-color: #F8F9F9;
-    }`
-  }
+    }`}
 
-  ${props => props.isDisabled && props.selected ?
-    `${TitleStyle} background-color: #A3A9AE;
-    p {color: #fff} ` : ``
-  }
+  ${props =>
+    props.isDisabled && props.selected
+      ? `background-color: #ECEEF1
+       .title_style {color: #D0D5DA}`
+      : ``}
 `;
 
 const BodyContainer = styled.div`
   margin: 24px 16px 0px 16px;
-
-  ${props => props.isDisabled ? `pointer-events: none;` : ``}
 `;
 
 class TabContainer extends Component {
   constructor(props) {
     super(props);
 
+    this.arrayRefs = [];
+    const countElements = props.children.length;
+
+    let item = countElements;
+    while (item !== 0) {
+      this.arrayRefs.push(React.createRef());
+      item--;
+    }
+
     this.state = {
-      activeTab: this.props.selectedItem
+      activeTab: this.props.selectedItem,
+      onScrollHide: true
     };
+
+    this.scrollRef = React.createRef();
   }
 
-  titleClick = (index, item) => {
+  titleClick = (index, item, ref) => {
     if (this.state.activeTab !== index) {
       this.setState({ activeTab: index });
       let newItem = Object.assign({}, item);
       delete newItem.content;
       this.props.onSelect && this.props.onSelect(newItem);
+
+      this.setTabPosition(index, ref);
     }
   };
 
+  getWidthElements = () => {
+    const arrayWidths = [];
+    const length = this.arrayRefs.length - 1;
+    let widthItem = 0;
+    while (length + 1 !== widthItem) {
+      arrayWidths.push(this.arrayRefs[widthItem].current.offsetWidth);
+      widthItem++;
+    }
+
+    return arrayWidths;
+  };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { activeTab, onScrollHide } = this.state;
+    const { isDisabled } = this.props;
+    if (
+      activeTab === nextState.activeTab &&
+      isDisabled === nextProps.isDisabled &&
+      onScrollHide === nextState.onScrollHide
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  componentDidMount() {
+    const { activeTab } = this.state;
+    if (activeTab !== 0 && this.arrayRefs[activeTab].current !== null) {
+      this.setTabPosition(activeTab);
+    }
+  }
+
+  setTabPosition = (index, currentRef) => {
+    const arrayOfWidths = this.getWidthElements(); //get tabs widths
+    const scrollLeft = this.scrollRef.current.getScrollLeft(); // get scroll position relative to left side
+    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
+    const containerWidth = this.scrollRef.current.getClientWidth(); //get main container width
+    const currentTabWidth = currentRef.current.offsetWidth;
+    const marginRight = 8;
+
+    //get tabs of left side
+    let leftTabs = 0;
+    let leftFullWidth = 0;
+    while (leftTabs !== index) {
+      leftTabs++;
+      leftFullWidth += arrayOfWidths[leftTabs] + marginRight;
+    }
+    leftFullWidth += arrayOfWidths[0] + marginRight;
+
+    //get tabs of right side
+    let rightTabs = this.arrayRefs.length - 1;
+    let rightFullWidth = 0;
+    while (rightTabs !== index - 1) {
+      rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
+      rightTabs--;
+    }
+
+    //Out of range of left side
+    if (leftFullWidth > containerWidth + scrollLeft) {
+      let prevIndex = index - 1;
+      let widthBlocksInContainer = 0;
+      while (prevIndex !== -1) {
+        widthBlocksInContainer += arrayOfWidths[prevIndex] + marginRight;
+        prevIndex--;
+      }
+
+      const difference = containerWidth - widthBlocksInContainer;
+      const currentContainerWidth = currentTabWidth;
+
+      this.scrollRef.current.scrollLeft(
+        difference * -1 + currentContainerWidth + marginRight
+      );
+    }
+    //Out of range of left side
+    else if (rightFullWidth > staticScroll - scrollLeft) {
+      this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+    }
+  };
+
+  setTabPosition = index => {
+    const arrayOfWidths = this.getWidthElements(); //get tabs widths
+    const marginRight = 8;
+    let rightTabs = this.arrayRefs.length - 1;
+    let rightFullWidth = 0;
+    while (rightTabs !== index - 1) {
+      rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
+      rightTabs--;
+    }
+
+    const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
+    this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
+  };
+
+  onMouseEnter = () => {
+    this.setState({ onScrollHide: false });
+  };
+
+  onMouseLeave = () => {
+    this.setState({ onScrollHide: true });
+  };
+
   render() {
-    //console.log('Tab container render');
+    //console.log("Tabs container render");
+
+    const { isDisabled, children } = this.props;
+    const { activeTab, onScrollHide } = this.state;
+
     return (
-      <TabsContainer>
-        <NavItem>
-          {this.props.children.map((item, index) =>
-            <Label
-              onClick={this.titleClick.bind(this, index, item)}
-              key={item.key}
-              selected={this.state.activeTab === index}
-              isDisabled={this.props.isDisabled}
-            >
-              <Text.Body> {item.title} </Text.Body>
-            </Label>
-          )}
-        </NavItem>
-        <BodyContainer> {this.props.children[this.state.activeTab].content} </BodyContainer>
-      </TabsContainer>
+      <>
+        <StyledScrollbar
+          autoHide={onScrollHide}
+          stype="preMediumBlack"
+          className="scrollbar"
+          ref={this.scrollRef}
+        >
+          <NavItem className="className_items">
+            {children.map((item, index) => (
+              <Label
+                onMouseMove={this.onMouseEnter}
+                onMouseLeave={this.onMouseLeave}
+                ref={this.arrayRefs[index]}
+                onClick={this.titleClick.bind(
+                  this,
+                  index,
+                  item,
+                  this.arrayRefs[index]
+                )}
+                key={item.key}
+                selected={activeTab === index}
+                isDisabled={isDisabled}
+              >
+                <Text.Body className="title_style" fontSize={13}>
+                  {item.title}
+                </Text.Body>
+              </Label>
+            ))}
+          </NavItem>
+        </StyledScrollbar>
+        <BodyContainer>{children[activeTab].content}</BodyContainer>
+      </>
     );
   }
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.PropTypes.arrayOf(
-    PropTypes.object.isRequired
-  ).isRequired,
+  children: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   isDisabled: PropTypes.bool,
   onSelect: PropTypes.func,
   selectedItem: PropTypes.number
@@ -103,6 +246,6 @@ TabContainer.propTypes = {
 
 TabContainer.defaultProps = {
   selectedItem: 0
-}
+};
 
 export default TabContainer;

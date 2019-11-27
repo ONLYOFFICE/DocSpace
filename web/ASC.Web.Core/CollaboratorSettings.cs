@@ -32,18 +32,17 @@ namespace ASC.Web.Studio.Core
 {
     [Serializable]
     [DataContract]
-    public class CollaboratorSettings : BaseSettings<CollaboratorSettings>
+    public class CollaboratorSettings : ISettings
     {
         [DataMember(Name = "FirstVisit")]
         public bool FirstVisit { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{73537E08-17F6-4706-BFDA-1414108AA7D2}"); }
         }
 
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new CollaboratorSettings()
             {

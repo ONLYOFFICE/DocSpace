@@ -28,15 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core.TFA
 {
     [Serializable]
     [DataContract]
-    public class TfaAppUserSettings : BaseSettings<TfaAppUserSettings>
+    public class TfaAppUserSettings : ISettings
     {
         [DataMember(Name = "BackupCodes")]
         public IEnumerable<BackupCode> CodesSetting { get; set; }
@@ -44,12 +42,12 @@ namespace ASC.Web.Studio.Core.TFA
         [DataMember(Name = "Salt")]
         public long SaltSetting { get; set; }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{EAF10611-BE1E-4634-B7A1-57F913042F78}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TfaAppUserSettings
             {
@@ -58,71 +56,49 @@ namespace ASC.Web.Studio.Core.TFA
             };
         }
 
-        public static long GetSalt(Guid userId)
+        public static long GetSalt(SettingsManager settingsManager, Guid userId)
         {
-            var settings = LoadForUser(userId);
+            var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var salt = settings.SaltSetting;
             if (salt == 0)
             {
                 var from = new DateTime(2018, 07, 07, 0, 0, 0, DateTimeKind.Utc);
                 settings.SaltSetting = salt = (long)(DateTime.UtcNow - from).TotalMilliseconds;
 
-                settings.SaveForUser(userId);
+                settingsManager.SaveForUser<TfaAppUserSettings>(settings, userId);
             }
             return salt;
         }
 
-        public static IEnumerable<BackupCode> BackupCodes
+        public static IEnumerable<BackupCode> BackupCodesForUser(SettingsManager settingsManager, Guid userId)
         {
-            get { return LoadForCurrentUser().CodesSetting; }
-            set
-            {
-                var settings = LoadForCurrentUser();
-                settings.CodesSetting = value;
-                settings.SaveForCurrentUser();
-            }
+            return settingsManager.LoadForUser<TfaAppUserSettings>(userId).CodesSetting;
         }
 
-        public static IEnumerable<BackupCode> BackupCodesForUser(Guid userId)
+        public static void DisableCodeForUser(SettingsManager settingsManager, Guid userId, string code)
         {
-            return LoadForUser(userId).CodesSetting;
-        }
-
-        public static void DisableCodeForUser(Guid userId, string code)
-        {
-            var settings = LoadForUser(userId);
+            var settings = settingsManager.LoadForUser<TfaAppUserSettings>(userId);
             var query = settings.CodesSetting.Where(x => x.Code == code).ToList();
 
             if (query.Any())
                 query.First().IsUsed = true;
 
-            settings.SaveForUser(userId);
+            settingsManager.SaveForUser(settings, userId);
         }
 
-        public static bool EnableForUser(Guid guid)
+        public static bool EnableForUser(SettingsManager settingsManager, Guid guid)
         {
-            return LoadForUser(guid).CodesSetting.Any();
+            return settingsManager.LoadForUser<TfaAppUserSettings>(guid).CodesSetting.Any();
         }
 
-        public static void DisableForUser(Guid guid)
+        public static void DisableForUser(IServiceProvider serviceProvider, SettingsManager settingsManager, Guid guid)
         {
-            if (new TfaAppUserSettings().GetDefault() is TfaAppUserSettings defaultSettings)
+            if (new TfaAppUserSettings().GetDefault(serviceProvider) is TfaAppUserSettings defaultSettings)
             {
-                defaultSettings.SaveForUser(guid);
+                settingsManager.SaveForUser(defaultSettings, guid);
             }
         }
 
-        public static bool IsVisibleSettings
-        {
-            get
-            {
-                var quota = TenantExtra.GetTenantQuota();
-                return CoreContext.Configuration.Standalone
-                       || (!quota.Trial
-                           && !quota.NonProfit
-                           && !quota.Free
-                           && !quota.Open);
-            }
-        }
+
     }
 }

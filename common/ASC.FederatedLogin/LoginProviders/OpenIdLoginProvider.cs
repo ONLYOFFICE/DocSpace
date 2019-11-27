@@ -26,7 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
@@ -40,6 +42,11 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         private static readonly OpenIdRelyingParty Openid = new OpenIdRelyingParty();
 
+        public OpenIdLoginProvider(Signature signature, InstanceCrypto instanceCrypto)
+        {
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
+        }
 
         public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
         {
@@ -93,12 +100,12 @@ namespace ASC.FederatedLogin.LoginProviders
                     }
                     catch (ProtocolException ex)
                     {
-                        return LoginProfile.FromError(ex);
+                        return LoginProfile.FromError(Signature, InstanceCrypto, ex);
                     }
                 }
                 else
                 {
-                    return LoginProfile.FromError(new Exception("invalid OpenID identifier"));
+                    return LoginProfile.FromError(Signature, InstanceCrypto, new Exception("invalid OpenID identifier"));
                 }
             }
             else
@@ -117,9 +124,9 @@ namespace ASC.FederatedLogin.LoginProviders
                         var profile = ProfileFromOpenId(spprofile, fetchprofile, response.ClaimedIdentifier.ToString(), realmUrlString);
                         return profile;
                     case AuthenticationStatus.Canceled:
-                        return LoginProfile.FromError(new Exception("Canceled at provider"));
+                        return LoginProfile.FromError(Signature, InstanceCrypto, new Exception("Canceled at provider"));
                     case AuthenticationStatus.Failed:
-                        return LoginProfile.FromError(response.Exception);
+                        return LoginProfile.FromError(Signature, InstanceCrypto, response.Exception);
                 }
             }
             return null;
@@ -138,9 +145,12 @@ namespace ASC.FederatedLogin.LoginProviders
         public string ClientSecret { get { return ""; } }
         public bool IsEnabled { get { return GoogleLoginProvider.Instance.IsEnabled; } }
 
-        internal static LoginProfile ProfileFromOpenId(ClaimsResponse spprofile, FetchResponse fetchprofile, string claimedId, string realmUrlString)
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+
+        internal LoginProfile ProfileFromOpenId(ClaimsResponse spprofile, FetchResponse fetchprofile, string claimedId, string realmUrlString)
         {
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Link = claimedId,
                 Id = claimedId,

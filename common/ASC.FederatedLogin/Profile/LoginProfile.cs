@@ -34,6 +34,7 @@ using System.Runtime.Serialization.Json;
 using System.Security.Permissions;
 using System.Text;
 using System.Web;
+using ASC.Common.Utils;
 using ASC.FederatedLogin.Helpers;
 using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
@@ -176,7 +177,7 @@ namespace ASC.FederatedLogin.Profile
         [DataMember(Name = "Hash")]
         public string Hash
         {
-            get { return Common.Utils.Signature.Create(HashId); }
+            get { return Signature?.Create(HashId); }
             set { throw new NotImplementedException(); }
         }
 
@@ -216,6 +217,9 @@ namespace ASC.FederatedLogin.Profile
             get { return !IsFailed; }
         }
 
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+
         internal string GetField(string name)
         {
             return _fields.ContainsKey(name) ? _fields[name] : string.Empty;
@@ -224,7 +228,7 @@ namespace ASC.FederatedLogin.Profile
 
         public LoginProfile GetMinimalProfile()
         {
-            var profileNew = new LoginProfile
+            var profileNew = new LoginProfile(Signature, InstanceCrypto)
             {
                 Provider = Provider,
                 Id = Id
@@ -281,15 +285,15 @@ namespace ASC.FederatedLogin.Profile
             return new Uri(request.GetDisplayUrl()).HasProfile();
         }
 
-        public static LoginProfile GetProfile(HttpContext context, IMemoryCache memoryCache)
+        public static LoginProfile GetProfile(Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IMemoryCache memoryCache)
         {
-            if (context == null) return new LoginProfile();
-            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache);
+            if (context == null) return new LoginProfile(signature, instanceCrypto);
+            return new Uri(context.Request.GetDisplayUrl()).GetProfile(context, memoryCache, signature, instanceCrypto);
         }
 
-        internal static LoginProfile FromError(Exception e)
+        internal static LoginProfile FromError(Signature signature, InstanceCrypto instanceCrypto, Exception e)
         {
-            var profile = new LoginProfile { AuthorizationError = e.Message };
+            var profile = new LoginProfile(signature, instanceCrypto) { AuthorizationError = e.Message };
             return profile;
         }
 
@@ -354,9 +358,9 @@ namespace ASC.FederatedLogin.Profile
             return string.Join(new string(PairSeparator, 1), _fields.Select(x => string.Join(new string(KeyValueSeparator, 1), new[] { x.Key, x.Value })).ToArray());
         }
 
-        internal static LoginProfile CreateFromSerializedString(string serialized)
+        internal static LoginProfile CreateFromSerializedString(Signature signature, InstanceCrypto instanceCrypto, string serialized)
         {
-            var profile = new LoginProfile();
+            var profile = new LoginProfile(signature, instanceCrypto);
             profile.FromSerializedString(serialized);
             return profile;
         }
@@ -379,11 +383,13 @@ namespace ASC.FederatedLogin.Profile
         }
 
 
-        internal LoginProfile()
+        internal LoginProfile(Signature signature, InstanceCrypto instanceCrypto)
         {
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
         }
 
-        protected LoginProfile(SerializationInfo info, StreamingContext context)
+        protected LoginProfile(Signature signature, InstanceCrypto instanceCrypto, SerializationInfo info, StreamingContext context) : this(signature, instanceCrypto)
         {
             if (info == null)
                 throw new ArgumentNullException("info");
@@ -391,7 +397,7 @@ namespace ASC.FederatedLogin.Profile
             FromTransport(transformed);
         }
 
-        public LoginProfile(string transport)
+        public LoginProfile(Signature signature, InstanceCrypto instanceCrypto, string transport) : this(signature, instanceCrypto)
         {
             FromTransport(transport);
         }

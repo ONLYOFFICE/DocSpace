@@ -25,7 +25,7 @@ function getData() {
       { key: 'filter-other', group: 'filter-other', label: 'Other', isHeader: true },
         { key: '0', group: 'filter-other', subgroup: 'filter-groups', defaultSelectLabel: 'Select', label: 'Groups' },
           { key: '0', inSubgroup: true, group: 'filter-groups', label: 'Administration'},
-          { key: '1', inSubgroup: true, group: 'filter-groups', label: 'Public Relations'},
+          { key: '1', inSubgroup: true, group: 'filter-groups', label: 'Public Relations'}
     ];
   }
 function getSortData() {

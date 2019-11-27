@@ -27,6 +27,7 @@ storiesOf("Components|Buttons", module)
       <Section>
         <IconButtons>
           <HelpButton
+            displayType="dropdown"
             tooltipContent={
               <Text.Body fontSize={13}>
                 Paste you tooltip content here
@@ -34,6 +35,8 @@ storiesOf("Components|Buttons", module)
             }
           />
           <HelpButton
+            displayType="aside"
+            helpButtonHeaderContent="Aside position HelpButton"
             tooltipContent={
               <Text.Body>
                 You tooltip content with{" "}
@@ -47,10 +50,12 @@ storiesOf("Components|Buttons", module)
             }
           />
           <HelpButton
+            displayType="auto"
+            helpButtonHeaderContent="Auto position HelpButton"
             tooltipContent={
               <>
                 <p>You can put every thing here</p>
-                <ul style={{marginBottom: 0}}>
+                <ul style={{ marginBottom: 0 }}>
                   <li>Word</li>
                   <li>Chart</li>
                   <li>Else</li>

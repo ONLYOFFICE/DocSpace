@@ -30,16 +30,9 @@ class ContextMenu extends React.PureComponent {
     this.container.removeEventListener('scroll', this.handleScroll);
   }
 
-  handleContextMenu = (e) => {
-    e.preventDefault();
-    this.handleClick(e);
-
-    this.setState({
-      visible: true
-    });
-
+  moveMenu = e => {
     const menu = document.getElementById('contextMenu');
-    const bounds = this.container.getBoundingClientRect();
+    const bounds = (this.container !== document) && this.container.getBoundingClientRect();
 
     const clickX = e.clientX - bounds.left;
     const clickY = e.clientY - bounds.top;
@@ -47,35 +40,56 @@ class ContextMenu extends React.PureComponent {
     const screenW = this.container.offsetWidth;
     const screenH = this.container.offsetHeight;
 
-    const rootW = menu.offsetWidth;
-    const rootH = menu.offsetHeight;
+    const rootW = menu && menu.offsetWidth;
+    const rootH = menu && menu.offsetHeight;
 
     const right = (screenW - clickX) > rootW;
     const left = !right;
     const top = (screenH - clickY) > rootH;
     const bottom = !top;
 
+    let newTop = `0px`;
+    let newLeft = `0px`;
+
     if (right) {
-      menu.style.left = `${clickX + 5}px`;
+      newLeft = `${clickX + 5}px`;
     }
 
     if (left) {
-      menu.style.left = `${clickX - rootW - 5}px`;
+      newLeft = `${clickX - rootW - 5}px`;
     }
 
     if (top) {
-      menu.style.top = `${clickY + 5}px`;
+      newTop = `${clickY + 5}px`;
     }
 
     if (bottom) {
-      menu.style.top = `${clickY - rootH - 5}px`;
+      newTop = `${clickY - rootH - 5}px`;
     }
+
+    if (menu) {
+      menu.style.top = newTop;
+      menu.style.left = newLeft;
+    }
+  }
+
+  handleContextMenu = (e) => {
+    if (e) {
+      e.preventDefault();
+      this.handleClick(e);
+    }
+    
+    this.setState({
+      visible: true
+    });
+
+    if (e) this.moveMenu(e);
   }
 
   handleClick = (e) => {
     const { visible } = this.state;
     const menu = document.getElementById('contextMenu');
-    const wasOutside = !(e.target.contains === menu);
+    const wasOutside = e.target ? !(e.target.contains === menu) : true;
 
     if (wasOutside && visible)
       this.setState({ visible: false });

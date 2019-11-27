@@ -11,9 +11,10 @@ import {
 import { connect } from "react-redux";
 import styled from 'styled-components';
 import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
 import { updateProfileCulture } from "../../../../../store/profile/actions";
-import ProfileInfo from "./ProfileInfo/ProfileInfo"
+import ProfileInfo from "./ProfileInfo/ProfileInfo";
+import { store } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
 
 const ProfileWrapper = styled.div`
   display: flex;

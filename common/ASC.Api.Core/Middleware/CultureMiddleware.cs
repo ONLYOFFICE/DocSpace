@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ASC.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -16,13 +17,13 @@ namespace ASC.Api.Core.Middleware
             this.next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task Invoke(HttpContext context, UserManager userManager, TenantManager tenantManager, AuthContext authContext)
         {
             CultureInfo culture = null;
 
-            if (SecurityContext.IsAuthenticated)
+            if (authContext.IsAuthenticated)
             {
-                var user = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                var user = userManager.GetUsers(authContext.CurrentAccount.ID);
 
                 if (!string.IsNullOrEmpty(user.CultureName))
                 {
@@ -32,7 +33,7 @@ namespace ASC.Api.Core.Middleware
 
             if (culture == null)
             {
-                culture = CoreContext.TenantManager.GetCurrentTenant().GetCulture();
+                culture = tenantManager.GetCurrentTenant().GetCulture();
             }
 
             Thread.CurrentThread.CurrentCulture = culture;
@@ -47,6 +48,14 @@ namespace ASC.Api.Core.Middleware
         public static IApplicationBuilder UseCultureMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<CultureMiddleware>();
+        }
+
+        public static IServiceCollection AddCultureMiddleware(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddAuthContextService();
         }
     }
 }

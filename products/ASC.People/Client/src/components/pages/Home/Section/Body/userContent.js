@@ -4,7 +4,7 @@ import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-compone
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
 import { useTranslation } from 'react-i18next';
-import history from "../../../../../history";
+import { history } from "asc-web-common";
 
 const getFormatedGroups = (user, status) => {
   let temp = [];
@@ -87,8 +87,8 @@ const UserContent = ({ user, history, settings }) => {
       </>
       {title
         ?
-        <span style={headDepartmentStyle}>
           <Text.Body
+            style={headDepartmentStyle}
             as="span"
             color={sideInfoColor}
             fontSize={12}
@@ -97,7 +97,6 @@ const UserContent = ({ user, history, settings }) => {
           >
             {title}
           </Text.Body>
-        </span>
         : <div style={headDepartmentStyle}></div>
       }
       {groups}

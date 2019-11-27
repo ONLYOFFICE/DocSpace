@@ -29,9 +29,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using ASC.Common.Caching;
+using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
+using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -75,8 +81,15 @@ namespace ASC.FederatedLogin.LoginProviders
         {
         }
 
-        public VKLoginProvider(string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public VKLoginProvider(TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional)
         {
         }
 
@@ -104,7 +117,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
             catch (Exception ex)
             {
-                return LoginProfile.FromError(ex);
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
             }
         }
 
@@ -116,7 +129,7 @@ namespace ASC.FederatedLogin.LoginProviders
             return RequestProfile(accessToken);
         }
 
-        private static LoginProfile RequestProfile(string accessToken)
+        private LoginProfile RequestProfile(string accessToken)
         {
             var fields = new[] { "sex" };
             var vkProfile = RequestHelper.PerformRequest(VKProfileUrl + "&fields=" + HttpUtility.UrlEncode(string.Join(",", fields)) + "&access_token=" + accessToken);
@@ -125,7 +138,7 @@ namespace ASC.FederatedLogin.LoginProviders
             return loginProfile;
         }
 
-        private static LoginProfile ProfileFromVK(string strProfile)
+        private LoginProfile ProfileFromVK(string strProfile)
         {
             var jProfile = JObject.Parse(strProfile);
             if (jProfile == null) throw new Exception("Failed to correctly process the response");
@@ -139,7 +152,7 @@ namespace ASC.FederatedLogin.LoginProviders
             var vkProfiles = profileJson.ToObject<List<VKProfile>>();
             if (vkProfiles.Count == 0) throw new Exception("Failed to correctly process the response");
 
-            var profile = new LoginProfile
+            var profile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Id = vkProfiles[0].id,
                 FirstName = vkProfiles[0].first_name,

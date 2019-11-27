@@ -32,11 +32,12 @@ using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Core.PublicResources;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -66,7 +67,10 @@ namespace ASC.Api.Settings.Smtp
         protected int CurrentTenant { get; private set; }
 
         protected Guid CurrentUser { get; private set; }
-
+        public UserManager UserManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public IConfiguration Configuration { get; }
         protected ILog Logger { get; private set; }
 
         public SmtpSettingsWrapper SmtpSettings { get; private set; }
@@ -75,11 +79,24 @@ namespace ASC.Api.Settings.Smtp
 
         private readonly string messageBody;
 
-        public SmtpOperation(SmtpSettingsWrapper smtpSettings, int tenant, Guid user)
+
+        public SmtpOperation(
+            SmtpSettingsWrapper smtpSettings,
+            int tenant,
+            Guid user,
+            UserManager userManager,
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> options)
         {
             SmtpSettings = smtpSettings;
             CurrentTenant = tenant;
             CurrentUser = user;
+            UserManager = userManager;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            Configuration = configuration;
 
             //todo
             //messageSubject = WebstudioNotifyPatternResource.subject_smtp_test;
@@ -93,7 +110,7 @@ namespace ASC.Api.Settings.Smtp
 
             TaskInfo = new DistributedTask();
 
-            Logger = LogManager.GetLogger("ASC");
+            Logger = options.CurrentValue;
         }
 
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
@@ -104,15 +121,15 @@ namespace ASC.Api.Settings.Smtp
 
                 SetProgress(5, "Setup tenant");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SetProgress(10, "Setup user");
 
-                SecurityContext.AuthenticateMe(CurrentTenant, CurrentUser); //Core.Configuration.Constants.CoreSystem);
+                SecurityContext.AuthenticateMe(CurrentUser); //Core.Configuration.Constants.CoreSystem);
 
                 SetProgress(15, "Find user data");
 
-                var currentUser = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                var currentUser = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
 
                 SetProgress(20, "Create mime message");
 
@@ -199,8 +216,8 @@ namespace ASC.Api.Settings.Smtp
 
         public SmtpClient GetSmtpClient()
         {
-            var sslCertificatePermit = ConfigurationManager.AppSettings["mail.certificate-permit"] != null &&
-                    Convert.ToBoolean(ConfigurationManager.AppSettings["mail.certificate-permit"]);
+            var sslCertificatePermit = Configuration["mail.certificate-permit"] != null &&
+                    Convert.ToBoolean(Configuration["mail.certificate-permit"]);
 
             return new SmtpClient
             {

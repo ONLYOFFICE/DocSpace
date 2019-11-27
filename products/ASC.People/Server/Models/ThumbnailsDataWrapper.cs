@@ -26,7 +26,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using ASC.Core.Tenants;
 using ASC.Web.Core.Users;
 
 namespace ASC.Web.Api.Models
@@ -34,14 +33,14 @@ namespace ASC.Web.Api.Models
     [DataContract]
     public class ThumbnailsDataWrapper
     {
-        public ThumbnailsDataWrapper(Tenant tenant, Guid userId)
+        public ThumbnailsDataWrapper(Guid userId, UserPhotoManager userPhotoManager)
         {
-            Original = UserPhotoManager.GetPhotoAbsoluteWebPath(tenant, userId);
-            Retina = UserPhotoManager.GetRetinaPhotoURL(tenant.TenantId, userId);
-            Max = UserPhotoManager.GetMaxPhotoURL(tenant.TenantId, userId);
-            Big = UserPhotoManager.GetBigPhotoURL(tenant.TenantId, userId);
-            Medium = UserPhotoManager.GetMediumPhotoURL(tenant.TenantId, userId);
-            Small = UserPhotoManager.GetSmallPhotoURL(tenant.TenantId, userId);
+            Original = userPhotoManager.GetPhotoAbsoluteWebPath(userId);
+            Retina = userPhotoManager.GetRetinaPhotoURL(userId);
+            Max = userPhotoManager.GetMaxPhotoURL(userId);
+            Big = userPhotoManager.GetBigPhotoURL(userId);
+            Medium = userPhotoManager.GetMediumPhotoURL(userId);
+            Small = userPhotoManager.GetSmallPhotoURL(userId);
         }
 
         private ThumbnailsDataWrapper()

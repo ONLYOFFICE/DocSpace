@@ -32,7 +32,7 @@ namespace ASC.Core.Common.Tests
     using NUnit.Framework;
 
     [TestFixture]
-    public class DbSubscriptionServiceTest : DbBaseTest<DbSubscriptionService>
+    class DbSubscriptionServiceTest : DbBaseTest<DbSubscriptionService>
     {
         [OneTimeSetUp]
         public void ClearData()

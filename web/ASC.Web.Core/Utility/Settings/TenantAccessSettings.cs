@@ -32,7 +32,7 @@ namespace ASC.Web.Core.Utility.Settings
 {
     [Serializable]
     [DataContract]
-    public class TenantAccessSettings : BaseSettings<TenantAccessSettings>
+    public class TenantAccessSettings : ISettings
     {
         [DataMember(Name = "Anyone")]
         public bool Anyone { get; set; }
@@ -40,18 +40,14 @@ namespace ASC.Web.Core.Utility.Settings
         [DataMember(Name = "RegisterUsersImmediately")]
         public bool RegisterUsersImmediately { get; set; }
 
-        #region ISettings Members
-
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{0CB4C871-0040-45AB-AE79-4CC292B91EF1}"); }
         }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new TenantAccessSettings { Anyone = false, RegisterUsersImmediately = false };
         }
-
-        #endregion
     }
 }

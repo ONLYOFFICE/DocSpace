@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
@@ -36,10 +35,10 @@ using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    public class DbAzService : DbBaseService, IAzService
+    class DbAzService : DbBaseService, IAzService
     {
-        public DbAzService(ConnectionStringSettings connectionString)
-            : base(connectionString, "tenant")
+        public DbAzService(DbOptionsManager dbOptionsManager)
+            : base(dbOptionsManager, "tenant")
         {
         }
 
@@ -82,7 +81,7 @@ namespace ASC.Core.Data
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using (var db = GetDb())
+            var db = GetDb();
             using (var tx = db.BeginTransaction())
             {
                 if (!ExistEscapeRecord(db, r))
@@ -103,7 +102,7 @@ namespace ASC.Core.Data
         public void RemoveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            using var db = GetDb();
+            var db = GetDb();
             using var tx = db.BeginTransaction();
             if (ExistEscapeRecord(db, r))
             {

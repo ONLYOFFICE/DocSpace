@@ -37,22 +37,24 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Data.Storage;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.Migration;
 using ASC.IPSecurity;
 using ASC.MessagingSystem;
+using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Sms;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Settings;
 using ASC.Web.Core.WebZones;
@@ -64,13 +66,15 @@ using ASC.Web.Studio.Core.SMS;
 using ASC.Web.Studio.Core.Statistic;
 using ASC.Web.Studio.Core.TFA;
 using ASC.Web.Studio.UserControls.CustomNavigation;
+using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-
-using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Settings
 {
@@ -78,35 +82,135 @@ namespace ASC.Api.Settings
     [ApiController]
     public partial class SettingsController : ControllerBase
     {
-        private const int ONE_THREAD = 1;
-        private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
+        //private const int ONE_THREAD = 1;
 
-        private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
-
-        private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
-
+        //private static readonly DistributedTaskQueue quotaTasks = new DistributedTaskQueue("quotaOperations", ONE_THREAD);
+        //private static DistributedTaskQueue LDAPTasks { get; } = new DistributedTaskQueue("ldapOperations");
+        //private static DistributedTaskQueue SMTPTasks { get; } = new DistributedTaskQueue("smtpOperations");
         public Tenant Tenant { get { return ApiContext.Tenant; } }
-
         public ApiContext ApiContext { get; }
-
-        public LogManager LogManager { get; }
-
         public MessageService MessageService { get; }
-
         public StudioNotifyService StudioNotifyService { get; }
-
         public IWebHostEnvironment WebHostEnvironment { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public AuthContext AuthContext { get; }
+        public CookiesManager CookiesManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public StudioNotifyHelper StudioNotifyHelper { get; }
+        public LicenseReader LicenseReader { get; }
+        public PermissionContext PermissionContext { get; }
+        public SettingsManager SettingsManager { get; }
+        public TfaManager TfaManager { get; }
+        public WebItemManager WebItemManager { get; }
+        public WebItemManagerSecurity WebItemManagerSecurity { get; }
+        public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
+        public TenantWhiteLabelSettingsHelper TenantWhiteLabelSettingsHelper { get; }
+        public StorageHelper StorageHelper { get; }
+        public TenantLogoManager TenantLogoManager { get; }
+        public TenantUtil TenantUtil { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        public ColorThemesSettingsHelper ColorThemesSettingsHelper { get; }
+        public IConfiguration Configuration { get; }
+        public SetupInfo SetupInfo { get; }
+        public BuildVersion BuildVersion { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public StatisticManager StatisticManager { get; }
+        public IPRestrictionsService IPRestrictionsService { get; }
+        public CoreConfiguration CoreConfiguration { get; }
+        public MessageTarget MessageTarget { get; }
+        public StudioSmsNotificationSettingsHelper StudioSmsNotificationSettingsHelper { get; }
+        public CoreSettings CoreSettings { get; }
+        public StorageSettingsHelper StorageSettingsHelper { get; }
+        public ILog Log { get; set; }
 
-
-        public SettingsController(LogManager logManager,
+        public SettingsController(
+            IOptionsMonitor<ILog> option,
             MessageService messageService,
             StudioNotifyService studioNotifyService,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticsProvider,
+            AuthContext authContext,
+            CookiesManager cookiesManager,
+            WebItemSecurity webItemSecurity,
+            StudioNotifyHelper studioNotifyHelper,
+            LicenseReader licenseReader,
+            PermissionContext permissionContext,
+            SettingsManager settingsManager,
+            TfaManager tfaManager,
+            WebItemManager webItemManager,
+            WebItemManagerSecurity webItemManagerSecurity,
+            TenantInfoSettingsHelper tenantInfoSettingsHelper,
+            TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
+            StorageHelper storageHelper,
+            TenantLogoManager tenantLogoManager,
+            TenantUtil tenantUtil,
+            CoreBaseSettings coreBaseSettings,
+            CommonLinkUtility commonLinkUtility,
+            ColorThemesSettingsHelper colorThemesSettingsHelper,
+            IConfiguration configuration,
+            SetupInfo setupInfo,
+            BuildVersion buildVersion,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            StatisticManager statisticManager,
+            IPRestrictionsService iPRestrictionsService,
+            CoreConfiguration coreConfiguration,
+            MessageTarget messageTarget,
+            StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+            CoreSettings coreSettings,
+            StorageSettingsHelper storageSettingsHelper,
+            IWebHostEnvironment webHostEnvironment,
+            IServiceProvider serviceProvider,
+            EmployeeWraperHelper employeeWraperHelper)
         {
-            LogManager = logManager;
+            Log = option.Get("ASC.Api");
+            WebHostEnvironment = webHostEnvironment;
+            ServiceProvider = serviceProvider;
+            EmployeeWraperHelper = employeeWraperHelper;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            TenantExtra = tenantExtra;
+            TenantStatisticsProvider = tenantStatisticsProvider;
+            AuthContext = authContext;
+            CookiesManager = cookiesManager;
+            WebItemSecurity = webItemSecurity;
+            StudioNotifyHelper = studioNotifyHelper;
+            LicenseReader = licenseReader;
+            PermissionContext = permissionContext;
+            SettingsManager = settingsManager;
+            TfaManager = tfaManager;
+            WebItemManager = webItemManager;
+            WebItemManagerSecurity = webItemManagerSecurity;
+            TenantInfoSettingsHelper = tenantInfoSettingsHelper;
+            TenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
+            StorageHelper = storageHelper;
+            TenantLogoManager = tenantLogoManager;
+            TenantUtil = tenantUtil;
+            CoreBaseSettings = coreBaseSettings;
+            CommonLinkUtility = commonLinkUtility;
+            ColorThemesSettingsHelper = colorThemesSettingsHelper;
+            Configuration = configuration;
+            SetupInfo = setupInfo;
+            BuildVersion = buildVersion;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            StatisticManager = statisticManager;
+            IPRestrictionsService = iPRestrictionsService;
+            CoreConfiguration = coreConfiguration;
+            MessageTarget = messageTarget;
+            StudioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+            CoreSettings = coreSettings;
+            StorageSettingsHelper = storageSettingsHelper;
         }
 
         [Read("")]
@@ -119,7 +223,7 @@ namespace ASC.Api.Settings
                 GreetingSettings = Tenant.Name
             };
 
-            if (SecurityContext.IsAuthenticated)
+            if (AuthContext.IsAuthenticated)
             {
                 settings.TrustedDomains = Tenant.TrustedDomains;
                 settings.TrustedDomainsType = Tenant.TrustedDomainsType;
@@ -127,6 +231,7 @@ namespace ASC.Api.Settings
                 settings.Timezone = timeZone.Id;
                 settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
+                settings.OwnerId = Tenant.OwnerId;
             }
 
             return settings;
@@ -135,7 +240,7 @@ namespace ASC.Api.Settings
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {
-            return QuotaWrapper.GetCurrent(Tenant);
+            return new QuotaWrapper(Tenant, CoreBaseSettings, CoreConfiguration, TenantExtra, TenantStatisticsProvider, AuthContext, SettingsManager, WebItemManager);
         }
 
         [AllowAnonymous]
@@ -148,22 +253,28 @@ namespace ASC.Api.Settings
         [Read("timezones")]
         public List<object> GetTimeZones()
         {
-            var timeZones =  TimeZoneInfo.GetSystemTimeZones().ToList();
+            var timeZones = TimeZoneInfo.GetSystemTimeZones().ToList();
 
             if (timeZones.All(tz => tz.Id != "UTC"))
             {
                 timeZones.Add(TimeZoneInfo.Utc);
             }
 
-            List<object> listOfTimezones = new List<object>();
+            var listOfTimezones = new List<object>();
 
             foreach (var tz in timeZones.OrderBy(z => z.BaseUtcOffset))
             {
                 var displayName = tz.DisplayName;
-                if (tz.StandardName.StartsWith("GMT") && !tz.StandardName.StartsWith("GMT "))
+                if (!displayName.StartsWith("(UTC") && !displayName.StartsWith("UTC"))
                 {
-                    displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + tz.Id;
-                   
+                    if (tz.BaseUtcOffset != TimeSpan.Zero)
+                    {
+                        displayName = string.Format("(UTC{0}{1}) ", tz.BaseUtcOffset < TimeSpan.Zero ? "-" : "+", tz.BaseUtcOffset.ToString(@"hh\:mm")) + displayName;
+                    }
+                    else
+                    {
+                        displayName = "(UTC) " + displayName;
+                    }
                 }
 
                 listOfTimezones.Add(new TimezonesModel { Id = tz.Id, DisplayName = displayName });
@@ -173,21 +284,21 @@ namespace ASC.Api.Settings
             return listOfTimezones;
         }
 
-/*        [Read("greetingsettings")]
-        public string GetGreetingSettings()
-        {
-            return Tenant.Name;
-        }*/
+        /*        [Read("greetingsettings")]
+                public string GetGreetingSettings()
+                {
+                    return Tenant.Name;
+                }*/
 
         [Create("greetingsettings")]
         public object SaveGreetingSettings(GreetingSettingsModel model)
         {
             try
             {
-                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
                 Tenant.Name = model.Title;
-                CoreContext.TenantManager.SaveTenant(Tenant);
+                TenantManager.SaveTenant(Tenant);
 
                 MessageService.Send(MessageAction.GreetingSettingsUpdated);
 
@@ -204,15 +315,15 @@ namespace ASC.Api.Settings
         {
             try
             {
-                SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-               TenantInfoSettings.Load().RestoreDefaultTenantName();
+                TenantInfoSettingsHelper.RestoreDefaultTenantName();
 
                 return new
                 {
                     Status = 1,
                     Message = Resource.SuccessfullySaveGreetingSettingsMessage,
-                    CompanyName = CoreContext.TenantManager.GetCurrentTenant().Name
+                    CompanyName = Tenant.Name
                 };
             }
             catch (Exception e)
@@ -221,39 +332,39 @@ namespace ASC.Api.Settings
             }
         }
 
-        [Read("recalculatequota")]
-        public void RecalculateQuota()
-        {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+        //[Read("recalculatequota")]
+        //public void RecalculateQuota()
+        //{
+        //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
-            var operations = quotaTasks.GetTasks()
-                .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
+        //    var operations = quotaTasks.GetTasks()
+        //        .Where(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
 
-            if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-            {
-                throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-            }
+        //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
+        //    {
+        //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
+        //    }
 
-            var op = new QuotaSync(Tenant.TenantId);
+        //    var op = new QuotaSync(Tenant.TenantId, ServiceProvider);
 
-            quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-        }
+        //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
+        //}
 
-        [Read("checkrecalculatequota")]
-        public bool CheckRecalculateQuota()
-        {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+        //[Read("checkrecalculatequota")]
+        //public bool CheckRecalculateQuota()
+        //{
+        //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
+        //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.TenantIdKey) == Tenant.TenantId);
 
-            if (task != null && task.Status == DistributedTaskStatus.Completed)
-            {
-                quotaTasks.RemoveTask(task.Id);
-                return false;
-            }
+        //    if (task != null && task.Status == DistributedTaskStatus.Completed)
+        //    {
+        //        quotaTasks.RemoveTask(task.Id);
+        //        return false;
+        //    }
 
-            return task != null;
-        }
+        //    return task != null;
+        //}
 
         [AllowAnonymous]
         [Read("version/build", false)]
@@ -265,16 +376,16 @@ namespace ASC.Api.Settings
         [Read("version")]
         public TenantVersionWrapper GetVersions()
         {
-            return new TenantVersionWrapper(Tenant.Version, CoreContext.TenantManager.GetTenantVersions());
+            return new TenantVersionWrapper(Tenant.Version, TenantManager.GetTenantVersions());
         }
 
         [Update("version")]
         public TenantVersionWrapper SetVersion(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            CoreContext.TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
-            CoreContext.TenantManager.SetTenantVersion(Tenant, model.VersionId);
+            TenantManager.GetTenantVersions().FirstOrDefault(r => r.Id == model.VersionId).NotFoundIfNull();
+            TenantManager.SetTenantVersion(Tenant, model.VersionId);
 
             return GetVersions();
         }
@@ -284,18 +395,18 @@ namespace ASC.Api.Settings
         {
             if (ids == null || !ids.Any())
             {
-                ids = WebItemManager.Instance.GetItemsAll().Select(i => i.ID.ToString());
+                ids = WebItemManager.GetItemsAll().Select(i => i.ID.ToString());
             }
 
-            var subItemList = WebItemManager.Instance.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
+            var subItemList = WebItemManager.GetItemsAll().Where(item => item.IsSubItem()).Select(i => i.ID.ToString());
 
-            return ids.Select(r => WebItemSecurity.GetSecurityInfo(Tenant.TenantId, r))
+            return ids.Select(r => WebItemSecurity.GetSecurityInfo(r))
                       .Select(i => new SecurityWrapper
                       {
                           WebItemId = i.WebItemId,
                           Enabled = i.Enabled,
-                          Users = i.Users.Select(r => EmployeeWraper.Get(r, ApiContext)),
-                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, ApiContext)),
+                          Users = i.Users.Select(EmployeeWraperHelper.Get),
+                          Groups = i.Groups.Select(g => new GroupWrapperSummary(g, UserManager)),
                           IsSubItem = subItemList.Contains(i.WebItemId),
                       }).ToList();
         }
@@ -303,15 +414,15 @@ namespace ASC.Api.Settings
         [Read("security/{id}")]
         public bool GetWebItemSecurityInfo(Guid id)
         {
-            var module = WebItemManager.Instance[id];
+            var module = WebItemManager[id];
 
-            return module != null && !module.IsDisabled(Tenant);
+            return module != null && !module.IsDisabled(WebItemSecurity, AuthContext);
         }
 
         [Read("security/modules")]
         public object GetEnabledModules()
         {
-            var EnabledModules = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.Normal)
+            var EnabledModules = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.Normal)
                                         .Where(item => !item.IsSubItem() && item.Visible)
                                         .ToList()
                                         .Select(item => new
@@ -327,7 +438,7 @@ namespace ASC.Api.Settings
         [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
         public object GetPasswordSettings()
         {
-            var UserPasswordSettings = PasswordSettings.Load();
+            var UserPasswordSettings = SettingsManager.Load<PasswordSettings>();
 
             return UserPasswordSettings;
         }
@@ -335,7 +446,7 @@ namespace ASC.Api.Settings
         [Update("security")]
         public IEnumerable<SecurityWrapper> SetWebItemSecurity(WebItemSecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             WebItemSecurity.SetSecurity(model.Id, model.Enabled, model.Subjects?.ToArray());
             var securityInfo = GetWebItemSecurityInfo(new List<string> { model.Id });
@@ -369,7 +480,7 @@ namespace ASC.Api.Settings
         [Update("security/access")]
         public IEnumerable<SecurityWrapper> SetAccessToWebItems(WebItemSecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var itemList = new ItemDictionary<string, bool>();
 
@@ -379,7 +490,7 @@ namespace ASC.Api.Settings
                     itemList.Add(item.Key, item.Value);
             }
 
-            var defaultPageSettings = StudioDefaultPageSettings.Load();
+            var defaultPageSettings = SettingsManager.Load<StudioDefaultPageSettings>();
 
             foreach (var item in itemList)
             {
@@ -388,9 +499,9 @@ namespace ASC.Api.Settings
 
                 if (item.Value)
                 {
-                    if (WebItemManager.Instance[productId] is IProduct webItem)
+                    if (WebItemManager[productId] is IProduct webItem)
                     {
-                        var productInfo = WebItemSecurity.GetSecurityInfo(Tenant.TenantId, item.Key);
+                        var productInfo = WebItemSecurity.GetSecurityInfo(item.Key);
                         var selectedGroups = productInfo.Groups.Select(group => group.ID).ToList();
                         var selectedUsers = productInfo.Users.Select(user => user.ID).ToList();
                         selectedUsers.AddRange(selectedGroups);
@@ -402,7 +513,7 @@ namespace ASC.Api.Settings
                 }
                 else if (productId == defaultPageSettings.DefaultProductID)
                 {
-                    (defaultPageSettings.GetDefault() as StudioDefaultPageSettings).Save();
+                    SettingsManager.Save(defaultPageSettings.GetDefault(ServiceProvider) as StudioDefaultPageSettings);
                 }
 
                 WebItemSecurity.SetSecurity(item.Key, item.Value, subjects);
@@ -416,36 +527,36 @@ namespace ASC.Api.Settings
         [Read("security/administrator/{productid}")]
         public IEnumerable<EmployeeWraper> GetProductAdministrators(Guid productid)
         {
-            return WebItemSecurity.GetProductAdministrators(Tenant, productid)
-                                  .Select(r => EmployeeWraper.Get(r, ApiContext))
+            return WebItemSecurity.GetProductAdministrators(productid)
+                                  .Select(EmployeeWraperHelper.Get)
                                   .ToList();
         }
 
         [Read("security/administrator")]
         public object IsProductAdministrator(Guid productid, Guid userid)
         {
-            var result = WebItemSecurity.IsProductAdministrator(Tenant, productid, userid);
+            var result = WebItemSecurity.IsProductAdministrator(productid, userid);
             return new { ProductId = productid, UserId = userid, Administrator = result, };
         }
 
         [Update("security/administrator")]
         public object SetProductAdministrator(SecurityModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            WebItemSecurity.SetProductAdministrator(Tenant, model.ProductId, model.UserId, model.Administrator);
+            WebItemSecurity.SetProductAdministrator(model.ProductId, model.UserId, model.Administrator);
 
-            var admin = CoreContext.UserManager.GetUsers(model.UserId);
+            var admin = UserManager.GetUsers(model.UserId);
 
             if (model.ProductId == Guid.Empty)
             {
                 var messageAction = model.Administrator ? MessageAction.AdministratorOpenedFullAccess : MessageAction.AdministratorDeleted;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), admin.DisplayUserName(false, DisplayUserSettingsHelper));
             }
             else
             {
                 var messageAction = model.Administrator ? MessageAction.ProductAddedAdministrator : MessageAction.ProductDeletedAdministrator;
-                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false));
+                MessageService.Send(messageAction, MessageTarget.Create(admin.ID), GetProductName(model.ProductId), admin.DisplayUserName(false, DisplayUserSettingsHelper));
             }
 
             return new { model.ProductId, model.UserId, model.Administrator };
@@ -454,7 +565,7 @@ namespace ASC.Api.Settings
         [Read("logo")]
         public string GetLogo()
         {
-            return TenantInfoSettings.Load().GetAbsoluteCompanyLogoPath();
+            return TenantInfoSettingsHelper.GetAbsoluteCompanyLogoPath(SettingsManager.Load<TenantInfoSettings>());
         }
 
 
@@ -462,25 +573,25 @@ namespace ASC.Api.Settings
         [Create("whitelabel/save")]
         public void SaveWhiteLabelSettings(WhiteLabelModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled || !TenantLogoManager.WhiteLabelPaid)
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
+            var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
             if (model.Logo != null)
             {
                 var logoDict = new Dictionary<int, string>();
                 model.Logo.ToList().ForEach(n => logoDict.Add(n.Key, n.Value));
 
-                _tenantWhiteLabelSettings.SetLogo(Tenant.TenantId, logoDict);
+                TenantWhiteLabelSettingsHelper.SetLogo(_tenantWhiteLabelSettings, logoDict);
             }
 
-            _tenantWhiteLabelSettings.LogoText = model.LogoText;
-            _tenantWhiteLabelSettings.Save(Tenant.TenantId);
+            _tenantWhiteLabelSettings.SetLogoText(model.LogoText);
+            TenantWhiteLabelSettingsHelper.Save(_tenantWhiteLabelSettings, Tenant.TenantId, TenantLogoManager);
 
         }
 
@@ -491,7 +602,7 @@ namespace ASC.Api.Settings
         {
             if (model.Attachments != null && model.Attachments.Any())
             {
-                var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
+                var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
                 foreach (var f in model.Attachments)
                 {
@@ -500,9 +611,9 @@ namespace ASC.Api.Settings
                     var logoType = (WhiteLabelLogoTypeEnum)(Convert.ToInt32(parts[0]));
                     var fileExt = parts[1];
                     using var inputStream = f.OpenReadStream();
-                    _tenantWhiteLabelSettings.SetLogoFromStream(logoType, fileExt, inputStream);
+                    TenantWhiteLabelSettingsHelper.SetLogoFromStream(_tenantWhiteLabelSettings, logoType, fileExt, inputStream);
                 }
-                _tenantWhiteLabelSettings.Save(Tenant.TenantId);
+                TenantWhiteLabelSettingsHelper.Save(_tenantWhiteLabelSettings, Tenant.TenantId, TenantLogoManager);
             }
             else
             {
@@ -515,7 +626,7 @@ namespace ASC.Api.Settings
         [Read("whitelabel/sizes")]
         public object GetWhiteLabelSizes()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
@@ -538,22 +649,22 @@ namespace ASC.Api.Settings
         [Read("whitelabel/logos")]
         public Dictionary<int, string> GetWhiteLabelLogos(bool retina)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled)
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
+            var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
 
             var result = new Dictionary<int, string>
             {
-                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Dark, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.Favicon, !retina)) },
-                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(HttpContext, _tenantWhiteLabelSettings.GetAbsoluteLogoPath(WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
+                { (int)WhiteLabelLogoTypeEnum.LightSmall, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Dark, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.Favicon, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !retina)) },
+                { (int)WhiteLabelLogoTypeEnum.DocsEditor, CommonLinkUtility.GetFullAbsolutePath(TenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !retina)) }
             };
 
             return result;
@@ -568,9 +679,9 @@ namespace ASC.Api.Settings
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var whiteLabelSettings = TenantWhiteLabelSettings.Load();
+            var whiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
-            return whiteLabelSettings.LogoText ?? TenantWhiteLabelSettings.DefaultLogoText;
+            return whiteLabelSettings.GetLogoText(SettingsManager) ?? TenantWhiteLabelSettings.DefaultLogoText;
         }
 
 
@@ -578,42 +689,42 @@ namespace ASC.Api.Settings
         [Update("whitelabel/restore")]
         public void RestoreWhiteLabelOptions()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             if (!TenantLogoManager.WhiteLabelEnabled || !TenantLogoManager.WhiteLabelPaid)
             {
                 throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
             }
 
-            var _tenantWhiteLabelSettings = TenantWhiteLabelSettings.Load();
-            _tenantWhiteLabelSettings.RestoreDefault();
+            var _tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
+            TenantWhiteLabelSettingsHelper.RestoreDefault(_tenantWhiteLabelSettings, TenantLogoManager);
 
-            var _tenantInfoSettings = TenantInfoSettings.Load();
-            _tenantInfoSettings.RestoreDefaultLogo();
-            _tenantInfoSettings.Save();
+            var _tenantInfoSettings = SettingsManager.Load<TenantInfoSettings>();
+            TenantInfoSettingsHelper.RestoreDefaultLogo(_tenantInfoSettings, TenantLogoManager);
+            SettingsManager.Save(_tenantInfoSettings);
         }
 
         [Read("iprestrictions")]
         public IEnumerable<IPRestriction> GetIpRestrictions()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Get(Tenant.TenantId);
         }
 
         [Update("iprestrictions")]
         public IEnumerable<string> SaveIpRestrictions(IpRestrictionsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             return IPRestrictionsService.Save(model.Ips, Tenant.TenantId);
         }
 
         [Update("iprestrictions/settings")]
         public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var settings = new IPRestrictionsSettings { Enable = model.Enable };
-            settings.Save();
+            SettingsManager.Save(settings);
 
             return settings;
         }
@@ -622,7 +733,7 @@ namespace ASC.Api.Settings
         public TipsSettings UpdateTipsSettings(SettingsModel model)
         {
             var settings = new TipsSettings { Show = model.Show };
-            settings.SaveForCurrentUser();
+            SettingsManager.SaveForCurrentUser(settings);
 
             if (!model.Show && !string.IsNullOrEmpty(SetupInfo.TipsAddress))
             {
@@ -631,7 +742,7 @@ namespace ASC.Api.Settings
                     using var client = new WebClient();
                     var data = new NameValueCollection
                     {
-                        ["userId"] = SecurityContext.CurrentAccount.ID.ToString(),
+                        ["userId"] = AuthContext.CurrentAccount.ID.ToString(),
                         ["tenantId"] = Tenant.TenantId.ToString(CultureInfo.InvariantCulture)
                     };
 
@@ -639,7 +750,7 @@ namespace ASC.Api.Settings
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error(e.Message, e);
+                    Log.Error(e.Message, e);
                 }
             }
 
@@ -649,21 +760,21 @@ namespace ASC.Api.Settings
         [Update("tips/change/subscription")]
         public bool UpdateTipsSubscription()
         {
-            return StudioPeriodicNotify.ChangeSubscription(Tenant, SecurityContext.CurrentAccount.ID);
+            return StudioPeriodicNotify.ChangeSubscription(AuthContext.CurrentAccount.ID, StudioNotifyHelper);
         }
 
         [Update("wizard/complete")]
         public WizardSettings CompleteWizard()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = WizardSettings.Load();
+            var settings = SettingsManager.Load<WizardSettings>();
 
             if (settings.Completed)
                 return settings;
 
             settings.Completed = true;
-            settings.Save();
+            SettingsManager.Save(settings);
 
             return settings;
         }
@@ -671,26 +782,29 @@ namespace ASC.Api.Settings
         [Update("tfaapp")]
         public bool TfaSettings(TfaModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var result = false;
 
             MessageAction action;
+            var settings = SettingsManager.Load<TfaAppAuthSettings>();
+
             switch (model.Type)
             {
                 case "sms":
-                    if (!StudioSmsNotificationSettings.IsVisibleSettings)
+                    if (!StudioSmsNotificationSettingsHelper.IsVisibleSettings())
                         throw new Exception(Resource.SmsNotAvailable);
 
                     if (!SmsProviderManager.Enabled())
                         throw new MethodAccessException();
 
-                    StudioSmsNotificationSettings.Enable = true;
+                    StudioSmsNotificationSettingsHelper.Enable = true;
                     action = MessageAction.TwoFactorAuthenticationEnabledBySms;
 
-                    if (TfaAppAuthSettings.Enable)
+                    if (settings.EnableSetting)
                     {
-                        TfaAppAuthSettings.Enable = false;
+                        settings.EnableSetting = false;
+                        SettingsManager.Save(settings);
                     }
 
                     result = true;
@@ -703,12 +817,14 @@ namespace ASC.Api.Settings
                         throw new Exception(Resource.TfaAppNotAvailable);
                     }
 
-                    TfaAppAuthSettings.Enable = true;
+                    settings.EnableSetting = true;
+                    SettingsManager.Save(settings);
+
                     action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)
                     {
-                        StudioSmsNotificationSettings.Enable = false;
+                        StudioSmsNotificationSettingsHelper.Enable = false;
                     }
 
                     result = true;
@@ -716,14 +832,15 @@ namespace ASC.Api.Settings
                     break;
 
                 default:
-                    if (TfaAppAuthSettings.Enable)
+                    if (settings.EnableSetting)
                     {
-                        TfaAppAuthSettings.Enable = false;
+                        settings.EnableSetting = false;
+                        SettingsManager.Save(settings);
                     }
 
-                    if (StudioSmsNotificationSettings.IsVisibleSettings && StudioSmsNotificationSettings.Enable)
+                    if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && StudioSmsNotificationSettingsHelper.Enable)
                     {
-                        StudioSmsNotificationSettings.Enable = false;
+                        StudioSmsNotificationSettingsHelper.Enable = false;
                     }
 
                     action = MessageAction.TwoFactorAuthenticationDisabled;
@@ -733,7 +850,7 @@ namespace ASC.Api.Settings
 
             if (result)
             {
-                CookiesManager.ResetTenantCookie(HttpContext);
+                CookiesManager.ResetTenantCookie();
             }
 
             MessageService.Send(action);
@@ -744,30 +861,30 @@ namespace ASC.Api.Settings
         [Read("tfaappcodes")]
         public IEnumerable<object> TfaAppGetCodes()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(currentUser.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (currentUser.IsVisitor(ApiContext.Tenant) || currentUser.IsOutsider(ApiContext.Tenant))
+            if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            return TfaAppUserSettings.LoadForCurrentUser().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
+            return SettingsManager.LoadForCurrentUser<TfaAppUserSettings>().CodesSetting.Select(r => new { r.IsUsed, r.Code }).ToList();
         }
 
         [Update("tfaappnewcodes")]
         public IEnumerable<object> TfaAppRequestNewCodes()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(Tenant.TenantId, SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(currentUser.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, currentUser.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (currentUser.IsVisitor(Tenant) || currentUser.IsOutsider(Tenant))
+            if (currentUser.IsVisitor(UserManager) || currentUser.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            var codes = currentUser.GenerateBackupCodes().Select(r => new { r.IsUsed, r.Code }).ToList();
-            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false));
+            var codes = TfaManager.GenerateBackupCodes(currentUser).Select(r => new { r.IsUsed, r.Code }).ToList();
+            MessageService.Send(MessageAction.UserConnectedTfaApp, MessageTarget.Create(currentUser.ID), currentUser.DisplayUserName(false, DisplayUserSettingsHelper));
             return codes;
         }
 
@@ -775,26 +892,26 @@ namespace ASC.Api.Settings
         public string TfaAppNewApp(TfaModel model)
         {
             var isMe = model.Id.Equals(Guid.Empty);
-            var user = CoreContext.UserManager.GetUsers(isMe ? SecurityContext.CurrentAccount.ID : model.Id);
+            var user = UserManager.GetUsers(isMe ? AuthContext.CurrentAccount.ID : model.Id);
 
-            if (!isMe && !SecurityContext.CheckPermissions(Tenant, new UserSecurityProvider(user.ID), Constants.Action_EditUser))
+            if (!isMe && !PermissionContext.CheckPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser))
                 throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
 
-            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(user.ID))
+            if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(SettingsManager, user.ID))
                 throw new Exception(Resource.TfaAppNotAvailable);
 
-            if (user.IsVisitor(Tenant) || user.IsOutsider(Tenant))
+            if (user.IsVisitor(UserManager) || user.IsOutsider(UserManager))
                 throw new NotSupportedException("Not available.");
 
-            TfaAppUserSettings.DisableForUser(user.ID);
-            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false));
+            TfaAppUserSettings.DisableForUser(ServiceProvider, SettingsManager, user.ID);
+            MessageService.Send(MessageAction.UserDisconnectedTfaApp, MessageTarget.Create(user.ID), user.DisplayUserName(false, DisplayUserSettingsHelper));
 
             if (isMe)
             {
-                return CommonLinkUtility.GetConfirmationUrl(Tenant.TenantId, user.Email, ConfirmType.TfaActivation);
+                return CommonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
             }
 
-            StudioNotifyService.SendMsgTfaReset(Tenant.TenantId, user);
+            StudioNotifyService.SendMsgTfaReset(user);
             return string.Empty;
         }
 
@@ -802,23 +919,23 @@ namespace ASC.Api.Settings
         [Update("welcome/close")]
         public void CloseWelcomePopup()
         {
-            var currentUser = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            var currentUser = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
 
-            var collaboratorPopupSettings = CollaboratorSettings.LoadForCurrentUser();
+            var collaboratorPopupSettings = SettingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-            if (!(currentUser.IsVisitor(Tenant) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(Tenant)))
+            if (!(currentUser.IsVisitor(UserManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(UserManager)))
                 throw new NotSupportedException("Not available.");
 
             collaboratorPopupSettings.FirstVisit = false;
-            collaboratorPopupSettings.SaveForCurrentUser();
+            SettingsManager.SaveForCurrentUser(collaboratorPopupSettings);
         }
 
         ///<visible>false</visible>
         [Update("colortheme")]
         public void SaveColorTheme(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            ColorThemesSettings.SaveColorTheme(model.Theme);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            ColorThemesSettingsHelper.SaveColorTheme(model.Theme);
             MessageService.Send(MessageAction.ColorThemeChanged);
         }
 
@@ -826,7 +943,7 @@ namespace ASC.Api.Settings
         [Update("timeandlanguage")]
         public string TimaAndLanguage(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var culture = CultureInfo.GetCultureInfo(model.Lng);
 
@@ -848,7 +965,7 @@ namespace ASC.Api.Settings
             }
             Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID) ?? TimeZoneInfo.Utc;
 
-            CoreContext.TenantManager.SaveTenant(Tenant);
+            TenantManager.SaveTenant(Tenant);
 
             if (!Tenant.TimeZone.Id.Equals(oldTimeZone.Id) || changelng)
             {
@@ -869,9 +986,9 @@ namespace ASC.Api.Settings
         [Update("defaultpage")]
         public string SaveDefaultPageSettings(SettingsModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID }.Save();
+            SettingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = model.DefaultProductID });
 
             MessageService.Send(MessageAction.DefaultStartPageSettingsUpdated);
 
@@ -879,16 +996,16 @@ namespace ASC.Api.Settings
         }
 
 
-        private static string GetProductName(Guid productId)
+        private string GetProductName(Guid productId)
         {
-            var product = WebItemManager.Instance[productId];
+            var product = WebItemManager[productId];
             return productId == Guid.Empty ? "All" : product != null ? product.Name : productId.ToString();
         }
 
         [Read("license/refresh")]
         public bool RefreshLicense()
         {
-            if (!CoreContext.Configuration.Standalone) return false;
+            if (!CoreBaseSettings.Standalone) return false;
             LicenseReader.RefreshLicense();
             return true;
         }
@@ -897,7 +1014,7 @@ namespace ASC.Api.Settings
         [Read("customnavigation/getall")]
         public List<CustomNavigationItem> GetCustomNavigationItems()
         {
-            return CustomNavigationSettings.Load().Items;
+            return SettingsManager.Load<CustomNavigationSettings>().Items;
         }
 
         [Read("customnavigation/getsample")]
@@ -909,15 +1026,15 @@ namespace ASC.Api.Settings
         [Read("customnavigation/get/{id}")]
         public CustomNavigationItem GetCustomNavigationItem(Guid id)
         {
-            return CustomNavigationSettings.Load().Items.FirstOrDefault(item => item.Id == id);
+            return SettingsManager.Load<CustomNavigationSettings>().Items.FirstOrDefault(item => item.Id == id);
         }
 
         [Create("customnavigation/create")]
         public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = CustomNavigationSettings.Load();
+            var settings = SettingsManager.Load<CustomNavigationSettings>();
 
             var exist = false;
 
@@ -933,13 +1050,13 @@ namespace ASC.Api.Settings
                 if (existItem.SmallImg != item.SmallImg)
                 {
                     StorageHelper.DeleteLogo(existItem.SmallImg);
-                    existItem.SmallImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.SmallImg);
+                    existItem.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
                 }
 
                 if (existItem.BigImg != item.BigImg)
                 {
                     StorageHelper.DeleteLogo(existItem.BigImg);
-                    existItem.BigImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.BigImg);
+                    existItem.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
                 }
 
                 exist = true;
@@ -949,13 +1066,13 @@ namespace ASC.Api.Settings
             if (!exist)
             {
                 item.Id = Guid.NewGuid();
-                item.SmallImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.SmallImg);
-                item.BigImg = StorageHelper.SaveTmpLogo(Tenant.TenantId, item.BigImg);
+                item.SmallImg = StorageHelper.SaveTmpLogo(item.SmallImg);
+                item.BigImg = StorageHelper.SaveTmpLogo(item.BigImg);
 
                 settings.Items.Add(item);
             }
 
-            settings.Save();
+            SettingsManager.Save(settings);
 
             MessageService.Send(MessageAction.CustomNavigationSettingsUpdated);
 
@@ -965,9 +1082,9 @@ namespace ASC.Api.Settings
         [Delete("customnavigation/delete/{id}")]
         public void DeleteCustomNavigationItem(Guid id)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var settings = CustomNavigationSettings.Load();
+            var settings = SettingsManager.Load<CustomNavigationSettings>();
 
             var terget = settings.Items.FirstOrDefault(item => item.Id == id);
 
@@ -977,7 +1094,7 @@ namespace ASC.Api.Settings
             StorageHelper.DeleteLogo(terget.BigImg);
 
             settings.Items.Remove(terget);
-            settings.Save();
+            SettingsManager.Save(settings);
 
             MessageService.Send(MessageAction.CustomNavigationSettingsUpdated);
         }
@@ -987,7 +1104,7 @@ namespace ASC.Api.Settings
         {
             var settings = new EmailActivationSettings { Show = show };
 
-            settings.SaveForCurrentUser();
+            SettingsManager.SaveForCurrentUser(settings);
 
             return settings;
         }
@@ -998,13 +1115,13 @@ namespace ASC.Api.Settings
         {
             var result = new List<CompanyWhiteLabelSettings>();
 
-            var instance = CompanyWhiteLabelSettings.Instance;
+            var instance = CompanyWhiteLabelSettings.Instance(SettingsManager);
 
             result.Add(instance);
 
-            if (!instance.IsDefault && !instance.IsLicensor)
+            if (!instance.IsDefault(CoreSettings) && !instance.IsLicensor)
             {
-                result.Add(instance.GetDefault() as CompanyWhiteLabelSettings);
+                result.Add(instance.GetDefault(ServiceProvider) as CompanyWhiteLabelSettings);
             }
 
             return result;
@@ -1013,9 +1130,9 @@ namespace ASC.Api.Settings
         [Read("statistics/spaceusage/{id}")]
         public List<UsageSpaceStatItemWrapper> GetSpaceUsageStatistics(Guid id)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var webtem = WebItemManager.Instance.GetItems(Tenant, WebZoneType.All, ItemAvailableState.All)
+            var webtem = WebItemManagerSecurity.GetItems(WebZoneType.All, ItemAvailableState.All)
                                        .FirstOrDefault(item =>
                                                        item != null &&
                                                        item.ID == id &&
@@ -1038,7 +1155,7 @@ namespace ASC.Api.Settings
         [Read("statistics/visit")]
         public List<ChartPointWrapper> GetVisitStatistics(ApiDateTime fromDate, ApiDateTime toDate)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
             var from = TenantUtil.DateTimeFromUtc(fromDate);
             var to = TenantUtil.DateTimeFromUtc(toDate);
@@ -1086,9 +1203,9 @@ namespace ASC.Api.Settings
         [Read("storage")]
         public List<StorageWrapper> GetAllStorages()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            var current = StorageSettings.Load();
+            var current = SettingsManager.Load<StorageSettings>();
             var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().ToList();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
@@ -1096,9 +1213,9 @@ namespace ASC.Api.Settings
         [Read("storage/progress", false)]
         public double GetStorageProgress()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-            if (!CoreContext.Configuration.Standalone) return -1;
+            if (!CoreBaseSettings.Standalone) return -1;
 
             using var migrateClient = new ServiceClient();
             return migrateClient.GetProgress(Tenant.TenantId);
@@ -1107,14 +1224,14 @@ namespace ASC.Api.Settings
         [Update("storage")]
         public StorageSettings UpdateStorage(StorageModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!CoreBaseSettings.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
-            var settings = StorageSettings.Load();
+            var settings = SettingsManager.Load<StorageSettings>();
             if (settings.Module == model.Module) return settings;
 
             settings.Module = model.Module;
@@ -1126,7 +1243,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("UpdateStorage", e);
+                Log.Error("UpdateStorage", e);
                 throw;
             }
 
@@ -1136,10 +1253,10 @@ namespace ASC.Api.Settings
         [Delete("storage")]
         public void ResetStorageToDefault()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return;
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!CoreBaseSettings.Standalone) return;
 
-            var settings = StorageSettings.Load();
+            var settings = SettingsManager.Load<StorageSettings>();
 
             settings.Module = null;
             settings.Props = null;
@@ -1150,7 +1267,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("ResetStorageToDefault", e);
+                Log.Error("ResetStorageToDefault", e);
                 throw;
             }
         }
@@ -1158,10 +1275,10 @@ namespace ASC.Api.Settings
         [Read("storage/cdn")]
         public List<StorageWrapper> GetAllCdnStorages()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!CoreBaseSettings.Standalone) return null;
 
-            var current = CdnStorageSettings.Load();
+            var current = SettingsManager.Load<CdnStorageSettings>();
             var consumers = ConsumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null).ToList();
             return consumers.Select(consumer => new StorageWrapper(consumer, current)).ToList();
         }
@@ -1169,14 +1286,14 @@ namespace ASC.Api.Settings
         [Update("storage/cdn")]
         public CdnStorageSettings UpdateCdn(StorageModel model)
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return null;
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!CoreBaseSettings.Standalone) return null;
 
             var consumer = ConsumerFactory.GetByName(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
-            var settings = CdnStorageSettings.Load();
+            var settings = SettingsManager.Load<CdnStorageSettings>();
             if (settings.Module == model.Module) return settings;
 
             settings.Module = model.Module;
@@ -1189,7 +1306,7 @@ namespace ASC.Api.Settings
             }
             catch (Exception e)
             {
-                LogManager.GetLogger("ASC").Error("UpdateCdn", e);
+                Log.Error("UpdateCdn", e);
                 throw;
             }
 
@@ -1199,16 +1316,16 @@ namespace ASC.Api.Settings
         [Delete("storage/cdn")]
         public void ResetCdnToDefault()
         {
-            SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-            if (!CoreContext.Configuration.Standalone) return;
+            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+            if (!CoreBaseSettings.Standalone) return;
 
-            CdnStorageSettings.Load().Clear();
+            StorageSettingsHelper.Clear(SettingsManager.Load<CdnStorageSettings>());
         }
 
         //[Read("storage/backup")]
         //public List<StorageWrapper> GetAllBackupStorages()
         //{
-        //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+        //    PermissionContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
         //    var schedule = new BackupAjaxHandler().GetSchedule();
         //    var current = new StorageSettings();
@@ -1239,7 +1356,7 @@ namespace ASC.Api.Settings
         [Read("socket")]
         public object GetSocketSettings()
         {
-            var hubUrl = ConfigurationManager.AppSettings["web:hub"] ?? string.Empty;
+            var hubUrl = Configuration["web:hub"] ?? string.Empty;
             if (hubUrl != string.Empty)
             {
                 if (!hubUrl.EndsWith("/"))
@@ -1249,6 +1366,54 @@ namespace ASC.Api.Settings
             }
 
             return new { Url = hubUrl };
+        }
+    }
+
+    public static class SettingsControllerExtension
+    {
+        public static IServiceCollection AddSettingsController(this IServiceCollection services)
+        {
+            return services
+                .AddMessageTargetService()
+                .AddCoreConfigurationService()
+                .AddIPRestrictionsService()
+                .AddDisplayUserSettingsService()
+                .AddSetupInfo()
+                .AddCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddTenantUtilService()
+                .AddEmailValidationKeyProviderService()
+                .AddMessageServiceService()
+                .AddStudioNotifyServiceService()
+                .AddApiContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddUserPhotoManagerService()
+                .AddAuthContextService()
+                .AddCookiesManagerService()
+                .AddWebItemSecurity()
+                .AddStudioNotifyHelperService()
+                .AddLicenseReaderService()
+                .AddPermissionContextService()
+                .AddWebItemManager()
+                .AddWebItemManagerSecurity()
+                .AddCdnStorageSettingsService()
+                .AddStorageSettingsService()
+                .AddStorageFactoryService()
+                .AddStorageFactoryConfigService()
+                .AddSettingsManagerService()
+                .AddTenantInfoSettingsService()
+                .AddColorThemesSettingsHelperService()
+                .AddTenantWhiteLabelSettingsService()
+                .AddStudioSmsNotificationSettingsService()
+                .AddTfaManagerService()
+                .AddStorageHelperService()
+                .AddTenantLogoManagerService()
+                .AddBuildVersionService()
+                .AddStatisticManagerService()
+                .AddEmployeeWraper();
         }
     }
 }

@@ -30,7 +30,7 @@ const hoveredCss = css`
 `;
 
 const StyledLink = styled(SimpleLink)`
-  text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
+  text-decoration: none;
   user-select: none;
   cursor: pointer;
   opacity: ${props => props.isSemitransparent && "0.5"};
@@ -87,7 +87,7 @@ Link.propTypes = {
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
-  children: PropTypes.string,
+  children: PropTypes.any,
   className: PropTypes.string
 };
 

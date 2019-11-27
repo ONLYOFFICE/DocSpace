@@ -28,47 +28,60 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
-using ASC.Core.Billing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.UserControls.Statistics
 {
-    public static class TenantStatisticsProvider
+    public class TenantStatisticsProvider
     {
-        public static bool IsNotPaid()
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+
+        public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
         {
-            Tariff tariff;
-            return TenantExtra.EnableTarrifSettings
-                   && ((tariff = TenantExtra.GetCurrentTariff()).State >= TariffState.NotPaid
-                       || TenantExtra.Enterprise && !TenantExtra.EnterprisePaid && tariff.LicenseDate == DateTime.MaxValue);
+            UserManager = userManager;
+            TenantManager = tenantManager;
         }
 
-        public static int GetUsersCount(Tenant tenant)
+        public int GetUsersCount()
         {
-            return CoreContext.UserManager.GetUsersByGroup(tenant, Constants.GroupUser.ID).Length;
+            return UserManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
         }
 
-        public static long GetUsedSize()
+        public long GetUsedSize()
         {
-            return GetUsedSize(TenantProvider.CurrentTenantID);
+            return GetUsedSize(TenantManager.GetCurrentTenant().TenantId);
         }
 
-        public static long GetUsedSize(int tenant)
+        public long GetUsedSize(int tenant)
         {
             return GetQuotaRows(tenant).Sum(r => r.Counter);
         }
 
-        public static long GetUsedSize(Guid moduleId)
+        public long GetUsedSize(Guid moduleId)
         {
-            return GetQuotaRows(TenantProvider.CurrentTenantID).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
+            return GetQuotaRows(TenantManager.GetCurrentTenant().TenantId).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
         }
 
-        public static IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
+        public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
         {
-            return CoreContext.TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
+            return TenantManager.FindTenantQuotaRows(new TenantQuotaRowQuery(tenant))
                 .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
+        }
+    }
+
+    public static class TenantStatisticsProviderExtension
+    {
+        public static IServiceCollection AddTenantStatisticsProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantStatisticsProvider>();
+
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService();
         }
     }
 }

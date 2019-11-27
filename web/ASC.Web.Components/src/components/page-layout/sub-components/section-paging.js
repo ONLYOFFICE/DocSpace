@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledSectionPaging = styled.div`
-  margin: 0 0 16px;
+  margin: 16px 0 0;
 `;
 
 const SectionPaging = React.memo(props => {

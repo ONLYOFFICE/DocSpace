@@ -30,18 +30,21 @@ using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Geolocation
 {
     public class GeolocationHelper
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Geo");
-
         private readonly string dbid;
 
+        public ILog Log { get; }
+        public DbOptionsManager DbOptions { get; }
 
-        public GeolocationHelper(string dbid)
+        public GeolocationHelper(DbOptionsManager dbOptions, IOptionsMonitor<ILog> option, string dbid)
         {
+            Log = option.CurrentValue;
+            DbOptions = dbOptions;
             this.dbid = dbid;
         }
 
@@ -51,7 +54,7 @@ namespace ASC.Geolocation
             try
             {
                 var ipformatted = FormatIP(ip);
-                using var db = new DbManager(dbid);
+                var db = DbOptions.Get(dbid);
                 var q = new SqlQuery("dbip_location")
 .Select("ip_start", "ip_end", "country", "city", "timezone_offset", "timezone_name")
 .Where(Exp.Le("ip_start", ipformatted))
@@ -73,14 +76,9 @@ namespace ASC.Geolocation
             }
             catch (Exception error)
             {
-                log.Error(error);
+                Log.Error(error);
             }
             return IPGeolocationInfo.Default;
-        }
-
-        public IPGeolocationInfo GetIPGeolocationFromHttpContext()
-        {
-            return GetIPGeolocationFromHttpContext(Common.HttpContext.Current);
         }
 
         public IPGeolocationInfo GetIPGeolocationFromHttpContext(Microsoft.AspNetCore.Http.HttpContext context)

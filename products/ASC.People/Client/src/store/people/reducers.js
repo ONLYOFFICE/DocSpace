@@ -11,7 +11,8 @@ import {
   SET_SELECTOR_USERS
 } from "./actions";
 import { isUserSelected, skipUser, getUsersBySelected } from "./selectors";
-import Filter from "./filter";
+import { api } from "asc-web-common";
+const { Filter } = api;
 
 const initialState = {
   users: [],

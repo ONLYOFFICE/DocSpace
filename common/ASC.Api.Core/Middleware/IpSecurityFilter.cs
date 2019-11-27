@@ -1,9 +1,12 @@
 ﻿using System.Net;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -11,10 +14,19 @@ namespace ASC.Api.Core.Middleware
     {
         private readonly ILog log;
 
-        public IpSecurityFilter(LogManager logManager)
+        public IpSecurityFilter(
+            IOptionsMonitor<ILog> options,
+            AuthContext authContext,
+            IPSecurity.IPSecurity IPSecurity)
         {
-            log = logManager.Get("Api");
+            log = options.CurrentValue;
+            AuthContext = authContext;
+            this.IPSecurity = IPSecurity;
         }
+
+        public AuthContext AuthContext { get; }
+        public IPRestrictionsSettings IPRestrictionsSettings { get; }
+        public IPSecurity.IPSecurity IPSecurity { get; }
 
         public void OnResourceExecuted(ResourceExecutedContext context)
         {
@@ -22,14 +34,23 @@ namespace ASC.Api.Core.Middleware
 
         public void OnResourceExecuting(ResourceExecutingContext context)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant(context.HttpContext);
-            var settings = IPRestrictionsSettings.LoadForTenant(tenant.TenantId);
-            if (settings.Enable && SecurityContext.IsAuthenticated && !IPSecurity.IPSecurity.Verify(context.HttpContext, tenant))
+            if (AuthContext.IsAuthenticated && !IPSecurity.Verify())
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
-                log.WarnFormat("IPSecurity: Tenant {0}, user {1}", tenant.TenantId, SecurityContext.CurrentAccount.ID);
+                log.WarnFormat("IPSecurity: user {0}", AuthContext.CurrentAccount.ID);
                 return;
             }
+        }
+    }
+
+    public static class IpSecurityFilterExtension
+    {
+        public static IServiceCollection AddIpSecurityFilter(this IServiceCollection services)
+        {
+            return services
+                .AddSettingsManagerService()
+                .AddAuthContextService()
+                .AddIPSecurityService();
         }
     }
 }

@@ -27,13 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-
-using ASC.Common.Utils;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Core.Notify;
 using ASC.Core.Notify.Senders;
 using ASC.Core.Tenants;
 using ASC.Notify.Engine;
-
+using ASC.Notify.Messages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Constants = ASC.Core.Configuration.Constants;
 using NotifyContext = ASC.Notify.Context;
 
@@ -43,19 +46,11 @@ namespace ASC.Core
     {
         private static readonly object syncRoot = new object();
         private static bool notifyStarted;
-        private static NotifyContext notifyContext;
         private static bool? ismono;
         private static string monoversion;
 
 
-        public static NotifyContext NotifyContext
-        {
-            get
-            {
-                NotifyStartUp();
-                return notifyContext;
-            }
-        }
+        public static NotifyContext NotifyContext { get; private set; }
 
         public static string[] DefaultClientSenders
         {
@@ -94,23 +89,27 @@ namespace ASC.Core
         }
 
 
-        private static void NotifyStartUp()
+        public static void NotifyStartUp(IServiceProvider serviceProvider)
         {
             if (notifyStarted) return;
             lock (syncRoot)
             {
                 if (notifyStarted) return;
 
-                notifyContext = new NotifyContext();
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                var cacheNotify = serviceProvider.GetService<ICacheNotify<NotifyMessage>>();
+                var options = serviceProvider.GetService<IOptionsMonitor<ILog>>();
 
-                INotifySender jabberSender = new NotifyServiceSender();
-                INotifySender emailSender = new NotifyServiceSender();
+                NotifyContext = new NotifyContext(serviceProvider);
 
-                var postman = ConfigurationManager.AppSettings["core:notify:postman"];
+                INotifySender jabberSender = new NotifyServiceSender(cacheNotify);
+                INotifySender emailSender = new NotifyServiceSender(cacheNotify);
+
+                var postman = configuration["core:notify:postman"];
 
                 if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase) || "smtp".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    jabberSender = new JabberSender();
+                    jabberSender = new JabberSender(serviceProvider);
 
                     var properties = new Dictionary<string, string>
                     {
@@ -118,37 +117,48 @@ namespace ASC.Core
                     };
                     if ("ases".Equals(postman, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        emailSender = new AWSSender();
-                        properties["accessKey"] = ConfigurationManager.AppSettings["ses:accessKey"];
-                        properties["secretKey"] = ConfigurationManager.AppSettings["ses:secretKey"];
-                        properties["refreshTimeout"] = ConfigurationManager.AppSettings["ses:refreshTimeout"];
+                        emailSender = new AWSSender(serviceProvider, options);
+                        properties["accessKey"] = configuration["ses:accessKey"];
+                        properties["secretKey"] = configuration["ses:secretKey"];
+                        properties["refreshTimeout"] = configuration["ses:refreshTimeout"];
                     }
                     else
                     {
-                        emailSender = new SmtpSender();
+                        emailSender = new SmtpSender(serviceProvider, options);
                     }
                     emailSender.Init(properties);
                 }
 
-                notifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender));
-                notifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyEMailSenderSysName, new EmailSenderSink(emailSender, serviceProvider));
+                NotifyContext.NotifyService.RegisterSender(Constants.NotifyMessengerSenderSysName, new JabberSenderSink(jabberSender, serviceProvider));
 
-                notifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
-                notifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
+                NotifyContext.NotifyEngine.BeforeTransferRequest += NotifyEngine_BeforeTransferRequest;
+                NotifyContext.NotifyEngine.AfterTransferRequest += NotifyEngine_AfterTransferRequest;
                 notifyStarted = true;
             }
         }
 
-        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request)
+        public static void RegisterSendMethod(Action<DateTime> method, string cron)
         {
-            request.Properties.Add("Tenant", CoreContext.TenantManager.GetCurrentTenant(false));
+            NotifyContext.NotifyEngine.RegisterSendMethod(method, cron);
         }
 
-        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request)
+        public static void UnregisterSendMethod(Action<DateTime> method)
+        {
+            NotifyContext.NotifyEngine.UnregisterSendMethod(method);
+
+        }
+        private static void NotifyEngine_BeforeTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope serviceScope)
+        {
+            request.Properties.Add("Tenant", serviceScope.ServiceProvider.GetService<TenantManager>().GetCurrentTenant(false));
+        }
+
+        private static void NotifyEngine_AfterTransferRequest(NotifyEngine sender, NotifyRequest request, IServiceScope scope)
         {
             if ((request.Properties.Contains("Tenant") ? request.Properties["Tenant"] : null) is Tenant tenant)
             {
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(tenant);
             }
         }
     }

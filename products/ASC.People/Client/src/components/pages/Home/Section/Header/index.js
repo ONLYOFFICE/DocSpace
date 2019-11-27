@@ -14,23 +14,21 @@ import {
   getSelectedGroup,
   getSelectionIds
 } from "../../../../../store/people/selectors";
-import { isAdmin } from "../../../../../store/auth/selectors";
 import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
   updateUserType,
   fetchPeople
 } from "../../../../../store/people/actions";
-import { EmployeeStatus, EmployeeType } from "../../../../../helpers/constants";
 import {
   typeUser,
   typeGuest
 } from "../../../../../helpers/../helpers/customNames";
-import {
-  resendUserInvites,
-  deleteUsers
-} from "../../../../../store/services/api";
 import { deleteGroup } from "../../../../../store/group/actions";
+import { store, api, constants } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
+const { resendUserInvites, deleteUsers } = api.people;
+const { EmployeeStatus, EmployeeType } = constants;
 
 const StyledContainer = styled.div`
   .group-button-menu-container {

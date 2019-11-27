@@ -30,15 +30,13 @@ import {
   getUserStatus,
   getUserRole
 } from "../../../../../store/people/selectors";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { EmployeeStatus } from "../../../../../helpers/constants";
-import {
-  resendUserInvites,
-  sendInstructionsToDelete,
-  sendInstructionsToChangePassword,
-  deleteUser
-} from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
+import isEqual from "lodash/isEqual";
+import { store, api, constants } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
+const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
+const { EmployeeStatus } = constants;
+
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -461,6 +459,19 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
+  needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.checked !== nextProps.checked) {
+      return true;
+    }
+    if (currentProps.status !== nextProps.status) {
+      return true;
+    }
+    if (!isEqual(currentProps.data, nextProps.data)) {
+      return true;
+    }
+    return false;
+  };
+
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
@@ -468,7 +479,7 @@ class SectionBodyContent extends React.PureComponent {
 
     return users.length > 0 ? (
       <>
-        <RowContainer>
+        <RowContainer useReactWindow={false}>
           {users.map(user => {
             const contextOptions = this.getUserContextOptions(user, viewer);
             const contextOptionsProps = !contextOptions.length
@@ -494,6 +505,7 @@ class SectionBodyContent extends React.PureComponent {
                 onSelect={this.onContentRowSelect}
                 {...checkedProps}
                 {...contextOptionsProps}
+                needForUpdate={this.needForUpdate}
               >
                 <UserContent
                   user={user}

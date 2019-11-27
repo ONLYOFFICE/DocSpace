@@ -25,15 +25,16 @@
 
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Notify.Engine
 {
     interface INotifyEngine
     {
-        void QueueRequest(NotifyRequest request);
+        void QueueRequest(NotifyRequest request, IServiceScope serviceScope);
 
-        event Action<NotifyEngine, NotifyRequest> AfterTransferRequest;
+        event Action<NotifyEngine, NotifyRequest, IServiceScope> AfterTransferRequest;
 
-        event Action<NotifyEngine, NotifyRequest> BeforeTransferRequest;
+        event Action<NotifyEngine, NotifyRequest, IServiceScope> BeforeTransferRequest;
     }
 }

@@ -7,7 +7,7 @@ import { isArrayEqual } from "../../../utils/array";
 const StyledDays = styled.div`
   display: flex;
   flex-wrap: wrap;
-  ${props => (props.size === "base" ? "width: 270px;" : "width: 310px;")}
+  ${props => (props.size === "base" ? "width: 270px;" : "width: 294px;")}
 `;
 
 class Days extends React.Component {

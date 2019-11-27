@@ -213,12 +213,13 @@ class FilterBlock extends React.Component {
   }
   render() {
     const _this = this;
+    const filterItems = this.getFilterItems();
     return (
       <>
         <StyledFilterBlock ref={this.filterWrapper} id='filter-items-container'>
-          {this.getFilterItems()}
+          {filterItems}
         </StyledFilterBlock>
-        <FilterButton id='filter-button' iconSize={this.props.iconSize} getData={_this.getData} isDisabled={this.props.isDisabled} />
+        {filterItems.length > 0 && <FilterButton id='filter-button' iconSize={this.props.iconSize} getData={_this.getData} isDisabled={this.props.isDisabled} />}
       </>
     );
   }

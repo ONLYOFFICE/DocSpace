@@ -22,7 +22,7 @@ const StyledDropdown = styled.div`
     ${props => (props.directionY === 'bottom' && css`top: ${props => props.manualY ? props.manualY : '100%'};`)}
     ${props => (props.directionX === 'right' && css`right: ${props => props.manualX ? props.manualX : '0px'};`)}
     ${props => (props.directionX === 'left' && css`left: ${props => props.manualX ? props.manualX : '0px'};`)}
-    z-index: 1000;
+    z-index: 150;
     margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
     margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
     display: ${props => (props.isOpen || props.opened ? 'block' : 'none')};
@@ -68,40 +68,56 @@ class DropDown extends React.PureComponent {
     super(props);
 
     this.state = {
-      width: 100
+      width: 100,
+      directionX: props.directionX,
+      directionY: props.directionY
     };
     
-    this.dropDown = React.createRef();
-  }
-
-  setDropDownWidthState = () => {
-    if (this.dropDown.current) {
-      this.setState({
-        width: this.dropDown.current.offsetWidth
-      });
-    }
+    this.dropDownRef = React.createRef();
   }
 
   componentDidMount () {
-    this.setDropDownWidthState();
+    this.checkPosition();
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened || this.props.isOpen !== prevProps.isOpen) {
-      this.setDropDownWidthState();
+      this.checkPosition();
+    }
+  }
+
+  checkPosition = () => {
+    if (this.dropDownRef.current){
+      const rects = this.dropDownRef.current.getBoundingClientRect();
+      const container = {width: window.innerWidth, height: window.innerHeight};
+      
+      const left = rects.left < 0;
+      const right = rects.right > container.width;
+
+      let newDirection = {};
+      
+      newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;
+
+      this.setState({
+        directionX: newDirection.directionX,
+        width: rects.width
+      });
     }
   }
 
   render() {
-    const {maxHeight, withArrow, directionX, children} = this.props;
+    const {maxHeight, withArrow, children} = this.props;
+    const {directionX, directionY} = this.state;
     const fullHeight = children && children.length * 36;
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
     //console.log("DropDown render");
     return (
       <StyledDropdown
-        ref={this.dropDown}
+        ref={this.dropDownRef}
         {...this.props}
+        directionX={directionX}
+        directionY={directionY}
         {...dropDownMaxHeightProp}
       >
         {withArrow && <Arrow directionX={directionX} />}

@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 
@@ -34,7 +33,7 @@ namespace ASC.Core.Data
 {
     public abstract class DbBaseService
     {
-        private readonly string dbid;
+        private DbOptionsManager DbOptionsManager { get; }
 
         protected string TenantColumn
         {
@@ -42,9 +41,9 @@ namespace ASC.Core.Data
             private set;
         }
 
-        protected DbBaseService(ConnectionStringSettings connectionString, string tenantColumn)
+        protected DbBaseService(DbOptionsManager dbOptionsManager, string tenantColumn)
         {
-            dbid = connectionString.Name;
+            DbOptionsManager = dbOptionsManager;
             TenantColumn = tenantColumn;
         }
 
@@ -75,7 +74,7 @@ namespace ASC.Core.Data
 
         protected IDbManager GetDb()
         {
-            return DbManager.FromHttpContext(dbid);
+            return DbOptionsManager?.Value;
         }
 
         protected SqlQuery Query(string table, int tenant)
@@ -106,7 +105,7 @@ namespace ASC.Core.Data
 
         private T Execute<T>(Func<IDbManager, T> action)
         {
-            using var db = GetDb();
+            var db = GetDb();
             return action(db);
         }
     }

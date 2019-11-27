@@ -13,11 +13,8 @@ import {
   Loader,
   toastr
 } from "asc-web-components";
-import {
-  changePassword,
-  getConfirmationInfo,
-  logout
-} from "../../../../../src/store/auth/actions";
+import { store } from 'asc-web-common';
+const { changePassword,  getConfirmationInfo, logout } = store.auth.actions;
 
 const BodyStyle = styled(Container)`
   margin-top: 70px;
@@ -95,6 +92,7 @@ class Form extends React.PureComponent {
       }
 
       changePassword(userId, password, key)
+        .then(() => this.props.logout())
         .then(() => {
           history.push("/");
           toastr.success(this.props.t("ChangePasswordSuccess"));

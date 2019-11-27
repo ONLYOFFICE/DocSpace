@@ -32,13 +32,14 @@ namespace ASC.Data.Storage.DiscStorage
     internal class MappedPath
     {
         public string PhysicalPath { get; set; }
+        public PathUtils PathUtils { get; }
 
-
-        private MappedPath()
+        private MappedPath(PathUtils pathUtils)
         {
+            PathUtils = pathUtils;
         }
 
-        public MappedPath(string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig)
+        public MappedPath(PathUtils pathUtils, string tenant, bool appendTenant, string ppath, IDictionary<string, string> storageConfig) : this(pathUtils)
         {
             tenant = tenant.Trim('/');
 
@@ -49,7 +50,7 @@ namespace ASC.Data.Storage.DiscStorage
         public MappedPath AppendDomain(string domain)
         {
             domain = domain.Replace('.', '_'); //Domain prep. Remove dots
-            return new MappedPath
+            return new MappedPath(PathUtils)
             {
                 PhysicalPath = Path.Combine(PhysicalPath, PathUtils.Normalize(domain, true)),
             };

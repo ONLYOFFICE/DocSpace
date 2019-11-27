@@ -11,12 +11,13 @@ import {
   Textarea,
   Text
 } from "asc-web-components";
-import { getShortenedLink } from "../../../store/services/api";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
 import styled from "styled-components";
 import copy from "copy-to-clipboard";
+import { api } from "asc-web-common";
+const { getShortenedLink } = api.portal;
 
 const ModalDialogContainer = styled.div`
   .margin-text {

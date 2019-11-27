@@ -3,23 +3,25 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
-using ASC.Common.Utils;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility
 {
     public interface IUrlShortener
     {
-        string GetShortenLink(string shareLink);
+        string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility);
     }
 
-    public static class UrlShortener
+    public class UrlShortener
     {
-        public static bool Enabled { get { return !(Instance is NullShortener); } }
+        public bool Enabled { get { return !(Instance is NullShortener); } }
 
-        private static IUrlShortener _instance;
-        public static IUrlShortener Instance
+        private IUrlShortener _instance;
+        public IUrlShortener Instance
         {
             get
             {
@@ -29,9 +31,9 @@ namespace ASC.Web.Core.Utility
                     {
                         _instance = new BitLyShortener();
                     }
-                    else if (!string.IsNullOrEmpty(ConfigurationManager.AppSettings["web.url-shortener"]))
+                    else if (!string.IsNullOrEmpty(Configuration["web:url-shortener"]))
                     {
-                        _instance = new OnlyoShortener();
+                        _instance = new OnlyoShortener(Configuration);
                     }
                     else
                     {
@@ -42,11 +44,18 @@ namespace ASC.Web.Core.Utility
                 return _instance;
             }
         }
+
+        public IConfiguration Configuration { get; }
+
+        public UrlShortener(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
     }
 
     public class BitLyShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             return BitlyLoginProvider.GetShortenLink(shareLink);
         }
@@ -58,21 +67,21 @@ namespace ASC.Web.Core.Utility
         private readonly string internalUrl;
         private readonly string sKey;
 
-        public OnlyoShortener()
+        public OnlyoShortener(IConfiguration configuration)
         {
-            url = ConfigurationManager.AppSettings["web.url-shortener"];
-            internalUrl = ConfigurationManager.AppSettings["web.url-shortener.internal"];
-            sKey = ConfigurationManager.AppSettings["core.machinekey"];
+            url = configuration["web.url-shortener"];
+            internalUrl = configuration["web.url-shortener.internal"];
+            sKey = configuration["core.machinekey"];
 
             if (!url.EndsWith("/"))
                 url += '/';
         }
 
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             using var client = new WebClient { Encoding = Encoding.UTF8 };
             client.Headers.Add("Authorization", CreateAuthToken());
-            return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
+            return commonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
@@ -86,9 +95,18 @@ namespace ASC.Web.Core.Utility
 
     public class NullShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
         {
             return null;
+        }
+    }
+
+    public static class UrlShortenerExtension
+    {
+        public static IServiceCollection AddUrlShortener(this IServiceCollection services)
+        {
+            services.TryAddSingleton<UrlShortener>();
+            return services;
         }
     }
 }
