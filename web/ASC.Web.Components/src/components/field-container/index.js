@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import { tablet } from "../../utils/device";
 import Label from "../label";
 import HelpButton from "../help-button";
+import { Text } from "../text";
 
 function getHorizontalCss(labelWidth) {
   return css`
@@ -60,10 +61,13 @@ function getVerticalCss() {
 }
 
 const Container = styled.div`
+  .error-label {
+    max-width: ${props => (props.maxwidth ? props.maxwidth : "293px")}
+  }
   ${props =>
     props.vertical
       ? getVerticalCss()
-      : getHorizontalCss(props.horLabelWidth)}
+      : getHorizontalCss(props.maxLabelWidth)}
 
   @media ${tablet} {
     ${getVerticalCss()}
@@ -86,11 +90,19 @@ class FieldContainer extends React.Component {
       tooltipContent,
       place,
       helpButtonHeaderContent,
-      horLabelWidth
+      maxLabelWidth,
+      errorMessage,
+      errorColor,
+      errorMessageWidth
     } = this.props;
 
     return (
-      <Container vertical={isVertical} horLabelWidth={horLabelWidth} className={className} >
+      <Container
+        vertical={isVertical}
+        maxLabelWidth={maxLabelWidth}
+        className={className}
+        maxwidth={errorMessageWidth}
+      >
         <div className="field-label-icon">
           <Label
             isRequired={isRequired}
@@ -107,7 +119,14 @@ class FieldContainer extends React.Component {
             />
           )}
         </div>
-        <div className="field-body">{children}</div>
+        <div className="field-body">
+          {children}
+          {hasError ? (
+            <Text.Body className="error-label" fontSize={10} color={errorColor}>
+              {errorMessage}
+            </Text.Body>
+          ) : null}
+        </div>
       </Container>
     );
   }
@@ -129,12 +148,17 @@ FieldContainer.propTypes = {
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   place: PropTypes.string,
   helpButtonHeaderContent: PropTypes.string,
-  horLabelWidth: PropTypes.string
+  maxLabelWidth: PropTypes.string,
+  errorMessage: PropTypes.string,
+  errorColor: PropTypes.string,
+  errorMessageWidth: PropTypes.string
 };
 
 FieldContainer.defaultProps = {
   place: "bottom",
-  horLabelWidth: "110px"
-}
+  maxLabelWidth: "110px",
+  errorColor: "#C96C27",
+  errorMessageWidth: "293px"
+};
 
 export default FieldContainer;

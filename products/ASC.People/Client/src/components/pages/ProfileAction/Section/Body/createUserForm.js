@@ -14,7 +14,11 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
-import { createThumbnailsAvatar, loadAvatar } from "../../../../../store/services/api";
+import { api } from "asc-web-common";
+const {
+  createThumbnailsAvatar,
+  loadAvatar
+} = api.people;
 
 class CreateUserForm extends React.Component {
 
@@ -369,10 +373,10 @@ class CreateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text.Body fontSize={13}>
+                <Text.Body fontSize={13} as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
-                    <p className="tooltip_email" style={{marginTop: "1rem", marginBottom: "1rem"}} >
+                    <p className="tooltip_email" style={{margin: "1rem 0"}} >
                       You can create a new mail on the domain as the primary.
                       In this case, you must set a one-time password so that the user can log in to the portal for the first time.
                     </p>

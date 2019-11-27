@@ -212,7 +212,9 @@ class FilterInput extends React.Component {
         const fullWidth = this.searchWrapper.current.getBoundingClientRect().width;
         const filterWidth = this.filterWrapper.current.getBoundingClientRect().width;
         const filterArr = Array.from(Array.from(this.filterWrapper.current.children).find(x => x.id === 'filter-items-container').children);
-        const filterButton = Array.from(Array.from(this.filterWrapper.current.children).find(x => x.id != 'filter-items-container').children)[0];
+        const searchFilterButton = Array.from(this.filterWrapper.current.children).find(x => x.id != 'filter-items-container');
+
+        const filterButton = searchFilterButton ? Array.from(searchFilterButton.children)[0] : null;
 
         if (fullWidth <= this.minWidth && fullWidth > 0) {
             this.setState({
@@ -228,7 +230,7 @@ class FilterInput extends React.Component {
                 elementsWidth = elementsWidth + element.getBoundingClientRect().width;
             });
 
-            if (elementsWidth >= (fullWidth / 3) - filterButton.getBoundingClientRect().width) {
+            if ( filterButton !== null && (elementsWidth >= (fullWidth / 3) - filterButton.getBoundingClientRect().width)) {
                 for (let i = 0; i < filterArr.length; i++) {
                     if (elementsWidth > (fullWidth / 3) - filterButton.getBoundingClientRect().width) {
                         elementsWidth = elementsWidth - filterArr[i].getBoundingClientRect().width;

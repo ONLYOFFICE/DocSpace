@@ -1,17 +1,15 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Router, Switch } from "react-router-dom";
+import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import PeopleLayout from "./components/Layout/index";
 import Home from "./components/pages/Home";
-import PrivateRoute from "./helpers/privateRoute";
 import Profile from './components/pages/Profile';
 import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
-import { Error404 } from "./components/pages/Error";
 import Reassign from './components/pages/Reassign';
 import Import from './components/pages/Import';
-import history from './history';
+import { history, PrivateRoute, PublicRoute, Login, Error404 } from "asc-web-common";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -26,6 +24,7 @@ const App = ({ settings }) => {
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
           <Switch>
+            <Redirect exact from="/" to={`${homepage}`} />
             <PrivateRoute exact path={[homepage, `${homepage}/filter`]} component={Home} />
             <PrivateRoute
               path={`${homepage}/view/:userId`}
@@ -62,6 +61,7 @@ const App = ({ settings }) => {
               component={Import}
               restricted
             />
+            <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
             <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>

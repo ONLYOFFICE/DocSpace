@@ -1,8 +1,9 @@
 import { combineReducers } from 'redux';
-import authReducer from './auth/reducers';
 import peopleReducer from './people/reducers';
 import profileReducer from './profile/reducers';
 import groupReducer from './group/reducers';
+import { store } from 'asc-web-common';
+const { reducer: authReducer } = store.auth;
 
 const rootReducer = combineReducers({
     auth: authReducer,

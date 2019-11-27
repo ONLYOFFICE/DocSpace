@@ -3,9 +3,9 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
-import { logout, changeEmail } from '../../../../store/auth/actions';
 import PropTypes from 'prop-types';
-
+import { store } from 'asc-web-common';
+const { logout, changeEmail } = store.auth.actions;
 
 class ActivateEmail extends React.PureComponent {
 

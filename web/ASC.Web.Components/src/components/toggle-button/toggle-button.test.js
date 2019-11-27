@@ -16,16 +16,31 @@ describe("<ToggleButton />", () => {
   });
 
   it("Toggle button componentDidUpdate() test", () => {
-    const wrapper = mount(<ToggleButton isChecked={false} />).instance();
+    const wrapper = mount(
+      <ToggleButton
+        isChecked={false}
+        onChange={event => console.log(event.target.value)}
+      />
+    ).instance();
     wrapper.componentDidUpdate(wrapper.props);
 
-    const wrapper2 = mount(<ToggleButton isChecked={true} />).instance();
+    const wrapper2 = mount(
+      <ToggleButton
+        isChecked={true}
+        onChange={event => console.log(event.target.value)}
+      />
+    ).instance();
     wrapper2.componentDidUpdate(wrapper2.props);
 
-    const wrapper3 = shallow(<ToggleButton isChecked={false} />);
+    const wrapper3 = shallow(
+      <ToggleButton
+        isChecked={false}
+        onChange={event => console.log(event.target.value)}
+      />
+    );
     wrapper3.setState({ isOpen: true });
     wrapper3.instance().componentDidUpdate(wrapper3.props());
-    
+
     expect(wrapper.props).toBe(wrapper.props);
     expect(wrapper.state.checked).toBe(wrapper.props.isChecked);
     expect(wrapper2.props).toBe(wrapper2.props);

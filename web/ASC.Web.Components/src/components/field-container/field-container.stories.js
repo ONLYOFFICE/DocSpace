@@ -2,7 +2,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import { action } from "@storybook/addon-actions";
 import { StringValue } from "react-values";
-import { text, boolean, withKnobs } from "@storybook/addon-knobs/react";
+import { text, boolean, withKnobs, color } from "@storybook/addon-knobs/react";
 import FieldContainer from ".";
 import TextInput from "../text-input";
 import Section from "../../../.storybook/decorators/section";
@@ -26,10 +26,13 @@ storiesOf("Components|FieldContainer", module)
               isRequired={boolean("isRequired", false)}
               hasError={boolean("hasError", false)}
               labelText={text("labelText", "Name:")}
-              horLabelWidth={text("horLabelWidth", "110px")}
+              maxLabelWidth={text("maxLabelWidth", "110px")}
               tooltipContent={text("tooltipContent", "Paste you tooltip content here")}
               helpButtonHeaderContent={text("helpButtonHeaderContent", "Tooltip header")}
               place="top"
+              errorMessage={text("errorMessage", "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit")}
+              errorColor={color("color", "#C96C27")}
+              errorMessageWidth={text("errorMessageWidth", "293px")}
             >
               <TextInput
                 value={value}

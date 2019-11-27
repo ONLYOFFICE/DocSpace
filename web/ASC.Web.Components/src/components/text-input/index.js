@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import commonInputStyle from '../text-input/common-input-styles';
 import MaskedInput from 'react-text-mask'
 import isEqual from "lodash/isEqual";
-import { Text } from "../text";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
@@ -81,18 +80,6 @@ const StyledInput = styled(Input).attrs((props) => ({
     ${props => !props.withBorder && `border: none;`}
 `;
 
-const ErrorLabel = styled.label`
-    word-wrap: break-word;
-    font-size: 10px;
-    max-width: ${props =>
-      (props.scale && '100%') ||
-      (props.size === 'base' && '173px') ||
-      (props.size === 'middle' && '300px') ||
-      (props.size === 'big' && '350px') ||
-      (props.size === 'huge' && '500px')
-    };
-`;
-
 class TextInput extends React.Component { 
     shouldComponentUpdate(nextProps) {
         return !isEqual(this.props, nextProps);
@@ -100,21 +87,7 @@ class TextInput extends React.Component {
 
     render() {
         // console.log(`TextInput render id=${this.props.id}`);
-        const {scale, size, errorMessage, color, hasError} = this.props;
-        return (
-        <>
-            <StyledInput {...this.props} />
-            {hasError ? 
-            <Text.Body fontSize={10} color={color}>
-              <ErrorLabel
-                scale={scale}
-                size={size}
-              >
-                {errorMessage}
-              </ErrorLabel>
-            </Text.Body>
-            : null}
-        </>);
+        return (<StyledInput {...this.props} />);
     }
 }
 
@@ -141,9 +114,7 @@ TextInput.propTypes = {
     isReadOnly: PropTypes.bool,
     hasError: PropTypes.bool,
     hasWarning: PropTypes.bool,
-    autoComplete: PropTypes.string,
-    errorMessage: PropTypes.string,
-    color: PropTypes.string
+    autoComplete: PropTypes.string
 }
 
 TextInput.defaultProps = {
@@ -157,8 +128,7 @@ TextInput.defaultProps = {
     hasWarning: false,
     autoComplete: 'off',
     withBorder: true,
-    keepCharPositions: false,
-    color: "#C96C27"
+    keepCharPositions: false
 }
 
 export default TextInput

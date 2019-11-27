@@ -121,7 +121,7 @@ class TabContainer extends Component {
   componentDidMount() {
     const { activeTab } = this.state;
     if (activeTab !== 0 && this.arrayRefs[activeTab].current !== null) {
-      this.secondFunction(activeTab);
+      this.setTabPosition(activeTab);
     }
   }
 
@@ -172,7 +172,7 @@ class TabContainer extends Component {
     }
   };
 
-  secondFunction = index => {
+  setTabPosition = index => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const marginRight = 8;
     let rightTabs = this.arrayRefs.length - 1;

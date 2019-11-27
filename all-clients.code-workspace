@@ -5,6 +5,10 @@
 			"path": "./web/ASC.Web.Components"
 		},
         {
+			"name": "ASC.Web.Common"
+			"path": "./web/ASC.Web.Common"
+		},
+        {
 			"name": "ASC.Web.Client"
 			"path": "./web/ASC.Web.Client"
 		},

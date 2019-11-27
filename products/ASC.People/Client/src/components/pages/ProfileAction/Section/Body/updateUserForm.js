@@ -5,7 +5,6 @@ import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarE
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
-import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -15,8 +14,9 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
-import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
 import styled from "styled-components";
+import { api } from "asc-web-common";
+const {sendInstructionsToChangePassword, sendInstructionsToChangeEmail, createThumbnailsAvatar, loadAvatar, deleteAvatar} = api.people;
 
 const Table = styled.table`
   width: 100%;
@@ -449,7 +449,7 @@ class UpdateUserForm extends React.Component {
             {t("ProfileTypePopupHelper")}
         </Text.Body>
 
-        <Text.Body fontSize={12}>
+        <Text.Body fontSize={12} as="div">
           <Table>
             <tbody>
               <tr>
@@ -554,10 +554,10 @@ class UpdateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text.Body fontSize={13}>                  
+                <Text.Body fontSize={13} as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
-                    <p style={{marginTop: "1rem"/*, height: "0", visibility: "hidden"*/}}>
+                    <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>
                       You can create a new mail on the domain as the primary.
                       In this case, you must set a one-time password so that the user can log in to the portal for the first time.
                     </p>

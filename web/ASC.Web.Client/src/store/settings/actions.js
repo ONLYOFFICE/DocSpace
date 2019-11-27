@@ -1,7 +1,7 @@
-import * as api from "../services/api";
+import { api } from "asc-web-common";
 import axios from "axios";
 import { getSelectorOptions, getUserOptions } from "./selectors";
-import Filter from "./filter";
+const { Filter } = api;
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
@@ -77,11 +77,11 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
     return axios
       .all(
         userIds.map(userId =>
-          api.changeProductAdmin(userId, productId, isAdmin)
+          api.people.changeProductAdmin(userId, productId, isAdmin)
         )
       )
       .then(() =>
-        axios.all([api.getUserList(filterData), api.getListAdmins(filterData)])
+        axios.all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
       )
       .then(
         axios.spread((users, admins) => {
@@ -99,7 +99,7 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
 
 export function getPortalOwner(userId) {
   return dispatch => {
-    return api.getUserById(userId).then(owner => dispatch(setOwner(owner)));
+    return api.people.getUserById(userId).then(owner => dispatch(setOwner(owner)));
   };
 }
 
@@ -110,19 +110,21 @@ export function fetchPeople(filter) {
   }
 
   return dispatch => {
-    return axios.all([api.getUserList(), api.getListAdmins(filterData)]).then(
-      axios.spread((users, admins) => {
-        const options = getUserOptions(users.items, admins.items);
-        const newOptions = getSelectorOptions(options);
+    return axios
+      .all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
+      .then(
+        axios.spread((users, admins) => {
+          const options = getUserOptions(users.items, admins.items);
+          const newOptions = getSelectorOptions(options);
         const usersOptions = getSelectorOptions(users.items);
-        filterData.total = admins.total;
+          filterData.total = admins.total;
 
         dispatch(setUsers(usersOptions));
-        dispatch(setAdmins(admins.items));
+          dispatch(setAdmins(admins.items));
         dispatch(setOptions(newOptions));
-        dispatch(setFilter(filterData));
-      })
-    );
+          dispatch(setFilter(filterData));
+        })
+      );
   };
 }
 
@@ -143,7 +145,7 @@ export function getUpdateListAdmin(filter) {
 
 export function getUsersOptions() {
   return dispatch => {
-    return api.getUserList().then(users => {
+    return api.people.getUserList().then(users => {
       const usersOptions = getSelectorOptions(users.items);
       dispatch(setUsers(usersOptions));
     });
@@ -152,7 +154,8 @@ export function getUsersOptions() {
 
 export function getWhiteLabelLogoText() {
   return dispatch => {
-    return api.getLogoText().then(res => {
+    return api.settings.getLogoText()
+    .then(res => {
       dispatch(setLogoText(res));
     });
   };
@@ -160,7 +163,8 @@ export function getWhiteLabelLogoText() {
 
 export function getWhiteLabelLogoSizes() {
   return dispatch => {
-    return api.getLogoSizes().then(res => {
+    return api.settings.getLogoSizes()
+    .then(res => {
       dispatch(setLogoSizes(res));
     });
   };
@@ -168,7 +172,8 @@ export function getWhiteLabelLogoSizes() {
 
 export function getWhiteLabelLogoUrls() {
   return dispatch => {
-    return api.getLogoUrls().then(res => {
+    return api.settings.getLogoUrls()
+    .then(res => {
       dispatch(setLogoUrls(Object.values(res)));
     });
   };

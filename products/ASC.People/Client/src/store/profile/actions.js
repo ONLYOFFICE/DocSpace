@@ -1,8 +1,9 @@
-import * as api from "../../store/services/api";
-import { isMe } from '../auth/selectors';
 import { getUserByUserName } from '../people/selectors';
 import { fetchPeople } from "../people/actions";
-import { setCurrentUser } from "../auth/actions";
+import { store, api } from 'asc-web-common';
+const { setCurrentUser } = store.auth.actions;
+const { isMe } = store.auth.selectors;
+
 
 export const SET_PROFILE = 'SET_PROFILE';
 export const CLEAN_PROFILE = 'CLEAN_PROFILE';
@@ -37,7 +38,7 @@ export function fetchProfile(userName) {
         } else {
             const user = getUserByUserName(people.users, userName);
             if (!user) {
-                api.getUser(userName).then(user => {
+                api.people.getUser(userName).then(user => {
                     dispatch(setProfile(user));
                 });
             } else {
@@ -54,7 +55,7 @@ export function createProfile(profile) {
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
-        return api.createUser(member).then(user => {
+        return api.people.createUser(member).then(user => {
             result = user;
             return dispatch(setProfile(user));
         }).then(() => {
@@ -72,7 +73,7 @@ export function updateProfile(profile) {
         const member = employeeWrapperToMemberModel(profile);
         let result;
 
-        return api.updateUser(member).then(user => {
+        return api.people.updateUser(member).then(user => {
             result = user;
             return Promise.resolve(dispatch(setProfile(user)));
         }).then(() => {
@@ -85,7 +86,7 @@ export function updateProfile(profile) {
 
 export function updateProfileCulture(id, culture) {
     return (dispatch) => {
-        return api.updateUserCulture(id, culture).then(user => {
+        return api.people.updateUserCulture(id, culture).then(user => {
             dispatch(setCurrentUser(user));
             return dispatch(setProfile(user));
         });
@@ -94,6 +95,6 @@ export function updateProfileCulture(id, culture) {
 
 export function getInvitationLink(isGuest = false) {
     return dispatch => {
-        return api.getInvitationLink(isGuest);
+        return api.portal.getInvitationLink(isGuest);
     }
 };

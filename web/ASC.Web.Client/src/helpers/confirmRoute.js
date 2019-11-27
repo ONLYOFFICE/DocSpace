@@ -1,12 +1,13 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { getObjectByLocation } from "./../helpers/converters";
 import { PageLayout, Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { AUTH_KEY } from "./constants";
-import { checkConfirmLink } from "../store/services/api";
+import { api, constants, utils } from "asc-web-common";
+const { checkConfirmLink } = api.user;
+const { AUTH_KEY } = constants;
+const { getObjectByLocation } = utils;
 
 class ConfirmRoute extends React.Component {
   constructor(props) {
