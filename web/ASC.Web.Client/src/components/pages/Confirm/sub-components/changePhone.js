@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import styled from "styled-components";
 import { Button, TextInput, PageLayout, Text } from "asc-web-components";
-//import { useTranslation } from "react-i18next";
-//import { login } from '../../../../../src/store/auth/actions';
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;

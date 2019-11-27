@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Layout, Toast } from 'asc-web-components';
-import { logout } from '../../store/auth/actions';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
-//import { isAdmin } from "../../store/auth/selectors";
+import { store } from 'asc-web-common';
+const { logout } = store.auth.actions;
 
 class PurePeopleLayout extends React.Component {
     shouldComponentUpdate(nextProps) {

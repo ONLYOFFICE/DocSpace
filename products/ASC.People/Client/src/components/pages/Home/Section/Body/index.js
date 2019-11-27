@@ -30,16 +30,13 @@ import {
   getUserStatus,
   getUserRole
 } from "../../../../../store/people/selectors";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { EmployeeStatus } from "../../../../../helpers/constants";
-import {
-  resendUserInvites,
-  sendInstructionsToDelete,
-  sendInstructionsToChangePassword,
-  deleteUser
-} from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
+import { store, api, constants } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
+const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
+const { EmployeeStatus } = constants;
+
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {

@@ -8,10 +8,11 @@ import {
     toastr
 } from "asc-web-components";
 import InviteDialog from './../../dialogs/Invite';
-import { isAdmin } from '../../../store/auth/selectors';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 import { typeUser, typeGuest, department } from './../../../helpers/customNames';
+import { store } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
     constructor(props) {

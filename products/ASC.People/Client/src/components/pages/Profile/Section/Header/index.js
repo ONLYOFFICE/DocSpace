@@ -13,14 +13,21 @@ import {
   AvatarEditor
 } from "asc-web-components";
 import { withRouter } from "react-router";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { getUserStatus, toEmployeeWrapper } from "../../../../../store/people/selectors";
-import { withTranslation } from 'react-i18next';
-import { resendUserInvites } from "../../../../../store/services/api";
-import { EmployeeStatus } from "../../../../../helpers/constants";
-import { updateUserStatus, fetchPeople } from "../../../../../store/people/actions";
-import { fetchProfile } from '../../../../../store/profile/actions';
 import {
+  getUserStatus,
+  toEmployeeWrapper
+} from "../../../../../store/people/selectors";
+import { withTranslation } from "react-i18next";
+import {
+  updateUserStatus,
+  fetchPeople
+} from "../../../../../store/people/actions";
+import { fetchProfile } from "../../../../../store/profile/actions";
+import styled from "styled-components";
+import { store, api, constants } from "asc-web-common";
+const { isAdmin, isMe } = store.auth.selectors;
+const {
+  resendUserInvites,
   sendInstructionsToDelete,
   sendInstructionsToChangePassword,
   sendInstructionsToChangeEmail,
@@ -28,8 +35,8 @@ import {
   loadAvatar,
   deleteAvatar,
   deleteUser
-} from "../../../../../store/services/api";
-import styled from 'styled-components';
+} = api.people;
+const { EmployeeStatus } = constants;
 
 const wrapperStyle = {
   display: "flex",
@@ -70,38 +77,42 @@ class SectionHeaderContent extends React.PureComponent {
         header: "",
         body: "",
         buttons: [],
-        newEmail: profile.email,
+        newEmail: profile.email
       },
       avatar: {
         tmpFile: "",
-        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        image: profile.avatarDefault
+          ? "data:image/png;base64," + profile.avatarDefault
+          : null,
         defaultWidth: 0,
         defaultHeight: 0
       }
     };
 
     return newState;
-  }
+  };
 
   openAvatarEditor = () => {
-    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
+    let avatarDefault = this.state.profile.avatarDefault
+      ? "data:image/png;base64," + this.state.profile.avatarDefault
+      : null;
     let _this = this;
     if (avatarDefault !== null) {
       let img = new Image();
-      img.onload = function () {
+      img.onload = function() {
         _this.setState({
           avatar: {
             defaultWidth: img.width,
             defaultHeight: img.height
           }
-        })
+        });
       };
       img.src = avatarDefault;
     }
     this.setState({
-      visibleAvatarEditor: true,
+      visibleAvatarEditor: true
     });
-  }
+  };
 
   onLoadFileAvatar = file => {
     let data = new FormData();
@@ -109,64 +120,72 @@ class SectionHeaderContent extends React.PureComponent {
     data.append("file", file);
     data.append("Autosave", false);
     loadAvatar(this.state.profile.id, data)
-      .then((response) => {
+      .then(response => {
         var img = new Image();
-        img.onload = function () {
+        img.onload = function() {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
             image: response.data,
             defaultWidth: img.width,
             defaultHeight: img.height
-          }
+          };
           _this.setState(stateCopy);
         };
         img.src = response.data;
       })
-      .catch((error) => toastr.error(error));
-  }
+      .catch(error => toastr.error(error));
+  };
 
   onSaveAvatar = (isUpdate, result) => {
     if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
-        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
+        x: Math.round(
+          result.x * this.state.avatar.defaultWidth - result.width / 2
+        ),
+        y: Math.round(
+          result.y * this.state.avatar.defaultHeight - result.height / 2
+        ),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile
       })
-        .then((response) => {
+        .then(response => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
-          stateCopy.avatar.tmpFile = '';
-          stateCopy.profile.avatarMax = response.max + '?_=' + Math.floor(Math.random() * Math.floor(10000));
+          stateCopy.avatar.tmpFile = "";
+          stateCopy.profile.avatarMax =
+            response.max +
+            "?_=" +
+            Math.floor(Math.random() * Math.floor(10000));
           toastr.success("Success");
           this.setState(stateCopy);
         })
-        .catch((error) => toastr.error(error))
+        .catch(error => toastr.error(error))
         .then(() => this.props.fetchProfile(this.state.profile.id));
     } else {
       deleteAvatar(this.state.profile.id)
-        .then((response) => {
+        .then(response => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
           toastr.success("Success");
           this.setState(stateCopy);
         })
-        .catch((error) => toastr.error(error));
+        .catch(error => toastr.error(error));
     }
-  }
+  };
 
   onCloseAvatarEditor = () => {
     this.setState({
-      visibleAvatarEditor: false,
+      visibleAvatarEditor: false
     });
-  }
+  };
 
   onEmailChange = event => {
     const emailRegex = /.+@.+\..+/;
-    const newEmail = (event && event.target.value) || this.state.dialog.newEmail;
+    const newEmail =
+      (event && event.target.value) || this.state.dialog.newEmail;
     const hasError = !emailRegex.test(newEmail);
 
     const dialog = {
@@ -174,7 +193,9 @@ class SectionHeaderContent extends React.PureComponent {
       header: "Change email",
       body: (
         <Text.Body>
-          <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
+          <span style={{ display: "block", marginBottom: "8px" }}>
+            The activation instructions will be sent to the entered email
+          </span>
           <TextInput
             id="new-email"
             scale={true}
@@ -197,17 +218,20 @@ class SectionHeaderContent extends React.PureComponent {
       ],
       newEmail: newEmail
     };
-    this.setState({ dialog: dialog })
-  }
+    this.setState({ dialog: dialog });
+  };
 
   onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
-      .then((res) => {
+    sendInstructionsToChangeEmail(
+      this.state.profile.id,
+      this.state.dialog.newEmail
+    )
+      .then(res => {
         toastr.success(res);
       })
-      .catch((error) => toastr.error(error))
+      .catch(error => toastr.error(error))
       .finally(this.onDialogClose);
-  }
+  };
 
   onPasswordChange = () => {
     const dialog = {
@@ -215,8 +239,12 @@ class SectionHeaderContent extends React.PureComponent {
       header: "Change password",
       body: (
         <Text.Body>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
-      </Text.Body>
+          Send the password change instructions to the{" "}
+          <a href={`mailto:${this.state.profile.email}`}>
+            {this.state.profile.email}
+          </a>{" "}
+          email address
+        </Text.Body>
       ),
       buttons: [
         <Button
@@ -228,47 +256,50 @@ class SectionHeaderContent extends React.PureComponent {
         />
       ]
     };
-    this.setState({ dialog: dialog })
-  }
+    this.setState({ dialog: dialog });
+  };
 
   onSendPasswordChangeInstructions = () => {
     sendInstructionsToChangePassword(this.state.profile.email)
-      .then((res) => {
+      .then(res => {
         toastr.success(res);
       })
-      .catch((error) => toastr.error(error))
+      .catch(error => toastr.error(error))
       .finally(this.onDialogClose);
-  }
+  };
 
   onDialogClose = () => {
     const dialog = { visible: false, newEmail: this.state.profile.email };
-    this.setState({ dialog: dialog })
-  }
+    this.setState({ dialog: dialog });
+  };
 
   onEditClick = () => {
     const { history, settings } = this.props;
     history.push(`${settings.homepage}/edit/${this.state.profile.userName}`);
-  }
+  };
 
   onUpdateUserStatus = (status, userId) => {
     const { fetchProfile, updateUserStatus } = this.props;
 
-    updateUserStatus(status, new Array(userId))
-      .then(() => fetchProfile(userId));
-  }
+    updateUserStatus(status, new Array(userId)).then(() =>
+      fetchProfile(userId)
+    );
+  };
 
-  onDisableClick = () => this.onUpdateUserStatus(EmployeeStatus.Disabled, this.state.profile.id);
+  onDisableClick = () =>
+    this.onUpdateUserStatus(EmployeeStatus.Disabled, this.state.profile.id);
 
-  onEnableClick = () => this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
+  onEnableClick = () =>
+    this.onUpdateUserStatus(EmployeeStatus.Active, this.state.profile.id);
 
   onReassignDataClick = user => {
     const { history, settings } = this.props;
     history.push(`${settings.homepage}/reassign/${user.userName}`);
-  }
+  };
 
   onDeletePersonalDataClick = () => {
     toastr.success("Context action: Delete personal data");
-  }
+  };
 
   onDeleteProfileClick = user => {
     this.setState({
@@ -330,7 +361,7 @@ class SectionHeaderContent extends React.PureComponent {
         ]
       }
     });
-  }
+  };
 
   onDeleteSelfProfileClick = email => {
     this.setState({
@@ -376,18 +407,20 @@ class SectionHeaderContent extends React.PureComponent {
         ]
       }
     });
-  }
+  };
 
   onInviteAgainClick = () => {
     resendUserInvites(new Array(this.state.profile.id))
-      .then(() => toastr.success(
-        <Text.Body>
-          The email activation instructions have been sent to the{" "}
-          <b>{this.state.profile.email}</b> email address
-        </Text.Body>
-      ))
+      .then(() =>
+        toastr.success(
+          <Text.Body>
+            The email activation instructions have been sent to the{" "}
+            <b>{this.state.profile.email}</b> email address
+          </Text.Body>
+        )
+      )
       .catch(error => toastr.error(error));
-  }
+  };
 
   getUserContextOptions = (user, viewer) => {
     let status = "";
@@ -403,63 +436,63 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t('EditUserDialogTitle'),
+            label: t("EditUserDialogTitle"),
             onClick: this.onEditClick
           },
           {
             key: "change-password",
-            label: t('PasswordChangeButton'),
+            label: t("PasswordChangeButton"),
             onClick: this.onPasswordChange
           },
           {
             key: "change-email",
-            label: t('EmailChangeButton'),
+            label: t("EmailChangeButton"),
             onClick: this.onEmailChange
           },
           {
             key: "edit-photo",
-            label: t('EditPhoto'),
+            label: t("EditPhoto"),
             onClick: this.openAvatarEditor
           },
           isMe(user, viewer.userName)
             ? viewer.isOwner
               ? {}
               : {
-                key: "delete-profile",
-                label: t("DeleteSelfProfile"),
-                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
-              }
+                  key: "delete-profile",
+                  label: t("DeleteSelfProfile"),
+                  onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+                }
             : {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
+                key: "disable",
+                label: t("DisableUserButton"),
+                onClick: this.onDisableClick
+              }
         ];
       case "disabled":
         return [
           {
             key: "enable",
-            label: t('EnableUserButton'),
+            label: t("EnableUserButton"),
             onClick: this.onEnableClick
           },
           {
             key: "edit-photo",
-            label: t('EditPhoto'),
+            label: t("EditPhoto"),
             onClick: this.openAvatarEditor
           },
           {
             key: "reassign-data",
-            label: t('ReassignData'),
+            label: t("ReassignData"),
             onClick: this.onReassignDataClick.bind(this, user)
           },
           {
             key: "delete-personal-data",
-            label: t('RemoveData'),
+            label: t("RemoveData"),
             onClick: this.onDeletePersonalDataClick
           },
           {
             key: "delete-profile",
-            label: t('DeleteSelfProfile'),
+            label: t("DeleteSelfProfile"),
             onClick: this.onDeleteProfileClick.bind(this, user)
           }
         ];
@@ -467,31 +500,31 @@ class SectionHeaderContent extends React.PureComponent {
         return [
           {
             key: "edit",
-            label: t('EditButton'),
+            label: t("EditButton"),
             onClick: this.onEditClick
           },
           {
             key: "invite-again",
-            label: t('InviteAgainLbl'),
+            label: t("InviteAgainLbl"),
             onClick: this.onInviteAgainClick
           },
           {
             key: "edit-photo",
-            label: t('EditPhoto'),
+            label: t("EditPhoto"),
             onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
-          (user.status === EmployeeStatus.Active
-            ? {
-              key: "disable",
-              label: t("DisableUserButton"),
-              onClick: this.onDisableClick
-            }
-            : {
-              key: "enable",
-              label: t("EnableUserButton"),
-              onClick: this.onEnableClick
-            }),
+            (user.status === EmployeeStatus.Active
+              ? {
+                  key: "disable",
+                  label: t("DisableUserButton"),
+                  onClick: this.onDisableClick
+                }
+              : {
+                  key: "enable",
+                  label: t("EnableUserButton"),
+                  onClick: this.onEnableClick
+                }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -501,11 +534,11 @@ class SectionHeaderContent extends React.PureComponent {
       default:
         return [];
     }
-  }
+  };
 
   goBack = () => {
     this.props.history.goBack();
-  }
+  };
 
   render() {
     const { profile, isAdmin, viewer, t } = this.props;
@@ -525,12 +558,12 @@ class SectionHeaderContent extends React.PureComponent {
         </div>
         <Header truncate={true}>
           {profile.displayName}
-          {profile.isLDAP && ` (${t('LDAPLbl')})`}
+          {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </Header>
         {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
           <ContextMenuButton
             directionX="right"
-            title={t('Actions')}
+            title={t("Actions")}
             iconName="VerticalDotsIcon"
             size={16}
             color="#A3A9AE"
@@ -562,7 +595,7 @@ class SectionHeaderContent extends React.PureComponent {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     settings: state.auth.settings,
     profile: state.profile.targetUser,
@@ -570,6 +603,9 @@ const mapStateToProps = (state) => {
     isAdmin: isAdmin(state.auth.user),
     filter: state.people.filter
   };
-}
+};
 
-export default connect(mapStateToProps, { updateUserStatus, fetchProfile, fetchPeople })(withRouter(withTranslation()(SectionHeaderContent)));
+export default connect(
+  mapStateToProps,
+  { updateUserStatus, fetchProfile, fetchPeople }
+)(withRouter(withTranslation()(SectionHeaderContent)));

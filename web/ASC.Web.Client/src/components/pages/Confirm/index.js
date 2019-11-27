@@ -5,6 +5,7 @@ import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import { Error404 } from "asc-web-common";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -14,7 +15,6 @@ const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
-const Error404 = lazy(() => import("../Error"));
 
 const Confirm = ({ match, language }) => {
 

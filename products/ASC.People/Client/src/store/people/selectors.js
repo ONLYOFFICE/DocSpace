@@ -1,6 +1,7 @@
 import { find, filter, cloneDeep } from "lodash";
-import { EmployeeActivationStatus, EmployeeStatus } from "../../helpers/constants";
-import { isAdmin } from "../auth/selectors";
+import { store, constants } from 'asc-web-common';
+const { isAdmin } = store.auth.selectors;
+const { EmployeeActivationStatus, EmployeeStatus} = constants;
 
 export function getSelectedUser(selection, userId) {
     return find(selection, function (obj) {

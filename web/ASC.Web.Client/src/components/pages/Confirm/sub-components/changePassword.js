@@ -13,11 +13,8 @@ import {
   Loader,
   toastr
 } from "asc-web-components";
-import {
-  changePassword,
-  getConfirmationInfo,
-  logout
-} from "../../../../../src/store/auth/actions";
+import { store } from 'asc-web-common';
+const { changePassword,  getConfirmationInfo, logout } = store.auth.actions;
 
 const BodyStyle = styled(Container)`
   margin-top: 70px;
