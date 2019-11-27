@@ -31,7 +31,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   moveMenu = e => {
-    const menu = document.getElementById('contextMenu');
+    const menu = document.getElementById(this.props.id);
     const bounds = (this.container !== document) && this.container.getBoundingClientRect();
 
     const clickX = e.clientX - bounds.left;
@@ -88,7 +88,7 @@ class ContextMenu extends React.PureComponent {
 
   handleClick = (e) => {
     const { visible } = this.state;
-    const menu = document.getElementById('contextMenu');
+    const menu = document.getElementById(this.props.id);
     const wasOutside = e.target ? !(e.target.contains === menu) : true;
 
     if (wasOutside && visible)
@@ -104,26 +104,31 @@ class ContextMenu extends React.PureComponent {
 
   render() {
     const { visible } = this.state;
-    const { options } = this.props;
+    const { options, id, className, style } = this.props;
 
-    return (visible && options || null) &&
-      <DropDown id="contextMenu" opened={true}>
+    return (visible && options || null) && (
+      <DropDown id={id} className={className} style={style} opened={true}>
         {options.map((item) => {
           if (item && item.key !== undefined) {
             return <DropDownItem key={item.key} {...item} />
           }
         })}
       </DropDown>
+    )
   }
 }
 
 ContextMenu.propTypes = {
   options: PropTypes.array,
-  targetAreaId: PropTypes.string
+  targetAreaId: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ContextMenu.defaultProps = {
-  options: []
+  options: [],
+  id: "contextMenu"
 };
 
 export default ContextMenu;
