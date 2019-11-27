@@ -31,7 +31,7 @@ storiesOf("Components|FieldContainer", module)
               helpButtonHeaderContent={text("helpButtonHeaderContent", "Tooltip header")}
               place="top"
               errorMessage={text("errorMessage", "Error text. Lorem ipsum dolor sit amet, consectetuer adipiscing elit")}
-              errorColor={color("color", "#C96C27")}
+              errorColor={color("errorColor", "#C96C27")}
               errorMessageWidth={text("errorMessageWidth", "293px")}
             >
               <TextInput
