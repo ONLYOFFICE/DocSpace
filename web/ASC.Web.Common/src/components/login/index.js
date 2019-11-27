@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import {
@@ -22,7 +22,7 @@ import {
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import SubModalDialog from "./sub-components/modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
@@ -88,261 +88,302 @@ const TooltipStyle = styled.span`
   margin-top: 2px;
 `;
 
-const mdOptions = { size: 6, offset: 3 };
+class Form extends Component {
+  constructor(props) {
+    super(props);
 
-const Form = props => {
-  const { t } = useTranslation("translation", { i18n });
-  const { login, setIsLoaded, match, history, language, greetingTitle } = props;
-  const { params } = match;
-  const [identifier, setIdentifier] = useState(params.confirmedEmail || "");
-  const [identifierValid, setIdentifierValid] = useState(true);
-  const [password, setPassword] = useState("");
-  const [passwordValid, setPasswordValid] = useState(true);
-  const [errorText, setErrorText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+    this.state = {
+      identifierValid: true,
+      identifier: "",
+      isLoading: false,
+      isDisabled: false,
+      passwordValid: true,
+      password: "",
+      isChecked: false,
+      openDialog: false,
+      email: "",
+      errorText: ""
+    };
+  }
 
-  const [openDialog, setOpenDialog] = useState(false);
-  const [email, setEmail] = useState("");
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [isChecked, setIsisChecked] = useState(false);
-
-  const onClick = () => {
-    setOpenDialog(true);
-    setIsDisabled(true);
-    setEmail(identifier);
+  onChangeLogin = event => {
+    this.setState({ identifier: event.target.value });
+    !this.state.identifierValid && this.setState({ identifierValid: true });
+    this.state.errorText && this.setState({ errorText: "" });
   };
 
-  const onDialogClose = () => {
-    setOpenDialog(false);
-    setIsDisabled(false);
-    setIsLoading(false);
-    setEmail("");
+  onChangePassword = event => {
+    this.setState({ password: event.target.value });
+    !this.state.passwordValid && this.setState({ passwordValid: true });
+    this.state.errorText && this.setState({ errorText: "" });
   };
 
-  const onSendPasswordInstructions = useCallback(() => {
-    setIsLoading(true);
-    sendInstructionsToChangePassword(email)
-      .then(res => toastr.success(res), message => toastr.error(message))
-      .finally(onDialogClose());
-  }, [email]);
+  onChangeEmail = event => {
+    this.setState({ email: event.target.value });
+  };
 
-  const onSubmit = useCallback(() => {
-    errorText && setErrorText("");
+  onChangeCheckbox = () => this.setState({ isChecked: !this.state.isChecked });
+
+  onClick = () => {
+    this.setState({
+      openDialog: true,
+      isDisabled: true,
+      email: this.state.identifier
+    });
+  };
+
+  onKeyPress = event => {
+    if (event.key === "Enter") {
+      !this.state.isDisabled
+        ? this.onSubmit()
+        : this.onSendPasswordInstructions();
+    }
+  };
+
+  onSendPasswordInstructions = () => {
+    this.setState({ isLoading: true });
+    sendInstructionsToChangePassword(this.state.email)
+      .then(
+        res => toastr.success(res),
+        message => toastr.error(message)
+      )
+      .finally(this.onDialogClose());
+  };
+
+  onDialogClose = () => {
+    this.setState({
+      openDialog: false,
+      isDisabled: false,
+      isLoading: false,
+      email: ""
+    });
+  };
+
+  onSubmit = () => {
+    const { errorText, identifier, password } = this.state;
+    const { login, setIsLoaded, history } = this.props;
+
+    errorText && this.setState({ errorText: "" });
     let hasError = false;
 
     const userName = identifier.trim();
 
     if (!userName) {
       hasError = true;
-      setIdentifierValid(!hasError);
+      this.setState({ identifierValid: !hasError });
     }
 
     const pass = password.trim();
 
     if (!pass) {
       hasError = true;
-      setPasswordValid(!hasError);
+      this.setState({ passwordValid: !hasError });
     }
 
     if (hasError) return false;
 
-    setIsLoading(true);
+    this.setState({ isLoading: true });
 
     login(userName, pass).then(
       () => {
-        //console.log("auth success", match, location, history);
-        setIsLoading(false);
+        this.setState({ isLoading: false });
         setIsLoaded(true);
         history.push("/");
       },
       error => {
-        //console.error("auth error", error);
-        setErrorText(error);
-        setIsLoading(false);
+        this.setState({ errorText: error, isLoading: false });
       }
     );
-  }, [errorText, history, identifier, login, setIsLoaded, password]);
+  };
 
-  const onKeyPress = useCallback(
-    event => {
-      if (event.key === "Enter") {
-        !isDisabled ? onSubmit() : onSendPasswordInstructions();
-      }
-    },
-    [onSendPasswordInstructions, onSubmit, isDisabled]
-  );
-
-  useEffect(() => {
+  componentDidMount() {
+    const { language, match } = this.props;
+    const { params } = match;
     i18n.changeLanguage(language);
-    params.error && setErrorText(params.error);
-    window.addEventListener("keyup", onKeyPress);
-    // Remove event listeners on cleanup
-    return () => {
-      window.removeEventListener("keyup", onKeyPress);
-    };
-  }, [onKeyPress, params, language]);
+    params.error && this.setState({ errorText: params.error });
+    window.addEventListener("keyup", this.onKeyPress);
+  }
 
-  const onChangePassword = event => {
-    setPassword(event.target.value);
-    !passwordValid && setPasswordValid(true);
-    errorText && setErrorText("");
-  };
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.onKeyPress);
+  }
 
-  const onChangeLogin = event => {
-    setIdentifier(event.target.value);
-    !identifierValid && setIdentifierValid(true);
-    errorText && setErrorText("");
-  };
+  render() {
+    const mdOptions = { size: 6, offset: 3 };
+    const { greetingTitle, match, t } = this.props;
+    const {
+      identifierValid,
+      identifier,
+      isLoading,
+      passwordValid,
+      password,
+      isChecked,
+      openDialog,
+      email,
+      errorText
+    } = this.state;
+    const { params } = match;
 
-  const onChangeEmail = event => {
-    setEmail(event.target.value);
-  };
+    //console.log("Login render");
 
-  // console.log('Login render');
+    return (
+      <FormContainer>
+        <Row className="login-row">
+          <Col sm="12" md={mdOptions}>
+            <Card className="login-card">
+              <CardImg
+                className="card-img"
+                src="images/dark_general.png"
+                alt="Logo"
+                top
+              />
+              <CardTitle className="card-title">{greetingTitle}</CardTitle>
+            </Card>
+          </Col>
+        </Row>
+        <Row className="login-row">
+          <Col sm="12" md={mdOptions}>
+            <TextInput
+              id="login"
+              name="login"
+              hasError={!identifierValid}
+              value={identifier}
+              placeholder={t("RegistrationEmailWatermark")}
+              size="huge"
+              scale={true}
+              isAutoFocussed={true}
+              tabIndex={1}
+              isDisabled={isLoading}
+              autoComplete="username"
+              onChange={this.onChangeLogin}
+              onKeyDown={this.onKeyPress}
+            />
+          </Col>
+        </Row>
+        <Row className="login-row">
+          <Col sm="12" md={mdOptions}>
+            <TextInput
+              id="password"
+              name="password"
+              type="password"
+              hasError={!passwordValid}
+              value={password}
+              placeholder={t("Password")}
+              size="huge"
+              scale={true}
+              tabIndex={2}
+              isDisabled={isLoading}
+              autoComplete="current-password"
+              onChange={this.onChangePassword}
+              onKeyDown={this.onKeyPress}
+            />
+          </Col>
+        </Row>
+        <Row className="login-row">
+          <Col sm="12" md={mdOptions}>
+            <Link
+              fontSize={12}
+              className="link-style"
+              type="page"
+              isHovered={true}
+              onClick={this.onClick}
+            >
+              {t("ForgotPassword")}
+            </Link>
+            <Checkbox
+              className="checkbox"
+              isChecked={isChecked}
+              onChange={this.onChangeCheckbox}
+              label={t("Remember")}
+            />
+            <TooltipStyle>
+              <HelpButton
+                helpButtonHeaderContent={t("CookieSettingsTitle")}
+                tooltipContent={
+                  <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
+                }
+              />
+            </TooltipStyle>
+          </Col>
+        </Row>
+
+        {openDialog ? (
+          <SubModalDialog
+            openDialog={openDialog}
+            isLoading={isLoading}
+            email={email}
+            onChangeEmail={this.onChangeEmail}
+            onSendPasswordInstructions={this.onSendPasswordInstructions}
+            onDialogClose={this.onDialogClose}
+            t={t}
+          />
+        ) : null}
+
+        <Row className="button-row">
+          <Col sm="12" md={mdOptions}>
+            <Button
+              primary
+              size="big"
+              label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+              tabIndex={3}
+              isDisabled={isLoading}
+              isLoading={isLoading}
+              onClick={this.onSubmit}
+            />
+          </Col>
+        </Row>
+        {params.confirmedEmail && (
+          <Row className="login-row">
+            <Col sm="12" md={mdOptions}>
+              <Text.Body isBold={true} fontSize={16}>
+                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+              </Text.Body>
+            </Col>
+          </Row>
+        )}
+        <Collapse isOpen={!!errorText}>
+          <Row className="login-row">
+            <Col sm="12" md={mdOptions}>
+              <div className="alert alert-danger">{errorText}</div>
+            </Col>
+          </Row>
+        </Collapse>
+      </FormContainer>
+    );
+  }
+}
+
+const FormWrapper = withTranslation()(Form);
+
+const LoginForm = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
 
   return (
-    <FormContainer>
-      <Row className="login-row">
-        <Col sm="12" md={mdOptions}>
-          <Card className="login-card">
-            <CardImg
-              className="card-img"
-              src="images/dark_general.png"
-              alt="Logo"
-              top
-            />
-            <CardTitle className="card-title">
-              {greetingTitle}
-            </CardTitle>
-          </Card>
-        </Col>
-      </Row>
-      <Row className="login-row">
-        <Col sm="12" md={mdOptions}>
-          <TextInput
-            id="login"
-            name="login"
-            hasError={!identifierValid}
-            value={identifier}
-            placeholder={t("RegistrationEmailWatermark")}
-            size="huge"
-            scale={true}
-            isAutoFocussed={true}
-            tabIndex={1}
-            isDisabled={isLoading}
-            autoComplete="username"
-            onChange={onChangeLogin}
-            onKeyDown={onKeyPress}
-          />
-        </Col>
-      </Row>
-      <Row className="login-row">
-        <Col sm="12" md={mdOptions}>
-          <TextInput
-            id="password"
-            name="password"
-            type="password"
-            hasError={!passwordValid}
-            value={password}
-            placeholder={t("Password")}
-            size="huge"
-            scale={true}
-            tabIndex={2}
-            isDisabled={isLoading}
-            autoComplete="current-password"
-            onChange={onChangePassword}
-            onKeyDown={onKeyPress}
-          />
-        </Col>
-      </Row>
-      <Row className="login-row">
-        <Col sm="12" md={mdOptions}>
-          <Link
-            fontSize={12}
-            className="link-style"
-            type="page"
-            isHovered={true}
-            onClick={onClick}
-          >
-            {t("ForgotPassword")}
-          </Link>
-          <Checkbox
-            className="checkbox"
-            isChecked={isChecked}
-            onChange={() => setIsisChecked(!isChecked)}
-            label={t("Remember")}
-          />
-          <TooltipStyle>
-            <HelpButton
-              helpButtonHeaderContent={t('CookieSettingsTitle')}
-              tooltipContent={
-                <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
-              }
-            />
-          </TooltipStyle>
-        </Col>
-      </Row>
-
-      {openDialog ? (
-        <SubModalDialog
-          openDialog={openDialog}
-          isLoading={isLoading}
-          email={email}
-          onChangeEmail={onChangeEmail}
-          onSendPasswordInstructions={onSendPasswordInstructions}
-          onDialogClose={onDialogClose}
-          t={t}
-        />
-      ) : null}
-
-      <Row className="button-row">
-        <Col sm="12" md={mdOptions}>
-          <Button
-            primary
-            size="big"
-            label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-            tabIndex={3}
-            isDisabled={isLoading}
-            isLoading={isLoading}
-            onClick={onSubmit}
-          />
-        </Col>
-      </Row>
-      {params.confirmedEmail && (
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <Text.Body isBold={true} fontSize={16}>
-              {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-            </Text.Body>
-          </Col>
-        </Row>
-      )}
-      <Collapse isOpen={!!errorText}>
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <div className="alert alert-danger">{errorText}</div>
-          </Col>
-        </Row>
-      </Collapse>
-    </FormContainer>
+    <I18nextProvider i18n={i18n}>
+      <PageLayout sectionBodyContent={<FormWrapper {...props} />} />
+    </I18nextProvider>
   );
 };
 
-const LoginForm = props => (
-  <PageLayout sectionBodyContent={<Form {...props} />} />
-);
-
-LoginForm.propTypes = {
+Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  setIsLoaded: PropTypes.func.isRequired,
+  greetingTitle: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+  language: PropTypes.string.isRequired
 };
 
-LoginForm.defaultProps = {
+Form.defaultProps = {
   identifier: "",
   password: "",
   email: ""
+};
+
+LoginForm.propTypes = {
+  language: PropTypes.string.isRequired
 };
 
 function mapStateToProps(state) {
@@ -352,7 +393,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { login, setIsLoaded }
-)(withRouter(LoginForm));
+export default connect(mapStateToProps, { login, setIsLoaded })(
+  withRouter(LoginForm)
+);
