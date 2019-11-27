@@ -39,6 +39,6 @@ describe('<DropDownProfileItem />', () => {
       <DropDownProfileItem {...baseProps} style={{ color: 'red' }} />
     );
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.prop('style')).toEqual({ color: 'red' });
   });
 });
