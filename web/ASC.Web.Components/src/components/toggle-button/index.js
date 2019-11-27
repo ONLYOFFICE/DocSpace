@@ -56,7 +56,7 @@ class ToggleButton extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: this.props.isChecked
+      checked: props.isChecked
     };
   }
 
@@ -103,5 +103,9 @@ ToggleButton.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   className: PropTypes.string
 };
+
+ToggleIcon.propTypes = {
+  isChecked: PropTypes.bool
+}
 
 export default ToggleButton;
