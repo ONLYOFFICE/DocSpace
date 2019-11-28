@@ -167,16 +167,14 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
 
-    login(userName, pass).then(
-      () => {
-        this.setState({ isLoading: false });
+    login(userName, pass)
+      .then(() => {
         setIsLoaded(true);
         history.push("/");
-      },
-      error => {
+      })
+      .catch(error => {
         this.setState({ errorText: error, isLoading: false });
-      }
-    );
+      });
   };
 
   componentDidMount() {
