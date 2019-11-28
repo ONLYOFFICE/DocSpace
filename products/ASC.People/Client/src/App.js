@@ -2,14 +2,13 @@ import React, { Suspense } from "react";
 import { connect } from "react-redux";
 import { Router, Switch, Redirect } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import PeopleLayout from "./components/Layout/index";
 import Home from "./components/pages/Home";
 import Profile from './components/pages/Profile';
 import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import Reassign from './components/pages/Reassign';
 import Import from './components/pages/Import';
-import { history, PrivateRoute, PublicRoute, Login, Error404 } from "asc-web-common";
+import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout } from "asc-web-common";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -19,7 +18,7 @@ const App = ({ settings }) => {
   const { homepage } = settings;
   return (
     <Router history={history}>
-      <PeopleLayout>
+      <StudioLayout>
         <Suspense
           fallback={<Loader className="pageLoader" type="rombs" size={40} />}
         >
@@ -65,7 +64,7 @@ const App = ({ settings }) => {
             <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>
-      </PeopleLayout>
+      </StudioLayout>
     </Router>
   );
 };
