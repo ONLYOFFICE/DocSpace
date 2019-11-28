@@ -439,7 +439,7 @@ class FilterInput extends React.Component {
                 break;
         }
         return (
-            <StyledFilterInput className={this.props.className}>
+            <StyledFilterInput className={this.props.className} id={this.props.id} style={this.props.style}>
                 <StyledSearchInput ref={this.searchWrapper}>
                     <SearchInput
                         id={this.props.id}
@@ -495,7 +495,10 @@ FilterInput.protoTypes = {
     autoRefresh: PropTypes.bool,
     selectedFilterData: PropTypes.object,
     directionAscLabel: PropTypes.string,
-    directionDescLabel: PropTypes.string
+    directionDescLabel: PropTypes.string,
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 FilterInput.defaultProps = {
