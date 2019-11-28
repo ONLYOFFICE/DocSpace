@@ -37,10 +37,10 @@ const ErrorText = styled(Container)`
     cursor: default;
 `;
 
-const ErrorContainer = ({children}) => {
+const ErrorContainer = ({ children, id, className, style }) => {
     //console.log("ErrorContainer render");
     return (
-        <ErrorFrame fluid>
+        <ErrorFrame fluid id={id} className={className} style={style}>
             <ErrorWrapper fluid>
                 <ErrorText>
                     {children}
@@ -51,7 +51,10 @@ const ErrorContainer = ({children}) => {
 };
 
 ErrorContainer.propTypes = {
-    children: PropTypes.any
-  };
+    children: PropTypes.any,
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+};
 
 export default ErrorContainer;
