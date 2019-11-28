@@ -114,8 +114,8 @@ class HelpButton extends React.Component {
   };
 
   onClick = () => {
-    this.setState({isOpen: !this.state.isOpen});
-  }
+    this.setState({ isOpen: !this.state.isOpen });
+  };
 
   render() {
     const { isOpen, displayType } = this.state;
@@ -125,14 +125,15 @@ class HelpButton extends React.Component {
       offsetRight,
       offsetLeft,
       zIndex,
-      helpButtonHeaderContent
+      helpButtonHeaderContent,
+      className
     } = this.props;
 
     return (
       <div ref={this.ref}>
         <IconButton
           id={this.id}
-          className="icon-button"
+          className={className}
           isClickable={true}
           iconName="QuestionIcon"
           size={13}
@@ -156,8 +157,7 @@ class HelpButton extends React.Component {
             <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
-                {
-                  helpButtonHeaderContent &&
+                {helpButtonHeaderContent && (
                   <Header>
                     <HeaderText>
                       <Text.Body isBold={true} fontSize={21}>
@@ -165,7 +165,7 @@ class HelpButton extends React.Component {
                       </Text.Body>
                     </HeaderText>
                   </Header>
-                }
+                )}
                 <Body>{tooltipContent}</Body>
               </Content>
             </Aside>
@@ -181,7 +181,8 @@ HelpButton.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+    .isRequired,
   offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
@@ -189,7 +190,8 @@ HelpButton.propTypes = {
   offsetLeft: PropTypes.number,
   zIndex: PropTypes.number,
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
-  helpButtonHeaderContent: PropTypes.string
+  helpButtonHeaderContent: PropTypes.string,
+  className: PropTypes.string
 };
 
 HelpButton.defaultProps = {
