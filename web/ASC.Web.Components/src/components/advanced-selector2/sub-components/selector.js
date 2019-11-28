@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Checkbox from "../../checkbox";
 import Link from "../../link";
-//import ComboBox from "../../combobox";
+import ComboBox from "../../combobox";
 import SearchInput from "../../search-input";
 import Loader from "../../loader";
 import { Text } from "../../text";
@@ -91,12 +91,26 @@ const StyledContainer = styled(Container)`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: 30px 1fr;
+    grid-template-rows: 60px 1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
       grid-area: header-options;
       /* background-color: white; */
+
+      display: grid;
+      grid-row-gap: 12px;
+      grid-template-columns: 1fr;
+      grid-template-rows: 30px 30px;
+      grid-template-areas: "options_searcher" "options_group_selector";
+
+      .options_searcher {
+        grid-area: options_searcher;
+      }
+
+      .options_group_selector {
+        grid-area: options_group_selector;
+      }
     }
 
     .body-options {
@@ -518,6 +532,19 @@ const ADSelector = props => {
             onChange={onSearchChange}
             onClearSearch={onSearchReset}
           />
+          {displayType === "aside" && groups && groups.length > 0 && (
+            <ComboBox
+              className="options_group_selector"
+              isDisabled={isDisabled}
+              options={groups}
+              selectedOption={currentGroup}
+              dropDownMaxHeight={200}
+              scaled={true}
+              scaledOptions={true}
+              size="content"
+              onSelect={onGroupSelect}
+            />
+          )}
         </ADSelectorHeader>
         <ADSelectorBody className="body-options">
           <InfiniteLoader
