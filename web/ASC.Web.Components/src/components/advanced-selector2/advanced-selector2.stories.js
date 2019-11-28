@@ -106,8 +106,7 @@ class ADSelectorExample extends React.Component {
 
   loadNextPage = ({ startIndex, searchValue, currentGroup }) => {
     console.log(
-      `loadNextPage(startIndex=${startIndex}, searchValue=${searchValue}, currentGroup=${currentGroup &&
-        currentGroup.label})`
+      `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}", currentGroup="${currentGroup}")`
     );
     this.setState({ isNextPageLoading: true }, () => {
       setTimeout(() => {
@@ -220,7 +219,7 @@ class ADSelectorExample extends React.Component {
 
             if (!user) return null;
 
-            console.log("onOptionTooltipShow", index, user);
+            // console.log("onOptionTooltipShow", index, user);
 
             return (
               <div

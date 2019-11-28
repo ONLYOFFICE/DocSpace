@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Checkbox from "../../checkbox";
@@ -157,8 +157,16 @@ const ADSelector = props => {
     onGroupChanged
   } = props;
 
+  //console.log("options", options); 
+  //console.log("hasNextPage", hasNextPage); 
+  //console.log("isNextPageLoading", isNextPageLoading);
+
   const listOptionsRef = useRef(null);
   const listGroupsRef = useRef(null);
+
+  useEffect(() => {
+    resetCache();
+  }, [searchValue, currentGroup, hasNextPage])
 
   const [selectedOptionList, setSelectedOptionList] = useState(
     selectedOptions || []
@@ -294,7 +302,7 @@ const ADSelector = props => {
 
   const resetCache = () => {
     if (listOptionsRef && listOptionsRef.current) {
-      listOptionsRef.current.resetloadMoreItemsCache();
+      listOptionsRef.current.resetloadMoreItemsCache(true);
     }
   };
 
@@ -302,13 +310,11 @@ const ADSelector = props => {
     if(!currentGroup || !group || currentGroup.key === group.key)
         return;
 
-    resetCache();
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
   };
 
   const onSearchChange = value => {
-    resetCache();
     setSearchValue(value);
     onSearchChanged && onSearchChanged(value);
   };
@@ -481,12 +487,16 @@ const ADSelector = props => {
   const loadMoreItems = startIndex => {
     if (isNextPageLoading) return;
 
+    const options = {
+      startIndex: startIndex || 0,
+      searchValue: searchValue,
+      currentGroup: currentGroup ? currentGroup.key : null
+    };
+
+    console.log("loadMoreItems", options);
+
     loadNextPage &&
-      loadNextPage({
-        startIndex: startIndex || 0,
-        searchValue,
-        currentGroup: currentGroup ? currentGroup.key : null
-      });
+      loadNextPage(options);
   };
 
   return (
