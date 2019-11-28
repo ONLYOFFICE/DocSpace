@@ -165,6 +165,7 @@ const ADSelector = props => {
     searchPlaceHolderLabel,
     emptySearchOptionsLabel,
     emptyOptionsLabel,
+    loadingLabel,
     onSelect,
     getOptionTooltipContent,
     onSearchChanged,
@@ -372,7 +373,7 @@ const ADSelector = props => {
               marginRight: "10px"
             }}
           />
-          <Text.Body as="span">Loading... Please wait...</Text.Body>
+          <Text.Body as="span">{loadingLabel}</Text.Body>
         </div>
       );
     } else {
@@ -645,6 +646,7 @@ ADSelector.propTypes = {
   groupsHeaderLabel: PropTypes.string,
   emptySearchOptionsLabel: PropTypes.string,
   emptyOptionsLabel: PropTypes.string,
+  loadingLabel: PropTypes.string,
 
   //size: PropTypes.oneOf(["compact", "full"]),
   displayType: PropTypes.oneOf(["dropdown", "aside"]),

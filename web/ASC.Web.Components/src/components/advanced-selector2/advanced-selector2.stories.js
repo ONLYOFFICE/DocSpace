@@ -200,6 +200,7 @@ class ADSelectorExample extends React.Component {
             "There are no users with such name"
           )}
           emptyOptionsLabel={text("emptyOptionsLabel", "There are no users")}
+          loadingLabel={text('loadingLabel', 'Loading... Please wait...')}
           onSelect={selectedOptions => {
             action("onSelect")(selectedOptions);
             this.toggle();
