@@ -30,4 +30,28 @@ describe("<HelpButton />", () => {
     wrapper.afterHide();
     expect(wrapper.state.isOpen).toEqual(false);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <HelpButton tooltipContent={tooltipContent} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <HelpButton tooltipContent={tooltipContent} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <HelpButton tooltipContent={tooltipContent} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

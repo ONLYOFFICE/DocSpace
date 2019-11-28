@@ -49,7 +49,10 @@ import { HelpButton } from "asc-web-components";
 
 | Props                     |       Type        | Required |              Values              | Default | Description                                      |
 | ------------------------- | :---------------: | :------: | :------------------------------: | :-----: | ------------------------------------------------ |
-| `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
-| `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
+| `className`               |     `string`      |    -     |                -                 |    -    | Accepts class                                    |
 | `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
 | `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |
+| `id`                      |     `string`      |    -     |                -                 |    -    | Accepts id                                       |
+| `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
+| `style`                   |  `obj`, `array`   |    -     |                -                 |    -    | Accepts css style                                |
+| `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
