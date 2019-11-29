@@ -46,9 +46,9 @@ namespace ASC.Core.Data
         public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
         public UserDbContext UserDbContext { get; set; }
-        public UserDbContextManager UserDbContextManager { get; }
+        public DbContextManager<UserDbContext> UserDbContextManager { get; }
 
-        public EFUserService(UserDbContextManager userDbContextManager)
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager)
         {
             FromUserToUserInfo = user => new UserInfo
             {

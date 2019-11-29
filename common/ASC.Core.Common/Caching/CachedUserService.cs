@@ -481,7 +481,7 @@ namespace ASC.Core.Caching
             services.AddCoreSettingsService();
 
             services.AddLoggerService();
-            services.TryAddScoped<UserDbContextManager>();
+            services.TryAddScoped<DbContextManager<UserDbContext>>();
             services.TryAddScoped<IConfigureOptions<UserDbContext>, ConfigureDbContext>();
             services.TryAddScoped<UserDbContext>();
 

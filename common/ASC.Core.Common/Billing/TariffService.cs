@@ -32,12 +32,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using ASC.Common.Caching;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
-
-using ASC.Core.Data;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -79,7 +75,7 @@ namespace ASC.Core.Billing
         }
     }
 
-    public class TariffService : DbBaseService, ITariffService
+    public class TariffService : ITariffService
     {
         private readonly ICache cache;
         private readonly ICacheNotify<TariffCacheItem> notify;
@@ -101,6 +97,7 @@ namespace ASC.Core.Billing
         public CoreBaseSettings CoreBaseSettings { get; }
         public CoreSettings CoreSettings { get; }
         public IConfiguration Configuration { get; }
+        public CoreDbContext CoreDbContext { get; set; }
         public TariffServiceStorage TariffServiceStorage { get; }
         public IOptionsMonitor<ILog> Options { get; }
 
@@ -110,16 +107,17 @@ namespace ASC.Core.Billing
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            DbOptionsManager dbOptionsManager,
+            DbContextManager<CoreDbContext> coreDbContextManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options)
-            : base(dbOptionsManager, "tenant")
+
         {
             log = options.CurrentValue;
             this.quotaService = quotaService;
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
             Configuration = configuration;
+            CoreDbContext = coreDbContextManager.Value;
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
             CoreBaseSettings = coreBaseSettings;
@@ -378,36 +376,34 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         public string GetButton(int tariffId, string partnerId)
         {
-            var q = new SqlQuery("tenants_buttons")
-               .Select("button_url")
-               .Where(Exp.Eq("tariff_id", tariffId) & Exp.Eq("partner_id", partnerId))
-               .SetMaxResults(1);
-
-            return ExecList(q).ConvertAll(r => (string)r[0]).SingleOrDefault();
+            return CoreDbContext.Buttons
+                .Where(r => r.TariffId == tariffId && r.PartnerId == partnerId)
+                .Select(r => r.ButtonUrl)
+                .SingleOrDefault();
         }
 
         public void SaveButton(int tariffId, string partnerId, string buttonUrl)
         {
-            var q = new SqlInsert("tenants_buttons", true)
-                .InColumnValue("tariff_id", tariffId)
-                .InColumnValue("partner_id", partnerId)
-                .InColumnValue("button_url", buttonUrl);
+            var efButton = new EFButton()
+            {
+                TariffId = tariffId,
+                PartnerId = partnerId,
+                ButtonUrl = buttonUrl
+            };
 
-            ExecNonQuery(q);
+            CoreDbContext.Buttons.Add(efButton);
+            CoreDbContext.SaveChanges();
         }
 
 
         private Tuple<int, DateTime> GetBillingInfo(int tenant)
         {
-            var q = new SqlQuery("tenants_tariff")
-                .Select("tariff", "stamp")
-                .Where("tenant", tenant)
-                .OrderBy("id", false)
-                .SetMaxResults(1);
-
-            return ExecList(q)
-                .ConvertAll(r => Tuple.Create(Convert.ToInt32(r[0]), ((DateTime)r[1]).Year < 9999 ? (DateTime)r[1] : DateTime.MaxValue))
+            var r = CoreDbContext.Tariffs
+                .Where(r => r.Tenant == tenant)
+                .OrderByDescending(r => r.Id)
                 .SingleOrDefault();
+
+            return r != null ? Tuple.Create(r.Tariff, r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue) : null;
         }
 
         private bool SaveBillingInfo(int tenant, Tuple<int, DateTime> bi, bool renewal = true)
@@ -415,17 +411,24 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
             var inserted = false;
             if (!Equals(bi, GetBillingInfo(tenant)))
             {
-                var db = GetDb();
-                using var tx = db.BeginTransaction();
+                using var tx = CoreDbContext.Database.BeginTransaction();
+
                 // last record is not the same
-                var q = new SqlQuery("tenants_tariff").SelectCount().Where("tenant", tenant).Where("tariff", bi.Item1).Where("stamp", bi.Item2);
-                if (bi.Item2 == DateTime.MaxValue || renewal || db.ExecuteScalar<int>(q) == 0)
+                var count = CoreDbContext.Tariffs
+                    .Count(r => r.Tenant == tenant && r.Tariff == bi.Item1 && r.Stamp == bi.Item2);
+
+                if (bi.Item2 == DateTime.MaxValue || renewal || count == 0)
                 {
-                    var i = new SqlInsert("tenants_tariff")
-                        .InColumnValue("tenant", tenant)
-                        .InColumnValue("tariff", bi.Item1)
-                        .InColumnValue("stamp", bi.Item2);
-                    db.ExecuteNonQuery(i);
+                    var efTariff = new EFTariff
+                    {
+                        Tenant = tenant,
+                        Tariff = bi.Item1,
+                        Stamp = bi.Item2
+                    };
+
+                    CoreDbContext.Tariffs.Add(efTariff);
+                    CoreDbContext.SaveChanges();
+
                     cache.Remove(GetTariffCacheKey(tenant));
                     inserted = true;
                 }
@@ -447,12 +450,15 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
         public void DeleteDefaultBillingInfo()
         {
             const int tenant = Tenant.DEFAULT_TENANT;
-            var db = GetDb();
+
+            var tariffs = CoreDbContext.Tariffs.Where(r => r.Tenant == tenant).ToList();
+
+            foreach (var t in tariffs)
             {
-                db.ExecuteNonQuery(new SqlUpdate("tenants_tariff")
-                                       .Set("tenant", -2)
-                                       .Where("tenant", tenant));
+                t.Tenant = -2;
             }
+
+            CoreDbContext.SaveChanges();
 
             ClearCache(tenant);
         }
@@ -613,6 +619,10 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
     {
         public static IServiceCollection AddTariffService(this IServiceCollection services)
         {
+            services.TryAddScoped<DbContextManager<CoreDbContext>>();
+            services.TryAddScoped<IConfigureOptions<CoreDbContext>, ConfigureDbContext>();
+            services.TryAddScoped<CoreDbContext>();
+
             services.TryAddSingleton<TariffServiceStorage>();
             services.TryAddScoped<ITariffService, TariffService>();
             return services;
