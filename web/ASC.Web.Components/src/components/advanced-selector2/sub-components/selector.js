@@ -91,26 +91,32 @@ const StyledContainer = styled(Container)`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: 60px 1fr;
+    grid-template-rows: ${props => props.displayType === "aside" ? "100px": "30px"}  1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
       grid-area: header-options;
       /* background-color: white; */
 
-      display: grid;
-      grid-row-gap: 12px;
-      grid-template-columns: 1fr;
-      grid-template-rows: 30px 30px;
-      grid-template-areas: "options_searcher" "options_group_selector";
+      ${props => props.displayType === "aside" && css`
+        display: grid;
+        grid-row-gap: 12px;
+        grid-template-columns: 1fr;
+        grid-template-rows: 30px 30px 30px;
+        grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
 
-      .options_searcher {
-        grid-area: options_searcher;
-      }
+        .options_searcher {
+          grid-area: options_searcher;
+        }
 
-      .options_group_selector {
-        grid-area: options_group_selector;
-      }
+        .options_group_selector {
+          grid-area: options_group_selector;
+        }
+
+        .options_group_select_all {
+          grid-area: options_group_select_all;
+        }
+      `}
     }
 
     .body-options {
@@ -191,6 +197,8 @@ const ADSelector = props => {
     selectedGroups || []
   );
   const [searchValue, setSearchValue] = useState("");
+
+  const [selectedAll, setSelectedAll] = useState(false);
 
   const convertGroups = items => {
     if (!items) return [];
@@ -328,6 +336,10 @@ const ADSelector = props => {
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
   };
+
+  const onSelectAllChange = () => {
+    setSelectedAll(!selectedAll);
+  }
 
   const onSearchChange = value => {
     setSearchValue(value);
@@ -534,17 +546,26 @@ const ADSelector = props => {
             onClearSearch={onSearchReset}
           />
           {displayType === "aside" && groups && groups.length > 0 && (
-            <ComboBox
-              className="options_group_selector"
-              isDisabled={isDisabled}
+            <>
+              <ComboBox
+                className="options_group_selector"
+                isDisabled={isDisabled}
               options={groups}
-              selectedOption={currentGroup}
-              dropDownMaxHeight={200}
-              scaled={true}
-              scaledOptions={true}
-              size="content"
-              onSelect={onGroupSelect}
-            />
+                selectedOption={currentGroup}
+                dropDownMaxHeight={200}
+                scaled={true}
+                scaledOptions={true}
+                size="content"
+                onSelect={onGroupSelect}
+              />
+              <Checkbox
+                className="options_group_select_all"
+                label={"Select all"}
+                isChecked={selectedAll}
+                isIndeterminate={false}
+                onChange={onSelectAllChange}
+              />
+            </>
           )}
         </ADSelectorHeader>
         <ADSelectorBody className="body-options">
