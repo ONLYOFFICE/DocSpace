@@ -164,13 +164,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read]
-        public IEnumerable<EmployeeWraper> GetAll()
+        public IQueryable<EmployeeWraper> GetAll()
         {
             return GetByStatus(EmployeeStatus.Active);
         }
 
         [Read("status/{status}")]
-        public IEnumerable<EmployeeWraper> GetByStatus(EmployeeStatus status)
+        public IQueryable<EmployeeWraper> GetByStatus(EmployeeStatus status)
         {
             if (CoreBaseSettings.Personal) throw new Exception("Method not available");
             Guid? groupId = null;
@@ -336,10 +336,10 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Read("filter")]
-        public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+        public IQueryable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-            return users.Select(EmployeeWraperFullHelper.GetFull);
+            return users.Select(r => EmployeeWraperFullHelper.GetFull(r));
         }
 
         [Read("simple/filter")]

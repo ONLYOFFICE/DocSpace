@@ -52,6 +52,7 @@ namespace ASC.Common.Logging
         void TraceFormat(string message, object arg0);
 
         void DebugWithProps(string message, params KeyValuePair<string, object>[] props);
+        void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3);
         void Debug(object message);
         void Debug(object message, Exception exception);
         void DebugFormat(string format, params object[] args);
@@ -331,6 +332,22 @@ namespace ASC.Common.Logging
             if (IsFatalEnabled) loger.FatalFormat(provider, format, args);
         }
 
+        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
+        {
+            if (!IsDebugEnabled) return;
+
+            AddProp(prop1);
+            AddProp(prop2);
+            AddProp(prop3);
+
+            loger.Debug(message);
+
+            static void AddProp(KeyValuePair<string, object> p)
+            {
+                log4net.ThreadContext.Properties[p.Key] = p.Value;
+            }
+        }
+
         public string LogDirectory
         {
             get
@@ -471,6 +488,29 @@ namespace ASC.Common.Logging
             }
 
             Loger.Log(theEvent);
+        }
+        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
+        {
+            if (!IsDebugEnabled) return;
+
+            var theEvent = new LogEventInfo
+            {
+                Message = message,
+                LoggerName = Name,
+                Level = LogLevel.Debug
+            };
+
+            AddProp(prop1);
+            AddProp(prop2);
+            AddProp(prop3);
+
+
+            Loger.Log(theEvent);
+
+            void AddProp(KeyValuePair<string, object> p)
+            {
+                theEvent.Properties[p.Key] = p.Value;
+            }
         }
 
         public void Info(object message)
@@ -791,6 +831,10 @@ namespace ASC.Common.Logging
         }
 
         public void FatalFormat(IFormatProvider provider, string format, params object[] args)
+        {
+        }
+
+        public void DebugWithProps(string message, KeyValuePair<string, object> prop1, KeyValuePair<string, object> prop2, KeyValuePair<string, object> prop3)
         {
         }
 
