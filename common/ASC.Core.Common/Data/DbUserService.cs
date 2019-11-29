@@ -296,6 +296,8 @@ namespace ASC.Core.Data
         {
             var ids = CollectGroupChilds(tenant, id);
 
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
             UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
@@ -323,6 +325,7 @@ namespace ASC.Core.Data
             }
 
             UserDbContext.SaveChanges();
+            tr.Commit();
         }
 
         public void RemoveUser(int tenant, Guid id)
@@ -332,6 +335,8 @@ namespace ASC.Core.Data
 
         public void RemoveUser(int tenant, Guid id, bool immediate)
         {
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
             UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id));
             UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id));
@@ -365,6 +370,8 @@ namespace ASC.Core.Data
             }
 
             UserDbContext.SaveChanges();
+
+            tr.Commit();
         }
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType)
@@ -374,6 +381,8 @@ namespace ASC.Core.Data
 
         public void RemoveUserGroupRef(int tenant, Guid userId, Guid groupId, UserGroupRefType refType, bool immediate)
         {
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == userId && r.GroupId == groupId && r.RefType == refType);
             if (immediate)
             {
@@ -390,6 +399,8 @@ namespace ASC.Core.Data
             var user = UserDbContext.Users.First(r => r.Tenant == tenant && r.Id == userId);
             user.LastModified = DateTime.UtcNow;
             UserDbContext.SaveChanges();
+
+            tr.Commit();
         }
 
         public Group SaveGroup(int tenant, Group group)
@@ -439,11 +450,15 @@ namespace ASC.Core.Data
             r.LastModified = DateTime.UtcNow;
             r.Tenant = tenant;
 
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             UserDbContext.UserGroups.Add(FromUserGroupRefToUserGroup(r));
 
             var user = UserDbContext.Users.First(a => a.Tenant == tenant && a.Id == r.UserId);
             user.LastModified = r.LastModified;
             UserDbContext.SaveChanges();
+
+            tr.Commit();
 
             return r;
         }

@@ -619,9 +619,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
     {
         public static IServiceCollection AddTariffService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<CoreDbContext>>();
-            services.TryAddScoped<IConfigureOptions<CoreDbContext>, ConfigureDbContext>();
-            services.TryAddScoped<CoreDbContext>();
+            services.AddCoreDbContextService();
 
             services.TryAddSingleton<TariffServiceStorage>();
             services.TryAddScoped<ITariffService, TariffService>();
