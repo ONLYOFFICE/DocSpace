@@ -463,6 +463,22 @@ const ADSelector = props => {
       : 0;
   };
 
+  const getGroupLabel = group => {
+    const selected = getGroupSelected(group);
+    return isMultiSelect
+      ? `${group.label} (${group.total}/${selected})`
+      : group.label;
+  }
+
+  const getSelectorGroups = groups => {
+    return groups.map(group => {
+      return {
+        ...group,
+        label: getGroupLabel(group)
+      }
+    })
+  }
+
   // eslint-disable-next-line react/prop-types
   const renderGroup = ({ index, style }) => {
     const group = groups[index];
@@ -470,7 +486,6 @@ const ADSelector = props => {
     const isChecked = isGroupChecked(group);
     const isIndeterminate = isGroupIndeterminate(group);
     const isSelected = currentGroup.key === group.key;
-    const selected = getGroupSelected(group);
 
     return (
       <div
@@ -494,9 +509,7 @@ const ADSelector = props => {
           className="group_link"
           onClick={() => onGroupSelect(group)}
         >
-          {isMultiSelect
-            ? `${group.label} (${group.total}/${selected})`
-            : group.label}
+          {getGroupLabel(group)}
         </Link>
       </div>
     );
@@ -550,7 +563,7 @@ const ADSelector = props => {
               <ComboBox
                 className="options_group_selector"
                 isDisabled={isDisabled}
-              options={groups}
+                options={getSelectorGroups(groups)}
                 selectedOption={currentGroup}
                 dropDownMaxHeight={200}
                 scaled={true}
