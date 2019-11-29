@@ -21,7 +21,7 @@ import HelpButton from "../../help-button";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({ displayType, groups, isMultiSelect, ...props }) => (
+const Container = ({ displayType, options, groups, isMultiSelect, hasSelected, ...props }) => (
   <div {...props} />
 );
 /* eslint-enable react/prop-types */
@@ -52,7 +52,7 @@ const StyledContainer = styled(Container)`
             grid-row-gap: 16px;
 
             grid-template-columns: 1fr;
-            grid-template-rows: 30px 1fr;
+            grid-template-rows: 30px 0.98fr;
             grid-template-areas: "header-groups" "body-groups";
 
             .header-groups {
@@ -78,8 +78,13 @@ const StyledContainer = styled(Container)`
       : css`
           height: 100%;
           grid-template-columns: 1fr;
-          grid-template-rows: 1fr 69px;
-          grid-template-areas: "column-options" "footer";
+          ${props => props.isMultiSelect && props.hasSelected 
+          ? css`
+            grid-template-rows: 0.98fr 69px;
+            grid-template-areas: "column-options" "footer";`
+          : css`
+            grid-template-rows: 0.98fr;
+            grid-template-areas: "column-options";`}
         `}
 
   .column-options {
@@ -91,7 +96,9 @@ const StyledContainer = styled(Container)`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${props => props.displayType === "aside" ? (props.isMultiSelect ? "100px" : "70px"): "30px"}  1fr;
+    grid-template-rows: ${props => props.displayType === "aside" 
+      ? (props.isMultiSelect && props.options && props.options.length > 0 ? "100px" : "70px")
+      : "30px"}  0.98fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
@@ -102,8 +109,8 @@ const StyledContainer = styled(Container)`
         display: grid;
         grid-row-gap: 12px;
         grid-template-columns: 1fr;
-        grid-template-rows: 30px 30px ${props => props.isMultiSelect && "30px"};
-        ${props => props.isMultiSelect 
+        grid-template-rows: 30px 30px ${props => props.isMultiSelect && props.options && props.options.length > 0 && "30px"};
+        ${props => props.isMultiSelect && props.options && props.options.length > 0
           ? css`grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";`
           : css`grid-template-areas: "options_searcher" "options_group_selector";`}
 
@@ -115,7 +122,7 @@ const StyledContainer = styled(Container)`
           grid-area: options_group_selector;
         }
 
-        ${props => props.isMultiSelect && css`
+        ${props => props.isMultiSelect && props.options && props.options.length > 0 && css`
           .options_group_select_all {
             grid-area: options_group_select_all;
           }
@@ -568,8 +575,10 @@ const ADSelector = props => {
   return (
     <StyledContainer
       displayType={displayType}
+      options={options}
       groups={groups}
       isMultiSelect={isMultiSelect}
+      hasSelected={hasSelected()}
     >
       <ADSelectorColumn className="column-options" displayType={displayType}>
         <ADSelectorHeader className="header-options">
@@ -597,7 +606,7 @@ const ADSelector = props => {
                 size="content"
                 onSelect={onGroupSelect}
               />
-              {isMultiSelect && (
+              {isMultiSelect && options && options.length > 0 && (
                 <Checkbox
                   className="options_group_select_all"
                   label={selectAllLabel}
