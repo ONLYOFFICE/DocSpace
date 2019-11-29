@@ -91,7 +91,7 @@ const StyledContainer = styled(Container)`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${props => props.displayType === "aside" ? "100px": "30px"}  1fr;
+    grid-template-rows: ${props => props.displayType === "aside" ? (props.isMultiSelect ? "100px" : "70px"): "30px"}  1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
@@ -102,8 +102,10 @@ const StyledContainer = styled(Container)`
         display: grid;
         grid-row-gap: 12px;
         grid-template-columns: 1fr;
-        grid-template-rows: 30px 30px 30px;
-        grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
+        grid-template-rows: 30px 30px ${props => props.isMultiSelect && "30px"};
+        ${props => props.isMultiSelect 
+          ? css`grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";`
+          : css`grid-template-areas: "options_searcher" "options_group_selector";`}
 
         .options_searcher {
           grid-area: options_searcher;
@@ -113,9 +115,11 @@ const StyledContainer = styled(Container)`
           grid-area: options_group_selector;
         }
 
-        .options_group_select_all {
-          grid-area: options_group_select_all;
-        }
+        ${props => props.isMultiSelect && css`
+          .options_group_select_all {
+            grid-area: options_group_select_all;
+          }
+        `}
       `}
     }
 
@@ -172,6 +176,7 @@ const ADSelector = props => {
     emptySearchOptionsLabel,
     emptyOptionsLabel,
     loadingLabel,
+    selectAllLabel,
     onSelect,
     getOptionTooltipContent,
     onSearchChanged,
@@ -336,7 +341,7 @@ const ADSelector = props => {
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
 
-    if(displayType === "aside") {
+    if(displayType === "aside" && isMultiSelect) {
       setSelectedAll(isGroupChecked(group));
     }
   };
@@ -592,13 +597,15 @@ const ADSelector = props => {
                 size="content"
                 onSelect={onGroupSelect}
               />
-              <Checkbox
-                className="options_group_select_all"
-                label={"Select all"}
-                isChecked={selectedAll}
-                isIndeterminate={false}
-                onChange={onSelectAllChange}
-              />
+              {isMultiSelect && (
+                <Checkbox
+                  className="options_group_select_all"
+                  label={selectAllLabel}
+                  isChecked={selectedAll}
+                  isIndeterminate={false}
+                  onChange={onSelectAllChange}
+                />
+              )}
             </>
           )}
         </ADSelectorHeader>
