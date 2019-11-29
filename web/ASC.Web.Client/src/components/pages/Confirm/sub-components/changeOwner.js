@@ -4,44 +4,44 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Container, Row, Col, Card, CardTitle, CardImg } from "reactstrap";
 import { Button, PageLayout, Text, toastr } from "asc-web-components";
 //import {  } from "../../../../../src/store/auth/actions";
 
-const BodyStyle = styled(Container)`
+const BodyStyle = styled.div`
   margin-top: 70px;
 
-  .buttons-style {
-    margin-top: 20px;
-    min-width: 110px;
-  }
-  .button-style {
-    margin-right: 8px;
-  }
-  .confirm_text {
-    margin: 12px 0;
-  }
+  .owner-container {
+    display: grid;
 
-  .password-card {
-    border: none;
-    .card-img {
-      max-width: 216px;
-      max-height: 35px;
-    }
-    .card-title {
-      word-wrap: break-word;
-      margin: 8px 0;
-      text-align: left;
-      font-size: 24px;
-      color: #116d9d;
-    }
-  }
+    .owner-wrapper {
+      align-self: center;
+      justify-self: center;
+      .owner-img {
+        max-width: 216px;
+        max-height: 35px;
+      }
+      .owner-title {
+        word-wrap: break-word;
+        margin: 8px 0;
+        text-align: left;
+        font-size: 24px;
+        color: #116d9d;
+      }
+      .owner-confirm_text {
+        margin: 20px 0 12px 0;
+      }
+      .owner-buttons {
+        margin-top: 20px;
+        min-width: 110px;
+      }
+      .owner-button {
+        margin-right: 8px;
+      }
 
-  .row_display {
-    display: flex;
-  }
-  .confirm-text {
-    margin-top: 32px;
+      .owner-confirm-message {
+        margin-top: 32px;
+      }
+    }
   }
 `;
 
@@ -68,61 +68,47 @@ class Form extends React.PureComponent {
 
   render() {
     const { t, greetingTitle } = this.props;
-    const mdOptions = { size: 6, offset: 2 };
 
     return (
       <BodyStyle>
-        <Row className="password-row">
-          <Col sm="12" md={mdOptions}>
-            <Card className="password-card">
-              <CardImg
-                className="card-img"
-                src="images/dark_general.png"
-                alt="Logo"
-                top
-              />
-              <CardTitle className="card-title">{greetingTitle}</CardTitle>
-            </Card>
-          </Col>
-        </Row>
-        <Row>
-          <Col sm="12" md={{ size: 12, offset: 2 }}>
-            <Text.Body className="confirm_text" fontSize={18}>
+        <div className="owner-container">
+          <div className="owner-wrapper">
+            <img
+              className="owner-img"
+              src="images/dark_general.png"
+              alt="Logo"
+            />
+            <Text.Body className="owner-title">{greetingTitle}</Text.Body>
+            <Text.Body className="owner-confirm_text" fontSize={18}>
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text.Body>
-          </Col>
-        </Row>
-        {this.state.showButtons ? (
-          <Row>
-            <Col className="row_display" sm="12" md={mdOptions}>
-              <Button
-                className="button-style buttons-style"
-                primary
-                size="big"
-                label={t("SaveButton")}
-                tabIndex={2}
-                isDisabled={false}
-                onClick={this.onAcceptClick}
-              />
-              <Button
-                className="buttons-style"
-                size="big"
-                label={t("CancelButton")}
-                tabIndex={2}
-                isDisabled={false}
-                onClick={this.onCancelClick}
-              />
-            </Col>
-          </Row>
-        ) : (
-          <Row>
-            <Col sm="12" md={{ size: 12, offset: 2 }}>
-              <Text.Body className="confirm-text" fontSize={12}>
+            {this.state.showButtons ? (
+              <>
+                <Button
+                  className="owner-button owner-buttons"
+                  primary
+                  size="big"
+                  label={t("SaveButton")}
+                  tabIndex={2}
+                  isDisabled={false}
+                  onClick={this.onAcceptClick}
+                />
+                <Button
+                  className="owner-buttons"
+                  size="big"
+                  label={t("CancelButton")}
+                  tabIndex={2}
+                  isDisabled={false}
+                  onClick={this.onCancelClick}
+                />
+              </>
+            ) : (
+              <Text.Body className="owner-confirm-message" fontSize={12}>
                 {t("ConfirmOwnerPortalSuccessMessage")}
               </Text.Body>
-            </Col>
-          </Row>
-        )}
+            )}
+          </div>
+        </div>
       </BodyStyle>
     );
   }

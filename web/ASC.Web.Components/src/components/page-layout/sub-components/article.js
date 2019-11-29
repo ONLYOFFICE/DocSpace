@@ -31,8 +31,13 @@ const StyledArticle = styled.article`
             z-index: 400;
           `
         : `
-            display: none;
-            width: 0px;
+            width: 240px;
+            min-width: 240px;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: -240px;
+            z-index: 400;
           `}
   }
 `;

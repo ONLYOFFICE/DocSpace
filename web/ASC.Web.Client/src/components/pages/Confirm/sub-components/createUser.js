@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
-import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { store } from 'asc-web-common';
@@ -318,10 +317,9 @@ class Confirm extends React.PureComponent {
 
             </Row>
  */}
-                            <Collapse className='confirm-row'
-                                isOpen={!!this.state.errorText}>
-                                <div className="alert alert-danger">{this.state.errorText}</div>
-                            </Collapse>
+                            <Text.Body className='confirm-row' fontSize={14} color="#c30">
+                                {this.state.errorText}
+                            </Text.Body>
                         </div>
                     </ConfirmContainer>
                 )

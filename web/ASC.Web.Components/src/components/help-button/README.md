@@ -53,3 +53,4 @@ import { HelpButton } from "asc-web-components";
 | `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
 | `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
 | `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |
+| `className`               |     `string`      |    -     |                -                 |    -    | Set component class                              |

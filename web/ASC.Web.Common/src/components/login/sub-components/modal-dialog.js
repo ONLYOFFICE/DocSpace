@@ -45,7 +45,7 @@ class SubModalDialog extends React.Component {
         ]}
         footerContent={[
           <Button
-            className="btn-style"
+            className="login-button-dialog"
             key="SendBtn"
             label={isLoading ? t("LoadingProcessing") : t("SendButton")}
             size="big"

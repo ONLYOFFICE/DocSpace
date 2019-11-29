@@ -115,7 +115,7 @@ class HelpButton extends React.Component {
 
   onClick = () => {
     this.setState({isOpen: !this.state.isOpen});
-  }
+  };
 
   render() {
     const { isOpen, displayType } = this.state;
@@ -178,8 +178,7 @@ class HelpButton extends React.Component {
             <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
-                {
-                  helpButtonHeaderContent &&
+                {helpButtonHeaderContent && (
                   <Header>
                     <HeaderText>
                       <Text.Body isBold={true} fontSize={21}>
@@ -187,7 +186,7 @@ class HelpButton extends React.Component {
                       </Text.Body>
                     </HeaderText>
                   </Header>
-                }
+                )}
                 <Body>{tooltipContent}</Body>
               </Content>
             </Aside>
@@ -203,7 +202,8 @@ HelpButton.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
+    .isRequired,
   offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
