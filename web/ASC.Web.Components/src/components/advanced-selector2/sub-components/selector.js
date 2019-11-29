@@ -335,10 +335,31 @@ const ADSelector = props => {
 
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
+
+    if(displayType === "aside") {
+      setSelectedAll(isGroupChecked(group));
+    }
   };
 
   const onSelectAllChange = () => {
-    setSelectedAll(!selectedAll);
+    const checked = !selectedAll
+    //console.log("onSelectAllChange", checked);
+    setSelectedAll(checked);
+
+    if(!currentGroup)
+        return;
+
+    const group = convertGroup(currentGroup);
+
+    if(!group)
+      return;
+
+    group.selected = checked ? group.total : 0;
+    const newSelectedGroups = checked
+      ? [group, ...selectedGroupList]
+      : selectedGroupList.filter(el => el.key !== group.key);
+
+    setSelectedGroupList(newSelectedGroups);
   }
 
   const onSearchChange = value => {
