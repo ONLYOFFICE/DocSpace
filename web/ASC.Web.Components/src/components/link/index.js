@@ -3,23 +3,6 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import { Text } from "../text";
 
-// eslint-disable-next-line no-unused-vars
-const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, title, containerWidth, ...props }) => <a {...props} />;
-
-SimpleLink.propTypes = {
-  color: PropTypes.string,
-  fontSize: PropTypes.number,
-  isBold: PropTypes.bool,
-  isHovered: PropTypes.bool,
-  isSemitransparent: PropTypes.bool,
-  isTextOverflow: PropTypes.bool,
-  rel: PropTypes.string,
-  title: PropTypes.string,
-  type: PropTypes.oneOf(["action", "page"]),
-  containerWidth: PropTypes.string
-};
-
-
 const colorCss = css`
     color: ${props => props.color};
 `;
@@ -29,7 +12,7 @@ const hoveredCss = css`
   text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
 `;
 
-const StyledLink = styled(SimpleLink)`
+const StyledLink = styled(Text.Body)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
@@ -46,30 +29,17 @@ const StyledLink = styled(SimpleLink)`
 `;
 
 // eslint-disable-next-line react/display-name
-const Link = memo(props => {
-  const {
-    isBold,
-    title,
-    fontSize,
-    color,
-    isTextOverflow
-  } = props;
-
-  //console.log("Link render", props);
+const Link = memo(({isTextOverflow, children, ...rest}) => {
+  // console.log("Link render", rest);
 
   return (
-    <StyledLink {...props}>
-      <Text.Body
-        as="span"
-        color={color}
-        fontSize={fontSize}
-        isBold={isBold}
-        title={title}
+      <StyledLink
+        tag="a"
         truncate={isTextOverflow}
+        {...rest}
       >
-        {props.children}
-      </Text.Body>
-    </StyledLink>
+        {children}
+      </StyledLink>
   );
 });
 
