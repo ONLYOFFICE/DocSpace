@@ -2,15 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import {
-  Collapse,
-  Container,
-  Row,
-  Col,
-  Card,
-  CardTitle,
-  CardImg
-} from "reactstrap";
-import {
   Button,
   TextInput,
   PageLayout,
@@ -28,64 +19,58 @@ import SubModalDialog from "./sub-components/modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 
-const FormContainer = styled(Container)`
-  margin-top: 70px;
+const FormContainer = styled.form`
+  margin: 50px auto 0 auto;
+  max-width: 432px;
 
-  .link-style {
-    float: right;
-    line-height: 16px;
+  .login-header {
+    margin-bottom: 24px;
+
+    .login-logo {
+      max-width: 216px;
+      max-height: 35px;
+    }
+
+    .login-title {
+      margin: 8px 0;
+    }
   }
 
-  .text-body {
+  .login-input {
+    margin-bottom: 24px;
+  }
+
+  .login-forgot-wrapper {
+    height: 36px;
+
+    .login-checkbox-wrapper {
+      position: absolute;
+      display: inline-flex;
+
+      .login-checkbox {
+        float: left;
+        span {
+          font-size: 12px;
+        }
+      }
+      .login-tooltip {
+        margin-left: 3px;
+        display: inline-flex;
+      }
+    }
+    .login-link {
+      float: right;
+      line-height: 16px;
+    }
+  }
+
+  .login-button {
     margin-bottom: 16px;
   }
 
-  .btn-style {
+  .login-button-dialog {
     margin-right: 8px;
   }
-
-  .checkbox {
-    float: left;
-    span {
-      font-size: 12px;
-    }
-  }
-
-  .question-icon {
-    float: left;
-    margin-left: 4px;
-    line-height: 16px;
-  }
-
-  .login-row {
-    margin: 23px 0 0;
-
-    .login-card {
-      border: none;
-
-      .card-img {
-        max-width: 216px;
-        max-height: 35px;
-      }
-      .card-title {
-        word-wrap: break-word;
-        margin: 8px 0;
-        text-align: left;
-        font-size: 24px;
-        color: #116d9d;
-      }
-    }
-  }
-
-  .button-row {
-    margin: 16px 0 0;
-  }
-`;
-
-const TooltipStyle = styled.span`
-  margin-left: 3px;
-  position: absolute;
-  margin-top: 2px;
 `;
 
 class Form extends Component {
@@ -184,16 +169,14 @@ class Form extends Component {
 
     this.setState({ isLoading: true });
 
-    login(userName, pass).then(
-      () => {
-        this.setState({ isLoading: false });
+    login(userName, pass)
+      .then(() => {
         setIsLoaded(true);
         history.push("/");
-      },
-      error => {
+      })
+      .catch(error => {
         this.setState({ errorText: error, isLoading: false });
-      }
-    );
+      });
   };
 
   componentDidMount() {
@@ -209,8 +192,8 @@ class Form extends Component {
   }
 
   render() {
-    const mdOptions = { size: 6, offset: 3 };
     const { greetingTitle, match, t } = this.props;
+
     const {
       identifierValid,
       identifier,
@@ -228,84 +211,79 @@ class Form extends Component {
 
     return (
       <FormContainer>
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <Card className="login-card">
-              <CardImg
-                className="card-img"
-                src="images/dark_general.png"
-                alt="Logo"
-                top
-              />
-              <CardTitle className="card-title">{greetingTitle}</CardTitle>
-            </Card>
-          </Col>
-        </Row>
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <TextInput
-              id="login"
-              name="login"
-              hasError={!identifierValid}
-              value={identifier}
-              placeholder={t("RegistrationEmailWatermark")}
-              size="huge"
-              scale={true}
-              isAutoFocussed={true}
-              tabIndex={1}
-              isDisabled={isLoading}
-              autoComplete="username"
-              onChange={this.onChangeLogin}
-              onKeyDown={this.onKeyPress}
-            />
-          </Col>
-        </Row>
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <TextInput
-              id="password"
-              name="password"
-              type="password"
-              hasError={!passwordValid}
-              value={password}
-              placeholder={t("Password")}
-              size="huge"
-              scale={true}
-              tabIndex={2}
-              isDisabled={isLoading}
-              autoComplete="current-password"
-              onChange={this.onChangePassword}
-              onKeyDown={this.onKeyPress}
-            />
-          </Col>
-        </Row>
-        <Row className="login-row">
-          <Col sm="12" md={mdOptions}>
-            <Link
-              fontSize={12}
-              className="link-style"
-              type="page"
-              isHovered={true}
-              onClick={this.onClick}
-            >
-              {t("ForgotPassword")}
-            </Link>
+        <div className="login-header">
+          <img
+            className="login-logo"
+            src="images/dark_general.png"
+            alt="Logo"
+          />
+          <Text.Headline className="login-title" color="#116d9d">
+            {greetingTitle}
+          </Text.Headline>
+        </div>
+
+        <TextInput
+          id="login"
+          name="login"
+          hasError={!identifierValid}
+          value={identifier}
+          placeholder={t("RegistrationEmailWatermark")}
+          size="huge"
+          scale={true}
+          isAutoFocussed={true}
+          tabIndex={1}
+          isDisabled={isLoading}
+          autoComplete="username"
+          onChange={this.onChangeLogin}
+          onKeyDown={this.onKeyPress}
+          className="login-input"
+        />
+
+        <TextInput
+          id="password"
+          name="password"
+          type="password"
+          hasError={!passwordValid}
+          value={password}
+          placeholder={t("Password")}
+          size="huge"
+          scale={true}
+          isAutoFocussed={true}
+          tabIndex={2}
+          isDisabled={isLoading}
+          autoComplete="current-password"
+          onChange={this.onChangePassword}
+          onKeyDown={this.onKeyPress}
+          className="login-input"
+        />
+
+        <div className="login-forgot-wrapper">
+          <div className="login-checkbox-wrapper">
             <Checkbox
-              className="checkbox"
+              className="login-checkbox"
               isChecked={isChecked}
               onChange={this.onChangeCheckbox}
               label={t("Remember")}
             />
-            <TooltipStyle>
-              <HelpButton
-                helpButtonHeaderContent={t("CookieSettingsTitle")}
-                tooltipContent={
-                  <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
-                }
-              />
-            </TooltipStyle>
-          </Col>
-        </Row>
+            <HelpButton
+              className="login-tooltip"
+              helpButtonHeaderContent={t("CookieSettingsTitle")}
+              tooltipContent={
+                <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
+              }
+            />
+          </div>
+
+          <Link
+            fontSize={12}
+            className="login-link"
+            type="page"
+            isHovered={true}
+            onClick={this.onClick}
+          >
+            {t("ForgotPassword")}
+          </Link>
+        </div>
 
         {openDialog ? (
           <SubModalDialog
@@ -319,35 +297,26 @@ class Form extends Component {
           />
         ) : null}
 
-        <Row className="button-row">
-          <Col sm="12" md={mdOptions}>
-            <Button
-              primary
-              size="big"
-              label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
-              tabIndex={3}
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={this.onSubmit}
-            />
-          </Col>
-        </Row>
+        <Button
+          id="button"
+          className="login-button"
+          primary
+          size="big"
+          label={isLoading ? t("LoadingProcessing") : t("LoginButton")}
+          tabIndex={3}
+          isDisabled={isLoading}
+          isLoading={isLoading}
+          onClick={this.onSubmit}
+        />
+
         {params.confirmedEmail && (
-          <Row className="login-row">
-            <Col sm="12" md={mdOptions}>
-              <Text.Body isBold={true} fontSize={16}>
-                {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-              </Text.Body>
-            </Col>
-          </Row>
+          <Text.Body isBold={true} fontSize={16}>
+            {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
+          </Text.Body>
         )}
-        <Collapse isOpen={!!errorText}>
-          <Row className="login-row">
-            <Col sm="12" md={mdOptions}>
-              <div className="alert alert-danger">{errorText}</div>
-            </Col>
-          </Row>
-        </Collapse>
+        <Text.Body fontSize={14} color="#c30">
+          {errorText}
+        </Text.Body>
       </FormContainer>
     );
   }
