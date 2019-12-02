@@ -205,7 +205,7 @@ namespace ASC.Core.Data
 
         public IDictionary<string, UserGroupRef> GetUserGroupRefs(int tenant, DateTime from)
         {
-            var q = UserDbContext.UserGroups.Where(r => true);
+            IQueryable<UserGroup> q = UserDbContext.UserGroups;
 
             if (tenant != Tenant.DEFAULT_TENANT)
             {

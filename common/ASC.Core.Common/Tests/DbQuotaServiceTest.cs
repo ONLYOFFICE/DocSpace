@@ -32,7 +32,6 @@ namespace ASC.Core.Common.Tests
     using System.Runtime.Serialization.Json;
     using System.Text;
     using ASC.Common.Data;
-    using ASC.Common.Data.Sql;
     using ASC.Core.Billing;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
@@ -54,7 +53,7 @@ namespace ASC.Core.Common.Tests
             Service.RemoveTenantQuota(Tenant);
             foreach (var row in Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant) { Path = "path" }))
             {
-                DeleteQuotaRow(row);
+                //DeleteQuotaRow(row);
             }
         }
 
@@ -84,7 +83,7 @@ namespace ASC.Core.Common.Tests
             rows = Service.FindTenantQuotaRows(new TenantQuotaRowQuery(Tenant).WithPath("path")).ToList();
             CompareQuotaRows(row, rows.Find(r => r.Tenant == row.Tenant && r.Tag == row.Tag));
 
-            DeleteQuotaRow(row);
+            //DeleteQuotaRow(row);
         }
 
         [Test]
@@ -140,12 +139,12 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(r1.Counter, r2.Counter);
         }
 
-        private void DeleteQuotaRow(TenantQuotaRow row)
-        {
-            var d = new SqlDelete(DbQuotaService.tenants_quotarow).Where("tenant", row.Tenant).Where("path", row.Path);
-            var dbManager = DbOptionsManager.Value;
-            dbManager.ExecuteNonQuery(d);
-        }
+        //private void DeleteQuotaRow(TenantQuotaRow row)
+        //{
+        //    var d = new SqlDelete(DbQuotaService.tenants_quotarow).Where("tenant", row.Tenant).Where("path", row.Path);
+        //    var dbManager = DbOptionsManager.Value;
+        //    dbManager.ExecuteNonQuery(d);
+        //}
     }
 }
 #endif

@@ -10,6 +10,8 @@ namespace ASC.Core.Common.EF
         public DbSet<EFTariff> Tariffs { get; set; }
         public DbSet<EFButton> Buttons { get; set; }
         public DbSet<Acl> Acl { get; set; }
+        public DbSet<DbQuota> Quotas { get; set; }
+        public DbSet<DbQuotaRow> QuotaRows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,6 +19,9 @@ namespace ASC.Core.Common.EF
 
             modelBuilder.Entity<EFButton>()
                 .HasKey(c => new { c.TariffId, c.PartnerId });
+
+            modelBuilder.Entity<DbQuotaRow>()
+                .HasKey(c => new { c.Tenant, c.Path });
         }
     }
 
