@@ -384,7 +384,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
         public void SaveButton(int tariffId, string partnerId, string buttonUrl)
         {
-            var efButton = new EFButton()
+            var efButton = new DbButton()
             {
                 TariffId = tariffId,
                 PartnerId = partnerId,
@@ -419,7 +419,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
 
                 if (bi.Item2 == DateTime.MaxValue || renewal || count == 0)
                 {
-                    var efTariff = new EFTariff
+                    var efTariff = new DbTariff
                     {
                         Tenant = tenant,
                         Tariff = bi.Item1,

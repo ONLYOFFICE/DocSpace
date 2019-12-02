@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.Core.Common.EF
 {
     [Table("tenants_tariff")]
-    public class EFTariff
+    public class DbTariff
     {
         public int Id { get; set; }
         public int Tenant { get; set; }

@@ -7,8 +7,8 @@ namespace ASC.Core.Common.EF
 {
     public class CoreDbContext : BaseDbContext
     {
-        public DbSet<EFTariff> Tariffs { get; set; }
-        public DbSet<EFButton> Buttons { get; set; }
+        public DbSet<DbTariff> Tariffs { get; set; }
+        public DbSet<DbButton> Buttons { get; set; }
         public DbSet<Acl> Acl { get; set; }
         public DbSet<DbQuota> Quotas { get; set; }
         public DbSet<DbQuotaRow> QuotaRows { get; set; }
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF
         {
             modelBuilder.AddAcl();
 
-            modelBuilder.Entity<EFButton>()
+            modelBuilder.Entity<DbButton>()
                 .HasKey(c => new { c.TariffId, c.PartnerId });
 
             modelBuilder.Entity<DbQuotaRow>()

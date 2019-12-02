@@ -3,7 +3,7 @@
 namespace ASC.Core.Common.EF
 {
     [Table("tenants_buttons")]
-    public class EFButton
+    public class DbButton
     {
         [Column("button_url")]
         public string ButtonUrl { get; set; }
