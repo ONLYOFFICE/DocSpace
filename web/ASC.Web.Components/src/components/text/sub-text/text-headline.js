@@ -1,8 +1,6 @@
+import React from "react";
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-
-
-export default function createStyledHeadline() {
 
    const fontSize = css`
       ${props =>
@@ -18,21 +16,23 @@ export default function createStyledHeadline() {
       font-weight: 600;
       color: ${props => props.color};
       text-align: left;
-      ${props => (props.truncate === true && 'white-space: nowrap; overflow: hidden; text-overflow: ellipsis;')}
-      ${props => props.isInline == true && 'display: inline-block;'}
+      ${props => (props.truncate && css`white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`)}
+      ${props => props.isInline && css`display: inline-block;`}
    `
 
    const StyledHeadline = styled.h1`
       ${styles}
    `;
 
-   const Text = props => {
+   const Text = ({ title, tag, as, ...rest }) => {
       return (
-         <StyledHeadline {...props} title={props.title}></StyledHeadline>
+         <StyledHeadline as={!as && tag ? tag : as} title={title} {...rest}></StyledHeadline>
       );
    };
 
    Text.propTypes = {
+      as: PropTypes.string,
+      tag: PropTypes.string,
       color: PropTypes.string,
       title: PropTypes.string,
       truncate: PropTypes.bool,
@@ -48,5 +48,4 @@ export default function createStyledHeadline() {
       size: 'big'
    };
 
-   return Text;
-}
+   export default Text;
