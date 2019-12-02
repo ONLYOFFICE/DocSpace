@@ -35,8 +35,8 @@ namespace ASC.Core.Data
 {
     class DbQuotaService : IQuotaService
     {
-        public Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
-        public Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
+        private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
+        private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
         private CoreDbContext CoreDbContext { get; set; }
 
         public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
@@ -108,11 +108,15 @@ namespace ASC.Core.Data
 
         public void RemoveTenantQuota(int id)
         {
+            using var tr = CoreDbContext.Database.BeginTransaction();
             var d = CoreDbContext.Quotas
                  .Where(r => r.Tenant == id)
                  .SingleOrDefault();
+
             CoreDbContext.Quotas.Remove(d);
             CoreDbContext.SaveChanges();
+
+            tr.Commit();
         }
 
 

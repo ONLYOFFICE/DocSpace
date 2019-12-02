@@ -1,4 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
@@ -11,7 +14,7 @@ namespace ASC.Core.Common.EF
         public DbSet<DbGroup> Groups { get; set; }
         public DbSet<UserGroup> UserGroups { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
-        public DbSet<SubscriptionMethod> SubscriptionMethods { get; set; }
+        public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,11 +23,23 @@ namespace ASC.Core.Common.EF
             modelBuilder.Entity<Subscription>()
                 .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient, c.Object });
 
-            modelBuilder.Entity<SubscriptionMethod>()
+            modelBuilder.Entity<DbSubscriptionMethod>()
                 .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient });
 
             modelBuilder.Entity<UserGroup>()
                 .HasKey(c => new { c.Tenant, c.UserId, c.GroupId, c.RefType });
+        }
+    }
+
+    public static class UserDbExtension
+    {
+        public static IServiceCollection AddUserDbContextService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DbContextManager<UserDbContext>>();
+            services.TryAddScoped<IConfigureOptions<UserDbContext>, ConfigureDbContext>();
+            services.TryAddScoped<UserDbContext>();
+
+            return services;
         }
     }
 }

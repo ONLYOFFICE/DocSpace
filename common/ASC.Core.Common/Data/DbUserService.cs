@@ -299,8 +299,8 @@ namespace ASC.Core.Data
             using var tr = UserDbContext.Database.BeginTransaction();
 
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
-            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
-            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Recipient)));
+            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && ids.Any(i => i.ToString() == r.Recipient)));
+            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && ids.Any(i => i.ToString() == r.Recipient)));
 
             var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.GroupId));
             var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
@@ -338,8 +338,8 @@ namespace ASC.Core.Data
             using var tr = UserDbContext.Database.BeginTransaction();
 
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id));
-            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id));
-            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id));
+            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
+            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()));
             UserDbContext.Photos.RemoveRange(UserDbContext.Photos.Where(r => r.Tenant == tenant && r.UserId == id));
 
             var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && r.UserId == id);
@@ -476,6 +476,8 @@ namespace ASC.Core.Data
 
         public void SetUserPhoto(int tenant, Guid id, byte[] photo)
         {
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             var userPhoto = UserDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
             if (photo != null && photo.Length != 0)
             {
@@ -499,6 +501,7 @@ namespace ASC.Core.Data
             }
 
             UserDbContext.SaveChanges();
+            tr.Commit();
         }
 
         private IQueryable<User> GetUserQuery(UserDbContext UserDbContext, int tenant, DateTime from)
