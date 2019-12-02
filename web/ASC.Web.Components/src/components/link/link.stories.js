@@ -11,6 +11,7 @@ const type = ['action', 'page'];
 const target = ['_blank', '_self', '_parent', '_top'];
 
 function clickActionLink(e) {
+  console.log("clickActionLink", e);
   action('actionClick')(e);
 }
 
@@ -39,6 +40,7 @@ storiesOf('Components|Link', module)
           isTextOverflow={isTextOverflow}
           isHovered={boolean('isHovered', false)}
           isSemitransparent={boolean('isSemitransparent', false)}
+          data-value="1111"
           {...actionProps}
         >
           {label}
