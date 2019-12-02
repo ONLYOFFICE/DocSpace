@@ -401,6 +401,19 @@ const ADSelector = props => {
     return checked;
   };
 
+  const onLinkClick = (e) => {
+    const index = e.target.dataset.index;
+    if(!index)
+      return;
+
+    const option = options[index];
+
+    if(!option)
+      return;
+
+    onSelectOptions([option])
+  }
+
   // Render an item or a loading indicator.
   // eslint-disable-next-line react/prop-types
   const renderOption = ({ index, style }) => {
@@ -429,17 +442,29 @@ const ADSelector = props => {
         tooltipProps = { "data-for": "user", "data-tip": index };
 
       ReactTooltip.rebuild();
-      //console.log("Item render", item, checked, selected);
-      content = isMultiSelect ? (
+
+      content = (
         <>
-          <Checkbox
-            id={option.key}
-            value={`${index}`}
-            label={option.label}
-            isChecked={isChecked}
-            className="option_checkbox"
-            onChange={onOptionChange}
-          />
+          {isMultiSelect ? (
+            <Checkbox
+              id={option.key}
+              value={`${index}`}
+              label={option.label}
+              isChecked={isChecked}
+              className="option_checkbox"
+              onChange={onOptionChange}
+            />
+          ) : (
+            <Link
+              key={option.key}
+              data-index={index}
+              isTextOverflow={true}
+              className="option_link"
+              onClick={onLinkClick}
+            >
+              {option.label}
+            </Link>
+          )}
           {displayType === "aside" && (
             <HelpButton
               id={`info-${option.key}`}
@@ -453,16 +478,6 @@ const ADSelector = props => {
             />
           )}
         </>
-      ) : (
-        <Link
-          as="span"
-          key={option.key}
-          truncate={true}
-          className="option_link"
-          onClick={() => onSelectOptions([option])}
-        >
-          {option.label}
-        </Link>
       );
     }
 
