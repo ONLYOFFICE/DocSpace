@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Text } from "../text";
+import { Text } from "asc-web-components";
 
 const TitleContainer = styled.div`
   width: auto;
