@@ -33,4 +33,28 @@ describe('<TextInput />', () => {
 
     expect(shouldUpdate).toBe(true);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={event => alert(event.target.value)} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={event => alert(event.target.value)}className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={event => alert(event.target.value)} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });
