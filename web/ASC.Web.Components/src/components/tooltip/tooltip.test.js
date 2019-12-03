@@ -27,4 +27,20 @@ describe("<Tooltip />", () => {
     wrapper.componentDidUpdate(wrapper.props, wrapper.state);
     expect(wrapper.props).toBe(wrapper.props);
   });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <Tooltip className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <Tooltip style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });
