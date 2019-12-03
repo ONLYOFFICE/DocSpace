@@ -51,12 +51,12 @@ const TileCard = styled(Card)`
 
 const ModuleTile = props => {
   //console.log("ModuleTile render");
-  const { title, imageUrl, link, description, isPrimary, onClick } = props;
+  const { title, imageUrl, link, description, isPrimary, onClick, className, id, style } = props;
 
   const handleClick = (e, link) => onClick && onClick(e, link);
 
   return (
-    <TileCard>
+    <TileCard className={className} id={id} style={style}>
       {isPrimary ? (
         <Row className="justify-content-md-center">
           <Col md="auto">
@@ -108,7 +108,11 @@ ModuleTile.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   link: PropTypes.string.isRequired,
   description: PropTypes.string,
-  isPrimary: PropTypes.bool
+  isPrimary: PropTypes.bool,
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ModuleTile.defaultProps = {
