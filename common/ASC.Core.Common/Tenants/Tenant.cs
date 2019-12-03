@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 
 namespace ASC.Core.Tenants
@@ -41,7 +42,7 @@ namespace ASC.Core.Tenants
         public Tenant()
         {
             TenantId = DEFAULT_TENANT;
-            TimeZone = TimeZoneInfo.Utc;
+            TimeZone = TimeZoneInfo.Utc.Id;
             Language = CultureInfo.CurrentCulture.Name;
             TrustedDomains = new List<string>();
             TrustedDomainsType = TenantTrustedDomainsType.None;
@@ -81,9 +82,16 @@ namespace ASC.Core.Tenants
 
         public string Language { get; set; }
 
-        public TimeZoneInfo TimeZone { get; set; }
+        public string TimeZone { get; set; }
 
-        public List<string> TrustedDomains { get; private set; }
+        public List<string> TrustedDomains { get; set; }
+        public string TrustedDomainsRaw
+        {
+            set
+            {
+                TrustedDomains = value != null ? value.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList() : new List<string>();
+            }
+        }
 
         public TenantTrustedDomainsType TrustedDomainsType { get; set; }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using ASC.Core.Users;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -67,5 +68,13 @@ namespace ASC.Core.Common.EF
         public UserSecurity UserSecurity { get; set; }
 
         public List<UserGroup> Groups { get; set; }
+    }
+
+    public static class DbUserExtension
+    {
+        public static void AddUser(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.AddUserGroup();
+        }
     }
 }

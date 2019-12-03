@@ -54,6 +54,7 @@ namespace ASC.Core
         public DbOptionsManager DbOptions { get; }
         public TariffServiceStorage TariffServiceStorage { get; }
         public IOptionsMonitor<ILog> Options { get; }
+        public TenantUtil TenantUtil { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
@@ -63,7 +64,8 @@ namespace ASC.Core
             DbRegistry dbRegistry,
             DbOptionsManager dbOptions,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            TenantUtil tenantUtil)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
@@ -74,6 +76,7 @@ namespace ASC.Core
             DbOptions = dbOptions;
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
+            TenantUtil = tenantUtil;
             Initialize();
         }
 
@@ -230,14 +233,14 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, name);
                     }
                 }
 
-                regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
+                regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
+                    regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil);
                 }
             }
             else
@@ -249,16 +252,16 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
+                    regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options);
+                        regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil);
                     }
                 }
                 else
@@ -283,10 +286,10 @@ namespace ASC.Core
 
                                     if (!regions.ContainsKey(string.Empty))
                                     {
-                                        regions[string.Empty] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, cs.Name);
+                                        regions[string.Empty] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, cs.Name);
                                     }
 
-                                    regions[cs.Name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, cs.Name);
+                                    regions[cs.Name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, cs.Name);
                                 });
                         }
                         catch (DbException) { }

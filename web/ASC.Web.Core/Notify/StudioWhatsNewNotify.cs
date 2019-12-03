@@ -82,11 +82,12 @@ namespace ASC.Web.Studio.Core.Notify
                     using var scope = ServiceProvider.CreateScope();
                     var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
                     var paymentManager = scope.ServiceProvider.GetService<PaymentManager>();
+                    var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
 
                     var tenant = tenantManager.GetTenant(tenantid);
                     if (tenant == null ||
                         tenant.Status != TenantStatus.Active ||
-                        !TimeToSendWhatsNew(TenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
+                        !TimeToSendWhatsNew(tenantUtil.DateTimeFromUtc(tenant.TimeZone, scheduleDate)) ||
                         TariffState.NotPaid <= paymentManager.GetTariff(tenantid).State)
                     {
                         continue;
@@ -99,7 +100,6 @@ namespace ASC.Web.Studio.Core.Notify
                     var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                     var authContext = scope.ServiceProvider.GetService<AuthContext>();
                     var authentication = scope.ServiceProvider.GetService<AuthManager>();
-                    var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
                     var feedAggregateDataProvider = scope.ServiceProvider.GetService<FeedAggregateDataProvider>();

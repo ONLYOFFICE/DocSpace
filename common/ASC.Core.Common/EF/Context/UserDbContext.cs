@@ -26,8 +26,7 @@ namespace ASC.Core.Common.EF
             modelBuilder.Entity<DbSubscriptionMethod>()
                 .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient });
 
-            modelBuilder.Entity<UserGroup>()
-                .HasKey(c => new { c.Tenant, c.UserId, c.GroupId, c.RefType });
+            modelBuilder.AddUser();
         }
     }
 

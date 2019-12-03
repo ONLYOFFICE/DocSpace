@@ -52,6 +52,7 @@ namespace ASC.Core
         private readonly DbSettingsManager settingsManager;
         private readonly CoreSettings coreSettings;
 
+        public TenantUtil TenantUtil { get; }
         public string Region
         {
             get;
@@ -68,8 +69,9 @@ namespace ASC.Core
             IConfiguration configuration,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options)
-            : this(configuration, connectionString, tariffServiceStorage, options, null)
+            IOptionsMonitor<ILog> options,
+            TenantUtil tenantUtil)
+            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, null)
         {
         }
 
@@ -79,6 +81,7 @@ namespace ASC.Core
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
+            TenantUtil tenantUtil,
             string region)
         {
             tenantService = new DbTenantService(null, null, null);
@@ -90,6 +93,7 @@ namespace ASC.Core
             tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
+            TenantUtil = tenantUtil;
             Region = region ?? string.Empty;
             DbId = connectionString.Name;
         }
@@ -146,7 +150,7 @@ namespace ASC.Core
             {
                 Name = ri.Name,
                 Language = ri.Culture.Name,
-                TimeZone = ri.TimeZoneInfo,
+                TimeZone = ri.TimeZoneInfo.Id,
                 HostedRegion = ri.HostedRegion,
                 PartnerId = ri.PartnerId,
                 AffiliateId = ri.AffiliateId,

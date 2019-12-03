@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -19,5 +20,14 @@ namespace ASC.Core.Common.EF
 
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
+    }
+
+    public static class DbUserGroupExtension
+    {
+        public static void AddUserGroup(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserGroup>()
+                .HasKey(c => new { c.Tenant, c.UserId, c.GroupId, c.RefType });
+        }
     }
 }

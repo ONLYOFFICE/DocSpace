@@ -185,7 +185,7 @@ namespace ASC.Core.Common.Tests
             Assert.AreEqual(t1.TenantId, t2.TenantId);
             Assert.AreEqual(t1.TrustedDomains, t2.TrustedDomains);
             Assert.AreEqual(t1.TrustedDomainsType, t2.TrustedDomainsType);
-            Assert.AreEqual(t1.TimeZone.Id, t2.TimeZone.Id);
+            Assert.AreEqual(t1.TimeZone, t2.TimeZone);
             Assert.AreEqual(t1.Version, t2.Version);
             Assert.AreEqual(t1.VersionChanged, t2.VersionChanged);
         }
