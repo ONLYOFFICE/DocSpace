@@ -24,16 +24,19 @@ import { Paging } from "asc-web-components";
 
 ### Properties
 
-| Props               |    Type    | Required |     Values      |  Default   | Description                              |
-| ------------------- | :--------: | :------: | :-------------: | :--------: | ---------------------------------------- |
-| `pageItems`         |  `array`   |    -     |        -        |     -      | Paging combo box items                   |
-| `countItems`        |  `array`   |    -     |        -        |     -      | Items per page combo box items           |
-| `previousLabel`     |  `string`  |    -     |        -        | `Previous` | Label for previous button                |
-| `nextLabel`         |  `string`  |    -     |        -        |   `Next`   | Label for next button                    |
-| `previousAction`    | `function` |    -     |        -        |     -      | Action for previous button               |
-| `nextAction`        | `function` |    -     |        -        |     -      | Action for next button                   |
-| `openDirection`     |  `string`  |    -     | `top`, `bottom` |  `bottom`  | Indicates opening direction of combo box |
-| `disablePrevious`   |   `bool`   |    -     |        -        |  `false`   | Set previous button disabled             |
-| `disableNext`       |   `bool`   |    -     |        -        |  `false`   | Set next button disabled                 |
-| `selectedPageItem`  |  `object`  |    -     |        -        |     -      | Initial value for pageItems              |
-| `selectedCountItem` |  `object`  |    -     |        -        |     -      | Initial value for countItems             |
+| Props               |      Type      | Required |     Values      |  Default   | Description                              |
+| ------------------- | :------------: | :------: | :-------------: | :--------: | ---------------------------------------- |
+| `className`         |    `string`    |    -     |        -        |     -      | Accepts class                            |
+| `countItems`        |    `array`     |    -     |        -        |     -      | Items per page combo box items           |
+| `disableNext`       |     `bool`     |    -     |        -        |  `false`   | Set next button disabled                 |
+| `disablePrevious`   |     `bool`     |    -     |        -        |  `false`   | Set previous button disabled             |
+| `id`                |    `string`    |    -     |        -        |     -      | Accepts id                               |
+| `nextAction`        |   `function`   |    -     |        -        |     -      | Action for next button                   |
+| `nextLabel`         |    `string`    |    -     |        -        |   `Next`   | Label for next button                    |
+| `openDirection`     |    `string`    |    -     | `top`, `bottom` |  `bottom`  | Indicates opening direction of combo box |
+| `pageItems`         |    `array`     |    -     |        -        |     -      | Paging combo box items                   |
+| `previousAction`    |   `function`   |    -     |        -        |     -      | Action for previous button               |
+| `previousLabel`     |    `string`    |    -     |        -        | `Previous` | Label for previous button                |
+| `selectedCountItem` |    `object`    |    -     |        -        |     -      | Initial value for countItems             |
+| `selectedPageItem`  |    `object`    |    -     |        -        |     -      | Initial value for pageItems              |
+| `style`             | `obj`, `array` |    -     |        -        |     -      | Accepts css style                        |
