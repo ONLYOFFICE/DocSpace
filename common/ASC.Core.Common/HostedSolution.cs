@@ -84,7 +84,7 @@ namespace ASC.Core
             TenantUtil tenantUtil,
             string region)
         {
-            tenantService = new DbTenantService(null, null, null);
+            tenantService = new DbTenantService(null, null);
             var baseSettings = new CoreBaseSettings(configuration);
             coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
