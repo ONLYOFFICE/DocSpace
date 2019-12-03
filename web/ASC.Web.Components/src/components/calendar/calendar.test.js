@@ -1,9 +1,8 @@
 import React from "react";
-import { mount, shallow, render } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { Weekdays, Days, Day } from "./sub-components/";
 import Calendar from "./";
 import ComboBox from "../combobox";
-import moment from "moment";
 
 const baseCalendarProps = {
   isDisabled: false,
@@ -73,7 +72,6 @@ const selectedDate = new Date("09/12/2019");
 const openToDate = new Date("09/12/2019");
 const minDate = new Date("01/01/1970");
 const maxDate = new Date("01/01/2020");
-const months = moment.months();
 
 describe("Weekdays tests:", () => {
   it("Weekdays renders without error", () => {

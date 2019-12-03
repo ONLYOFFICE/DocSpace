@@ -91,6 +91,7 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 
 `;
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const SimpleText = ({ color, ...props }) => (<Text.Body as="span" {...props} />);
 const StyledText = styled(SimpleText)`
 

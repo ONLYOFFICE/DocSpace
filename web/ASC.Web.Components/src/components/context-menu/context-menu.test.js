@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import ContextMenu from '.';
 
 const baseProps = {

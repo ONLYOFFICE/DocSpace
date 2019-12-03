@@ -36,8 +36,10 @@ storiesOf('Components|ToggleContent', module)
                children.push(<Button label={text('Button label', 'OK')} key={i} onClick={action('button clicked!')} />);
                break;
             case 'icon':
-               let iconName = `${select('iconName', iconNames, 'AimIcon')}`;
-               children.push(React.createElement(Icons[iconName], { key: i }));
+               {
+                  let iconName = `${select('iconName', iconNames, 'AimIcon')}`;
+                  children.push(React.createElement(Icons[iconName], { key: i }));
+               }
                break;
             case 'text':
                children.push(<Text.Body key={i}>

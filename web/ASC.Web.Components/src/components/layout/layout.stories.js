@@ -11,7 +11,7 @@ import MainButton from '../main-button';
 import SearchInput from '../search-input';
 import Paging from '../paging';
 import withReadme from 'storybook-readme/with-readme';
-import { text, boolean, withKnobs } from '@storybook/addon-knobs/react';
+import { boolean, withKnobs } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
 const currentUser = {

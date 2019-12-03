@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { StringValue } from 'react-values';
-import { withKnobs, boolean, text, select, number, color } from '@storybook/addon-knobs/react';
+import { withKnobs, boolean, text, select, number } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 import TextInput from '.';
@@ -17,8 +17,8 @@ storiesOf('Components|Input', module)
   .add('text', () => (
     <StringValue
       onChange={e => {
-          action('onChange')(e);
-        }
+        action('onChange')(e);
+      }
       }
     >
       {({ value, set }) => (
@@ -42,7 +42,7 @@ storiesOf('Components|Input', module)
             withBorder={boolean('withBorder', true)}
             mask={text("mask", null)}
             value={value}
-            onChange={e => { 
+            onChange={e => {
               set(e.target.value);
             }}
           />

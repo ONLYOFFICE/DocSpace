@@ -5,6 +5,7 @@ import TextInput from '../text-input';
 import Button from '../button';
 
 const LoginForm = props => {
+    // eslint-disable-next-line react/prop-types
     const { loginPlaceholder, passwordPlaceholder, buttonText, onSubmit, errorText } = props;
     const [login, setLogin] = useState('');
     const [loginValid, setLoginValid] = useState(true);
