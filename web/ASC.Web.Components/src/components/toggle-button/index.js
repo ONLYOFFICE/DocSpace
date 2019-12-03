@@ -67,7 +67,7 @@ class ToggleButton extends Component {
   }
 
   render() {
-    const { isDisabled, label, onChange, id, className } = this.props;
+    const { isDisabled, label, onChange, id, className, style } = this.props;
     const colorProps = isDisabled ? { color: "#A3A9AE" } : {};
 
     //console.log("ToggleButton render");
@@ -76,6 +76,7 @@ class ToggleButton extends Component {
       <ToggleButtonContainer
         id={id}
         className={className}
+        style={style}
         isDisabled={isDisabled}
       >
         <HiddenInput
@@ -101,7 +102,8 @@ ToggleButton.propTypes = {
   onChange: PropTypes.func,
   label: PropTypes.string,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  className: PropTypes.string
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ToggleIcon.propTypes = {
