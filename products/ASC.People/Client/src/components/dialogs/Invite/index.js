@@ -93,11 +93,8 @@ class PureInviteDialog extends React.Component {
       });
   };
 
-  componentDidUpdate(prevProps) {
-    console.log("invitelink did UPDATE");
-    if (this.props.visible && !prevProps.visible) {
+  componentDidMount() {
       this.onCopyLinkToClipboard();
-    }
   }
 
   onClickToCloseButton = () =>
