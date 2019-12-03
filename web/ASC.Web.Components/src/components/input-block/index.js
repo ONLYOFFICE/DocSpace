@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { InputGroup, InputGroupAddon } from 'reactstrap';
 import TextInput from '../text-input';
 import { Icons } from '../icons';
 import IconButton from '../icon-button';
@@ -29,16 +28,22 @@ const StyledChildrenBlock = styled.div`
 `;
 
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
-  <InputGroup {...props}></InputGroup>
+  <div {...props}></div>
 );
 const StyledInputGroup = styled(CustomInputGroup)`
-  ${commonInputStyle}
-  :focus-within{
-      border-color: #2DA7DB;
+  display: flex;
+
+  .prepend {
+    display: flex;
+    align-items: center;
   }
-  .input-group-prepend,
-  .input-group-append{
-      margin: 0;
+
+  .append {
+    align-items: center;
+    margin: 0;
+  }
+  ${commonInputStyle} :focus-within {
+    border-color: #2da7db;
   }
 `;
 class InputBlock extends React.Component {
@@ -83,11 +88,11 @@ class InputBlock extends React.Component {
 
     return (
       <StyledInputGroup hasError={this.props.hasError} hasWarning={this.props.hasWarning} isDisabled={this.props.isDisabled} scale={this.props.scale} size={this.props.size}>
-        <InputGroupAddon addonType="prepend">
+        <div className="prepend">
           <StyledChildrenBlock>
             {this.props.children}
           </StyledChildrenBlock>
-        </InputGroupAddon>
+        </div>
         <TextInput
           id={this.props.id}
           name={this.props.name}
@@ -111,10 +116,8 @@ class InputBlock extends React.Component {
           mask={this.props.mask}
           keepCharPositions={this.props.keepCharPositions}
         />
-        {
-          iconNames.includes(this.props.iconName)
-          &&
-          <InputGroupAddon addonType="append">
+        {iconNames.includes(this.props.iconName) && (
+          <div className="append">
             <StyledIconBlock>
               <IconButton
                 size={iconButtonSize}
@@ -126,8 +129,8 @@ class InputBlock extends React.Component {
                 isClickable={typeof this.props.onIconClick === 'function'}
               />
             </StyledIconBlock>
-          </InputGroupAddon>
-        }
+          </div>
+        )}
       </StyledInputGroup>
     );
   }
