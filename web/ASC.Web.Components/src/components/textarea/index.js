@@ -6,6 +6,7 @@ import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
 import { tablet } from "../../utils/device";
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
@@ -24,6 +25,8 @@ const StyledScrollbar = styled(ClearScrollbar)`
   }
 
 `;
+
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {...props} />
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
@@ -48,12 +51,12 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 `;
 
 class Textarea extends React.PureComponent {
-
   render() {
-    console.log('Textarea render');
+    //console.log('Textarea render');
     return (
       <StyledScrollbar
         className={this.props.className}
+        style={this.props.style}
         stype='preMediumBlack'
         isDisabled={this.props.isDisabled}
       >
@@ -84,7 +87,8 @@ Textarea.propTypes = {
   placeholder: PropTypes.string,
   tabIndex: PropTypes.number,
   value: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 Textarea.defaultProps = {
