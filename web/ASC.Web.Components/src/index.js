@@ -1,6 +1,5 @@
 export { default as Button } from './components/button'
 export { default as TextInput } from './components/text-input'
-export { default as ModuleTile } from './components/module-tile'
 export { default as Loader } from './components/loader'
 export { Icons } from './components/icons'
 export { default as GroupButton } from './components/group-button'

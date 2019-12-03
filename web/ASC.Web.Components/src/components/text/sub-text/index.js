@@ -1,7 +1,7 @@
-import createStyledHeadline from './create-styled-headline';
-import createStyledHeader from './create-styled-header';
+import React from "react";
+import { default as Header } from './text-header';
 
-export const Headline = createStyledHeadline();
-export { default as Body } from "./create-styled-body-text";
-export const MenuHeader = createStyledHeader('MenuHeader');
-export const ContentHeader = createStyledHeader('ContentHeader');
+export { default as Headline } from "./text-headline";
+export { default as Body } from "./text-body";
+export const MenuHeader = (props) => <Header headlineType='MenuHeader' {...props} />;
+export const ContentHeader = (props) => <Header headlineType='ContentHeader' {...props} />;
