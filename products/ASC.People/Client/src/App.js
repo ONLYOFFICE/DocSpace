@@ -9,7 +9,7 @@ import ProfileAction from './components/pages/ProfileAction';
 import GroupAction from './components/pages/GroupAction';
 import Reassign from './components/pages/Reassign';
 import Import from './components/pages/Import';
-import { history, PrivateRoute, PublicRoute, Login, Error404 } from "asc-web-common";
+import { history, PrivateRoute, PublicRoute, Login, Error404, Offline } from "asc-web-common";
 
 /*const Profile = lazy(() => import("./components/pages/Profile"));
 const ProfileAction = lazy(() => import("./components/pages/ProfileAction"));
@@ -18,6 +18,7 @@ const GroupAction = lazy(() => import("./components/pages/GroupAction"));*/
 const App = ({ settings }) => {
   const { homepage } = settings;
   return (
+    navigator.onLine ? 
     <Router history={history}>
       <PeopleLayout>
         <Suspense
@@ -67,6 +68,7 @@ const App = ({ settings }) => {
         </Suspense>
       </PeopleLayout>
     </Router>
+    : <Offline/>
   );
 };
 
