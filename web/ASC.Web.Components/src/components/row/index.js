@@ -121,7 +121,10 @@ Row.propTypes = {
   data: PropTypes.object,
   contextOptions: PropTypes.array,
   onSelect: PropTypes.func,
-  needForUpdate: PropTypes.func
+  needForUpdate: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default Row;
