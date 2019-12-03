@@ -13,4 +13,20 @@ describe('<Textarea />', () => {
 
     expect(wrapper).toExist();
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <Toast id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <Toast className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
 });
