@@ -16,10 +16,13 @@ import { RequestLoader } from "asc-web-components";
 
 | Props         |       Type        | Required | Values |           Default           | Description                   |
 | ------------- | :---------------: | :------: | :----: | :-------------------------: | ----------------------------- |
-| `visible`     |      `bool`       |    -     |   -    |           `false`           | Visibility                    |
-| `loaderSize`  | `number`,`string` |    -     |   -    |            `16`             | Svg height and width value    |
-| `loaderColor` |     `string`      |    -     |   -    |           `#999`            | Svg color                     |
-| `label`       |     `string`      |    -     |   -    | `Loading... Please wait...` | Svg aria-label and text label |
-| `fontSize`    | `number`,`string` |    -     |   -    |            `12`             | Text label font size          |
+| `className`   |     `string`      |    -     |   -    |              -              | Accepts class                 |
 | `fontColor`   |     `string`      |    -     |   -    |           `#999`            | Text label font color         |
+| `fontSize`    | `number`,`string` |    -     |   -    |            `12`             | Text label font size          |
+| `id`          |     `string`      |    -     |   -    |              -              | Accepts id                    |
+| `label`       |     `string`      |    -     |   -    | `Loading... Please wait...` | Svg aria-label and text label |
+| `loaderColor` |     `string`      |    -     |   -    |           `#999`            | Svg color                     |
+| `loaderSize`  | `number`,`string` |    -     |   -    |            `16`             | Svg height and width value    |
+| `style`       |  `obj`, `array`   |    -     |   -    |              -              | Accepts css style             |
+| `visible`     |      `bool`       |    -     |   -    |           `false`           | Visibility                    |
 | `zIndex`      |     `string`      |    -     |   -    |            `256`            | CSS z-index                   |
