@@ -16,7 +16,10 @@ import { ToggleContent } from "asc-web-components";
 
 #### Properties
 
-| Props    |  Type  | Required | Values |   Default    | Description             |
-| -------- | :----: | :------: | :----: | :----------: | ----------------------- |
-| `label`  | `text` |    ✅    |   -    | `Some label` | Define label for header |
-| `isOpen` | `bool` |    -     |   -    |   `false`    | State of component      |
+| Props       |      Type      | Required | Values |   Default    | Description             |
+| ----------- | :------------: | :------: | :----: | :----------: | ----------------------- |
+| `className` |    `string`    |    -     |   -    |      -       | Accepts class           |
+| `id`        |    `string`    |    -     |   -    |      -       | Accepts id              |
+| `isOpen`    |     `bool`     |    -     |   -    |   `false`    | State of component      |
+| `label`     |     `text`     |    ✅    |   -    | `Some label` | Define label for header |
+| `style`     | `obj`, `array` |    -     |   -    |      -       | Accepts css style       |
