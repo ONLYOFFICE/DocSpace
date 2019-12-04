@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -83,7 +83,6 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
-    "reactstrap": "8.0.1",
     "rollup": "^1.21.1",
     "rollup-plugin-babel": "^4.3.3",
     "rollup-plugin-cleanup": "^3.1.1",
@@ -112,7 +111,6 @@
     "react-router": "5.0.1",
     "react-router-dom": "5.0.1",
     "react-values": "^0.3.3",
-    "reactstrap": "8.0.1",
     "styled-components": "^4.3.2"
   },
   "resolutions": {

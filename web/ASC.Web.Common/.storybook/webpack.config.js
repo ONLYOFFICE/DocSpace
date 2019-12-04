@@ -19,6 +19,11 @@ module.exports = ({ config }) => {
     config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
   }
 
+  config.resolve.alias = {
+    ...config.resolve.alias,
+    "styled-components": path.resolve('./node_modules/styled-components'),
+  };
+
   config.devtool = 'cheap-module-source-map'; // TODO: should we use something differen?
   config.module.rules = [
     // Disable require.ensure as it's not a standard language feature.
