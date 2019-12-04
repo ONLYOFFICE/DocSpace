@@ -205,15 +205,15 @@ class SectionBodyContent extends React.Component {
 
     return (
       <>
-        <Text.Body fontSize={18} >
+        <Text fontSize={18} >
           Functionality at development stage.
-        </Text.Body>
+        </Text>
         <br />
-        <Text.Body fontSize={14} >
+        <Text fontSize={14} >
           Files are formatted according to CSV RFC rules. <br />
           Column Order: FirstName, LastName, Email. <br />
           Comma delimiter, strings in unix format. <br />
-        </Text.Body>
+        </Text>
         <SelectSourceWrapper>
           <StyledFileInput>
             <Button size='big' primary={true} scale={true} label="Upload CSV" isDisabled={true} />
@@ -223,9 +223,9 @@ class SectionBodyContent extends React.Component {
           </StyledFileInput>
         </SelectSourceWrapper>
         <br />
-        <Text.Body fontSize={14} >
+        <Text fontSize={14} >
           Ready for import: {`${splittedLines.length} of ${splittedLines.length}`}
-        </Text.Body>
+        </Text>
         <div style={{ position: 'relative', width: '100%', height: '30px' }}>
           <StyledProgress completed={completion} />
         </div>

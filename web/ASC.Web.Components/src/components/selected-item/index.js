@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Text } from '../text';
+import Text from '../text';
 import IconButton from '../icon-button';
 
 const StyledSelectedItem = styled.div`
@@ -48,9 +48,9 @@ const SelectedItem = (props) => {
   return (
     <StyledSelectedItem {...props}>
       <StyledSelectedTextBox>
-        <Text.Body as='span' truncate {...colorProps} >
+        <Text as='span' truncate {...colorProps} >
           {text}
-        </Text.Body>
+        </Text>
       </StyledSelectedTextBox>
       <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
         <IconButton

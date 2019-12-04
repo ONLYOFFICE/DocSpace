@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { tablet } from "../../../utils/device";
 import NavItem from "./nav-item";
-import { Text } from "../../text";
+import Header from "../../header";
 
 const backgroundColor = "#0F4071";
 
@@ -20,7 +20,7 @@ const StyledHeader = styled.header`
   }
 `;
 
-const Header = React.memo(props => {
+const HeaderComponent = React.memo(props => {
   //console.log("Header render");
   return (
     <StyledHeader>
@@ -29,19 +29,19 @@ const Header = React.memo(props => {
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Text.MenuHeader color="#FFFFFF">
+      <Header type="menu" color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
-      </Text.MenuHeader>
+      </Header>
     </StyledHeader>
   );
 });
 
-Header.displayName = "Header";
+HeaderComponent.displayName = "Header";
 
-Header.propTypes = {
+HeaderComponent.propTypes = {
   badgeNumber: PropTypes.number,
   onClick: PropTypes.func,
   currentModule: PropTypes.object
 };
 
-export default Header;
+export default HeaderComponent;

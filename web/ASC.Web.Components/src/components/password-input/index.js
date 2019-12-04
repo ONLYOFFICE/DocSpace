@@ -7,7 +7,7 @@ import { tablet } from '../../utils/device';
 import InputBlock from '../input-block'
 import { Icons } from '../icons'
 import Link from '../link'
-import { Text } from '../text'
+import Text from '../text'
 //import DropDown from '../drop-down'
 
 import Tooltip from "../tooltip";
@@ -64,11 +64,11 @@ const Progress = styled.div`
   width: ${props => props.progressWidth ? props.progressWidth + '%' : '0%'};
 `;
 
-const StyledTooltipContainer = styled(Text.Body)`
+const StyledTooltipContainer = styled(Text)`
   //margin: 8px 16px 16px 16px;
 `;
 
-const StyledTooltipItem = styled(Text.Body)`
+const StyledTooltipItem = styled(Text)`
   margin-left: 8px;
   height: 24px;
   color: ${props => props.valid ? '#44bb00' : '#B40404'};

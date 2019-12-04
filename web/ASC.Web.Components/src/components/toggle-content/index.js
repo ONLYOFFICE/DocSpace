@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Icons } from '../icons'
-import { Text } from '../text'
+import Heading from '../heading'
 import PropTypes from 'prop-types'
 
 
@@ -27,7 +27,7 @@ const StyledSpan = styled.span`
   user-select: none;
 `;
 
-const StyledText = styled(Text.Headline)`
+const StyledText = styled(Heading)`
   height: 26px;
   line-height: 26px;
   font-style: normal;

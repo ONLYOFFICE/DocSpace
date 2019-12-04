@@ -23,7 +23,7 @@ import { Tooltip, IconButton, Text } from "asc-web-components";
   </div>
   <Tooltip
     id="tooltipContent"
-    getContent={dataTip => <Text.Body fontSize={13}>{dataTip}</Text.Body>}
+    getContent={dataTip => <Text fontSize={13}>{dataTip}</Text>}
     effect="float"
     place="top"
     maxWidth={320}
@@ -82,13 +82,13 @@ const arrayUsers = [
   getContent={dataTip =>
     dataTip ? (
       <div>
-        <Text.Body isBold={true} fontSize={16}>
+        <Text isBold={true} fontSize={16}>
           {arrayUsers[dataTip].name}
-        </Text.Body>
-        <Text.Body color="#A3A9AE" fontSize={13}>
+        </Text>
+        <Text color="#A3A9AE" fontSize={13}>
           {arrayUsers[dataTip].email}
-        </Text.Body>
-        <Text.Body fontSize={13}>{arrayUsers[dataTip].position}</Text.Body>
+        </Text>
+        <Text fontSize={13}>{arrayUsers[dataTip].position}</Text>
       </div>
     ) : null
   }

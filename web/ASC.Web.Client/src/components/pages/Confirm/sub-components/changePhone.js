@@ -68,9 +68,9 @@ const PhoneForm = props => {
           {greetingTitle}
         </div>
       </div>
-      <Text.Body className="edit-text" isBold fontSize={14}>{subTitleTranslation}</Text.Body>
-      <Text.Body fontSize={13}>{infoTranslation}: <b>+{currentPhone}</b></Text.Body>
-      <Text.Body className="edit-text" fontSize={13}>{subInfoTranslation}</Text.Body>
+      <Text className="edit-text" isBold fontSize={14}>{subTitleTranslation}</Text>
+      <Text fontSize={13}>{infoTranslation}: <b>+{currentPhone}</b></Text>
+      <Text className="edit-text" fontSize={13}>{subInfoTranslation}</Text>
       <TextInput
         id="phone"
         name="phone"

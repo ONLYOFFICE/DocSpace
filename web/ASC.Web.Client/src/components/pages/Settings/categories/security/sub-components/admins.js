@@ -444,11 +444,11 @@ class PureAdminsSettings extends Component {
                             </Link>
                             <div style={{ maxWidth: 120 }} />
 
-                            <Text.Body>
+                            <Text>
                               {user.isAdmin
                                 ? "Full access"
                                 : "People module admin"}
-                            </Text.Body>
+                            </Text>
 
                             {!user.isOwner ? (
                               <IconButton

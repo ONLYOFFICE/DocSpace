@@ -1,12 +1,12 @@
 import React from "react";
 import { mount } from "enzyme";
 import Tooltip from ".";
-import { Text } from "../text";
+import Text from "../text";
 
 describe("<Tooltip />", () => {
   it("renders without error", () => {
     const wrapper = mount(
-      <Tooltip>{<Text.Body>You tooltip text</Text.Body>}</Tooltip>
+      <Tooltip>{<Text>You tooltip text</Text>}</Tooltip>
     );
 
     expect(wrapper).toExist();
@@ -14,7 +14,7 @@ describe("<Tooltip />", () => {
 
   it("Tooltip componentDidUpdate() lifecycle test", () => {
     const wrapper = mount(
-      <Tooltip>{<Text.Body>You tooltip text</Text.Body>}</Tooltip>
+      <Tooltip>{<Text>You tooltip text</Text>}</Tooltip>
     ).instance();
     wrapper.componentDidUpdate(wrapper.props, wrapper.state);
     expect(wrapper.props).toBe(wrapper.props);
@@ -22,7 +22,7 @@ describe("<Tooltip />", () => {
 
   it("Tooltip componentDidUpdate() lifecycle test", () => {
     const wrapper = mount(
-      <Tooltip>{<Text.Body>You tooltip text</Text.Body>}</Tooltip>
+      <Tooltip>{<Text>You tooltip text</Text>}</Tooltip>
     ).instance();
     wrapper.componentDidUpdate(wrapper.props, wrapper.state);
     expect(wrapper.props).toBe(wrapper.props);

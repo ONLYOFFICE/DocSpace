@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
-import { Text } from "../text";
+import Text from "../text";
 import { handleAnyClick } from "../../utils/event";
 import isEqual from "lodash/isEqual";
 
@@ -92,7 +92,7 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 `;
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const SimpleText = ({ color, ...props }) => (<Text.Body as="span" {...props} />);
+const SimpleText = ({ color, ...props }) => (<Text as="span" {...props} />);
 const StyledText = styled(SimpleText)`
 
   color: ${color};

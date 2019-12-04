@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Icons } from "../icons";
-import { Text } from "../text";
+import Text from "../text";
 
 const disableColor = "#A3A9AE";
 const hoverColor = disableColor;
@@ -120,12 +120,12 @@ class Checkbox extends React.Component {
         />
         <CheckboxIcon {...this.props} />
         {this.props.label && (
-          <Text.Body
+          <Text
             as="span"
             {...colorProps}
           >
             {label}
-          </Text.Body>
+          </Text>
         )}
       </Label>
     );
