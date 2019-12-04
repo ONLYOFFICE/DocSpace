@@ -50,6 +50,7 @@ export { default as CustomScrollbarsVirtualList } from './components/scrollbar/c
 export { default as RowContent } from './components/row-content'
 export { default as Calendar } from './components/calendar'
 export { default as AdvancedSelector } from './components/advanced-selector'
+export { default as AdvancedSelector2 } from './components/advanced-selector2'
 export { default as ContextMenu } from './components/context-menu'
 export { default as RowContainer } from './components/row-container'
 export { default as FieldContainer } from './components/field-container'
