@@ -78,7 +78,7 @@ const TitleContainer = styled.div`
 `;
 
 const ModuleTile = props => {
-  //console.log("ModuleTile render");
+  console.log("ModuleTile render", props);
   const { title, imageUrl, link, description, isPrimary, onClick } = props;
 
   const handleClick = (e, link) => onClick && onClick(e, link);
@@ -97,12 +97,12 @@ const ModuleTile = props => {
 
           <div className="title-text-wrapper">
             <div onClick={handleClick.bind(link)} className="title-text">
-              <Text.Body fontSize={36} className="title-text-header selectable">
+              <Text fontSize={36} className="title-text-header selectable">
                 {title}
-              </Text.Body>
-              <Text.Body fontSize={12} className="title-text-description">
+              </Text>
+              <Text fontSize={12} className="title-text-description">
                 {description}
-              </Text.Body>
+              </Text>
             </div>
           </div>
         </div>
@@ -117,13 +117,13 @@ const ModuleTile = props => {
           </div>
           <div>
             <div>
-              <Text.Body
+              <Text
                 fontSize={18}
                 className="sub-title-text"
                 onClick={handleClick.bind(link)}
               >
                 {title}
-              </Text.Body>
+              </Text>
             </div>
           </div>
         </div>
