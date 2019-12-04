@@ -267,6 +267,8 @@ const ADSelector = props => {
           );
         } else {
           index = groups.findIndex(sg => sg.key === g);
+          if(index < 0)
+            return;
           const notSelectedGroup = convertGroup(groups[index]);
           newSelectedGroups.push(
             Object.assign({}, notSelectedGroup, {
@@ -412,6 +414,10 @@ const ADSelector = props => {
       return;
 
     onSelectOptions([option])
+  }
+
+  const onAddClick = () => {
+    onSelectOptions(selectedOptionList)
   }
 
   // Render an item or a loading indicator.
@@ -710,6 +716,7 @@ const ADSelector = props => {
         selectButtonLabel={selectButtonLabel}
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}
+        onClick={onAddClick}
       />
     </StyledContainer>
   );
