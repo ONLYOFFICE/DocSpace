@@ -27,6 +27,7 @@ const StyledChildrenBlock = styled.div`
   padding: 2px 0px 2px 2px;
 `;
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
   <div {...props}></div>
 );
@@ -154,22 +155,21 @@ class InputBlock extends React.Component {
           keepCharPositions={keepCharPositions}
         />
         {
-          iconNames.includes(iconName)
-          &&
-          <InputGroupAddon addonType="append">
-            <StyledIconBlock>
-              <IconButton
-                size={iconButtonSize}
-                color={iconColor}
-                iconName={iconName}
-                isFill={isIconFill}
-                isDisabled={isDisabled}
-                onClick={this.onIconClick}
-                isClickable={typeof onIconClick === 'function'}
-              />
-            </StyledIconBlock>
-          </div>
-        )}
+          iconNames.includes(iconName) && (
+            <div className="append">
+              <StyledIconBlock>
+                <IconButton
+                  size={iconButtonSize}
+                  color={iconColor}
+                  iconName={iconName}
+                  isFill={isIconFill}
+                  isDisabled={isDisabled}
+                  onClick={this.onIconClick}
+                  isClickable={typeof onIconClick === 'function'}
+                />
+              </StyledIconBlock>
+            </div>
+          )}
       </StyledInputGroup>
     );
   }
