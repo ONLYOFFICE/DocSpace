@@ -78,7 +78,7 @@ const TitleContainer = styled.div`
 `;
 
 const ModuleTile = props => {
-  console.log("ModuleTile render", props);
+  // console.log("ModuleTile render", props);
   const { title, imageUrl, link, description, isPrimary, onClick } = props;
 
   const handleClick = (e, link) => onClick && onClick(e, link);
