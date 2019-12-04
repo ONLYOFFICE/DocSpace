@@ -108,35 +108,35 @@ class SectionBodyContent extends React.PureComponent {
         {(isSelf && false) && (
           <ToggleWrapper isSelf={true} >
             <ToggleContent label={t('Subscriptions')} isOpen={true} >
-              <Text.Body as="span">
+              <Text as="span">
                 <Button
                   size="big"
                   label={t('EditSubscriptionsBtn')}
                   primary={true}
                   onClick={this.onEditSubscriptionsClick}
                 />
-              </Text.Body>
+              </Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {profile.notes && (
           <ToggleWrapper>
             <ToggleContent label={t('Comments')} isOpen={true} >
-              <Text.Body as="span">{profile.notes}</Text.Body>
+              <Text as="span">{profile.notes}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {profile.contacts && (
           <ToggleWrapper isContacts={true} >
             <ToggleContent label={t('ContactInformation')} isOpen={true} >
-              <Text.Body as="span">{infoContacts}</Text.Body>
+              <Text as="span">{infoContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}
         {socialContacts && (
           <ToggleWrapper isContacts={true} >
             <ToggleContent label={t('SocialProfiles')} isOpen={true} >
-              <Text.Body as="span">{socialContacts}</Text.Body>
+              <Text as="span">{socialContacts}</Text>
             </ToggleContent>
           </ToggleWrapper>
         )}

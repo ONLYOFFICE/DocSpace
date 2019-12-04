@@ -82,9 +82,9 @@ const Body = ({ modules, match, history, isLoaded }) => {
                     <Tiles modules={modules} isPrimary={false} history={history} />
 
                     {!modules || !modules.length ? (
-                        <Text.Body className="home-error-text" fontSize={14} color="#c30">
+                        <Text className="home-error-text" fontSize={14} color="#c30">
                             {t('NoOneModulesAvailable')}
-                        </Text.Body> 
+                        </Text> 
                     ) : null}
                 </HomeContainer>
             )

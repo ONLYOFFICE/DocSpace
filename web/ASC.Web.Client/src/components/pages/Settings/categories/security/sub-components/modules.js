@@ -81,12 +81,12 @@ class PureModulesSettings extends Component {
         >
           <ProjectsContainer>
             <RadioButtonContainer>
-              <Text.Body>
+              <Text>
                 {t("AccessRightsAccessToProduct", {
                   product: t("People")
                 })}
                 :
-              </Text.Body>
+              </Text>
               <RadioButtonGroup
                 name="selectGroup"
                 selected="allUsers"
@@ -108,14 +108,14 @@ class PureModulesSettings extends Component {
               />
             </RadioButtonContainer>
             <ProjectsBody>
-              <Text.Body className="projects_margin" fontSize={12}>
+              <Text className="projects_margin" fontSize={12}>
                 {t("AccessRightsProductUsersCan", {
                   category: t("People")
                 })}
-              </Text.Body>
-              <Text.Body fontSize={12}>
+              </Text>
+              <Text fontSize={12}>
                 <li>{t("ViewProfilesAndGroups")}</li>
-              </Text.Body>
+              </Text>
             </ProjectsBody>
           </ProjectsContainer>
         </ToggleContent>

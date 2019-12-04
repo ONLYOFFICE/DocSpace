@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Text } from 'asc-web-components';
+import { Header } from 'asc-web-components';
 import { store } from 'asc-web-common';
 const { getCurrentModule } = store.auth.selectors;
 
 const ArticleHeaderContent = ({currentModuleName}) => {
-  return <Text.MenuHeader>{currentModuleName}</Text.MenuHeader>;
+  return <Header type="menu">{currentModuleName}</Header>;
 }
 
 const mapStateToProps = (state) => {

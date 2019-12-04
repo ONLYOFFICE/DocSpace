@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+import commonTextStyles from '../text/common-text-styles';
 
    const fontSize = css`
       ${props =>
@@ -11,26 +12,23 @@ import styled, { css } from 'styled-components';
    `;
 
    const styles = css`
-      font-family: 'Open Sans',sans-serif,Arial;
       font-size: ${fontSize}px;
       font-weight: 600;
-      color: ${props => props.color};
-      text-align: left;
-      ${props => (props.truncate && css`white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`)}
       ${props => props.isInline && css`display: inline-block;`}
    `
 
-   const StyledHeadline = styled.h1`
-      ${styles}
+   const StyledHeading = styled.h1`
+      ${styles};
+      ${commonTextStyles};
    `;
 
-   const Text = ({ title, tag, as, ...rest }) => {
+   const Heading = ({ title, tag, as, ...rest }) => {
       return (
-         <StyledHeadline as={!as && tag ? tag : as} title={title} {...rest}></StyledHeadline>
+         <StyledHeading as={!as && tag ? tag : as} title={title} {...rest}></StyledHeading>
       );
    };
 
-   Text.propTypes = {
+   Heading.propTypes = {
       as: PropTypes.string,
       tag: PropTypes.string,
       color: PropTypes.string,
@@ -40,7 +38,7 @@ import styled, { css } from 'styled-components';
       size: PropTypes.oneOf(['big', 'medium', 'small']),
    };
 
-   Text.defaultProps = {
+   Heading.defaultProps = {
       color: '#333333',
       title: '',
       truncate: false,
@@ -48,4 +46,4 @@ import styled, { css } from 'styled-components';
       size: 'big'
    };
 
-   export default Text;
+   export default Heading;

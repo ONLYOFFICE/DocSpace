@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import { tablet } from "../../utils/device";
 import Label from "../label";
 import HelpButton from "../help-button";
-import { Text } from "../text";
+import Text from "../text";
 
 function getHorizontalCss(labelWidth) {
   return css`
@@ -122,9 +122,9 @@ class FieldContainer extends React.Component {
         <div className="field-body">
           {children}
           {hasError ? (
-            <Text.Body className="error-label" fontSize={10} color={errorColor}>
+            <Text className="error-label" fontSize={10} color={errorColor}>
               {errorMessage}
-            </Text.Body>
+            </Text>
           ) : null}
         </div>
       </Container>

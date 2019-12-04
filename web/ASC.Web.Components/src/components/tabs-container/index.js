@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Text } from "../text";
+import Text from "../text";
 import Scrollbar from "../scrollbar";
 
 const StyledScrollbar = styled(Scrollbar)`
@@ -224,9 +224,9 @@ class TabContainer extends Component {
                 selected={activeTab === index}
                 isDisabled={isDisabled}
               >
-                <Text.Body className="title_style" fontSize={13}>
+                <Text className="title_style" fontSize={13}>
                   {item.title}
-                </Text.Body>
+                </Text>
               </Label>
             ))}
           </NavItem>

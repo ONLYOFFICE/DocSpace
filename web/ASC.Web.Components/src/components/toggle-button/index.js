@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Icons } from "../icons";
-import { Text } from "../text";
+import Text from "../text";
 
 const ToggleButtonContainer = styled.label`
   position: absolute;
@@ -26,13 +26,13 @@ const ToggleButtonContainer = styled.label`
         `}
   svg {
     ${props =>
-      props.isDisabled
-        ? css`
+    props.isDisabled
+      ? css`
             rect {
               fill: #eceff1;
             }
           `
-        : ""}
+      : ""}
   }
 
   .toggleText {
@@ -86,9 +86,9 @@ class ToggleButton extends Component {
         />
         <ToggleIcon isChecked={this.state.checked} />
         {label && (
-          <Text.Body className="toggleText" as="span" {...colorProps}>
+          <Text className="toggleText" as="span" {...colorProps}>
             {label}
-          </Text.Body>
+          </Text>
         )}
       </ToggleButtonContainer>
     );

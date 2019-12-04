@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Text } from '../text';
+import Text from '../text';
 import IconButton from '../icon-button';
 
 const StyledSelectedItem = styled.div`
@@ -41,16 +41,16 @@ const StyledCloseButton = styled.div`
 `;
 
 const SelectedItem = (props) => {
-    const {isDisabled, text, onClose } = props;
-    const colorProps = isDisabled ? {color: "#D0D5DA"} : {};
- 
-      //console.log("SelectedItem render");
-      return (
+    const { isDisabled, text, onClose } = props;
+    const colorProps = isDisabled ? { color: "#D0D5DA" } : {};
+
+    //console.log("SelectedItem render");
+    return (
         <StyledSelectedItem {...props}>
             <StyledSelectedTextBox>
-                <Text.Body as='span' truncate {...colorProps} >
+                <Text as='span' truncate {...colorProps} >
                     {text}
-                </Text.Body>
+                </Text>
             </StyledSelectedTextBox>
             <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
                 <IconButton
@@ -62,19 +62,19 @@ const SelectedItem = (props) => {
                 />
             </StyledCloseButton>
         </StyledSelectedItem>
-      );
-  }
-  
-  SelectedItem.propTypes = {
+    );
+}
+
+SelectedItem.propTypes = {
     text: PropTypes.string,
     isInline: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     isDisabled: PropTypes.bool
-  };
-  
-  SelectedItem.defaultProps = {
+};
+
+SelectedItem.defaultProps = {
     isInline: true,
     isDisabled: false
-  };
-  
-  export default SelectedItem;
+};
+
+export default SelectedItem;

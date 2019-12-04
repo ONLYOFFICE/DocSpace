@@ -7,7 +7,8 @@ import uniqueId from "lodash/uniqueId";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import { Text } from "../text";
+import Text from "../text";
+import Header from "../header";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
@@ -18,7 +19,7 @@ const Content = styled.div`
   padding: 0 16px 16px;
 `;
 
-const Header = styled.div`
+const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -29,7 +30,7 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Text.ContentHeader)`
+const HeaderText = styled(Header)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -153,24 +154,24 @@ class HelpButton extends React.Component {
             {tooltipContent}
           </Tooltip>
         ) : (
-          <>
-            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
-            <Aside visible={isOpen} scale={false} zIndex={zIndex}>
-              <Content>
-                {helpButtonHeaderContent && (
-                  <Header>
-                    <HeaderText>
-                      <Text.Body isBold={true} fontSize={21}>
-                        {helpButtonHeaderContent}
-                      </Text.Body>
-                    </HeaderText>
-                  </Header>
-                )}
-                <Body>{tooltipContent}</Body>
-              </Content>
-            </Aside>
-          </>
-        )}
+            <>
+              <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
+              <Aside visible={isOpen} scale={false} zIndex={zIndex}>
+                <Content>
+                  {helpButtonHeaderContent && (
+                    <HeaderContent>
+                      <HeaderText type='content'>
+                        <Text isBold={true} fontSize={21}>
+                          {helpButtonHeaderContent}
+                        </Text>
+                      </HeaderText>
+                    </HeaderContent>
+                  )}
+                  <Body>{tooltipContent}</Body>
+                </Content>
+              </Aside>
+            </>
+          )}
       </div>
     );
   }

@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
-  Text,
+  Header,
   toastr,
   ContextMenuButton,
   IconButton
@@ -210,7 +210,7 @@ const SectionHeaderContent = props => {
         <div className="header-container">
           {group ? (
             <>
-              <Text.ContentHeader truncate={true}>{group.name}</Text.ContentHeader>
+              <Header type="content" truncate={true}>{group.name}</Header>
               {isAdmin && (
                 <ContextMenuButton
                   directionX="right"
@@ -225,7 +225,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Text.ContentHeader>Departments</Text.ContentHeader>
+              <Header type="content">Departments</Header>
               {isAdmin && (
                 <IconButton
                   className="add-group-button"

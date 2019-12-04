@@ -205,13 +205,13 @@ class Confirm extends React.PureComponent {
                     <ConfirmContainer>
                         <div className='start-basis'>
                             <div className='margin-left'>
-                                <Text.Body className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
+                                <Text className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text>
 
                                 <div className='confirm-row full-width break-word'>
                                     <a href='/login'>
                                         <img src="images/dark_general.png" alt="Logo" />
                                     </a>
-                                    <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
+                                    <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
                                 </div>
                             </div>
 
@@ -313,13 +313,13 @@ class Confirm extends React.PureComponent {
 
                             {/*             <Row className='confirm-row'>
 
-                    <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
+                    <Text as='p' fontSize={14}>{t('LoginWithAccount')}</Text>
 
             </Row>
  */}
-                            <Text.Body className='confirm-row' fontSize={14} color="#c30">
+                            <Text className='confirm-row' fontSize={14} color="#c30">
                                 {this.state.errorText}
-                            </Text.Body>
+                            </Text>
                         </div>
                     </ConfirmContainer>
                 )

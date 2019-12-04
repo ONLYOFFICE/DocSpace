@@ -6,6 +6,7 @@ import {
   TextInput,
   PageLayout,
   Text,
+  Heading,
   Link,
   toastr,
   Checkbox,
@@ -217,9 +218,9 @@ class Form extends Component {
             src="images/dark_general.png"
             alt="Logo"
           />
-          <Text.Headline className="login-title" color="#116d9d">
+          <Heading className="login-title" color="#116d9d">
             {greetingTitle}
-          </Text.Headline>
+          </Heading>
         </div>
 
         <TextInput
@@ -269,7 +270,7 @@ class Form extends Component {
               className="login-tooltip"
               helpButtonHeaderContent={t("CookieSettingsTitle")}
               tooltipContent={
-                <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
+                <Text fontSize={12}>{t("RememberHelper")}</Text>
               }
             />
           </div>
@@ -310,13 +311,13 @@ class Form extends Component {
         />
 
         {params.confirmedEmail && (
-          <Text.Body isBold={true} fontSize={16}>
+          <Text isBold={true} fontSize={16}>
             {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-          </Text.Body>
+          </Text>
         )}
-        <Text.Body fontSize={14} color="#c30">
+        <Text fontSize={14} color="#c30">
           {errorText}
-        </Text.Body>
+        </Text>
       </FormContainer>
     );
   }

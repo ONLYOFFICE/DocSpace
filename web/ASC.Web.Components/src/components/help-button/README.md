@@ -9,7 +9,7 @@ import { HelpButton } from "asc-web-components";
 ```
 
 ```jsx
-<HelpButton tooltipContent={<Text.Body>Tooltip content</Text.Body>} />
+<HelpButton tooltipContent={<Text>Tooltip content</Text>} />
 ```
 
 #### Usage with link
@@ -17,12 +17,12 @@ import { HelpButton } from "asc-web-components";
 ```jsx
 <HelpButton
   tooltipContent={
-    <Text.Body>
+    <Text>
       Tooltip content with{" "}
       <Link isHovered={true} href="/">
         link
       </Link>
-    </Text.Body>
+    </Text>
   }
 />
 ```

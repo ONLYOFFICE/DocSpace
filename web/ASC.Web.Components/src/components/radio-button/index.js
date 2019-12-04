@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { Icons } from '../icons';
-import { Text } from '../text';
+import Text from '../text';
 
 const disableColor = '#A3A9AE';
 const hoverColor = disableColor;
@@ -93,8 +93,8 @@ class RadioButton extends React.Component {
 
   render() {
 
-    const colorProps = this.props.isDisabled ? {color: disableColor} : {};
-    
+    const colorProps = this.props.isDisabled ? { color: disableColor } : {};
+
     return (
       <Label
         spacing={this.props.spacing}
@@ -109,12 +109,12 @@ class RadioButton extends React.Component {
           }}
           disabled={this.props.isDisabled} />
         <RadiobuttonIcon {...this.props} />
-        <Text.Body
+        <Text
           as='span'
           {...colorProps}
         >
           {this.props.label || this.props.value}
-        </Text.Body>
+        </Text>
       </Label>
     );
   }

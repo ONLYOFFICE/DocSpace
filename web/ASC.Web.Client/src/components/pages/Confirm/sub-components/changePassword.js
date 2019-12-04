@@ -10,7 +10,8 @@ import {
   Text,
   PasswordInput,
   Loader,
-  toastr
+  toastr,
+  Heading
 } from "asc-web-components";
 import { store } from "asc-web-common";
 const { changePassword, getConfirmationInfo, logout } = store.auth.actions;
@@ -133,13 +134,13 @@ class Form extends React.PureComponent {
             src="images/dark_general.png"
             alt="Logo"
           />
-          <Text.Headline className="password-title" color="#116d9d">
+          <Heading className="password-title" color="#116d9d">
             {greetingTitle}
-          </Text.Headline>
+          </Heading>
         </div>
-        <Text.Body className="password-text" fontSize={14}>
+        <Text className="password-text" fontSize={14}>
           {t("PassworResetTitle")}
-        </Text.Body>
+        </Text>
         <PasswordInput
           id="password"
           name="password"

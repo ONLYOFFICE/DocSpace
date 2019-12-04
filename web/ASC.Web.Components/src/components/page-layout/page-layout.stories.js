@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import styled from '@emotion/styled';
 import Layout from '../layout';
 import PageLayout from '.';
-import { Text } from '../text';
+import Header from '../header';
 import IconButton from '../icon-button';
 import ContextMenuButton from '../context-menu-button';
 import MainButton from '../main-button';
@@ -49,7 +49,7 @@ const perPageItems = [
   }
 ];
 
-const articleHeaderContent = <Text.MenuHeader>Article Header</Text.MenuHeader>;
+const articleHeaderContent = <Header type="menu">Article Header</Header>;
 
 const articleMainButtonContent = <MainButton
   text='Actions'
@@ -64,7 +64,7 @@ const sectionHeaderContent = <HeaderContent>
     size='16'
     onClick={(e) => action('ArrowPathIcon Clicked')(e)}
   />
-  <Text.ContentHeader>Section Header</Text.ContentHeader>
+  <Header type="content">Section Header</Header>
   <IconButton
     iconName={"PlusIcon"}
     size='16'

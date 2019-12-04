@@ -78,10 +78,10 @@ class Form extends React.PureComponent {
               src="images/dark_general.png"
               alt="Logo"
             />
-            <Text.Body className="owner-title">{greetingTitle}</Text.Body>
-            <Text.Body className="owner-confirm_text" fontSize={18}>
+            <Text className="owner-title">{greetingTitle}</Text>
+            <Text className="owner-confirm_text" fontSize={18}>
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
-            </Text.Body>
+            </Text>
             {this.state.showButtons ? (
               <>
                 <Button
@@ -103,9 +103,9 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-              <Text.Body className="owner-confirm-message" fontSize={12}>
+              <Text className="owner-confirm-message" fontSize={12}>
                 {t("ConfirmOwnerPortalSuccessMessage")}
-              </Text.Body>
+              </Text>
             )}
           </div>
         </div>

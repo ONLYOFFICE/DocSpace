@@ -182,7 +182,7 @@ class PureOwnerSettings extends Component {
               className="page_loader"
             />
             <HeaderContainer>
-              <Text.Body fontSize={18}>{t("PortalOwner")}</Text.Body>
+              <Text fontSize={18}>{t("PortalOwner")}</Text>
             </HeaderContainer>
 
             <BodyContainer>
@@ -195,13 +195,13 @@ class PureOwnerSettings extends Component {
                   source={owner.avatar}
                 />
                 <div className="avatar_body">
-                  <Text.Body
+                  <Text
                     className="avatar_text"
                     fontSize={16}
                     isBold={true}
                   >
                     {owner.displayName}
-                  </Text.Body>
+                  </Text>
                   {owner.groups &&
                     owner.groups.map(group => (
                       <Link
@@ -215,20 +215,20 @@ class PureOwnerSettings extends Component {
                 </div>
               </AvatarContainer>
               <ProjectsBody>
-                <Text.Body className="portal_owner" fontSize={12}>
+                <Text className="portal_owner" fontSize={12}>
                   {t("AccessRightsOwnerCan")}:
-                </Text.Body>
-                <Text.Body fontSize={12}>
+                </Text>
+                <Text fontSize={12}>
                   {OwnerOpportunities.map((item, key) => (
                     <li key={key}>{item};</li>
                   ))}
-                </Text.Body>
+                </Text>
               </ProjectsBody>
             </BodyContainer>
 
-            <Text.Body fontSize={12} className="text-body_wrapper">
+            <Text fontSize={12} className="text-body_wrapper">
               {t("AccessRightsChangeOwnerText")}
-            </Text.Body>
+            </Text>
 
             <Link
               className="link_style"
@@ -246,13 +246,13 @@ class PureOwnerSettings extends Component {
               isDisabled={!isLoading ? selectedOwner === null : false}
               onClick={this.onChangeOwner}
             />
-            <Text.Body
+            <Text
               className="text-body_inline"
               fontSize={12}
               color="#A3A9AE"
             >
               {t("AccessRightsChangeOwnerConfirmText")}
-            </Text.Body>
+            </Text>
 
             <div className="advanced-selector">
               <AdvancedSelector
