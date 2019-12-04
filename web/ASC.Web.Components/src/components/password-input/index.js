@@ -58,9 +58,9 @@ const TooltipStyle = styled.div`
   }
 `;
 const Progress = styled.div`
-  border: 3px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
+  border: 1.5px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
   border-radius: 2px;
-  margin-top: -4px;
+  margin-top: -1px;
   width: ${props => props.progressWidth ? props.progressWidth + '%' : '0%'};
 `;
 
