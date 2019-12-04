@@ -21,13 +21,10 @@ const StyledComponent = styled.div`
 
    .field-container {
       margin-top: 45px;
-      & > div {
-         min-width: 435px
-      }
    }
 
    .input-width {
-      width: 500px;
+      max-width: 500px;
    }
    
    .border-img {
@@ -203,14 +200,14 @@ class WhiteLabel extends React.Component {
             : <>
                <StyledComponent>
                   <div className='settings-block'>
-                     <Text.Body fontSize={16}>{t('LogoSettings')}</Text.Body>
-                     <Text.Body
+                     <Text fontSize={16}>{t('LogoSettings')}</Text>
+                     <Text
                         className='margin-top'
                         fontSize={14}>
                         <Trans i18nKey="LogoUploadRecommendation">
                            We recommended that you use images in <strong>PNG</strong> format with transparent background
                         </Trans>
-                     </Text.Body>
+                     </Text>
 
                      <FieldContainer
                         id='fieldContainerCompanyName'
@@ -223,6 +220,7 @@ class WhiteLabel extends React.Component {
                            onChange={this.onChangeCompanyName}
                            isDisabled={!isPortalPaid}
                            isReadOnly={!isPortalPaid}
+                           scale={true}
                         />
                         {
                            isPortalPaid &&

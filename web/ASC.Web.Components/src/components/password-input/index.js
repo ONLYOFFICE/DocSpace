@@ -7,7 +7,7 @@ import { tablet } from '../../utils/device';
 import InputBlock from '../input-block'
 import { Icons } from '../icons'
 import Link from '../link'
-import { Text } from '../text'
+import Text from '../text'
 //import DropDown from '../drop-down'
 
 import Tooltip from "../tooltip";
@@ -58,17 +58,17 @@ const TooltipStyle = styled.div`
   }
 `;
 const Progress = styled.div`
-  border: 3px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
+  border: 1.5px solid ${props => (!props.isDisabled && props.progressColor) ? props.progressColor : 'transparent'};
   border-radius: 2px;
-  margin-top: -4px;
+  margin-top: -1px;
   width: ${props => props.progressWidth ? props.progressWidth + '%' : '0%'};
 `;
 
-const StyledTooltipContainer = styled(Text.Body)`
+const StyledTooltipContainer = styled(Text)`
   //margin: 8px 16px 16px 16px;
 `;
 
-const StyledTooltipItem = styled(Text.Body)`
+const StyledTooltipItem = styled(Text)`
   margin-left: 8px;
   height: 24px;
   color: ${props => props.valid ? '#44bb00' : '#B40404'};
@@ -186,7 +186,7 @@ class PasswordInput extends React.Component {
       return e.preventDefault();
 
     const newPassword = this.getNewPassword();
-    
+
     if (this.state.type !== 'text') {
       this.setState({
         type: 'text'

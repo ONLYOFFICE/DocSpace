@@ -5,6 +5,7 @@ import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+import { Error404 } from "asc-web-common";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -13,7 +14,7 @@ const ActivateEmailForm = lazy(() => import("./sub-components/activateEmail"));
 const ChangeEmailForm = lazy(() => import("./sub-components/changeEmail"));
 const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
-const Error404 = lazy(() => import("../Error"));
+const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
 const Confirm = ({ match, language }) => {
 
@@ -60,6 +61,11 @@ const Confirm = ({ match, language }) => {
             exact
             path={`${match.path}/PhoneActivation`}
             component={ChangePhoneForm}
+          />
+          <Route
+            exact
+            path={`${match.path}/ownerchange`}
+            component={ChangeOwnerForm}
           />
           <Route component={Error404} />
         </Switch>

@@ -5,7 +5,7 @@ import ReactAvatarEditor from 'react-avatar-editor'
 import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
-import { Text } from '../../text'
+import Text from '../../text'
 import { tablet } from '../../../utils/device';
 
 const StyledErrorContainer = styled.div`
@@ -190,6 +190,10 @@ class AvatarEditorBody extends React.Component {
             this.setState({
                 scale: scale < 1 ? 1 : scale > 5 ? 5 : scale
             });
+            this.props.onSizeChange({
+                width: this.setEditorRef.current.getImage().width,
+                height: this.setEditorRef.current.getImage().height
+            });
         }
     }
     onTouchEnd(evt) {
@@ -217,11 +221,19 @@ class AvatarEditorBody extends React.Component {
         this.setState({
             scale: scale < 1 ? 1 : scale > 5 ? 5 : scale
         });
+        this.props.onSizeChange({
+            width: this.setEditorRef.current.getImage().width,
+            height: this.setEditorRef.current.getImage().height
+        });
     }
 
     handleScale = e => {
         const scale = parseFloat(e.target.value);
-        this.setState({ scale })
+        this.setState({ scale });
+        this.props.onSizeChange({
+            width: this.setEditorRef.current.getImage().width,
+            height: this.setEditorRef.current.getImage().height
+        });
     };
     onImageReady() {
         this.setState({
@@ -304,11 +316,11 @@ class AvatarEditorBody extends React.Component {
                 }
                 <StyledErrorContainer key="errorMsg">
                     {this.state.errorText !== null &&
-                        <Text.Body
+                        <Text
                             as="p"
                             color="#C96C27"
                             isBold={true}
-                        >{this.state.errorText}</Text.Body>
+                        >{this.state.errorText}</Text>
                     }
                 </StyledErrorContainer>
             </div>
@@ -319,6 +331,7 @@ class AvatarEditorBody extends React.Component {
 AvatarEditorBody.propTypes = {
     onImageChange: PropTypes.func,
     onPositionChange: PropTypes.func,
+    onSizeChange: PropTypes.func,
     onLoadFileError: PropTypes.func,
     onLoadFile: PropTypes.func,
     deleteImage: PropTypes.func,

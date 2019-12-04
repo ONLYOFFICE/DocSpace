@@ -5,8 +5,9 @@ import { Button, PageLayout, Text } from 'asc-web-components';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { deleteSelf } from './../../../../store/services/api';
-import { logout } from '../../../../store/auth/actions';
+import { store, api } from 'asc-web-common';
+const { logout } = store.auth.actions;
+const { deleteSelf } = api.people;
 
 const ProfileRemoveContainer = styled.div`
     display: flex;
@@ -46,7 +47,6 @@ class ProfileRemove extends React.PureComponent {
             isLoading: false,
             isProfileDeleted: true
           });
-          //setAuthorizationToken();
           console.log('success delete', res)
           return logout()
         })
@@ -70,13 +70,13 @@ class ProfileRemove extends React.PureComponent {
             <a href='/login'>
               <img src="images/dark_general.png" alt="Logo" />
             </a>
-            <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
+            <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
           </div>
 
           {!isProfileDeleted
             ? <>
-              <Text.Body className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileConfirmation')}</Text.Body>
-              <Text.Body className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileConfirmationInfo')}</Text.Body>
+              <Text className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileConfirmation')}</Text>
+              <Text className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileConfirmationInfo')}</Text>
 
               <Button
                 className='confirm-row'
@@ -89,8 +89,8 @@ class ProfileRemove extends React.PureComponent {
               />
             </>
             : <>
-              <Text.Body className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileSuccessMessage')}</Text.Body>
-              <Text.Body className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileSuccessMessageInfo')}</Text.Body>
+              <Text className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileSuccessMessage')}</Text>
+              <Text className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileSuccessMessageInfo')}</Text>
             </>
           }
 

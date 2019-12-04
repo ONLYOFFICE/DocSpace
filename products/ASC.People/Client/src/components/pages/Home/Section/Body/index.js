@@ -30,15 +30,13 @@ import {
   getUserStatus,
   getUserRole
 } from "../../../../../store/people/selectors";
-import { isAdmin, isMe } from "../../../../../store/auth/selectors";
-import { EmployeeStatus } from "../../../../../helpers/constants";
-import {
-  resendUserInvites,
-  sendInstructionsToDelete,
-  sendInstructionsToChangePassword,
-  deleteUser
-} from "../../../../../store/services/api";
 import { isMobileOnly } from "react-device-detect";
+import isEqual from "lodash/isEqual";
+import { store, api, constants } from 'asc-web-common';
+const { isAdmin, isMe } = store.auth.selectors;
+const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
+const { EmployeeStatus } = constants;
+
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -74,13 +72,13 @@ class SectionBodyContent extends React.PureComponent {
         visible: true,
         header: "Password change",
         body: (
-          <Text.Body>
+          <Text>
             Send the password change instructions to the{" "}
             <Link type="page" href={`mailto:${email}`} isHovered title={email}>
               {email}
             </Link>{" "}
             email address
-          </Text.Body>
+          </Text>
         ),
         buttons: [
           <Button
@@ -94,10 +92,10 @@ class SectionBodyContent extends React.PureComponent {
               sendInstructionsToChangePassword(email)
               .then(() =>
                   toastr.success(
-                    <Text.Body>
+                    <Text>
                       The password change instructions have been sent to the{" "}
                       <b>{email}</b> email address
-                    </Text.Body>
+                    </Text>
                   )
                 )
                 .catch(error => toastr.error(error))
@@ -135,9 +133,9 @@ class SectionBodyContent extends React.PureComponent {
                 this.setState({ newEmail: e.target.value });
               }}
             />
-            <Text.Body style={{ marginTop: "16px" }}>
+            <Text style={{ marginTop: "16px" }}>
               The activation instructions will be sent to the entered email
-            </Text.Body>
+            </Text>
           </>
         ),
         buttons: [
@@ -202,18 +200,18 @@ class SectionBodyContent extends React.PureComponent {
         header: "Confirmation",
         body: (
           <>
-            <Text.Body>
+            <Text>
               User <b>{user.displayName}</b> will be deleted.
-            </Text.Body>
-            <Text.Body>Note: this action cannot be undone.</Text.Body>
-            <Text.Body color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+            </Text>
+            <Text>Note: this action cannot be undone.</Text>
+            <Text color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
               Warning!
-            </Text.Body>
-            <Text.Body>
+            </Text>
+            <Text>
               User personal documents which are available to others will be
               deleted. To avoid this, you must start the data reassign process
               before deleting.
-            </Text.Body>
+            </Text>
           </>
         ),
         buttons: [
@@ -265,12 +263,12 @@ class SectionBodyContent extends React.PureComponent {
         visible: true,
         header: "Delete profile dialog",
         body: (
-          <Text.Body>
+          <Text>
             Send the profile deletion instructions to the email address{" "}
             <Link type="page" href={`mailto:${email}`} isHovered title={email}>
               {email}
             </Link>
-          </Text.Body>
+          </Text>
         ),
         buttons: [
           <Button
@@ -284,10 +282,10 @@ class SectionBodyContent extends React.PureComponent {
               sendInstructionsToDelete()
                 .then(() =>
                   toastr.success(
-                    <Text.Body>
+                    <Text>
                       Instructions to delete your profile has been sent to{" "}
                       <b>{email}</b> email address
-                    </Text.Body>
+                    </Text>
                   )
                 )
                 .catch(error => toastr.error(error))
@@ -314,10 +312,10 @@ class SectionBodyContent extends React.PureComponent {
     resendUserInvites([user.id])
       .then(() =>
         toastr.success(
-          <Text.Body>
+          <Text>
             The email activation instructions have been sent to the{" "}
             <b>{user.email}</b> email address
-          </Text.Body>
+          </Text>
         )
       )
       .catch(error => toastr.error(error))
@@ -461,6 +459,19 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
+  needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.checked !== nextProps.checked) {
+      return true;
+    }
+    if (currentProps.status !== nextProps.status) {
+      return true;
+    }
+    if (!isEqual(currentProps.data, nextProps.data)) {
+      return true;
+    }
+    return false;
+  };
+
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
@@ -468,7 +479,7 @@ class SectionBodyContent extends React.PureComponent {
 
     return users.length > 0 ? (
       <>
-        <RowContainer>
+        <RowContainer useReactWindow={false}>
           {users.map(user => {
             const contextOptions = this.getUserContextOptions(user, viewer);
             const contextOptionsProps = !contextOptions.length
@@ -494,6 +505,7 @@ class SectionBodyContent extends React.PureComponent {
                 onSelect={this.onContentRowSelect}
                 {...checkedProps}
                 {...contextOptionsProps}
+                needForUpdate={this.needForUpdate}
               >
                 <UserContent
                   user={user}

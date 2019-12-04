@@ -1,7 +1,6 @@
 import React from "react";
 import { Trans } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../../helpers/customNames';
-import { resendUserInvites, sendInstructionsToChangeEmail } from "../../../../../../store/services/api";
 import {
   Text,
   TextInput,
@@ -14,7 +13,8 @@ import {
   HelpButton
 } from "asc-web-components";
 import styled from 'styled-components';
-import history from "../../../../../../history";
+import { history, api } from "asc-web-common";
+const { resendUserInvites, sendInstructionsToChangeEmail } = api.people;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -122,7 +122,7 @@ class ProfileInfo extends React.PureComponent {
       visible: true,
       header: "Change email",
       body: (
-        <Text.Body>
+        <Text>
           <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
           <TextInput
             id="new-email"
@@ -132,7 +132,7 @@ class ProfileInfo extends React.PureComponent {
             onChange={this.onEmailChange}
             hasError={hasError}
           />
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -207,18 +207,18 @@ class ProfileInfo extends React.PureComponent {
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage =
-      <Text.Body fontSize={13}>
+      <Text fontSize={13}>
         <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
           "In case you cannot find your language in the list of the
           available ones, feel free to write to us at
-          <Link href="mailto:documentation@onlyoffice.com" isHovered={true}>
+          <Link href={`mailto:${supportEmail}`} isHovered={true}>
             {{ supportEmail }}
           </Link> to take part in the translation and get up to 1 year free of
           charge."
         </Trans>
         {" "}
         <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
-      </Text.Body>
+      </Text>
 
     return (
       <InfoContainer>
@@ -347,7 +347,13 @@ class ProfileInfo extends React.PureComponent {
                 className='language-combo'
               />
               <TooltipIcon>
-                <HelpButton place="bottom" offsetLeft={50} offsetRight={0} tooltipContent={tooltipLanguage} />
+              <HelpButton
+                  place="bottom"
+                  offsetLeft={50}
+                  offsetRight={0}
+                  tooltipContent={tooltipLanguage}
+                  helpButtonHeaderContent={t('Language')}
+                />
               </TooltipIcon>
 
             </InfoItemValue>

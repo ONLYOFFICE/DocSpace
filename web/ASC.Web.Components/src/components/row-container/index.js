@@ -8,7 +8,9 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import ContextMenu from '../context-menu';
 
 const StyledRowContainer = styled.div`
-  height: ${props => props.manualHeight ? props.manualHeight : '100%'};
+  height: ${props => props.useReactWindow ? props.manualHeight ? props.manualHeight : '100%' : 'auto'};
+  margin: 16px 0;
+  position: relative;
 `;
 
 class RowContainer extends React.PureComponent {
@@ -49,7 +51,7 @@ class RowContainer extends React.PureComponent {
   }, areEqual);
 
   render() {
-    const { manualHeight, itemHeight, children } = this.props;
+    const { manualHeight, itemHeight, children, useReactWindow } = this.props;
 
     const renderList = ({ height, width }) => (
       <List
@@ -66,11 +68,17 @@ class RowContainer extends React.PureComponent {
     );
 
     return (
-      <StyledRowContainer id='rowContainer' manualHeight={manualHeight}>
-        <AutoSizer>
-          {renderList}
-        </AutoSizer>
-        <ContextMenu targetAreaId='rowContainer' options={this.state.contextOptions} />
+      <StyledRowContainer id="rowContainer" manualHeight={manualHeight} useReactWindow={useReactWindow}>
+        { useReactWindow ? (
+          <AutoSizer>{renderList}</AutoSizer>
+        ) : (
+          children.map((item, index) => (
+            <div key={index} onContextMenu={this.onRowContextClick.bind(this, item.props.contextOptions)}>
+              {item}
+            </div>
+          ))
+        )}
+        <ContextMenu targetAreaId="rowContainer" options={this.state.contextOptions} />
       </StyledRowContainer>
     );
   }
@@ -79,11 +87,13 @@ class RowContainer extends React.PureComponent {
 RowContainer.propTypes = {
   itemHeight: PropTypes.number,
   manualHeight: PropTypes.string,
-  children: PropTypes.any.isRequired
+  children: PropTypes.any.isRequired,
+  useReactWindow: PropTypes.bool
 };
 
 RowContainer.defaultProps = {
   itemHeight: 50,
+  useReactWindow: true
 };
 
 export default RowContainer;

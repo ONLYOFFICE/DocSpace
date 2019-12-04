@@ -5,7 +5,6 @@ import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarE
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile } from '../../../../../store/profile/actions';
-import { sendInstructionsToChangePassword, sendInstructionsToChangeEmail } from "../../../../../store/services/api";
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -15,8 +14,9 @@ import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
-import { createThumbnailsAvatar, loadAvatar, deleteAvatar } from "../../../../../store/services/api";
 import styled from "styled-components";
+import { api } from "asc-web-common";
+const {sendInstructionsToChangePassword, sendInstructionsToChangeEmail, createThumbnailsAvatar, loadAvatar, deleteAvatar} = api.people;
 
 const Table = styled.table`
   width: 100%;
@@ -68,6 +68,7 @@ class UpdateUserForm extends React.Component {
     this.onSelectGroups = this.onSelectGroups.bind(this);
     this.onRemoveGroup = this.onRemoveGroup.bind(this);
 
+    this.mainFieldsContainerRef = React.createRef();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -147,10 +148,17 @@ class UpdateUserForm extends React.Component {
   validate() {
     const { profile } = this.state;
     const errors = {
-      firstName: !profile.firstName,
-      lastName: !profile.lastName,
+      firstName: !profile.firstName.trim(),
+      lastName: !profile.lastName.trim(),
     };
     const hasError = errors.firstName || errors.lastName;
+
+    if (hasError) {
+      const element = this.mainFieldsContainerRef.current;
+      const parent = element.closest(".scroll-body");
+      (parent || window).scrollTo(0, element.offsetTop);
+    }
+
     this.setState({ errors: errors });
     return !hasError;
   }
@@ -185,7 +193,7 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change email",
       body: (
-        <Text.Body>
+        <Text>
           <span style={{display: "block", marginBottom: "8px"}}>The activation instructions will be sent to the entered email</span>
           <TextInput
             id="new-email"
@@ -195,7 +203,7 @@ class UpdateUserForm extends React.Component {
             onChange={this.onEmailChange}
             hasError={hasError}
           />
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -226,9 +234,9 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change password",
       body: (
-        <Text.Body>
+        <Text>
           Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -257,9 +265,9 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change phone",
       body: (
-        <Text.Body>
+        <Text>
           The instructions on how to change the user mobile number will be sent to the user email address
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -333,6 +341,7 @@ class UpdateUserForm extends React.Component {
       visibleAvatarEditor: true,
     });
   }
+
   onLoadFileAvatar(file) {
     let data = new FormData();
     let _this = this;
@@ -355,6 +364,7 @@ class UpdateUserForm extends React.Component {
       })
       .catch((error) => toastr.error(error));
   }
+
   onSaveAvatar(isUpdate, result) {
     if(isUpdate){
       createThumbnailsAvatar(this.state.profile.id, {
@@ -385,6 +395,7 @@ class UpdateUserForm extends React.Component {
       .catch((error) => toastr.error(error));
     }
   }
+
   onCloseAvatarEditor() {
     this.setState({
       visibleAvatarEditor: false,
@@ -432,35 +443,70 @@ class UpdateUserForm extends React.Component {
     const contacts = getUserContacts(profile.contacts);
     const tooltipTypeContent = 
       <>
-        <Text.Body style={{paddingBottom: 17}} fontSize={13}>{t("ProfileTypePopupHelper")}</Text.Body>
-        <Table>
-          <tbody>
-            <tr>
-              <Th>{t("ProductsAndInstruments_Products")}</Th><Th>{t("Employee")}</Th><Th>{t("GuestCaption")}</Th>
-            </tr>
-            <tr>
-              <Td>{t("Mail")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("DocumentsProduct")}</Td><Td>full access</Td><Td>view</Td>
-            </tr>
-            <tr>
-              <Td>{t("ProjectsProduct")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("CommunityProduct")}</Td><Td>full access</Td><Td>view</Td>
-            </tr>
-            <tr>
-              <Td>{t("People")}</Td><Td>review</Td><Td>-</Td>
-            </tr>
-            <tr>
-              <Td>{t("Message")}</Td><Td>review</Td><Td>review</Td>
-            </tr>
-            <tr>
-              <Td>{t("Calendar")}</Td><Td>review</Td><Td>review</Td>
-            </tr>
-          </tbody>
-        </Table>
+        <Text 
+          style={{paddingBottom: 17}} 
+          fontSize={13}>
+            {t("ProfileTypePopupHelper")}
+        </Text>
+
+        <Text fontSize={12} as="div">
+          <Table>
+            <tbody>
+              <tr>
+                <Th>
+                  <Text isBold fontSize={13}>
+                    {t("ProductsAndInstruments_Products")}
+                  </Text>
+                </Th>
+                <Th>
+                  <Text isBold fontSize={13}>
+                    {t("Employee")}
+                    </Text>
+                  </Th>
+                <Th>
+                  <Text isBold fontSize={13}>
+                    {t("GuestCaption")}
+                  </Text>
+                </Th>
+              </tr>
+              <tr>
+                <Td>{t("Mail")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("DocumentsProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
+              </tr>
+              <tr>
+                <Td>{t("ProjectsProduct")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("CommunityProduct")}</Td>
+                <Td>full access</Td>
+                <Td>view</Td>
+              </tr>
+              <tr>
+                <Td>{t("People")}</Td>
+                <Td>review</Td>
+                <Td>-</Td>
+              </tr>
+              <tr>
+                <Td>{t("Message")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
+              </tr>
+              <tr>
+                <Td>{t("Calendar")}</Td>
+                <Td>review</Td>
+                <Td>review</Td>
+              </tr>            
+            </tbody>
+          </Table>
+        </Text>
         <Link 
           color="#316DAA" 
           isHovered={true} 
@@ -496,7 +542,7 @@ class UpdateUserForm extends React.Component {
               unknownError    ={t("unknownError")}
             />
           </AvatarContainer>
-          <MainFieldsContainer>
+          <MainFieldsContainer ref={this.mainFieldsContainerRef}>
             <TextChangeField
               labelText={`${t("Email")}:`}
               inputName="email"
@@ -506,10 +552,18 @@ class UpdateUserForm extends React.Component {
               buttonOnClick={this.onEmailChange}
               buttonTabIndex={1}
 
+              helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
-                  The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <p style={{height: "0", visibility: "hidden"}}>You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</p> The main e-mail can be used as a login when logging in to the portal.
-                </Trans>
+                <Text fontSize={13} as="div">
+                  <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
+                    The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
+                    <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>
+                      You can create a new mail on the domain as the primary.
+                      In this case, you must set a one-time password so that the user can log in to the portal for the first time.
+                    </p>
+                    The main e-mail can be used as a login when logging in to the portal.
+                  </Trans>
+                </Text>
               }
             />
             <TextChangeField
@@ -583,6 +637,7 @@ class UpdateUserForm extends React.Component {
               radioOnChange={this.onUserTypeChange}
 
               tooltipContent={tooltipTypeContent}
+              helpButtonHeaderContent={t('UserType')}
             />
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}

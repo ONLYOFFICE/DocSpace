@@ -74,33 +74,33 @@ const Body = ({language}) => {
       </p>
 
       <VersionStyle>
-        <Text.Body className="text_p" fontSize={14} color="#A3A9AE">
+        <Text className="text_p" fontSize={14} color="#A3A9AE">
           {`${t("AboutCompanyVersion")}: ${version.version}`}
-        </Text.Body>
+        </Text>
       </VersionStyle>
 
-      <Text.Body className="copyright-line" fontSize={14}>
+      <Text className="copyright-line" fontSize={14}>
         {t("AboutCompanyLicensor")}
-      </Text.Body>
+      </Text>
 
-      <Text.Body className="text_p" fontSize={16} isBold={true}>
+      <Text className="text_p" fontSize={16} isBold={true}>
         Ascensio System SIA
-      </Text.Body>
+      </Text>
 
       <Style>
-        <Text.Body className="text_p" fontSize={12}>
-          <Text.Body
+        <Text className="text_p" fontSize={12}>
+          <Text
             className="text_span"
             fontSize={12}
             as="span"
             color="#A3A9AE"
           >
             {t("AboutCompanyAddressTitle")}:{" "}
-          </Text.Body>
+          </Text>
           20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050
-        </Text.Body>
+        </Text>
 
-        <Text.Body
+        <Text
           fontSize={12}
           className="text_span"
           as="span"
@@ -110,20 +110,20 @@ const Body = ({language}) => {
           <Link href="mailto:support@onlyoffice.com" fontSize={12}>
             support@onlyoffice.com
           </Link>
-        </Text.Body>
+        </Text>
 
         <div style={{ marginTop: "4px" }}>
-          <Text.Body className="text_p" fontSize={12}>
-            <Text.Body
+          <Text className="text_p" fontSize={12}>
+            <Text
               fontSize={12}
               className="text_span"
               as="span"
               color="#A3A9AE"
             >
               {t("AboutCompanyTelTitle")}:{" "}
-            </Text.Body>
+            </Text>
             +371 660-16425
-          </Text.Body>
+          </Text>
         </div>
 
         <Link href="http://www.onlyoffice.com" fontSize={12}>
@@ -131,7 +131,7 @@ const Body = ({language}) => {
         </Link>
 
         <div style={{ marginTop: "20px" }}>
-          <Text.Body className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize={12}>
             {t("LicensedUnder", {license: "GNU GPL v.3"} )}:{" "}
             <Link
               href="https://www.gnu.org/licenses/gpl-3.0.html"
@@ -140,9 +140,9 @@ const Body = ({language}) => {
             >
               GNU GPL v.3
             </Link>{" "}
-          </Text.Body>
+          </Text>
 
-          <Text.Body className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize={12}>
             {t("SourceCode")}:{" "}
             <Link
               href="https://github.com/ONLYOFFICE/CommunityServer"
@@ -151,7 +151,7 @@ const Body = ({language}) => {
             >
               GitHub
             </Link>
-          </Text.Body>
+          </Text>
         </div>
       </Style>
     </BodyStyle>

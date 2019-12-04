@@ -36,6 +36,7 @@ using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
 {
@@ -65,25 +66,43 @@ namespace ASC.FederatedLogin
             return profiles;
         }
     }
-
-    public class AccountLinker
+    public class ConfigureAccountLinker : IConfigureNamedOptions<AccountLinker>
     {
-
-        private readonly string dbid;
-
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
 
-        public AccountLinker(string dbid, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
+        public ConfigureAccountLinker(Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
         {
-            this.dbid = dbid;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
             DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
         }
+
+        public void Configure(string name, AccountLinker options)
+        {
+            options.DbId = name;
+            options.AccountLinkerStorage = AccountLinkerStorage;
+            options.DbOptions = DbOptions;
+            options.InstanceCrypto = InstanceCrypto;
+            options.Signature = Signature;
+        }
+
+        public void Configure(AccountLinker options)
+        {
+            Configure("default", options);
+        }
+    }
+
+    public class AccountLinker
+    {
+        public string DbId { get; set; }
+        public Signature Signature { get; set; }
+        public InstanceCrypto InstanceCrypto { get; set; }
+        public DbOptionsManager DbOptions { get; set; }
+        public AccountLinkerStorage AccountLinkerStorage { get; set; }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
@@ -97,7 +116,7 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            var db = DbOptions.Get(dbid);
+            var db = DbOptions.Get(DbId);
             var query = new SqlQuery("account_links")
 .Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
             return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
@@ -116,7 +135,7 @@ namespace ASC.FederatedLogin
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            var db = DbOptions.Get(dbid);
+            var db = DbOptions.Get(DbId);
             var query = new SqlQuery("account_links")
 .Select("profile").Where("id", obj);
             return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
@@ -124,7 +143,7 @@ namespace ASC.FederatedLogin
 
         public void AddLink(string obj, LoginProfile profile)
         {
-            var db = DbOptions.Get(dbid);
+            var db = DbOptions.Get(DbId);
             db.ExecuteScalar<int>(
                 new SqlInsert("account_links", true)
                     .InColumnValue("id", obj)
@@ -158,7 +177,7 @@ namespace ASC.FederatedLogin
             if (!string.IsNullOrEmpty(provider)) sql.Where("provider", provider);
             if (!string.IsNullOrEmpty(hashId)) sql.Where("uid", hashId);
 
-            var db = DbOptions.Get(dbid);
+            var db = DbOptions.Get(DbId);
             db.ExecuteScalar<int>(sql);
 
             AccountLinkerStorage.RemoveFromCache(obj);
@@ -173,6 +192,21 @@ namespace ASC.FederatedLogin
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 
             return services;
+        }
+    }
+
+    public static class AccountLinkerExtension
+    {
+        public static IServiceCollection AddAccountLinker(this IServiceCollection services)
+        {
+            services.TryAddScoped<AccountLinker>();
+            services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
+
+            return services
+                .AddSignatureService()
+                .AddInstanceCryptoService()
+                .AddDbManagerService()
+                .AddAccountLinkerStorageService();
         }
     }
 }

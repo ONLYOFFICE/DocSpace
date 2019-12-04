@@ -28,7 +28,7 @@ const ClearTextareaAutosize = ({ isDisabled, ...props }) => <TextareaAutosize {.
 const StyledTextarea = styled(ClearTextareaAutosize)`
   ${commonInputStyle};
   width: 100%;
-  height: 96%;
+  height: 90%;
   border: none;
   outline: none;
   resize: none;
@@ -50,7 +50,8 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 class Textarea extends React.PureComponent {
 
   render() {
-    console.log('Textarea render');
+    // console.log('Textarea render');
+    console.warn('Textarea render');
     return (
       <StyledScrollbar
         className={this.props.className}

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "/products/people",
   "dependencies": {
+    "asc-web-common": "file:../../../packages/asc-web-common",
     "asc-web-components": "file:../../../packages/asc-web-components",
     "axios": "^0.19.0",
     "bootstrap": "4.3.1",
@@ -29,7 +30,6 @@
     "react-router-dom": "5.0.1",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
-    "reactstrap": "8.0.1",
     "redux": "4.0.4",
     "redux-thunk": "2.3.0",
     "styled-components": "^4.3.2"

@@ -5,7 +5,7 @@ import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import HelpButton from ".";
 import Section from "../../../.storybook/decorators/section";
-import { Text } from "../text";
+import Text from "../text";
 import Link from "../link";
 import styled from "styled-components";
 
@@ -27,15 +27,18 @@ storiesOf("Components|Buttons", module)
       <Section>
         <IconButtons>
           <HelpButton
+            displayType="dropdown"
             tooltipContent={
-              <Text.Body fontSize={13}>
+              <Text fontSize={13}>
                 Paste you tooltip content here
-              </Text.Body>
+              </Text>
             }
           />
           <HelpButton
+            displayType="aside"
+            helpButtonHeaderContent="Aside position HelpButton"
             tooltipContent={
-              <Text.Body>
+              <Text>
                 You tooltip content with{" "}
                 <Link
                   isHovered={true}
@@ -43,14 +46,16 @@ storiesOf("Components|Buttons", module)
                 >
                   link
                 </Link>
-              </Text.Body>
+              </Text>
             }
           />
           <HelpButton
+            displayType="auto"
+            helpButtonHeaderContent="Auto position HelpButton"
             tooltipContent={
               <>
                 <p>You can put every thing here</p>
-                <ul style={{marginBottom: 0}}>
+                <ul style={{ marginBottom: 0 }}>
                   <li>Word</li>
                   <li>Chart</li>
                   <li>Else</li>

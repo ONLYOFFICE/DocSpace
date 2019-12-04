@@ -27,13 +27,13 @@
 using System;
 using System.Linq;
 using System.Security;
-using ASC.Common.Data;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
@@ -47,8 +47,7 @@ namespace ASC.Web.Studio.Core
             SecurityContext securityContext,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            DbOptionsManager dbOptions,
-            AccountLinkerStorage accountLinkerStorage)
+            IOptionsSnapshot<AccountLinker> snapshot)
         {
             var tenant = tenantManager.GetCurrentTenant();
             var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
@@ -59,7 +58,7 @@ namespace ASC.Web.Studio.Core
                 Provider = ProviderConstants.Blockchain,
             };
 
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
+            var linker = snapshot.Get("webstudio");
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -72,14 +71,14 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress(SecurityContext securityContext, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
+        public static string GetAddress(SecurityContext securityContext, IOptionsSnapshot<AccountLinker> snapshot)
         {
-            return GetAddress(securityContext.CurrentAccount.ID, signature, instanceCrypto, dbOptions, accountLinkerStorage);
+            return GetAddress(securityContext.CurrentAccount.ID, snapshot);
         }
 
-        public static string GetAddress(Guid userId, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
+        public static string GetAddress(Guid userId, IOptionsSnapshot<AccountLinker> snapshot)
         {
-            var linker = new AccountLinker("webstudio", signature, instanceCrypto, dbOptions, accountLinkerStorage);
+            var linker = snapshot.Get("webstudio");
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
             if (profile == null) return null;
 

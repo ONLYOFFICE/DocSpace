@@ -75,11 +75,10 @@ namespace ASC.Employee.Core.Controllers
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
-        public DbOptionsManager DbOptions { get; }
-        public AccountLinkerStorage AccountLinkerStorage { get; }
         public WebItemSecurityCache WebItemSecurityCache { get; }
         public MessageTarget MessageTarget { get; }
         public SettingsManager SettingsManager { get; }
+        public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
         public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
         public EFUserService EFUserService { get; }
@@ -110,12 +109,11 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettingsHelper displayUserSettingsHelper,
             Signature signature,
             InstanceCrypto instanceCrypto,
-            DbOptionsManager dbOptions,
-            AccountLinkerStorage accountLinkerStorage,
             WebItemSecurityCache webItemSecurityCache,
             MessageTarget messageTarget,
             SettingsManager settingsManager,
             IOptionsMonitor<ILog> option,
+            IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
             EmployeeWraperHelper employeeWraperHelper,
             EFUserService eFUserService)
@@ -145,11 +143,10 @@ namespace ASC.Employee.Core.Controllers
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             Signature = signature;
             InstanceCrypto = instanceCrypto;
-            DbOptions = dbOptions;
-            AccountLinkerStorage = accountLinkerStorage;
             WebItemSecurityCache = webItemSecurityCache;
             MessageTarget = messageTarget;
             SettingsManager = settingsManager;
+            AccountLinker = accountLinker;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
             EFUserService = eFUserService;
@@ -1340,7 +1337,7 @@ namespace ASC.Employee.Core.Controllers
 
         private AccountLinker GetLinker()
         {
-            return new AccountLinker("webstudio", Signature, InstanceCrypto, DbOptions, AccountLinkerStorage);
+            return AccountLinker.Get("webstudio");
         }
 
         private static string GetMeaningfulProviderName(string providerName)
@@ -1581,6 +1578,7 @@ namespace ASC.Employee.Core.Controllers
         public static IServiceCollection AddPeopleController(this IServiceCollection services)
         {
             return services
+                .AddAccountLinker()
                 .AddMessageTargetService()
                 .AddAccountLinkerStorageService()
                 .AddFileSizeCommentService()

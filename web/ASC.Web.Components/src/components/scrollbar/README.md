@@ -1,19 +1,19 @@
 # Scrollbar
 
-#### Description
+Scrollbar is used for displaying custom scrollbar
 
-Scrollbar is used for displaying custom scroollbar
-
-#### Usage
+### Usage
 
 ```js
-import { Scrollbar } from 'asc-web-components';
+import { Scrollbar } from "asc-web-components";
+```
 
+```jsx
 <Scrollbar>Some content</Scrollbar>
 ```
 
-#### Properties
+### Properties
 
-| Props      | Type        | Required | Values                                    | Default      | Description           |
-| ---------- | ----------- | :------: | ----------------------------------------- | ------------ | --------------------- |
-| `stype`    | `string`    |          | `smallWhite`, `smallBlack`, `preMediumBlack`, `mediumBlack` | `smallBlack` | Scroollbar style type |
+| Props   |   Type   | Required |                           Values                            |   Default    | Description          |
+| ------- | :------: | :------: | :---------------------------------------------------------: | :----------: | -------------------- |
+| `stype` | `string` |          | `smallWhite`, `smallBlack`, `preMediumBlack`, `mediumBlack` | `smallBlack` | Scrollbar style type |

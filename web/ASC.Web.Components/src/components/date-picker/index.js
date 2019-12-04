@@ -10,7 +10,8 @@ import isEmpty from "lodash/isEmpty";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import { Text } from "../text";
+import Text from "../text";
+import Header from "../header";
 import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
@@ -32,7 +33,7 @@ const Content = styled.div`
   padding: 0 16px 16px;
 `;
 
-const Header = styled.div`
+const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -43,7 +44,7 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Text.ContentHeader)`
+const HeaderText = styled(Header)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -350,7 +351,7 @@ class DatePicker extends Component {
           isDisabled={isDisabled}
           isReadOnly={isReadOnly}
           hasError={hasError}
-          onFocus={this.onClick.bind(this, true)}
+          //onFocus={this.onClick.bind(this, true)}
           iconName={"CalendarIcon"}
           onIconClick={this.onClick.bind(this, !isOpen)}
           value={value}
@@ -376,13 +377,13 @@ class DatePicker extends Component {
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
-                  <Header>
-                    <HeaderText>
-                      <Text.Body isBold={true} fontSize={21}>
+                  <StyledHeader>
+                    <HeaderText type='content'>
+                      <Text isBold={true} fontSize={20}>
                         {calendarHeaderContent}
-                      </Text.Body>
+                      </Text>
                     </HeaderText>
-                  </Header>
+                  </StyledHeader>
                   <Body>{this.renderBody()}</Body>
                 </Content>
               </Aside>

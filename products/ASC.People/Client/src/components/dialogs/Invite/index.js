@@ -11,12 +11,13 @@ import {
   Textarea,
   Text
 } from "asc-web-components";
-import { getShortenedLink } from "../../../store/services/api";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
 import styled from "styled-components";
 import copy from "copy-to-clipboard";
+import { api } from "asc-web-common";
+const { getShortenedLink } = api.portal;
 
 const ModalDialogContainer = styled.div`
   .margin-text {
@@ -92,11 +93,8 @@ class PureInviteDialog extends React.Component {
       });
   };
 
-  componentDidUpdate(prevProps) {
-    console.log("invitelink did UPDATE");
-    if (this.props.visible && !prevProps.visible) {
+  componentDidMount() {
       this.onCopyLinkToClipboard();
-    }
   }
 
   onClickToCloseButton = () =>
@@ -115,12 +113,12 @@ class PureInviteDialog extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text.Body className="margin-text" as="p">
+              <Text className="margin-text" as="p">
                 {t("HelpAnswerLinkInviteSettings")}
-              </Text.Body>
-              <Text.Body className="margin-text" as="p">
+              </Text>
+              <Text className="margin-text" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
-              </Text.Body>
+              </Text>
               <div className="flex">
                 <div>
                   <Link

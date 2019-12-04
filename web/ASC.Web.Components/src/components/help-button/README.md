@@ -1,39 +1,35 @@
-# Buttons: HelpButton
+# HelpButton
 
-## Usage
+HelpButton is used for a action on a page
+
+### Usage
 
 ```js
 import { HelpButton } from "asc-web-components";
 ```
 
-#### Description
-
-HelpButton is used for a action on a page.
-
-#### Usage base
-
-```js
-<HelpButton tooltipContent={<Text.Body>Tooltip content</Text.Body>} />
+```jsx
+<HelpButton tooltipContent={<Text>Tooltip content</Text>} />
 ```
 
 #### Usage with link
 
-```js
+```jsx
 <HelpButton
   tooltipContent={
-    <Text.Body>
+    <Text>
       Tooltip content with{" "}
       <Link isHovered={true} href="/">
         link
       </Link>
-    </Text.Body>
+    </Text>
   }
 />
 ```
 
-#### Usage
+#### Usage with aside
 
-```js
+```jsx
 <HelpButton
   tooltipContent={
     <>
@@ -49,9 +45,12 @@ HelpButton is used for a action on a page.
 />
 ```
 
-#### Properties
+### Properties
 
-| Props            | Type               | Required | Values                     | Default | Description       |
-| ---------------- | ------------------ | :------: | -------------------------- | ------- | ----------------- |
-| `tooltipContent` | `object or string` |    ✅    | -                          | -       | Tooltip content   |
-| `place`          | `string`           |    -     | `top, right, bottom, left` | `top`   | Tooltip placement |
+| Props                     |       Type        | Required |              Values              | Default | Description                                      |
+| ------------------------- | :---------------: | :------: | :------------------------------: | :-----: | ------------------------------------------------ |
+| `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
+| `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
+| `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
+| `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |
+| `className`               |     `string`      |    -     |                -                 |    -    | Set component class                              |

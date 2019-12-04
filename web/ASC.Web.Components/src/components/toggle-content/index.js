@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Icons } from '../icons'
-import { Text } from '../text'
+import Heading from '../heading'
 import PropTypes from 'prop-types'
 
 
@@ -11,7 +11,7 @@ display: ${props => props.isOpen ? 'block' : 'none'};
 padding-top: 9px;
 `;
 
-const IconArrow= ({ isOpen, ...props }) => <Icons.ArrowContentIcon {...props} />;
+const IconArrow = ({ isOpen, ...props }) => <Icons.ArrowContentIcon {...props} />;
 
 const Arrow = styled(IconArrow)`
 
@@ -26,7 +26,7 @@ const StyledSpan = styled.span`
   user-select: none;
 `;
 
-const StyledText = styled(Text.Headline)`
+const StyledText = styled(Heading)`
   height: 26px;
   line-height: 26px;
   font-style: normal;

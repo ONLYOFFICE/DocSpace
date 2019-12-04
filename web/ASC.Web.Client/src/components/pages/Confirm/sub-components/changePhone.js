@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import styled from "styled-components";
 import { Button, TextInput, PageLayout, Text } from "asc-web-components";
-//import { useTranslation } from "react-i18next";
-//import { login } from '../../../../../src/store/auth/actions';
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
@@ -70,9 +68,9 @@ const PhoneForm = props => {
           {greetingTitle}
         </div>
       </div>
-      <Text.Body className="edit-text" isBold fontSize={14}>{subTitleTranslation}</Text.Body>
-      <Text.Body fontSize={13}>{infoTranslation}: <b>+{currentPhone}</b></Text.Body>
-      <Text.Body className="edit-text" fontSize={13}>{subInfoTranslation}</Text.Body>
+      <Text className="edit-text" isBold fontSize={14}>{subTitleTranslation}</Text>
+      <Text fontSize={13}>{infoTranslation}: <b>+{currentPhone}</b></Text>
+      <Text className="edit-text" fontSize={13}>{subInfoTranslation}</Text>
       <TextInput
         id="phone"
         name="phone"

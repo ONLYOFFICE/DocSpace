@@ -1,4 +1,4 @@
-import React, { Component, lazy } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import i18n from "../../i18n";
@@ -6,9 +6,9 @@ import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TabContainer } from "asc-web-components";
 
-const OwnerSettings = lazy(() => import("./sub-components/owner"));
-const AdminsSettings = lazy(() => import("./sub-components/admins"));
-const ModulesSettings = lazy(() => import("./sub-components/modules"));
+import OwnerSettings from "./sub-components/owner";
+import AdminsSettings from "./sub-components/admins";
+import ModulesSettings from "./sub-components/modules";
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -72,7 +72,6 @@ class PureAccessRights extends Component {
     }
     return true;
   }
-
 
   render() {
     const { isLoading, selectedTab } = this.state;
