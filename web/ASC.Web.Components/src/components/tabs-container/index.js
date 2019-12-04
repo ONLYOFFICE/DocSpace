@@ -181,7 +181,7 @@ class TabContainer extends Component {
       rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
       rightTabs--;
     }
-
+    rightFullWidth -= marginRight;
     const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
     this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
   };
