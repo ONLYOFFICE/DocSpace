@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { InputGroup, InputGroupAddon } from 'reactstrap';
 import TextInput from '../text-input';
 import { Icons } from '../icons';
 import IconButton from '../icon-button';
@@ -29,16 +28,22 @@ const StyledChildrenBlock = styled.div`
 `;
 
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
-  <InputGroup {...props}></InputGroup>
+  <div {...props}></div>
 );
 const StyledInputGroup = styled(CustomInputGroup)`
-  ${commonInputStyle}
-  :focus-within{
-      border-color: #2DA7DB;
+  display: flex;
+
+  .prepend {
+    display: flex;
+    align-items: center;
   }
-  .input-group-prepend,
-  .input-group-append{
-      margin: 0;
+
+  .append {
+    align-items: center;
+    margin: 0;
+  }
+  ${commonInputStyle} :focus-within {
+    border-color: #2da7db;
   }
 `;
 class InputBlock extends React.Component {
@@ -120,11 +125,11 @@ class InputBlock extends React.Component {
         className={className}
         style={style}
       >
-        <InputGroupAddon addonType="prepend">
+        <div className="prepend">
           <StyledChildrenBlock>
             {children}
           </StyledChildrenBlock>
-        </InputGroupAddon>
+        </div>
         <TextInput
           id={id}
           name={name}
@@ -163,8 +168,8 @@ class InputBlock extends React.Component {
                 isClickable={typeof onIconClick === 'function'}
               />
             </StyledIconBlock>
-          </InputGroupAddon>
-        }
+          </div>
+        )}
       </StyledInputGroup>
     );
   }

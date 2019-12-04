@@ -14,10 +14,8 @@ import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElemen
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
-    & > span {
       font-size: inherit;
       font-weight: inherit;
-    }
   }
 `;
 
