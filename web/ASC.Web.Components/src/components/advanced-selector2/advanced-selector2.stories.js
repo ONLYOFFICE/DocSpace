@@ -15,8 +15,8 @@ import AdvancedSelector2 from "./";
 import Section from "../../../.storybook/decorators/section";
 import Button from "../button";
 import Avatar from "../avatar";
-import { Text } from "../text";
-import { isEqual } from "lodash";
+import Text from "../text";
+import isEqual from "lodash/isEqual";
 import { name, image, internet } from "faker";
 
 function getRandomInt(min, max) {
@@ -241,17 +241,17 @@ class ADSelectorExample extends React.Component {
                   editing={false}
                 />
                 <div>
-                  <Text.Body isBold={true} fontSize={16}>
+                  <Text isBold={true} fontSize={16}>
                     {user.label}
-                  </Text.Body>
-                  <Text.Body
+                  </Text>
+                  <Text
                     color="#A3A9AE"
                     fontSize={13}
                     style={{ paddingBottom: 8 }}
                   >
                     {user.email}
-                  </Text.Body>
-                  <Text.Body fontSize={13}>{user.position}</Text.Body>
+                  </Text>
+                  <Text fontSize={13}>{user.position}</Text>
                 </div>
               </div>
             );

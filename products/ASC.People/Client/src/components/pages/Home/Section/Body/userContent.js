@@ -87,7 +87,7 @@ const UserContent = ({ user, history, settings }) => {
       </>
       {title
         ?
-          <Text.Body
+          <Text
             style={headDepartmentStyle}
             as="span"
             color={sideInfoColor}
@@ -96,7 +96,7 @@ const UserContent = ({ user, history, settings }) => {
             truncate={true}
           >
             {title}
-          </Text.Body>
+          </Text>
         : <div style={headDepartmentStyle}></div>
       }
       {groups}

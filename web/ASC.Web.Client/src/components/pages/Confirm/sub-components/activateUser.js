@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { store, constants } from 'asc-web-common';
-const { getConfirmationInfo, activateConfirmUser } = store.auth.actions;
+import { getConfirmationInfo } from '../../../../store/confirm/actions';
+const { activateConfirmUser } = store.auth.actions;
 const { EmployeeActivationStatus } = constants;
 
 
@@ -138,7 +139,7 @@ class Confirm extends React.PureComponent {
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
 
-    getConfirmationInfo(this.state.key, this.state.linkType)
+    getConfirmationInfo(this.state.key)
       .then(
         function () {
           console.log("get settings success");
@@ -190,13 +191,13 @@ class Confirm extends React.PureComponent {
           <ConfirmContainer>
             <div className='start-basis'>
               <div className='margin-left'>
-                <Text.Body className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
+                <Text className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text>
 
                 <div className='confirm-row full-width break-word'>
                   <a href='/login'>
                     <img src="images/dark_general.png" alt="Logo" />
                   </a>
-                  <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
+                  <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
                 </div>
               </div>
 
@@ -293,13 +294,13 @@ class Confirm extends React.PureComponent {
 
               {/*             <Row className='confirm-row'>
 
-                    <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
+                    <Text as='p' fontSize={14}>{t('LoginWithAccount')}</Text>
 
             </Row>
  */}
-              <Text.Body className="confirm-row" fontSize={14} color="#c30">
+              <Text className="confirm-row" fontSize={14} color="#c30">
                 {this.state.errorText}
-              </Text.Body>
+              </Text>
             </div>
           </ConfirmContainer>
         )
@@ -319,8 +320,8 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 
 function mapStateToProps(state) {
   return {
-    isConfirmLoaded: state.auth.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
+    isConfirmLoaded: state.confirm.isConfirmLoaded,
+    settings: state.confirm.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings
   };
 }

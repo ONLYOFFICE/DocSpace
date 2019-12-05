@@ -23,7 +23,10 @@ In particular case, state is created containing options for particular Row eleme
 
 ### Properties
 
-| Props          |   Type   | Required | Values | Default | Description              |
-| -------------- | :------: | :------: | :----: | :-----: | ------------------------ |
-| `options`      | `array`  |    -     |   -    |  `[ ]`  | DropDownItems collection |
-| `targetAreaId` | `string` |    -     |   -    |    -    | Id of container apply to |
+| Props          |      Type      | Required | Values |    Default    | Description              |
+| -------------- | :------------: | :------: | :----: | :-----------: | ------------------------ |
+| `className`    |    `string`    |    -     |   -    |       -       | Accepts class            |
+| `id`           |    `string`    |    -     |   -    | `contextMenu` | Accepts id               |
+| `options`      |    `array`     |    -     |   -    |     `[ ]`     | DropDownItems collection |
+| `style`        | `obj`, `array` |    -     |   -    |       -       | Accepts css style        |
+| `targetAreaId` |    `string`    |    -     |   -    |       -       | Id of container apply to |

@@ -29,18 +29,11 @@ const StyledPage = styled.div`
   margin-right: 8px;
 `;
 
-const previousAction = () => {
-  console.log('Prev action');
-};
-
-const nextAction = () => {
-  console.log('Next action');
-};
-
 const Paging = props => {
   //console.log("Paging render");
-  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems, 
-    openDirection, disablePrevious, disableNext, selectedPageItem, selectedCountItem} = props;
+  const { previousLabel, nextLabel, previousAction, nextAction, pageItems, countItems,
+    openDirection, disablePrevious, disableNext, selectedPageItem, selectedCountItem,
+    id, className, style } = props;
 
   const onSelectPageAction = (option) => {
     props.onSelectPage(option);
@@ -53,38 +46,42 @@ const Paging = props => {
   const setDropDownMaxHeight = pageItems && pageItems.length > 6 ? { dropDownMaxHeight: 200 } : {};
 
   return (
-    <StyledPaging>
-      <Button 
-        size='medium' 
-        scale={true} 
-        label={previousLabel} 
-        onClick={previousAction} 
+    <StyledPaging
+      id={id}
+      className={className}
+      style={style}
+    >
+      <Button
+        size='medium'
+        scale={true}
+        label={previousLabel}
+        onClick={previousAction}
         isDisabled={disablePrevious} />
       {pageItems &&
         <StyledPage>
-          <ComboBox 
-            directionY={openDirection} 
-            options={pageItems} 
+          <ComboBox
+            directionY={openDirection}
+            options={pageItems}
             onSelect={onSelectPageAction}
             scaledOptions={pageItems.length > 6}
             selectedOption={selectedPageItem}
             {...setDropDownMaxHeight} />
         </StyledPage>
       }
-      <Button 
-        size='medium' 
-        scale={true} 
-        label={nextLabel} 
-        onClick={nextAction} 
+      <Button
+        size='medium'
+        scale={true}
+        label={nextLabel}
+        onClick={nextAction}
         isDisabled={disableNext} />
       {countItems &&
         <StyledOnPage>
-          <ComboBox 
+          <ComboBox
             directionY={openDirection}
             directionX='right'
-            options={countItems} 
-            onSelect={onSelectCountAction} 
-            selectedOption={selectedCountItem}/>
+            options={countItems}
+            onSelect={onSelectCountAction}
+            selectedOption={selectedCountItem} />
         </StyledOnPage>
       }
     </StyledPaging>
@@ -110,12 +107,14 @@ Paging.propTypes = {
   pageItems: PropTypes.array,
   countItems: PropTypes.array,
 
-  openDirection: PropTypes.oneOf(['bottom', 'top'])
+  openDirection: PropTypes.oneOf(['bottom', 'top']),
+
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 Paging.defaultProps = {
-  previousAction: previousAction,
-  nextAction: nextAction,
   disablePrevious: false,
   disableNext: false
 }

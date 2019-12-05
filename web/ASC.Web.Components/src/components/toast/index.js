@@ -132,6 +132,9 @@ const Toast = props => {
       newestOnTop={true}
       pauseOnFocusLoss={false}
       transition={Fade}
+      className={props.className}
+      id={props.id}
+      style={props.style}
     />
   );
 };
@@ -142,6 +145,9 @@ Toast.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string,
   type: PropTypes.oneOf(['success', 'error', 'warning', 'info']).isRequired,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Toast.defaultProps = {

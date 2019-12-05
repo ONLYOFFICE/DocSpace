@@ -1,9 +1,8 @@
 import React from "react";
-import { mount, shallow, render } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { Weekdays, Days, Day } from "./sub-components/";
 import Calendar from "./";
 import ComboBox from "../combobox";
-import moment from "moment";
 
 const baseCalendarProps = {
   isDisabled: false,
@@ -73,7 +72,6 @@ const selectedDate = new Date("09/12/2019");
 const openToDate = new Date("09/12/2019");
 const minDate = new Date("01/01/1970");
 const maxDate = new Date("01/01/2020");
-const months = moment.months();
 
 describe("Weekdays tests:", () => {
   it("Weekdays renders without error", () => {
@@ -315,5 +313,29 @@ describe("Calendar tests:", () => {
 
     expect(wrapper2.props).toBe(wrapper2.props);
     expect(wrapper2.state).toBe(wrapper2.state);
+  });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <Calendar {...baseCalendarProps} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 });

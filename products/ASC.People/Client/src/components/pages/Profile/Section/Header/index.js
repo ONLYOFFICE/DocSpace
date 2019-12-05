@@ -10,7 +10,8 @@ import {
   TextInput,
   Button,
   ModalDialog,
-  AvatarEditor
+  AvatarEditor,
+  Header
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import {
@@ -43,7 +44,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const Header = styled(Text.ContentHeader)`
+const HeaderContainer = styled(Header)`
   margin-left: 16px;
   margin-right: 16px;
   max-width: calc(100vw - 430px);
@@ -192,7 +193,7 @@ class SectionHeaderContent extends React.PureComponent {
       visible: true,
       header: "Change email",
       body: (
-        <Text.Body>
+        <Text>
           <span style={{ display: "block", marginBottom: "8px" }}>
             The activation instructions will be sent to the entered email
           </span>
@@ -204,7 +205,7 @@ class SectionHeaderContent extends React.PureComponent {
             onChange={this.onEmailChange}
             hasError={hasError}
           />
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -238,13 +239,13 @@ class SectionHeaderContent extends React.PureComponent {
       visible: true,
       header: "Change password",
       body: (
-        <Text.Body>
+        <Text>
           Send the password change instructions to the{" "}
           <a href={`mailto:${this.state.profile.email}`}>
             {this.state.profile.email}
           </a>{" "}
           email address
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -308,18 +309,18 @@ class SectionHeaderContent extends React.PureComponent {
         header: "Confirmation",
         body: (
           <>
-            <Text.Body>
+            <Text>
               User <b>{user.displayName}</b> will be deleted.
-            </Text.Body>
-            <Text.Body>Note: this action cannot be undone.</Text.Body>
-            <Text.Body color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+            </Text>
+            <Text>Note: this action cannot be undone.</Text>
+            <Text color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
               Warning!
-            </Text.Body>
-            <Text.Body>
+            </Text>
+            <Text>
               User personal documents which are available to others will be
               deleted. To avoid this, you must start the data reassign process
               before deleting.
-            </Text.Body>
+            </Text>
           </>
         ),
         buttons: [
@@ -369,12 +370,12 @@ class SectionHeaderContent extends React.PureComponent {
         visible: true,
         header: "Delete profile dialog",
         body: (
-          <Text.Body>
+          <Text>
             Send the profile deletion instructions to the email address{" "}
             <Link type="page" href={`mailto:${email}`} isHovered title={email}>
               {email}
             </Link>
-          </Text.Body>
+          </Text>
         ),
         buttons: [
           <Button
@@ -386,10 +387,10 @@ class SectionHeaderContent extends React.PureComponent {
               sendInstructionsToDelete()
                 .then(() =>
                   toastr.success(
-                    <Text.Body>
+                    <Text>
                       Instructions to delete your profile has been sent to{" "}
                       <b>{email}</b> email address
-                    </Text.Body>
+                    </Text>
                   )
                 )
                 .catch(error => toastr.error(error));
@@ -413,10 +414,10 @@ class SectionHeaderContent extends React.PureComponent {
     resendUserInvites(new Array(this.state.profile.id))
       .then(() =>
         toastr.success(
-          <Text.Body>
+          <Text>
             The email activation instructions have been sent to the{" "}
             <b>{this.state.profile.email}</b> email address
-          </Text.Body>
+          </Text>
         )
       )
       .catch(error => toastr.error(error));
@@ -556,10 +557,10 @@ class SectionHeaderContent extends React.PureComponent {
             onClick={this.goBack}
           />
         </div>
-        <Header truncate={true}>
+        <HeaderContainer type='content' truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
-        </Header>
+        </HeaderContainer>
         {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
           <ContextMenuButton
             directionX="right"

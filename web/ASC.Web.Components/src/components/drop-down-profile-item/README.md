@@ -21,9 +21,12 @@ To add an avatar username and email when you turn on isUserPreview parameter, yo
 
 ### Properties
 
-| Props          |   Type   | Required |             Values             | Default | Description            |
-| -------------- | :------: | :------: | :----------------------------: | :-----: | ---------------------- |
-| `avatarRole`   | `oneOf`  |    -     | `owner`,`admin`,`guest`,`user` | `user`  | Adds a user role table |
-| `avatarSource` | `string` |    -     |               -                |    -    | Avatar image source    |
-| `displayName`  | `string` |    -     |               -                |    -    | User name for display  |
-| `email`        | `string` |    -     |               -                |    -    | User email for display |
+| Props          |      Type      | Required |             Values             | Default | Description            |
+| -------------- | :------------: | :------: | :----------------------------: | :-----: | ---------------------- |
+| `avatarRole`   |    `oneOf`     |    -     | `owner`,`admin`,`guest`,`user` | `user`  | Adds a user role table |
+| `avatarSource` |    `string`    |    -     |               -                |    -    | Avatar image source    |
+| `className`    |    `string`    |    -     |               -                |    -    | Accepts class          |
+| `displayName`  |    `string`    |    -     |               -                |    -    | User name for display  |
+| `email`        |    `string`    |    -     |               -                |    -    | User email for display |
+| `id`           |    `string`    |    -     |               -                |    -    | Accepts id             |
+| `style`        | `obj`, `array` |    -     |               -                |    -    | Accepts css style      |

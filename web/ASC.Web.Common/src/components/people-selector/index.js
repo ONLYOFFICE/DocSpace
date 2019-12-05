@@ -135,17 +135,17 @@ class PeopleSelector extends React.Component {
               editing={false}
             />
             <div>
-              <Text.Body isBold={true} fontSize={16}>
+              <Text isBold={true} fontSize={16}>
                 {user.label}
-              </Text.Body>
-              <Text.Body
+              </Text>
+              <Text
                 color="#A3A9AE"
                 fontSize={13}
                 style={{ paddingBottom: 8 }}
               >
                 {user.email}
-              </Text.Body>
-              <Text.Body fontSize={13}>{user.position}</Text.Body>
+              </Text>
+              <Text fontSize={13}>{user.position}</Text>
             </div>
           </div>
         );

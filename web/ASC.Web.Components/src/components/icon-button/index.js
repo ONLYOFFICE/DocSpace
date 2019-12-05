@@ -130,6 +130,7 @@ class IconButton extends React.PureComponent {
       isClickable,
       onClick,
       id,
+      style,
       dataTip
     } = this.props;
 
@@ -146,6 +147,7 @@ class IconButton extends React.PureComponent {
         data-tip={dataTip}
         data-event="click focus"
         data-for={id}
+        style={style}
         //{...this.props}
       >
         {React.createElement(Icons[this.state.currentIconName], {
@@ -175,6 +177,7 @@ IconButton.propTypes = {
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   dataTip: PropTypes.string
 };
 

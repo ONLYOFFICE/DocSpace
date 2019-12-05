@@ -6,7 +6,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 //import ADSelectorRow from "../row";
 import Checkbox from "../../../checkbox";
 import Loader from "../../../loader";
-import { Text } from "../../../text";
+import Text from "../../../text";
 import findIndex from "lodash/findIndex";
 //import isEqual from "lodash/isEqual";
 
@@ -49,7 +49,7 @@ class ADSelectorOptionsBody extends React.Component {
               marginRight: "10px"
             }}
           />
-          <Text.Body as="span">Loading... Please wait...</Text.Body>
+          <Text as="span">Loading... Please wait...</Text>
         </div>
       );
     } else {

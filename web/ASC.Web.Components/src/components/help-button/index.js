@@ -7,7 +7,8 @@ import uniqueId from "lodash/uniqueId";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import { Text } from "../text";
+import Text from "../text";
+import Header from "../header";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
@@ -18,7 +19,7 @@ const Content = styled.div`
   padding: 0 16px 16px;
 `;
 
-const Header = styled.div`
+const HeaderContent = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -29,7 +30,7 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Text.ContentHeader)`
+const HeaderText = styled(Header)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -42,7 +43,7 @@ class HelpButton extends React.Component {
     this.state = { isOpen: false, displayType: this.getTypeByWidth() };
     this.ref = React.createRef();
     this.refTooltip = React.createRef();
-    this.id = `tooltip_${uniqueId()}`;
+    this.id = this.props.id || uniqueId();
 
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -130,11 +131,12 @@ class HelpButton extends React.Component {
       color, 
       getContent, 
       className, 
-      dataTip
+      dataTip,
+      style
     } = this.props;
 
     return (
-      <div ref={this.ref}>
+      <div ref={this.ref} style={style}>
         <IconButton
           id={this.id}
           className={className}
@@ -179,13 +181,13 @@ class HelpButton extends React.Component {
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
                 {helpButtonHeaderContent && (
-                  <Header>
-                    <HeaderText>
-                      <Text.Body isBold={true} fontSize={21}>
+                    <HeaderContent>
+                      <HeaderText type='content'>
+                        <Text isBold={true} fontSize={21}>
                         {helpButtonHeaderContent}
-                      </Text.Body>
+                        </Text>
                     </HeaderText>
-                  </Header>
+                    </HeaderContent>
                 )}
                 <Body>{tooltipContent}</Body>
               </Content>
@@ -213,9 +215,11 @@ HelpButton.propTypes = {
   helpButtonHeaderContent: PropTypes.string,
   iconName: PropTypes.string,
   color: PropTypes.string,
-  className: PropTypes.string,
   dataTip: PropTypes.string,
-  getContent: PropTypes.func
+  getContent: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 HelpButton.defaultProps = {
@@ -224,7 +228,8 @@ HelpButton.defaultProps = {
   offsetLeft: 0,
   zIndex: 310,
   displayType: "auto",
+  className: "icon-button",
   iconName: "QuestionIcon"
-}
+};
 
 export default HelpButton;

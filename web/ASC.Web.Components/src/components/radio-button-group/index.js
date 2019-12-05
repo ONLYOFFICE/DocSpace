@@ -34,7 +34,11 @@ class RadioButtonGroup extends React.Component {
   render() {
     const options = this.props.options;
     return (
-      <StyledDiv className={this.props.className}>
+      <StyledDiv
+        id={this.props.id}
+        className={this.props.className}
+        style={this.props.style}
+      >
         {options.map(option => {
           return (
             <RadioButton
@@ -70,7 +74,10 @@ RadioButtonGroup.propTypes = {
     disabled: PropTypes.bool
   })).isRequired,
   selected: PropTypes.string.isRequired,
-  spacing: PropTypes.number
+  spacing: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 RadioButtonGroup.defaultProps = {

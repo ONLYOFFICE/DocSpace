@@ -96,29 +96,28 @@ describe('<Avatar />', () => {
     expect(wrapper.prop('editing')).toEqual(true);
   });
 
-  /*
-  it('not re-render test', () => {
-    const wrapper = shallow(<Avatar {...baseProps} />).instance();
+  it('accepts id', () => {
+    const wrapper = mount(
+      <Avatar {...baseProps} id="testId" />
+    );
 
-    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, wrapper.state);
-
-    expect(shouldUpdate).toBe(false);
+    expect(wrapper.prop('id')).toEqual('testId');
   });
 
-  it('re-render test', () => {
-    const wrapper = shallow(<Avatar {...baseProps} />).instance();
+  it('accepts className', () => {
+    const wrapper = mount(
+      <Avatar {...baseProps} className="test" />
+    );
 
-    const shouldUpdate = wrapper.shouldComponentUpdate({
-      size: 'max',
-      role: 'admin',
-      source: '',
-      editLabel: 'Edit',
-      userName: 'Demo User',
-      editing: false,
-      editAction: () => jest.fn()
-    }, wrapper.state);
-
-    expect(shouldUpdate).toBe(true);
+    expect(wrapper.prop('className')).toEqual('test');
   });
-  */
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <Avatar {...baseProps} style={{width: '100px'}} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('width', '100px');
+  });
+
 });

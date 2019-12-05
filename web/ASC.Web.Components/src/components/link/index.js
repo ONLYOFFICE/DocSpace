@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { Text } from "../text";
+import Text from "../text";
 
 const colorCss = css`
     color: ${props => props.color};
@@ -12,7 +12,7 @@ const hoveredCss = css`
   text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
 `;
 
-const StyledLink = styled(Text.Body)`
+const StyledLink = styled(Text)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
@@ -29,17 +29,17 @@ const StyledLink = styled(Text.Body)`
 `;
 
 // eslint-disable-next-line react/display-name
-const Link = memo(({isTextOverflow, children, ...rest}) => {
+const Link = memo(({ isTextOverflow, children, ...rest }) => {
   // console.log("Link render", rest);
 
   return (
-      <StyledLink
-        tag="a"
-        truncate={isTextOverflow}
-        {...rest}
-      >
-        {children}
-      </StyledLink>
+    <StyledLink
+      tag="a"
+      truncate={isTextOverflow}
+      {...rest}
+    >
+      {children}
+    </StyledLink>
   );
 });
 
@@ -58,7 +58,9 @@ Link.propTypes = {
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Link.defaultProps = {

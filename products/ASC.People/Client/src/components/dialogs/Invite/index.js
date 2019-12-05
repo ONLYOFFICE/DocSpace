@@ -113,12 +113,12 @@ class PureInviteDialog extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text.Body className="margin-text" as="p">
+              <Text className="margin-text" as="p">
                 {t("HelpAnswerLinkInviteSettings")}
-              </Text.Body>
-              <Text.Body className="margin-text" as="p">
+              </Text>
+              <Text className="margin-text" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
-              </Text.Body>
+              </Text>
               <div className="flex">
                 <div>
                   <Link

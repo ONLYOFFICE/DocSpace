@@ -6,7 +6,7 @@ import Link from "../../link";
 import ComboBox from "../../combobox";
 import SearchInput from "../../search-input";
 import Loader from "../../loader";
-import { Text } from "../../text";
+import Text from "../../text";
 import Tooltip from "../../tooltip";
 import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
 import ADSelectorColumn from "./column";
@@ -437,7 +437,7 @@ const ADSelector = props => {
               marginRight: "10px"
             }}
           />
-          <Text.Body as="span">{loadingLabel}</Text.Body>
+          <Text as="span">{loadingLabel}</Text>
         </div>
       );
     } else {
@@ -667,9 +667,9 @@ const ADSelector = props => {
           </InfiniteLoader>
           {!hasNextPage && itemCount === 0 && (
             <div className="row-block">
-              <Text.Body>
+              <Text>
                 {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
-              </Text.Body>
+              </Text>
             </div>
           )}
           <Tooltip
@@ -682,14 +682,14 @@ const ADSelector = props => {
       {displayType === "dropdown" && groups && groups.length > 0 && (
         <ADSelectorColumn className="column-groups" displayType={displayType}>
           <ADSelectorHeader className="header-groups">
-            <Text.Body
+            <Text
               as="p"
               className="group_header"
               fontSize={15}
               isBold={true}
             >
               {groupsHeaderLabel}
-            </Text.Body>
+            </Text>
           </ADSelectorHeader>
           <ADSelectorBody className="body-groups">
             <AutoSizer>

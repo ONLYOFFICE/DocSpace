@@ -17,19 +17,19 @@ class SubModalDialog extends React.Component {
       <ModalDialog
         visible={openDialog}
         headerContent={
-          <Text.Body isBold={false} fontSize={21}>
+          <Text isBold={false} fontSize={21}>
             {t("PasswordRecoveryTitle")}
-          </Text.Body>
+          </Text>
         }
         bodyContent={[
-          <Text.Body
+          <Text
             key="text-body"
             className="text-body"
             isBold={false}
             fontSize={13}
           >
             {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
-          </Text.Body>,
+          </Text>,
           <TextInput
             key="e-mail"
             id="e-mail"

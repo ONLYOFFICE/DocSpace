@@ -15,9 +15,12 @@ import { SelectedItem } from "asc-web-components";
 
 ### Properties
 
-| Props        |   Type   | Required | Values | Default | Description                                           |
-| ------------ | :------: | :------: | :----: | :-----: | ----------------------------------------------------- |
-| `isDisabled` |  `bool`  |    -     |   -    | `false` | Tells when the button should present a disabled state |
-| `text`       | `string` |    -     |   -    |    -    | Selected item text                                    |
-| `isInline`   |  `bool`  |    -     |   -    | `true`  | Sets the 'display: inline-block' property             |
-| `onClose`    |  `func`  |    -     |   -    |    -    | What the selected item will trigger when clicked      |
+| Props        |      Type      | Required | Values | Default | Description                                           |
+| ------------ | :------------: | :------: | :----: | :-----: | ----------------------------------------------------- |
+| `className`  |    `string`    |    -     |   -    |    -    | Accepts class                                         |
+| `id`         |    `string`    |    -     |   -    |    -    | Accepts id                                            |
+| `isDisabled` |     `bool`     |    -     |   -    | `false` | Tells when the button should present a disabled state |
+| `isInline`   |     `bool`     |    -     |   -    | `true`  | Sets the 'display: inline-block' property             |
+| `onClose`    |     `func`     |    -     |   -    |    -    | What the selected item will trigger when clicked      |
+| `style`      | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                     |
+| `text`       |    `string`    |    -     |   -    |    -    | Selected item text                                    |

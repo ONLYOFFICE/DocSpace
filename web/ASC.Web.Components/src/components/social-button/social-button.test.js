@@ -40,4 +40,28 @@ describe('<SocialButton />', () => {
 
     expect(testClick).toHaveBeenCalledTimes(1);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <SocialButton iconName={'ShareGoogleIcon'} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <SocialButton iconName={'ShareGoogleIcon'} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <SocialButton iconName={'ShareGoogleIcon'} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

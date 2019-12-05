@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { Text } from '.';
+import Text from '.';
 
 describe('<Text />', () => {
   it('renders without error', () => {
     const wrapper = mount(     
-      <Text.Body as='p' title='Some title'>
+      <Text as='p' title='Some title'>
         Some text
-    </Text.Body>
+    </Text>
     );
 
     expect(wrapper).toExist();

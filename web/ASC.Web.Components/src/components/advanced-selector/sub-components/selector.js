@@ -6,7 +6,7 @@ import InfiniteLoader from "react-window-infinite-loader";
 import Checkbox from "../../checkbox";
 import ComboBox from "../../combobox";
 import Loader from "../../loader";
-import { Text } from "../../text";
+import Text from "../../text";
 import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
 import ADSelectorOptionsHeader from "./options/header";
 import ADSelectorGroupsHeader from "./groups/header";
@@ -306,7 +306,7 @@ const ADSelector = props => {
           marginRight: "10px"
         }}
       />
-      <Text.Body as="span">Loading... Please wait...</Text.Body>
+      <Text as="span">Loading... Please wait...</Text>
     </div>;
     } else {
       const option = options[index];

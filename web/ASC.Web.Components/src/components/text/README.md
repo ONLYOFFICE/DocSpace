@@ -2,40 +2,22 @@
 
 Component that displays plain text
 
-### Usage
+## Usage
 
 ```js
 import { Text } from "asc-web-components";
 ```
 
 ```jsx
-<Text.Body as="p" title="Some title">
+<Text as="p" title="Some title">
   Some text
-</Text.Body>
+</Text>
 ```
 
-```jsx
-<Text.ContentHeader title="Some title" isInline>
-  Some text
-</Text.ContentHeader>
-```
-
-```jsx
-<Text.Headline as="h1" title="Some title">
-  Some text
-</Text.Headline>
-```
-
-```jsx
-<Text.MenuHeader title="Some title" isInline>
-  Some text
-</Text.MenuHeader>
-```
-
-##### If you need to override styles add forwardedAs instead of as
+### If you need to override styles add forwardedAs instead of as
 
 ```js
-const StyledText = styled(Text.Body)`
+const StyledText = styled(Text)`
   &:hover {
     border-bottom: 1px dotted;
   }
@@ -48,7 +30,7 @@ const StyledText = styled(Text.Body)`
 </StyledText>
 ```
 
-### Properties Text.Body
+### Properties
 
 | Props             |   Type   | Required | Values |  Default  | Description                                        |
 | ----------------- | :------: | :------: | :----: | :-------: | -------------------------------------------------- |
@@ -63,32 +45,3 @@ const StyledText = styled(Text.Body)`
 | `isItalic`        |  `bool`  |    -     |   -    |  `false`  | Sets the font style                                |
 | `backgroundColor` | `string` |    -     |   -    |     -     | Sets background color                              |
 | `fontWeight`      | `number` |    -     |   -    |     -     | Sets the font weight                               |
-
-### Properties Text.ContentHeader
-
-| Props      |   Type   | Required | Values |  Default  | Description                               |
-| ---------- | :------: | :------: | :----: | :-------: | ----------------------------------------- |
-| `color`    | `string` |    -     |   -    | `#333333` | Specifies the contentHeader color         |
-| `title`    |  `bool`  |    -     |   -    |     -     | Title                                     |
-| `truncate` |  `bool`  |    -     |   -    |  `false`  | Disables word wrapping                    |
-| `isInline` |  `bool`  |    -     |   -    |  `false`  | Sets the 'display: inline-block' property |
-
-### Properties Text.Headline
-
-| Props      |   Type   | Required |          Values          |  Default  | Description                                        |
-| ---------- | :------: | :------: | :----------------------: | :-------: | -------------------------------------------------- |
-| `color`    | `string` |    -     |            -             | `#333333` | Specifies the headline color                       |
-| `as`       | `string` |    -     |            -             |   `h1`    | Sets the tag through which to render the component |
-| `title`    |  `bool`  |    -     |            -             |     -     | Title                                              |
-| `truncate` |  `bool`  |    -     |            -             |  `false`  | Disables word wrapping                             |
-| `isInline` |  `bool`  |    -     |            -             |  `false`  | Sets the 'display: inline-block' property          |
-| `size`     | `oneOF`  |    -     | `big`, `medium`, `small` |   `big`   | Sets the size of headline                          |
-
-### Properties Text.MenuHeader
-
-| Props      |   Type   | Required | Values |  Default  | Description                               |
-| ---------- | :------: | :------: | :----: | :-------: | ----------------------------------------- |
-| `color`    | `string` |    -     |   -    | `#333333` | Specifies the menuHeader color            |
-| `title`    |  `bool`  |    -     |   -    |     -     | Title                                     |
-| `truncate` |  `bool`  |    -     |   -    |  `false`  | Disables word wrapping                    |
-| `isInline` |  `bool`  |    -     |   -    |  `false`  | Sets the 'display: inline-block' property |

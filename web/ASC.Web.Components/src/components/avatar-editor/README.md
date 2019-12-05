@@ -46,3 +46,6 @@ import { AvatarEditor } from "asc-web-components";
 | `onDeleteImage`    |   `function`    |    -     |            -             |               -               | Image deletion event                     |
 | `onLoadFile`       |   `function`    |    -     |            -             |               -               | Image upload event                       |
 | `onImageChange`    |   `function`    |    -     |            -             |               -               | Image change event                       |
+| `className`        |    `string`     |    -     |            -             |               -               | Accepts class                            |
+| `id`               |    `string`     |    -     |            -             |               -               | Accepts id                               |
+| `style`            | `obj`, `array`  |    -     |            -             |               -               | Accepts css style                        |
