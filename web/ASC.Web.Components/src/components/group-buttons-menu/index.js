@@ -7,6 +7,7 @@ import throttle from 'lodash/throttle';
 import { isArrayEqual } from '../../utils/array';
 
 const StyledGroupButtonsMenu = styled.div`
+    box-sizing: border-box;
     position: sticky;
     top: 0;
     background: #FFFFFF;
