@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import Loader from '../loader';
+import Text from "../text";
 
 const StyledOuter = styled.div`
   position: fixed;
@@ -15,9 +16,7 @@ const StyledOuter = styled.div`
 const StyledInner = styled.div`
   background-color: #fff;
   border: 1px solid #cacaca;
-  color: ${props => props.fontColor};
   display: inline-block;
-  font-size: ${props => props.fontSize}px;
   white-space: nowrap;
   overflow: hidden;
   padding: 5px 10px;
@@ -29,21 +28,30 @@ const StyledInner = styled.div`
   box-shadow: 0 2px 8px rgba(0,0,0,.3);
   -moz-box-shadow: 0 2px 8px rgba(0,0,0,.3);
   -webkit-box-shadow: 0 2px 8px rgba(0,0,0,.3);
+
+  .text-style {
+    display: contents;
+  }  
 `;
 
 const OvalLoader = styled(Loader)`
   display: inline;
   margin-right: 10px;
+  svg {
+    vertical-align: middle;
+  }
 `;
 
 const RequestLoader = props => {
   //console.log("RequestLoader render");
-  const { loaderColor, loaderSize, label } = props;
+  const { loaderColor, loaderSize, label, fontColor, fontSize } = props;
   return (
     <StyledOuter {...props}>
       <StyledInner {...props}>
         <OvalLoader type="oval" color={loaderColor} size={loaderSize} label={label} />
-        {label}
+        <Text className="text-style" color={fontColor} fontSize={fontSize}>
+          {label}
+        </Text>
       </StyledInner>
     </StyledOuter>
   );
