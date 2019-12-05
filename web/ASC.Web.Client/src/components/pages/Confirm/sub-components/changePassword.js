@@ -14,7 +14,8 @@ import {
   Heading
 } from "asc-web-components";
 import { store } from "asc-web-common";
-const { changePassword, getConfirmationInfo, logout } = store.auth.actions;
+import { getConfirmationInfo} from '../../../../store/confirm/actions';
+const { changePassword, logout } = store.auth.actions;
 
 const BodyStyle = styled.form`
   margin: 70px auto 0 auto;
@@ -205,8 +206,8 @@ const ChangePasswordForm = props => (
 function mapStateToProps(state) {
   return {
     isValidConfirmLink: state.auth.isValidConfirmLink,
-    isConfirmLoaded: state.auth.isConfirmLoaded,
-    settings: state.auth.settings.passwordSettings,
+    isConfirmLoaded: state.confirm.isConfirmLoaded,
+    settings: state.confirm.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
     greetingTitle: state.auth.settings.greetingSettings
   };

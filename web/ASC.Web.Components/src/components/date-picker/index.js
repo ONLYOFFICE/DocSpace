@@ -134,9 +134,7 @@ class DatePicker extends Component {
   };
 
   onClick = isOpen => {
-    if (!this.state.hasError) {
-      this.setState({ isOpen });
-    }
+    this.setState({ isOpen });
   };
 
   onClose = () => {
