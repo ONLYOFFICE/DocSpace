@@ -43,6 +43,7 @@ using ASC.Core.Tenants;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 
 namespace ASC.Core.Data
 {
@@ -161,7 +162,7 @@ namespace ASC.Core.Data
                         Id = settings.ID,
                         UserId = userId,
                         TenantId = tenantId,
-                        Data = data
+                        Data = JObject.Parse(data)
                     };
 
                     WebstudioDbContext.WebstudioSettings.Add(s);
@@ -200,9 +201,9 @@ namespace ASC.Core.Data
                         .Select(r => r.Data)
                         .FirstOrDefault();
 
-                if (!string.IsNullOrEmpty(result))
+                if (result != null)
                 {
-                    settings = Deserialize<T>(result);
+                    settings = Deserialize<T>(result.ToString());
                 }
                 else
                 {
