@@ -6,8 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { store } from 'asc-web-common';
-import { getConfirmationInfo} from '../../../../store/confirm/actions';
-const { createConfirmUser, logout, login } = store.auth.actions;
+import { getConfirmationInfo, createConfirmUser } from '../../../../store/confirm/actions';
+const { logout, login } = store.auth.actions;
 
 const inputWidth = '400px';
 
@@ -342,7 +342,7 @@ function mapStateToProps(state) {
     return {
         isConfirmLoaded: state.confirm.isConfirmLoaded,
         isAuthenticated: state.auth.isAuthenticated,
-        settings: state.confirm.passwordSettings,
+        settings: state.auth.settings.passwordSettings,
         greetingTitle: state.auth.settings.greetingSettings
     };
 }

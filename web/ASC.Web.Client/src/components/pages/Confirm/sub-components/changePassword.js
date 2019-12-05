@@ -207,7 +207,7 @@ function mapStateToProps(state) {
   return {
     isValidConfirmLink: state.auth.isValidConfirmLink,
     isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.confirm.passwordSettings,
+    settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
     greetingTitle: state.auth.settings.greetingSettings
   };

@@ -133,7 +133,7 @@ export function getModules(dispatch) {
     .then(modules => dispatch(setModules(modules)));
 }
 
-const loadInitInfo = dispatch => {
+export const loadInitInfo = dispatch => {
   return getPortalSettings(dispatch).then(() => getModules(dispatch));
 };
 
@@ -153,17 +153,6 @@ export function logout() {
   };
 }
 
-export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
-  return dispatch => {
-    return api.people
-      .createUser(data, key)
-      .then(user => dispatch(setCurrentUser(user)))
-      .then(() => api.user.login(loginData.userName, loginData.password))
-      .then(() => loadInitInfo(dispatch));
-  };
-}
-
 export function changePassword(userId, password, key) {
   return dispatch => {
     return api.people
@@ -177,38 +166,6 @@ export function changeEmail(userId, email, key) {
     return api.people
       .changeEmail(userId, email, key)
       .then(user => dispatch(setNewEmail(user.email)));
-  };
-}
-
-export function activateConfirmUser(
-  personalData,
-  loginData,
-  key,
-  userId,
-  activationStatus
-) {
-  const changedData = {
-    id: userId,
-    FirstName: personalData.firstname,
-    LastName: personalData.lastname
-  };
-
-  return dispatch => {
-    return api.people
-      .changePassword(userId, loginData.password, key)
-      .then(data => {
-        console.log("set password success:", data);
-        return api.people.updateActivationStatus(activationStatus, userId, key);
-      })
-      .then(data => {
-        console.log("activation success, result:", data);
-        return dispatch(login(loginData.userName, loginData.password));
-      })
-      .then(data => {
-        console.log("log in, result:", data);
-        return api.people.updateUser(changedData);
-      })
-      .then(user => dispatch(setCurrentUser(user)));
   };
 }
 
