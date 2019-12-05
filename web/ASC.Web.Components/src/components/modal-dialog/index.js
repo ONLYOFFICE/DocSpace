@@ -6,6 +6,7 @@ import Aside from "../layout/sub-components/aside";
 import Header from "../header";
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
+import Text from "../text";
 
 const Dialog = styled.div`
   position: relative;
@@ -22,6 +23,7 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+  box-sizing: border-box;
 `;
 
 const StyledHeader = styled.div`
@@ -156,7 +158,11 @@ class ModalDialog extends React.Component {
                 <HeaderText>{headerContent}</HeaderText>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
               </Header>
-              <Body>{bodyContent}</Body>
+              <Body>
+                <Text>
+                  {bodyContent}
+                </Text>
+              </Body>
               <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
             </Content>
           </Aside>
