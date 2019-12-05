@@ -182,9 +182,10 @@ class Form extends Component {
 
   componentDidMount() {
     const { language, match } = this.props;
-    const { params } = match;
+    const { error, confirmedEmail } = match.params;
     i18n.changeLanguage(language);
-    params.error && this.setState({ errorText: params.error });
+    error && this.setState({ errorText: error });
+    confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
   }
 
