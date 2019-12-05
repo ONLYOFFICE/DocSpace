@@ -20,6 +20,7 @@ const NavItemWrapper = styled.div`
   padding: 0 16px;
   cursor: pointer;
   position: relative;
+  box-sizing: border-box;
 `;
 
 const NavItemLabel = styled.div`

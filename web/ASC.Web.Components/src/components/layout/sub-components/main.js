@@ -9,6 +9,7 @@ const StyledMain = styled.main`
   z-index: 0;
   display: flex;
   flex-direction: row;
+  box-sizing: border-box;
 
   @media ${tablet} {
     padding: ${props => (props.fullscreen ? "0" : "56px 0 0 0")};
