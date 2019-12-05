@@ -33,7 +33,7 @@ const Header = ({ title, tag, as, children, ...rest }) => {
 Header.propTypes = {
    as: PropTypes.string,
    tag: PropTypes.string,
-   // children: PropTypes.string,
+   children: PropTypes.any,
    color: PropTypes.string,
    title: PropTypes.string,
    truncate: PropTypes.bool,
