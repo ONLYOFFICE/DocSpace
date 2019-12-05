@@ -27,20 +27,23 @@ For health of checkbox, button inherits part of properties of this component.
 
 ### Properties
 
-| Props               | Type     | Required | Values | Default        | Description                                           |
-| ------------------- | :------: | :------: | :----: | :------------: | ----------------------------------------------------- |
-| `label`             | `string` |    -     | -      | `Group button` | Value of the group button                             |
-| `disabled`          | `bool`   |    -     | -      | `false`        | Tells when the button should present a disabled state |
-| `isDropdown`        | `bool`   |    -     | -      | `false`        | Tells when the button should present a dropdown state |
-| `isSeparator`       | `bool`   |    -     | -      | `false`        | Tells when the button should contain separator        |
-| `opened`            | `bool`   |    -     | -      | `false`        | Tells when the button should be opened by default     |
-| `action`            | `func`   |    -     | -      | -              | What the button will trigger when clicked             |
-| `tabIndex`          | `number` |    -     | -      | `-1`           | Value of tab index                                    |
-| `onClick`           | `func`   |    -     | -      | -              | Property for onClick action                           |
-| `fontWeight`        | `string` |    -     | -      | `600`          | Value of font weight                                  |
-| `onSelect`          | `func`   |    -     | -      | -              | Called when value is selected in selector             |
-| `selected`          | `string` |    -     | -      | -              | Selected value label                                  |
-| `onChange`          | `func`   |    -     | -      | -              | Called when checkbox is checked                       |
-| `isIndeterminate`   | `bool`   |    -     | -      | `false`        | Initial value of Indeterminate checkbox               |
-| `checked`           | `bool`   |    -     | -      | `false`        | Initial value of checkbox                             |
-| `dropDownMaxHeight` | `number` |    -     | -      | -              | Selected height value of DropDown                     |
+| Props               |      Type      | Required | Values |    Default     | Description                                           |
+| ------------------- | :------------: | :------: | :----: | :------------: | ----------------------------------------------------- |
+| `action`            |     `func`     |    -     |   -    |       -        | What the button will trigger when clicked             |
+| `checked`           |     `bool`     |    -     |   -    |    `false`     | Initial value of checkbox                             |
+| `className`         |    `string`    |    -     |   -    |       -        | Accepts class                                         |
+| `disabled`          |     `bool`     |    -     |   -    |    `false`     | Tells when the button should present a disabled state |
+| `dropDownMaxHeight` |    `number`    |    -     |   -    |       -        | Selected height value of DropDown                     |
+| `fontWeight`        |    `string`    |    -     |   -    |     `600`      | Value of font weight                                  |
+| `id`                |    `string`    |    -     |   -    |       -        | Accepts id                                            |
+| `isDropdown`        |     `bool`     |    -     |   -    |    `false`     | Tells when the button should present a dropdown state |
+| `isIndeterminate`   |     `bool`     |    -     |   -    |    `false`     | Initial value of Indeterminate checkbox               |
+| `isSeparator`       |     `bool`     |    -     |   -    |    `false`     | Tells when the button should contain separator        |
+| `label`             |    `string`    |    -     |   -    | `Group button` | Value of the group button                             |
+| `onChange`          |     `func`     |    -     |   -    |       -        | Called when checkbox is checked                       |
+| `onClick`           |     `func`     |    -     |   -    |       -        | Property for onClick action                           |
+| `onSelect`          |     `func`     |    -     |   -    |       -        | Called when value is selected in selector             |
+| `opened`            |     `bool`     |    -     |   -    |    `false`     | Tells when the button should be opened by default     |
+| `selected`          |    `string`    |    -     |   -    |       -        | Selected value label                                  |
+| `style`             | `obj`, `array` |    -     |   -    |       -        | Accepts css style                                     |
+| `tabIndex`          |    `number`    |    -     |   -    |      `-1`      | Value of tab index                                    |

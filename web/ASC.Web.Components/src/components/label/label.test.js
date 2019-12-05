@@ -1,48 +1,42 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Badge from '.';
+import Label from '.';
 
-describe('<Badge />', () => {
+const baseProps = {
+  text: "First name:",
+  title: "first name",
+  htmlFor: "firstNameField",
+  display: "block"
+};
+
+describe('<Label />', () => {
   it('renders without error', () => {
     const wrapper = mount(
-      <Badge />
+      <Label {...baseProps} />
     );
 
     expect(wrapper).toExist();
   });
 
-  it('displays number', () => {
+  it('display error', () => {
     const wrapper = mount(
-      <Badge number={10} />
+      <Label {...baseProps} error />
     );
 
-    expect(wrapper.prop('number')).toBe(10);
+    expect(wrapper.prop('error')).toBe(true);
   });
 
-  it('call onClick()', () => {
-    const onClick = jest.fn();
+  it('display required', () => {
     const wrapper = mount(
-      <Badge onClick={onClick} />
+      <Label {...baseProps} isRequired />
     );
 
-    wrapper.simulate('click');
-
-    expect(onClick).toBeCalled();
-  });
-
-  it('call onClick() without wrapper', () => {
-    const wrapper = mount(
-      <Badge />
-    );
-
-    wrapper.simulate('click');
-    
-    expect(wrapper).toExist();
+    expect(wrapper.prop('isRequired')).toBe(true);
   });
 
   it('accepts id', () => {
     const wrapper = mount(
-      <Badge id="testId" />
+      <Label {...baseProps} id="testId" />
     );
 
     expect(wrapper.prop('id')).toEqual('testId');
@@ -50,7 +44,7 @@ describe('<Badge />', () => {
 
   it('accepts className', () => {
     const wrapper = mount(
-      <Badge className="test" />
+      <Label {...baseProps} className="test" />
     );
 
     expect(wrapper.prop('className')).toEqual('test');
@@ -58,7 +52,7 @@ describe('<Badge />', () => {
 
   it('accepts style', () => {
     const wrapper = mount(
-      <Badge style={{ color: 'red' }} />
+      <Label {...baseProps} style={{ color: 'red' }} />
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');

@@ -14,6 +14,9 @@ import { Scrollbar } from "asc-web-components";
 
 ### Properties
 
-| Props   |   Type   | Required |                           Values                            |   Default    | Description          |
-| ------- | :------: | :------: | :---------------------------------------------------------: | :----------: | -------------------- |
-| `stype` | `string` |          | `smallWhite`, `smallBlack`, `preMediumBlack`, `mediumBlack` | `smallBlack` | Scrollbar style type |
+| Props       |      Type      | Required |                           Values                            |   Default    | Description          |
+| ----------- | :------------: | :------: | :---------------------------------------------------------: | :----------: | -------------------- |
+| `className` |    `string`    |    -     |                              -                              |      -       | Accepts class        |
+| `id`        |    `string`    |    -     |                              -                              |      -       | Accepts id           |
+| `style`     | `obj`, `array` |    -     |                              -                              |      -       | Accepts css style    |
+| `stype`     |    `string`    |          | `smallWhite`, `smallBlack`, `preMediumBlack`, `mediumBlack` | `smallBlack` | Scrollbar style type |

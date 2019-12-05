@@ -31,13 +31,16 @@ import { FilterInput } from "asc-web-components";
 
 ### Properties
 
-| Props                |   Type   | Required |             Values              | Default | Description                                                                                            |
-| -------------------- | :------: | :------: | :-----------------------------: | :-----: | ------------------------------------------------------------------------------------------------------ |
-| `id`                 | `string` |    -     |                -                |    -    | Used as HTML `id` property                                                                             |
-| `value`              | `string` |    -     |                -                |    -    | Value of the input                                                                                     |
-| `onChange`           |  `func`  |    -     |                -                |    -    | Called with the new value. Required when input is not read only. Parent should pass it back as `value` |
-| `isDisabled`         |  `bool`  |    -     |                -                | `false` | Indicates that the field cannot be used (e.g not authorised, or changes not saved)                     |
-| `placeholder`        | `string` |    -     |                -                |    -    | Placeholder text for the input                                                                         |
-| `size`               | `string` |          | `base`, `middle`, `big`, `huge` | `base`  | Supported size of the input fields.                                                                    |
-| `scale`              |  `bool`  |    -     |                -                |    -    | Indicates the input field has scale                                                                    |
-| `selectedFilterData` | `object` |    -     |                -                |    -    | Selected filter data                                                                                   |
+| Props                |      Type      | Required |             Values              | Default | Description                                                                                            |
+| -------------------- | :------------: | :------: | :-----------------------------: | :-----: | ------------------------------------------------------------------------------------------------------ |
+| `className`          |    `string`    |    -     |                -                |    -    | Accepts class                                                                                          |
+| `id`                 |    `string`    |    -     |                -                |    -    | Used as HTML `id` property                                                                             |
+| `id`                 |    `string`    |    -     |                -                |    -    | Accepts id                                                                                             |
+| `isDisabled`         |     `bool`     |    -     |                -                | `false` | Indicates that the field cannot be used (e.g not authorised, or changes not saved)                     |
+| `onChange`           |     `func`     |    -     |                -                |    -    | Called with the new value. Required when input is not read only. Parent should pass it back as `value` |
+| `placeholder`        |    `string`    |    -     |                -                |    -    | Placeholder text for the input                                                                         |
+| `scale`              |     `bool`     |    -     |                -                |    -    | Indicates the input field has scale                                                                    |
+| `selectedFilterData` |    `object`    |    -     |                -                |    -    | Selected filter data                                                                                   |
+| `size`               |    `string`    |          | `base`, `middle`, `big`, `huge` | `base`  | Supported size of the input fields.                                                                    |
+| `style`              | `obj`, `array` |    -     |                -                |    -    | Accepts css style                                                                                      |
+| `value`              |    `string`    |    -     |                -                |    -    | Value of the input                                                                                     |

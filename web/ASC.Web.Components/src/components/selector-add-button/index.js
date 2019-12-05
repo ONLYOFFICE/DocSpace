@@ -26,10 +26,10 @@ const StyledButton = styled.div`
 `;
 
 const SelectorAddButton = (props) => {
-  const {isDisabled, title, onClick, className } = props;
+  const {isDisabled, title, onClick, className, id, style } = props;
 
   return (
-    <StyledButton isDisabled={isDisabled} title={title} onClick={onClick} className={className} >
+    <StyledButton isDisabled={isDisabled} title={title} onClick={onClick} className={className} id={id} style={style} >
       <IconButton
         color="#979797"
         size={14}
@@ -46,7 +46,9 @@ SelectorAddButton.propTypes = {
   title: PropTypes.string,
   onClick: PropTypes.func,
   isDisabled: PropTypes.bool,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 SelectorAddButton.defaultProps = {

@@ -129,7 +129,8 @@ class IconButton extends React.PureComponent {
       isFill,
       isClickable,
       onClick,
-      id
+      id,
+      style
     } = this.props;
 
     return (
@@ -145,6 +146,7 @@ class IconButton extends React.PureComponent {
         data-tip=""
         data-event="click focus"
         data-for={id}
+        style={style}
         //{...this.props}
       >
         {React.createElement(Icons[this.state.currentIconName], {
@@ -173,7 +175,8 @@ IconButton.propTypes = {
   onMouseEnter: PropTypes.func,
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
-  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 IconButton.defaultProps = {

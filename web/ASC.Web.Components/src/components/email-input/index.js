@@ -111,7 +111,10 @@ EmailInput.propTypes = {
   customValidateFunc: PropTypes.func,
   value: PropTypes.string,
   isValid: PropTypes.bool,
-  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)])
+  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)]),
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 EmailInput.defaultProps = {

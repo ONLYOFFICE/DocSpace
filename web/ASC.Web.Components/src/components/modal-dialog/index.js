@@ -144,19 +144,23 @@ class ModalDialog extends React.Component {
         </Dialog>
       </Backdrop>
     ) : (
-        <>
+        <div 
+          className={this.props.className}
+          id={this.props.id}
+          style={this.props.style}
+        >
           <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
           <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
             <Content>
-              <StyledHeader>
-                <HeaderText type='content'>{headerContent}</HeaderText>
+              <Header>
+                <HeaderText>{headerContent}</HeaderText>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-              </StyledHeader>
+              </Header>
               <Body>{bodyContent}</Body>
               <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
             </Content>
           </Aside>
-        </>
+        </div>
       );
   }
 }
@@ -178,7 +182,10 @@ ModalDialog.propTypes = {
     PropTypes.node
   ]),
   onClose: PropTypes.func,
-  zIndex: PropTypes.number
+  zIndex: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ModalDialog.defaultProps = {

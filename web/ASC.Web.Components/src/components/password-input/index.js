@@ -302,7 +302,8 @@ class PasswordInput extends React.Component {
       id,
       autoComplete,
       className,
-      tooltipOffsetLeft
+      tooltipOffsetLeft,
+      style
     } = this.props;
     const {
       type,
@@ -346,7 +347,7 @@ class PasswordInput extends React.Component {
     );
 
     return (
-      <StyledInput onValidateInput={onValidateInput} className={className}>
+      <StyledInput onValidateInput={onValidateInput} className={className} style={style}>
         <PasswordProgress
           inputWidth={inputWidth}
           data-for="tooltipContent"
@@ -430,6 +431,7 @@ PasswordInput.propTypes = {
   tabIndex: PropTypes.number,
   maxLength: PropTypes.number,
   className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),

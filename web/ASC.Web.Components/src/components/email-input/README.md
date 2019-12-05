@@ -25,11 +25,14 @@ You can apply all properties of the `TextInput` component to the component
 
 | Props                |                 Type                  | Required | Values |     Default     | Description                                                              |
 | -------------------- | :-----------------------------------: | :------: | :----: | :-------------: | ------------------------------------------------------------------------ |
-| `onValidateInput`    |                `func`                 |    -     |   -    |        -        | Will be validate our value, return boolean validation result             |
-| `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                            |
-| `onChange`           |                `func`                 |    -     |   -    |        -        | Function for your custom handling changes in input                       |
+| `className`          |               `string`                |    -     |   -    |        -        | Accepts class                                                            |
 | `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value                          |
+| `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                            |
+| `id`                 |               `string`                |    -     |   -    |        -        | Accepts id                                                               |
 | `isValid`            |                `bool`                 |    -     |   -    |        -        | Used in your custom validation function for change border-color of input |
+| `onChange`           |                `func`                 |    -     |   -    |        -        | Function for your custom handling changes in input                       |
+| `onValidateInput`    |                `func`                 |    -     |   -    |        -        | Will be validate our value, return boolean validation result             |
+| `style`              |            `obj`, `array`             |    -     |   -    |        -        | Accepts css style                                                        |
 
 ### Validate email
 
@@ -39,13 +42,13 @@ For email validating you should use plain Object or our email utility with follo
 
 | Props                    |  Type  | Required | Default | Description                                                                                                                                                 |
 | ------------------------ | :----: | :------: | :-----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `allowDomainPunycode`    | `bool` |    -     | `false` | Allow email with punycode symbols in domain, e. g. `example@джpумлатест.bрфa` and `example@mañana.com` are valid email addresses                            |
-| `allowLocalPartPunycode` | `bool` |    -     | `false` | Allow email with punycode symbols in local part, e. g. `джумла@example.com` and `mañana@example.com` are valid email addresses                              |
 | `allowDomainIp`          | `bool` |    -     | `false` | Allow email with IP address in domain, e. g. `user@[127.0.0.1]` is a valid email address                                                                    |
-| `allowStrictLocalPart`   | `bool` |    -     | `true`  | Allow email, started with latin symbols and digits(`([a-zA-Z0-9]+)`) and also contains `_,-,.,+`. Used RegEx `/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)\*\$/` |
-| `allowSpaces`            | `bool` |    -     | `false` | Allow spaces in local part and domain, e. g. `" "@example.org` is a valid email address                                                                     |
-| `allowName`              | `bool` |    -     | `false` | Supports all features of RFC 5322, which means that `"Bob Example" <bob@example.com>` is a valid email address                                              |
+| `allowDomainPunycode`    | `bool` |    -     | `false` | Allow email with punycode symbols in domain, e. g. `example@джpумлатест.bрфa` and `example@mañana.com` are valid email addresses                            |
 | `allowLocalDomainName`   | `bool` |    -     | `false` | Allow local domain address, e. g. `admin@local` is a valid email address                                                                                    |
+| `allowLocalPartPunycode` | `bool` |    -     | `false` | Allow email with punycode symbols in local part, e. g. `джумла@example.com` and `mañana@example.com` are valid email addresses                              |
+| `allowName`              | `bool` |    -     | `false` | Supports all features of RFC 5322, which means that `"Bob Example" <bob@example.com>` is a valid email address                                              |
+| `allowSpaces`            | `bool` |    -     | `false` | Allow spaces in local part and domain, e. g. `" "@example.org` is a valid email address                                                                     |
+| `allowStrictLocalPart`   | `bool` |    -     | `true`  | Allow email, started with latin symbols and digits(`([a-zA-Z0-9]+)`) and also contains `_,-,.,+`. Used RegEx `/^([a-zA-Z0-9]+)([_\-\.\+][a-zA-Z0-9]+)\*\$/` |
 
 ### emailSettings prop
 
@@ -109,12 +112,12 @@ How are applied colors in component:
 
 | Сomponent actions | isValid | border-color |
 | ----------------- | :-----: | :----------: |
-| `default`         | `true`  |   #D0D5DA    |
-| `default`         | `false` |     #c30     |
-| `:hover`          | `true`  |   #D0D5DA    |
-| `:hover`          | `false` |     #c30     |
-| `:focus`          | `true`  |   #2DA7DB    |
 | `:focus`          | `false` |     #c30     |
+| `:focus`          | `true`  |   #2DA7DB    |
+| `:hover`          | `false` |     #c30     |
+| `:hover`          | `true`  |   #D0D5DA    |
+| `default`         | `false` |     #c30     |
+| `default`         | `true`  |   #D0D5DA    |
 
 ```js
 import React, { useState } from "react";

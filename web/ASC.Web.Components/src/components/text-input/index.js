@@ -22,7 +22,6 @@ const StyledInput = styled(Input).attrs((props) => ({
     onChange: props.onChange,
     onBlur: props.onBlur,
     onFocus: props.onFocus,
-    disabled: props.isDisabled,
     readOnly: props.isReadOnly,
     autoFocus: props.isAutoFocussed,
     autoComplete: props.autoComplete,
@@ -114,7 +113,10 @@ TextInput.propTypes = {
     isReadOnly: PropTypes.bool,
     hasError: PropTypes.bool,
     hasWarning: PropTypes.bool,
-    autoComplete: PropTypes.string
+    autoComplete: PropTypes.string,
+
+    className: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 TextInput.defaultProps = {

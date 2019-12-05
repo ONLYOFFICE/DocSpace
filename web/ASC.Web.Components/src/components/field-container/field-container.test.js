@@ -13,4 +13,28 @@ describe('<FieldContainer />', () => {
 
     expect(wrapper).toExist();
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <FieldContainer id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <FieldContainer className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <FieldContainer style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Scrollbars } from 'react-custom-scrollbars';
 
 
@@ -18,7 +19,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
     mediumBlack: {
       thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '8px', borderRadius: 'inherit' },
       thumbH: { backgroundColor: 'rgba(0, 0, 0, 0.1)', height: '8px', borderRadius: 'inherit' },
-      view: {paddingRight: '16px'}
+      view: { paddingRight: '16px' }
     },
     preMediumBlack: {
       thumbV: { backgroundColor: 'rgba(0, 0, 0, 0.1)', width: '5px', borderRadius: 'inherit', cursor: 'default' },
@@ -26,7 +27,7 @@ const Scrollbar = React.forwardRef((props, ref) => {
       view: {}
     },
   };
-  
+
   const stype = scrollbarType[props.stype];
 
   const thumbV = stype ? stype.thumbV : {};
@@ -42,13 +43,20 @@ const Scrollbar = React.forwardRef((props, ref) => {
   );
 
   const renderView = ({ style, ...props }) => (
-    <div {...props} style={{ ...style, ...view}} className={"scroll-body"} />
+    <div {...props} style={{ ...style, ...view }} className={"scroll-body"} />
   );
 
   return (
     <Scrollbars renderView={renderView} renderThumbVertical={renderNavThumbVertical} renderThumbHorizontal={renderNavThumbHorizontal} {...props} ref={ref} />
   );
 });
+
+Scrollbar.propTypes = {
+  stype: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+};
 
 Scrollbar.defaultProps = {
   stype: "smallBlack"

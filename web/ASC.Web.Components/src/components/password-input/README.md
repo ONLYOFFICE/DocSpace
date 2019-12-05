@@ -67,36 +67,38 @@ If emailInputName parameter value is empty, copy action will be disabled.
 
 ### Properties
 
-| Props                    | Type     | Required |       Values       |     Default     | Description                                                           |
-| ------------------------ | :------- | :------: | :----------------: | :-------------: | --------------------------------------------------------------------- |
-| `id`                     | `string` |    -     |         -          |        -        | Allows you to set the component id                                    |
-| `autoComplete`           | `string` |    -     |         -          | `new-password`  | Allows you to set the component auto-complete                         |
-| `inputType`              | `array`  |    -     | `text`, `password` |   `password`    | It is necessary for correct display of values ​​inside input          |
-| `inputName`              | `string` |    -     |         -          | `passwordInput` | Input name                                                            |
-| `emailInputName`         | `string` |    ✅    |         -          |        -        | Required to associate password field with email field                 |
-| `inputValue`             | `string` |    -     |         -          |        -        | Input value                                                           |
-| `onChange`               | `func`   |    -     |         -          |        -        | Will be triggered whenever an PasswordInput typing                    |
-| `clipActionResource`     | `string` |    -     |         -          |        -        | Translation of text for copying email data and password               |
-| `clipEmailResource`      | `string` |    -     |         -          |    `E-mail`     | Text translation email to copy                                        |
-| `clipPasswordResource`   | `string` |    -     |         -          |   `Password`    | Text translation password to copy                                     |
-| `clipCopiedResource`     | `string` |    -     |         -          |    `Copied`     | Text translation copy action to copy                                  |
-| `tooltipPasswordTitle`   | `string` |    -     |         -          |        -        | Text translation tooltip                                              |
-| `tooltipPasswordLength`  | `string` |    -     |         -          |        -        | Password text translation is long tooltip                             |
-| `tooltipPasswordDigits`  | `string` |    -     |         -          |        -        | Digit text translation tooltip                                        |
-| `tooltipPasswordCapital` | `string` |    -     |         -          |        -        | Capital text translation tooltip                                      |
-| `tooltipPasswordSpecial` | `string` |    -     |         -          |        -        | Special text translation tooltip                                      |
-| `generatorSpecial`       | `string` |    -     |         -          |   `!@#$%^&*`    | Set of special characters for password generator and validator        |
-| `passwordSettings`       | `object` |    ✅    |         -          |        -        | Set of settings for password generator and validator                  |
-| `isDisabled`             | `bool`   |    -     |         -          |     `false`     | Set input disabled                                                    |
-| `inputWidth`             | `string` |    -     |         -          |        -        | If you need to set input width manually                               |
-| `onValidateInput`        | `func`   |    -     |         -          |        -        | Will be triggered whenever an PasswordInput typing, return bool value |
-| `onCopyToClipboard`      | `func`   |    -     |         -          |        -        | Will be triggered if you press copy button, return formatted value    |
+| Props                    | Type           | Required |       Values       |     Default     | Description                                                           |
+| ------------------------ | :------------- | :------: | :----------------: | :-------------: | --------------------------------------------------------------------- |
+| `autoComplete`           | `string`       |    -     |         -          | `new-password`  | Allows you to set the component auto-complete                         |
+| `className`              | `string`       |    -     |         -          |        -        | Accepts class                                                         |
+| `clipActionResource`     | `string`       |    -     |         -          |        -        | Translation of text for copying email data and password               |
+| `clipCopiedResource`     | `string`       |    -     |         -          |    `Copied`     | Text translation copy action to copy                                  |
+| `clipEmailResource`      | `string`       |    -     |         -          |    `E-mail`     | Text translation email to copy                                        |
+| `clipPasswordResource`   | `string`       |    -     |         -          |   `Password`    | Text translation password to copy                                     |
+| `emailInputName`         | `string`       |    ✅    |         -          |        -        | Required to associate password field with email field                 |
+| `generatorSpecial`       | `string`       |    -     |         -          |   `!@#$%^&*`    | Set of special characters for password generator and validator        |
+| `id`                     | `string`       |    -     |         -          |        -        | Allows you to set the component id                                    |
+| `inputName`              | `string`       |    -     |         -          | `passwordInput` | Input name                                                            |
+| `inputType`              | `array`        |    -     | `text`, `password` |   `password`    | It is necessary for correct display of values ​​inside input          |
+| `inputValue`             | `string`       |    -     |         -          |        -        | Input value                                                           |
+| `inputWidth`             | `string`       |    -     |         -          |        -        | If you need to set input width manually                               |
+| `isDisabled`             | `bool`         |    -     |         -          |     `false`     | Set input disabled                                                    |
+| `onChange`               | `func`         |    -     |         -          |        -        | Will be triggered whenever an PasswordInput typing                    |
+| `onCopyToClipboard`      | `func`         |    -     |         -          |        -        | Will be triggered if you press copy button, return formatted value    |
+| `onValidateInput`        | `func`         |    -     |         -          |        -        | Will be triggered whenever an PasswordInput typing, return bool value |
+| `passwordSettings`       | `object`       |    ✅    |         -          |        -        | Set of settings for password generator and validator                  |
+| `style`                  | `obj`, `array` |    -     |         -          |        -        | Accepts css style                                                     |
+| `tooltipPasswordCapital` | `string`       |    -     |         -          |        -        | Capital text translation tooltip                                      |
+| `tooltipPasswordDigits`  | `string`       |    -     |         -          |        -        | Digit text translation tooltip                                        |
+| `tooltipPasswordLength`  | `string`       |    -     |         -          |        -        | Password text translation is long tooltip                             |
+| `tooltipPasswordSpecial` | `string`       |    -     |         -          |        -        | Special text translation tooltip                                      |
+| `tooltipPasswordTitle`   | `string`       |    -     |         -          |        -        | Text translation tooltip                                              |
 
 #### passwordSettings properties
 
 | Props         |   Type   | Required | Values | Default | Description                     |
 | ------------- | :------: | :------: | :----: | :-----: | ------------------------------- |
-| `minLength`   | `number` |    ✅    |   -    |    -    | Minimum password length         |
-| `upperCase`   |  `bool`  |    ✅    |   -    |    -    | Must contain uppercase letters  |
 | `digits`      |  `bool`  |    ✅    |   -    |    -    | Must contain digits             |
+| `minLength`   | `number` |    ✅    |   -    |    -    | Minimum password length         |
 | `specSymbols` |  `bool`  |    ✅    |   -    |    -    | Must contain special characters |
+| `upperCase`   |  `bool`  |    ✅    |   -    |    -    | Must contain uppercase letters  |

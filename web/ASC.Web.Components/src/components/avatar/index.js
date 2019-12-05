@@ -204,7 +204,11 @@ Avatar.propTypes = {
   editLabel: PropTypes.string,
   userName: PropTypes.string,
   editing: PropTypes.bool,
-  editAction: PropTypes.func
+  editAction: PropTypes.func,
+  
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Avatar.defaultProps = {

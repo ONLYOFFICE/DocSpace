@@ -17,7 +17,7 @@ const commonCss = css`
   font-weight: 600;
 `;
 
-const RowContainer = styled.div`
+const StyledRowContent = styled.div`
   width: 100%;
   display: inline-flex;
 
@@ -95,13 +95,13 @@ const TabletSideInfo = styled.div`
 const getSideInfo = content => {
   let info = '';
   const lastIndex = content.length - 1;
-  
+
   content.map((element, index) => {
     const delimiter = (index === lastIndex) ? '' : ' | ';
-    if (index > 1) { 
+    if (index > 1) {
       info += (element.props && element.props.children)
-                ? element.props.children + delimiter
-                : '';
+        ? element.props.children + delimiter
+        : '';
     }
   });
 
@@ -110,12 +110,16 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children, disableSideInfo } = props;
+  const { children, disableSideInfo, id, className, style } = props;
 
   const sideInfo = getSideInfo(children);
 
   return (
-    <RowContainer disableSideInfo={disableSideInfo}>
+    <StyledRowContent
+      disableSideInfo={disableSideInfo}
+      id={id}
+      className={className}
+      style={style}>
       <MainContainerWrapper disableSideInfo={disableSideInfo}>
         <MainContainer>
           {children[0]}
@@ -133,18 +137,21 @@ const RowContent = props => {
           );
         }
       })}
-      {!disableSideInfo && 
-      <TabletSideInfo >
-        {sideInfo}
-      </TabletSideInfo>
+      {!disableSideInfo &&
+        <TabletSideInfo >
+          {sideInfo}
+        </TabletSideInfo>
       }
-    </RowContainer>
+    </StyledRowContent>
   )
 };
 
 RowContent.propTypes = {
   children: PropTypes.node.isRequired,
-  disableSideInfo: PropTypes.bool
+  disableSideInfo: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 RowContent.defaultProps = {
