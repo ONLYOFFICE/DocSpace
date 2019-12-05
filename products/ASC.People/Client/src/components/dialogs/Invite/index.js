@@ -184,8 +184,8 @@ class PureInviteDialog extends React.Component {
 const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
-    userInvitationLink: state.auth.settings.inviteLinks.userLink,
-    guestInvitationLink: state.auth.settings.inviteLinks.guestLink
+    userInvitationLink: state.portal.inviteLinks.userLink,
+    guestInvitationLink: state.portal.inviteLinks.guestLink
   };
 };
 

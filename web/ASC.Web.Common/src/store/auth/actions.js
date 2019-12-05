@@ -14,7 +14,6 @@ export const GET_TIMEZONES = "GET_TIMEZONES";
 export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
-export const SET_INVITE_LINKS = "SET_INVITE_LINKS";
 
 export function setCurrentUser(user) {
   return {
@@ -55,16 +54,6 @@ export function setPasswordSettings(passwordSettings) {
   return {
     type: SET_PASSWORD_SETTINGS,
     passwordSettings
-  };
-}
-
-export function setInviteLinks(userLink, guestLink) {
-  return {
-    type: SET_INVITE_LINKS,
-    payload: {
-      userLink,
-      guestLink
-    }
   };
 }
 
@@ -153,22 +142,6 @@ export function logout() {
   };
 }
 
-export function changePassword(userId, password, key) {
-  return dispatch => {
-    return api.people
-      .changePassword(userId, password, key)
-      .then(() => logout(dispatch));
-  };
-}
-
-export function changeEmail(userId, email, key) {
-  return dispatch => {
-    return api.people
-      .changeEmail(userId, email, key)
-      .then(user => dispatch(setNewEmail(user.email)));
-  };
-}
-
 export function getPortalCultures(dispatch = null) {
   return dispatch
     ? api.settings.getPortalCultures().then(cultures => {
@@ -181,51 +154,8 @@ export function getPortalCultures(dispatch = null) {
       };
 }
 
-export function setLanguageAndTime(lng, timeZoneID) {
-  return dispatch => {
-    return api.settings
-      .setLanguageAndTime(lng, timeZoneID)
-      .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
-  };
-}
-
-export function getPortalTimezones() {
-  return dispatch => {
-    return api.settings.getPortalTimezones().then(timezones => {
-      dispatch(setTimezones(timezones));
-    });
-  };
-}
-
-export function setGreetingTitle(greetingTitle) {
-  return dispatch => {
-    return api.settings.setGreetingSettings(greetingTitle).then(() => {
-      dispatch(setGreetingSettings(greetingTitle));
-    });
-  };
-}
-
-export function restoreGreetingTitle() {
-  return dispatch => {
-    return api.settings.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
-    });
-  };
-}
-
 export function getPortalPasswordSettings(dispatch, confirmKey = null) {
   return api.settings.getPortalPasswordSettings(confirmKey).then(settings => {
     dispatch(setPasswordSettings(settings));
   });
-}
-
-export function getPortalInviteLinks() {
-  return (dispatch, getState) => {
-    const { auth } = getState();
-    if (!auth.user.isAdmin) return Promise.resolve();
-
-    return api.portal.getInvitationLinks().then(data => {
-      dispatch(setInviteLinks(data.userLink, data.guestLink));
-    });
-  };
 }

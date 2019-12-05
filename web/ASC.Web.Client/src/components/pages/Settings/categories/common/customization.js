@@ -5,7 +5,8 @@ import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store } from 'asc-web-common';
-const { getPortalCultures, setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } = store.auth.actions;
+import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+const { getPortalCultures } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {

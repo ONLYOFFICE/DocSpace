@@ -1,5 +1,5 @@
 import { api, store } from "asc-web-common";
-const { setCurrentUser, loadInitInfo, login, getPortalPasswordSettings } = store.auth.actions;
+const { setCurrentUser, loadInitInfo, login, getPortalPasswordSettings, setNewEmail, logout } = store.auth.actions;
 
 export const SET_IS_CONFIRM_LOADED = "SET_IS_CONFIRM_LOADED";
 
@@ -56,3 +56,19 @@ export function activateConfirmUser(
       .then(user => dispatch(setCurrentUser(user)));
   };
 }
+
+export function changeEmail(userId, email, key) {
+  return dispatch => {
+    return api.people
+      .changeEmail(userId, email, key)
+      .then(user => dispatch(setNewEmail(user.email)));
+  };
+};
+
+export function changePassword(userId, password, key) {
+  return dispatch => {
+    return api.people
+      .changePassword(userId, password, key)
+      .then(() => logout(dispatch));
+  };
+};
