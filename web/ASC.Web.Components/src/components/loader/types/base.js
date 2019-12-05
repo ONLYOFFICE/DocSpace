@@ -57,7 +57,7 @@ const LoadingDots = props => {
     )
 };
 
-LoadingDots.protoTypes = {
+LoadingDots.propTypes = {
     color: PropTypes.string,
     size: PropTypes.number.isRequired,
     label: PropTypes.string.isRequired
