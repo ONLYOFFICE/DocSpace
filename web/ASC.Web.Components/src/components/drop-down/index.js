@@ -148,7 +148,10 @@ DropDown.propTypes = {
   manualWidth: PropTypes.string,
   manualY: PropTypes.string,
   manualX: PropTypes.string,
-  maxHeight: PropTypes.number
+  maxHeight: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 DropDown.defaultProps = {

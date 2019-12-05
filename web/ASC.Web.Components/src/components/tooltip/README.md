@@ -99,22 +99,24 @@ const arrayUsers = [
 
 | Props         |   Type   | Required |              Values              | Default | Description                       |
 | ------------- | :------: | :------: | :------------------------------: | :-----: | --------------------------------- |
-| `data-tip`    | `string` |    -     |                -                 |    -    | Required if you need to component |
 | `data-event`  | `string` |    -     |          `click, focus`          |    -    | Custom event to trigger tooltip   |
+| `data-for`    | `string` |    ✅    |                -                 |    -    | Corresponds to the id of Tooltip  |
 | `data-offset` | `string` |    -     | `top`, `left`, `right`, `bottom` |    -    | Offset of current tooltip         |
 | `data-place`  | `string` |    -     | `top`, `right`, `bottom`, `left` |    -    | Tooltip placement                 |
-| `data-for`    | `string` |    ✅    |                -                 |    -    | Corresponds to the id of Tooltip  |
+| `data-tip`    | `string` |    -     |                -                 |    -    | Required if you need to component |
 
 ### ReactTooltip Properties
 
-| Props          |   Type   | Required |              Values              | Default | Description                          |
-| -------------- | :------: | :------: | :------------------------------: | :-----: | ------------------------------------ |
-| `id`           | `string` |    ✅    |                -                 |    -    | Used as HTML id property             |
-| `getContent`   |  `func`  |    -     |                                  |    -    | Generate the tip content dynamically |
-| `effect`       | `string` |    -     |         `float`, `solid`         | `float` | Behavior of tooltip                  |
-| `place`        | `string` |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Global tooltip placement             |
-| `offsetTop`    | `number` |    -     |                -                 |    -    | Offset top all tooltips on page      |
-| `offsetRight`  | `number` |    -     |                -                 |    -    | Offset right all tooltips on page    |
-| `offsetBottom` | `number` |    -     |                -                 |    -    | Offset bottom all tooltips on page   |
-| `offsetLeft`   | `number` |    -     |                -                 |    -    | Offset left all tooltips on page     |
-| `maxWidth`     | `number` |    -     |                -                 |  `340`  | Set max width of tooltip             |
+| Props          |      Type      | Required |              Values              | Default | Description                          |
+| -------------- | :------------: | :------: | :------------------------------: | :-----: | ------------------------------------ |
+| `className`    |    `string`    |    -     |                -                 |    -    | Accepts class                        |
+| `effect`       |    `string`    |    -     |         `float`, `solid`         | `float` | Behavior of tooltip                  |
+| `getContent`   |     `func`     |    -     |                                  |    -    | Generate the tip content dynamically |
+| `id`           |    `string`    |    ✅    |                -                 |    -    | Used as HTML id property             |
+| `maxWidth`     |    `number`    |    -     |                -                 |  `340`  | Set max width of tooltip             |
+| `offsetBottom` |    `number`    |    -     |                -                 |    -    | Offset bottom all tooltips on page   |
+| `offsetLeft`   |    `number`    |    -     |                -                 |    -    | Offset left all tooltips on page     |
+| `offsetRight`  |    `number`    |    -     |                -                 |    -    | Offset right all tooltips on page    |
+| `offsetTop`    |    `number`    |    -     |                -                 |    -    | Offset top all tooltips on page      |
+| `place`        |    `string`    |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Global tooltip placement             |
+| `style`        | `obj`, `array` |    -     |                -                 |    -    | Accepts css style                    |

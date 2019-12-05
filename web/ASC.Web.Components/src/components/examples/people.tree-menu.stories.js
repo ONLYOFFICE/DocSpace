@@ -18,6 +18,7 @@ const treeData = [
 ];
 
 const TreeMenuStory = props => {
+  // eslint-disable-next-line react/prop-types
   const { data } = props;
 
   const [gData, setGData] = useState(data);
@@ -41,6 +42,7 @@ const TreeMenuStory = props => {
       const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
 
       const loop = (data, key, callback) => {
+          // eslint-disable-next-line react/prop-types
           data.forEach((item, index, arr) => {
               if (item.key === key) {
                   callback(item, index, arr);
@@ -94,6 +96,7 @@ const TreeMenuStory = props => {
   }
 
   const loop = data => {
+      // eslint-disable-next-line react/prop-types
       return data.map((item) => {
           if (item.children && item.children.length) {
               return <TreeNode title={item.title} key={item.key} icon={item.root ? <Icons.CatalogDepartmentsIcon size="scale" isfill={true} color="dimgray"/> : ''} >{loop(item.children)}</TreeNode>;

@@ -57,11 +57,16 @@ class Tooltip extends Component {
       children,
       afterShow,
       afterHide,
-      reference
+      reference,
+      className,
+      style
     } = this.props;
 
     return (
-      <TooltipStyle>
+      <TooltipStyle
+        className={className}
+        style={style}
+      >
         <ReactTooltip
           id={id}
           ref={reference}
@@ -103,7 +108,9 @@ Tooltip.propTypes = {
   reference: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.shape({ current: PropTypes.any })
-  ])
+  ]),
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Tooltip.defaultProps = {

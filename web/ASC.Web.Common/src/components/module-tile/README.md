@@ -21,11 +21,14 @@ import { ModuleTile } from "asc-web-common";
 
 ### Properties
 
-| Props         |   Type   | Required | Values | Default | Description                             |
-| ------------- | :------: | :------: | :----: | :-----: | --------------------------------------- |
-| `title`       | `string` |    ✅    |   -    |    -    | Title of tile                           |
-| `imageUrl`    | `string` |    ✅    |   -    |    -    | Image url/path                          |
-| `link`        | `string` |    ✅    |   -    |    -    | Link to return on onClick               |
-| `description` | `string` |    -     |   -    |    -    | Description of primary tile             |
-| `isPrimary`   |  `bool`  |    -     |   -    |    -    | Tells when the tile should be primary   |
-| `onClick`     |  `func`  |    ✅    |   -    |    -    | What the tile will trigger when clicked |
+| Props         |      Type      | Required | Values | Default | Description                             |
+| ------------- | :------------: | :------: | :----: | :-----: | --------------------------------------- |
+| `className`   |    `string`    |    -     |   -    |    -    | Accepts class                           |
+| `description` |    `string`    |    -     |   -    |    -    | Description of primary tile             |
+| `id`          |    `string`    |    -     |   -    |    -    | Accepts id                              |
+| `imageUrl`    |    `string`    |    -     |   -    |    -    | Image url/path                          |
+| `isPrimary`   |     `bool`     |    -     |   -    |    -    | Tells when the tile should be primary   |
+| `link`        |    `string`    |    -     |   -    |    -    | Link to return on onClick               |
+| `onClick`     |     `func`     |    ✅    |   -    |    -    | What the tile will trigger when clicked |
+| `style`       | `obj`, `array` |    -     |   -    |    -    | Accepts css style                       |
+| `title`       |    `string`    |    -     |   -    |    -    | Title of tile                           |

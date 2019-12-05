@@ -57,6 +57,9 @@ RequestLoader.propTypes = {
   label: PropTypes.string,
   fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   fontColor: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 RequestLoader.defaultProps = {

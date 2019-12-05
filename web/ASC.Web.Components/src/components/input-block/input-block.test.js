@@ -3,6 +3,7 @@ import { mount } from 'enzyme';
 import InputBlock from '.';
 import Button from '../button';
 
+
 describe('<IconButton />', () => {
   it('renders without error', () => {
     const mask = [/\d/, /\d/, '/', /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
@@ -14,5 +15,83 @@ describe('<IconButton />', () => {
     );
 
     expect(wrapper).toExist();
+  });
+
+  it('test base size props', () => {
+    const wrapper = mount(
+      <InputBlock iconName="SearchIcon" size="base" >
+      </InputBlock>
+    );
+
+    expect(wrapper.prop('size')).toBe('base');
+  });
+
+  it('test middle size props', () => {
+    const wrapper = mount(
+      <InputBlock iconName="SearchIcon" size="middle" >
+      </InputBlock>
+    );
+
+    expect(wrapper.prop('size')).toBe('middle');
+  });
+
+  it('test big size props', () => {
+    const wrapper = mount(
+      <InputBlock iconName="SearchIcon" size="big" >
+      </InputBlock>
+    );
+
+    expect(wrapper.prop('size')).toBe('big');
+  });
+
+  it('test huge size props', () => {
+    const wrapper = mount(
+      <InputBlock iconName="SearchIcon" size="huge" >
+      </InputBlock>
+    );
+
+    expect(wrapper.prop('size')).toBe('huge');
+  });
+
+  it('test iconSize props', () => {
+    const wrapper = mount(
+      <InputBlock iconName="SearchIcon" iconSize={18} >
+      </InputBlock>
+    );
+
+    expect(wrapper.prop('iconSize')).toBe(18);
+  });
+
+  it('test empty props', () => {
+    const wrapper = mount(
+      <InputBlock>
+      </InputBlock>
+    );
+
+    expect(wrapper).toExist();
+  });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <InputBlock id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <InputBlock className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <InputBlock style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 });

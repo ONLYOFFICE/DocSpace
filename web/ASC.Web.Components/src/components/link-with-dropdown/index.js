@@ -27,7 +27,7 @@ SimpleLinkWithDropdown.propTypes = {
 
 const color = props => props.color;
 
-// eslint-disable-next-line react/prop-types 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const ExpanderDownIcon = ({ isSemitransparent, dropdownType, isOpen, ...props }) => (<Icons.ExpanderDownIcon {...props} />);
 
 const Caret = styled(ExpanderDownIcon)`
@@ -91,6 +91,7 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 
 `;
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const SimpleText = ({ color, ...props }) => (<Text as="span" {...props} />);
 const StyledText = styled(SimpleText)`
 
@@ -171,14 +172,18 @@ class LinkWithDropdown extends React.Component {
       color,
       isBold,
       title,
-      isOpen,
       className,
       data,
+      id,
+      style,
       ...rest
     } = this.props;
     return (
       <StyledSpan
-        className={className}>
+        className={className}
+        id={id}
+        style={style}
+      >
         <span
           ref={this.ref}
           onClick={this.clickToDropdown}
@@ -238,7 +243,9 @@ LinkWithDropdown.propTypes = {
   title: PropTypes.string,
   isOpen: PropTypes.bool,
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 LinkWithDropdown.defaultProps = {

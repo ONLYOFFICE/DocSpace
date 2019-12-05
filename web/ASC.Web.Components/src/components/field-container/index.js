@@ -83,6 +83,8 @@ class FieldContainer extends React.Component {
     const {
       isVertical,
       className,
+      id,
+      style,
       isRequired,
       hasError,
       labelText,
@@ -101,6 +103,8 @@ class FieldContainer extends React.Component {
         vertical={isVertical}
         maxLabelWidth={maxLabelWidth}
         className={className}
+        id={id}
+        style={style}
         maxwidth={errorMessageWidth}
       >
         <div className="field-label-icon">
@@ -151,7 +155,9 @@ FieldContainer.propTypes = {
   maxLabelWidth: PropTypes.string,
   errorMessage: PropTypes.string,
   errorColor: PropTypes.string,
-  errorMessageWidth: PropTypes.string
+  errorMessageWidth: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 FieldContainer.defaultProps = {

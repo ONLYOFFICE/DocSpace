@@ -46,6 +46,7 @@ const HiddenInput = styled.input`
   z-index: -1;
 `;
 
+// eslint-disable-next-line react/prop-types
 const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
   const iconName = isIndeterminate
     ? "CheckboxIndeterminateIcon"
@@ -104,15 +105,15 @@ class Checkbox extends React.Component {
 
   render() {
     //console.log("Checkbox render");
-
-    const colorProps = this.props.isDisabled ? { color: disableColor } : {};
+    const { isDisabled, id, className, label, style } = this.props;
+    const colorProps = isDisabled ? { color: disableColor } : {};
 
     return (
-      <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} className={this.props.className}>
+      <Label id={id} style={style} htmlFor={id} isDisabled={isDisabled} className={className}>
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
-          disabled={this.props.isDisabled}
+          disabled={isDisabled}
           ref={this.ref}
           {...this.props}
           onChange={this.onInputChange}
@@ -123,7 +124,7 @@ class Checkbox extends React.Component {
             as="span"
             {...colorProps}
           >
-            {this.props.label}
+            {label}
           </Text>
         )}
       </Label>
@@ -141,7 +142,9 @@ Checkbox.propTypes = {
   isIndeterminate: PropTypes.bool,
   isDisabled: PropTypes.bool,
 
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Checkbox.defaultProps = {

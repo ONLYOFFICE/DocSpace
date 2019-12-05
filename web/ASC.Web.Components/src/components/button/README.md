@@ -19,16 +19,19 @@ import { Button } from "asc-web-components";
 
 ### Properties
 
-| Props        |   Type   | Required |         Values          | Default | Description                                           |
-| ------------ | :------: | :------: | :---------------------: | :-----: | ----------------------------------------------------- |
-| `label`      | `string` |    -     |            -            |    -    | Button text                                           |
-| `primary`    |  `bool`  |    -     |            -            | `false` | Tells when the button should be primary               |
-| `size`       | `oneOf`  |    -     | `base`, `middle`, `big` | `base`  | Size of button                                        |
-| `scale`      |  `bool`  |    -     |            -            | `false` | Scale width of button to 100%                         |
-| `icon`       |  `node`  |    -     |            -            | `null`  | Icon node element                                     |
-| `tabIndex`   | `number` |    -     |            -            |  `-1`   | Button tab index                                      |
-| `isHovered`  |  `bool`  |    -     |            -            | `false` | Tells when the button should present a hovered state  |
-| `isClicked`  |  `bool`  |    -     |            -            | `false` | Tells when the button should present a clicked state  |
-| `isDisabled` |  `bool`  |    -     |            -            | `false` | Tells when the button should present a disabled state |
-| `isLoading`  |  `bool`  |    -     |            -            | `false` | Tells when the button should show loader icon         |
-| `onClick`    |  `func`  |    -     |            -            |    -    | What the button will trigger when clicked             |
+| Props        |      Type      | Required |         Values          | Default | Description                                           |
+| ------------ | :------------: | :------: | :---------------------: | :-----: | ----------------------------------------------------- |
+| `className`  |    `string`    |    -     |            -            |    -    | Accepts class                                         |
+| `icon`       |     `node`     |    -     |            -            | `null`  | Icon node element                                     |
+| `id`         |    `string`    |    -     |            -            |    -    | Accepts id                                            |
+| `isClicked`  |     `bool`     |    -     |            -            | `false` | Tells when the button should present a clicked state  |
+| `isDisabled` |     `bool`     |    -     |            -            | `false` | Tells when the button should present a disabled state |
+| `isHovered`  |     `bool`     |    -     |            -            | `false` | Tells when the button should present a hovered state  |
+| `isLoading`  |     `bool`     |    -     |            -            | `false` | Tells when the button should show loader icon         |
+| `label`      |    `string`    |    -     |            -            |    -    | Button text                                           |
+| `onClick`    |     `func`     |    -     |            -            |    -    | What the button will trigger when clicked             |
+| `primary`    |     `bool`     |    -     |            -            | `false` | Tells when the button should be primary               |
+| `scale`      |     `bool`     |    -     |            -            | `false` | Scale width of button to 100%                         |
+| `size`       |    `oneOf`     |    -     | `base`, `middle`, `big` | `base`  | Size of button                                        |
+| `style`      | `obj`, `array` |    -     |            -            |    -    | Accepts css style                                     |
+| `tabIndex`   |    `number`    |    -     |            -            |  `-1`   | Button tab index                                      |
