@@ -1,0 +1,128 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { AdvancedSelector2 } from "asc-web-components";
+import { getGroupList } from "../../api/groups";
+import { setClientBasePath } from "../../api/client";
+
+class GroupSelector extends React.Component {
+    constructor(props) {
+        super(props);
+
+        const { isOpen } = props;
+        this.state = this.getDefaultState(isOpen, []);
+      }
+    
+      componentDidMount() {
+        const PREFIX = "api";
+        const VERSION = "2.0";
+        const baseURL = `http://localhost:8092/${PREFIX}/${VERSION}`;
+        setClientBasePath(baseURL);
+
+        getGroupList(this.props.useFake)
+          .then((groups) => this.setState({groups: this.convertGroups(groups)}))
+          .catch((error) => console.log(error));
+      }
+
+      componentDidUpdate(prevProps) {
+        if(this.props.isOpen !== prevProps.isOpen)
+          this.setState({ isOpen: this.props.isOpen });
+      }
+
+      convertGroups = groups => {
+        return groups
+          ? groups.map(g => {
+              return {
+                key: g.id,
+                label: g.name,
+                total: 0
+              };
+            })
+          : [];
+      };
+
+      loadNextPage = ({ startIndex, searchValue }) => {
+        console.log(
+          `loadNextPage(startIndex=${startIndex}, searchValue="${searchValue}")`
+        );
+
+        this.setState({ isNextPageLoading: true }, () => {
+
+          getGroupList(this.props.useFake)
+            .then((groups) => {
+
+              const newOptions = this.convertGroups(groups);
+
+              this.setState({
+                hasNextPage: false,
+                isNextPageLoading: false,
+                options: newOptions
+              });
+            })
+            .catch((error) => console.log(error));
+        });
+      };
+
+      getDefaultState = (isOpen, groups) => {
+        return {
+          isOpen: isOpen,
+          groups,
+          hasNextPage: true,
+          isNextPageLoading: false
+        };
+      };
+
+    render() {
+        const {
+            isOpen,
+            groups,
+            selectedOptions,
+            hasNextPage,
+            isNextPageLoading
+          } = this.state;
+
+        const { 
+            displayTypes,
+            isMultiSelect,
+            isDisabled,
+            onSelect
+        } = this.props;
+
+        return (
+        <AdvancedSelector2
+            options={groups}
+            hasNextPage={hasNextPage}
+            isNextPageLoading={isNextPageLoading}
+            loadNextPage={this.loadNextPage}
+            size={"compact"}
+            displayType={displayTypes}
+            selectedOptions={selectedOptions}
+            isOpen={isOpen}
+            isMultiSelect={isMultiSelect}
+            isDisabled={isDisabled}
+            searchPlaceHolderLabel={"Search"}
+            selectButtonLabel={"Add departments"}
+            selectAllLabel={"Select all"}
+            groupsHeaderLabel={"Groups"}
+            emptySearchOptionsLabel={"There are no departments with such name"}
+            emptyOptionsLabel={"There are no departments"}
+            loadingLabel={'Loading... Please wait...'}
+            onSelect={onSelect}
+            onSearchChanged={value => {
+              //action("onSearchChanged")(value);
+              console.log("Search group", value);
+              this.setState({ options: [], hasNextPage: true });
+            }}
+      />);
+    }
+}
+
+GroupSelector.propTypes = {
+  onSelect: PropTypes.func,
+  useFake: PropTypes.bool,
+}
+
+GroupSelector.defaultProps = {
+  useFake: false
+}
+
+export default GroupSelector;
