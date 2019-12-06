@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import Badge from "../../badge";
 import { Icons } from "../../icons";
+import Text from "../../text";
 
 const baseColor = "#7A95B0",
   activeColor = "#FFFFFF";
@@ -24,8 +25,6 @@ const NavItemWrapper = styled.div`
 `;
 
 const NavItemLabel = styled.div`
-  font-weight: bold;
-  font-size: 16px;
   margin: 0 auto 0 16px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -67,8 +66,10 @@ const NavItem = React.memo(props => {
         color: color
       })}
       {children && (
-        <NavItemLabel opened={opened} color={color}>
-          {children}
+        <NavItemLabel opened={opened}>
+          <Text color={color} isBold fontSize={16}>
+            {children}
+          </Text>
         </NavItemLabel>
       )}
       <NavItemBadge
