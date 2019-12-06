@@ -30,7 +30,8 @@
     "lodash": "4.17.15",
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
-    "universal-cookie": "^4.0.2"
+    "universal-cookie": "^4.0.2",
+    "faker": "^4.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
