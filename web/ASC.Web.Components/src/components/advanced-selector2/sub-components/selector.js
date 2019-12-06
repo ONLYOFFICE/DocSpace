@@ -187,7 +187,8 @@ const ADSelector = props => {
     onSelect,
     getOptionTooltipContent,
     onSearchChanged,
-    onGroupChanged
+    onGroupChanged,
+    size
   } = props;
 
   //console.log("options", options); 
@@ -249,6 +250,9 @@ const ADSelector = props => {
       ? [option, ...selectedOptionList]
       : selectedOptionList.filter(el => el.key !== option.key);
     setSelectedOptionList(newSelected);
+
+    if(!option.groups)
+      return;
 
     const newSelectedGroups = [];
     const removedSelectedGroups = [];
@@ -392,7 +396,7 @@ const ADSelector = props => {
   const isOptionChecked = option => {
     const checked =
       selectedOptionList.findIndex(el => el.key === option.key) > -1 ||
-      option.groups.filter(gKey => {
+      option.groups && option.groups.filter(gKey => {
         const selectedGroup = selectedGroupList.find(sg => sg.key === gKey);
 
         if (!selectedGroup) return false;
@@ -471,7 +475,7 @@ const ADSelector = props => {
               {option.label}
             </Link>
           )}
-          {displayType === "aside" && (
+          {displayType === "aside" && getOptionTooltipContent && (
             <HelpButton
               id={`info-${option.key}`}
               className="option-info"
@@ -601,7 +605,7 @@ const ADSelector = props => {
       isMultiSelect={isMultiSelect}
       hasSelected={hasSelected()}
     >
-      <ADSelectorColumn className="column-options" displayType={displayType}>
+      <ADSelectorColumn className="column-options" displayType={displayType} size={size}>
         <ADSelectorHeader className="header-options">
           <SearchInput
             className="options_searcher"
@@ -672,15 +676,17 @@ const ADSelector = props => {
               </Text>
             </div>
           )}
-          <Tooltip
-            id="user"
-            offsetRight={90}
-            getContent={getOptionTooltipContent}
-          />
+          {getOptionTooltipContent &&
+            <Tooltip
+              id="user"
+              offsetRight={90}
+              getContent={getOptionTooltipContent}
+            />
+          }
         </ADSelectorBody>
       </ADSelectorColumn>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <ADSelectorColumn className="column-groups" displayType={displayType}>
+        <ADSelectorColumn className="column-groups" displayType={displayType} size={size}>
           <ADSelectorHeader className="header-groups">
             <Text
               as="p"
@@ -741,7 +747,7 @@ ADSelector.propTypes = {
   emptyOptionsLabel: PropTypes.string,
   loadingLabel: PropTypes.string,
 
-  //size: PropTypes.oneOf(["compact", "full"]),
+  size: PropTypes.oneOf(["compact", "full"]),
   displayType: PropTypes.oneOf(["dropdown", "aside"]),
 
   selectedOptions: PropTypes.array,
@@ -751,6 +757,10 @@ ADSelector.propTypes = {
   onSearchChanged: PropTypes.func,
   onGroupChanged: PropTypes.func,
   getOptionTooltipContent: PropTypes.func
+};
+
+ADSelector.defaultProps = {
+  size: "full"
 };
 
 export default ADSelector;
