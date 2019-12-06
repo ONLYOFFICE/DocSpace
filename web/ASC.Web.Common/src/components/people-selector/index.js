@@ -163,7 +163,6 @@ class PeopleSelector extends React.Component {
           } = this.state;
 
         const { 
-            size, 
             displayTypes,
             isMultiSelect,
             isDisabled,
@@ -177,7 +176,7 @@ class PeopleSelector extends React.Component {
             hasNextPage={hasNextPage}
             isNextPageLoading={isNextPageLoading}
             loadNextPage={this.loadNextPage}
-            size={size}
+            size={"full"}
             displayType={displayTypes}
             selectedOptions={selectedOptions}
             selectedGroups={selectedGroups}
@@ -192,11 +191,11 @@ class PeopleSelector extends React.Component {
             emptyOptionsLabel={"There are no users"}
             loadingLabel={'Loading... Please wait...'}
             onSelect={onSelect}
-            onSearchChanged={value => {
+            onSearchChanged={() => {
               //action("onSearchChanged")(value);
               this.setState({ options: [], hasNextPage: true });
             }}
-            onGroupChanged={group => {
+            onGroupChanged={() => {
               //action("onGroupChanged")(group);
               this.setState({ options: [], hasNextPage: true });
             }}
@@ -208,6 +207,9 @@ class PeopleSelector extends React.Component {
 PeopleSelector.propTypes = {
   onSelect: PropTypes.func,
   useFake: PropTypes.bool,
+  isMultiSelect: PropTypes.bool,
+  displayTypes: PropTypes.oneOf(["dropdown", "aside"]),
+  isDisabled: PropTypes.bool
 }
 
 PeopleSelector.defaultProps = {
