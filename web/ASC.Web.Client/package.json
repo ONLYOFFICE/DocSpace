@@ -6,7 +6,6 @@
     "asc-web-common": "file:../../packages/asc-web-common",
     "asc-web-components": "file:../../packages/asc-web-components",
     "axios": "^0.19.0",
-    "bootstrap": "4.3.1",
     "connected-react-router": "6.5.2",
     "history": "4.9.0",
     "i18next": "17.0.12",
