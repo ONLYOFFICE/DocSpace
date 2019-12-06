@@ -250,7 +250,6 @@ class Form extends Component {
           placeholder={t("Password")}
           size="huge"
           scale={true}
-          isAutoFocussed={true}
           tabIndex={2}
           isDisabled={isLoading}
           autoComplete="current-password"
