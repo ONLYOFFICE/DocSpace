@@ -20,7 +20,7 @@ class PeopleSelector extends React.Component {
         const baseURL = `http://localhost:8092/${PREFIX}/${VERSION}`;
         setClientBasePath(baseURL);
 
-        getGroupList()
+        getGroupList(this.props.useFake)
           .then((groups) => this.setState({groups: [{
             key: "all",
             label: "All groups",
@@ -79,7 +79,7 @@ class PeopleSelector extends React.Component {
           if(currentGroup && currentGroup !== "all")
             filter.group = currentGroup;
 
-          getUserList(filter)
+          getUserList(filter, this.props.useFake)
             .then((response) => {
 
               const newOptions = (startIndex ? [...this.state.options] : []).concat(this.convertUsers(response.items));
@@ -206,11 +206,12 @@ class PeopleSelector extends React.Component {
 }
 
 PeopleSelector.propTypes = {
-  onSelect: PropTypes.func
+  onSelect: PropTypes.func,
+  useFake: PropTypes.bool,
 }
 
 PeopleSelector.defaultProps = {
-
+  useFake: false
 }
 
 export default PeopleSelector;
