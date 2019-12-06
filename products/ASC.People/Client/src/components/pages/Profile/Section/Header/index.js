@@ -11,8 +11,8 @@ import {
   Button,
   ModalDialog,
   AvatarEditor,
-  Header
 } from "asc-web-components";
+import { Heading } from 'asc-web-common';
 import { withRouter } from "react-router";
 import {
   getUserStatus,
@@ -44,7 +44,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Heading)`
   margin-left: 16px;
   margin-right: 16px;
   max-width: calc(100vw - 430px);

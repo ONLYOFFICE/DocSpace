@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton, Header } from "asc-web-components";
+import { IconButton } from "asc-web-components";
+import { Heading } from 'asc-web-common';
 import { withTranslation } from "react-i18next";
 import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
@@ -36,7 +37,7 @@ class SectionHeaderContent extends React.Component {
           size="16"
           onClick={this.onBackClick}
         />
-        <Header type="content" style={textStyle}>{headerText}</Header>
+        <Heading type="content" style={textStyle}>{headerText}</Heading>
       </div>
     );
   }

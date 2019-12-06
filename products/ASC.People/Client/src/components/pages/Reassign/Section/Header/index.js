@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Header, IconButton } from "asc-web-components";
+import { IconButton } from "asc-web-components";
+import { Heading } from 'asc-web-common';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 
@@ -28,12 +29,12 @@ const SectionHeaderContent = props => {
           onClick={() => history.push(settings.homepage)}
         />
       </div>
-      <Header type="content" truncate={true} style={textStyle}>
+      <Heading type="content" truncate={true} style={textStyle}>
         {/* {profile.displayName}
         {profile.isLDAP && ` (${t('LDAPLbl')})`}
         -  */}
         {t('ReassignmentData')}
-      </Header>
+      </Heading>
     </div>
   );
 };

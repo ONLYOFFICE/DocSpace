@@ -22,13 +22,11 @@ const StyledHeading = styled.h1`
       ${commonTextStyles};
    `;
 
-const Heading = ({ title, level, color, ...rest }) => {
+const Heading = ({ level, ...rest }) => {
    return (
       <StyledHeading
          as={`h${level}`}
          level={+level}
-         title={title}
-         color={color}
          {...rest}>
       </StyledHeading>
    );

@@ -2,7 +2,8 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { IconButton, Header, utils } from 'asc-web-components';
+import { IconButton, utils } from 'asc-web-components';
+import { Heading } from 'asc-web-common';
 import { useTranslation } from 'react-i18next';
 import {typeUser, typeGuest } from './../../../../../helpers/customNames';
 
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
   align-Items: center;
 `;
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Heading)`
   margin-left: 16px;
   max-width: calc(100vw - 430px);
   @media ${utils.device.tablet} {
