@@ -1,8 +1,7 @@
 // Override default variables before the import
 $font-family-base: 'Open Sans', sans-serif;
 
-// Import Bootstrap and its default variables
-/*@import '~bootstrap/scss/bootstrap.scss';*/
+
 @import '~react-toastify/dist/ReactToastify.min.css';
 
 html, body {
