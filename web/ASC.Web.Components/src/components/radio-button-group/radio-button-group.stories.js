@@ -26,7 +26,7 @@ storiesOf('Components|Input', module)
     });
 
     let children = [];
-    optionsMultiSelect.forEach(function (item, i) {
+    optionsMultiSelect.forEach(function (item) {
       switch (item) {
         case 'radio1':
           children.push({ value: values[0], label: text('label 1', 'First radiobtn') });

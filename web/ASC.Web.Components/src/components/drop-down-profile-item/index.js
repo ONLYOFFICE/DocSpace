@@ -79,7 +79,10 @@ DropDownProfileItem.propTypes = {
   displayName: PropTypes.string,
   email: PropTypes.string,
   avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
-  avatarSource: PropTypes.string
+  avatarSource: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default DropDownProfileItem

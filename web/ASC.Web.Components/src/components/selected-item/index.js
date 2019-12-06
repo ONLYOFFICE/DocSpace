@@ -41,40 +41,43 @@ const StyledCloseButton = styled.div`
 `;
 
 const SelectedItem = (props) => {
-    const { isDisabled, text, onClose } = props;
-    const colorProps = isDisabled ? { color: "#D0D5DA" } : {};
+  const { isDisabled, text, onClose } = props;
+  const colorProps = isDisabled ? { color: "#D0D5DA" } : {};
 
-    //console.log("SelectedItem render");
-    return (
-        <StyledSelectedItem {...props}>
-            <StyledSelectedTextBox>
-                <Text as='span' truncate {...colorProps} >
-                    {text}
-                </Text>
-            </StyledSelectedTextBox>
-            <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
-                <IconButton
-                    color="#979797"
-                    size={10}
-                    iconName='CrossIcon'
-                    isFill={true}
-                    isDisabled={isDisabled}
-                />
-            </StyledCloseButton>
-        </StyledSelectedItem>
-    );
+  //console.log("SelectedItem render");
+  return (
+    <StyledSelectedItem {...props}>
+      <StyledSelectedTextBox>
+        <Text as='span' truncate {...colorProps} >
+          {text}
+        </Text>
+      </StyledSelectedTextBox>
+      <StyledCloseButton onClick={onClose} isDisabled={isDisabled}>
+        <IconButton
+          color="#979797"
+          size={10}
+          iconName='CrossIcon'
+          isFill={true}
+          isDisabled={isDisabled}
+        />
+      </StyledCloseButton>
+    </StyledSelectedItem>
+  );
 }
 
 SelectedItem.propTypes = {
-    text: PropTypes.string,
-    isInline: PropTypes.bool,
-    onClose: PropTypes.func.isRequired,
-    isDisabled: PropTypes.bool
+  text: PropTypes.string,
+  isInline: PropTypes.bool,
+  onClose: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 SelectedItem.defaultProps = {
-    isInline: true,
-    isDisabled: false
+  isInline: true,
+  isDisabled: false
 };
 
 export default SelectedItem;

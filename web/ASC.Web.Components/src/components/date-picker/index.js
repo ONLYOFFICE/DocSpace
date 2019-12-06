@@ -134,9 +134,7 @@ class DatePicker extends Component {
   };
 
   onClick = isOpen => {
-    if (!this.state.hasError) {
-      this.setState({ isOpen });
-    }
+    this.setState({ isOpen });
   };
 
   onClose = () => {
@@ -341,11 +339,11 @@ class DatePicker extends Component {
   };
 
   render() {
-    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent } = this.props;
+    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent, id, style, className } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
     return (
-      <DateInputStyle ref={this.ref}>
+      <DateInputStyle ref={this.ref} id={id} className={className} style={style}>
         <InputBlock
           scale={true}
           isDisabled={isDisabled}
@@ -411,7 +409,10 @@ DatePicker.propTypes = {
   calendarSize: PropTypes.oneOf(["base", "big"]),
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   zIndex: PropTypes.number,
-  calendarHeaderContent: PropTypes.string
+  calendarHeaderContent: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 DatePicker.defaultProps = {

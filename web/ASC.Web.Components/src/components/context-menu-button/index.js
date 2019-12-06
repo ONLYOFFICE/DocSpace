@@ -90,13 +90,16 @@ class ContextMenuButton extends React.Component {
       onMouseLeave,
       onMouseOver,
       onMouseOut,
-      directionX
+      directionX,
+      className,
+      id,
+      style
     } = this.props;
 
     const { isOpen } = this.state;
 
     return (
-      <StyledOuter ref={this.ref}>
+      <StyledOuter ref={this.ref} className={className} id={id} style={style}>
         <IconButton
           color={color}
           hoverColor={hoverColor}
@@ -116,7 +119,7 @@ class ContextMenuButton extends React.Component {
         <DropDown directionX={directionX} isOpen={isOpen}>
           {
             this.state.data.map((item, index) =>
-              (item && (item.label || item.icon))  && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
+              (item && (item.label || item.icon)) && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
               />
             )
           }
@@ -147,7 +150,11 @@ ContextMenuButton.propTypes = {
   onMouseOver: PropTypes.func,
   onMouseOut: PropTypes.func,
 
-  directionX: PropTypes.string
+  directionX: PropTypes.string,
+
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ContextMenuButton.defaultProps = {

@@ -29,12 +29,17 @@ or
 
 #### Properties
 
-| Props                  |   Type   | Required |            Values             |   Default    | Description                                                              |
-| ---------------------- | :------: | :------: | :---------------------------: | :----------: | ------------------------------------------------------------------------ |
-| `isDisabled`           |  `bool`  |    -     |               -               |   `false`    | Tells when the button should present a disabled state                    |
-| `isDropdown`           |  `bool`  |    -     |               -               |    `true`    | Select a state between two separate buttons or one with a drop-down list |
-| `clickAction`          |  `func`  |    -     |               -               |      -       | What the main button will trigger when clicked                           |
-| `clickActionSecondary` |  `func`  |    -     |               -               |      -       | What the secondary button will trigger when clicked                      |
-| `moduleName`           | `oneOf`  |    -     | `people`, `mail`, `documents` |      -       | The name of the module where the button is used                          |
-| `text`                 | `string` |    -     |               -               |   `Button`   | Button text                                                              |
-| `iconName`             | `string` |    -     |               -               | `PeopleIcon` | Icon inside button                                                       |
+| Props                  |      Type      | Required |            Values             |   Default    | Description                                                              |
+| ---------------------- | :------------: | :------: | :---------------------------: | :----------: | ------------------------------------------------------------------------ |
+| `className`            |    `string`    |    -     |               -               |      -       | Accepts class                                                            |
+| `clickActionSecondary` |     `func`     |    -     |               -               |      -       | What the secondary button will trigger when clicked                      |
+| `clickAction`          |     `func`     |    -     |               -               |      -       | What the main button will trigger when clicked                           |
+| `iconName`             |    `string`    |    -     |               -               | `PeopleIcon` | Icon inside button                                                       |
+| `id`                   |    `string`    |    -     |               -               |      -       | Accepts id                                                               |
+| `isDisabled`           |     `bool`     |    -     |               -               |   `false`    | Tells when the button should present a disabled state                    |
+| `isDropdown`           |     `bool`     |    -     |               -               |    `true`    | Select a state between two separate buttons or one with a drop-down list |
+| `moduleName`           |    `oneOf`     |    -     | `people`, `mail`, `documents` |      -       | The name of the module where the button is used                          |
+| `onClick`              |     `func`     |    -     |               -               |      -       | DropDown component click action                                          |
+| `opened`               |     `bool`     |    -     |               -               |      -       | Open DropDown                                                            |
+| `style`                | `obj`, `array` |    -     |               -               |      -       | Accepts css style                                                        |
+| `text`                 |    `string`    |    -     |               -               |   `Button`   | Button text                                                              |

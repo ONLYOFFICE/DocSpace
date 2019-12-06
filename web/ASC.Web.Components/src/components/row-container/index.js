@@ -51,7 +51,7 @@ class RowContainer extends React.PureComponent {
   }, areEqual);
 
   render() {
-    const { manualHeight, itemHeight, children, useReactWindow } = this.props;
+    const { manualHeight, itemHeight, children, useReactWindow, id, className, style } = this.props;
 
     const renderList = ({ height, width }) => (
       <List
@@ -68,7 +68,7 @@ class RowContainer extends React.PureComponent {
     );
 
     return (
-      <StyledRowContainer id="rowContainer" manualHeight={manualHeight} useReactWindow={useReactWindow}>
+      <StyledRowContainer id={id} className={className} style={style} manualHeight={manualHeight} useReactWindow={useReactWindow}>
         { useReactWindow ? (
           <AutoSizer>{renderList}</AutoSizer>
         ) : (
@@ -78,7 +78,7 @@ class RowContainer extends React.PureComponent {
             </div>
           ))
         )}
-        <ContextMenu targetAreaId="rowContainer" options={this.state.contextOptions} />
+        <ContextMenu targetAreaId={id} options={this.state.contextOptions} />
       </StyledRowContainer>
     );
   }
@@ -88,12 +88,16 @@ RowContainer.propTypes = {
   itemHeight: PropTypes.number,
   manualHeight: PropTypes.string,
   children: PropTypes.any.isRequired,
-  useReactWindow: PropTypes.bool
+  useReactWindow: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 RowContainer.defaultProps = {
   itemHeight: 50,
-  useReactWindow: true
+  useReactWindow: true,
+  id: "rowContainer"
 };
 
 export default RowContainer;

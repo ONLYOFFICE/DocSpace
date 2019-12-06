@@ -58,7 +58,9 @@ Link.propTypes = {
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Link.defaultProps = {

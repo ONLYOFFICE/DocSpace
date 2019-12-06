@@ -13,16 +13,19 @@ const StyledBackdrop = styled.div`
   top: 0;
 `;
 
-const Backdrop = props => { 
+const Backdrop = props => {
   //console.log("Backdrop render");
   return (
-    <StyledBackdrop {...props}/> 
+    <StyledBackdrop {...props} />
   );
 }
 
 Backdrop.propTypes = {
   visible: PropTypes.bool,
-  zIndex: PropTypes.number
+  zIndex: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Backdrop.defaultProps = {

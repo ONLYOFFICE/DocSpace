@@ -204,4 +204,20 @@ describe('<PasswordInput />', () => {
     expect(wrapper.state('type')).toBe('text');
     expect(wrapper.state('progressWidth')).toBe(100);
   });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <PasswordInput {...baseProps} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <PasswordInput {...baseProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
 });

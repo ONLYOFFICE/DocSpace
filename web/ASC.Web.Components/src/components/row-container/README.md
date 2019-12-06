@@ -14,8 +14,11 @@ import { RowContainer } from "asc-web-components";
 
 ### Properties
 
-| Props            |   Type   | Required | Values | Default | Description                                                     |
-| ---------------- | :------: | :------: | :----: | :-----: | --------------------------------------------------------------- |
-| `manualHeight`   | `string` |    -     |   -    |    -    | Allows you to set fixed block height for Row                    |
-| `itemHeight`     | `number` |    -     |   -    |  `50`   | Height of one Row element. Required for scroll to work properly |
-| `useReactWindow` |  `bool`  |    -     |   -    | `true`  | Use react-window for efficiently rendering large lists          |
+| Props            |      Type      | Required | Values |    Default     | Description                                                     |
+| ---------------- | :------------: | :------: | :----: | :------------: | --------------------------------------------------------------- |
+| `className`      |    `string`    |    -     |   -    |       -        | Accepts class                                                   |
+| `id`             |    `string`    |    -     |   -    | `rowContainer` | Accepts id                                                      |
+| `itemHeight`     |    `number`    |    -     |   -    |      `50`      | Height of one Row element. Required for scroll to work properly |
+| `manualHeight`   |    `string`    |    -     |   -    |       -        | Allows you to set fixed block height for Row                    |
+| `style`          | `obj`, `array` |    -     |   -    |       -        | Accepts css style                                               |
+| `useReactWindow` |     `bool`     |    -     |   -    |     `true`     | Use react-window for efficiently rendering large lists          |

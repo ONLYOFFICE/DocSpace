@@ -541,4 +541,28 @@ describe('<EmailInput />', () => {
 
     wrapper.simulate('change', event);
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <EmailInput {...baseProps} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <EmailInput {...baseProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <EmailInput {...baseProps} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

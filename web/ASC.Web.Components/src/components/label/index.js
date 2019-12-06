@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import Text from '../text';
 
 const Label = (props) => {
-    const { isRequired, error, title, truncate, isInline, htmlFor, text, display, className } = props;
+    const { isRequired, error, title, truncate, isInline, htmlFor, text, display, className, id, style } = props;
     const errorProp = error ? { color: "#c30" } : {}
 
-    //console.log("Label render");
+    
     return (
-        <Text as='label' htmlFor={htmlFor} isInline={isInline} display={display} {...errorProp} fontWeight={600} truncate={truncate} title={title} className={className}>
+            <Text as='label' id={id} style={style} htmlFor={htmlFor} isInline={isInline} display={display} {...errorProp} fontWeight={600} truncate={truncate} title={title} className={className}>
             {text} {isRequired && " *"}
         </Text>
     );
@@ -23,7 +23,9 @@ Label.propTypes = {
     htmlFor: PropTypes.string,
     text: PropTypes.string,
     display: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Label.defaultProps = {

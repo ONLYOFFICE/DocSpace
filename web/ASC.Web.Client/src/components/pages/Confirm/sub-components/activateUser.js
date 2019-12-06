@@ -5,8 +5,8 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { store, constants } from 'asc-web-common';
-const { getConfirmationInfo, activateConfirmUser } = store.auth.actions;
+import { constants } from 'asc-web-common';
+import { getConfirmationInfo, activateConfirmUser } from '../../../../store/confirm/actions';
 const { EmployeeActivationStatus } = constants;
 
 
@@ -138,7 +138,7 @@ class Confirm extends React.PureComponent {
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
 
-    getConfirmationInfo(this.state.key, this.state.linkType)
+    getConfirmationInfo(this.state.key)
       .then(
         function () {
           console.log("get settings success");
@@ -319,7 +319,7 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 
 function mapStateToProps(state) {
   return {
-    isConfirmLoaded: state.auth.isConfirmLoaded,
+    isConfirmLoaded: state.confirm.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings
   };

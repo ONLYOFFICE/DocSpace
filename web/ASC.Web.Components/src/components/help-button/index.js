@@ -43,7 +43,7 @@ class HelpButton extends React.Component {
     this.state = { isOpen: false, displayType: this.getTypeByWidth() };
     this.ref = React.createRef();
     this.refTooltip = React.createRef();
-    this.id = uniqueId();
+    this.id = this.props.id || uniqueId();
 
     this.throttledResize = throttle(this.resize, 300);
   }
@@ -127,11 +127,12 @@ class HelpButton extends React.Component {
       offsetLeft,
       zIndex,
       helpButtonHeaderContent,
-      className
+      className,
+      style
     } = this.props;
 
     return (
-      <div ref={this.ref}>
+      <div ref={this.ref} style={style}>
         <IconButton
           id={this.id}
           className={className}
@@ -192,7 +193,9 @@ HelpButton.propTypes = {
   zIndex: PropTypes.number,
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   helpButtonHeaderContent: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 HelpButton.defaultProps = {
@@ -200,7 +203,8 @@ HelpButton.defaultProps = {
   offsetRight: 120,
   offsetLeft: 0,
   zIndex: 310,
-  displayType: "auto"
+  displayType: "auto",
+  className: "icon-button"
 };
 
 export default HelpButton;

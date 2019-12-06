@@ -199,7 +199,12 @@ MainButton.propTypes = {
   isDropdown: PropTypes.bool,
   clickAction: PropTypes.func,
   clickActionSecondary: PropTypes.func,
-  iconName: PropTypes.string
+  iconName: PropTypes.string,
+  opened: PropTypes.bool,  //TODO: Make us whole
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 MainButton.defaultProps = {

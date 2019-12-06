@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { store } from 'asc-web-common';
-const { getConfirmationInfo, createConfirmUser, logout, login } = store.auth.actions;
+import { getConfirmationInfo, createConfirmUser } from '../../../../store/confirm/actions';
+const { logout, login } = store.auth.actions;
 
 const inputWidth = '400px';
 
@@ -152,7 +153,7 @@ class Confirm extends React.PureComponent {
     componentDidMount() {
         const { getConfirmationInfo, history } = this.props;
 
-        getConfirmationInfo(this.state.key, this.state.linkType)
+        getConfirmationInfo(this.state.key)
             .catch(e => {
                 console.error("get settings error", e);
                 history.push(`/login/error=${e}`);
@@ -339,7 +340,7 @@ const CreateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {...
 
 function mapStateToProps(state) {
     return {
-        isConfirmLoaded: state.auth.isConfirmLoaded,
+        isConfirmLoaded: state.confirm.isConfirmLoaded,
         isAuthenticated: state.auth.isAuthenticated,
         settings: state.auth.settings.passwordSettings,
         greetingTitle: state.auth.settings.greetingSettings

@@ -124,7 +124,10 @@ SocialButton.propTypes = {
   label: PropTypes.string,
   iconName: PropTypes.string,
   tabIndex: PropTypes.number,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 SocialButton.defaultProps = {

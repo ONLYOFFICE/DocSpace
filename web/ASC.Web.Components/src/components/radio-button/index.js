@@ -9,6 +9,7 @@ const hoverColor = disableColor;
 const internalCircleDisabledColor = '#D0D5DA';
 const externalCircleDisabledColor = '#eceef1';
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearLabel = ({ spacing, isDisabled, ...props }) => <label {...props} />
 const Label = styled(ClearLabel)`
   display: flex;
@@ -56,6 +57,7 @@ const Input = styled.input`
   opacity: 0.0001;
 `;
 
+// eslint-disable-next-line react/prop-types
 const RadiobuttonIcon = ({ isChecked, isDisabled }) => {
   const iconName = isChecked
     ? "RadiobuttonCheckedIcon"
@@ -98,7 +100,10 @@ class RadioButton extends React.Component {
     return (
       <Label
         spacing={this.props.spacing}
-        isDisabled={this.props.isDisabled}>
+        isDisabled={this.props.isDisabled}
+        id={this.props.id}
+        className={this.props.className}
+        style={this.props.style}>
         <Input type='radio'
           name={this.props.name}
           value={this.props.value}
@@ -128,6 +133,10 @@ RadioButton.propTypes = {
   onChange: PropTypes.func,
   onClick: PropTypes.func,
   value: PropTypes.string.isRequired,
+  spacing: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 RadioButton.defaultProps = {

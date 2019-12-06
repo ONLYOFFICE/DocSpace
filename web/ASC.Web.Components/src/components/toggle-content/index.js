@@ -11,6 +11,7 @@ display: ${props => props.isOpen ? 'block' : 'none'};
 padding-top: 9px;
 `;
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const IconArrow = ({ isOpen, ...props }) => <Icons.ArrowContentIcon {...props} />;
 
 const Arrow = styled(IconArrow)`
@@ -56,7 +57,11 @@ class ToggleContent extends React.Component {
   render() {
     //console.log("ToggleContent render");
     return (
-      <div className={this.props.className}>
+      <div
+        className={this.props.className}
+        id={this.props.id}
+        style={this.props.style}
+      >
         <StyledSpan onClick={() => {
           this.toggleContent(!this.state.isOpen);
           this.props.onChange && this.props.onChange(!this.state.isOpen);
@@ -74,7 +79,10 @@ ToggleContent.propTypes = {
   label: PropTypes.string.isRequired,
   isOpen: PropTypes.bool,
   onChange: PropTypes.func,
-  className: PropTypes.string
+  className: PropTypes.string,
+  children: PropTypes.any,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 ToggleContent.defaultProps = {

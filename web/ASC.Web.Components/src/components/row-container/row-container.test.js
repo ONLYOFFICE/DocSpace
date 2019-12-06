@@ -84,10 +84,40 @@ describe('<RowContainer />', () => {
   it('render with normal rows', () => {
     const wrapper = mount(
       <RowContainer {...baseProps}>
-        <div contextOptions={[{key: '1', label: 'test'}]}>test</div>
+        <div contextOptions={[{ key: '1', label: 'test' }]}>test</div>
       </RowContainer>
     );
 
     expect(wrapper).toExist();
+  });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <RowContainer {...baseProps} id="testId">
+        <span>Demo</span>
+      </RowContainer>
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <RowContainer {...baseProps} className="test">
+        <span>Demo</span>
+      </RowContainer>
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <RowContainer {...baseProps} style={{ color: 'red' }}>
+        <span>Demo</span>
+      </RowContainer>
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 });

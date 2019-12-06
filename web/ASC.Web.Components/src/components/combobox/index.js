@@ -176,7 +176,10 @@ ComboBox.propTypes = {
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
   scaled: PropTypes.bool,
-  scaledOptions: PropTypes.bool
+  scaledOptions: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 ComboBox.defaultProps = {
