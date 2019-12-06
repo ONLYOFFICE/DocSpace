@@ -2,7 +2,7 @@
 $font-family-base: 'Open Sans', sans-serif;
 
 // Import Bootstrap and its default variables
-@import '~bootstrap/scss/bootstrap.scss';
+/*@import '~bootstrap/scss/bootstrap.scss';*/
 @import '~react-toastify/dist/ReactToastify.min.css';
 
 html, body {
@@ -18,4 +18,8 @@ html, body {
         left: calc(50% - 32px);
         top: 35%;
     }
+}
+
+body {
+    margin: 0;
 }
