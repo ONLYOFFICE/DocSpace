@@ -9,7 +9,7 @@ import { Heading } from "asc-web-components";
 ```
 
 ```jsx
-<Heading as="h1" title="Some title">
+<Heading level={1} title="Some title">
   Some text
 </Heading>
 ```
@@ -32,11 +32,11 @@ const StyledHeading = styled(Heading)`
 
 ### Properties
 
-| Props      |   Type   | Required |          Values          |  Default  | Description                                        |
-| ---------- | :------: | :------: | :----------------------: | :-------: | -------------------------------------------------- |
-| `color`    | `string` |    -     |            -             | `#333333` | Specifies the headline color                       |
-| `as`       | `string` |    -     |            -             |   `h1`    | Sets the tag through which to render the component |
-| `title`    |  `bool`  |    -     |            -             |     -     | Title                                              |
-| `truncate` |  `bool`  |    -     |            -             |  `false`  | Disables word wrapping                             |
-| `isInline` |  `bool`  |    -     |            -             |  `false`  | Sets the 'display: inline-block' property          |
-| `size`     | `oneOF`  |    -     | `big`, `medium`, `small` |   `big`   | Sets the size of headline                          |
+| Props      |   Type   | Required |          Values          |  Default  | Description                                                                                                                           |
+| ---------- | :------: | :------: | :----------------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `string` |    -     |            -             | `#333333` | Specifies the headline color                                                                                                          |
+| `level`    | `oneOf`  |    -     |     1, 2, 3, 4, 5, 6     |    `1`    | The heading level. It corresponds to the number after the 'H' for the DOM tag. Set the level for semantic accuracy and accessibility. |
+| `title`    |  `bool`  |    -     |            -             |     -     | Title                                                                                                                                 |
+| `truncate` |  `bool`  |    -     |            -             |  `false`  | Disables word wrapping                                                                                                                |
+| `isInline` |  `bool`  |    -     |            -             |  `false`  | Sets the 'display: inline-block' property                                                                                             |
+| `size`     | `oneOF`  |    -     | `big`, `medium`, `small` |   `big`   | Sets the size of headline                                                                                                             |

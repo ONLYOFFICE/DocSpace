@@ -12,7 +12,7 @@ storiesOf('Components| ErrorContainer', module)
     .addDecorator(withReadme(Readme))
     .add('base', () => (
         <ErrorContainer>
-            <Heading as="h2" size='medium' isInline>{text("Headline text", "Some error has happened")}</Heading>
+            <Heading level={2} size='medium' isInline>{text("Headline text", "Some error has happened")}</Heading>
             <Text as="span">{text("Body text", "Try again later")}</Text>
         </ErrorContainer>
     ));
