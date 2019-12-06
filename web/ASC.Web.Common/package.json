@@ -63,7 +63,6 @@
     "babel-plugin-inline-react-svg": "^1.1.0",
     "babel-plugin-transform-dynamic-import": "^2.1.0",
     "babel-plugin-transform-rename-import": "^2.3.0",
-    "bootstrap": "^4.3.1",
     "cross-env": "^5.2.0",
     "css-loader": "^3.2.0",
     "enzyme": "^3.10.0",
@@ -101,7 +100,6 @@
   },
   "peerDependencies": {
     "asc-web-components": "file:../../packages/asc-web-components",
-    "bootstrap": "^4.3.1",
     "i18next": "17.0.12",
     "prop-types": "^15.7.2",
     "react": "^16.9.0",
