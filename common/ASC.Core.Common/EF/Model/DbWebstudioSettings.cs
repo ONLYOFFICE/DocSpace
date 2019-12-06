@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF.Model
@@ -17,7 +18,7 @@ namespace ASC.Core.Common.EF.Model
 
     public static class WebstudioSettingsExtension
     {
-        public static void AddWebstudioSettings(this ModelBuilder modelBuilder)
+        public static ModelBuilder AddWebstudioSettings(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbWebstudioSettings>()
                 .HasKey(c => new { c.TenantId, c.Id, c.UserId });
@@ -25,6 +26,8 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder.Entity<DbWebstudioSettings>()
                 .Property(r => r.Data)
                 .HasConversion(r => r.ToString(), r => JsonDocument.Parse(r, new JsonDocumentOptions()));
+
+            return modelBuilder;
         }
     }
 }
