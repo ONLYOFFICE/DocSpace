@@ -95,7 +95,6 @@
     "svg-inline-loader": "^0.8.0"
   },
   "dependencies": {
-    "bootstrap": "^4.3.1",
     "email-addresses": "^3.0.3",
     "html-to-react": "^1.4.2",
     "lodash": "4.17.15",

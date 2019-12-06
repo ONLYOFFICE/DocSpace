@@ -4,7 +4,6 @@ It can also be an scss file, however,
 you have to go to `webpack.config.js` file
 and enable the options in there
 */
-/*@import "../node_modules/bootstrap/dist/css/bootstrap.css";*/
 @import "../node_modules/react-toastify/dist/ReactToastify.min.css";
 
 body {
@@ -28,6 +27,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem;
 }
   
-  h5, .h5 {
-    font-size: 1.25rem;
-  }
+h5, .h5 {
+  font-size: 1.25rem;
+}
