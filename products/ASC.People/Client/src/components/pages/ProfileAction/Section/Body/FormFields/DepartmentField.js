@@ -3,9 +3,9 @@ import isEqual from "lodash/isEqual";
 import {
   FieldContainer,
   SelectorAddButton,
-  SelectedItem,
-  AdvancedSelector
+  SelectedItem
 } from "asc-web-components";
+import { GroupSelector } from "asc-web-common";
 
 class DepartmentField extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -50,7 +50,7 @@ class DepartmentField extends React.Component {
           onClick={onShowGroupSelector}
           className="department-add-btn"
         />
-        <AdvancedSelector
+        {/* <AdvancedSelector
           displayType="dropdown"
           isOpen={selectorIsVisible}
           maxHeight={336}
@@ -64,6 +64,11 @@ class DepartmentField extends React.Component {
           selectAllLabel={selectorSelectAllText}
           onSelect={selectorOnSelectGroups}
           onCancel={onCloseGroupSelector}
+        /> */}
+        <GroupSelector 
+          isOpen={selectorIsVisible}
+          isMultiSelect={true}
+          onSelect={selectorOnSelectGroups}
         />
         {selectorSelectedOptions.map(option => (
             <SelectedItem
