@@ -269,13 +269,13 @@ namespace ASC.MessagingSystem.DbSender
                        : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
         }
 
-        //TODO: move to external service
+        //TODO: move to external service and fix
         private void DeleteOldEvents(object state)
         {
             try
             {
-                GetOldEvents(LoginEventsTable, "LoginHistoryLifeTime");
-                GetOldEvents(AuditEventsTable, "AuditTrailLifeTime");
+                //GetOldEvents(LoginEventsTable, "LoginHistoryLifeTime");
+                //GetOldEvents(AuditEventsTable, "AuditTrailLifeTime");
             }
             catch (Exception ex)
             {
@@ -294,7 +294,7 @@ namespace ASC.MessagingSystem.DbSender
                 .Having(Exp.Sql("dout < ADDDATE(UTC_DATE(), INTERVAL -tout DAY)"))
                 .SetMaxResults(1000);
 
-            List<int> ids;
+            List<AuditEvent> ids;
 
             do
             {
@@ -308,22 +308,22 @@ namespace ASC.MessagingSystem.DbSender
                     {
                         r.Id,
                         r.Date,
-                        date = ef.WebstudioSettings
+                        settings = ef.WebstudioSettings
                         .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
                         .Select(r => r.Data)
-                        .FirstOrDefault()
-                        ?? TenantAuditSettings.MaxLifeTime.ToString()
+                        .FirstOrDefault(),
+                        ef = r
                     })
-                    .Where(r => r.Date < DateTime.UtcNow.AddDays(-1))
+                    .Where(r => r.Date < DateTime.UtcNow.AddDays(-r.settings.RootElement.GetProperty(settings).GetInt32()))
                     .Take(1000);
 
-                ids = ae.ToList().Select(r => r.Id).ToList();
+                ids = ae.ToList().Select(r => r.ef).ToList();
 
                 if (!ids.Any()) return;
 
-                //var deleteQuery = new SqlDelete(table).Where(Exp.In("id", ids));
+                //ef.AuditEvents.RemoveRange(ids);
+                ef.SaveChanges();
 
-                //dbManager.ExecuteNonQuery(deleteQuery);
             } while (ids.Any());
         }
     }
