@@ -30,3 +30,9 @@ h1, h2, h3, h4, h5, h6 {
 h5, .h5 {
   font-size: 1.25rem;
 }
+
+.Toastify__toast-container--top-center {
+  top: 1em;
+  left: 50%;
+  margin-left: -160px;
+}
