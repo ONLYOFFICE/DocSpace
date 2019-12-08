@@ -81,7 +81,6 @@ class GroupSelector extends React.Component {
           } = this.state;
 
         const { 
-            displayTypes,
             isMultiSelect,
             isDisabled,
             onSelect
@@ -94,7 +93,7 @@ class GroupSelector extends React.Component {
             isNextPageLoading={isNextPageLoading}
             loadNextPage={this.loadNextPage}
             size={"compact"}
-            displayType={displayTypes}
+            displayType={"auto"}
             selectedOptions={selectedOptions}
             isOpen={isOpen}
             isMultiSelect={isMultiSelect}
@@ -111,6 +110,9 @@ class GroupSelector extends React.Component {
               //action("onSearchChanged")(value);
               console.log("Search group", value);
               this.setState({ options: [], hasNextPage: true });
+            }}
+            onCancel={() => {
+              this.setState({ isOpen: false });
             }}
       />);
     }

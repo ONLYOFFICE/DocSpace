@@ -2643,6 +2643,7 @@ asap@~2.0.3:
     react-avatar-editor "^11.0.7"
     react-custom-scrollbars "^4.2.1"
     react-dropzone "^10.1.8"
+    react-onclickoutside "^6.9.0"
     react-text-mask "^5.4.3"
     react-toastify "^5.3.2"
     react-tooltip "^3.11.1"
@@ -9925,6 +9926,11 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-onclickoutside@^6.9.0:
+  version "6.9.0"
+  resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
+  integrity sha512-8ltIY3bC7oGhj2nPAvWOGi+xGFybPNhJM0V1H8hY/whNcXgmDeaeoCMPPd8VatrpTsUWjb/vGzrmu6SrXVty3A==
 
 react-popper-tooltip@^2.8.3:
   version "2.10.0"

@@ -111,6 +111,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dropzone": "^10.1.8",
     "react-lifecycles-compat": "^3.0.4",
+    "react-onclickoutside": "^6.9.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^5.3.2",
     "react-tooltip": "^3.11.1",

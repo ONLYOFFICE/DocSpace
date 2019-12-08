@@ -3,23 +3,106 @@ import PropTypes from "prop-types";
 import DropDown from "../drop-down";
 import Aside from "../layout/sub-components/aside";
 import ADSelector from "./sub-components/selector";
+import Backdrop from "../backdrop";
+import { desktop } from "../../utils/device";
+import throttle from "lodash/throttle";
+import onClickOutside from "react-onclickoutside";
 
-const displayTypes = ["dropdown", "aside"];
+const displayTypes = ["dropdown", "aside", "auto"];
 const sizes = ["compact", "full"];
 
 class AdvancedSelector2 extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.ref = React.createRef();
+
+    this.state = { 
+      isOpen: props.isOpen, 
+      displayType: this.getTypeByWidth() 
+    };
+  }
+
+  handleClickOutside = evt => {
+    // ..handling code goes here...
+    console.log("handleClickOutside", evt);
+    this.onClose();
+  };
+
+  componentDidMount() {
+    if(this.state.isOpen) {
+      this.throttledResize = throttle(this.resize, 300);
+      //handleAnyClick(true, this.handleClick);
+      window.addEventListener("resize", this.throttledResize);
+    }
+  }
+
+  resize = () => {
+    if (this.props.displayType !== "auto") return;
+    const type = this.getTypeByWidth();
+    if (type === this.state.displayType) return;
+    this.setState({ displayType: type });
+  };
+
+  onClose = () => {
+    //this.setState({ isOpen: false });
+    this.props.onCancel && this.props.onCancel();
+  };
+
+  componentDidUpdate(prevProps) {
+    if (this.props.displayType !== prevProps.displayType) {
+      this.setState({ displayType: this.getTypeByWidth() });
+    }
+
+    if(this.props.isOpen !== prevProps.isOpen) {
+      this.setState({ 
+        isOpen: this.props.isOpen, 
+        displayType: this.getTypeByWidth() 
+      }, () => {
+        if(this.state.isOpen)
+          this.throttledResize = throttle(this.resize, 300);
+        else
+          this.throttledResize.cancel();
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    //handleAnyClick(false, this.handleClick);
+    this.throttledResize.cancel();
+    window.removeEventListener("resize", this.throttledResize);
+  }
+
+  getTypeByWidth = () => {
+    const displayType = this.props.displayType !== "auto" 
+      ? this.props.displayType 
+      : window.innerWidth < desktop.match(/\d+/)[0] ? "aside" : "dropdown";
+
+    //console.log("AdvancedSelector2 displayType", displayType);
+
+    return displayType;
+  };
+
   render() {
-    const { displayType, isOpen } = this.props;
+    const { isOpen, displayType } = this.state;
     //console.log("AdvancedSelector render()");
 
     return (
-        displayType === "dropdown" 
-        ? <DropDown opened={isOpen} className="dropdown-container">
-            <ADSelector {...this.props} />
-          </DropDown>
-        : <Aside visible={isOpen} scale={false} className="aside-container">
-            <ADSelector {...this.props} />
+      <div ref={this.ref}>
+        {displayType === "dropdown" 
+        ? 
+            <DropDown opened={isOpen} className="dropdown-container">
+              <ADSelector {...this.props} displayType={displayType} />
+            </DropDown>
+        : 
+        <>
+          <Backdrop onClick={this.onClose} visible={isOpen} zIndex={310} />
+          <Aside visible={isOpen} scale={false} className="aside-container">
+            <ADSelector {...this.props} displayType={displayType} />
           </Aside>
+        </>
+        }
+      </div>
     );
   }
 }
@@ -63,8 +146,8 @@ AdvancedSelector2.defaultProps = {
   buttonLabel: "Add members",
   selectAllLabel: "Select all",
   allowAnyClickClose: true,
-  displayType: "dropdown",
+  displayType: "auto",
   options: []
 };
 
-export default AdvancedSelector2;
+export default onClickOutside(AdvancedSelector2);

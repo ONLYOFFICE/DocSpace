@@ -23,7 +23,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 const sizes = ["compact", "full"];
-const displayTypes = ["dropdown", "aside"];
+const displayTypes = ["dropdown", "aside", "auto"];
 
 class ADSelectorExample extends React.Component {
   constructor(props) {
@@ -182,7 +182,7 @@ class ADSelectorExample extends React.Component {
           isNextPageLoading={isNextPageLoading}
           loadNextPage={this.loadNextPage}
           size={select("size", sizes, "full")}
-          displayType={select("displayType", displayTypes, "dropdown")}
+          displayType={select("displayType", displayTypes, "auto")}
           selectedOptions={selectedOptions}
           selectedGroups={selectedGroups}
           isOpen={isOpen}
@@ -213,6 +213,9 @@ class ADSelectorExample extends React.Component {
             action("onGroupChanged")(group);
             this.setState({ options: [], hasNextPage: true });
           }}
+          onCancel={() => this.setState({
+            isOpen: false
+          })}
           getOptionTooltipContent={index => {
             if (!index) return null;
 

@@ -163,7 +163,6 @@ class PeopleSelector extends React.Component {
           } = this.state;
 
         const { 
-            displayTypes,
             isMultiSelect,
             isDisabled,
             onSelect
@@ -177,7 +176,7 @@ class PeopleSelector extends React.Component {
             isNextPageLoading={isNextPageLoading}
             loadNextPage={this.loadNextPage}
             size={"full"}
-            displayType={displayTypes}
+            displayType={"auto"}
             selectedOptions={selectedOptions}
             selectedGroups={selectedGroups}
             isOpen={isOpen}
@@ -200,6 +199,9 @@ class PeopleSelector extends React.Component {
               this.setState({ options: [], hasNextPage: true });
             }}
             getOptionTooltipContent={this.getOptionTooltipContent}
+            onCancel={() => {
+              this.setState({ isOpen: false });
+            }}
       />);
     }
 }
@@ -208,7 +210,6 @@ PeopleSelector.propTypes = {
   onSelect: PropTypes.func,
   useFake: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
-  displayTypes: PropTypes.oneOf(["dropdown", "aside"]),
   isDisabled: PropTypes.bool
 }
 
