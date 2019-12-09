@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { tablet } from "../../../utils/device";
 import NavItem from "./nav-item";
 import Heading from "../../heading";
-import '../../heading/heading.css';
 
 const backgroundColor = "#0F4071";
 
@@ -19,6 +18,12 @@ const StyledHeader = styled.header`
   @media ${tablet} {
     display: flex;
   }
+
+  .heading {
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700;
+  }
 `;
 
 const HeaderComponent = React.memo(props => {
@@ -30,7 +35,7 @@ const HeaderComponent = React.memo(props => {
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Heading size='xlarge' color="#FFFFFF">
+      <Heading className="heading" size='xlarge' color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
       </Heading>
     </StyledHeader>

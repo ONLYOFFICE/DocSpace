@@ -12,7 +12,6 @@ import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
 import throttle from "lodash/throttle";
-import '../heading/heading.css';
 
 const DateInputStyle = styled.div`
   max-width: 110px;
@@ -46,6 +45,9 @@ const Body = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
+  margin: 0;
+  line-height: 56px;
+  font-weight: 700 !important;
 `;
 
 class DatePicker extends Component {
@@ -375,7 +377,6 @@ class DatePicker extends Component {
                   <StyledHeader>
                     <HeaderText 
                       size='medium'
-                      className='common-headline'
                       truncate={true}
                       >
                         {calendarHeaderContent}

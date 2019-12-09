@@ -8,7 +8,6 @@ import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
-import '../heading/heading.css';
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
@@ -32,6 +31,9 @@ const Body = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
+  margin: 0;
+  line-height: 56px;
+  font-weight: 700;
 `;
 class HelpButton extends React.Component {
   constructor(props) {
@@ -159,8 +161,7 @@ class HelpButton extends React.Component {
                   {helpButtonHeaderContent && (
                     <HeaderContent>
                       <HeaderText 
-                        type='content'
-                        className='common-headline'
+                        size='medium'
                         truncate={true}
                         >
                           {helpButtonHeaderContent}

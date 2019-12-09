@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Backdrop from "../backdrop";
 import Aside from "../layout/sub-components/aside";
 import Heading from "../heading";
-import '../heading/heading.css';
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
 
@@ -33,6 +32,9 @@ const StyledHeader = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
+  margin: 0;
+  line-height: 56px;
+  font-weight: 700;
 `;
 
 const CloseButton = styled.a`
@@ -135,7 +137,6 @@ class ModalDialog extends React.Component {
             <StyledHeader>
               <HeaderText 
                 size='medium'
-                className='common-headline'
                 truncate={true}
               >{headerContent}</HeaderText>
               <CloseButton onClick={onClose}></CloseButton>
@@ -157,7 +158,6 @@ class ModalDialog extends React.Component {
             <StyledHeader>
                 <HeaderText
                   size='medium'
-                  className='common-headline'
                   truncate={true}
                 >{headerContent}</HeaderText>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
