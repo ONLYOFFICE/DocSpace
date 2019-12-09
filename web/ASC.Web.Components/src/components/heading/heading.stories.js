@@ -6,7 +6,7 @@ import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-const textTags = ['p', 'span', 'div'];
+const levels = [1, 2, 3, 4, 5, 6];
 const size = ['big', 'medium', 'small'];
 
 storiesOf('Components|Heading', module)
@@ -17,7 +17,7 @@ storiesOf('Components|Heading', module)
       <div style={{ width: "100%" }}>
         <Heading
           color={color('color', '#333333')}
-          as={select('as', textTags, 'h2')}
+          level={select('level', levels, 1)}
           title={text('title', '')}
           truncate={boolean('truncate', false)}
           isInline={boolean('isInline', false)}

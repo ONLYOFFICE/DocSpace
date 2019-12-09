@@ -5,7 +5,7 @@ import Heading from '.';
 describe('<Heading />', () => {
   it('renders without error', () => {
     const wrapper = mount(     
-      <Heading as='h4' title='Some title'>
+      <Heading level={4} title='Some title'>
         Some text
     </Heading>
     );

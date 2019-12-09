@@ -9,7 +9,60 @@ const Fade = cssTransition({
 });
 
 const StyledToastContainer = styled(ToastContainer)`
-width: 365px !important;
+  width: 365px !important;
+  z-index: 9999;
+  -webkit-transform: translateZ(9999px);
+  position: fixed;
+  padding: 4px;
+  width: 320px;
+  box-sizing: border-box;
+  color: #fff;
+  top: 1em;
+  right: 1em;
+
+  @media only screen and (max-width: 480px) {
+    width: 100vw;
+    padding: 0;
+    left: 0;
+    margin: 0;
+}
+
+.Toastify__progress-bar--animated {
+  animation: Toastify__trackProgress linear 1 forwards;
+}
+.Toastify__toast-body {
+  margin: auto 0;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.Toastify__close-button {
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  background: transparent;
+  outline: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.3s ease;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+}
+.Toastify__close-button:focus,
+.Toastify__close-button:hover {
+  opacity: 1;
+}
+
+@keyframes Toastify__trackProgress {
+  0% {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
 
 .Toastify__toast--success{
   background-color: #cae796;
@@ -97,6 +150,15 @@ width: 365px !important;
 /* .Toastily__toast or & > div (less productive) */
 .Toastify__toast 
 {
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 15px 0 rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      max-height: 800px;
+      overflow: hidden;
+      cursor: pointer;
+
       border-radius: 3px;
       -moz-border-radius: 3px;
       -webkit-border-radius: 3px;

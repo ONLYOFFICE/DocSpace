@@ -33,6 +33,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
@@ -41,6 +42,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -177,9 +179,7 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                fileName = photo?
-                            .Select(x => x.Value)
-                            .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
+                fileName = (photo?.FirstOrDefault(x => x.Key == userId && !string.IsNullOrEmpty(x.Value) && x.Value.Contains("_orig_")))?.Value;
             }
 
             return fileName;
