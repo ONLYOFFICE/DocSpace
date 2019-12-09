@@ -10,9 +10,9 @@ import isEmpty from "lodash/isEmpty";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import Text from "../text";
-import Header from "../header";
+import Heading from "../heading";
 import throttle from "lodash/throttle";
+import '../heading/heading.css';
 
 const DateInputStyle = styled.div`
   max-width: 110px;
@@ -44,7 +44,7 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Header)`
+const HeaderText = styled(Heading)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -376,10 +376,11 @@ class DatePicker extends Component {
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
                   <StyledHeader>
-                    <HeaderText type='content'>
-                      <Text isBold={true} fontSize={20}>
+                    <HeaderText 
+                      size='medium'
+                      className='common-headline'
+                      >
                         {calendarHeaderContent}
-                      </Text>
                     </HeaderText>
                   </StyledHeader>
                   <Body>{this.renderBody()}</Body>

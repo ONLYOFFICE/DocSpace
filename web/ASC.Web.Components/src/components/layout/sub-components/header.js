@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { tablet } from "../../../utils/device";
 import NavItem from "./nav-item";
-import Header from "../../header";
+import Heading from "../../heading";
+import '../../heading/heading.css';
 
 const backgroundColor = "#0F4071";
 
@@ -29,9 +30,9 @@ const HeaderComponent = React.memo(props => {
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Header type="menu" color="#FFFFFF">
+      <Heading size='xlarge' color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
-      </Header>
+      </Heading>
     </StyledHeader>
   );
 });

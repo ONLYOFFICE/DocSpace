@@ -41,6 +41,7 @@ Heading.propTypes = {
    truncate: PropTypes.bool,
    isInline: PropTypes.bool,
    size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge']),
+   className: PropTypes.string,
 };
 
 Heading.defaultProps = {
@@ -49,7 +50,8 @@ Heading.defaultProps = {
    truncate: false,
    isInline: false,
    size: 'large',
-   level: 1
+   level: 1,
+   className: ''
 };
 
 export default Heading;
