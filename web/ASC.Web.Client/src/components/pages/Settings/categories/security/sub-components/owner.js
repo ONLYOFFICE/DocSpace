@@ -16,9 +16,9 @@ import {
   toastr,
   Button,
   RequestLoader,
-  AdvancedSelector,
   Loader
 } from "asc-web-components";
+import { PeopleSelector } from "asc-web-common";
 import isEmpty from "lodash/isEmpty";
 
 const OwnerContainer = styled.div`
@@ -83,8 +83,6 @@ class PureOwnerSettings extends Component {
     this.state = {
       isLoading: false,
       showSelector: false,
-      options: [],
-      allOptions: [],
       showLoader: true,
       selectedOwner: null
     };
@@ -94,9 +92,7 @@ class PureOwnerSettings extends Component {
     const {
       owner,
       getPortalOwner,
-      ownerId,
-      options,
-      getUsersOptions
+      ownerId
     } = this.props;
 
     if (isEmpty(owner, true)) {
@@ -105,18 +101,6 @@ class PureOwnerSettings extends Component {
           toastr.error(error);
         })
         .finally(() => this.setState({ showLoader: false }));
-    }
-    if (isEmpty(options, true)) {
-      getUsersOptions()
-        .catch(error => {
-          toastr.error(error);
-        })
-        .finally(() =>
-          this.setState({
-            showLoader: false,
-            allOptions: this.props.options
-          })
-        );
     }
     this.setState({ showLoader: false });
   }
@@ -135,21 +119,10 @@ class PureOwnerSettings extends Component {
     });
   };
 
-  onSearchUsers = template => {
-    const options = this.filterUserSelectorOptions(
-      this.state.allOptions,
-      template
-    );
-    this.setState({ options: options });
-  };
-
   onSelect = selected => {
     this.onShowSelector(false);
     this.setState({ selectedOwner: selected });
   };
-
-  filterUserSelectorOptions = (options, template) =>
-    options.filter(option => option.label.indexOf(template) > -1);
 
   render() {
     const { t, owner } = this.props;
@@ -157,7 +130,6 @@ class PureOwnerSettings extends Component {
       isLoading,
       showLoader,
       showSelector,
-      options,
       selectedOwner
     } = this.state;
 
@@ -255,18 +227,11 @@ class PureOwnerSettings extends Component {
             </Text>
 
             <div className="advanced-selector">
-              <AdvancedSelector
-                displayType="dropdown"
+              <PeopleSelector 
                 isOpen={showSelector}
-                placeholder="placeholder"
-                options={options}
-                onSearchChanged={this.onSearchUsers}
-                //groups={groups}
-                buttonLabel="Add members"
+                size={"compact"}
                 onSelect={this.onSelect}
                 onCancel={this.onShowSelector.bind(this, false)}
-                onAddNewClick={() => console.log("onAddNewClick")}
-                selectAllLabel="selectorSelectAllText"
               />
             </div>
           </OwnerContainer>
@@ -291,12 +256,11 @@ const OwnerSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const { owner, users } = state.settings.security.accessRight;
+  const { owner } = state.settings.security.accessRight;
 
   return {
     ownerId: state.auth.settings.ownerId,
-    owner,
-    options: users
+    owner
   };
 }
 

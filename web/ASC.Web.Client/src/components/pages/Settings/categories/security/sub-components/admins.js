@@ -19,7 +19,6 @@ import {
   Link,
   Paging,
   IconButton,
-  AdvancedSelector,
   toastr,
   FilterInput,
   Button,
@@ -28,6 +27,7 @@ import {
   EmptyScreenContainer,
   Icons
 } from "asc-web-components";
+import { PeopleSelector } from "asc-web-common"
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
@@ -358,20 +358,11 @@ class PureAdminsSettings extends Component {
                   onClick={this.onShowGroupSelector}
                 />
                 <div style={{ right: 180 }} className="advanced-selector">
-                  <AdvancedSelector
-                    displayType="dropdown"
+                  <PeopleSelector 
                     isOpen={showSelector}
-                    placeholder="placeholder"
-                    options={options}
-                    onSearchChanged={this.onSearchUsers}
-                    //groups={groups}
                     isMultiSelect={true}
-                    buttonLabel="Add members"
                     onSelect={this.onSelect}
                     onCancel={this.onShowGroupSelector}
-                    onAddNewClick={() => console.log("onAddNewClick")}
-                    selectAllLabel="selectorSelectAllText"
-                    selectedOptions={selectedOptions}
                   />
                 </div>
 
@@ -383,20 +374,11 @@ class PureAdminsSettings extends Component {
                   onClick={this.onShowFullAdminGroupSelector}
                 />
                 <div style={{ right: 160 }} className="advanced-selector">
-                  <AdvancedSelector
-                    displayType="dropdown"
+                  <PeopleSelector 
                     isOpen={showFullAdminSelector}
-                    placeholder="placeholder"
-                    options={options}
-                    onSearchChanged={this.onSearchUsers}
-                    //groups={groups}
                     isMultiSelect={true}
-                    buttonLabel="Add members"
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onShowFullAdminGroupSelector}
-                    onAddNewClick={() => console.log("onAddNewClick")}
-                    selectAllLabel="selectorSelectAllText"
-                    selectedOptions={selectedOptions}
                   />
                 </div>
               </div>

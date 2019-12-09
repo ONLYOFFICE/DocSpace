@@ -159,7 +159,8 @@ class PeopleSelector extends React.Component {
             selectedOptions,
             selectedGroups,
             hasNextPage,
-            isNextPageLoading
+            isNextPageLoading,
+            size
           } = this.state;
 
         const { 
@@ -175,7 +176,7 @@ class PeopleSelector extends React.Component {
             hasNextPage={hasNextPage}
             isNextPageLoading={isNextPageLoading}
             loadNextPage={this.loadNextPage}
-            size={"full"}
+            size={size}
             displayType={"auto"}
             selectedOptions={selectedOptions}
             selectedGroups={selectedGroups}
@@ -210,11 +211,13 @@ PeopleSelector.propTypes = {
   onSelect: PropTypes.func,
   useFake: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
+  size: PropTypes.oneOf("full", "compact")
 }
 
 PeopleSelector.defaultProps = {
-  useFake: false
+  useFake: false,
+  size: "full"
 }
 
 export default PeopleSelector;
