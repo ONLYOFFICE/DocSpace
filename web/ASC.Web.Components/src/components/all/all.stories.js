@@ -4,9 +4,8 @@ import { BooleanValue, StringValue } from "react-values";
 import Section from "../../../.storybook/decorators/section";
 import Avatar from "../avatar";
 import Button from "../button";
-import HelpButton from "../help-button";
-import IconButton from "../icon-button";
-import SocialButton from "../social-button";
+//import HelpButton from "../help-button";
+//import IconButton from "../icon-button";
 import ToggleButton from "../toggle-button";
 import Calendar from "../calendar";
 import Checkbox from "../checkbox";
@@ -94,18 +93,6 @@ const arrayUsers = [
     name: "Kevin",
     email: "Kevin@gmail.com",
     position: "developer"
-  },
-  {
-    key: "user_4",
-    name: "Alex",
-    email: "Alex@gmail.com",
-    position: "developer"
-  },
-  {
-    key: "user_5",
-    name: "Tomas",
-    email: "Tomas@gmail.com",
-    position: "developer"
   }
 ];
 
@@ -145,6 +132,37 @@ const getElementProps = element =>
 
 const elementProps = getElementProps(element);
 
+const rowContent = (
+  <>
+    <Row
+      key="1"
+      {...checkedProps}
+      {...elementProps}
+      contextOptions={[
+        {
+          key: "key1",
+          label: "Edit",
+          onClick: () => console.log("Context action: Edit")
+        },
+        {
+          key: "key2",
+          label: "Delete",
+          onClick: () => console.log("Context action: Delete")
+        }
+      ]}
+    >
+      <Text truncate={true}>Sample text</Text>
+    </Row>
+  </>
+);
+
+let rowCount = 5;
+const rowArray = [];
+while (rowCount != 0) {
+  rowArray.push(rowContent);
+  rowCount--;
+}
+
 storiesOf("Components|All", module)
   .addParameters({ options: { showAddonPanel: false } })
   .add("all", () => (
@@ -159,28 +177,34 @@ storiesOf("Components|All", module)
       >
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <Text as="p" title="Some title">
-              Some text
-            </Text>
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <Header type="content" title="Some title" isInline>
-              Some text
-            </Header>
-          </div>
-          <div style={{ padding: "8px 0" }}>
             <Heading level={1} title="Some title">
-              Some text
+              Heading text
             </Heading>
           </div>
           <div style={{ padding: "8px 0" }}>
-            <Link
-              type="page"
-              color="black"
-              href="https://github.com"
-              isBold={true}
-            >
-              Bold page link
+            <Header type="content" title="Some title" isInline>
+              Header text
+            </Header>
+          </div>
+          <div style={{ padding: "8px 0" }}>
+            <Text as="p" title="Some title">
+              Text as "p"
+            </Text>
+          </div>
+
+          <div style={{ padding: "8px 0" }}>
+            <Link type="page" href="https://github.com">
+              Black page link
+            </Link>
+            <br />
+            <Link type="page" href="https://github.com" isHovered={true}>
+              Black hovered page link
+            </Link>
+            <br />
+            <Link type="action">Black action link</Link>
+            <br />
+            <Link type="action" isHovered={true}>
+              Black hovered action link
             </Link>
           </div>
           <div style={{ padding: "24px 0 8px 0" }}>
@@ -194,14 +218,6 @@ storiesOf("Components|All", module)
             <br />
             <Link data-for="group" data-tip={2}>
               Kevin
-            </Link>
-            <br />
-            <Link data-for="group" data-tip={3}>
-              Alex
-            </Link>
-            <br />
-            <Link data-for="group" data-tip={4}>
-              Tomas
             </Link>
             <Tooltip
               id="group"
@@ -221,50 +237,99 @@ storiesOf("Components|All", module)
               }
             />
           </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <BooleanValue>
-              {({ value, toggle }) => (
-                <Checkbox
-                  id="id"
-                  name="name"
-                  value="value"
-                  label="label"
-                  isChecked={value}
-                  isIndeterminate={false}
+            <div style={{ display: "flex" }}>
+              <div style={{ marginRight: 16 }}>
+                <Button
+                  size="big"
                   isDisabled={false}
-                  onChange={e => toggle(e.target.checked)}
+                  onClick={() => {}}
+                  label="Button"
+                  primary
                 />
-              )}
-            </BooleanValue>
-          </div>
-          <div style={{ padding: "8px 0 24px 0" }}>
-            <BooleanValue>
-              {({ value, toggle }) => (
-                <ToggleButton
-                  label="text"
-                  onChange={e => toggle(e.target.checked)}
-                  isChecked={value}
-                />
-              )}
-            </BooleanValue>
+              </div>
+
+              <Button
+                size="big"
+                isDisabled={false}
+                onClick={() => {}}
+                label="Button"
+              />
+            </div>
           </div>
           <div style={{ padding: "8px 0" }}>
-            <RadioButtonGroup
-              name="fruits"
-              selected="banana"
-              options={[
-                { value: "apple", label: "Sweet apple" },
-                { value: "banana", label: "Banana" },
-                { value: "Mandarin" }
+            <Toast />
+            <Button
+              label="Show toastr"
+              onClick={() =>
+                toastr.success(
+                  "Some text for toast",
+                  "Some text for title",
+                  true
+                )
+              }
+            />
+          </div>
+          {/*
+            <div style={{ padding: "8px 0" }}>
+            <ContextMenuButton
+              iconName="VerticalDotsIcon"
+              size={16}
+              color="#A3A9AE"
+              isDisabled={false}
+              title="Actions"
+              getData={() => [
+                {
+                  key: "key",
+                  label: "label",
+                  onClick: () => {}
+                }
               ]}
             />
           </div>
+          */}
+          {/*<div style={{ padding: "8px 0" }}>
+            <div style={{ display: "flex" }}>
+              <div style={{ marginRight: 16 }}>
+                <IconButton
+                  size="25"
+                  isDisabled={false}
+                  onClick={() => {}}
+                  iconName={"SearchIcon"}
+                  isFill={true}
+                  isClickable={false}
+                />
+              </div>
+              <HelpButton tooltipContent="Paste you tooltip content here" />
+            </div>
+          </div>
+          */}
+        </div>
+        <div style={{ justifySelf: "center" }}>
+          <div style={{ padding: "8px 0" }}>
+            <ComboBox
+              options={options}
+              isDisabled={false}
+              selectedOption={{
+                key: 0,
+                label: "Select"
+              }}
+              dropDownMaxHeight={200}
+              noBorder={false}
+              scaledOptions={true}
+              size="content"
+              onSelect={option => console.log("selected", option)}
+            />
+          </div>
+
           <div style={{ padding: "8px 0" }}>
             <StringValue>
               {({ value, set }) => (
-                <TextInput value={value} onChange={e => set(e.target.value)} />
+                <TextInput
+                  placeholder="Add input text"
+                  value={value}
+                  onChange={e => set(e.target.value)}
+                />
               )}
             </StringValue>
           </div>
@@ -273,8 +338,9 @@ storiesOf("Components|All", module)
             <StringValue>
               {({ value, set }) => (
                 <InputBlock
+                  placeholder="Add input text"
                   iconName={"SearchIcon"}
-                  onIconClick={() => alert(value)}
+                  onIconClick={() => {}}
                   onChange={e => set(e.target.value)}
                   value={value}
                 >
@@ -315,7 +381,12 @@ storiesOf("Components|All", module)
           <div style={{ padding: "8px 0" }}>
             <StringValue>
               {({ value, set }) => (
-                <FieldContainer tooltipContent={value} labelText="Name:">
+                <FieldContainer
+                  place="top"
+                  isRequired
+                  tooltipContent="Paste you tooltip content here"
+                  labelText="Name:"
+                >
                   <TextInput
                     value={value}
                     onChange={e => set(e.target.value)}
@@ -324,59 +395,63 @@ storiesOf("Components|All", module)
               )}
             </StringValue>
           </div>
-        </div>
-        <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <IconButton
-              size="25"
-              isDisabled={false}
-              onClick={() => alert("Clicked")}
-              iconName={"SearchIcon"}
-              isFill={true}
-              isClickable={false}
+            <RadioButtonGroup
+              name="fruits"
+              selected="banana"
+              options={[
+                { value: "apple", label: "Sweet apple" },
+                { value: "banana", label: "Banana" },
+                { value: "Mandarin" }
+              ]}
             />
           </div>
           <div style={{ padding: "8px 0" }}>
-            <HelpButton tooltipContent="Paste you tooltip content here" />
+            <BooleanValue>
+              {({ value, toggle }) => (
+                <div style={{ display: "flex" }}>
+                  <div style={{ marginRight: 24 }}>
+                    <Checkbox
+                      id="id"
+                      name="name"
+                      value="value"
+                      label="Checkbox"
+                      isChecked={value}
+                      isIndeterminate={false}
+                      isDisabled={false}
+                      onChange={e => toggle(e.target.checked)}
+                    />
+                  </div>
+                  <Checkbox
+                    id="id"
+                    name="name"
+                    value="value"
+                    label="Checkbox indeterminate"
+                    isIndeterminate={true}
+                    isDisabled={false}
+                    onChange={() => {}}
+                  />
+                </div>
+              )}
+            </BooleanValue>
           </div>
 
-          <div style={{ padding: "8px 0" }}>
-            <Toast />
-            <button
-              onClick={() =>
-                toastr.success(
-                  "Some text for toast",
-                  "Some text for title",
-                  true
-                )
-              }
-            >
-              Show toastr
-            </button>
-          </div>
-
-          <div style={{ padding: "8px 0" }}>
-            <Button
-              size="big"
-              isDisabled={false}
-              onClick={() => alert("Button clicked")}
-              label="Button"
-              primary
-            />
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <SocialButton
-              label="Base SocialButton"
-              iconName="ShareGoogleIcon"
-              isDisabled={false}
-              onClick={alert("clicked")}
-            />
+          <div style={{ padding: "8px 0 24px 0" }}>
+            <BooleanValue>
+              {({ value, toggle }) => (
+                <ToggleButton
+                  label="Toggle button"
+                  onChange={e => toggle(e.target.checked)}
+                  isChecked={value}
+                />
+              )}
+            </BooleanValue>
           </div>
         </div>
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
             <Calendar
-              onChange={date => alert(date)}
+              onChange={() => {}}
               disabled={false}
               themeColor="#ED7309"
               selectedDate={new Date()}
@@ -387,6 +462,15 @@ storiesOf("Components|All", module)
             />
           </div>
         </div>
+        <div style={{ justifySelf: "center" }}>
+          <div style={{ padding: "8px 0" }}>
+            {rowArray[0]}
+            {rowArray.map((item, index) => {
+              return <div key={index}>{item}</div>;
+            })}
+          </div>
+        </div>
+
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
             <Avatar
@@ -409,70 +493,6 @@ storiesOf("Components|All", module)
             <Loader type="dual-ring" color="black" size={30} label="Loading" />
           </div>
         </div>
-        <div>
-          <div style={{ padding: "8px 0" }}>
-            <TabContainer>{array_items}</TabContainer>
-          </div>
-          <div style={{ padding: "16px 0" }}>
-            <ToggleContent label="ToggleContent">
-              <span>Toggle content text</span>
-            </ToggleContent>
-          </div>
-        </div>
-        <div>
-          <div style={{ padding: "8px 0" }}>
-            <ComboBox
-              options={options}
-              isDisabled={false}
-              selectedOption={{
-                key: 0,
-                label: "Select"
-              }}
-              dropDownMaxHeight={200}
-              noBorder={false}
-              scaledOptions={true}
-              size="content"
-              onSelect={option => console.log("selected", option)}
-            />
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <ContextMenuButton
-              iconName="VerticalDotsIcon"
-              size={16}
-              color="#A3A9AE"
-              isDisabled={false}
-              title="Actions"
-              getData={() => [
-                {
-                  key: "key",
-                  label: "label",
-                  onClick: () => alert("label")
-                }
-              ]}
-            />
-          </div>
-          <div style={{ padding: "8px 0" }}>
-            <Row
-              key="1"
-              {...checkedProps}
-              {...elementProps}
-              contextOptions={[
-                {
-                  key: "key1",
-                  label: "Edit",
-                  onClick: () => console.log("Context action: Edit")
-                },
-                {
-                  key: "key2",
-                  label: "Delete",
-                  onClick: () => console.log("Context action: Delete")
-                }
-              ]}
-            >
-              <Text truncate={true}>Sample text</Text>
-            </Row>
-          </div>
-        </div>
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
             <Scrollbar stype="mediumBlack" style={{ width: 300, height: 200 }}>
@@ -493,6 +513,16 @@ storiesOf("Components|All", module)
               sunt in culpa qui officia deserunt mollit anim id est laborum.
               ================================================================
             </Scrollbar>
+          </div>
+        </div>
+        <div>
+          <div style={{ padding: "8px 0" }}>
+            <TabContainer>{array_items}</TabContainer>
+          </div>
+          <div style={{ padding: "16px 0" }}>
+            <ToggleContent label="ToggleContent">
+              <span>Toggle content text</span>
+            </ToggleContent>
           </div>
         </div>
       </div>
