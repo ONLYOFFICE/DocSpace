@@ -90,9 +90,6 @@ namespace ASC.Web.Api.Models
         public string AvatarMax { get; set; }
 
         [DataMember(Order = 20)]
-        public string AvatarDefault { get; set; }
-
-        [DataMember(Order = 20)]
         public string AvatarMedium { get; set; }
 
         [DataMember(Order = 20)]
@@ -251,11 +248,6 @@ namespace ASC.Web.Api.Models
             }
 
             var userInfoLM = userInfo.LastModified.GetHashCode();
-
-            if (Context.Check("avatarDefault"))
-            {
-                result.AvatarDefault = Convert.ToBase64String(UserManager.GetUserPhoto(userInfo.ID));
-            }
 
             if (Context.Check("avatarMax"))
             {
