@@ -159,10 +159,12 @@ class AvatarEditorBody extends React.Component {
         this.props.deleteImage();
     }
     onImageChange() {
-        this.setState({
-            croppedImage: this.setEditorRef.current.getImage().toDataURL()
-        });
-        this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
+        if(this.setEditorRef.current !== null){
+            this.setState({
+                croppedImage: this.setEditorRef.current.getImage().toDataURL()
+            });
+            this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
+        }
     }
     dist = 0
     scaling = false
@@ -246,6 +248,13 @@ class AvatarEditorBody extends React.Component {
             width: this.setEditorRef.current.getImage().width,
             height: this.setEditorRef.current.getImage().height
         });
+    }
+    componentDidUpdate(prevProps){
+        if(prevProps.image !== this.props.image){
+            this.setState({
+                image: this.props.image
+            });
+        }
     }
     render() {
         return (
