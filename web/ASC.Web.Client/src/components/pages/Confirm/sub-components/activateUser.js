@@ -5,9 +5,8 @@ import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } fr
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { store, constants } from 'asc-web-common';
-import { getConfirmationInfo } from '../../../../store/confirm/actions';
-const { activateConfirmUser } = store.auth.actions;
+import { constants } from 'asc-web-common';
+import { getConfirmationInfo, activateConfirmUser } from '../../../../store/confirm/actions';
 const { EmployeeActivationStatus } = constants;
 
 
@@ -321,7 +320,7 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 function mapStateToProps(state) {
   return {
     isConfirmLoaded: state.confirm.isConfirmLoaded,
-    settings: state.confirm.passwordSettings,
+    settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings
   };
 }
