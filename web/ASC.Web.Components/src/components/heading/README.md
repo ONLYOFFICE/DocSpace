@@ -39,4 +39,4 @@ const StyledHeading = styled(Heading)`
 | `title`    |  `bool`  |    -     |            -             |     -     | Title                                                                                                                                 |
 | `truncate` |  `bool`  |    -     |            -             |  `false`  | Disables word wrapping                                                                                                                |
 | `isInline` |  `bool`  |    -     |            -             |  `false`  | Sets the 'display: inline-block' property                                                                                             |
-| `size`     | `oneOF`  |    -     | `big`, `medium`, `small` |   `big`   | Sets the size of headline                                                                                                             |
+| `size`     | `oneOF`  |    -     | `xsmall`, `small`, `medium`, `large`, `xlarge` |   `large`   | Sets the size of headline                                                                                                             |
