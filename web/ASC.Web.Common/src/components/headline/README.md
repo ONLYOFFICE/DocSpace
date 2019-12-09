@@ -2,7 +2,7 @@
 
 Component that displays Heading text with custom styles
 
-## Usage
+### Usage
 
 ```js
 import { Headline } from "asc-web-common";
@@ -20,7 +20,7 @@ import { Headline } from "asc-web-common";
 </Headline>
 ```
 
-### If you need to override styles add forwardedAs instead of as
+#### If you need to override styles add forwardedAs instead of as
 
 ```js
 const StyledText = styled(Headline)`
