@@ -21,6 +21,12 @@ export function getUserList(filter = Filter.getDefault()) {
       url: `/people/${userName || '@self'}.json`
     });
   }
+  export function getUserPhoto(userId) {
+    return request({
+      method: "get",
+      url: `/people/${userId}/photo`
+    });
+  }
 
   export function createUser(data, confirmKey = null) {
     const options = {
