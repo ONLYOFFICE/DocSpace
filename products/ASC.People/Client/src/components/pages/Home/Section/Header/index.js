@@ -8,7 +8,7 @@ import {
   ContextMenuButton,
   IconButton
 } from "asc-web-components";
-import { Heading } from 'asc-web-common';
+import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
@@ -210,7 +210,7 @@ const SectionHeaderContent = props => {
         <div className="header-container">
           {group ? (
             <>
-              <Heading type="content" truncate={true}>{group.name}</Heading>
+              <Headline type="content" truncate={true}>{group.name}</Headline>
               {isAdmin && (
                 <ContextMenuButton
                   directionX="right"
@@ -225,7 +225,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Heading type="content">Departments</Heading>
+              <Headline type="content">Departments</Headline>
               {isAdmin && (
                 <IconButton
                   className="add-group-button"

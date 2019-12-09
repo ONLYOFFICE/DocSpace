@@ -1,29 +1,29 @@
-# Heading
+# Headline
 
-Component that displays Heading text
+Component that displays Heading text with custom styles
 
-### Usage
+## Usage
 
 ```js
-import { Heading } from "asc-web-common";
+import { Headline } from "asc-web-common";
 ```
 
 ```jsx
-<Heading type="content" title="Some title" isInline>
+<Headline type="content" title="Some title" isInline>
   Some text
-</Heading>
+</Headline>
 ```
 
 ```jsx
-<Heading type="menu" title="Some title">
+<Headline type="menu" title="Some title">
   Some text
-</Heading>
+</Headline>
 ```
 
-##### If you need to override styles add forwardedAs instead of as
+### If you need to override styles add forwardedAs instead of as
 
 ```js
-const StyledText = styled(Heading)`
+const StyledText = styled(Headline)`
   &:hover {
     border-bottom: 1px dotted;
   }

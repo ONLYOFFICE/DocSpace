@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import Heading from '.';
+import Headline from '.';
 
-describe('<Heading />', () => {
+describe('<Headline />', () => {
   it('renders without error', () => {
     const wrapper = mount(     
-      <Heading as='span' title='Some title'>
+    <Headline level={1} title='Some title'>
         Some text
-    </Heading>
+    </Headline>
     );
 
     expect(wrapper).toExist();

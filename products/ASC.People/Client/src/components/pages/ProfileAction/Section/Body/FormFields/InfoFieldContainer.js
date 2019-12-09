@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { Heading } from 'asc-web-common';
+import { Headline } from 'asc-web-common';
 
 const Container = styled.div`
   margin: 0 0 40px 0;
 `;
 
-const StyledHeader = styled(Heading)`
+const StyledHeader = styled(Headline)`
   margin: 0 0 24px 0;
   line-height: unset;
 `;
