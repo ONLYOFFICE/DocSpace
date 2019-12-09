@@ -30,6 +30,13 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700 !important;
+  }
 `;
 
 const StyledHeader = styled.div`
@@ -41,13 +48,6 @@ const StyledHeader = styled.div`
 const Body = styled.div`
   position: relative;
   padding: 16px 0;
-`;
-
-const HeaderText = styled(Heading)`
-  max-width: 500px;
-  margin: 0;
-  line-height: 56px;
-  font-weight: 700 !important;
 `;
 
 class DatePicker extends Component {
@@ -375,12 +375,13 @@ class DatePicker extends Component {
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
                   <StyledHeader>
-                    <HeaderText 
+                    <Heading
+                      className='header' 
                       size='medium'
                       truncate={true}
                       >
                         {calendarHeaderContent}
-                    </HeaderText>
+                    </Heading>
                   </StyledHeader>
                   <Body>{this.renderBody()}</Body>
                 </Content>

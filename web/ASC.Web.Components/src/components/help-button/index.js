@@ -16,6 +16,13 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700;
+  }
 `;
 
 const HeaderContent = styled.div`
@@ -29,12 +36,6 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Heading)`
-  max-width: 500px;
-  margin: 0;
-  line-height: 56px;
-  font-weight: 700;
-`;
 class HelpButton extends React.Component {
   constructor(props) {
     super(props);
@@ -161,6 +162,7 @@ class HelpButton extends React.Component {
                   {helpButtonHeaderContent && (
                     <HeaderContent>
                       <HeaderText 
+                        className='header'
                         size='medium'
                         truncate={true}
                         >

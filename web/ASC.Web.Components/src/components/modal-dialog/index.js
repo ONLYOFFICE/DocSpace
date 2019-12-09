@@ -22,19 +22,19 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+  
+  .heading {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700;
+  }
 `;
 
 const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
-`;
-
-const HeaderText = styled(Heading)`
-  max-width: 500px;
-  margin: 0;
-  line-height: 56px;
-  font-weight: 700;
 `;
 
 const CloseButton = styled.a`
@@ -135,10 +135,13 @@ class ModalDialog extends React.Component {
         <Dialog>
           <Content>
             <StyledHeader>
-              <HeaderText 
+              <Heading
+                className='heading'
                 size='medium'
                 truncate={true}
-              >{headerContent}</HeaderText>
+              >
+                {headerContent}
+              </Heading>
               <CloseButton onClick={onClose}></CloseButton>
             </StyledHeader>
             <Body>{bodyContent}</Body>
@@ -147,7 +150,7 @@ class ModalDialog extends React.Component {
         </Dialog>
       </Backdrop>
     ) : (
-        <div 
+        <div
           className={this.props.className}
           id={this.props.id}
           style={this.props.style}
@@ -155,13 +158,16 @@ class ModalDialog extends React.Component {
           <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
           <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
             <Content>
-            <StyledHeader>
-                <HeaderText
+              <StyledHeader>
+                <Heading
+                  className='heading'
                   size='medium'
                   truncate={true}
-                >{headerContent}</HeaderText>
+                >
+                  {headerContent}
+                </Heading>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-            </StyledHeader>
+              </StyledHeader>
               <Body>{bodyContent}</Body>
               <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
             </Content>
