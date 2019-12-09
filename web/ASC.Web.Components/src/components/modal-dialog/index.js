@@ -33,9 +33,6 @@ const StyledHeader = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 const CloseButton = styled.a`
@@ -139,6 +136,7 @@ class ModalDialog extends React.Component {
               <HeaderText 
                 size='medium'
                 className='common-headline'
+                truncate={true}
               >{headerContent}</HeaderText>
               <CloseButton onClick={onClose}></CloseButton>
             </StyledHeader>
@@ -160,6 +158,7 @@ class ModalDialog extends React.Component {
                 <HeaderText
                   size='medium'
                   className='common-headline'
+                  truncate={true}
                 >{headerContent}</HeaderText>
                 {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
             </StyledHeader>

@@ -32,9 +32,6 @@ const Body = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 class HelpButton extends React.Component {
   constructor(props) {
@@ -164,6 +161,7 @@ class HelpButton extends React.Component {
                       <HeaderText 
                         type='content'
                         className='common-headline'
+                        truncate={true}
                         >
                           {helpButtonHeaderContent}
                       </HeaderText>

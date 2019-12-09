@@ -46,9 +46,6 @@ const Body = styled.div`
 
 const HeaderText = styled(Heading)`
   max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 class DatePicker extends Component {
@@ -379,6 +376,7 @@ class DatePicker extends Component {
                     <HeaderText 
                       size='medium'
                       className='common-headline'
+                      truncate={true}
                       >
                         {calendarHeaderContent}
                     </HeaderText>
