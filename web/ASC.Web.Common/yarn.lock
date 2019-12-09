@@ -2631,7 +2631,7 @@ asap@~2.0.3:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-components@file:../../packages/asc-web-components":
-  version "1.0.204"
+  version "1.0.218"
   dependencies:
     email-addresses "^3.0.3"
     html-to-react "^1.4.2"
