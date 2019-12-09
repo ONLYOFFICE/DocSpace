@@ -34,7 +34,7 @@ const StyledText = styled(Text)`
 
 | Props             |   Type   | Required | Values |  Default  | Description                                        |
 | ----------------- | :------: | :------: | :----: | :-------: | -------------------------------------------------- |
-| `fontSize`        | `number` |    -     |   -    |   `13`    | Sets the font size                                 |
+| `fontSize`        | `oneOfType(number, string)` |    -     |   -    |   `13`    | Sets the font size                                 |
 | `as`              | `string` |    -     |   -    |    `p`    | Sets the tag through which to render the component |
 | `title`           |  `bool`  |    -     |   -    |     -     | Title                                              |
 | `truncate`        |  `bool`  |    -     |   -    |  `false`  | Disables word wrapping                             |
