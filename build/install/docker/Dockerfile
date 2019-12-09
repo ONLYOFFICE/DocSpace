@@ -63,7 +63,7 @@ RUN apt-get -y update && \
                         jq \ 
                         git \ 
                         yarn \
-                        dotnet-sdk-3.0 \
+                        dotnet-sdk-3.1 \
                         supervisor \
                         mysql-client \
                         mysql-server
@@ -74,6 +74,14 @@ RUN cd /app/onlyoffice/src/ && \
     yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build/ASC.Web.Components.log && \
     npm run build --prefix web/ASC.Web.Components && \
     yarn pack --cwd web/ASC.Web.Components
+	
+RUN cd /app/onlyoffice/src/ && \
+    component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+	yarn remove asc-web-components --cwd web/ASC.Web.Common --peer && \
+    yarn add file:../../$component --cwd web/ASC.Web.Common --cache-folder ../../yarn --peer && \
+    yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build/ASC.Web.Common.log && \
+    npm run build --prefix web/ASC.Web.Common && \
+    yarn pack --cwd web/ASC.Web.Common
 
 RUN cd /app/onlyoffice/src/ && \
     npm run build:storybook --prefix web/ASC.Web.Components && \
@@ -82,7 +90,10 @@ RUN cd /app/onlyoffice/src/ && \
 
 RUN cd /app/onlyoffice/src/ && \
     component=$(ls web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+	common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+	yarn remove asc-web-components asc-web-common --cwd web/ASC.Web.Client && \
     yarn add ../../$component --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
+	yarn add ../../$common --cwd web/ASC.Web.Client --cache-folder ../../yarn && \
     yarn install --cwd web/ASC.Web.Client --frozen-lockfile || (cd web/ASC.Web.Client && npm i && cd ../../) && \
     npm run build --prefix web/ASC.Web.Client && \
     rm -rf /var/www/studio/client/* && \
@@ -91,7 +102,10 @@ RUN cd /app/onlyoffice/src/ && \
 
 RUN cd /app/onlyoffice/src/ && \
     component=$(ls  web/ASC.Web.Components/asc-web-components-v1.*.tgz) && \
+	common=$(ls web/ASC.Web.Common/asc-web-common-v1.*.tgz) && \
+	yarn remove asc-web-components asc-web-common --cwd products/ASC.People/Client && \
     yarn add ../../../$component --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
+	yarn add ../../../$common --cwd products/ASC.People/Client --cache-folder ../../../yarn && \
     yarn install --cwd products/ASC.People/Client --frozen-lockfile || (cd products/ASC.People/Client && npm i && cd ../../../) && \
     npm run build --prefix products/ASC.People/Client && \
     mkdir -p /var/www/products/ASC.People/client && \

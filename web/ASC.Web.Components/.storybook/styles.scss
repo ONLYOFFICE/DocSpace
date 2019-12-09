@@ -5,4 +5,9 @@ you have to go to `webpack.config.js` file
 and enable the options in there
 */
 @import '../node_modules/bootstrap/dist/css/bootstrap.css';
-@import '../node_modules/react-toastify/dist/ReactToastify.min.css';
+
+.Toastify__toast-container--top-center {
+  top: 1em;
+  left: 50%;
+  margin-left: -160px;
+}

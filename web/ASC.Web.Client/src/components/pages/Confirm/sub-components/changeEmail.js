@@ -4,8 +4,7 @@ import { withTranslation } from 'react-i18next';
 import { PageLayout, Loader } from 'asc-web-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { store } from 'asc-web-common';
-const { changeEmail } = store.auth.actions;
+import { changeEmail } from '../../../../store/confirm/actions';
 
 class ChangeEmail extends React.PureComponent {
     componentDidMount() {

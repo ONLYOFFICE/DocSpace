@@ -93,10 +93,6 @@ export function updateProfileCulture(id, culture) {
     };
 };
 
-export function getInvitationLink(isGuest = false) {
-    return dispatch => {
-        return api.portal.getInvitationLink(isGuest);
-    }
 };
 export function getUserPhoto(id) {
     return api.people.getUserPhoto(id);
