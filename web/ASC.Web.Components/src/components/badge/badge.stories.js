@@ -16,7 +16,7 @@ storiesOf('Components|Badge', module)
         number={number('number', 10)}
         backgroundColor={color('backgroundColor', '#ED7309')}
         color={color('color', '#FFFFFF')}
-        fontSize={number('fontSize', 11)}
+        fontSize={text('fontSize', '11px')}
         fontWeight={number('fontWeight', 800)}
         borderRadius={text('borderRadius', '11px')}
         padding={text('padding', '0 5px')}
