@@ -1,4 +1,5 @@
 ﻿using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,6 +15,7 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<DbTenantVersion> TenantVersion { get; set; }
         public DbSet<DbTenantPartner> TenantPartner { get; set; }
         public DbSet<DbTenantForbiden> TenantForbiden { get; set; }
+        public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
         public DbSet<DbCoreSettings> CoreSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

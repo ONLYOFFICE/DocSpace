@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -44,6 +45,11 @@ namespace ASC.Core.Common.EF
             foreach (var v in Pairs)
             {
                 v.Value.Dispose();
+            }
+
+            foreach (var v in AsyncList)
+            {
+                v.Dispose();
             }
         }
     }

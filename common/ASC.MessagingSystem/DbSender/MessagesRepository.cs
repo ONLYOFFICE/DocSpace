@@ -38,6 +38,7 @@ using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -128,9 +129,8 @@ namespace ASC.MessagingSystem.DbSender
             if (events == null) return;
 
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
             using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
-            using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
             foreach (var message in events)
@@ -299,7 +299,6 @@ namespace ASC.MessagingSystem.DbSender
             do
             {
                 using var scope = ServiceProvider.CreateScope();
-                var dbManager = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
                 using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
 
                 var ae = ef.AuditEvents
