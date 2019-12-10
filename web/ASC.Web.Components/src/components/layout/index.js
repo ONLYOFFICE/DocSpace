@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "../backdrop";
-import Header from "./sub-components/header";
+import HeaderComponent from "./sub-components/header";
 import Nav from "./sub-components/nav";
 import Aside from "./sub-components/aside";
 import Main from "./sub-components/main";
@@ -173,7 +173,7 @@ class Layout extends React.Component {
           />
         )}
         {this.state.isHeaderAvailable && (
-          <Header
+          <HeaderComponent
             badgeNumber={this.state.totalNotifications}
             onClick={this.showNav}
             currentModule={this.state.currentModule}

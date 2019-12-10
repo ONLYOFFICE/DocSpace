@@ -20,10 +20,13 @@ import { EmptyScreenContainer } from "asc-web-components";
 
 ### Properties
 
-| Props             |   Type    | Required | Values | Default | Description                             |
-| ----------------- | :-------: | :------: | :----: | :-----: | --------------------------------------- |
-| `imageSrc`        | `string`  |    -     |   -    |    -    | Image url source                        |
-| `imageAlt`        | `string`  |    -     |   -    |    -    | Alternative image text                  |
-| `headerText`      | `string`  |    -     |   -    |    -    | Header text                             |
-| `descriptionText` | `string`  |    -     |   -    |    -    | Description text                        |
-| `buttons`         | `element` |    -     |   -    |    -    | Content of EmptyContentButtonsContainer |
+| Props             |      Type      | Required | Values | Default | Description                             |
+| ----------------- | :------------: | :------: | :----: | :-----: | --------------------------------------- |
+| `buttons`         |   `element`    |    -     |   -    |    -    | Content of EmptyContentButtonsContainer |
+| `className`       |    `string`    |    -     |   -    |    -    | Accepts class                           |
+| `descriptionText` |    `string`    |    -     |   -    |    -    | Description text                        |
+| `headerText`      |    `string`    |    -     |   -    |    -    | Header text                             |
+| `id`              |    `string`    |    -     |   -    |    -    | Accepts id                              |
+| `imageAlt`        |    `string`    |    -     |   -    |    -    | Alternative image text                  |
+| `imageSrc`        |    `string`    |    -     |   -    |    -    | Image url source                        |
+| `style`           | `obj`, `array` |    -     |   -    |    -    | Accepts css style                       |

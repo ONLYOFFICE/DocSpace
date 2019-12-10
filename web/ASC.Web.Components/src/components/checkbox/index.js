@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Icons } from "../icons";
-import { Text } from "../text";
+import Text from "../text";
 
 const disableColor = "#A3A9AE";
 const hoverColor = disableColor;
@@ -46,12 +46,13 @@ const HiddenInput = styled.input`
   z-index: -1;
 `;
 
+// eslint-disable-next-line react/prop-types
 const CheckboxIcon = ({ isChecked, isDisabled, isIndeterminate }) => {
   const iconName = isIndeterminate
     ? "CheckboxIndeterminateIcon"
     : isChecked
-    ? "CheckboxCheckedIcon"
-    : "CheckboxIcon";
+      ? "CheckboxCheckedIcon"
+      : "CheckboxIcon";
 
   let newProps = {
     size: "medium",
@@ -104,27 +105,27 @@ class Checkbox extends React.Component {
 
   render() {
     //console.log("Checkbox render");
-
-    const colorProps = this.props.isDisabled ? {color: disableColor} : {};
+    const { isDisabled, id, className, label, style, value } = this.props;
+    const colorProps = isDisabled ? { color: disableColor } : {};
 
     return (
-      <Label htmlFor={this.props.id} isDisabled={this.props.isDisabled} className={this.props.className}>
+      <Label id={id} style={style} isDisabled={isDisabled} className={className}>
         <HiddenInput
           type="checkbox"
           checked={this.state.checked}
-          disabled={this.props.isDisabled}
+          disabled={isDisabled}
           ref={this.ref}
-          {...this.props}
+          value={value}
           onChange={this.onInputChange}
         />
         <CheckboxIcon {...this.props} />
         {this.props.label && (
-          <Text.Body
+          <Text
             as="span"
             {...colorProps}
           >
-            {this.props.label}
-          </Text.Body>
+            {label}
+          </Text>
         )}
       </Label>
     );
@@ -141,7 +142,9 @@ Checkbox.propTypes = {
   isIndeterminate: PropTypes.bool,
   isDisabled: PropTypes.bool,
 
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Checkbox.defaultProps = {

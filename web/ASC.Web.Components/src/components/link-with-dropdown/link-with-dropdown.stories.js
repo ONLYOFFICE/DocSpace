@@ -5,7 +5,6 @@ import Readme from './README.md';
 import { text, boolean, withKnobs, select, number, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Section from '../../../.storybook/decorators/section';
-import { Col } from 'reactstrap';
 
 const dropdownType = ["alwaysDashed", "appearDashedAfterHover"];
 
@@ -36,7 +35,7 @@ storiesOf('Components|LinkWithDropdown', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => (
     <Section>
-      <Col>
+      <div>
         <LinkWithDropdown
           dropdownType={select('dropdownType', dropdownType, 'alwaysDashed')}
           color={color('color', '#333333')}
@@ -49,7 +48,7 @@ storiesOf('Components|LinkWithDropdown', module)
         >
           {text('text', 'Simple link with dropdown')}
         </LinkWithDropdown>
-      </Col>
+      </div>
     </Section>
   )
   );

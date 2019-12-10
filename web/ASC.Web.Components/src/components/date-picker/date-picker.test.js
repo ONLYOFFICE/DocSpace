@@ -191,4 +191,28 @@ describe("DatePicker tests", () => {
     wrapper.unmount();
     expect(componentWillUnmount).toHaveBeenCalled();
   });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <DatePicker isOpen={true} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <DatePicker isOpen={true} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <DatePicker isOpen={true} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

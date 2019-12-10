@@ -27,11 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
 using ASC.Common.Utils;
 using ASC.FederatedLogin.Profile;
-using ASC.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
 {
@@ -54,12 +53,12 @@ namespace ASC.FederatedLogin
         }
 
 
-        public MultiRegionAccountLinker(string databaseId, Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, IConfiguration configuration, AccountLinkerStorage accountLinkerStorage)
+        public MultiRegionAccountLinker(string databaseId, IConfiguration configuration, IOptionsSnapshot<AccountLinker> snapshot)
         {
             foreach (var connection in configuration.GetConnectionStrings())
             {
                 if (connection.Name.StartsWith(databaseId))
-                    _accountLinkers.Add(connection.Name, new AccountLinker(connection.Name, signature, instanceCrypto, dbOptions, accountLinkerStorage));
+                    _accountLinkers.Add(connection.Name, snapshot.Get(connection.Name));
             }
         }
 

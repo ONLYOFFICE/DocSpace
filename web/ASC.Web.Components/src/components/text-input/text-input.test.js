@@ -4,15 +4,15 @@ import TextInput from '.';
 
 describe('<TextInput />', () => {
   it('renders without error', () => {
-    const wrapper = mount(     
-      <TextInput value="text" onChange={event => alert(event.target.value)} />
+    const wrapper = mount(
+      <TextInput value="text" onChange={jest.fn()} />
     );
 
     expect(wrapper).toExist();
   });
 
   it('not re-render test', () => {
-    const onChange= event => alert(event.target.value);
+    const onChange = jest.fn();
 
     const wrapper = shallow(<TextInput value="text" onChange={onChange} />).instance();
 
@@ -22,7 +22,7 @@ describe('<TextInput />', () => {
   });
 
   it('re-render test by value', () => {
-    const onChange= event => alert(event.target.value);
+    const onChange = jest.fn();
 
     const wrapper = shallow(<TextInput value="text" onChange={onChange} />).instance();
 
@@ -32,5 +32,29 @@ describe('<TextInput />', () => {
     });
 
     expect(shouldUpdate).toBe(true);
+  });
+
+  it('accepts id', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={jest.fn()} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={jest.fn()} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <TextInput value="text" onChange={jest.fn()} style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 });

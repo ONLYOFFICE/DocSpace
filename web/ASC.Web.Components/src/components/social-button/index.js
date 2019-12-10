@@ -1,12 +1,12 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import { Text } from '../text';
+import Text from '../text';
 import isEqual from "lodash/isEqual";
 import { Icons } from "../icons";
 
 // eslint-disable-next-line no-unused-vars
-const ButtonWrapper = ({label, iconName, isDisabled,  ...props}) => <button type="button" {...props}></button>;
+const ButtonWrapper = ({ label, iconName, isDisabled, ...props }) => <button type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
@@ -107,13 +107,13 @@ class SocialButton extends React.Component {
   }
 
   render() {
-    const {label, iconName} = this.props;  
+    const { label, iconName } = this.props;
     return (
       <StyledSocialButton {...this.props}>
         {React.createElement(Icons[iconName], {})}
 
         {label && (
-          <Text.Body as="span" className="social_button_text">{label}</Text.Body>
+          <Text as="span" className="social_button_text">{label}</Text>
         )}
       </StyledSocialButton>
     );
@@ -124,7 +124,10 @@ SocialButton.propTypes = {
   label: PropTypes.string,
   iconName: PropTypes.string,
   tabIndex: PropTypes.number,
-  isDisabled: PropTypes.bool
+  isDisabled: PropTypes.bool,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 SocialButton.defaultProps = {

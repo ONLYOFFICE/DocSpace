@@ -14,6 +14,9 @@ import { ErrorContainer } from "asc-web-components";
 
 #### Properties
 
-| Props      | Type  | Required | Values | Default | Description                                            |
-| ---------- | :---: | :------: | :----: | :-----: | ------------------------------------------------------ |
-| `children` | `any` |    -     |   -    |    -    | If you need insert description of error or some action |
+| Props       |      Type      | Required | Values | Default | Description                                            |
+| ----------- | :------------: | :------: | :----: | :-----: | ------------------------------------------------------ |
+| `children`  |     `any`      |    -     |   -    |    -    | If you need insert description of error or some action |
+| `className` |    `string`    |    -     |   -    |    -    | Accepts class                                          |
+| `id`        |    `string`    |    -     |   -    |    -    | Accepts id                                             |
+| `style`     | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                      |

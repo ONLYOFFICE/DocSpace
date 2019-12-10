@@ -5,7 +5,8 @@ import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
 import { store } from 'asc-web-common';
-const { getPortalCultures, setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } = store.auth.actions;
+import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
+const { getPortalCultures } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -152,7 +153,7 @@ class Customization extends React.Component {
       const { isLoadedData, languages, language, isLoading, timezones, timezone, greetingTitle, isLoadingGreetingSave, isLoadingGreetingRestore } = this.state;
       const supportEmail = "documentation@onlyoffice.com";
       const tooltipLanguage =
-         <Text.Body fontSize={13}>
+         <Text fontSize={13}>
             <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
                "In case you cannot find your language in the list of the
                available ones, feel free to write to us at
@@ -163,7 +164,7 @@ class Customization extends React.Component {
             </Trans>
             {" "}
             <Link isHovered={true} href="https://helpcenter.onlyoffice.com/ru/guides/become-translator.aspx">{t("LearnMore")}</Link>
-         </Text.Body>
+         </Text>
 
       console.log("CustomizationSettings render");
       return (
@@ -172,7 +173,7 @@ class Customization extends React.Component {
             : <>
                <StyledComponent>
                   <div className='settings-block'>
-                     <Text.Body fontSize={16}>{t('StudioTimeLanguageSettings')}</Text.Body>
+                     <Text fontSize={16}>{t('StudioTimeLanguageSettings')}</Text>
                      <FieldContainer
                         id='fieldContainerLanguage'
                         className='margin-top field-container-width'
@@ -223,7 +224,7 @@ class Customization extends React.Component {
                   </div>
 
                   <div className='settings-block'>
-                     <Text.Body fontSize={16}>{t('GreetingSettingsTitle')}</Text.Body>
+                     <Text fontSize={16}>{t('GreetingSettingsTitle')}</Text>
                      <FieldContainer
                         id='fieldContainerWelcomePage'
                         className='margin-top field-container-width'

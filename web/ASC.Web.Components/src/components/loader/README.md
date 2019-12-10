@@ -19,10 +19,12 @@ import { Loader } from "asc-web-components";
 
 ### Properties
 
-| Props       |       Type        | Required |                Values                | Default | Description |
-| ----------- | :---------------: | :------: | :----------------------------------: | :-----: | ----------- |
-| `type`      |      `oneOf`      |    -     | `base`, `oval`, `dual-ring`, `rombs` | `base`  | -           |
-| `color`     |     `string`      |    -     |                  -                   |    -    | Font color  |
-| `size`      | `number`,`string` |    -     |                  -                   |    -    | Font size   |
-| `label`     |     `string`      |    -     |                  -                   |    -    | Text label  |
-| `className` |     `string`      |    -     |                  -                   |    -    | Class name  |
+| Props       |       Type        | Required |                Values                | Default | Description       |
+| ----------- | :---------------: | :------: | :----------------------------------: | :-----: | ----------------- |
+| `className` |     `string`      |    -     |                  -                   |    -    | Class name        |
+| `color`     |     `string`      |    -     |                  -                   |    -    | Font color        |
+| `id`        |     `string`      |    -     |                  -                   |    -    | Accepts id        |
+| `label`     |     `string`      |    -     |                  -                   |    -    | Text label        |
+| `size`      | `number`,`string` |    -     |                  -                   |    -    | Font size         |
+| `style`     |  `obj`, `array`   |    -     |                  -                   |    -    | Accepts css style |
+| `type`      |      `oneOf`      |    -     | `base`, `oval`, `dual-ring`, `rombs` | `base`  | -                 |

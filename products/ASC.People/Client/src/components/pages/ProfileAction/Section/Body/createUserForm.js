@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr, AvatarEditor, Text } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile } from '../../../../../store/profile/actions';
+import { createProfile, getUserPhoto } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -69,19 +69,17 @@ class CreateUserForm extends React.Component {
   }
 
   openAvatarEditor(){
-    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
-    let _this = this;
-    if(avatarDefault !== null){
-      let img = new Image();
-      img.onload = function () {
-        _this.setState({
-          avatar:{
-            defaultWidth: img.width,
-            defaultHeight: img.height
-          }
-        })
-      };
-      img.src = avatarDefault;
+    let avatarDefault = this.state.avatar.image;
+    let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(this.state.avatar.image);
+    if (avatarDefault !== null && avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+      this.setState({
+        avatar: {
+          tmpFile: this.state.avatar.tmpFile,
+          image: this.state.avatar.image,
+          defaultWidth: avatarDefaultSizes[1],
+          defaultHeight: avatarDefaultSizes[2]
+        }
+      }) 
     }
     this.setState({
       visibleAvatarEditor: true,
@@ -149,7 +147,21 @@ class CreateUserForm extends React.Component {
     });
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
-
+    getUserPhoto(profile.id).then(userPhotoData => {
+      if(userPhotoData.original){
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
+            }
+          });
+        }
+      }
+    });
     return {
       visibleAvatarEditor: false,
       croppedAvatarImage: "",
@@ -169,7 +181,7 @@ class CreateUserForm extends React.Component {
       },
       avatar: {
         tmpFile:"",
-        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        image: null,
         defaultWidth: 0,
         defaultHeight: 0,
         x: 0,
@@ -373,7 +385,7 @@ class CreateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text.Body fontSize={13} as="div">
+                <Text fontSize={13} as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
                     <p className="tooltip_email" style={{margin: "1rem 0"}} >
@@ -382,7 +394,7 @@ class CreateUserForm extends React.Component {
                     </p>
                     The main e-mail can be used as a login when logging in to the portal.
                   </Trans>
-                </Text.Body>
+                </Text>
               }
             />
             <PasswordField

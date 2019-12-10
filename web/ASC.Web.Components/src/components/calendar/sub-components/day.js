@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Text } from "../../text";
+import Text from "../../text";
 import isEqual from "lodash/isEqual";
 
 const StyledDay = styled.div`
@@ -45,9 +45,9 @@ class Day extends React.Component {
           onClick={onDayClick.bind(this, day)}
           className={day.className}
         >
-          <Text.Body isBold={true} color="inherit;" className="textStyle">
+          <Text isBold={true} color="inherit;" className="textStyle">
             {day.value}
-          </Text.Body>
+          </Text>
         </DayContent>
       </StyledDay>
     );

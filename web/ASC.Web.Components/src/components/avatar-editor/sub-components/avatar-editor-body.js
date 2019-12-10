@@ -5,7 +5,7 @@ import ReactAvatarEditor from 'react-avatar-editor'
 import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
-import { Text } from '../../text'
+import Text from '../../text'
 import { tablet } from '../../../utils/device';
 
 const StyledErrorContainer = styled.div`
@@ -159,10 +159,12 @@ class AvatarEditorBody extends React.Component {
         this.props.deleteImage();
     }
     onImageChange() {
-        this.setState({
-            croppedImage: this.setEditorRef.current.getImage().toDataURL()
-        });
-        this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
+        if(this.setEditorRef.current !== null){
+            this.setState({
+                croppedImage: this.setEditorRef.current.getImage().toDataURL()
+            });
+            this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
+        }
     }
     dist = 0
     scaling = false
@@ -247,6 +249,13 @@ class AvatarEditorBody extends React.Component {
             height: this.setEditorRef.current.getImage().height
         });
     }
+    componentDidUpdate(prevProps){
+        if(prevProps.image !== this.props.image){
+            this.setState({
+                image: this.props.image
+            });
+        }
+    }
     render() {
         return (
             <div
@@ -316,11 +325,11 @@ class AvatarEditorBody extends React.Component {
                 }
                 <StyledErrorContainer key="errorMsg">
                     {this.state.errorText !== null &&
-                        <Text.Body
+                        <Text
                             as="p"
                             color="#C96C27"
                             isBold={true}
-                        >{this.state.errorText}</Text.Body>
+                        >{this.state.errorText}</Text>
                     }
                 </StyledErrorContainer>
             </div>

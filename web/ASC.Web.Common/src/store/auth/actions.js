@@ -7,7 +7,6 @@ export const SET_SETTINGS = "SET_SETTINGS";
 export const SET_IS_LOADED = "SET_IS_LOADED";
 export const LOGOUT = "LOGOUT";
 export const SET_PASSWORD_SETTINGS = "SET_PASSWORD_SETTINGS";
-export const SET_IS_CONFIRM_LOADED = "SET_IS_CONFIRM_LOADED";
 export const SET_NEW_EMAIL = "SET_NEW_EMAIL";
 export const GET_PORTAL_CULTURES = "GET_PORTAL_CULTURES";
 export const SET_PORTAL_LANGUAGE_AND_TIME = "SET_PORTAL_LANGUAGE_AND_TIME";
@@ -15,7 +14,6 @@ export const GET_TIMEZONES = "GET_TIMEZONES";
 export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
-export const SET_INVITE_LINKS = "SET_INVITE_LINKS";
 
 export function setCurrentUser(user) {
   return {
@@ -45,12 +43,6 @@ export function setIsLoaded(isLoaded) {
   };
 }
 
-export function setIsConfirmLoaded(isConfirmLoaded) {
-  return {
-    type: SET_IS_CONFIRM_LOADED,
-    isConfirmLoaded
-  };
-}
 
 export function setLogout() {
   return {
@@ -62,16 +54,6 @@ export function setPasswordSettings(passwordSettings) {
   return {
     type: SET_PASSWORD_SETTINGS,
     passwordSettings
-  };
-}
-
-export function setInviteLinks(userLink, guestLink) {
-  return {
-    type: SET_INVITE_LINKS,
-    payload: {
-      userLink,
-      guestLink
-    }
   };
 }
 
@@ -140,7 +122,7 @@ export function getModules(dispatch) {
     .then(modules => dispatch(setModules(modules)));
 }
 
-const loadInitInfo = dispatch => {
+export const loadInitInfo = dispatch => {
   return getPortalSettings(dispatch).then(() => getModules(dispatch));
 };
 
@@ -160,74 +142,6 @@ export function logout() {
   };
 }
 
-export function getConfirmationInfo(token, type) {
-  return dispatch => {
-    return api.settings
-      .getPortalPasswordSettings(token)
-      .then(settings => dispatch(setPasswordSettings(settings)))
-      .then(() => dispatch(setIsConfirmLoaded(true)));
-  };
-}
-
-export function createConfirmUser(registerData, loginData, key) {
-  const data = Object.assign({}, registerData, loginData);
-  return dispatch => {
-    return api.people
-      .createUser(data, key)
-      .then(user => dispatch(setCurrentUser(user)))
-      .then(() => api.user.login(loginData.userName, loginData.password))
-      .then(() => loadInitInfo(dispatch));
-  };
-}
-
-export function changePassword(userId, password, key) {
-  return dispatch => {
-    return api.people
-      .changePassword(userId, password, key)
-      .then(() => logout(dispatch));
-  };
-}
-
-export function changeEmail(userId, email, key) {
-  return dispatch => {
-    return api.people
-      .changeEmail(userId, email, key)
-      .then(user => dispatch(setNewEmail(user.email)));
-  };
-}
-
-export function activateConfirmUser(
-  personalData,
-  loginData,
-  key,
-  userId,
-  activationStatus
-) {
-  const changedData = {
-    id: userId,
-    FirstName: personalData.firstname,
-    LastName: personalData.lastname
-  };
-
-  return dispatch => {
-    return api.people
-      .changePassword(userId, loginData.password, key)
-      .then(data => {
-        console.log("set password success:", data);
-        return api.people.updateActivationStatus(activationStatus, userId, key);
-      })
-      .then(data => {
-        console.log("activation success, result:", data);
-        return dispatch(login(loginData.userName, loginData.password));
-      })
-      .then(data => {
-        console.log("log in, result:", data);
-        return api.people.updateUser(changedData);
-      })
-      .then(user => dispatch(setCurrentUser(user)));
-  };
-}
-
 export function getPortalCultures(dispatch = null) {
   return dispatch
     ? api.settings.getPortalCultures().then(cultures => {
@@ -240,51 +154,8 @@ export function getPortalCultures(dispatch = null) {
       };
 }
 
-export function setLanguageAndTime(lng, timeZoneID) {
-  return dispatch => {
-    return api.settings
-      .setLanguageAndTime(lng, timeZoneID)
-      .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
-  };
-}
-
-export function getPortalTimezones() {
-  return dispatch => {
-    return api.settings.getPortalTimezones().then(timezones => {
-      dispatch(setTimezones(timezones));
-    });
-  };
-}
-
-export function setGreetingTitle(greetingTitle) {
-  return dispatch => {
-    return api.settings.setGreetingSettings(greetingTitle).then(() => {
-      dispatch(setGreetingSettings(greetingTitle));
-    });
-  };
-}
-
-export function restoreGreetingTitle() {
-  return dispatch => {
-    return api.settings.restoreGreetingSettings().then(res => {
-      dispatch(setGreetingSettings(res.companyName));
-    });
-  };
-}
-
 export function getPortalPasswordSettings(dispatch, confirmKey = null) {
   return api.settings.getPortalPasswordSettings(confirmKey).then(settings => {
     dispatch(setPasswordSettings(settings));
   });
-}
-
-export function getPortalInviteLinks() {
-  return (dispatch, getState) => {
-    const { auth } = getState();
-    if (!auth.user.isAdmin) return Promise.resolve();
-
-    return api.portal.getInvitationLinks().then(data => {
-      dispatch(setInviteLinks(data.userLink, data.guestLink));
-    });
-  };
 }

@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import ContextMenu from '.';
 
 const baseProps = {
@@ -88,5 +87,25 @@ describe('<ContextMenu />', () => {
     instance.handleContextMenu(new Event('click', { target: null }));
 
     expect(wrapper.state('visible')).toEqual(true);
+  });
+
+  it('accepts id', () => {
+    const wrapper = mount(<ContextMenu {...baseProps} id="testId" />);
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(<ContextMenu {...baseProps} className="test" />);
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(<ContextMenu {...baseProps} style={{ color: 'red' }} />);
+
+    wrapper.setState({visible: true});
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 });

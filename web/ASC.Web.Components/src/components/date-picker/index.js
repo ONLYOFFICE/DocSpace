@@ -10,7 +10,8 @@ import isEmpty from "lodash/isEmpty";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import { Text } from "../text";
+import Text from "../text";
+import Header from "../header";
 import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
@@ -32,7 +33,7 @@ const Content = styled.div`
   padding: 0 16px 16px;
 `;
 
-const Header = styled.div`
+const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -43,7 +44,7 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Text.ContentHeader)`
+const HeaderText = styled(Header)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -133,9 +134,7 @@ class DatePicker extends Component {
   };
 
   onClick = isOpen => {
-    if (!this.state.hasError) {
-      this.setState({ isOpen });
-    }
+    this.setState({ isOpen });
   };
 
   onClose = () => {
@@ -340,11 +339,11 @@ class DatePicker extends Component {
   };
 
   render() {
-    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent } = this.props;
+    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent, id, style, className } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
     return (
-      <DateInputStyle ref={this.ref}>
+      <DateInputStyle ref={this.ref} id={id} className={className} style={style}>
         <InputBlock
           scale={true}
           isDisabled={isDisabled}
@@ -376,13 +375,13 @@ class DatePicker extends Component {
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
-                  <Header>
-                    <HeaderText>
-                      <Text.Body isBold={true} fontSize={20}>
+                  <StyledHeader>
+                    <HeaderText type='content'>
+                      <Text isBold={true} fontSize={20}>
                         {calendarHeaderContent}
-                      </Text.Body>
+                      </Text>
                     </HeaderText>
-                  </Header>
+                  </StyledHeader>
                   <Body>{this.renderBody()}</Body>
                 </Content>
               </Aside>
@@ -410,7 +409,10 @@ DatePicker.propTypes = {
   calendarSize: PropTypes.oneOf(["base", "big"]),
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   zIndex: PropTypes.number,
-  calendarHeaderContent: PropTypes.string
+  calendarHeaderContent: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 DatePicker.defaultProps = {

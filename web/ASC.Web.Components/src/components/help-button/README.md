@@ -9,7 +9,7 @@ import { HelpButton } from "asc-web-components";
 ```
 
 ```jsx
-<HelpButton tooltipContent={<Text.Body>Tooltip content</Text.Body>} />
+<HelpButton tooltipContent={<Text>Tooltip content</Text>} />
 ```
 
 #### Usage with link
@@ -17,12 +17,12 @@ import { HelpButton } from "asc-web-components";
 ```jsx
 <HelpButton
   tooltipContent={
-    <Text.Body>
+    <Text>
       Tooltip content with{" "}
       <Link isHovered={true} href="/">
         link
       </Link>
-    </Text.Body>
+    </Text>
   }
 />
 ```
@@ -49,7 +49,6 @@ import { HelpButton } from "asc-web-components";
 
 | Props                     |       Type        | Required |              Values              | Default | Description                                      |
 | ------------------------- | :---------------: | :------: | :------------------------------: | :-----: | ------------------------------------------------ |
-| `tooltipContent`          | `object`,`string` |    ✅    |                -                 |    -    | Tooltip content                                  |
-| `place`                   |     `string`      |    -     | `top`, `right`, `bottom`, `left` |  `top`  | Tooltip placement                                |
+| `className`               |     `string`      |    -     |                -                 |    -    | Accepts class                                    |
 | `displayType`             |      `oneOf`      |    -     |   `dropdown`, `aside`, `auto`    | `auto`  | Tooltip display type                             |
-| `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) |
+| `helpButtonHeaderContent` |     `string`      |    -     |                -                 |    -    | Tooltip header content (tooltip opened in aside) || `id`                      |     `string`      |    -     |                -                 |    -    | Accepts id                                       |

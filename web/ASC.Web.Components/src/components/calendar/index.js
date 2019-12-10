@@ -592,7 +592,7 @@ class Calendar extends Component {
   render() {
     //console.log("Calendar render");
 
-    const { size, themeColor } = this.props;
+    const { size, themeColor, style, id, className } = this.props;
     const {
       optionsMonth,
       selectedOptionMonth,
@@ -608,7 +608,7 @@ class Calendar extends Component {
     const dropDownSizeYear = optionsYear.length > 4 ? 184 : undefined;
 
     return (
-      <CalendarContainer hasError={hasError} size={size}>
+      <CalendarContainer className={className} id={id} style={style} hasError={hasError} size={size}>
         <CalendarStyle size={size} color={themeColor} isDisabled={isDisabled}>
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
@@ -658,7 +658,10 @@ Calendar.propTypes = {
   maxDate: PropTypes.instanceOf(Date),
   locale: PropTypes.string,
   isDisabled: PropTypes.bool,
-  size: PropTypes.oneOf(["base", "big"])
+  size: PropTypes.oneOf(["base", "big"]),
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Calendar.defaultProps = {

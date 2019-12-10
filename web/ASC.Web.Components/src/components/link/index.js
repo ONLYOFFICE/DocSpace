@@ -1,24 +1,7 @@
 import React, { memo } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
-import { Text } from "../text";
-
-// eslint-disable-next-line no-unused-vars
-const SimpleLink = ({ rel, isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, type, color, title, containerWidth, ...props }) => <a {...props} />;
-
-SimpleLink.propTypes = {
-  color: PropTypes.string,
-  fontSize: PropTypes.number,
-  isBold: PropTypes.bool,
-  isHovered: PropTypes.bool,
-  isSemitransparent: PropTypes.bool,
-  isTextOverflow: PropTypes.bool,
-  rel: PropTypes.string,
-  title: PropTypes.string,
-  type: PropTypes.oneOf(["action", "page"]),
-  containerWidth: PropTypes.string
-};
-
+import Text from "../text";
 
 const colorCss = css`
     color: ${props => props.color};
@@ -29,7 +12,7 @@ const hoveredCss = css`
   text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
 `;
 
-const StyledLink = styled(SimpleLink)`
+const StyledLink = styled(Text)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
@@ -46,29 +29,16 @@ const StyledLink = styled(SimpleLink)`
 `;
 
 // eslint-disable-next-line react/display-name
-const Link = memo(props => {
-  const {
-    isBold,
-    title,
-    fontSize,
-    color,
-    isTextOverflow
-  } = props;
-
-  //console.log("Link render", props);
+const Link = memo(({ isTextOverflow, children, ...rest }) => {
+  // console.log("Link render", rest);
 
   return (
-    <StyledLink {...props}>
-      <Text.Body
-        as="span"
-        color={color}
-        fontSize={fontSize}
-        isBold={isBold}
-        title={title}
-        truncate={isTextOverflow}
-      >
-        {props.children}
-      </Text.Body>
+    <StyledLink
+      tag="a"
+      truncate={isTextOverflow}
+      {...rest}
+    >
+      {children}
     </StyledLink>
   );
 });
@@ -88,7 +58,9 @@ Link.propTypes = {
   title: PropTypes.string,
   type: PropTypes.oneOf(["action", "page"]),
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Link.defaultProps = {

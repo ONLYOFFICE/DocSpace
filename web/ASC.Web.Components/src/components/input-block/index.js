@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { InputGroup, InputGroupAddon } from 'reactstrap';
 import TextInput from '../text-input';
 import { Icons } from '../icons';
 import IconButton from '../icon-button';
@@ -28,17 +27,24 @@ const StyledChildrenBlock = styled.div`
   padding: 2px 0px 2px 2px;
 `;
 
+// eslint-disable-next-line react/prop-types, no-unused-vars
 const CustomInputGroup = ({ isIconFill, hasError, hasWarning, isDisabled, scale, ...props }) => (
-  <InputGroup {...props}></InputGroup>
+  <div {...props}></div>
 );
 const StyledInputGroup = styled(CustomInputGroup)`
-  ${commonInputStyle}
-  :focus-within{
-      border-color: #2DA7DB;
+  display: flex;
+
+  .prepend {
+    display: flex;
+    align-items: center;
   }
-  .input-group-prepend,
-  .input-group-append{
-      margin: 0;
+
+  .append {
+    align-items: center;
+    margin: 0;
+  }
+  ${commonInputStyle} :focus-within {
+    border-color: #2da7db;
   }
 `;
 class InputBlock extends React.Component {
@@ -58,11 +64,40 @@ class InputBlock extends React.Component {
 
   render() {
     let iconButtonSize = 0;
+    const {
+      hasError,
+      hasWarning,
+      isDisabled,
+      scale,
+      size,
+      className,
+      style,
+      children,
+      id,
+      name,
+      type,
+      value,
+      placeholder,
+      tabIndex,
+      maxLength,
+      onBlur,
+      onFocus,
+      isReadOnly,
+      isAutoFocussed,
+      autoComplete,
+      mask,
+      keepCharPositions,
+      iconName,
+      iconColor,
+      isIconFill,
+      onIconClick,
+      iconSize
+    } = this.props;
 
-    if (typeof this.props.iconSize == "number" && this.props.iconSize > 0) {
-      iconButtonSize = this.props.iconSize;
+    if (typeof iconSize == "number" && iconSize > 0) {
+      iconButtonSize = iconSize;
     } else {
-      switch (this.props.size) {
+      switch (size) {
         case 'base':
           iconButtonSize = 15;
           break;
@@ -82,52 +117,59 @@ class InputBlock extends React.Component {
     }
 
     return (
-      <StyledInputGroup hasError={this.props.hasError} hasWarning={this.props.hasWarning} isDisabled={this.props.isDisabled} scale={this.props.scale} size={this.props.size}>
-        <InputGroupAddon addonType="prepend">
+      <StyledInputGroup
+        hasError={hasError}
+        hasWarning={hasWarning}
+        isDisabled={isDisabled}
+        scale={scale}
+        size={size}
+        className={className}
+        style={style}
+      >
+        <div className="prepend">
           <StyledChildrenBlock>
-            {this.props.children}
+            {children}
           </StyledChildrenBlock>
-        </InputGroupAddon>
+        </div>
         <TextInput
-          id={this.props.id}
-          name={this.props.name}
-          type={this.props.type}
-          value={this.props.value}
-          isDisabled={this.props.isDisabled}
-          hasError={this.props.hasError}
-          hasWarning={this.props.hasWarning}
-          placeholder={this.props.placeholder}
-          tabIndex={this.props.tabIndex}
-          maxLength={this.props.maxLength}
-          onBlur={this.props.onBlur}
-          onFocus={this.props.onFocus}
-          isReadOnly={this.props.isReadOnly}
-          isAutoFocussed={this.props.isAutoFocussed}
-          autoComplete={this.props.autoComplete}
-          size={this.props.size}
-          scale={this.props.scale}
+          id={id}
+          name={name}
+          type={type}
+          value={value}
+          isDisabled={isDisabled}
+          hasError={hasError}
+          hasWarning={hasWarning}
+          placeholder={placeholder}
+          tabIndex={tabIndex}
+          maxLength={maxLength}
+          onBlur={onBlur}
+          onFocus={onFocus}
+          isReadOnly={isReadOnly}
+          isAutoFocussed={isAutoFocussed}
+          autoComplete={autoComplete}
+          size={size}
+          scale={scale}
           onChange={this.onChange}
           withBorder={false}
-          mask={this.props.mask}
-          keepCharPositions={this.props.keepCharPositions}
+          mask={mask}
+          keepCharPositions={keepCharPositions}
         />
         {
-          iconNames.includes(this.props.iconName)
-          &&
-          <InputGroupAddon addonType="append">
-            <StyledIconBlock>
-              <IconButton
-                size={iconButtonSize}
-                color={this.props.iconColor}
-                iconName={this.props.iconName}
-                isFill={this.props.isIconFill}
-                isDisabled={this.props.isDisabled}
-                onClick={this.onIconClick}
-                isClickable={typeof this.props.onIconClick === 'function'}
-              />
-            </StyledIconBlock>
-          </InputGroupAddon>
-        }
+          iconNames.includes(iconName) && (
+            <div className="append">
+              <StyledIconBlock>
+                <IconButton
+                  size={iconButtonSize}
+                  color={iconColor}
+                  iconName={iconName}
+                  isFill={isIconFill}
+                  isDisabled={isDisabled}
+                  onClick={this.onIconClick}
+                  isClickable={typeof onIconClick === 'function'}
+                />
+              </StyledIconBlock>
+            </div>
+          )}
       </StyledInputGroup>
     );
   }
@@ -167,7 +209,10 @@ InputBlock.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ])
+  ]),
+
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 InputBlock.defaultProps = {
