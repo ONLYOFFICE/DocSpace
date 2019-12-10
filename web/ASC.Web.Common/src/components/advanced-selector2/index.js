@@ -139,7 +139,7 @@ AdvancedSelector2.propTypes = {
 
 AdvancedSelector2.defaultProps = {
   isMultiSelect: false,
-  size: "compact",
+  size: "full",
   buttonLabel: "Add members",
   selectAllLabel: "Select all",
   allowAnyClickClose: true,
