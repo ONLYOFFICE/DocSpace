@@ -93,7 +93,6 @@ export function updateProfileCulture(id, culture) {
     };
 };
 
-};
 export function getUserPhoto(id) {
     return api.people.getUserPhoto(id);
 };
