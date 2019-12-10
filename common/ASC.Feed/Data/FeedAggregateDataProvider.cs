@@ -29,9 +29,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -50,20 +47,18 @@ namespace ASC.Feed.Data
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
-        public DbOptionsManager DbOptionsManager { get; }
         public FeedDbContext FeedDbContext { get; }
 
-        public FeedAggregateDataProvider(DbOptionsManager dbOptionsManager, DbContextManager<FeedDbContext> dbContextManager)
+        public FeedAggregateDataProvider(DbContextManager<FeedDbContext> dbContextManager)
         {
-            DbOptionsManager = dbOptionsManager;
             FeedDbContext = dbContextManager.Get(Constants.FeedDbId);
         }
-        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil, DbOptionsManager dbOptionsManager)
+
+        public FeedAggregateDataProvider(AuthContext authContext, TenantManager tenantManager, TenantUtil tenantUtil)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
             TenantUtil = tenantUtil;
-            DbOptionsManager = dbOptionsManager;
         }
 
         public DateTime GetLastTimeAggregate(string key)
@@ -196,65 +191,64 @@ namespace ASC.Feed.Data
 
         private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
         {
-            var query = new SqlQuery("feed_aggregate a")
-                .InnerJoin("feed_users u", Exp.EqColumns("a.id", "u.feed_id"))
-                .Select("a.json, a.module, a.author, a.modified_by, a.group_id, a.created_date, a.modified_date, a.aggregated_date")
-                .Where("a.tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where(
-                    !Exp.Eq("a.modified_by", AuthContext.CurrentAccount.ID) &
-                    Exp.Eq("u.user_id", AuthContext.CurrentAccount.ID)
-                )
-                .OrderBy("a.modified_date", false)
-                .SetFirstResult(filter.Offset)
-                .SetMaxResults(filter.Max);
+            var q = FeedDbContext.FeedAggregates
+                .Where(r => r.Tenant == TenantManager.GetCurrentTenant().TenantId)
+                .Where(r => r.ModifiedBy != AuthContext.CurrentAccount.ID)
+                .Join(FeedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
+                .Where(r => r.users.UserId == AuthContext.CurrentAccount.ID)
+                .OrderByDescending(r => r.aggregates.ModifiedDate)
+                .Skip(filter.Offset)
+                .Take(filter.Max);
 
             if (filter.OnlyNew)
             {
-                query.Where(Exp.Ge("a.aggregated_date", filter.From));
+                q = q.Where(r => r.aggregates.AggregateDate >= filter.From);
             }
             else
             {
                 if (1 < filter.From.Year)
                 {
-                    query.Where(Exp.Ge("a.modified_date", filter.From));
+                    q = q.Where(r => r.aggregates.ModifiedDate >= filter.From);
                 }
                 if (filter.To.Year < 9999)
                 {
-                    query.Where(Exp.Le("a.modified_date", filter.To));
+                    q = q.Where(r => r.aggregates.ModifiedDate <= filter.To);
                 }
             }
 
             if (!string.IsNullOrEmpty(filter.Product))
             {
-                query.Where("a.product", filter.Product);
-            }
-            if (filter.Author != Guid.Empty)
-            {
-                query.Where("a.modified_by", filter.Author);
-            }
-            if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
-            {
-                var exp = filter.SearchKeys
-                                .Where(s => !string.IsNullOrEmpty(s))
-                                .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
-                                .Aggregate(Exp.False, (cur, s) => cur | Exp.Like("a.keywords", s, SqlLike.AnyWhere));
-                query.Where(exp);
+                q = q.Where(r => r.aggregates.Product == filter.Product);
             }
 
-            var db = GetDb();
-            var news = db
-                        .ExecuteList(query)
-                        .ConvertAll(r => new FeedResultItem(
-                        Convert.ToString(r[0]),
-                        Convert.ToString(r[1]),
-                        new Guid(Convert.ToString(r[2])),
-                        new Guid(Convert.ToString(r[3])),
-                        Convert.ToString(r[4]),
-                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])),
-                        TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[7])),
-                        TenantUtil));
-            return news;
+            if (filter.Author != Guid.Empty)
+            {
+                q = q.Where(r => r.aggregates.ModifiedBy == filter.Author);
+            }
+
+            if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
+            {
+                var keys = filter.SearchKeys
+                                .Where(s => !string.IsNullOrEmpty(s))
+                                .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
+                                .ToList();
+
+                q = q.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
+            }
+
+            var news = q.Select(r => r.aggregates).ToList();
+
+            return news.Select(r => new FeedResultItem(
+                r.Json,
+                r.Module,
+                r.Author,
+                r.ModifiedBy,
+                r.GroupId,
+                TenantUtil.DateTimeFromUtc(r.CreatedDate),
+                TenantUtil.DateTimeFromUtc(r.ModifiedDate),
+                TenantUtil.DateTimeFromUtc(r.AggregateDate),
+                TenantUtil))
+                .ToList();
         }
 
         public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
@@ -306,8 +300,6 @@ namespace ASC.Feed.Data
 
             tx.Commit();
         }
-
-        private IDbManager GetDb() => DbOptionsManager.Get(Constants.FeedDbId);
     }
 
 
@@ -392,7 +384,6 @@ namespace ASC.Feed.Data
                 .AddAuthContextService()
                 .AddTenantManagerService()
                 .AddTenantUtilService()
-                .AddDbManagerService()
                 .AddFeedDbService();
         }
     }
