@@ -212,7 +212,7 @@ PeopleSelector.propTypes = {
   useFake: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  size: PropTypes.oneOf("full", "compact")
+  size: PropTypes.oneOf(["full", "compact"])
 }
 
 PeopleSelector.defaultProps = {
