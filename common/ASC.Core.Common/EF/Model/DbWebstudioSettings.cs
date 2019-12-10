@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -12,8 +11,7 @@ namespace ASC.Core.Common.EF.Model
         public int TenantId { get; set; }
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
-
-        public JsonDocument Data { get; set; }
+        public string Data { get; set; }
     }
 
     public static class WebstudioSettingsExtension
@@ -23,9 +21,9 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder.Entity<DbWebstudioSettings>()
                 .HasKey(c => new { c.TenantId, c.Id, c.UserId });
 
-            modelBuilder.Entity<DbWebstudioSettings>()
-                .Property(r => r.Data)
-                .HasConversion(r => r.ToString(), r => JsonDocument.Parse(r, new JsonDocumentOptions()));
+            //modelBuilder.Entity<DbWebstudioSettings>()
+            //    .Property(r => r.Data)
+            //    .HasConversion(r => r.ToString(), r => JsonDocument.Parse(r, new JsonDocumentOptions()));
 
             return modelBuilder;
         }

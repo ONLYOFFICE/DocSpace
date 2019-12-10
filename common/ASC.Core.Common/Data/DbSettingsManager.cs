@@ -31,7 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Text.Json;
+
 using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Logging;
@@ -40,6 +40,7 @@ using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -161,7 +162,7 @@ namespace ASC.Core.Data
                         Id = settings.ID,
                         UserId = userId,
                         TenantId = tenantId,
-                        Data = JsonDocument.Parse(data)
+                        Data = data
                     };
 
                     WebstudioDbContext.WebstudioSettings.Add(s);
@@ -197,7 +198,7 @@ namespace ASC.Core.Data
                         .Where(r => r.Id == settingsInstance.ID)
                         .Where(r => r.TenantId == tenantId)
                         .Where(r => r.UserId == userId)
-                        .Select(r => r.Data.RootElement.ToString())
+                        .Select(r => r.Data)
                         .FirstOrDefault();
 
                 if (result != null)

@@ -313,7 +313,7 @@ namespace ASC.MessagingSystem.DbSender
                         .FirstOrDefault(),
                         ef = r
                     })
-                    .Where(r => r.Date < DateTime.UtcNow.AddDays(-r.settings.RootElement.GetProperty(settings).GetInt32()))
+                    //.Where(r => r.Date < DateTime.UtcNow.AddDays(-r.settings.RootElement.GetProperty(settings).GetInt32()))
                     .Take(1000);
 
                 ids = ae.ToList().Select(r => r.ef).ToList();
