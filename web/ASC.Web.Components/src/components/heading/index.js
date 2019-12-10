@@ -28,7 +28,6 @@ const Heading = ({ level, ...rest }) => {
    return (
       <StyledHeading
          as={`h${level}`}
-         level={+level}
          {...rest}>
       </StyledHeading>
    );
