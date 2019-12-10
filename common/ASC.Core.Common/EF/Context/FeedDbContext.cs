@@ -12,11 +12,13 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<FeedLast> FeedLast { get; set; }
         public DbSet<FeedAggregate> FeedAggregates { get; set; }
         public DbSet<FeedUsers> FeedUsers { get; set; }
+        public DbSet<FeedReaded> FeedReaded { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .AddFeedUsers();
+                .AddFeedUsers()
+                .AddFeedReaded();
         }
     }
 
