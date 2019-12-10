@@ -66,8 +66,7 @@ class AdvancedSelector2 extends React.Component {
   }
 
   componentWillUnmount() {
-    //handleAnyClick(false, this.handleClick);
-    this.throttledResize.cancel();
+    this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
   }
 
