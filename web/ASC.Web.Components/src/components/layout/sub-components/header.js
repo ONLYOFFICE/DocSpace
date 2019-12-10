@@ -7,7 +7,7 @@ import Heading from "../../heading";
 
 const backgroundColor = "#0F4071";
 
-const StyledHeader = styled.header`
+const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: none;
@@ -29,7 +29,7 @@ const StyledHeader = styled.header`
 const HeaderComponent = React.memo(props => {
   //console.log("Header render");
   return (
-    <StyledHeader>
+    <Header>
       <NavItem
         iconName="MenuIcon"
         badgeNumber={props.badgeNumber}
@@ -38,7 +38,7 @@ const HeaderComponent = React.memo(props => {
       <Heading className="heading" size='xlarge' color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
       </Heading>
-    </StyledHeader>
+    </Header>
   );
 });
 

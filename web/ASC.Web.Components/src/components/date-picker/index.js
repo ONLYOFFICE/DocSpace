@@ -39,7 +39,7 @@ const Content = styled.div`
   }
 `;
 
-const StyledHeader = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -374,7 +374,7 @@ class DatePicker extends Component {
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
-                  <StyledHeader>
+                  <Header>
                     <Heading
                       className='header' 
                       size='medium'
@@ -382,7 +382,7 @@ class DatePicker extends Component {
                       >
                         {calendarHeaderContent}
                     </Heading>
-                  </StyledHeader>
+                  </Header>
                   <Body>{this.renderBody()}</Body>
                 </Content>
               </Aside>
