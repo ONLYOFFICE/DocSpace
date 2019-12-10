@@ -2,8 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -24,11 +22,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public static IServiceCollection AddWebstudioDbContextService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<WebstudioDbContext>>();
-            services.TryAddScoped<IConfigureOptions<WebstudioDbContext>, ConfigureDbContext>();
-            services.TryAddScoped<WebstudioDbContext>();
-
-            return services;
+            return services.AddDbContextManagerService<WebstudioDbContext>();
         }
     }
 }

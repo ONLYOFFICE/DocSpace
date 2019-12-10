@@ -1,8 +1,7 @@
 ﻿using ASC.Core.Common.EF.Model;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -20,11 +19,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public static IServiceCollection AddAccountLinkContextService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<AccountLinkContext>>();
-            services.TryAddScoped<IConfigureOptions<AccountLinkContext>, ConfigureDbContext>();
-            services.TryAddScoped<AccountLinkContext>();
-
-            return services;
+            return services.AddDbContextManagerService<AccountLinkContext>();
         }
     }
 }

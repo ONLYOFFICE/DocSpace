@@ -2,8 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -36,11 +34,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public static IServiceCollection AddTenantDbContextService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<TenantDbContext>>();
-            services.TryAddScoped<IConfigureOptions<TenantDbContext>, ConfigureDbContext>();
-            services.TryAddScoped<TenantDbContext>();
-
-            return services;
+            return services.AddDbContextManagerService<TenantDbContext>();
         }
     }
 }

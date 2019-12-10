@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
@@ -51,6 +53,18 @@ namespace ASC.Core.Common.EF
             {
                 v.Dispose();
             }
+        }
+    }
+
+    public static class DbContextManagerExtension
+    {
+        public static IServiceCollection AddDbContextManagerService<T>(this IServiceCollection services) where T : BaseDbContext, new()
+        {
+            services.TryAddScoped<DbContextManager<T>>();
+            services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
+            services.TryAddScoped<T>();
+
+            return services;
         }
     }
 }

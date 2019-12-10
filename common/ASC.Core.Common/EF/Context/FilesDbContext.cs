@@ -2,8 +2,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -21,11 +19,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public static IServiceCollection AddFilesDbContextService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<FilesDbContext>>();
-            services.TryAddScoped<IConfigureOptions<FilesDbContext>, ConfigureDbContext>();
-            services.TryAddScoped<FilesDbContext>();
-
-            return services;
+            return services.AddDbContextManagerService<FilesDbContext>();
         }
     }
 }

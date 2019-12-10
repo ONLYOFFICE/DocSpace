@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.EF
 {
@@ -34,11 +32,7 @@ namespace ASC.Core.Common.EF
     {
         public static IServiceCollection AddUserDbContextService(this IServiceCollection services)
         {
-            services.TryAddScoped<DbContextManager<UserDbContext>>();
-            services.TryAddScoped<IConfigureOptions<UserDbContext>, ConfigureDbContext>();
-            services.TryAddScoped<UserDbContext>();
-
-            return services;
+            return services.AddDbContextManagerService<UserDbContext>();
         }
     }
 }
