@@ -10,7 +10,7 @@ const StyledArticleBody = styled.div`
   height: 100%;
 
   .people-tree-menu{
-    margin-right: 20px;
+    margin-right: 30px;
   }
 `;
 

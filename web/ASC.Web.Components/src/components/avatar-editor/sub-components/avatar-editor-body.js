@@ -42,6 +42,7 @@ const CloseButton = styled.a`
 `;
 
 const DropZoneContainer = styled.div`
+    box-sizing: border-box;
     display: block;
     width: 100%;
     height: 300px;
