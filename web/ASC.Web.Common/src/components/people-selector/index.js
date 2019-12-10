@@ -161,11 +161,10 @@ class PeopleSelector extends React.Component {
       selectedOptions,
       selectedGroups,
       hasNextPage,
-      isNextPageLoading,
-      size
+      isNextPageLoading
     } = this.state;
 
-    const { isMultiSelect, isDisabled, onSelect } = this.props;
+    const { isMultiSelect, isDisabled, onSelect, size } = this.props;
 
     return (
       <AdvancedSelector2
