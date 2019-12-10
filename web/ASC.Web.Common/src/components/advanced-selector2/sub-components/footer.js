@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Button from "../../button";
+import { Button } from "asc-web-components";
 import styled, { css } from "styled-components";
 
 const StyledContainer = styled.div`

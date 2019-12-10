@@ -1,14 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import Checkbox from "../../checkbox";
-import Link from "../../link";
-import ComboBox from "../../combobox";
-import SearchInput from "../../search-input";
-import Loader from "../../loader";
-import Text from "../../text";
-import Tooltip from "../../tooltip";
-import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
 import ADSelectorColumn from "./column";
 import ADSelectorFooter from "./footer";
 import ADSelectorHeader from "./header";
@@ -17,13 +9,28 @@ import { FixedSizeList as List } from "react-window";
 import InfiniteLoader from "react-window-infinite-loader";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ReactTooltip from "react-tooltip";
-import HelpButton from "../../help-button";
+import {
+  Checkbox,
+  Link,
+  ComboBox,
+  SearchInput,
+  Loader,
+  Text,
+  Tooltip,
+  CustomScrollbarsVirtualList,
+  HelpButton
+} from "asc-web-components";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Container = ({ displayType, options, groups, isMultiSelect, hasSelected, ...props }) => (
-  <div {...props} />
-);
+const Container = ({
+  displayType,
+  options,
+  groups,
+  isMultiSelect,
+  hasSelected,
+  ...props
+}) => <div {...props} />;
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
@@ -69,7 +76,7 @@ const StyledContainer = styled(Container)`
                 padding-left: 8px;
 
                 .group_checkbox {
-                    display: inline-block;
+                  display: inline-block;
                 }
               }
             }
@@ -78,13 +85,16 @@ const StyledContainer = styled(Container)`
       : css`
           height: 100%;
           grid-template-columns: 1fr;
-          ${props => props.isMultiSelect && props.hasSelected 
-          ? css`
-            grid-template-rows: 0.98fr 69px;
-            grid-template-areas: "column-options" "footer";`
-          : css`
-            grid-template-rows: 0.98fr;
-            grid-template-areas: "column-options";`}
+          ${props =>
+            props.isMultiSelect && props.hasSelected
+              ? css`
+                  grid-template-rows: 0.98fr 69px;
+                  grid-template-areas: "column-options" "footer";
+                `
+              : css`
+                  grid-template-rows: 0.98fr;
+                  grid-template-areas: "column-options";
+                `}
         `}
 
   .column-options {
@@ -96,38 +106,58 @@ const StyledContainer = styled(Container)`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: ${props => props.displayType === "aside" 
-      ? (props.isMultiSelect && props.options && props.options.length > 0 ? (props.groups && props.groups.length ? "100px" : "30px") : "70px")
-      : "30px"}  0.98fr;
+    grid-template-rows: ${props =>
+        props.displayType === "aside"
+          ? props.isMultiSelect && props.options && props.options.length > 0
+            ? props.groups && props.groups.length
+              ? "100px"
+              : "30px"
+            : "70px"
+          : "30px"} 0.98fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
       grid-area: header-options;
       /* background-color: white; */
 
-      ${props => props.displayType === "aside" && css`
-        display: grid;
-        grid-row-gap: 12px;
-        grid-template-columns: 1fr;
-        grid-template-rows: 30px 30px ${props => props.isMultiSelect && props.options && props.options.length > 0 && "30px"};
-        ${props => props.isMultiSelect && props.options && props.options.length > 0
-          ? css`grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";`
-          : css`grid-template-areas: "options_searcher" "options_group_selector";`}
+      ${props =>
+        props.displayType === "aside" &&
+        css`
+          display: grid;
+          grid-row-gap: 12px;
+          grid-template-columns: 1fr;
+          grid-template-rows: 30px 30px ${props =>
+              props.isMultiSelect &&
+              props.options &&
+              props.options.length > 0 &&
+              "30px"};
+          ${props =>
+            props.isMultiSelect && props.options && props.options.length > 0
+              ? css`
+                  grid-template-areas: "options_searcher" "options_group_selector" "options_group_select_all";
+                `
+              : css`
+                  grid-template-areas: "options_searcher" "options_group_selector";
+                `}
 
-        .options_searcher {
-          grid-area: options_searcher;
-        }
-
-        .options_group_selector {
-          grid-area: options_group_selector;
-        }
-
-        ${props => props.isMultiSelect && props.options && props.options.length > 0 && css`
-          .options_group_select_all {
-            grid-area: options_group_select_all;
+          .options_searcher {
+            grid-area: options_searcher;
           }
+
+          .options_group_selector {
+            grid-area: options_group_selector;
+          }
+
+          ${props =>
+            props.isMultiSelect &&
+            props.options &&
+            props.options.length > 0 &&
+            css`
+              .options_group_select_all {
+                grid-area: options_group_select_all;
+              }
+            `}
         `}
-      `}
     }
 
     .body-options {
@@ -191,8 +221,8 @@ const ADSelector = props => {
     size
   } = props;
 
-  //console.log("options", options); 
-  //console.log("hasNextPage", hasNextPage); 
+  //console.log("options", options);
+  //console.log("hasNextPage", hasNextPage);
   //console.log("isNextPageLoading", isNextPageLoading);
 
   const listOptionsRef = useRef(null);
@@ -200,7 +230,7 @@ const ADSelector = props => {
 
   useEffect(() => {
     resetCache();
-  }, [searchValue, currentGroup, hasNextPage])
+  }, [searchValue, currentGroup, hasNextPage]);
 
   const [selectedOptionList, setSelectedOptionList] = useState(
     selectedOptions || []
@@ -251,8 +281,7 @@ const ADSelector = props => {
       : selectedOptionList.filter(el => el.key !== option.key);
     setSelectedOptionList(newSelected);
 
-    if(!option.groups)
-      return;
+    if (!option.groups) return;
 
     const newSelectedGroups = [];
     const removedSelectedGroups = [];
@@ -271,8 +300,7 @@ const ADSelector = props => {
           );
         } else {
           index = groups.findIndex(sg => sg.key === g);
-          if(index < 0)
-            return;
+          if (index < 0) return;
           const notSelectedGroup = convertGroup(groups[index]);
           newSelectedGroups.push(
             Object.assign({}, notSelectedGroup, {
@@ -348,29 +376,26 @@ const ADSelector = props => {
   };
 
   const onGroupSelect = group => {
-    if(!currentGroup || !group || currentGroup.key === group.key)
-        return;
+    if (!currentGroup || !group || currentGroup.key === group.key) return;
 
     setCurrentGroup(group);
     onGroupChanged && onGroupChanged(group);
 
-    if(displayType === "aside" && isMultiSelect) {
+    if (displayType === "aside" && isMultiSelect) {
       setSelectedAll(isGroupChecked(group));
     }
   };
 
   const onSelectAllChange = () => {
-    const checked = !selectedAll
+    const checked = !selectedAll;
     //console.log("onSelectAllChange", checked);
     setSelectedAll(checked);
 
-    if(!currentGroup)
-        return;
+    if (!currentGroup) return;
 
     const group = convertGroup(currentGroup);
 
-    if(!group)
-      return;
+    if (!group) return;
 
     group.selected = checked ? group.total : 0;
     const newSelectedGroups = checked
@@ -378,7 +403,7 @@ const ADSelector = props => {
       : selectedGroupList.filter(el => el.key !== group.key);
 
     setSelectedGroupList(newSelectedGroups);
-  }
+  };
 
   const onSearchChange = value => {
     setSearchValue(value);
@@ -396,33 +421,32 @@ const ADSelector = props => {
   const isOptionChecked = option => {
     const checked =
       selectedOptionList.findIndex(el => el.key === option.key) > -1 ||
-      option.groups && option.groups.filter(gKey => {
-        const selectedGroup = selectedGroupList.find(sg => sg.key === gKey);
+      (option.groups &&
+        option.groups.filter(gKey => {
+          const selectedGroup = selectedGroupList.find(sg => sg.key === gKey);
 
-        if (!selectedGroup) return false;
+          if (!selectedGroup) return false;
 
-        return selectedGroup.total === selectedGroup.selected;
-      }).length > 0;
+          return selectedGroup.total === selectedGroup.selected;
+        }).length > 0);
 
     return checked;
   };
 
-  const onLinkClick = (e) => {
+  const onLinkClick = e => {
     const index = e.target.dataset.index;
-    if(!index)
-      return;
+    if (!index) return;
 
     const option = options[index];
 
-    if(!option)
-      return;
+    if (!option) return;
 
-    onSelectOptions([option])
-  }
+    onSelectOptions([option]);
+  };
 
   const onAddClick = () => {
-    onSelectOptions(selectedOptionList)
-  }
+    onSelectOptions(selectedOptionList);
+  };
 
   // Render an item or a loading indicator.
   // eslint-disable-next-line react/prop-types
@@ -526,16 +550,16 @@ const ADSelector = props => {
     return isMultiSelect
       ? `${group.label} (${group.total}/${selected})`
       : group.label;
-  }
+  };
 
   const getSelectorGroups = groups => {
     return groups.map(group => {
       return {
         ...group,
         label: getGroupLabel(group)
-      }
-    })
-  }
+      };
+    });
+  };
 
   // eslint-disable-next-line react/prop-types
   const renderGroup = ({ index, style }) => {
@@ -593,8 +617,7 @@ const ADSelector = props => {
 
     console.log("loadMoreItems", options);
 
-    loadNextPage &&
-      loadNextPage(options);
+    loadNextPage && loadNextPage(options);
   };
 
   return (
@@ -605,7 +628,11 @@ const ADSelector = props => {
       isMultiSelect={isMultiSelect}
       hasSelected={hasSelected()}
     >
-      <ADSelectorColumn className="column-options" displayType={displayType} size={size}>
+      <ADSelectorColumn
+        className="column-options"
+        displayType={displayType}
+        size={size}
+      >
         <ADSelectorHeader className="header-options">
           <SearchInput
             className="options_searcher"
@@ -676,24 +703,23 @@ const ADSelector = props => {
               </Text>
             </div>
           )}
-          {getOptionTooltipContent &&
+          {getOptionTooltipContent && (
             <Tooltip
               id="user"
               offsetRight={90}
               getContent={getOptionTooltipContent}
             />
-          }
+          )}
         </ADSelectorBody>
       </ADSelectorColumn>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <ADSelectorColumn className="column-groups" displayType={displayType} size={size}>
+        <ADSelectorColumn
+          className="column-groups"
+          displayType={displayType}
+          size={size}
+        >
           <ADSelectorHeader className="header-groups">
-            <Text
-              as="p"
-              className="group_header"
-              fontSize={15}
-              isBold={true}
-            >
+            <Text as="p" className="group_header" fontSize={15} isBold={true}>
               {groupsHeaderLabel}
             </Text>
           </ADSelectorHeader>

@@ -51,7 +51,6 @@ export { default as EmptyScreenContainer} from './components/empty-screen-contai
 export { default as CustomScrollbarsVirtualList } from './components/scrollbar/custom-scrollbars-virtual-list'
 export { default as RowContent } from './components/row-content'
 export { default as Calendar } from './components/calendar'
-export { default as AdvancedSelector2 } from './components/advanced-selector2'
 export { default as ContextMenu } from './components/context-menu'
 export { default as RowContainer } from './components/row-container'
 export { default as FieldContainer } from './components/field-container'
@@ -61,3 +60,4 @@ export { default as PasswordInput } from './components/password-input'
 export { default as Tooltip } from './components/tooltip'
 export { default as HelpButton } from './components/help-button'
 export { default as EmailInput } from './components/email-input'
+export { default as Aside } from "./components/layout/sub-components/aside"

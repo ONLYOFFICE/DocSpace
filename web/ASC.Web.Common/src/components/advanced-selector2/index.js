@@ -1,12 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import DropDown from "../drop-down";
-import Aside from "../layout/sub-components/aside";
 import ADSelector from "./sub-components/selector";
-import Backdrop from "../backdrop";
-import { desktop } from "../../utils/device";
+import { utils, Backdrop, DropDown, Aside } from "asc-web-components";
 import throttle from "lodash/throttle";
 import onClickOutside from "react-onclickoutside";
+const { desktop } = utils.device;
 
 const displayTypes = ["dropdown", "aside", "auto"];
 const sizes = ["compact", "full"];

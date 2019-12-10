@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { AdvancedSelector2 } from "asc-web-components";
+import AdvancedSelector2 from "../advanced-selector2";
 import { getGroupList } from "../../api/groups";
 import { setClientBasePath } from "../../api/client";
 
