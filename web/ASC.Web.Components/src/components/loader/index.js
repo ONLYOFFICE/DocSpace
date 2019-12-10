@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Oval } from "./types/oval";
 import { DualRing } from "./types/dual-ring";
 import { Rombs } from "./types/rombs";
+import Text from "../text";
 
 const Loader = (props) =>  {
     const { type, color, size, label, className, style, id } = props;
@@ -19,7 +20,11 @@ const Loader = (props) =>  {
           return <Rombs {...props} />;
         default:
           return (
-              <span style={{...style, color: color, fontSize: size }}>{label}</span>
+              <span style={{...style }}>
+                <Text color={color} fontSize={size}>
+                  {label}
+              </Text>
+            </span>
           );
       }
     };

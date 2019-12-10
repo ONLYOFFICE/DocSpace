@@ -59,6 +59,12 @@ const ToggleContentContainer = styled.div`
   .filter_container {
     margin-top: 16px;
   }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 `;
 
 class PureAdminsSettings extends Component {

@@ -48,6 +48,7 @@ function getVerticalCss() {
     .field-label-icon {
       display: inline-flex;
       width: 100%;
+      line-height: 1.5;
     }
     .field-body {
       width: 100%;

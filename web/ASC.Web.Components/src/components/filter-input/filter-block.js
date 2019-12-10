@@ -26,6 +26,7 @@ const StyledFilterItem = styled.div`
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
+  box-sizing: border-box;
 
   &:last-child{
     margin-bottom: 0;

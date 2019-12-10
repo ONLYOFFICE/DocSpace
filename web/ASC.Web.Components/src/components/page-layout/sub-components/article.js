@@ -11,6 +11,7 @@ const StyledArticle = styled.article`
   min-width: 264px;
   transition: width 0.3s ease-in-out;
   overflow: hidden auto;
+  box-sizing: border-box;
 
   @media ${tablet} {
     ${props =>

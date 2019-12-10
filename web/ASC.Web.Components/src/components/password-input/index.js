@@ -23,7 +23,7 @@ SimpleInput.propTypes = {
 const StyledInput = styled(SimpleInput)`
   display: flex;
   align-items: center;
-  line-height: 32px;
+  line-height: 45px;
   flex-direction: row;
   flex-wrap: nowrap;
 
@@ -38,7 +38,7 @@ const PasswordProgress = styled.div`
 
 const NewPasswordButton = styled.div`
   margin-left: 16px;
-  margin-top: -6px;
+  margin-top: 4px;
 `;
 
 const CopyLink = styled.div`
@@ -48,7 +48,7 @@ const CopyLink = styled.div`
   @media ${tablet} {
     width: 100%;
     margin-left: 0px;
-    margin-top: 8px;
+    margin-top: -1px;
   }
 `;
 
