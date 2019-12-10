@@ -45,7 +45,7 @@ const Link = memo(({ isTextOverflow, children, ...rest }) => {
 
 Link.propTypes = {
   color: PropTypes.string,
-  fontSize: PropTypes.number,
+  fontSize: PropTypes.string,
   href: PropTypes.string,
   isBold: PropTypes.bool,
   isHovered: PropTypes.bool,
@@ -65,7 +65,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
   color: "#333333",
-  fontSize: 13,
+  fontSize: '13px',
   href: undefined,
   isBold: false,
   isHovered: false,

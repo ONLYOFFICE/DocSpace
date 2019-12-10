@@ -13,6 +13,7 @@ const HomeContainer = styled.div`
     margin: 0 auto;
     max-width: 1140px;
     width: 100%;
+    box-sizing: border-box;
     /*justify-content: center;*/
 
     .home-modules {

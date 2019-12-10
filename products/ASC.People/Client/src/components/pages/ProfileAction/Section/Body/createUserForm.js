@@ -385,7 +385,7 @@ class CreateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text fontSize={13} as="div">
+                <Text fontSize='13px' as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
                     <p className="tooltip_email" style={{margin: "1rem 0"}} >

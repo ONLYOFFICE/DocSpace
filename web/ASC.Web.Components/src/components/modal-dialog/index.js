@@ -22,7 +22,7 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
-  
+  box-sizing: border-box;  
   .heading {
     max-width: 500px;
     margin: 0;

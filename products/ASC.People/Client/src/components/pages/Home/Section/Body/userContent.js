@@ -91,7 +91,7 @@ const UserContent = ({ user, history, settings }) => {
             style={headDepartmentStyle}
             as="span"
             color={sideInfoColor}
-            fontSize={12}
+            fontSize='12px'
             title={title}
             truncate={true}
           >

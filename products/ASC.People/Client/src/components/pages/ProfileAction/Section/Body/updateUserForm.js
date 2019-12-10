@@ -463,22 +463,22 @@ class UpdateUserForm extends React.Component {
             {t("ProfileTypePopupHelper")}
         </Text>
 
-        <Text fontSize={12} as="div">
+        <Text fontSize='12px' as="div">
           <Table>
             <tbody>
               <tr>
                 <Th>
-                  <Text isBold fontSize={13}>
+                  <Text isBold fontSize='13px'>
                     {t("ProductsAndInstruments_Products")}
                   </Text>
                 </Th>
                 <Th>
-                  <Text isBold fontSize={13}>
+                  <Text isBold fontSize='13px'>
                     {t("Employee")}
                     </Text>
                   </Th>
                 <Th>
-                  <Text isBold fontSize={13}>
+                  <Text isBold fontSize='13px'>
                     {t("GuestCaption")}
                   </Text>
                 </Th>
@@ -568,7 +568,7 @@ class UpdateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text fontSize={13} as="div">
+                <Text fontSize='13px' as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
                     <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>

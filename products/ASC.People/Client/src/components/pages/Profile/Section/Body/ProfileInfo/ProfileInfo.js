@@ -207,7 +207,7 @@ class ProfileInfo extends React.PureComponent {
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage =
-      <Text fontSize={13}>
+      <Text fontSize='13px'>
         <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
           "In case you cannot find your language in the list of the
           available ones, feel free to write to us at
