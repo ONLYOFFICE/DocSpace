@@ -9,6 +9,11 @@ describe("<HelpButton />", () => {
     expect(wrapper).toExist();
   });
 
+  it("HelpButton renders without error in Aside mode", () => {
+    const wrapper = mount(<HelpButton tooltipContent={tooltipContent} displayType="aside" helpButtonHeaderContent="Header text" />);
+    expect(wrapper).toExist();
+  });
+
   it("HelpButton componentWillUnmount  test", () => {
     const wrapper = mount(<HelpButton tooltipContent={tooltipContent} />);
     const componentWillUnmount = jest.spyOn(
