@@ -4,7 +4,8 @@ import styled, { css } from 'styled-components';
 import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
-  font-size: ${props => props.fontSize}px;
+  ${props => (typeof (props.fontSize) === 'string' && css`font-size: ${props.fontSize};`) ||
+    (typeof (props.fontSize) === 'number' && css`font-size: ${props.fontSize}px;`)};
   font-weight: ${props => props.fontWeight
     ? props.fontWeight
     : props.isBold == true ? 700 : 500};
@@ -33,7 +34,7 @@ Text.propTypes = {
   tag: PropTypes.string,
   title: PropTypes.string,
   color: PropTypes.string,
-  fontSize: PropTypes.number,
+  fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   fontWeight: PropTypes.number,
   backgroundColor: PropTypes.string,
   truncate: PropTypes.bool,
