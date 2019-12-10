@@ -10,7 +10,7 @@ const Common = ({ match }) => {
   const basePath = '/settings/common';
 
   return (
-    <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
+    <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
       <Switch>
         <Route
           exact

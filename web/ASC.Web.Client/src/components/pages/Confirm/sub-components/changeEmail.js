@@ -43,7 +43,7 @@ class ChangeEmail extends React.PureComponent {
     render() {
         console.log('Change email render');
         return (
-            <Loader className="pageLoader" type="rombs" size={40} />
+            <Loader className="pageLoader" type="rombs" size='40px' />
         );
     }
 }

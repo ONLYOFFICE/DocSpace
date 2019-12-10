@@ -81,11 +81,11 @@ const EmptyScreenContainer = props => {
       <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image" />
 
       {headerText && (
-        <Text as="span" color="#333333" fontSize={24} className="ec-header">{headerText}</Text>
+        <Text as="span" color="#333333" fontSize='24px' className="ec-header">{headerText}</Text>
       )}
 
       {descriptionText && (
-        <Text as="span" color="#737373" fontSize={14} className="ec-desc">{descriptionText}</Text>
+        <Text as="span" color="#737373" fontSize='14px' className="ec-desc">{descriptionText}</Text>
       )}
 
       {buttons && (

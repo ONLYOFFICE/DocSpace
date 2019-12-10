@@ -77,7 +77,7 @@ const getFormattedDepartments = departments => {
   const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="page" fontSize={13} isHovered={true} onClick={onGroupClick.bind(this, department)}>
+        <Link type="page" fontSize='13px' isHovered={true} onClick={onGroupClick.bind(this, department)}>
           {department.name}
         </Link>
         {departments.length - 1 !== index ? ", " : ""}
@@ -248,7 +248,7 @@ class ProfileInfo extends React.PureComponent {
                 }
                 <Link
                   type="page"
-                  fontSize={13}
+                  fontSize='13px'
                   isHovered={true}
                   title={email}
                   onClick={this.onEmailClick.bind(email)}

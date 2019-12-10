@@ -478,13 +478,13 @@ storiesOf("Components|All", module)
         </div>
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <Loader type="base" color="black" size={30} label="Loading..." />
+            <Loader type="base" color="black" size='30px' label="Loading..." />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="oval" color="black" size={30} label="Loading" />
+            <Loader type="oval" color="black" size='30px' label="Loading" />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="dual-ring" color="black" size={30} label="Loading" />
+            <Loader type="dual-ring" color="black" size='30px' label="Loading" />
           </div>
         </div>
         <div style={{ justifySelf: "center" }}>

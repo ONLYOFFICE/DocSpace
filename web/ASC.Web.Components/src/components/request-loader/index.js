@@ -60,10 +60,10 @@ const RequestLoader = props => {
 RequestLoader.propTypes = {
   visible: PropTypes.bool,
   zIndex: PropTypes.number,  
-  loaderSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  loaderSize: PropTypes.string,
   loaderColor: PropTypes.string,
   label: PropTypes.string,
-  fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  fontSize: PropTypes.string,
   fontColor: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
@@ -73,10 +73,10 @@ RequestLoader.propTypes = {
 RequestLoader.defaultProps = {
   visible: false,
   zIndex: 256,
-  loaderSize: 16,
+  loaderSize: '16px',
   loaderColor: '#999',
   label: 'Loading... Please wait...',
-  fontSize: 12,
+  fontSize: '12px',
   fontColor: '#999'
 };
 

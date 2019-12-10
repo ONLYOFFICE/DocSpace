@@ -459,7 +459,7 @@ class UpdateUserForm extends React.Component {
       <>
         <Text 
           style={{paddingBottom: 17}} 
-          fontSize={13}>
+          fontSize='13px'>
             {t("ProfileTypePopupHelper")}
         </Text>
 

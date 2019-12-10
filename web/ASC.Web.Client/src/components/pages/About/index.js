@@ -107,7 +107,7 @@ const Body = ({language}) => {
           color="#A3A9AE"
         >
           {t("AboutCompanyEmailTitle")}:{" "}
-          <Link href="mailto:support@onlyoffice.com" fontSize={12}>
+          <Link href="mailto:support@onlyoffice.com" fontSize='12px'>
             support@onlyoffice.com
           </Link>
         </Text>
@@ -126,7 +126,7 @@ const Body = ({language}) => {
           </Text>
         </div>
 
-        <Link href="http://www.onlyoffice.com" fontSize={12}>
+        <Link href="http://www.onlyoffice.com" fontSize='12px'>
           www.onlyoffice.com
         </Link>
 
@@ -136,18 +136,18 @@ const Body = ({language}) => {
             <Link
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               isHovered={true}
-              fontSize={12}
+              fontSize='12px'
             >
               GNU GPL v.3
             </Link>{" "}
           </Text>
 
-          <Text className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize='12px'>
             {t("SourceCode")}:{" "}
             <Link
               href="https://github.com/ONLYOFFICE/CommunityServer"
               isHovered={true}
-              fontSize={12}
+              fontSize='12px'
             >
               GitHub
             </Link>

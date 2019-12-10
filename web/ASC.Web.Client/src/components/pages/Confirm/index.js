@@ -24,7 +24,7 @@ const Confirm = ({ match, language }) => {
   return (
     <I18nextProvider i18n={i18n}>
       <Suspense
-        fallback={<Loader className="pageLoader" type="rombs" size={40} />}
+        fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
       >
         <Switch>
           <ConfirmRoute

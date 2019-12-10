@@ -70,13 +70,13 @@ class ProfileRemove extends React.PureComponent {
             <a href='/login'>
               <img src="images/dark_general.png" alt="Logo" />
             </a>
-            <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
+            <Text as='p' fontSize='24px' color='#116d9d'>{greetingTitle}</Text>
           </div>
 
           {!isProfileDeleted
             ? <>
-              <Text className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileConfirmation')}</Text>
-              <Text className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileConfirmationInfo')}</Text>
+              <Text className='confirm-row' as='p' fontSize='18px' >{t('DeleteProfileConfirmation')}</Text>
+              <Text className='confirm-row' as='p' fontSize='16px' >{t('DeleteProfileConfirmationInfo')}</Text>
 
               <Button
                 className='confirm-row'
@@ -89,8 +89,8 @@ class ProfileRemove extends React.PureComponent {
               />
             </>
             : <>
-              <Text className='confirm-row' as='p' fontSize={18} >{t('DeleteProfileSuccessMessage')}</Text>
-              <Text className='confirm-row' as='p' fontSize={16} >{t('DeleteProfileSuccessMessageInfo')}</Text>
+              <Text className='confirm-row' as='p' fontSize='18px' >{t('DeleteProfileSuccessMessage')}</Text>
+              <Text className='confirm-row' as='p' fontSize='16px' >{t('DeleteProfileSuccessMessageInfo')}</Text>
             </>
           }
 

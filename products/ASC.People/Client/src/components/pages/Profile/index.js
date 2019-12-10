@@ -57,7 +57,7 @@ class PureProfile extends React.Component {
       sectionHeaderContent: <SectionHeaderContent />,
       sectionBodyContent: <SectionBodyContent />
     } : {
-      sectionBodyContent: <Loader className="pageLoader" type="rombs" size={40} />
+      sectionBodyContent: <Loader className="pageLoader" type="rombs" size='40px' />
     };
 
     return <PageLayout {...articleProps} {...sectionProps} />;
