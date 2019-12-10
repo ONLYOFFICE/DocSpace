@@ -1264,6 +1264,7 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddCommonLinkUtilityService()
                 .AddSetupInfo()
                 .AddDbManagerService()
+                .AddFeedDbService()
                 .AddCoreBaseSettingsService()
                 .AddDisplayUserSettingsService()
                 .AddSecurityContextService()
