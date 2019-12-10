@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile } from '../../../../../store/profile/actions';
+import { updateProfile, getUserPhoto } from '../../../../../store/profile/actions'
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -82,6 +82,22 @@ class UpdateUserForm extends React.Component {
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups); 
 
+    getUserPhoto(profile.id).then(userPhotoData => {
+      if(userPhotoData.original){
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
+            }
+          });
+        }
+      }
+    });
+
     const newState = {
       isLoading: false,
       errors: {
@@ -105,7 +121,7 @@ class UpdateUserForm extends React.Component {
       },
       avatar: {
         tmpFile:"",
-        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        image: null,
         defaultWidth: 0,
         defaultHeight: 0
       }
@@ -323,19 +339,17 @@ class UpdateUserForm extends React.Component {
   }
 
   openAvatarEditor(){
-    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
-    let _this = this;
-    if(avatarDefault !== null){
-      let img = new Image();
-      img.onload = function () {
-        _this.setState({
-          avatar:{
-            defaultWidth: img.width,
-            defaultHeight: img.height
-          }
-        })
-      };
-      img.src = avatarDefault;
+    let avatarDefault = this.state.avatar.image;
+    let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(this.state.avatar.image);
+    if (avatarDefault !== null && avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+      this.setState({
+        avatar: {
+          tmpFile: this.state.avatar.tmpFile,
+          image: this.state.avatar.image,
+          defaultWidth: avatarDefaultSizes[1],
+          defaultHeight: avatarDefaultSizes[2]
+        }
+      }) 
     }
     this.setState({
       visibleAvatarEditor: true,
