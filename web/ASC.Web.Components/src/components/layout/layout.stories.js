@@ -4,14 +4,14 @@ import { action } from '@storybook/addon-actions';
 import styled from '@emotion/styled';
 import Layout from '.';
 import PageLayout from '../page-layout';
-import { Text } from '../text';
+import Header from '../header';
 import IconButton from '../icon-button';
 import ContextMenuButton from '../context-menu-button';
 import MainButton from '../main-button';
 import SearchInput from '../search-input';
 import Paging from '../paging';
 import withReadme from 'storybook-readme/with-readme';
-import { text, boolean, withKnobs } from '@storybook/addon-knobs/react';
+import { boolean, withKnobs } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 
 const currentUser = {
@@ -26,7 +26,7 @@ const currentUser = {
 };
 
 const currentUserActions = [
-  { 
+  {
     key: 'ProfileBtn',
     label: 'Profile',
     onClick: (e) => action('ProfileBtn Clicked')(e)
@@ -144,16 +144,16 @@ const perPageItems = [
   }
 ];
 
-const asideContent = <p style={{padding: 40}}>Aside Content</p>;
+const asideContent = <p style={{ padding: 40 }}>Aside Content</p>;
 
-const articleHeaderContent = <Text.MenuHeader>Article Header</Text.MenuHeader>;
+const articleHeaderContent = <Header type="menu">Article Header</Header>;
 
 const articleMainButtonContent = <MainButton
   text='Actions'
   clickAction={(e) => action('MainButton Clicked')(e)}
 />;
 
-const articleBodyContent = <p style={{padding: 40}}>Article Content</p>;
+const articleBodyContent = <p style={{ padding: 40 }}>Article Content</p>;
 
 const sectionHeaderContent = <HeaderContent>
   <IconButton
@@ -161,8 +161,8 @@ const sectionHeaderContent = <HeaderContent>
     size='16'
     onClick={(e) => action('ArrowPathIcon Clicked')(e)}
   />
-  <Text.ContentHeader>Section Header</Text.ContentHeader>
-  <IconButton 
+  <Header type="content">Section Header</Header>
+  <IconButton
     iconName={"PlusIcon"}
     size='16'
     onClick={(e) => action('PlusIcon Clicked')(e)}
@@ -194,11 +194,11 @@ const sectionFilterContent = <SearchInput
       label: 'Test'
     }
   ]}
-  onSearchClick={(result) => {console.log(result)}}
-  onChangeFilter={(result) => {console.log(result)}}
+  onSearchClick={(result) => { console.log(result) }}
+  onChangeFilter={(result) => { console.log(result) }}
 />
 
-const sectionBodyContent = <p style={{padding: 40}}>Section Content</p>;
+const sectionBodyContent = <p style={{ padding: 40 }}>Section Content</p>;
 
 const sectionPagingContent = <Paging
   previousLabel="Previous"

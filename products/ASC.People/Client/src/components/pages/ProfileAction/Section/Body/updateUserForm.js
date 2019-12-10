@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { updateProfile } from '../../../../../store/profile/actions';
+import { updateProfile, getUserPhoto } from '../../../../../store/profile/actions'
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import TextChangeField from './FormFields/TextChangeField'
@@ -82,6 +82,22 @@ class UpdateUserForm extends React.Component {
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups); 
 
+    getUserPhoto(profile.id).then(userPhotoData => {
+      if(userPhotoData.original){
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
+            }
+          });
+        }
+      }
+    });
+
     const newState = {
       isLoading: false,
       errors: {
@@ -105,7 +121,7 @@ class UpdateUserForm extends React.Component {
       },
       avatar: {
         tmpFile:"",
-        image: profile.avatarDefault ? "data:image/png;base64," + profile.avatarDefault : null,
+        image: null,
         defaultWidth: 0,
         defaultHeight: 0
       }
@@ -193,7 +209,7 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change email",
       body: (
-        <Text.Body>
+        <Text>
           <span style={{display: "block", marginBottom: "8px"}}>The activation instructions will be sent to the entered email</span>
           <TextInput
             id="new-email"
@@ -203,7 +219,7 @@ class UpdateUserForm extends React.Component {
             onChange={this.onEmailChange}
             hasError={hasError}
           />
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -234,9 +250,9 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change password",
       body: (
-        <Text.Body>
+        <Text>
           Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -265,9 +281,9 @@ class UpdateUserForm extends React.Component {
       visible: true,
       header: "Change phone",
       body: (
-        <Text.Body>
+        <Text>
           The instructions on how to change the user mobile number will be sent to the user email address
-        </Text.Body>
+        </Text>
       ),
       buttons: [
         <Button
@@ -323,19 +339,17 @@ class UpdateUserForm extends React.Component {
   }
 
   openAvatarEditor(){
-    let avatarDefault = this.state.profile.avatarDefault ? "data:image/png;base64," + this.state.profile.avatarDefault : null;
-    let _this = this;
-    if(avatarDefault !== null){
-      let img = new Image();
-      img.onload = function () {
-        _this.setState({
-          avatar:{
-            defaultWidth: img.width,
-            defaultHeight: img.height
-          }
-        })
-      };
-      img.src = avatarDefault;
+    let avatarDefault = this.state.avatar.image;
+    let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(this.state.avatar.image);
+    if (avatarDefault !== null && avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+      this.setState({
+        avatar: {
+          tmpFile: this.state.avatar.tmpFile,
+          image: this.state.avatar.image,
+          defaultWidth: avatarDefaultSizes[1],
+          defaultHeight: avatarDefaultSizes[2]
+        }
+      }) 
     }
     this.setState({
       visibleAvatarEditor: true,
@@ -443,30 +457,30 @@ class UpdateUserForm extends React.Component {
     const contacts = getUserContacts(profile.contacts);
     const tooltipTypeContent = 
       <>
-        <Text.Body 
+        <Text 
           style={{paddingBottom: 17}} 
           fontSize={13}>
             {t("ProfileTypePopupHelper")}
-        </Text.Body>
+        </Text>
 
-        <Text.Body fontSize={12} as="div">
+        <Text fontSize={12} as="div">
           <Table>
             <tbody>
               <tr>
                 <Th>
-                  <Text.Body isBold fontSize={13}>
+                  <Text isBold fontSize={13}>
                     {t("ProductsAndInstruments_Products")}
-                  </Text.Body>
+                  </Text>
                 </Th>
                 <Th>
-                  <Text.Body isBold fontSize={13}>
+                  <Text isBold fontSize={13}>
                     {t("Employee")}
-                    </Text.Body>
+                    </Text>
                   </Th>
                 <Th>
-                  <Text.Body isBold fontSize={13}>
+                  <Text isBold fontSize={13}>
                     {t("GuestCaption")}
-                  </Text.Body>
+                  </Text>
                 </Th>
               </tr>
               <tr>
@@ -506,7 +520,7 @@ class UpdateUserForm extends React.Component {
               </tr>            
             </tbody>
           </Table>
-        </Text.Body>
+        </Text>
         <Link 
           color="#316DAA" 
           isHovered={true} 
@@ -554,7 +568,7 @@ class UpdateUserForm extends React.Component {
 
               helpButtonHeaderContent={t("Mail")}
               tooltipContent={
-                <Text.Body fontSize={13} as="div">
+                <Text fontSize={13} as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
                     <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>
@@ -563,7 +577,7 @@ class UpdateUserForm extends React.Component {
                     </p>
                     The main e-mail can be used as a login when logging in to the portal.
                   </Trans>
-                </Text.Body>
+                </Text>
               }
             />
             <TextChangeField

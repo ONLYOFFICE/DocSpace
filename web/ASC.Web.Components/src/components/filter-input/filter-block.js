@@ -26,6 +26,7 @@ const StyledFilterItem = styled.div`
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
+  box-sizing: border-box;
 
   &:last-child{
     margin-bottom: 0;
@@ -214,12 +215,13 @@ class FilterBlock extends React.Component {
   render() {
     const _this = this;
     const filterItems = this.getFilterItems();
+    const filterData = this.props.getFilterData();
     return (
       <>
         <StyledFilterBlock ref={this.filterWrapper} id='filter-items-container'>
           {filterItems}
         </StyledFilterBlock>
-        {filterItems.length > 0 && <FilterButton id='filter-button' iconSize={this.props.iconSize} getData={_this.getData} isDisabled={this.props.isDisabled} />}
+        {filterData.length > 0 && <FilterButton id='filter-button' iconSize={this.props.iconSize} getData={_this.getData} isDisabled={this.props.isDisabled} />}
       </>
     );
   }
@@ -231,7 +233,8 @@ FilterBlock.propTypes = {
   hideFilterItems: PropTypes.array,
   openFilterItems: PropTypes.array,
   onRender: PropTypes.func,
-  onDeleteFilterItem: PropTypes.func
+  onDeleteFilterItem: PropTypes.func,
+  getFilterData: PropTypes.func
 }
 
 export default FilterBlock;

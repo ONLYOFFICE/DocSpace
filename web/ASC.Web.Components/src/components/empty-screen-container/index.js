@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Text } from '../text';
+import Text from '../text';
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
@@ -76,25 +76,25 @@ const EmptyScreenContainer = props => {
   const { imageSrc, imageAlt, headerText, descriptionText, buttons } = props;
   return (
 
-      <EmptyContentBody {...props}>
+    <EmptyContentBody {...props}>
 
-        <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image"/>
+      <EmptyContentImage imageSrc={imageSrc} imageAlt={imageAlt} className="ec-image" />
 
-        {headerText && (
-          <Text.Body as="span" color="#333333" fontSize={24} className="ec-header">{headerText}</Text.Body>
-        )}
-        
-        {descriptionText && (          
-          <Text.Body as="span" color="#737373" fontSize={14} className="ec-desc">{descriptionText}</Text.Body>
-        )}
+      {headerText && (
+        <Text as="span" color="#333333" fontSize={24} className="ec-header">{headerText}</Text>
+      )}
 
-        {buttons && (
-          <div className="ec-buttons">
-            {buttons}
-          </div>
-        )}
+      {descriptionText && (
+        <Text as="span" color="#737373" fontSize={14} className="ec-desc">{descriptionText}</Text>
+      )}
 
-      </EmptyContentBody>
+      {buttons && (
+        <div className="ec-buttons">
+          {buttons}
+        </div>
+      )}
+
+    </EmptyContentBody>
   );
 };
 
@@ -103,7 +103,10 @@ EmptyScreenContainer.propTypes = {
   imageAlt: PropTypes.string,
   headerText: PropTypes.string,
   descriptionText: PropTypes.string,
-  buttons: PropTypes.any
+  buttons: PropTypes.any,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default EmptyScreenContainer;

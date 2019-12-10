@@ -160,6 +160,30 @@ describe('<GroupButton />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
+  it('accepts id', () => {
+    const wrapper = mount(
+      <GroupButton {...baseProps}  id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <GroupButton {...baseProps}  className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <GroupButton {...baseProps}  style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
+
 });
 
 

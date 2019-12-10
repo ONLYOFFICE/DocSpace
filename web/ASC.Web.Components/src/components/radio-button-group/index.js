@@ -1,11 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import RadioButton from '../radio-button';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const StyledDiv = styled.div`
-  display: flex;
-`;
+// eslint-disable-next-line react/prop-types, no-unused-vars
+const ClearDiv = ({ orientation, width, ...props }) => <div {...props} />
+const StyledDiv = styled(ClearDiv)`
+  ${props =>
+    (props.orientation === 'horizontal' && css`display: flex;`) ||
+    (props.orientation === 'vertical' && css`display: block;`)};
+
+    width: ${props => props.width};
+    `;
 
 class RadioButtonGroup extends React.Component {
 
@@ -34,7 +40,13 @@ class RadioButtonGroup extends React.Component {
   render() {
     const options = this.props.options;
     return (
-      <StyledDiv className={this.props.className}>
+      <StyledDiv
+        id={this.props.id}
+        className={this.props.className}
+        style={this.props.style}
+        orientation={this.props.orientation}
+        width={this.props.width}
+      >
         {options.map(option => {
           return (
             <RadioButton
@@ -50,6 +62,7 @@ class RadioButtonGroup extends React.Component {
               isDisabled={this.props.isDisabled || option.disabled}
               label={option.label}
               spacing={this.props.spacing}
+              orientation={this.props.orientation}
             />
           )
         }
@@ -70,13 +83,20 @@ RadioButtonGroup.propTypes = {
     disabled: PropTypes.bool
   })).isRequired,
   selected: PropTypes.string.isRequired,
-  spacing: PropTypes.number
+  spacing: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  orientation: PropTypes.oneOf(['horizontal', 'vertical']),
+  width: PropTypes.string,
 }
 
 RadioButtonGroup.defaultProps = {
   isDisabled: false,
   selected: undefined,
-  spacing: 33
+  spacing: '15px',
+  orientation: 'horizontal',
+  width: '100%'
 }
 
 export default RadioButtonGroup;

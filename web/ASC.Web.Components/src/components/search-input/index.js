@@ -26,13 +26,13 @@ class SearchInput extends React.Component {
     this.setSearchTimer = this.setSearchTimer.bind(this);
   }
 
-
   clearSearch() {
     this.setState({
       inputValue: ''
     });
     if (typeof this.props.onClearSearch === 'function') this.props.onClearSearch();
   }
+
   onInputChange(e) {
     this.setState({
       inputValue: e.target.value
@@ -40,6 +40,7 @@ class SearchInput extends React.Component {
     if (this.props.autoRefresh)
       this.setSearchTimer(e.target.value);
   }
+
   setSearchTimer(value) {
     this.timerId && clearTimeout(this.timerId);
     this.timerId = null;
@@ -49,6 +50,7 @@ class SearchInput extends React.Component {
       this.timerId = null;
     }, this.props.refreshTimeout);
   }
+  
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.value != nextProps.value) {
       this.setState({ inputValue: nextProps.value });
@@ -79,7 +81,7 @@ class SearchInput extends React.Component {
     }
 
     return (
-      <StyledSearchInput className={this.props.className}>
+      <StyledSearchInput className={this.props.className} style={this.props.style}>
         <InputBlock
           ref={this.input}
           id={this.props.id}
@@ -117,7 +119,9 @@ SearchInput.propTypes = {
   isDisabled: PropTypes.bool,
   showClearButton: PropTypes.bool,
   refreshTimeout: PropTypes.number,
-  autoRefresh: PropTypes.bool
+  autoRefresh: PropTypes.bool,
+  children: PropTypes.any,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 SearchInput.defaultProps = {

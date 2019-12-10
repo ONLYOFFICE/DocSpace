@@ -9,7 +9,7 @@ import Checkbox from "../checkbox";
 import Button from "../button";
 import { Icons } from "../icons";
 import ComboBox from "../combobox";
-import { Text } from "../text";
+import Text from "../text";
 import findIndex from "lodash/findIndex";
 import filter from "lodash/filter";
 import isEqual from "lodash/isEqual";
@@ -116,6 +116,7 @@ const StyledBodyContainer = styled(Container)`
     }
 
     .data_column_one {
+      box-sizing: border-box;
       ${props =>
         props.displayType === "dropdown" &&
         props.groups &&
@@ -130,6 +131,7 @@ const StyledBodyContainer = styled(Container)`
         margin-top: 4px;
         margin-left: -8px;
         .option {
+          box-sizing: border-box;
           line-height: 32px;
           padding-left: ${props => (props.isMultiSelect ? 8 : 0)}px;
           cursor: pointer;
@@ -150,6 +152,7 @@ const StyledBodyContainer = styled(Container)`
     }
 
     .data_column_two {
+      box-sizing: border-box;
       ${props =>
         props.displayType === "dropdown" &&
         props.groups &&
@@ -171,6 +174,7 @@ const StyledBodyContainer = styled(Container)`
         margin-left: 8px;
 
         .option {
+          box-sizing: border-box;
           line-height: 32px;
           padding-left: 8px;
           cursor: pointer;
@@ -511,14 +515,14 @@ class AdvancedSelector extends React.Component {
               groups &&
               groups.length > 0 && (
                 <div className="data_column_two">
-                  <Text.Body
+                  <Text
                     as="p"
                     className="group_header"
                     fontSize={15}
                     isBold={true}
                   >
                     Groups
-                  </Text.Body>
+                  </Text>
                   <FixedSizeList
                     className="group_list"
                     height={listHeight}

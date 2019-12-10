@@ -16,9 +16,6 @@ const StyledComboBox = styled(ComboBox)`
     float: left;
     width: 20%;
     margin-left: 8px;
-    .display-block{
-        display: block;
-    }
 
     @media ${mobile} {
         width: 50px;
@@ -90,11 +87,11 @@ class SortComboBox extends React.Component {
             <>
                 <DropDownItem noHover >
                     <RadioButtonGroup
-                        className="display-block"
+                        orientation='vertical'
                         onClick={this.onChangeSortDirection}
                         isDisabled={this.props.isDisabled}
                         selected={this.state.sortDirection.toString()}
-                        spacing={0}
+                        spacing='0px'
                         name={'direction'}
                         options={sortDirectionArray}
                     />
@@ -102,11 +99,11 @@ class SortComboBox extends React.Component {
                 <DropDownItem isSeparator />
                 <DropDownItem noHover >
                     <RadioButtonGroup
-                        className="display-block"
+                        orientation='vertical'
                         onClick={this.onChangeSortId}
                         isDisabled={this.props.isDisabled}
                         selected={this.props.selectedOption.key}
-                        spacing={0}
+                        spacing='0px'
                         name={'sort'}
                         options={sortArray}
                     />

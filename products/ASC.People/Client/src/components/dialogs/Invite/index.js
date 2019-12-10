@@ -93,11 +93,8 @@ class PureInviteDialog extends React.Component {
       });
   };
 
-  componentDidUpdate(prevProps) {
-    console.log("invitelink did UPDATE");
-    if (this.props.visible && !prevProps.visible) {
+  componentDidMount() {
       this.onCopyLinkToClipboard();
-    }
   }
 
   onClickToCloseButton = () =>
@@ -116,12 +113,12 @@ class PureInviteDialog extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text.Body className="margin-text" as="p">
+              <Text className="margin-text" as="p">
                 {t("HelpAnswerLinkInviteSettings")}
-              </Text.Body>
-              <Text.Body className="margin-text" as="p">
+              </Text>
+              <Text className="margin-text" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
-              </Text.Body>
+              </Text>
               <div className="flex">
                 <div>
                   <Link
@@ -187,8 +184,8 @@ class PureInviteDialog extends React.Component {
 const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
-    userInvitationLink: state.auth.settings.inviteLinks.userLink,
-    guestInvitationLink: state.auth.settings.inviteLinks.guestLink
+    userInvitationLink: state.portal.inviteLinks.userLink,
+    guestInvitationLink: state.portal.inviteLinks.guestLink
   };
 };
 

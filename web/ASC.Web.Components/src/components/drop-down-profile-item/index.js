@@ -31,6 +31,7 @@ const UserPreview = styled.div`
     border-radius: 6px 6px 0px 0px;
     padding: 15px;
     cursor: default;
+    box-sizing: border-box;
 `;
 
 const AvatarWrapper = styled.div`
@@ -79,7 +80,10 @@ DropDownProfileItem.propTypes = {
   displayName: PropTypes.string,
   email: PropTypes.string,
   avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
-  avatarSource: PropTypes.string
+  avatarSource: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 export default DropDownProfileItem

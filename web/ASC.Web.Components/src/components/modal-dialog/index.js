@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import Backdrop from "../backdrop";
 import Aside from "../layout/sub-components/aside";
-import { Text } from "../text";
+import Header from "../header";
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
 
@@ -22,15 +22,16 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+  box-sizing: border-box;
 `;
 
-const Header = styled.div`
+const StyledHeader = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
 `;
 
-const HeaderText = styled(Text.ContentHeader)`
+const HeaderText = styled(Header)`
   max-width: 500px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -134,30 +135,34 @@ class ModalDialog extends React.Component {
       <Backdrop visible={visible} zIndex={zIndex}>
         <Dialog>
           <Content>
-            <Header>
-              <HeaderText>{headerContent}</HeaderText>
+            <StyledHeader>
+              <HeaderText type='content'>{headerContent}</HeaderText>
               <CloseButton onClick={onClose}></CloseButton>
-            </Header>
+            </StyledHeader>
             <Body>{bodyContent}</Body>
             <Footer>{footerContent}</Footer>
           </Content>
         </Dialog>
       </Backdrop>
     ) : (
-      <>
-        <Backdrop visible={visible} onClick={onClose} zIndex={zIndex}/>
-        <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
-          <Content>
-            <Header>
-              <HeaderText>{headerContent}</HeaderText>
-              {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
-            </Header>
-            <Body>{bodyContent}</Body>
-            <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
-          </Content>
-        </Aside>
-      </>
-    );
+        <div 
+          className={this.props.className}
+          id={this.props.id}
+          style={this.props.style}
+        >
+          <Backdrop visible={visible} onClick={onClose} zIndex={zIndex} />
+          <Aside visible={visible} scale={scale} zIndex={zIndex} className="modal-dialog-aside">
+            <Content>
+              <Header>
+                <HeaderText>{headerContent}</HeaderText>
+                {scale ? <CloseButton onClick={onClose}></CloseButton> : ""}
+              </Header>
+              <Body>{bodyContent}</Body>
+              <Footer className="modal-dialog-aside-footer">{footerContent}</Footer>
+            </Content>
+          </Aside>
+        </div>
+      );
   }
 }
 
@@ -178,7 +183,10 @@ ModalDialog.propTypes = {
     PropTypes.node
   ]),
   onClose: PropTypes.func,
-  zIndex: PropTypes.number
+  zIndex: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ModalDialog.defaultProps = {

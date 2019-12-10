@@ -23,19 +23,20 @@ import { IconButton } from "asc-web-components";
 
 | Props           |        Type        | Required | Values |     Default     | Description                                           |
 | --------------- | :----------------: | :------: | :----: | :-------------: | ----------------------------------------------------- |
+| `className`     |      `string`      |    -     |   -    |        -        | Set component class                                   |
+| `clickColor`    |      `string`      |    -     |   -    |        -        | Icon color on click action                            |
 | `color`         |      `string`      |    -     |   -    |    `#d0d5da`    | Icon color                                            |
 | `hoverColor`    |      `string`      |    -     |   -    |        -        | Icon color on hover action                            |
-| `clickColor`    |      `string`      |    -     |   -    |        -        | Icon color on click action                            |
-| `size`          | `number`,`string`  |    -     |   -    |      `25`       | Button height and width value                         |
-| `isDisabled`    |       `bool`       |    -     |   -    |     `false`     | Tells when the button should present a disabled state |
-| `iconName`      |      `string`      |    ✅    |   -    | `AZSortingIcon` | Icon name                                             |
-| `iconHoverName` |      `string`      |    -     |   -    |        -        | Icon name on hover action                             |
 | `iconClickName` |      `string`      |    -     |   -    |        -        | Icon name on click action                             |
+| `iconHoverName` |      `string`      |    -     |   -    |        -        | Icon name on hover action                             |
+| `iconName`      |      `string`      |    ✅    |   -    | `AZSortingIcon` | Icon name                                             |
+| `id`            | `string`, `number` |    -     |   -    |        -        | Set component id                                      |
+| `isClickable`   |       `bool`       |    -     |   -    |     `false`     | Set cursor value                                      |
+| `isDisabled`    |       `bool`       |    -     |   -    |     `false`     | Tells when the button should present a disabled state |
 | `isFill`        |       `bool`       |    -     |   -    |     `true`      | Determines if icon fill is needed                     |
 | `onClick`       |       `func`       |    -     |   -    |        -        | What the button will trigger when clicked             |
-| `onMouseEnter`  |       `func`       |    -     |   -    |        -        | What the button will trigger when cursor enter        |
 | `onMouseDown`   |       `func`       |    -     |   -    |        -        | What the button will trigger when cursor down         |
+| `onMouseEnter`  |       `func`       |    -     |   -    |        -        | What the button will trigger when cursor enter        |
 | `onMouseUp`     |       `func`       |    -     |   -    |        -        | What the button will trigger when cursor up           |
-| `isClickable`   |       `bool`       |    -     |   -    |     `false`     | Set cursor value                                      |
-| `className`     |      `string`      |    -     |   -    |        -        | Set component class                                   |
-| `id`            | `string`, `number` |    -     |   -    |        -        | Set component id                                      |
+| `size`          | `number`,`string`  |    -     |   -    |      `25`       | Button height and width value                         |
+| `style`         |   `obj`, `array`   |    -     |   -    |        -        | Accepts css style                                     |

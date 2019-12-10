@@ -3,11 +3,10 @@ import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
 import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
 import styled from 'styled-components';
-import { Collapse } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { store, constants } from 'asc-web-common';
-const { getConfirmationInfo, activateConfirmUser } = store.auth.actions;
+import { constants } from 'asc-web-common';
+import { getConfirmationInfo, activateConfirmUser } from '../../../../store/confirm/actions';
 const { EmployeeActivationStatus } = constants;
 
 
@@ -139,7 +138,7 @@ class Confirm extends React.PureComponent {
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
 
-    getConfirmationInfo(this.state.key, this.state.linkType)
+    getConfirmationInfo(this.state.key)
       .then(
         function () {
           console.log("get settings success");
@@ -191,13 +190,13 @@ class Confirm extends React.PureComponent {
           <ConfirmContainer>
             <div className='start-basis'>
               <div className='margin-left'>
-                <Text.Body className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text.Body>
+                <Text className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text>
 
                 <div className='confirm-row full-width break-word'>
                   <a href='/login'>
                     <img src="images/dark_general.png" alt="Logo" />
                   </a>
-                  <Text.Body as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text.Body>
+                  <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
                 </div>
               </div>
 
@@ -294,14 +293,13 @@ class Confirm extends React.PureComponent {
 
               {/*             <Row className='confirm-row'>
 
-                    <Text.Body as='p' fontSize={14}>{t('LoginWithAccount')}</Text.Body>
+                    <Text as='p' fontSize={14}>{t('LoginWithAccount')}</Text>
 
             </Row>
  */}
-              <Collapse className='confirm-row'
-                isOpen={!!this.state.errorText}>
-                <div className="alert alert-danger">{this.state.errorText}</div>
-              </Collapse>
+              <Text className="confirm-row" fontSize={14} color="#c30">
+                {this.state.errorText}
+              </Text>
             </div>
           </ConfirmContainer>
         )
@@ -321,7 +319,7 @@ const ActivateUserForm = (props) => (<PageLayout sectionBodyContent={<Confirm {.
 
 function mapStateToProps(state) {
   return {
-    isConfirmLoaded: state.auth.isConfirmLoaded,
+    isConfirmLoaded: state.confirm.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
     greetingTitle: state.auth.settings.greetingSettings
   };

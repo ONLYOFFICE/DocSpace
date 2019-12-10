@@ -5,7 +5,7 @@ import Readme from "./README.md";
 import Tooltip from "./";
 import Section from "../../../.storybook/decorators/section";
 import Link from "../link";
-import { Text } from "../text";
+import Text from "../text";
 
 const BodyStyle = { marginTop: 70, marginLeft: 50, position: "absolute" };
 const BodyStyle_2 = { marginTop: 70, marginLeft: 250 };
@@ -56,13 +56,13 @@ storiesOf("Components|Tooltip", module)
         </div>
         <Tooltip id="link" offsetRight={90} effect="solid">
           <div>
-            <Text.Body isBold={true} fontSize={16}>
+            <Text isBold={true} fontSize={16}>
               Bob Johnston
-            </Text.Body>
-            <Text.Body color="#A3A9AE" fontSize={13}>
+            </Text>
+            <Text color="#A3A9AE" fontSize={13}>
               BobJohnston@gmail.com
-            </Text.Body>
-            <Text.Body fontSize={13}>Developer</Text.Body>
+            </Text>
+            <Text fontSize={13}>Developer</Text>
           </div>
         </Tooltip>
 
@@ -95,15 +95,15 @@ storiesOf("Components|Tooltip", module)
           getContent={dataTip =>
             dataTip ? (
               <div>
-                <Text.Body isBold={true} fontSize={16}>
+                <Text isBold={true} fontSize={16}>
                   {arrayUsers[dataTip].name}
-                </Text.Body>
-                <Text.Body color="#A3A9AE" fontSize={13}>
+                </Text>
+                <Text color="#A3A9AE" fontSize={13}>
                   {arrayUsers[dataTip].email}
-                </Text.Body>
-                <Text.Body fontSize={13}>
+                </Text>
+                <Text fontSize={13}>
                   {arrayUsers[dataTip].position}
-                </Text.Body>
+                </Text>
               </div>
             ) : null
           }

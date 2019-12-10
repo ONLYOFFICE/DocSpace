@@ -1,7 +1,8 @@
-import { api } from "asc-web-common";
+import { api, store } from "asc-web-common";
 import axios from "axios";
 import { getSelectorOptions, getUserOptions } from "./selectors";
 const { Filter } = api;
+const { setPortalLanguageAndTime, setTimezones, setGreetingSettings } = store.auth.actions;
 
 export const SET_USERS = "SET_USERS";
 export const SET_ADMINS = "SET_ADMINS";
@@ -175,6 +176,38 @@ export function getWhiteLabelLogoUrls() {
     return api.settings.getLogoUrls()
     .then(res => {
       dispatch(setLogoUrls(Object.values(res)));
+    });
+  };
+}
+
+export function setLanguageAndTime(lng, timeZoneID) {
+  return dispatch => {
+    return api.settings
+      .setLanguageAndTime(lng, timeZoneID)
+      .then(() => dispatch(setPortalLanguageAndTime({ lng, timeZoneID })));
+  };
+};
+
+export function getPortalTimezones() {
+  return dispatch => {
+    return api.settings.getPortalTimezones().then(timezones => {
+      dispatch(setTimezones(timezones));
+    });
+  };
+};
+
+export function setGreetingTitle(greetingTitle) {
+  return dispatch => {
+    return api.settings.setGreetingSettings(greetingTitle).then(() => {
+      dispatch(setGreetingSettings(greetingTitle));
+    });
+  };
+}
+
+export function restoreGreetingTitle() {
+  return dispatch => {
+    return api.settings.restoreGreetingSettings().then(res => {
+      dispatch(setGreetingSettings(res.companyName));
     });
   };
 }

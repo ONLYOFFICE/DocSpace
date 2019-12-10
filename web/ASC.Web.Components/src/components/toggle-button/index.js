@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Icons } from "../icons";
-import { Text } from "../text";
+import Text from "../text";
 
 const ToggleButtonContainer = styled.label`
   position: absolute;
@@ -26,13 +26,13 @@ const ToggleButtonContainer = styled.label`
         `}
   svg {
     ${props =>
-      props.isDisabled
-        ? css`
+    props.isDisabled
+      ? css`
             rect {
               fill: #eceff1;
             }
           `
-        : ""}
+      : ""}
   }
 
   .toggleText {
@@ -67,7 +67,7 @@ class ToggleButton extends Component {
   }
 
   render() {
-    const { isDisabled, label, onChange, id, className } = this.props;
+    const { isDisabled, label, onChange, id, className, style } = this.props;
     const colorProps = isDisabled ? { color: "#A3A9AE" } : {};
 
     //console.log("ToggleButton render");
@@ -76,6 +76,7 @@ class ToggleButton extends Component {
       <ToggleButtonContainer
         id={id}
         className={className}
+        style={style}
         isDisabled={isDisabled}
       >
         <HiddenInput
@@ -86,9 +87,9 @@ class ToggleButton extends Component {
         />
         <ToggleIcon isChecked={this.state.checked} />
         {label && (
-          <Text.Body className="toggleText" as="span" {...colorProps}>
+          <Text className="toggleText" as="span" {...colorProps}>
             {label}
-          </Text.Body>
+          </Text>
         )}
       </ToggleButtonContainer>
     );
@@ -101,7 +102,8 @@ ToggleButton.propTypes = {
   onChange: PropTypes.func,
   label: PropTypes.string,
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  className: PropTypes.string
+  className: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 ToggleIcon.propTypes = {

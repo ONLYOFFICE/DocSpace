@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
 import { Icons } from '../../icons';
-import { Text } from '../../text'
+import Text from '../../text'
 
 const StyledComboButton = styled.div`
   display: flex;
@@ -31,6 +31,8 @@ const StyledComboButton = styled.div`
 
   color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
 
+  box-sizing: border-box;
+
   ${props => !props.noBorder && `
     border: 1px solid #D0D5DA;
     border-radius: 3px;
@@ -48,8 +50,8 @@ const StyledComboButton = styled.div`
   :hover{
     border-color: ${props => props.isOpen ? '#2DA7DB' : '#A3A9AE'};
     cursor: ${props => (props.isDisabled || (!props.containOptions && !props.withAdvancedOptions))
-      ? 'default'
-      : 'pointer'};
+    ? 'default'
+    : 'pointer'};
 
     ${props => props.isDisabled && `
       border-color: #ECEEF1;
@@ -140,7 +142,7 @@ class ComboButton extends React.Component {
             }
           </StyledIcon>
         }
-        <Text.Body
+        <Text
           noBorder={noBorder}
           title={selectedOption.label}
           as="div"
@@ -149,7 +151,7 @@ class ComboButton extends React.Component {
           className="combo-button-label"
         >
           {selectedOption.label}
-        </Text.Body>
+        </Text>
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}

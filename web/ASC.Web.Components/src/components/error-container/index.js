@@ -1,7 +1,13 @@
 import React from 'react';
-import { Container } from 'reactstrap';
 import PropTypes from "prop-types";
 import styled from 'styled-components';
+
+const Container = styled.div`
+    width: 100%;
+    padding: 0 15px;
+    margin: 0 auto;
+    box-sizing: border-box;
+`;
 
 const ErrorFrame = styled(Container)`
     background: #DFDFDF url("data:image/jpeg;base64,/9j/4AAQSkZJRgABAgAAZABkAAD/7AARRHVja3kAAQAEAAAAUAAA/+4ADkFkb2JlAGTAAAAAAf/bAIQAAgICAgICAgICAgMCAgIDBAMCAgMEBQQEBAQEBQYFBQUFBQUGBgcHCAcHBgkJCgoJCQwMDAwMDAwMDAwMDAwMDAEDAwMFBAUJBgYJDQsJCw0PDg4ODg8PDAwMDAwPDwwMDAwMDA8MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM/8AAEQgDrgABAwERAAIRAQMRAf/EAaIAAAAHAQEBAQEAAAAAAAAAAAQFAwIGAQAHCAkKCwEAAgIDAQEBAQEAAAAAAAAAAQACAwQFBgcICQoLEAACAQMDAgQCBgcDBAIGAnMBAgMRBAAFIRIxQVEGE2EicYEUMpGhBxWxQiPBUtHhMxZi8CRygvElQzRTkqKyY3PCNUQnk6OzNhdUZHTD0uIIJoMJChgZhJRFRqS0VtNVKBry4/PE1OT0ZXWFlaW1xdXl9WZ2hpamtsbW5vY3R1dnd4eXp7fH1+f3OEhYaHiImKi4yNjo+Ck5SVlpeYmZqbnJ2en5KjpKWmp6ipqqusra6voRAAICAQIDBQUEBQYECAMDbQEAAhEDBCESMUEFURNhIgZxgZEyobHwFMHR4SNCFVJicvEzJDRDghaSUyWiY7LCB3PSNeJEgxdUkwgJChgZJjZFGidkdFU38qOzwygp0+PzhJSktMTU5PRldYWVpbXF1eX1RlZmdoaWprbG1ub2R1dnd4eXp7fH1+f3OEhYaHiImKi4yNjo+DlJWWl5iZmpucnZ6fkqOkpaanqKmqq6ytrq+v/aAAwDAQACEQMRAD8A+vFM3zz1LqYFXYpbwJX0wIpdhSupgSuwKvoMCW6YrS6h8MKV+RVdTFK7Aq+mKV2BK6mKV9MC0voMUrsCV9BgtV1MU0voMbVdgTS+gwJXUOKqlMC03Q4pX4ErqHFK/Aq6hxSvyKV9MVXYpXUwJX4FXUxTa/FV9BgS3gWm6HwxSqYq3Q4Er8Ct4sqX4ELsKV1MCV1MC03Q4pX0wKuwpb4++C1XYFbxTTdD4YqvyKXYVbxSupii3cvbAlbirsVdiqnirsVW8jiq3FWuQxVZirqjxxVTxV2KqeKuqPHFVPFXYqp1PjiqzkcVaxVbyOKrajxxVTxVrkMVWYqsqcVW1GKrMVW8vbFVuKrKnFVtRiqzFVvL2xVbUeOKqeKrKnFWsVU8VaqMVWYqt5e2KrcVU8VW8jiq3FVlT44q1iqnirsVU8VdUeOKqeKrORxVrFVvL2xVSq/8v44q/wD/2Q==") 0 0 repeat-x;
@@ -37,10 +43,10 @@ const ErrorText = styled(Container)`
     cursor: default;
 `;
 
-const ErrorContainer = ({children}) => {
+const ErrorContainer = ({ children, id, className, style }) => {
     //console.log("ErrorContainer render");
     return (
-        <ErrorFrame fluid>
+        <ErrorFrame fluid id={id} className={className} style={style}>
             <ErrorWrapper fluid>
                 <ErrorText>
                     {children}
@@ -51,7 +57,10 @@ const ErrorContainer = ({children}) => {
 };
 
 ErrorContainer.propTypes = {
-    children: PropTypes.any
-  };
+    children: PropTypes.any,
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+};
 
 export default ErrorContainer;

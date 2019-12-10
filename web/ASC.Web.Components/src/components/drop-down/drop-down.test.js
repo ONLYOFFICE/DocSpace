@@ -119,4 +119,27 @@ describe('<DropDown />', () => {
     expect(wrapper.props()).toBe(wrapper.props());
   });
 
+  it('accepts id', () => {
+    const wrapper = mount(
+      <DropDown {...baseProps} id="testId" />
+    );
+
+    expect(wrapper.prop('id')).toEqual('testId');
+  });
+
+  it('accepts className', () => {
+    const wrapper = mount(
+      <DropDown {...baseProps} className="test" />
+    );
+
+    expect(wrapper.prop('className')).toEqual('test');
+  });
+
+  it('accepts style', () => {
+    const wrapper = mount(
+      <DropDown {...baseProps} isOpen style={{ color: 'red' }} />
+    );
+
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
 });

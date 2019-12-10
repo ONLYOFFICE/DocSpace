@@ -5,9 +5,10 @@ import PropTypes from "prop-types";
 import { Oval } from "./types/oval";
 import { DualRing } from "./types/dual-ring";
 import { Rombs } from "./types/rombs";
+import Text from "../text";
 
 const Loader = (props) =>  {
-    const { type, color, size, label, className, style } = props;
+    const { type, color, size, label, className, style, id } = props;
   
     const svgRenderer = type => {
       switch (type) {
@@ -19,13 +20,17 @@ const Loader = (props) =>  {
           return <Rombs {...props} />;
         default:
           return (
-              <span style={{...style, color: color, fontSize: size }}>{label}</span>
+              <span style={{...style }}>
+                <Text color={color} fontSize={size}>
+                  {label}
+              </Text>
+            </span>
           );
       }
     };
   
     return (
-        <div aria-busy="true" className={className} style={style}>{svgRenderer(type)}</div>
+        <div aria-busy="true" className={className} style={style} id={id}>{svgRenderer(type)}</div>
     );
   };
 
@@ -34,7 +39,9 @@ const Loader = (props) =>  {
     type: PropTypes.oneOf(['base', 'oval', 'dual-ring', 'rombs']),
     size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     label: PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
   };
 
   Loader.defaultProps = {

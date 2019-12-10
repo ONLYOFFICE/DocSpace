@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Text } from "../text";
+import Text from "../text";
 import Scrollbar from "../scrollbar";
 
 const StyledScrollbar = styled(Scrollbar)`
@@ -121,7 +121,7 @@ class TabContainer extends Component {
   componentDidMount() {
     const { activeTab } = this.state;
     if (activeTab !== 0 && this.arrayRefs[activeTab].current !== null) {
-      this.setTabPosition(activeTab);
+      this.setPrimaryTabPosition(activeTab);
     }
   }
 
@@ -172,7 +172,7 @@ class TabContainer extends Component {
     }
   };
 
-  setTabPosition = index => {
+  setPrimaryTabPosition = index => {
     const arrayOfWidths = this.getWidthElements(); //get tabs widths
     const marginRight = 8;
     let rightTabs = this.arrayRefs.length - 1;
@@ -181,7 +181,7 @@ class TabContainer extends Component {
       rightFullWidth += arrayOfWidths[rightTabs] + marginRight;
       rightTabs--;
     }
-
+    rightFullWidth -= marginRight;
     const staticScroll = this.scrollRef.current.getScrollWidth(); //get static scroll width
     this.scrollRef.current.scrollLeft(staticScroll - rightFullWidth);
   };
@@ -224,9 +224,9 @@ class TabContainer extends Component {
                 selected={activeTab === index}
                 isDisabled={isDisabled}
               >
-                <Text.Body className="title_style" fontSize={13}>
+                <Text className="title_style" fontSize={13}>
                   {item.title}
-                </Text.Body>
+                </Text>
               </Label>
             ))}
           </NavItem>

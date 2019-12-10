@@ -1,12 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components';
+import Text from "../text";
 
 const StyledBadge = styled.div`
   background-color: ${props => props.backgroundColor};
-  color: ${props => props.color};
-  font-size: ${props => props.fontSize};
-  font-weight: ${props => props.fontWeight};
   border-radius: ${props => props.borderRadius};
   padding: ${props => props.padding};
   max-width: ${props => props.maxWidth};
@@ -16,6 +14,7 @@ const StyledBadge = styled.div`
   text-overflow: ellipsis;
   display: ${props => props.number > 0 ? 'inline-block' : 'none'};
   user-select: none;
+  line-height: 1.5;
 `;
 
 const Badge = props => {
@@ -27,8 +26,15 @@ const Badge = props => {
       props.onClick(e);
     }
   };
-
-  return (<StyledBadge {...props} onClick={onClick}>{props.number}</StyledBadge>);
+  
+  const { fontSize, color, fontWeight } = props;
+  return (
+    <StyledBadge {...props} onClick={onClick}>
+      <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
+        {props.number}
+      </Text>
+    </StyledBadge>
+  );
 };
 
 Badge.propTypes = {
@@ -40,14 +46,17 @@ Badge.propTypes = {
   borderRadius: PropTypes.string,
   padding: PropTypes.string,
   maxWidth: PropTypes.string,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Badge.defaultProps = {
   number: 0,
   backgroundColor: '#ED7309',
   color: '#FFFFFF',
-  fontSize: '11px',
+  fontSize: "11px",
   fontWeight: 800,
   borderRadius: '11px',
   padding: '0 5px',

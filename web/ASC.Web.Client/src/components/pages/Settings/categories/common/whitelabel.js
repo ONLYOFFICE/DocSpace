@@ -200,14 +200,14 @@ class WhiteLabel extends React.Component {
             : <>
                <StyledComponent>
                   <div className='settings-block'>
-                     <Text.Body fontSize={16}>{t('LogoSettings')}</Text.Body>
-                     <Text.Body
+                     <Text fontSize={16}>{t('LogoSettings')}</Text>
+                     <Text
                         className='margin-top'
                         fontSize={14}>
                         <Trans i18nKey="LogoUploadRecommendation">
                            We recommended that you use images in <strong>PNG</strong> format with transparent background
                         </Trans>
-                     </Text.Body>
+                     </Text>
 
                      <FieldContainer
                         id='fieldContainerCompanyName'

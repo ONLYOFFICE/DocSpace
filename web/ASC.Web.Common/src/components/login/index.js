@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { Collapse } from "reactstrap";
 import {
   Button,
   TextInput,
   PageLayout,
   Text,
+  Heading,
   Link,
   toastr,
   Checkbox,
@@ -20,46 +20,49 @@ import SubModalDialog from "./sub-components/modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
 import { sendInstructionsToChangePassword } from "../../api/people";
 
-const FormContainer = styled.div`
+const FormContainer = styled.form`
   margin: 50px auto 0 auto;
   max-width: 432px;
 
   .login-header {
+    margin-bottom: 24px;
+
     .login-logo {
       max-width: 216px;
       max-height: 35px;
     }
 
     .login-title {
-      word-wrap: break-word;
       margin: 8px 0;
-      text-align: left;
-      font-size: 24px;
-      color: #116d9d;
     }
-
-    margin-bottom: 24px;
   }
 
   .login-input {
     margin-bottom: 24px;
   }
 
-  .login-link {
-    float: right;
-    line-height: 16px;
-  }
+  .login-forgot-wrapper {
+    height: 36px;
 
-  .login-checkbox {
-    float: left;
-    span {
-      font-size: 12px;
+    .login-checkbox-wrapper {
+      position: absolute;
+      display: inline-flex;
+
+      .login-checkbox {
+        float: left;
+        span {
+          font-size: 12px;
+        }
+      }
+      .login-tooltip {
+        margin-left: 3px;
+        display: inline-flex;
+      }
     }
-  }
-
-  .login-tooltip {
-    margin-left: 3px;
-    display: inline-flex;
+    .login-link {
+      float: right;
+      line-height: 16px;
+    }
   }
 
   .login-button {
@@ -179,9 +182,10 @@ class Form extends Component {
 
   componentDidMount() {
     const { language, match } = this.props;
-    const { params } = match;
+    const { error, confirmedEmail } = match.params;
     i18n.changeLanguage(language);
-    params.error && this.setState({ errorText: params.error });
+    error && this.setState({ errorText: error });
+    confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
   }
 
@@ -215,7 +219,9 @@ class Form extends Component {
             src="images/dark_general.png"
             alt="Logo"
           />
-          <div className="login-title">{greetingTitle}</div>
+          <Heading className="login-title" color="#116d9d">
+            {greetingTitle}
+          </Heading>
         </div>
 
         <TextInput
@@ -244,7 +250,6 @@ class Form extends Component {
           placeholder={t("Password")}
           size="huge"
           scale={true}
-          isAutoFocussed={true}
           tabIndex={2}
           isDisabled={isLoading}
           autoComplete="current-password"
@@ -253,8 +258,8 @@ class Form extends Component {
           className="login-input"
         />
 
-        <div style={{ height: 30 }}>
-          <div style={{ position: "absolute", display: "inline-flex" }}>
+        <div className="login-forgot-wrapper">
+          <div className="login-checkbox-wrapper">
             <Checkbox
               className="login-checkbox"
               isChecked={isChecked}
@@ -265,7 +270,7 @@ class Form extends Component {
               className="login-tooltip"
               helpButtonHeaderContent={t("CookieSettingsTitle")}
               tooltipContent={
-                <Text.Body fontSize={12}>{t("RememberHelper")}</Text.Body>
+                <Text fontSize={12}>{t("RememberHelper")}</Text>
               }
             />
           </div>
@@ -294,6 +299,7 @@ class Form extends Component {
         ) : null}
 
         <Button
+          id="button"
           className="login-button"
           primary
           size="big"
@@ -305,13 +311,13 @@ class Form extends Component {
         />
 
         {params.confirmedEmail && (
-          <Text.Body isBold={true} fontSize={16}>
+          <Text isBold={true} fontSize={16}>
             {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-          </Text.Body>
+          </Text>
         )}
-        <Collapse isOpen={!!errorText}>
-          <div className="alert alert-danger">{errorText}</div>
-        </Collapse>
+        <Text fontSize={14} color="#c30">
+          {errorText}
+        </Text>
       </FormContainer>
     );
   }

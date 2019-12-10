@@ -74,6 +74,9 @@ class AvatarEditor extends React.Component {
         if (this.props.visible !== prevProps.visible) {
             this.setState({ visible: this.props.visible });
         }
+        if (this.props.image !== prevProps.image) {
+            this.setState({ isContainsFile: !!this.props.image });
+        }
     }
 
     render() {
@@ -111,6 +114,9 @@ class AvatarEditor extends React.Component {
                     />
                 ]}
                 onClose={this.onClose}
+                className={this.props.className}
+                id={this.props.id}
+                style={this.props.style}
             />
         );
     }
@@ -133,7 +139,10 @@ AvatarEditor.propTypes = {
     onLoadFileError: PropTypes.func,
     unknownTypeError: PropTypes.string,
     unknownError: PropTypes.string,
-    displayType: PropTypes.oneOf(['auto', 'modal', 'aside'])
+    displayType: PropTypes.oneOf(['auto', 'modal', 'aside']),
+    className: PropTypes.string,
+    id: PropTypes.string,
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 AvatarEditor.defaultProps = {

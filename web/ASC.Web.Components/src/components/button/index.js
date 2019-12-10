@@ -229,6 +229,9 @@ Button.propTypes = {
   icon: PropTypes.node,
 
   tabIndex: PropTypes.number,
+  className: PropTypes.string,
+  id: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   isHovered: PropTypes.bool,
   isClicked: PropTypes.bool,

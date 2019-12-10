@@ -59,6 +59,12 @@ const ToggleContentContainer = styled.div`
   .filter_container {
     margin-top: 16px;
   }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 `;
 
 class PureAdminsSettings extends Component {
@@ -444,11 +450,11 @@ class PureAdminsSettings extends Component {
                             </Link>
                             <div style={{ maxWidth: 120 }} />
 
-                            <Text.Body>
+                            <Text>
                               {user.isAdmin
                                 ? "Full access"
                                 : "People module admin"}
-                            </Text.Body>
+                            </Text>
 
                             {!user.isOwner ? (
                               <IconButton

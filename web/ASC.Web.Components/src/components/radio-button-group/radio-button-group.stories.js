@@ -3,17 +3,18 @@ import { storiesOf } from '@storybook/react';
 import withReadme from 'storybook-readme/with-readme';
 import RadioButtonGroup from '.';
 import Section from '../../../.storybook/decorators/section';
-import { withKnobs, text, boolean, number } from '@storybook/addon-knobs/react';
+import { withKnobs, text, boolean, select } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
 import { action } from '@storybook/addon-actions';
 import { optionsKnob as options } from '@storybook/addon-knobs';
 
 
 storiesOf('Components|Input', module)
-  .addDecorator(withKnobs)
-  .addDecorator(withReadme(Readme))
-  .add('radio button group', () => {
-
+.addDecorator(withKnobs)
+.addDecorator(withReadme(Readme))
+.add('radio button group', () => {
+  
+    const orientation = ['horizontal', 'vertical'];
     const values = ['first', 'second', 'third'];
     const valuesMultiSelect = {
       radio1: 'radio1',
@@ -26,7 +27,7 @@ storiesOf('Components|Input', module)
     });
 
     let children = [];
-    optionsMultiSelect.forEach(function (item, i) {
+    optionsMultiSelect.forEach(function (item) {
       switch (item) {
         case 'radio1':
           children.push({ value: values[0], label: text('label 1', 'First radiobtn') });
@@ -50,9 +51,11 @@ storiesOf('Components|Input', module)
               action('onChange')(e);
               console.log('Value of selected radiobutton: ', e.target.value);
             }}
+            orientation={select('orientation', orientation, 'horizontal')}
+            width={text('width', '100%')}
             isDisabled={boolean('isDisabled', false)}
             selected={values[0]}
-            spacing={number('spacing', 33)}
+            spacing={text('spacing', '15px')}
             name={text('name', 'group')}
             options={children}
           />

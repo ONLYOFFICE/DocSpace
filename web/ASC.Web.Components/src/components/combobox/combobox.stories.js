@@ -104,7 +104,7 @@ storiesOf('Components|Input', module)
 
     return (
       <Section>
-        <table style={{ width: 584, borderCollapse: "separate" }}>
+        <table style={{ width: 584, borderCollapse: "separate", textAlign: "left" }}>
           <thead>
             <tr>
               <th>Default</th>

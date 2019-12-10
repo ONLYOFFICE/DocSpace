@@ -4,43 +4,42 @@ import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Container, Row, Col, Card, CardTitle, CardImg } from "reactstrap";
 import {
   Button,
   PageLayout,
   Text,
   PasswordInput,
   Loader,
-  toastr
+  toastr,
+  Heading
 } from "asc-web-components";
-import { store } from 'asc-web-common';
-const { changePassword,  getConfirmationInfo, logout } = store.auth.actions;
+import { store } from "asc-web-common";
+import { getConfirmationInfo, changePassword } from '../../../../store/confirm/actions';
+const { logout } = store.auth.actions;
 
-const BodyStyle = styled(Container)`
-  margin-top: 70px;
-  p {
+const BodyStyle = styled.form`
+  margin: 70px auto 0 auto;
+  max-width: 500px;
+
+  .password-header {
+    margin-bottom: 24px;
+
+    .password-logo {
+      max-width: 216px;
+      max-height: 35px;
+    }
+
+    .password-title {
+      margin: 8px 0;
+    }
+  }
+
+  .password-text {
     margin-bottom: 5px;
   }
-  .button-style {
-    margin-top: 20px;
-  }
 
-  .password-row {
-    margin: 23px 0 0;
-    .password-card {
-      border: none;
-      .card-img {
-        max-width: 216px;
-        max-height: 35px;
-      }
-      .card-title {
-        word-wrap: break-word;
-        margin: 8px 0;
-        text-align: left;
-        font-size: 24px;
-        color: #116d9d;
-      }
-    }
+  .password-button {
+    margin-top: 20px;
   }
 `;
 
@@ -106,8 +105,7 @@ class Form extends React.PureComponent {
 
   componentDidMount() {
     const { getConfirmationInfo, history } = this.props;
-    getConfirmationInfo(this.state.key)
-    .catch(error => {
+    getConfirmationInfo(this.state.key).catch(error => {
       toastr.error(this.props.t(`${error}`));
       history.push("/");
     });
@@ -126,69 +124,65 @@ class Form extends React.PureComponent {
   render() {
     const { settings, isConfirmLoaded, t, greetingTitle } = this.props;
     const { isLoading, password, passwordEmpty } = this.state;
-    const mdOptions = { size: 6, offset: 3 };
 
     return !isConfirmLoaded ? (
       <Loader className="pageLoader" type="rombs" size={40} />
     ) : (
       <BodyStyle>
-        <Row className="password-row">
-          <Col sm="12" md={mdOptions}>
-            <Card className="password-card">
-              <CardImg
-                className="card-img"
-                src="images/dark_general.png"
-                alt="Logo"
-                top
-              />
-              <CardTitle className="card-title">
-                {greetingTitle}
-              </CardTitle>
-            </Card>
-            <Text.Body fontSize={14}>{t("PassworResetTitle")}</Text.Body>
-
-            <PasswordInput
-              id="password"
-              name="password"
-              inputName="password"
-              inputValue={password}
-              size="huge"
-              scale={true}
-              type="password"
-              isDisabled={isLoading}
-              hasError={passwordEmpty}
-              onValidateInput={this.validatePassword}
-              generatorSpecial="!@#$%^&*"
-              tabIndex={1}
-              value={password}
-              onChange={this.onChange}
-              emailInputName="E-mail"
-              passwordSettings={settings}
-              tooltipPasswordTitle="Password must contain:"
-              tooltipPasswordLength={`${t("ErrorPasswordLength", {
-                fromNumber: 6,
-                toNumber: 30
-              })}:`}
-              placeholder={t("PasswordCustomMode")}
-              maxLength={30}
-              onKeyDown={this.onKeyPress}
-              isAutoFocussed={true}
-              inputWidth="490px"
-            />
-            <Button
-              className="button-style"
-              primary
-              size="big"
-              tabIndex={2}
-              label={
-                isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
-              }
-              isDisabled={isLoading}
-              isLoading={isLoading}
-              onClick={this.onSubmit}
-            />
-          </Col>
-        </Row>
+        <div className="password-header">
+          <img
+            className="password-logo"
+            src="images/dark_general.png"
+            alt="Logo"
+          />
+          <Heading className="password-title" color="#116d9d">
+            {greetingTitle}
+          </Heading>
+        </div>
+        <Text className="password-text" fontSize={14}>
+          {t("PassworResetTitle")}
+        </Text>
+        <PasswordInput
+          id="password"
+          name="password"
+          inputName="password"
+          inputValue={password}
+          size="huge"
+          scale={true}
+          type="password"
+          isDisabled={isLoading}
+          hasError={passwordEmpty}
+          onValidateInput={this.validatePassword}
+          generatorSpecial="!@#$%^&*"
+          tabIndex={1}
+          value={password}
+          onChange={this.onChange}
+          emailInputName="E-mail"
+          passwordSettings={settings}
+          tooltipPasswordTitle="Password must contain:"
+          tooltipPasswordLength={`${t("ErrorPasswordLength", {
+            fromNumber: 6,
+            toNumber: 30
+          })}:`}
+          placeholder={t("PasswordCustomMode")}
+          maxLength={30}
+          onKeyDown={this.onKeyPress}
+          isAutoFocussed={true}
+          inputWidth="490px"
+        />
+        <Button
+          id="button"
+          className="password-button"
+          primary
+          size="big"
+          tabIndex={2}
+          label={
+            isLoading ? t("LoadingProcessing") : t("ImportContactsOkButton")
+          }
+          isDisabled={isLoading}
+          isLoading={isLoading}
+          onClick={this.onSubmit}
+        />
       </BodyStyle>
     );
   }
@@ -212,14 +206,15 @@ const ChangePasswordForm = props => (
 function mapStateToProps(state) {
   return {
     isValidConfirmLink: state.auth.isValidConfirmLink,
-    isConfirmLoaded: state.auth.isConfirmLoaded,
+    isConfirmLoaded: state.confirm.isConfirmLoaded,
     settings: state.auth.settings.passwordSettings,
     isAuthenticated: state.auth.isAuthenticated,
-    greetingTitle: state.auth.settings.greetingSettings,
+    greetingTitle: state.auth.settings.greetingSettings
   };
 }
 
-export default connect(
-  mapStateToProps,
-  { changePassword, getConfirmationInfo, logout }
-)(withRouter(withTranslation()(ChangePasswordForm)));
+export default connect(mapStateToProps, {
+  changePassword,
+  getConfirmationInfo,
+  logout
+})(withRouter(withTranslation()(ChangePasswordForm)));
