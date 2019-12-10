@@ -161,13 +161,13 @@ class HelpButton extends React.Component {
                 <Content>
                   {helpButtonHeaderContent && (
                     <HeaderContent>
-                      <HeaderText 
+                      <Heading 
                         className='header'
                         size='medium'
                         truncate={true}
                         >
                           {helpButtonHeaderContent}
-                      </HeaderText>
+                      </Heading>
                     </HeaderContent>
                   )}
                   <Body>{tooltipContent}</Body>
