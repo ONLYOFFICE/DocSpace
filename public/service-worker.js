@@ -91,6 +91,9 @@ function useFallback() {
 }
 
 function refresh(response) {
+
+  //Send data update messages to all clients
+
   /*return self.clients.matchAll().then((clients) => {
       clients.forEach((client) => {
           const message = {
