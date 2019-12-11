@@ -2,7 +2,7 @@ const precacheVersion = 1;
 const precacheName = 'precache-v' + precacheVersion;
 const precacheFiles = [
     '/',
-    '/error.png',
+    '/bg-error.png',
     '/api/2.0/modules', 
     '/api/2.0/people/info.json', 
     '/api/2.0/people/@self.json',

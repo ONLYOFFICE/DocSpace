@@ -3,7 +3,7 @@
   "name": "Onlyoffice AppServer",
   "icons": [
     {
-      "src":"icon.png",
+      "src":"appIcon.png",
       "sizes": "192x192",
       "type": "image/png"
     }
