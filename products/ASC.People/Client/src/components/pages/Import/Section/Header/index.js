@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Header, IconButton, Badge } from "asc-web-components";
+import { IconButton } from "asc-web-components";
+import { Headline } from 'asc-web-common';
 import { withRouter } from "react-router";
 import { useTranslation } from 'react-i18next';
 
@@ -28,9 +29,9 @@ const SectionHeaderContent = props => {
           onClick={() => history.push(settings.homepage)}
         />
       </div>
-      <Header type="content" truncate={true} style={textStyle}>
+      <Headline type="content" truncate={true} style={textStyle}>
         Add users to the portal (Development)
-      </Header>
+      </Headline>
     </div>
   );
 };

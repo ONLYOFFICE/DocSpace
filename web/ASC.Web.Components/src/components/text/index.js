@@ -4,10 +4,8 @@ import styled, { css } from 'styled-components';
 import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
-  outline: 0 !important;
-  ${props => (typeof (props.fontSize) === 'string' && css`font-size: ${props.fontSize};`) ||
-    (typeof (props.fontSize) === 'number' && css`font-size: ${props.fontSize}px;`)};
-  font-weight: ${props => props.fontWeight
+  font-size: ${props => props.fontSize};  
+  outline: 0 !important;  font-weight: ${props => props.fontWeight
     ? props.fontWeight
     : props.isBold == true ? 700 : 500};
   ${props => props.isItalic == true && css`font-style: italic;`}
@@ -35,7 +33,7 @@ Text.propTypes = {
   tag: PropTypes.string,
   title: PropTypes.string,
   color: PropTypes.string,
-  fontSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  fontSize: PropTypes.string,
   fontWeight: PropTypes.number,
   backgroundColor: PropTypes.string,
   truncate: PropTypes.bool,
@@ -48,7 +46,7 @@ Text.propTypes = {
 Text.defaultProps = {
   title: '',
   color: '#333333',
-  fontSize: 13,
+  fontSize: '13px',
   truncate: false,
   isBold: false,
   isInline: false,

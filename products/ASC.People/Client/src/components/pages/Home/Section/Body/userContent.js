@@ -29,7 +29,7 @@ const getFormatedGroups = (user, status) => {
         containerWidth='160px'
         type='action'
         title={temp[0].label}
-        fontSize={12}
+        fontSize='12px'
         color={linkColor}
         onClick={temp[0].onClick}
       >
@@ -41,7 +41,7 @@ const getFormatedGroups = (user, status) => {
         isTextOverflow={true}
         containerWidth='160px'
         title={temp[0].label}
-        fontSize={12}
+        fontSize='12px'
         color={linkColor}
         data={temp}
       >
@@ -80,7 +80,7 @@ const UserContent = ({ user, history, settings }) => {
 
   return (
     <RowContent>
-      <Link type='page' title={displayName} isBold={true} fontSize={15} color={nameColor} onClick={onUserNameClick} >{displayName}</Link>
+      <Link type='page' title={displayName} isBold={true} fontSize='15px' color={nameColor} onClick={onUserNameClick} >{displayName}</Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
@@ -91,7 +91,7 @@ const UserContent = ({ user, history, settings }) => {
             style={headDepartmentStyle}
             as="span"
             color={sideInfoColor}
-            fontSize={12}
+            fontSize='12px'
             title={title}
             truncate={true}
           >
@@ -100,8 +100,8 @@ const UserContent = ({ user, history, settings }) => {
         : <div style={headDepartmentStyle}></div>
       }
       {groups}
-      <Link type='page' title={mobilePhone} fontSize={12} color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
-      <Link containerWidth='220px' type='page' title={email} fontSize={12} color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
+      <Link type='page' title={mobilePhone} fontSize='12px' color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
+      <Link containerWidth='220px' type='page' title={email} fontSize='12px' color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
     </RowContent>
   );
 };

@@ -10,8 +10,7 @@ import isEmpty from "lodash/isEmpty";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import Text from "../text";
-import Header from "../header";
+import Heading from "../heading";
 import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
@@ -31,9 +30,16 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700 !important;
+  }
 `;
 
-const StyledHeader = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -42,13 +48,6 @@ const StyledHeader = styled.div`
 const Body = styled.div`
   position: relative;
   padding: 16px 0;
-`;
-
-const HeaderText = styled(Header)`
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 class DatePicker extends Component {
@@ -375,13 +374,15 @@ class DatePicker extends Component {
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
-                  <StyledHeader>
-                    <HeaderText type='content'>
-                      <Text isBold={true} fontSize={20}>
+                  <Header>
+                    <Heading
+                      className='header' 
+                      size='medium'
+                      truncate={true}
+                      >
                         {calendarHeaderContent}
-                      </Text>
-                    </HeaderText>
-                  </StyledHeader>
+                    </Heading>
+                  </Header>
                   <Body>{this.renderBody()}</Body>
                 </Content>
               </Aside>

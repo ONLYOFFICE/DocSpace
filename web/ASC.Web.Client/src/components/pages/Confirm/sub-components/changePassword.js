@@ -126,7 +126,7 @@ class Form extends React.PureComponent {
     const { isLoading, password, passwordEmpty } = this.state;
 
     return !isConfirmLoaded ? (
-      <Loader className="pageLoader" type="rombs" size={40} />
+      <Loader className="pageLoader" type="rombs" size='40px' />
     ) : (
       <BodyStyle>
         <div className="password-header">
@@ -139,7 +139,7 @@ class Form extends React.PureComponent {
             {greetingTitle}
           </Heading>
         </div>
-        <Text className="password-text" fontSize={14}>
+        <Text className="password-text" fontSize='14px'>
           {t("PassworResetTitle")}
         </Text>
         <PasswordInput

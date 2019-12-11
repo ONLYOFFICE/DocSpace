@@ -101,12 +101,12 @@ class PureModulesSettings extends Component {
               />
             </RadioButtonContainer>
             <ProjectsBody>
-              <Text className="projects_margin" fontSize={12}>
+              <Text className="projects_margin" fontSize='12px'>
                 {t("AccessRightsProductUsersCan", {
                   category: t("People")
                 })}
               </Text>
-              <Text fontSize={12}>
+              <Text fontSize='12px'>
                 <li>{t("ViewProfilesAndGroups")}</li>
               </Text>
             </ProjectsBody>

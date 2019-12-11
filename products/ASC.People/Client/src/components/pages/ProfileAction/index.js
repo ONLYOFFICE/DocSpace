@@ -66,7 +66,7 @@ class ProfileAction extends React.Component {
         }
       : {
           sectionBodyContent: (
-            <Loader className="pageLoader" type="rombs" size={40} />
+            <Loader className="pageLoader" type="rombs" size='40px' />
           )
         };
 

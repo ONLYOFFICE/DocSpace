@@ -97,10 +97,10 @@ const ModuleTile = props => {
 
           <div className="title-text-wrapper">
             <div onClick={handleClick.bind(link)} className="title-text">
-              <Text fontSize={36} className="title-text-header selectable">
+              <Text fontSize='36px' className="title-text-header selectable">
                 {title}
               </Text>
-              <Text fontSize={12} className="title-text-description">
+              <Text fontSize='12px' className="title-text-description">
                 {description}
               </Text>
             </div>
@@ -118,7 +118,7 @@ const ModuleTile = props => {
           <div>
             <div>
               <Text
-                fontSize={18}
+                fontSize='18px'
                 className="sub-title-text"
                 onClick={handleClick.bind(link)}
               >

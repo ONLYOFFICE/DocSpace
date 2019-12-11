@@ -67,7 +67,7 @@ const NavItem = React.memo(props => {
       })}
       {children && (
         <NavItemLabel opened={opened}>
-          <Text color={color} isBold fontSize={16}>
+          <Text color={color} isBold fontSize='16px'>
             {children}
           </Text>
         </NavItemLabel>

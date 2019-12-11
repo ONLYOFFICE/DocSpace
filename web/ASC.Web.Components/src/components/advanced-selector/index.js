@@ -518,7 +518,7 @@ class AdvancedSelector extends React.Component {
                   <Text
                     as="p"
                     className="group_header"
-                    fontSize={15}
+                    fontSize='15px'
                     isBold={true}
                   >
                     Groups

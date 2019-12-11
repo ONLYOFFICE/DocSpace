@@ -12,7 +12,9 @@ const hoveredCss = css`
   text-decoration: ${props => (props.type === 'page' ? 'underline' : 'underline dashed')};
 `;
 
-const StyledLink = styled(Text)`
+// eslint-disable-next-line react/prop-types, no-unused-vars
+const PureText = ({type, color, ...props}) => <Text {...props}/>;
+const StyledText = styled(PureText)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
@@ -26,6 +28,11 @@ const StyledLink = styled(Text)`
   }
 
   ${props => props.isHovered && hoveredCss}
+
+  ${props => props.isTextOverflow && css`
+      display: inline-block;
+      max-width: 100%;
+    `}
 `;
 
 // eslint-disable-next-line react/display-name
@@ -33,19 +40,20 @@ const Link = memo(({ isTextOverflow, children, ...rest }) => {
   // console.log("Link render", rest);
 
   return (
-    <StyledLink
+    <StyledText
       tag="a"
+      isTextOverflow={isTextOverflow}
       truncate={isTextOverflow}
       {...rest}
     >
       {children}
-    </StyledLink>
+    </StyledText>
   );
 });
 
 Link.propTypes = {
   color: PropTypes.string,
-  fontSize: PropTypes.number,
+  fontSize: PropTypes.string,
   href: PropTypes.string,
   isBold: PropTypes.bool,
   isHovered: PropTypes.bool,
@@ -65,7 +73,7 @@ Link.propTypes = {
 
 Link.defaultProps = {
   color: "#333333",
-  fontSize: 13,
+  fontSize: '13px',
   href: undefined,
   isBold: false,
   isHovered: false,

@@ -166,7 +166,7 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          <Text fontSize={16} isBold color="#fff">
+          <Text fontSize='16px' isBold color="#fff">
             {this.props.text}
           </Text>
         </StyledMainButton>

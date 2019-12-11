@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import LinkWithDropdown from '.';
 import Readme from './README.md';
-import { text, boolean, withKnobs, select, number, color } from '@storybook/addon-knobs/react';
+import { text, boolean, withKnobs, select, color } from '@storybook/addon-knobs/react';
 import withReadme from 'storybook-readme/with-readme';
 import Section from '../../../.storybook/decorators/section';
 
@@ -39,7 +39,7 @@ storiesOf('Components|LinkWithDropdown', module)
         <LinkWithDropdown
           dropdownType={select('dropdownType', dropdownType, 'alwaysDashed')}
           color={color('color', '#333333')}
-          fontSize={number('fontSize', 13)}
+          fontSize={text('fontSize', '13px')}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
           isTextOverflow={boolean('isTextOverflow', false)}

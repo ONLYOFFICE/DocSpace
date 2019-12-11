@@ -11,8 +11,8 @@ import {
   Button,
   ModalDialog,
   AvatarEditor,
-  Header
 } from "asc-web-components";
+import { Headline } from 'asc-web-common';
 import { withRouter } from "react-router";
 import {
   getUserStatus,
@@ -44,7 +44,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Headline)`
   margin-left: 16px;
   margin-right: 16px;
   max-width: calc(100vw - 430px);
@@ -318,7 +318,7 @@ class SectionHeaderContent extends React.PureComponent {
               User <b>{user.displayName}</b> will be deleted.
             </Text>
             <Text>Note: this action cannot be undone.</Text>
-            <Text color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+            <Text color="#c30" fontSize="18px" style={{ margin: "20px 0" }}>
               Warning!
             </Text>
             <Text>

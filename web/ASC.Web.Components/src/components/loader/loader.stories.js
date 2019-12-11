@@ -16,7 +16,7 @@ storiesOf('Components|Loaders', module)
       <Loader 
         type={select('type', typeOptions, 'base')} 
         color={color('color', '#63686a')}
-        size={number('size', 18)}
+        size={text('size', '18px')}
         label={text('label', "Loading content, please wait...")} />
     </Section>
   ))
@@ -25,7 +25,7 @@ storiesOf('Components|Loaders', module)
       <Loader 
         type={select('type', typeOptions, 'dual-ring')} 
         color={color('color', '#63686a')} 
-        size={number('size', 40)}
+        size={text('size', '40px')}
         label={text('label', "Loading content, please wait.")} />
     </Section>
   ))
@@ -34,7 +34,7 @@ storiesOf('Components|Loaders', module)
       <Loader 
         type={select('type', typeOptions, 'oval')} 
         color={color('color', '#63686a')} 
-        size={number('size', 40)}
+        size={text('size', '40px')}
         label={text('label', "Loading content, please wait.")} />
     </Section>
   ))
@@ -42,6 +42,6 @@ storiesOf('Components|Loaders', module)
     <Section>
       <Loader 
         type={select('type', typeOptions, 'rombs')}  
-        size={number('size', 40)} />
+        size={text('size', '40px')} />
     </Section>
   ));

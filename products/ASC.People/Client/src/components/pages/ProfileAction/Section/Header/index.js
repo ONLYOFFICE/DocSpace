@@ -2,16 +2,17 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { IconButton, Header, utils } from 'asc-web-components';
+import { IconButton, utils } from 'asc-web-components';
+import { Headline } from 'asc-web-common';
 import { useTranslation } from 'react-i18next';
-import {typeUser, typeGuest } from './../../../../../helpers/customNames';
+import { typeUser, typeGuest } from './../../../../../helpers/customNames';
 
 const Wrapper = styled.div`
   display: flex;
   align-Items: center;
 `;
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Headline)`
   margin-left: 16px;
   max-width: calc(100vw - 430px);
   @media ${utils.device.tablet} {
@@ -38,7 +39,7 @@ const SectionHeaderContent = (props) => {
 
   return (
     <Wrapper>
-      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={onClick}/>
+      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={onClick} />
       <HeaderContainer type='content' truncate={true}>{headerText}</HeaderContainer>
     </Wrapper>
   );

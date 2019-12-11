@@ -339,16 +339,16 @@ class PureAdminsSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size={40} />
+          <Loader className="pageLoader" type="rombs" size='40px' />
         ) : (
           <>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize={16}
+              loaderSize='16px'
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize={12}
+              fontSize='12px'
               fontColor={"#999"}
               className="page_loader"
             />
@@ -442,7 +442,7 @@ class PureAdminsSettings extends Component {
                               type="page"
                               title={user.displayName}
                               isBold={true}
-                              fontSize={15}
+                              fontSize='15px'
                               color={nameColor}
                               href={user.profileUrl}
                             >

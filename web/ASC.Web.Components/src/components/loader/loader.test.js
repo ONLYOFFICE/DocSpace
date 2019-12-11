@@ -5,7 +5,7 @@ import Loader from '.';
 const baseProps = {
   type:"base",
   color: "black",
-  size: 18,
+  size: '18px',
   label: "Loading"
 };
 
