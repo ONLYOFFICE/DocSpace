@@ -11,7 +11,6 @@ import ModalDialog from "../modal-dialog";
 import FieldContainer from "../field-container";
 import TextInput from "../text-input";
 import ComboBox from "../combobox";
-import ComboButton from '../combobox/sub-components/combo-button'
 
 const groups = [
   {
@@ -154,7 +153,7 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
             >
               {({ value: isOpen, toggle }) => (
                 <div style={{ position: "relative" }}>
-                  <ComboButton
+                  <ComboBox
                     label="Toggle dropdown"
                     options={options}
                     isOpen={isOpen}
@@ -164,7 +163,9 @@ storiesOf("EXAMPLES|AdvancedSelector", module)
                       label: "Add employee"
                     }}
                     //innerContainer={react.node} // if you need insert custom node element inside ComboBox
-                    onClick={toggle}
+                    toggleAction={toggle}
+                    displayType="toggle"
+                    scaled={false}
                   />
                   <ArrayValue
                     defaultValue={options}
