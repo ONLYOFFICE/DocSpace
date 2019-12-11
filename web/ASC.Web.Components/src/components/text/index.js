@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
+  outline: 0 !important;
   ${props => (typeof (props.fontSize) === 'string' && css`font-size: ${props.fontSize};`) ||
     (typeof (props.fontSize) === 'number' && css`font-size: ${props.fontSize}px;`)};
   font-weight: ${props => props.fontWeight
