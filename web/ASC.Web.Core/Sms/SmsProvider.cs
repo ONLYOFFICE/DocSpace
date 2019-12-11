@@ -31,17 +31,21 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using ASC.Common.Caching;
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
@@ -442,7 +446,7 @@ namespace ASC.Web.Core.Sms
             }
         }
 
-        public void ClearOldNumbers(DbOptionsManager dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
+        public void ClearOldNumbers(DbContextManager<VoipDbContext> dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, TenantManager tenantManager, BaseCommonLinkUtility baseCommonLinkUtility, VoipDaoCache voipDaoCache)
         {
             if (string.IsNullOrEmpty(Key) || string.IsNullOrEmpty(Secret)) return;
 

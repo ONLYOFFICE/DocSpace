@@ -25,9 +25,11 @@
 
 
 using System;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
-
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 
 namespace ASC.VoipService.Dao
 {
@@ -35,9 +37,11 @@ namespace ASC.VoipService.Dao
     {
         private readonly string dbid = "default";
 
-        protected AbstractDao(DbOptionsManager dbOptions, int tenantID)
+        protected VoipDbContext VoipDbContext { get; set; }
+
+        protected AbstractDao(DbContextManager<VoipDbContext> dbOptions, int tenantID)
         {
-            DbOptions = dbOptions;
+            VoipDbContext = dbOptions.Get(dbid);
             TenantID = tenantID;
         }
 
