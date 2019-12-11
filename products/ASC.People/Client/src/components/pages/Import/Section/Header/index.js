@@ -30,7 +30,7 @@ const SectionHeaderContent = props => {
         />
       </div>
       <Headline type="content" truncate={true} style={textStyle}>
-        Add users to the portal
+        Add users to the portal (Development)
       </Headline>
     </div>
   );

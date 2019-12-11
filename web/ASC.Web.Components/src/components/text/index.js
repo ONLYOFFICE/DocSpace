@@ -4,8 +4,8 @@ import styled, { css } from 'styled-components';
 import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
-  font-size: ${props => props.fontSize};
-  font-weight: ${props => props.fontWeight
+  font-size: ${props => props.fontSize};  
+  outline: 0 !important;  font-weight: ${props => props.fontWeight
     ? props.fontWeight
     : props.isBold == true ? 700 : 500};
   ${props => props.isItalic == true && css`font-style: italic;`}
