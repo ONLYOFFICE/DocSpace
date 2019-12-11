@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
-import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader, EmailInput } from 'asc-web-components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -182,9 +182,11 @@ class Confirm extends React.PureComponent {
 
     onChangeEmail = event => {
         this.setState({ email: event.target.value });
-        !this.state.emailValid && this.setState({ emailValid: true });
+        // !this.state.emailValid && this.setState({ emailValid: true });
         this.state.errorText && this.setState({ errorText: "" });;
     }
+
+    onValidateEmail = value => this.setState({emailValid: value });
 
     onChangePassword = event => {
         this.setState({ password: event.target.value });
@@ -252,7 +254,7 @@ class Confirm extends React.PureComponent {
                                         onKeyDown={this.onKeyPress}
                                     />
 
-                                    <TextInput
+                                    <EmailInput
                                         className='confirm-row'
                                         id='email'
                                         name={emailInputName}
@@ -263,9 +265,10 @@ class Confirm extends React.PureComponent {
                                         tabIndex={3}
                                         autoComplete='email'
                                         isDisabled={this.state.isLoading}
-                                        hasError={!this.state.emailValid}
+                                        // hasError={!this.state.emailValid}
                                         onChange={this.onChangeEmail}
                                         onKeyDown={this.onKeyPress}
+                                        onValidateInput={this.onValidateEmail}
                                     />
 
                                 </div>

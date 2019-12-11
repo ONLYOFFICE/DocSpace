@@ -69,9 +69,8 @@ const emailSettings = {
 or instance of `EmailSettings` class:
 
 ```js
-//TODO: rename package
-import { EmailSettings } from "asc-utils"; //temporary name of package
-import { EmailInput } from "asc-web-components";
+import { EmailInput, utils } from "asc-web-components";
+const { EmailSettings } = utils.email;
 
 const emailSettings = new EmailSettings();
 
