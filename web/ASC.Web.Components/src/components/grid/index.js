@@ -1,15 +1,19 @@
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
+
+const gridAreaStyle = gridArea => `grid-area: ${gridArea};`;
 const gridGapStyle = gridGap => `grid-gap: ${gridGap};`;
 const gridRowGapStyle = gridRowGap => `grid-row-gap: ${gridRowGap};`;
 const gridColumnGapStyle = gridColumnGap => `grid-column-gap: ${gridColumnGap};`;
 
-const alignItemsStyle = alignItems => `align-items: ${alignItems};`;
 const alignContentStyle = alignContent => `align-content: ${alignContent};`;
+const alignItemsStyle = alignItems => `align-items: ${alignItems};`;
+const alignSelfStyle = alignSelf => `align-self: ${alignSelf};`;
 
-const justifyItemsStyle = justifyItems => `justify-items: ${justifyItems};`;
 const justifyContentStyle = justifyContent => `justify-content: ${justifyContent};`;
+const justifyItemsStyle = justifyItems => `justify-items: ${justifyItems};`;
+const justifySelfStyle = justifySelf => `justify-self: ${justifySelf};`;
 
 const getRepeatCount = count => typeof count === 'number' ? count : `auto-${count}`;
 const getRepeatSize = size => Array.isArray(size) ? `minmax(${size[0]}, ${size[1]})` : `minmax(${size}, 1fr)`;
@@ -79,11 +83,14 @@ const areasStyle = props => {
 
 const heightStyle = heightProp => `height: ${heightProp};`;
 const widthStyle = widthProp => `width: ${widthProp};`;
+const marginStyle = marginProp => `margin: ${marginProp};`;
+const paddingStyle = paddingProp => `padding: ${paddingProp};`;
 
 const Grid = styled.div`
   display: grid;
   box-sizing: border-box;
 
+  ${props => props.gridArea && gridAreaStyle(props.gridArea)}
   ${props => props.gridGap && gridGapStyle(props.gridGap)}
   ${props => props.gridRowGap && gridRowGapStyle(props)}
   ${props => props.gridColumnGap && gridColumnGapStyle(props)}
@@ -92,29 +99,42 @@ const Grid = styled.div`
   ${props => props.columnsProp && columnsStyle(props)}
   ${props => props.areasProp && areasStyle(props)}
 
-  ${props => props.alignItems && alignItemsStyle(props.alignItems)}
   ${props => props.alignContent && alignContentStyle(props.alignContent)}
+  ${props => props.alignItems && alignItemsStyle(props.alignItems)}
+  ${props => props.alignSelf && alignSelfStyle(props.alignSelf)}
 
-  ${props => props.justifyItems && justifyItemsStyle(props.justifyItems)}
   ${props => props.justifyContent && justifyContentStyle(props.justifyContent)}
+  ${props => props.justifyItems && justifyItemsStyle(props.justifyItems)}
+  ${props => props.justifySelf && justifySelfStyle(props.justifySelf)}
 
   ${props => props.heightProp && heightStyle(props.heightProp)}
   ${props => props.widthProp && widthStyle(props.widthProp)}
+  ${props => props.marginProp && marginStyle(props.marginProp)}
+  ${props => props.paddingProp && paddingStyle(props.paddingProp)}
 `;
 
 Grid.propTypes = {
-    rowsProp: PropTypes.array,
-    columnsProp: PropTypes.array,
-    areasProp: PropTypes.array,
+  gridArea: PropTypes.string,
+  gridGap: PropTypes.string,
+  gridRowGap: PropTypes.string,
+  gridColumnGap: PropTypes.string,
+  
+  rowsProp: PropTypes.array,
+  columnsProp: PropTypes.array,
+  areasProp: PropTypes.array,
 
-    alignItems: PropTypes.string,
-    alignContent: PropTypes.string,
+  alignContent: PropTypes.string,
+  alignItems: PropTypes.string,
+  alignSelfStyle: PropTypes.string,
+  
+  justifyContent: PropTypes.string,
+  justifyItems: PropTypes.string,
+  justifySelf: PropTypes.string,
 
-    justifyItems: PropTypes.string,
-    justifyContent: PropTypes.string,
-
-    heightProp: PropTypes.string,
-    widthProp: PropTypes.string
+  heightProp: PropTypes.string,
+  widthProp: PropTypes.string,
+  marginProp: PropTypes.string,
+  paddingProp: PropTypes.string,
 }
 
 Grid.defaultProps = {
