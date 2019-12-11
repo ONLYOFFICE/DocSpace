@@ -67,7 +67,7 @@ function update(request) {
 }
 
 const fallback = 
-'<div style="cursor: default;background: url(/error.png);width: 100%;height: 310px;padding: 315px 0 0;'+
+'<div style="cursor: default;background: url(/bg-error.png);width: 100%;height: 310px;padding: 315px 0 0;'+
             'margin-top: -325px;'+
             'position: absolute;'+
             'left: 0;'+
