@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-using ASC.Common.Data;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -46,12 +45,10 @@ namespace ASC.Web.Studio.Core.Statistic
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
-        public IDbManager DbManager { get; }
         public WebstudioDbContext WebstudioDbContext { get; }
 
-        public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager, DbOptionsManager optionsDbManager)
+        public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
         {
-            DbManager = optionsDbManager.Value;
             WebstudioDbContext = dbContextManager.Value;
         }
 
@@ -164,11 +161,6 @@ namespace ASC.Web.Studio.Core.Statistic
                 WebstudioDbContext.SaveChanges();
             }
             tx.Commit();
-        }
-
-        private IDbManager GetDb()
-        {
-            return DbManager;
         }
     }
 

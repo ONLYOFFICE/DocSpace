@@ -31,20 +31,18 @@ namespace ASC.Core.Common.Tests
     using System.Linq;
     using System.Runtime.Serialization.Json;
     using System.Text;
-    using ASC.Common.Data;
+
     using ASC.Core.Billing;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
+
     using NUnit.Framework;
 
     [TestFixture]
     class DbQuotaServiceTest : DbBaseTest<DbQuotaService>
     {
-        public DbOptionsManager DbOptionsManager { get; }
-
-        public DbQuotaServiceTest(DbOptionsManager dbOptionsManager)
+        public DbQuotaServiceTest()
         {
-            DbOptionsManager = dbOptionsManager;
         }
 
         [OneTimeSetUp]

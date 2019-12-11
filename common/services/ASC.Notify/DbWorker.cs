@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-using ASC.Common.Data;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -38,6 +37,7 @@ using ASC.Notify.Messages;
 
 using Google.Protobuf.Collections;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -64,9 +64,8 @@ namespace ASC.Notify
         public int SaveMessage(NotifyMessage m)
         {
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
             using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
-            using var tx = db.BeginTransaction(IsolationLevel.ReadCommitted);
+            using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
             var notifyQueue = new NotifyQueue
             {
