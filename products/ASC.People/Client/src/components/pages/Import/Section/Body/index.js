@@ -4,7 +4,9 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import styled from 'styled-components';
 import { Text, Button, Avatar, toastr } from 'asc-web-components';
+import { api } from 'asc-web-common';
 import { toEmployeeWrapper } from "../../../../../store/people/selectors";
+import { importUsers } from "../../../../../store/people/actions";
 import { FixedSizeList as List, areEqual } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 
@@ -110,11 +112,13 @@ class SectionBodyContent extends React.Component {
 
     this.state = {
       splittedLines: [],
-      completion: 0
+      importing: false
     }
   }
 
   getAsText = (fileToRead) => {
+    if (!fileToRead) return;
+    
     let reader = new FileReader();
     reader.readAsText(fileToRead);
     reader.onload = this.loadHandler;
@@ -173,19 +177,45 @@ class SectionBodyContent extends React.Component {
     return preparedUsers;
   }
 
+  makeChunks = (data, size = 50) => {
+    let temp = [];
+
+    for (let i = 0; i < data.length; i += size) {
+      temp.push(data.slice(i, i + size));
+    }
+
+    return temp;
+  }
+
   runImport = users => {
-    // Use with axios
+    const chunks = this.makeChunks(users);
+
+    chunks.map(async chunk => { //TODO: do something better than an asynchronous carnival
+      for (const user of chunk) {
+        await api.people.createUser(user);
+      }
+    });
+    
+    this.setState({
+      importing: false
+    });
   }
 
   onImportClick = () => {
     const users = this.prepareUsersData();
+
+    this.setState({
+      importing: true
+    });
+
     this.runImport(users);
   }
 
   render() {
-    const { splittedLines, completion } = this.state;
+    const { splittedLines, importing } = this.state;
     // const { t } = useTranslation();
     const rows = this.createRows(splittedLines);
+    const isImportEnabled = true;
 
     const renderList = ({ height, width }) => {
       const itemHeight = (width < 768) ? 56 : 36;
@@ -205,37 +235,30 @@ class SectionBodyContent extends React.Component {
 
     return (
       <>
-        <Text fontSize={18} >
-          Functionality at development stage.
-        </Text>
-        <br />
         <Text fontSize={14} >
-          Files are formatted according to CSV RFC rules. <br />
-          Column Order: FirstName, LastName, Email. <br />
+          Files are formatted according to <b>CSV RFC 4180</b> rules. <br />
+          <b>Column Order:</b> FirstName, LastName, Email. <br />
           Comma delimiter, strings in unix format. <br />
         </Text>
         <SelectSourceWrapper>
           <StyledFileInput>
-            <Button size='big' primary={true} scale={true} label="Upload CSV" isDisabled={true} />
-            {false &&
+            <Button size='big' primary={true} scale={true} label="Upload CSV" isDisabled={!isImportEnabled} />
+            {isImportEnabled &&
               <input type="file" name="file" onChange={(e) => this.getAsText(e.target.files[0])} accept='.csv' />
             }
           </StyledFileInput>
         </SelectSourceWrapper>
         <br />
         <Text fontSize={14} >
-          Ready for import: {`${splittedLines.length} of ${splittedLines.length}`}
+          Ready for import: {splittedLines.length} of {splittedLines.length}
         </Text>
-        <div style={{ position: 'relative', width: '100%', height: '30px' }}>
-          <StyledProgress completed={completion} />
-        </div>
         <LoadCsvWrapper>
           <AutoSizer>
             {renderList}
           </AutoSizer>
         </LoadCsvWrapper>
         <StyledFileInput>
-          <Button size='big' primary={true} scale={true} onClick={this.onImportClick} isDisabled={true} label="Start import" />
+          <Button size='big' primary={true} scale={true} onClick={this.onImportClick} isDisabled={importing || !splittedLines.length} label="Start import" />
         </StyledFileInput>
       </>
     );
@@ -247,8 +270,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-  }
-)(withRouter(SectionBodyContent));
+export default connect(mapStateToProps, {})(withRouter(SectionBodyContent));

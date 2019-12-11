@@ -31,7 +31,7 @@ class Import extends React.Component {
   }
 
   render() {
-    console.log("Import render")
+    //console.log("Import render")
 
     // let loaded = false;
     // const { profile, match } = this.props;
