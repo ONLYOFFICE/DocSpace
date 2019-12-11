@@ -14,10 +14,10 @@ storiesOf('Components|Loaders', module)
       <RequestLoader 
         visible={boolean('visible', true)}
         zIndex={number('zIndex', 256)}
-        loaderSize={number('loaderSize', 16)}
+        loaderSize={text('loaderSize', '16px')}
         loaderColor={color('loaderColor', '#999')}
         label={text('label', 'Loading... Please wait...')}
-        fontSize={number('fontSize', 12)}
+        fontSize={text('fontSize', '12px')}
         fontColor={color('fontColor', '#999')} />
     </Section>
   ));

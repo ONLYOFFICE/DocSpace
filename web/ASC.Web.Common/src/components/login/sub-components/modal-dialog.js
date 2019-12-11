@@ -17,7 +17,7 @@ class SubModalDialog extends React.Component {
       <ModalDialog
         visible={openDialog}
         headerContent={
-          <Text isBold={false} fontSize={21}>
+          <Text isBold={false} fontSize='21px'>
             {t("PasswordRecoveryTitle")}
           </Text>
         }
@@ -26,7 +26,7 @@ class SubModalDialog extends React.Component {
             key="text-body"
             className="text-body"
             isBold={false}
-            fontSize={13}
+            fontSize='13px'
           >
             {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
           </Text>,

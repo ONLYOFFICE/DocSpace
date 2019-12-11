@@ -37,7 +37,7 @@ const Loader = (props) =>  {
   Loader.propTypes = {
     color: PropTypes.string,
     type: PropTypes.oneOf(['base', 'oval', 'dual-ring', 'rombs']),
-    size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    size: PropTypes.string,
     label: PropTypes.string,
     className: PropTypes.string,
     id: PropTypes.string,
@@ -47,7 +47,7 @@ const Loader = (props) =>  {
   Loader.defaultProps = {
     color: "#63686a",
     type: "base",
-    size: 40,
+    size: '40px',
     label: "Loading content, please wait."
   };
 

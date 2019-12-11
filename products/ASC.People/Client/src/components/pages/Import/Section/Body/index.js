@@ -235,7 +235,11 @@ class SectionBodyContent extends React.Component {
 
     return (
       <>
-        <Text fontSize={14} >
+        <Text fontSize='18px' >
+          Functionality at development stage.
+        </Text>
+        <br />
+        <Text fontSize='14px' >
           Files are formatted according to <b>CSV RFC 4180</b> rules. <br />
           <b>Column Order:</b> FirstName, LastName, Email. <br />
           Comma delimiter, strings in unix format. <br />
@@ -249,7 +253,7 @@ class SectionBodyContent extends React.Component {
           </StyledFileInput>
         </SelectSourceWrapper>
         <br />
-        <Text fontSize={14} >
+        <Text fontSize='14px' >
           Ready for import: {splittedLines.length} of {splittedLines.length}
         </Text>
         <LoadCsvWrapper>

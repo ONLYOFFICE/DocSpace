@@ -183,7 +183,7 @@ const Avatar = memo(props => {
               type='action'
               title={editLabel}
               isTextOverflow={true}
-              fontSize={14}
+              fontSize='14px'
               color={whiteColor}
               onClick={editAction}
             >

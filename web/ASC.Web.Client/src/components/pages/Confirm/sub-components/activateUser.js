@@ -184,19 +184,19 @@ class Confirm extends React.PureComponent {
     return (
       !isConfirmLoaded
         ? (
-          <Loader className="pageLoader" type="rombs" size={40} />
+          <Loader className="pageLoader" type="rombs" size='40px' />
         )
         : (
           <ConfirmContainer>
             <div className='start-basis'>
               <div className='margin-left'>
-                <Text className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text>
+                <Text className='confirm-row' as='p' fontSize='18px'>{t('InviteTitle')}</Text>
 
                 <div className='confirm-row full-width break-word'>
                   <a href='/login'>
                     <img src="images/dark_general.png" alt="Logo" />
                   </a>
-                  <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
+                  <Text as='p' fontSize='24px' color='#116d9d'>{greetingTitle}</Text>
                 </div>
               </div>
 
@@ -293,11 +293,11 @@ class Confirm extends React.PureComponent {
 
               {/*             <Row className='confirm-row'>
 
-                    <Text as='p' fontSize={14}>{t('LoginWithAccount')}</Text>
+                    <Text as='p' fontSize='14px'>{t('LoginWithAccount')}</Text>
 
             </Row>
  */}
-              <Text className="confirm-row" fontSize={14} color="#c30">
+              <Text className="confirm-row" fontSize='14px' color="#c30">
                 {this.state.errorText}
               </Text>
             </div>

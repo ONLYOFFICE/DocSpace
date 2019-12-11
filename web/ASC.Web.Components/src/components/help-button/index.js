@@ -7,8 +7,7 @@ import uniqueId from "lodash/uniqueId";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import Text from "../text";
-import Header from "../header";
+import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
@@ -17,6 +16,13 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700;
+  }
 `;
 
 const HeaderContent = styled.div`
@@ -30,12 +36,6 @@ const Body = styled.div`
   padding: 16px 0;
 `;
 
-const HeaderText = styled(Header)`
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
 class HelpButton extends React.Component {
   constructor(props) {
     super(props);
@@ -161,11 +161,13 @@ class HelpButton extends React.Component {
                 <Content>
                   {helpButtonHeaderContent && (
                     <HeaderContent>
-                      <HeaderText type='content'>
-                        <Text isBold={true} fontSize={21}>
+                      <Heading 
+                        className='header'
+                        size='medium'
+                        truncate={true}
+                        >
                           {helpButtonHeaderContent}
-                        </Text>
-                      </HeaderText>
+                      </Heading>
                     </HeaderContent>
                   )}
                   <Body>{tooltipContent}</Body>

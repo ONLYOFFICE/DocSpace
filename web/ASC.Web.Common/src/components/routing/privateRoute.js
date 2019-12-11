@@ -37,7 +37,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         return (
           <PageLayout
             sectionBodyContent={
-              <Loader className="pageLoader" type="rombs" size={40} />
+              <Loader className="pageLoader" type="rombs" size='40px' />
             }
           />
         );

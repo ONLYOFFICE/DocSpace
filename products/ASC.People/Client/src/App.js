@@ -20,7 +20,7 @@ const App = ({ settings }) => {
     <Router history={history}>
       <StudioLayout>
         <Suspense
-          fallback={<Loader className="pageLoader" type="rombs" size={40} />}
+          fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
         >
           <Switch>
             <Redirect exact from="/" to={`${homepage}`} />

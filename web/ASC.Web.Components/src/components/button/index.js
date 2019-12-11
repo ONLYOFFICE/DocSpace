@@ -212,7 +212,7 @@ class Button extends React.Component {
       <StyledButton {...this.props}>
           {(isLoading || icon) && 
             isLoading 
-              ? <Loader type="oval" size={size === "big" ? 16 : 14} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+              ? <Loader type="oval" size={size === "big" ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
               : <Icon {...this.props} />
           }
           {label}

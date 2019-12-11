@@ -270,13 +270,13 @@ class Form extends Component {
               className="login-tooltip"
               helpButtonHeaderContent={t("CookieSettingsTitle")}
               tooltipContent={
-                <Text fontSize={12}>{t("RememberHelper")}</Text>
+                <Text fontSize='12px'>{t("RememberHelper")}</Text>
               }
             />
           </div>
 
           <Link
-            fontSize={12}
+            fontSize='12px'
             className="login-link"
             type="page"
             isHovered={true}
@@ -311,11 +311,11 @@ class Form extends Component {
         />
 
         {params.confirmedEmail && (
-          <Text isBold={true} fontSize={16}>
+          <Text isBold={true} fontSize='16px'>
             {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
           </Text>
         )}
-        <Text fontSize={14} color="#c30">
+        <Text fontSize='14px' color="#c30">
           {errorText}
         </Text>
       </FormContainer>

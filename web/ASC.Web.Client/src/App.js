@@ -13,7 +13,7 @@ const App = () => {
     <Router history={history}>
       <StudioLayout>
         <Suspense
-          fallback={<Loader className="pageLoader" type="rombs" size={40} />}
+          fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
         >
           <Switch>
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />

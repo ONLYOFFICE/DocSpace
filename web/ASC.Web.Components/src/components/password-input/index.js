@@ -403,7 +403,7 @@ class PasswordInput extends React.Component {
           <Link
             type="action"
             isHovered={true}
-            fontSize={13}
+            fontSize='13px'
             color={iconsColor}
             isSemitransparent={disableCopyAction}
             onClick={this.copyToClipboard.bind(this, emailInputName)}

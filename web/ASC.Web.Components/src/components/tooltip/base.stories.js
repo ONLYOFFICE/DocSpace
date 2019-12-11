@@ -38,13 +38,13 @@ storiesOf("Components|Tooltip", module)
           offsetLeft={number("offsetLeft", 0)}
           getContent={dataTip => (
             <div>
-              <Text isBold={true} fontSize={16}>
+              <Text isBold={true} fontSize='16px'>
                 {dataTip}
               </Text>
-              <Text color="#A3A9AE" fontSize={13}>
+              <Text color="#A3A9AE" fontSize='13px'>
                 BobJohnston@gmail.com
               </Text>
-              <Text fontSize={13}>Developer</Text>
+              <Text fontSize='13px'>Developer</Text>
             </div>
           )}
         />
