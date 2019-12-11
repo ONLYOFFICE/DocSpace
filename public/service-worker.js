@@ -2,6 +2,7 @@ const precacheVersion = 1;
 const precacheName = 'precache-v' + precacheVersion;
 const precacheFiles = [
     '/',
+    '/error.png',
     '/api/2.0/modules', 
     '/api/2.0/people/info.json', 
     '/api/2.0/people/@self.json',
@@ -14,7 +15,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(precacheName).then((cache) => {
       return cache.addAll(precacheFiles);
-    }) 
+    })
   );
 });
 
@@ -43,9 +44,61 @@ self.addEventListener('fetch', (e) => {
             .then((fetchResponse) => {
                 return fetchResponse;
             })
-            .catch((err) => {
-                return caches.match("/")
-            });
+            .catch(() => useFallback());
       })
   );
+  e.waitUntil(
+    update(e.request).then(refresh)
+  );
 });
+
+function update(request) {
+    return caches.open(precacheName).then((cache) =>
+      {
+        caches.match(request).then((cachesResponse) => {
+          if(cachesResponse){
+            fetch(request).then((response) =>
+                cache.put(request, response.clone()).then(() => response)
+            ).catch((err) => console.log(`[ServiceWorker] ${err}`));
+          }
+        })
+      }
+    );
+}
+
+const fallback = 
+'<div style="cursor: default;background: url(/error.png);width: 100%;height: 310px;padding: 315px 0 0;'+
+            'margin-top: -325px;'+
+            'position: absolute;'+
+            'left: 0;'+
+            'top: 50%;'+
+            'z-index: 1;">'+
+'<div style="width: 310px;'+
+            'margin: 0 auto;'+
+            'padding-left: 38px;'+
+            'text-align: center;'+
+            'font: normal 24px/35px Tahoma;'+
+            'color: #275678;'+
+            'position: relative;">\n'+
+    '<p>No internet connection found.</p>\n'+
+'</div>\n'+
+'</div>';
+
+function useFallback() {
+  return Promise.resolve(new Response(fallback, { headers: {
+      'Content-Type': 'text/html; charset=utf-8'
+  }}));
+}
+
+function refresh(response) {
+  /*return self.clients.matchAll().then((clients) => {
+      clients.forEach((client) => {
+          const message = {
+              type: 'refresh',
+              url: response.url,
+              eTag: response.headers.get('ETag')
+          };
+          client.postMessage(JSON.stringify(message));
+      });
+  });*/
+}
