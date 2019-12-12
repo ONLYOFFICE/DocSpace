@@ -9,8 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: appleboy/telegram-action@master
+    - uses: actions/checkout@master
     - name: telegram action on pull request
+      uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
