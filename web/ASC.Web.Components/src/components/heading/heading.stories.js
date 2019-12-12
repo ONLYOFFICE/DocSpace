@@ -7,7 +7,7 @@ import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
 const levels = [1, 2, 3, 4, 5, 6];
-const size = ['big', 'medium', 'small'];
+const size = ['xsmall', 'small', 'medium', 'large', 'xlarge'];
 
 storiesOf('Components|Heading', module)
   .addDecorator(withKnobs)
@@ -21,7 +21,7 @@ storiesOf('Components|Heading', module)
           title={text('title', '')}
           truncate={boolean('truncate', false)}
           isInline={boolean('isInline', false)}
-          size={select('size', size, 'big')}
+          size={select('size', size, 'large')}
         >
           {text('Text', 'Sample text Heading')}
         </Heading>

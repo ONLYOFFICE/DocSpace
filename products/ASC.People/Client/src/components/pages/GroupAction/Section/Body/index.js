@@ -1,36 +1,36 @@
-import React from "react";
-import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
-import PropTypes from "prop-types";
 import {
-  Button,
-  TextInput,
-  Icons,
-  SelectedItem,
   AdvancedSelector,
-  FieldContainer,
+  Button,
   ComboBox,
-  ComboButton,
+  FieldContainer,
+  Icons,
   ModalDialog,
   SearchInput,
+  SelectedItem,
+  TextInput,
   toastr,
   utils
 } from "asc-web-components";
+import {
+  createGroup,
+  resetGroup,
+  updateGroup
+} from "../../../../../store/group/actions";
 import {
   department,
   headOfDepartment,
   typeUser
 } from "../../../../../helpers/customNames";
-import { connect } from "react-redux";
-import {
-  resetGroup,
-  createGroup,
-  updateGroup
-} from "../../../../../store/group/actions";
-import styled from "styled-components";
-import { fetchSelectorUsers, fetchPeople, fetchGroups } from "../../../../../store/people/actions";
+import { fetchGroups, fetchPeople, fetchSelectorUsers } from "../../../../../store/people/actions";
+
 import { GUID_EMPTY } from "../../../../../helpers/constants";
+import PropTypes from "prop-types";
+import React from "react";
+import { connect } from "react-redux";
 import isEqual from "lodash/isEqual";
+import styled from "styled-components";
+import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
 
 const MainContainer = styled.div`
   display: flex;
@@ -409,7 +409,7 @@ class SectionBodyContent extends React.Component {
           isVertical={true}
           labelText={t("CustomHeadOfDepartment", { headOfDepartment })}
         >
-          <ComboButton
+          <ComboBox
             id="head-selector"
             tabIndex={2}
             options={[]}
@@ -419,10 +419,11 @@ class SectionBodyContent extends React.Component {
             isDisabled={inLoading}
             size="content"
             opened={isHeadSelectorOpen}
-            onClick={this.onHeadSelectorClick}
+            toggleAction={this.onHeadSelectorClick}
+            displayType="toggle"
           >
             <Icons.CatalogGuestIcon size="medium" />
-          </ComboButton>
+          </ComboBox>
           <AdvancedSelector
             displayType="dropdown"
             isOpen={isHeadSelectorOpen}
@@ -448,7 +449,7 @@ class SectionBodyContent extends React.Component {
           isVertical={true}
           labelText={t("Members")}
         >
-          <ComboButton
+          <ComboBox
             id="users-selector"
             tabIndex={3}
             options={[]}
@@ -461,10 +462,11 @@ class SectionBodyContent extends React.Component {
             scaled={true}
             size="content"
             opened={isUsersSelectorOpen}
-            onClick={this.onUsersSelectorClick}
+            toggleAction={this.onUsersSelectorClick}
+            displayType="toggle"
           >
             <Icons.CatalogGuestIcon size="medium" />
-          </ComboButton>
+          </ComboBox>
           <AdvancedSelector
             displayType="dropdown"
             isOpen={isUsersSelectorOpen}

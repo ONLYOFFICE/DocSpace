@@ -18,7 +18,7 @@ storiesOf('Components|Text', module)
         <Text
           title={text('title', '')}
           as={select('as', textTags , 'p')}
-          fontSize={number('fontSize', 13)}
+          fontSize={text('fontSize', '13px')}
           fontWeight={number('fontWeight')}
           truncate={boolean('truncate', false)}
           color={color('color', '#333333')}

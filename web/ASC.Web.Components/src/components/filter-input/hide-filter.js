@@ -13,6 +13,7 @@ const Caret = styled.div`
 `;
 
 const StyledHideFilterButton = styled.div`
+  box-sizing: border-box;
   display: flex;
   position: relative;
   align-items: center;

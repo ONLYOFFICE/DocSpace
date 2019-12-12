@@ -80,7 +80,7 @@ class ConfirmRoute extends React.Component {
           !this.state.isLoaded ? (
             <PageLayout
               sectionBodyContent={
-                <Loader className="pageLoader" type="rombs" size={40} />
+                <Loader className="pageLoader" type="rombs" size='40px' />
               }
             />
           ) : (

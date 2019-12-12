@@ -52,6 +52,7 @@ class PasswordField extends React.Component {
           isDisabled={radioIsDisabled}
           onClick={radioOnChange}
           className="radio-group"
+          spacing='33px'
         />
         <PasswordInput
           inputName={inputName}

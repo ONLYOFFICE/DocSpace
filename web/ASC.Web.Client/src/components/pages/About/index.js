@@ -74,24 +74,24 @@ const Body = ({language}) => {
       </p>
 
       <VersionStyle>
-        <Text className="text_p" fontSize={14} color="#A3A9AE">
+        <Text className="text_p" fontSize='14px' color="#A3A9AE">
           {`${t("AboutCompanyVersion")}: ${version.version}`}
         </Text>
       </VersionStyle>
 
-      <Text className="copyright-line" fontSize={14}>
+      <Text className="copyright-line" fontSize='14px'>
         {t("AboutCompanyLicensor")}
       </Text>
 
-      <Text className="text_p" fontSize={16} isBold={true}>
+      <Text className="text_p" fontSize='16px' isBold={true}>
         Ascensio System SIA
       </Text>
 
       <Style>
-        <Text className="text_p" fontSize={12}>
+        <Text className="text_p" fontSize='12px'>
           <Text
             className="text_span"
-            fontSize={12}
+            fontSize='12px'
             as="span"
             color="#A3A9AE"
           >
@@ -101,21 +101,21 @@ const Body = ({language}) => {
         </Text>
 
         <Text
-          fontSize={12}
+          fontSize='12px'
           className="text_span"
           as="span"
           color="#A3A9AE"
         >
           {t("AboutCompanyEmailTitle")}:{" "}
-          <Link href="mailto:support@onlyoffice.com" fontSize={12}>
+          <Link href="mailto:support@onlyoffice.com" fontSize='12px'>
             support@onlyoffice.com
           </Link>
         </Text>
 
         <div style={{ marginTop: "4px" }}>
-          <Text className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize='12px'>
             <Text
-              fontSize={12}
+              fontSize='12px'
               className="text_span"
               as="span"
               color="#A3A9AE"
@@ -126,28 +126,28 @@ const Body = ({language}) => {
           </Text>
         </div>
 
-        <Link href="http://www.onlyoffice.com" fontSize={12}>
+        <Link href="http://www.onlyoffice.com" fontSize='12px'>
           www.onlyoffice.com
         </Link>
 
         <div style={{ marginTop: "20px" }}>
-          <Text className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize='12px'>
             {t("LicensedUnder", {license: "GNU GPL v.3"} )}:{" "}
             <Link
               href="https://www.gnu.org/licenses/gpl-3.0.html"
               isHovered={true}
-              fontSize={12}
+              fontSize='12px'
             >
               GNU GPL v.3
             </Link>{" "}
           </Text>
 
-          <Text className="text_p" fontSize={12}>
+          <Text className="text_p" fontSize='12px'>
             {t("SourceCode")}:{" "}
             <Link
               href="https://github.com/ONLYOFFICE/CommunityServer"
               isHovered={true}
-              fontSize={12}
+              fontSize='12px'
             >
               GitHub
             </Link>

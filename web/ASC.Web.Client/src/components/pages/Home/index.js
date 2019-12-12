@@ -13,6 +13,7 @@ const HomeContainer = styled.div`
     margin: 0 auto;
     max-width: 1140px;
     width: 100%;
+    box-sizing: border-box;
     /*justify-content: center;*/
 
     .home-modules {
@@ -75,7 +76,7 @@ const Body = ({ modules, match, history, isLoaded }) => {
     return (
         !isLoaded
             ? (
-                <Loader className="pageLoader" type="rombs" size={40} />
+                <Loader className="pageLoader" type="rombs" size='40px' />
             )
             : (
                 <HomeContainer>
@@ -83,7 +84,7 @@ const Body = ({ modules, match, history, isLoaded }) => {
                     <Tiles modules={modules} isPrimary={false} history={history} />
 
                     {!modules || !modules.length ? (
-                        <Text className="home-error-text" fontSize={14} color="#c30">
+                        <Text className="home-error-text" fontSize='14px' color="#c30">
                             {t('NoOneModulesAvailable')}
                         </Text> 
                     ) : null}

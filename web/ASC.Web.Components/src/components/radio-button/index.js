@@ -10,7 +10,7 @@ const internalCircleDisabledColor = '#D0D5DA';
 const externalCircleDisabledColor = '#eceef1';
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
-const ClearLabel = ({ spacing, isDisabled, ...props }) => <label {...props} />
+const ClearLabel = ({ spacing, isDisabled, orientation, ...props }) => <label {...props} />
 const Label = styled(ClearLabel)`
   display: flex;
   align-items: center;
@@ -47,7 +47,13 @@ const Label = styled(ClearLabel)`
         `}
 
   &:not(:first-child) {
-    margin-left: ${props => props.spacing}px;
+    ${props =>
+    (props.orientation === 'horizontal' && css`margin-left: ${props.spacing};`)};
+  }
+
+  &:not(:last-child) {
+    ${props =>
+    (props.orientation === 'vertical' && css`margin-bottom: ${props.spacing};`)};
   }
 `;
 
@@ -99,6 +105,7 @@ class RadioButton extends React.Component {
 
     return (
       <Label
+        orientation={this.props.orientation}
         spacing={this.props.spacing}
         isDisabled={this.props.isDisabled}
         id={this.props.id}
@@ -133,10 +140,11 @@ RadioButton.propTypes = {
   onChange: PropTypes.func,
   onClick: PropTypes.func,
   value: PropTypes.string.isRequired,
-  spacing: PropTypes.number,
+  spacing: PropTypes.string,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  orientation: PropTypes.oneOf(['horizontal', 'vertical'])
 }
 
 RadioButton.defaultProps = {

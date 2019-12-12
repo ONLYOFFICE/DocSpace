@@ -50,7 +50,7 @@ class GroupAction extends React.Component {
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
-          sectionBodyContent={<Loader className="pageLoader" type="rombs" size={40} />}
+          sectionBodyContent={<Loader className="pageLoader" type="rombs" size='40px' />}
           />
         }
       </I18nextProvider>

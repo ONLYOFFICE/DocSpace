@@ -22,6 +22,8 @@ const StyledSectionToggler = styled.div`
     border-radius: 48px;
     cursor: pointer;
     background: #fff;
+    box-sizing: border-box;
+    line-height: 1.5;
   }
 `;
 

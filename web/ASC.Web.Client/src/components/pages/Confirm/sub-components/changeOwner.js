@@ -79,7 +79,7 @@ class Form extends React.PureComponent {
               alt="Logo"
             />
             <Text className="owner-title">{greetingTitle}</Text>
-            <Text className="owner-confirm_text" fontSize={18}>
+            <Text className="owner-confirm_text" fontSize='18px'>
               {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
             </Text>
             {this.state.showButtons ? (
@@ -103,7 +103,7 @@ class Form extends React.PureComponent {
                 />
               </>
             ) : (
-              <Text className="owner-confirm-message" fontSize={12}>
+              <Text className="owner-confirm-message" fontSize='12px'>
                 {t("ConfirmOwnerPortalSuccessMessage")}
               </Text>
             )}

@@ -36,6 +36,7 @@ const StyledDropdownItem = styled.div`
     background: none;
     text-decoration: none;
     user-select: none;
+    outline: 0 !important;
 
     ${fontStyle}
 

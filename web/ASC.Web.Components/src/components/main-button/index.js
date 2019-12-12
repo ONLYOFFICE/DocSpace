@@ -4,6 +4,7 @@ import styled, { css } from "styled-components";
 import DropDown from "../drop-down";
 import { Icons } from "../icons";
 import { handleAnyClick } from "../../utils/event";
+import Text from "../text";
 
 const backgroundColor = "#ED7309",
   disableBackgroundColor = "#FFCCA6",
@@ -70,12 +71,9 @@ const StyledMainButton = styled.div`
   background-color: ${props =>
     props.isDisabled ? disableBackgroundColor : backgroundColor};
   padding: 5px 11px;
-  color: #ffffff;
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  font-weight: bold;
-  font-size: 16px;
   line-height: 22px;
 
   &:after {
@@ -168,7 +166,9 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          {this.props.text}
+          <Text fontSize='16px' isBold color="#fff">
+            {this.props.text}
+          </Text>
         </StyledMainButton>
         {this.props.isDropdown ? (
           <StyledDropDown

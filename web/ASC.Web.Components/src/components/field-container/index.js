@@ -48,6 +48,7 @@ function getVerticalCss() {
     .field-label-icon {
       display: inline-flex;
       width: 100%;
+      line-height: 1.5;
     }
     .field-body {
       width: 100%;
@@ -126,7 +127,7 @@ class FieldContainer extends React.Component {
         <div className="field-body">
           {children}
           {hasError ? (
-            <Text className="error-label" fontSize={10} color={errorColor}>
+            <Text className="error-label" fontSize='10px' color={errorColor}>
               {errorMessage}
             </Text>
           ) : null}

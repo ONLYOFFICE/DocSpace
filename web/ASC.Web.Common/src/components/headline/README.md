@@ -1,29 +1,29 @@
-# Header
+# Headline
 
-Component that displays header text
+Component that displays Heading text with custom styles
 
 ### Usage
 
 ```js
-import { Header } from "asc-web-components";
+import { Headline } from "asc-web-common";
 ```
 
 ```jsx
-<Header type="content" title="Some title" isInline>
+<Headline type="content" title="Some title" isInline>
   Some text
-</Header>
+</Headline>
 ```
 
 ```jsx
-<Header type="menu" title="Some title">
+<Headline type="menu" title="Some title">
   Some text
-</Header>
+</Headline>
 ```
 
-##### If you need to override styles add forwardedAs instead of as
+#### If you need to override styles add forwardedAs instead of as
 
 ```js
-const StyledText = styled(Header)`
+const StyledText = styled(Headline)`
   &:hover {
     border-bottom: 1px dotted;
   }
@@ -36,12 +36,12 @@ const StyledText = styled(Header)`
 </StyledText>
 ```
 
-### Properties Header
+### Properties
 
 | Props      |   Type   | Required |     Values      |  Default  | Description                                          |
 | ---------- | :------: | :------: | :-------------: | :-------: | ---------------------------------------------------- |
 | `color`    | `string` |    -     |        -        | `#333333` | Specifies the contentHeader color                    |
+| `isInline` |  `bool`  |    -     |        -        |  `false`  | Sets the 'display: inline-block' property            |
 | `title`    |  `bool`  |    -     |        -        |     -     | Title                                                |
 | `truncate` |  `bool`  |    -     |        -        |  `false`  | Disables word wrapping                               |
-| `isInline` |  `bool`  |    -     |        -        |  `false`  | Sets the 'display: inline-block' property            |
 | `type`     | `oneOf`  |    ✅    | `menu, content` |     -     | Sets the size of text: menu (27px) or content (21px) |

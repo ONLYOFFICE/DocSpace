@@ -11,14 +11,6 @@ const ProjectsContainer = styled.div`
   align-items: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
-
-  .display-block {
-    display: block;
-  }
-
-  div label:not(:first-child) {
-    margin: 0;
-  }
 `;
 
 const RadioButtonContainer = styled.div`
@@ -104,16 +96,17 @@ class PureModulesSettings extends Component {
                     })
                   }
                 ]}
-                className="display-block"
+                orientation='vertical'
+                spacing='10px'
               />
             </RadioButtonContainer>
             <ProjectsBody>
-              <Text className="projects_margin" fontSize={12}>
+              <Text className="projects_margin" fontSize='12px'>
                 {t("AccessRightsProductUsersCan", {
                   category: t("People")
                 })}
               </Text>
-              <Text fontSize={12}>
+              <Text fontSize='12px'>
                 <li>{t("ViewProfilesAndGroups")}</li>
               </Text>
             </ProjectsBody>

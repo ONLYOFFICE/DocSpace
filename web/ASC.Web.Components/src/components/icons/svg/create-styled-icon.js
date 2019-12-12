@@ -75,6 +75,8 @@ export default function createStyledIcon(Component, displayName, fillPath="*", s
     ${props.strokePath} {
       ${props.isStroke ? 'stroke:' + props.stroke : ''};
     }
+    overflow: hidden;
+    vertical-align: middle;
     ${getSizeStyle(props.size)}
   `
   );

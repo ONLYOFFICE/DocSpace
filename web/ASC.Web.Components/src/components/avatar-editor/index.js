@@ -74,6 +74,9 @@ class AvatarEditor extends React.Component {
         if (this.props.visible !== prevProps.visible) {
             this.setState({ visible: this.props.visible });
         }
+        if (this.props.image !== prevProps.image) {
+            this.setState({ isContainsFile: !!this.props.image });
+        }
     }
 
     render() {

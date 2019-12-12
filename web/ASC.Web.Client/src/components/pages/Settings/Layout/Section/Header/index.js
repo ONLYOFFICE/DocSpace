@@ -1,11 +1,12 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { Header, utils } from 'asc-web-components';
+import { utils } from 'asc-web-components';
+import { Headline } from 'asc-web-common';
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
 import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Headline)`
   margin-right: 16px;
   max-width: calc(100vw - 430px);
   @media ${utils.device.tablet} {

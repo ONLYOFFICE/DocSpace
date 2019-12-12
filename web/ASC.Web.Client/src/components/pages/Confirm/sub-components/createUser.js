@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
-import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
+import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader, EmailInput } from 'asc-web-components';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -182,9 +182,11 @@ class Confirm extends React.PureComponent {
 
     onChangeEmail = event => {
         this.setState({ email: event.target.value });
-        !this.state.emailValid && this.setState({ emailValid: true });
+        // !this.state.emailValid && this.setState({ emailValid: true });
         this.state.errorText && this.setState({ errorText: "" });;
     }
+
+    onValidateEmail = value => this.setState({emailValid: value });
 
     onChangePassword = event => {
         this.setState({ password: event.target.value });
@@ -200,19 +202,19 @@ class Confirm extends React.PureComponent {
         return (
             !isConfirmLoaded
                 ? (
-                    <Loader className="pageLoader" type="rombs" size={40} />
+                    <Loader className="pageLoader" type="rombs" size='40px' />
                 )
                 : (
                     <ConfirmContainer>
                         <div className='start-basis'>
                             <div className='margin-left'>
-                                <Text className='confirm-row' as='p' fontSize={18}>{t('InviteTitle')}</Text>
+                                <Text className='confirm-row' as='p' fontSize='18px'>{t('InviteTitle')}</Text>
 
                                 <div className='confirm-row full-width break-word'>
                                     <a href='/login'>
                                         <img src="images/dark_general.png" alt="Logo" />
                                     </a>
-                                    <Text as='p' fontSize={24} color='#116d9d'>{greetingTitle}</Text>
+                                    <Text as='p' fontSize='24px' color='#116d9d'>{greetingTitle}</Text>
                                 </div>
                             </div>
 
@@ -252,7 +254,7 @@ class Confirm extends React.PureComponent {
                                         onKeyDown={this.onKeyPress}
                                     />
 
-                                    <TextInput
+                                    <EmailInput
                                         className='confirm-row'
                                         id='email'
                                         name={emailInputName}
@@ -263,9 +265,10 @@ class Confirm extends React.PureComponent {
                                         tabIndex={3}
                                         autoComplete='email'
                                         isDisabled={this.state.isLoading}
-                                        hasError={!this.state.emailValid}
+                                        // hasError={!this.state.emailValid}
                                         onChange={this.onChangeEmail}
                                         onKeyDown={this.onKeyPress}
+                                        onValidateInput={this.onValidateEmail}
                                     />
 
                                 </div>
@@ -314,11 +317,11 @@ class Confirm extends React.PureComponent {
 
                             {/*             <Row className='confirm-row'>
 
-                    <Text as='p' fontSize={14}>{t('LoginWithAccount')}</Text>
+                    <Text as='p' fontSize='14px'>{t('LoginWithAccount')}</Text>
 
             </Row>
  */}
-                            <Text className='confirm-row' fontSize={14} color="#c30">
+                            <Text className='confirm-row' fontSize='14px' color="#c30">
                                 {this.state.errorText}
                             </Text>
                         </div>

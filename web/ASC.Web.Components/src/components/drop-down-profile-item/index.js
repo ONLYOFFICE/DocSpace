@@ -31,6 +31,7 @@ const UserPreview = styled.div`
     border-radius: 6px 6px 0px 0px;
     padding: 15px;
     cursor: default;
+    box-sizing: border-box;
 `;
 
 const AvatarWrapper = styled.div`

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import commonTextStyles from '../text/common-text-styles';
+import { Heading } from 'asc-web-components';
 
 const fontSize = css`
       ${props =>
@@ -10,29 +10,23 @@ const fontSize = css`
    }
    `;
 
-const styles = css`
+const StyledHeading = styled(Heading)`
    margin: 0;
    line-height: 56px;
    font-size: ${fontSize}px;
    font-weight: 700;
-   ${props => props.isInline && css`display: inline-block;`}
 `;
 
-const StyledHeader = styled.h1`
-      ${styles};
-      ${commonTextStyles};
-   `;
-
-const Header = ({ title, tag, as, children, ...rest }) => {
-   //console.log("Header render");
+const Headline = (props) => {
+   //console.log("Headline render");
    return (
-      <StyledHeader as={!as && tag ? tag : as} title={title} {...rest}>{children}</StyledHeader>
+      <StyledHeading
+         {...props} />
    );
 };
 
-Header.propTypes = {
-   as: PropTypes.string,
-   tag: PropTypes.string,
+Headline.propTypes = {
+   level: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
    children: PropTypes.any,
    color: PropTypes.string,
    title: PropTypes.string,
@@ -41,11 +35,12 @@ Header.propTypes = {
    type: PropTypes.oneOf(['menu', 'content']),
 };
 
-Header.defaultProps = {
+Headline.defaultProps = {
    color: '#333333',
    title: '',
    truncate: false,
    isInline: false,
+   level: 1
 };
 
-export default Header;
+export default Headline;

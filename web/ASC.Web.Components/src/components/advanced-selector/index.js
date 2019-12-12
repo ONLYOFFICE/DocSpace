@@ -116,6 +116,7 @@ const StyledBodyContainer = styled(Container)`
     }
 
     .data_column_one {
+      box-sizing: border-box;
       ${props =>
         props.displayType === "dropdown" &&
         props.groups &&
@@ -130,6 +131,7 @@ const StyledBodyContainer = styled(Container)`
         margin-top: 4px;
         margin-left: -8px;
         .option {
+          box-sizing: border-box;
           line-height: 32px;
           padding-left: ${props => (props.isMultiSelect ? 8 : 0)}px;
           cursor: pointer;
@@ -150,6 +152,7 @@ const StyledBodyContainer = styled(Container)`
     }
 
     .data_column_two {
+      box-sizing: border-box;
       ${props =>
         props.displayType === "dropdown" &&
         props.groups &&
@@ -171,6 +174,7 @@ const StyledBodyContainer = styled(Container)`
         margin-left: 8px;
 
         .option {
+          box-sizing: border-box;
           line-height: 32px;
           padding-left: 8px;
           cursor: pointer;
@@ -514,7 +518,7 @@ class AdvancedSelector extends React.Component {
                   <Text
                     as="p"
                     className="group_header"
-                    fontSize={15}
+                    fontSize='15px'
                     isBold={true}
                   >
                     Groups

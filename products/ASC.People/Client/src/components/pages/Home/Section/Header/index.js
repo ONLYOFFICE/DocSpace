@@ -4,11 +4,11 @@ import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
-  Header,
   toastr,
   ContextMenuButton,
   IconButton
 } from "asc-web-components";
+import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
@@ -210,7 +210,7 @@ const SectionHeaderContent = props => {
         <div className="header-container">
           {group ? (
             <>
-              <Header type="content" truncate={true}>{group.name}</Header>
+              <Headline type="content" truncate={true}>{group.name}</Headline>
               {isAdmin && (
                 <ContextMenuButton
                   directionX="right"
@@ -225,7 +225,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Header type="content">Departments</Header>
+              <Headline type="content">Departments</Headline>
               {isAdmin && (
                 <IconButton
                   className="add-group-button"

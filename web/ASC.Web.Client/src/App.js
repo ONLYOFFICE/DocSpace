@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout} from "asc-web-common";
+import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline} from "asc-web-common";
 
 const Home = lazy(() => import("./components/pages/Home"));
 const About = lazy(() => import("./components/pages/About"));
@@ -10,10 +10,11 @@ const Settings = lazy(() => import("./components/pages/Settings"));
 
 const App = () => {
   return (
+    navigator.onLine ? 
     <Router history={history}>
       <StudioLayout>
         <Suspense
-          fallback={<Loader className="pageLoader" type="rombs" size={40} />}
+          fallback={<Loader className="pageLoader" type="rombs" size='40px' />}
         >
           <Switch>
             <PublicRoute exact path={["/login","/login/error=:error", "/login/confirmed-email=:confirmedEmail"]} component={Login} />
@@ -25,7 +26,8 @@ const App = () => {
           </Switch>
         </Suspense>
       </StudioLayout>
-    </Router>
+    </Router> :
+    <Offline/>
   );
 };
 
