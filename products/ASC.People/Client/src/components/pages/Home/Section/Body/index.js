@@ -32,6 +32,7 @@ import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
+import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
 const { EmployeeStatus } = constants;
@@ -49,6 +50,7 @@ class SectionBodyContent extends React.PureComponent {
         buttons: [],
       },
       changeEmailDialogVisible: false,
+      changePasswordDialogVisible: false,
       isEmailValid: false
     };
   }
@@ -66,55 +68,7 @@ class SectionBodyContent extends React.PureComponent {
     history.push(`${settings.homepage}/edit/${user.userName}`);
   };
 
-  onChangePasswordClick = email => {
-    this.setState({
-      dialog: {
-        visible: true,
-        header: "Password change",
-        body: (
-          <Text>
-            Send the password change instructions to the{" "}
-            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
-              {email}
-            </Link>{" "}
-            email address
-          </Text>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="Send"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              const { onLoading } = this.props;
-              onLoading(true);
-              sendInstructionsToChangePassword(email)
-                .then(() =>
-                  toastr.success(
-                    <Text>
-                      The password change instructions have been sent to the{" "}
-                      <b>{email}</b> email address
-                    </Text>
-                  )
-                )
-                .catch(error => toastr.error(error))
-                .finally(() => onLoading(false));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
-    });
-  };
+  onChangePasswordClick = email => this.setState({ changePasswordDialogVisible: true, userEmail: email });
 
   onChangeEmailClick = (user) => {
     this.setState({
@@ -422,6 +376,8 @@ class SectionBodyContent extends React.PureComponent {
     this.setState({ changeEmailDialogVisible: false, userEmail: '', userId: '' });
   }
 
+  onChangePasswordDialogClose = () => this.setState({ changePasswordDialogVisible: false });
+
   needForUpdate = (currentProps, nextProps) => {
     if (currentProps.checked !== nextProps.checked) {
       return true;
@@ -438,7 +394,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
-    const { dialog, changeEmailDialogVisible } = this.state;
+    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -493,6 +449,13 @@ class SectionBodyContent extends React.PureComponent {
             onClose={this.onChangeEmailDialogClose}
             newEmail={this.state.userEmail}
             id={this.state.userId}
+          />
+        }
+        {changePasswordDialogVisible &&
+          <ChangePasswordDialog
+            visible={changePasswordDialogVisible}
+            onClose={this.onChangePasswordDialogClose}
+            email={this.state.userEmail}
           />
         }
       </>

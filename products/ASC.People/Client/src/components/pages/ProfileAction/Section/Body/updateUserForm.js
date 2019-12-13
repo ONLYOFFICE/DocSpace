@@ -17,7 +17,8 @@ import { departments, department, position, employedSinceDate, typeGuest, typeUs
 import styled from "styled-components";
 import { api } from "asc-web-common";
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
-const { sendInstructionsToChangePassword, sendInstructionsToChangeEmail, createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
+import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
+const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 
 const Table = styled.table`
   width: 100%;
@@ -47,8 +48,7 @@ class UpdateUserForm extends React.Component {
     this.onCancel = this.onCancel.bind(this);
 
     this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
-    this.onSendPasswordChangeInstructions = this.onSendPasswordChangeInstructions.bind(this);
+    this.onPasswordChange = this.toggleChangePasswordDialog.bind(this);
     this.onPhoneChange = this.onPhoneChange.bind(this);
     this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
     this.onDialogClose = this.onDialogClose.bind(this);
@@ -124,7 +124,8 @@ class UpdateUserForm extends React.Component {
         image: null,
         defaultWidth: 0,
         defaultHeight: 0
-      }
+      },
+      changePasswordDialogVisible: false
     };
 
     //Set unique contacts id 
@@ -204,36 +205,7 @@ class UpdateUserForm extends React.Component {
     this.setState({ changeEmailDialogVisible: false });
   }
 
-  onPasswordChange() {
-    const dialog = {
-      visible: true,
-      header: "Change password",
-      body: (
-        <Text>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPasswordChangeInstructions}
-        />
-      ]
-    };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendPasswordChangeInstructions() {
-    sendInstructionsToChangePassword(this.state.profile.email)
-      .then((res) => {
-        toastr.success(res);
-      })
-      .catch((error) => toastr.error(error))
-      .finally(this.onDialogClose);
-  }
+  toggleChangePasswordDialog = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible});
 
   onPhoneChange() {
     const dialog = {
@@ -409,7 +381,7 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, dialog, selector, changeEmailDialogVisible } = this.state;
+    const { isLoading, errors, profile, dialog, selector, changeEmailDialogVisible, changePasswordDialogVisible } = this.state;
     const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
@@ -545,7 +517,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.password}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onPasswordChange}
+              buttonOnClick={this.toggleChangePasswordDialog}
               buttonTabIndex={2}
             />
             <TextChangeField
@@ -698,6 +670,14 @@ class UpdateUserForm extends React.Component {
             onClose={this.onChangeEmailDialogClose}
             newEmail={profile.email}
             id={profile.id}
+          />
+        }
+
+        {changePasswordDialogVisible &&
+          <ChangePasswordDialog
+            visible={changePasswordDialogVisible}
+            onClose={this.toggleChangePasswordDialog}
+            email={profile.email}
           />
         }
       </>
