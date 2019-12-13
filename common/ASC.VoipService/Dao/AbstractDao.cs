@@ -26,7 +26,6 @@
 
 using System;
 
-using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -45,12 +44,6 @@ namespace ASC.VoipService.Dao
             TenantID = tenantID;
         }
 
-        protected DbManager GetDb()
-        {
-            return DbOptions.Get(dbid);
-        }
-
-        public DbOptionsManager DbOptions { get; }
         protected int TenantID
         {
             get;

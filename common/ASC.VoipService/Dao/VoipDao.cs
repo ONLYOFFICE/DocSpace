@@ -113,66 +113,63 @@ namespace ASC.VoipService.Dao
                 ContactId = call.ContactId
             };
 
-            using (var db = GetDb())
+            if (!string.IsNullOrEmpty(call.ParentID))
             {
-                if (!string.IsNullOrEmpty(call.ParentID))
-                {
-                    voipCall.ParentCallId = call.ParentID;
-                }
-
-                if (call.Status.HasValue)
-                {
-                    voipCall.Status = (int)call.Status.Value;
-                }
-
-                if (!call.AnsweredBy.Equals(Guid.Empty))
-                {
-                    voipCall.AnsweredBy = call.AnsweredBy;
-                }
-
-                if (call.DialDate == DateTime.MinValue)
-                {
-                    call.DialDate = DateTime.UtcNow;
-                }
-
-                voipCall.DialDate = TenantUtil.DateTimeToUtc(call.DialDate);
-
-                if (call.DialDuration > 0)
-                {
-                    voipCall.DialDuration = call.DialDuration;
-                }
-
-                if (call.Price > decimal.Zero)
-                {
-                    voipCall.Price = call.Price;
-                }
-
-                if (call.VoipRecord != null)
-                {
-                    if (!string.IsNullOrEmpty(call.VoipRecord.Id))
-                    {
-                        voipCall.RecordSid = call.VoipRecord.Id;
-                    }
-
-                    if (!string.IsNullOrEmpty(call.VoipRecord.Uri))
-                    {
-                        voipCall.RecordUrl = call.VoipRecord.Uri;
-                    }
-
-                    if (call.VoipRecord.Duration != 0)
-                    {
-                        voipCall.RecordDuration = call.VoipRecord.Duration;
-                    }
-
-                    if (call.VoipRecord.Price != default)
-                    {
-                        voipCall.RecordPrice = call.VoipRecord.Price;
-                    }
-                }
-
-                VoipDbContext.VoipCalls.Add(voipCall);
-                VoipDbContext.SaveChanges();
+                voipCall.ParentCallId = call.ParentID;
             }
+
+            if (call.Status.HasValue)
+            {
+                voipCall.Status = (int)call.Status.Value;
+            }
+
+            if (!call.AnsweredBy.Equals(Guid.Empty))
+            {
+                voipCall.AnsweredBy = call.AnsweredBy;
+            }
+
+            if (call.DialDate == DateTime.MinValue)
+            {
+                call.DialDate = DateTime.UtcNow;
+            }
+
+            voipCall.DialDate = TenantUtil.DateTimeToUtc(call.DialDate);
+
+            if (call.DialDuration > 0)
+            {
+                voipCall.DialDuration = call.DialDuration;
+            }
+
+            if (call.Price > decimal.Zero)
+            {
+                voipCall.Price = call.Price;
+            }
+
+            if (call.VoipRecord != null)
+            {
+                if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+                {
+                    voipCall.RecordSid = call.VoipRecord.Id;
+                }
+
+                if (!string.IsNullOrEmpty(call.VoipRecord.Uri))
+                {
+                    voipCall.RecordUrl = call.VoipRecord.Uri;
+                }
+
+                if (call.VoipRecord.Duration != 0)
+                {
+                    voipCall.RecordDuration = call.VoipRecord.Duration;
+                }
+
+                if (call.VoipRecord.Price != default)
+                {
+                    voipCall.RecordPrice = call.VoipRecord.Price;
+                }
+            }
+
+            VoipDbContext.VoipCalls.Add(voipCall);
+            VoipDbContext.SaveChanges();
 
             return call;
         }
@@ -212,7 +209,6 @@ namespace ASC.VoipService.Dao
 
         public IEnumerable<VoipCall> GetMissedCalls(Guid agent, long count = 0, DateTime? from = null)
         {
-            using var db = GetDb();
             var query = GetCallsQuery(new VoipCallFilter { Agent = agent, SortBy = "date", SortOrder = true, Type = "missed" });
 
             if (from.HasValue)

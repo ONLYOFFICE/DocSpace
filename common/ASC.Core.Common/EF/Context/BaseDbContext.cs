@@ -1,11 +1,18 @@
 ﻿using System.Configuration;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace ASC.Core.Common.EF
 {
-    public class BaseDbContext : DbContext
+    public class BaseDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
+        public BaseDbContext() { }
+
+        public BaseDbContext(DbContextOptions options) : base(options)
+        {
+        }
+
         internal ILoggerFactory LoggerFactory { get; set; }
         internal ConnectionStringSettings ConnectionStringSettings { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -11,6 +12,14 @@ namespace ASC.Core.Common.EF.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.AddMobileAppInstall();
+        }
+    }
+
+    public static class DbContextExtension
+    {
+        public static IServiceCollection AddDbContextService(this IServiceCollection services)
+        {
+            return services.AddDbContextManagerService<DbContext>();
         }
     }
 }
