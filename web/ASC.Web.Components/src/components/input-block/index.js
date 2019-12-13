@@ -169,7 +169,6 @@ class InputBlock extends React.Component {
                   iconName={iconName}
                   isFill={isIconFill}
                   isDisabled={isDisabled}
-                  onClick={this.onIconClick}
                   isClickable={typeof onIconClick === 'function'}
                 />
               </StyledIconBlock>
