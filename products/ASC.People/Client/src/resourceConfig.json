@@ -29,8 +29,7 @@
       "EmailChangeTitle",
       "EnterEmail",
       "EmailActivationDescription",
-      "SendButton",
-      "CancelButton"
+      "SendButton"
     ]
   }
 },

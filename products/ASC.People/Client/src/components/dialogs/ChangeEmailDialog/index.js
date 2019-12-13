@@ -17,9 +17,6 @@ import { api } from "asc-web-common";
 const { sendInstructionsToChangeEmail } = api.people;
 
 const ModalDialogContainer = styled.div`
-  .cancel-btn {
-    margin-left: 8px;
-  }
 
   .margin-top {
     margin-top: 16px;
@@ -104,15 +101,6 @@ class PureChangeEmailDialog extends React.Component {
                 onClick={this.onSendEmailChangeInstructions}
                 isDisabled={isSendButtonDisabled}
                 isLoading={isRequestRunning}
-              />
-              <Button
-                key="CancelBtn"
-                label={t('CancelButton')}
-                size="medium"
-                primary={false}
-                onClick={onClose}
-                className='cancel-btn'
-                isDisabled={isRequestRunning}
               />
             </>
           }
