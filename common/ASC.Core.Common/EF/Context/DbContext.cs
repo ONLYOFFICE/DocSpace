@@ -8,6 +8,7 @@ namespace ASC.Core.Common.EF.Context
     public class DbContext : BaseDbContext
     {
         public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
+        public DbSet<DbipLocation> DbipLocation { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

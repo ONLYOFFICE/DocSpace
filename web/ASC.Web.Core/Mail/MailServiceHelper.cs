@@ -114,20 +114,6 @@ namespace ASC.Web.Core.Mail
             return string.IsNullOrEmpty(value) ? "onlyoffice_mailserver" : value;
         }
 
-        private DbManager GetDb(string dbid, string connectionString)
-        {
-            var connectionSettings = new System.Configuration.ConnectionStringSettings(dbid, connectionString, "MySql.Data.MySqlClient");
-
-            if (DbRegistry.IsDatabaseRegistered(connectionSettings.Name))
-            {
-                DbRegistry.UnRegisterDatabase(connectionSettings.Name);
-            }
-
-            DbRegistry.RegisterDatabase(connectionSettings.Name, connectionSettings);
-
-            return DbOptions.Get(connectionSettings.Name);
-        }
-
         private void DemandPermission()
         {
             if (!CoreBaseSettings.Standalone)
@@ -182,7 +168,6 @@ namespace ASC.Web.Core.Mail
 
             using var mailDbContext = new MailDbContext(options);
 
-            using var dbManager = GetDb(dbid, connectionString);
             var token = mailDbContext.ApiKeys
                 .Where(r => r.Id == 1)
                 .Select(r => r.AccessToken)

@@ -26,6 +26,7 @@
 
 #if DEBUG
 using ASC.Geolocation;
+
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Geolocation
@@ -36,7 +37,7 @@ namespace ASC.Common.Tests.Geolocation
         [Test]
         public void GetIPGeolocationTest()
         {
-            var helper = new GeolocationHelper(null, null, "db");
+            var helper = new GeolocationHelper(null, null);
             var info = helper.GetIPGeolocation("62.213.10.13");
             Assert.AreEqual("Nizhny Novgorod", info.City);
             Assert.AreEqual("062.213.011.127", info.IPEnd);

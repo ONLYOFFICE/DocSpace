@@ -26,26 +26,26 @@
 
 using System;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Geolocation
 {
     public class GeolocationHelper
     {
-        private readonly string dbid;
+        public string Dbid { get; set; }
 
         public ILog Log { get; }
-        public DbOptionsManager DbOptions { get; }
+        public DbContext DbContext { get; }
 
-        public GeolocationHelper(DbOptionsManager dbOptions, IOptionsMonitor<ILog> option, string dbid)
+        public GeolocationHelper(DbContextManager<DbContext> dbContext, IOptionsMonitor<ILog> option)
         {
             Log = option.CurrentValue;
-            DbOptions = dbOptions;
-            this.dbid = dbid;
+            DbContext = dbContext.Get(Dbid);
         }
 
 
@@ -54,25 +54,22 @@ namespace ASC.Geolocation
             try
             {
                 var ipformatted = FormatIP(ip);
-                var db = DbOptions.Get(dbid);
-                var q = new SqlQuery("dbip_location")
-.Select("ip_start", "ip_end", "country", "city", "timezone_offset", "timezone_name")
-.Where(Exp.Le("ip_start", ipformatted))
-.OrderBy("ip_start", false)
-.SetMaxResults(1);
-                return db
-                    .ExecuteList(q)
-                    .Select(r => new IPGeolocationInfo()
+                var q = DbContext.DbipLocation
+                    .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)
+                    .Where(r => ipformatted.CompareTo(r.IPEnd) <= 0)
+                    .OrderByDescending(r => r.IPStart)
+                    .Select(r => new IPGeolocationInfo
                     {
-                        IPStart = Convert.ToString(r[0]),
-                        IPEnd = Convert.ToString(r[1]),
-                        Key = Convert.ToString(r[2]),
-                        City = Convert.ToString(r[3]),
-                        TimezoneOffset = Convert.ToDouble(r[4]),
-                        TimezoneName = Convert.ToString(r[5])
+                        City = r.City,
+                        IPEnd = r.IPEnd,
+                        IPStart = r.IPStart,
+                        Key = r.Country,
+                        TimezoneOffset = r.TimezoneOffset,
+                        TimezoneName = r.TimezoneName
                     })
-                    .SingleOrDefault(i => ipformatted.CompareTo(i.IPEnd) <= 0) ??
-                    IPGeolocationInfo.Default;
+                    .FirstOrDefault();
+
+                return q ?? IPGeolocationInfo.Default;
             }
             catch (Exception error)
             {
