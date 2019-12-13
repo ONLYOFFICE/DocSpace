@@ -38,7 +38,7 @@ const cloneObjectsArray = function (props) {
 const convertToInternalData = function (fullDataArray, inputDataArray) {
     const filterItems = [];
     for (let i = 0; i < inputDataArray.length; i++) {
-        const filterValue = fullDataArray.find(x => ((x.key === inputDataArray[i].key.replace(inputDataArray[i].group + "_", '')) && x.group === inputDataArray[i].group && !x.inSubgroup));
+        let filterValue = fullDataArray.find(x => ((x.key === inputDataArray[i].key.replace(inputDataArray[i].group + "_", '')) && x.group === inputDataArray[i].group && !x.inSubgroup));
         if (filterValue) {
             inputDataArray[i].key = inputDataArray[i].group + "_" + inputDataArray[i].key;
             inputDataArray[i].label = filterValue.label;
