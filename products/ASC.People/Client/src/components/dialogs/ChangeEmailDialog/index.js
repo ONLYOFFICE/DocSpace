@@ -34,6 +34,7 @@ class PureChangeEmailDialog extends React.Component {
 
     this.state = {
       isEmailValid: true,
+      isRequestRunning: false,
       email: newEmail,
       id
     };
@@ -46,19 +47,25 @@ class PureChangeEmailDialog extends React.Component {
   onChangeEmailInput = e => this.setState({ email: e.target.value });
 
   onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(this.state.id, this.state.email)
-      .then((res) => {
-        toastr.success(res);
-      })
-      .catch((error) => toastr.error(error))
-      .finally(this.props.onClose());
+    this.setState({ isRequestRunning: true }, function () {
+      sendInstructionsToChangeEmail(this.state.id, this.state.email)
+        .then((res) => {
+          toastr.success(res);
+        })
+        .catch((error) => toastr.error(error))
+        .finally(() => {
+          this.props.onClose();
+          this.setState({ isRequestRunning: false });
+        });
+    })
+
   }
 
 
   render() {
     console.log("ChangeEmailDialog render");
     const { t, visible, newEmail, onClose } = this.props;
-    const { isEmailValid, email } = this.state;
+    const { isEmailValid, email, isRequestRunning } = this.state;
     const isSendButtonDisabled = !isEmailValid || newEmail.toLowerCase() === email.toLowerCase();
 
     return (
@@ -96,6 +103,7 @@ class PureChangeEmailDialog extends React.Component {
                 primary={true}
                 onClick={this.onSendEmailChangeInstructions}
                 isDisabled={isSendButtonDisabled}
+                isLoading={isRequestRunning}
               />
               <Button
                 key="CancelBtn"
@@ -104,6 +112,7 @@ class PureChangeEmailDialog extends React.Component {
                 primary={false}
                 onClick={onClose}
                 className='cancel-btn'
+                isDisabled={isRequestRunning}
               />
             </>
           }
