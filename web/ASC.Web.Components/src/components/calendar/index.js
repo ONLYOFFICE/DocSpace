@@ -45,19 +45,12 @@ const ComboBoxDateStyle = styled.div`
 const CalendarContainer = styled.div`
   ${props =>
     props.size === "base" ? `max-width: 293px;` : `max-width: 325px;`}
-  ${props => (props.hasError ? `border: 1px solid red;` : ``)}
 `;
 
 const CalendarStyle = styled.div`
   ${props => (props.size === "base" ? "width: 265px;" : `width: 289px;`)}
 
   box-sizing: content-box;
-  ${props =>
-    props.isDisabled
-      ? `pointer-events: none;
-        ${DisabledStyle}
-        `
-      : "pointer-events: auto;"}
 
   .calendar-month {
     ${HoverStyle}
@@ -104,7 +97,7 @@ class Calendar extends Component {
   }
 
   mapPropsToState = props => {
-    const { minDate, maxDate, openToDate, selectedDate, isDisabled } = props;
+    const { minDate, maxDate, openToDate, selectedDate } = props;
     const months = moment.months();
     const arrayWeekdays = moment.weekdaysMin();
     const optionsMonth = this.getListMonth(
@@ -121,19 +114,24 @@ class Calendar extends Component {
       selectedDate
     );
     const optionsWeekdays = this.getWeekDays(arrayWeekdays);
+    let newOpenToDate = openToDate;
+    if (
+      this.compareDates(openToDate, maxDate) > 0 ||
+      this.compareDates(openToDate, minDate) < 0
+    ) {
+      newOpenToDate = minDate;
+    }
 
     const newState = {
       months,
       minDate,
       maxDate,
-      openToDate,
+      openToDate: newOpenToDate,
       selectedDate,
       optionsMonth,
-      hasError: false,
-      isDisabled,
-      selectedOptionMonth: this.getCurrentMonth(optionsMonth, openToDate),
+      selectedOptionMonth: this.getCurrentMonth(optionsMonth, newOpenToDate),
       optionsYear,
-      selectedOptionYear: this.getCurrentYear(optionsYear, openToDate),
+      selectedOptionYear: this.getCurrentYear(optionsYear, newOpenToDate),
       optionsDays,
       optionsWeekdays
     };
@@ -281,6 +279,10 @@ class Calendar extends Component {
   getCurrentYear = (arrayYears, openToDate) => {
     const openToDateYear = openToDate.getFullYear();
     let currentYear = arrayYears.find(x => x.key == openToDateYear);
+    if (!currentYear) {
+      const newDate = this.props.minDate.getFullYear();
+      currentYear = { key: newDate, label: `${newDate}` };
+    }
     return currentYear;
   };
 
@@ -500,92 +502,41 @@ class Calendar extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    const {
-      selectedDate,
-      openToDate,
-      minDate,
-      maxDate,
-      isDisabled,
-      locale
-    } = this.props;
-
-    const { hasError } = this.state;
+    const { selectedDate, openToDate, minDate, maxDate, locale } = this.props;
 
     let newState = {};
 
-    //MAX MIN DATE ERROR
-    if (
-      this.compareDates(openToDate, maxDate) > 0 ||
-      this.compareDates(openToDate, minDate) < 0 ||
-      this.compareDates(selectedDate, maxDate) > 0 ||
-      this.compareDates(selectedDate, minDate) < 0
-    ) {
-      if (!hasError && !this.state.isDisabled) {
-        this.setState({
-          hasError: true,
-          isDisabled: true
-        });
-        this.props.onChange &&
-          this.props.onChange("INVALID PROP (SELECTED DATE/OPEN TO DATE) DATE");
-      }
-    } else if (
-      (this.compareDates(openToDate, maxDate) <= 0 ||
-        this.compareDates(openToDate, minDate) >= 0 ||
-        this.compareDates(selectedDate, maxDate) <= 0 ||
-        this.compareDates(selectedDate, minDate) >= 0) &&
-      hasError &&
-      this.state.isDisabled
-    ) {
+    if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
+      newState = { selectedDate };
+    }
+
+    if (this.compareDates(openToDate, prevProps.openToDate) !== 0) {
       newState = Object.assign({}, newState, {
-        selectedDate,
-        openToDate,
-        isDisabled: false,
-        hasError: false
+        openToDate
       });
+    }
+
+    if (this.compareDates(minDate, prevProps.minDate) !== 0) {
+      newState = Object.assign({}, newState, {
+        minDate
+      });
+    }
+
+    if (this.compareDates(maxDate, prevProps.maxDate) !== 0) {
+      newState = Object.assign({}, newState, {
+        maxDate
+      });
+    }
+
+    if (!isEmpty(newState) || locale !== prevProps.locale) {
+      moment.locale(locale);
       newState = this.mapPropsToState({
         ...this.state,
         ...newState
       });
+
+      //console.log("componentDidUpdate newState", newState);
       this.setState(newState);
-    } else {
-      if (this.compareDates(selectedDate, prevProps.selectedDate) !== 0) {
-        newState = { selectedDate };
-      }
-
-      if (this.compareDates(openToDate, prevProps.openToDate) !== 0) {
-        newState = Object.assign({}, newState, {
-          openToDate
-        });
-      }
-
-      if (this.compareDates(minDate, prevProps.minDate) !== 0) {
-        newState = Object.assign({}, newState, {
-          minDate
-        });
-      }
-
-      if (this.compareDates(maxDate, prevProps.maxDate) !== 0) {
-        newState = Object.assign({}, newState, {
-          maxDate
-        });
-      }
-
-      if (isDisabled !== prevProps.isDisabled) {
-        newState = Object.assign({}, newState, {
-          isDisabled
-        });
-      }
-
-      if (!isEmpty(newState) || locale !== prevProps.locale) {
-        moment.locale(locale);
-        newState = this.mapPropsToState({
-          ...this.state,
-          ...newState
-        });
-
-        //console.log("componentDidUpdate newState", newState);
-        this.setState(newState);
-      }
     }
   }
 
@@ -599,17 +550,20 @@ class Calendar extends Component {
       selectedOptionYear,
       optionsYear,
       optionsDays,
-      optionsWeekdays,
-      hasError,
-      isDisabled
+      optionsWeekdays
     } = this.state;
 
     const dropDownSizeMonth = optionsMonth.length > 4 ? 184 : undefined;
     const dropDownSizeYear = optionsYear.length > 4 ? 184 : undefined;
 
     return (
-      <CalendarContainer className={className} id={id} style={style} hasError={hasError} size={size}>
-        <CalendarStyle size={size} color={themeColor} isDisabled={isDisabled}>
+      <CalendarContainer
+        className={className}
+        id={id}
+        style={style}
+        size={size}
+      >
+        <CalendarStyle size={size} color={themeColor}>
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
               <ComboBox
@@ -619,7 +573,7 @@ class Calendar extends Component {
                 onSelect={this.onSelectMonth}
                 selectedOption={selectedOptionMonth}
                 options={optionsMonth}
-                isDisabled={isDisabled}
+                isDisabled={false}
               />
             </ComboBoxMonthStyle>
             <ComboBoxDateStyle>
@@ -630,7 +584,7 @@ class Calendar extends Component {
                 onSelect={this.onSelectYear}
                 selectedOption={selectedOptionYear}
                 options={optionsYear}
-                isDisabled={isDisabled}
+                isDisabled={false}
               />
             </ComboBoxDateStyle>
           </ComboBoxStyle>
@@ -657,7 +611,6 @@ Calendar.propTypes = {
   minDate: PropTypes.instanceOf(Date),
   maxDate: PropTypes.instanceOf(Date),
   locale: PropTypes.string,
-  isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "big"]),
   className: PropTypes.string,
   id: PropTypes.string,
