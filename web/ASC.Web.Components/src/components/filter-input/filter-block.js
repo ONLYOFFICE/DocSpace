@@ -34,6 +34,8 @@ const StyledFilterItem = styled.div`
 `;
 const StyledCloseButtonBlock = styled.div`
   display: flex;
+  cursor: ${props =>
+    props.isDisabled || !props.isClickable ? "default" : "pointer"};
   align-items: center;
   position: absolute;
   height: 100%;
@@ -66,6 +68,7 @@ class FilterItem extends React.Component {
     };
 
     this.onSelect = this.onSelect.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   onSelect(option) {
@@ -75,6 +78,9 @@ class FilterItem extends React.Component {
       group: option.group,
       inSubgroup: !!option.inSubgroup
     });
+  }
+  onClick(e){
+    !this.props.isDisabled && this.props.onClose(e, this.props.id);
   }
 
   render() {
@@ -98,10 +104,10 @@ class FilterItem extends React.Component {
           : <StyledFilterName>{this.props.label}</StyledFilterName>
         }
 
-        <StyledCloseButtonBlock>
+        <StyledCloseButtonBlock onClick={this.onClick}>
           <CloseButton
             isDisabled={this.props.isDisabled}
-            onClick={!this.props.isDisabled ? ((e) => this.props.onClose(e, this.props.id)) : undefined}
+            onClick={this.onClick}
           />
         </StyledCloseButtonBlock>
       </StyledFilterItem>

@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
 import Checkbox from "../checkbox";
 import ContextMenuButton from "../context-menu-button";
+import PropTypes from "prop-types";
+import React from "react";
+import isEqual from "lodash/isEqual";
+import styled from "styled-components";
 import { tablet } from "../../utils/device";
 
 const StyledRow = styled.div`
@@ -48,13 +48,14 @@ const StyledElement = styled.div`
 `;
 
 const StyledOptionButton = styled.div`
-  flex: 0 0 18px;
   display: flex;
-  margin-left: 8px;
-  margin-right: 16px;
-`;
 
-// eslint-disable-next-line react/display-name
+  .expandButton > div:first-child {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 16px;
+  }
+`;
 
 class Row extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -106,7 +107,7 @@ class Row extends React.Component {
         <StyledContent>{children}</StyledContent>
         <StyledOptionButton>
           {renderContext && (
-            <ContextMenuButton directionX="right" getData={getOptions} />
+            <ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />
           )}
         </StyledOptionButton>
       </StyledRow>
@@ -116,14 +117,14 @@ class Row extends React.Component {
 
 Row.propTypes = {
   checked: PropTypes.bool,
-  element: PropTypes.element,
   children: PropTypes.element,
-  data: PropTypes.object,
-  contextOptions: PropTypes.array,
-  onSelect: PropTypes.func,
-  needForUpdate: PropTypes.func,
   className: PropTypes.string,
+  contextOptions: PropTypes.array,
+  data: PropTypes.object,
+  element: PropTypes.element,
   id: PropTypes.string,
+  needForUpdate: PropTypes.func,
+  onSelect: PropTypes.func,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 

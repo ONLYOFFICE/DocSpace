@@ -8,6 +8,7 @@ import { createProfile, getUserPhoto } from '../../../../../store/profile/action
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
+import EmailField from './FormFields/EmailField';
 import DateField from './FormFields/DateField'
 import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
@@ -211,12 +212,11 @@ class CreateUserForm extends React.Component {
   }
 
   validate() {
-    const { profile } = this.state;
-    const emailRegex = /.+@.+\..+/;
+    const { profile, errors:stateErrors } = this.state;
     const errors = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
-      email: !emailRegex.test(profile.email.trim()),
+      email: stateErrors.email,
       password: profile.passwordType === "temp" && !profile.password.trim()
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
@@ -319,6 +319,8 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
+  onValidateEmailField = (value) => this.setState({errors: { ...this.state.errors, email:!value }});
+
   render() {
     const { isLoading, errors, profile, selector } = this.state;
     const { t, settings, i18n } = this.props;
@@ -373,7 +375,7 @@ class CreateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputTabIndex={2}
             />
-            <TextField
+            <EmailField
               isRequired={true}
               hasError={errors.email}
               labelText={`${t("Email")}:`}
@@ -396,6 +398,7 @@ class CreateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
+              onValidateInput={this.onValidateEmailField}
             />
             <PasswordField
               isRequired={true}
