@@ -134,6 +134,8 @@ const ChangeEmailDialog = props => (
 ChangeEmailDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  newEmail: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 function mapStateToProps(state) {
