@@ -13,8 +13,6 @@ import {
   ModalDialog,
   Button,
   Text,
-  Label,
-  TextInput
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -33,6 +31,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
+import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
 const { EmployeeStatus } = constants;
@@ -43,13 +42,14 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      newEmail: null,
       dialog: {
         visible: false,
         header: "",
         body: "",
-        buttons: []
-      }
+        buttons: [],
+      },
+      changeEmailDialogVisible: false,
+      isEmailValid: false
     };
   }
 
@@ -90,7 +90,7 @@ class SectionBodyContent extends React.PureComponent {
               const { onLoading } = this.props;
               onLoading(true);
               sendInstructionsToChangePassword(email)
-              .then(() =>
+                .then(() =>
                   toastr.success(
                     <Text>
                       The password change instructions have been sent to the{" "}
@@ -116,51 +116,11 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onChangeEmailClick = email => {
+  onChangeEmailClick = (user) => {
     this.setState({
-      dialog: {
-        visible: true,
-        header: "Email change",
-        body: (
-          <>
-            <Label htmlFor="new-email" text="Enter a new email address" />
-            <TextInput
-              id="new-email"
-              scale={true}
-              isAutoFocussed={true}
-              value={this.state.newEmail}
-              onChange={e => {
-                this.setState({ newEmail: e.target.value });
-              }}
-            />
-            <Text style={{ marginTop: "16px" }}>
-              The activation instructions will be sent to the entered email
-            </Text>
-          </>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="Send"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              toastr.success(
-                `Context action: Change e-mail from ${email} to ${this.state.newEmail}`
-              );
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
+      changeEmailDialogVisible: true,
+      userEmail: user.email,
+      userId: user.id
     });
   };
 
@@ -344,11 +304,11 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onEmailSentClick.bind(this, user.email)
           },
           user.mobilePhone &&
-            isMobileOnly && {
-              key: "send-message",
-              label: t("LblSendMessage"),
-              onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
-            },
+          isMobileOnly && {
+            key: "send-message",
+            label: t("LblSendMessage"),
+            onClick: this.onSendMessageClick.bind(this, user.mobilePhone)
+          },
           { key: "separator", isSeparator: true },
           {
             key: "edit",
@@ -363,21 +323,21 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.onChangeEmailClick.bind(this, user.email)
+            onClick: this.onChangeEmailClick.bind(this, user)
           },
           isSelf
-            ? viewer.isOwner 
-              ? {} 
+            ? viewer.isOwner
+              ? {}
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
                 onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
             : {
-                key: "disable",
-                label: t("DisableUserButton"),
-                onClick: this.onDisableClick.bind(this, user)
-              }
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick.bind(this, user)
+            }
         ];
       case "disabled":
         return [
@@ -415,17 +375,17 @@ class SectionBodyContent extends React.PureComponent {
             onClick: this.onInviteAgainClick.bind(this, user)
           },
           !isSelf &&
-            (user.status === EmployeeStatus.Active
-              ? {
-                  key: "disable",
-                  label: t("DisableUserButton"),
-                  onClick: this.onDisableClick.bind(this, user)
-                }
-              : {
-                  key: "enable",
-                  label: t("EnableUserButton"),
-                  onClick: this.onEnableClick.bind(this, user)
-                }),
+          (user.status === EmployeeStatus.Active
+            ? {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick.bind(this, user)
+            }
+            : {
+              key: "enable",
+              label: t("EnableUserButton"),
+              onClick: this.onEnableClick.bind(this, user)
+            }),
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -453,11 +413,14 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDialogClose = () => {
-    this.setState({ 
-      newEmail: null,
-      dialog: { visible: false } 
+    this.setState({
+      dialog: { visible: false }
     });
   };
+
+  onChangeEmailDialogClose = () => {
+    this.setState({ changeEmailDialogVisible: false, userEmail: '', userId: '' });
+  }
 
   needForUpdate = (currentProps, nextProps) => {
     if (currentProps.checked !== nextProps.checked) {
@@ -475,7 +438,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
-    const { dialog } = this.state;
+    const { dialog, changeEmailDialogVisible } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -523,23 +486,32 @@ class SectionBodyContent extends React.PureComponent {
           footerContent={dialog.buttons}
           onClose={this.onDialogClose}
         />
+
+        {changeEmailDialogVisible &&
+          <ChangeEmailDialog
+            visible={changeEmailDialogVisible}
+            onClose={this.onChangeEmailDialogClose}
+            newEmail={this.state.userEmail}
+            id={this.state.userId}
+          />
+        }
       </>
     ) : (
-      <EmptyScreenContainer
-        imageSrc="images/empty_screen_filter.png"
-        imageAlt="Empty Screen Filter image"
-        headerText={t("NotFoundTitle")}
-        descriptionText={t("NotFoundDescription")}
-        buttons={
-          <>
-            <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-            <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-              {t("ClearButton")}
-            </Link>
-          </>
-        }
-      />
-    );
+        <EmptyScreenContainer
+          imageSrc="images/empty_screen_filter.png"
+          imageAlt="Empty Screen Filter image"
+          headerText={t("NotFoundTitle")}
+          descriptionText={t("NotFoundDescription")}
+          buttons={
+            <>
+              <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+              <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+                {t("ClearButton")}
+              </Link>
+            </>
+          }
+        />
+      );
   }
 }
 

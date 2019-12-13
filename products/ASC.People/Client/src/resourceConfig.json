@@ -23,6 +23,15 @@
     "ResourceJS": [
       "LinkCopySuccess"
     ]
+  },
+  "ChangeEmailDialog":{
+    "Resource": [
+      "EmailChangeTitle",
+      "EnterEmail",
+      "EmailActivationDescription",
+      "SendButton",
+      "CancelButton"
+    ]
   }
 },
   "pages": {
