@@ -68,7 +68,6 @@ storiesOf("Components|DatePicker", module)
         isDisabled={boolean("isDisabled", false)}
         isReadOnly={boolean("isReadOnly", false)}
         hasError={boolean("hasError", false)}
-        //hasWarning={boolean("hasWarning", false)}
         isOpen={boolean("isOpen", false)}
         themeColor={color("themeColor", "#ED7309")}
         locale={select("locale", locales, "en")}
