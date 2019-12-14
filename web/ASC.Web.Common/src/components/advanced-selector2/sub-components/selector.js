@@ -459,7 +459,7 @@ const ADSelector = props => {
         <div key="loader">
           <Loader
             type="oval"
-            size={16}
+            size="16px"
             style={{
               display: "inline",
               marginRight: "10px"
@@ -719,7 +719,7 @@ const ADSelector = props => {
           size={size}
         >
           <ADSelectorHeader className="header-groups">
-            <Text as="p" className="group_header" fontSize={15} isBold={true}>
+            <Text as="p" className="group_header" fontSize="15px" isBold={true}>
               {groupsHeaderLabel}
             </Text>
           </ADSelectorHeader>
