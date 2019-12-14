@@ -32,6 +32,14 @@
       "SendButton"
     ]
   },
+  "DeleteProfileDialog":{
+    "Resource": [
+      "DeleteProfileTitle",
+      "DeleteProfileInfo",
+      "CloseButton",
+      "SendButton"
+    ]
+  },
   "ChangePasswordDialog":{
     "Resource": [
       "PasswordChangeTitle",

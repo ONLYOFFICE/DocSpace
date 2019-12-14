@@ -33,8 +33,9 @@ import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
 import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
+import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
 const { isAdmin, isMe } = store.auth.selectors;
-const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
+const { resendUserInvites, deleteUser } = api.people;
 const { EmployeeStatus } = constants;
 
 
@@ -51,6 +52,7 @@ class SectionBodyContent extends React.PureComponent {
       },
       changeEmailDialogVisible: false,
       changePasswordDialogVisible: false,
+      deleteSelfProfileDialogVisible: false,
       isEmailValid: false
     };
   }
@@ -173,50 +175,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onDeleteSelfProfileClick = email => {
     this.setState({
-      dialog: {
-        visible: true,
-        header: "Delete profile dialog",
-        body: (
-          <Text>
-            Send the profile deletion instructions to the email address{" "}
-            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
-              {email}
-            </Link>
-          </Text>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="Send"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              const { onLoading } = this.props;
-              onLoading(true);
-              sendInstructionsToDelete()
-                .then(() =>
-                  toastr.success(
-                    <Text>
-                      Instructions to delete your profile has been sent to{" "}
-                      <b>{email}</b> email address
-                    </Text>
-                  )
-                )
-                .catch(error => toastr.error(error))
-                .finally(() => onLoading(false));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
+      deleteSelfProfileDialogVisible: true,
+      userEmail: email
     });
   };
 
@@ -378,6 +338,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onChangePasswordDialogClose = () => this.setState({ changePasswordDialogVisible: false });
 
+  onDeleteSelfProfileDialogClose = () => this.setState({ deleteSelfProfileDialogVisible: false });
+
   needForUpdate = (currentProps, nextProps) => {
     if (currentProps.checked !== nextProps.checked) {
       return true;
@@ -394,7 +356,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t } = this.props;
-    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible } = this.state;
+    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible, deleteSelfProfileDialogVisible } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -455,6 +417,14 @@ class SectionBodyContent extends React.PureComponent {
           <ChangePasswordDialog
             visible={changePasswordDialogVisible}
             onClose={this.onChangePasswordDialogClose}
+            email={this.state.userEmail}
+          />
+        }
+
+        {deleteSelfProfileDialogVisible &&
+          <DeleteSelfProfileDialog
+            visible={deleteSelfProfileDialogVisible}
+            onClose={this.onDeleteSelfProfileDialogClose}
             email={this.state.userEmail}
           />
         }

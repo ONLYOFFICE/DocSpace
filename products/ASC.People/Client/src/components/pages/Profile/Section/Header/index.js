@@ -26,10 +26,10 @@ import {
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
+import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
-  sendInstructionsToDelete,
   sendInstructionsToChangePassword,
   sendInstructionsToChangeEmail,
   createThumbnailsAvatar,
@@ -85,7 +85,8 @@ class SectionHeaderContent extends React.PureComponent {
         image: null,
         defaultWidth: 0,
         defaultHeight: 0
-      }
+      },
+      deleteSelfProfileDialogVisible: false
     };
 
     return newState;
@@ -93,7 +94,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   openAvatarEditor = () => {
     getUserPhoto(this.state.profile.id).then(userPhotoData => {
-      if(userPhotoData.original){
+      if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
           this.setState({
@@ -105,7 +106,7 @@ class SectionHeaderContent extends React.PureComponent {
             },
             visibleAvatarEditor: true
           });
-        }else{
+        } else {
           this.setState({
             avatar: {
               tmpFile: this.state.avatar.tmpFile,
@@ -128,7 +129,7 @@ class SectionHeaderContent extends React.PureComponent {
     loadAvatar(this.state.profile.id, data)
       .then(response => {
         var img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
@@ -371,49 +372,12 @@ class SectionHeaderContent extends React.PureComponent {
 
   onDeleteSelfProfileClick = email => {
     this.setState({
-      dialog: {
-        visible: true,
-        header: "Delete profile dialog",
-        body: (
-          <Text>
-            Send the profile deletion instructions to the email address{" "}
-            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
-              {email}
-            </Link>
-          </Text>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="Send"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              sendInstructionsToDelete()
-                .then(() =>
-                  toastr.success(
-                    <Text>
-                      Instructions to delete your profile has been sent to{" "}
-                      <b>{email}</b> email address
-                    </Text>
-                  )
-                )
-                .catch(error => toastr.error(error));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
+      deleteSelfProfileDialogVisible: true,
+      email
     });
   };
+
+  onDeleteSelfProfileDialogClose = () => this.setState({ deleteSelfProfileDialogVisible: false });
 
   onInviteAgainClick = () => {
     resendUserInvites(new Array(this.state.profile.id))
@@ -464,15 +428,15 @@ class SectionHeaderContent extends React.PureComponent {
             ? viewer.isOwner
               ? {}
               : {
-                  key: "delete-profile",
-                  label: t("DeleteSelfProfile"),
-                  onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
-                }
-            : {
-                key: "disable",
-                label: t("DisableUserButton"),
-                onClick: this.onDisableClick
+                key: "delete-profile",
+                label: t("DeleteSelfProfile"),
+                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
+            : {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick
+            }
         ];
       case "disabled":
         return [
@@ -520,17 +484,17 @@ class SectionHeaderContent extends React.PureComponent {
             onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
-            (user.status === EmployeeStatus.Active
-              ? {
-                  key: "disable",
-                  label: t("DisableUserButton"),
-                  onClick: this.onDisableClick
-                }
-              : {
-                  key: "enable",
-                  label: t("EnableUserButton"),
-                  onClick: this.onEnableClick
-                }),
+          (user.status === EmployeeStatus.Active
+            ? {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick
+            }
+            : {
+              key: "enable",
+              label: t("EnableUserButton"),
+              onClick: this.onEnableClick
+            }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -548,7 +512,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   render() {
     const { profile, isAdmin, viewer, t } = this.props;
-    const { dialog, avatar, visibleAvatarEditor } = this.state;
+    const { dialog, avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible } = this.state;
 
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
@@ -596,6 +560,14 @@ class SectionHeaderContent extends React.PureComponent {
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("unknownError")}
         />
+
+        {deleteSelfProfileDialogVisible &&
+          <DeleteSelfProfileDialog
+            visible={deleteSelfProfileDialogVisible}
+            onClose={this.onDeleteSelfProfileDialogClose}
+            email={this.state.email}
+          />
+        }
       </div>
     );
   }
