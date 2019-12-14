@@ -56,13 +56,13 @@ storiesOf("Components|Tooltip", module)
         </div>
         <Tooltip id="link" offsetRight={90} effect="solid">
           <div>
-            <Text isBold={true} fontSize={16}>
+            <Text isBold={true} fontSize='16px'>
               Bob Johnston
             </Text>
-            <Text color="#A3A9AE" fontSize={13}>
+            <Text color="#A3A9AE" fontSize='13px'>
               BobJohnston@gmail.com
             </Text>
-            <Text fontSize={13}>Developer</Text>
+            <Text fontSize='13px'>Developer</Text>
           </div>
         </Tooltip>
 
@@ -95,13 +95,13 @@ storiesOf("Components|Tooltip", module)
           getContent={dataTip =>
             dataTip ? (
               <div>
-                <Text isBold={true} fontSize={16}>
+                <Text isBold={true} fontSize='16px'>
                   {arrayUsers[dataTip].name}
                 </Text>
-                <Text color="#A3A9AE" fontSize={13}>
+                <Text color="#A3A9AE" fontSize='13px'>
                   {arrayUsers[dataTip].email}
                 </Text>
-                <Text fontSize={13}>
+                <Text fontSize='13px'>
                   {arrayUsers[dataTip].position}
                 </Text>
               </div>

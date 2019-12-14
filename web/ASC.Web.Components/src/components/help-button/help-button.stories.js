@@ -29,7 +29,7 @@ storiesOf("Components|Buttons", module)
           <HelpButton
             displayType="dropdown"
             tooltipContent={
-              <Text fontSize={13}>
+              <Text fontSize='13px'>
                 Paste you tooltip content here
               </Text>
             }

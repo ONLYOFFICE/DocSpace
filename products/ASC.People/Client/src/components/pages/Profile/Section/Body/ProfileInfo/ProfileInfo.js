@@ -77,7 +77,7 @@ const getFormattedDepartments = departments => {
   const formattedDepartments = departments.map((department, index) => {
     return (
       <span key={index}>
-        <Link type="page" fontSize={13} isHovered={true} onClick={onGroupClick.bind(this, department)}>
+        <Link type="page" fontSize='13px' isHovered={true} onClick={onGroupClick.bind(this, department)}>
           {department.name}
         </Link>
         {departments.length - 1 !== index ? ", " : ""}
@@ -207,7 +207,7 @@ class ProfileInfo extends React.PureComponent {
     const formatedDepartments = department && getFormattedDepartments(groups);
     const supportEmail = "documentation@onlyoffice.com";
     const tooltipLanguage =
-      <Text fontSize={13}>
+      <Text fontSize='13px'>
         <Trans i18nKey="NotFoundLanguage" i18n={i18n}>
           "In case you cannot find your language in the list of the
           available ones, feel free to write to us at
@@ -248,7 +248,7 @@ class ProfileInfo extends React.PureComponent {
                 }
                 <Link
                   type="page"
-                  fontSize={13}
+                  fontSize='13px'
                   isHovered={true}
                   title={email}
                   onClick={this.onEmailClick.bind(email)}

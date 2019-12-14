@@ -9,7 +9,7 @@ const Security = () => {
   const basePath = "/settings/security";
 
   return (
-    <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
+    <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
       <Switch>
         <Route
           exact

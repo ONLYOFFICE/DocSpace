@@ -1,11 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import styled from 'styled-components';
-import DropDownItem from '../drop-down-item'
+import ComboButton from './sub-components/combo-button'
 import DropDown from '../drop-down'
+import DropDownItem from '../drop-down-item'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { handleAnyClick } from '../../utils/event';
 import isEqual from 'lodash/isEqual';
-import ComboButton from './sub-components/combo-button'
+import styled from 'styled-components';
 
 const StyledComboBox = styled.div`
   width: ${props =>
@@ -35,7 +35,7 @@ class ComboBox extends React.Component {
       handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) =>{
+  handleClick = (e) => {
     if (this.state.isOpen && !this.ref.current.contains(e.target)) {
       this.toggle(false);
     }
@@ -48,6 +48,7 @@ class ComboBox extends React.Component {
   comboBoxClick = (e) => {
     if (this.props.isDisabled || e && e.target.closest('.optionalBlock')) return;
     this.toggle(!this.state.isOpen);
+    this.props.toggleAction && this.props.toggleAction(e);
   };
 
   optionClick = (option) => {
@@ -94,7 +95,9 @@ class ComboBox extends React.Component {
       isDisabled,
       children,
       noBorder,
-      scaledOptions } = this.props;
+      scaledOptions,
+      displayType,
+      toggleAction } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -106,7 +109,9 @@ class ComboBox extends React.Component {
 
     const optionsLength = options.length
       ? options.length
-      : 0;
+      : (displayType !== 'toggle')
+        ? 0
+        : 1;
 
     const advancedOptionsLength = advancedOptions
       ? advancedOptions.props.children.length
@@ -120,6 +125,7 @@ class ComboBox extends React.Component {
         size={size}
         data={selectedOption}
         onClick={this.comboBoxClick}
+        toggleAction={toggleAction}
         {...this.props}
       >
         <ComboButton
@@ -135,59 +141,62 @@ class ComboBox extends React.Component {
           size={size}
           scaled={scaled}
         />
-        <DropDown
-          directionX={directionX}
-          directionY={directionY}
-          manualY='102%'
-          isOpen={isOpen}
-          {...dropDownMaxHeightProp}
-          {...dropDownManualWidthProp}
-        >
-          {advancedOptions
-            ? advancedOptions
-            : options.map((option) =>
-              <DropDownItem {...option}
-                key={option.key}
-                disabled={
-                  option.disabled
-                  || (option.label === selectedOption.label)}
-                onClick={this.optionClick.bind(this, option)}
-              />
-            )}
-        </DropDown>
+        {displayType !== 'toggle' &&
+          <DropDown
+            directionX={directionX}
+            directionY={directionY}
+            manualY='102%'
+            isOpen={isOpen}
+            {...dropDownMaxHeightProp}
+            {...dropDownManualWidthProp}
+          >
+            {advancedOptions
+              ? advancedOptions
+              : options.map((option) =>
+                <DropDownItem {...option}
+                  key={option.key}
+                  disabled={
+                    option.disabled
+                    || (option.label === selectedOption.label)}
+                  onClick={this.optionClick.bind(this, option)}
+                />
+              )}
+          </DropDown>
+        }
       </StyledComboBox>
     );
   }
 }
 
 ComboBox.propTypes = {
-  noBorder: PropTypes.bool,
-  isDisabled: PropTypes.bool,
-  selectedOption: PropTypes.object.isRequired,
-
-  options: PropTypes.array.isRequired,
   advancedOptions: PropTypes.element,
   children: PropTypes.any,
-  opened: PropTypes.bool,
-
-  onSelect: PropTypes.func,
-  dropDownMaxHeight: PropTypes.number,
-  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
+  className: PropTypes.string,
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
+  displayType: PropTypes.oneOf(['default', 'toggle']),
+  dropDownMaxHeight: PropTypes.number,
+  id: PropTypes.string,
+  isDisabled: PropTypes.bool,
+  noBorder: PropTypes.bool,
+  onSelect: PropTypes.func,
+  opened: PropTypes.bool,
+  options: PropTypes.array.isRequired,
   scaled: PropTypes.bool,
   scaledOptions: PropTypes.bool,
-  className: PropTypes.string,
-  id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  selectedOption: PropTypes.object.isRequired,
+  size: PropTypes.oneOf(['base', 'middle', 'big', 'huge', 'content']),
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  toggleAction: PropTypes.func
 }
 
 ComboBox.defaultProps = {
-  noBorder: false,
+  displayType: 'default',
   isDisabled: false,
-  size: 'base',
+  noBorder: false,
   scaled: true,
-  scaledOptions: false
+  scaledOptions: false,
+  size: 'base'
 }
 
 export default ComboBox;

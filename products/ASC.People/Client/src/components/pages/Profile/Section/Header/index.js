@@ -11,8 +11,8 @@ import {
   Button,
   ModalDialog,
   AvatarEditor,
-  Header
 } from "asc-web-components";
+import { Headline } from 'asc-web-common';
 import { withRouter } from "react-router";
 import {
   getUserStatus,
@@ -23,7 +23,7 @@ import {
   updateUserStatus,
   fetchPeople
 } from "../../../../../store/people/actions";
-import { fetchProfile } from "../../../../../store/profile/actions";
+import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
 const { isAdmin, isMe } = store.auth.selectors;
@@ -44,7 +44,7 @@ const wrapperStyle = {
   alignItems: "center"
 };
 
-const HeaderContainer = styled(Header)`
+const HeaderContainer = styled(Headline)`
   margin-left: 16px;
   margin-right: 16px;
   max-width: calc(100vw - 430px);
@@ -82,9 +82,7 @@ class SectionHeaderContent extends React.PureComponent {
       },
       avatar: {
         tmpFile: "",
-        image: profile.avatarDefault
-          ? "data:image/png;base64," + profile.avatarDefault
-          : null,
+        image: null,
         defaultWidth: 0,
         defaultHeight: 0
       }
@@ -94,24 +92,31 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   openAvatarEditor = () => {
-    let avatarDefault = this.state.profile.avatarDefault
-      ? "data:image/png;base64," + this.state.profile.avatarDefault
-      : null;
-    let _this = this;
-    if (avatarDefault !== null) {
-      let img = new Image();
-      img.onload = function() {
-        _this.setState({
-          avatar: {
-            defaultWidth: img.width,
-            defaultHeight: img.height
-          }
-        });
-      };
-      img.src = avatarDefault;
-    }
-    this.setState({
-      visibleAvatarEditor: true
+    getUserPhoto(this.state.profile.id).then(userPhotoData => {
+      if(userPhotoData.original){
+        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
+        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: avatarDefaultSizes[1],
+              defaultHeight: avatarDefaultSizes[2],
+              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
+            },
+            visibleAvatarEditor: true
+          });
+        }else{
+          this.setState({
+            avatar: {
+              tmpFile: this.state.avatar.tmpFile,
+              defaultWidth: 0,
+              defaultHeight: 0,
+              image: null
+            },
+            visibleAvatarEditor: true
+          });
+        }
+      }
     });
   };
 
@@ -313,7 +318,7 @@ class SectionHeaderContent extends React.PureComponent {
               User <b>{user.displayName}</b> will be deleted.
             </Text>
             <Text>Note: this action cannot be undone.</Text>
-            <Text color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
+            <Text color="#c30" fontSize="18px" style={{ margin: "20px 0" }}>
               Warning!
             </Text>
             <Text>

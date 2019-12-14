@@ -32,7 +32,7 @@ const StyledAside = styled(Container)`
 
     .modal-dialog-aside-footer {
       position: fixed;
-      bottom: 16px;
+      bottom: 80px;
     }
   }
 `;

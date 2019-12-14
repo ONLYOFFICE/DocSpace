@@ -104,10 +104,10 @@ class PureHome extends React.Component {
         <RequestLoader
           visible={this.state.isLoading}
           zIndex={256}
-          loaderSize={16}
+          loaderSize='16px'
           loaderColor={"#999"}
           label={`${t('LoadingProcessing')} ${t('LoadingDescription')}`}
-          fontSize={12}
+          fontSize='12px'
           fontColor={"#999"}
         />
         <PageLayout

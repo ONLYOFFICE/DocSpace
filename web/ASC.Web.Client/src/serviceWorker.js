@@ -91,6 +91,16 @@ function registerValidSW(swUrl, config) {
             }
           }
         };
+        setTimeout(function(){
+          let precacheFiles = [];
+          for(let i = 0; i < document.scripts.length; i++){
+            precacheFiles.push(document.scripts[i].src);
+          }
+          caches.open('precache-v1').then((cache) => {
+            return cache.addAll(precacheFiles);
+          })
+        },1500);
+        
       };
     })
     .catch(error => {

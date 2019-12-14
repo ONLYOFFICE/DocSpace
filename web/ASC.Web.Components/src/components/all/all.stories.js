@@ -17,7 +17,6 @@ import Textarea from "../textarea";
 import ContextMenuButton from "../context-menu-button";
 import DatePicker from "../date-picker";
 import FieldContainer from "../field-container";
-import Header from "../header";
 import Heading from "../heading";
 import Link from "../link";
 import Loader from "../loader";
@@ -182,11 +181,6 @@ storiesOf("Components|All", module)
             </Heading>
           </div>
           <div style={{ padding: "8px 0" }}>
-            <Header type="content" title="Some title" isInline>
-              Header text
-            </Header>
-          </div>
-          <div style={{ padding: "8px 0" }}>
             <Text as="p" title="Some title">
               Text as "p"
             </Text>
@@ -225,13 +219,13 @@ storiesOf("Components|All", module)
               getContent={dataTip =>
                 dataTip ? (
                   <div>
-                    <Text isBold={true} fontSize={16}>
+                    <Text isBold={true} fontSize='16px'>
                       {arrayUsers[dataTip].name}
                     </Text>
-                    <Text color="#A3A9AE" fontSize={13}>
+                    <Text color="#A3A9AE" fontSize='13px'>
                       {arrayUsers[dataTip].email}
                     </Text>
-                    <Text fontSize={13}>{arrayUsers[dataTip].position}</Text>
+                    <Text fontSize='13px'>{arrayUsers[dataTip].position}</Text>
                   </div>
                 ) : null
               }
@@ -484,13 +478,13 @@ storiesOf("Components|All", module)
         </div>
         <div style={{ justifySelf: "center" }}>
           <div style={{ padding: "8px 0" }}>
-            <Loader type="base" color="black" size={30} label="Loading..." />
+            <Loader type="base" color="black" size='30px' label="Loading..." />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="oval" color="black" size={30} label="Loading" />
+            <Loader type="oval" color="black" size='30px' label="Loading" />
           </div>
           <div style={{ padding: "8px 0", marginLeft: 45 }}>
-            <Loader type="dual-ring" color="black" size={30} label="Loading" />
+            <Loader type="dual-ring" color="black" size='30px' label="Loading" />
           </div>
         </div>
         <div style={{ justifySelf: "center" }}>

@@ -92,65 +92,40 @@ const advancedOptions = (
 </ComboBox>
 ```
 
-### Properties
-
-| Props               |      Type      | Required |                   Values                   | Default | Description                                                 |
-| ------------------- | :------------: | :------: | :----------------------------------------: | :-----: | ----------------------------------------------------------- |
-| `advancedOptions`   |   `element`    |    -     |                     -                      |    -    | If you need display options not basic options               |
-| `className`         |    `string`    |    -     |                     -                      |    -    | Accepts class                                               |
-| `dropDownMaxHeight` |    `number`    |    -     |                     -                      |    -    | Height of Dropdown                                          |
-| `id`                |    `string`    |    -     |                     -                      |    -    | Accepts id                                                  |
-| `isDisabled`        |     `bool`     |    -     |                     -                      | `false` | Indicates that component is disabled                        |
-| `noBorder`          |     `bool`     |    -     |                     -                      | `false` | Indicates that component is displayed without borders       |
-| `onSelect`          |     `func`     |    -     |                     -                      |    -    | Will be triggered whenever an ComboBox is selected option   |
-| `options`           |    `array`     |    ✅    |                     -                      |    -    | Combo box options                                           |
-| `scaledOptions`     |     `bool`     |    -     |                     -                      | `false` | Indicates that component`s options is scaled by ComboButton |
-| `scaled`            |     `bool`     |    -     |                     -                      | `true`  | Indicates that component is scaled by parent                |
-| `selectedOption`    |    `object`    |    ✅    |                     -                      |    -    | Selected option                                             |
-| `size`              |    `oneOf`     |    -     | `base`, `middle`, `big`, `huge`, `content` | `base`  | Select component width, one of default                      |
-| `style`             | `obj`, `array` |    -     |                     -                      |    -    | Accepts css style                                           |
-
-## ComboButton
-
-#### Description
-
-> This description is for reference only, the component described below is not exported.
-
-To create designs using combobox logic, there is a child component ComboButton.
-This is an independent element that responds to changes in parameters and serves only to demonstrate set values.
+To use Combobox as a toggle button, you must declare it according to the parameters:
 
 ```jsx
-<ComboButton
-  noBorder={false}
-  isDisabled={false}
+<ComboBox
+  options={[]} // Required to display correctly
   selectedOption={{
     key: 0,
-    label: "Select"
+    label: "Selected option"
   }}
-  withOptions={false}
-  optionsLength={0}
-  withAdvancedOptions={true}
-  innerContainer={<>Demo container</>}
-  innerContainerClassName="optionalBlock"
-  isOpen={false}
-  size="content"
   scaled={false}
-/>
+  size="content"
+  displayType="toggle"
+  toggleAction={alert('action')}
+>
+  <Icons.NavLogoIcon size="medium" key="comboIcon" />
+</ComboBox>
 ```
 
 ### Properties
 
-| Props                     |   Type   | Required |              Values              |     Default      | Description                                              |
-| ------------------------- | :------: | :------: | :------------------------------: | :--------------: | -------------------------------------------------------- |
-| `innerContainerClassName` | `string` |    -     |                -                 | `innerContainer` | Required to access third-party container                 |
-| `innerContainer`          |  `node`  |    -     |                -                 |        -         | Allows displaying third-party element inside ComboButton |
-| `isDisabled`              |  `bool`  |    -     |                -                 |     `false`      | Indicates that component is disabled                     |
-| `isOpen`                  |  `bool`  |    -     |                -                 |     `false`      | Lets you style as ComboBox arrow                         |
-| `noBorder`                |  `bool`  |    -     |                -                 |     `false`      | Indicates that component is displayed without borders    |
-| `onClick`                 |  `func`  |    -     |                -                 |        -         | Will be triggered whenever an ComboButton is clicked     |
-| `optionsLength`           | `number` |    -     |                -                 |        -         | Lets you style as ComboBox with options                  |
-| `scaled`                  |  `bool`  |    -     |                -                 |     `false`      | Indicates that component is scaled by parent             |
-| `selectedOption`          | `object` |    -     |                -                 |        -         | Selected option                                          |
-| `size`                    | `oneOf`  |    -     | `base`, `...`, `huge`, `content` |    `content`     | Select component width, one of default                   |
-| `withAdvancedOptions`     |  `bool`  |    -     |                -                 |     `false`      | Lets you style as a ComboBox with advanced options       |
-| `withOptions`             |  `bool`  |    -     |                -                 |      `true`      | Lets you style as ComboBox with options                  |
+| Props               |      Type      | Required |                   Values                   |  Default  | Description                                                                            |
+| ------------------- | :------------: | :------: | :----------------------------------------: | :-------: | -------------------------------------------------------------------------------------- |
+| `advancedOptions`   |   `element`    |    -     |                     -                      |     -     | If you need display options not basic options                                          |
+| `className`         |    `string`    |    -     |                     -                      |     -     | Accepts class                                                                          |
+| `displayType`       |    `oneOf`     |    -     |            `default`, `toggle`             | `default` | Component Display Type                                                                 |
+| `dropDownMaxHeight` |    `number`    |    -     |                     -                      |     -     | Height of Dropdown                                                                     |
+| `id`                |    `string`    |    -     |                     -                      |     -     | Accepts id                                                                             |
+| `isDisabled`        |     `bool`     |    -     |                     -                      |  `false`  | Indicates that component is disabled                                                   |
+| `noBorder`          |     `bool`     |    -     |                     -                      |  `false`  | Indicates that component is displayed without borders                                  |
+| `onSelect`          |     `func`     |    -     |                     -                      |     -     | Will be triggered whenever an ComboBox is selected option                              |
+| `options`           |    `array`     |    ✅    |                     -                      |     -     | Combo box options                                                                      |
+| `scaledOptions`     |     `bool`     |    -     |                     -                      |  `false`  | Indicates that component`s options is scaled by ComboButton                            |
+| `scaled`            |     `bool`     |    -     |                     -                      |  `true`   | Indicates that component is scaled by parent                                           |
+| `selectedOption`    |    `object`    |    ✅    |                     -                      |     -     | Selected option                                                                        |
+| `size`              |    `oneOf`     |    -     | `base`, `middle`, `big`, `huge`, `content` |  `base`   | Select component width, one of default                                                 |
+| `style`             | `obj`, `array` |    -     |                     -                      |     -     | Accepts css style                                                                      |
+| `toggleAction`      |     `func`     |    -     |                     -                      |     -     | The event will be raised when using `displayType: toggle` when clicking on a component |

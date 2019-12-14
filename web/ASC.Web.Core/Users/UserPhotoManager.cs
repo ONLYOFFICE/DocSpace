@@ -33,6 +33,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
@@ -41,6 +42,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -177,9 +179,7 @@ namespace ASC.Web.Core.Users
             }
             else
             {
-                fileName = photo?
-                            .Select(x => x.Value)
-                            .FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
+                fileName = (photo?.FirstOrDefault(x => x.Key == userId && !string.IsNullOrEmpty(x.Value) && x.Value.Contains("_orig_")))?.Value;
             }
 
             return fileName;
@@ -516,10 +516,6 @@ namespace ASC.Web.Core.Users
         {
             return SaveOrUpdatePhoto(userID, data, -1, OriginalFotoSize, true, out _);
         }
-        public string SaveOrUpdateCroppedPhoto(Guid userID, byte[] data, byte[] defaultData)
-        {
-            return SaveOrUpdateCroppedPhoto(userID, data, defaultData, -1, OriginalFotoSize, true, out _);
-        }
 
         public void RemovePhoto(Guid idUser)
         {
@@ -543,49 +539,7 @@ namespace ASC.Web.Core.Users
                 UserManager.SaveUserPhoto(userID, data);
                 SetUserPhotoThumbnailSettings(userID, width, height);
                 UserPhotoManagerCache.ClearCache(userID);
-            }
 
-            var store = GetDataStore();
-
-            var photoUrl = GetDefaultPhotoAbsoluteWebPath();
-            if (data != null && data.Length > 0)
-            {
-                using (var stream = new MemoryStream(data))
-                {
-                    photoUrl = store.Save(fileName, stream).ToString();
-                }
-                //Queue resizing
-                SizePhoto(userID, data, -1, SmallFotoSize, true);
-                SizePhoto(userID, data, -1, MediumFotoSize, true);
-                SizePhoto(userID, data, -1, BigFotoSize, true);
-                SizePhoto(userID, data, -1, MaxFotoSize, true);
-                SizePhoto(userID, data, -1, RetinaFotoSize, true);
-            }
-            return photoUrl;
-        }
-        private string SaveOrUpdateCroppedPhoto(Guid userID, byte[] data, byte[] defaultData, long maxFileSize, Size size, bool saveInCoreContext, out string fileName)
-        {
-            data = TryParseImage(data, maxFileSize, size, out var imgFormat, out var width, out var height);
-
-            var widening = CommonPhotoManager.GetImgFormatName(imgFormat);
-            fileName = string.Format("{0}_orig_{1}-{2}.{3}", userID, width, height, widening);
-
-            if (saveInCoreContext)
-            {
-                UserManager.SaveUserPhoto(userID, defaultData);
-
-                var max = Math.Max(Math.Max(width, height), SmallFotoSize.Width);
-                var min = Math.Max(Math.Min(width, height), SmallFotoSize.Width);
-
-                var pos = (max - min) / 2;
-
-                var settings = new UserPhotoThumbnailSettings(
-                    width >= height ? new Point(pos, 0) : new Point(0, pos),
-                    new Size(min, min));
-
-                SettingsManager.SaveForUser(settings, userID);
-
-                UserPhotoManagerCache.ClearCache(userID);
             }
 
             var store = GetDataStore();

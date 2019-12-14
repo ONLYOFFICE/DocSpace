@@ -10,8 +10,7 @@ import isEmpty from "lodash/isEmpty";
 import Aside from "../layout/sub-components/aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
-import Text from "../text";
-import Header from "../header";
+import Heading from "../heading";
 import throttle from "lodash/throttle";
 
 const DateInputStyle = styled.div`
@@ -31,9 +30,16 @@ const Content = styled.div`
   width: 100%;
   background-color: #fff;
   padding: 0 16px 16px;
+
+  .header {
+    max-width: 500px;
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700 !important;
+  }
 `;
 
-const StyledHeader = styled.div`
+const Header = styled.div`
   display: flex;
   align-items: center;
   border-bottom: 1px solid #dee2e6;
@@ -42,13 +48,6 @@ const StyledHeader = styled.div`
 const Body = styled.div`
   position: relative;
   padding: 16px 0;
-`;
-
-const HeaderText = styled(Header)`
-  max-width: 500px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 `;
 
 class DatePicker extends Component {
@@ -130,7 +129,7 @@ class DatePicker extends Component {
     this.onClick(!this.state.isOpen);
     const formatValue = moment(value).format("L");
     this.props.onChange && this.props.onChange(value);
-    this.setState({ selectedDate: value, value: formatValue });
+    this.setState({ selectedDate: value, value: formatValue, hasError: false });
   };
 
   onClick = isOpen => {
@@ -288,7 +287,10 @@ class DatePicker extends Component {
       });
     }
 
-    if (this.isValidDate(selectedDate, maxDate, minDate, hasError)) {
+    if (
+      this.isValidDate(selectedDate, maxDate, minDate, hasError) &&
+      this.isValidDate(this.state.selectedDate, maxDate, minDate, hasError)
+    ) {
       newState = Object.assign({}, newState, {
         hasError: true,
         isOpen: false
@@ -311,17 +313,11 @@ class DatePicker extends Component {
   }
 
   renderBody = () => {
-    const {
-      isDisabled,
-      minDate,
-      maxDate,
-      locale,
-      themeColor
-    } = this.props;
+    const { isDisabled, minDate, maxDate, locale, themeColor } = this.props;
     const { selectedDate, displayType } = this.state;
 
     let calendarSize;
-    (displayType === "aside") ? calendarSize = "big" : calendarSize = "base";
+    displayType === "aside" ? (calendarSize = "big") : (calendarSize = "base");
 
     return (
       <Calendar
@@ -339,11 +335,24 @@ class DatePicker extends Component {
   };
 
   render() {
-    const { isDisabled, isReadOnly, zIndex, calendarHeaderContent, id, style, className } = this.props;
+    const {
+      isDisabled,
+      isReadOnly,
+      zIndex,
+      calendarHeaderContent,
+      id,
+      style,
+      className
+    } = this.props;
     const { value, isOpen, mask, hasError, displayType } = this.state;
 
     return (
-      <DateInputStyle ref={this.ref} id={id} className={className} style={style}>
+      <DateInputStyle
+        ref={this.ref}
+        id={id}
+        className={className}
+        style={style}
+      >
         <InputBlock
           scale={true}
           isDisabled={isDisabled}
@@ -375,13 +384,11 @@ class DatePicker extends Component {
               />
               <Aside visible={isOpen} scale={false} zIndex={zIndex}>
                 <Content>
-                  <StyledHeader>
-                    <HeaderText type='content'>
-                      <Text isBold={true} fontSize={20}>
-                        {calendarHeaderContent}
-                      </Text>
-                    </HeaderText>
-                  </StyledHeader>
+                  <Header>
+                    <Heading className="header" size="medium" truncate={true}>
+                      {calendarHeaderContent}
+                    </Heading>
+                  </Header>
                   <Body>{this.renderBody()}</Body>
                 </Content>
               </Aside>

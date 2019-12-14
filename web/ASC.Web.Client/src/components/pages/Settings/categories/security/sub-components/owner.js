@@ -140,21 +140,21 @@ class PureOwnerSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size={40} />
+          <Loader className="pageLoader" type="rombs" size='40px' />
         ) : (
           <OwnerContainer>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize={16}
+              loaderSize='16px'
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize={12}
+              fontSize='12px'
               fontColor={"#999"}
               className="page_loader"
             />
             <HeaderContainer>
-              <Text fontSize={18}>{t("PortalOwner")}</Text>
+              <Text fontSize='18px'>{t("PortalOwner")}</Text>
             </HeaderContainer>
 
             <BodyContainer>
@@ -169,7 +169,7 @@ class PureOwnerSettings extends Component {
                 <div className="avatar_body">
                   <Text
                     className="avatar_text"
-                    fontSize={16}
+                    fontSize='16px'
                     isBold={true}
                   >
                     {owner.displayName}
@@ -177,7 +177,7 @@ class PureOwnerSettings extends Component {
                   {owner.groups &&
                     owner.groups.map(group => (
                       <Link
-                        fontSize={12}
+                        fontSize='12px'
                         key={group.id}
                         href={owner.profileUrl}
                       >
@@ -187,10 +187,10 @@ class PureOwnerSettings extends Component {
                 </div>
               </AvatarContainer>
               <ProjectsBody>
-                <Text className="portal_owner" fontSize={12}>
+                <Text className="portal_owner" fontSize='12px'>
                   {t("AccessRightsOwnerCan")}:
                 </Text>
-                <Text fontSize={12}>
+                <Text fontSize='12px'>
                   {OwnerOpportunities.map((item, key) => (
                     <li key={key}>{item};</li>
                   ))}
@@ -198,7 +198,7 @@ class PureOwnerSettings extends Component {
               </ProjectsBody>
             </BodyContainer>
 
-            <Text fontSize={12} className="text-body_wrapper">
+            <Text fontSize='12px' className="text-body_wrapper">
               {t("AccessRightsChangeOwnerText")}
             </Text>
 
@@ -220,7 +220,7 @@ class PureOwnerSettings extends Component {
             />
             <Text
               className="text-body_inline"
-              fontSize={12}
+              fontSize='12px'
               color="#A3A9AE"
             >
               {t("AccessRightsChangeOwnerConfirmText")}

@@ -1,0 +1,15 @@
+{
+  "short_name": "AppServer",
+  "name": "Onlyoffice AppServer",
+  "icons": [
+    {
+      "src":"appIcon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#222",
+  "theme_color": "#222",
+  "display": "standalone"
+}

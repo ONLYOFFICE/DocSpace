@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import styled from '@emotion/styled';
 import Layout from '.';
 import PageLayout from '../page-layout';
-import Header from '../header';
+import Heading from '../heading';
 import IconButton from '../icon-button';
 import ContextMenuButton from '../context-menu-button';
 import MainButton from '../main-button';
@@ -109,6 +109,12 @@ const currentModuleId = '44444444-4444-4444-4444-444444444444';
 
 const onLogoClick = (e) => action('Logo Clicked')(e);
 
+const HeaderText = styled(Heading)`
+  margin: 0;
+  line-height: 56px;
+  font-weight: 700;
+`;
+
 const HeaderContent = styled.div`
   display: flex;
   align-items: center;
@@ -146,7 +152,7 @@ const perPageItems = [
 
 const asideContent = <p style={{ padding: 40 }}>Aside Content</p>;
 
-const articleHeaderContent = <Header type="menu">Article Header</Header>;
+const articleHeaderContent = <HeaderText size='xlarge'>Article Header</HeaderText>;
 
 const articleMainButtonContent = <MainButton
   text='Actions'
@@ -161,7 +167,7 @@ const sectionHeaderContent = <HeaderContent>
     size='16'
     onClick={(e) => action('ArrowPathIcon Clicked')(e)}
   />
-  <Header type="content">Section Header</Header>
+  <HeaderText size='medium'>Section Header</HeaderText>
   <IconButton
     iconName={"PlusIcon"}
     size='16'

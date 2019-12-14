@@ -6,6 +6,7 @@ const Container = styled.div`
     width: 100%;
     padding: 0 15px;
     margin: 0 auto;
+    box-sizing: border-box;
 `;
 
 const ErrorFrame = styled(Container)`

@@ -32,11 +32,11 @@ const StyledHeading = styled(Heading)`
 
 ### Properties
 
-| Props      |   Type   | Required |          Values          |  Default  | Description                                                                                                                           |
-| ---------- | :------: | :------: | :----------------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `color`    | `string` |    -     |            -             | `#333333` | Specifies the headline color                                                                                                          |
-| `level`    | `oneOf`  |    -     |     1, 2, 3, 4, 5, 6     |    `1`    | The heading level. It corresponds to the number after the 'H' for the DOM tag. Set the level for semantic accuracy and accessibility. |
-| `title`    |  `bool`  |    -     |            -             |     -     | Title                                                                                                                                 |
-| `truncate` |  `bool`  |    -     |            -             |  `false`  | Disables word wrapping                                                                                                                |
-| `isInline` |  `bool`  |    -     |            -             |  `false`  | Sets the 'display: inline-block' property                                                                                             |
-| `size`     | `oneOF`  |    -     | `big`, `medium`, `small` |   `big`   | Sets the size of headline                                                                                                             |
+| Props      |   Type   | Required |                     Values                     |  Default  | Description                                                                                                                           |
+| ---------- | :------: | :------: | :--------------------------------------------: | :-------: | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `color`    | `string` |    -     |                       -                        | `#333333` | Specifies the headline color                                                                                                          |
+| `isInline` |  `bool`  |    -     |                       -                        |  `false`  | Sets the 'display: inline-block' property                                                                                             |
+| `level`    | `oneOf`  |    -     |                1, 2, 3, 4, 5, 6                |    `1`    | The heading level. It corresponds to the number after the 'H' for the DOM tag. Set the level for semantic accuracy and accessibility. |
+| `size`     | `oneOF`  |    -     | `xsmall`, `small`, `medium`, `large`, `xlarge` |  `large`  | Sets the size of headline                                                                                                             |
+| `title`    |  `bool`  |    -     |                       -                        |     -     | Title                                                                                                                                 |
+| `truncate` |  `bool`  |    -     |                       -                        |  `false`  | Disables word wrapping                                                                                                                |

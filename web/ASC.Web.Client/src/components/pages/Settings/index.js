@@ -12,7 +12,7 @@ const Settings = () => {
   
   return (
     <Layout key='1'>
-      <Suspense fallback={<Loader className="pageLoader" type="rombs" size={40} />}>
+      <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>
         <Switch>
           <Route
             path={`${basePath}/security`}

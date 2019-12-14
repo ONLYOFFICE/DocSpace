@@ -28,7 +28,7 @@ import { Link } from "asc-web-components";
 | ------------------- | :------------: | :------: | :--------------------------------------: | :-------------------: | ---------------------------------------------------------------------------------------------- |
 | `className`         |    `string`    |    -     |                    -                     |           -           | Accepts class                                                                                  |
 | `color`             |    `string`    |    -     |                    -                     |       `#333333`       | Color of link                                                                                  |
-| `fontSize`          |    `number`    |    -     |                    -                     |         `13`          | Font size of link (in px)                                                                      |
+| `fontSize`          |    `string`    |    -     |                    -                     |        `13px`         | Font size of link                                                                              |
 | `href`              |    `string`    |    -     |                    -                     |      `undefined`      | Used as HTML `href` property                                                                   |
 | `id`                |    `string`    |    -     |                    -                     |           -           | Accepts id                                                                                     |
 | `isBold`            |     `bool`     |    -     |                    -                     |        `false`        | Set font weight                                                                                |

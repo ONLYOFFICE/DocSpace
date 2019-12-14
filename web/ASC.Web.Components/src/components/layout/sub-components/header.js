@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { tablet } from "../../../utils/device";
 import NavItem from "./nav-item";
-import Header from "../../header";
+import Heading from "../../heading";
 
 const backgroundColor = "#0F4071";
 
-const StyledHeader = styled.header`
+const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
   display: none;
@@ -18,21 +18,27 @@ const StyledHeader = styled.header`
   @media ${tablet} {
     display: flex;
   }
+
+  .heading {
+    margin: 0;
+    line-height: 56px;
+    font-weight: 700;
+  }
 `;
 
 const HeaderComponent = React.memo(props => {
   //console.log("Header render");
   return (
-    <StyledHeader>
+    <Header>
       <NavItem
         iconName="MenuIcon"
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Header type="menu" color="#FFFFFF">
+      <Heading className="heading" size='xlarge' color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
-      </Header>
-    </StyledHeader>
+      </Heading>
+    </Header>
   );
 });
 

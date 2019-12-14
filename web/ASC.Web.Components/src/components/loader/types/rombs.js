@@ -37,8 +37,8 @@ export const keyFrameGreen = keyframes`
 `;
 
 const Romb = styled.div`
-    width: ${props => props.size}px;
-    height: ${props => props.size}px;
+    width: ${props => props.size};
+    height: ${props => props.size};
     -ms-transform: rotate(135deg) skew(20deg, 20deg);
     -webkit-transform: rotate(135deg) skew(20deg, 20deg);
     -moz-transform: rotate(135deg) skew(20deg, 20deg);
@@ -85,11 +85,11 @@ const Rombs = ({ size }) => (
 );
 
 Rombs.protoTypes = {
-    size: PropTypes.number.isRequired
+    size: PropTypes.string.isRequired
 };
 
 Rombs.defaultProps = {
-    size: 40
+    size: '40px'
 }
 
 export { Rombs };

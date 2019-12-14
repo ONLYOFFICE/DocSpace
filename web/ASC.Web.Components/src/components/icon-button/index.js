@@ -40,7 +40,7 @@ class IconButton extends React.PureComponent {
     if (isDisabled) return;
 
     this.setState({
-      currentIconName: iconHoverName || iconName,
+      currentIconName: !('ontouchstart' in document.documentElement) ? iconHoverName || iconName : iconName,
       currentIconColor: hoverColor || color
     });
 
@@ -71,7 +71,7 @@ class IconButton extends React.PureComponent {
     if (isDisabled) return;
 
     this.setState({
-      currentIconName: iconClickName || iconName,
+      currentIconName: !('ontouchstart' in document.documentElement) ? iconClickName || iconName : iconName,
       currentIconColor: clickColor || color
     });
 
@@ -92,7 +92,7 @@ class IconButton extends React.PureComponent {
     switch (e.nativeEvent.which) {
       case 1: //Left click
         this.setState({
-          currentIconName: iconHoverName || iconName,
+          currentIconName: !('ontouchstart' in document.documentElement) ? iconHoverName || iconName : iconName,
           currentIconColor: iconHoverName || color
         });
 

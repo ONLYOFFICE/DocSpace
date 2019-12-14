@@ -63,7 +63,7 @@ RUN apt-get -y update && \
                         jq \ 
                         git \ 
                         yarn \
-                        dotnet-sdk-3.0 \
+                        dotnet-sdk-3.1 \
                         supervisor \
                         mysql-client \
                         mysql-server

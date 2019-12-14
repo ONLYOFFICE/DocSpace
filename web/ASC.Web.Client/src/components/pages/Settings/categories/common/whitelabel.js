@@ -196,14 +196,14 @@ class WhiteLabel extends React.Component {
       console.log("WhiteLabelSettings render");
       return (
          !isLoadedData ?
-            <Loader className="pageLoader" type="rombs" size={40} />
+            <Loader className="pageLoader" type="rombs" size='40px' />
             : <>
                <StyledComponent>
                   <div className='settings-block'>
-                     <Text fontSize={16}>{t('LogoSettings')}</Text>
+                     <Text fontSize='16px'>{t('LogoSettings')}</Text>
                      <Text
                         className='margin-top'
-                        fontSize={14}>
+                        fontSize='14px'>
                         <Trans i18nKey="LogoUploadRecommendation">
                            We recommended that you use images in <strong>PNG</strong> format with transparent background
                         </Trans>
