@@ -178,6 +178,7 @@ const StyledContainer = styled(Container)`
   }
 
   .row-block {
+    box-sizing: border-box;
     line-height: 32px;
     cursor: pointer;
 
