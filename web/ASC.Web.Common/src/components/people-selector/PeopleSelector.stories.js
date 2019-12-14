@@ -8,7 +8,7 @@ import {
 } from "@storybook/addon-knobs/react";
 import Section from "../../../.storybook/decorators/section";
 
-import PeopleSelector from "./";
+import PeopleSelector from ".";
 import { BooleanValue } from "react-values";
 import { Button } from "asc-web-components";
 //import withReadme from "storybook-readme/with-readme";

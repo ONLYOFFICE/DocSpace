@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Avatar, Text } from "asc-web-components";
-import AdvancedSelector from "../advanced-selector2";
+import AdvancedSelector from "../AdvancedSelector";
 import { getUserList } from "../../api/people";
 import { getGroupList } from "../../api/groups";
 import Filter from "../../api/people/filter";

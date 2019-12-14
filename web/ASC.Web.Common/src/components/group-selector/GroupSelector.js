@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AdvancedSelector from "../advanced-selector2";
+import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
 
 class GroupSelector extends React.Component {
