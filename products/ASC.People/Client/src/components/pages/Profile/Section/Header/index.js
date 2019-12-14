@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import {
   Text,
-  Link,
   IconButton,
   ContextMenuButton,
   toastr,
@@ -27,11 +26,11 @@ import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
 import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
+import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
+import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
-  sendInstructionsToChangePassword,
-  sendInstructionsToChangeEmail,
   createThumbnailsAvatar,
   loadAvatar,
   deleteAvatar,
@@ -86,7 +85,9 @@ class SectionHeaderContent extends React.PureComponent {
         defaultWidth: 0,
         defaultHeight: 0
       },
-      deleteSelfProfileDialogVisible: false
+      deleteSelfProfileDialogVisible: false,
+      changePasswordDialogVisible: false,
+      changeEmailDialogVisible: false,
     };
 
     return newState;
@@ -189,91 +190,9 @@ class SectionHeaderContent extends React.PureComponent {
     });
   };
 
-  onEmailChange = event => {
-    const emailRegex = /.+@.+\..+/;
-    const newEmail =
-      (event && event.target.value) || this.state.dialog.newEmail;
-    const hasError = !emailRegex.test(newEmail);
+  toggleChangePasswordDialogVisible = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible });
 
-    const dialog = {
-      visible: true,
-      header: "Change email",
-      body: (
-        <Text>
-          <span style={{ display: "block", marginBottom: "8px" }}>
-            The activation instructions will be sent to the entered email
-          </span>
-          <TextInput
-            id="new-email"
-            scale={true}
-            isAutoFocussed={true}
-            value={newEmail}
-            onChange={this.onEmailChange}
-            hasError={hasError}
-          />
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendEmailChangeInstructions}
-          isDisabled={hasError}
-        />
-      ],
-      newEmail: newEmail
-    };
-    this.setState({ dialog: dialog });
-  };
-
-  onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(
-      this.state.profile.id,
-      this.state.dialog.newEmail
-    )
-      .then(res => {
-        toastr.success(res);
-      })
-      .catch(error => toastr.error(error))
-      .finally(this.onDialogClose);
-  };
-
-  onPasswordChange = () => {
-    const dialog = {
-      visible: true,
-      header: "Change password",
-      body: (
-        <Text>
-          Send the password change instructions to the{" "}
-          <a href={`mailto:${this.state.profile.email}`}>
-            {this.state.profile.email}
-          </a>{" "}
-          email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPasswordChangeInstructions}
-        />
-      ]
-    };
-    this.setState({ dialog: dialog });
-  };
-
-  onSendPasswordChangeInstructions = () => {
-    sendInstructionsToChangePassword(this.state.profile.email)
-      .then(res => {
-        toastr.success(res);
-      })
-      .catch(error => toastr.error(error))
-      .finally(this.onDialogClose);
-  };
+  toggleChangeEmailDialogVisible = () => this.setState({ changeEmailDialogVisible: !this.state.changeEmailDialogVisible });
 
   onDialogClose = () => {
     const dialog = { visible: false, newEmail: this.state.profile.email };
@@ -412,12 +331,12 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "change-password",
             label: t("PasswordChangeButton"),
-            onClick: this.onPasswordChange
+            onClick: this.toggleChangePasswordDialogVisible
           },
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.onEmailChange
+            onClick: this.toggleChangeEmailDialogVisible
           },
           {
             key: "edit-photo",
@@ -512,7 +431,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   render() {
     const { profile, isAdmin, viewer, t } = this.props;
-    const { dialog, avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible } = this.state;
+    const { dialog, avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible, changePasswordDialogVisible, changeEmailDialogVisible } = this.state;
 
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
@@ -566,6 +485,23 @@ class SectionHeaderContent extends React.PureComponent {
             visible={deleteSelfProfileDialogVisible}
             onClose={this.onDeleteSelfProfileDialogClose}
             email={this.state.email}
+          />
+        }
+
+        {changePasswordDialogVisible &&
+          <ChangePasswordDialog
+            visible={changePasswordDialogVisible}
+            onClose={this.toggleChangePasswordDialogVisible}
+            email={this.state.profile.email}
+          />
+        }
+
+        {changeEmailDialogVisible &&
+          <ChangeEmailDialog
+            visible={changeEmailDialogVisible}
+            onClose={this.toggleChangeEmailDialogVisible}
+            newEmail={this.state.profile.email}
+            id={this.state.profile.id}
           />
         }
       </div>
