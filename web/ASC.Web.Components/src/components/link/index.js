@@ -78,7 +78,7 @@ Link.defaultProps = {
   isBold: false,
   isHovered: false,
   isSemitransparent: false,
-  isTextOverflow: true,
+  isTextOverflow: false,
   rel: "noopener noreferrer",
   tabIndex: -1,
   type: "page",
