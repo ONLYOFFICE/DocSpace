@@ -356,6 +356,7 @@ const Selector = props => {
                 place="top"
                 offsetLeft={160}
                 dataTip={`${index}`}
+                displayType="dropdown"
               />
             )}
           </>
