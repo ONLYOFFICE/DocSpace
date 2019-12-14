@@ -24,6 +24,7 @@ const Container = ({
             grid-template-areas: "column-options column-groups" "footer footer";
   
             .column-groups {
+              box-sizing: border-box;
               grid-area: column-groups;
   
               ${props =>
@@ -68,17 +69,18 @@ const Container = ({
             ${props =>
               props.isMultiSelect && props.hasSelected
                 ? css`
-                    grid-template-rows: 0.98fr 69px;
+                    grid-template-rows: 1fr 69px;
                     grid-template-areas: "column-options" "footer";
                   `
                 : css`
-                    grid-template-rows: 0.98fr;
+                    grid-template-rows: 1fr;
                     grid-template-areas: "column-options";
                   `}
           `}
   
     .column-options {
       grid-area: column-options;
+      box-sizing: border-box;
   
       display: grid;
       /* background-color: red; */
