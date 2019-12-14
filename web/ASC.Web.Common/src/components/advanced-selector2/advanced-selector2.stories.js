@@ -242,7 +242,7 @@ class ADSelectorExample extends React.Component {
                   editing={false}
                 />
                 <div>
-                  <Text isBold={true} fontSize="16px">
+                  <Text isBold={true} fontSize="13px" fontWeight={700}>
                     {user.label}
                   </Text>
                   <Text
@@ -252,7 +252,7 @@ class ADSelectorExample extends React.Component {
                   >
                     {user.email}
                   </Text>
-                  <Text fontSize="16px">{user.position}</Text>
+                  <Text fontSize="13px" fontWeight={600}>{user.position}</Text>
                 </div>
               </div>
             );
