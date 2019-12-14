@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AdvancedSelector2 from "../advanced-selector2";
+import AdvancedSelector from "../advanced-selector2";
 import { getGroupList } from "../../api/groups";
-import { setClientBasePath } from "../../api/client";
 
 class GroupSelector extends React.Component {
     constructor(props) {
@@ -13,11 +12,6 @@ class GroupSelector extends React.Component {
       }
     
       componentDidMount() {
-        const PREFIX = "api";
-        const VERSION = "2.0";
-        const baseURL = `http://localhost:8092/${PREFIX}/${VERSION}`;
-        setClientBasePath(baseURL);
-
         getGroupList(this.props.useFake)
           .then((groups) => this.setState({groups: this.convertGroups(groups)}))
           .catch((error) => console.log(error));
@@ -87,7 +81,7 @@ class GroupSelector extends React.Component {
         } = this.props;
 
         return (
-        <AdvancedSelector2
+        <AdvancedSelector
             options={groups}
             hasNextPage={hasNextPage}
             isNextPageLoading={isNextPageLoading}

@@ -1,11 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Avatar, Text } from "asc-web-components";
-import AdvancedSelector2 from "../advanced-selector2";
+import AdvancedSelector from "../advanced-selector2";
 import { getUserList } from "../../api/people";
 import { getGroupList } from "../../api/groups";
 import Filter from "../../api/people/filter";
-import { setClientBasePath } from "../../api/client";
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -16,11 +15,6 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const PREFIX = "api";
-    const VERSION = "2.0";
-    const baseURL = `http://localhost:8092/${PREFIX}/${VERSION}`;
-    setClientBasePath(baseURL);
-
     getGroupList(this.props.useFake)
       .then(groups =>
         this.setState({
@@ -171,7 +165,7 @@ class PeopleSelector extends React.Component {
     const { isMultiSelect, isDisabled, onSelect, size } = this.props;
 
     return (
-      <AdvancedSelector2
+      <AdvancedSelector
         options={options}
         groups={groups}
         hasNextPage={hasNextPage}
