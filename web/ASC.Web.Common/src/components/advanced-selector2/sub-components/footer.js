@@ -4,6 +4,7 @@ import { Button } from "asc-web-components";
 import styled, { css } from "styled-components";
 
 const StyledContainer = styled.div`
+  box-sizing: border-box;
   border-top: 1px solid #eceef1;
   padding: 16px;
   height: 69px;
