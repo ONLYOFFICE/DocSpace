@@ -1,22 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Button } from "asc-web-components";
-import styled, { css } from "styled-components";
+import StyledFooter from "./StyledFooter";
 
-const StyledContainer = styled.div`
-  box-sizing: border-box;
-  border-top: 1px solid #eceef1;
-  padding: 16px;
-  height: 69px;
-
-  ${props =>
-    !props.isVisible &&
-    css`
-      display: none;
-    `}
-`;
-
-const ADSelectorFooter = props => {
+const Footer = props => {
   const {
     selectButtonLabel,
     isDisabled,
@@ -26,7 +13,7 @@ const ADSelectorFooter = props => {
   } = props;
 
   return (
-    <StyledContainer isVisible={isVisible} className={className}>
+    <StyledFooter isVisible={isVisible} className={className}>
       <Button
         className="add_members_btn"
         primary={true}
@@ -36,11 +23,11 @@ const ADSelectorFooter = props => {
         isDisabled={isDisabled}
         onClick={onClick}
       />
-    </StyledContainer>
+    </StyledFooter>
   );
 };
 
-ADSelectorFooter.propTypes = {
+Footer.propTypes = {
   className: PropTypes.string,
   selectButtonLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
@@ -48,4 +35,4 @@ ADSelectorFooter.propTypes = {
   onClick: PropTypes.func
 };
 
-export default ADSelectorFooter;
+export default Footer;

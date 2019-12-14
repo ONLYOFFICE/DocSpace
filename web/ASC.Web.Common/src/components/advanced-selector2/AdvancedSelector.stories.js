@@ -11,7 +11,7 @@ import {
 } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
-import AdvancedSelector2 from "./";
+import AdvancedSelector2 from ".";
 import Section from "../../../.storybook/decorators/section";
 import {Button, Avatar, Text} from "asc-web-components";
 import isEqual from "lodash/isEqual";

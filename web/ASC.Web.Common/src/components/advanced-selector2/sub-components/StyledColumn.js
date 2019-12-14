@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 
 /* eslint-disable no-unused-vars */
@@ -11,7 +10,7 @@ const Container = ({
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
 
-const StyledContainer = styled(Container)`
+const StyledColumn = styled(Container)`
     ${props => props.displayType === "dropdown" 
         ? css`
             ${props => props.size === "compact"  
@@ -32,27 +31,4 @@ const StyledContainer = styled(Container)`
     }
 `;
 
-class ADSelectorColumn extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const { children, displayType, className, style, size } = this.props;
-        return (
-            <StyledContainer displayType={displayType} className={className} style={style} size={size}>
-                {children}
-            </StyledContainer>
-        );
-    }
-}
-
-ADSelectorColumn.propTypes = {
-    children: PropTypes.any,
-    className: PropTypes.string,
-    style: PropTypes.object,
-    displayType: PropTypes.oneOf(["dropdown", "aside"]),
-    size: PropTypes.oneOf(["compact", "full"])
-};
-
-export default ADSelectorColumn;
+export default StyledColumn;
