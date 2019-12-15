@@ -1,6 +1,5 @@
 import { api, store } from "asc-web-common";
 import axios from "axios";
-import { getSelectorOptions } from "./selectors";
 const { Filter } = api;
 const { setPortalLanguageAndTime, setTimezones, setGreetingSettings } = store.auth.actions;
 
@@ -123,15 +122,6 @@ export function getUpdateListAdmin(filter) {
 
       dispatch(setAdmins(admins.items));
       dispatch(setFilter(filterData));
-    });
-  };
-}
-
-export function getUsersOptions() {
-  return dispatch => {
-    return api.people.getUserList().then(users => {
-      const usersOptions = getSelectorOptions(users.items);
-      dispatch(setUsers(usersOptions));
     });
   };
 }

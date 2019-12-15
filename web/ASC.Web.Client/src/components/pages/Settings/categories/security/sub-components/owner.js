@@ -6,8 +6,7 @@ import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import {
-  getPortalOwner,
-  getUsersOptions
+  getPortalOwner
 } from "../../../../../../store/settings/actions";
 import {
   Text,
@@ -114,14 +113,17 @@ class PureOwnerSettings extends Component {
 
   onShowSelector = status => {
     this.setState({
-      options: this.props.options,
       showSelector: status
     });
   };
 
-  onSelect = selected => {
+  onCancelSelector = () => {
     this.onShowSelector(false);
-    this.setState({ selectedOwner: selected });
+  }
+
+  onSelect = items => {
+    this.onShowSelector(false);
+    this.setState({ selectedOwner: items[0] });
   };
 
   render() {
@@ -231,7 +233,7 @@ class PureOwnerSettings extends Component {
                 isOpen={showSelector}
                 size={"compact"}
                 onSelect={this.onSelect}
-                onCancel={this.onShowSelector.bind(this, false)}
+                onCancel={this.onCancelSelector}
               />
             </div>
           </OwnerContainer>
@@ -272,6 +274,6 @@ OwnerSettings.propTypes = {
   owner: PropTypes.object
 };
 
-export default connect(mapStateToProps, { getPortalOwner, getUsersOptions })(
+export default connect(mapStateToProps, { getPortalOwner })(
   withRouter(OwnerSettings)
 );
