@@ -79,7 +79,7 @@ class AdvancedSelector extends React.Component {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
     }
-    this.props.enableOnClickOutside(false);
+    this.props.disableOnClickOutside();
   }
 
   getTypeByWidth = () => {
