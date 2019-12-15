@@ -16,7 +16,6 @@ class AdvancedSelector extends React.Component {
     this.ref = React.createRef();
 
     this.state = { 
-      isOpen: props.isOpen, 
       displayType: this.getTypeByWidth() 
     };
   }
@@ -28,17 +27,21 @@ class AdvancedSelector extends React.Component {
   };
 
   componentDidMount() {
-    if(this.state.isOpen) {
+    if(this.props.isOpen) {
       this.throttledResize = throttle(this.resize, 300);
-      //handleAnyClick(true, this.handleClick);
       window.addEventListener("resize", this.throttledResize);
     }
   }
 
   resize = () => {
-    if (this.props.displayType !== "auto") return;
+    if (this.props.displayType !== "auto") 
+      return;
+
     const type = this.getTypeByWidth();
-    if (type === this.state.displayType) return;
+    
+    if (type === this.state.displayType) 
+      return;
+    
     this.setState({ displayType: type });
   };
 
@@ -49,27 +52,34 @@ class AdvancedSelector extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (this.props.displayType !== prevProps.displayType) {
-      this.setState({ displayType: this.getTypeByWidth() });
+    if(this.props.isOpen !== prevProps.isOpen) {
+      console.log(`ADSelector#${this.props.id} componentDidUpdate isOpen=${this.props.isOpen}`);
+      if(!this.props.isOpen) {
+        this.props.disableOnClickOutside();
+        this.throttledResize && this.throttledResize.cancel();
+        window.removeEventListener("resize", this.throttledResize);
+      }
+      else {
+        this.props.enableOnClickOutside();
+        this.resize();
+        this.throttledResize = throttle(this.resize, 300);
+        window.addEventListener("resize", this.throttledResize);
+      }
     }
 
-    if(this.props.isOpen !== prevProps.isOpen) {
-      console.log("componentDidUpdate isOpen changed", this.props.isOpen);
-      this.setState({ 
-        isOpen: this.props.isOpen, 
-        displayType: this.getTypeByWidth() 
-      }, () => {
-        if(this.state.isOpen)
-          this.throttledResize = throttle(this.resize, 300);
-        else
-          this.throttledResize.cancel();
-      });
+    if (this.props.displayType !== prevProps.displayType) {
+      console.log(`ADSelector#${this.props.id} componentDidUpdate displayType=${this.props.displayType}`);
+      this.setState({ displayType: this.getTypeByWidth() });
     }
   }
 
   componentWillUnmount() {
-    this.throttledResize && this.throttledResize.cancel();
-    window.removeEventListener("resize", this.throttledResize);
+    if(this.throttledResize)
+    {
+      this.throttledResize && this.throttledResize.cancel();
+      window.removeEventListener("resize", this.throttledResize);
+    }
+    this.props.enableOnClickOutside(false);
   }
 
   getTypeByWidth = () => {
@@ -83,11 +93,13 @@ class AdvancedSelector extends React.Component {
   };
 
   render() {
-    const { isOpen, displayType } = this.state;
+    const { displayType } = this.state;
+    const { isOpen, id, className, style } = this.props;
+
     console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 
     return (
-      <div ref={this.ref}>
+      <div ref={this.ref} id={id} className={className} style={style}>
         {displayType === "dropdown" 
         ? 
             <DropDown opened={isOpen} className="dropdown-container">
@@ -107,6 +119,9 @@ class AdvancedSelector extends React.Component {
 }
 
 AdvancedSelector.propTypes = {
+  id: PropTypes.string,
+  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  style: PropTypes.object,
   options: PropTypes.array,
   selectedOptions: PropTypes.array,
   groups: PropTypes.array,
@@ -137,6 +152,8 @@ AdvancedSelector.propTypes = {
   onCancel: PropTypes.func,
   onAddNewClick: PropTypes.func,
   loadNextPage: PropTypes.func,
+  enableOnClickOutside: PropTypes.func,
+  disableOnClickOutside: PropTypes.func
 };
 
 AdvancedSelector.defaultProps = {
@@ -149,4 +166,17 @@ AdvancedSelector.defaultProps = {
   options: []
 };
 
-export default onClickOutside(AdvancedSelector);
+const EnhancedComponent = onClickOutside(AdvancedSelector);
+
+class AdvancedSelectorContainer extends React.Component {
+  render() {
+    console.log(`AdvancedSelectorContainer isOpen=${this.props.isOpen} enableOnClickOutside=${this.props.isOpen}`);
+    return <EnhancedComponent disableOnClickOutside={true} {...this.props} />;
+  }
+}
+
+AdvancedSelectorContainer.propTypes = {
+  isOpen: PropTypes.bool
+}
+
+export default AdvancedSelectorContainer;
