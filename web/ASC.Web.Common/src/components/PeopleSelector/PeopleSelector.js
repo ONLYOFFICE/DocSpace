@@ -10,8 +10,13 @@ class PeopleSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    const { isOpen } = props;
-    this.state = this.getDefaultState(isOpen, []);
+    this.state = {
+      options: [],
+      groups: [],
+      page: 0,
+      hasNextPage: true,
+      isNextPageLoading: false
+    };
   }
 
   componentDidMount() {
@@ -28,11 +33,6 @@ class PeopleSelector extends React.Component {
         })
       )
       .catch(error => console.log(error));
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.isOpen !== prevProps.isOpen)
-      this.setState({ isOpen: this.props.isOpen });
   }
 
   convertGroups = groups => {
@@ -94,17 +94,6 @@ class PeopleSelector extends React.Component {
     });
   };
 
-  getDefaultState = (isOpen, groups) => {
-    return {
-      isOpen: isOpen,
-      options: [],
-      groups,
-      page: 0,
-      hasNextPage: true,
-      isNextPageLoading: false
-    };
-  };
-
   getOptionTooltipContent = index => {
     if (!index) return null;
 
@@ -153,7 +142,6 @@ class PeopleSelector extends React.Component {
 
   render() {
     const {
-      isOpen,
       options,
       groups,
       selectedOptions,
@@ -162,10 +150,13 @@ class PeopleSelector extends React.Component {
       isNextPageLoading
     } = this.state;
 
-    const { isMultiSelect, isDisabled, onSelect, size, onCancel } = this.props;
+    const { id, className, style, isOpen, isMultiSelect, isDisabled, onSelect, size, onCancel } = this.props;
 
     return (
       <AdvancedSelector
+        id={id} 
+        className={className} 
+        style={style}
         options={options}
         groups={groups}
         hasNextPage={hasNextPage}
@@ -202,6 +193,9 @@ class PeopleSelector extends React.Component {
 }
 
 PeopleSelector.propTypes = {
+  id: PropTypes.string,
+  className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
+  style: PropTypes.object,
   isOpen: PropTypes.bool,
   onSelect: PropTypes.func,
   onCancel: PropTypes.func,
