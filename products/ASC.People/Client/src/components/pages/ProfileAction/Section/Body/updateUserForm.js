@@ -19,6 +19,12 @@ import { api } from "asc-web-common";
 import { ChangeEmailDialog, ChangePasswordDialog, ChangePhoneDialog } from '../../../../dialogs';
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 
+const dialogsDataset = {
+  changeEmail: 'changeEmail',
+  changePassword: 'changePassword',
+  changePhone: 'changePhone'
+};
+
 const Table = styled.table`
   width: 100%;
   margin-bottom: 23px;
@@ -112,9 +118,10 @@ class UpdateUserForm extends React.Component {
         defaultHeight: 0
       },
       dialogsVisible: {
-        changePassword: false,
-        changePhone: false,
-        changeEmail: false
+        [dialogsDataset.changePassword]: false,
+        [dialogsDataset.changePhone]: false,
+        [dialogsDataset.changeEmail]: false,
+        currentDialog: ''
       }
     };
 
@@ -133,6 +140,20 @@ class UpdateUserForm extends React.Component {
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy)
   }
+
+  toggleDialogsVisible = (e) => {
+    const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
+    const selectedDialog = e ? e.target.dataset.dialog : e;
+    if (selectedDialog) {
+      stateCopy[selectedDialog] = true;
+      stateCopy.currentDialog = selectedDialog;
+    }
+    else {
+      stateCopy[stateCopy.currentDialog] = false;
+      stateCopy.currentDialog = '';
+    }
+    this.setState({ dialogsVisible: stateCopy });
+  };
 
   onUserTypeChange(event) {
     var stateCopy = Object.assign({}, this.state);
@@ -190,11 +211,6 @@ class UpdateUserForm extends React.Component {
   onCancel() {
     this.props.history.goBack();
   }
-  toggleChangeEmailDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail } });
-
-  toggleChangePasswordDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword } });
-
-  toggleChangePhoneDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePhone: !this.state.dialogsVisible.changePhone } });
 
   onContactsItemAdd(item) {
     var stateCopy = Object.assign({}, this.state);
@@ -451,7 +467,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleChangeEmailDialog}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={1}
 
               helpButtonHeaderContent={t("Mail")}
@@ -467,6 +483,7 @@ class UpdateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
+              dataDialog={dialogsDataset.changeEmail}
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
@@ -474,8 +491,9 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.password}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleChangePasswordDialog}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={2}
+              dataDialog={dialogsDataset.changePassword}
             />
             <TextChangeField
               labelText={`${t("Phone")}:`}
@@ -483,8 +501,9 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.phone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.toggleChangePhoneDialog}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
+              dataDialog={dialogsDataset.changePhone}
             />
             <TextField
               isRequired={true}
@@ -617,7 +636,7 @@ class UpdateUserForm extends React.Component {
         {dialogsVisible.changeEmail &&
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
-            onClose={this.toggleChangeEmailDialog}
+            onClose={this.toggleDialogsVisible}
             newEmail={profile.email}
             id={profile.id}
           />
@@ -626,7 +645,7 @@ class UpdateUserForm extends React.Component {
         {dialogsVisible.changePassword &&
           <ChangePasswordDialog
             visible={dialogsVisible.changePassword}
-            onClose={this.toggleChangePasswordDialog}
+            onClose={this.toggleDialogsVisible}
             email={profile.email}
           />
         }
@@ -634,7 +653,7 @@ class UpdateUserForm extends React.Component {
         {dialogsVisible.changePhone &&
           <ChangePhoneDialog
             visible={dialogsVisible.changePhone}
-            onClose={this.toggleChangePhoneDialog}
+            onClose={this.toggleDialogsVisible}
             user={profile}
           />
         }
