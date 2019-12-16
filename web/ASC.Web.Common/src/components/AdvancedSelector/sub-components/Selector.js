@@ -95,8 +95,6 @@ const Selector = props => {
     getCurrentGroup(convertGroups(groups))
   );
 
-  const [lastIndex, setLastIndex] = useState(0);
-
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = useCallback(index => {
     return !hasNextPage || index < options.length;
@@ -212,7 +210,6 @@ const Selector = props => {
   const onGroupSelect = useCallback(
     group => {
       if (!currentGroup || !group || currentGroup.key === group.key) {
-        loadMoreItems(lastIndex);
         return;
       }
 
@@ -369,7 +366,16 @@ const Selector = props => {
         </div>
       );
     },
-    [options, displayType, isMultiSelect, selectedOptionList, setSelectedGroupList, currentGroup]
+    [
+      isItemLoaded,
+      loadingLabel,
+      options,
+      isOptionChecked,
+      displayType,
+      isMultiSelect,
+      onLinkClick,
+      getOptionTooltipContent
+    ]
   );
 
   const isGroupChecked = useCallback(
@@ -499,7 +505,7 @@ const Selector = props => {
         currentGroup: currentGroup ? currentGroup.key : null
       };
 
-      setLastIndex(startIndex);
+      //setLastIndex(startIndex);
 
       console.log("loadMoreItems", options);
 
