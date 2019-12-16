@@ -71,10 +71,12 @@ class SectionHeaderContent extends React.PureComponent {
         defaultWidth: 0,
         defaultHeight: 0
       },
-      deleteSelfProfileDialogVisible: false,
-      changePasswordDialogVisible: false,
-      changeEmailDialogVisible: false,
-      deleteProfileEverDialogVisible: false,
+      dialogsVisible: {
+        deleteSelfProfile: false,
+        changePassword: false,
+        changeEmail: false,
+        deleteProfileEver: false
+      },
     };
 
     return newState;
@@ -177,9 +179,9 @@ class SectionHeaderContent extends React.PureComponent {
     });
   };
 
-  toggleChangePasswordDialogVisible = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible });
+  toggleChangePasswordDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword } });
 
-  toggleChangeEmailDialogVisible = () => this.setState({ changeEmailDialogVisible: !this.state.changeEmailDialogVisible });
+  toggleChangeEmailDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail } });
 
   onEditClick = () => {
     const { history, settings } = this.props;
@@ -209,17 +211,15 @@ class SectionHeaderContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  toggleDeleteProfileEverDialog = () => this.setState({ deleteProfileEverDialogVisible: !this.state.deleteProfileEverDialogVisible });
+  toggleDeleteProfileEverDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver } });
 
 
-  onDeleteSelfProfileClick = email => {
-    this.setState({
-      deleteSelfProfileDialogVisible: true,
-      email
-    });
+  toggleDeleteSelfProfileDialog = () => {
+    this.setState(
+      {
+        dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile }
+      });
   };
-
-  onDeleteSelfProfileDialogClose = () => this.setState({ deleteSelfProfileDialogVisible: false });
 
   onInviteAgainClick = () => {
     resendUserInvites(new Array(this.state.profile.id))
@@ -254,12 +254,12 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "change-password",
             label: t("PasswordChangeButton"),
-            onClick: this.toggleChangePasswordDialogVisible
+            onClick: this.toggleChangePasswordDialog
           },
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.toggleChangeEmailDialogVisible
+            onClick: this.toggleChangeEmailDialog
           },
           {
             key: "edit-photo",
@@ -272,7 +272,7 @@ class SectionHeaderContent extends React.PureComponent {
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
-                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+                onClick: this.toggleDeleteSelfProfileDialog
               }
             : {
               key: "disable",
@@ -340,7 +340,7 @@ class SectionHeaderContent extends React.PureComponent {
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+            onClick: this.toggleDeleteSelfProfileDialog
           }
         ];
       default:
@@ -354,8 +354,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   render() {
     const { profile, isAdmin, viewer, t, filter, settings, history } = this.props;
-    const { avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible, changePasswordDialogVisible, changeEmailDialogVisible,
-      deleteProfileEverDialogVisible } = this.state;
+    const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
@@ -397,34 +396,34 @@ class SectionHeaderContent extends React.PureComponent {
           unknownError={t("unknownError")}
         />
 
-        {deleteSelfProfileDialogVisible &&
+        {dialogsVisible.deleteSelfProfile &&
           <DeleteSelfProfileDialog
-            visible={deleteSelfProfileDialogVisible}
-            onClose={this.onDeleteSelfProfileDialogClose}
-            email={this.state.email}
-          />
-        }
-
-        {changePasswordDialogVisible &&
-          <ChangePasswordDialog
-            visible={changePasswordDialogVisible}
-            onClose={this.toggleChangePasswordDialogVisible}
+            visible={dialogsVisible.deleteSelfProfile}
+            onClose={this.toggleDeleteSelfProfileDialog}
             email={this.state.profile.email}
           />
         }
 
-        {changeEmailDialogVisible &&
+        {dialogsVisible.changePassword &&
+          <ChangePasswordDialog
+            visible={dialogsVisible.changePassword}
+            onClose={this.toggleChangePasswordDialog}
+            email={this.state.profile.email}
+          />
+        }
+
+        {dialogsVisible.changeEmail &&
           <ChangeEmailDialog
-            visible={changeEmailDialogVisible}
-            onClose={this.toggleChangeEmailDialogVisible}
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleChangeEmailDialog}
             newEmail={this.state.profile.email}
             id={this.state.profile.id}
           />
         }
 
-        {deleteProfileEverDialogVisible &&
+        {dialogsVisible.deleteProfileEver &&
           <DeleteProfileEverDialog
-            visible={deleteProfileEverDialogVisible}
+            visible={dialogsVisible.deleteProfileEver}
             onClose={this.toggleDeleteProfileEverDialog}
             user={this.state.profile}
             filter={filter}

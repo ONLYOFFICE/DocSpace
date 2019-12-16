@@ -30,7 +30,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
-import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog} from '../../../../dialogs';
+import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
@@ -47,10 +47,12 @@ class SectionBodyContent extends React.PureComponent {
         body: "",
         buttons: [],
       },
-      changeEmailDialogVisible: false,
-      changePasswordDialogVisible: false,
-      deleteSelfProfileDialogVisible: false,
-      deleteProfileEverDialogVisible: false,
+      dialogsVisible: {
+        changeEmail: false,
+        changePassword: false,
+        deleteSelfProfile: false,
+        deleteProfileEver: false,
+      },
       isEmailValid: false
     };
   }
@@ -68,11 +70,17 @@ class SectionBodyContent extends React.PureComponent {
     history.push(`${settings.homepage}/edit/${user.userName}`);
   };
 
-  onChangePasswordClick = email => this.setState({ changePasswordDialogVisible: true, userEmail: email });
-
-  onChangeEmailClick = (user) => {
+  toggleChangePasswordDialog = (email) => {
+    const checkedEmail = typeof (email) === 'string' ? email : undefined;
     this.setState({
-      changeEmailDialogVisible: true,
+      dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword },
+      userEmail: checkedEmail
+    });
+  };
+
+  toggleChangeEmailDialog = (user) => {
+    this.setState({
+      dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail },
       userEmail: user.email,
       userId: user.id
     });
@@ -107,21 +115,22 @@ class SectionBodyContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  onDeleteProfileEverClick = user => {
+  toggleDeleteProfileEverDialog = user => {
     this.setState({
-      deleteProfileEverDialogVisible: true,
-      user
+      dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver },
+      user: {
+        id: user.id,
+        displayName: user.displayName,
+        userName: user.userName,
+      }
     });
   };
 
-  onDeleteProfileEverDialogClose = () => {
-    this.setState({ deleteProfileEverDialogVisible: false, user: {} });
-  }
-
-  onDeleteSelfProfileClick = email => {
+  toggleDeleteSelfProfileDialog = email => {
+    const checkedEmail = typeof (email) === 'string' ? email : undefined;
     this.setState({
-      deleteSelfProfileDialogVisible: true,
-      userEmail: email
+      dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile },
+      userEmail: checkedEmail
     });
   };
 
@@ -177,12 +186,12 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "change-password",
             label: t("PasswordChangeButton"),
-            onClick: this.onChangePasswordClick.bind(this, user.email)
+            onClick: this.toggleChangePasswordDialog.bind(this, user.email)
           },
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.onChangeEmailClick.bind(this, user)
+            onClick: this.toggleChangeEmailDialog.bind(this, user)
           },
           isSelf
             ? viewer.isOwner
@@ -190,7 +199,7 @@ class SectionBodyContent extends React.PureComponent {
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
-                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+                onClick: this.toggleDeleteSelfProfileDialog.bind(this, user.email)
               }
             : {
               key: "disable",
@@ -218,7 +227,7 @@ class SectionBodyContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileEverClick.bind(this, user)
+            onClick: this.toggleDeleteProfileEverDialog.bind(this, user)
           }
         ];
       case "pending":
@@ -248,7 +257,7 @@ class SectionBodyContent extends React.PureComponent {
           isSelf && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+            onClick: this.toggleDeleteSelfProfileDialog.bind(this, user.email)
           }
         ];
       default:
@@ -277,14 +286,6 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onChangeEmailDialogClose = () => {
-    this.setState({ changeEmailDialogVisible: false, userEmail: '', userId: '' });
-  }
-
-  onChangePasswordDialogClose = () => this.setState({ changePasswordDialogVisible: false });
-
-  onDeleteSelfProfileDialogClose = () => this.setState({ deleteSelfProfileDialogVisible: false });
-
   needForUpdate = (currentProps, nextProps) => {
     if (currentProps.checked !== nextProps.checked) {
       return true;
@@ -301,7 +302,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t, filter } = this.props;
-    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible, deleteSelfProfileDialogVisible, deleteProfileEverDialogVisible, user } = this.state;
+    const { dialog, dialogsVisible, user } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -350,34 +351,34 @@ class SectionBodyContent extends React.PureComponent {
           onClose={this.onDialogClose}
         />
 
-        {changeEmailDialogVisible &&
+        {dialogsVisible.changeEmail &&
           <ChangeEmailDialog
-            visible={changeEmailDialogVisible}
-            onClose={this.onChangeEmailDialogClose}
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleChangeEmailDialog}
             newEmail={this.state.userEmail}
             id={this.state.userId}
           />
         }
-        {changePasswordDialogVisible &&
+        {dialogsVisible.changePassword &&
           <ChangePasswordDialog
-            visible={changePasswordDialogVisible}
-            onClose={this.onChangePasswordDialogClose}
+            visible={dialogsVisible.changePassword}
+            onClose={this.toggleChangePasswordDialog}
             email={this.state.userEmail}
           />
         }
 
-        {deleteSelfProfileDialogVisible &&
+        {dialogsVisible.deleteSelfProfile &&
           <DeleteSelfProfileDialog
-            visible={deleteSelfProfileDialogVisible}
-            onClose={this.onDeleteSelfProfileDialogClose}
+            visible={dialogsVisible.deleteSelfProfile}
+            onClose={this.toggleDeleteSelfProfileDialog}
             email={this.state.userEmail}
           />
         }
 
-        {deleteProfileEverDialogVisible &&
+        {dialogsVisible.deleteProfileEver &&
           <DeleteProfileEverDialog
-            visible={deleteProfileEverDialogVisible}
-            onClose={this.onDeleteProfileEverDialogClose}
+            visible={dialogsVisible.deleteProfileEver}
+            onClose={this.toggleDeleteProfileEverDialog}
             user={user}
             filter={filter}
             settings={settings}

@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, AvatarEditor, Link } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile, getUserPhoto } from '../../../../../store/profile/actions'
@@ -45,12 +45,6 @@ class UpdateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
-
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.toggleChangePasswordDialog.bind(this);
-    this.toggleChangePhoneDialog = this.toggleChangePhoneDialog.bind(this);
-
-    this.onDialogClose = this.onDialogClose.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
@@ -105,13 +99,6 @@ class UpdateUserForm extends React.Component {
       },
       profile: profile,
       visibleAvatarEditor: false,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: profile.email,
-      },
       selector: {
         visible: false,
         allOptions: allOptions,
@@ -124,8 +111,11 @@ class UpdateUserForm extends React.Component {
         defaultWidth: 0,
         defaultHeight: 0
       },
-      changePasswordDialogVisible: false,
-      changePhoneDialogVisible: false
+      dialogsVisible: {
+        changePassword: false,
+        changePhone: false,
+        changeEmail: false
+      }
     };
 
     //Set unique contacts id 
@@ -200,19 +190,11 @@ class UpdateUserForm extends React.Component {
   onCancel() {
     this.props.history.goBack();
   }
-  onEmailChange = () => this.setState({ changeEmailDialogVisible: true });
-  onChangeEmailDialogClose = () => {
-    this.setState({ changeEmailDialogVisible: false });
-  }
+  toggleChangeEmailDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail } });
 
-  toggleChangePasswordDialog = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible });
+  toggleChangePasswordDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword } });
 
-  toggleChangePhoneDialog = () => this.setState({ changePhoneDialogVisible: !this.state.changePhoneDialogVisible });
-
-  onDialogClose() {
-    const dialog = { visible: false, newEmail: this.state.profile.email };
-    this.setState({ dialog: dialog })
-  }
+  toggleChangePhoneDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePhone: !this.state.dialogsVisible.changePhone } });
 
   onContactsItemAdd(item) {
     var stateCopy = Object.assign({}, this.state);
@@ -356,7 +338,7 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, dialog, selector, changeEmailDialogVisible, changePasswordDialogVisible, changePhoneDialogVisible } = this.state;
+    const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
     const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
@@ -469,7 +451,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onEmailChange}
+              buttonOnClick={this.toggleChangeEmailDialog}
               buttonTabIndex={1}
 
               helpButtonHeaderContent={t("Mail")}
@@ -631,34 +613,27 @@ class UpdateUserForm extends React.Component {
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11} />
           <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12} />
         </div>
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose}
-        />
 
-        {changeEmailDialogVisible &&
+        {dialogsVisible.changeEmail &&
           <ChangeEmailDialog
-            visible={changeEmailDialogVisible}
-            onClose={this.onChangeEmailDialogClose}
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleChangeEmailDialog}
             newEmail={profile.email}
             id={profile.id}
           />
         }
 
-        {changePasswordDialogVisible &&
+        {dialogsVisible.changePassword &&
           <ChangePasswordDialog
-            visible={changePasswordDialogVisible}
+            visible={dialogsVisible.changePassword}
             onClose={this.toggleChangePasswordDialog}
             email={profile.email}
           />
         }
 
-        {changePhoneDialogVisible &&
+        {dialogsVisible.changePhone &&
           <ChangePhoneDialog
-            visible={changePhoneDialogVisible}
+            visible={dialogsVisible.changePhone}
             onClose={this.toggleChangePhoneDialog}
             user={profile}
           />
