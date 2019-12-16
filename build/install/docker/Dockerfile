@@ -37,7 +37,6 @@ RUN apt-get -y update && \
     apt-get -y update && \
     apt-get install -yq elasticsearch=6.5.0 && \
     add-apt-repository -y ppa:certbot/certbot && \
-    add-apt-repository -y ppa:jonathonf/ffmpeg-4 && \
     curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - && \

@@ -5,13 +5,25 @@ import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import version from "../../../../package.json";
 import styled from "styled-components";
+import { Trans } from "react-i18next";
 
 const BodyStyle = styled.div`
   margin-top: 24px;
-  .text_p {
+
+  .avatar {
     text-align: center;
+    margin: 0px;
   }
-  .text_span {
+
+  .text-about {
+    margin-top: 4px;
+  }
+
+  .text-license {
+    margin-top: 20px;
+  }
+
+  .text_style {
     text-align: center;
   }
 
@@ -19,6 +31,12 @@ const BodyStyle = styled.div`
     text-align: center;
     max-width: 216px;
     max-height: 35px;
+  }
+
+  .hidden-text {
+    height: 0;
+    visibility: hidden;
+    margin: 0;
   }
 
   .copyright-line {
@@ -54,102 +72,112 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({language}) => {
+const Body = ({ language }) => {
   const { t } = useTranslation("translation", { i18n });
 
   useEffect(() => {
     i18n.changeLanguage(language);
   }, [language]);
 
+  const gitHub = "GitHub";
+  const license = "GNU GPL v.3";
+  const link = "www.onlyoffice.com";
+  const phone = "+371 660-16425";
+  const supportLink = "support@onlyoffice.com";
+  const address =
+    "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
+  const licenseContent = (
+    <Text className="text_style" fontSize="12px">
+      <Trans i18nKey="LicensedUnder" i18n={i18n}>
+        "This software is licensed under:"
+        <Link
+          href="https://www.gnu.org/licenses/gpl-3.0.html"
+          isHovered={true}
+          fontSize="12px"
+        >
+          {{ license }}
+        </Link>
+      </Trans>
+    </Text>
+  );
+
   return (
     <BodyStyle>
-      <p style={{ textAlign: "center", margin: "0px" }}>
+      <p className="avatar">
         <img
           className="logo-img"
           src="images/dark_general.png"
           width="320"
           height="181"
           alt="Logo"
-        ></img>
+        />
       </p>
 
       <VersionStyle>
-        <Text className="text_p" fontSize='14px' color="#A3A9AE">
+        <Text className="text_style" fontSize="14px" color="#A3A9AE">
           {`${t("AboutCompanyVersion")}: ${version.version}`}
         </Text>
       </VersionStyle>
 
-      <Text className="copyright-line" fontSize='14px'>
+      <Text className="copyright-line" fontSize="14px">
         {t("AboutCompanyLicensor")}
       </Text>
 
-      <Text className="text_p" fontSize='16px' isBold={true}>
-        Ascensio System SIA
+      <Text className="text_style" fontSize="16px" isBold={true}>
+        <Trans i18nKey="AllRightsReservedCustomMode" i18n={i18n}>
+          Ascensio System SIA
+          <p className="hidden-text">All rights reserved.</p>
+        </Trans>
       </Text>
 
       <Style>
-        <Text className="text_p" fontSize='12px'>
+        <Text className="text_style" fontSize="12px">
           <Text
-            className="text_span"
-            fontSize='12px'
+            className="text_style"
+            fontSize="12px"
             as="span"
             color="#A3A9AE"
           >
             {t("AboutCompanyAddressTitle")}:{" "}
           </Text>
-          20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050
+          {address}
         </Text>
 
-        <Text
-          fontSize='12px'
-          className="text_span"
-          as="span"
-          color="#A3A9AE"
-        >
+        <Text fontSize="12px" className="text_style" as="span" color="#A3A9AE">
           {t("AboutCompanyEmailTitle")}:{" "}
-          <Link href="mailto:support@onlyoffice.com" fontSize='12px'>
-            support@onlyoffice.com
+          <Link href="mailto:support@onlyoffice.com" fontSize="12px">
+            {supportLink}
           </Link>
         </Text>
 
-        <div style={{ marginTop: "4px" }}>
-          <Text className="text_p" fontSize='12px'>
+        <div className="text-about">
+          <Text className="text_style" fontSize="12px">
             <Text
-              fontSize='12px'
-              className="text_span"
+              fontSize="12px"
+              className="text_style"
               as="span"
               color="#A3A9AE"
             >
               {t("AboutCompanyTelTitle")}:{" "}
             </Text>
-            +371 660-16425
+            {phone}
           </Text>
         </div>
-
-        <Link href="http://www.onlyoffice.com" fontSize='12px'>
-          www.onlyoffice.com
+        <Link href="http://www.onlyoffice.com" fontSize="12px">
+          {link}
         </Link>
 
-        <div style={{ marginTop: "20px" }}>
-          <Text className="text_p" fontSize='12px'>
-            {t("LicensedUnder", {license: "GNU GPL v.3"} )}:{" "}
-            <Link
-              href="https://www.gnu.org/licenses/gpl-3.0.html"
-              isHovered={true}
-              fontSize='12px'
-            >
-              GNU GPL v.3
-            </Link>{" "}
-          </Text>
+        <div className="text-license">
+          <div className="text-row">{licenseContent}</div>
 
-          <Text className="text_p" fontSize='12px'>
+          <Text className="text_style" fontSize="12px">
             {t("SourceCode")}:{" "}
             <Link
               href="https://github.com/ONLYOFFICE/CommunityServer"
               isHovered={true}
-              fontSize='12px'
+              fontSize="12px"
             >
-              GitHub
+              {gitHub}
             </Link>
           </Text>
         </div>
@@ -158,11 +186,13 @@ const Body = ({language}) => {
   );
 };
 
-const About = ({language}) => <PageLayout sectionBodyContent={<Body language={language} />} />;
+const About = ({ language }) => (
+  <PageLayout sectionBodyContent={<Body language={language} />} />
+);
 
 function mapStateToProps(state) {
   return {
-      language: state.auth.user.cultureName || state.auth.settings.culture,
+    language: state.auth.user.cultureName || state.auth.settings.culture
   };
 }
 

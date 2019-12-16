@@ -1,19 +1,21 @@
-import React from "react";
-import { withRouter } from "react-router";
-import { withTranslation } from 'react-i18next';
 import {
-  Text,
   Avatar,
   Button,
-  ToggleContent,
-  IconButton
+  IconButton,
+  Text,
+  ToggleContent
 } from "asc-web-components";
-import { connect } from "react-redux";
-import styled from 'styled-components';
-import { getUserRole, getUserContacts } from "../../../../../store/people/selectors";
-import { updateProfileCulture } from "../../../../../store/profile/actions";
+import { getUserContacts, getUserRole } from "../../../../../store/people/selectors";
+
 import ProfileInfo from "./ProfileInfo/ProfileInfo";
+import React from "react";
+import { connect } from "react-redux";
 import { store } from 'asc-web-common';
+import styled from 'styled-components';
+import { updateProfileCulture } from "../../../../../store/profile/actions";
+import { withRouter } from "react-router";
+import { withTranslation } from 'react-i18next';
+
 const { isAdmin, isMe } = store.auth.selectors;
 
 const ProfileWrapper = styled.div`
@@ -53,6 +55,7 @@ const ToggleWrapper = styled.div`
 const ContactWrapper = styled.div`
   display: inline-flex;
   width: 300px;
+  margin-bottom: 12px;
 `;
 
 const createContacts = contacts => {

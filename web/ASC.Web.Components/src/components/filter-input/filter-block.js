@@ -100,6 +100,7 @@ class FilterItem extends React.Component {
             scaled={false}
             noBorder={true}
             opened={this.props.opened}
+            directionX='right'
           ></StyledComboBox>
           : <StyledFilterName>{this.props.label}</StyledFilterName>
         }
