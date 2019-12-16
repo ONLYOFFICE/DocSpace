@@ -40,6 +40,12 @@
       "SendButton"
     ]
   },
+  "ChangePhoneDialog":{
+    "Resource": [
+      "SendButton",
+      "MobilePhoneChangeTitle"
+    ]
+  },
   "DeleteProfileEverDialog":{
     "Resource": [
       "Confirmation",

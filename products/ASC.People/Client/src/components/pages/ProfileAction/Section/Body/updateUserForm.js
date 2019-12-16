@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, ModalDialog, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile, getUserPhoto } from '../../../../../store/profile/actions'
@@ -18,6 +18,7 @@ import styled from "styled-components";
 import { api } from "asc-web-common";
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
 import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
+import ChangePhoneDialog from '../../../../dialogs/ChangePhoneDialog';
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 
 const Table = styled.table`
@@ -49,8 +50,8 @@ class UpdateUserForm extends React.Component {
 
     this.onEmailChange = this.onEmailChange.bind(this);
     this.onPasswordChange = this.toggleChangePasswordDialog.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
+    this.toggleChangePhoneDialog = this.toggleChangePhoneDialog.bind(this);
+
     this.onDialogClose = this.onDialogClose.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
@@ -125,7 +126,8 @@ class UpdateUserForm extends React.Component {
         defaultWidth: 0,
         defaultHeight: 0
       },
-      changePasswordDialogVisible: false
+      changePasswordDialogVisible: false,
+      changePhoneDialogVisible: false
     };
 
     //Set unique contacts id 
@@ -205,34 +207,9 @@ class UpdateUserForm extends React.Component {
     this.setState({ changeEmailDialogVisible: false });
   }
 
-  toggleChangePasswordDialog = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible});
+  toggleChangePasswordDialog = () => this.setState({ changePasswordDialogVisible: !this.state.changePasswordDialogVisible });
 
-  onPhoneChange() {
-    const dialog = {
-      visible: true,
-      header: "Change phone",
-      body: (
-        <Text>
-          The instructions on how to change the user mobile number will be sent to the user email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPhoneChangeInstructions}
-        />
-      ]
-    };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendPhoneChangeInstructions() {
-    toastr.success("Context action: Change phone");
-    this.onDialogClose();
-  }
+  toggleChangePhoneDialog = () => this.setState({ changePhoneDialogVisible: !this.state.changePhoneDialogVisible });
 
   onDialogClose() {
     const dialog = { visible: false, newEmail: this.state.profile.email };
@@ -381,7 +358,7 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, dialog, selector, changeEmailDialogVisible, changePasswordDialogVisible } = this.state;
+    const { isLoading, errors, profile, dialog, selector, changeEmailDialogVisible, changePasswordDialogVisible, changePhoneDialogVisible } = this.state;
     const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
@@ -526,7 +503,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.phone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onPhoneChange}
+              buttonOnClick={this.toggleChangePhoneDialog}
               buttonTabIndex={3}
             />
             <TextField
@@ -678,6 +655,14 @@ class UpdateUserForm extends React.Component {
             visible={changePasswordDialogVisible}
             onClose={this.toggleChangePasswordDialog}
             email={profile.email}
+          />
+        }
+
+        {changePhoneDialogVisible &&
+          <ChangePhoneDialog
+            visible={changePhoneDialogVisible}
+            onClose={this.toggleChangePhoneDialog}
+            user={profile}
           />
         }
       </>
