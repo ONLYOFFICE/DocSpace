@@ -7,7 +7,7 @@ import {
     DropDownItem,
     toastr
 } from "asc-web-components";
-import InviteDialog from './../../dialogs/Invite';
+import { InviteDialog } from './../../dialogs';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
 import { typeUser, typeGuest, department } from './../../../helpers/customNames';

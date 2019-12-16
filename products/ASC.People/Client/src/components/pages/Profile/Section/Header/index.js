@@ -21,10 +21,7 @@ import {
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
-import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
-import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
-import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
-import DeleteProfileEverDialog from '../../../../dialogs/DeleteProfileEverDialog';
+import { DeleteSelfProfileDialog, ChangePasswordDialog, ChangeEmailDialog, DeleteProfileEverDialog } from '../../../../dialogs';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,

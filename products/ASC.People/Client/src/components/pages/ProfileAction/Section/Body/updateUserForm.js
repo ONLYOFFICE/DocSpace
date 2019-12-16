@@ -16,9 +16,7 @@ import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 import styled from "styled-components";
 import { api } from "asc-web-common";
-import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
-import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
-import ChangePhoneDialog from '../../../../dialogs/ChangePhoneDialog';
+import { ChangeEmailDialog, ChangePasswordDialog, ChangePhoneDialog } from '../../../../dialogs';
 const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
 
 const Table = styled.table`

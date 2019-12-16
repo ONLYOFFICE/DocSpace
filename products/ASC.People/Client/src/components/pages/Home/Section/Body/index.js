@@ -30,10 +30,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
-import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
-import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
-import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
-import DeleteProfileEverDialog from '../../../../dialogs/DeleteProfileEverDialog';
+import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog} from '../../../../dialogs';
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
