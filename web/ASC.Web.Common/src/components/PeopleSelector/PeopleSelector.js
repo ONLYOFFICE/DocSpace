@@ -52,7 +52,7 @@ class PeopleSelector extends React.Component {
       ? users.map(u => {
           return {
             key: u.id,
-            groups: u.groups || [],
+            groups: u.groups && u.groups.length ? u.groups.map(g => g.id) : [],
             label: u.displayName,
             email: u.email,
             position: u.title,
