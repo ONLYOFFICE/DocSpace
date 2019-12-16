@@ -1,5 +1,8 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 import { Avatar, Text } from "asc-web-components";
 import AdvancedSelector from "../AdvancedSelector";
 import { getUserList } from "../../api/people";
@@ -20,6 +23,9 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
+    const { language } = this.props;
+    i18n.changeLanguage(language);
+
     getGroupList(this.props.useFake)
       .then(groups =>
         this.setState({
@@ -33,6 +39,12 @@ class PeopleSelector extends React.Component {
         })
       )
       .catch(error => console.log(error));
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.language !== prevProps.language) {
+      i18n.changeLanguage(this.props.language);
+    }
   }
 
   convertGroups = groups => {
@@ -127,14 +139,12 @@ class PeopleSelector extends React.Component {
           <Text isBold={true} fontSize="13px" fontWeight={700}>
             {user.label}
           </Text>
-          <Text
-            color="#A3A9AE"
-            fontSize="13px"
-            style={{ paddingBottom: 8 }}
-          >
+          <Text color="#A3A9AE" fontSize="13px" style={{ paddingBottom: 8 }}>
             {user.email}
           </Text>
-          <Text fontSize="13px" fontWeight={600}>{user.position}</Text>
+          <Text fontSize="13px" fontWeight={600}>
+            {user.position}
+          </Text>
         </div>
       </div>
     );
@@ -150,44 +160,55 @@ class PeopleSelector extends React.Component {
       isNextPageLoading
     } = this.state;
 
-    const { id, className, style, isOpen, isMultiSelect, isDisabled, onSelect, size, onCancel } = this.props;
+    const {
+      id,
+      className,
+      style,
+      isOpen,
+      isMultiSelect,
+      isDisabled,
+      onSelect,
+      size,
+      onCancel,
+      t
+    } = this.props;
 
     return (
-      <AdvancedSelector
-        id={id} 
-        className={className} 
-        style={style}
-        options={options}
-        groups={groups}
-        hasNextPage={hasNextPage}
-        isNextPageLoading={isNextPageLoading}
-        loadNextPage={this.loadNextPage}
-        size={size}
-        displayType={"auto"}
-        selectedOptions={selectedOptions}
-        selectedGroups={selectedGroups}
-        isOpen={isOpen}
-        isMultiSelect={isMultiSelect}
-        isDisabled={isDisabled}
-        searchPlaceHolderLabel={"Search users"}
-        selectButtonLabel={"Add members"}
-        selectAllLabel={"Select all"}
-        groupsHeaderLabel={"Groups"}
-        emptySearchOptionsLabel={"There are no users with such name"}
-        emptyOptionsLabel={"There are no users"}
-        loadingLabel={"Loading... Please wait..."}
-        onSelect={onSelect}
-        onSearchChanged={() => {
-          //action("onSearchChanged")(value);
-          this.setState({ options: [], hasNextPage: true });
-        }}
-        onGroupChanged={() => {
-          //action("onGroupChanged")(group);
-          this.setState({ options: [], hasNextPage: true });
-        }}
-        getOptionTooltipContent={this.getOptionTooltipContent}
-        onCancel={onCancel}
-      />
+        <AdvancedSelector
+          id={id}
+          className={className}
+          style={style}
+          options={options}
+          groups={groups}
+          hasNextPage={hasNextPage}
+          isNextPageLoading={isNextPageLoading}
+          loadNextPage={this.loadNextPage}
+          size={size}
+          displayType={"auto"}
+          selectedOptions={selectedOptions}
+          selectedGroups={selectedGroups}
+          isOpen={isOpen}
+          isMultiSelect={isMultiSelect}
+          isDisabled={isDisabled}
+          searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
+          selectButtonLabel={t("AddMembersButtonLabel")}
+          selectAllLabel={t("SelectAllLabel")}
+          groupsHeaderLabel={"Groups"}
+          emptySearchOptionsLabel={t("EmptySearchUsersResult")}
+          emptyOptionsLabel={t("EmptyUsers")}
+          loadingLabel={t("LoadingLabel")}
+          onSelect={onSelect}
+          onSearchChanged={() => {
+            //action("onSearchChanged")(value);
+            this.setState({ options: [], hasNextPage: true });
+          }}
+          onGroupChanged={() => {
+            //action("onGroupChanged")(group);
+            this.setState({ options: [], hasNextPage: true });
+          }}
+          getOptionTooltipContent={this.getOptionTooltipContent}
+          onCancel={onCancel}
+        />
     );
   }
 }
@@ -202,12 +223,39 @@ PeopleSelector.propTypes = {
   useFake: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  size: PropTypes.oneOf(["full", "compact"])
+  size: PropTypes.oneOf(["full", "compact"]),
+  language: PropTypes.string,
+  t: PropTypes.func
 };
 
 PeopleSelector.defaultProps = {
   useFake: false,
-  size: "full"
+  size: "full",
+  language: "en"
 };
 
-export default PeopleSelector;
+const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
+
+const PeopleSelectorWithI18n = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return (
+      <ExtendedPeopleSelector i18n={i18n} {...props} />
+  );
+};
+
+PeopleSelectorWithI18n.propTypes = {
+  language: PropTypes.string
+};
+
+function mapStateToProps(state) {
+  return {
+    language:
+      state.auth &&
+      ((state.auth.user && state.auth.user.cultureName) ||
+        (state.auth.settings && state.auth.settings.culture))
+  };
+}
+
+export default connect(mapStateToProps)(PeopleSelectorWithI18n);
