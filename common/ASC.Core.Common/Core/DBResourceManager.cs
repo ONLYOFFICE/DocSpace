@@ -35,11 +35,12 @@ using System.Resources;
 using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Web;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,12 +58,18 @@ namespace TMResourceData
                     : base(filename, assembly)
         {
         }
-        public DBResourceManager(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, string filename, Assembly assembly)
+
+        public DBResourceManager(
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> option,
+            DbContextManager<ResourceDbContext> dbContext,
+            string filename,
+            Assembly assembly)
                     : base(filename, assembly)
         {
             Configuration = configuration;
             Option = option;
-            OptionsDbManager = optionsDbManager;
+            DbContext = dbContext;
         }
 
 
@@ -130,7 +137,7 @@ namespace TMResourceData
 
         public IConfiguration Configuration { get; }
         public IOptionsMonitor<ILog> Option { get; }
-        public DbOptionsManager OptionsDbManager { get; }
+        public DbContextManager<ResourceDbContext> DbContext { get; }
 
         protected override ResourceSet InternalGetResourceSet(CultureInfo culture, bool createIfNotExists, bool tryParents)
         {
@@ -138,7 +145,7 @@ namespace TMResourceData
             if (set == null)
             {
                 var invariant = culture == CultureInfo.InvariantCulture ? base.InternalGetResourceSet(CultureInfo.InvariantCulture, true, true) : null;
-                set = new DBResourceSet(Configuration, Option, OptionsDbManager, invariant, culture, BaseName);
+                set = new DBResourceSet(Configuration, Option, DbContext, invariant, culture, BaseName);
                 resourceSets.AddOrUpdate(culture.Name, set, (k, v) => set);
             }
             return set;
@@ -159,9 +166,15 @@ namespace TMResourceData
 
             public IConfiguration Configuration { get; }
             public IOptionsMonitor<ILog> Option { get; }
-            public DbOptionsManager OptionsDbManager { get; }
+            public DbContextManager<ResourceDbContext> DbContext { get; }
 
-            public DBResourceSet(IConfiguration configuration, IOptionsMonitor<ILog> option, DbOptionsManager optionsDbManager, ResourceSet invariant, CultureInfo culture, string filename)
+            public DBResourceSet(
+                IConfiguration configuration,
+                IOptionsMonitor<ILog> option,
+                DbContextManager<ResourceDbContext> dbContext,
+                ResourceSet invariant,
+                CultureInfo culture,
+                string filename)
             {
                 if (culture == null)
                 {
@@ -174,7 +187,7 @@ namespace TMResourceData
 
                 Configuration = configuration;
                 Option = option;
-                OptionsDbManager = optionsDbManager;
+                DbContext = dbContext;
                 log = option.CurrentValue;
 
                 try
@@ -259,14 +272,14 @@ namespace TMResourceData
 
             private Dictionary<string, string> LoadResourceSet(string filename, string culture)
             {
-                var dbManager = OptionsDbManager.Get("tmresource");
-                var q = new SqlQuery("res_data d")
-.Select("d.title", "d.textvalue")
-.InnerJoin("res_files f", Exp.EqColumns("f.id", "d.fileid"))
-.Where("f.resname", filename)
-.Where("d.culturetitle", culture);
-                return dbManager.ExecuteList(q)
-                    .ToDictionary(r => (string)r[0], r => (string)r[1], StringComparer.InvariantCultureIgnoreCase);
+                using var context = DbContext.Get("tmresource");
+                var q = context.ResData
+                    .Where(r => r.CultureTitle == culture)
+                    .Join(context.ResFiles, r => r.FileId, a => a.Id, (d, f) => new { data = d, files = f })
+                    .Where(r => r.files.ResName == filename);
+
+                return q
+                    .ToDictionary(r => r.data.Title, r => r.data.TextValue, StringComparer.InvariantCultureIgnoreCase);
             }
         }
     }

@@ -72,7 +72,6 @@
   <ItemGroup>
     <Folder Include="Notify\" />
     <Folder Include="Tests\Geolocation\" />
-    <Folder Include="Tests\Notify\" />
     <Folder Include="Tests\Security\Authorizing\" />
   </ItemGroup>
 </Project>
