@@ -32,12 +32,26 @@
       "SendButton"
     ]
   },
-  "DeleteProfileDialog":{
+  "DeleteSelfProfileDialog":{
     "Resource": [
       "DeleteProfileTitle",
       "DeleteProfileInfo",
       "CloseButton",
       "SendButton"
+    ]
+  },
+  "DeleteProfileEverDialog":{
+    "Resource": [
+      "Confirmation",
+      "DeleteUserConfirmation",
+      "Warning",
+      "DeleteUserDataConfirmation"      
+    ],
+    "PeopleResource": [
+      "SuccessfullyDeleteUserInfoMessage"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
     ]
   },
   "ChangePasswordDialog":{

@@ -11,7 +11,6 @@ import {
   Link,
   RowContainer,
   ModalDialog,
-  Button,
   Text,
 } from "asc-web-components";
 import UserContent from "./userContent";
@@ -34,8 +33,9 @@ import { store, api, constants } from 'asc-web-common';
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
 import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
 import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
+import DeleteProfileEverDialog from '../../../../dialogs/DeleteProfileEverDialog';
 const { isAdmin, isMe } = store.auth.selectors;
-const { resendUserInvites, deleteUser } = api.people;
+const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 
 
@@ -53,6 +53,7 @@ class SectionBodyContent extends React.PureComponent {
       changeEmailDialogVisible: false,
       changePasswordDialogVisible: false,
       deleteSelfProfileDialogVisible: false,
+      deleteProfileEverDialogVisible: false,
       isEmailValid: false
     };
   }
@@ -111,67 +112,14 @@ class SectionBodyContent extends React.PureComponent {
 
   onDeleteProfileEverClick = user => {
     this.setState({
-      dialog: {
-        visible: true,
-        header: "Confirmation",
-        body: (
-          <>
-            <Text>
-              User <b>{user.displayName}</b> will be deleted.
-            </Text>
-            <Text>Note: this action cannot be undone.</Text>
-            <Text color="#c30" fontSize="18" style={{ margin: "20px 0" }}>
-              Warning!
-            </Text>
-            <Text>
-              User personal documents which are available to others will be
-              deleted. To avoid this, you must start the data reassign process
-              before deleting.
-            </Text>
-          </>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="OK"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              const { onLoading, filter, fetchPeople } = this.props;
-              onLoading(true);
-              deleteUser(user.id)
-                .then(() => {
-                  toastr.success("User has been removed successfully");
-                  return fetchPeople(filter);
-                })
-                .catch(error => toastr.error(error))
-                .finally(() => onLoading(false));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="ReassignBtn"
-            label="Reassign data"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              toastr.success("Context action: Reassign profile");
-              this.onDialogClose();
-            }}
-            style={{ marginLeft: "8px" }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
+      deleteProfileEverDialogVisible: true,
+      user
     });
   };
+
+  onDeleteProfileEverDialogClose = () => {
+    this.setState({ deleteProfileEverDialogVisible: false, user: {} });
+  }
 
   onDeleteSelfProfileClick = email => {
     this.setState({
@@ -355,8 +303,8 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     console.log("Home SectionBodyContent render()");
-    const { users, viewer, selection, history, settings, t } = this.props;
-    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible, deleteSelfProfileDialogVisible } = this.state;
+    const { users, viewer, selection, history, settings, t, filter } = this.props;
+    const { dialog, changeEmailDialogVisible, changePasswordDialogVisible, deleteSelfProfileDialogVisible, deleteProfileEverDialogVisible, user } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -426,6 +374,17 @@ class SectionBodyContent extends React.PureComponent {
             visible={deleteSelfProfileDialogVisible}
             onClose={this.onDeleteSelfProfileDialogClose}
             email={this.state.userEmail}
+          />
+        }
+
+        {deleteProfileEverDialogVisible &&
+          <DeleteProfileEverDialog
+            visible={deleteProfileEverDialogVisible}
+            onClose={this.onDeleteProfileEverDialogClose}
+            user={user}
+            filter={filter}
+            settings={settings}
+            history={history}
           />
         }
       </>

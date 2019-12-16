@@ -6,9 +6,6 @@ import {
   ContextMenuButton,
   toastr,
   utils,
-  TextInput,
-  Button,
-  ModalDialog,
   AvatarEditor,
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
@@ -19,8 +16,7 @@ import {
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
-  updateUserStatus,
-  fetchPeople
+  updateUserStatus
 } from "../../../../../store/people/actions";
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
@@ -28,13 +24,13 @@ import { store, api, constants } from "asc-web-common";
 import DeleteSelfProfileDialog from '../../../../dialogs/DeleteSelfProfileDialog';
 import ChangePasswordDialog from '../../../../dialogs/ChangePasswordDialog';
 import ChangeEmailDialog from '../../../../dialogs/ChangeEmailDialog';
+import DeleteProfileEverDialog from '../../../../dialogs/DeleteProfileEverDialog';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
   createThumbnailsAvatar,
   loadAvatar,
-  deleteAvatar,
-  deleteUser
+  deleteAvatar
 } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -72,13 +68,6 @@ class SectionHeaderContent extends React.PureComponent {
     const newState = {
       profile: profile,
       visibleAvatarEditor: false,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: profile.email
-      },
       avatar: {
         tmpFile: "",
         image: null,
@@ -88,6 +77,7 @@ class SectionHeaderContent extends React.PureComponent {
       deleteSelfProfileDialogVisible: false,
       changePasswordDialogVisible: false,
       changeEmailDialogVisible: false,
+      deleteProfileEverDialogVisible: false,
     };
 
     return newState;
@@ -194,11 +184,6 @@ class SectionHeaderContent extends React.PureComponent {
 
   toggleChangeEmailDialogVisible = () => this.setState({ changeEmailDialogVisible: !this.state.changeEmailDialogVisible });
 
-  onDialogClose = () => {
-    const dialog = { visible: false, newEmail: this.state.profile.email };
-    this.setState({ dialog: dialog });
-  };
-
   onEditClick = () => {
     const { history, settings } = this.props;
     history.push(`${settings.homepage}/edit/${this.state.profile.userName}`);
@@ -227,67 +212,8 @@ class SectionHeaderContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  onDeleteProfileClick = user => {
-    this.setState({
-      dialog: {
-        visible: true,
-        header: "Confirmation",
-        body: (
-          <>
-            <Text>
-              User <b>{user.displayName}</b> will be deleted.
-            </Text>
-            <Text>Note: this action cannot be undone.</Text>
-            <Text color="#c30" fontSize="18px" style={{ margin: "20px 0" }}>
-              Warning!
-            </Text>
-            <Text>
-              User personal documents which are available to others will be
-              deleted. To avoid this, you must start the data reassign process
-              before deleting.
-            </Text>
-          </>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="OK"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              deleteUser(user.id)
-                .then(() => {
-                  const { filter, fetchPeople } = this.props;
-                  toastr.success("User has been removed successfully");
-                  return fetchPeople(filter);
-                })
-                .catch(error => toastr.error(error));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="ReassignBtn"
-            label="Reassign data"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              toastr.success("Context action: Reassign profile");
-              this.onDialogClose();
-            }}
-            style={{ marginLeft: "8px" }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
-    });
-  };
+  toggleDeleteProfileEverDialog = () => this.setState({ deleteProfileEverDialogVisible: !this.state.deleteProfileEverDialogVisible });
+
 
   onDeleteSelfProfileClick = email => {
     this.setState({
@@ -382,7 +308,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick.bind(this, user)
+            onClick: this.toggleDeleteProfileEverDialog
           }
         ];
       case "pending":
@@ -430,9 +356,9 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, viewer, t } = this.props;
-    const { dialog, avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible, changePasswordDialogVisible, changeEmailDialogVisible } = this.state;
-
+    const { profile, isAdmin, viewer, t, filter, settings, history } = this.props;
+    const { avatar, visibleAvatarEditor, deleteSelfProfileDialogVisible, changePasswordDialogVisible, changeEmailDialogVisible,
+      deleteProfileEverDialogVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
@@ -460,13 +386,7 @@ class SectionHeaderContent extends React.PureComponent {
             isDisabled={false}
           />
         )}
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose}
-        />
+
         <AvatarEditor
           image={avatar.image}
           visible={visibleAvatarEditor}
@@ -504,6 +424,17 @@ class SectionHeaderContent extends React.PureComponent {
             id={this.state.profile.id}
           />
         }
+
+        {deleteProfileEverDialogVisible &&
+          <DeleteProfileEverDialog
+            visible={deleteProfileEverDialogVisible}
+            onClose={this.toggleDeleteProfileEverDialog}
+            user={this.state.profile}
+            filter={filter}
+            settings={settings}
+            history={history}
+          />
+        }
       </div>
     );
   }
@@ -521,5 +452,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, fetchProfile, fetchPeople }
+  { updateUserStatus, fetchProfile }
 )(withRouter(withTranslation()(SectionHeaderContent)));
