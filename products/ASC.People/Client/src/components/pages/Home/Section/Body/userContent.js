@@ -80,7 +80,7 @@ const UserContent = ({ user, history, settings }) => {
 
   return (
     <RowContent>
-      <Link type='page' title={displayName} isBold={true} fontSize='15px' color={nameColor} onClick={onUserNameClick} >{displayName}</Link>
+      <Link type='page' title={displayName} isBold={true} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
@@ -100,8 +100,8 @@ const UserContent = ({ user, history, settings }) => {
         : <div style={headDepartmentStyle}></div>
       }
       {groups}
-      <Link type='page' title={mobilePhone} fontSize='12px' color={sideInfoColor} onClick={onPhoneClick} >{mobilePhone}</Link>
-      <Link containerWidth='220px' type='page' title={email} fontSize='12px' color={sideInfoColor} onClick={onEmailClick} >{email}</Link>
+      <Link type='page' title={mobilePhone} fontSize='12px' color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
+      <Link containerWidth='220px' type='page' title={email} fontSize='12px' color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
     </RowContent>
   );
 };
