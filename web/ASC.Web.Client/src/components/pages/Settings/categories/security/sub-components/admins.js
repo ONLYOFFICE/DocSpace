@@ -27,7 +27,7 @@ import {
   EmptyScreenContainer,
   Icons
 } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common"
+import { PeopleSelector } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
@@ -115,31 +115,51 @@ class PureAdminsSettings extends Component {
   };
 
   onShowGroupSelector = () => {
+    /* console.log(
+      `onShowGroupSelector(showSelector: ${!this.state.showSelector})`
+    ); */
+
     this.setState({
       showSelector: !this.state.showSelector
     });
   };
-
-  onCancelSelector = () => {
-    this.setState({
-      showSelector: false,
-      showFullAdminSelector: false
-    });
-  }
-
+ 
   onShowFullAdminGroupSelector = () => {
+    /* console.log(
+      `onShowFullAdminGroupSelector(showFullAdminSelector: ${!this.state
+        .showFullAdminSelector})`
+    ); */
+
     this.setState({
       showFullAdminSelector: !this.state.showFullAdminSelector
     });
   };
 
+  onCancelSelector = e => {
+    /* console.log(
+      `onCancelSelector(showSelector: false, showFullAdminSelector: false`,
+      e
+    ); */
+
+    if (
+      (this.state.showSelector &&
+        e.target.id === "people-admin-selector_button") ||
+      (this.state.showFullAdminSelector &&
+        e.target.id === "full-admin-selector_button")
+    ) {
+      // Skip double set of isOpen property
+      return;
+    }
+
+    this.setState({
+      showSelector: false,
+      showFullAdminSelector: false
+    });
+  };
+
   onSelect = selected => {
     const { productId } = this.props;
-    this.onChangeAdmin(
-      selected.map(user => user.key),
-      true,
-      productId
-    );
+    this.onChangeAdmin(selected.map(user => user.key), true, productId);
     this.onShowGroupSelector();
   };
 
@@ -325,16 +345,16 @@ class PureAdminsSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size='40px' />
+          <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
           <>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize='16px'
+              loaderSize="16px"
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize='12px'
+              fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
             />
@@ -343,13 +363,14 @@ class PureAdminsSettings extends Component {
               <div className="buttons_container">
                 <div className="people-admin_container">
                   <Button
+                    id="people-admin-selector_button"
                     size="medium"
                     primary={true}
                     label="Set people admin"
                     isDisabled={isLoading}
                     onClick={this.onShowGroupSelector}
                   />
-                  <PeopleSelector 
+                  <PeopleSelector
                     id="people-admin-selector"
                     isOpen={showSelector}
                     isMultiSelect={true}
@@ -359,13 +380,14 @@ class PureAdminsSettings extends Component {
                 </div>
                 <div className="full-admin_container">
                   <Button
+                    id="full-admin-selector_button"
                     size="medium"
                     primary={true}
                     label="Set portal admin"
                     isDisabled={isLoading}
                     onClick={this.onShowFullAdminGroupSelector}
                   />
-                  <PeopleSelector 
+                  <PeopleSelector
                     id="full-admin-selector"
                     isOpen={showFullAdminSelector}
                     isMultiSelect={true}
@@ -410,7 +432,7 @@ class PureAdminsSettings extends Component {
                               type="page"
                               title={user.displayName}
                               isBold={true}
-                              fontSize='15px'
+                              fontSize="15px"
                               color={nameColor}
                               href={user.profileUrl}
                             >
@@ -513,11 +535,7 @@ const AdminsSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const {
-    admins,
-    owner,
-    filter
-  } = state.settings.security.accessRight;
+  const { admins, owner, filter } = state.settings.security.accessRight;
 
   return {
     admins,
@@ -539,8 +557,11 @@ AdminsSettings.propTypes = {
   owner: PropTypes.object
 };
 
-export default connect(mapStateToProps, {
-  changeAdmins,
-  fetchPeople,
-  getUpdateListAdmin
-})(withRouter(AdminsSettings));
+export default connect(
+  mapStateToProps,
+  {
+    changeAdmins,
+    fetchPeople,
+    getUpdateListAdmin
+  }
+)(withRouter(AdminsSettings));

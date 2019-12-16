@@ -22,10 +22,10 @@ class AdvancedSelector extends React.Component {
     this.throttledResize = throttle(this.resize, 300);
   }
 
-  handleClickOutside = evt => {
+  handleClickOutside = e => {
     // ..handling code goes here...
-    console.log(`ADSelector#${this.props.id} handleClickOutside`, evt);
-    this.onClose();
+    console.log(`ADSelector#${this.props.id} handleClickOutside`, e);
+    this.onClose(e);
   };
 
   componentDidMount() {
@@ -47,10 +47,10 @@ class AdvancedSelector extends React.Component {
     this.setState({ displayType: type });
   };
 
-  onClose = () => {
+  onClose = (e) => {
     //console.log("onClose");
     //this.setState({ isOpen: false });
-    this.props.onCancel && this.props.onCancel();
+    this.props.onCancel && this.props.onCancel(e);
   };
 
   componentDidUpdate(prevProps) {
