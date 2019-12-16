@@ -18,17 +18,19 @@ class AdvancedSelector extends React.Component {
     this.state = { 
       displayType: this.getTypeByWidth() 
     };
+
+    this.throttledResize = throttle(this.resize, 300);
   }
 
   handleClickOutside = evt => {
     // ..handling code goes here...
-    console.log("handleClickOutside", evt);
+    console.log(`ADSelector#${this.props.id} handleClickOutside`, evt);
     this.onClose();
   };
 
   componentDidMount() {
     if(this.props.isOpen) {
-      this.throttledResize = throttle(this.resize, 300);
+      this.props.enableOnClickOutside();
       window.addEventListener("resize", this.throttledResize);
     }
   }
@@ -46,7 +48,7 @@ class AdvancedSelector extends React.Component {
   };
 
   onClose = () => {
-    console.log("onClose");
+    //console.log("onClose");
     //this.setState({ isOpen: false });
     this.props.onCancel && this.props.onCancel();
   };
@@ -54,16 +56,15 @@ class AdvancedSelector extends React.Component {
   componentDidUpdate(prevProps) {
     if(this.props.isOpen !== prevProps.isOpen) {
       console.log(`ADSelector#${this.props.id} componentDidUpdate isOpen=${this.props.isOpen}`);
-      if(!this.props.isOpen) {
-        this.props.disableOnClickOutside();
-        this.throttledResize && this.throttledResize.cancel();
-        window.removeEventListener("resize", this.throttledResize);
-      }
-      else {
+      if(this.props.isOpen) {
         this.props.enableOnClickOutside();
         this.resize();
-        this.throttledResize = throttle(this.resize, 300);
         window.addEventListener("resize", this.throttledResize);
+      }
+      else {
+        this.props.disableOnClickOutside();
+        this.throttledResize.cancel();
+        window.removeEventListener("resize", this.throttledResize);
       }
     }
 
