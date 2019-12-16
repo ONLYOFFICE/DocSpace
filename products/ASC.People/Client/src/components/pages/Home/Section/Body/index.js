@@ -74,15 +74,17 @@ class SectionBodyContent extends React.PureComponent {
     const checkedEmail = typeof (email) === 'string' ? email : undefined;
     this.setState({
       dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword },
-      userEmail: checkedEmail
+      user: { email: checkedEmail }
     });
   };
 
   toggleChangeEmailDialog = (user) => {
     this.setState({
       dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail },
-      userEmail: user.email,
-      userId: user.id
+      user: {
+        email: user.email,
+        id: user.id
+      }
     });
   };
 
@@ -130,7 +132,7 @@ class SectionBodyContent extends React.PureComponent {
     const checkedEmail = typeof (email) === 'string' ? email : undefined;
     this.setState({
       dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile },
-      userEmail: checkedEmail
+      user: { email: checkedEmail }
     });
   };
 
@@ -355,15 +357,15 @@ class SectionBodyContent extends React.PureComponent {
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
             onClose={this.toggleChangeEmailDialog}
-            newEmail={this.state.userEmail}
-            id={this.state.userId}
+            newEmail={user.email}
+            id={user.id}
           />
         }
         {dialogsVisible.changePassword &&
           <ChangePasswordDialog
             visible={dialogsVisible.changePassword}
             onClose={this.toggleChangePasswordDialog}
-            email={this.state.userEmail}
+            email={user.email}
           />
         }
 
@@ -371,7 +373,7 @@ class SectionBodyContent extends React.PureComponent {
           <DeleteSelfProfileDialog
             visible={dialogsVisible.deleteSelfProfile}
             onClose={this.toggleDeleteSelfProfileDialog}
-            email={this.state.userEmail}
+            email={user.email}
           />
         }
 
