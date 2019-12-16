@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Security;
+
 using ASC.Common.Data;
 using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
@@ -36,6 +37,7 @@ using ASC.Common.Utils;
 using ASC.Core.Billing;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -197,11 +199,6 @@ namespace ASC.Core
         public IDbManager GetRegionDb(string region)
         {
             return DbOptions.Get(GetRegionService(region).DbId);
-        }
-
-        public IDbManager GetMultiRegionDb()
-        {
-            return new MultiRegionalDbManager(GetRegions().Select(r => DbOptions.Get(GetRegionService(r).DbId)));
         }
 
         public System.Configuration.ConnectionStringSettings GetRegionConnectionString(string region)

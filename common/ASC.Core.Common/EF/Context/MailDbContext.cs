@@ -1,6 +1,7 @@
 ﻿using ASC.Core.Common.EF.Model.Mail;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -17,6 +18,13 @@ namespace ASC.Core.Common.EF.Context
         public MailDbContext(DbContextOptions<MailDbContext> options)
             : base(options)
         {
+        }
+    }
+    public static class MailDbExtension
+    {
+        public static IServiceCollection AddMailDbContextService(this IServiceCollection services)
+        {
+            return services.AddDbContextManagerService<MailDbContext>();
         }
     }
 }

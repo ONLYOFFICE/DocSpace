@@ -1,6 +1,7 @@
 ﻿using ASC.Core.Common.EF.Model.Resource;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -19,6 +20,14 @@ namespace ASC.Core.Common.EF.Context
             modelBuilder
                 .AddResAuthorsLang()
                 .AddResAuthorsFile();
+        }
+    }
+
+    public static class ResourceDbExtension
+    {
+        public static IServiceCollection AddResourceDbService(this IServiceCollection services)
+        {
+            return services.AddDbContextManagerService<ResourceDbContext>();
         }
     }
 }

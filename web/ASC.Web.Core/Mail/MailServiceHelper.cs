@@ -79,7 +79,6 @@ namespace ASC.Web.Core.Mail
         public DbRegistry DbRegistry { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
-        public DbContextOptionsBuilder<MailDbContext> DbContextOptionsBuilder { get; }
         public EFLoggerFactory LoggerFactory { get; }
         public MailDbContext MailDbContext { get; }
         public ICache Cache { get; }
@@ -92,7 +91,6 @@ namespace ASC.Web.Core.Mail
             CoreBaseSettings coreBaseSettings,
             MailServiceHelperStorage mailServiceHelperStorage,
             DbContextManager<MailDbContext> dbContext,
-            DbContextOptionsBuilder<MailDbContext> dbContextOptionsBuilder,
             EFLoggerFactory loggerFactory)
         {
             UserManager = userManager;
@@ -101,7 +99,6 @@ namespace ASC.Web.Core.Mail
             DbRegistry = dbRegistry;
             CoreBaseSettings = coreBaseSettings;
             MailServiceHelperStorage = mailServiceHelperStorage;
-            DbContextOptionsBuilder = dbContextOptionsBuilder;
             LoggerFactory = loggerFactory;
             MailDbContext = dbContext.Get("webstudio");
             Cache = mailServiceHelperStorage.Cache;
@@ -161,7 +158,8 @@ namespace ASC.Web.Core.Mail
         {
             DemandPermission();
 
-            var options = DbContextOptionsBuilder
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
+            var options = dbContextOptionsBuilder
                 .UseMySql(connectionString)
                 .UseLoggerFactory(LoggerFactory)
                 .Options;
