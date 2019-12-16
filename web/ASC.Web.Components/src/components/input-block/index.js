@@ -17,6 +17,8 @@ const StyledIconBlock = styled.div`
     (props.size === 'big' && '30px') ||
     (props.size === 'huge' && '30px')
   };
+  cursor: ${props =>
+    props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
   padding-right: 7px;
 `;
@@ -56,7 +58,7 @@ class InputBlock extends React.Component {
 
   }
   onIconClick(e) {
-    if (typeof this.props.onIconClick === "function") this.props.onIconClick(e);
+    if (typeof this.props.onIconClick === "function" && !this.props.isDisabled) this.props.onIconClick(e);
   }
   onChange(e) {
     if (typeof this.props.onChange === "function") this.props.onChange(e);
@@ -157,14 +159,16 @@ class InputBlock extends React.Component {
         {
           iconNames.includes(iconName) && (
             <div className="append">
-              <StyledIconBlock>
+              <StyledIconBlock 
+                isDisabled={isDisabled}
+                onClick={this.onIconClick}
+                isClickable={typeof onIconClick === 'function'}>
                 <IconButton
                   size={iconButtonSize}
                   color={iconColor}
                   iconName={iconName}
                   isFill={isIconFill}
                   isDisabled={isDisabled}
-                  onClick={this.onIconClick}
                   isClickable={typeof onIconClick === 'function'}
                 />
               </StyledIconBlock>

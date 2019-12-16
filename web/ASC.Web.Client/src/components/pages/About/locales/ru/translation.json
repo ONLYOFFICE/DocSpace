@@ -5,8 +5,8 @@
   "AboutCompanyAddressTitle": "адрес",
   "AboutCompanyEmailTitle": "email",
   "AboutCompanyTelTitle": "тел.",
-  "LicensedUnder": "Это программное обеспечение лицензируется под {{license}}",
-
+  "LicensedUnder": "Программа распространяется под лицензией: {{license}}",
+  "AllRightsReservedCustomMode": "<0>Ascensio System SIA.</0> <1>All rights reserved.</1>",
 
 
   "SourceCode": "Исходный код программы доступен по cсылке"
