@@ -1,9 +1,12 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import withReadme from 'storybook-readme/with-readme';
+import Readme from './README.md';
 import Grid from '.';
 import Box from '../box';
 
 storiesOf('Components|Grid', module)
+  .addDecorator(withReadme(Readme))
   .add('base', () => (
     <Grid
       widthProp="100%"
