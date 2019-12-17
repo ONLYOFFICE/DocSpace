@@ -32,6 +32,8 @@ class PureChangePhoneDialog extends React.Component {
 
     i18n.changeLanguage(language);
   }
+
+  // TODO: add real api request for executing change phone
   onChangePhone = () => {
     const { onClose } = this.props;
     this.setState({ isRequestRunning: true }, function () {
