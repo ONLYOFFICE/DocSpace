@@ -147,7 +147,7 @@ class ComboBox extends React.Component {
             directionX={directionX}
             directionY={directionY}
             manualY='102%'
-            isOpen={isOpen}
+            open={isOpen}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
           >
