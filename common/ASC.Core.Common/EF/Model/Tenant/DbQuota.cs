@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.Core.Common.EF
 {
     [Table("tenants_quota")]
-    public class DbQuota
+    public class DbQuota : BaseEntity
     {
         [Key]
         public int Tenant { get; set; }
@@ -27,5 +27,10 @@ namespace ASC.Core.Common.EF
         public string AvangateId { get; set; }
 
         public bool Visible { get; set; }
+
+        internal override object[] GetKeys()
+        {
+            return new object[] { Tenant };
+        }
     }
 }

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Utils;
@@ -35,6 +36,7 @@ using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -93,7 +95,7 @@ namespace ASC.FederatedLogin
             options.AccountLinkerStorage = AccountLinkerStorage;
             options.InstanceCrypto = InstanceCrypto;
             options.Signature = Signature;
-            options.AccountLinkContext = DbContextManager;
+            options.AccountLinkContextManager = DbContextManager;
         }
 
         public void Configure(AccountLinker options)
@@ -108,13 +110,21 @@ namespace ASC.FederatedLogin
         public Signature Signature { get; set; }
         public InstanceCrypto InstanceCrypto { get; set; }
         public AccountLinkerStorage AccountLinkerStorage { get; set; }
-        public DbContextManager<AccountLinkContext> AccountLinkContext { get; set; }
+        public DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
+
+        public AccountLinkContext AccountLinkContext
+        {
+            get
+            {
+                return AccountLinkContextManager.Get(DbId);
+            }
+        }
 
         public DbSet<AccountLinks> AccountLinks
         {
             get
             {
-                return AccountLinkContext.Get(DbId).AccountLinks;
+                return AccountLinkContext.AccountLinks;
             }
         }
 
@@ -168,8 +178,8 @@ namespace ASC.FederatedLogin
                 Linked = DateTime.UtcNow
             };
 
-            AccountLinks.Add(accountLink);
-            AccountLinkContext.Get(DbId).SaveChanges();
+            AccountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
+            AccountLinkContext.SaveChanges();
 
             AccountLinkerStorage.RemoveFromCache(obj);
         }
@@ -191,7 +201,7 @@ namespace ASC.FederatedLogin
 
         public void RemoveProvider(string obj, string provider = null, string hashId = null)
         {
-            using var tr = AccountLinkContext.Get(DbId).Database.BeginTransaction();
+            using var tr = AccountLinkContext.Database.BeginTransaction();
 
             var accountLinkQuery = AccountLinks
                 .Where(r => r.Id == obj);

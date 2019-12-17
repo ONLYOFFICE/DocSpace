@@ -166,7 +166,7 @@ namespace ASC.Core.Data
                         Data = data
                     };
 
-                    WebstudioDbContext.WebstudioSettings.Add(s);
+                    WebstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
                 }
 
                 WebstudioDbContext.SaveChanges();

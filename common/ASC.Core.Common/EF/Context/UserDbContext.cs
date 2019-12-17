@@ -22,15 +22,11 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddAcl();
-
-            modelBuilder.Entity<Subscription>()
-                .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient, c.Object });
-
-            modelBuilder.Entity<DbSubscriptionMethod>()
-                .HasKey(c => new { c.Tenant, c.Source, c.Action, c.Recipient });
-
-            modelBuilder.AddUser();
+            modelBuilder
+                .AddAcl()
+                .AddSubscription()
+                .AddSubscriptionMethod()
+                .AddUser();
         }
     }
 

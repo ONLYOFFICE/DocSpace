@@ -98,7 +98,7 @@ namespace ASC.Feed.Data
                 Tenant = tenant
             };
 
-            FeedDbContext.FeedReaded.Add(feedReaded);
+            FeedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
             FeedDbContext.SaveChanges();
         }
 

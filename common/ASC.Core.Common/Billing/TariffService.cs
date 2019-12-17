@@ -418,7 +418,7 @@ client.GetPaymentUrls(null, products, !string.IsNullOrEmpty(affiliateId) ? affil
                 ButtonUrl = buttonUrl
             };
 
-            CoreDbContext.Buttons.Add(efButton);
+            CoreDbContext.AddOrUpdate(r => r.Buttons, efButton);
             CoreDbContext.SaveChanges();
         }
 

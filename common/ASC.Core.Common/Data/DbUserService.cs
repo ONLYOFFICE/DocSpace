@@ -420,7 +420,7 @@ namespace ASC.Core.Data
             group.Tenant = tenant;
 
             var dbGroup = FromGroupToDbGroup(group);
-            UserDbContext.Groups.Add(dbGroup);
+            UserDbContext.AddOrUpdate(r => r.Groups, dbGroup);
             UserDbContext.SaveChanges();
 
             return group;
@@ -438,6 +438,7 @@ namespace ASC.Core.Data
             user.UserName = user.UserName.Trim();
             user.Email = user.Email.Trim();
 
+            using var tx = UserDbContext.Database.BeginTransaction();
             var count = UserDbContext.Users.Where(r => r.UserName == user.UserName && r.Id != user.ID && !r.Removed).Count();
 
             if (count != 0)
@@ -445,8 +446,16 @@ namespace ASC.Core.Data
                 throw new ArgumentOutOfRangeException("Duplicate username.");
             }
 
-            UserDbContext.Users.Add(FromUserInfoToUser(user));
+            count = UserDbContext.Users.Where(r => r.Email == user.Email && r.Id != user.ID && !r.Removed).Count();
+
+            if (count != 0)
+            {
+                throw new ArgumentOutOfRangeException("Duplicate email.");
+            }
+
+            UserDbContext.AddOrUpdate(r => r.Users, FromUserInfoToUser(user));
             UserDbContext.SaveChanges();
+            tx.Commit();
 
             return user;
         }
@@ -460,12 +469,15 @@ namespace ASC.Core.Data
 
             using var tr = UserDbContext.Database.BeginTransaction();
 
-            UserDbContext.UserGroups.Add(FromUserGroupRefToUserGroup(r));
+            UserDbContext.AddOrUpdate(r => r.UserGroups, FromUserGroupRefToUserGroup(r));
 
-            var user = UserDbContext.Users.First(a => a.Tenant == tenant && a.Id == r.UserId);
-            user.LastModified = r.LastModified;
+            var user = UserDbContext.Users.FirstOrDefault(a => a.Tenant == tenant && a.Id == r.UserId);
+            if (user != null)
+            {
+                user.LastModified = r.LastModified;
+            }
+
             UserDbContext.SaveChanges();
-
             tr.Commit();
 
             return r;
@@ -476,9 +488,14 @@ namespace ASC.Core.Data
             var h1 = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
             var h2 = !string.IsNullOrEmpty(password) ? Crypto.GetV(password, 1, true) : null;
 
-            var us = UserDbContext.UserSecurity.FirstOrDefault(r => r.UserId == id);
-            us.PwdHash = h1;
-            us.PwdHashSha512 = h2;
+            var us = new UserSecurity
+            {
+                UserId = id,
+                PwdHash = h1,
+                PwdHashSha512 = h2
+            };
+
+            UserDbContext.AddOrUpdate(r => r.UserSecurity, us);
             UserDbContext.SaveChanges();
         }
 
@@ -502,6 +519,8 @@ namespace ASC.Core.Data
                 {
                     userPhoto.Photo = photo;
                 }
+
+                UserDbContext.AddOrUpdate(r => r.Photos, userPhoto);
             }
             else if (userPhoto != null)
             {

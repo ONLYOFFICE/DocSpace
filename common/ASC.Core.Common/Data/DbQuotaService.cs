@@ -110,7 +110,7 @@ namespace ASC.Core.Data
                 Visible = quota.Visible
             };
 
-            CoreDbContext.Quotas.Add(dbQuota);
+            CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
             CoreDbContext.SaveChanges();
 
             return quota;
@@ -150,7 +150,7 @@ namespace ASC.Core.Data
                 LastModified = DateTime.UtcNow
             };
 
-            CoreDbContext.QuotaRows.Add(dbQuotaRow);
+            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
             CoreDbContext.SaveChanges();
 
             tx.Commit();

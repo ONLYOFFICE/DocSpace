@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF
@@ -19,15 +20,13 @@ namespace ASC.Core.Common.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.AddAcl();
-
-            modelBuilder.Entity<DbButton>()
-                .HasKey(c => new { c.TariffId, c.PartnerId });
-
-            modelBuilder.Entity<DbQuotaRow>()
-                .HasKey(c => new { c.Tenant, c.Path });
+            modelBuilder
+                .AddAcl()
+                .AddDbButton()
+                .AddDbQuotaRow();
         }
     }
+
 
     public static class CoreDbExtension
     {

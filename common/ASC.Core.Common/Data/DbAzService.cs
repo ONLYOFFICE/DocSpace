@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
@@ -160,7 +161,7 @@ namespace ASC.Core.Data
                 Tenant = r.Tenant
             };
 
-            CoreDbContext.Acl.Add(record);
+            CoreDbContext.AddOrUpdate(r => r.Acl, record);
             CoreDbContext.SaveChanges();
         }
     }

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Core.Common.EF.Model
 {
     [Table("feed_readed")]
-    public class FeedReaded
+    public class FeedReaded : BaseEntity
     {
         [Column("user_id")]
         public Guid UserId { get; set; }
@@ -15,6 +15,11 @@ namespace ASC.Core.Common.EF.Model
 
         [Column("tenant_id")]
         public int Tenant { get; set; }
+
+        internal override object[] GetKeys()
+        {
+            return new object[] { Tenant, UserId, Module };
+        }
     }
 
     public static class FeedReadedExtension

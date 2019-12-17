@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
@@ -113,7 +114,7 @@ namespace ASC.Core.Data
                 Tenant = s.Tenant
             };
 
-            UserDbContext.Subscriptions.Add(subs);
+            UserDbContext.AddOrUpdate(r => r.Subscriptions, subs);
             UserDbContext.SaveChanges();
         }
 
@@ -211,8 +212,10 @@ namespace ASC.Core.Data
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
-                UserDbContext.SubscriptionMethods.Add(sm);
+                UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
             }
+
+            UserDbContext.SaveChanges();
             tr.Commit();
         }
 

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using ASC.Core.Users;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
     [Table("core_user")]
-    public class User
+    public class User : BaseEntity
     {
         public int Tenant { get; set; }
 
@@ -68,6 +70,11 @@ namespace ASC.Core.Common.EF
         public UserSecurity UserSecurity { get; set; }
 
         public List<UserGroup> Groups { get; set; }
+
+        internal override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     }
 
     public static class DbUserExtension

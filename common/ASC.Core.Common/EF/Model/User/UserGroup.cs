@@ -1,11 +1,12 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
     [Table("core_usergroup")]
-    public class UserGroup
+    public class UserGroup : BaseEntity
     {
         public int Tenant { get; set; }
 
@@ -20,6 +21,11 @@ namespace ASC.Core.Common.EF
 
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
+
+        internal override object[] GetKeys()
+        {
+            return new object[] { Tenant, UserId, GroupId, RefType };
+        }
     }
 
     public static class DbUserGroupExtension
