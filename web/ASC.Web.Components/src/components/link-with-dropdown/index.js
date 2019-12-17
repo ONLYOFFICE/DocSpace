@@ -176,6 +176,7 @@ class LinkWithDropdown extends React.Component {
       data,
       id,
       style,
+      isOpen,
       ...rest
     } = this.props;
     return (

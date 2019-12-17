@@ -28,7 +28,7 @@ const arrowDropdown = css`
   height: 0;
   margin-top: -1px;
   position: absolute;
-  right: 8px;
+  right: 10px;
   top: 50%;
   width: 0;
 `;
@@ -166,7 +166,7 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          <Text fontSize='16px' isBold color="#fff">
+          <Text fontSize='16px' fontWeight="600" color="#fff">
             {this.props.text}
           </Text>
         </StyledMainButton>
