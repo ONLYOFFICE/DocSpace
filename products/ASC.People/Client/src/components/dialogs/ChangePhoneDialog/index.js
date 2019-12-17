@@ -10,15 +10,7 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import styled from "styled-components";
 import { api } from "asc-web-common";
-
-const ModalDialogContainer = styled.div`
-
-  .margin-top {
-    margin-top: 16px;
-  }
-`;
 
 class PureChangePhoneDialog extends React.Component {
   constructor(props) {
@@ -40,18 +32,17 @@ class PureChangePhoneDialog extends React.Component {
       toastr.success("Context action: Change phone");
       onClose();
       this.setState({ isRequestRunning: false });
-  });
-};
+    });
+  };
 
 
 
-render() {
-  console.log("ChangePhoneDialog render");
-  const { t, visible, onClose } = this.props;
-  const { isRequestRunning } = this.state;
+  render() {
+    console.log("ChangePhoneDialog render");
+    const { t, visible, onClose } = this.props;
+    const { isRequestRunning } = this.state;
 
-  return (
-    <ModalDialogContainer>
+    return (
       <ModalDialog
         visible={visible}
         onClose={onClose}
@@ -72,9 +63,8 @@ render() {
           />
         }
       />
-    </ModalDialogContainer>
-  );
-}
+    );
+  }
 }
 
 const ChangePhoneDialogContainer = withTranslation()(PureChangePhoneDialog);

@@ -14,29 +14,10 @@ import {
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
-import styled from "styled-components";
+import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
 import { api } from "asc-web-common";
 const { getShortenedLink } = api.portal;
-
-const ModalDialogContainer = styled.div`
-  .margin-text {
-    margin: 12px 0;
-  }
-
-  .margin-link {
-    margin-right: 12px;
-  }
-
-  .margin-textarea {
-    margin-top: 12px;
-  }
-
-  .flex {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
 
 const textAreaName = "link-textarea";
 
@@ -113,16 +94,16 @@ class PureInviteDialog extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text className="margin-text" as="p">
+              <Text className="text-dialog" as="p">
                 {t("HelpAnswerLinkInviteSettings")}
               </Text>
-              <Text className="margin-text" as="p">
+              <Text className="text-dialog" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
               </Text>
               <div className="flex">
                 <div>
                   <Link
-                    className="margin-link"
+                    className="link-dialog"
                     type="action"
                     isHovered={true}
                     onClick={this.onCopyLinkToClipboard}
@@ -147,7 +128,7 @@ class PureInviteDialog extends React.Component {
                 />
               </div>
               <Textarea
-                className="margin-textarea"
+                className="textarea-dialog"
                 isReadOnly={true}
                 isDisabled={this.state.isLoading}
                 name={textAreaName}

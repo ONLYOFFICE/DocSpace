@@ -11,16 +11,9 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider, Trans } from "react-i18next";
 import i18n from "./i18n";
-import styled from "styled-components";
+import ModalDialogContainer from '../ModalDialogContainer';
 import { api } from "asc-web-common";
 const { sendInstructionsToChangePassword } = api.people;
-
-const ModalDialogContainer = styled.div`
-
-  .margin-top {
-    margin-top: 16px;
-  }
-`;
 
 class PureChangePasswordDialog extends React.Component {
   constructor(props) {
@@ -57,41 +50,36 @@ class PureChangePasswordDialog extends React.Component {
     const { isRequestRunning } = this.state;
 
     return (
-      <ModalDialogContainer>
-        <ModalDialog
-          visible={visible}
-          onClose={onClose}
-          headerContent={t('PasswordChangeTitle')}
-          bodyContent={
-            <Text fontSize='13px'>
-              <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail">
-                Send the password change instructions to the
+      <ModalDialog
+        visible={visible}
+        onClose={onClose}
+        headerContent={t('PasswordChangeTitle')}
+        bodyContent={
+          <Text fontSize='13px'>
+            <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail">
+              Send the password change instructions to the
               <Link type="page" href={`mailto:${email}`} isHovered title={email}>
-                  {{ email }}
-                </Link>
-                email address
+                {{ email }}
+              </Link>
+              email address
           </Trans>
-            </Text>
+          </Text>
 
-          }
-          footerContent={
-            <>
-              <Button
-                key="SendBtn"
-                label={t('SendButton')}
-                size="medium"
-                primary={true}
-                onClick={this.onSendPasswordChangeInstructions}
-                isLoading={isRequestRunning}
-              />
-            </>
-          }
-        />
-      </ModalDialogContainer>
+        }
+        footerContent={
+          <Button
+            key="SendBtn"
+            label={t('SendButton')}
+            size="medium"
+            primary={true}
+            onClick={this.onSendPasswordChangeInstructions}
+            isLoading={isRequestRunning}
+          />
+        }
+      />
     );
   }
 }
-
 
 const ChangePasswordDialogContainer = withTranslation()(PureChangePasswordDialog);
 

@@ -11,20 +11,9 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import styled from "styled-components";
+import ModalDialogContainer from '../ModalDialogContainer';
 import { api } from "asc-web-common";
 const { sendInstructionsToDelete } = api.people;
-
-const ModalDialogContainer = styled.div`
-
-  .margin-top {
-    margin-top: 16px;
-  }
-
-  .margin-left {
-    margin-left: 8px;
-  }
-`;
 
 class PureDeleteSelfProfileDialog extends React.Component {
   constructor(props) {
@@ -70,7 +59,6 @@ class PureDeleteSelfProfileDialog extends React.Component {
                 {email}
               </Link>
             </Text>
-
           }
           footerContent={
             <>
@@ -83,7 +71,7 @@ class PureDeleteSelfProfileDialog extends React.Component {
                 isLoading={isRequestRunning}
               />
               <Button
-                className='margin-left'
+                className='button-dialog'
                 key="CloseBtn"
                 label={t('CloseButton')}
                 size="medium"

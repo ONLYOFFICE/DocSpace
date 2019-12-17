@@ -10,27 +10,12 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider, Trans } from "react-i18next";
 import i18n from "./i18n";
-import styled from "styled-components";
 import { api } from "asc-web-common";
 import { typeUser } from "../../../helpers/customNames";
 import { fetchPeople } from '../../../store/people/actions';
+import ModalDialogContainer from '../ModalDialogContainer';
 const { deleteUser } = api.people;
 const { Filter } = api;
-
-const ModalDialogContainer = styled.div`
-
-  .margin-top {
-    margin-top: 16px;
-  }
-
-  .margin-left {
-    margin-left: 8px;
-  }
-
-  .warning-text {
-    margin: 20px 0; 
-  }
-`;
 
 class PureDeleteProfileEverDialog extends React.Component {
   constructor(props) {
@@ -103,7 +88,7 @@ class PureDeleteProfileEverDialog extends React.Component {
                 isLoading={isRequestRunning}
               />
               <Button
-                className='margin-left'
+                className='button-dialog'
                 key="ReassignBtn"
                 label={t('ReassignData')}
                 size="medium"
@@ -111,7 +96,7 @@ class PureDeleteProfileEverDialog extends React.Component {
                 isDisabled={isRequestRunning}
               />
               <Button
-                className='margin-left'
+                className='button-dialog'
                 key="CancelBtn"
                 label={t('CancelButton')}
                 size="medium"
@@ -125,7 +110,6 @@ class PureDeleteProfileEverDialog extends React.Component {
     );
   }
 }
-
 
 const DeleteProfileEverDialogContainer = withTranslation()(PureDeleteProfileEverDialog);
 

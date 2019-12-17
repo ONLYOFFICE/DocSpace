@@ -12,16 +12,9 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
-import styled from "styled-components";
+import ModalDialogContainer from '../ModalDialogContainer';
 import { api } from "asc-web-common";
 const { sendInstructionsToChangeEmail } = api.people;
-
-const ModalDialogContainer = styled.div`
-
-  .margin-top {
-    margin-top: 16px;
-  }
-`;
 
 class PureChangeEmailDialog extends React.Component {
   constructor(props) {
@@ -74,7 +67,7 @@ class PureChangeEmailDialog extends React.Component {
             <>
               <Label htmlFor="new-email" text={t('EnterEmail')} />
               <EmailInput
-                className='margin-top'
+                className='input-dialog'
                 id="new-email"
                 scale={true}
                 isAutoFocussed={true}
@@ -84,24 +77,22 @@ class PureChangeEmailDialog extends React.Component {
 
               />
               <Text
-                className='margin-top'
+                className='text-dialog'
               >
                 {t('EmailActivationDescription')}
               </Text>
             </>
           }
           footerContent={
-            <>
-              <Button
-                key="SendBtn"
-                label={t('SendButton')}
-                size="medium"
-                primary={true}
-                onClick={this.onSendEmailChangeInstructions}
-                isDisabled={isSendButtonDisabled}
-                isLoading={isRequestRunning}
-              />
-            </>
+            <Button
+              key="SendBtn"
+              label={t('SendButton')}
+              size="medium"
+              primary={true}
+              onClick={this.onSendEmailChangeInstructions}
+              isDisabled={isSendButtonDisabled}
+              isLoading={isRequestRunning}
+            />
           }
         />
       </ModalDialogContainer>
