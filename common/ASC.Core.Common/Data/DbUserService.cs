@@ -48,7 +48,7 @@ namespace ASC.Core.Data
         public UserDbContext UserDbContext { get; set; }
         public DbContextManager<UserDbContext> UserDbContextManager { get; }
 
-        public EFUserService(DbContextManager<UserDbContext> userDbContextManager)
+        private EFUserService()
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -151,9 +151,17 @@ namespace ASC.Core.Data
                 LastModified = userGroup.LastModified,
                 Removed = userGroup.Removed
             };
+        }
 
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager) : this()
+        {
             UserDbContextManager = userDbContextManager;
             UserDbContext = UserDbContextManager.Value;
+        }
+
+        public EFUserService(UserDbContext userDbContext) : this()
+        {
+            UserDbContext = userDbContext;
         }
 
         public Group GetGroup(int tenant, Guid id)

@@ -32,6 +32,8 @@ using System.Security;
 
 using ASC.Common.Logging;
 using ASC.Core.Billing;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
@@ -60,43 +62,43 @@ namespace ASC.Core
             private set;
         }
 
-        public string DbId
-        {
-            get;
-            private set;
-        }
-
-        public HostedSolution(
-            IConfiguration configuration,
-            ConnectionStringSettings connectionString,
-            TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options,
-            TenantUtil tenantUtil)
-            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, null)
-        {
-        }
-
-        //TODO:fix
         public HostedSolution(
             IConfiguration configuration,
             ConnectionStringSettings connectionString,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
             TenantUtil tenantUtil,
+            TenantDomainValidator tenantDomainValidator,
+            TenantDbContext tenantDbContext,
+            UserDbContext userDbContext,
+            CoreDbContext coreDbContext)
+            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, tenantDomainValidator, tenantDbContext, userDbContext, coreDbContext, null)
+        {
+        }
+
+        public HostedSolution(
+            IConfiguration configuration,
+            ConnectionStringSettings connectionString,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options,
+            TenantUtil tenantUtil,
+            TenantDomainValidator tenantDomainValidator,
+            TenantDbContext tenantDbContext,
+            UserDbContext userDbContext,
+            CoreDbContext coreDbContext,
             string region)
         {
-            tenantService = new DbTenantService(null, null);
+            tenantService = new DbTenantService(tenantDbContext, tenantDomainValidator);
             var baseSettings = new CoreBaseSettings(configuration);
             coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
 
-            userService = new EFUserService(null);
-            quotaService = new DbQuotaService(null);
-            tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, null, tariffServiceStorage, options);
+            userService = new EFUserService(userDbContext);
+            quotaService = new DbQuotaService(coreDbContext);
+            tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, coreDbContext, tariffServiceStorage, options);
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             TenantUtil = tenantUtil;
             Region = region ?? string.Empty;
-            DbId = connectionString.Name;
         }
 
         public List<Tenant> GetTenants(DateTime from)

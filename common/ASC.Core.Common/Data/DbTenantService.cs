@@ -28,11 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Data
@@ -48,10 +50,9 @@ namespace ASC.Core.Data
         public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
         public Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
 
-        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator)
+        public DbTenantService(TenantDomainValidator tenantDomainValidator)
         {
             TenantDomainValidator = tenantDomainValidator;
-            TenantDbContext = dbContextManager.Value;
             FromDbTenantToTenant = r => new Tenant
             {
                 Calls = r.Calls,
@@ -79,6 +80,16 @@ namespace ASC.Core.Data
 
             var fromDbTenantToTenant = FromDbTenantToTenant.Compile();
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
+        }
+
+        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator) : this(tenantDomainValidator)
+        {
+            TenantDbContext = dbContextManager.Value;
+        }
+
+        public DbTenantService(TenantDbContext dbContextManager, TenantDomainValidator tenantDomainValidator) : this(tenantDomainValidator)
+        {
+            TenantDbContext = dbContextManager;
         }
 
 

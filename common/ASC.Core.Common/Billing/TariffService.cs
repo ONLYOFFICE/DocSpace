@@ -35,6 +35,7 @@ using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -101,13 +102,12 @@ namespace ASC.Core.Billing
         public TariffServiceStorage TariffServiceStorage { get; }
         public IOptionsMonitor<ILog> Options { get; }
 
-        public TariffService(
+        private TariffService(
             IQuotaService quotaService,
             ITenantService tenantService,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             IConfiguration configuration,
-            DbContextManager<CoreDbContext> coreDbContextManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options)
 
@@ -117,7 +117,6 @@ namespace ASC.Core.Billing
             this.tenantService = tenantService;
             CoreSettings = coreSettings;
             Configuration = configuration;
-            CoreDbContext = coreDbContextManager.Value;
             TariffServiceStorage = tariffServiceStorage;
             Options = options;
             CoreBaseSettings = coreBaseSettings;
@@ -127,6 +126,34 @@ namespace ASC.Core.Billing
 
             cache = TariffServiceStorage.Cache;
             notify = TariffServiceStorage.Notify;
+        }
+        public TariffService(
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            DbContextManager<CoreDbContext> coreDbContextManager,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : this(quotaService, tenantService, coreBaseSettings, coreSettings, configuration, tariffServiceStorage, options)
+
+        {
+            CoreDbContext = coreDbContextManager.Value;
+        }
+        public TariffService(
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            CoreDbContext coreDbContext,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : this(quotaService, tenantService, coreBaseSettings, coreSettings, configuration, tariffServiceStorage, options)
+
+        {
+            CoreDbContext = coreDbContext;
         }
 
 

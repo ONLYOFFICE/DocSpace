@@ -16,6 +16,12 @@ namespace ASC.Core.Common.EF.Context
         public DbSet<TenantIpRestrictions> TenantIpRestrictions { get; set; }
         public DbSet<DbCoreSettings> CoreSettings { get; set; }
 
+        public TenantDbContext() { }
+        public TenantDbContext(DbContextOptions<TenantDbContext> options)
+            : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.AddUser();

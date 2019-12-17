@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
@@ -39,9 +40,8 @@ namespace ASC.Core.Data
         private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
         private CoreDbContext CoreDbContext { get; set; }
 
-        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
+        private DbQuotaService()
         {
-            CoreDbContext = dbContextManager.Value;
             FromDbQuotaToTenantQuota = r => new TenantQuota()
             {
                 Name = r.Name,
@@ -62,6 +62,16 @@ namespace ASC.Core.Data
                 Tag = r.Tag,
                 Tenant = r.Tenant
             };
+        }
+
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
+        {
+            CoreDbContext = dbContextManager.Value;
+        }
+
+        public DbQuotaService(CoreDbContext dbContext) : this()
+        {
+            CoreDbContext = dbContext;
         }
 
 

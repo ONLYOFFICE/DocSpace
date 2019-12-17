@@ -97,6 +97,7 @@ namespace ASC.Core.Data
             WebstudioDbContext = dbContextManager.Value;
         }
 
+        //TODO: remove
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
             dbId = connectionString != null ? connectionString.Name : "default";

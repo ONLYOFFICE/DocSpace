@@ -14,6 +14,12 @@ namespace ASC.Core.Common.EF
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<DbSubscriptionMethod> SubscriptionMethods { get; set; }
 
+        public UserDbContext() { }
+        public UserDbContext(DbContextOptions<UserDbContext> options)
+            : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.AddAcl();

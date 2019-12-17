@@ -11,6 +11,12 @@ namespace ASC.Core.Common.EF
         public DbSet<DbQuota> Quotas { get; set; }
         public DbSet<DbQuotaRow> QuotaRows { get; set; }
 
+        public CoreDbContext() { }
+        public CoreDbContext(DbContextOptions<CoreDbContext> options)
+            : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.AddAcl();

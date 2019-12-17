@@ -76,7 +76,7 @@ namespace ASC.Core.Common.EF
             services.TryAddScoped<MultiRegionalDbContextManager<T>>();
             services.TryAddScoped<IConfigureOptions<T>, ConfigureDbContext>();
             services.TryAddScoped<IConfigureOptions<MultiRegionalDbContext<T>>, ConfigureMultiRegionalDbContext<T>>();
-            services.TryAddScoped<T>();
+            //services.TryAddScoped<T>();
 
             return services;
         }
