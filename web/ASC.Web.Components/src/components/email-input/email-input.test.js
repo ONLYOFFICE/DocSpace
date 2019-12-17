@@ -19,6 +19,45 @@ const baseProps = {
 }
 
 describe('<EmailInput />', () => {
+  it('Faith test', () => {
+    const email = "zzz";
+    const wrapper = shallow(<EmailInput value={email} />).instance();
+
+    expect(wrapper.state.isValidEmail).toBe(false);
+  });
+
+  it('Faith test 2', () => {
+    const email = "zzz";
+
+    const wrapper = shallow(<EmailInput value={email} />).instance();
+
+    let event = { target: { value: "simple@example.com" } };
+
+    wrapper.onChangeAction(event);
+
+    expect(wrapper.state.isValidEmail).toBe(true);
+
+    event = { target: { value: "" } };
+
+    wrapper.onChangeAction(event);
+
+    expect(wrapper.state.isValidEmail).toBe(false);
+  });
+
+  it('Faith test 3', () => {
+    const email = "zzz";
+
+    const wrapper = mount(<EmailInput value={email} />);
+
+    expect(wrapper.state().inputValue).toBe(email);
+
+    wrapper.setProps({ value: 'bar' });
+    
+    //expect(wrapper.state.isValidEmail).toBe(false);
+
+    expect(wrapper.state().inputValue).toBe("bar");
+  });
+
   it('renders without error', () => {
     const wrapper = mount(<EmailInput {...baseProps} />);
 
