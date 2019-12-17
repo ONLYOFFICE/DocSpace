@@ -27,12 +27,12 @@ class PureChangeEmailDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    const { newEmail, language } = props;
+    const { email, language } = props;
 
     this.state = {
       isEmailValid: true,
       isRequestRunning: false,
-      email: newEmail,
+      email,
     };
 
     i18n.changeLanguage(language);
@@ -60,9 +60,9 @@ class PureChangeEmailDialog extends React.Component {
 
   render() {
     console.log("ChangeEmailDialog render");
-    const { t, visible, newEmail, onClose } = this.props;
-    const { isEmailValid, email, isRequestRunning } = this.state;
-    const isSendButtonDisabled = !isEmailValid || newEmail.toLowerCase() === email.toLowerCase();
+    const { t, visible, email, onClose } = this.props;
+    const { isEmailValid, isRequestRunning } = this.state;
+    const isSendButtonDisabled = !isEmailValid || this.state.email.toLowerCase() === email.toLowerCase();
 
     return (
       <ModalDialogContainer>
@@ -120,7 +120,7 @@ const ChangeEmailDialog = props => (
 ChangeEmailDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  newEmail: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
 };
 

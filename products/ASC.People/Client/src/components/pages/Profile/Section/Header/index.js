@@ -416,7 +416,7 @@ class SectionHeaderContent extends React.PureComponent {
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
             onClose={this.toggleChangeEmailDialog}
-            newEmail={this.state.profile.email}
+            email={this.state.profile.email}
             id={this.state.profile.id}
           />
         }
