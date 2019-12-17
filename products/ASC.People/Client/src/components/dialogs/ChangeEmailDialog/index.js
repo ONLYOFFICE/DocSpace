@@ -10,13 +10,13 @@ import {
   Label,
   EmailInput
 } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ModalDialogContainer from '../ModalDialogContainer';
 import { api } from "asc-web-common";
 const { sendInstructionsToChangeEmail } = api.people;
 
-class PureChangeEmailDialog extends React.Component {
+class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -100,12 +100,10 @@ class PureChangeEmailDialog extends React.Component {
   }
 }
 
-const ChangeEmailDialogContainer = withTranslation()(PureChangeEmailDialog);
+const ChangeEmailDialogTranslated = withTranslation()(ChangeEmailDialogComponent);
 
 const ChangeEmailDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <ChangeEmailDialogContainer {...props} />
-  </I18nextProvider>
+  <ChangeEmailDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangeEmailDialog.propTypes = {

@@ -9,13 +9,12 @@ import {
   Link,
   Text
 } from "asc-web-components";
-import { withTranslation, I18nextProvider, Trans } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
-import ModalDialogContainer from '../ModalDialogContainer';
 import { api } from "asc-web-common";
 const { sendInstructionsToChangePassword } = api.people;
 
-class PureChangePasswordDialog extends React.Component {
+class ChangePasswordDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -56,7 +55,7 @@ class PureChangePasswordDialog extends React.Component {
         headerContent={t('PasswordChangeTitle')}
         bodyContent={
           <Text fontSize='13px'>
-            <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail">
+            <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail" i18n={i18n}>
               Send the password change instructions to the
               <Link type="page" href={`mailto:${email}`} isHovered title={email}>
                 {{ email }}
@@ -81,12 +80,10 @@ class PureChangePasswordDialog extends React.Component {
   }
 }
 
-const ChangePasswordDialogContainer = withTranslation()(PureChangePasswordDialog);
+const ChangePasswordDialogTranslated = withTranslation()(ChangePasswordDialogComponent);
 
 const ChangePasswordDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <ChangePasswordDialogContainer {...props} />
-  </I18nextProvider>
+  <ChangePasswordDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangePasswordDialog.propTypes = {

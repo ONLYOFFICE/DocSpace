@@ -8,11 +8,11 @@ import {
   Button,
   Text
 } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api } from "asc-web-common";
 
-class PureChangePhoneDialog extends React.Component {
+class ChangePhoneDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -67,12 +67,10 @@ class PureChangePhoneDialog extends React.Component {
   }
 }
 
-const ChangePhoneDialogContainer = withTranslation()(PureChangePhoneDialog);
+const ChangePhoneDialogTranslated = withTranslation()(ChangePhoneDialogComponent);
 
 const ChangePhoneDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <ChangePhoneDialogContainer {...props} />
-  </I18nextProvider>
+  <ChangePhoneDialogTranslated i18n={i18n} {...props} />
 );
 
 ChangePhoneDialog.propTypes = {

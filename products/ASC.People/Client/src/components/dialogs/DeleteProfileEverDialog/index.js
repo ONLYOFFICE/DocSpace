@@ -8,7 +8,7 @@ import {
   Button,
   Text
 } from "asc-web-components";
-import { withTranslation, I18nextProvider, Trans } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
 import { api } from "asc-web-common";
 import { typeUser } from "../../../helpers/customNames";
@@ -17,7 +17,7 @@ import ModalDialogContainer from '../ModalDialogContainer';
 const { deleteUser } = api.people;
 const { Filter } = api;
 
-class PureDeleteProfileEverDialog extends React.Component {
+class DeleteProfileEverDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
@@ -64,7 +64,7 @@ class PureDeleteProfileEverDialog extends React.Component {
           bodyContent={
             <>
               <Text>
-                <Trans i18nKey='DeleteUserConfirmation'>
+                <Trans i18nKey='DeleteUserConfirmation' i18n={i18n}>
                   {{ typeUser }} <strong>{{ user: user.displayName }}</strong> will be deleted.
               </Trans>
               </Text>
@@ -111,12 +111,10 @@ class PureDeleteProfileEverDialog extends React.Component {
   }
 }
 
-const DeleteProfileEverDialogContainer = withTranslation()(PureDeleteProfileEverDialog);
+const DeleteProfileEverDialogTranslated = withTranslation()(DeleteProfileEverDialogComponent);
 
 const DeleteProfileEverDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <DeleteProfileEverDialogContainer {...props} />
-  </I18nextProvider>
+  <DeleteProfileEverDialogTranslated i18n={i18n} {...props} />
 );
 
 DeleteProfileEverDialog.propTypes = {

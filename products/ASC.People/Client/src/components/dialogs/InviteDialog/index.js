@@ -11,7 +11,7 @@ import {
   Textarea,
   Text
 } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
 import ModalDialogContainer from '../ModalDialogContainer';
@@ -21,7 +21,7 @@ const { getShortenedLink } = api.portal;
 
 const textAreaName = "link-textarea";
 
-class PureInviteDialog extends React.Component {
+class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -75,7 +75,7 @@ class PureInviteDialog extends React.Component {
   };
 
   componentDidMount() {
-      this.onCopyLinkToClipboard();
+    this.onCopyLinkToClipboard();
   }
 
   onClickToCloseButton = () =>
@@ -170,12 +170,10 @@ const mapStateToProps = state => {
   };
 };
 
-const InviteDialogContainer = withTranslation()(PureInviteDialog);
+const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
 const InviteDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <InviteDialogContainer {...props} />
-  </I18nextProvider>
+  <InviteDialogTranslated i18n={i18n} {...props} />
 );
 
 InviteDialog.propTypes = {
