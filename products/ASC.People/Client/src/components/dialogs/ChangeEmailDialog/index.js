@@ -27,13 +27,12 @@ class PureChangeEmailDialog extends React.Component {
   constructor(props) {
     super(props);
 
-    const { newEmail, id, language } = props;
+    const { newEmail, language } = props;
 
     this.state = {
       isEmailValid: true,
       isRequestRunning: false,
       email: newEmail,
-      id
     };
 
     i18n.changeLanguage(language);
@@ -45,7 +44,7 @@ class PureChangeEmailDialog extends React.Component {
 
   onSendEmailChangeInstructions = () => {
     this.setState({ isRequestRunning: true }, function () {
-      sendInstructionsToChangeEmail(this.state.id, this.state.email)
+      sendInstructionsToChangeEmail(this.props.id, this.state.email)
         .then((res) => {
           toastr.success(res);
         })
@@ -109,7 +108,6 @@ class PureChangeEmailDialog extends React.Component {
     );
   }
 }
-
 
 const ChangeEmailDialogContainer = withTranslation()(PureChangeEmailDialog);
 
