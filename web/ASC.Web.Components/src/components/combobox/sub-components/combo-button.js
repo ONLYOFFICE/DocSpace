@@ -61,7 +61,7 @@ const StyledComboButton = styled.div`
     margin-right: 8px;
     max-width: 175px;
     ${props => props.noBorder && `
-      line-height: 13px;
+      line-height: 15px;
       border-bottom: 1px dashed transparent;
     `}
   }

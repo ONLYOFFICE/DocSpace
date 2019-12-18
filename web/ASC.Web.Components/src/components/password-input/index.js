@@ -478,7 +478,7 @@ PasswordInput.defaultProps = {
 export default PasswordInput;
 /*
             {displayTooltip &&
-              <DropDown directionY='top' manualY='150%' isOpen={true}>
+              <DropDown directionY='top' manualY='150%' open={true}>
                 {tooltipContent}
               </DropDown>
             }

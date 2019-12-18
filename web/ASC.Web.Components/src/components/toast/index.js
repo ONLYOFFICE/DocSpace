@@ -8,6 +8,21 @@ const Fade = cssTransition({
   exit: 'fadeOut'
 });
 
+const toastColors = {
+  active: {
+    success: '#cae796',
+    error: '#ffbfaa',
+    info: '#f1da92',
+    warning: '#f1ca92'
+  },
+  hover: {
+    success: '#bcdf7e',
+    error: '#ffa98d',
+    info: '#eed27b',
+    warning: '#eeb97b'
+  }
+};
+
 const StyledToastContainer = styled(ToastContainer)`
   width: 365px !important;
   z-index: 9999;
@@ -19,6 +34,7 @@ const StyledToastContainer = styled(ToastContainer)`
   color: #fff;
   top: 1em;
   right: 1em;
+  margin-top: 40px;
 
   @media only screen and (max-width: 480px) {
     width: 100vw;
@@ -65,34 +81,34 @@ const StyledToastContainer = styled(ToastContainer)`
 }
 
 .Toastify__toast--success{
-  background-color: #cae796;
+  background-color: ${toastColors.active.success};
 
   &:hover {
-      background-color: #bcdf7e;
+      background-color: ${toastColors.hover.success};
   }
 }
 
 .Toastify__toast--error{
-  background-color: #ffbfaa;
+  background-color: ${toastColors.active.error};
 
   &:hover {
-    background-color: #ffa98d;
+    background-color: ${toastColors.hover.error};
   }
 }
 
 .Toastify__toast--info{
-  background-color: #f1da92;
+  background-color: ${toastColors.active.info};
 
   &:hover {
-    background-color: #eed27b;
+    background-color: ${toastColors.hover.info};
   }
 }
 
 .Toastify__toast--warning{
-  background-color: #f1ca92;
+  background-color: ${toastColors.active.warning};
 
   &:hover {
-    background-color: #eeb97b;
+    background-color: ${toastColors.hover.warning};
   }
 }
 
@@ -189,14 +205,14 @@ const Toast = props => {
   //console.log("Toast render");
   return (
     <StyledToastContainer
+      className={props.className}
       draggable={false}
       hideProgressBar={true}
+      id={props.id}
       newestOnTop={true}
       pauseOnFocusLoss={false}
-      transition={Fade}
-      className={props.className}
-      id={props.id}
       style={props.style}
+      transition={Fade}
     />
   );
 };
@@ -204,18 +220,18 @@ const Toast = props => {
 
 Toast.propTypes = {
   autoClosed: PropTypes.bool,
-  text: PropTypes.string,
-  title: PropTypes.string,
-  type: PropTypes.oneOf(['success', 'error', 'warning', 'info']).isRequired,
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  text: PropTypes.string,
+  title: PropTypes.string,
+  type: PropTypes.oneOf(['success', 'error', 'warning', 'info']).isRequired
 };
 
 Toast.defaultProps = {
+  autoClosed: true,
   text: 'Demo text for example',
   title: 'Demo title',
-  autoClosed: true,
   type: 'success',
 }
 

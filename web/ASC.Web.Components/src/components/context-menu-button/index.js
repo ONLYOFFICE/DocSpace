@@ -116,7 +116,7 @@ class ContextMenuButton extends React.Component {
           onMouseOver={onMouseOver}
           onMouseOut={onMouseOut}
         />
-        <DropDown directionX={directionX} isOpen={isOpen}>
+        <DropDown directionX={directionX} open={isOpen}>
           {
             this.state.data.map((item, index) =>
               (item && (item.label || item.icon)) && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}

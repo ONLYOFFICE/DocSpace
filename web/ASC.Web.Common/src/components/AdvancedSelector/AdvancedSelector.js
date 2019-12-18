@@ -103,7 +103,7 @@ class AdvancedSelector extends React.Component {
       <div ref={this.ref} id={id} className={className} style={style}>
         {displayType === "dropdown" 
         ? 
-            <DropDown opened={isOpen} className="dropdown-container">
+            <DropDown open={isOpen} className="dropdown-container">
               <Selector {...this.props} displayType={displayType} />
             </DropDown>
         : 

@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-list'
 import DropDownItem from '../drop-down-item'
+import Backdrop from '../backdrop'
 import { FixedSizeList } from "react-window"
 
 const StyledDropdown = styled.div`
@@ -25,7 +26,7 @@ const StyledDropdown = styled.div`
     z-index: 150;
     margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
     margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
-    display: ${props => (props.isOpen || props.opened ? 'block' : 'none')};
+    display: ${props => (props.open ? 'block' : 'none')};
     background: #FFFFFF;
     border-radius: 6px;
     -moz-border-radius: 6px;
@@ -72,92 +73,102 @@ class DropDown extends React.PureComponent {
       directionX: props.directionX,
       directionY: props.directionY
     };
-    
+
     this.dropDownRef = React.createRef();
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.checkPosition();
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.opened !== prevProps.opened || this.props.isOpen !== prevProps.isOpen) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.open !== prevProps.open) {
       this.checkPosition();
     }
   }
 
+  toggleDropDown = () => {
+    this.props.clickOutsideAction && this.props.clickOutsideAction(!this.props.open);
+  }
+
   checkPosition = () => {
-    if (this.dropDownRef.current){
-      const rects = this.dropDownRef.current.getBoundingClientRect();
-      const container = {width: window.innerWidth, height: window.innerHeight};
-      
-      const left = rects.left < 0;
-      const right = rects.right > container.width;
+    if (!this.dropDownRef.current) return;
 
-      let newDirection = {};
-      
-      newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;
+    const rects = this.dropDownRef.current.getBoundingClientRect();
+    const container = { width: window.innerWidth, height: window.innerHeight };
 
-      this.setState({
-        directionX: newDirection.directionX,
-        width: rects.width
-      });
-    }
+    const left = rects.left < 0;
+    const right = rects.right > container.width;
+
+    let newDirection = {};
+
+    newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;
+
+    this.setState({
+      directionX: newDirection.directionX,
+      width: rects.width
+    });
   }
 
   render() {
-    const {maxHeight, withArrow, children} = this.props;
-    const {directionX, directionY} = this.state;
+    const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
+    const { directionX, directionY } = this.state;
     const fullHeight = children && children.length * 36;
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
     //console.log("DropDown render");
     return (
-      <StyledDropdown
-        ref={this.dropDownRef}
-        {...this.props}
-        directionX={directionX}
-        directionY={directionY}
-        {...dropDownMaxHeightProp}
-      >
-        {withArrow && <Arrow directionX={directionX} />}
-        {maxHeight
-          ? <FixedSizeList
-            height={calculatedHeight}
-            width={this.state.width}
-            itemSize={36}
-            itemCount={children.length}
-            itemData={children}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Row}
-          </FixedSizeList>
-          : children}
-      </StyledDropdown>
+      <>
+        {(withBackdrop && open) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
+        <StyledDropdown
+          ref={this.dropDownRef}
+          {...this.props}
+          directionX={directionX}
+          directionY={directionY}
+          {...dropDownMaxHeightProp}
+        >
+
+          {withArrow && <Arrow directionX={directionX} />}
+          {maxHeight
+            ? <FixedSizeList
+              height={calculatedHeight}
+              width={this.state.width}
+              itemSize={36}
+              itemCount={children.length}
+              itemData={children}
+              outerElementType={CustomScrollbarsVirtualList}
+            >
+              {Row}
+            </FixedSizeList>
+            : children}
+        </StyledDropdown>
+      </>
     );
   }
 }
 
 DropDown.propTypes = {
-  opened: PropTypes.bool,
-  isOpen: PropTypes.bool,
   children: PropTypes.any,
+  className: PropTypes.string,
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
-  withArrow: PropTypes.bool,
-  manualWidth: PropTypes.string,
-  manualY: PropTypes.string,
-  manualX: PropTypes.string,
-  maxHeight: PropTypes.number,
-  className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  open: PropTypes.bool,
+  manualWidth: PropTypes.string,
+  manualX: PropTypes.string,
+  manualY: PropTypes.string,
+  maxHeight: PropTypes.number,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  withArrow: PropTypes.bool,
+  withBackdrop: PropTypes.bool,
+  clickOutsideAction: PropTypes.func
 };
 
 DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
-  withArrow: false
+  withArrow: false,
+  withBackdrop: false
 };
 
 export default DropDown

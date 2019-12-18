@@ -4,7 +4,6 @@ import Scrollbar from '../scrollbar/index';
 import PropTypes from 'prop-types';
 import commonInputStyle from '../text-input/common-input-styles';
 import TextareaAutosize from 'react-autosize-textarea';
-import { tablet } from "../../utils/device";
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearScrollbar = ({ isDisabled, ...props }) => <Scrollbar {...props} />
@@ -19,10 +18,6 @@ const StyledScrollbar = styled(ClearScrollbar)`
   width: 100% !important;
   height: 91px !important;
   background-color: ${props => props.isDisabled && '#F8F9F9'};
-
-  @media ${tablet} {
-    height: 190px !important;
-  }
 
 `;
 
@@ -54,24 +49,37 @@ const StyledTextarea = styled(ClearTextareaAutosize)`
 class Textarea extends React.PureComponent {
   render() {
     // console.log('Textarea render');
+    const {
+      className,
+      id,
+      isDisabled,
+      isReadOnly,
+      maxLength,
+      name,
+      onChange,
+      placeholder,
+      style,
+      tabIndex,
+      value
+    } = this.props;
     return (
       <StyledScrollbar
-        className={this.props.className}
-        style={this.props.style}
+        className={className}
+        style={style}
         stype='preMediumBlack'
-        isDisabled={this.props.isDisabled}
+        isDisabled={isDisabled}
       >
         <StyledTextarea
-          id={this.props.id}
-          placeholder={this.props.placeholder}
-          onChange={(e) => this.props.onChange && this.props.onChange(e)}
-          maxLength={this.props.maxLength}
-          name={this.props.name}
-          tabIndex={this.props.tabIndex}
-          isDisabled={this.props.isDisabled}
-          disabled={this.props.isDisabled}
-          readOnly={this.props.isReadOnly}
-          value={this.props.value}
+          id={id}
+          placeholder={placeholder}
+          onChange={(e) => onChange && onChange(e)}
+          maxLength={maxLength}
+          name={name}
+          tabIndex={tabIndex}
+          isDisabled={isDisabled}
+          disabled={isDisabled}
+          readOnly={isReadOnly}
+          value={value}
         />
       </StyledScrollbar>
     )
@@ -79,6 +87,7 @@ class Textarea extends React.PureComponent {
 }
 
 Textarea.propTypes = {
+  className: PropTypes.string,
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
   isReadOnly: PropTypes.bool,
@@ -86,19 +95,18 @@ Textarea.propTypes = {
   name: PropTypes.string,
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   tabIndex: PropTypes.number,
   value: PropTypes.string,
-  className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 }
 
 Textarea.defaultProps = {
+  className: '',
   isDisabled: false,
   isReadOnly: false,
   placeholder: '',
-  value: '',
   tabIndex: -1,
-  className: ''
+  value: '',
 }
 
 export default Textarea;
