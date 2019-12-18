@@ -2,9 +2,9 @@ import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline} from "asc-web-common";
+import About from "./components/pages/About";
 
 const Home = lazy(() => import("./components/pages/Home"));
-const About = lazy(() => import("./components/pages/About"));
 const Confirm = lazy(() => import("./components/pages/Confirm"));
 const Settings = lazy(() => import("./components/pages/Settings"));
 
