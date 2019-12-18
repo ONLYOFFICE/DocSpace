@@ -82,15 +82,23 @@ class PeopleSelector extends React.Component {
     const pageCount = 100;
 
     this.setState({ isNextPageLoading: true }, () => {
+      const {role, useFake} = this.props;
+
       const filter = Filter.getDefault();
       filter.page = startIndex / pageCount;
       filter.pageCount = pageCount;
 
-      if (searchValue) filter.search = searchValue;
+      if (searchValue) { 
+        filter.search = searchValue;
+      }
+
+      if(role) {
+        filter.role = role;
+      }
 
       if (currentGroup && currentGroup !== "all") filter.group = currentGroup;
 
-      getUserList(filter, this.props.useFake)
+      getUserList(filter, useFake)
         .then(response => {
           const newOptions = (startIndex ? [...this.state.options] : []).concat(
             this.convertUsers(response.items)
@@ -225,13 +233,15 @@ PeopleSelector.propTypes = {
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["full", "compact"]),
   language: PropTypes.string,
-  t: PropTypes.func
+  t: PropTypes.func,
+  role: PropTypes.oneOf(["admin", "user", "guest"])
 };
 
 PeopleSelector.defaultProps = {
   useFake: false,
   size: "full",
-  language: "en"
+  language: "en",
+  role: null
 };
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);

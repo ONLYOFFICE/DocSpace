@@ -374,6 +374,7 @@ class PureAdminsSettings extends Component {
                     id="people-admin-selector"
                     isOpen={showSelector}
                     isMultiSelect={true}
+                    role="user"
                     onSelect={this.onSelect}
                     onCancel={this.onCancelSelector}
                   />
@@ -391,6 +392,7 @@ class PureAdminsSettings extends Component {
                     id="full-admin-selector"
                     isOpen={showFullAdminSelector}
                     isMultiSelect={true}
+                    role="user"
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onCancelSelector}
                   />
