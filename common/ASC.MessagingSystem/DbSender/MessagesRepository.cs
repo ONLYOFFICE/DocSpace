@@ -27,11 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
 using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -274,8 +273,8 @@ namespace ASC.MessagingSystem.DbSender
         {
             try
             {
-                //GetOldEvents(LoginEventsTable, "LoginHistoryLifeTime");
-                //GetOldEvents(AuditEventsTable, "AuditTrailLifeTime");
+                GetOldEvents(r => r.LoginEvents, "LoginHistoryLifeTime");
+                GetOldEvents(r => r.AuditEvents, "AuditTrailLifeTime");
             }
             catch (Exception ex)
             {
@@ -283,44 +282,37 @@ namespace ASC.MessagingSystem.DbSender
             }
         }
 
-        private void GetOldEvents(string table, string settings)
+        private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
         {
-            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.Guid, TenantAuditSettings.MaxLifeTime);
-            var query = new SqlQuery(table + " t1")
-                .Select("t1.id")
-                .Select(sqlQueryLimit)
-                .Select("t1.`date` AS dout")
-                .InnerJoin("tenants_tenants tt", Exp.EqColumns("tt.id", "t1.tenant_id"))
-                .Having(Exp.Sql("dout < ADDDATE(UTC_DATE(), INTERVAL -tout DAY)"))
-                .SetMaxResults(1000);
-
-            List<AuditEvent> ids;
-
+            List<T> ids;
+            var compile = func.Compile();
             do
             {
                 using var scope = ServiceProvider.CreateScope();
                 using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+                var table = compile.Invoke(ef);
 
-                var ae = ef.AuditEvents
+                var ae = table
                     .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
                     .Select(r => new
                     {
                         r.Id,
                         r.Date,
-                        settings = ef.WebstudioSettings
-                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
-                        .Select(r => r.Data)
-                        .FirstOrDefault(),
+                        r.TenantId,
                         ef = r
                     })
-                    //.Where(r => r.Date < DateTime.UtcNow.AddDays(-r.settings.RootElement.GetProperty(settings).GetInt32()))
+                    .Where(r => r.Date < DateTime.UtcNow.AddDays(
+                        ef.WebstudioSettings
+                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
+                        .Select(r => Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
+                        .FirstOrDefault()))
                     .Take(1000);
 
-                ids = ae.ToList().Select(r => r.ef).ToList();
+                ids = ae.Select(r => r.ef).ToList();
 
                 if (!ids.Any()) return;
 
-                //ef.AuditEvents.RemoveRange(ids);
+                table.RemoveRange(ids);
                 ef.SaveChanges();
 
             } while (ids.Any());
