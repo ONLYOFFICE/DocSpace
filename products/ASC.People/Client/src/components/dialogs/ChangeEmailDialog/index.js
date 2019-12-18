@@ -53,9 +53,9 @@ class ChangeEmailDialogComponent extends React.Component {
 
   render() {
     console.log("ChangeEmailDialog render");
-    const { t, visible, email, onClose } = this.props;
-    const { isEmailValid, isRequestRunning } = this.state;
-    const isSendButtonDisabled = !isEmailValid || this.state.email.toLowerCase() === email.toLowerCase();
+    const { t, visible, onClose } = this.props;
+    const { isEmailValid, isRequestRunning, email } = this.state;
+    const isSendButtonDisabled = !email || !email.length || !isEmailValid || email.toLowerCase() === this.props.email.toLowerCase();
 
     return (
       <ModalDialogContainer>
