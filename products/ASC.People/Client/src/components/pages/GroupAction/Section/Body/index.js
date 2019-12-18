@@ -96,7 +96,7 @@ class SectionBodyContent extends React.Component {
       searchValue: "",
       error: null,
       inLoading: false,
-      isHeaderSelectorOpen: false,
+      isHeadSelectorOpen: false,
       isUsersSelectorOpen: false,
       users: users,
       groups: groups,
@@ -170,13 +170,13 @@ class SectionBodyContent extends React.Component {
         key: option.key,
         label: option.label
       },
-      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen
+      isHeadSelectorOpen: !this.state.isHeadSelectorOpen
     });
   };
 
   onHeadSelectorClick = () => {
     this.setState({
-      isHeaderSelectorOpen: !this.state.isHeaderSelectorOpen
+      isHeadSelectorOpen: !this.state.isHeadSelectorOpen
     });
   };
 
@@ -253,12 +253,29 @@ class SectionBodyContent extends React.Component {
     });
   };
 
+  onCancelSelector = (e) => {
+    if (
+      (this.state.isHeadSelectorOpen &&
+        e.target.id === "head-selector_button") ||
+      (this.state.isUsersSelectorOpen &&
+        e.target.id === "users-selector_button")
+    ) {
+      // Skip double set of isOpen property
+      return;
+    }
+
+    this.setState({
+      isHeadSelectorOpen: false,
+      isUsersSelectorOpen: false
+    });
+  }
+
   render() {
     const { t } = this.props;
     const {
       groupName,
       groupMembers,
-      isHeaderSelectorOpen: isHeadSelectorOpen,
+      isHeadSelectorOpen,
       isUsersSelectorOpen,
       inLoading,
       error,
@@ -293,7 +310,7 @@ class SectionBodyContent extends React.Component {
           labelText={t("CustomHeadOfDepartment", { headOfDepartment })}
         >
           <ComboBox
-            id="head-selector"
+            id="head-selector_button"
             tabIndex={2}
             options={[]}
             isOpen={isHeadSelectorOpen}
@@ -301,7 +318,6 @@ class SectionBodyContent extends React.Component {
             scaled={true}
             isDisabled={inLoading}
             size="content"
-            opened={isHeadSelectorOpen}
             toggleAction={this.onHeadSelectorClick}
             displayType="toggle"
           >
@@ -310,6 +326,7 @@ class SectionBodyContent extends React.Component {
           <PeopleSelector
             isOpen={isHeadSelectorOpen} 
             onSelect={this.onHeadSelectorSelect}
+            onCancel={this.onCancelSelector}
           />
         </FieldContainer>
         <FieldContainer
@@ -320,7 +337,7 @@ class SectionBodyContent extends React.Component {
           labelText={t("Members")}
         >
           <ComboBox
-            id="users-selector"
+            id="users-selector_button"
             tabIndex={3}
             options={[]}
             isOpen={isUsersSelectorOpen}
@@ -331,7 +348,6 @@ class SectionBodyContent extends React.Component {
             }}
             scaled={true}
             size="content"
-            opened={isUsersSelectorOpen}
             toggleAction={this.onUsersSelectorClick}
             displayType="toggle"
           >
@@ -341,6 +357,7 @@ class SectionBodyContent extends React.Component {
             isOpen={isUsersSelectorOpen} 
             isMultiSelect={true}
             onSelect={this.onUsersSelectorSelect}
+            onCancel={this.onCancelSelector}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
