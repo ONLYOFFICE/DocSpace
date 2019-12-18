@@ -19,7 +19,7 @@ storiesOf("Components| DropDown", module)
       <div style={{ position: "relative" }}>
         <div>Only dropdown</div>
         <div style={{ marginTop: 8 }}>Without active button</div>
-        <DropDown opened={true}>
+        <DropDown open={true}>
           <DropDownItem isHeader label="Category 1" />
           <DropDownItem
             label="Button 1"

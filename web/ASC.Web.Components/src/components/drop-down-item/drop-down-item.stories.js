@@ -21,7 +21,7 @@ storiesOf('Components | DropDown', module)
         <DropDown
           directionX={direction}
           manualY='1%'
-          opened={true}>
+          open={true}>
           <DropDownItem
             isHeader={isHeader}
             label={isHeader ? 'Category' : ''}

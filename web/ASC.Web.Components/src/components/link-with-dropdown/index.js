@@ -176,6 +176,7 @@ class LinkWithDropdown extends React.Component {
       data,
       id,
       style,
+      isOpen,
       ...rest
     } = this.props;
     return (
@@ -215,7 +216,7 @@ class LinkWithDropdown extends React.Component {
         </span>
 
         <DropDown
-          isOpen={this.state.isOpen}
+          open={this.state.isOpen}
           withArrow={false}
           {...rest}
         >

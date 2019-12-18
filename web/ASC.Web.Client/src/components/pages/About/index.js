@@ -87,7 +87,7 @@ const Body = ({ language }) => {
   const address =
     "20A-12 Ernesta Birznieka-Upisha street, Riga, Latvia, EU, LV-1050";
   const licenseContent = (
-    <Text className="text_style" fontSize="12px">
+    <Text as="div" className="text_style" fontSize="12px">
       <Trans i18nKey="LicensedUnder" i18n={i18n}>
         "This software is licensed under:"
         <Link
@@ -123,7 +123,7 @@ const Body = ({ language }) => {
         {t("AboutCompanyLicensor")}
       </Text>
 
-      <Text className="text_style" fontSize="16px" isBold={true}>
+      <Text as="div" className="text_style" fontSize="16px" isBold={true}>
         <Trans i18nKey="AllRightsReservedCustomMode" i18n={i18n}>
           Ascensio System SIA
           <p className="hidden-text">All rights reserved.</p>

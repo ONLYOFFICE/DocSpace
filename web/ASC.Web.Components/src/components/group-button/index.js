@@ -6,7 +6,8 @@ import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
 import { handleAnyClick } from '../../utils/event';
-
+import { tablet } from '../../utils/device'
+ 
 const textColor = "#333333",
   disabledTextColor = "#A3A9AE";
 
@@ -32,6 +33,7 @@ const StyledDropdownToggle = styled.div`
   line-height: 19px;
 
   cursor: default;
+  outline: 0;
 
   color: ${props => (props.disabled ? disabledTextColor : textColor)};
 
@@ -84,15 +86,19 @@ const Caret = styled.div`
 
 const Separator = styled.div`
   vertical-align: middle;
-  border: 0.5px solid #eceef1;
-  width: 1px;
+  border: 0.5px solid #ECEEF1;
+  width: 0px;
   height: 24px;
-  margin: 16px 16px 0 16px;
+  margin: 16px 11px 0 11px;
 `;
 
 const StyledCheckbox = styled.div`
     display: inline-block;
-    margin: auto 0 auto 16px;
+    margin: auto 0 auto 24px;
+
+    @media ${ tablet } {
+      margin: auto 0 auto 16px;
+    }
 
     & > * {
         margin: 0px;
@@ -158,6 +164,7 @@ class GroupButton extends React.PureComponent {
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
     const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
+    const offsetSelectDropDown = isSelect ? { manualX : (window.innerWidth <= 1024) ? '16px' : '24px'} : {};
 
     return (
       <StyledGroupButton ref={this.ref} id={id} className={className} style={style}>
@@ -187,7 +194,11 @@ class GroupButton extends React.PureComponent {
             </StyledDropdownToggle>
             <DropDown
               {...dropDownMaxHeightProp}
-              isOpen={this.state.isOpen}
+              {...offsetSelectDropDown}
+              manualY='72px'
+              open={this.state.isOpen}
+              clickOutsideAction={this.dropDownToggleClick}
+              withBackdrop={true}
             >
               {React.Children.map(children, (child) =>
                 <DropDownItem

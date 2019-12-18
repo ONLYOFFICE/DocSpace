@@ -42,8 +42,12 @@ const StyledContainer = styled.div`
     align-items: center;
     max-width: calc(100vw - 32px);
 
-    .add-group-button {
-      margin-left: 8px;
+    .action-button {
+      margin-left: 16px;
+
+      @media (max-width: 1024px) {
+        margin-left: auto;
+      }
     }
   }
 `;
@@ -213,6 +217,7 @@ const SectionHeaderContent = props => {
               <Headline type="content" truncate={true}>{group.name}</Headline>
               {isAdmin && (
                 <ContextMenuButton
+                  className="action-button"
                   directionX="right"
                   title={t("Actions")}
                   iconName="VerticalDotsIcon"
@@ -228,10 +233,12 @@ const SectionHeaderContent = props => {
               <Headline type="content">Departments</Headline>
               {isAdmin && (
                 <IconButton
-                  className="add-group-button"
+                  className="action-button"
                   size={16}
                   iconName="PlusIcon"
-                  isFill={false}
+                  color="#A3A9AE"
+                  hoverColor="#657077"
+                  isFill={true}
                   onClick={onAddDepartmentsClick}
                 />
               )}
