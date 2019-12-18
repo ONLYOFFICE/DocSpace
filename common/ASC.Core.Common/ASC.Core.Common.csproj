@@ -54,6 +54,7 @@
     </PackageReference>
     <PackageReference Include="MailKit" Version="2.4.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.1" />
     <PackageReference Include="System.Text.Json" Version="4.7.0" />
   </ItemGroup>
