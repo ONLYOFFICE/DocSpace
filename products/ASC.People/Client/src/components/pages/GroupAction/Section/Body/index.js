@@ -1,5 +1,4 @@
 import {
-  AdvancedSelector,
   Button,
   ComboBox,
   FieldContainer,
@@ -21,13 +20,11 @@ import {
   headOfDepartment,
   typeUser
 } from "../../../../../helpers/customNames";
-import { fetchGroups, fetchPeople, fetchSelectorUsers } from "../../../../../store/people/actions";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
 import React from "react";
 import { connect } from "react-redux";
-import isEqual from "lodash/isEqual";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
@@ -100,7 +97,6 @@ class SectionBodyContent extends React.Component {
       isUsersSelectorOpen: false,
       users: users,
       groups: groups,
-      modalVisible: false,
       header: group
         ? {
             key: 0,
@@ -134,13 +130,6 @@ class SectionBodyContent extends React.Component {
     return newState;
   };
 
-  componentDidUpdate(prevProps) {
-    //const { users, group } = this.props;
-    // if (!isEqual(this.props, prevProps)) {
-    //   this.setState(this.mapPropsToState());
-    // }
-  }
-
   onGroupChange = e => {
     this.setState({
       groupName: e.target.value
@@ -153,16 +142,8 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onHeadSelectorSearch = value => {
-    /*setOptions(
-      options.filter(option => {
-        return option.label.indexOf(value) > -1;
-      })
-    );*/
-  };
-
   onHeadSelectorSelect = options => {
-    if(!options || !options.length) return;
+    if (!options || !options.length) return;
 
     const option = options[0];
     this.setState({
@@ -200,13 +181,7 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  toggleModalVisible = () => {
-    this.setState({
-      modalVisible: !this.state.modalVisible
-    });
-  };
-
-  save = (group) => {
+  save = group => {
     const { createGroup, updateGroup } = this.props;
     return group.id
       ? updateGroup(group.id, group.name, group.managerKey, group.members)
@@ -227,8 +202,7 @@ class SectionBodyContent extends React.Component {
       members: groupMembers.map(u => u.key)
     };
 
-    if(group && group.id)
-      newGroup.id = group.id;
+    if (group && group.id) newGroup.id = group.id;
 
     this.save(newGroup)
       .then(group => {
@@ -253,12 +227,14 @@ class SectionBodyContent extends React.Component {
     });
   };
 
-  onCancelSelector = (e) => {
+  onCancelSelector = e => {
     if (
       (this.state.isHeadSelectorOpen &&
-        e.target.id === "head-selector_button") ||
+        (e.target.id === "head-selector_button" ||
+          e.target.closest("#head-selector_button"))) ||
       (this.state.isUsersSelectorOpen &&
-        e.target.id === "users-selector_button")
+        (e.target.id === "users-selector_button" ||
+          e.target.closest("#users-selector_button")))
     ) {
       // Skip double set of isOpen property
       return;
@@ -268,7 +244,7 @@ class SectionBodyContent extends React.Component {
       isHeadSelectorOpen: false,
       isUsersSelectorOpen: false
     });
-  }
+  };
 
   render() {
     const { t } = this.props;
@@ -324,7 +300,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboBox>
           <PeopleSelector
-            isOpen={isHeadSelectorOpen} 
+            isOpen={isHeadSelectorOpen}
             onSelect={this.onHeadSelectorSelect}
             onCancel={this.onCancelSelector}
           />
@@ -354,7 +330,7 @@ class SectionBodyContent extends React.Component {
             <Icons.CatalogGuestIcon size="medium" />
           </ComboBox>
           <PeopleSelector
-            isOpen={isUsersSelectorOpen} 
+            isOpen={isUsersSelectorOpen}
             isMultiSelect={true}
             onSelect={this.onUsersSelectorSelect}
             onCancel={this.onCancelSelector}
@@ -446,7 +422,7 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
   };
 }
 
