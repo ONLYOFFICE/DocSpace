@@ -371,7 +371,7 @@ class DatePicker extends Component {
         {isOpen ? (
           displayType === "dropdown" ? (
             <DropDownStyle>
-              <DropDown className="drop-down" opened={isOpen}>
+              <DropDown className="drop-down" open={isOpen}>
                 {this.renderBody()}
               </DropDown>
             </DropDownStyle>

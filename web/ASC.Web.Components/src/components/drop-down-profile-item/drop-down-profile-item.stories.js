@@ -18,7 +18,7 @@ storiesOf('Components | DropDown', module)
           withArrow={true}
           directionX='right'
           manualY='1%'
-          opened={true}>
+          open={true}>
             <DropDownProfileItem
               avatarRole='admin'
               avatarSource='https://static-www.onlyoffice.com/images/team/developers_photos/personal_44_2x.jpg'
