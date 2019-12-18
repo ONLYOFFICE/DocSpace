@@ -48,9 +48,8 @@ class EmailInput extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { emailSettings } = this.props;
-    if (isEqualEmailSettings(this.state.emailSettings, emailSettings)) return;
 
     const validatedSettings = checkAndConvertEmailSettings(emailSettings);
 
@@ -58,27 +57,34 @@ class EmailInput extends React.Component {
       this.checkEmail(this.state.inputValue);
     });
 
+    if (prevProps.value !== this.props.value) {
+      this.setState({ inputValue: this.props.value });
+    }
+
   }
 
   checkEmail = (value) => {
-    if (!value.length) {
-      !this.state.isValidEmail && this.setState({ isValidEmail: true, inputValue: value });
-      return;
-    }
-
     const emailObj = parseAddress(value, this.state.emailSettings);
     const isValidEmail = emailObj.isValid();
-
-    this.props.onValidateInput
-      && this.props.onValidateInput(isValidEmail);
-
-    this.setState({ isValidEmail, inputValue: value });
+    return isValidEmail;
   }
 
-  onChangeAction = (e) => {
-    this.props.onChange && this.props.onChange(e);
+  onChange = (e) => {
+    if (this.props.onChange) {
+      this.props.onChange(e)
+    }
+    else {
+      this.setState({ inputValue: e.target.value });
+    }
+    const isValidEmail = this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(e.target.value);
+    if (!e.target.value.length) {
+      this.setState({ isValidEmail: true });
+    }
+    else {
+      this.setState({ isValidEmail });
+    }
 
-    this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(e.target.value);
+    this.props.onValidateInput && this.props.onValidateInput(isValidEmail);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -96,7 +102,7 @@ class EmailInput extends React.Component {
       <StyledTextInput
         isValidEmail={isValid || isValidEmail}
         value={inputValue}
-        onChange={this.onChangeAction}
+        onChange={this.onChange}
         type='text'
         onValidateInput={onValidateInput}
         {...rest}
