@@ -79,11 +79,12 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   toggleChangeEmailDialog = (user) => {
+    const checkedUser = user ? user : {};
     this.setState({
       dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail },
       user: {
-        email: user.email,
-        id: user.id
+        email: checkedUser.email,
+        id: checkedUser.id
       }
     });
   };
@@ -118,12 +119,13 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   toggleDeleteProfileEverDialog = user => {
+    const checkedUser = user ? user : {};
     this.setState({
       dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver },
       user: {
-        id: user.id,
-        displayName: user.displayName,
-        userName: user.userName,
+        id: checkedUser.id,
+        displayName: checkedUser.displayName,
+        userName: checkedUser.userName,
       }
     });
   };
