@@ -193,7 +193,7 @@ class PeopleSelector extends React.Component {
           searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
           selectButtonLabel={t("AddMembersButtonLabel")}
           selectAllLabel={t("SelectAllLabel")}
-          groupsHeaderLabel={"Groups"}
+          groupsHeaderLabel={t("CustomDepartments", { departments: "Groups" })} //TODO: Replace to variable from settings
           emptySearchOptionsLabel={t("EmptySearchUsersResult")}
           emptyOptionsLabel={t("EmptyUsers")}
           loadingLabel={t("LoadingLabel")}
