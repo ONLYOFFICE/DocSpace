@@ -36,19 +36,23 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   e.respondWith(
-    caches.match(e.request).then((cachesResponse) => {
-          if(cachesResponse){
-              return cachesResponse;
-          }
-          return fetch(e.request)
-            .then((fetchResponse) => {
-                return fetchResponse;
-            })
-            .catch(() => useFallback());
+    fetch(e.request)
+      .then((fetchResponse) => {
+        e.waitUntil(
+          update(e.request).then(refresh)
+        );
+        return fetchResponse;
       })
-  );
-  e.waitUntil(
-    update(e.request).then(refresh)
+      .catch((err) => {
+        return caches.match(e.request)
+          .then((cachesResponse) =>{
+            if(cachesResponse){
+              return cachesResponse;
+            }else{
+              return useFallback();
+            }
+          })
+      })
   );
 });
 
