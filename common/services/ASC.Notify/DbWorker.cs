@@ -83,6 +83,7 @@ namespace ASC.Notify
             };
 
             notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
+            dbContext.SaveChanges();
 
             var id = notifyQueue.NotifyId;
 
@@ -96,6 +97,7 @@ namespace ASC.Notify
             };
 
             dbContext.NotifyInfo.Add(info);
+            dbContext.SaveChanges();
 
             tx.Commit();
 
