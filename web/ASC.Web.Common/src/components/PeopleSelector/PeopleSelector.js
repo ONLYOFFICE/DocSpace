@@ -82,17 +82,17 @@ class PeopleSelector extends React.Component {
     const pageCount = 100;
 
     this.setState({ isNextPageLoading: true }, () => {
-      const {role, useFake} = this.props;
+      const { role, useFake } = this.props;
 
       const filter = Filter.getDefault();
       filter.page = startIndex / pageCount;
       filter.pageCount = pageCount;
 
-      if (searchValue) { 
+      if (searchValue) {
         filter.search = searchValue;
       }
 
-      if(role) {
+      if (role) {
         filter.role = role;
       }
 
@@ -158,6 +158,16 @@ class PeopleSelector extends React.Component {
     );
   };
 
+  onSearchChanged = () => {
+    //console.log("onSearchChanged")(value);
+    this.setState({ options: [], hasNextPage: true });
+  };
+
+  onGroupChanged = () => {
+    //console.log("onGroupChanged")(group);
+    this.setState({ options: [], hasNextPage: true });
+  };
+
   render() {
     const {
       options,
@@ -182,41 +192,35 @@ class PeopleSelector extends React.Component {
     } = this.props;
 
     return (
-        <AdvancedSelector
-          id={id}
-          className={className}
-          style={style}
-          options={options}
-          groups={groups}
-          hasNextPage={hasNextPage}
-          isNextPageLoading={isNextPageLoading}
-          loadNextPage={this.loadNextPage}
-          size={size}
-          displayType={"auto"}
-          selectedOptions={selectedOptions}
-          selectedGroups={selectedGroups}
-          isOpen={isOpen}
-          isMultiSelect={isMultiSelect}
-          isDisabled={isDisabled}
-          searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
-          selectButtonLabel={t("AddMembersButtonLabel")}
-          selectAllLabel={t("SelectAllLabel")}
-          groupsHeaderLabel={t("CustomDepartments", { departments: "Groups" })} //TODO: Replace to variable from settings
-          emptySearchOptionsLabel={t("EmptySearchUsersResult")}
-          emptyOptionsLabel={t("EmptyUsers")}
-          loadingLabel={t("LoadingLabel")}
-          onSelect={onSelect}
-          onSearchChanged={() => {
-            //action("onSearchChanged")(value);
-            this.setState({ options: [], hasNextPage: true });
-          }}
-          onGroupChanged={() => {
-            //action("onGroupChanged")(group);
-            this.setState({ options: [], hasNextPage: true });
-          }}
-          getOptionTooltipContent={this.getOptionTooltipContent}
-          onCancel={onCancel}
-        />
+      <AdvancedSelector
+        id={id}
+        className={className}
+        style={style}
+        options={options}
+        groups={groups}
+        hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
+        loadNextPage={this.loadNextPage}
+        size={size}
+        displayType={"auto"}
+        selectedOptions={selectedOptions}
+        selectedGroups={selectedGroups}
+        isOpen={isOpen}
+        isMultiSelect={isMultiSelect}
+        isDisabled={isDisabled}
+        searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
+        selectButtonLabel={t("AddMembersButtonLabel")}
+        selectAllLabel={t("SelectAllLabel")}
+        groupsHeaderLabel={t("CustomDepartments", { departments: "Groups" })} //TODO: Replace to variable from settings
+        emptySearchOptionsLabel={t("EmptySearchUsersResult")}
+        emptyOptionsLabel={t("EmptyUsers")}
+        loadingLabel={t("LoadingLabel")}
+        onSelect={onSelect}
+        onSearchChanged={this.onSearchChanged}
+        onGroupChanged={this.onGroupChanged}
+        getOptionTooltipContent={this.getOptionTooltipContent}
+        onCancel={onCancel}
+      />
     );
   }
 }
@@ -250,9 +254,7 @@ const PeopleSelectorWithI18n = props => {
   const { language } = props;
   i18n.changeLanguage(language);
 
-  return (
-      <ExtendedPeopleSelector i18n={i18n} {...props} />
-  );
+  return <ExtendedPeopleSelector i18n={i18n} {...props} />;
 };
 
 PeopleSelectorWithI18n.propTypes = {
