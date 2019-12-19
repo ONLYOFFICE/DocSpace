@@ -95,14 +95,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
                 onClick={this.onReassignDataClick}
                 isDisabled={isRequestRunning}
               />
-              <Button
-                className='button-dialog'
-                key="CancelBtn"
-                label={t('CancelButton')}
-                size="medium"
-                onClick={onClose}
-                isDisabled={isRequestRunning}
-              />
             </>
           }
         />

@@ -4,7 +4,6 @@
   "NotBeUndone": "Note: this action cannot be undone.",
   "DeleteUserDataConfirmation": "User's personal documents that are available to others will be deleted. To avoid this, you must start the data reassign process before deleting.",
   "OKButton": "OK",
-  "CancelButton": "Cancel",
   "ReassignData": "Reassign data",
   "Warning": "Warning!",
   "SuccessfullyDeleteUserInfoMessage": "User has been successfully deleted"
