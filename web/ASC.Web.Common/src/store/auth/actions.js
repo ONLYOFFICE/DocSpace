@@ -132,13 +132,17 @@ export function getUserInfo(dispatch) {
 
 export function login(user, pass) {
   return dispatch => {
-    return api.user.login(user, pass).then(() => getUserInfo(dispatch));
+    return api.user.login(user, pass)
+    .then(() => dispatch(setIsLoaded(false)))
+    .then(() => getUserInfo(dispatch));
   };
 }
 
 export function logout() {
   return dispatch => {
-    return api.user.logout().then(() => dispatch(setLogout()));
+    return api.user.logout()
+      .then(() => dispatch(setLogout()))
+      .then(() => dispatch(setIsLoaded(true)));
   };
 }
 

@@ -14,7 +14,7 @@ import {
 } from "asc-web-components";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import SubModalDialog from "./sub-components/modal-dialog";
 import { login, setIsLoaded } from "../../store/auth/actions";
@@ -25,6 +25,7 @@ const FormContainer = styled.form`
   max-width: 432px;
 
   .login-header {
+    min-height: 79px;
     margin-bottom: 24px;
 
     .login-logo {
@@ -181,9 +182,12 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { language, match } = this.props;
+    const { language, match, i18n } = this.props;
     const { error, confirmedEmail } = match.params;
-    i18n.changeLanguage(language);
+
+    if(i18n.lng != language)
+      i18n.changeLanguage(language);
+
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });
     window.addEventListener("keyup", this.onKeyPress);
@@ -323,19 +327,6 @@ class Form extends Component {
   }
 }
 
-const FormWrapper = withTranslation()(Form);
-
-const LoginForm = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <PageLayout sectionBodyContent={<FormWrapper {...props} />} />
-    </I18nextProvider>
-  );
-};
-
 Form.propTypes = {
   login: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired,
@@ -343,6 +334,7 @@ Form.propTypes = {
   setIsLoaded: PropTypes.func.isRequired,
   greetingTitle: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired,
+  i18n: PropTypes.object.isRequired,
   language: PropTypes.string.isRequired
 };
 
@@ -352,12 +344,28 @@ Form.defaultProps = {
   email: ""
 };
 
+const FormWrapper = withTranslation()(Form);
+
+const LoginForm = props => {
+  const { language, isLoaded } = props;
+
+  i18n.changeLanguage(language);
+
+  return (
+    <>
+      {isLoaded && <PageLayout sectionBodyContent={<FormWrapper i18n={i18n} {...props} />} />}
+    </>
+  );
+};
+
 LoginForm.propTypes = {
-  language: PropTypes.string.isRequired
+  language: PropTypes.string.isRequired,
+  isLoaded: PropTypes.bool
 };
 
 function mapStateToProps(state) {
   return {
+    isLoaded: state.auth.isLoaded,
     language: state.auth.user.cultureName || state.auth.settings.culture,
     greetingTitle: state.auth.settings.greetingSettings
   };
