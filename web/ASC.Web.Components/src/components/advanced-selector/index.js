@@ -564,7 +564,7 @@ class AdvancedSelector extends React.Component {
     return (
       <StyledContainer>
         {displayType === "dropdown" ? (
-          <DropDown opened={isOpen} className="dropdown-container">
+          <DropDown open={isOpen} className="dropdown-container">
             {this.renderBody()}
           </DropDown>
         ) : (

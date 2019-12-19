@@ -23,9 +23,11 @@ const SectionHeaderContent = props => {
     <div style={wrapperStyle}>
       <div style={{ width: "16px" }}>
         <IconButton
-          iconName={"ArrowPathIcon"}
+          iconName="ArrowPathIcon"
           color="#A3A9AE"
           size="16"
+          hoverColor="#657077"
+          isFill={true}
           onClick={() => history.push(settings.homepage)}
         />
       </div>

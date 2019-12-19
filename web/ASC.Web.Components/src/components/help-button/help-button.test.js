@@ -59,4 +59,14 @@ describe("<HelpButton />", () => {
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
+
+  it("", () => {
+    const wrapper = mount(<HelpButton tooltipContent={tooltipContent} />).instance();
+    wrapper.componentDidUpdate(wrapper.props);
+
+    wrapper.componentDidUpdate({displayType: "auto"});
+    wrapper.componentDidUpdate({displayType: "aside"});
+
+    expect(wrapper.props).toBe(wrapper.props);
+  });
 });

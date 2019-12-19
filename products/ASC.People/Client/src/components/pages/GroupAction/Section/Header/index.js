@@ -33,8 +33,11 @@ class SectionHeaderContent extends React.Component {
     return (
       <div style={wrapperStyle}>
         <IconButton
-          iconName={"ArrowPathIcon"}
+          iconName="ArrowPathIcon"
           size="16"
+          color="#A3A9AE"
+          hoverColor="#657077"
+          isFill={true}
           onClick={this.onBackClick}
         />
         <Headline type="content" style={textStyle}>{headerText}</Headline>

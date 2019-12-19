@@ -8,18 +8,9 @@ const array_items = [
     title: "Title1",
     content: (
       <div>
-        <div>
-          <button>BUTTON</button> <button>BUTTON</button>
-          <button>BUTTON</button>
-        </div>
-        <div>
-          <button>BUTTON</button> <button>BUTTON</button>
-          <button>BUTTON</button>
-        </div>
-        <div>
-          <button>BUTTON</button> <button>BUTTON</button>
-          <button>BUTTON</button>
-        </div>
+        <button>BUTTON</button>
+        <button>BUTTON</button>
+        <button>BUTTON</button>
       </div>
     )
   },
@@ -28,15 +19,9 @@ const array_items = [
     title: "Title2",
     content: (
       <div>
-        <div>
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>
-        </div>
-        <div>
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>
-        </div>
-        <div>
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>
-        </div>
+        <label>LABEL</label>
+        <label>LABEL</label>
+        <label>LABEL</label>
       </div>
     )
   },
@@ -45,15 +30,9 @@ const array_items = [
     title: "Title3",
     content: (
       <div>
-        <div>
-          <input></input> <input></input> <input></input>
-        </div>
-        <div>
-          <input></input> <input></input> <input></input>
-        </div>
-        <div>
-          <input></input> <input></input> <input></input>
-        </div>
+        <input></input>
+        <input></input>
+        <input></input>
       </div>
     )
   },
@@ -62,21 +41,9 @@ const array_items = [
     title: "Title4",
     content: (
       <div>
-        <div>
-          {" "}
-          <button>BUTTON</button> <button>BUTTON</button>{" "}
-          <button>BUTTON</button>{" "}
-        </div>
-        <div>
-          {" "}
-          <button>BUTTON</button> <button>BUTTON</button>{" "}
-          <button>BUTTON</button>{" "}
-        </div>
-        <div>
-          {" "}
-          <button>BUTTON</button> <button>BUTTON</button>{" "}
-          <button>BUTTON</button>{" "}
-        </div>
+        <button>BUTTON</button>
+        <button>BUTTON</button>
+        <button>BUTTON</button>
       </div>
     )
   },
@@ -85,18 +52,9 @@ const array_items = [
     title: "Title5",
     content: (
       <div>
-        <div>
-          {" "}
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>{" "}
-        </div>
-        <div>
-          {" "}
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>{" "}
-        </div>
-        <div>
-          {" "}
-          <label>LABEL</label> <label>LABEL</label> <label>LABEL</label>{" "}
-        </div>
+        <label>LABEL</label>
+        <label>LABEL</label>
+        <label>LABEL</label>
       </div>
     )
   }
@@ -139,5 +97,13 @@ describe("<TabContainer />", () => {
       wrapper.state
     );
     expect(shouldUpdate).toBe(false);
+  });
+
+  it("TabsContainer not re-render test", () => {
+    const wrapper = mount(
+      <TabContainer>{array_items}</TabContainer>
+    ).instance();
+    const shouldUpdate = wrapper.shouldComponentUpdate(wrapper.props, {...wrapper.state, activeTab: 3});
+    expect(shouldUpdate).toBe(true);
   });
 });

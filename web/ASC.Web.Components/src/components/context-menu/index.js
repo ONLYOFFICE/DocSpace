@@ -107,7 +107,7 @@ class ContextMenu extends React.PureComponent {
     const { options, id, className, style } = this.props;
 
     return (visible && options || null) && (
-      <DropDown id={id} className={className} style={style} opened={true}>
+      <DropDown id={id} className={className} style={style} open={true}>
         {options.map((item) => {
           if (item && item.key !== undefined) {
             return <DropDownItem key={item.key} {...item} />

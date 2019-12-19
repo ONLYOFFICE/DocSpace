@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme';
 import DropDown from '.';
 
 const baseProps = {
-  opened: false,
+  open: false,
   isOpen: false,
   directionX: 'left',
   directionY: 'bottom',
@@ -23,10 +23,9 @@ describe('<DropDown />', () => {
   });
 
   it('opened/isOpen', () => {
-    const wrapper = mount(<DropDown {...baseProps} opened isOpen />);
+    const wrapper = mount(<DropDown {...baseProps} open />);
 
-    expect(wrapper.prop('opened')).toEqual(true);
-    expect(wrapper.prop('isOpen')).toEqual(true);
+    expect(wrapper.prop('open')).toEqual(true);
   });
 
   it('directionX right', () => {
@@ -103,7 +102,7 @@ describe('<DropDown />', () => {
     const wrapper = shallow(<DropDown {...baseProps} />);
     const instance = wrapper.instance();
 
-    wrapper.setState({ isOpen: true });
+    wrapper.setState({ opened: true });
 
     instance.componentDidUpdate(wrapper.props(), wrapper.state());
 
@@ -114,7 +113,7 @@ describe('<DropDown />', () => {
     const wrapper = shallow(<DropDown {...baseProps} />);
     const instance = wrapper.instance();
 
-    instance.componentDidUpdate({ opened: true }, wrapper.state());
+    instance.componentDidUpdate({ open: true }, wrapper.state());
 
     expect(wrapper.props()).toBe(wrapper.props());
   });
@@ -137,7 +136,7 @@ describe('<DropDown />', () => {
 
   it('accepts style', () => {
     const wrapper = mount(
-      <DropDown {...baseProps} isOpen style={{ color: 'red' }} />
+      <DropDown {...baseProps} open style={{ color: 'red' }} />
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');

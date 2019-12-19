@@ -89,7 +89,7 @@ class ProfileActions extends React.PureComponent {
           isUserPreview
           withArrow
           directionX="right"
-          isOpen={this.state.opened}
+          open={this.state.opened}
         >
           <DropDownProfileItem
             avatarRole={this.getUserRole(this.state.user)}

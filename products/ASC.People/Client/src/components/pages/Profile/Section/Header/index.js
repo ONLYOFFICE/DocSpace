@@ -31,18 +31,28 @@ const {
 } = api.people;
 const { EmployeeStatus } = constants;
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
-
 const HeaderContainer = styled(Headline)`
   margin-left: 16px;
-  margin-right: 16px;
   max-width: calc(100vw - 430px);
+
   @media ${utils.device.tablet} {
     max-width: calc(100vw - 96px);
   }
+`;
+
+const StyledContainer = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+    .action-button {
+      margin-left: 16px;
+
+      @media (max-width: 1024px) {
+        margin-left: auto;
+      }
+    }
 `;
 
 class SectionHeaderContent extends React.PureComponent {
@@ -358,21 +368,22 @@ class SectionHeaderContent extends React.PureComponent {
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
-      <div style={wrapperStyle}>
-        <div style={{ width: "16px" }}>
-          <IconButton
-            iconName={"ArrowPathIcon"}
-            color="#A3A9AE"
-            size="16"
-            onClick={this.goBack}
-          />
-        </div>
+      <StyledContainer>
+        <IconButton
+          iconName="ArrowPathIcon"
+          color="#A3A9AE"
+          size="16"
+          hoverColor="#657077"
+          isFill={true}
+          onClick={this.goBack}
+        />
         <HeaderContainer type='content' truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </HeaderContainer>
         {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
           <ContextMenuButton
+            className="action-button"
             directionX="right"
             title={t("Actions")}
             iconName="VerticalDotsIcon"
@@ -431,7 +442,7 @@ class SectionHeaderContent extends React.PureComponent {
             history={history}
           />
         }
-      </div>
+      </StyledContainer>
     );
   }
 }

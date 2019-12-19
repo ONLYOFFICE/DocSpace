@@ -135,7 +135,7 @@ export function getUpdateListAdmin(filter) {
     filterData = Filter.getDefault();
   }
   return dispatch => {
-    return api.getListAdmins(filterData).then(admins => {
+    return api.people.getListAdmins(filterData).then(admins => {
       filterData.total = admins.total;
 
       dispatch(setAdmins(admins.items));

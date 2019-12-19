@@ -166,13 +166,15 @@ class MainButton extends React.PureComponent {
     return (
       <GroupMainButton {...this.props} ref={this.ref}>
         <StyledMainButton {...this.props} onClick={this.onMainButtonClick}>
-          <Text fontSize='16px' fontWeight="600" color="#fff">
+          <Text fontSize='16px' fontWeight={600} color="#fff">
             {this.props.text}
           </Text>
         </StyledMainButton>
         {this.props.isDropdown ? (
           <StyledDropDown
-            isOpen={this.state.isOpen}
+            open={this.state.isOpen}
+            withBackdrop
+            clickOutsideAction={this.handleClick}
             {...this.props}
             onClick={this.onDropDownClick}
           />
