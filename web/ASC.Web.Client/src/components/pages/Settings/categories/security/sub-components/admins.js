@@ -34,7 +34,6 @@ import isEmpty from "lodash/isEmpty";
 const ToggleContentContainer = styled.div`
   .buttons_container {
     display: flex;
-    width: fit-content;
   }
   .toggle_content {
     margin-bottom: 24px;
@@ -45,7 +44,10 @@ const ToggleContentContainer = styled.div`
   }
 
   .remove_icon {
-    margin-left: 120px;
+    margin-left: 70px;
+    @media (max-width: 576px) {
+      margin-left: 0px;
+    }
   }
 
   .button_style {
@@ -339,16 +341,16 @@ class PureAdminsSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size='40px' />
+          <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
           <>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize='16px'
+              loaderSize="16px"
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize='12px'
+              fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
             />
@@ -442,7 +444,7 @@ class PureAdminsSettings extends Component {
                               type="page"
                               title={user.displayName}
                               isBold={true}
-                              fontSize='15px'
+                              fontSize="15px"
                               color={nameColor}
                               href={user.profileUrl}
                             >
