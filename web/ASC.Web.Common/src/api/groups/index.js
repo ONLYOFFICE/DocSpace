@@ -1,7 +1,8 @@
 import { request } from "../client";
+import * as fakeGroup from "./fake";
 
-export function getGroupList() {
-    return request({
+export function getGroupList(fake = false) {
+    return fake ? fakeGroup.getGroupList() : request({
       method: "get",
       url: "/group"
     });

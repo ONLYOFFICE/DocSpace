@@ -15,6 +15,7 @@ const Wrapper = styled.div`
 const HeaderContainer = styled(Headline)`
   margin-left: 16px;
   max-width: calc(100vw - 430px);
+
   @media ${utils.device.tablet} {
     max-width: calc(100vw - 64px);
   }
@@ -39,8 +40,20 @@ const SectionHeaderContent = (props) => {
 
   return (
     <Wrapper>
-      <IconButton iconName={'ArrowPathIcon'} size="16" onClick={onClick} />
-      <HeaderContainer type='content' truncate={true}>{headerText}</HeaderContainer>
+      <IconButton
+        iconName='ArrowPathIcon'
+        color="#A3A9AE"
+        size="16"
+        hoverColor="#657077"
+        isFill={true}
+        onClick={onClick}
+      />
+      <HeaderContainer
+        type='content'
+        truncate={true}
+      >
+        {headerText}
+      </HeaderContainer>
     </Wrapper>
   );
 };

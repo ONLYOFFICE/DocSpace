@@ -19,7 +19,6 @@ import {
   Link,
   Paging,
   IconButton,
-  AdvancedSelector,
   toastr,
   FilterInput,
   Button,
@@ -28,13 +27,13 @@ import {
   EmptyScreenContainer,
   Icons
 } from "asc-web-components";
+import { PeopleSelector } from "asc-web-common";
 import { getUserRole } from "../../../../../../store/settings/selectors";
 import isEmpty from "lodash/isEmpty";
 
 const ToggleContentContainer = styled.div`
   .buttons_container {
     display: flex;
-    width: fit-content;
   }
   .toggle_content {
     margin-bottom: 24px;
@@ -45,14 +44,18 @@ const ToggleContentContainer = styled.div`
   }
 
   .remove_icon {
-    margin-left: 120px;
+    margin-left: 70px;
+    @media (max-width: 576px) {
+      margin-left: 0px;
+  }
   }
 
-  .button_style {
+  .people-admin_container {
     margin-right: 16px;
+    position: relative;
   }
 
-  .advanced-selector {
+  .full-admin_container {
     position: relative;
   }
 
@@ -74,8 +77,6 @@ class PureAdminsSettings extends Component {
     this.state = {
       showSelector: false,
       showFullAdminSelector: false,
-      allOptions: [],
-      options: [],
       isLoading: false,
       showLoader: true,
       selectedOptions: []
@@ -83,9 +84,9 @@ class PureAdminsSettings extends Component {
   }
 
   componentDidMount() {
-    const { admins, options, fetchPeople } = this.props;
+    const { admins, fetchPeople } = this.props;
 
-    if (isEmpty(admins, true) || isEmpty(options, true)) {
+    if (isEmpty(admins, true)) {
       const newFilter = this.onAdminsFilter();
       fetchPeople(newFilter)
         .catch(error => {
@@ -93,8 +94,7 @@ class PureAdminsSettings extends Component {
         })
         .finally(() =>
           this.setState({
-            showLoader: false,
-            allOptions: this.props.options
+            showLoader: false
           })
         );
     } else {
@@ -117,30 +117,52 @@ class PureAdminsSettings extends Component {
   };
 
   onShowGroupSelector = () => {
+    /* console.log(
+      `onShowGroupSelector(showSelector: ${!this.state.showSelector})`
+    ); */
+
     this.setState({
-      showSelector: !this.state.showSelector,
-      options: this.props.options,
-      selectedOptions: []
+      showSelector: !this.state.showSelector
+    });
+  };
+ 
+  onShowFullAdminGroupSelector = () => {
+    /* console.log(
+      `onShowFullAdminGroupSelector(showFullAdminSelector: ${!this.state
+        .showFullAdminSelector})`
+    ); */
+
+    this.setState({
+      showFullAdminSelector: !this.state.showFullAdminSelector
     });
   };
 
-  onShowFullAdminGroupSelector = () => {
+  onCancelSelector = e => {
+    /* console.log(
+      `onCancelSelector(showSelector: false, showFullAdminSelector: false`,
+      e
+    ); */
+
+    if (
+      (this.state.showSelector &&
+        e.target.id === "people-admin-selector_button") ||
+      (this.state.showFullAdminSelector &&
+        e.target.id === "full-admin-selector_button")
+    ) {
+      // Skip double set of isOpen property
+      return;
+    }
+
     this.setState({
-      showFullAdminSelector: !this.state.showFullAdminSelector,
-      options: this.props.options,
-      selectedOptions: []
+      showSelector: false,
+      showFullAdminSelector: false
     });
   };
 
   onSelect = selected => {
     const { productId } = this.props;
-    this.onChangeAdmin(
-      selected.map(user => user.key),
-      true,
-      productId
-    );
+    this.onChangeAdmin(selected.map(user => user.key), true, productId);
     this.onShowGroupSelector();
-    this.setState({ selectedOptions: selected });
   };
 
   onSelectFullAdmin = selected => {
@@ -150,15 +172,6 @@ class PureAdminsSettings extends Component {
       "00000000-0000-0000-0000-000000000000"
     );
     this.onShowFullAdminGroupSelector();
-    this.setState({ selectedOptions: selected });
-  };
-
-  onSearchUsers = template => {
-    const options = this.filterUserSelectorOptions(
-      this.state.allOptions,
-      template
-    );
-    this.setState({ options: options });
   };
 
   onChangePage = pageItem => {
@@ -264,9 +277,6 @@ class PureAdminsSettings extends Component {
       .finally(() => this.onLoading(false));
   };
 
-  filterUserSelectorOptions = (options, template) =>
-    options.filter(option => option.label.indexOf(template) > -1);
-
   pageItems = () => {
     const { t, filter } = this.props;
     if (filter.total < filter.pageCount) return [];
@@ -325,8 +335,6 @@ class PureAdminsSettings extends Component {
     const { t, admins, filter } = this.props;
     const {
       showSelector,
-      options,
-      selectedOptions,
       isLoading,
       showFullAdminSelector,
       showLoader
@@ -339,70 +347,56 @@ class PureAdminsSettings extends Component {
     return (
       <>
         {showLoader ? (
-          <Loader className="pageLoader" type="rombs" size='40px' />
+          <Loader className="pageLoader" type="rombs" size="40px" />
         ) : (
           <>
             <RequestLoader
               visible={isLoading}
               zIndex={256}
-              loaderSize='16px'
+              loaderSize="16px"
               loaderColor={"#999"}
               label={`${t("LoadingProcessing")} ${t("LoadingDescription")}`}
-              fontSize='12px'
+              fontSize="12px"
               fontColor={"#999"}
               className="page_loader"
             />
 
             <ToggleContentContainer>
               <div className="buttons_container">
-                <Button
-                  className="button_style"
-                  size="medium"
-                  primary={true}
-                  label="Set people admin"
-                  isDisabled={isLoading}
-                  onClick={this.onShowGroupSelector}
-                />
-                <div style={{ right: 180 }} className="advanced-selector">
-                  <AdvancedSelector
-                    displayType="dropdown"
+                <div className="people-admin_container">
+                  <Button
+                    id="people-admin-selector_button"
+                    size="medium"
+                    primary={true}
+                    label="Set people admin"
+                    isDisabled={isLoading}
+                    onClick={this.onShowGroupSelector}
+                  />
+                  <PeopleSelector
+                    id="people-admin-selector"
                     isOpen={showSelector}
-                    placeholder="placeholder"
-                    options={options}
-                    onSearchChanged={this.onSearchUsers}
-                    //groups={groups}
                     isMultiSelect={true}
-                    buttonLabel="Add members"
+                    role="user"
                     onSelect={this.onSelect}
-                    onCancel={this.onShowGroupSelector}
-                    onAddNewClick={() => console.log("onAddNewClick")}
-                    selectAllLabel="selectorSelectAllText"
-                    selectedOptions={selectedOptions}
+                    onCancel={this.onCancelSelector}
                   />
                 </div>
-
-                <Button
-                  size="medium"
-                  primary={true}
-                  label="Set portal admin"
-                  isDisabled={isLoading}
-                  onClick={this.onShowFullAdminGroupSelector}
-                />
-                <div style={{ right: 160 }} className="advanced-selector">
-                  <AdvancedSelector
-                    displayType="dropdown"
+                <div className="full-admin_container">
+                  <Button
+                    id="full-admin-selector_button"
+                    size="medium"
+                    primary={true}
+                    label="Set portal admin"
+                    isDisabled={isLoading}
+                    onClick={this.onShowFullAdminGroupSelector}
+                  />
+                  <PeopleSelector
+                    id="full-admin-selector"
                     isOpen={showFullAdminSelector}
-                    placeholder="placeholder"
-                    options={options}
-                    onSearchChanged={this.onSearchUsers}
-                    //groups={groups}
                     isMultiSelect={true}
-                    buttonLabel="Add members"
+                    role="user"
                     onSelect={this.onSelectFullAdmin}
-                    onCancel={this.onShowFullAdminGroupSelector}
-                    onAddNewClick={() => console.log("onAddNewClick")}
-                    selectAllLabel="selectorSelectAllText"
-                    selectedOptions={selectedOptions}
+                    onCancel={this.onCancelSelector}
                   />
                 </div>
               </div>
@@ -415,6 +409,7 @@ class PureAdminsSettings extends Component {
               />
 
               {admins.length > 0 ? (
+                <>
                 <div className="wrapper">
                   <RowContainer manualHeight={`${admins.length * 50}px`}>
                     {admins.map(user => {
@@ -442,7 +437,7 @@ class PureAdminsSettings extends Component {
                               type="page"
                               title={user.displayName}
                               isBold={true}
-                              fontSize='15px'
+                              fontSize="15px"
                               color={nameColor}
                               href={user.profileUrl}
                             >
@@ -480,7 +475,6 @@ class PureAdminsSettings extends Component {
                     })}
                   </RowContainer>
                 </div>
-              ) : countElements > 25 ? (
                 <div className="wrapper">
                   <Paging
                     previousLabel={t("PreviousPage")}
@@ -499,6 +493,7 @@ class PureAdminsSettings extends Component {
                     disableNext={!filter.hasNext()}
                   />
                 </div>
+                </>
               ) : (
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"
@@ -545,18 +540,12 @@ const AdminsSettings = props => {
 };
 
 function mapStateToProps(state) {
-  const {
-    admins,
-    options,
-    owner,
-    filter
-  } = state.settings.security.accessRight;
+  const { admins, owner, filter } = state.settings.security.accessRight;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
-    options,
     filter
   };
 }
@@ -564,19 +553,20 @@ function mapStateToProps(state) {
 AdminsSettings.defaultProps = {
   admins: [],
   productId: "",
-  owner: {},
-  options: []
+  owner: {}
 };
 
 AdminsSettings.propTypes = {
   admins: PropTypes.arrayOf(PropTypes.object),
   productId: PropTypes.string,
-  owner: PropTypes.object,
-  options: PropTypes.arrayOf(PropTypes.object)
+  owner: PropTypes.object
 };
 
-export default connect(mapStateToProps, {
-  changeAdmins,
-  fetchPeople,
-  getUpdateListAdmin
-})(withRouter(AdminsSettings));
+export default connect(
+  mapStateToProps,
+  {
+    changeAdmins,
+    fetchPeople,
+    getUpdateListAdmin
+  }
+)(withRouter(AdminsSettings));

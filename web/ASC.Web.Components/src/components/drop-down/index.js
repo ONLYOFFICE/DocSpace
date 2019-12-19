@@ -113,13 +113,15 @@ class DropDown extends React.PureComponent {
   render() {
     const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
     const { directionX, directionY } = this.state;
-    const fullHeight = children && children.length * 36;
+    const isTablet = window.innerWidth <= 1024; //TODO: Make some better
+    const itemHeight = isTablet ? 40 : 36;
+    const fullHeight = children && children.length * itemHeight;
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
     //console.log("DropDown render");
     return (
       <>
-        {(withBackdrop && open) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
+        {(withBackdrop && open && isTablet) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
         <StyledDropdown
           ref={this.dropDownRef}
           {...this.props}
@@ -133,7 +135,7 @@ class DropDown extends React.PureComponent {
             ? <FixedSizeList
               height={calculatedHeight}
               width={this.state.width}
-              itemSize={36}
+              itemSize={itemHeight}
               itemCount={children.length}
               itemData={children}
               outerElementType={CustomScrollbarsVirtualList}

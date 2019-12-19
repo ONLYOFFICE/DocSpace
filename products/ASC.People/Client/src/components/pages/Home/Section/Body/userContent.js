@@ -26,6 +26,7 @@ const getFormatedGroups = (user, status) => {
   if (temp.length <= 1) {
     return (
       <Link
+        isTextOverflow={true}
         containerWidth='160px'
         type='action'
         title={temp[0].label}
@@ -71,7 +72,7 @@ const UserContent = ({ user, history, settings }) => {
   );
 
   const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
-  const sideInfoColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
+  const sideInfoColor = ((status === 'pending') || (status === 'disabled')) ? '#D0D5DA' : '#A3A9AE';
   //const { t } = useTranslation();
 
   const headDepartmentStyle = {
@@ -79,7 +80,9 @@ const UserContent = ({ user, history, settings }) => {
   }
 
   return (
-    <RowContent>
+    <RowContent
+      sideColor={sideInfoColor}
+    >
       <Link type='page' title={displayName} isBold={true} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
