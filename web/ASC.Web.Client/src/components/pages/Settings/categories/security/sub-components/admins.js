@@ -417,90 +417,91 @@ class PureAdminsSettings extends Component {
               />
 
               {admins.length > 0 ? (
-                <div className="wrapper">
-                  <RowContainer manualHeight={`${admins.length * 50}px`}>
-                    {admins.map(user => {
-                      const element = (
-                        <Avatar
-                          size="small"
-                          role={getUserRole(user)}
-                          userName={user.displayName}
-                          source={user.avatar}
-                        />
-                      );
-                      const nameColor =
-                        user.status === "pending" ? "#A3A9AE" : "#333333";
+                <>
+                  <div className="wrapper">
+                    <RowContainer manualHeight={`${admins.length * 50}px`}>
+                      {admins.map(user => {
+                        const element = (
+                          <Avatar
+                            size="small"
+                            role={getUserRole(user)}
+                            userName={user.displayName}
+                            source={user.avatar}
+                          />
+                        );
+                        const nameColor =
+                          user.status === "pending" ? "#A3A9AE" : "#333333";
 
-                      return (
-                        <Row
-                          key={user.id}
-                          status={user.status}
-                          data={user}
-                          element={element}
-                        >
-                          <RowContent disableSideInfo={true}>
-                            <Link
-                              containerWidth="120px"
-                              type="page"
-                              title={user.displayName}
-                              isBold={true}
-                              fontSize="15px"
-                              color={nameColor}
-                              href={user.profileUrl}
-                            >
-                              {user.displayName}
-                            </Link>
-                            <div style={{ maxWidth: 120 }} />
+                        return (
+                          <Row
+                            key={user.id}
+                            status={user.status}
+                            data={user}
+                            element={element}
+                          >
+                            <RowContent disableSideInfo={true}>
+                              <Link
+                                containerWidth="120px"
+                                type="page"
+                                title={user.displayName}
+                                isBold={true}
+                                fontSize="15px"
+                                color={nameColor}
+                                href={user.profileUrl}
+                              >
+                                {user.displayName}
+                              </Link>
+                              <div style={{ maxWidth: 120 }} />
 
-                            <Text>
-                              {user.isAdmin
-                                ? "Full access"
-                                : "People module admin"}
-                            </Text>
+                              <Text>
+                                {user.isAdmin
+                                  ? "Full access"
+                                  : "People module admin"}
+                              </Text>
 
-                            {!user.isOwner ? (
-                              <IconButton
-                                className="remove_icon"
-                                size="16"
-                                isDisabled={isLoading}
-                                onClick={this.onChangeAdmin.bind(
-                                  this,
-                                  [user.id],
-                                  false,
-                                  "00000000-0000-0000-0000-000000000000"
-                                )}
-                                iconName={"CatalogTrashIcon"}
-                                isFill={true}
-                                isClickable={false}
-                              />
-                            ) : (
-                              <div />
-                            )}
-                          </RowContent>
-                        </Row>
-                      );
-                    })}
-                  </RowContainer>
-                </div>
-              ) : countElements > 25 ? (
-                <div className="wrapper">
-                  <Paging
-                    previousLabel={t("PreviousPage")}
-                    nextLabel={t("NextPage")}
-                    openDirection="top"
-                    countItems={this.countItems()}
-                    pageItems={this.pageItems()}
-                    displayItems={false}
-                    selectedPageItem={this.selectedPageItem()}
-                    selectedCountItem={this.selectedCountItem()}
-                    onSelectPage={this.onChangePage}
-                    onSelectCount={this.onChangePageSize}
-                    previousAction={this.onPrevClick}
-                    nextAction={this.onNextClick}
-                    disablePrevious={!filter.hasPrev()}
-                    disableNext={!filter.hasNext()}
-                  />
-                </div>
+                              {!user.isOwner ? (
+                                <IconButton
+                                  className="remove_icon"
+                                  size="16"
+                                  isDisabled={isLoading}
+                                  onClick={this.onChangeAdmin.bind(
+                                    this,
+                                    [user.id],
+                                    false,
+                                    "00000000-0000-0000-0000-000000000000"
+                                  )}
+                                  iconName={"CatalogTrashIcon"}
+                                  isFill={true}
+                                  isClickable={false}
+                                />
+                              ) : (
+                                <div />
+                              )}
+                            </RowContent>
+                          </Row>
+                        );
+                      })}
+                    </RowContainer>
+                  </div>
+                  <div className="wrapper">
+                    <Paging
+                      previousLabel={t("PreviousPage")}
+                      nextLabel={t("NextPage")}
+                      openDirection="top"
+                      countItems={this.countItems()}
+                      pageItems={this.pageItems()}
+                      displayItems={false}
+                      selectedPageItem={this.selectedPageItem()}
+                      selectedCountItem={this.selectedCountItem()}
+                      onSelectPage={this.onChangePage}
+                      onSelectCount={this.onChangePageSize}
+                      previousAction={this.onPrevClick}
+                      nextAction={this.onNextClick}
+                      disablePrevious={!filter.hasPrev()}
+                      disableNext={!filter.hasNext()}
+                    />
+                  </div>
+                </>
               ) : (
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"
