@@ -10,7 +10,7 @@
     ]
   },
   "dialogs": {
-    "Invite": {
+    "InviteDialog": {
       "Resource": [
         "HelpAnswerLinkInviteSettings",
         "CopyToClipboard",

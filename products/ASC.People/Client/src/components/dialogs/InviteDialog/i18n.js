@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === "production") {
         useSuspense: true
       },
       backend: {
-        loadPath: `${config.homepage}/locales/Invite/{{lng}}/{{ns}}.json`
+        loadPath: `${config.homepage}/locales/InviteDialog/{{lng}}/{{ns}}.json`
       }
     });
 } else if (process.env.NODE_ENV === "development") {
@@ -31,6 +31,9 @@ if (process.env.NODE_ENV === "production") {
   const resources = {
     en: {
       translation: require("./locales/en/translation.json")
+    },
+    ru: {
+      translation: require("./locales/ru/translation.json")
     }
   };
 

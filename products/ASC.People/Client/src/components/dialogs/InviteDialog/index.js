@@ -24,14 +24,18 @@ const textAreaName = "link-textarea";
 class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    const { language, userInvitationLink, guestInvitationLink } = this.props;
     this.state = {
       isGuest: false,
-      userInvitationLink: this.props.userInvitationLink,
-      guestInvitationLink: this.props.guestInvitationLink,
+      userInvitationLink,
+      guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
       visible: false
     };
+
+    i18n.changeLanguage(language);
   }
 
   onCopyLinkToClipboard = () => {
@@ -94,7 +98,7 @@ class InviteDialogComponent extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text className="text-dialog" as="p">
+              <Text as="p">
                 {t("HelpAnswerLinkInviteSettings")}
               </Text>
               <Text className="text-dialog" as="p">
@@ -166,7 +170,8 @@ const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink
+    guestInvitationLink: state.portal.inviteLinks.guestLink,
+    language: state.auth.user.cultureName,
   };
 };
 
