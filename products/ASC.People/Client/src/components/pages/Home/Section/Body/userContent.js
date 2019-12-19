@@ -26,6 +26,7 @@ const getFormatedGroups = (user, status) => {
   if (temp.length <= 1) {
     return (
       <Link
+        isTextOverflow={true}
         containerWidth='160px'
         type='action'
         title={temp[0].label}
