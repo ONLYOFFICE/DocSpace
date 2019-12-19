@@ -8,6 +8,7 @@ const Container = ({
   options,
   groups,
   isMultiSelect,
+  allowGroupSelection,
   hasSelected,
   ...props
 }) => <div {...props} />;
