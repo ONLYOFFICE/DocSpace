@@ -3,11 +3,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { Avatar, Text } from "asc-web-components";
 import AdvancedSelector from "../AdvancedSelector";
 import { getUserList } from "../../api/people";
 import { getGroupList } from "../../api/groups";
 import Filter from "../../api/people/filter";
+import UserTooltip from "./sub-components/UserTooltip";
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -126,35 +126,7 @@ class PeopleSelector extends React.Component {
     // console.log("onOptionTooltipShow", index, user);
 
     return (
-      <div
-        style={{
-          width: 253,
-          minHeight: 63,
-          display: "grid",
-          gridTemplateColumns: "30px 1fr",
-          gridTemplateRows: "1fr",
-          gridColumnGap: 8
-        }}
-      >
-        <Avatar
-          size="small"
-          role="user"
-          source={user.avatarUrl}
-          userName=""
-          editing={false}
-        />
-        <div>
-          <Text isBold={true} fontSize="13px" fontWeight={700}>
-            {user.label}
-          </Text>
-          <Text color="#A3A9AE" fontSize="13px" style={{ paddingBottom: 8 }}>
-            {user.email}
-          </Text>
-          <Text fontSize="13px" fontWeight={600}>
-            {user.position}
-          </Text>
-        </div>
-      </div>
+      <UserTooltip avatarUrl={user.avatarUrl} label={user.label} email={user.email} position={user.position} />
     );
   };
 
