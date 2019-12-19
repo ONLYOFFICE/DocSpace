@@ -80,7 +80,7 @@ const Body = ({ language }) => {
   }, [language]);
 
   const gitHub = "GitHub";
-  const license = "GNU GPL v.3";
+  const license = "AGPL-3.0";
   const link = "www.onlyoffice.com";
   const phone = "+371 660-16425";
   const supportLink = "support@onlyoffice.com";
