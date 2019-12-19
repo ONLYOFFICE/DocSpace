@@ -92,10 +92,13 @@ const StyledSelector = styled(Container)`
     grid-template-rows: ${props =>
         props.displayType === "aside"
           ? props.isMultiSelect && props.allowGroupSelection && props.options && props.options.length > 0
-            ? props.groups && props.groups.length
+            ? props.groups && props.groups.length > 0
               ? "100px"
               : "30px"
-            : "70px"
+            :  
+              props.groups && props.groups.length > 0
+                ? "70px"
+                : "30px"
           : "30px"} 0.98fr;
     grid-template-areas: "header-options" "body-options";
 
