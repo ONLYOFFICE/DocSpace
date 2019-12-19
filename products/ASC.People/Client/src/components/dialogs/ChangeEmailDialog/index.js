@@ -31,6 +31,13 @@ class ChangeEmailDialogComponent extends React.Component {
     i18n.changeLanguage(language);
   }
 
+  componentDidUpdate(prevProps) {
+    const { email } = this.props;
+    if (prevProps.email !== email) {
+      this.setState({ email });
+    }
+  }
+
   onValidateEmailInput = value => this.setState({ isEmailValid: value });
 
   onChangeEmailInput = e => this.setState({ email: e.target.value });
@@ -47,7 +54,6 @@ class ChangeEmailDialogComponent extends React.Component {
           this.setState({ isRequestRunning: false });
         });
     })
-
   }
 
 
@@ -55,7 +61,7 @@ class ChangeEmailDialogComponent extends React.Component {
     console.log("ChangeEmailDialog render");
     const { t, visible, onClose } = this.props;
     const { isEmailValid, isRequestRunning, email } = this.state;
-    const isSendButtonDisabled = !email || !email.length || !isEmailValid || email.toLowerCase() === this.props.email.toLowerCase();
+    const isSendButtonDisabled = !isEmailValid || email.toLowerCase() === this.props.email.toLowerCase();
 
     return (
       <ModalDialogContainer>
