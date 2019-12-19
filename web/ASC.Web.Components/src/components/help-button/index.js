@@ -115,7 +115,7 @@ class HelpButton extends React.Component {
   };
 
   onClick = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    this.setState({isOpen: !this.state.isOpen});
   };
 
   render() {
@@ -126,8 +126,12 @@ class HelpButton extends React.Component {
       offsetRight,
       offsetLeft,
       zIndex,
-      helpButtonHeaderContent,
-      className,
+      helpButtonHeaderContent, 
+      iconName, 
+      color, 
+      getContent, 
+      className, 
+      dataTip,
       style
     } = this.props;
 
@@ -137,44 +141,61 @@ class HelpButton extends React.Component {
           id={this.id}
           className={className}
           isClickable={true}
-          iconName="QuestionIcon"
+          iconName={iconName}
           size={13}
+          color={color}
+          data-for={this.id}
+          dataTip={dataTip}
           onClick={this.onClick}
         />
-        {displayType === "dropdown" ? (
-          <Tooltip
-            id={this.id}
-            reference={this.refTooltip}
-            effect="solid"
-            place={place}
-            offsetRight={offsetRight}
-            offsetLeft={offsetLeft}
-            afterShow={this.afterShow}
-            afterHide={this.afterHide}
-          >
-            {tooltipContent}
-          </Tooltip>
-        ) : (
-            <>
-              <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
-              <Aside visible={isOpen} scale={false} zIndex={zIndex}>
-                <Content>
-                  {helpButtonHeaderContent && (
+        {displayType === "dropdown" ? 
+        getContent ? 
+        <Tooltip
+          id={this.id}
+          reference={this.refTooltip}
+          effect="solid"
+          place={place}
+          offsetRight={offsetRight}
+          offsetLeft={offsetLeft}
+          afterShow={this.afterShow}
+          afterHide={this.afterHide}
+          getContent={getContent}
+        />
+        :
+        <Tooltip
+          id={this.id}
+          reference={this.refTooltip}
+          effect="solid"
+          place={place}
+          offsetRight={offsetRight}
+          offsetLeft={offsetLeft}
+          afterShow={this.afterShow}
+          afterHide={this.afterHide}
+          getContent={getContent}
+        >
+          {tooltipContent}
+        </Tooltip>
+        : (
+          <>
+            <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
+            <Aside visible={isOpen} scale={false} zIndex={zIndex}>
+              <Content>
+                {helpButtonHeaderContent && (
                     <HeaderContent>
                       <Heading 
                         className='header'
                         size='medium'
                         truncate={true}
                         >
-                          {helpButtonHeaderContent}
+                        {helpButtonHeaderContent}
                       </Heading>
                     </HeaderContent>
-                  )}
-                  <Body>{tooltipContent}</Body>
-                </Content>
-              </Aside>
-            </>
-          )}
+                )}
+                <Body>{tooltipContent}</Body>
+              </Content>
+            </Aside>
+          </>
+        )}
       </div>
     );
   }
@@ -185,8 +206,7 @@ HelpButton.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
   ]),
-  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
-    .isRequired,
+  tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   offsetRight: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
@@ -195,6 +215,10 @@ HelpButton.propTypes = {
   zIndex: PropTypes.number,
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   helpButtonHeaderContent: PropTypes.string,
+  iconName: PropTypes.string,
+  color: PropTypes.string,
+  dataTip: PropTypes.string,
+  getContent: PropTypes.func,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
@@ -206,7 +230,8 @@ HelpButton.defaultProps = {
   offsetLeft: 0,
   zIndex: 310,
   displayType: "auto",
-  className: "icon-button"
+  className: "icon-button",
+  iconName: "QuestionIcon"
 };
 
 export default HelpButton;

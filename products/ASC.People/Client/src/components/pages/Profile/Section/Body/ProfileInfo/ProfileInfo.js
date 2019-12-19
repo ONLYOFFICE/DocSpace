@@ -27,17 +27,17 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 400px;
+  width: 360px;
 `;
 
 const InfoItemLabel = styled.div`
-  width: 140px;
+  width: 130px;
   white-space: nowrap;
   color: #A3A9AE;
 `;
 
 const InfoItemValue = styled.div`
-  width: 240px;
+  width: 260px;
 
   .language-combo {
     padding-top: 4px;

@@ -4,3 +4,6 @@ export { default as Login } from "./login";
 export { default as StudioLayout } from "./layout";
 export { default as ModuleTile } from "./module-tile";
 export { default as Headline } from "./headline";
+export { default as PeopleSelector } from "./PeopleSelector";
+export { default as GroupSelector } from "./GroupSelector";
+export { default as AdvancedSelector } from './AdvancedSelector'
