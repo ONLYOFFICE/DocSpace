@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Icons } from '../icons'
+import { tablet } from '../../utils/device'
 
 const itemTruncate = css`
     white-space: nowrap;
@@ -82,6 +83,10 @@ const StyledDropdownItem = styled.div`
 
         text-transform: uppercase;
       `
+    }
+
+    @media ${ tablet } {
+      line-height: 40px;
     }
   
     ${props => props.disabled && disabledAndHeaderStyle }

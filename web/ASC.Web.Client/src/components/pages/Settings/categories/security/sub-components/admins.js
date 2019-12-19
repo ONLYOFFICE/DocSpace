@@ -34,7 +34,6 @@ import isEmpty from "lodash/isEmpty";
 const ToggleContentContainer = styled.div`
   .buttons_container {
     display: flex;
-    width: fit-content;
   }
   .toggle_content {
     margin-bottom: 24px;
@@ -45,7 +44,10 @@ const ToggleContentContainer = styled.div`
   }
 
   .remove_icon {
-    margin-left: 120px;
+    margin-left: 70px;
+    @media (max-width: 576px) {
+      margin-left: 0px;
+  }
   }
 
   .people-admin_container {
@@ -407,6 +409,7 @@ class PureAdminsSettings extends Component {
               />
 
               {admins.length > 0 ? (
+                <>
                 <div className="wrapper">
                   <RowContainer manualHeight={`${admins.length * 50}px`}>
                     {admins.map(user => {
@@ -472,7 +475,6 @@ class PureAdminsSettings extends Component {
                     })}
                   </RowContainer>
                 </div>
-              ) : countElements > 25 ? (
                 <div className="wrapper">
                   <Paging
                     previousLabel={t("PreviousPage")}
@@ -491,6 +493,7 @@ class PureAdminsSettings extends Component {
                     disableNext={!filter.hasNext()}
                   />
                 </div>
+                </>
               ) : (
                 <EmptyScreenContainer
                   imageSrc="products/people/images/empty_screen_filter.png"

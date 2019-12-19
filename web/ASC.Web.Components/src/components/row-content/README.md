@@ -63,4 +63,5 @@ Each not main child can take containerWidth property for task of width of child'
 | `containerWidth`  |    `string`    |    -     |   -    | `100px` | For task of width of child's container |
 | `disableSideInfo` |     `bool`     |    -     |   -    | `false` | If you do not need SideElements        |
 | `id`              |    `string`    |    -     |   -    |    -    | Accepts id                             |
+| `sideColor`       |    `string`    |    -     |   -    |    -    | Need for change side information color |
 | `style`           | `obj`, `array` |    -     |   -    |    -    | Accepts css style                      |

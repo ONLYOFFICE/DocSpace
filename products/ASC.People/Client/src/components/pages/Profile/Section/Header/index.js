@@ -39,18 +39,28 @@ const {
 } = api.people;
 const { EmployeeStatus } = constants;
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
-
 const HeaderContainer = styled(Headline)`
   margin-left: 16px;
-  margin-right: 16px;
   max-width: calc(100vw - 430px);
+
   @media ${utils.device.tablet} {
     max-width: calc(100vw - 96px);
   }
+`;
+
+const StyledContainer = styled.div`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+    .action-button {
+      margin-left: 16px;
+
+      @media (max-width: 1024px) {
+        margin-left: auto;
+      }
+    }
 `;
 
 class SectionHeaderContent extends React.PureComponent {
@@ -93,7 +103,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   openAvatarEditor = () => {
     getUserPhoto(this.state.profile.id).then(userPhotoData => {
-      if(userPhotoData.original){
+      if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
           this.setState({
@@ -105,7 +115,7 @@ class SectionHeaderContent extends React.PureComponent {
             },
             visibleAvatarEditor: true
           });
-        }else{
+        } else {
           this.setState({
             avatar: {
               tmpFile: this.state.avatar.tmpFile,
@@ -128,7 +138,7 @@ class SectionHeaderContent extends React.PureComponent {
     loadAvatar(this.state.profile.id, data)
       .then(response => {
         var img = new Image();
-        img.onload = function() {
+        img.onload = function () {
           var stateCopy = Object.assign({}, _this.state);
           stateCopy.avatar = {
             tmpFile: response.data,
@@ -464,15 +474,15 @@ class SectionHeaderContent extends React.PureComponent {
             ? viewer.isOwner
               ? {}
               : {
-                  key: "delete-profile",
-                  label: t("DeleteSelfProfile"),
-                  onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
-                }
-            : {
-                key: "disable",
-                label: t("DisableUserButton"),
-                onClick: this.onDisableClick
+                key: "delete-profile",
+                label: t("DeleteSelfProfile"),
+                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
               }
+            : {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick
+            }
         ];
       case "disabled":
         return [
@@ -520,17 +530,17 @@ class SectionHeaderContent extends React.PureComponent {
             onClick: this.openAvatarEditor
           },
           !isMe(user, viewer.userName) &&
-            (user.status === EmployeeStatus.Active
-              ? {
-                  key: "disable",
-                  label: t("DisableUserButton"),
-                  onClick: this.onDisableClick
-                }
-              : {
-                  key: "enable",
-                  label: t("EnableUserButton"),
-                  onClick: this.onEnableClick
-                }),
+          (user.status === EmployeeStatus.Active
+            ? {
+              key: "disable",
+              label: t("DisableUserButton"),
+              onClick: this.onDisableClick
+            }
+            : {
+              key: "enable",
+              label: t("EnableUserButton"),
+              onClick: this.onEnableClick
+            }),
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
@@ -553,21 +563,22 @@ class SectionHeaderContent extends React.PureComponent {
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
-      <div style={wrapperStyle}>
-        <div style={{ width: "16px" }}>
-          <IconButton
-            iconName={"ArrowPathIcon"}
-            color="#A3A9AE"
-            size="16"
-            onClick={this.goBack}
-          />
-        </div>
+      <StyledContainer>
+        <IconButton
+          iconName="ArrowPathIcon"
+          color="#A3A9AE"
+          size="16"
+          hoverColor="#657077"
+          isFill={true}
+          onClick={this.goBack}
+        />
         <HeaderContainer type='content' truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
         </HeaderContainer>
         {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
           <ContextMenuButton
+            className="action-button"
             directionX="right"
             title={t("Actions")}
             iconName="VerticalDotsIcon"
@@ -596,7 +607,7 @@ class SectionHeaderContent extends React.PureComponent {
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("unknownError")}
         />
-      </div>
+      </StyledContainer>
     );
   }
 }
