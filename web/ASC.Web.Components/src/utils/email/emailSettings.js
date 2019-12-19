@@ -9,6 +9,28 @@ export class EmailSettings {
     this.allowLocalDomainName = false;
   }
 
+  static equals = (settings1, settings2) => {
+    const instance1 = convertEmailSettings(settings1);
+    const instance2 = convertEmailSettings(settings2);
+    const comparedProperties = [
+      'allowDomainPunycode',
+      'allowLocalPartPunycode',
+      'allowDomainIp',
+      'allowStrictLocalPart',
+      'allowSpaces',
+      'allowName',
+      'allowLocalDomainName'
+    ];
+    const propLength = comparedProperties.length;
+    for (let i = 0; i < propLength; i++) {
+      const comparedProp = comparedProperties[i]
+      if (instance1[comparedProp] !== instance2[comparedProp]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   get allowDomainPunycode() {
     return this._allowDomainPunycode;
   }
@@ -18,7 +40,7 @@ export class EmailSettings {
       this._allowDomainPunycode = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
     }
   }
 
@@ -31,7 +53,7 @@ export class EmailSettings {
       this._allowLocalPartPunycode = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
     }
   }
 
@@ -44,7 +66,7 @@ export class EmailSettings {
       this._allowDomainIp = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowDomainIp option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowDomainIp option. Use boolean value`);
     }
   }
 
@@ -57,7 +79,7 @@ export class EmailSettings {
       this._allowStrictLocalPart = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
     }
   }
 
@@ -70,7 +92,7 @@ export class EmailSettings {
       this._allowSpaces = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowSpaces option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowSpaces option. Use boolean value`);
     }
   }
 
@@ -83,7 +105,7 @@ export class EmailSettings {
       this._allowName = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowName option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowName option. Use boolean value`);
     }
   }
 
@@ -96,7 +118,7 @@ export class EmailSettings {
       this._allowLocalDomainName = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
     }
   }
 
@@ -123,7 +145,7 @@ export class EmailSettings {
   }
 }
 
-export const checkAndConvertEmailSettings = (settings) => {
+export const convertEmailSettings = (settings) => {
   if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
     const defaultSettings = new EmailSettings();
     Object.keys(settings).map((item) => {
@@ -137,24 +159,4 @@ export const checkAndConvertEmailSettings = (settings) => {
   else if (typeof settings === 'object' && settings instanceof EmailSettings) {
     return settings;
   }
-}
-
-export const isEqualEmailSettings = (settings1, settings2) => {
-  const comparedProperties = [
-    'allowDomainPunycode',
-    'allowLocalPartPunycode',
-    'allowDomainIp',
-    'allowStrictLocalPart',
-    'allowSpaces',
-    'allowName',
-    'allowLocalDomainName'
-  ];
-  const propLength = comparedProperties.length;
-  for (let i = 0; i < propLength; i++) {
-    const comparedProp = comparedProperties[i]
-    if (settings1[comparedProp] !== settings2[comparedProp]) {
-      return false;
-    }
-  }
-  return true;
 }

@@ -26,7 +26,7 @@ You can apply all properties of the `TextInput` component to the component
 | Props                |                 Type                  | Required | Values |     Default     | Description                                                              |
 | -------------------- | :-----------------------------------: | :------: | :----: | :-------------: | ------------------------------------------------------------------------ |
 | `className`          |               `string`                |    -     |   -    |        -        | Accepts class                                                            |
-| `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value                          |
+| `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value. Function must return boolean result of validating                         |
 | `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                            |
 | `id`                 |               `string`                |    -     |   -    |        -        | Accepts id                                                               |
 | `isValid`            |                `bool`                 |    -     |   -    |        -        | Used in your custom validation function for change border-color of input |

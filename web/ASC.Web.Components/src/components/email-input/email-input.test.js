@@ -33,13 +33,13 @@ describe('<EmailInput />', () => {
 
     let event = { target: { value: "simple@example.com" } };
 
-    wrapper.onChangeAction(event);
+    wrapper.onChange(event);
 
     expect(wrapper.state.isValidEmail).toBe(true);
 
     event = { target: { value: "" } };
 
-    wrapper.onChangeAction(event);
+    wrapper.onChange(event);
 
     expect(wrapper.state.isValidEmail).toBe(false);
   });
@@ -52,8 +52,8 @@ describe('<EmailInput />', () => {
     expect(wrapper.state().inputValue).toBe(email);
 
     wrapper.setProps({ value: 'bar' });
-    
-    //expect(wrapper.state.isValidEmail).toBe(false);
+
+    expect(wrapper.state().isValidEmail).toBe(false);
 
     expect(wrapper.state().inputValue).toBe("bar");
   });
@@ -97,7 +97,7 @@ describe('<EmailInput />', () => {
     expect(shouldUpdate).toBe(true);
     expect(wrapper.state('emailSettings')).toBe(emailSettings);
   });
-  it('isValidEmail is "true" after deleting value', () => {
+  it('isValidEmail is "false" after deleting value', () => {
 
     const wrapper = mount(<EmailInput {...baseProps} />);
 
@@ -111,7 +111,7 @@ describe('<EmailInput />', () => {
 
     wrapper.simulate('change', emptyValue);
 
-    expect(wrapper.state('isValidEmail')).toBe(true);
+    expect(wrapper.state('isValidEmail')).toBe(false);
   });
 
   it('not re-render test', () => {
