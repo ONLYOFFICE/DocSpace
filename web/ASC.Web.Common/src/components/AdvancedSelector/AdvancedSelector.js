@@ -142,6 +142,7 @@ AdvancedSelector.propTypes = {
   isDisabled: PropTypes.bool,
   selectedAll: PropTypes.bool,
   isOpen: PropTypes.bool,
+  allowGroupSelection: PropTypes.bool,
   allowCreation: PropTypes.bool,
   allowAnyClickClose: PropTypes.bool,
   hasNextPage: PropTypes.bool,
@@ -162,6 +163,7 @@ AdvancedSelector.defaultProps = {
   size: "full",
   buttonLabel: "Add members",
   selectAllLabel: "Select all",
+  allowGroupSelection: false,
   allowAnyClickClose: true,
   displayType: "auto",
   options: []

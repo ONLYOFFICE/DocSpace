@@ -66,7 +66,8 @@ const Selector = props => {
     getOptionTooltipContent,
     onSearchChanged,
     onGroupChanged,
-    size
+    size,
+    allowGroupSelection
   } = props;
 
   //console.log("options", options);
@@ -413,11 +414,11 @@ const Selector = props => {
   const getGroupLabel = useCallback(
     group => {
       const selected = getGroupSelected(group);
-      return isMultiSelect
+      return isMultiSelect && allowGroupSelection
         ? `${group.label} (${group.total}/${selected})`
         : group.label;
     },
-    [isMultiSelect]
+    [isMultiSelect, allowGroupSelection]
   );
 
   const getSelectorGroups = useCallback(
@@ -460,7 +461,7 @@ const Selector = props => {
           style={style}
           className={`row-block${isSelected ? " selected" : ""}`}
         >
-          {isMultiSelect && (
+          {isMultiSelect && allowGroupSelection && (
             <Checkbox
               id={group.key}
               value={`${index}`}
@@ -483,7 +484,7 @@ const Selector = props => {
         </div>
       );
     },
-    [groups, currentGroup, isMultiSelect, selectedGroupList]
+    [groups, currentGroup, isMultiSelect, selectedGroupList, allowGroupSelection]
   );
 
   const hasSelected = useCallback(() => {
@@ -520,6 +521,7 @@ const Selector = props => {
       options={options}
       groups={groups}
       isMultiSelect={isMultiSelect}
+      allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
     >
       <Column
@@ -552,7 +554,7 @@ const Selector = props => {
                 size="content"
                 onSelect={onGroupSelect}
               />
-              {isMultiSelect && options && options.length > 0 && (
+              {isMultiSelect && allowGroupSelection && options && options.length > 0 && (
                 <Checkbox
                   className="options_group_select_all"
                   label={selectAllLabel}
@@ -658,6 +660,7 @@ Selector.propTypes = {
 
   isDisabled: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
+  allowGroupSelection: PropTypes.bool,
 
   selectButtonLabel: PropTypes.string,
   selectAllLabel: PropTypes.string,

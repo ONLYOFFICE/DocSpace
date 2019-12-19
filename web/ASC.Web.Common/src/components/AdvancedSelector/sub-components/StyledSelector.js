@@ -91,7 +91,7 @@ const StyledSelector = styled(Container)`
     grid-template-columns: 1fr;
     grid-template-rows: ${props =>
         props.displayType === "aside"
-          ? props.isMultiSelect && props.options && props.options.length > 0
+          ? props.isMultiSelect && props.allowGroupSelection && props.options && props.options.length > 0
             ? props.groups && props.groups.length
               ? "100px"
               : "30px"
