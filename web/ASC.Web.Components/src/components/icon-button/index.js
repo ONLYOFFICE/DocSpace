@@ -9,7 +9,8 @@ const StyledOuter = styled.div`
     props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
   cursor: ${props =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
-  line-height: 0;
+    line-height: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 class IconButton extends React.PureComponent {
   constructor(props) {
