@@ -8,7 +8,7 @@ const ModalDialogContainer = styled.div`
   }
 
   .text-dialog {
-    margin-top: 16px;
+    margin: 16px 0;
   }
 
   .input-dialog {
