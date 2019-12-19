@@ -1,0 +1,9 @@
+{
+  "SearchPlaceholder": "Search",
+  "AddDepartmentsButtonLabel": "Add departments",
+  "SelectAllLabel": "Select all",
+  "EmptySearchOptionsLabel": "There are no departments with such name",
+  "EmptyOptionsLabel": "There are no departments",
+  "LoadingLabel": "Loading... Please wait..."
+
+}

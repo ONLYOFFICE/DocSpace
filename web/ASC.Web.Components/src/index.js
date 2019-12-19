@@ -1,6 +1,6 @@
-export { default as AdvancedSelector } from './components/advanced-selector'
 export { default as Avatar } from './components/avatar'
 export { default as AvatarEditor } from './components/avatar-editor'
+export { default as Aside } from './components/layout/sub-components/aside'
 export { default as Backdrop } from './components/backdrop'
 export { default as Badge } from './components/badge'
 export { default as Button } from './components/button'
