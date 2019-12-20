@@ -92,7 +92,7 @@ const UserContent = ({ user, history, settings }) => {
         ?
           <Text
             style={headDepartmentStyle}
-            as="span"
+            as="div"
             color={sideInfoColor}
             fontSize='12px'
             title={title}
