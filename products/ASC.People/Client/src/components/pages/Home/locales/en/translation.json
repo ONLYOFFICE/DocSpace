@@ -39,6 +39,7 @@
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
 
   "CustomHeadOfDepartment": " {{headOfDepartment}}",
   "CustomTypeGuest": "{{typeGuest}}",

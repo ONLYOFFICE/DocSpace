@@ -1,6 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Backdrop from "../backdrop";
+import { withTranslation } from 'react-i18next';
+import i18n from './i18n';
+import { connect } from "react-redux";
 
 import Article from "./sub-components/article";
 import ArticleHeader from "./sub-components/article-header";
@@ -14,7 +17,7 @@ import SectionBody from "./sub-components/section-body";
 import SectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
 
-class PageLayout extends React.PureComponent {
+class PageLayoutComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = this.mapPropsToState(props);
@@ -141,9 +144,9 @@ class PageLayout extends React.PureComponent {
             {this.state.isArticleBodyAvailable && (
               <ArticlePinPanel
                 pinned={this.state.isArticlePinned}
-                pinText="Pin this panel"
+                pinText={this.props.t('PinPanel')}
                 onPin={this.pinArticle}
-                unpinText="Unpin this panel"
+                unpinText={this.props.t('UnpinPanel')}
                 onUnpin={this.unpinArticle}
               />
             )}
@@ -180,7 +183,19 @@ class PageLayout extends React.PureComponent {
   }
 }
 
-PageLayout.propTypes = {
+const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
+const Pagelayout = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return <PageLayoutTranslated i18n={i18n} {...props} />
+}
+
+Pagelayout.propTypes = {
+  language:PropTypes.string,
+}
+
+PageLayoutComponent.propTypes = {
   isBackdropVisible: PropTypes.bool,
   isArticleVisible: PropTypes.bool,
   isArticlePinned: PropTypes.bool,
@@ -214,14 +229,24 @@ PageLayout.propTypes = {
     PropTypes.node
   ]),
 
-  withBodyScroll: PropTypes.bool
+  withBodyScroll: PropTypes.bool,
+  t: PropTypes.func,
 };
 
-PageLayout.defaultProps = {
+PageLayoutComponent.defaultProps = {
   isBackdropVisible: false,
   isArticleVisible: false,
   isArticlePinned: false,
   withBodyScroll: true
 };
 
-export default PageLayout;
+function mapStateToProps(state) {
+  return {
+    language:
+      state.auth &&
+      ((state.auth.user && state.auth.user.cultureName) ||
+        (state.auth.settings && state.auth.settings.culture))
+  };
+}
+
+export default connect(mapStateToProps)(Pagelayout);
