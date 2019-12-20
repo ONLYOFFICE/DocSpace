@@ -1,6 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { PageLayout, Text, Link } from "asc-web-components";
+import { Text, Link } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import version from "../../../../package.json";

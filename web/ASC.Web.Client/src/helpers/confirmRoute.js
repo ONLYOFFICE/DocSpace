@@ -1,10 +1,10 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { PageLayout, Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { api, constants, utils } from "asc-web-common";
+import { api, constants, utils, PageLayout } from "asc-web-common";
 const { checkConfirmLink } = api.user;
 const { AUTH_KEY } = constants;
 const { getObjectByLocation } = utils;

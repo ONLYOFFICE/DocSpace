@@ -4,7 +4,7 @@ import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../../utils/event";
 import uniqueId from "lodash/uniqueId";
-import Aside from "../layout/sub-components/aside";
+import Aside from "../aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
