@@ -64,15 +64,22 @@ class ChangeEmailDialogComponent extends React.Component {
   };
 
   onValidateEmail = () => {
-    const { isEmailValid, email, isEmailEmpty } = this.state;
+    const { isEmailValid, email } = this.state;
     const { t } = this.props;
+    const isEmailEmpty = !email && !email.length;
     const errorMessage = isEmailEmpty ? t('EmailEmpty')
       : email.toLowerCase() === this.props.email.toLowerCase() ? t('SameEmail')
         : isEmailValid ? '' : t('EmailNotValid');
     const hasError = Boolean(errorMessage);
     this.setState({ errorMessage, hasError });
     !hasError && this.onSendEmailChangeInstructions();
-  }
+  };
+
+  onKeyPress = event => {
+    if (event.key === "Enter") {
+      this.onValidateEmail();
+    }
+  };
 
 
   render() {
@@ -101,6 +108,7 @@ class ChangeEmailDialogComponent extends React.Component {
                   value={email}
                   onChange={this.onChangeEmailInput}
                   onValidateInput={this.onValidateEmailInput}
+                  onKeyUp={this.onKeyPress}
                 />
               </FieldContainer>
               <Text
