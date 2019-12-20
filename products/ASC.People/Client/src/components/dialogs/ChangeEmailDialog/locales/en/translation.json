@@ -2,5 +2,9 @@
   "EmailChangeTitle": "Email change",
   "EnterEmail": "Enter a new email address",
   "EmailActivationDescription": "The activation instructions will be sent to the entered email",
-  "SendButton": "Send"
+  "SendButton": "Send",
+
+  "EmailEmpty": "Email field is empty",
+  "SameEmail": "Email is same",
+  "EmailNotValid": "Email not valid"
 }

@@ -2,5 +2,9 @@
   "EmailChangeTitle": "Изменение адреса электронной почты",
   "EnterEmail": "Введите новый адрес электронной почты",
   "EmailActivationDescription": "Инструкции по активации будут отправлены на введённый адрес электронной почты",
-  "SendButton": "Отправить"
+  "SendButton": "Отправить",
+
+  "EmailEmpty": "Поле email пустое",
+  "SameEmail": "Email совпадает с текущим",
+  "EmailNotValid": "Некорректный email"
 }
