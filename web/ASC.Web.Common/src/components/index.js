@@ -1,4 +1,4 @@
-export { default as PrivateRoute } from "./routing/privateRoute";
+export { default as PrivateRoute } from "./PrivateRoute";
 export { default as PublicRoute } from "./routing/publicRoute";
 export { default as StudioLayout } from "./StudioLayout";
 export { default as ModuleTile } from "./ModuleTile";
