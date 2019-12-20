@@ -47,11 +47,13 @@ const InfoItemValue = styled.div`
       padding-left: 0px;
     }
   }
+  .help-icon {
+    margin-top: -2px;
+  }
 `;
 
-const TooltipIcon = styled.span`
+const TooltipIcon = styled.div`
   display: inline-flex;
-  padding-top: 6px;
 `;
 
 const IconButtonWrapper = styled.div`
@@ -353,6 +355,7 @@ class ProfileInfo extends React.PureComponent {
                   offsetRight={0}
                   tooltipContent={tooltipLanguage}
                   helpButtonHeaderContent={t('Language')}
+                  className="help-icon"
                 />
               </TooltipIcon>
 

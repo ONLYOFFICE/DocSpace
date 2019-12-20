@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { tablet, mobile } from "../../../utils/device";
 import { Icons } from "../../icons";
+import Text from '../../text';
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;
@@ -40,12 +41,12 @@ const ArticlePinPanel = React.memo(props => {
       {pinned ? (
         <div onClick={onUnpin}>
           <Icons.CatalogUnpinIcon size="medium" />
-          <span>{unpinText}</span>
+          <Text as='span'>{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <Icons.CatalogPinIcon size="medium" />
-          <span>{pinText}</span>
+          <Text as='span'>{pinText}</Text>
         </div>
       )}
     </StyledArticlePinPanel>

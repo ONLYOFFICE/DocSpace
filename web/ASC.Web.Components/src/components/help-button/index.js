@@ -11,6 +11,12 @@ import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
+const HelpContainer = styled.div`
+  .help-icon {
+    padding: 8px;
+  }
+`;
+
 const Content = styled.div`
   position: relative;
   width: 100%;
@@ -136,10 +142,10 @@ class HelpButton extends React.Component {
     } = this.props;
 
     return (
-      <div ref={this.ref} style={style}>
+      <HelpContainer ref={this.ref} style={style}>
         <IconButton
           id={this.id}
-          className={className}
+          className={`${className} help-icon`}
           isClickable={true}
           iconName={iconName}
           size={13}
@@ -196,7 +202,7 @@ class HelpButton extends React.Component {
             </Aside>
           </>
         )}
-      </div>
+      </HelpContainer>
     );
   }
 }

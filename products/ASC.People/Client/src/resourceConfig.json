@@ -149,6 +149,7 @@
         "CloseButton",
         "Actions",
         "People",
+        "MessageEmailActivationInstuctionsSentOnEmail",
         "EnableUserButton"
       ],
       "PeopleResource": [
