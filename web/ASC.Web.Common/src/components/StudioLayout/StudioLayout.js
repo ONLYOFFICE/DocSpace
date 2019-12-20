@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./pureStudioLayout";
@@ -57,6 +57,20 @@ const getAvailableModules = (modules, currentUser) => {
   return [separator, ...products, ...customModules];
 };
 
+const StudioLayoutContainer = withTranslation()(PureStudioLayout);
+
+const StudioLayout = props => {
+  const { language } = props;
+  i18n.changeLanguage(language);
+
+  return <StudioLayoutContainer i18n={i18n} {...props} />;
+};
+
+StudioLayout.propTypes = {
+  logout: PropTypes.func.isRequired,
+  language: PropTypes.string
+};
+
 function mapStateToProps(state) {
   return {
     hasChanges: state.auth.isAuthenticated && state.auth.isLoaded,
@@ -68,22 +82,7 @@ function mapStateToProps(state) {
   };
 }
 
-const StudioLayoutContainer = withTranslation()(PureStudioLayout);
-
-const StudioLayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <StudioLayoutContainer {...props} />
-    </I18nextProvider>
-  );
-};
-
-StudioLayout.propTypes = {
-  logout: PropTypes.func.isRequired,
-  language: PropTypes.string
-};
-
-export default connect(mapStateToProps, { logout })(withRouter(StudioLayout));
+export default connect(
+  mapStateToProps,
+  { logout }
+)(withRouter(StudioLayout));
