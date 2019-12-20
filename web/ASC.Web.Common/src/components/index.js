@@ -1,5 +1,6 @@
 export { default as PrivateRoute } from "./PrivateRoute";
 export { default as PublicRoute } from "./PublicRoute";
+export { default as ExternalRedirect } from "./ExternalRedirect";
 export { default as StudioLayout } from "./StudioLayout";
 export { default as ModuleTile } from "./ModuleTile";
 export { default as Headline } from "./Headline";
