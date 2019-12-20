@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { PageLayout, Loader } from "asc-web-components";
 import { isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
-import { Error401, Error404 } from "../errors"
+import { Error401, Error404 } from "../../pages/errors";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
