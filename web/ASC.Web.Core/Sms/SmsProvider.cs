@@ -31,6 +31,7 @@ using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Common.Logging;
@@ -40,40 +41,40 @@ using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
+
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
 namespace ASC.Web.Core.Sms
 {
-    public static class SmsProviderManager
+    public class SmsProviderManager
     {
-        public static readonly SmscProvider SmscProvider;
-        public static readonly ClickatellProvider ClickatellProvider;
-        public static readonly TwilioProvider TwilioProvider;
+        public SmscProvider SmscProvider { get => ConsumerFactory.Get<SmscProvider>(); }
+        public ConsumerFactory ConsumerFactory { get; }
 
-        public static readonly ClickatellProvider ClickatellUSAProvider = null;
-        public static readonly TwilioProvider TwilioSaaSProvider = null;
+        public ClickatellProvider ClickatellProvider { get => ConsumerFactory.Get<ClickatellProvider>(); }
+        public TwilioProvider TwilioProvider { get => ConsumerFactory.Get<TwilioProvider>(); }
 
-        static SmsProviderManager()
+        public ClickatellProvider ClickatellUSAProvider { get => ConsumerFactory.Get<ClickatellUSAProvider>(); }
+        public TwilioProvider TwilioSaaSProvider { get => ConsumerFactory.Get<TwilioSaaSProvider>(); }
+
+        public SmsProviderManager(ConsumerFactory consumerFactory)
         {
-            SmscProvider = ConsumerFactory.Get<SmscProvider>();
-
-            ClickatellProvider = ConsumerFactory.Get<ClickatellProvider>();
-            ClickatellUSAProvider = ConsumerFactory.Get<ClickatellUSAProvider>();
-
-            TwilioProvider = ConsumerFactory.Get<TwilioProvider>();
-            TwilioSaaSProvider = ConsumerFactory.Get<TwilioSaaSProvider>();
+            ConsumerFactory = consumerFactory;
         }
 
-        public static bool Enabled()
+        public bool Enabled()
         {
             return SmscProvider.Enable() || ClickatellProvider.Enable() || ClickatellUSAProvider.Enable() || TwilioProvider.Enable() || TwilioSaaSProvider.Enable();
         }
 
-        public static bool SendMessage(string number, string message)
+        public bool SendMessage(string number, string message)
         {
             if (!Enabled()) return false;
 
@@ -115,7 +116,14 @@ namespace ASC.Web.Core.Sms
             return provider.SendMessage(number, message);
         }
     }
-
+    public static class SmsProviderManagerExtension
+    {
+        public static IServiceCollection AddSmsProviderManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SmsProviderManager>();
+            return services.AddConsumerFactoryService();
+        }
+    }
 
     public abstract class SmsProvider : Consumer
     {
@@ -136,11 +144,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
             Log = options.CurrentValue;
         }
@@ -197,11 +206,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -333,11 +343,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
         {
         }
     }
@@ -352,11 +363,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
         {
         }
     }
@@ -420,11 +432,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -448,7 +461,7 @@ namespace ASC.Web.Core.Sms
 
             var provider = new VoipService.Twilio.TwilioProvider(Key, Secret, authContext, tenantUtil, securityContext, baseCommonLinkUtility);
 
-            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, voipDaoCache);
+            var dao = new CachedVoipDao(tenantManager.GetCurrentTenant().TenantId, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, ConsumerFactory, voipDaoCache);
             var numbers = dao.GetNumbers();
             foreach (var number in numbers)
             {
@@ -468,11 +481,12 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
         {
         }
     }

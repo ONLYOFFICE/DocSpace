@@ -25,16 +25,18 @@
 
 
 using System.Collections.Generic;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class BoxLoginProvider : Consumer, IOAuthProvider
     {
-        public static BoxLoginProvider Instance
+        public BoxLoginProvider Instance
         {
             get
             {
@@ -65,10 +67,11 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
         }
     }

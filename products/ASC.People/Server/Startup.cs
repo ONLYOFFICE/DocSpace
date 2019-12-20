@@ -1,5 +1,6 @@
 
 using System;
+
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -73,8 +74,6 @@ namespace ASC.People
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             services
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
@@ -119,6 +118,8 @@ namespace ASC.People
             services
                 .AddPeopleController()
                 .AddGroupController();
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

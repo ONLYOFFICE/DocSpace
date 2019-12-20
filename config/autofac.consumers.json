@@ -1,0 +1,35 @@
+{
+  "components": [
+    {
+      "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin",
+      "services": [
+        {
+          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+        }, 
+		{
+		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
+		}, 
+		{
+		  "key": "Bitly",
+		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
+		}, 
+		{
+		  "key": "Bitly",
+		  "type": "ASC.FederatedLogin.LoginProviders.BitlyLoginProvider, ASC.FederatedLogin"
+		}
+      ],
+	  "instanceScope": "perlifetimescope",
+	  "parameters": {
+		  "name": "Bitly",
+		  "order": "13",
+		  "props": {
+			"bitlyClientId": "",
+			"bitlyClientSecret": ""
+		  },
+		  "additional": {
+			"bitlyUrl" : ""
+		  }
+	  }
+    }
+  ]
+}

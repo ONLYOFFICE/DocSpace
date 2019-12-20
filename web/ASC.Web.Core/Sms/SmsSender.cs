@@ -27,9 +27,11 @@
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -39,12 +41,18 @@ namespace ASC.Web.Core.Sms
     {
         public IConfiguration Configuration { get; }
         public TenantManager TenantManager { get; }
+        public SmsProviderManager SmsProviderManager { get; }
         public ILog Log { get; }
 
-        public SmsSender(IConfiguration configuration, TenantManager tenantManager, IOptionsMonitor<ILog> options)
+        public SmsSender(
+            IConfiguration configuration,
+            TenantManager tenantManager,
+            IOptionsMonitor<ILog> options,
+            SmsProviderManager smsProviderManager)
         {
             Configuration = configuration;
             TenantManager = tenantManager;
+            SmsProviderManager = smsProviderManager;
             Log = options.CurrentValue;
         }
 
