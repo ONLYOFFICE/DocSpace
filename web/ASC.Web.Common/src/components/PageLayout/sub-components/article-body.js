@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Scrollbar from "../../scrollbar";
+import { Scrollbar } from "asc-web-components";
 
 const StyledArticleBody = styled.div`
   margin: 16px 0;

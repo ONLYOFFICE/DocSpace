@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Scrollbar from "../../scrollbar";
-import { tablet } from "../../../utils/device";
+import { utils, Scrollbar } from "asc-web-components";
+const { tablet } = utils.device;
 
 const StyledSectionBody = styled.div`
   margin: 16px 0;

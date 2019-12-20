@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Layout, Toast } from "asc-web-components";
+import { Toast } from "asc-web-components";
+import Layout from "../Layout";
 
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps) {

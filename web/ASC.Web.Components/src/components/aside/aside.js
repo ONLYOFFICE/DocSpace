@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Scrollbar from "../../scrollbar";
+import Scrollbar from "../scrollbar";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */

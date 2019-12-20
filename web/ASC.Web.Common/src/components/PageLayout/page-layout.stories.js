@@ -2,14 +2,10 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import styled from '@emotion/styled';
-import Layout from '../layout';
+import Layout from '../Layout';
 import PageLayout from '.';
-import Heading from '../heading';
-import IconButton from '../icon-button';
-import ContextMenuButton from '../context-menu-button';
-import MainButton from '../main-button';
-import SearchInput from '../search-input';
-import Paging from '../paging';
+import Headline from '../Headline';
+import {IconButton, ContextMenuButton, MainButton, SearchInput, Paging} from 'asc-web-components';
 import withReadme from 'storybook-readme/with-readme';
 import { boolean, withKnobs } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
@@ -49,13 +45,7 @@ const perPageItems = [
   }
 ];
 
-const StyledHeading = styled(Heading)`
-  margin: 0;
-  line-height: 56px;
-  font-weight: 700;
-`;
-
-const articleHeaderContent = <StyledHeading size="xlarge">Article Header</StyledHeading>;
+const articleHeaderContent = <Headline type="menu">Article Header</Headline>;
 
 const articleMainButtonContent = <MainButton
   text='Actions'
@@ -70,7 +60,7 @@ const sectionHeaderContent = <HeaderContent>
     size='16'
     onClick={(e) => action('ArrowPathIcon Clicked')(e)}
   />
-  <StyledHeading size='medium'>Section Header</StyledHeading>
+  <Headline type='content'>Section Header</Headline>
   <IconButton
     iconName={"PlusIcon"}
     size='16'

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { tablet } from "../../../utils/device";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 const StyledArticleHeader = styled.div`
   border-bottom: 1px solid #eceef1;

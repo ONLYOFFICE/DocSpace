@@ -6,4 +6,6 @@ export { default as ModuleTile } from "./ModuleTile";
 export { default as Headline } from "./Headline";
 export { default as PeopleSelector } from "./PeopleSelector";
 export { default as GroupSelector } from "./GroupSelector";
-export { default as AdvancedSelector } from './AdvancedSelector'
+export { default as AdvancedSelector } from './AdvancedSelector';
+export { default as PageLayout } from './PageLayout';
+export { default as Layout } from './Layout';

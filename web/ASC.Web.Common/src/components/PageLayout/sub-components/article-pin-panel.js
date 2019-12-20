@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { tablet, mobile } from "../../../utils/device";
-import { Icons } from "../../icons";
-import Text from '../../text';
+import { utils, Icons, Text } from "asc-web-components";
+const { tablet, mobile } = utils.device;
 
 const StyledArticlePinPanel = styled.div`
   border-top: 1px solid #eceef1;

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { tablet } from "../../../utils/device";
-import Scrollbar from "../../scrollbar";
+import { utils, Scrollbar } from "asc-web-components";
+const { tablet } = utils.device;
 
 const backgroundColor = "#0F4071";
 

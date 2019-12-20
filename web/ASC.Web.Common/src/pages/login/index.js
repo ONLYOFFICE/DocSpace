@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import {
   Button,
   TextInput,
-  PageLayout,
   Text,
   Heading,
   Link,
@@ -12,6 +11,7 @@ import {
   Checkbox,
   HelpButton
 } from "asc-web-components";
+import PageLayout from "../../components/PageLayout";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";

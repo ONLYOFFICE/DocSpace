@@ -2,7 +2,8 @@
 import React, { useCallback } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { connect } from "react-redux";
-import { PageLayout, Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
+import PageLayout from "../PageLayout";
 import { isAdmin, isMe } from "../../store/auth/selectors.js";
 import { AUTH_KEY } from "../../constants";
 import { Error401, Error404 } from "../../pages/errors";

@@ -1,10 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Avatar from "../../avatar";
-import DropDown from "../../drop-down";
-import DropDownItem from "../../drop-down-item";
-import DropDownProfileItem from "../../drop-down-profile-item";
-import { handleAnyClick } from "../../../utils/event";
+import { Avatar, DropDown, DropDownItem, DropDownProfileItem, utils } from "asc-web-components";
+const { handleAnyClick } = utils.event;
 
 class ProfileActions extends React.PureComponent {
   constructor(props) {

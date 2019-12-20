@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { PageLayout, Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,

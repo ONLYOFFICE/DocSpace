@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Backdrop from "../backdrop";
+import { Backdrop, Aside } from "asc-web-components";
 import HeaderComponent from "./sub-components/header";
 import Nav from "./sub-components/nav";
-import Aside from "./sub-components/aside";
 import Main from "./sub-components/main";
 import HeaderNav from "./sub-components/header-nav";
 import NavLogoItem from "./sub-components/nav-logo-item";

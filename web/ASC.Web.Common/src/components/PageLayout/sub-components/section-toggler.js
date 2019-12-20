@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { tablet } from "../../../utils/device";
-import { Icons } from "../../icons";
+import { utils, Icons } from "asc-web-components";
+const { tablet } = utils.device;
 
 const StyledSectionToggler = styled.div`
   height: 64px;

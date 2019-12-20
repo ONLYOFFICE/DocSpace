@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
-import { Button, TextInput, PageLayout, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
+import { Button, TextInput, Text, PasswordInput, toastr, Loader } from 'asc-web-components';
+import { PageLayout } from "asc-web-common";
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';

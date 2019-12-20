@@ -1,9 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { tablet } from "../../../utils/device";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 import NavItem from "./nav-item";
-import Heading from "../../heading";
+import Headline from "../../Headline";
 
 const backgroundColor = "#0F4071";
 
@@ -18,12 +19,6 @@ const Header = styled.header`
   @media ${tablet} {
     display: flex;
   }
-
-  .heading {
-    margin: 0;
-    line-height: 56px;
-    font-weight: 700;
-  }
 `;
 
 const HeaderComponent = React.memo(props => {
@@ -35,9 +30,9 @@ const HeaderComponent = React.memo(props => {
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Heading className="heading" size='xlarge' color="#FFFFFF">
+      <Headline type="menu" color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
-      </Heading>
+      </Headline>
     </Header>
   );
 });

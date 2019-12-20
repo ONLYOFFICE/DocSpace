@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Backdrop from "../backdrop";
+import { Backdrop } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { connect } from "react-redux";

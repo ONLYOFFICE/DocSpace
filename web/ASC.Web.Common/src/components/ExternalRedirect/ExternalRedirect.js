@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { PageLayout, Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
+import PageLayout from "../PageLayout";
 
 export class ExternalRedirect extends Component {
   constructor(props) {

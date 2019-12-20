@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import Badge from "../../badge";
-import { Icons } from "../../icons";
-import Text from "../../text";
+import { Badge, Icons, Text} from "asc-web-components";
 
 const baseColor = "#7A95B0",
   activeColor = "#FFFFFF";

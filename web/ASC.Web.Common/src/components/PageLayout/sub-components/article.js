@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { tablet } from "../../../utils/device";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
   padding: 0 16px;

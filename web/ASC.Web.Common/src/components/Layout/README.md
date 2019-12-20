@@ -5,7 +5,7 @@ Default page layout
 ### Usage
 
 ```js
-import { Layout } from "asc-web-components";
+import { Layout } from "asc-web-common";
 ```
 
 ```jsx

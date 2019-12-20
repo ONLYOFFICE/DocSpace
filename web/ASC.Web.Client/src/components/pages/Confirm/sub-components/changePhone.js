@@ -3,7 +3,8 @@ import { withRouter } from "react-router";
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
 import styled from "styled-components";
-import { Button, TextInput, PageLayout, Text } from "asc-web-components";
+import { Button, TextInput, Text } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 
 const BodyStyle = styled.div`
   margin: 70px auto 0 auto;
