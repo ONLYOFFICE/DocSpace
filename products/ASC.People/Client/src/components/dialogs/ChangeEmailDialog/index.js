@@ -7,8 +7,8 @@ import {
   ModalDialog,
   Button,
   Text,
-  Label,
-  EmailInput
+  EmailInput,
+  FieldContainer
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -26,6 +26,8 @@ class ChangeEmailDialogComponent extends React.Component {
       isEmailValid: true,
       isRequestRunning: false,
       email,
+      hasError: false,
+      errorMessage: ''
     };
 
     i18n.changeLanguage(language);
@@ -40,7 +42,12 @@ class ChangeEmailDialogComponent extends React.Component {
 
   onValidateEmailInput = value => this.setState({ isEmailValid: value });
 
-  onChangeEmailInput = e => this.setState({ email: e.target.value });
+  onChangeEmailInput = e => {
+    const { hasError } = this.state;
+    const email = e.target.value;
+    hasError && this.setState({ hasError: false });
+    this.setState({ email });
+  };
 
   onSendEmailChangeInstructions = () => {
     this.setState({ isRequestRunning: true }, function () {
@@ -54,14 +61,24 @@ class ChangeEmailDialogComponent extends React.Component {
           this.setState({ isRequestRunning: false });
         });
     })
+  };
+
+  onValidateEmail = () => {
+    const { isEmailValid, email, isEmailEmpty } = this.state;
+    const { t } = this.props;
+    const errorMessage = isEmailEmpty ? t('EmailEmpty')
+      : email.toLowerCase() === this.props.email.toLowerCase() ? t('SameEmail')
+        : isEmailValid ? '' : t('EmailNotValid');
+    const hasError = Boolean(errorMessage);
+    this.setState({ errorMessage, hasError });
+    !hasError && this.onSendEmailChangeInstructions();
   }
 
 
   render() {
     console.log("ChangeEmailDialog render");
     const { t, visible, onClose } = this.props;
-    const { isEmailValid, isRequestRunning, email } = this.state;
-    const isSendButtonDisabled = !isEmailValid || email.toLowerCase() === this.props.email.toLowerCase();
+    const { isRequestRunning, email, errorMessage, hasError } = this.state;
 
     return (
       <ModalDialogContainer>
@@ -71,17 +88,21 @@ class ChangeEmailDialogComponent extends React.Component {
           headerContent={t('EmailChangeTitle')}
           bodyContent={
             <>
-              <Label htmlFor="new-email" text={t('EnterEmail')} />
-              <EmailInput
-                className='input-dialog'
-                id="new-email"
-                scale={true}
-                isAutoFocussed={true}
-                value={email}
-                onChange={this.onChangeEmailInput}
-                onValidateInput={this.onValidateEmailInput}
-
-              />
+              <FieldContainer
+                isVertical
+                labelText={t('EnterEmail')}
+                errorMessage={errorMessage}
+                hasError={hasError}
+              >
+                <EmailInput
+                  id="new-email"
+                  scale={true}
+                  isAutoFocussed={true}
+                  value={email}
+                  onChange={this.onChangeEmailInput}
+                  onValidateInput={this.onValidateEmailInput}
+                />
+              </FieldContainer>
               <Text
                 className='text-dialog'
               >
@@ -95,8 +116,7 @@ class ChangeEmailDialogComponent extends React.Component {
               label={t('SendButton')}
               size="medium"
               primary={true}
-              onClick={this.onSendEmailChangeInstructions}
-              isDisabled={isSendButtonDisabled}
+              onClick={this.onValidateEmail}
               isLoading={isRequestRunning}
             />
           }

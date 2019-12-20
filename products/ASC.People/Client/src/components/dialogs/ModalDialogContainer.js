@@ -30,6 +30,14 @@ const ModalDialogContainer = styled.div`
   .link-dialog {
     margin-right: 12px;
   }
+
+  .error-label {
+    position: absolute;
+  }
+
+  .field-body {
+    position: relative;
+}
 `;
 
 export default ModalDialogContainer;
