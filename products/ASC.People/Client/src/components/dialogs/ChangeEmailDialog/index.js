@@ -66,8 +66,8 @@ class ChangeEmailDialogComponent extends React.Component {
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          this.props.onClose();
           this.setState({ isRequestRunning: false });
+          this.props.onClose();
         });
     })
   };
@@ -93,7 +93,8 @@ class ChangeEmailDialogComponent extends React.Component {
   };
 
   onKeyPress = event => {
-    if (event.key === "Enter") {
+    const { isRequestRunning } = this.state;
+    if (event.key === "Enter" && !isRequestRunning) {
       this.onValidateEmail();
     }
   };
