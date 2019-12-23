@@ -227,8 +227,9 @@ namespace ASC.Core.Data
                     Calls = t.Calls
                 };
 
-                TenantDbContext.Tenants.Add(tenant);
+                tenant = TenantDbContext.Tenants.Add(tenant).Entity;
                 TenantDbContext.SaveChanges();
+                t.TenantId = tenant.Id;
             }
             else
             {
@@ -280,11 +281,6 @@ namespace ASC.Core.Data
             }
 
             tx.Commit();
-
-            t.TenantId = TenantDbContext.Tenants
-                .Where(r => r.Alias == t.TenantAlias.ToLowerInvariant())
-                .Select(r => r.Id)
-                .FirstOrDefault();
 
             //CalculateTenantDomain(t);
             return t;
