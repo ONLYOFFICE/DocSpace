@@ -20,8 +20,13 @@ const NavLogoItem = React.memo(props => {
 
   const navLogoOpenedIconStyle = {
     display: props.opened ? "block" : "none",
-    maxHeight: "24px",
-    width: "auto"
+    width: "141px",
+    minWidth: "141px",
+    height: "22px",
+    minHeight: "22px",
+    position: "absolute",
+    top: "17px",
+    left: "13px"
   };
 
   return (
