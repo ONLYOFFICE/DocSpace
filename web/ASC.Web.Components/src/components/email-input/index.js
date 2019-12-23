@@ -80,7 +80,7 @@ class EmailInput extends React.Component {
     const { onValidateInput, emailSettings, onChange, value, hasError, ...rest } = this.props;
 
     const { isValidEmail, inputValue } = this.state;
-    const isError = Boolean(inputValue && !isValidEmail.isValid) || hasError;
+    const isError = typeof (hasError) === 'boolean' ? hasError : Boolean(inputValue && !isValidEmail.isValid);
 
     return (
       <SimpleInput
@@ -110,7 +110,7 @@ EmailInput.propTypes = {
 EmailInput.defaultProps = {
   autoComplete: 'email',
   className: '',
-  hasError: false,
+  hasError: undefined,
   id: '',
   isDisabled: false,
   isReadOnly: false,
