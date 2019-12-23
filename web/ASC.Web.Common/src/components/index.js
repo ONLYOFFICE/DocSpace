@@ -1,6 +1,11 @@
-export { default as PrivateRoute } from "./routing/privateRoute";
-export { default as PublicRoute } from "./routing/publicRoute";
-export { default as Login } from "./login";
-export { default as StudioLayout } from "./layout";
-export { default as ModuleTile } from "./module-tile";
-export { default as Headline } from "./headline";
+export { default as PrivateRoute } from "./PrivateRoute";
+export { default as PublicRoute } from "./PublicRoute";
+export { default as ExternalRedirect } from "./ExternalRedirect";
+export { default as StudioLayout } from "./StudioLayout";
+export { default as ModuleTile } from "./ModuleTile";
+export { default as Headline } from "./Headline";
+export { default as PeopleSelector } from "./PeopleSelector";
+export { default as GroupSelector } from "./GroupSelector";
+export { default as AdvancedSelector } from './AdvancedSelector';
+export { default as PageLayout } from './PageLayout';
+export { default as Layout } from './Layout';

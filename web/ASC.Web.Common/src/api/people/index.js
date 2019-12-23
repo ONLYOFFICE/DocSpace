@@ -2,8 +2,13 @@
 import { request } from "../client";
 //import axios from "axios";
 import Filter from "./filter";
+import * as fakePeople from "./fake";
 
-export function getUserList(filter = Filter.getDefault()) {
+export function getUserList(filter = Filter.getDefault(), fake = false) {
+    if(fake) {
+      return fakePeople.getUserList(filter);
+    }
+
     const params =
       filter && filter instanceof Filter
         ? `/filter.json?${filter.toUrlParams()}`

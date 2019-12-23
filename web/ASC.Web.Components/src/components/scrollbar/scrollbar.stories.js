@@ -14,8 +14,8 @@ storiesOf('Components|Scrollbar', module)
   .add('base', () => (
     <Section>
         <Scrollbar
-            stype={select('stype', stypes, 'smallBlack')}
-            style={{ width: 300, height: 200, background: 'yellow' }}>
+            stype={select('stype', stypes, 'mediumBlack')}
+            style={{ width: 300, height: 200 }}>
                 ================================================================
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from 'react-redux';
-import { PageLayout } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import i18n from "../i18n";
 import { I18nextProvider } from "react-i18next";
 import {

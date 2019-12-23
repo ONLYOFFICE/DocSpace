@@ -42,10 +42,12 @@ const StyledComponent = styled.div`
    }
 
    .dropdown-item-width {
-      & > div:first-child {
-            div:first-child{
+      & > div:last-child {
+         & > div:first-child {
+            div{
                max-width: 100%;
             }
+         }
       }
    }
 `;
@@ -191,6 +193,7 @@ class Customization extends React.Component {
                            scaled={true}
                            scaledOptions={true}
                            dropDownMaxHeight={300}
+                           className='dropdown-item-width'
                         />
                      </FieldContainer>
 

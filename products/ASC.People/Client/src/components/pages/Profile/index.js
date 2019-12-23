@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { PageLayout, Loader, toastr } from "asc-web-components";
+import { Loader, toastr } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { fetchProfile } from '../../../store/profile/actions';

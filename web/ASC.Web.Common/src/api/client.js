@@ -44,6 +44,13 @@ export function setAuthorizationToken(token) {
   }
 }
 
+export function setClientBasePath(path) {
+  if (!path)
+    return;
+
+  client.defaults.baseURL = path;
+}
+
 const checkResponseError = res => {
   if(!res) return;
 

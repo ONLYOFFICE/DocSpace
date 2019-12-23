@@ -1,6 +1,5 @@
 import { api, store } from "asc-web-common";
 import axios from "axios";
-import { getSelectorOptions, getUserOptions } from "./selectors";
 const { Filter } = api;
 const { setPortalLanguageAndTime, setTimezones, setGreetingSettings } = store.auth.actions;
 
@@ -81,20 +80,12 @@ export function changeAdmins(userIds, productId, isAdmin, filter) {
           api.people.changeProductAdmin(userId, productId, isAdmin)
         )
       )
-      .then(() =>
-        axios.all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
-      )
-      .then(
-        axios.spread((users, admins) => {
-          const options = getUserOptions(users.items, admins.items);
-          const newOptions = getSelectorOptions(options);
-          filterData.total = admins.total;
-
-          dispatch(setOptions(newOptions));
-          dispatch(setAdmins(admins.items));
-          dispatch(setFilter(filterData));
-        })
-      );
+      .then(() => api.people.getListAdmins(filterData))
+      .then(admins => {
+        filterData.total = admins.total;
+        dispatch(setAdmins(admins.items));
+        dispatch(setFilter(filterData));
+      });
   };
 }
 
@@ -111,21 +102,12 @@ export function fetchPeople(filter) {
   }
 
   return dispatch => {
-    return axios
-      .all([api.people.getUserList(filterData), api.people.getListAdmins(filterData)])
-      .then(
-        axios.spread((users, admins) => {
-          const options = getUserOptions(users.items, admins.items);
-          const newOptions = getSelectorOptions(options);
-        const usersOptions = getSelectorOptions(users.items);
-          filterData.total = admins.total;
-
-        dispatch(setUsers(usersOptions));
-          dispatch(setAdmins(admins.items));
-        dispatch(setOptions(newOptions));
-          dispatch(setFilter(filterData));
-        })
-      );
+    return api.people.getListAdmins(filterData)
+      .then(admins => {
+        filterData.total = admins.total;
+        dispatch(setAdmins(admins.items));
+        dispatch(setFilter(filterData));
+      });
   };
 }
 
@@ -135,20 +117,11 @@ export function getUpdateListAdmin(filter) {
     filterData = Filter.getDefault();
   }
   return dispatch => {
-    return api.getListAdmins(filterData).then(admins => {
+    return api.people.getListAdmins(filterData).then(admins => {
       filterData.total = admins.total;
 
       dispatch(setAdmins(admins.items));
       dispatch(setFilter(filterData));
-    });
-  };
-}
-
-export function getUsersOptions() {
-  return dispatch => {
-    return api.people.getUserList().then(users => {
-      const usersOptions = getSelectorOptions(users.items);
-      dispatch(setUsers(usersOptions));
     });
   };
 }
