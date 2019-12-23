@@ -343,7 +343,7 @@ class PasswordInput extends React.Component {
       //displayTooltip
     } = this.state;
 
-    const iconsColor = '#D0D5DA !important';
+    const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
     const iconName = type === 'password' ? 'EyeOffIcon' : 'EyeIcon' ;
 
     const tooltipContent = (
@@ -385,7 +385,7 @@ class PasswordInput extends React.Component {
             name={inputName}
             hasError={hasError}
             isDisabled={isDisabled}
-            iconName={iconName}
+            iconName={`${iconName} !important`}
             value={inputValue}
             onIconClick={this.changeInputType}
             onChange={this.onChangeAction}
