@@ -20,10 +20,10 @@ const commonInputStyle = css`
     -webkit-border-radius: 3px;
 
     :hover{
-        border-color: ${props => props.isDisabled ? '#ECEEF1' : '#A3A9AE'};
+        border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#A3A9AE'};
     }
     :focus{
-        border-color: #2DA7DB;
+        border-color: ${props => (props.hasError && '#c30') || (props.hasWarning && '#f1ca92') || (props.isDisabled && '#ECEEF1')|| '#2DA7DB'};
     }
 
     cursor: ${props => props.isReadOnly || props.isDisabled ? "default" : "text"};
