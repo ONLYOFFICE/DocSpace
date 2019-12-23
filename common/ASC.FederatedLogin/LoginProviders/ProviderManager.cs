@@ -26,31 +26,33 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Common.Utils;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class ProviderManager
     {
-        public static ILoginProvider GetLoginProvider(string providerType, Signature signature, InstanceCrypto instanceCrypto)
+        public static ILoginProvider GetLoginProvider(string providerType, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {
             return providerType == ProviderConstants.OpenId
-                ? new OpenIdLoginProvider(signature, instanceCrypto)
-                : ConsumerFactory.GetByName(providerType) as ILoginProvider;
+                ? new OpenIdLoginProvider(signature, instanceCrypto, consumerFactory)
+                : consumerFactory.GetByKey(providerType) as ILoginProvider;
         }
 
-        public static LoginProfile Process(string providerType, Signature signature, InstanceCrypto instanceCrypto, HttpContext context, IDictionary<string, string> @params)
+        public static LoginProfile Process(string providerType, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory, HttpContext context, IDictionary<string, string> @params)
         {
-            return GetLoginProvider(providerType, signature, instanceCrypto).ProcessAuthoriztion(context, @params);
+            return GetLoginProvider(providerType, signature, instanceCrypto, consumerFactory).ProcessAuthoriztion(context, @params);
         }
 
-        public static LoginProfile GetLoginProfile(string providerType, string accessToken, Signature signature, InstanceCrypto instanceCrypto)
+        public static LoginProfile GetLoginProfile(string providerType, string accessToken, Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {
-            var consumer = GetLoginProvider(providerType, signature, instanceCrypto);
+            var consumer = GetLoginProvider(providerType, signature, instanceCrypto, consumerFactory);
             if (consumer == null) throw new ArgumentException("Unknown provider type", "providerType");
 
             try

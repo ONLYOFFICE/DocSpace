@@ -40,8 +40,6 @@ namespace ASC.Web.Studio
             /*services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddNewtonsoftJson();*/
 
-            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
             services.AddNLogManager("ASC.Api", "ASC.Web");
@@ -54,6 +52,8 @@ namespace ASC.Web.Studio
                 .AddStorage()
                 .AddPathUtilsService()
                 .AddStorageHandlerService();
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -28,17 +28,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.Helpers
 {
     public static class OAuth20TokenHelper
     {
-        public static void RequestCode<T>(HttpContext context, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
+        public static void RequestCode<T>(HttpContext context, ConsumerFactory consumerFactory, string scope = null, Dictionary<string, string> additionalArgs = null) where T : Consumer, IOAuthProvider, new()
         {
-            var loginProvider = ConsumerFactory.Get<T>();
+            var loginProvider = consumerFactory.Get<T>();
             var requestUrl = loginProvider.CodeUrl;
             var clientID = loginProvider.ClientID;
             var redirectUri = loginProvider.RedirectUri;
@@ -67,9 +69,9 @@ namespace ASC.FederatedLogin.Helpers
             context.Response.Redirect(uriBuilder.Uri + "?" + query, true);
         }
 
-        public static OAuth20Token GetAccessToken<T>(string authCode) where T : Consumer, IOAuthProvider, new()
+        public static OAuth20Token GetAccessToken<T>(ConsumerFactory consumerFactory, string authCode) where T : Consumer, IOAuthProvider, new()
         {
-            var loginProvider = ConsumerFactory.Get<T>();
+            var loginProvider = consumerFactory.Get<T>();
             var requestUrl = loginProvider.AccessTokenUrl;
             var clientID = loginProvider.ClientID;
             var clientSecret = loginProvider.ClientSecret;
@@ -109,9 +111,9 @@ namespace ASC.FederatedLogin.Helpers
             return null;
         }
 
-        public static OAuth20Token RefreshToken<T>(OAuth20Token token) where T : Consumer, IOAuthProvider, new()
+        public static OAuth20Token RefreshToken<T>(ConsumerFactory consumerFactory, OAuth20Token token) where T : Consumer, IOAuthProvider, new()
         {
-            var loginProvider = ConsumerFactory.Get<T>();
+            var loginProvider = consumerFactory.Get<T>();
             return RefreshToken(loginProvider.AccessTokenUrl, token);
         }
 

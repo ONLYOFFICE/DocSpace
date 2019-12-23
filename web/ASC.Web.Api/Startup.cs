@@ -68,8 +68,6 @@ namespace ASC.Web.Api
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             services
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
@@ -91,6 +89,8 @@ namespace ASC.Web.Api
                 .AddPortalController()
                 .AddSettingsController()
                 .AddSmtpSettingsController();
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
