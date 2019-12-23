@@ -126,7 +126,7 @@ class Layout extends React.Component {
         isNavOpened: true,
         isAsideVisible: false
       });
-    }, 300);
+    }, 1000);
   };
 
   handleNavMouseLeave = () => {
