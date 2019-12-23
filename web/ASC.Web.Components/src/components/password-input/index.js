@@ -34,11 +34,35 @@ const StyledInput = styled(SimpleInput)`
 
 const PasswordProgress = styled.div`
   ${props => props.inputWidth ? `width: ${props.inputWidth};` : `flex: auto;`}
+
+  .input-relative {
+    position: relative;
+
+    svg {
+      overflow: hidden;
+      vertical-align: middle;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 `;
 
 const NewPasswordButton = styled.div`
   margin-left: 16px;
-  margin-top: 4px;
+
+  svg {
+    overflow: hidden;
+    vertical-align: middle;
+    margin-bottom: 4px;
+  }
+
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const CopyLink = styled.div`
@@ -319,8 +343,8 @@ class PasswordInput extends React.Component {
       //displayTooltip
     } = this.state;
 
-    const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
-    const iconName = type === 'password' ? 'EyeIcon' : 'EyeOffIcon';
+    const iconsColor = '#D0D5DA !important';
+    const iconName = type === 'password' ? 'EyeOffIcon' : 'EyeIcon' ;
 
     const tooltipContent = (
       <StyledTooltipContainer forwardedAs='div' title={tooltipPasswordTitle}>
@@ -356,6 +380,7 @@ class PasswordInput extends React.Component {
           ref={this.ref}
         >
           <InputBlock
+            className="input-relative"
             id={id}
             name={inputName}
             hasError={hasError}
