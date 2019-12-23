@@ -17,7 +17,7 @@ Headline.propTypes = {
    title: PropTypes.string,
    truncate: PropTypes.bool,
    isInline: PropTypes.bool,
-   type: PropTypes.oneOf(['menu', 'content']),
+   type: PropTypes.oneOf(['content', 'header', 'menu']),
 };
 
 Headline.defaultProps = {

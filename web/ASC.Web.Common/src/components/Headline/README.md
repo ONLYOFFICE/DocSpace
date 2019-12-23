@@ -15,6 +15,12 @@ import { Headline } from "asc-web-common";
 ```
 
 ```jsx
+<Headline type="header" title="Some title">
+  Some text
+</Headline>
+```
+
+```jsx
 <Headline type="menu" title="Some title">
   Some text
 </Headline>
@@ -44,4 +50,4 @@ const StyledText = styled(Headline)`
 | `isInline` |  `bool`  |    -     |        -        |  `false`  | Sets the 'display: inline-block' property            |
 | `title`    |  `bool`  |    -     |        -        |     -     | Title                                                |
 | `truncate` |  `bool`  |    -     |        -        |  `false`  | Disables word wrapping                               |
-| `type`     | `oneOf`  |    ✅    | `menu, content` |     -     | Sets the size of text: menu (27px) or content (21px) |
+| `type`     | `oneOf`  |    ✅    | `content, header, menu` |     -     | Sets the size of text: content (21px), header (28px) or menu (27px) |
