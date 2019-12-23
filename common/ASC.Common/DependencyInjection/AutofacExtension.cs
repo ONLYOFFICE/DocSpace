@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
+
 using Autofac;
 using Autofac.Configuration;
+using Autofac.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -39,14 +42,39 @@ namespace ASC.Common.DependencyInjection
                 productsDir = Path.GetFullPath(Path.Combine(currentDir, folder));
             }
 
-            var module = new ConfigurationModule(configuration);
             var builder = new ContainerBuilder();
-            builder.RegisterModule(module);
+            var modules = new string[] { "autofac.json", "autofac.products.json", "autofac.consumers.json" };
 
-            var sectionSettings = configuration.GetSection("products");
-
-            if (sectionSettings != null)
+            foreach (var p in modules)
             {
+                var config = new ConfigurationBuilder()
+                .SetBasePath(configuration["pathToConf"])
+                .AddJsonFile(p);
+
+                var root = config.Build();
+                var module = new ConfigurationModule(root);
+                builder.RegisterModule(module);
+
+                if (p == "autofac.products.json")
+                {
+                    FindAndLoad(root.GetSection("components"));
+                }
+            }
+
+            builder.Populate(services);
+
+            var container = builder.Build();
+
+            services.TryAddSingleton(container);
+
+            return container;
+
+            void FindAndLoad(IConfigurationSection sectionSettings)
+            {
+                if (sectionSettings == null)
+                {
+                    return;
+                }
                 var cs = new List<AutofacComponent>();
                 sectionSettings.Bind(cs);
 
@@ -62,8 +90,6 @@ namespace ASC.Common.DependencyInjection
                             //LoadAssembly(s.Type);
                             types.Add(s.Type);
                         }
-
-                        builder.RegisterType(Type.GetType(component.Type)).As(types.Select(r => Type.GetType(r)).ToArray());
                     }
                     catch (System.Exception)
                     {
@@ -71,12 +97,6 @@ namespace ASC.Common.DependencyInjection
                     }
                 }
             }
-
-            var container = builder.Build();
-
-            services.TryAddSingleton(container);
-
-            return container;
 
             void LoadAssembly(string type)
             {

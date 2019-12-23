@@ -28,10 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using ASC.Common.Caching;
 using ASC.Common.Data;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
@@ -68,8 +70,9 @@ namespace ASC.VoipService.Dao
             TenantUtil tenantUtil,
             SecurityContext securityContext,
             BaseCommonLinkUtility baseCommonLinkUtility,
+            ConsumerFactory consumerFactory,
             VoipDaoCache voipDaoCache)
-            : base(tenantID, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility)
+            : base(tenantID, dbOptions, authContext, tenantUtil, securityContext, baseCommonLinkUtility, consumerFactory)
         {
             cache = voipDaoCache.Cache;
             VoipDaoCache = voipDaoCache;

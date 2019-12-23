@@ -39,7 +39,7 @@ namespace ASC.Notify
                         )
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
-                        .AddJsonFile("autofac.json")
+                        .AddJsonFile($"appsettings.services.json", true)
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
@@ -48,8 +48,6 @@ namespace ASC.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-
                     services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
@@ -65,6 +63,8 @@ namespace ASC.Notify
                     .AddJabberSenderService()
                     .AddSmtpSenderService()
                     .AddAWSSenderService();
+
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

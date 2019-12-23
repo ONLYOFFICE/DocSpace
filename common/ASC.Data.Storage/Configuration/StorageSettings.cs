@@ -27,12 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Common.Settings;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -120,6 +122,7 @@ namespace ASC.Data.Storage.Configuration
         public TenantManager TenantManager { get; }
         public SettingsManager SettingsManager { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         public StorageSettingsHelper(
             BaseStorageSettingsListener baseStorageSettingsListener,
@@ -130,7 +133,8 @@ namespace ASC.Data.Storage.Configuration
             IOptionsMonitor<ILog> options,
             TenantManager tenantManager,
             SettingsManager settingsManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            ConsumerFactory consumerFactory)
         {
             BaseStorageSettingsListener = baseStorageSettingsListener;
             StorageFactoryConfig = storageFactoryConfig;
@@ -141,6 +145,7 @@ namespace ASC.Data.Storage.Configuration
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             HttpContextAccessor = httpContextAccessor;
+            ConsumerFactory = consumerFactory;
         }
 
         public bool Save<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings, new()
@@ -172,7 +177,7 @@ namespace ASC.Data.Storage.Configuration
         {
             if (string.IsNullOrEmpty(baseStorageSettings.Module) || baseStorageSettings.Props == null) return dataStoreConsumer = new DataStoreConsumer();
 
-            var consumer = ConsumerFactory.GetByName<DataStoreConsumer>(baseStorageSettings.Module);
+            var consumer = ConsumerFactory.GetByKey<DataStoreConsumer>(baseStorageSettings.Module);
 
             if (!consumer.IsSet) return dataStoreConsumer = new DataStoreConsumer();
 
@@ -219,7 +224,8 @@ namespace ASC.Data.Storage.Configuration
 
             return services
                 .AddSettingsManagerService()
-                .AddBaseStorageSettingsService();
+                .AddBaseStorageSettingsService()
+                .AddConsumerFactoryService();
         }
 
         public static IServiceCollection AddStorageSettingsService(this IServiceCollection services)
@@ -228,7 +234,8 @@ namespace ASC.Data.Storage.Configuration
 
             return services
                 .AddSettingsManagerService()
-                .AddBaseStorageSettingsService();
+                .AddBaseStorageSettingsService()
+                .AddConsumerFactoryService();
         }
     }
 }

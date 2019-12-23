@@ -1,12 +1,13 @@
 {
-  "products": [
+  "components": [
     {
       "type": "ASC.People.PeopleProduct, ASC.People",
       "services": [
         {
           "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
         }
-      ]
+      ],
+	  "instanceScope": "singleinstance"
     }
   ]
 }

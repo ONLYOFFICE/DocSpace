@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+
 using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -12,7 +13,7 @@ using ASC.Web.Api.Routing;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
-using Microsoft.AspNetCore.Hosting;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -27,28 +28,19 @@ namespace ASC.Web.Api.Controllers
 
         public ApiContext ApiContext { get; }
         public UserManager UserManager { get; }
-        public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
-        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public PaymentManager PaymentManager { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public UrlShortener UrlShortener { get; }
         public PermissionContext PermissionContext { get; }
-        public MessageService MessageService { get; }
-        public StudioNotifyService StudioNotifyService { get; }
-        public IWebHostEnvironment WebHostEnvironment { get; }
         public ILog Log { get; }
 
 
         public PortalController(
             IOptionsMonitor<ILog> options,
-            MessageService messageService,
-            StudioNotifyService studioNotifyService,
             ApiContext apiContext,
             UserManager userManager,
-            AuthContext authContext,
             TenantManager tenantManager,
-            EmailValidationKeyProvider emailValidationKeyProvider,
             PaymentManager paymentManager,
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
@@ -56,13 +48,9 @@ namespace ASC.Web.Api.Controllers
             )
         {
             Log = options.CurrentValue;
-            MessageService = messageService;
-            StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
             UserManager = userManager;
-            AuthContext = authContext;
             TenantManager = tenantManager;
-            EmailValidationKeyProvider = emailValidationKeyProvider;
             PaymentManager = paymentManager;
             CommonLinkUtility = commonLinkUtility;
             UrlShortener = urlShortener;
@@ -94,7 +82,7 @@ namespace ASC.Web.Api.Controllers
         {
             try
             {
-                return UrlShortener.Instance.GetShortenLink(link, CommonLinkUtility);
+                return UrlShortener.Instance.GetShortenLink(link);
             }
             catch (Exception ex)
             {

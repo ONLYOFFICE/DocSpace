@@ -28,10 +28,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Caching;
 using ASC.Core.Tenants;
+
 using Autofac;
+
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Common.Configuration
 {
@@ -78,6 +83,7 @@ namespace ASC.Core.Common.Configuration
         public TenantManager TenantManager { get; set; }
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
+        public ConsumerFactory ConsumerFactory { get; }
         public IConfiguration Configuration { get; }
         public ICacheNotify<ConsumerCacheItem> Cache { get; }
 
@@ -101,12 +107,14 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache) : this()
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
+            ConsumerFactory = consumerFactory;
             Configuration = configuration;
             Cache = cache;
             OnlyDefault = configuration["core:default-consumers"] == "true";
@@ -118,10 +126,11 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            : this(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -133,10 +142,11 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            : this(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -294,9 +304,10 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
         {
 
         }
@@ -305,10 +316,11 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
         {
             Init(additional);
         }
@@ -317,10 +329,11 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
             Init(additional);
         }
@@ -350,34 +363,39 @@ namespace ASC.Core.Common.Configuration
 
         private DataStoreConsumer GetCdn(string cdn)
         {
-            var fromConfig = ConsumerFactory.GetByName<Consumer>(cdn);
+            var fromConfig = ConsumerFactory.GetByKey<Consumer>(cdn);
 
             var props = ManagedKeys.ToDictionary(prop => prop, prop => this[prop]);
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.ConsumerFactory, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
         }
 
         public object Clone()
         {
-            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, ConsumerFactory, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 
     public class ConsumerFactory
     {
-        private static IContainer Builder { get; set; }
+        public ILifetimeScope Builder { get; set; }
 
-        static ConsumerFactory()
+        public ConsumerFactory(IContainer builder)
         {
-            var container = ConsumerConfigLoader.LoadConsumers("consumers");
-            Builder = container.Build();
+            Builder = builder;
         }
 
-        public static Consumer GetByName(string name)
+
+        public ConsumerFactory(ILifetimeScope builder)
         {
-            if (Builder.TryResolveNamed(name, typeof(Consumer), out var result))
+            Builder = builder;
+        }
+
+        public Consumer GetByKey(string key)
+        {
+            if (Builder.TryResolveKeyed(key, typeof(Consumer), out var result))
             {
                 return (Consumer)result;
             }
@@ -385,9 +403,9 @@ namespace ASC.Core.Common.Configuration
             return new Consumer();
         }
 
-        public static T GetByName<T>(string name) where T : Consumer, new()
+        public T GetByKey<T>(string key) where T : Consumer, new()
         {
-            if (Builder.TryResolveNamed(name, typeof(T), out var result))
+            if (Builder.TryResolveKeyed(key, typeof(T), out var result))
             {
                 return (T)result;
             }
@@ -395,7 +413,7 @@ namespace ASC.Core.Common.Configuration
             return new T();
         }
 
-        public static T Get<T>() where T : Consumer, new()
+        public T Get<T>() where T : Consumer, new()
         {
             if (Builder.TryResolve(out T result))
             {
@@ -405,9 +423,18 @@ namespace ASC.Core.Common.Configuration
             return new T();
         }
 
-        public static IEnumerable<T> GetAll<T>() where T : Consumer, new()
+        public IEnumerable<T> GetAll<T>() where T : Consumer, new()
         {
             return Builder.Resolve<IEnumerable<T>>();
+        }
+    }
+
+    public static class ConsumerFactoryExtension
+    {
+        public static IServiceCollection AddConsumerFactoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<ConsumerFactory>();
+            return services;
         }
     }
 }
