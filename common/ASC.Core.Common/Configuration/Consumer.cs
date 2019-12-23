@@ -393,9 +393,9 @@ namespace ASC.Core.Common.Configuration
             Builder = builder;
         }
 
-        public Consumer GetByKey(string name)
+        public Consumer GetByKey(string key)
         {
-            if (Builder.TryResolveKeyed(name, typeof(Consumer), out var result))
+            if (Builder.TryResolveKeyed(key, typeof(Consumer), out var result))
             {
                 return (Consumer)result;
             }
@@ -403,9 +403,9 @@ namespace ASC.Core.Common.Configuration
             return new Consumer();
         }
 
-        public T GetByKey<T>(string name) where T : Consumer, new()
+        public T GetByKey<T>(string key) where T : Consumer, new()
         {
-            if (Builder.TryResolveKeyed(name, typeof(T), out var result))
+            if (Builder.TryResolveKeyed(key, typeof(T), out var result))
             {
                 return (T)result;
             }
