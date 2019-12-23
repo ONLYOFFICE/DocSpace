@@ -33,7 +33,6 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 
 using ASC.Common.Caching;
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -307,12 +306,10 @@ namespace ASC.Core.Data
     {
         public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
         {
-            services.AddWebstudioDbContextService();
-
             services.TryAddSingleton<DbSettingsManagerCache>();
             services.TryAddScoped<DbSettingsManager>();
 
-            return services.AddDbManagerService();
+            return services.AddWebstudioDbContextService();
         }
     }
 }

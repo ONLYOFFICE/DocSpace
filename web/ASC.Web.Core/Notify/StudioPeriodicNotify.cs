@@ -30,7 +30,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -1263,7 +1262,6 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddAuthContextService()
                 .AddCommonLinkUtilityService()
                 .AddSetupInfo()
-                .AddDbManagerService()
                 .AddFeedDbService()
                 .AddCoreBaseSettingsService()
                 .AddDisplayUserSettingsService()

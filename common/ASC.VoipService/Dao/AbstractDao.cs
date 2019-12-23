@@ -26,7 +26,6 @@
 
 using System;
 
-using ASC.Common.Data.Sql;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
@@ -48,26 +47,6 @@ namespace ASC.VoipService.Dao
         {
             get;
             private set;
-        }
-
-        protected SqlQuery Query(string table)
-        {
-            return new SqlQuery(table).Where(GetTenantColumnName(table), TenantID);
-        }
-
-        protected SqlDelete Delete(string table)
-        {
-            return new SqlDelete(table).Where(GetTenantColumnName(table), TenantID);
-        }
-
-        protected SqlInsert Insert(string table)
-        {
-            return new SqlInsert(table, true).InColumns(GetTenantColumnName(table)).Values(TenantID);
-        }
-
-        protected SqlUpdate Update(string table)
-        {
-            return new SqlUpdate(table).Where(GetTenantColumnName(table), TenantID);
         }
 
         protected string GetTenantColumnName(string table)

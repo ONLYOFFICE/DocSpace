@@ -30,7 +30,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -55,13 +54,10 @@ namespace ASC.MessagingSystem.DbSender
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
         private static Parser Parser { get; set; }
-        public DbRegistry DbRegistry { get; }
 
         private readonly Timer Timer;
         private bool timerStarted;
 
-        private const string LoginEventsTable = "login_events";
-        private const string AuditEventsTable = "audit_events";
         private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }

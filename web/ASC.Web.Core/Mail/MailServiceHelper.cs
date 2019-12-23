@@ -30,7 +30,6 @@ using System.Net;
 using System.Security;
 
 using ASC.Common.Caching;
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -76,7 +75,6 @@ namespace ASC.Web.Core.Mail
         public UserManager UserManager { get; }
         public AuthContext AuthContext { get; }
         public IConfiguration Configuration { get; }
-        public DbRegistry DbRegistry { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public MailServiceHelperStorage MailServiceHelperStorage { get; }
         public EFLoggerFactory LoggerFactory { get; }
@@ -87,7 +85,6 @@ namespace ASC.Web.Core.Mail
             UserManager userManager,
             AuthContext authContext,
             IConfiguration configuration,
-            DbRegistry dbRegistry,
             CoreBaseSettings coreBaseSettings,
             MailServiceHelperStorage mailServiceHelperStorage,
             DbContextManager<MailDbContext> dbContext,
@@ -96,7 +93,6 @@ namespace ASC.Web.Core.Mail
             UserManager = userManager;
             AuthContext = authContext;
             Configuration = configuration;
-            DbRegistry = dbRegistry;
             CoreBaseSettings = coreBaseSettings;
             MailServiceHelperStorage = mailServiceHelperStorage;
             LoggerFactory = loggerFactory;

@@ -8,14 +8,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Security;
+
 using ASC.Api.Core;
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
-using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Data.Reassigns;
@@ -42,6 +41,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
@@ -81,7 +81,6 @@ namespace ASC.Employee.Core.Controllers
         public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
         public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
-        public EFUserService EFUserService { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -115,8 +114,7 @@ namespace ASC.Employee.Core.Controllers
             IOptionsMonitor<ILog> option,
             IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
-            EmployeeWraperHelper employeeWraperHelper,
-            EFUserService eFUserService)
+            EmployeeWraperHelper employeeWraperHelper)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -149,7 +147,6 @@ namespace ASC.Employee.Core.Controllers
             AccountLinker = accountLinker;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
-            EFUserService = eFUserService;
         }
 
         [Read("info")]
@@ -1491,7 +1488,6 @@ namespace ASC.Employee.Core.Controllers
                 .AddTenantUtilService()
                 .AddSecurityContextService()
                 .AddWebItemSecurityCache()
-                .AddDbManagerService()
                 .AddDisplayUserSettingsService()
                 .AddTenantManagerService()
                 .AddSetupInfo()
