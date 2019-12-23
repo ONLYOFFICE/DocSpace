@@ -4,7 +4,7 @@ import { utils } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledArticle = styled.article`
-  padding: 0 16px;
+  padding: 0 24px;
   background: #f8f9f9;
   display: flex;
   flex-direction: column;
@@ -15,6 +15,7 @@ const StyledArticle = styled.article`
   box-sizing: border-box;
 
   @media ${tablet} {
+    padding: 0 16px;
     ${props =>
       props.visible
         ? props.pinned
