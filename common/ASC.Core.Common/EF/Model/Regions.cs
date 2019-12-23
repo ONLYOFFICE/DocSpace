@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Core.Common.EF.Model
 {
-    [Table("region")]
+    [Table("regions")]
     public class Regions
     {
         [Key]
