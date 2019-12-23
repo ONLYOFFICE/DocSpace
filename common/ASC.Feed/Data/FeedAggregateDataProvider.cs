@@ -76,7 +76,7 @@ namespace ASC.Feed.Data
                 LastDate = value
             };
 
-            FeedDbContext.FeedLast.Add(feedLast);
+            FeedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
             FeedDbContext.SaveChanges();
 
             const int feedsPortionSize = 1000;
@@ -127,6 +127,8 @@ namespace ASC.Feed.Data
                     FeedDbContext.FeedUsers.Remove(fu);
                 }
 
+                FeedDbContext.AddOrUpdate(r => r.FeedAggregates, feedAggregate);
+
                 foreach (var u in f.Users)
                 {
                     var feedUser = new FeedUsers
@@ -135,7 +137,7 @@ namespace ASC.Feed.Data
                         UserId = u
                     };
 
-                    FeedDbContext.FeedUsers.Add(feedUser);
+                    FeedDbContext.AddOrUpdate(r => r.FeedUsers, feedUser);
                 }
             }
 

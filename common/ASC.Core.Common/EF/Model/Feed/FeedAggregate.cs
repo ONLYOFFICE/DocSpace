@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.Core.Common.EF.Model
 {
     [Table("feed_aggregate")]
-    public class FeedAggregate
+    public class FeedAggregate : BaseEntity
     {
         public string Id { get; set; }
         public int Tenant { get; set; }
@@ -28,5 +28,7 @@ namespace ASC.Core.Common.EF.Model
         public DateTime AggregateDate { get; set; }
         public string Json { get; set; }
         public string Keywords { get; set; }
+
+        internal override object[] GetKeys() => new object[] { Id };
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.Core.Common.EF.Model
 {
     [Table("feed_last")]
-    public class FeedLast
+    public class FeedLast : BaseEntity
     {
         [Key]
         [Column("last_key")]
@@ -13,5 +13,7 @@ namespace ASC.Core.Common.EF.Model
 
         [Column("last_date")]
         public DateTime LastDate { get; set; }
+
+        internal override object[] GetKeys() => new object[] { LastKey };
     }
 }
