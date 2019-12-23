@@ -4,29 +4,31 @@ import styled, { css } from "styled-components";
 import { Badge, Icons, Text} from "asc-web-components";
 
 const baseColor = "#7A95B0",
-  activeColor = "#FFFFFF";
+  activeColor = "#FFFFFF",
+  separatorColor = "#3E668D";
 
 const NavItemSeparator = styled.div`
-  border-bottom: 1px solid ${baseColor};
+  border-bottom: 1px solid ${separatorColor};
   margin: 0 16px;
 `;
 
 const NavItemWrapper = styled.div`
   display: flex;
   min-width: 56px;
-  min-height: 56px;
+  min-height: 50px;
   align-items: center;
   padding: 0 16px;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
+
+  &:hover {
+    background: #0D3760;
+  }
 `;
 
-const NavItemLabel = styled.div`
+const NavItemLabel = styled(Text)`
   margin: 0 auto 0 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${props => props.color};
   display: ${props => (props.opened ? "block" : "none")};
 `;
 
@@ -64,10 +66,8 @@ const NavItem = React.memo(props => {
         color: color
       })}
       {children && (
-        <NavItemLabel opened={opened}>
-          <Text color={color} isBold fontSize='16px'>
-            {children}
-          </Text>
+        <NavItemLabel tag="div" opened={opened} color={color} fontSize="16px" fontWeight="bold" truncate>
+          {children}
         </NavItemLabel>
       )}
       <NavItemBadge
