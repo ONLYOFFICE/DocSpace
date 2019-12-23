@@ -27,10 +27,15 @@ class ChangeEmailDialogComponent extends React.Component {
       isRequestRunning: false,
       email,
       hasError: false,
-      errorMessage: ''
+      errorMessage: '',
+      emailErrors: []
     };
 
     i18n.changeLanguage(language);
+  }
+
+  componentDidMount() {
+    window.addEventListener("keyup", this.onKeyPress);
   }
 
   componentDidUpdate(prevProps) {
@@ -40,7 +45,11 @@ class ChangeEmailDialogComponent extends React.Component {
     }
   }
 
-  onValidateEmailInput = value => this.setState({ isEmailValid: value });
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.onKeyPress);
+  }
+
+  onValidateEmailInput = validateObj => this.setState({ isEmailValid: validateObj.isValid, emailErrors: validateObj.errors });
 
   onChangeEmailInput = e => {
     const { hasError } = this.state;
@@ -64,15 +73,23 @@ class ChangeEmailDialogComponent extends React.Component {
   };
 
   onValidateEmail = () => {
-    const { isEmailValid, email } = this.state;
+    const { isEmailValid, email, emailErrors } = this.state;
     const { t } = this.props;
-    const isEmailEmpty = !email && !email.length;
-    const errorMessage = isEmailEmpty ? t('EmailEmpty')
-      : email.toLowerCase() === this.props.email.toLowerCase() ? t('SameEmail')
-        : isEmailValid ? '' : t('EmailNotValid');
-    const hasError = Boolean(errorMessage);
-    this.setState({ errorMessage, hasError });
-    !hasError && this.onSendEmailChangeInstructions();
+    if (isEmailValid) {
+      const sameEmailError = email.toLowerCase() === this.props.email.toLowerCase();
+      if (sameEmailError) {
+        this.setState({ errorMessage: t('SameEmail'), hasError: true });
+      }
+      else {
+        this.setState({ errorMessage: '', hasError: false });
+        this.onSendEmailChangeInstructions();
+      }
+    }
+    else {
+      const translatedErrors = emailErrors.map((errorKey => t(errorKey)));
+      const errorMessage = translatedErrors[0];
+      this.setState({ errorMessage, hasError: true });
+    }
   };
 
   onKeyPress = event => {
@@ -109,6 +126,7 @@ class ChangeEmailDialogComponent extends React.Component {
                   onChange={this.onChangeEmailInput}
                   onValidateInput={this.onValidateEmailInput}
                   onKeyUp={this.onKeyPress}
+                  hasError={hasError}
                 />
               </FieldContainer>
               <Text

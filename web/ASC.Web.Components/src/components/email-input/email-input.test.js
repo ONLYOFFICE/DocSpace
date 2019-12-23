@@ -23,7 +23,7 @@ describe('<EmailInput />', () => {
     const email = "zzz";
     const wrapper = shallow(<EmailInput value={email} />).instance();
 
-    expect(wrapper.state.isValidEmail).toBe(false);
+    expect(wrapper.state.isValidEmail.isValid).toBe(false);
   });
 
   it('Faith test 2', () => {
@@ -35,13 +35,13 @@ describe('<EmailInput />', () => {
 
     wrapper.onChange(event);
 
-    expect(wrapper.state.isValidEmail).toBe(true);
+    expect(wrapper.state.isValidEmail.isValid).toBe(true);
 
     event = { target: { value: "" } };
 
     wrapper.onChange(event);
 
-    expect(wrapper.state.isValidEmail).toBe(false);
+    expect(wrapper.state.isValidEmail.isValid).toBe(false);
   });
 
   it('Faith test 3', () => {
@@ -53,7 +53,7 @@ describe('<EmailInput />', () => {
 
     wrapper.setProps({ value: 'bar' });
 
-    expect(wrapper.state().isValidEmail).toBe(false);
+    expect(wrapper.state().isValidEmail.isValid).toBe(false);
 
     expect(wrapper.state().inputValue).toBe("bar");
   });
@@ -105,13 +105,13 @@ describe('<EmailInput />', () => {
 
     wrapper.simulate('change', event);
 
-    expect(wrapper.state('isValidEmail')).toBe(false);
+    expect(wrapper.state().isValidEmail.isValid).toBe(false);
 
     const emptyValue = { target: { value: "" } };
 
     wrapper.simulate('change', emptyValue);
 
-    expect(wrapper.state('isValidEmail')).toBe(false);
+    expect(wrapper.state().isValidEmail.isValid).toBe(false);
   });
 
   it('not re-render test', () => {
@@ -125,7 +125,7 @@ describe('<EmailInput />', () => {
   it('passed valid email: simple@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -137,7 +137,7 @@ describe('<EmailInput />', () => {
   it('passed valid email: disposable.style.email.with+symbol@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -149,7 +149,7 @@ describe('<EmailInput />', () => {
   it('passed valid email: user.name+tag+sorting@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -161,7 +161,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with one-letter local-part: x@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -174,7 +174,7 @@ describe('<EmailInput />', () => {
   it('passed valid email, local domain name with no TLD: admin@mailserver1', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
 
@@ -187,7 +187,7 @@ describe('<EmailInput />', () => {
   it('passed valid email, local domain name with no TLD: admin@mailserver1 (settings: allowLocalDomainName = true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const emailSettings = new EmailSettings();
@@ -201,7 +201,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (one-letter domain name): example@s.example', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -214,7 +214,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (space between the quotes): " "@example.org', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -226,7 +226,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (space between the quotes): " "@example.org (settings: allowSpaces = true, allowStrictLocalPart = false)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowSpaces = true;
@@ -241,7 +241,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (quoted double dot): "john..doe"@example.org)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
 
@@ -253,7 +253,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (quoted double dot): "john..doe"@example.org (settings: allowSpaces = true, allowStrictLocalPart = false)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowSpaces = true;
@@ -268,7 +268,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (bangified host route used for uucp mailers): mailhost!username@example.org', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -280,7 +280,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (bangified host route used for uucp mailers): mailhost!username@example.org (object settings: allowStrictLocalPart = false)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
     const emailSettings = {
       allowStrictLocalPart: false
@@ -294,7 +294,7 @@ describe('<EmailInput />', () => {
   it('passed valid email (% escaped mail route to user@example.com via example.org): user%example.com@example.org)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowStrictLocalPart = false;
@@ -307,7 +307,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in domain: example@джpумлатест.bрфa', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -320,7 +320,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part: mañana@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -333,7 +333,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part and domain: mañana@mañana.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -345,7 +345,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part and domain: mañana@mañana.com (settings: allowDomainPunycode=true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowDomainPunycode = true;
@@ -358,7 +358,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part and domain: mañana@mañana.com (settings: allowLocalPartPunycode=true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowLocalPartPunycode = true;
@@ -371,7 +371,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part and domain: mañana@mañana.com (settings: allowDomainPunycode=true, allowLocalPartPunycode=true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowLocalPartPunycode = true;
@@ -385,7 +385,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with punycode symbols in local part and domain: mañana@mañana.com (settings: allowDomainPunycode=true, allowLocalPartPunycode=true, allowStrictLocalPart=false)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
     const emailSettings = new EmailSettings();
     emailSettings.allowLocalPartPunycode = true;
@@ -400,7 +400,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with IP address in domain: user@[127.0.0.1]', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
 
@@ -412,7 +412,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with IP address in domain: user@[127.0.0.1] (settings: allowDomainIp = true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const emailSettings = { allowDomainIp: true };
@@ -425,7 +425,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with Name (RFC 5322): "Jack Bowman" <jack@fogcreek.com>', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -437,7 +437,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with Name (RFC 5322): "Jack Bowman" <jack@fogcreek.com> (instance of EmailSettings: allowName = true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const emailSettings = new EmailSettings();
@@ -451,7 +451,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with Name (RFC 5322): Bob <bob@example.com>', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -463,7 +463,7 @@ describe('<EmailInput />', () => {
   it('passed valid email with Name (RFC 5322): Bob <bob@example.com> (instance of EmailSettings: allowName = true)', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(true);
+      expect(isValidEmail.isValid).toEqual(true);
     });
 
     const emailSettings = new EmailSettings();
@@ -478,7 +478,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (no @ character): Abc.example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -490,7 +490,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (only one @ is allowed outside quotation marks): A@b@c@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -502,7 +502,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (none of the special characters in this local-part are allowed outside quotation marks): a"b(c)d,e:f;g<h>i[j\k]l@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -514,7 +514,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (none of the special characters in this local-part are allowed outside quotation marks): a"b(c)d,e:f;g<h>i[j\k]l@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);
@@ -526,7 +526,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (quoted strings must be dot separated or the only element making up the local-part): just"not"right@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const emailSettings = new EmailSettings();
@@ -541,7 +541,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email  (spaces, quotes, and backslashes may only exist when within quoted strings and preceded by a backslash): this is"not\allowed@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const emailSettings = new EmailSettings();
@@ -556,7 +556,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (even if escaped (preceded by a backslash), spaces, quotes, and backslashes must still be contained by quotes): this\ still\"not\\allowed@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const emailSettings = new EmailSettings();
@@ -571,7 +571,7 @@ describe('<EmailInput />', () => {
   it('passed invalid email (local part is longer than 64 characters): 1234567890123456789012345678901234567890123456789012345678901234+x@example.com', () => {
 
     const onValidateInput = jest.fn(isValidEmail => {
-      expect(isValidEmail).toEqual(false);
+      expect(isValidEmail.isValid).toEqual(false);
     });
 
     const wrapper = mount(<EmailInput {...baseProps} onValidateInput={onValidateInput} />);

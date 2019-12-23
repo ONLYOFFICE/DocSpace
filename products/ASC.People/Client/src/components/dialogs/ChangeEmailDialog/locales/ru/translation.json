@@ -4,7 +4,16 @@
   "EmailActivationDescription": "Инструкции по активации будут отправлены на введённый адрес электронной почты",
   "SendButton": "Отправить",
 
-  "EmailEmpty": "Поле email пустое",
   "SameEmail": "Email совпадает с текущим",
-  "EmailNotValid": "Некорректный email"
+  "LocalDomain": "Псевдодомен(локальный) верхнего уровня не поддерживается",
+  "IncorrectDomain": "Некорректный домен",
+  "DomainIpAddress": "IP адрес в качестве домена не поддерживается",
+  "PunycodeDomain": "Домен содержит запрещенные символы",
+  "PunycodeLocalPart": "Имя почтового ящика содержит запрещенные символы",
+  "IncorrectLocalPart": "Некорректное имя почтового ящика",
+  "SpacesInLocalPart": "Имя почтового ящика содержит пробелы",
+  "MaxLengthExceeded": "Максимальная длина имени почтового ящика - 64 символа.",
+  "IncorrectEmail": "Некорректный email",
+  "ManyEmails": "Поле содержит больше одного email",
+  "EmptyEmail": "Поле email пустое"
 }

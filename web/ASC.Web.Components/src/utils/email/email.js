@@ -1,6 +1,6 @@
 import emailAddresses from "email-addresses";
 import punycode from "punycode";
-import { parseErrorTypes } from "./../constants";
+import { parseErrorTypes, errorKeys } from "./../constants";
 import { EmailSettings } from './emailSettings';
 
 const getParts = string => {
@@ -70,7 +70,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Local domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.LocalDomain
     });
   }
 
@@ -79,7 +80,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Incorrect domain",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.IncorrectDomain
     });
   }
 
@@ -91,7 +93,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Domains as ip address are not supported",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.DomainIpAddress
     });
   }
 
@@ -99,7 +102,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Punycode domains are not supported",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.PunycodeDomain
     });
   }
 
@@ -107,7 +111,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Punycode local part are not supported",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.PunycodeLocalPart
     });
   }
 
@@ -119,7 +124,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Incorrect localpart",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.IncorrectLocalPart
     });
   }
 
@@ -131,7 +137,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "Incorrect, localpart contains spaces",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.SpacesInLocalPart
     });
   }
 
@@ -139,7 +146,8 @@ const checkErrors = (parsedAddress, options) => {
     errors.push({
       message: "The maximum total length of a user name or other local-part is 64 characters. See RFC2821",
       type: parseErrorTypes.IncorrectEmail,
-      errorItem: parsedAddress
+      errorItem: parsedAddress,
+      errorKey: errorKeys.MaxLengthExceeded
     });
   }
 
@@ -168,7 +176,8 @@ export const parseAddresses = (str, options = new EmailSettings()) => {
     if (!parsedAddress || (parsedAddress.name && !options.allowName)) {
       errors.push({
         message: "Incorrect email",
-        type: parseErrorTypes.IncorrectEmail
+        type: parseErrorTypes.IncorrectEmail,
+        errorKey: errorKeys.IncorrectEmail
       });
     } else {
       const checkOptionErrors = checkErrors(parsedAddress, options)
@@ -195,13 +204,13 @@ export const parseAddress = (str, options = new EmailSettings()) => {
 
   if (!parsedEmails.length) {
     return new Email("", str, [
-      { message: "No one email parsed", type: parseErrorTypes.EmptyRecipients }
+      { message: "No one email parsed", type: parseErrorTypes.EmptyRecipients, errorKey: errorKeys.EmptyEmail }
     ]);
   }
 
   if (parsedEmails.length > 1) {
     return new Email("", str, [
-      { message: "Too many email parsed", type: parseErrorTypes.IncorrectEmail }
+      { message: "Too many email parsed", type: parseErrorTypes.IncorrectEmail, errorKey: errorKeys.ManyEmails }
     ]);
   }
 

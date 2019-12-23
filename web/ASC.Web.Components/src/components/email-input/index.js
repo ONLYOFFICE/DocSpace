@@ -51,7 +51,12 @@ class EmailInput extends React.Component {
     else {
       const emailObj = parseAddress(value, emailSettings);
       const isValidEmail = emailObj.isValid();
-      return isValidEmail;
+      const parsedErrors = emailObj.parseErrors;
+      const errors = parsedErrors ? parsedErrors.map(error => error.errorKey) : [];
+      return {
+        isValid: isValidEmail,
+        errors
+      };
     }
   }
 
@@ -72,14 +77,14 @@ class EmailInput extends React.Component {
   render() {
     //console.log('EmailInput render()');
     // eslint-disable-next-line no-unused-vars
-    const { onValidateInput, emailSettings, onChange, value, ...rest } = this.props;
+    const { onValidateInput, emailSettings, onChange, value, hasError, ...rest } = this.props;
 
     const { isValidEmail, inputValue } = this.state;
-    const hasError = Boolean(inputValue && !isValidEmail);
+    const isError = Boolean(inputValue && !isValidEmail.isValid) || hasError;
 
     return (
       <SimpleInput
-        hasError={hasError}
+        hasError={isError}
         value={inputValue}
         onChange={this.onChange}
         type='text'
@@ -91,30 +96,32 @@ class EmailInput extends React.Component {
 }
 
 EmailInput.propTypes = {
-  onValidateInput: PropTypes.func,
-  onChange: PropTypes.func,
-  customValidateFunc: PropTypes.func,
-  value: PropTypes.string,
-  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)]),
   className: PropTypes.string,
+  customValidateFunc: PropTypes.func,
+  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)]),
+  hasError: PropTypes.bool,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  onChange: PropTypes.func,
+  onValidateInput: PropTypes.func,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  value: PropTypes.string,
 }
 
 EmailInput.defaultProps = {
-  id: '',
-  name: '',
   autoComplete: 'email',
-  maxLength: 255,
-  value: '',
+  className: '',
+  hasError: false,
+  id: '',
   isDisabled: false,
   isReadOnly: false,
-  size: 'base',
-  scale: false,
-  withBorder: true,
+  maxLength: 255,
+  name: '',
   placeholder: '',
-  className: '',
+  scale: false,
+  size: 'base',
   title: '',
+  value: '',
+  withBorder: true,
 
   emailSettings: new EmailSettings()
 }

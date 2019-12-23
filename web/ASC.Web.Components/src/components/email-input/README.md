@@ -23,16 +23,16 @@ import { EmailInput } from "asc-web-components";
 
 You can apply all properties of the `TextInput` component to the component
 
-| Props                |                 Type                  | Required | Values |     Default     | Description                                                              |
-| -------------------- | :-----------------------------------: | :------: | :----: | :-------------: | ------------------------------------------------------------------------ |
-| `className`          |               `string`                |    -     |   -    |        -        | Accepts class                                                            |
-| `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value. Function must return boolean result of validating                         |
-| `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                            |
-| `id`                 |               `string`                |    -     |   -    |        -        | Accepts id                                                               |
-| `isValid`            |                `bool`                 |    -     |   -    |        -        | Used in your custom validation function for change border-color of input |
-| `onChange`           |                `func`                 |    -     |   -    |        -        | Function for your custom handling changes in input                       |
-| `onValidateInput`    |                `func`                 |    -     |   -    |        -        | Will be validate our value, return boolean validation result             |
-| `style`              |            `obj`, `array`             |    -     |   -    |        -        | Accepts css style                                                        |
+| Props                |                 Type                  | Required | Values |     Default     | Description                                                                                                                                                                          |
+| -------------------- | :-----------------------------------: | :------: | :----: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `className`          |               `string`                |    -     |   -    |        -        | Accepts class                                                                                                                                                                        |
+| `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value. Function must return object with following parameters: `isValid`: boolean result of validating, `errors`(optional): array of errors |
+| `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                                                                                                                                        |
+| `id`                 |               `string`                |    -     |   -    |        -        | Accepts id                                                                                                                                                                           |
+| `isValid`            |                `bool`                 |    -     |   -    |        -        | Used in your custom validation function for change border-color of input                                                                                                             |
+| `onChange`           |                `func`                 |    -     |   -    |        -        | Function for your custom handling changes in input                                                                                                                                   |
+| `onValidateInput`    |                `func`                 |    -     |  { isValid: bool, errors: array}    |        -        | Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors                                               |
+| `style`              |            `obj`, `array`             |    -     |   -    |        -        | Accepts css style                                                                                                                                                                    |
 
 ### Validate email
 
@@ -104,8 +104,7 @@ emailSettings.getSettings(); /* returned Object with NEW settings:
 
 ### Custom validate email
 
-You should use custom validation with the `customValidateFunc` prop. Also you can change state of validation with the help of `isValid` prop.
-`isValid` prop allow you to change border-color of input.
+You should use custom validation with the `customValidateFunc` prop. This prop contain function for your custom validation input value. Function must return object with following parameters: `isValid`: boolean result of validating, `errors`(optional): array of errors.
 
 How are applied colors in component:
 
@@ -119,10 +118,9 @@ How are applied colors in component:
 | `default`         | `true`  |   #D0D5DA    |
 
 ```js
-import React, { useState } from "react";
+import React from "react";
 import { EmailInput } from "asc-web-components";
 
-const [emailValid, setEmailValid] = useState(true);
 
 const customChangeFunc = (e) => {
   // your event handling
@@ -132,16 +130,19 @@ const customChangeFunc = (e) => {
 const customValidateFunc = (value) => {
   let validationResult;
 // your validating function
-  setEmailValid(validationResult);
+const emailValidation = {
+  isValid: true,
+  errors: ['Too short username', 'Incorrect domain']
+}
+  return emailValidation;
 }
 
-const onValidateInput = (isValidEmail) => {
-    console.log(`isValidEmail = ${isValidEmail}`);
+const onValidateInput = (isValidEmailObj) => {
+    console.log(`isValidEmail = ${isValidEmailObj.isValid}`);
 }
 
 return (
 <EmailInput
-  isValid={emailValid}
   onChange={customChangeFunc}
   customValidateFunc={customValidateFunc}
   onValidateInput={onValidateInput}

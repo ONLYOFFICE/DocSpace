@@ -319,7 +319,7 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
-  onValidateEmailField = (value) => this.setState({errors: { ...this.state.errors, email:!value }});
+  onValidateEmailField = (value) => this.setState({errors: { ...this.state.errors, email:!value.isValid }});
 
   render() {
     const { isLoading, errors, profile, selector } = this.state;

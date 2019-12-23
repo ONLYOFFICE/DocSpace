@@ -33,6 +33,7 @@ const ModalDialogContainer = styled.div`
 
   .error-label {
     position: absolute;
+    max-width: 100%;
   }
 
   .field-body {
