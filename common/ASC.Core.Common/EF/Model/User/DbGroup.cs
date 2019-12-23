@@ -9,8 +9,8 @@ namespace ASC.Core.Common.EF
         public int Tenant { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid CategoryId { get; set; }
-        public Guid ParentId { get; set; }
+        public Guid? CategoryId { get; set; }
+        public Guid? ParentId { get; set; }
         public string Sid { get; set; }
         public bool Removed { get; set; }
 

@@ -112,8 +112,8 @@ namespace ASC.Core.Data
             {
                 Id = group.Id,
                 Name = group.Name,
-                CategoryId = group.CategoryId,
-                ParentId = group.ParentId,
+                CategoryId = group.CategoryId.HasValue ? group.CategoryId.Value : Guid.Empty,
+                ParentId = group.ParentId.HasValue ? group.ParentId.Value : Guid.Empty,
                 Sid = group.Sid,
                 Removed = group.Removed,
                 LastModified = group.LastModified,
