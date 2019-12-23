@@ -3,8 +3,11 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -13,7 +16,7 @@ namespace ASC.Web.Core.Utility
 {
     public interface IUrlShortener
     {
-        string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility);
+        string GetShortenLink(string shareLink);
     }
 
     public class UrlShortener
@@ -27,13 +30,13 @@ namespace ASC.Web.Core.Utility
             {
                 if (_instance == null)
                 {
-                    if (BitlyLoginProvider.Enabled)
+                    if (ConsumerFactory.Get<BitlyLoginProvider>().Enabled)
                     {
-                        _instance = new BitLyShortener();
+                        _instance = new BitLyShortener(ConsumerFactory);
                     }
                     else if (!string.IsNullOrEmpty(Configuration["web:url-shortener"]))
                     {
-                        _instance = new OnlyoShortener(Configuration);
+                        _instance = new OnlyoShortener(Configuration, CommonLinkUtility);
                     }
                     else
                     {
@@ -46,18 +49,29 @@ namespace ASC.Web.Core.Utility
         }
 
         public IConfiguration Configuration { get; }
+        public ConsumerFactory ConsumerFactory { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
-        public UrlShortener(IConfiguration configuration)
+        public UrlShortener(IConfiguration configuration, ConsumerFactory consumerFactory, CommonLinkUtility commonLinkUtility)
         {
             Configuration = configuration;
+            ConsumerFactory = consumerFactory;
+            CommonLinkUtility = commonLinkUtility;
         }
     }
 
     public class BitLyShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
+        public BitLyShortener(ConsumerFactory consumerFactory)
         {
-            return BitlyLoginProvider.GetShortenLink(shareLink);
+            ConsumerFactory = consumerFactory;
+        }
+
+        public ConsumerFactory ConsumerFactory { get; }
+
+        public string GetShortenLink(string shareLink)
+        {
+            return ConsumerFactory.Get<BitlyLoginProvider>().GetShortenLink(shareLink);
         }
     }
 
@@ -67,7 +81,7 @@ namespace ASC.Web.Core.Utility
         private readonly string internalUrl;
         private readonly string sKey;
 
-        public OnlyoShortener(IConfiguration configuration)
+        public OnlyoShortener(IConfiguration configuration, CommonLinkUtility commonLinkUtility)
         {
             url = configuration["web.url-shortener"];
             internalUrl = configuration["web.url-shortener.internal"];
@@ -75,13 +89,16 @@ namespace ASC.Web.Core.Utility
 
             if (!url.EndsWith("/"))
                 url += '/';
+            CommonLinkUtility = commonLinkUtility;
         }
 
-        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
+        public CommonLinkUtility CommonLinkUtility { get; }
+
+        public string GetShortenLink(string shareLink)
         {
             using var client = new WebClient { Encoding = Encoding.UTF8 };
             client.Headers.Add("Authorization", CreateAuthToken());
-            return commonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
+            return CommonLinkUtility.GetFullAbsolutePath(url + client.DownloadString(new Uri(internalUrl + "?url=" + HttpUtility.UrlEncode(shareLink))));
         }
 
         private string CreateAuthToken(string pkey = "urlShortener")
@@ -95,7 +112,7 @@ namespace ASC.Web.Core.Utility
 
     public class NullShortener : IUrlShortener
     {
-        public string GetShortenLink(string shareLink, CommonLinkUtility commonLinkUtility)
+        public string GetShortenLink(string shareLink)
         {
             return null;
         }
@@ -105,8 +122,10 @@ namespace ASC.Web.Core.Utility
     {
         public static IServiceCollection AddUrlShortener(this IServiceCollection services)
         {
-            services.TryAddSingleton<UrlShortener>();
-            return services;
+            services.TryAddScoped<UrlShortener>();
+            return services
+                .AddConsumerFactoryService()
+                .AddCommonLinkUtilityService();
         }
     }
 }

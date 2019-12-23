@@ -30,33 +30,35 @@ using System.Globalization;
 using System.Net;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class BitlyLoginProvider : Consumer, IValidateKeysProvider
     {
-        private static string BitlyClientId
+        private string BitlyClientId
         {
             get { return Instance["bitlyClientId"]; }
         }
 
-        private static string BitlyClientSecret
+        private string BitlyClientSecret
         {
             get { return Instance["bitlyClientSecret"]; }
         }
 
-        private static string BitlyUrl
+        private string BitlyUrl
         {
             get { return Instance["bitlyUrl"]; }
         }
 
-        private static BitlyLoginProvider Instance
+        private BitlyLoginProvider Instance
         {
             get { return ConsumerFactory.Get<BitlyLoginProvider>(); }
         }
@@ -67,10 +69,11 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
         }
 
@@ -86,7 +89,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        public static bool Enabled
+        public bool Enabled
         {
             get
             {
@@ -96,7 +99,7 @@ namespace ASC.FederatedLogin.LoginProviders
             }
         }
 
-        public static string GetShortenLink(string shareLink)
+        public string GetShortenLink(string shareLink)
         {
             var uri = new Uri(shareLink);
 

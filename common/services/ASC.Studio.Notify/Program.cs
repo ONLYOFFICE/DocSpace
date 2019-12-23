@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Notify;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -34,8 +36,6 @@ namespace ASC.Studio.Notify
                         .AddJsonFile("appsettings.json")
                         .AddJsonFile($"appsettings.{env}.json", true)
                         .AddJsonFile($"appsettings.services.json", true)
-                        .AddJsonFile("autofac.json")
-                        .AddJsonFile("autofac.products.json")
                         .AddJsonFile("storage.json")
                         .AddJsonFile("notify.json")
                         .AddJsonFile("kafka.json")
@@ -45,10 +45,10 @@ namespace ASC.Studio.Notify
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
-
-                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                     services.AddHostedService<ServiceLauncher>();
                     services.AddServiceLauncher();
+
+                    services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })
                 .UseConsoleLifetime()
                 .Build();

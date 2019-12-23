@@ -26,10 +26,12 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Sms;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -59,17 +61,20 @@ namespace ASC.Web.Studio.Core.SMS
         public CoreBaseSettings CoreBaseSettings { get; }
         public SetupInfo SetupInfo { get; }
         public SettingsManager SettingsManager { get; }
+        public SmsProviderManager SmsProviderManager { get; }
 
         public StudioSmsNotificationSettingsHelper(
             TenantExtra tenantExtra,
             CoreBaseSettings coreBaseSettings,
             SetupInfo setupInfo,
-            SettingsManager settingsManager)
+            SettingsManager settingsManager,
+            SmsProviderManager smsProviderManager)
         {
             TenantExtra = tenantExtra;
             CoreBaseSettings = coreBaseSettings;
             SetupInfo = setupInfo;
             SettingsManager = settingsManager;
+            SmsProviderManager = smsProviderManager;
         }
 
         public bool IsVisibleSettings()

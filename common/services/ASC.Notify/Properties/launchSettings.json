@@ -15,7 +15,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
         "log__name": "notify",
-        "log__dir": "../../../Logs"
+        "log__dir": "../../../Logs",
+        "core__products__folder": "../../../products"
       }
     },
     "ASC.Notify": {
@@ -25,7 +26,8 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "$STORAGE_ROOT": "../../../Data",
         "log__name": "notify",
-        "log__dir": "../../../Logs"
+        "log__dir": "../../../Logs",
+        "core__products__folder": "../../../products"
       },
       "applicationUrl": "http://localhost:5005/"
     }

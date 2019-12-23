@@ -27,17 +27,19 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
     public class DocuSignLoginProvider : Consumer, IOAuthProvider
     {
-        public static DocuSignLoginProvider Instance
+        public DocuSignLoginProvider Instance
         {
             get { return ConsumerFactory.Get<DocuSignLoginProvider>(); }
         }
@@ -66,10 +68,11 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
         }
 

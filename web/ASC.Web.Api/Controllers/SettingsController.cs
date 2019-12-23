@@ -95,6 +95,8 @@ namespace ASC.Api.Settings
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IServiceProvider ServiceProvider { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public ConsumerFactory ConsumerFactory { get; }
+        public SmsProviderManager SmsProviderManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
@@ -172,12 +174,16 @@ namespace ASC.Api.Settings
             IWebHostEnvironment webHostEnvironment,
             IServiceProvider serviceProvider,
             EmployeeWraperHelper employeeWraperHelper,
+            ConsumerFactory consumerFactory,
+            SmsProviderManager smsProviderManager,
             TimeZoneConverter timeZoneConverter)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
             ServiceProvider = serviceProvider;
             EmployeeWraperHelper = employeeWraperHelper;
+            ConsumerFactory = consumerFactory;
+            SmsProviderManager = smsProviderManager;
             TimeZoneConverter = timeZoneConverter;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
@@ -1231,7 +1237,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
 
-            var consumer = ConsumerFactory.GetByName(model.Module);
+            var consumer = ConsumerFactory.GetByKey(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
@@ -1293,7 +1299,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
 
-            var consumer = ConsumerFactory.GetByName(model.Module);
+            var consumer = ConsumerFactory.GetByKey(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
@@ -1417,7 +1423,9 @@ namespace ASC.Api.Settings
                 .AddTenantLogoManagerService()
                 .AddBuildVersionService()
                 .AddStatisticManagerService()
-                .AddEmployeeWraper();
+                .AddEmployeeWraper()
+                .AddConsumerFactoryService()
+                .AddSmsProviderManagerService();
         }
     }
 }
