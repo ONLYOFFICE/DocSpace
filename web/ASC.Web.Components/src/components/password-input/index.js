@@ -385,14 +385,14 @@ class PasswordInput extends React.Component {
             name={inputName}
             hasError={hasError}
             isDisabled={isDisabled}
-            iconName={`${iconName} !important`}
+            iconName={iconName}
             value={inputValue}
             onIconClick={this.changeInputType}
             onChange={this.onChangeAction}
             scale={scale}
             size={size}
             type={type}
-            iconColor={iconsColor}
+            iconColor={`${iconsColor} !important`}
             isIconFill={true}
             //onFocus={this.onFocus}
             onBlur={this.onBlur}
