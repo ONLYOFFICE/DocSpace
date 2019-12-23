@@ -26,10 +26,6 @@ namespace ASC.Core.Common.EF.Model
             modelBuilder.Entity<DbWebstudioSettings>()
                 .HasKey(c => new { c.TenantId, c.Id, c.UserId });
 
-            //modelBuilder.Entity<DbWebstudioSettings>()
-            //    .Property(r => r.Data)
-            //    .HasConversion(r => r.ToString(), r => JsonDocument.Parse(r, new JsonDocumentOptions()));
-
             return modelBuilder;
         }
     }
