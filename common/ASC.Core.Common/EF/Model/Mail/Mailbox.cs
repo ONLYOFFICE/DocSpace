@@ -45,7 +45,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         public int LoginDelay { get; set; }
 
         [Column("quota_error")]
-        public int QuotaError { get; set; }
+        public bool QuotaError { get; set; }
 
         [Column("imap_intervals")]
         public string ImapIntervals { get; set; }
@@ -82,7 +82,7 @@ namespace ASC.Core.Common.EF.Model.Mail
         public DateTime DateLoginDelayExpires { get; set; }
 
         [Column("date_auth_error")]
-        public DateTime DateAuthError { get; set; }
+        public DateTime? DateAuthError { get; set; }
 
         [Column("date_created")]
         public DateTime DateCreated { get; set; }
