@@ -38,9 +38,9 @@ const StyledText = styled(Text)`
 | `backgroundColor` |          `string`           |    -     |   -    |     -     | Sets background color                              |
 | `color`           |          `string`           |    -     |   -    | `#333333` | Specifies the text color                           |
 | `display`         |          `string`           |    -     |   -    |     -     | Sets the 'display' property                        |
-| `fontSize`        | `oneOfType(number, string)` |    -     |   -    |   `13`    | Sets the font size                                 |
-| `fontWeight`      |          `number`           |    -     |   -    |     -     | Sets the font weight                               |
-| `isBold`          |           `bool`            |    -     |   -    |  `false`  | Sets font weight value ​​to bold                   |
+| `fontSize`        |          `string`           |    -     |   -    |   `13px`  | Sets the font size                                 |
+| `fontWeight`      | `oneOfType(number, string)` |    -     |   -    |     -     | Sets the font weight                               |
+| `isBold`          |           `bool`            |    -     |   -    |  `false`  | Sets font weight value ​​to bold                     |
 | `isInline`        |           `bool`            |    -     |   -    |  `false`  | Sets the 'display: inline-block' property          |
 | `isItalic`        |           `bool`            |    -     |   -    |  `false`  | Sets the font style                                |
 | `title`           |           `bool`            |    -     |   -    |     -     | Title                                              |
