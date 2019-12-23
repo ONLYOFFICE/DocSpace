@@ -109,13 +109,13 @@ class ArticleBodyContent extends React.Component {
     history.push(newPath);
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (!utils.array.isArrayEqual(nextState.selectedKeys, this.state.selectedKeys)) {
-  //     return true;
-  //   }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (!utils.array.isArrayEqual(nextState.selectedKeys, this.state.selectedKeys)) {
+      return true;
+    }
 
-  //   return false;
-  // }
+    return false;
+  }
 
   onSelect = value => {
     const { selectedKeys } = this.state;
