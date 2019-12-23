@@ -28,8 +28,7 @@ function getHorizontalCss(labelWidth) {
     }
     .icon-button {
       position: relative;
-      line-height: 24px;
-      margin: 2px 0 0 4px;
+      margin-top: 1px;
     }
   `;
 }
@@ -56,7 +55,7 @@ function getVerticalCss() {
     .icon-button {
       position: relative;
       line-height: unset;
-      margin: -4px 0 0 4px;
+      margin-top: -12px;
     }
   `;
 }

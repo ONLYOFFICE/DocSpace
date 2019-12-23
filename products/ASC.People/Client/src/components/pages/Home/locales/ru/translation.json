@@ -39,6 +39,7 @@
   "LblInvited": "Invited",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
 
   "CustomHeadOfDepartment": " {{headOfDepartment}}",
   "CustomTypeGuest": "{{typeGuest}}",

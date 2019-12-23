@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.246",
+  "version": "1.0.259",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -72,9 +72,11 @@
     "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.7.2",
     "eslint-plugin-react": "^7.17.0",
+    "faker": "^4.1.0",
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
     "jest-junit": "^10.0.0",
+    "jest-styled-components": "^6.3.4",
     "postcss": "^7.0.24",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -114,7 +116,8 @@
     "react-toastify": "^5.4.1",
     "react-tooltip": "^3.11.1",
     "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5"
+    "react-window": "^1.8.5",
+    "react-window-infinite-loader": "^1.0.5"
   },
   "resolutions": {
     "js-yaml": "3.13.1"

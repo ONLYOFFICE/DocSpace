@@ -9,7 +9,8 @@ const StyledOuter = styled.div`
     props.size ? Math.abs(parseInt(props.size)) + "px" : "20px"};
   cursor: ${props =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
-  line-height: 0;
+    line-height: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 class IconButton extends React.PureComponent {
   constructor(props) {
@@ -130,7 +131,8 @@ class IconButton extends React.PureComponent {
       isClickable,
       onClick,
       id,
-      style
+      style,
+      dataTip
     } = this.props;
 
     return (
@@ -143,7 +145,7 @@ class IconButton extends React.PureComponent {
         onMouseDown={this.onMouseDown}
         onMouseUp={this.onMouseUp}
         isClickable={typeof onClick === "function" || isClickable}
-        data-tip=""
+        data-tip={dataTip}
         data-event="click focus"
         data-for={id}
         style={style}
@@ -176,7 +178,8 @@ IconButton.propTypes = {
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  dataTip: PropTypes.string
 };
 
 IconButton.defaultProps = {
@@ -185,7 +188,8 @@ IconButton.defaultProps = {
   isFill: true,
   iconName: "AZSortingIcon",
   isDisabled: false,
-  isClickable: false
+  isClickable: false,
+  dataTip: ""
 };
 
 export default IconButton;

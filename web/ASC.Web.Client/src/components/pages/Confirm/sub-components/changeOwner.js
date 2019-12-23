@@ -2,10 +2,9 @@ import React from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, PageLayout, Text, toastr } from "asc-web-components";
-//import {  } from "../../../../../src/store/auth/actions";
+import { Button, Text, toastr } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 
 const BodyStyle = styled.div`
   margin-top: 70px;

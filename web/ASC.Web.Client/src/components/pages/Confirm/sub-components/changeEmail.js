@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from "react-router";
 import { withTranslation } from 'react-i18next';
-import { PageLayout, Loader } from 'asc-web-components';
+import { Loader } from 'asc-web-components';
+import { PageLayout } from "asc-web-common";
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { changeEmail } from '../../../../store/confirm/actions';

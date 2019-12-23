@@ -1,7 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import {
   Row,
   Avatar,
@@ -33,6 +33,7 @@ import {
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
+import i18n from '../../i18n';
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites, sendInstructionsToDelete, sendInstructionsToChangePassword, deleteUser } = api.people;
 const { EmployeeStatus } = constants;
@@ -165,21 +166,21 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDisableClick = user => {
-    const { updateUserStatus, onLoading } = this.props;
+    const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Disabled, [user.id])
-      .then(() => toastr.success("SUCCESS Context action: Disable"))
+      .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
 
   onEnableClick = user => {
-    const { updateUserStatus, onLoading } = this.props;
+    const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
     updateUserStatus(EmployeeStatus.Active, [user.id])
-      .then(() => toastr.success("SUCCESS Context action: Enable"))
+      .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
   };
@@ -313,8 +314,10 @@ class SectionBodyContent extends React.PureComponent {
       .then(() =>
         toastr.success(
           <Text>
-            The email activation instructions have been sent to the{" "}
-            <b>{user.email}</b> email address
+            <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+                The email activation instructions have been sent to the
+                <strong>{{email: user.email}}</strong> email address
+            </Trans>
           </Text>
         )
       )

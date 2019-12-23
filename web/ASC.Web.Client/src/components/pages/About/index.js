@@ -1,6 +1,7 @@
 ﻿import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { PageLayout, Text, Link } from "asc-web-components";
+import { Text, Link } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import version from "../../../../package.json";
@@ -80,7 +81,7 @@ const Body = ({ language }) => {
   }, [language]);
 
   const gitHub = "GitHub";
-  const license = "GNU GPL v.3";
+  const license = "AGPL-3.0";
   const link = "www.onlyoffice.com";
   const phone = "+371 660-16425";
   const supportLink = "support@onlyoffice.com";

@@ -27,17 +27,17 @@ const InfoItem = styled.div`
   font-size: 13px;
   line-height: 24px;
   display: flex;
-  width: 400px;
+  width: 360px;
 `;
 
 const InfoItemLabel = styled.div`
-  width: 140px;
+  width: 130px;
   white-space: nowrap;
   color: #A3A9AE;
 `;
 
 const InfoItemValue = styled.div`
-  width: 240px;
+  width: 260px;
 
   .language-combo {
     padding-top: 4px;
@@ -47,11 +47,13 @@ const InfoItemValue = styled.div`
       padding-left: 0px;
     }
   }
+  .help-icon {
+    margin-top: -2px;
+  }
 `;
 
-const TooltipIcon = styled.span`
+const TooltipIcon = styled.div`
   display: inline-flex;
-  padding-top: 6px;
 `;
 
 const IconButtonWrapper = styled.div`
@@ -353,6 +355,7 @@ class ProfileInfo extends React.PureComponent {
                   offsetRight={0}
                   tooltipContent={tooltipLanguage}
                   helpButtonHeaderContent={t('Language')}
+                  className="help-icon"
                 />
               </TooltipIcon>
 

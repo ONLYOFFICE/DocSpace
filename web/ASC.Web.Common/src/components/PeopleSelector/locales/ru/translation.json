@@ -1,0 +1,9 @@
+{
+  "SearchUsersPlaceholder": "Поиск пользователей",
+  "AddMembersButtonLabel": "Добавить участников",
+  "SelectAllLabel": "Выбрать все",
+  "EmptySearchUsersResult": "Нет такого пользователя",
+  "EmptyUsers": "Нет пользователей",
+  "LoadingLabel": "Загрузка... Пожалуйста подождите...",
+  "CustomDepartments": "{{departments}}"
+}
