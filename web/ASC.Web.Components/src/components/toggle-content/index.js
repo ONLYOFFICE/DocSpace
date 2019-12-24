@@ -30,6 +30,7 @@ const StyledSpan = styled.span`
 const StyledText = styled(Heading)`
   height: 26px;
   line-height: 26px;
+  box-sizing: border-box;
   font-style: normal;
     &:hover{
     border-bottom: 1px dashed;
@@ -67,7 +68,7 @@ class ToggleContent extends React.Component {
           this.props.onChange && this.props.onChange(!this.state.isOpen);
         }}>
           <Arrow color="#333333" isfill={true} size='medium' isOpen={this.state.isOpen} />
-          <StyledText level={2} size='medium' isInline={true}>{this.props.label}</StyledText>
+          <StyledText level={2} size='small' isInline={true}>{this.props.label}</StyledText>
         </StyledSpan>
         <StyledContent isOpen={this.state.isOpen}>{this.props.children}</StyledContent>
       </div>
