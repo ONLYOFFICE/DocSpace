@@ -29,16 +29,17 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
 using ASC.Common.Caching;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -76,24 +77,26 @@ namespace ASC.Core.Data
         private DbSettingsManagerCache DbSettingsManagerCache { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
-        private DbManager DbManager { get; }
+        private WebstudioDbContext WebstudioDbContext { get; }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
             DbSettingsManagerCache dbSettingsManagerCache,
-            DbOptionsManager optionsDbManager,
             IOptionsMonitor<ILog> option,
-            AuthContext authContext, TenantManager tenantManager) : this(null)
+            AuthContext authContext,
+            TenantManager tenantManager,
+            DbContextManager<WebstudioDbContext> dbContextManager) : this(null)
         {
             ServiceProvider = serviceProvider;
             DbSettingsManagerCache = dbSettingsManagerCache;
             AuthContext = authContext;
             TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
-            DbManager = optionsDbManager.Value;
             log = option.CurrentValue;
+            WebstudioDbContext = dbContextManager.Value;
         }
 
+        //TODO: remove
         public DbSettingsManager(ConnectionStringSettings connectionString)
         {
             dbId = connectionString != null ? connectionString.Name : "default";
@@ -135,32 +138,40 @@ namespace ASC.Core.Data
                 var key = settings.ID.ToString() + tenantId + userId;
                 var data = Serialize(settings);
 
-                var db = DbManager;
                 var def = (T)settings.GetDefault(ServiceProvider);
 
                 var defaultData = Serialize(def);
 
-                ISqlInstruction i;
+                var tr = WebstudioDbContext.Database.BeginTransaction();
+
                 if (data.SequenceEqual(defaultData))
                 {
                     // remove default settings
-                    i = new SqlDelete("webstudio_settings")
-                        .Where("id", settings.ID.ToString())
-                        .Where("tenantid", tenantId)
-                        .Where("userid", userId.ToString());
+                    var s = WebstudioDbContext.WebstudioSettings
+                        .Where(r => r.Id == settings.ID)
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => r.UserId == userId)
+                        .FirstOrDefault();
+
+                    WebstudioDbContext.WebstudioSettings.Remove(s);
                 }
                 else
                 {
-                    i = new SqlInsert("webstudio_settings", true)
-                        .InColumnValue("id", settings.ID.ToString())
-                        .InColumnValue("userid", userId.ToString())
-                        .InColumnValue("tenantid", tenantId)
-                        .InColumnValue("data", data);
+                    var s = new DbWebstudioSettings
+                    {
+                        Id = settings.ID,
+                        UserId = userId,
+                        TenantId = tenantId,
+                        Data = data
+                    };
+
+                    WebstudioDbContext.AddOrUpdate(r => r.WebstudioSettings, s);
                 }
 
-                DbSettingsManagerCache.Remove(key);
+                WebstudioDbContext.SaveChanges();
+                tr.Commit();
 
-                db.ExecuteNonQuery(i);
+                DbSettingsManagerCache.Remove(key);
 
                 Cache.Insert(key, settings, expirationTimeout);
                 return true;
@@ -183,18 +194,16 @@ namespace ASC.Core.Data
                 var settings = Cache.Get<T>(key);
                 if (settings != null) return settings;
 
-                var db = DbManager;
-                var q = new SqlQuery("webstudio_settings")
-                    .Select("data")
-                    .Where("id", settingsInstance.ID.ToString())
-                    .Where("tenantid", tenantId)
-                    .Where("userid", userId.ToString());
+                var result = WebstudioDbContext.WebstudioSettings
+                        .Where(r => r.Id == settingsInstance.ID)
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => r.UserId == userId)
+                        .Select(r => r.Data)
+                        .FirstOrDefault();
 
-                var result = db.ExecuteScalar<object>(q);
                 if (result != null)
                 {
-                    var data = result is string ? Encoding.UTF8.GetBytes((string)result) : (byte[])result;
-                    settings = Deserialize<T>(data);
+                    settings = Deserialize<T>(result.ToString());
                 }
                 else
                 {
@@ -243,7 +252,7 @@ namespace ASC.Core.Data
 
         public bool SaveForCurrentUser<T>(T data) where T : class, ISettings
         {
-            return SaveForUser<T>(data, CurrentUserID);
+            return SaveForUser(data, CurrentUserID);
         }
 
         public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings
@@ -253,12 +262,12 @@ namespace ASC.Core.Data
 
         public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings
         {
-            return SaveForTenant<T>(data, Tenant.DEFAULT_TENANT);
+            return SaveForTenant(data, Tenant.DEFAULT_TENANT);
         }
 
         public bool SaveForTenant<T>(T data, int tenantId) where T : class, ISettings
         {
-            return SaveSettings<T>(data, tenantId);
+            return SaveSettings(data, tenantId);
         }
 
         public void ClearCache<T>() where T : class, ISettings
@@ -266,20 +275,18 @@ namespace ASC.Core.Data
             ClearCache<T>(TenantID);
         }
 
-        private T Deserialize<T>(byte[] data)
+        private T Deserialize<T>(string data)
         {
-            using var stream = new MemoryStream(data);
-            var settings = data[0] == 0
-                            ? new BinaryFormatter().Deserialize(stream)
-                            : GetJsonSerializer(typeof(T)).ReadObject(stream);
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(data));
+            var settings = GetJsonSerializer(typeof(T)).ReadObject(stream);
             return (T)settings;
         }
 
-        private byte[] Serialize(ISettings settings)
+        private string Serialize(ISettings settings)
         {
             using var stream = new MemoryStream();
             GetJsonSerializer(settings.GetType()).WriteObject(stream, settings);
-            return stream.ToArray();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         private DataContractJsonSerializer GetJsonSerializer(Type type)
@@ -302,7 +309,7 @@ namespace ASC.Core.Data
             services.TryAddSingleton<DbSettingsManagerCache>();
             services.TryAddScoped<DbSettingsManager>();
 
-            return services.AddDbManagerService();
+            return services.AddWebstudioDbContextService();
         }
     }
 }

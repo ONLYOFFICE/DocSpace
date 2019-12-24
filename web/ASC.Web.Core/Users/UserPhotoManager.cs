@@ -233,9 +233,10 @@ namespace ASC.Web.Core.Users
             Log = options.Get("ASC.Web.Photo");
         }
 
+        public string defaultAbsoluteWebPath;
         public string GetDefaultPhotoAbsoluteWebPath()
         {
-            return WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar);
+            return defaultAbsoluteWebPath ?? (defaultAbsoluteWebPath = WebImageSupplier.GetAbsoluteWebPath(_defaultAvatar));
         }
 
         public string GetRetinaPhotoURL(Guid userID)
@@ -295,29 +296,34 @@ namespace ASC.Web.Core.Users
         }
 
 
+        public string defaultSmallPhotoURL;
         public string GetDefaultSmallPhotoURL()
         {
-            return GetDefaultPhotoAbsoluteWebPath(SmallFotoSize);
+            return defaultSmallPhotoURL ?? (defaultSmallPhotoURL = GetDefaultPhotoAbsoluteWebPath(SmallFotoSize));
         }
 
+        public string defaultMediumPhotoURL;
         public string GetDefaultMediumPhotoURL()
         {
-            return GetDefaultPhotoAbsoluteWebPath(MediumFotoSize);
+            return defaultMediumPhotoURL ?? (defaultMediumPhotoURL = GetDefaultPhotoAbsoluteWebPath(MediumFotoSize));
         }
 
+        public string defaultBigPhotoURL;
         public string GetDefaultBigPhotoURL()
         {
-            return GetDefaultPhotoAbsoluteWebPath(BigFotoSize);
+            return defaultBigPhotoURL ?? (defaultBigPhotoURL = GetDefaultPhotoAbsoluteWebPath(BigFotoSize));
         }
 
+        public string defaultMaxPhotoURL;
         public string GetDefaultMaxPhotoURL()
         {
-            return GetDefaultPhotoAbsoluteWebPath(MaxFotoSize);
+            return defaultMaxPhotoURL ?? (defaultMaxPhotoURL = GetDefaultPhotoAbsoluteWebPath(MaxFotoSize));
         }
 
+        public string defaultRetinaPhotoURL;
         public string GetDefaultRetinaPhotoURL()
         {
-            return GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize);
+            return defaultRetinaPhotoURL ?? (defaultRetinaPhotoURL = GetDefaultPhotoAbsoluteWebPath(RetinaFotoSize));
         }
 
 
@@ -853,9 +859,10 @@ namespace ASC.Web.Core.Users
             }
         }
 
+        private IDataStore dataStore;
         private IDataStore GetDataStore()
         {
-            return StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos");
+            return dataStore ?? (dataStore = StorageFactory.GetStorage(Tenant.TenantId.ToString(), "userPhotos"));
         }
 
         public static CacheSize ToCache(Size size) =>

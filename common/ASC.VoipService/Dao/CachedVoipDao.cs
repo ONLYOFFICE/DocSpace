@@ -30,10 +30,11 @@ using System.Globalization;
 using System.Linq;
 
 using ASC.Common.Caching;
-using ASC.Common.Data;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 
 namespace ASC.VoipService.Dao
@@ -65,7 +66,7 @@ namespace ASC.VoipService.Dao
 
         public CachedVoipDao(
             int tenantID,
-            DbOptionsManager dbOptions,
+            DbContextManager<VoipDbContext> dbOptions,
             AuthContext authContext,
             TenantUtil tenantUtil,
             SecurityContext securityContext,
@@ -91,7 +92,7 @@ namespace ASC.VoipService.Dao
             VoipDaoCache.ResetCache(TenantID);
         }
 
-        public override IEnumerable<VoipPhone> GetNumbers(params object[] ids)
+        public override IEnumerable<VoipPhone> GetNumbers(params string[] ids)
         {
             var numbers = cache.Get<List<VoipPhone>>(GetCacheKey(TenantID));
             if (numbers == null)

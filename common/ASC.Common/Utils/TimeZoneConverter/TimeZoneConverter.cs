@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -39,6 +41,8 @@ namespace ASC.Common.Utils
 {
     public class TimeZoneConverter
     {
+        private TimeZoneInfo defaultTimeZone;
+
         private IEnumerable<MapZone> _mapZones;
 
         private bool _isR7;
@@ -118,6 +122,8 @@ namespace ASC.Common.Utils
 
         public TimeZoneInfo GetTimeZone(string timeZoneId, bool defaultIfNoMatch = true)
         {
+            var defaultTimezone = GetTimeZoneDefault();
+
             try
             {
                 return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
@@ -141,18 +147,18 @@ namespace ASC.Common.Utils
                     }
 
                     Log.InfoFormat("TimeZone {0} not found", timeZoneId);
-                    return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? TimeZoneInfo.Utc : null;
+                    return defaultIfNoMatch ? GetTimeZoneByOffset(timeZoneId) ?? defaultTimezone : null;
                 }
                 catch (Exception error)
                 {
                     Log.Error(error);
-                    return defaultIfNoMatch ? TimeZoneInfo.Utc : null;
+                    return defaultIfNoMatch ? defaultTimezone : null;
                 }
             }
             catch (Exception error)
             {
                 Log.Error(error);
-                return defaultIfNoMatch ? TimeZoneInfo.Utc : null;
+                return defaultIfNoMatch ? defaultTimezone : null;
             }
         }
 
@@ -226,6 +232,61 @@ namespace ASC.Common.Utils
                 return timeZone.DisplayName;
 
             return _translations.ContainsKey(timeZone.Id) ? _translations[timeZone.Id] : timeZone.DisplayName;
+        }
+
+        private TimeZoneInfo GetTimeZoneDefault()
+        {
+            if (defaultTimeZone == null)
+            {
+                try
+                {
+                    var tz = TimeZoneInfo.Local;
+                    if (Path.DirectorySeparatorChar == '/')
+                    {
+                        if (tz.StandardName == "UTC" || tz.StandardName == "UCT")
+                        {
+                            tz = TimeZoneInfo.Utc;
+                        }
+                        else
+                        {
+                            var id = string.Empty;
+                            if (File.Exists("/etc/timezone"))
+                            {
+                                id = File.ReadAllText("/etc/timezone").Trim();
+                            }
+
+                            if (string.IsNullOrEmpty(id))
+                            {
+                                var psi = new ProcessStartInfo
+                                {
+                                    FileName = "/bin/bash",
+                                    Arguments = "date +%Z",
+                                    RedirectStandardOutput = true,
+                                    UseShellExecute = false,
+                                };
+                                using var p = Process.Start(psi);
+                                if (p.WaitForExit(1000))
+                                {
+                                    id = p.StandardOutput.ReadToEnd();
+                                }
+                                p.Close();
+                            }
+                            if (!string.IsNullOrEmpty(id))
+                            {
+                                tz = TimeZoneInfo.GetSystemTimeZones().FirstOrDefault(z => z.Id == id) ?? tz;
+                            }
+                        }
+                    }
+                    defaultTimeZone = tz;
+                }
+                catch (Exception)
+                {
+                    // ignore
+                    defaultTimeZone = TimeZoneInfo.Utc;
+                }
+            }
+
+            return defaultTimeZone;
         }
 
         private class MapZone

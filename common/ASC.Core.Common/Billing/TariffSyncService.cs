@@ -28,12 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using ASC.Common.Data;
+
 using ASC.Common.Logging;
 using ASC.Common.Module;
 using ASC.Common.Utils;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -124,16 +125,14 @@ namespace ASC.Core.Billing
 
     class TariffSync
     {
-        public TariffSync(TenantManager tenantManager, DbRegistry dbRegistry, CoreSettings coreSettings, DbQuotaService dbQuotaService)
+        public TariffSync(TenantManager tenantManager, CoreSettings coreSettings, DbQuotaService dbQuotaService)
         {
             TenantManager = tenantManager;
-            DbRegistry = dbRegistry;
             CoreSettings = coreSettings;
             DbQuotaService = dbQuotaService;
         }
 
         public TenantManager TenantManager { get; }
-        public DbRegistry DbRegistry { get; }
         public CoreSettings CoreSettings { get; }
         public DbQuotaService DbQuotaService { get; }
 

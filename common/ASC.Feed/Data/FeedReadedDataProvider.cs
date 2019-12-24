@@ -26,10 +26,14 @@
 
 using System;
 using System.Collections.Generic;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using System.Linq;
+
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Feed.Data
 {
@@ -39,13 +43,13 @@ namespace ASC.Feed.Data
 
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
-        public DbOptionsManager DbOptionsManager { get; }
+        public FeedDbContext FeedDbContext { get; }
 
-        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbOptionsManager dbOptionsManager)
+        public FeedReadedDataProvider(AuthContext authContext, TenantManager tenantManager, DbContextManager<FeedDbContext> dbContextManager)
         {
             AuthContext = authContext;
             TenantManager = tenantManager;
-            DbOptionsManager = dbOptionsManager;
+            FeedDbContext = dbContextManager.Get(dbId);
         }
 
         public DateTime GetTimeReaded()
@@ -60,14 +64,11 @@ namespace ASC.Feed.Data
 
         public DateTime GetTimeReaded(Guid user, string module, int tenant)
         {
-            var query = new SqlQuery("feed_readed")
-                .SelectMax("timestamp")
-                .Where("tenant_id", tenant)
-                .Where("user_id", user.ToString())
-                .Where("module", module);
-
-            using var db = GetDb();
-            return db.ExecuteScalar<DateTime>(query);
+            return FeedDbContext.FeedReaded
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.UserId == user)
+                .Where(r => r.Module == module)
+                .Max(r => r.TimeStamp);
         }
 
         public void SetTimeReaded()
@@ -89,12 +90,16 @@ namespace ASC.Feed.Data
         {
             if (string.IsNullOrEmpty(module)) return;
 
-            var query = new SqlInsert("feed_readed", true)
-                .InColumns("user_id", "timestamp", "module", "tenant_id")
-                .Values(user.ToString(), time, module, tenant);
+            var feedReaded = new FeedReaded
+            {
+                UserId = user,
+                TimeStamp = time,
+                Module = module,
+                Tenant = tenant
+            };
 
-            using var db = GetDb();
-            db.ExecuteNonQuery(query);
+            FeedDbContext.AddOrUpdate(r => r.FeedReaded, feedReaded);
+            FeedDbContext.SaveChanges();
         }
 
         public IEnumerable<string> GetReadedModules(DateTime fromTime)
@@ -104,20 +109,12 @@ namespace ASC.Feed.Data
 
         public IEnumerable<string> GetReadedModules(Guid user, int tenant, DateTime fromTime)
         {
-            var query = new SqlQuery("feed_readed")
-                .Select("module")
-                .Where("tenant_id", tenant)
-                .Where("user_id", user)
-                .Where(Exp.Gt("timestamp", fromTime));
-
-            using var db = GetDb();
-            return db.ExecuteList(query).ConvertAll(r => (string)r[0]);
-        }
-
-
-        private DbManager GetDb()
-        {
-            return DbOptionsManager.Get(dbId);
+            return FeedDbContext.FeedReaded
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.UserId == user)
+                .Where(r => r.TimeStamp >= fromTime)
+                .Select(r => r.Module)
+                .ToList();
         }
 
         private int GetTenant()
@@ -128,6 +125,17 @@ namespace ASC.Feed.Data
         private Guid GetUser()
         {
             return AuthContext.CurrentAccount.ID;
+        }
+    }
+
+    public static class FeedReadedDataProviderExtension
+    {
+        public static IServiceCollection AddFeedReadedDataProvider(this IServiceCollection services)
+        {
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddFeedDbService();
         }
     }
 }

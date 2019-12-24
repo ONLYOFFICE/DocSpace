@@ -198,6 +198,9 @@ namespace ASC.Core.Tenants
         }
 
 
+        public TenantQuota()
+        {
+        }
         public TenantQuota(int tenant)
         {
             Id = tenant;

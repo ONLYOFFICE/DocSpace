@@ -27,9 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using System.Linq;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -41,11 +45,11 @@ namespace ASC.Web.Studio.Core.Statistic
         private static readonly TimeSpan cacheTime = TimeSpan.FromMinutes(2);
         private static readonly IDictionary<string, UserVisit> cache = new Dictionary<string, UserVisit>();
 
-        public IDbManager DbManager { get; }
+        public WebstudioDbContext WebstudioDbContext { get; }
 
-        public StatisticManager(DbOptionsManager optionsDbManager)
+        public StatisticManager(DbContextManager<WebstudioDbContext> dbContextManager)
         {
-            DbManager = optionsDbManager.Value;
+            WebstudioDbContext = dbContextManager.Value;
         }
 
         public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
@@ -78,18 +82,15 @@ namespace ASC.Web.Studio.Core.Statistic
 
         public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
         {
-            var db = GetDb();
-            var users = db
-.ExecuteList(
-new SqlQuery("webstudio_uservisit")
-.Select("UserID")
-.Where("VisitDate", DateTime.UtcNow.Date)
-.Where("TenantID", tenantID)
-.Where("ProductID", productID.ToString())
-.GroupBy(1)
-.OrderBy("FirstVisitTime", true)
-)
-.ConvertAll(r => new Guid((string)r[0]));
+            var users = WebstudioDbContext.WebstudioUserVisit
+                .Where(r => r.VisitDate == DateTime.UtcNow.Date)
+                .Where(r => r.TenantId == tenantID)
+                .Where(r => r.ProductId == productID)
+                .OrderBy(r => r.FirstVisitTime)
+                .GroupBy(r => r.UserId)
+                .Select(r => r.Key)
+                .ToList();
+
             lock (cache)
             {
                 foreach (var visit in cache.Values)
@@ -105,35 +106,25 @@ new SqlQuery("webstudio_uservisit")
 
         public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            var db = GetDb();
-            return db.ExecuteList(new SqlQuery("webstudio_uservisit")
-.Select("VisitDate")
-.SelectSum("VisitCount")
-.Where(Exp.Between("VisitDate", startDate, endPeriod))
-.Where("TenantID", tenantID)
-.GroupBy("VisitDate")
-.OrderBy("VisitDate", true))
-.ConvertAll(
-r =>
-new UserVisit { VisitDate = Convert.ToDateTime(r[0]), VisitCount = Convert.ToInt32(r[1]) });
+            return WebstudioDbContext.WebstudioUserVisit
+                .Where(r => r.TenantId == tenantID)
+                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                .OrderBy(r => r.VisitDate)
+                .GroupBy(r => r.VisitDate)
+                .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) })
+                .ToList();
         }
 
         public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
         {
-            var db = GetDb();
-            return db.ExecuteList(new SqlQuery("webstudio_uservisit")
-.Select("VisitDate", "UserId")
-.Where(Exp.Between("VisitDate", startDate, endPeriod))
-.Where("TenantID", tenantID)
-.GroupBy("UserId", "VisitDate")
-.OrderBy("VisitDate", true))
-.ConvertAll(
-r =>
-new UserVisit
-{
-    VisitDate = Convert.ToDateTime(r[0]),
-    UserID = new Guid(Convert.ToString(r[1]))
-});
+            return
+                WebstudioDbContext.WebstudioUserVisit
+                .Where(r => r.TenantId == tenantID)
+                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                .OrderBy(r => r.VisitDate)
+                .GroupBy(r => new { r.UserId, r.VisitDate })
+                .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId })
+                .ToList();
         }
 
         private void FlushCache()
@@ -148,32 +139,28 @@ new UserVisit
                 lastSave = DateTime.UtcNow;
             }
 
-            var db = GetDb();
-            using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = WebstudioDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             foreach (var v in visits)
             {
-                var sql =
-                    "insert into webstudio_uservisit(tenantid, productid, userid, visitdate, firstvisittime, lastvisittime, visitcount) values " +
-                    "(@TenantId, @ProductId, @UserId, @VisitDate, @FirstVisitTime, @LastVisitTime, @VisitCount) " +
-                    "on duplicate key update lastvisittime = @LastVisitTime, visitcount = visitcount + @VisitCount";
-
-                db.ExecuteNonQuery(sql, new
+                var w = new DbWebstudioUserVisit
                 {
                     TenantId = v.TenantID,
-                    ProductId = v.ProductID.ToString(),
-                    UserId = v.UserID.ToString(),
+                    ProductId = v.ProductID,
+                    UserId = v.UserID,
                     VisitDate = v.VisitDate.Date,
                     FirstVisitTime = v.VisitDate,
-                    v.LastVisitTime,
-                    v.VisitCount,
-                });
+                    VisitCount = v.VisitCount
+                };
+
+                if (v.LastVisitTime.HasValue)
+                {
+                    w.LastVisitTime = v.LastVisitTime.Value;
+                }
+
+                WebstudioDbContext.WebstudioUserVisit.Add(w);
+                WebstudioDbContext.SaveChanges();
             }
             tx.Commit();
-        }
-
-        private IDbManager GetDb()
-        {
-            return DbManager;
         }
     }
 
@@ -183,7 +170,7 @@ new UserVisit
         {
             services.TryAddScoped<StatisticManager>();
 
-            return services.AddDbManagerService();
+            return services.AddWebstudioDbContextService();
         }
     }
 }

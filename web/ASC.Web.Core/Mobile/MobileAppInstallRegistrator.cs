@@ -25,47 +25,48 @@
 
 
 using System;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
+using System.Linq;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Notify.Push;
 
 namespace ASC.Web.Core.Mobile
 {
     public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
-        public DbManager DbManager { get; }
+        public DbContext DbContext { get; }
 
-        public MobileAppInstallRegistrator(DbOptionsManager optionsDbManager)
+        public MobileAppInstallRegistrator(DbContextManager<DbContext> dbContext)
         {
-            DbManager = optionsDbManager.Value;
+            DbContext = dbContext.Value;
         }
 
         public void RegisterInstall(string userEmail, MobileAppType appType)
         {
-            DbManager.ExecuteNonQuery(
-"INSERT INTO `mobile_app_install` (`user_email`, `app_type`, `registered_on`, `last_sign`)" +
-" VALUES (@user_email, @app_type, @registered_on, @last_sign)" +
-" ON DUPLICATE KEY UPDATE `last_sign`=@last_sign",
-new
-{
-    user_email = userEmail,
-    app_type = (int)appType,
-    registered_on = DateTime.UtcNow,
-    last_sign = DateTime.UtcNow
-});
+            var mai = new MobileAppInstall
+            {
+                AppType = (int)appType,
+                UserEmail = userEmail,
+                RegisteredOn = DateTime.UtcNow,
+                LastSign = DateTime.UtcNow
+            };
+
+            DbContext.MobileAppInstall.Add(mai);
+            DbContext.SaveChanges();
         }
 
         public bool IsInstallRegistered(string userEmail, MobileAppType? appType)
         {
-            var query = new SqlQuery("mobile_app_install")
-                .SelectCount()
-                .Where("user_email", userEmail);
+            var q = DbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
 
             if (appType.HasValue)
-                query.Where("app_type", (int)appType.Value);
+            {
+                q = q.Where(r => r.AppType == (int)appType.Value);
+            }
 
-
-            return DbManager.ExecuteScalar<int>(query) > 0;
+            return q.Count() > 0;
         }
     }
 }

@@ -25,109 +25,127 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model.Resource;
 
 namespace ASC.Resource.Manager
 {
     public class ResourceData
     {
         private const string Dbid = "tmresource";
-        private const string ResDataTable = "res_data";
-        private const string ResCultureTable = "res_cultures";
-        private const string ResFilesTable = "res_files";
-        private const string ResReserveTable = "res_reserve";
-        private const string ResAuthorsTable = "res_authors";
-        private const string ResAuthorsLangTable = "res_authorslang";
-        private const string ResAuthorsFileTable = "res_authorsfile";
 
-        public DbOptionsManager DbOptionsManager { get; }
+        public ResourceDbContext DbContext { get; }
 
-        public ResourceData(DbOptionsManager dbOptionsManager)
+        public ResourceData(DbContextManager<ResourceDbContext> dbContext)
         {
-            DbOptionsManager = dbOptionsManager;
+            DbContext = dbContext.Get(Dbid);
         }
 
-        public DateTime GetLastUpdate()
+        /* public DateTime GetLastUpdate()
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResFilesTable).SelectMax("LastUpdate");
+            return DbContext.ResFiles.Max(r => r.LastUpdate);
+        } */
 
-            return dbManager.ExecuteScalar<DateTime>(sql);
-        }
-
-        public List<ResCulture> GetListLanguages(int fileId, string title)
+        /* public List<ResCulture> GetListLanguages(int fileId, string title)
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResCultureTable)
-.Select("res_cultures.title", "res_cultures.value", "res_cultures.available")
-.LeftOuterJoin("res_data", Exp.EqColumns("res_cultures.title", "res_data.cultureTitle"))
-.Where("res_data.fileID", fileId)
-.Where("res_data.title", title);
+            var sql = DbContext.ResCultures
+                .Join(DbContext.ResData.DefaultIfEmpty(), r => r.Title, r => r.CultureTitle, (c, d) => new { data = d, culture = c })
+                .Where(r => r.data.FileId == fileId)
+                .Where(r => r.data.Title == title);
 
-            var language = dbManager.ExecuteList(sql).ConvertAll(GetCultureFromDB);
+            var language = sql.Select(r => GetCultureFromDB(r.culture)).ToList();
 
             language.Remove(language.Find(p => p.Title == "Neutral"));
 
             return language;
-        }
+        } */
 
-        public Dictionary<ResCulture, List<string>> GetCulturesWithAuthors()
+        /* public Dictionary<ResCulture, List<string>> GetCulturesWithAuthors()
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery("res_authorslang ral")
-.Select(new[] { "ral.authorLogin", "rc.title", "rc.value" })
-.InnerJoin("res_cultures rc", Exp.EqColumns("rc.title", "ral.cultureTitle"))
-.InnerJoin("res_authors ra", Exp.EqColumns("ra.login", "ral.authorLogin"))
-.Where("ra.isAdmin", false);
+            return
+                DbContext.ResAuthorsLang
+                .Join(DbContext.ResCultures, r => r.CultureTitle, r => r.Title, (al, rc) => new { cultures = rc, authorsLang = al })
+                .Join(DbContext.Authors, r => r.authorsLang.AuthorLogin, r => r.Login, (a, al) => new { authors = al, a.cultures, a.authorsLang })
+                .Where(r => r.authors.IsAdmin == false)
+                .ToList()
+                .GroupBy(r => new ResCulture { Title = r.cultures.Title, Value = r.cultures.Value }, r => r.authorsLang.AuthorLogin)
+                .ToDictionary(r => r.Key, r => r.ToList());
+        } */
 
-            return dbManager.ExecuteList(sql)
-                            .GroupBy(r => new ResCulture { Title = (string)r[1], Value = (string)r[2] }, r => (string)r[0])
-                            .ToDictionary(r => r.Key, r => r.ToList());
-        }
-
-        public void AddCulture(string cultureTitle, string name)
+        /* public void AddCulture(string cultureTitle, string name)
         {
-            var dbManager = GetDb();
-            var sqlInsert = new SqlInsert(ResCultureTable);
-            sqlInsert.InColumnValue("title", cultureTitle).InColumnValue("value", name);
-            dbManager.ExecuteNonQuery(sqlInsert);
-        }
+            var culture = new ResCultures
+            {
+                Title = cultureTitle,
+                Value = name
+            };
+
+            DbContext.ResCultures.Add(culture);
+            DbContext.SaveChanges();
+        } */
 
         public void AddResource(string cultureTitle, string resType, DateTime date, ResWord word, bool isConsole, string authorLogin, bool updateIfExist = true)
         {
-            var db = GetDb();
-            var resData = db.ExecuteScalar<string>(GetQuery(ResDataTable, cultureTitle, word));
-            var resReserve = db.ExecuteScalar<string>(GetQuery(ResReserveTable, cultureTitle, word));
+            var resData = DbContext.ResData
+                .Where(r => r.FileId == word.ResFile.FileID)
+                .Where(r => r.CultureTitle == cultureTitle)
+                .Where(r => r.Title == word.Title)
+                .Select(r => r.TextValue)
+                .FirstOrDefault();
 
-            //нет ключа
+            var resReserve = DbContext.ResReserve
+                .Where(r => r.FileId == word.ResFile.FileID)
+                .Where(r => r.CultureTitle == cultureTitle)
+                .Where(r => r.Title == word.Title)
+                .Select(r => r.TextValue)
+                .FirstOrDefault();
+
             if (string.IsNullOrEmpty(resData))
             {
-                //добавляем в основную таблицу
-                db.ExecuteNonQuery(Insert(ResDataTable, cultureTitle, word)
-                                          .InColumnValue("resourceType", resType)
-                                          .InColumnValue("timechanges", date)
-                                          .InColumnValue("flag", 2)
-                                          .InColumnValue("authorLogin", authorLogin));
+                var newResData = new ResData
+                {
+                    Title = word.Title,
+                    TextValue = word.ValueFrom,
+                    CultureTitle = cultureTitle,
+                    FileId = word.ResFile.FileID,
+                    ResourceType = resType,
+                    TimeChanges = date,
+                    Flag = 2,
+                    AuthorLogin = authorLogin
+                };
 
-                //добавляем в резервную таблицу
-                if (isConsole) db.ExecuteNonQuery(Insert(ResReserveTable, cultureTitle, word));
+                DbContext.ResData.Add(newResData);
+                DbContext.SaveChanges();
+
+                if (isConsole)
+                {
+                    var newResReserve = new ResReserve
+                    {
+                        Title = word.Title,
+                        TextValue = word.ValueFrom,
+                        CultureTitle = cultureTitle,
+                        FileId = word.ResFile.FileID
+                    };
+
+                    DbContext.ResReserve.Add(newResReserve);
+                    DbContext.SaveChanges();
+                }
             }
             else
             {
                 if (cultureTitle == "Neutral" && isConsole)
                 {
-                    updateIfExist = db.ExecuteScalar<int>(new SqlQuery(ResDataTable)
-                        .SelectCount()
-                        .Where("fileID", word.ResFile.FileID)
-                        .Where(!Exp.Eq("cultureTitle", cultureTitle))
-                        .Where("title", word.Title)) == 0;
+                    updateIfExist =
+                        DbContext.ResData
+                        .Where(r => r.FileId == word.ResFile.FileID)
+                        .Where(r => r.CultureTitle != cultureTitle)
+                        .Where(r => r.Title == word.Title)
+                        .Count() == 0;
                 }
 
                 var isChangeResData = resData != word.ValueFrom;
@@ -135,50 +153,103 @@ namespace ASC.Resource.Manager
 
                 if (!updateIfExist) return;
 
-                //при работе с консолью изменилось по сравнению с res_data и res_reserve, либо при работе с сайтом изменилось по сравнению с res_reserve
                 if ((isConsole && isChangeResData && isChangeResReserve) || !isConsole)
                 {
-                    // изменилась нейтральная культура - выставлен флаг у всех ключей из выбранного файла с выбранным title
                     if (cultureTitle == "Neutral")
                     {
-                        var update = new SqlUpdate(ResDataTable)
-                                        .Set("flag", 3)
-                                        .Where("fileID", word.ResFile.FileID)
-                                        .Where("title", word.Title);
+                        var forUpdate = DbContext.ResData
+                            .Where(r => r.FileId == word.ResFile.FileID)
+                            .Where(r => r.Title == word.Title)
+                            .ToList();
 
-                        db.ExecuteNonQuery(update);
+                        foreach (var f in forUpdate)
+                        {
+                            f.Flag = 3;
+                        }
+
+                        DbContext.SaveChanges();
                     }
-                    // изменилась не нейтральная культура 
-                    db.ExecuteNonQuery(Insert(ResDataTable, cultureTitle, word)
-                                          .InColumnValue("resourceType", resType)
-                                          .InColumnValue("timechanges", date)
-                                          .InColumnValue("flag", 2)
-                                          .InColumnValue("authorLogin", authorLogin));
 
-                    if (isConsole) db.ExecuteNonQuery(Update(ResReserveTable, cultureTitle, word));
+                    var newResData = new ResData
+                    {
+                        Title = word.Title,
+                        TextValue = word.ValueFrom,
+                        CultureTitle = cultureTitle,
+                        FileId = word.ResFile.FileID,
+                        ResourceType = resType,
+                        TimeChanges = date,
+                        Flag = 2,
+                        AuthorLogin = authorLogin
+                    };
+
+                    DbContext.ResData.Add(newResData);
+                    DbContext.SaveChanges();
+
+                    if (isConsole)
+                    {
+                        var resReserveForUpdate = DbContext.ResReserve
+                            .Where(r => r.FileId == word.ResFile.FileID)
+                            .Where(r => r.Title == word.Title)
+                            .Where(r => r.CultureTitle == cultureTitle)
+                            .ToList();
+
+                        foreach (var r in resReserveForUpdate)
+                        {
+                            r.Flag = 2;
+                            r.TextValue = word.ValueFrom;
+                        }
+
+                        DbContext.SaveChanges();
+                    }
                 }
                 else if (isChangeResData)
                 {
-                    db.ExecuteNonQuery(Update(ResReserveTable, cultureTitle, word));
+                    var resReserveForUpdate = DbContext.ResReserve
+                            .Where(r => r.FileId == word.ResFile.FileID)
+                            .Where(r => r.Title == word.Title)
+                            .Where(r => r.CultureTitle == cultureTitle)
+                            .ToList();
+
+                    foreach (var r in resReserveForUpdate)
+                    {
+                        r.Flag = 2;
+                        r.TextValue = word.ValueFrom;
+                    }
+
+                    DbContext.SaveChanges();
                 }
             }
         }
 
-        public void EditEnglish(ResWord word)
+        /* public void EditEnglish(ResWord word)
         {
-            var dbManager = GetDb();
-            var update = new SqlUpdate(ResDataTable);
-            update.Set("textvalue", word.ValueFrom).Where("fileID", word.ResFile.FileID).Where("title", word.Title).Where("cultureTitle", "Neutral");
-            dbManager.ExecuteNonQuery(update);
-        }
+            var data = DbContext.ResData
+                .Where(r => r.FileId == word.ResFile.FileID)
+                .Where(r => r.Title == word.Title)
+                .Where(r => r.CultureTitle == "Neutral");
 
-        public void AddComment(ResWord word)
-        {
-            var dbManager = GetDb();
-            var sqlUpdate = new SqlUpdate(ResDataTable);
-            sqlUpdate.Set("description", word.TextComment).Where("title", word.Title).Where("fileID", word.ResFile.FileID).Where("cultureTitle", "Neutral");
-            dbManager.ExecuteNonQuery(sqlUpdate);
-        }
+            foreach (var d in data)
+            {
+                d.TextValue = word.ValueFrom;
+            }
+
+            DbContext.SaveChanges();
+        } */
+
+        /*  public void AddComment(ResWord word)
+         {
+             var data = DbContext.ResData
+                 .Where(r => r.Title == word.Title)
+                 .Where(r => r.FileId == word.ResFile.FileID)
+                 .Where(r => r.CultureTitle == "Neutral");
+
+             foreach (var d in data)
+             {
+                 d.Description = word.TextComment;
+             }
+
+             DbContext.SaveChanges();
+         } */
 
         public int AddFile(string fileName, string projectName, string moduleName)
         {
@@ -189,118 +260,144 @@ namespace ASC.Resource.Manager
                 fileName = fileNameWithoutExtension.Split('.')[0] + Path.GetExtension(fileName);
             }
 
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResFilesTable)
-.SelectCount()
-.Where("resName", fileName)
-.Where("projectName", projectName)
-.Where("moduleName", moduleName);
+            var count = DbContext.ResFiles
+                .Where(r => r.ResName == fileName)
+                .Where(r => r.ProjectName == projectName)
+                .Where(r => r.ModuleName == moduleName)
+                .Count();
 
-            if (dbManager.ExecuteScalar<int>(sql) == 0)
+            if (count == 0)
             {
-                var insert = new SqlInsert(ResFilesTable)
-                    .InColumns("resName", "projectName", "moduleName")
-                    .Values(fileName, projectName, moduleName);
+                var file = new ResFiles
+                {
+                    ResName = fileName,
+                    ProjectName = projectName,
+                    ModuleName = moduleName
+                };
 
-                dbManager.ExecuteNonQuery(insert);
+                DbContext.ResFiles.Add(file);
+                DbContext.SaveChanges();
             }
 
-            var update = new SqlUpdate(ResFilesTable)
-                .Set("lastUpdate", DateTime.UtcNow.AddHours(4));
-            dbManager.ExecuteNonQuery(update);
+            var files = DbContext.ResFiles.ToList();
+            var lastUpdate = DateTime.UtcNow.AddHours(4);
 
-            sql = new SqlQuery(ResFilesTable)
-                .Select("id")
-                .Where("resName", fileName)
-                .Where("projectName", projectName)
-                .Where("moduleName", moduleName);
-            return dbManager.ExecuteScalar<int>(sql);
+            foreach (var f in files)
+            {
+                f.LastUpdate = lastUpdate;
+            }
+
+            DbContext.SaveChanges();
+
+            return DbContext.ResFiles
+                .Where(r => r.ResName == fileName)
+                .Where(r => r.ProjectName == projectName)
+                .Where(r => r.ModuleName == moduleName)
+                .Select(r => r.Id)
+                .FirstOrDefault();
         }
 
 
         public IEnumerable<ResCulture> GetCultures()
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResCultureTable);
-            sql.Select("title", "value", "available")
-               .OrderBy("title", true);
-
-            return dbManager.ExecuteList(sql).ConvertAll(GetCultureFromDB);
+            return DbContext.ResCultures
+                .OrderBy(r => r.Title)
+                .Select(GetCultureFromDB)
+                .ToList();
         }
 
-        public void SetCultureAvailable(string title)
+        /* public void SetCultureAvailable(string title)
         {
-            var dbManager = GetDb();
-            var sql = new SqlUpdate(ResCultureTable);
-            sql.Set("available", true).Where("title", title);
-            dbManager.ExecuteNonQuery(sql);
+            var cultures = DbContext.ResCultures.Where(r => r.Title == title);
+
+            foreach (var c in cultures)
+            {
+                c.Available = true;
+            }
+
+            DbContext.SaveChanges();
         }
 
         private static ResCulture GetCultureFromDB(IList<object> r)
         {
             return new ResCulture { Title = (string)r[0], Value = (string)r[1], Available = (bool)r[2] };
         }
+                        */
 
+        private static ResCulture GetCultureFromDB(ResCultures r)
+        {
+            return new ResCulture { Title = r.Title, Value = r.Value, Available = r.Available };
+        }
         public List<ResFile> GetAllFiles()
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResFilesTable);
-
-            return dbManager.ExecuteList(sql.SelectAll()).Select(r => new ResFile
+            return DbContext.ResFiles.Select(r => new ResFile
             {
-                FileID = (int)r[0],
-                ProjectName = (string)r[1],
-                ModuleName = (string)r[2],
-                FileName = (string)r[3]
+                FileID = r.Id,
+                ProjectName = r.ProjectName,
+                ModuleName = r.ModuleName,
+                FileName = r.ResName
             }).ToList();
         }
 
         public IEnumerable<ResWord> GetListResWords(ResCurrent current, string search)
         {
-            var dbManager = GetDb();
-            var exist = new SqlQuery(ResDataTable + " rd3")
-.Select("rd3.title")
-.Where("rd3.fileid = rd1.fileid")
-.Where("rd3.title = concat('del_', rd1.title)")
-.Where("rd3.cultureTitle = rd1.cultureTitle");
-
-            var sql = new SqlQuery(ResDataTable + " rd1")
-                .Select("rd1.title", "rd1.fileid", "rd1.textValue", "rd1.description", "rd1.flag", "rd1.link", "rf.resName", "rd2.id", "rd2.flag", "rd2.textValue")
-                .LeftOuterJoin(ResDataTable + " rd2", Exp.EqColumns("rd1.fileid", "rd2.fileid") & Exp.EqColumns("rd1.title", "rd2.title") & Exp.Eq("rd2.cultureTitle", current.Language.Title))
-                .InnerJoin(ResFilesTable + " rf", Exp.EqColumns("rf.ID", "rd1.fileID"))
-                .Where("rd1.cultureTitle", "Neutral")
-                .Where("rd1.flag != 4")
-                .Where("rd1.resourceType", "text")
-                .Where(!Exp.Like("rd1.title", @"del\_", SqlLike.StartWith) & !Exp.Exists(exist))
-                .OrderBy("rd1.id", true);
+            IQueryable<TempResData> exist = DbContext.ResData
+                .Where(r => r.Flag != 4)
+                .Where(r => r.ResourceType == "text")
+                .Where(r => r.CultureTitle == "Neutral")
+                .Join(DbContext.ResData.DefaultIfEmpty(), r => new { r.FileId, r.Title }, r => new { r.FileId, r.Title }, (r1, r2) => new { r1, r2 })
+                .Join(DbContext.ResFiles, r => r.r1.FileId, f => f.Id, (d, f) => new TempResData { R1 = d.r1, R2 = d.r2, RF = f })
+                .Where(r => r.R2.CultureTitle == current.Language.Title)
+                .Where(r => !r.R1.Title.StartsWith(@"del\_"))
+                .Where(r =>
+                    !DbContext.ResData
+                    .Where(d => d.FileId == r.R1.FileId)
+                    .Where(d => d.Title == "del_" + r.R1.Title)
+                    .Where(d => d.CultureTitle == r.R1.CultureTitle)
+                    .Any()
+                )
+                .OrderBy(r => r.R1.Id);
 
             if (current.Module != null && !string.IsNullOrEmpty(current.Module.Name))
             {
-                sql.Where("rf.moduleName", current.Module.Name);
+                exist = exist.Where(r => r.RF.ModuleName == current.Module.Name);
             }
 
             if (current.Project != null && !string.IsNullOrEmpty(current.Project.Name))
             {
-                sql.Where("rf.projectName", current.Project.Name);
+                exist = exist.Where(r => r.RF.ProjectName == current.Project.Name);
             }
 
             if (current.Word != null && current.Word.ResFile != null && !string.IsNullOrEmpty(current.Word.ResFile.FileName))
             {
-                sql.Where("rf.resName", current.Word.ResFile.FileName);
+                exist = exist.Where(r => r.RF.ResName == current.Word.ResFile.FileName);
             }
 
             if (!string.IsNullOrEmpty(search))
-                sql.Where(Exp.Like("rd1.textvalue", search));
-
-            return dbManager.ExecuteList(sql).ConvertAll(r =>
             {
-                var word = GetWord(r);
-                word.ResFile.FileName = Convert.ToString(r[6]);
+                exist = exist.Where(r => r.R1.TextValue == search);
+            }
 
-                if (r[7] != null)
+            return exist.ToList().Select(r =>
+            {
+                var word = new ResWord
                 {
-                    word.Status = (int)r[8] == 3 ? WordStatusEnum.Changed : WordStatusEnum.Translated;
-                    word.ValueTo = Convert.ToString(r[9]);
+                    Title = r.R1.Title,
+                    ResFile = new ResFile
+                    {
+                        FileID = r.R1.FileId
+                    },
+                    ValueFrom = r.R1.TextValue,
+                    TextComment = r.R1.Description,
+                    Flag = r.R1.Flag,
+                    Link = r.R1.Link
+                };
+                word.ResFile.FileName = r.RF.ResName;
+
+                if (r.R2 != null)
+                {
+                    word.Status = r.R2.Flag == 3 ? WordStatusEnum.Changed : WordStatusEnum.Translated;
+                    word.ValueTo = r.R2.TextValue;
                 }
                 else
                 {
@@ -311,7 +408,7 @@ namespace ASC.Resource.Manager
             }).OrderBy(r => r.ValueFrom);
         }
 
-        public List<ResWord> GetListResWords(ResFile resFile, string to, string search)
+        /*public List<ResWord> GetListResWords(ResFile resFile, string to, string search)
         {
             var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable)
@@ -332,8 +429,8 @@ namespace ASC.Resource.Manager
 
             return dbManager.ExecuteList(sql).ConvertAll(GetWord);
         }
-
-        public void GetListModules(ResCurrent currentData)
+        */
+        /* public void GetListModules(ResCurrent currentData)
         {
             var dbManager = GetDb();
             var notExist = new SqlQuery(ResDataTable + " rd1")
@@ -368,25 +465,25 @@ namespace ASC.Resource.Manager
                 module.Counts[WordStatusEnum.All] = Convert.ToInt32(r[3]);
                 module.Counts[WordStatusEnum.Untranslated] = module.Counts[WordStatusEnum.All] - module.Counts[WordStatusEnum.Changed] - module.Counts[WordStatusEnum.Translated];
             });
-        }
+        }*/
 
-        public void LockModules(string projectName, string modules)
+        /* public void LockModules(string projectName, string modules)
         {
             var dbManager = GetDb();
             var sqlUpdate = new SqlUpdate(ResFilesTable);
             sqlUpdate.Set("isLock", 1).Where("projectName", projectName).Where(Exp.In("moduleName", modules.Split(',')));
             dbManager.ExecuteNonQuery(sqlUpdate);
-        }
+        } */
 
-        public void UnLockModules()
+        /* public void UnLockModules()
         {
             var dbManager = GetDb();
             var sqlUpdate = new SqlUpdate(ResFilesTable);
             sqlUpdate.Set("isLock", 0);
             dbManager.ExecuteNonQuery(sqlUpdate);
-        }
+        } */
 
-        public void AddLink(string resource, string fileName, string page)
+        /* public void AddLink(string resource, string fileName, string page)
         {
             var dbManager = GetDb();
             var query = new SqlQuery(ResDataTable);
@@ -399,9 +496,9 @@ namespace ASC.Resource.Manager
             var update = new SqlUpdate(ResDataTable);
             update.Set("link", page).Where("id", key);
             dbManager.ExecuteNonQuery(update);
-        }
+        } */
 
-        public void GetResWordByKey(ResWord word, string to)
+        /* public void GetResWordByKey(ResWord word, string to)
         {
             var dbManager = GetDb();
             var sql = new SqlQuery(ResDataTable)
@@ -429,21 +526,21 @@ namespace ASC.Resource.Manager
                 .Where("id", word.ResFile.FileID);
 
             word.ResFile.FileName = dbManager.ExecuteScalar<string>(sql);
-        }
+        } */
 
         public void GetValueByKey(ResWord word, string to)
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResDataTable);
-            sql.Select("textvalue")
-               .Where("fileID", word.ResFile.FileID)
-               .Where("cultureTitle", to)
-               .Where("title", word.Title);
+            var valueTo = DbContext.ResData
+                .Where(r => r.FileId == word.ResFile.FileID)
+                .Where(r => r.CultureTitle == to)
+                .Where(r => r.Title == word.Title)
+                .Select(r => r.TextValue)
+                .FirstOrDefault();
 
-            word.ValueTo = dbManager.ExecuteScalar<string>(sql) ?? "";
+            word.ValueTo = valueTo ?? "";
         }
 
-        private void GetValue(ResWord word, string to, IList<object> r)
+        /* private void GetValue(ResWord word, string to, IList<object> r)
         {
             word.ValueFrom = (string)r[0] ?? "";
             word.TextComment = (string)r[1] ?? "";
@@ -452,18 +549,19 @@ namespace ASC.Resource.Manager
             var dom = langs.Exists(lang => lang == to) ? ".info" : ".com";
 
             word.Link = !string.IsNullOrEmpty((string)r[2]) ? string.Format("http://{0}-translator.teamlab{1}{2}", to, dom, r[2]) : "";
-        }
+        } */
 
-        public List<Author> GetListAuthors()
+        /* public List<Author> GetListAuthors()
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResAuthorsTable)
-.Select("login", "password", "isAdmin");
+            return DbContext.Authors.Select(r => new Author
+            {
+                Login = r.Login,
+                Password = r.Password,
+                IsAdmin = r.IsAdmin
+            }).ToList();
+        } */
 
-            return dbManager.ExecuteList(sql).ConvertAll(r => new Author { Login = (string)r[0], Password = (string)r[1], IsAdmin = Convert.ToBoolean(r[2]) });
-        }
-
-        public Author GetAuthor(string login)
+        /* public Author GetAuthor(string login)
         {
             var dbManager = GetDb();
             var sql = new SqlQuery(ResAuthorsTable)
@@ -510,9 +608,9 @@ namespace ASC.Resource.Manager
             }
 
             return author;
-        }
+        }*/
 
-        public void CreateAuthor(Author author, IEnumerable<string> languages, string modules)
+        /* public void CreateAuthor(Author author, IEnumerable<string> languages, string modules)
         {
             var dbManager = GetDb();
             var sqlInsert = new SqlInsert(ResAuthorsTable, true)
@@ -555,25 +653,37 @@ namespace ASC.Resource.Manager
 
         public List<ResWord> SearchAll(string projectName, string moduleName, string languageTo, string searchText, string searchType)
         {
-            var dbManager = GetDb();
-            var sql = new SqlQuery(ResDataTable)
-.Select("title", "fileid", "textValue", "resName", "moduleName", "projectName")
-.InnerJoin(ResFilesTable, Exp.EqColumns(ResFilesTable + ".ID", ResDataTable + ".fileID"))
-.Where("cultureTitle", languageTo)
-.Where("flag != 4")
-.Where(Exp.Like(searchType, searchText))
-.Where("resourceType", "text")
-.OrderBy("textValue", true);
+            var q = DbContext.ResData
+                .Where(r => r.CultureTitle == languageTo)
+                .Where(r => r.Flag != 4)
+                //.Where(r=> searchtype.containts(searchtext))
+                .Where(r => r.ResourceType == "text")
+                .OrderBy(r => r.TextValue)
+                .Join(DbContext.ResFiles, r => r.FileId, r => r.Id, (a, b) => new { data = a, files = b });
 
             if (!string.IsNullOrEmpty(projectName) && projectName != "All")
             {
-                sql.Where("projectName", projectName);
+                q = q.Where(r => r.files.ProjectName == projectName);
 
                 if (!string.IsNullOrEmpty(moduleName) && moduleName != "All")
-                    sql.Where("moduleName", moduleName);
+                {
+                    q = q.Where(r => r.files.ModuleName == moduleName);
+                }
             }
 
-            return dbManager.ExecuteList(sql).ConvertAll(GetSearchWord);
+            return q.Select(r => new ResWord()
+            {
+                Title = r.data.Title,
+                ValueFrom = r.data.TextValue,
+                ResFile = new ResFile
+                {
+                    FileID = r.files.Id,
+                    FileName = r.files.ResName,
+                    ModuleName = r.files.ModuleName,
+                    ProjectName = r.files.ProjectName
+                }
+            })
+            .ToList();
         }
 
         public void UpdateHashTable(ref Hashtable table, DateTime date)
@@ -596,50 +706,13 @@ namespace ASC.Resource.Manager
                     table.Add(key, t[0]);
             }
         }
+        */
+    }
 
-        private IDbManager GetDb(string dbId = null)
-        {
-            return DbOptionsManager.Get(dbId ?? Dbid);
-        }
-
-        private static ResWord GetWord(IList<object> r)
-        {
-            return new ResWord { Title = (string)r[0], ResFile = new ResFile { FileID = (int)r[1] }, ValueFrom = (string)r[2], TextComment = (string)r[3], Flag = (int)r[4], Link = (string)r[5] };
-        }
-
-        private static ResWord GetSearchWord(IList<object> r)
-        {
-            var resfile = new ResFile { FileID = (int)r[1], FileName = (string)r[3], ModuleName = (string)r[4], ProjectName = (string)r[5] };
-            return new ResWord { Title = (string)r[0], ResFile = resfile, ValueFrom = (string)r[2] };
-        }
-
-        private static SqlQuery GetQuery(string table, string cultureTitle, ResWord word)
-        {
-            return new SqlQuery(table)
-                      .Select("textvalue")
-                      .Where("fileID", word.ResFile.FileID)
-                      .Where("cultureTitle", cultureTitle)
-                      .Where("title", word.Title);
-
-        }
-
-        private static SqlUpdate Update(string table, string cultureTitle, ResWord word)
-        {
-            return new SqlUpdate(table)
-                       .Set("flag", 2)
-                       .Set("textvalue", word.ValueFrom)
-                       .Where("fileID", word.ResFile.FileID)
-                       .Where("title", word.Title)
-                       .Where("cultureTitle", cultureTitle);
-
-        }
-
-        private static SqlInsert Insert(string table, string cultureTitle, ResWord word)
-        {
-            return new SqlInsert(table, true)
-                    .InColumns("title", "textvalue", "cultureTitle", "fileID")
-                    .Values(word.Title, word.ValueFrom, cultureTitle, word.ResFile.FileID);
-
-        }
+    class TempResData
+    {
+        public ResData R1 { get; set; }
+        public ResData R2 { get; set; }
+        public ResFiles RF { get; set; }
     }
 }

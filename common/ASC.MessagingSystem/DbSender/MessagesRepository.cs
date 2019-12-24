@@ -27,14 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -52,13 +54,10 @@ namespace ASC.MessagingSystem.DbSender
         private readonly TimeSpan CacheTime;
         private readonly IDictionary<string, EventMessage> Cache;
         private static Parser Parser { get; set; }
-        public DbRegistry DbRegistry { get; }
 
         private readonly Timer Timer;
         private bool timerStarted;
 
-        private const string LoginEventsTable = "login_events";
-        private const string AuditEventsTable = "audit_events";
         private readonly Timer ClearTimer;
 
         public ILog Log { get; set; }
@@ -84,8 +83,8 @@ namespace ASC.MessagingSystem.DbSender
             if ((int)message.Action < 2000)
             {
                 using var scope = ServiceProvider.CreateScope();
-                using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
-                AddLoginEvent(message, db);
+                using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+                AddLoginEvent(message, ef);
                 return;
             }
 
@@ -125,8 +124,8 @@ namespace ASC.MessagingSystem.DbSender
             if (events == null) return;
 
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
-            using var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
             foreach (var message in events)
@@ -163,63 +162,68 @@ namespace ASC.MessagingSystem.DbSender
                 // messages with action code < 2000 are related to login-history
                 if ((int)message.Action >= 2000)
                 {
-                    AddAuditEvent(message, db);
+                    AddAuditEvent(message, ef);
                 }
             }
 
             tx.Commit();
         }
 
-        private static void AddLoginEvent(EventMessage message, IDbManager dbManager)
+        private static void AddLoginEvent(EventMessage message, MessagesContext dbContext)
         {
-            var i = new SqlInsert("login_events")
-                .InColumnValue("ip", message.IP)
-                .InColumnValue("login", message.Initiator)
-                .InColumnValue("browser", message.Browser)
-                .InColumnValue("platform", message.Platform)
-                .InColumnValue("date", message.Date)
-                .InColumnValue("tenant_id", message.TenantId)
-                .InColumnValue("user_id", message.UserId)
-                .InColumnValue("page", message.Page)
-                .InColumnValue("action", message.Action);
+            var le = new LoginEvents
+            {
+                Ip = message.IP,
+                Login = message.Initiator,
+                Browser = message.Browser,
+                Platform = message.Platform,
+                Date = message.Date,
+                TenantId = message.TenantId,
+                UserId = message.UserId,
+                Page = message.Page,
+                Action = (int)message.Action
+            };
 
             if (message.Description != null && message.Description.Any())
             {
-                i = i.InColumnValue("description",
+                le.Description =
                     JsonConvert.SerializeObject(message.Description, new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                    }));
+                    });
             }
 
-            dbManager.ExecuteNonQuery(i);
+            dbContext.LoginEvents.Add(le);
+            dbContext.SaveChanges();
         }
 
-        private static void AddAuditEvent(EventMessage message, IDbManager dbManager)
+        private static void AddAuditEvent(EventMessage message, MessagesContext dbContext)
         {
-            var i = new SqlInsert("audit_events")
-                .InColumnValue("ip", message.IP)
-                .InColumnValue("initiator", message.Initiator)
-                .InColumnValue("browser", message.Browser)
-                .InColumnValue("platform", message.Platform)
-                .InColumnValue("date", message.Date)
-                .InColumnValue("tenant_id", message.TenantId)
-                .InColumnValue("user_id", message.UserId)
-                .InColumnValue("page", message.Page)
-                .InColumnValue("action", message.Action);
+            var ae = new AuditEvent
+            {
+                Ip = message.IP,
+                Initiator = message.Initiator,
+                Browser = message.Browser,
+                Platform = message.Platform,
+                Date = message.Date,
+                TenantId = message.TenantId,
+                UserId = message.UserId,
+                Page = message.Page,
+                Action = (int)message.Action,
+                Target = message.Target?.ToString()
+            };
 
             if (message.Description != null && message.Description.Any())
             {
-                i = i.InColumnValue("description",
+                ae.Description =
                     JsonConvert.SerializeObject(GetSafeDescription(message.Description), new JsonSerializerSettings
                     {
                         DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                    }));
+                    });
             }
 
-            i.InColumnValue("target", message.Target?.ToString());
-
-            dbManager.ExecuteNonQuery(i);
+            dbContext.AuditEvents.Add(ae);
+            dbContext.SaveChanges();
         }
 
         private static IList<string> GetSafeDescription(IEnumerable<string> description)
@@ -260,13 +264,13 @@ namespace ASC.MessagingSystem.DbSender
                        : string.Format("{0} {1}", clientInfo.OS.Family, clientInfo.OS.Major);
         }
 
-        //TODO: move to external service
+        //TODO: move to external service and fix
         private void DeleteOldEvents(object state)
         {
             try
             {
-                GetOldEvents(LoginEventsTable, "LoginHistoryLifeTime");
-                GetOldEvents(AuditEventsTable, "AuditTrailLifeTime");
+                GetOldEvents(r => r.LoginEvents, "LoginHistoryLifeTime");
+                GetOldEvents(r => r.AuditEvents, "AuditTrailLifeTime");
             }
             catch (Exception ex)
             {
@@ -274,30 +278,39 @@ namespace ASC.MessagingSystem.DbSender
             }
         }
 
-        private void GetOldEvents(string table, string settings)
+        private void GetOldEvents<T>(Expression<Func<MessagesContext, DbSet<T>>> func, string settings) where T : MessageEvent
         {
-            var sqlQueryLimit = string.Format("(IFNULL((SELECT JSON_EXTRACT(`Data`, '$.{0}') from webstudio_settings where tt.id = TenantID and id='{1}'), {2})) as tout", settings, TenantAuditSettings.Guid, TenantAuditSettings.MaxLifeTime);
-            var query = new SqlQuery(table + " t1")
-                .Select("t1.id")
-                .Select(sqlQueryLimit)
-                .Select("t1.`date` AS dout")
-                .InnerJoin("tenants_tenants tt", Exp.EqColumns("tt.id", "t1.tenant_id"))
-                .Having(Exp.Sql("dout < ADDDATE(UTC_DATE(), INTERVAL -tout DAY)"))
-                .SetMaxResults(1000);
-
-            List<int> ids;
-
+            List<T> ids;
+            var compile = func.Compile();
             do
             {
                 using var scope = ServiceProvider.CreateScope();
-                var dbManager = scope.ServiceProvider.GetService<DbOptionsManager>().Get("messages");
-                ids = dbManager.ExecuteList(query).ConvertAll(r => Convert.ToInt32(r[0]));
+                using var ef = scope.ServiceProvider.GetService<DbContextManager<MessagesContext>>().Get("messages");
+                var table = compile.Invoke(ef);
+
+                var ae = table
+                    .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
+                    .Select(r => new
+                    {
+                        r.Id,
+                        r.Date,
+                        r.TenantId,
+                        ef = r
+                    })
+                    .Where(r => r.Date < DateTime.UtcNow.AddDays(
+                        ef.WebstudioSettings
+                        .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
+                        .Select(r => Convert.ToDouble(JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings) ?? TenantAuditSettings.MaxLifeTime.ToString()))
+                        .FirstOrDefault()))
+                    .Take(1000);
+
+                ids = ae.Select(r => r.ef).ToList();
 
                 if (!ids.Any()) return;
 
-                var deleteQuery = new SqlDelete(table).Where(Exp.In("id", ids));
+                table.RemoveRange(ids);
+                ef.SaveChanges();
 
-                dbManager.ExecuteNonQuery(deleteQuery);
             } while (ids.Any());
         }
     }

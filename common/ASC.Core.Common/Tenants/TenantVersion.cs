@@ -44,6 +44,11 @@ namespace ASC.Core
         }
 
 
+        public TenantVersion()
+        {
+
+        }
+
         public TenantVersion(int id, string name)
         {
             Id = id;
