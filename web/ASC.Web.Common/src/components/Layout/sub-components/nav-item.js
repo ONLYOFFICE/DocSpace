@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Badge, Icons, Text} from "asc-web-components";
+import { Badge, Icons, Link} from "asc-web-components";
 
 const baseColor = "#7A95B0",
   activeColor = "#FFFFFF",
@@ -27,7 +27,7 @@ const NavItemWrapper = styled.div`
   }
 `;
 
-const NavItemLabel = styled(Text)`
+const NavItemLabel = styled(Link)`
   margin: 0 auto 0 16px;
   display: ${props => (props.opened ? "block" : "none")};
 `;
@@ -52,7 +52,8 @@ const NavItem = React.memo(props => {
     children,
     badgeNumber,
     onClick,
-    onBadgeClick
+    onBadgeClick,
+    url
   } = props;
   const color = active ? activeColor : baseColor;
 
@@ -66,7 +67,7 @@ const NavItem = React.memo(props => {
         color: color
       })}
       {children && (
-        <NavItemLabel tag="div" opened={opened} color={color} fontSize="16px" fontWeight="bold" truncate>
+        <NavItemLabel opened={opened} color={color} fontSize="16px" fontWeight="bold" truncate href={url}>
           {children}
         </NavItemLabel>
       )}
@@ -82,17 +83,15 @@ const NavItem = React.memo(props => {
 NavItem.displayName = "NavItem";
 
 NavItem.propTypes = {
-  separator: PropTypes.bool,
-  opened: PropTypes.bool,
   active: PropTypes.bool,
-  iconName: PropTypes.string,
   badgeNumber: PropTypes.number,
-  onClick: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  url: PropTypes.string,
+  iconName: PropTypes.string,
   onBadgeClick: PropTypes.func,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+  onClick: PropTypes.func,
+  opened: PropTypes.bool,
+  separator: PropTypes.bool,
 };
 
 export default NavItem;

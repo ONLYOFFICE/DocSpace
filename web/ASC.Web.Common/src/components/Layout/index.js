@@ -201,6 +201,7 @@ class Layout extends React.Component {
                   item.onBadgeClick(e);
                   this.toggleAside();
                 }}
+                url={item.url}
               >
                 {item.title}
               </NavItem>
