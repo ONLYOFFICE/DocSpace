@@ -35,7 +35,7 @@ const getCustomModules = isAdmin => {
   const settingsModuleWrapper = toModuleWrapper(
     {
       id: "settings",
-      title: "Settings",
+      title: i18n.t('Settings'),
       link: "/settings"
     },
     "SettingsIcon"
