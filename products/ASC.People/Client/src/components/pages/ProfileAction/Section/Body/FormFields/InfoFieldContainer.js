@@ -4,6 +4,7 @@ import { Heading } from "asc-web-components";
 
 const Container = styled.div`
   margin: 0 0 40px 0;
+  max-width: 1024px;
 `;
 
 const StyledHeader = styled(Heading)`
