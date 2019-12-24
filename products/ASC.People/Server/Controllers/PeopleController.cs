@@ -10,7 +10,6 @@ using System.Net.Mail;
 using System.Security;
 
 using ASC.Api.Core;
-using ASC.Common.Data;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Common.Web;
@@ -42,6 +41,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Employee.Core.Controllers
@@ -158,13 +158,13 @@ namespace ASC.Employee.Core.Controllers
         }
 
         [Read]
-        public IEnumerable<EmployeeWraper> GetAll()
+        public IQueryable<EmployeeWraper> GetAll()
         {
             return GetByStatus(EmployeeStatus.Active);
         }
 
         [Read("status/{status}")]
-        public IEnumerable<EmployeeWraper> GetByStatus(EmployeeStatus status)
+        public IQueryable<EmployeeWraper> GetByStatus(EmployeeStatus status)
         {
             if (CoreBaseSettings.Personal) throw new Exception("Method not available");
             Guid? groupId = null;
@@ -265,7 +265,7 @@ namespace ASC.Employee.Core.Controllers
                 }
 
                 list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
-                                       (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Contacts != null && x.Contacts.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
+                                       (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
                 return list.Select(EmployeeWraperFullHelper.GetFull);
             }
@@ -330,10 +330,10 @@ namespace ASC.Employee.Core.Controllers
 
 
         [Read("filter")]
-        public IEnumerable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+        public IQueryable<EmployeeWraperFull> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
-            return users.Select(EmployeeWraperFullHelper.GetFull);
+            return users.Select(r => EmployeeWraperFullHelper.GetFull(r));
         }
 
         [Read("simple/filter")]
@@ -344,7 +344,7 @@ namespace ASC.Employee.Core.Controllers
             return users.Select(EmployeeWraperHelper.Get);
         }
 
-        private IEnumerable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+        private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
         {
             if (CoreBaseSettings.Personal) throw new MethodAccessException("Method not available");
             var isAdmin = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsAdmin(UserManager) ||
@@ -384,10 +384,9 @@ namespace ASC.Employee.Core.Controllers
                 includeGroups.Add(adminGroups);
             }
 
-            var users = UserManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total);
+            var users = UserManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, ApiContext.FilterValue, ApiContext.SortBy, !ApiContext.SortDescending, ApiContext.Count, ApiContext.StartIndex, out var total, out var count);
 
-            ApiContext.SetTotalCount(total)
-                .SetCount(users.Count);
+            ApiContext.SetTotalCount(total).SetCount(count);
 
             return users;
         }
@@ -1386,19 +1385,19 @@ namespace ASC.Employee.Core.Controllers
 
             if (contacts == null) return;
 
-            if (user.Contacts == null)
+            if (user.ContactsList == null)
             {
-                user.Contacts = new List<string>();
+                user.ContactsList = new List<string>();
             }
             else
             {
-                user.Contacts.Clear();
+                user.ContactsList.Clear();
             }
 
             foreach (var contact in contacts.Where(c => !string.IsNullOrEmpty(c.Value)))
             {
-                user.Contacts.Add(contact.Type);
-                user.Contacts.Add(contact.Value);
+                user.ContactsList.Add(contact.Type);
+                user.ContactsList.Add(contact.Value);
             }
         }
 
@@ -1407,18 +1406,18 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
             if (contacts == null) return;
 
-            if (user.Contacts == null)
+            if (user.ContactsList == null)
             {
-                user.Contacts = new List<string>();
+                user.ContactsList = new List<string>();
             }
 
             foreach (var contact in contacts)
             {
-                var index = user.Contacts.IndexOf(contact.Type);
+                var index = user.ContactsList.IndexOf(contact.Type);
                 if (index != -1)
                 {
                     //Remove existing
-                    user.Contacts.RemoveRange(index, 2);
+                    user.ContactsList.RemoveRange(index, 2);
                 }
             }
         }
@@ -1489,7 +1488,6 @@ namespace ASC.Employee.Core.Controllers
                 .AddTenantUtilService()
                 .AddSecurityContextService()
                 .AddWebItemSecurityCache()
-                .AddDbManagerService()
                 .AddDisplayUserSettingsService()
                 .AddTenantManagerService()
                 .AddSetupInfo()

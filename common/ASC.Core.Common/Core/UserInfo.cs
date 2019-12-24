@@ -67,7 +67,18 @@ namespace ASC.Core.Users
 
         public string Email { get; set; }
 
-        public List<string> Contacts { get; set; }
+        private string contacts;
+        public string Contacts
+        {
+            get => contacts;
+            set
+            {
+                contacts = value;
+                _ = ContactsFromString(contacts);
+            }
+        }
+
+        public List<string> ContactsList { get; set; }
 
         public string Location { get; set; }
 
@@ -93,6 +104,7 @@ namespace ASC.Core.Users
         public string Sid { get; set; } // LDAP user identificator
 
         public string SsoNameId { get; set; } // SSO SAML user identificator
+
         public string SsoSessionId { get; set; } // SSO SAML user session identificator
 
         public DateTime CreateDate { get; set; }
@@ -110,6 +122,11 @@ namespace ASC.Core.Users
         public override bool Equals(object obj)
         {
             return obj is UserInfo ui && ID.Equals(ui.ID);
+        }
+
+        public bool Equals(UserInfo obj)
+        {
+            return obj != null && ID.Equals(obj.ID);
         }
 
         public CultureInfo GetCulture()
@@ -146,9 +163,9 @@ namespace ASC.Core.Users
 
         internal string ContactsToString()
         {
-            if (Contacts == null || Contacts.Count == 0) return null;
+            if (ContactsList == null || ContactsList.Count == 0) return null;
             var sBuilder = new StringBuilder();
-            foreach (var contact in Contacts)
+            foreach (var contact in ContactsList)
             {
                 sBuilder.AppendFormat("{0}|", contact);
             }
@@ -159,16 +176,16 @@ namespace ASC.Core.Users
         {
             if (string.IsNullOrEmpty(contacts)) return this;
 
-            if (Contacts == null)
+            if (ContactsList == null)
             {
-                Contacts = new List<string>();
+                ContactsList = new List<string>();
             }
             else
             {
-                Contacts.Clear();
+                ContactsList.Clear();
             }
 
-            Contacts.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
+            ContactsList.AddRange(contacts.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries));
 
             return this;
         }

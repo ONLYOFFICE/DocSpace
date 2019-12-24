@@ -29,6 +29,7 @@ using System.Collections.Generic;
 
 using ASC.Common.Caching;
 using ASC.Common.Utils;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.DependencyInjection;
@@ -281,7 +282,9 @@ namespace ASC.Core.Caching
             services.TryAddScoped<DbTenantService>();
             services.TryAddScoped<ITenantService, CachedTenantService>();
 
-            return services.AddCoreBaseSettingsService();
+            return services
+                .AddCoreBaseSettingsService()
+                .AddTenantDbContextService();
         }
     }
 }

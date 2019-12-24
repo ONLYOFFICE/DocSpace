@@ -28,6 +28,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
+using ASC.Common.Utils;
 using ASC.Core;
 using Newtonsoft.Json;
 
@@ -50,20 +51,21 @@ namespace ASC.Api.Core
                                                        };
 
         public ApiDateTime()
-            : this(null, null)
+            : this(null, null, null)
         {
         }
 
-        public ApiDateTime(TenantManager tenantManager, DateTime? dateTime)
-            : this(tenantManager, dateTime, null)
+        public ApiDateTime(TenantManager tenantManager, TimeZoneConverter timeZoneConverter, DateTime? dateTime)
+            : this(tenantManager, dateTime, null, timeZoneConverter)
         {
         }
 
-        public ApiDateTime(TenantManager tenantManager, DateTime? dateTime, TimeZoneInfo timeZone)
+        public ApiDateTime(TenantManager tenantManager, DateTime? dateTime, TimeZoneInfo timeZone, TimeZoneConverter timeZoneConverter)
         {
             if (dateTime.HasValue && dateTime.Value > DateTime.MinValue && dateTime.Value < DateTime.MaxValue)
             {
                 TenantManager = tenantManager;
+                TimeZoneConverter = timeZoneConverter;
                 SetDate(dateTime.Value, timeZone);
             }
             else
@@ -79,12 +81,12 @@ namespace ASC.Api.Core
             TimeZoneOffset = offset;
         }
 
-        public static ApiDateTime Parse(string data, TenantManager tenantManager)
+        public static ApiDateTime Parse(string data, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
-            return Parse(data, null, tenantManager);
+            return Parse(data, null, tenantManager, timeZoneConverter);
         }
 
-        public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager)
+        public static ApiDateTime Parse(string data, TimeZoneInfo tz, TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
             if (string.IsNullOrEmpty(data)) throw new ArgumentNullException("data");
 
@@ -103,7 +105,7 @@ namespace ASC.Api.Core
                 {
                     if (tz == null)
                     {
-                        tz = GetTimeZoneInfo(tenantManager);
+                        tz = GetTimeZoneInfo(tenantManager, timeZoneConverter);
                     }
                     tzOffset = tz.GetUtcOffset(dateTime);
                     dateTime = dateTime.Subtract(tzOffset);
@@ -122,7 +124,7 @@ namespace ASC.Api.Core
 
             if (timeZone == null)
             {
-                timeZone = GetTimeZoneInfo(TenantManager);
+                timeZone = GetTimeZoneInfo(TenantManager, TimeZoneConverter);
             }
 
             //Hack
@@ -149,12 +151,12 @@ namespace ASC.Api.Core
 
         }
 
-        private static TimeZoneInfo GetTimeZoneInfo(TenantManager tenantManager)
+        private static TimeZoneInfo GetTimeZoneInfo(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
             var timeZone = TimeZoneInfo.Local;
             try
             {
-                timeZone = tenantManager.GetCurrentTenant().TimeZone;
+                timeZone = timeZoneConverter.GetTimeZone(tenantManager.GetCurrentTenant().TimeZone);
             }
             catch (Exception)
             {
@@ -170,17 +172,17 @@ namespace ASC.Api.Core
             return dateString + offsetString;
         }
 
-        public static ApiDateTime FromDate(TenantManager tenantManager, DateTime d)
+        public static ApiDateTime FromDate(TenantManager tenantManager, TimeZoneConverter timeZoneConverter, DateTime d)
         {
-            var date = new ApiDateTime(tenantManager, d);
+            var date = new ApiDateTime(tenantManager, timeZoneConverter, d);
             return date;
         }
 
-        public static ApiDateTime FromDate(TenantManager tenantManager, DateTime? d)
+        public static ApiDateTime FromDate(TenantManager tenantManager, TimeZoneConverter timeZoneConverter, DateTime? d)
         {
             if (d.HasValue)
             {
-                var date = new ApiDateTime(tenantManager, d);
+                var date = new ApiDateTime(tenantManager, timeZoneConverter, d);
                 return date;
             }
             return null;
@@ -236,7 +238,7 @@ namespace ASC.Api.Core
 
         public int CompareTo(DateTime other)
         {
-            return CompareTo(new ApiDateTime(TenantManager, other));
+            return CompareTo(new ApiDateTime(TenantManager, TimeZoneConverter, other));
         }
 
         public int CompareTo(ApiDateTime other)
@@ -288,6 +290,7 @@ namespace ASC.Api.Core
         public DateTime UtcTime { get; private set; }
         public TimeSpan TimeZoneOffset { get; private set; }
         public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
         public static ApiDateTime GetSample()
         {
@@ -308,11 +311,11 @@ namespace ASC.Api.Core
         {
             if (value is string)
             {
-                return ApiDateTime.Parse((string)value, null);
+                return ApiDateTime.Parse((string)value, null, null);
             }
             if (value is DateTime)
             {
-                return new ApiDateTime(null, (DateTime)value);
+                return new ApiDateTime(null, null, (DateTime)value);
             }
             return base.ConvertFrom(context, culture, value);
         }

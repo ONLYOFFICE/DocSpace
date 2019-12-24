@@ -26,6 +26,7 @@
 
 using System;
 using ASC.Common.Logging;
+using ASC.Core.Common.EF.Context;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -72,6 +73,7 @@ namespace ASC.MessagingSystem.DbSender
         {
             services.TryAddSingleton<DbMessageSender>();
             services.TryAddSingleton<MessagesRepository>();
+            services.AddMessagesContextService();
 
             return services;
         }
