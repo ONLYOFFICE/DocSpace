@@ -54,6 +54,7 @@ const Link = memo(({ isTextOverflow, children, ...rest }) => {
 Link.propTypes = {
   color: PropTypes.string,
   fontSize: PropTypes.string,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   href: PropTypes.string,
   isBold: PropTypes.bool,
   isHovered: PropTypes.bool,
