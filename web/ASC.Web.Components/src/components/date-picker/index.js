@@ -7,7 +7,7 @@ import Calendar from "../calendar";
 import moment from "moment";
 import { handleAnyClick } from "../../utils/event";
 import isEmpty from "lodash/isEmpty";
-import Aside from "../layout/sub-components/aside";
+import Aside from "../aside";
 import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";

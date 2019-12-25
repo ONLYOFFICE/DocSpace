@@ -29,11 +29,13 @@ namespace ASC.Core.Common.Tests
 {
     using System;
     using System.Linq;
-    using ASC.Common.Data;
+
     using ASC.Common.Logging;
     using ASC.Core.Billing;
+
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Options;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -43,8 +45,6 @@ namespace ASC.Core.Common.Tests
 
         public IServiceProvider ServiceProvider { get; set; }
         public IConfiguration Configuration { get; set; }
-        public DbRegistry DbRegistry { get; set; }
-
         public IOptionsMonitor<ILog> Options { get; set; }
 
         public TariffSyncServiceTest()

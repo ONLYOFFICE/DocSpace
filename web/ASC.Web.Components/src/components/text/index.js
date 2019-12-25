@@ -5,7 +5,8 @@ import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
   font-size: ${props => props.fontSize};  
-  outline: 0 !important;  font-weight: ${props => props.fontWeight
+  outline: 0 !important;
+  font-weight: ${props => props.fontWeight
     ? props.fontWeight
     : props.isBold == true ? 700 : 500};
   ${props => props.isItalic == true && css`font-style: italic;`}
@@ -34,7 +35,7 @@ Text.propTypes = {
   title: PropTypes.string,
   color: PropTypes.string,
   fontSize: PropTypes.string,
-  fontWeight: PropTypes.number,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   backgroundColor: PropTypes.string,
   truncate: PropTypes.bool,
   isBold: PropTypes.bool,

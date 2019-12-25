@@ -1,6 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { PageLayout, Loader } from "asc-web-components";
+import { Loader } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import i18n from "./i18n";

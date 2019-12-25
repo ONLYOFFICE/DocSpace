@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.251",
+  "version": "1.0.263",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -76,6 +76,7 @@
     "jest": "^24.9.0",
     "jest-enzyme": "^7.1.2",
     "jest-junit": "^10.0.0",
+    "jest-styled-components": "^6.3.4",
     "postcss": "^7.0.24",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",

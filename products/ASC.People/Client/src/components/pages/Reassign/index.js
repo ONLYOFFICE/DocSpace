@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 // import PropTypes from "prop-types";
-import { PageLayout } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 // import { SectionHeaderContent } from './Section';
 // import { fetchProfile } from '../../../store/profile/actions';

@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { Headline } from 'asc-web-common';
+import { Heading } from "asc-web-components";
 
 const Container = styled.div`
   margin: 0 0 40px 0;
+  max-width: 1024px;
 `;
 
-const StyledHeader = styled(Headline)`
+const StyledHeader = styled(Heading)`
   margin: 0 0 24px 0;
   line-height: unset;
 `;
@@ -16,7 +17,7 @@ const InfoFieldContainer = React.memo(props => {
 
   return (
     <Container>
-      <StyledHeader type='content'>{headerText}</StyledHeader>
+      <StyledHeader level={2} size='small'>{headerText}</StyledHeader>
       {children}
     </Container>
   );

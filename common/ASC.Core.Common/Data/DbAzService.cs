@@ -27,41 +27,49 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.Common.Security.Authorizing;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    class DbAzService : DbBaseService, IAzService
+    class DbAzService : IAzService
     {
-        public DbAzService(DbOptionsManager dbOptionsManager)
-            : base(dbOptionsManager, "tenant")
+        public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
+
+        private CoreDbContext CoreDbContext { get; set; }
+
+        public DbAzService(DbContextManager<CoreDbContext> dbContextManager)
         {
+            CoreDbContext = dbContextManager.Value;
+            FromAclToAzRecord = r => new AzRecord()
+            {
+                ActionId = r.Action,
+                ObjectId = r.Object,
+                Reaction = r.AceType,
+                SubjectId = r.Subject,
+                Tenant = r.Tenant
+            };
         }
 
         public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
         {
             // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
-            var q = new SqlQuery("core_acl")
-                .Select("subject", "action", "object", "acetype")
-                .Where(Exp.Eq("tenant", Tenant.DEFAULT_TENANT));
-
-            var commonAces = ExecList(q)
-                .ConvertAll(r => ToAzRecord(r, tenant))
+            var commonAces =
+                CoreDbContext.Acl
+                .Where(r => r.Tenant == Tenant.DEFAULT_TENANT)
+                .Select(FromAclToAzRecord)
                 .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
 
-            q = new SqlQuery("core_acl")
-                .Select("subject", "action", "object", "acetype")
-                .Where(Exp.Eq("tenant", tenant));
-
-            var tenantAces = ExecList(q)
-                .ConvertAll(r => new AzRecord(new Guid((string)r[0]), new Guid((string)r[1]), (AceType)Convert.ToInt32(r[3]), string.Empty.Equals(r[2]) ? null : (string)r[2]) { Tenant = tenant });
+            var tenantAces =
+                CoreDbContext.Acl
+                .Where(r => r.Tenant == tenant)
+                .Select(FromAclToAzRecord)
+                .ToList();
 
             // remove excaped rows
-            foreach (var a in tenantAces.ToList())
+            foreach (var a in tenantAces)
             {
                 var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
                 if (commonAces.ContainsKey(key))
@@ -81,20 +89,17 @@ namespace ASC.Core.Data
         public AzRecord SaveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            var db = GetDb();
-            using (var tx = db.BeginTransaction())
+            using var tx = CoreDbContext.Database.BeginTransaction();
+            if (!ExistEscapeRecord(r))
             {
-                if (!ExistEscapeRecord(db, r))
-                {
-                    InsertRecord(db, r);
-                }
-                else
-                {
-                    // unescape
-                    DeleteRecord(db, r);
-                }
-                tx.Commit();
+                InsertRecord(r);
             }
+            else
+            {
+                // unescape
+                DeleteRecord(r);
+            }
+            tx.Commit();
 
             return r;
         }
@@ -102,60 +107,62 @@ namespace ASC.Core.Data
         public void RemoveAce(int tenant, AzRecord r)
         {
             r.Tenant = tenant;
-            var db = GetDb();
-            using var tx = db.BeginTransaction();
-            if (ExistEscapeRecord(db, r))
+            using var tx = CoreDbContext.Database.BeginTransaction();
+            if (ExistEscapeRecord(r))
             {
                 // escape
-                InsertRecord(db, r);
+                InsertRecord(r);
             }
             else
             {
-                DeleteRecord(db, r);
+                DeleteRecord(r);
             }
             tx.Commit();
         }
 
 
-        private bool ExistEscapeRecord(IDbManager db, AzRecord r)
+        private bool ExistEscapeRecord(AzRecord r)
         {
-            var q = Query("core_acl", Tenant.DEFAULT_TENANT)
-                .SelectCount()
-                .Where("subject", r.SubjectId.ToString())
-                .Where("action", r.ActionId.ToString())
-                .Where("object", r.ObjectId ?? string.Empty)
-                .Where("acetype", r.Reaction);
-            return db.ExecuteScalar<int>(q) != 0;
+            var count = CoreDbContext.Acl
+                .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
+                .Where(a => a.Subject == r.SubjectId)
+                .Where(a => a.Action == r.ActionId)
+                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
+                .Where(a => a.AceType == r.Reaction)
+                .Count();
+
+            return count != 0;
         }
 
-        private void DeleteRecord(IDbManager db, AzRecord r)
+        private void DeleteRecord(AzRecord r)
         {
-            var q = Delete("core_acl", r.Tenant)
-                .Where("subject", r.SubjectId.ToString())
-                .Where("action", r.ActionId.ToString())
-                .Where("object", r.ObjectId ?? string.Empty)
-                .Where("acetype", r.Reaction);
-            db.ExecuteNonQuery(q);
+            using var tr = CoreDbContext.Database.BeginTransaction();
+            var record = CoreDbContext.Acl
+                .Where(a => a.Tenant == r.Tenant)
+                .Where(a => a.Subject == r.SubjectId)
+                .Where(a => a.Action == r.ActionId)
+                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
+                .Where(a => a.AceType == r.Reaction)
+                .FirstOrDefault();
+
+            CoreDbContext.Acl.Remove(record);
+            CoreDbContext.SaveChanges();
+            tr.Commit();
         }
 
-        private void InsertRecord(IDbManager db, AzRecord r)
+        private void InsertRecord(AzRecord r)
         {
-            var q = Insert("core_acl", r.Tenant)
-                .InColumnValue("subject", r.SubjectId.ToString())
-                .InColumnValue("action", r.ActionId.ToString())
-                .InColumnValue("object", r.ObjectId ?? string.Empty)
-                .InColumnValue("acetype", r.Reaction);
-            db.ExecuteNonQuery(q);
-        }
+            var record = new Acl
+            {
+                AceType = r.Reaction,
+                Action = r.ActionId,
+                Object = r.ObjectId,
+                Subject = r.SubjectId,
+                Tenant = r.Tenant
+            };
 
-        private AzRecord ToAzRecord(object[] r, int tenant)
-        {
-            return new AzRecord(
-                new Guid((string)r[0]),
-                new Guid((string)r[1]),
-                (AceType)Convert.ToInt32(r[3]),
-                string.Empty.Equals(r[2]) ? null : (string)r[2])
-            { Tenant = tenant };
+            CoreDbContext.AddOrUpdate(r => r.Acl, record);
+            CoreDbContext.SaveChanges();
         }
     }
 }

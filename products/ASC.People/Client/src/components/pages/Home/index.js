@@ -2,7 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
-import { PageLayout, RequestLoader } from "asc-web-components";
+import { RequestLoader } from "asc-web-components";
+import { PageLayout } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
 

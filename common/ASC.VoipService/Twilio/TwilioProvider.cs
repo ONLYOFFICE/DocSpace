@@ -28,9 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
+
 using Twilio.Clients;
 using Twilio.Exceptions;
 using Twilio.Jwt;
@@ -38,6 +41,7 @@ using Twilio.Jwt.Client;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Rest.Api.V2010.Account.AvailablePhoneNumberCountry;
 using Twilio.Types;
+
 using RecordingResource = Twilio.Rest.Api.V2010.Account.Call.RecordingResource;
 
 
@@ -171,14 +175,14 @@ namespace ASC.VoipService.Twilio
             return result;
         }
 
-        public VoipPhone GetPhone(object[] data)
+        public VoipPhone GetPhone(VoipNumber data)
         {
             return new TwilioPhone(client, AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility)
             {
-                Id = (string)data[0],
-                Number = (string)data[1],
-                Alias = (string)data[2],
-                Settings = new TwilioVoipSettings((string)data[3], AuthContext)
+                Id = data.Id,
+                Number = data.Number,
+                Alias = data.Alias,
+                Settings = new TwilioVoipSettings(data.Settings, AuthContext)
             };
         }
 

@@ -27,13 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Caching;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Utils;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -70,24 +73,28 @@ namespace ASC.FederatedLogin
     {
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
-        public DbOptionsManager DbOptions { get; }
         public AccountLinkerStorage AccountLinkerStorage { get; }
+        public DbContextManager<AccountLinkContext> DbContextManager { get; }
 
-        public ConfigureAccountLinker(Signature signature, InstanceCrypto instanceCrypto, DbOptionsManager dbOptions, AccountLinkerStorage accountLinkerStorage)
+        public ConfigureAccountLinker(
+            Signature signature,
+            InstanceCrypto instanceCrypto,
+            AccountLinkerStorage accountLinkerStorage,
+            DbContextManager<AccountLinkContext> dbContextManager)
         {
             Signature = signature;
             InstanceCrypto = instanceCrypto;
-            DbOptions = dbOptions;
             AccountLinkerStorage = accountLinkerStorage;
+            DbContextManager = dbContextManager;
         }
 
         public void Configure(string name, AccountLinker options)
         {
             options.DbId = name;
             options.AccountLinkerStorage = AccountLinkerStorage;
-            options.DbOptions = DbOptions;
             options.InstanceCrypto = InstanceCrypto;
             options.Signature = Signature;
+            options.AccountLinkContextManager = DbContextManager;
         }
 
         public void Configure(AccountLinker options)
@@ -101,8 +108,24 @@ namespace ASC.FederatedLogin
         public string DbId { get; set; }
         public Signature Signature { get; set; }
         public InstanceCrypto InstanceCrypto { get; set; }
-        public DbOptionsManager DbOptions { get; set; }
         public AccountLinkerStorage AccountLinkerStorage { get; set; }
+        public DbContextManager<AccountLinkContext> AccountLinkContextManager { get; set; }
+
+        public AccountLinkContext AccountLinkContext
+        {
+            get
+            {
+                return AccountLinkContextManager.Get(DbId);
+            }
+        }
+
+        public DbSet<AccountLinks> AccountLinks
+        {
+            get
+            {
+                return AccountLinkContext.AccountLinks;
+            }
+        }
 
         public IEnumerable<string> GetLinkedObjects(string id, string provider)
         {
@@ -116,10 +139,11 @@ namespace ASC.FederatedLogin
 
         public IEnumerable<string> GetLinkedObjectsByHashId(string hashid)
         {
-            var db = DbOptions.Get(DbId);
-            var query = new SqlQuery("account_links")
-.Select("id").Where("uid", hashid).Where(!Exp.Eq("provider", string.Empty));
-            return db.ExecuteList(query).ConvertAll(x => (string)x[0]);
+            return AccountLinks
+                .Where(r => r.UId == hashid)
+                .Where(r => r.Provider != string.Empty)
+                .Select(r => r.Id)
+                .ToList();
         }
 
         public IEnumerable<LoginProfile> GetLinkedProfiles(string obj, string provider)
@@ -135,23 +159,27 @@ namespace ASC.FederatedLogin
         private List<LoginProfile> GetLinkedProfilesFromDB(string obj)
         {
             //Retrieve by uinque id
-            var db = DbOptions.Get(DbId);
-            var query = new SqlQuery("account_links")
-.Select("profile").Where("id", obj);
-            return db.ExecuteList(query).ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, (string)x[0]));
+            return AccountLinks
+                    .Where(r => r.Id == obj)
+                    .Select(r => r.Profile)
+                    .ToList()
+                    .ConvertAll(x => LoginProfile.CreateFromSerializedString(Signature, InstanceCrypto, x));
         }
 
         public void AddLink(string obj, LoginProfile profile)
         {
-            var db = DbOptions.Get(DbId);
-            db.ExecuteScalar<int>(
-                new SqlInsert("account_links", true)
-                    .InColumnValue("id", obj)
-                    .InColumnValue("uid", profile.HashId)
-                    .InColumnValue("provider", profile.Provider)
-                    .InColumnValue("profile", profile.ToSerializedString())
-                    .InColumnValue("linked", DateTime.UtcNow)
-                );
+            var accountLink = new AccountLinks
+            {
+                Id = obj,
+                UId = profile.HashId,
+                Provider = profile.Provider,
+                Profile = profile.ToSerializedString(),
+                Linked = DateTime.UtcNow
+            };
+
+            AccountLinkContext.AddOrUpdate(r => r.AccountLinks, accountLink);
+            AccountLinkContext.SaveChanges();
+
             AccountLinkerStorage.RemoveFromCache(obj);
         }
 
@@ -172,14 +200,18 @@ namespace ASC.FederatedLogin
 
         public void RemoveProvider(string obj, string provider = null, string hashId = null)
         {
-            var sql = new SqlDelete("account_links").Where("id", obj);
+            using var tr = AccountLinkContext.Database.BeginTransaction();
 
-            if (!string.IsNullOrEmpty(provider)) sql.Where("provider", provider);
-            if (!string.IsNullOrEmpty(hashId)) sql.Where("uid", hashId);
+            var accountLinkQuery = AccountLinks
+                .Where(r => r.Id == obj);
 
-            var db = DbOptions.Get(DbId);
-            db.ExecuteScalar<int>(sql);
+            if (!string.IsNullOrEmpty(provider)) accountLinkQuery = accountLinkQuery.Where(r => r.Provider == provider);
+            if (!string.IsNullOrEmpty(hashId)) accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
 
+            var accountLink = accountLinkQuery.FirstOrDefault();
+            AccountLinks.Remove(accountLink);
+
+            tr.Commit();
             AccountLinkerStorage.RemoveFromCache(obj);
         }
     }
@@ -203,9 +235,9 @@ namespace ASC.FederatedLogin
             services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();
 
             return services
+                .AddAccountLinkContextService()
                 .AddSignatureService()
                 .AddInstanceCryptoService()
-                .AddDbManagerService()
                 .AddAccountLinkerStorageService();
         }
     }

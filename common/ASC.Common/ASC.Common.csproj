@@ -25,13 +25,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Notify\AWSEmail.cs" />
-    <Compile Remove="Data\Sql\SqlInstructionDebuggerDisplay.cs" />
     <Compile Remove="Tests\Logging\SpecialFolderPathConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ARSoft.Tools.NetStandard.DXSdata" Version="1.0.0" />
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="Autofac.Configuration" Version="4.1.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="Confluent.Kafka" Version="1.3.0" />
     <PackageReference Include="Google.Protobuf" Version="3.11.1" />
     <PackageReference Include="Grpc" Version="2.25.0" />
@@ -46,6 +46,7 @@
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.0" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
 <!-- <PackageReference Include="Microsoft.CodeQuality.Analyzers" Version="2.9.4">
       <PrivateAssets>all</PrivateAssets>
@@ -71,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Notify\" />
-    <Folder Include="Tests\Notify\" />
+    <Folder Include="Tests\Geolocation\" />
     <Folder Include="Tests\Security\Authorizing\" />
   </ItemGroup>
 </Project>

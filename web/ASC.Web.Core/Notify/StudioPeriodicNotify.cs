@@ -29,13 +29,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Billing;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -46,6 +46,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -110,7 +111,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
                     var apiSystemHelper = scope.ServiceProvider.GetService<ApiSystemHelper>();
                     var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
-                    var options = scope.ServiceProvider.GetService<DbOptionsManager>();
+                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
                     var couponManager = scope.ServiceProvider.GetService<CouponManager>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
@@ -205,18 +206,13 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             List<DateTime> datesWithActivity;
 
-                            var query = new SqlQuery("feed_aggregate")
-                                .Select(new SqlExp("cast(created_date as date) as short_date"))
-
-                                .Where("tenant", tenantManager.GetCurrentTenant().TenantId)
-                                .Where(Exp.Le("created_date", now.AddDays(-1)))
-                                .GroupBy("short_date");
-
-                            var db = options.Get(dbid);
-
-                            datesWithActivity = db
-                                .ExecuteList(query)
-                                .ConvertAll(r => Convert.ToDateTime(r[0]));
+                            datesWithActivity =
+                                context.Get(dbid).FeedAggregates
+                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                                .Where(r => r.CreatedDate <= now.AddDays(-1))
+                                .GroupBy(r => r.CreatedDate.Date)
+                                .Select(r => r.Key)
+                                .ToList();
 
                             if (datesWithActivity.Count < 5)
                             {
@@ -570,7 +566,7 @@ namespace ASC.Web.Studio.Core.Notify
                     var tenantExtra = scope.ServiceProvider.GetService<TenantExtra>();
                     var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
                     var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
-                    var options = scope.ServiceProvider.GetService<DbOptionsManager>();
+                    var context = scope.ServiceProvider.GetService<DbContextManager<FeedDbContext>>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
@@ -695,17 +691,13 @@ namespace ASC.Web.Studio.Core.Notify
                         {
                             List<DateTime> datesWithActivity;
 
-                            var query = new SqlQuery("feed_aggregate")
-                                .Select(new SqlExp("cast(created_date as date) as short_date"))
-                                .Where("tenant", tenantManager.GetCurrentTenant().TenantId)
-                                .Where(Exp.Le("created_date", now.AddDays(-1)))
-                                .GroupBy("short_date");
-
-                            var db = options.Get(dbid);
-
-                            datesWithActivity = db
-                                .ExecuteList(query)
-                                .ConvertAll(r => Convert.ToDateTime(r[0]));
+                            datesWithActivity =
+                                context.Get(dbid).FeedAggregates
+                                .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
+                                .Where(r => r.CreatedDate <= now.AddDays(-1))
+                                .GroupBy(r => r.CreatedDate.Date)
+                                .Select(r => r.Key)
+                                .ToList();
 
                             if (datesWithActivity.Count < 5)
                             {
@@ -1270,7 +1262,7 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddAuthContextService()
                 .AddCommonLinkUtilityService()
                 .AddSetupInfo()
-                .AddDbManagerService()
+                .AddFeedDbService()
                 .AddCoreBaseSettingsService()
                 .AddDisplayUserSettingsService()
                 .AddSecurityContextService()

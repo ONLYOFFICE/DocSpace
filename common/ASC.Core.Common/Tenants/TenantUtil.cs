@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -33,16 +34,23 @@ namespace ASC.Core.Tenants
     public class TenantUtil
     {
         public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
 
-        public TenantUtil(TenantManager tenantManager)
+        public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
             TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
         }
 
 
         public DateTime DateTimeFromUtc(DateTime utc)
         {
-            return DateTimeFromUtc(TenantManager.GetCurrentTenant().TimeZone, utc);
+            return DateTimeFromUtc(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone), utc);
+        }
+
+        public DateTime DateTimeFromUtc(string timeZone, DateTime utc)
+        {
+            return DateTimeFromUtc(TimeZoneConverter.GetTimeZone(timeZone), utc);
         }
 
         public static DateTime DateTimeFromUtc(TimeZoneInfo timeZone, DateTime utc)
@@ -63,7 +71,7 @@ namespace ASC.Core.Tenants
 
         public DateTime DateTimeToUtc(DateTime local)
         {
-            return DateTimeToUtc(TenantManager.GetCurrentTenant().TimeZone, local);
+            return DateTimeToUtc(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone), local);
         }
 
         public static DateTime DateTimeToUtc(TimeZoneInfo timeZone, DateTime local)
@@ -86,12 +94,16 @@ namespace ASC.Core.Tenants
 
         public DateTime DateTimeNow()
         {
-            return DateTimeNow(TenantManager.GetCurrentTenant().TimeZone);
+            return DateTimeNow(TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
         }
 
         public static DateTime DateTimeNow(TimeZoneInfo timeZone)
         {
             return DateTime.SpecifyKind(TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone), DateTimeKind.Local);
+        }
+        public DateTime DateTimeNow(string timeZone)
+        {
+            return DateTimeNow(TimeZoneConverter.GetTimeZone(timeZone));
         }
     }
 

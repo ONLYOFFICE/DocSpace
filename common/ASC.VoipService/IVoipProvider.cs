@@ -25,6 +25,8 @@
 
 
 using System.Collections.Generic;
+
+using ASC.Core.Common.EF.Model;
 using ASC.VoipService.Twilio;
 
 namespace ASC.VoipService
@@ -39,7 +41,7 @@ namespace ASC.VoipService
 
         VoipPhone DeleteNumber(VoipPhone phone);
 
-        VoipPhone GetPhone(object[] r);
+        VoipPhone GetPhone(VoipNumber r);
 
         VoipPhone GetPhone(string id);
 

@@ -28,10 +28,12 @@
 namespace ASC.Core.Common.Tests
 {
     using System.Linq;
+
     using ASC.Common.Caching;
-    using ASC.Common.Data;
     using ASC.Core.Caching;
+
     using Microsoft.Extensions.Configuration;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -40,7 +42,7 @@ namespace ASC.Core.Common.Tests
         private readonly ISubscriptionService service;
 
 
-        public CachedSubscriptionServiceTest(IConfiguration configuration, DbRegistry dbRegistry, ICacheNotify<SubscriptionRecord> cacheNotify, ICacheNotify<SubscriptionMethodCache> notify)
+        public CachedSubscriptionServiceTest(IConfiguration configuration, ICacheNotify<SubscriptionRecord> cacheNotify, ICacheNotify<SubscriptionMethodCache> notify)
         {
             service = new CachedSubscriptionService(null, null);
         }

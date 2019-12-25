@@ -27,19 +27,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    class DbSubscriptionService : DbBaseService, ISubscriptionService
+    class DbSubscriptionService : ISubscriptionService
     {
-        public DbSubscriptionService(DbOptionsManager dbOptionsManager)
-            : base(dbOptionsManager, "tenant")
+        private Expression<Func<Subscription, SubscriptionRecord>> FromSubscriptionToSubscriptionRecord { get; set; }
+        private Expression<Func<DbSubscriptionMethod, SubscriptionMethod>> FromDbSubscriptionMethodToSubscriptionMethod { get; set; }
+        private UserDbContext UserDbContext { get; set; }
+        public DbSubscriptionService(DbContextManager<UserDbContext> dbContextManager)
         {
+            UserDbContext = dbContextManager.Value;
 
+            FromSubscriptionToSubscriptionRecord = r => new SubscriptionRecord
+            {
+                ActionId = r.Action,
+                ObjectId = r.Object,
+                RecipientId = r.Recipient.ToString(),
+                SourceId = r.Source.ToString(),
+                Subscribed = !r.Unsubscribed,
+                Tenant = r.Tenant
+            };
+
+            FromDbSubscriptionMethodToSubscriptionMethod = r => new SubscriptionMethod
+            {
+                ActionId = r.Action,
+                RecipientId = r.Recipient.ToString(),
+                SourceId = r.Source.ToString(),
+                Tenant = r.Tenant,
+                Methods = r.Sender.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries)
+            };
         }
 
 
@@ -55,13 +76,14 @@ namespace ASC.Core.Data
         public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId)
         {
             var q = GetQuery(tenant, sourceId, actionId);
-            if (!string.IsNullOrEmpty(recipientId))
+
+            if (recipientId != null)
             {
-                q.Where("recipient", recipientId);
+                q = q.Where(r => r.Recipient == recipientId);
             }
             else
             {
-                q.Where("object", objectId ?? string.Empty);
+                q = q.Where(r => r.Object == (objectId ?? string.Empty));
             }
 
             return GetSubscriptions(q, tenant);
@@ -72,8 +94,8 @@ namespace ASC.Core.Data
             if (recipientId == null) throw new ArgumentNullException("recipientId");
 
             var q = GetQuery(tenant, sourceId, actionId)
-                .Where("recipient", recipientId)
-                .Where("object", objectId ?? string.Empty);
+                .Where(r => r.Recipient == recipientId)
+                .Where(r => r.Object == (objectId ?? string.Empty));
 
             return GetSubscriptions(q, tenant).FirstOrDefault();
         }
@@ -82,14 +104,18 @@ namespace ASC.Core.Data
         {
             if (s == null) throw new ArgumentNullException("s");
 
-            var i = Insert("core_subscription", s.Tenant)
-                .InColumnValue("source", s.SourceId)
-                .InColumnValue("action", s.ActionId)
-                .InColumnValue("recipient", s.RecipientId)
-                .InColumnValue("object", s.ObjectId ?? string.Empty)
-                .InColumnValue("unsubscribed", !s.Subscribed);
+            var subs = new Subscription
+            {
+                Action = s.ActionId,
+                Object = s.ObjectId ?? string.Empty,
+                Recipient = s.RecipientId,
+                Source = s.SourceId,
+                Unsubscribed = !s.Subscribed,
+                Tenant = s.Tenant
+            };
 
-            ExecNonQuery(i);
+            UserDbContext.AddOrUpdate(r => r.Subscriptions, subs);
+            UserDbContext.SaveChanges();
         }
 
         public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
@@ -102,12 +128,20 @@ namespace ASC.Core.Data
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
 
-            var d = Delete("core_subscription", tenant).Where("source", sourceId).Where("action", actionId);
+            using var tr = UserDbContext.Database.BeginTransaction();
+            var q = UserDbContext.Subscriptions
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.Source == sourceId)
+                .Where(r => r.Action == actionId);
+
             if (objectId != string.Empty)
             {
-                d.Where("object", objectId ?? string.Empty);
+                q = q.Where(r => r.Object == (objectId ?? string.Empty));
             }
-            ExecNonQuery(d);
+
+            var sub = q.FirstOrDefault();
+            UserDbContext.Subscriptions.Remove(sub);
+            tr.Commit();
         }
 
 
@@ -116,26 +150,23 @@ namespace ASC.Core.Data
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
 
-            var q = new SqlQuery("core_subscriptionmethod")
-                .Select("tenant", "recipient", "sender", "action")
-                .Where(Exp.Eq("tenant", -1) | Exp.Eq("tenant", tenant))
-                .Where("source", sourceId)
-                .GroupBy("recipient", "action")
-                .OrderBy("tenant", true);
+            var q = UserDbContext.SubscriptionMethods
+                .Where(r => r.Tenant == -1 || r.Tenant == tenant)
+                .Where(r => r.Source == sourceId);
 
-            if (recipientId != null) q.Where("recipient", recipientId);
+            if (recipientId != null)
+            {
+                q = q.Where(r => r.Recipient == recipientId);
+            }
 
-            var methods = ExecList(q)
-                .ConvertAll(r => new SubscriptionMethod
-                {
-                    Tenant = Convert.ToInt32(r[0]),
-                    SourceId = sourceId,
-                    ActionId = Convert.ToString(r[3]),
-                    RecipientId = (string)r[1],
-                    Methods = Convert.ToString(r[2]).Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries),
-                });
+            var a = q.OrderBy(r => r.Tenant)
+            .GroupBy(r => new { r.Recipient, r.Action }, (x, y) => y.First());
+
+
+            var methods = a.Select(FromDbSubscriptionMethodToSubscriptionMethod).ToList();
 
             var result = methods.ToList();
+
             var common = new Dictionary<string, SubscriptionMethod>();
             foreach (var m in methods)
             {
@@ -160,58 +191,52 @@ namespace ASC.Core.Data
         {
             if (m == null) throw new ArgumentNullException("m");
 
-            ISqlInstruction i;
+            using var tr = UserDbContext.Database.BeginTransaction();
+
             if (m.Methods == null || m.Methods.Length == 0)
             {
-                i = Delete("core_subscriptionmethod", m.Tenant)
-                    .Where("source", m.SourceId)
-                    .Where("action", m.ActionId)
-                    .Where("recipient", m.RecipientId);
+                var q = UserDbContext.SubscriptionMethods
+                    .Where(r => r.Tenant == m.Tenant)
+                    .Where(r => r.Source == m.SourceId)
+                    .Where(r => r.Recipient == m.RecipientId)
+                    .Where(r => r.Action == m.ActionId);
+                UserDbContext.SubscriptionMethods.Remove(q.FirstOrDefault());
             }
             else
             {
-                i = Insert("core_subscriptionmethod", m.Tenant)
-                    .InColumnValue("source", m.SourceId)
-                    .InColumnValue("action", m.ActionId)
-                    .InColumnValue("recipient", m.RecipientId)
-                    .InColumnValue("sender", string.Join("|", m.Methods));
+                var sm = new DbSubscriptionMethod
+                {
+                    Action = m.ActionId,
+                    Recipient = m.RecipientId,
+                    Source = m.SourceId,
+                    Tenant = m.Tenant,
+                    Sender = string.Join("|", m.Methods)
+                };
+                UserDbContext.AddOrUpdate(r => r.SubscriptionMethods, sm);
             }
-            ExecNonQuery(i);
+
+            UserDbContext.SaveChanges();
+            tr.Commit();
         }
 
 
-        private SqlQuery GetQuery(int tenant, string sourceId, string actionId)
+        private IQueryable<Subscription> GetQuery(int tenant, string sourceId, string actionId)
         {
             if (sourceId == null) throw new ArgumentNullException("sourceId");
             if (actionId == null) throw new ArgumentNullException("actionId");
 
-            return new SqlQuery("core_subscription")
-                .Select("tenant", "source", "action", "recipient", "object", "unsubscribed")
-                .Where(Exp.Eq("tenant", -1) | Exp.Eq("tenant", tenant))
-                .Where("source", sourceId)
-                .Where("action", actionId)
-                .OrderBy("tenant", true);
+            return
+                UserDbContext.Subscriptions
+                .Where(r => r.Source == sourceId)
+                .Where(r => r.Action == actionId)
+                .Where(r => r.Tenant == -1 || r.Tenant == tenant)
+                .OrderBy(r => r.Tenant)
+                ;
         }
 
-        private IEnumerable<SubscriptionRecord> GetSubscriptions(ISqlInstruction q, int tenant)
+        private IEnumerable<SubscriptionRecord> GetSubscriptions(IQueryable<Subscription> q, int tenant)
         {
-            var subs = ExecList(q)
-                .ConvertAll(r =>
-                {
-                    var result = new SubscriptionRecord
-                    {
-                        Tenant = Convert.ToInt32(r[0]),
-                        SourceId = (string)r[1],
-                        ActionId = (string)r[2],
-                        RecipientId = (string)r[3],
-                        Subscribed = !Convert.ToBoolean(r[5]),
-                    };
-                    if (!string.Empty.Equals(r[4]))
-                    {
-                        result.ObjectId = (string)r[4];
-                    }
-                    return result;
-                });
+            var subs = q.Select(FromSubscriptionToSubscriptionRecord).ToList();
 
             var result = subs.ToList();
             var common = new Dictionary<string, SubscriptionRecord>();

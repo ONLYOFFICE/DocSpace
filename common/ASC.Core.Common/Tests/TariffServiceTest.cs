@@ -28,7 +28,10 @@
 namespace ASC.Core.Common.Tests
 {
     using System;
+
     using ASC.Core.Billing;
+    using ASC.Core.Common.EF;
+
     using NUnit.Framework;
 
     [TestFixture]
@@ -39,7 +42,7 @@ namespace ASC.Core.Common.Tests
 
         public TariffServiceTest()
         {
-            tariffService = new TariffService(null, null, null, null, null, null, null, null);
+            tariffService = new TariffService(null, null, null, null, null, (CoreDbContext)null, null, null);
         }
 
 

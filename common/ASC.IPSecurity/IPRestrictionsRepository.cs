@@ -24,11 +24,13 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -38,45 +40,43 @@ namespace ASC.IPSecurity
     {
         private const string dbId = "core";
 
-        public DbOptionsManager DbOptions { get; }
+        public TenantDbContext TenantDbContext { get; }
 
-        public IPRestrictionsRepository(DbOptionsManager dbOptions)
+        public IPRestrictionsRepository(DbContextManager<TenantDbContext> dbContextManager)
         {
-            DbOptions = dbOptions;
+            TenantDbContext = dbContextManager.Get(dbId);
         }
 
         public List<IPRestriction> Get(int tenant)
         {
-            var db = DbOptions.Get(dbId);
-            return db
-.ExecuteList(new SqlQuery("tenants_iprestrictions").Select("id", "ip").Where("tenant", tenant))
-.ConvertAll(r => new IPRestriction
-{
-    Id = Convert.ToInt32(r[0]),
-    Ip = Convert.ToString(r[1]),
-    TenantId = tenant,
-});
+            return TenantDbContext.TenantIpRestrictions
+                .Where(r => r.Tenant == tenant)
+                .Select(r => new IPRestriction
+                {
+                    Id = r.Id,
+                    Ip = r.Ip,
+                    TenantId = r.Tenant
+                })
+                .ToList();
         }
 
         public List<string> Save(IEnumerable<string> ips, int tenant)
         {
-            var db = DbOptions.Get(dbId);
-            using var tx = db.BeginTransaction();
-            var d = new SqlDelete("tenants_iprestrictions").Where("tenant", tenant);
-            db.ExecuteNonQuery(d);
+            using var tx = TenantDbContext.Database.BeginTransaction();
 
-            var ipsList = ips.ToList();
-            foreach (var ip in ipsList)
+            var restrictions = TenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
+            TenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
+
+            var ipsList = ips.Select(r => new TenantIpRestrictions
             {
-                var i = new SqlInsert("tenants_iprestrictions")
-                    .InColumnValue("tenant", tenant)
-                    .InColumnValue("ip", ip);
+                Tenant = tenant,
+                Ip = r
+            });
 
-                db.ExecuteNonQuery(i);
-            }
+            TenantDbContext.TenantIpRestrictions.AddRange(ipsList);
 
             tx.Commit();
-            return ipsList;
+            return ips.ToList();
         }
     }
     public static class IPRestrictionsRepositoryExtension
@@ -85,7 +85,7 @@ namespace ASC.IPSecurity
         {
             services.TryAddScoped<IPRestrictionsRepository>();
 
-            return services.AddDbManagerService();
+            return services.AddTenantDbContextService();
         }
     }
 }

@@ -25,7 +25,6 @@
 
 
 #if DEBUG
-using ASC.Common.Data;
 using NUnit.Framework;
 
 namespace ASC.Common.Tests.Data
@@ -33,13 +32,13 @@ namespace ASC.Common.Tests.Data
     [TestFixture]
     public class MultiRegionalDbTest
     {
-        [Test]
-        public void ExecuteListTest()
-        {
-            using var db = new MultiRegionalDbManager(null, null, "core");
-            var r1 = db.ExecuteList("select 1");
-            Assert.IsTrue(r1.Count > 1);
-        }
+        //[Test]
+        //public void ExecuteListTest()
+        //{
+        //    using var db = new MultiRegionalDbManager(null, null, "core");
+        //    var r1 = db.ExecuteList("select 1");
+        //    Assert.IsTrue(r1.Count > 1);
+        //}
     }
 }
 #endif

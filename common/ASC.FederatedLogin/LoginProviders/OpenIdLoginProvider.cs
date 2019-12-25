@@ -26,14 +26,18 @@
 
 using System;
 using System.Collections.Generic;
+
 using ASC.Common.Utils;
+using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
 using DotNetOpenAuth.Messaging;
 using DotNetOpenAuth.OpenId;
 using DotNetOpenAuth.OpenId.Extensions.AttributeExchange;
 using DotNetOpenAuth.OpenId.Extensions.SimpleRegistration;
 using DotNetOpenAuth.OpenId.RelyingParty;
+
 using Microsoft.AspNetCore.Http;
 
 namespace ASC.FederatedLogin.LoginProviders
@@ -42,10 +46,11 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         private static readonly OpenIdRelyingParty Openid = new OpenIdRelyingParty();
 
-        public OpenIdLoginProvider(Signature signature, InstanceCrypto instanceCrypto)
+        public OpenIdLoginProvider(Signature signature, InstanceCrypto instanceCrypto, ConsumerFactory consumerFactory)
         {
             Signature = signature;
             InstanceCrypto = instanceCrypto;
+            ConsumerFactory = consumerFactory;
         }
 
         public LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
@@ -143,10 +148,11 @@ namespace ASC.FederatedLogin.LoginProviders
         public string RedirectUri { get { return ""; } }
         public string ClientID { get { return ""; } }
         public string ClientSecret { get { return ""; } }
-        public bool IsEnabled { get { return GoogleLoginProvider.Instance.IsEnabled; } }
+        public bool IsEnabled { get { return ConsumerFactory.Get<GoogleLoginProvider>().IsEnabled; } }
 
         public Signature Signature { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         internal LoginProfile ProfileFromOpenId(ClaimsResponse spprofile, FetchResponse fetchprofile, string claimedId, string realmUrlString)
         {

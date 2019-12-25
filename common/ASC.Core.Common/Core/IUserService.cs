@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ASC.Core.Users;
 
 namespace ASC.Core
@@ -34,7 +35,7 @@ namespace ASC.Core
     {
         IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from);
 
-        List<UserInfo> GetUsers(int tenant, bool isAdmin,
+        IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin,
             EmployeeStatus? employeeStatus,
             List<List<Guid>> includeGroups,
             List<Guid> excludeGroups,
@@ -44,7 +45,8 @@ namespace ASC.Core
             bool sortOrderAsc,
             long limit,
             long offset,
-            out int total);
+            out int total,
+            out int count);
 
         UserInfo GetUser(int tenant, Guid id);
 
