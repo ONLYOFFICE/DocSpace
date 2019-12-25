@@ -11,12 +11,7 @@ const iconNames = Object.keys(Icons);
 const StyledIconBlock = styled.div`
   display: flex;
   align-items: center;
-  width: ${props =>
-    (props.size === 'base' && '22px') ||
-    (props.size === 'middle' && '27px') ||
-    (props.size === 'big' && '30px') ||
-    (props.size === 'huge' && '30px')
-  };
+
   cursor: ${props =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
@@ -53,15 +48,11 @@ const StyledInputGroup = styled(CustomInputGroup)`
 class InputBlock extends React.Component {
   constructor(props) {
     super(props);
-
-    this.onIconClick = this.onIconClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-
   }
-  onIconClick(e) {
+  onIconClick = (e) => {
     if (typeof this.props.onIconClick === "function" && !this.props.isDisabled) this.props.onIconClick(e);
   }
-  onChange(e) {
+  onChange = (e) => {
     if (typeof this.props.onChange === "function") this.props.onChange(e);
   }
 
@@ -112,9 +103,6 @@ class InputBlock extends React.Component {
           break;
         case 'huge':
           iconButtonSize = 24;
-          break;
-
-        default:
           break;
       }
     }
