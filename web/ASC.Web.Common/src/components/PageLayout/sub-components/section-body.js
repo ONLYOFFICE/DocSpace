@@ -5,10 +5,13 @@ import { utils, Scrollbar } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledSectionBody = styled.div`
-  margin: 16px 8px 16px 0;
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+`;
+
+const StyledSectionWrapper = styled.div`
+  margin: 16px 8px 16px 0;
 
   @media ${tablet} {
     margin: 16px 0;
@@ -32,14 +35,16 @@ const SectionBody = React.memo(props => {
     <StyledSectionBody>
       {withScroll ? (
         <Scrollbar stype="mediumBlack">
-          {children}
-          <StyledSpacer pinned={pinned}/>
+          <StyledSectionWrapper>
+            {children}
+            <StyledSpacer pinned={pinned}/>
+          </StyledSectionWrapper>
         </Scrollbar>
       ) : (
-        <>
+        <StyledSectionWrapper>
           {children}
           <StyledSpacer pinned={pinned}/>
-        </>
+        </StyledSectionWrapper>
       )}
     </StyledSectionBody>
   );

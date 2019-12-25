@@ -9,8 +9,12 @@ const StyledArticleBody = styled.div`
   height: 100%;
 
   .people-tree-menu{
-    margin: 16px 30px 16px 0;
+    margin-right: 30px;
   }
+`;
+
+const StyledArticleWrapper = styled.div`
+  margin: 16px 0;
 `;
 
 const ArticleBody = React.memo(props => {
@@ -19,7 +23,9 @@ const ArticleBody = React.memo(props => {
 
   return (
     <StyledArticleBody>
-      <Scrollbar>{children}</Scrollbar>
+      <Scrollbar>
+        <StyledArticleWrapper>{children}</StyledArticleWrapper>
+      </Scrollbar>
     </StyledArticleBody>
   );
 });
