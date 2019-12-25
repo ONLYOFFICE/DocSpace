@@ -188,7 +188,7 @@ class UpdateUserForm extends React.Component {
 
     this.props.updateProfile(this.state.profile)
       .then((profile) => {
-        toastr.success("Success");
+        toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
@@ -404,7 +404,7 @@ class UpdateUserForm extends React.Component {
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = '';
           stateCopy.profile.avatarMax = response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
-          toastr.success("Success");
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
       })
       .catch((error) => toastr.error(error));
@@ -414,7 +414,7 @@ class UpdateUserForm extends React.Component {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success("Success");
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
       })
       .catch((error) => toastr.error(error));

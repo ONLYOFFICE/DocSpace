@@ -64,7 +64,7 @@ class CreateUserForm extends React.Component {
       tmpFile: this.state.avatar.tmpFile
     })
     .then(() => {
-        toastr.success("Success");
+        toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(`${this.props.settings.homepage}/view/${userName}`);
     })
     .catch((error) => toastr.error(error));
@@ -228,7 +228,7 @@ class CreateUserForm extends React.Component {
         if(this.state.avatar.tmpFile !== ""){
           this.createAvatar(profile.id,profile.userName);
         }else{
-          toastr.success("Success");
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
         }
       })
