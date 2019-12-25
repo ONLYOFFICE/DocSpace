@@ -56,6 +56,7 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
@@ -187,7 +188,7 @@ class UpdateUserForm extends React.Component {
 
     this.props.updateProfile(this.state.profile)
       .then((profile) => {
-        toastr.success("Success");
+        toastr.success(this.props.t("ChangesSavedSuccessfully"));
         this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
       })
       .catch((error) => {
@@ -338,6 +339,16 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  onContactsItemRemove(event) {
+    const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    const filteredArray = stateCopy.profile.contacts.filter((element) => { 
+      return element.id !== id;
+    });
+    stateCopy.profile.contacts = filteredArray;
+    this.setState(stateCopy);
+  }
+
   openAvatarEditor(){
     let avatarDefault = this.state.avatar.image;
     let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(this.state.avatar.image);
@@ -393,7 +404,7 @@ class UpdateUserForm extends React.Component {
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = '';
           stateCopy.profile.avatarMax = response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
-          toastr.success("Success");
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
       })
       .catch((error) => toastr.error(error));
@@ -403,7 +414,7 @@ class UpdateUserForm extends React.Component {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success("Success");
+          toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
       })
       .catch((error) => toastr.error(error));
@@ -708,6 +719,7 @@ class UpdateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("SocialProfiles")}>
@@ -719,6 +731,7 @@ class UpdateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <div>

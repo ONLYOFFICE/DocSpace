@@ -39,6 +39,7 @@
   "RequiredField": "Required field",
   "ChangeButton": "Change",
   "Phone": "Phone",
+  "ChangesSavedSuccessfully": "Changes saved successfully",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",

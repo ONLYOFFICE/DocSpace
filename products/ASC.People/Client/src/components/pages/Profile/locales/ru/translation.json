@@ -9,7 +9,7 @@
   "Subscriptions": "Подписки",
   "Comments": "Комментарии",
   "ContactInformation": "Контактные данные",
-  "PendingTitle": "Pending",
+  "PendingTitle": "Ожидание",
   "EmailChangeButton": "Изменить email",
   "SendInviteAgain": "Отправить приглашение ещё раз",
   "EditPhoto": "Изменить фотографию",
@@ -20,8 +20,8 @@
   "RemoveData": "Удалить личные данные",
   "DeleteSelfProfile": "Удалить профиль",
   "EditButton": "Редактировать",
-  "Actions": "Actions",
-  "ChangeEmailSuccess": "Mail has been successfully changed",
+  "Actions": "Действия",
+  "ChangeEmailSuccess": "Email успешно изменен",
   "NotFoundLanguage": "Если Вы не можете найти свой язык в списке доступных, Вы всегда можете написать нам по адресу <1>{{supportEmail}}</1>, чтобы принять участие в переводе и получить до 1 года бесплатного использования.",
   
   "PhoneChange": "Измененить номер телефона",
@@ -29,6 +29,7 @@
   "EditSubscriptionsBtn": "Изменить подписки",
   "InviteAgainLbl": "Активировать адрес email ещё раз",
   "LDAPLbl": "LDAP",
+  "SocialProfiles": "Социальные профили",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
