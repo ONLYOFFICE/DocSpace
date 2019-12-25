@@ -1384,21 +1384,7 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             if (contacts == null) return;
-
-            if (user.ContactsList == null)
-            {
-                user.ContactsList = new List<string>();
-            }
-            else
-            {
-                user.ContactsList.Clear();
-            }
-
-            foreach (var contact in contacts.Where(c => !string.IsNullOrEmpty(c.Value)))
-            {
-                user.ContactsList.Add(contact.Type);
-                user.ContactsList.Add(contact.Value);
-            }
+            user.Contacts = contacts.Select(r => $"{r.Type}|{r.Value}").Aggregate((a, b) => $"{a}|{b}");
         }
 
         private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
