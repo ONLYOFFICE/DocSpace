@@ -11,12 +11,7 @@ const iconNames = Object.keys(Icons);
 const StyledIconBlock = styled.div`
   display: flex;
   align-items: center;
-  width: ${props =>
-    (props.size === 'base' && '22px') ||
-    (props.size === 'middle' && '27px') ||
-    (props.size === 'big' && '30px') ||
-    (props.size === 'huge' && '30px')
-  };
+
   cursor: ${props =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
