@@ -27,80 +27,106 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using System.Linq.Expressions;
+
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 namespace ASC.Core.Data
 {
-    class DbQuotaService : DbBaseService, IQuotaService
+    class DbQuotaService : IQuotaService
     {
-        private const string tenants_quota = "tenants_quota";
-        internal const string tenants_quotarow = "tenants_quotarow";
+        private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
+        private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
+        private CoreDbContext CoreDbContext { get; set; }
 
-        public DbQuotaService(DbOptionsManager dbOptionsManager)
-            : base(dbOptionsManager, "tenant")
+        private DbQuotaService()
         {
+            FromDbQuotaToTenantQuota = r => new TenantQuota()
+            {
+                Name = r.Name,
+                ActiveUsers = r.ActiveUsers != 0 ? r.ActiveUsers : int.MaxValue,
+                AvangateId = r.AvangateId,
+                Features = r.Features,
+                MaxFileSize = GetInBytes(r.MaxFileSize),
+                MaxTotalSize = GetInBytes(r.MaxTotalSize),
+                Price = r.Price,
+                Price2 = r.Price2,
+                Visible = r.Visible
+            };
+
+            FromDbQuotaRowToTenantQuotaRow = r => new TenantQuotaRow
+            {
+                Counter = r.Counter,
+                Path = r.Path,
+                Tag = r.Tag,
+                Tenant = r.Tenant
+            };
+        }
+
+        public DbQuotaService(DbContextManager<CoreDbContext> dbContextManager) : this()
+        {
+            CoreDbContext = dbContextManager.Value;
+        }
+
+        public DbQuotaService(CoreDbContext dbContext) : this()
+        {
+            CoreDbContext = dbContext;
         }
 
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            return GetTenantQuotas(Exp.Empty);
+            return
+                CoreDbContext.Quotas
+                .Select(FromDbQuotaToTenantQuota)
+                .ToList();
         }
 
         public TenantQuota GetTenantQuota(int id)
         {
-            return GetTenantQuotas(Exp.Eq("tenant", id))
+            return
+                 CoreDbContext.Quotas
+                 .Where(r => r.Tenant == id)
+                .Select(FromDbQuotaToTenantQuota)
                 .SingleOrDefault();
         }
-
-        private IEnumerable<TenantQuota> GetTenantQuotas(Exp where)
-        {
-            var q = new SqlQuery(tenants_quota)
-                .Select("tenant", "name", "max_file_size", "max_total_size", "active_users", "features", "price", "price2", "avangate_id", "visible")
-                .Where(where);
-
-            return ExecList(q)
-                .ConvertAll(r => new TenantQuota(Convert.ToInt32(r[0]))
-                {
-                    Name = (string)r[1],
-                    MaxFileSize = GetInBytes(Convert.ToInt64(r[2])),
-                    MaxTotalSize = GetInBytes(Convert.ToInt64(r[3])),
-                    ActiveUsers = Convert.ToInt32(r[4]) != 0 ? Convert.ToInt32(r[4]) : int.MaxValue,
-                    Features = (string)r[5],
-                    Price = Convert.ToDecimal(r[6]),
-                    Price2 = Convert.ToDecimal(r[7]),
-                    AvangateId = (string)r[8],
-                    Visible = Convert.ToBoolean(r[9]),
-                });
-        }
-
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
             if (quota == null) throw new ArgumentNullException("quota");
 
-            var i = Insert(tenants_quota, quota.Id)
-                .InColumnValue("name", quota.Name)
-                .InColumnValue("max_file_size", GetInMBytes(quota.MaxFileSize))
-                .InColumnValue("max_total_size", GetInMBytes(quota.MaxTotalSize))
-                .InColumnValue("active_users", quota.ActiveUsers)
-                .InColumnValue("features", quota.Features)
-                .InColumnValue("price", quota.Price)
-                .InColumnValue("price2", quota.Price2)
-                .InColumnValue("avangate_id", quota.AvangateId)
-                .InColumnValue("visible", quota.Visible);
+            var dbQuota = new DbQuota
+            {
+                Tenant = quota.Id,
+                Name = quota.Name,
+                MaxFileSize = GetInMBytes(quota.MaxFileSize),
+                MaxTotalSize = GetInMBytes(quota.MaxTotalSize),
+                ActiveUsers = quota.ActiveUsers,
+                Features = quota.Features,
+                Price = quota.Price,
+                Price2 = quota.Price2,
+                AvangateId = quota.AvangateId,
+                Visible = quota.Visible
+            };
 
-            ExecNonQuery(i);
+            CoreDbContext.AddOrUpdate(r => r.Quotas, dbQuota);
+            CoreDbContext.SaveChanges();
+
             return quota;
         }
 
         public void RemoveTenantQuota(int id)
         {
-            var d = Delete(tenants_quota, id);
-            ExecNonQuery(d);
+            using var tr = CoreDbContext.Database.BeginTransaction();
+            var d = CoreDbContext.Quotas
+                 .Where(r => r.Tenant == id)
+                 .SingleOrDefault();
+
+            CoreDbContext.Quotas.Remove(d);
+            CoreDbContext.SaveChanges();
+
+            tr.Commit();
         }
 
 
@@ -108,17 +134,24 @@ namespace ASC.Core.Data
         {
             if (row == null) throw new ArgumentNullException("row");
 
-            var db = GetDb();
-            using var tx = db.BeginTransaction();
-            var counter = db.ExecuteScalar<long>(Query(tenants_quotarow, row.Tenant)
-.Select("counter")
-.Where("path", row.Path));
+            using var tx = CoreDbContext.Database.BeginTransaction();
 
-            db.ExecuteNonQuery(Insert(tenants_quotarow, row.Tenant)
-                .InColumnValue("path", row.Path)
-                .InColumnValue("counter", exchange ? counter + row.Counter : row.Counter)
-                .InColumnValue("tag", row.Tag)
-                .InColumnValue("last_modified", DateTime.UtcNow));
+            var counter = CoreDbContext.QuotaRows
+                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
+                .Select(r => r.Counter)
+                .FirstOrDefault();
+
+            var dbQuotaRow = new DbQuotaRow
+            {
+                Tenant = row.Tenant,
+                Path = row.Path,
+                Counter = exchange ? counter + row.Counter : row.Counter,
+                Tag = row.Tag,
+                LastModified = DateTime.UtcNow
+            };
+
+            CoreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            CoreDbContext.SaveChanges();
 
             tx.Commit();
         }
@@ -127,35 +160,25 @@ namespace ASC.Core.Data
         {
             if (query == null) throw new ArgumentNullException("query");
 
-            var q = new SqlQuery(tenants_quotarow).Select("tenant", "path", "counter", "tag");
-            var where = Exp.Empty;
+            IQueryable<DbQuotaRow> q = CoreDbContext.QuotaRows;
+
 
             if (query.Tenant != Tenant.DEFAULT_TENANT)
             {
-                where &= Exp.Eq("tenant", query.Tenant);
+                q = q.Where(r => r.Tenant == query.Tenant);
             }
             if (!string.IsNullOrEmpty(query.Path))
             {
-                where &= Exp.Eq("path", query.Path);
+                q = q.Where(r => r.Path == query.Path);
             }
+
             if (query.LastModified != default)
             {
-                where &= Exp.Ge("last_modified", query.LastModified);
+                q = q.Where(r => r.LastModified >= query.LastModified);
             }
 
-            if (where != Exp.Empty)
-            {
-                q.Where(where);
-            }
 
-            return ExecList(q)
-                .ConvertAll(r => new TenantQuotaRow
-                {
-                    Tenant = Convert.ToInt32(r[0]),
-                    Path = (string)r[1],
-                    Counter = Convert.ToInt64(r[2]),
-                    Tag = (string)r[3],
-                });
+            return q.Select(FromDbQuotaRowToTenantQuotaRow).ToList();
         }
 
 

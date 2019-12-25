@@ -80,9 +80,9 @@ namespace ASC.Core.Users
 
         public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
         {
-            var ldapUserContacts = ui.Contacts;
+            var ldapUserContacts = ui.ContactsList;
 
-            if (ui.Contacts == null) return;
+            if (ui.ContactsList == null) return;
 
             var newContacts = new List<string>();
 
@@ -111,7 +111,7 @@ namespace ASC.Core.Users
                 }
             }
 
-            ui.Contacts = newContacts;
+            ui.ContactsList = newContacts;
         }
     }
 }

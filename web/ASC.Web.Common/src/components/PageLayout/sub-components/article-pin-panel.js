@@ -40,12 +40,12 @@ const ArticlePinPanel = React.memo(props => {
       {pinned ? (
         <div onClick={onUnpin}>
           <Icons.CatalogUnpinIcon size="medium" />
-          <Text as='span'>{unpinText}</Text>
+          <Text as='span' color="#555F65">{unpinText}</Text>
         </div>
       ) : (
         <div onClick={onPin}>
           <Icons.CatalogPinIcon size="medium" />
-          <Text as='span'>{pinText}</Text>
+          <Text as='span' color="#555F65">{pinText}</Text>
         </div>
       )}
     </StyledArticlePinPanel>

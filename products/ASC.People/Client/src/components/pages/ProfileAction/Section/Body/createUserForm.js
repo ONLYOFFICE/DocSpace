@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr, AvatarEditor, Text } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile, getUserPhoto } from '../../../../../store/profile/actions';
+import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -38,6 +38,7 @@ class CreateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
     this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
@@ -148,21 +149,6 @@ class CreateUserForm extends React.Component {
     });
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
-    getUserPhoto(profile.id).then(userPhotoData => {
-      if(userPhotoData.original){
-        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
-        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
-          this.setState({
-            avatar: {
-              tmpFile: this.state.avatar.tmpFile,
-              defaultWidth: avatarDefaultSizes[1],
-              defaultHeight: avatarDefaultSizes[2],
-              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
-            }
-          });
-        }
-      }
-    });
     return {
       visibleAvatarEditor: false,
       croppedAvatarImage: "",
@@ -283,6 +269,16 @@ class CreateUserForm extends React.Component {
       if (element.id === id)
         element.value = event.target.value;
     });
+    this.setState(stateCopy);
+  }
+
+  onContactsItemRemove(event) {
+    const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    const filteredArray = stateCopy.profile.contacts.filter((element) => { 
+      return element.id !== id;
+    });
+    stateCopy.profile.contacts = filteredArray;
     this.setState(stateCopy);
   }
 
@@ -485,7 +481,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
-          <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
+          <Textarea placeholder={t("AddСomment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField
@@ -496,6 +492,7 @@ class CreateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("SocialProfiles")}>
@@ -507,6 +504,7 @@ class CreateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <div>

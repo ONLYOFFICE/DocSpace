@@ -126,7 +126,7 @@ class Layout extends React.Component {
         isNavOpened: true,
         isAsideVisible: false
       });
-    }, 300);
+    }, 1000);
   };
 
   handleNavMouseLeave = () => {
@@ -201,6 +201,7 @@ class Layout extends React.Component {
                   item.onBadgeClick(e);
                   this.toggleAside();
                 }}
+                url={item.url}
               >
                 {item.title}
               </NavItem>

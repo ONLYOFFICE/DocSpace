@@ -1,32 +1,34 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import { Badge, Icons, Text} from "asc-web-components";
+import { Badge, Icons, Link, Text } from "asc-web-components";
 
 const baseColor = "#7A95B0",
-  activeColor = "#FFFFFF";
+  activeColor = "#FFFFFF",
+  separatorColor = "#3E668D";
 
 const NavItemSeparator = styled.div`
-  border-bottom: 1px solid ${baseColor};
+  border-bottom: 1px solid ${separatorColor};
   margin: 0 16px;
 `;
 
-const NavItemWrapper = styled.div`
+const NavItemWrapper = styled(Link)`
   display: flex;
   min-width: 56px;
-  min-height: 56px;
+  min-height: 50px;
   align-items: center;
   padding: 0 16px;
   cursor: pointer;
   position: relative;
   box-sizing: border-box;
+
+  &:hover {
+    background: #0D3760;
+  }
 `;
 
-const NavItemLabel = styled.div`
+const NavItemLabel = styled(Text)`
   margin: 0 auto 0 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${props => props.color};
   display: ${props => (props.opened ? "block" : "none")};
 `;
 
@@ -50,49 +52,48 @@ const NavItem = React.memo(props => {
     children,
     badgeNumber,
     onClick,
-    onBadgeClick
+    onBadgeClick,
+    url
   } = props;
   const color = active ? activeColor : baseColor;
 
   return separator ? (
     <NavItemSeparator />
   ) : (
-    <NavItemWrapper onClick={onClick}>
-      {React.createElement(Icons[iconName], {
-        size: "big",
-        isfill: true,
-        color: color
-      })}
-      {children && (
-        <NavItemLabel opened={opened}>
-          <Text color={color} isBold fontSize='16px'>
+      <NavItemWrapper 
+      href={url} 
+      onClick={onClick}>
+        {React.createElement(Icons[iconName], {
+          size: "big",
+          isfill: true,
+          color: color
+        })}
+        {children && (
+          <NavItemLabel opened={opened} color={color} fontSize="16px" fontWeight="bold" truncate>
             {children}
-          </Text>
-        </NavItemLabel>
-      )}
-      <NavItemBadge
-        opened={opened}
-        number={badgeNumber}
-        onClick={onBadgeClick}
-      />
-    </NavItemWrapper>
-  );
+          </NavItemLabel>
+        )}
+        <NavItemBadge
+          opened={opened}
+          number={badgeNumber}
+          onClick={onBadgeClick}
+        />
+      </NavItemWrapper>
+    );
 });
 
 NavItem.displayName = "NavItem";
 
 NavItem.propTypes = {
-  separator: PropTypes.bool,
-  opened: PropTypes.bool,
   active: PropTypes.bool,
-  iconName: PropTypes.string,
   badgeNumber: PropTypes.number,
-  onClick: PropTypes.func,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
+  url: PropTypes.string,
+  iconName: PropTypes.string,
   onBadgeClick: PropTypes.func,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+  onClick: PropTypes.func,
+  opened: PropTypes.bool,
+  separator: PropTypes.bool,
 };
 
 export default NavItem;

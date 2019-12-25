@@ -69,7 +69,7 @@ class DropDown extends React.PureComponent {
     super(props);
 
     this.state = {
-      width: 100,
+      width: this.dropDownRef ? this.dropDownRef.current.offsetWidth : 240,
       directionX: props.directionX,
       directionY: props.directionY
     };
@@ -81,7 +81,7 @@ class DropDown extends React.PureComponent {
     this.checkPosition();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
       this.checkPosition();
     }
@@ -112,7 +112,7 @@ class DropDown extends React.PureComponent {
 
   render() {
     const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
-    const { directionX, directionY } = this.state;
+    const { directionX, directionY, width } = this.state;
     const isTablet = window.innerWidth <= 1024; //TODO: Make some better
     const itemHeight = isTablet ? 40 : 36;
     const fullHeight = children && children.length * itemHeight;
@@ -134,7 +134,7 @@ class DropDown extends React.PureComponent {
           {maxHeight
             ? <FixedSizeList
               height={calculatedHeight}
-              width={this.state.width}
+              width={width}
               itemSize={itemHeight}
               itemCount={children.length}
               itemData={children}

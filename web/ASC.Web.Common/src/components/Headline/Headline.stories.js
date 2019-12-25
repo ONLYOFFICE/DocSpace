@@ -6,7 +6,7 @@ import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
 import Readme from './README.md';
 
-const type = ['content', 'menu'];
+const type = ['content', 'header', 'menu'];
 const levels = [1, 2, 3, 4, 5, 6];
 
 storiesOf('Components|Heading', module)

@@ -29,15 +29,19 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
+
 using Google.Protobuf.Collections;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace ASC.Notify
@@ -60,22 +64,44 @@ namespace ASC.Notify
         public int SaveMessage(NotifyMessage m)
         {
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
-            using var tx = db.BeginTransaction(IsolationLevel.ReadCommitted);
-            var i = new SqlInsert("notify_queue")
-.InColumns("notify_id", "tenant_id", "sender", "reciever", "subject", "content_type", "content", "sender_type", "creation_date", "reply_to", "attachments")
-.Values(0, m.Tenant, m.From, m.To, m.Subject, m.ContentType, m.Content, m.Sender, new DateTime(m.CreationDate), m.ReplyTo, m.EmbeddedAttachments.ToString())
-.Identity(0, 0, true);
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+            using var tx = dbContext.Database.BeginTransaction(IsolationLevel.ReadCommitted);
 
-            var id = db.ExecuteScalar<int>(i);
+            var notifyQueue = new NotifyQueue
+            {
+                NotifyId = 0,
+                TenantId = m.Tenant,
+                Sender = m.From,
+                Reciever = m.To,
+                Subject = m.Subject,
+                ContentType = m.ContentType,
+                Content = m.Content,
+                SenderType = m.Sender,
+                CreationDate = new DateTime(m.CreationDate),
+                ReplyTo = m.ReplyTo,
+                Attachments = m.EmbeddedAttachments.ToString()
+            };
 
-            i = new SqlInsert("notify_info")
-                .InColumns("notify_id", "state", "attempts", "modify_date", "priority")
-                .Values(id, 0, 0, DateTime.UtcNow, m.Priority);
-            var affected = db.ExecuteNonQuery(i);
+            notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
+            dbContext.SaveChanges();
+
+            var id = notifyQueue.NotifyId;
+
+            var info = new NotifyInfo
+            {
+                NotifyId = id,
+                State = 0,
+                Attempts = 0,
+                ModifyDate = DateTime.UtcNow,
+                Priority = m.Priority
+            };
+
+            dbContext.NotifyInfo.Add(info);
+            dbContext.SaveChanges();
 
             tx.Commit();
-            return affected;
+
+            return 1;
         }
 
         public IDictionary<int, NotifyMessage> GetMessages(int count)
@@ -83,37 +109,37 @@ namespace ASC.Notify
             lock (syncRoot)
             {
                 using var scope = ServiceProvider.CreateScope();
-                using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
-                using var tx = db.BeginTransaction();
-                var q = new SqlQuery("notify_queue q")
-.InnerJoin("notify_info i", Exp.EqColumns("q.notify_id", "i.notify_id"))
-.Select("q.notify_id", "q.tenant_id", "q.sender", "q.reciever", "q.subject", "q.content_type", "q.content", "q.sender_type", "q.creation_date", "q.reply_to", "q.attachments")
-.Where(Exp.Eq("i.state", MailSendingState.NotSended) | (Exp.Eq("i.state", MailSendingState.Error) & Exp.Lt("i.modify_date", DateTime.UtcNow - TimeSpan.Parse(NotifyServiceCfg.Process.AttemptsInterval))))
-.OrderBy("i.priority", true)
-.OrderBy("i.notify_id", true)
-.SetMaxResults(count);
+                using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+                using var tx = dbContext.Database.BeginTransaction();
 
-                var messages = db
-                    .ExecuteList(q)
+                var q = dbContext.NotifyQueue
+                    .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
+                    .Where(r => r.info.State == (int)MailSendingState.NotSended || r.info.State == (int)MailSendingState.Error && r.info.ModifyDate < DateTime.UtcNow - TimeSpan.Parse(NotifyServiceCfg.Process.AttemptsInterval))
+                    .OrderBy(i => i.info.Priority)
+                    .ThenBy(i => i.info.NotifyId)
+                    .Take(count);
+
+
+                var messages = q
                     .ToDictionary(
-                        r => Convert.ToInt32(r[0]),
+                        r => r.queue.NotifyId,
                         r =>
                         {
                             var res = new NotifyMessage
                             {
-                                Tenant = Convert.ToInt32(r[1]),
-                                From = (string)r[2],
-                                To = (string)r[3],
-                                Subject = (string)r[4],
-                                ContentType = (string)r[5],
-                                Content = (string)r[6],
-                                Sender = (string)r[7],
-                                CreationDate = Convert.ToDateTime(r[8]).Ticks,
-                                ReplyTo = (string)r[9]
+                                Tenant = r.queue.TenantId,
+                                From = r.queue.Sender,
+                                To = r.queue.Reciever,
+                                Subject = r.queue.Subject,
+                                ContentType = r.queue.ContentType,
+                                Content = r.queue.Content,
+                                Sender = r.queue.SenderType,
+                                CreationDate = r.queue.CreationDate.Ticks,
+                                ReplyTo = r.queue.ReplyTo
                             };
                             try
                             {
-                                res.EmbeddedAttachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>((string)r[10]));
+                                res.EmbeddedAttachments.AddRange(JsonConvert.DeserializeObject<RepeatedField<NotifyMessageAttachment>>(r.queue.Attachments));
                             }
                             catch (Exception)
                             {
@@ -122,9 +148,14 @@ namespace ASC.Notify
                             return res;
                         });
 
-                var u = new SqlUpdate("notify_info").Set("state", MailSendingState.Sending).Where(Exp.In("notify_id", messages.Keys));
-                db.ExecuteNonQuery(u);
-                tx.Commit();
+                var info = dbContext.NotifyInfo.Where(r => messages.Keys.Any(a => a == r.NotifyId)).ToList();
+
+                foreach (var i in info)
+                {
+                    i.State = (int)MailSendingState.Sending;
+                }
+
+                dbContext.SaveChanges();
 
                 return messages;
             }
@@ -134,39 +165,57 @@ namespace ASC.Notify
         public void ResetStates()
         {
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
-            var u = new SqlUpdate("notify_info").Set("state", 0).Where("state", 1);
-            db.ExecuteNonQuery(u);
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+
+            var tr = dbContext.Database.BeginTransaction();
+            var info = dbContext.NotifyInfo.Where(r => r.State == 1).ToList();
+
+            foreach (var i in info)
+            {
+                i.State = 0;
+            }
+
+            dbContext.SaveChanges();
+            tr.Commit();
         }
 
         public void SetState(int id, MailSendingState result)
         {
             using var scope = ServiceProvider.CreateScope();
-            using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(dbid);
-            using var tx = db.BeginTransaction();
+            using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(dbid);
+            using var tx = dbContext.Database.BeginTransaction();
+
             if (result == MailSendingState.Sended)
             {
-                var d = new SqlDelete("notify_info").Where("notify_id", id);
-                db.ExecuteNonQuery(d);
+                var d = dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefault();
+                dbContext.NotifyInfo.Remove(d);
+                dbContext.SaveChanges();
             }
             else
             {
                 if (result == MailSendingState.Error)
                 {
-                    var q = new SqlQuery("notify_info").Select("attempts").Where("notify_id", id);
-                    var attempts = db.ExecuteScalar<int>(q);
+                    var attempts = dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefault();
                     if (NotifyServiceCfg.Process.MaxAttempts <= attempts + 1)
                     {
                         result = MailSendingState.FatalError;
                     }
                 }
-                var u = new SqlUpdate("notify_info")
-                    .Set("state", (int)result)
-                    .Set("attempts = attempts + 1")
-                    .Set("modify_date", DateTime.UtcNow)
-                    .Where("notify_id", id);
-                db.ExecuteNonQuery(u);
+
+                var info = dbContext.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .ToList();
+
+                foreach (var i in info)
+                {
+                    i.State = (int)result;
+                    i.Attempts += 1;
+                    i.ModifyDate = DateTime.UtcNow;
+                }
+
+                dbContext.SaveChanges();
             }
+
             tx.Commit();
         }
     }
@@ -178,7 +227,7 @@ namespace ASC.Notify
             services.TryAddSingleton<DbWorker>();
 
             return services
-                .AddDbManagerService();
+                .AddNotifyDbContext();
         }
     }
 }

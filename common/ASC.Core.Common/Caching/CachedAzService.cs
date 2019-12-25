@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using ASC.Common.Caching;
+using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -122,6 +123,8 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddAzService(this IServiceCollection services)
         {
+            services.AddCoreDbContextService();
+
             services.TryAddScoped<DbAzService>();
             services.TryAddScoped<IAzService, CachedAzService>();
             services.TryAddSingleton<AzServiceCache>();

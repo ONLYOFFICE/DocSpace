@@ -37,12 +37,14 @@ class PureStudioLayout extends React.Component {
       {
         key: "ProfileBtn",
         label: t("Profile"),
-        onClick: this.onProfileClick
+        onClick: this.onProfileClick,
+        url: '/products/people/view/@self'
       },
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
-        onClick: this.onAboutClick
+        onClick: this.onAboutClick,
+        url: '/about'
       },
       {
         key: "LogoutBtn",

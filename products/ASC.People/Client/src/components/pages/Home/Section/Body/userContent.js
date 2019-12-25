@@ -83,7 +83,7 @@ const UserContent = ({ user, history, settings }) => {
     <RowContent
       sideColor={sideInfoColor}
     >
-      <Link type='page' title={displayName} isBold={true} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
+      <Link type='page' title={displayName} fontWeight={600} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}

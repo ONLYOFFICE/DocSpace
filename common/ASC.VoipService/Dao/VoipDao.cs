@@ -27,12 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 using ASC.VoipService.Twilio;
 
@@ -40,13 +41,21 @@ namespace ASC.VoipService.Dao
 {
     public class VoipDao : AbstractDao
     {
-        public VoipDao(int tenantID, DbOptionsManager dbOptions, AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+        public VoipDao(
+            int tenantID,
+            DbContextManager<VoipDbContext> dbOptions,
+            AuthContext authContext,
+            TenantUtil tenantUtil,
+            SecurityContext securityContext,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            ConsumerFactory consumerFactory)
             : base(dbOptions, tenantID)
         {
             AuthContext = authContext;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
             BaseCommonLinkUtility = baseCommonLinkUtility;
+            ConsumerFactory = consumerFactory;
         }
 
         public virtual VoipPhone SaveOrUpdateNumber(VoipPhone phone)
@@ -56,46 +65,38 @@ namespace ASC.VoipService.Dao
                 phone.Number = phone.Number.TrimStart('+');
             }
 
-            using (var db = GetDb())
+            var voipNumber = new VoipNumber
             {
-                var insert = Insert("crm_voip_number")
-                    .InColumnValue("id", phone.Id)
-                    .InColumnValue("number", phone.Number)
-                    .InColumnValue("alias", phone.Alias);
+                Id = phone.Id,
+                Number = phone.Number,
+                Alias = phone.Alias,
+                Settings = phone.Settings.ToString(),
+                TenantId = TenantID
+            };
 
-                if (phone.Settings != null)
-                {
-                    insert.InColumnValue("settings", phone.Settings.ToString());
-                }
+            VoipDbContext.VoipNumbers.Add(voipNumber);
+            VoipDbContext.SaveChanges();
 
-                db.ExecuteNonQuery(insert);
-            }
             return phone;
         }
 
         public virtual void DeleteNumber(string phoneId = "")
         {
-            using var db = GetDb();
-            var query = Delete("crm_voip_number");
-            if (!string.IsNullOrEmpty(phoneId))
-            {
-                query.Where("id", phoneId);
-            }
-            db.ExecuteNonQuery(query);
+            var number = VoipDbContext.VoipNumbers.Where(r => r.Id == phoneId && r.TenantId == TenantID).FirstOrDefault();
+            VoipDbContext.VoipNumbers.Remove(number);
+            VoipDbContext.SaveChanges();
         }
 
-        public virtual IEnumerable<VoipPhone> GetNumbers(params object[] ids)
+        public virtual IEnumerable<VoipPhone> GetNumbers(params string[] ids)
         {
-            using var db = GetDb();
-            var query = Query("crm_voip_number")
-.Select("id", "number", "alias", "settings");
+            var numbers = VoipDbContext.VoipNumbers.Where(r => r.TenantId == TenantID);
 
             if (ids.Any())
             {
-                query.Where(Exp.In("number", ids) | Exp.In("id", ids));
+                numbers = numbers.Where(r => ids.Any(a => a == r.Number || a == r.Id));
             }
 
-            return db.ExecuteList(query).ConvertAll(ToPhone);
+            return numbers.ToList().ConvertAll(ToPhone);
         }
 
         public VoipPhone GetNumber(string id)
@@ -111,76 +112,78 @@ namespace ASC.VoipService.Dao
 
         public VoipCall SaveOrUpdateCall(VoipCall call)
         {
-            using (var db = GetDb())
+            var voipCall = new DbVoipCall
             {
-                var query = Insert("crm_voip_calls")
-                    .InColumnValue("id", call.Id)
-                    .InColumnValue("number_from", call.From)
-                    .InColumnValue("number_to", call.To)
-                    .InColumnValue("contact_id", call.ContactId);
+                TenantId = TenantID,
+                Id = call.Id,
+                NumberFrom = call.From,
+                NumberTo = call.To,
+                ContactId = call.ContactId
+            };
 
-                if (!string.IsNullOrEmpty(call.ParentID))
-                {
-                    query.InColumnValue("parent_call_id", call.ParentID);
-                }
-
-                if (call.Status.HasValue)
-                {
-                    query.InColumnValue("status", call.Status.Value);
-                }
-
-                if (!call.AnsweredBy.Equals(Guid.Empty))
-                {
-                    query.InColumnValue("answered_by", call.AnsweredBy);
-                }
-
-                if (call.DialDate == DateTime.MinValue)
-                {
-                    call.DialDate = DateTime.UtcNow;
-                }
-
-                query.InColumnValue("dial_date", TenantUtil.DateTimeToUtc(call.DialDate));
-
-                if (call.DialDuration > 0)
-                {
-                    query.InColumnValue("dial_duration", call.DialDuration);
-                }
-                if (call.Price > decimal.Zero)
-                {
-                    query.InColumnValue("price", call.Price);
-                }
-
-                if (call.VoipRecord != null)
-                {
-                    if (!string.IsNullOrEmpty(call.VoipRecord.Id))
-                    {
-                        query.InColumnValue("record_sid", call.VoipRecord.Id);
-                    }
-                    if (!string.IsNullOrEmpty(call.VoipRecord.Uri))
-                    {
-                        query.InColumnValue("record_url", call.VoipRecord.Uri);
-                    }
-
-                    if (call.VoipRecord.Duration != 0)
-                    {
-                        query.InColumnValue("record_duration", call.VoipRecord.Duration);
-                    }
-
-                    if (call.VoipRecord.Price != default)
-                    {
-                        query.InColumnValue("record_price", call.VoipRecord.Price);
-                    }
-                }
-
-                db.ExecuteNonQuery(query);
+            if (!string.IsNullOrEmpty(call.ParentID))
+            {
+                voipCall.ParentCallId = call.ParentID;
             }
+
+            if (call.Status.HasValue)
+            {
+                voipCall.Status = (int)call.Status.Value;
+            }
+
+            if (!call.AnsweredBy.Equals(Guid.Empty))
+            {
+                voipCall.AnsweredBy = call.AnsweredBy;
+            }
+
+            if (call.DialDate == DateTime.MinValue)
+            {
+                call.DialDate = DateTime.UtcNow;
+            }
+
+            voipCall.DialDate = TenantUtil.DateTimeToUtc(call.DialDate);
+
+            if (call.DialDuration > 0)
+            {
+                voipCall.DialDuration = call.DialDuration;
+            }
+
+            if (call.Price > decimal.Zero)
+            {
+                voipCall.Price = call.Price;
+            }
+
+            if (call.VoipRecord != null)
+            {
+                if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+                {
+                    voipCall.RecordSid = call.VoipRecord.Id;
+                }
+
+                if (!string.IsNullOrEmpty(call.VoipRecord.Uri))
+                {
+                    voipCall.RecordUrl = call.VoipRecord.Uri;
+                }
+
+                if (call.VoipRecord.Duration != 0)
+                {
+                    voipCall.RecordDuration = call.VoipRecord.Duration;
+                }
+
+                if (call.VoipRecord.Price != default)
+                {
+                    voipCall.RecordPrice = call.VoipRecord.Price;
+                }
+            }
+
+            VoipDbContext.VoipCalls.Add(voipCall);
+            VoipDbContext.SaveChanges();
 
             return call;
         }
 
         public IEnumerable<VoipCall> GetCalls(VoipCallFilter filter)
         {
-            using var db = GetDb();
             var query = GetCallsQuery(filter);
 
             if (filter.SortByColumn != null)
@@ -188,10 +191,10 @@ namespace ASC.VoipService.Dao
                 query.OrderBy(filter.SortByColumn, filter.SortOrder);
             }
 
-            query.SetFirstResult((int)filter.Offset);
-            query.SetMaxResults((int)filter.Max * 3);
+            query = query.Skip((int)filter.Offset);
+            query = query.Take((int)filter.Max * 3);
 
-            var calls = db.ExecuteList(query).ConvertAll(ToCall);
+            var calls = query.ToList().ConvertAll(ToCall);
 
             calls = calls.GroupJoin(calls, call => call.Id, h => h.ParentID, (call, h) =>
             {
@@ -209,141 +212,144 @@ namespace ASC.VoipService.Dao
 
         public int GetCallsCount(VoipCallFilter filter)
         {
-            using var db = GetDb();
-            var query = GetCallsQuery(filter).Where("ca.parent_call_id", "");
-            var queryCount = new SqlQuery().SelectCount().From(query, "t1");
-
-            return db.ExecuteScalar<int>(queryCount);
+            return GetCallsQuery(filter).Where(r => r.DbVoipCall.ParentCallId == "").Count();
         }
 
         public IEnumerable<VoipCall> GetMissedCalls(Guid agent, long count = 0, DateTime? from = null)
         {
-            using var db = GetDb();
             var query = GetCallsQuery(new VoipCallFilter { Agent = agent, SortBy = "date", SortOrder = true, Type = "missed" });
-
-            var subQuery = new SqlQuery("crm_voip_calls tmp")
-                .SelectMax("tmp.dial_date")
-                .Where(Exp.EqColumns("ca.tenant_id", "tmp.tenant_id"))
-                .Where(Exp.EqColumns("ca.number_from", "tmp.number_from") | Exp.EqColumns("ca.number_from", "tmp.number_to"))
-                .Where(Exp.Lt("tmp.status", VoipCallStatus.Missed));
 
             if (from.HasValue)
             {
-                query.Where(Exp.Ge("ca.dial_date", TenantUtil.DateTimeFromUtc(from.Value)));
+                query = query.Where(r => r.DbVoipCall.DialDate >= TenantUtil.DateTimeFromUtc(from.Value));
             }
 
             if (count != 0)
             {
-                query.SetMaxResults((int)count);
+                query = query.Take((int)count);
             }
 
-            query.Select(subQuery, "tmp_date");
+            var a = query.Select(ca => new
+            {
+                dbVoipCall = ca,
+                tmpDate = VoipDbContext.VoipCalls
+                .Where(tmp => tmp.TenantId == ca.DbVoipCall.TenantId)
+                .Where(tmp => tmp.NumberFrom == ca.DbVoipCall.NumberFrom || tmp.NumberTo == ca.DbVoipCall.NumberFrom)
+                .Where(tmp => tmp.Status <= (int)VoipCallStatus.Missed)
+                .Max(tmp => tmp.DialDate)
+            }).Where(r => r.dbVoipCall.DbVoipCall.DialDate >= r.tmpDate || r.tmpDate == default);
 
-            query.Having(Exp.Sql("ca.dial_date >= tmp_date") | Exp.Eq("tmp_date", null));
-
-            return db.ExecuteList(query).ConvertAll(ToCall);
+            return a.ToList().ConvertAll(r => ToCall(r.dbVoipCall));
         }
 
-        private SqlQuery GetCallsQuery(VoipCallFilter filter)
+        private IQueryable<CallContact> GetCallsQuery(VoipCallFilter filter)
         {
-            var query = Query("crm_voip_calls ca")
-                .Select("ca.id", "ca.parent_call_id", "ca.number_from", "ca.number_to", "ca.answered_by", "ca.dial_date", "ca.dial_duration", "ca.price", "ca.status")
-                .Select("ca.record_sid", "ca.record_url", "ca.record_duration", "ca.record_price")
-                .Select("ca.contact_id", "co.is_company", "co.company_name", "co.first_name", "co.last_name")
-                .LeftOuterJoin("crm_contact co", Exp.EqColumns("ca.contact_id", "co.id"))
-                .GroupBy("ca.id");
+            var q = VoipDbContext.VoipCalls
+                .Where(r => r.TenantId == TenantID);
 
             if (!string.IsNullOrEmpty(filter.Id))
             {
-                query.Where(Exp.Eq("ca.id", filter.Id) | Exp.Eq("ca.parent_call_id", filter.Id));
+                q = q.Where(r => r.Id == filter.Id || r.ParentCallId == filter.Id);
             }
 
             if (filter.ContactID.HasValue)
             {
-                query.Where(Exp.Eq("ca.contact_id", filter.ContactID.Value));
+                q = q.Where(r => r.ContactId == filter.ContactID.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(filter.SearchText))
             {
-                query.Where(Exp.Like("ca.id", filter.SearchText, SqlLike.StartWith));
+                q = q.Where(r => r.Id.StartsWith(filter.SearchText));
             }
 
             if (filter.TypeStatus.HasValue)
             {
-                query.Where("ca.status", filter.TypeStatus.Value);
+                q = q.Where(r => r.Status == filter.TypeStatus.Value);
             }
 
             if (filter.FromDate.HasValue)
             {
-                query.Where(Exp.Ge("ca.dial_date", filter.FromDate.Value));
+                q = q.Where(r => r.DialDate >= filter.FromDate.Value);
             }
 
             if (filter.ToDate.HasValue)
             {
-                query.Where(Exp.Le("ca.dial_date", filter.ToDate.Value));
+                q = q.Where(r => r.DialDate <= filter.ToDate.Value);
             }
 
             if (filter.Agent.HasValue)
             {
-                query.Where("ca.answered_by", filter.Agent.Value);
+                q = q.Where(r => r.AnsweredBy == filter.Agent.Value);
             }
 
-            return query;
+            return q
+                .GroupBy(r => r.Id, r => r)
+                .Join(
+                    VoipDbContext.CrmContact.DefaultIfEmpty(),
+                    r => r.FirstOrDefault().ContactId,
+                    c => c.Id,
+                    (call, contact) => new CallContact { DbVoipCall = call.FirstOrDefault(), CrmContact = contact })
+                ;
+        }
+
+        class CallContact
+        {
+            public DbVoipCall DbVoipCall { get; set; }
+            public CrmContact CrmContact { get; set; }
         }
 
         #region Converters
 
-        private VoipPhone ToPhone(object[] r)
+        private VoipPhone ToPhone(VoipNumber r)
         {
-            return GetProvider(AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility).GetPhone(r);
+            return GetProvider().GetPhone(r);
         }
 
-        private VoipCall ToCall(object[] r)
+        private VoipCall ToCall(CallContact dbVoipCall)
         {
             var call = new VoipCall
             {
-                Id = (string)r[0],
-                ParentID = (string)r[1],
-                From = (string)r[2],
-                To = (string)r[3],
-                AnsweredBy = new Guid((string)r[4]),
-                DialDate = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-                DialDuration = Convert.ToInt32(r[6] ?? "0"),
-                Price = Convert.ToDecimal(r[7]),
-                Status = (VoipCallStatus)Convert.ToInt32(r[8]),
+                Id = dbVoipCall.DbVoipCall.Id,
+                ParentID = dbVoipCall.DbVoipCall.ParentCallId,
+                From = dbVoipCall.DbVoipCall.NumberFrom,
+                To = dbVoipCall.DbVoipCall.NumberTo,
+                AnsweredBy = dbVoipCall.DbVoipCall.AnsweredBy,
+                DialDate = TenantUtil.DateTimeFromUtc(dbVoipCall.DbVoipCall.DialDate),
+                DialDuration = dbVoipCall.DbVoipCall.DialDuration,
+                Price = dbVoipCall.DbVoipCall.Price,
+                Status = (VoipCallStatus)dbVoipCall.DbVoipCall.Status,
                 VoipRecord = new VoipRecord
                 {
-                    Id = (string)r[9],
-                    Uri = (string)r[10],
-                    Duration = Convert.ToInt32(r[11] ?? "0"),
-                    Price = Convert.ToDecimal(r[12])
+                    Id = dbVoipCall.DbVoipCall.RecordSid,
+                    Uri = dbVoipCall.DbVoipCall.RecordUrl,
+                    Duration = dbVoipCall.DbVoipCall.RecordDuration,
+                    Price = dbVoipCall.DbVoipCall.RecordPrice
                 },
-                ContactId = Convert.ToInt32(r[13]),
-                ContactIsCompany = Convert.ToBoolean(r[14])
+                ContactId = dbVoipCall.CrmContact.Id,
+                ContactIsCompany = dbVoipCall.CrmContact.IsCompany,
             };
 
             if (call.ContactId != 0)
             {
                 call.ContactTitle = call.ContactIsCompany
-                                        ? r[15] == null ? null : Convert.ToString(r[15])
-                                        : r[16] == null || r[17] == null ? null :
-                                              string.Format("{0} {1}", Convert.ToString(r[16]), Convert.ToString(r[17]));
+                                        ? dbVoipCall.CrmContact.CompanyName
+                                        : dbVoipCall.CrmContact.FirstName == null || dbVoipCall.CrmContact.LastName == null ? null : string.Format("{0} {1}", dbVoipCall.CrmContact.FirstName, dbVoipCall.CrmContact.LastName);
             }
 
             return call;
         }
 
-        public static Consumer Consumer
+        public Consumer Consumer
         {
-            get { return ConsumerFactory.GetByName("twilio"); }
+            get { return ConsumerFactory.GetByKey("twilio"); }
         }
 
-        public static TwilioProvider GetProvider(AuthContext authContext, TenantUtil tenantUtil, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
+        public TwilioProvider GetProvider()
         {
-            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], authContext, tenantUtil, securityContext, baseCommonLinkUtility);
+            return new TwilioProvider(Consumer["twilioAccountSid"], Consumer["twilioAuthToken"], AuthContext, TenantUtil, SecurityContext, BaseCommonLinkUtility);
         }
 
-        public static bool ConfigSettingsExist
+        public bool ConfigSettingsExist
         {
             get
             {
@@ -355,8 +361,8 @@ namespace ASC.VoipService.Dao
         public AuthContext AuthContext { get; }
         public TenantUtil TenantUtil { get; }
         public SecurityContext SecurityContext { get; }
-        public TenantManager TenantManager { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         #endregion
     }

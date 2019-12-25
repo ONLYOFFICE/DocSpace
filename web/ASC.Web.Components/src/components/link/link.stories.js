@@ -20,7 +20,7 @@ storiesOf('Components|Link', module)
   .addDecorator(withReadme(Readme))
   .add('base', () => {
 
-    const href = text('href', "http://onlyoffice.com");
+    const href = text('href', "http://github.com");
 
     const actionProps = (href && href.length > 0) ? { href } : { onClick: clickActionLink };
 
@@ -34,13 +34,14 @@ storiesOf('Components|Link', module)
           type={select('type', type, 'page')}
           color={color('color', '#333333')}
           fontSize={text('fontSize', '13px')}
+          fontWeight={text('fontWeight', '700')}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
           target={select('target', target, '_blank')}
           isTextOverflow={isTextOverflow}
           isHovered={boolean('isHovered', false)}
+          noHover={boolean('noHover', false)}
           isSemitransparent={boolean('isSemitransparent', false)}
-          data-value="1111"
           {...actionProps}
         >
           {label}

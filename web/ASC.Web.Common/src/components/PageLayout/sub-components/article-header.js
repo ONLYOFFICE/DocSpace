@@ -8,7 +8,7 @@ const StyledArticleHeader = styled.div`
   height: 56px;
 
   @media ${tablet} {
-    display: ${props => (props.visible ? "block" : "none")};
+    display: none;
   }
 `;
 

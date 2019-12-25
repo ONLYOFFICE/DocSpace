@@ -12,6 +12,10 @@ const Container = styled.div`
     width: 120px;
     margin: 0 8px 0 0;
   }
+
+  .field-select > div > div:first-child.combo-button-label {
+    color: #A3A9AE;
+  }
 `;
 
 const getOptions = (patterns, keyPrefix) => {
@@ -30,6 +34,7 @@ const renderItems = (
   pattern,
   onTypeChange,
   onTextChange,
+  onRemove,
   isDisabled
 ) => {
   const items = contacts.map((contact, index) => {
@@ -50,6 +55,8 @@ const renderItems = (
         inputName={prefix + "value"}
         inputValue={contact.value}
         inputOnChange={onTextChange}
+        removeButtonName={prefix + "remove"}
+        removeButtonOnChange={onRemove}
       />
     );
   });
@@ -72,6 +79,7 @@ class ContactsField extends React.Component {
       onItemAdd,
       onItemTypeChange,
       onItemTextChange,
+      onItemRemove,
       isDisabled
     } = this.props;
 
@@ -80,6 +88,7 @@ class ContactsField extends React.Component {
       pattern,
       onItemTypeChange,
       onItemTextChange,
+      onItemRemove,
       isDisabled
     );
 

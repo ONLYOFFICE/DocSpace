@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
-import PureStudioLayout from "./pureStudioLayout";
+import PureStudioLayout from "./PureStudioLayout";
 
 const getSeparator = id => {
   return {
@@ -21,7 +21,12 @@ const toModuleWrapper = (item, iconName) => {
     iconName: iconName || "PeopleIcon",
     notifications: 0,
     url: item.link,
-    onClick: () => window.open(item.link, "_self"),
+    onClick: (e) => {
+      if (e) {
+        window.open(item.link, "_self");
+        e.preventDefault();
+      }
+  },
     onBadgeClick: e => console.log(iconName + " Badge Clicked", e)
   };
 };
@@ -35,7 +40,7 @@ const getCustomModules = isAdmin => {
   const settingsModuleWrapper = toModuleWrapper(
     {
       id: "settings",
-      title: "Settings",
+      title: i18n.t('Settings'),
       link: "/settings"
     },
     "SettingsIcon"

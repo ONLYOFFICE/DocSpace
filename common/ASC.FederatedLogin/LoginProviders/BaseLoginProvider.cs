@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -34,6 +35,7 @@ using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -41,7 +43,7 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public abstract class BaseLoginProvider<T> : Consumer, ILoginProvider where T : Consumer, ILoginProvider, new()
     {
-        public static T Instance
+        public T Instance
         {
             get
             {
@@ -78,12 +80,13 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
             Signature = signature;
             InstanceCrypto = instanceCrypto;
@@ -122,11 +125,11 @@ namespace ASC.FederatedLogin.LoginProviders
             var code = context.Request.Query["code"];
             if (string.IsNullOrEmpty(code))
             {
-                OAuth20TokenHelper.RequestCode<T>(context, scopes, additionalArgs);
+                OAuth20TokenHelper.RequestCode<T>(context, ConsumerFactory, scopes, additionalArgs);
                 return null;
             }
 
-            return OAuth20TokenHelper.GetAccessToken<T>(code);
+            return OAuth20TokenHelper.GetAccessToken<T>(ConsumerFactory, code);
         }
 
         public abstract LoginProfile GetLoginProfile(string accessToken);

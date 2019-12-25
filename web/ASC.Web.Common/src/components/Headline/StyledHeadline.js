@@ -1,18 +1,23 @@
-import styled, { css } from 'styled-components';
-import { Heading } from 'asc-web-components';
+import styled from "styled-components";
+import { Heading } from "asc-web-components";
 
-const fontSize = css`
-      ${props =>
-      (props.type === 'menu' && 27) ||
-      (props.type === 'content' && 21)
-   }
-   `;
+const size = {
+  header: "28px",
+  menu: "27px",
+  content: "21px"
+};
+
+const weight = {
+  header: 600,
+  menu: "bold",
+  content: "bold"
+};
 
 const StyledHeading = styled(Heading)`
-   margin: 0;
-   line-height: 56px;
-   font-size: ${fontSize}px;
-   font-weight: 700;
+  margin: 0;
+  line-height: 56px;
+  font-size: ${props => size[props.type]};
+  font-weight: ${props => weight[props.type]};
 `;
 
 export default StyledHeading;

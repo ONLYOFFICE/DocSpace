@@ -29,19 +29,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
+
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
-        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbOptionsManager dbOptions)
+        public DbContextManager<FilesDbContext> FilesDbContext { get; set; }
+        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbContextManager<FilesDbContext> dbContextManager)
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
-            DbOptions = dbOptions;
+            FilesDbContext = dbContextManager;
         }
 
         #region method
@@ -165,17 +168,15 @@ namespace ASC.Web.Core.Files
                     if (string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl)) return _extsConvertible;
 
                     const string databaseId = "files";
-                    const string tableTitle = "files_converts";
 
-                    var dbManager = DbOptions.Get(databaseId);
-                    var sqlQuery = new SqlQuery(tableTitle).Select("input", "output");
+                    var dbManager = FilesDbContext.Get(databaseId);
+                    var list = dbManager.FilesConverts.Select(r => new { r.Input, r.Ouput }).ToList();
 
-                    var list = dbManager.ExecuteList(sqlQuery);
 
                     list.ForEach(item =>
                         {
-                            var input = item[0] as string;
-                            var output = item[1] as string;
+                            var input = item.Input;
+                            var output = item.Ouput;
                             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(output))
                                 return;
                             input = input.ToLower().Trim();
@@ -254,8 +255,6 @@ namespace ASC.Web.Core.Files
         public List<string> ExtsCoAuthoring { get => (Configuration["files.docservice.coauthor-docs"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries).ToList(); }
         public IConfiguration Configuration { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
-        public DbRegistry DbRegistry { get; }
-        public DbOptionsManager DbOptions { get; }
 
         public static readonly List<string> ExtsArchive = new List<string>
             {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { text, boolean, withKnobs, color, number, select } from '@storybook/addon-knobs/react';
+import { text, boolean, withKnobs, color, select } from '@storybook/addon-knobs/react';
 import Text from '.';
 import Section from '../../../.storybook/decorators/section';
 import withReadme from 'storybook-readme/with-readme';
@@ -19,7 +19,7 @@ storiesOf('Components|Text', module)
           title={text('title', '')}
           as={select('as', textTags , 'p')}
           fontSize={text('fontSize', '13px')}
-          fontWeight={number('fontWeight')}
+          fontWeight={text('fontWeight', '700')}
           truncate={boolean('truncate', false)}
           color={color('color', '#333333')}
           backgroundColor={color('backgroundColor', '')}

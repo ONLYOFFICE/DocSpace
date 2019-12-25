@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Caching;
+using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using Microsoft.Extensions.Configuration;
@@ -208,10 +209,13 @@ namespace ASC.Core.Caching
     {
         public static IServiceCollection AddQuotaService(this IServiceCollection services)
         {
+            services.AddCoreDbContextService();
+
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<QuotaServiceCache>();
             services.TryAddScoped<DbQuotaService>();
             services.TryAddScoped<IQuotaService, CachedQuotaService>();
+
             return services;
         }
     }

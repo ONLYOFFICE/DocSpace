@@ -5,10 +5,14 @@ import { utils, Scrollbar } from "asc-web-components";
 const { tablet } = utils.device;
 
 const StyledSectionBody = styled.div`
-  margin: 16px 0;
+  margin: 16px 8px 16px 0;
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+
+  @media ${tablet} {
+    margin: 16px 0;
+  }
 `;
 
 const StyledSpacer = styled.div`

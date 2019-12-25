@@ -27,7 +27,7 @@ const disabledAndHeaderStyle = css`
 const StyledDropdownItem = styled.div`
     display: block;
     width: 100%;
-    max-width: 280px;
+    max-width: 240px;
     border: 0px;
     cursor: pointer;
     margin: 0px;

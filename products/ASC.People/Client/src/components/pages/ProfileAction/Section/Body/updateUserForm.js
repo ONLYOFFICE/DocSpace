@@ -55,6 +55,7 @@ class UpdateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.openAvatarEditor = this.openAvatarEditor.bind(this);
     this.onSaveAvatar = this.onSaveAvatar.bind(this);
@@ -242,7 +243,17 @@ class UpdateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
-  openAvatarEditor() {
+  onContactsItemRemove(event) {
+    const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    const filteredArray = stateCopy.profile.contacts.filter((element) => { 
+      return element.id !== id;
+    });
+    stateCopy.profile.contacts = filteredArray;
+    this.setState(stateCopy);
+  }
+
+  openAvatarEditor(){
     let avatarDefault = this.state.avatar.image;
     let avatarDefaultSizes = /_orig_(\d*)-(\d*)./g.exec(this.state.avatar.image);
     if (avatarDefault !== null && avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
@@ -604,7 +615,11 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
+<<<<<<< .mine
           <Textarea name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10} />
+=======
+          <Textarea placeholder={t("AddСomment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
+>>>>>>> .theirs
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField
@@ -615,7 +630,8 @@ class UpdateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
-          />
+            onItemRemove={this.onContactsItemRemove}
+          /> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("SocialProfiles")}>
           <ContactsField
@@ -626,7 +642,8 @@ class UpdateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
-          />
+            onItemRemove={this.onContactsItemRemove}
+          /> 
         </InfoFieldContainer>
         <div>
           <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11} />

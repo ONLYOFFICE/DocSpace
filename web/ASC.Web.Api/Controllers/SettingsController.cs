@@ -37,6 +37,7 @@ using ASC.Api.Collections;
 using ASC.Api.Core;
 using ASC.Api.Utils;
 using ASC.Common.Logging;
+using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Common.Configuration;
@@ -94,6 +95,9 @@ namespace ASC.Api.Settings
         public IWebHostEnvironment WebHostEnvironment { get; }
         public IServiceProvider ServiceProvider { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public ConsumerFactory ConsumerFactory { get; }
+        public SmsProviderManager SmsProviderManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -169,12 +173,18 @@ namespace ASC.Api.Settings
             StorageSettingsHelper storageSettingsHelper,
             IWebHostEnvironment webHostEnvironment,
             IServiceProvider serviceProvider,
-            EmployeeWraperHelper employeeWraperHelper)
+            EmployeeWraperHelper employeeWraperHelper,
+            ConsumerFactory consumerFactory,
+            SmsProviderManager smsProviderManager,
+            TimeZoneConverter timeZoneConverter)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
             ServiceProvider = serviceProvider;
             EmployeeWraperHelper = employeeWraperHelper;
+            ConsumerFactory = consumerFactory;
+            SmsProviderManager = smsProviderManager;
+            TimeZoneConverter = timeZoneConverter;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -228,8 +238,8 @@ namespace ASC.Api.Settings
                 settings.TrustedDomains = Tenant.TrustedDomains;
                 settings.TrustedDomainsType = Tenant.TrustedDomainsType;
                 var timeZone = Tenant.TimeZone;
-                settings.Timezone = timeZone.Id;
-                settings.UtcOffset = timeZone.GetUtcOffset(DateTime.UtcNow);
+                settings.Timezone = timeZone;
+                settings.UtcOffset = TimeZoneConverter.GetTimeZone(timeZone).GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
             }
@@ -963,13 +973,13 @@ namespace ASC.Api.Settings
             {
                 timeZones.Add(TimeZoneInfo.Utc);
             }
-            Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID) ?? TimeZoneInfo.Utc;
+            Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == model.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
 
             TenantManager.SaveTenant(Tenant);
 
-            if (!Tenant.TimeZone.Id.Equals(oldTimeZone.Id) || changelng)
+            if (!Tenant.TimeZone.Equals(oldTimeZone) || changelng)
             {
-                if (!Tenant.TimeZone.Id.Equals(oldTimeZone.Id))
+                if (!Tenant.TimeZone.Equals(oldTimeZone))
                 {
                     MessageService.Send(MessageAction.TimeZoneSettingsUpdated);
                 }
@@ -1227,7 +1237,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
 
-            var consumer = ConsumerFactory.GetByName(model.Module);
+            var consumer = ConsumerFactory.GetByKey(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
@@ -1289,7 +1299,7 @@ namespace ASC.Api.Settings
             PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
             if (!CoreBaseSettings.Standalone) return null;
 
-            var consumer = ConsumerFactory.GetByName(model.Module);
+            var consumer = ConsumerFactory.GetByKey(model.Module);
             if (!consumer.IsSet)
                 throw new ArgumentException("module");
 
@@ -1413,7 +1423,9 @@ namespace ASC.Api.Settings
                 .AddTenantLogoManagerService()
                 .AddBuildVersionService()
                 .AddStatisticManagerService()
-                .AddEmployeeWraper();
+                .AddEmployeeWraper()
+                .AddConsumerFactoryService()
+                .AddSmsProviderManagerService();
         }
     }
 }

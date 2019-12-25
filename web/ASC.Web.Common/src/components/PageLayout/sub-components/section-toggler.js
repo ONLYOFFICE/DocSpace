@@ -17,15 +17,22 @@ const StyledSectionToggler = styled.div`
   div {
     width: 48px;
     height: 48px;
-    padding: 12px 13px 14px 15px;
+    padding: 14px 12px 14px 16px;
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     border-radius: 48px;
     cursor: pointer;
     background: #fff;
     box-sizing: border-box;
-    line-height: 1.5;
+    line-height: 14px;
   }
 `;
+
+const iconStyle = {
+  width: "20px",
+  height: "20px",
+  minWidth: "20px",
+  minHeight: "20px"
+};
 
 const SectionToggler = React.memo(props => {
   //console.log("PageLayout SectionToggler render");
@@ -34,7 +41,7 @@ const SectionToggler = React.memo(props => {
   return (
     <StyledSectionToggler visible={visible}>
       <div onClick={onClick}>
-        <Icons.CatalogButtonIcon size="scale" />
+        <Icons.CatalogButtonIcon style={iconStyle} />
       </div>
     </StyledSectionToggler>
   );

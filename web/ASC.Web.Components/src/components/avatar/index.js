@@ -109,7 +109,7 @@ const EditContainer = styled.div`
     text-align: center;
     line-height: 19px;
     border-radius: 50%;
-    background: linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%);
+    background: ${props => props.gradient ? "linear-gradient(180deg, rgba(6, 22, 38, 0) 24.48%, rgba(6, 22, 38, 0.75) 100%)" : "transparent"}; 
 `;
 
 const EmptyIcon = styled(Icons.CameraIcon)`
@@ -177,13 +177,15 @@ const Avatar = memo(props => {
         {avatarContent}
       </AvatarWrapper>
       {editing && (size === 'max') &&
-        <EditContainer>
+        <EditContainer gradient={!!source}>
           <EditLink>
             <Link
               type='action'
               title={editLabel}
               isTextOverflow={true}
+              isHovered={true}
               fontSize='14px'
+              fontWeight={600}
               color={whiteColor}
               onClick={editAction}
             >

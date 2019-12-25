@@ -129,7 +129,7 @@ class PageLayoutComponent extends React.PureComponent {
             pinned={this.state.isArticlePinned}
           >
             {this.state.isArticleHeaderAvailable && (
-              <ArticleHeader visible={this.state.isArticlePinned}>
+              <ArticleHeader>
                 {this.state.articleHeaderContent}
               </ArticleHeader>
             )}
@@ -144,9 +144,9 @@ class PageLayoutComponent extends React.PureComponent {
             {this.state.isArticleBodyAvailable && (
               <ArticlePinPanel
                 pinned={this.state.isArticlePinned}
-                pinText={this.props.t('PinPanel')}
+                pinText={this.props.t('Pin')}
                 onPin={this.pinArticle}
-                unpinText={this.props.t('UnpinPanel')}
+                unpinText={this.props.t('Unpin')}
                 onUnpin={this.unpinArticle}
               />
             )}

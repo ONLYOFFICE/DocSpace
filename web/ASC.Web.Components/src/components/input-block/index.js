@@ -21,6 +21,7 @@ const StyledIconBlock = styled.div`
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
   padding-right: 7px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 `;
 
 const StyledChildrenBlock = styled.div`

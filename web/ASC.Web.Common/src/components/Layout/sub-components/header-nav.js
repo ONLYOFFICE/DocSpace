@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import ProfileActions from "./profile-actions";
+import { utils } from "asc-web-components";
+const { tablet } = utils.device;
 
 const StyledNav = styled.nav`
   display: flex;
-  padding: 0 16px;
+  padding: 0 24px 0 16px;
   align-items: center;
   position: absolute;
   right: 0;
@@ -17,6 +19,10 @@ const StyledNav = styled.nav`
     margin: 0 0 0 16px;
     padding: 0;
     min-width: 24px;
+  }
+
+  @media ${tablet} {
+    padding: 0 16px;
   }
 `;
 

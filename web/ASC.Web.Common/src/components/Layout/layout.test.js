@@ -136,7 +136,7 @@ describe('<Layout />', () => {
 
     wrapper.handleNavMouseEnter();
 
-    await later(400);
+    await later(1100);
 
     expect(wrapper.state.isNavOpened).toBe(true);
   });

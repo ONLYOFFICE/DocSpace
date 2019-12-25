@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -151,7 +153,7 @@ namespace ASC.Core.Caching
         private ICacheNotify<UserGroupRefCacheItem> CacheUserGroupRefItem { get; }
 
         public CachedUserService(
-            DbUserService service,
+            EFUserService service,
             CoreBaseSettings coreBaseSettings,
             UserServiceCache userServiceCache
             )
@@ -181,9 +183,22 @@ namespace ASC.Core.Caching
             }
         }
 
-        public List<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total)
+        public IQueryable<UserInfo> GetUsers(
+            int tenant,
+            bool isAdmin,
+            EmployeeStatus? employeeStatus,
+            List<List<Guid>> includeGroups,
+            List<Guid> excludeGroups,
+            EmployeeActivationStatus? activationStatus,
+            string text,
+            string sortBy,
+            bool sortOrderAsc,
+            long limit,
+            long offset,
+            out int total,
+            out int count)
         {
-            return service.GetUsers(tenant, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total);
+            return service.GetUsers(tenant, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
         }
 
         public UserInfo GetUser(int tenant, Guid id)
@@ -462,8 +477,13 @@ namespace ASC.Core.Caching
         public static IServiceCollection AddUserService(this IServiceCollection services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
-            services.AddCoreSettingsService();
-            services.TryAddScoped<DbUserService>();
+
+            services
+                .AddCoreSettingsService()
+                .AddLoggerService()
+                .AddUserDbContextService();
+
+            services.TryAddScoped<EFUserService>();
             services.TryAddScoped<IUserService, CachedUserService>();
             services.TryAddSingleton<UserServiceCache>();
             return services;

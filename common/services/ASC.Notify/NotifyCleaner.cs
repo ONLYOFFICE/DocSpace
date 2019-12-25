@@ -25,11 +25,15 @@
 
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ASC.Common.Data;
+
 using ASC.Common.Logging;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.EF.Context;
 using ASC.Notify.Config;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -72,17 +76,21 @@ namespace ASC.Notify
                 try
                 {
                     var date = DateTime.UtcNow.AddDays(-NotifyServiceCfg.StoreMessagesDays);
+
                     using var scope = ServiceProvider.CreateScope();
-                    using var db = scope.ServiceProvider.GetService<DbOptionsManager>().Get(NotifyServiceCfg.ConnectionStringName);
-                    using var d1 = db.Connection.CreateCommand("delete from notify_info where modify_date < ? and state = 4", date);
-                    using var d2 = db.Connection.CreateCommand("delete from notify_queue where creation_date < ?", date);
-                    d1.CommandTimeout = 60 * 60; // hour
-                    d2.CommandTimeout = 60 * 60; // hour
+                    using var dbContext = scope.ServiceProvider.GetService<DbContextManager<NotifyDbContext>>().Get(NotifyServiceCfg.ConnectionStringName);
+                    using var tx = dbContext.Database.BeginTransaction();
 
-                    var affected1 = d1.ExecuteNonQuery();
-                    var affected2 = d2.ExecuteNonQuery();
+                    var info = dbContext.NotifyInfo.Where(r => r.ModifyDate < date && r.State == 4).ToList();
+                    var queue = dbContext.NotifyQueue.Where(r => r.CreationDate < date).ToList();
+                    dbContext.NotifyInfo.RemoveRange(info);
+                    dbContext.NotifyQueue.RemoveRange(queue);
 
-                    log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", affected1, affected2);
+                    dbContext.SaveChanges();
+                    tx.Commit();
+
+                    log.InfoFormat("Clear notify messages: notify_info({0}), notify_queue ({1})", info.Count, queue.Count);
+
                 }
                 catch (ThreadAbortException)
                 {
@@ -106,7 +114,7 @@ namespace ASC.Notify
         {
             services.TryAddSingleton<NotifyCleaner>();
 
-            return services;
+            return services.AddNotifyDbContext();
         }
     }
 }

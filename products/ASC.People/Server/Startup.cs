@@ -1,9 +1,9 @@
 
 using System;
+
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
-using ASC.Common.Data;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
@@ -73,8 +73,6 @@ namespace ASC.People
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            var container = services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
-
             services
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
@@ -83,10 +81,6 @@ namespace ASC.People
                 .AddPaymentFilter()
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
-
-            services.Configure<DbManager>(r => { });
-            services.Configure<DbManager>("default", r => { });
-            services.Configure<DbManager>("messages", r => { r.CommandTimeout = 180000; });
 
             services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
             {
@@ -119,6 +113,8 @@ namespace ASC.People
             services
                 .AddPeopleController()
                 .AddGroupController();
+
+            services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

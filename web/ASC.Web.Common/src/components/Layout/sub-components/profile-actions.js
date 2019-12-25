@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDown, DropDownItem, DropDownProfileItem, utils } from "asc-web-components";
+import { Avatar, DropDown, DropDownItem, DropDownProfileItem, utils, Link } from "asc-web-components";
 const { handleAnyClick } = utils.event;
 
 class ProfileActions extends React.PureComponent {
@@ -95,11 +95,21 @@ class ProfileActions extends React.PureComponent {
             email={this.state.user.email}
           />
           {this.state.userActions.map(action => (
-            <DropDownItem
+            <Link
+              noHover={true}
               key={action.key}
-              {...action}
-              onClick={this.onDropDownItemClick.bind(this, action)}
-            />
+              href={action.url}
+              onClick={(e) => {
+                if (e) {
+                  this.onDropDownItemClick.bind(this, action);
+                  e.preventDefault();
+                }
+              }
+            }
+              >
+              <DropDownItem
+                {...action} />
+            </Link>
           ))}
         </DropDown>
       </div>

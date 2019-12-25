@@ -30,7 +30,7 @@ const HeaderComponent = React.memo(props => {
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
       />
-      <Headline type="menu" color="#FFFFFF">
+      <Headline type="header" color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
     </Header>
