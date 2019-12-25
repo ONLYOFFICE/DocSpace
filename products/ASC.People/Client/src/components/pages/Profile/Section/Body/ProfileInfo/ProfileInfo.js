@@ -261,26 +261,6 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         }
-        {department &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomDepartment", { department: departmentName })}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {formatedDepartments}
-            </InfoItemValue>
-          </InfoItem>
-        }
-        {title &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomPosition", { position })}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {title}
-            </InfoItemValue>
-          </InfoItem>
-        }
         {(mobilePhone) &&
           <InfoItem>
             <InfoItemLabel>
@@ -301,16 +281,6 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         }
-        {workFrom &&
-          <InfoItem>
-            <InfoItemLabel>
-              {t("CustomEmployedSinceDate", { employedSinceDate })}:
-            </InfoItemLabel>
-            <InfoItemValue>
-              {workFromDate}
-            </InfoItemValue>
-          </InfoItem>
-        }
         {birthday &&
           <InfoItem>
             <InfoItemLabel>
@@ -321,6 +291,26 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemValue>
           </InfoItem>
         }
+        {title &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomPosition", { position })}:
+            </InfoItemLabel>
+            <InfoItemValue>
+              {title}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {department &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomDepartment", { department: departmentName })}:
+            </InfoItemLabel>
+            <InfoItemValue>
+              {formatedDepartments}
+            </InfoItemValue>
+          </InfoItem>
+        }
         {location &&
           <InfoItem>
             <InfoItemLabel>
@@ -328,6 +318,16 @@ class ProfileInfo extends React.PureComponent {
             </InfoItemLabel>
             <InfoItemValue>
               {location}
+            </InfoItemValue>
+          </InfoItem>
+        }
+        {workFrom &&
+          <InfoItem>
+            <InfoItemLabel>
+              {t("CustomEmployedSinceDate", { employedSinceDate })}:
+            </InfoItemLabel>
+            <InfoItemValue>
+              {workFromDate}
             </InfoItemValue>
           </InfoItem>
         }
