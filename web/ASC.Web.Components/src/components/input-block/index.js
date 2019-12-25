@@ -48,15 +48,11 @@ const StyledInputGroup = styled(CustomInputGroup)`
 class InputBlock extends React.Component {
   constructor(props) {
     super(props);
-
-    this.onIconClick = this.onIconClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-
   }
-  onIconClick(e) {
+  onIconClick = (e) => {
     if (typeof this.props.onIconClick === "function" && !this.props.isDisabled) this.props.onIconClick(e);
   }
-  onChange(e) {
+  onChange = (e) => {
     if (typeof this.props.onChange === "function") this.props.onChange(e);
   }
 
