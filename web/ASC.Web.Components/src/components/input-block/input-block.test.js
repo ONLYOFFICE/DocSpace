@@ -19,7 +19,7 @@ describe('<IconButton />', () => {
 
   it('test base size props', () => {
     const wrapper = mount(
-      <InputBlock iconName="SearchIcon" size="base" >
+      <InputBlock iconName="SearchIcon" size="base">
       </InputBlock>
     );
 
@@ -94,4 +94,33 @@ describe('<IconButton />', () => {
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
+  it('call onChange', () => {
+    const onChange = jest.fn();
+    const wrapper = mount(<InputBlock iconName="SearchIcon" size="huge" onChange={onChange}/>);
+    const input = wrapper.find("input");
+    input.first().simulate("change", { target: { value: "test" } });
+    expect(onChange).toHaveBeenCalled();
+  });
+  it('call onIconClick', () => {
+    const onIconClick = jest.fn();
+    const wrapper = mount(<InputBlock iconName="SearchIcon" size="huge" isDisabled={false} onIconClick={onIconClick}/>);
+    const input = wrapper.find(".append div");
+    input.first().simulate('click');
+    expect(onIconClick).toHaveBeenCalled();
+  });
+  it('not call onChange', () => {
+    const onChange = jest.fn();
+    const wrapper = mount(<InputBlock iconName="SearchIcon" size="huge"/>);
+    const input = wrapper.find("input");
+    input.first().simulate("change", { target: { value: "test" } });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+  it('not call onIconClick', () => {
+    const onIconClick = jest.fn();
+    const wrapper = mount(<InputBlock iconName="SearchIcon" size="huge" isDisabled={true} onIconClick={onIconClick}/>);
+    const input = wrapper.find(".append div");
+    input.first().simulate('click');
+    expect(onIconClick).not.toHaveBeenCalled();
+  });
+  
 });

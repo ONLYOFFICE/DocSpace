@@ -112,9 +112,6 @@ class InputBlock extends React.Component {
         case 'huge':
           iconButtonSize = 24;
           break;
-
-        default:
-          break;
       }
     }
 

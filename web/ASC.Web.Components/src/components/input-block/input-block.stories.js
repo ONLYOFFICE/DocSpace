@@ -16,8 +16,8 @@ iconNames.push("NONE");
 
 const sizeOptions = ['base', 'middle', 'big', 'huge'];
 
-const IconClick = function(event , value){
-  action('iconClick')(value);
+const IconClick = function(){
+  action('iconClick')();
 };
 
 storiesOf('Components|Input', module)
