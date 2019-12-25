@@ -20,7 +20,8 @@ class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { email, language } = props;
+    const { user, language } = props;
+    const { email } = user;
 
     this.state = {
       isEmailValid: true,
@@ -39,8 +40,9 @@ class ChangeEmailDialogComponent extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { email } = this.props;
-    if (prevProps.email !== email) {
+    const { user } = this.props;
+    const { email } = user;
+    if (prevProps.user.email !== email) {
       this.setState({ email });
     }
   }
@@ -49,7 +51,7 @@ class ChangeEmailDialogComponent extends React.Component {
     window.removeEventListener("keyup", this.onKeyPress);
   }
 
-  onValidateEmailInput = validateObj => this.setState({ isEmailValid: validateObj.isValid, emailErrors: validateObj.errors });
+  onValidateEmailInput = result => this.setState({ isEmailValid: result.isValid, emailErrors: result.errors });
 
   onChangeEmailInput = e => {
     const { hasError } = this.state;
@@ -59,24 +61,26 @@ class ChangeEmailDialogComponent extends React.Component {
   };
 
   onSendEmailChangeInstructions = () => {
-    this.setState({ isRequestRunning: true }, function () {
-      sendInstructionsToChangeEmail(this.props.id, this.state.email)
+    const { email } = this.state;
+    const { user } = this.props;
+    const { id } = user;
+    this.setState({ isRequestRunning: true }, () => {
+      sendInstructionsToChangeEmail(id, email)
         .then((res) => {
           toastr.success(res);
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          this.setState({ isRequestRunning: false });
-          this.props.onClose();
+          this.setState({ isRequestRunning: false }, () => this.props.onClose());
         });
     })
   };
 
   onValidateEmail = () => {
     const { isEmailValid, email, emailErrors } = this.state;
-    const { t } = this.props;
+    const { t, user } = this.props;
     if (isEmailValid) {
-      const sameEmailError = email.toLowerCase() === this.props.email.toLowerCase();
+      const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
         this.setState({ errorMessage: t('SameEmail'), hasError: true });
       }
@@ -162,8 +166,7 @@ const ChangeEmailDialog = props => (
 ChangeEmailDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

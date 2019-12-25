@@ -362,8 +362,7 @@ class SectionBodyContent extends React.PureComponent {
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
             onClose={this.toggleChangeEmailDialog}
-            email={user.email}
-            id={user.id}
+            user={user}
           />
         }
         {dialogsVisible.changePassword &&

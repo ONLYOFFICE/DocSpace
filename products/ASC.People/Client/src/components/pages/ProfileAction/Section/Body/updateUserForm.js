@@ -650,8 +650,7 @@ class UpdateUserForm extends React.Component {
           <ChangeEmailDialog
             visible={dialogsVisible.changeEmail}
             onClose={this.toggleDialogsVisible}
-            email={profile.email}
-            id={profile.id}
+            user={profile}
           />
         }
 
