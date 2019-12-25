@@ -29,15 +29,14 @@ class DeleteSelfProfileDialogComponent extends React.Component {
   }
   onDeleteSelfProfileInstructions = () => {
     const { onClose } = this.props;
-    this.setState({ isRequestRunning: true }, function () {
+    this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToDelete()
         .then((res) => {
           toastr.success(res);
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          onClose();
-          this.setState({ isRequestRunning: false });
+          this.setState({ isRequestRunning: false }, () => onClose());
         });
     })
   }

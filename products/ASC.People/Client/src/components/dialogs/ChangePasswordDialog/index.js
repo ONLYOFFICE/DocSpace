@@ -28,15 +28,14 @@ class ChangePasswordDialogComponent extends React.Component {
   }
   onSendPasswordChangeInstructions = () => {
     const { email, onClose } = this.props;
-    this.setState({ isRequestRunning: true }, function () {
+    this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangePassword(email)
         .then((res) => {
           toastr.success(res);
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          onClose();
-          this.setState({ isRequestRunning: false });
+          this.setState({ isRequestRunning: false }, () => onClose());
         });
     })
 

@@ -31,7 +31,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
   }
   onDeleteProfileEver = () => {
     const { onClose, filter, fetchPeople, user, t } = this.props;
-    this.setState({ isRequestRunning: true }, function () {
+    this.setState({ isRequestRunning: true }, () => {
       deleteUser(user.id)
         .then((res) => {
           toastr.success(t('SuccessfullyDeleteUserInfoMessage'));
@@ -39,8 +39,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
-          onClose();
-          this.setState({ isRequestRunning: false });
+          this.setState({ isRequestRunning: false }, () => onClose());
         });
     })
   };
