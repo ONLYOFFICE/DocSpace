@@ -39,6 +39,7 @@
   "RequiredField": "Обязательное поле",
   "ChangeButton": "Изменить",
   "Phone": "Телефон",
+  "ChangesSavedSuccessfully": "Изменения успешно сохранены",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",

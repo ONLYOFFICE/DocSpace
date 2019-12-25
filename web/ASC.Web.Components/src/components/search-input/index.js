@@ -20,20 +20,16 @@ class SearchInput extends React.Component {
     this.state = {
       inputValue: props.value,
     };
-
-    this.clearSearch = this.clearSearch.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.setSearchTimer = this.setSearchTimer.bind(this);
   }
 
-  clearSearch() {
+  clearSearch = () => {
     this.setState({
       inputValue: ''
     });
-    if (typeof this.props.onClearSearch === 'function') this.props.onClearSearch();
+    typeof this.props.onClearSearch === 'function' && this.props.onClearSearch();
   }
 
-  onInputChange(e) {
+  onInputChange = (e) => {
     this.setState({
       inputValue: e.target.value
     });
@@ -41,23 +37,22 @@ class SearchInput extends React.Component {
       this.setSearchTimer(e.target.value);
   }
 
-  setSearchTimer(value) {
-    this.timerId && clearTimeout(this.timerId);
-    this.timerId = null;
-    this.timerId = setTimeout(() => {
-      this.props.onChange(value);
-      clearTimeout(this.timerId);
-      this.timerId = null;
-    }, this.props.refreshTimeout);
+  setSearchTimer = (value) => {
+    clearTimeout(this.timerId);
+    this.timerId = setTimeout(() => 
+      {
+        this.props.onChange(value);
+        clearTimeout(this.timerId);
+        this.timerId = null;
+      }, 
+      this.props.refreshTimeout
+    );
   }
-  
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.value != nextProps.value) {
-      this.setState({ inputValue: nextProps.value });
+  componentDidUpdate(prevProps) {
+    if (this.props.value != prevProps.value) {
+      this.setState({ inputValue: this.props.value });
       return true;
     }
-
-    return (!isEqual(this.state, nextState) || !isEqual(this.props, nextProps));
   }
 
   render() {
@@ -65,18 +60,16 @@ class SearchInput extends React.Component {
     let clearButtonSize = 15;
     switch (this.props.size) {
       case 'base':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton > 0 ? 12 : 15;
+        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 12 : 15;
         break;
       case 'middle':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton > 0 ? 16 : 18;
+        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 16 : 18;
         break;
       case 'big':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton > 0 ? 19 : 21;
+        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 19 : 21;
         break;
       case 'huge':
-        clearButtonSize = !!this.state.inputValue || this.props.showClearButton > 0 ? 22 : 24;
-        break;
-      default:
+        clearButtonSize = !!this.state.inputValue || this.props.showClearButton ? 22 : 24;
         break;
     }
 
@@ -87,7 +80,7 @@ class SearchInput extends React.Component {
           id={this.props.id}
           name={this.props.name}
           isDisabled={this.props.isDisabled}
-          iconName={!!this.state.inputValue || this.props.showClearButton > 0 ? "CrossIcon" : "SearchIcon"}
+          iconName={!!this.state.inputValue || this.props.showClearButton ? "CrossIcon" : "SearchIcon"}
           isIconFill={true}
           iconSize={clearButtonSize}
           iconColor={"#A3A9AE"}

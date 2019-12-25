@@ -15,16 +15,12 @@ class SearchStory extends React.Component  {
   constructor(props) {
     super(props);
     this.state = {
-      selectedFilterData: []
+      value: "test1"
     };
     this.buttonClick = this.buttonClick.bind(this);
   }
   buttonClick(){
-    this.setState({ selectedFilterData:[
-        {key: "1", group: "filter-status"},
-        {key: "-1", group: "filter-groups"}
-      ]
-    });   
+    this.setState({ value: "test"});   
   }
   render(){
     return(
