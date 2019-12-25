@@ -113,11 +113,19 @@ class ModalDialog extends React.Component {
 
   componentDidMount() {
     window.addEventListener("resize", this.throttledResize);
+    window.addEventListener("keyup", this.onKeyPress);
   }
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.throttledResize);
+    window.removeEventListener("keyup", this.onKeyPress);
   }
+
+  onKeyPress = event => {
+    if (event.key === "Esc" || event.key === "Escape") {
+      this.props.onClose();
+    }
+  };
 
   render() {
     const {
