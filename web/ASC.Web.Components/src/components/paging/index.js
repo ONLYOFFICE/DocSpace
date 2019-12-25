@@ -14,11 +14,21 @@ const StyledPaging = styled.div`
     margin-right: 8px;
     max-width: 110px;
   }
+
+  .buttonCustomStyle {
+    padding: 6px 8px 10px;
+  }
 `;
 
 const StyledOnPage = styled.div`
   margin-left: auto;
   margin-right: 0px;
+
+  .hideDisabled {
+    div[disabled] {
+      display: none;
+    }
+  }
 
   @media (max-width: 450px) {
     display: none;
@@ -27,6 +37,13 @@ const StyledOnPage = styled.div`
 
 const StyledPage = styled.div`
   margin-right: 8px;
+
+  .manualWidth {
+    > div:last-of-type {
+        width: 120%;
+      }
+    }
+  }
 `;
 
 const Paging = props => {
@@ -52,6 +69,7 @@ const Paging = props => {
       style={style}
     >
       <Button
+        className="buttonCustomStyle"
         size='medium'
         scale={true}
         label={previousLabel}
@@ -60,6 +78,7 @@ const Paging = props => {
       {pageItems &&
         <StyledPage>
           <ComboBox
+            className="manualWidth"
             directionY={openDirection}
             options={pageItems}
             onSelect={onSelectPageAction}
@@ -69,6 +88,7 @@ const Paging = props => {
         </StyledPage>
       }
       <Button
+        className="buttonCustomStyle"
         size='medium'
         scale={true}
         label={nextLabel}
@@ -77,6 +97,7 @@ const Paging = props => {
       {countItems &&
         <StyledOnPage>
           <ComboBox
+            className="hideDisabled"
             directionY={openDirection}
             directionX='right'
             options={countItems}

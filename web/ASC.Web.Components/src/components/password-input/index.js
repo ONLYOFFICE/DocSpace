@@ -8,8 +8,6 @@ import InputBlock from '../input-block'
 import { Icons } from '../icons'
 import Link from '../link'
 import Text from '../text'
-//import DropDown from '../drop-down'
-
 import Tooltip from "../tooltip";
 
 // eslint-disable-next-line no-unused-vars
@@ -53,6 +51,7 @@ const PasswordProgress = styled.div`
 
 const NewPasswordButton = styled.div`
   margin-left: 16px;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 
   svg {
     overflow: hidden;
@@ -123,20 +122,12 @@ class PasswordInput extends React.Component {
     }
   }
 
-  /*onFocus = () => {
-    this.setState({
-      displayTooltip: true
-    });
-  }*/
-
   onBlur = () => {
-    /*this.setState({
-      displayTooltip: false
-    });*/
     this.refTooltip.current.hideTooltip();
   }
 
   changeInputType = () => {
+    this.refTooltip.current.hideTooltip();
     const newType = this.state.type === 'text' ? 'password' : 'text';
 
     this.setState({
@@ -340,7 +331,6 @@ class PasswordInput extends React.Component {
       validCapital,
       validSpecial,
       disableCopyAction
-      //displayTooltip
     } = this.state;
 
     const iconsColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
@@ -394,7 +384,6 @@ class PasswordInput extends React.Component {
             type={type}
             iconColor={`${iconsColor} !important`}
             isIconFill={true}
-            //onFocus={this.onFocus}
             onBlur={this.onBlur}
             hasWarning={hasWarning}
             placeholder={placeholder}
@@ -501,10 +490,3 @@ PasswordInput.defaultProps = {
 }
 
 export default PasswordInput;
-/*
-            {displayTooltip &&
-              <DropDown directionY='top' manualY='150%' open={true}>
-                {tooltipContent}
-              </DropDown>
-            }
-*/
