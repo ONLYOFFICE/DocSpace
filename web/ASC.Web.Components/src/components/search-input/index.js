@@ -20,20 +20,16 @@ class SearchInput extends React.Component {
     this.state = {
       inputValue: props.value,
     };
-
-    this.clearSearch = this.clearSearch.bind(this);
-    this.onInputChange = this.onInputChange.bind(this);
-    this.setSearchTimer = this.setSearchTimer.bind(this);
   }
 
-  clearSearch() {
+  clearSearch = () => {
     this.setState({
       inputValue: ''
     });
-    if (typeof this.props.onClearSearch === 'function') this.props.onClearSearch();
+    typeof this.props.onClearSearch === 'function' && this.props.onClearSearch();
   }
 
-  onInputChange(e) {
+  onInputChange = (e) => {
     this.setState({
       inputValue: e.target.value
     });
@@ -41,14 +37,16 @@ class SearchInput extends React.Component {
       this.setSearchTimer(e.target.value);
   }
 
-  setSearchTimer(value) {
-    this.timerId && clearTimeout(this.timerId);
-    this.timerId = null;
-    this.timerId = setTimeout(() => {
-      this.props.onChange(value);
-      clearTimeout(this.timerId);
-      this.timerId = null;
-    }, this.props.refreshTimeout);
+  setSearchTimer = (value) => {
+    clearTimeout(this.timerId);
+    this.timerId = setTimeout(() => 
+      {
+        this.props.onChange(value);
+        clearTimeout(this.timerId);
+        this.timerId = null;
+      }, 
+      this.props.refreshTimeout
+    );
   }
   componentDidUpdate(prevProps) {
     if (this.props.value != prevProps.value) {

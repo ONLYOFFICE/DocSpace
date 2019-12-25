@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import SearchInput from '.';
+import InputBlock from '../input-block';
 
 const baseProps = {
   isNeedFilter: true,
@@ -73,12 +74,22 @@ describe('<SearchInput />', () => {
     const onChange = jest.fn();
     const wrapper = mount(<SearchInput {...baseProps} onClearSearch={onClearSearch} onChange={onChange}/>);
     
-    const input = wrapper.find("input");
-    input.first().simulate("change", { target: { value: "test" } });
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
     
     const icon = wrapper.find(".append div");
     icon.first().simulate('click');
     expect(onClearSearch).toHaveBeenCalled();
+  });
+  it('not call onClearSearch', () => {
+    const onClearSearch = jest.fn();
+    const onChange = jest.fn();
+    const wrapper = mount(<SearchInput {...baseProps} onChange={onChange}/>);
+    
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
+    
+    const icon = wrapper.find(".append div");
+    icon.first().simulate('click');
+    expect(onClearSearch).not.toHaveBeenCalled();
   });
   it('componentDidUpdate() props lifecycle test', () => {
     const wrapper = shallow(<SearchInput {...baseProps} />);
@@ -93,6 +104,18 @@ describe('<SearchInput />', () => {
 
     expect(wrapper.props()).toBe(wrapper.props());
   });
+  it('not call setSearchTimer', done => {
+    const onChange = jest.fn();
+    const wrapper = mount(<SearchInput {...baseProps} autoRefresh={false} onChange={onChange}/>);
+    
+    const input = wrapper.find("input");
+    input.first().simulate("change", { target: { value: "test" } });
+    
+    setTimeout(() => {
+      expect(onChange).not.toHaveBeenCalled();
+      done()
+    }, 1000);
+  });
   it('call setSearchTimer', done => {
     const onChange = jest.fn();
     const wrapper = mount(<SearchInput {...baseProps} onChange={onChange}/>);
@@ -104,5 +127,37 @@ describe('<SearchInput />', () => {
       expect(onChange).toHaveBeenCalled();
       done()
     }, 1000);
+  });
+  it('test icon button size. base size prop', () => {
+    const wrapper = mount(<SearchInput {...baseProps} size="base" />);
+    
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
+    
+    const inputBlock = wrapper.find(InputBlock);
+    expect(inputBlock.prop('iconSize')).toEqual(12);
+  });
+  it('test icon button size. middle size prop', () => {
+    const wrapper = mount(<SearchInput {...baseProps} size="middle" />);
+    
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
+    
+    const inputBlock = wrapper.find(InputBlock);
+    expect(inputBlock.prop('iconSize')).toEqual(16);
+  });
+  it('test icon button size. big size prop', () => {
+    const wrapper = mount(<SearchInput {...baseProps} size="big" />);
+    
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
+    
+    const inputBlock = wrapper.find(InputBlock);
+    expect(inputBlock.prop('iconSize')).toEqual(19);
+  });
+  it('test icon button size. huge size prop', () => {
+    const wrapper = mount(<SearchInput {...baseProps} size="huge"/>);
+    
+    wrapper.find("input").first().simulate("change", { target: { value: "test" } });
+    
+    const inputBlock = wrapper.find(InputBlock);
+    expect(inputBlock.prop('iconSize')).toEqual(22);
   });
 });
