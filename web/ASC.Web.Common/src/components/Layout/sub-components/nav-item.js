@@ -60,7 +60,9 @@ const NavItem = React.memo(props => {
   return separator ? (
     <NavItemSeparator />
   ) : (
-      <NavItemWrapper href={url} onClick={onClick}>
+      <NavItemWrapper 
+      href={url} 
+      onClick={onClick}>
         {React.createElement(Icons[iconName], {
           size: "big",
           isfill: true,
