@@ -1,11 +1,15 @@
 import React from "react";
 import styled from "styled-components";
 import isEqual from "lodash/isEqual";
-import { ComboBox, TextInput } from "asc-web-components";
+import { ComboBox, TextInput, IconButton } from "asc-web-components";
 
 const Container = styled.div`
   display: flex;
   margin: 0 0 16px 0;
+
+  .remove_icon {
+    margin-left: 8px;
+  }
 `;
 
 class ContactField extends React.Component {
@@ -26,7 +30,10 @@ class ContactField extends React.Component {
 
       inputName,
       inputValue,
-      inputOnChange
+      inputOnChange,
+
+      removeButtonName,
+      removeButtonOnChange
     } = this.props;
 
     return (
@@ -45,6 +52,15 @@ class ContactField extends React.Component {
           value={inputValue}
           isDisabled={isDisabled}
           onChange={inputOnChange}
+        />
+        <IconButton
+          id={removeButtonName}
+          className="remove_icon"
+          size="16"
+          onClick={removeButtonOnChange}
+          iconName={"CatalogTrashIcon"}
+          isFill={true}
+          isClickable={true}
         />
       </Container>
     );

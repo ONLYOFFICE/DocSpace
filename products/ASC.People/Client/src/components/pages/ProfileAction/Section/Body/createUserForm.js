@@ -38,6 +38,7 @@ class CreateUserForm extends React.Component {
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
     this.onContactsItemTextChange = this.onContactsItemTextChange.bind(this);
+    this.onContactsItemRemove = this.onContactsItemRemove.bind(this);
 
     this.onShowGroupSelector = this.onShowGroupSelector.bind(this);
     this.onCloseGroupSelector = this.onCloseGroupSelector.bind(this);
@@ -286,6 +287,16 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy);
   }
 
+  onContactsItemRemove(event) {
+    const id = event.target.closest(".remove_icon").dataset.for.split("_")[0];
+    var stateCopy = Object.assign({}, this.state);
+    const filteredArray = stateCopy.profile.contacts.filter((element) => { 
+      return element.id !== id;
+    });
+    stateCopy.profile.contacts = filteredArray;
+    this.setState(stateCopy);
+  }
+
   onShowGroupSelector() {
     var stateCopy = Object.assign({}, this.state);
     stateCopy.selector.visible = true;
@@ -496,6 +507,7 @@ class CreateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("SocialProfiles")}>
@@ -507,6 +519,7 @@ class CreateUserForm extends React.Component {
             onItemAdd={this.onContactsItemAdd}
             onItemTypeChange={this.onContactsItemTypeChange}
             onItemTextChange={this.onContactsItemTextChange}
+            onItemRemove={this.onContactsItemRemove}
           /> 
         </InfoFieldContainer>
         <div>
