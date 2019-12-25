@@ -19,14 +19,14 @@ const baseProps = {
 }
 
 describe('<EmailInput />', () => {
-  it('Faith test', () => {
+  it('Init invalid value test', () => {
     const email = "zzz";
     const wrapper = shallow(<EmailInput value={email} />).instance();
 
     expect(wrapper.state.isValidEmail.isValid).toBe(false);
   });
 
-  it('Faith test 2', () => {
+  it('Clean valid value test', () => {
     const email = "zzz";
 
     const wrapper = shallow(<EmailInput value={email} />).instance();
@@ -44,7 +44,7 @@ describe('<EmailInput />', () => {
     expect(wrapper.state.isValidEmail.isValid).toBe(false);
   });
 
-  it('Faith test 3', () => {
+  it('Change value prop test', () => {
     const email = "zzz";
 
     const wrapper = mount(<EmailInput value={email} />);
@@ -56,6 +56,34 @@ describe('<EmailInput />', () => {
     expect(wrapper.state().isValidEmail.isValid).toBe(false);
 
     expect(wrapper.state().inputValue).toBe("bar");
+  });
+
+  it('Custom validation test', () => {
+    const email = "zzz";
+
+    const customValidate = (value) => {
+      const isValid = !!(value && value.length > 0);
+      return { 
+        isValid: isValid,
+        errors: isValid ? [] : ["incorrect email"]
+      }
+    }
+
+    const wrapper = mount(<EmailInput value={email} customValidate={customValidate} />);
+
+    expect(wrapper.state().inputValue).toBe(email);
+
+    expect(wrapper.state().isValidEmail.isValid).toBe(true);
+
+    wrapper.setProps({ value: 'bar' });
+
+    expect(wrapper.state().isValidEmail.isValid).toBe(true);
+
+    expect(wrapper.state().inputValue).toBe("bar");
+
+    wrapper.setProps({ value: '' });
+
+    expect(wrapper.state().isValidEmail.isValid).toBe(false);
   });
 
   it('renders without error', () => {

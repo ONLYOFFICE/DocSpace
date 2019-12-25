@@ -10,8 +10,8 @@ export class EmailSettings {
   }
 
   static equals = (settings1, settings2) => {
-    const instance1 = convertEmailSettings(settings1);
-    const instance2 = convertEmailSettings(settings2);
+    const instance1 = EmailSettings.parse(settings1);
+    const instance2 = EmailSettings.parse(settings2);
     const comparedProperties = [
       'allowDomainPunycode',
       'allowLocalPartPunycode',
@@ -122,7 +122,7 @@ export class EmailSettings {
     }
   }
 
-  getSettings() {
+  toObject() {
     return {
       allowDomainPunycode: this.allowDomainPunycode,
       allowLocalPartPunycode: this.allowLocalPartPunycode,
@@ -143,20 +143,22 @@ export class EmailSettings {
     this.allowName = true;
     this.allowLocalDomainName = true;
   }
-}
 
-export const convertEmailSettings = (settings) => {
-  if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
+  static parse = (settings) => {
+    if(settings instanceof EmailSettings)
+      return settings;
+
+    if(typeof settings !== 'object')
+      throw new Error("Invalid argument");
+
     const defaultSettings = new EmailSettings();
-    Object.keys(settings).map((item) => {
-      if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
-        defaultSettings[item] = settings[item];
-      }
-    });
-    return defaultSettings;
-  }
+    Object.keys(settings).map((key) => {
+      if (!(key in defaultSettings) || defaultSettings[key] === settings[key]) 
+        return;
 
-  else if (typeof settings === 'object' && settings instanceof EmailSettings) {
-    return settings;
+      defaultSettings[key] = settings[key];
+    });
+
+    return defaultSettings;
   }
 }
