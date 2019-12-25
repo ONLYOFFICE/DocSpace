@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Avatar, Button, Textarea, toastr, AvatarEditor, Text } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
-import { createProfile, getUserPhoto } from '../../../../../store/profile/actions';
+import { createProfile } from '../../../../../store/profile/actions';
 import { MainContainer, AvatarContainer, MainFieldsContainer } from './FormFields/Form'
 import TextField from './FormFields/TextField'
 import PasswordField from './FormFields/PasswordField'
@@ -149,21 +149,6 @@ class CreateUserForm extends React.Component {
     });
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
     var selected = mapGroupsToGroupSelectorOptions(profile.groups);
-    getUserPhoto(profile.id).then(userPhotoData => {
-      if(userPhotoData.original){
-        let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
-        if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
-          this.setState({
-            avatar: {
-              tmpFile: this.state.avatar.tmpFile,
-              defaultWidth: avatarDefaultSizes[1],
-              defaultHeight: avatarDefaultSizes[2],
-              image: userPhotoData.original ? userPhotoData.original.indexOf('default_user_photo') !== -1 ? null : userPhotoData.original : null
-            }
-          });
-        }
-      }
-    });
     return {
       visibleAvatarEditor: false,
       croppedAvatarImage: "",
