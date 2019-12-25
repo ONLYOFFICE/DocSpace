@@ -4,13 +4,12 @@ import styled from "styled-components";
 import { Scrollbar } from "asc-web-components";
 
 const StyledArticleBody = styled.div`
-  margin: 16px 0;
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
 
   .people-tree-menu{
-    margin-right: 30px;
+    margin: 16px 30px 16px 0;
   }
 `;
 
