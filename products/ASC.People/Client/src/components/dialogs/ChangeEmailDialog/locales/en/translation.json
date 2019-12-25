@@ -10,9 +10,9 @@
   "DomainIpAddress": "Domains as ip address are not supported",
   "PunycodeDomain": "Punycode domains are not supported",
   "PunycodeLocalPart": "Punycode local part are not supported",
-  "IncorrectLocalPart": "Incorrect localpart",
-  "SpacesInLocalPart": "Incorrect, localpart contains spaces",
-  "MaxLengthExceeded": "The maximum total length of a user name or other local-part is 64 characters.",
+  "IncorrectLocalPart": "Incorrect local part",
+  "SpacesInLocalPart": "Incorrect, local part contains spaces",
+  "MaxLengthExceeded": "The maximum total length of a user name or other local part is 64 characters.",
   "IncorrectEmail": "Incorrect email",
   "ManyEmails": "Too many email parsed",
   "EmptyEmail": "No one email parsed"
