@@ -45,6 +45,13 @@ const CloseButton = styled.a`
   width: 16px;
   height: 16px;
 
+  &:hover {
+    &:before,
+    &:after {
+      background-color: #657077;
+    }
+  }
+
   &:before,
   &:after {
     position: absolute;

@@ -9,5 +9,7 @@
   "CustomNewDepartment": "Новый {{department, lowercase}}",
   "CustomEditDepartment": "Редактирование {{department, lowercase}}",
   "CustomDepartmentName": "Имя {{department}}",
-  "Members": "Участники"
+  "Members": "Участники",
+  "AddMembers": "Добавить участников",
+  "SearchAddedMembers": "Поиск добавленных участников"
 }
