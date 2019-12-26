@@ -48,13 +48,16 @@ const InfoItemValue = styled.div`
     }
   }
   .help-icon {
-    margin-top: -8px;
+    display: inline-flex;
+    
+    @media(min-width: 1025px) {
+      margin-top: 6px;
+    }
+    @media(max-width: 1024px) {
+      padding: 6px 8px 8px 8px;
+      margin-left: -8px;
+    }  
   }
-`;
-
-const TooltipIcon = styled.div`
-  padding-top: 6px;
-  display: inline-flex;
 `;
 
 const IconButtonWrapper = styled.div`
@@ -349,7 +352,6 @@ class ProfileInfo extends React.PureComponent {
                 size='content'
                 className='language-combo'
               />
-              <TooltipIcon>
               <HelpButton
                   place="bottom"
                   offsetLeft={50}
@@ -358,8 +360,6 @@ class ProfileInfo extends React.PureComponent {
                   helpButtonHeaderContent={t('Language')}
                   className="help-icon"
                 />
-              </TooltipIcon>
-
             </InfoItemValue>
 
           </InfoItem>
