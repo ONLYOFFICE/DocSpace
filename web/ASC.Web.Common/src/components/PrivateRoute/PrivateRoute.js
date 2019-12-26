@@ -65,7 +65,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       restricted,
       allowForMe,
       currentUser,
-      userId
+      userId,
+      Component
     ]
   );
 
