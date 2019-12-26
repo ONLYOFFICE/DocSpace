@@ -340,8 +340,6 @@ class PureAdminsSettings extends Component {
       showLoader
     } = this.state;
 
-    const countElements = filter.total;
-
     console.log("Admins render_");
 
     return (

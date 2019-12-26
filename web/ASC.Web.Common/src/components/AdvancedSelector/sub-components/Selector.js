@@ -97,9 +97,12 @@ const Selector = props => {
   );
 
   // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = useCallback(index => {
-    return !hasNextPage || index < options.length;
-  }, [hasNextPage, options]);
+  const isItemLoaded = useCallback(
+    index => {
+      return !hasNextPage || index < options.length;
+    },
+    [hasNextPage, options]
+  );
 
   const onOptionChange = useCallback(
     e => {
@@ -484,7 +487,13 @@ const Selector = props => {
         </div>
       );
     },
-    [groups, currentGroup, isMultiSelect, selectedGroupList, allowGroupSelection]
+    [
+      groups,
+      currentGroup,
+      isMultiSelect,
+      selectedGroupList,
+      allowGroupSelection
+    ]
   );
 
   const hasSelected = useCallback(() => {
@@ -524,11 +533,7 @@ const Selector = props => {
       allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
     >
-      <Column
-        className="column-options"
-        displayType={displayType}
-        size={size}
-      >
+      <Column className="column-options" displayType={displayType} size={size}>
         <Header className="header-options">
           <SearchInput
             className="options_searcher"
@@ -554,28 +559,31 @@ const Selector = props => {
                 size="content"
                 onSelect={onGroupSelect}
               />
-              {isMultiSelect && allowGroupSelection && options && options.length > 0 && (
-                <Checkbox
-                  className="options_group_select_all"
-                  label={selectAllLabel}
-                  isChecked={selectedAll}
-                  isIndeterminate={false}
-                  onChange={onSelectAllChange}
-                />
-              )}
+              {isMultiSelect &&
+                allowGroupSelection &&
+                options &&
+                options.length > 0 && (
+                  <Checkbox
+                    className="options_group_select_all"
+                    label={selectAllLabel}
+                    isChecked={selectedAll}
+                    isIndeterminate={false}
+                    onChange={onSelectAllChange}
+                  />
+                )}
             </>
           )}
         </Header>
         <Body className="body-options">
-          <InfiniteLoader
-            ref={listOptionsRef}
-            isItemLoaded={isItemLoaded}
-            itemCount={itemCount}
-            loadMoreItems={loadMoreItems}
-          >
-            {({ onItemsRendered, ref }) => (
-              <AutoSizer>
-                {({ width, height }) => (
+          <AutoSizer>
+            {({ width, height }) => (
+              <InfiniteLoader
+                ref={listOptionsRef}
+                isItemLoaded={isItemLoaded}
+                itemCount={itemCount}
+                loadMoreItems={loadMoreItems}
+              >
+                {({ onItemsRendered, ref }) => (
                   <List
                     className="options_list"
                     height={height}
@@ -589,9 +597,10 @@ const Selector = props => {
                     {renderOption}
                   </List>
                 )}
-              </AutoSizer>
+              </InfiniteLoader>
             )}
-          </InfiniteLoader>
+          </AutoSizer>
+
           {!hasNextPage && itemCount === 0 && (
             <div className="row-block">
               <Text>
@@ -609,11 +618,7 @@ const Selector = props => {
         </Body>
       </Column>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <Column
-          className="column-groups"
-          displayType={displayType}
-          size={size}
-        >
+        <Column className="column-groups" displayType={displayType} size={size}>
           <Header className="header-groups">
             <Text as="p" className="group_header" fontSize="15px" isBold={true}>
               {groupsHeaderLabel}
