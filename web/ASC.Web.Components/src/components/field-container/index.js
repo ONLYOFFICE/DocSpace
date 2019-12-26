@@ -28,7 +28,6 @@ function getHorizontalCss(labelWidth) {
     }
     .icon-button {
       position: relative;
-      margin-top: 1px;
     }
   `;
 }
