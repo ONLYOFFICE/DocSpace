@@ -53,6 +53,12 @@ const StyledContainer = styled.div`
         margin-left: auto;
       }
     }
+    .arrow-button {
+      @media (max-width: 1024px) {
+        padding: 8px 0 8px 8px;
+        margin-left: -8px;
+      }
+    }
 `;
 
 class SectionHeaderContent extends React.PureComponent {
@@ -378,6 +384,7 @@ class SectionHeaderContent extends React.PureComponent {
           hoverColor="#657077"
           isFill={true}
           onClick={this.onClickBack}
+          className="arrow-button"
         />
         <HeaderContainer type='content' truncate={true}>
           {profile.displayName}
