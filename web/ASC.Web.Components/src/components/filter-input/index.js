@@ -425,7 +425,7 @@ class FilterInput extends React.Component {
     }
     render() {
         //console.log("FilterInput render");
-        let iconSize = 32;
+        let iconSize = 33;
         switch (this.props.size) {
             case 'base':
                 iconSize = 33;
@@ -492,6 +492,7 @@ class FilterInput extends React.Component {
 }
 
 FilterInput.protoTypes = {
+    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
     autoRefresh: PropTypes.bool,
     selectedFilterData: PropTypes.object,
     directionAscLabel: PropTypes.string,
@@ -509,6 +510,7 @@ FilterInput.defaultProps = {
         filterValues: [],
         searchText: ''
     },
+    size: 'base',
     directionAscLabel: 'A-Z',
     directionDescLabel: 'Z-A'
 };
