@@ -7,6 +7,7 @@ class FilterButton extends React.PureComponent {
     //console.log('render FilterButton)
     return (
       <ContextMenuButton
+        id={this.props.id}
         title='Actions'
         iconName='RectangleFilterIcon'
         color='#A3A9AE'
@@ -20,6 +21,7 @@ class FilterButton extends React.PureComponent {
   }
 }
 FilterButton.propTypes = {
+  id: PropTypes.string,
   iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isDisabled: PropTypes.bool,
   getData: PropTypes.func
