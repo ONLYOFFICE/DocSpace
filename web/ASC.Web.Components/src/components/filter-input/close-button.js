@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const StyledCloseButton = styled.div`
     margin-left: 7px;
-    margin-top: -1px;
+    margin-top: -2px;
 `;
 const CloseButton = props => {
   //console.log("CloseButton render");
