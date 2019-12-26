@@ -26,6 +26,21 @@ class PureArticleMainButtonContent extends React.Component {
     this.props.history.push(link);
   };
 
+  goToEmployeeCreate = () => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/create/user`);
+  };
+
+  goToGuestCreate = () => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/create/guest`);
+  }
+
+  goToGroupCreate = () => {
+    const { history, settings } = this.props;
+    history.push(`${settings.homepage}/group/create`);
+  }
+
   onNotImplementedClick = (text) => {
     toastr.success(text);
   };
@@ -47,17 +62,17 @@ class PureArticleMainButtonContent extends React.Component {
             <DropDownItem
               icon="CatalogEmployeeIcon"
               label={t('CustomNewEmployee', { typeUser })}
-              onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/user`)}
+              onClick={this.goToEmployeeCreate}
             />
             <DropDownItem
               icon="CatalogGuestIcon"
               label={t('CustomNewGuest', { typeGuest })}
-              onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/create/guest`)}
+              onClick={this.goToGuestCreate}
             />
             <DropDownItem
               icon="CatalogDepartmentsIcon"
               label={t('CustomNewDepartment', { department })}
-              onClick={this.onDropDownItemClick.bind(this, `${settings.homepage}/group/create`)}
+              onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />
             <DropDownItem
