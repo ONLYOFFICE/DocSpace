@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { Scrollbar } from "asc-web-components";
 
 const StyledArticleBody = styled.div`
-  margin: 16px 0;
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
@@ -14,13 +13,19 @@ const StyledArticleBody = styled.div`
   }
 `;
 
+const StyledArticleWrapper = styled.div`
+  margin: 16px 0;
+`;
+
 const ArticleBody = React.memo(props => {
   //console.log("PageLayout ArticleBody render");
   const { children } = props;
 
   return (
     <StyledArticleBody>
-      <Scrollbar>{children}</Scrollbar>
+      <Scrollbar>
+        <StyledArticleWrapper>{children}</StyledArticleWrapper>
+      </Scrollbar>
     </StyledArticleBody>
   );
 });

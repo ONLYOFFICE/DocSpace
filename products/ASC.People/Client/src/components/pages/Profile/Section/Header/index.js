@@ -2,14 +2,10 @@ import React from "react";
 import { connect } from "react-redux";
 import {
   Text,
-  Link,
   IconButton,
   ContextMenuButton,
   toastr,
   utils,
-  TextInput,
-  Button,
-  ModalDialog,
   AvatarEditor,
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
@@ -20,22 +16,18 @@ import {
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
-  updateUserStatus,
-  fetchPeople
+  updateUserStatus
 } from "../../../../../store/people/actions";
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
+import { DeleteSelfProfileDialog, ChangePasswordDialog, ChangeEmailDialog, DeleteProfileEverDialog } from '../../../../dialogs';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
-  sendInstructionsToDelete,
-  sendInstructionsToChangePassword,
-  sendInstructionsToChangeEmail,
   createThumbnailsAvatar,
   loadAvatar,
-  deleteAvatar,
-  deleteUser
+  deleteAvatar
 } = api.people;
 const { EmployeeStatus } = constants;
 
@@ -83,19 +75,18 @@ class SectionHeaderContent extends React.PureComponent {
     const newState = {
       profile: profile,
       visibleAvatarEditor: false,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: profile.email
-      },
       avatar: {
         tmpFile: "",
         image: null,
         defaultWidth: 0,
         defaultHeight: 0
-      }
+      },
+      dialogsVisible: {
+        deleteSelfProfile: false,
+        changePassword: false,
+        changeEmail: false,
+        deleteProfileEver: false
+      },
     };
 
     return newState;
@@ -198,96 +189,9 @@ class SectionHeaderContent extends React.PureComponent {
     });
   };
 
-  onEmailChange = event => {
-    const emailRegex = /.+@.+\..+/;
-    const newEmail =
-      (event && event.target.value) || this.state.dialog.newEmail;
-    const hasError = !emailRegex.test(newEmail);
+  toggleChangePasswordDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changePassword: !this.state.dialogsVisible.changePassword } });
 
-    const dialog = {
-      visible: true,
-      header: "Change email",
-      body: (
-        <Text>
-          <span style={{ display: "block", marginBottom: "8px" }}>
-            The activation instructions will be sent to the entered email
-          </span>
-          <TextInput
-            id="new-email"
-            scale={true}
-            isAutoFocussed={true}
-            value={newEmail}
-            onChange={this.onEmailChange}
-            hasError={hasError}
-          />
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendEmailChangeInstructions}
-          isDisabled={hasError}
-        />
-      ],
-      newEmail: newEmail
-    };
-    this.setState({ dialog: dialog });
-  };
-
-  onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(
-      this.state.profile.id,
-      this.state.dialog.newEmail
-    )
-      .then(res => {
-        toastr.success(res);
-      })
-      .catch(error => toastr.error(error))
-      .finally(this.onDialogClose);
-  };
-
-  onPasswordChange = () => {
-    const dialog = {
-      visible: true,
-      header: "Change password",
-      body: (
-        <Text>
-          Send the password change instructions to the{" "}
-          <a href={`mailto:${this.state.profile.email}`}>
-            {this.state.profile.email}
-          </a>{" "}
-          email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPasswordChangeInstructions}
-        />
-      ]
-    };
-    this.setState({ dialog: dialog });
-  };
-
-  onSendPasswordChangeInstructions = () => {
-    sendInstructionsToChangePassword(this.state.profile.email)
-      .then(res => {
-        toastr.success(res);
-      })
-      .catch(error => toastr.error(error))
-      .finally(this.onDialogClose);
-  };
-
-  onDialogClose = () => {
-    const dialog = { visible: false, newEmail: this.state.profile.email };
-    this.setState({ dialog: dialog });
-  };
+  toggleChangeEmailDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, changeEmail: !this.state.dialogsVisible.changeEmail } });
 
   onEditClick = () => {
     const { history, settings } = this.props;
@@ -317,112 +221,14 @@ class SectionHeaderContent extends React.PureComponent {
     toastr.success("Context action: Delete personal data");
   };
 
-  onDeleteProfileClick = user => {
-    this.setState({
-      dialog: {
-        visible: true,
-        header: "Confirmation",
-        body: (
-          <>
-            <Text>
-              User <b>{user.displayName}</b> will be deleted.
-            </Text>
-            <Text>Note: this action cannot be undone.</Text>
-            <Text color="#c30" fontSize="18px" style={{ margin: "20px 0" }}>
-              Warning!
-            </Text>
-            <Text>
-              User personal documents which are available to others will be
-              deleted. To avoid this, you must start the data reassign process
-              before deleting.
-            </Text>
-          </>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="OK"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              deleteUser(user.id)
-                .then(() => {
-                  const { filter, fetchPeople } = this.props;
-                  toastr.success("User has been removed successfully");
-                  return fetchPeople(filter);
-                })
-                .catch(error => toastr.error(error));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="ReassignBtn"
-            label="Reassign data"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              toastr.success("Context action: Reassign profile");
-              this.onDialogClose();
-            }}
-            style={{ marginLeft: "8px" }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
-    });
-  };
+  toggleDeleteProfileEverDialog = () => this.setState({ dialogsVisible: { ...this.state.dialogsVisible, deleteProfileEver: !this.state.dialogsVisible.deleteProfileEver } });
 
-  onDeleteSelfProfileClick = email => {
-    this.setState({
-      dialog: {
-        visible: true,
-        header: "Delete profile dialog",
-        body: (
-          <Text>
-            Send the profile deletion instructions to the email address{" "}
-            <Link type="page" href={`mailto:${email}`} isHovered title={email}>
-              {email}
-            </Link>
-          </Text>
-        ),
-        buttons: [
-          <Button
-            key="OkBtn"
-            label="Send"
-            size="medium"
-            primary={true}
-            onClick={() => {
-              sendInstructionsToDelete()
-                .then(() =>
-                  toastr.success(
-                    <Text>
-                      Instructions to delete your profile has been sent to{" "}
-                      <b>{email}</b> email address
-                    </Text>
-                  )
-                )
-                .catch(error => toastr.error(error));
-              this.onDialogClose();
-            }}
-          />,
-          <Button
-            key="CancelBtn"
-            label="Cancel"
-            size="medium"
-            primary={false}
-            onClick={this.onDialogClose}
-            style={{ marginLeft: "8px" }}
-          />
-        ]
-      }
-    });
+
+  toggleDeleteSelfProfileDialog = () => {
+    this.setState(
+      {
+        dialogsVisible: { ...this.state.dialogsVisible, deleteSelfProfile: !this.state.dialogsVisible.deleteSelfProfile }
+      });
   };
 
   onInviteAgainClick = () => {
@@ -458,12 +264,12 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "change-password",
             label: t("PasswordChangeButton"),
-            onClick: this.onPasswordChange
+            onClick: this.toggleChangePasswordDialog
           },
           {
             key: "change-email",
             label: t("EmailChangeButton"),
-            onClick: this.onEmailChange
+            onClick: this.toggleChangeEmailDialog
           },
           {
             key: "edit-photo",
@@ -476,7 +282,7 @@ class SectionHeaderContent extends React.PureComponent {
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
-                onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+                onClick: this.toggleDeleteSelfProfileDialog
               }
             : {
               key: "disable",
@@ -509,7 +315,7 @@ class SectionHeaderContent extends React.PureComponent {
           {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteProfileClick.bind(this, user)
+            onClick: this.toggleDeleteProfileEverDialog
           }
         ];
       case "pending":
@@ -544,7 +350,7 @@ class SectionHeaderContent extends React.PureComponent {
           isMe(user, viewer.userName) && {
             key: "delete-profile",
             label: t("DeleteSelfProfile"),
-            onClick: this.onDeleteSelfProfileClick.bind(this, user.email)
+            onClick: this.toggleDeleteSelfProfileDialog
           }
         ];
       default:
@@ -557,9 +363,8 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   render() {
-    const { profile, isAdmin, viewer, t } = this.props;
-    const { dialog, avatar, visibleAvatarEditor } = this.state;
-
+    const { profile, isAdmin, viewer, t, filter, settings, history } = this.props;
+    const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
     const contextOptions = () => this.getUserContextOptions(profile, viewer);
 
     return (
@@ -588,13 +393,7 @@ class SectionHeaderContent extends React.PureComponent {
             isDisabled={false}
           />
         )}
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose}
-        />
+
         <AvatarEditor
           image={avatar.image}
           visible={visibleAvatarEditor}
@@ -607,6 +406,41 @@ class SectionHeaderContent extends React.PureComponent {
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("unknownError")}
         />
+
+        {dialogsVisible.deleteSelfProfile &&
+          <DeleteSelfProfileDialog
+            visible={dialogsVisible.deleteSelfProfile}
+            onClose={this.toggleDeleteSelfProfileDialog}
+            email={this.state.profile.email}
+          />
+        }
+
+        {dialogsVisible.changePassword &&
+          <ChangePasswordDialog
+            visible={dialogsVisible.changePassword}
+            onClose={this.toggleChangePasswordDialog}
+            email={this.state.profile.email}
+          />
+        }
+
+        {dialogsVisible.changeEmail &&
+          <ChangeEmailDialog
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleChangeEmailDialog}
+            user={this.state.profile}
+          />
+        }
+
+        {dialogsVisible.deleteProfileEver &&
+          <DeleteProfileEverDialog
+            visible={dialogsVisible.deleteProfileEver}
+            onClose={this.toggleDeleteProfileEverDialog}
+            user={this.state.profile}
+            filter={filter}
+            settings={settings}
+            history={history}
+          />
+        }
       </StyledContainer>
     );
   }
@@ -624,5 +458,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, fetchProfile, fetchPeople }
+  { updateUserStatus, fetchProfile }
 )(withRouter(withTranslation()(SectionHeaderContent)));

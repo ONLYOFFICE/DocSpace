@@ -632,11 +632,11 @@ namespace ASC.Core.Data
 
             if (!string.IsNullOrEmpty(text))
             {
-                q.Where(
-                    u => u.FirstName.Contains(text) |
-                    u.LastName.Contains(text) |
-                    u.Title.Contains(text) |
-                    u.Location.Contains(text) |
+                q = q.Where(
+                    u => u.FirstName.Contains(text) ||
+                    u.LastName.Contains(text) ||
+                    u.Title.Contains(text) ||
+                    u.Location.Contains(text) ||
                     u.Email.Contains(text));
             }
 

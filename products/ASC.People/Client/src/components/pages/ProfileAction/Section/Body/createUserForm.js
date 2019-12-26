@@ -202,7 +202,7 @@ class CreateUserForm extends React.Component {
     const errors = {
       firstName: !profile.firstName.trim(),
       lastName: !profile.lastName.trim(),
-      email: stateErrors.email,
+      email: stateErrors.email || !profile.email.trim(),
       password: profile.passwordType === "temp" && !profile.password.trim()
     };
     const hasError = errors.firstName || errors.lastName || errors.email || errors.password;
@@ -315,7 +315,7 @@ class CreateUserForm extends React.Component {
     this.setState(stateCopy)
   }
 
-  onValidateEmailField = (value) => this.setState({errors: { ...this.state.errors, email:!value }});
+  onValidateEmailField = (value) => this.setState({errors: { ...this.state.errors, email:!value.isValid }});
 
   render() {
     const { isLoading, errors, profile, selector } = this.state;

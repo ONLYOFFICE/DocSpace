@@ -44,7 +44,7 @@ namespace ASC.Core.Tenants
         };
 
         [DataMember(Name = "Id", Order = 10)]
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         [DataMember(Name = "Name", Order = 20)]
         public string Name { get; set; }
