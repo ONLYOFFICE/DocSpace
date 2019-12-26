@@ -48,11 +48,12 @@ const InfoItemValue = styled.div`
     }
   }
   .help-icon {
-    margin-top: -2px;
+    margin-top: -8px;
   }
 `;
 
 const TooltipIcon = styled.div`
+  padding-top: 6px;
   display: inline-flex;
 `;
 

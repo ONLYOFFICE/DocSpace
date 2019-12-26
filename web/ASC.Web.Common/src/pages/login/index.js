@@ -56,7 +56,6 @@ const FormContainer = styled.form`
         }
       }
       .login-tooltip {
-        margin-left: 3px;
         display: inline-flex;
       }
     }
