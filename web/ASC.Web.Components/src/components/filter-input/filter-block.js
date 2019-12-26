@@ -17,7 +17,7 @@ const StyledFilterItem = styled.div`
   margin-bottom: ${props => props.block ? '8px' : '0'};
   position: relative;
   height: 100%;
-  padding: 3px 22px 3px 7px;
+  padding: 4px 22px 2px 7px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
