@@ -31,7 +31,7 @@ const StyledCloseButton = styled.div`
 
     &:hover{
         path{
-            ${props => !props.isDisabled && "fill: #333;"} 
+            ${props => !props.isDisabled && "fill: #555F65;"} 
         }
     }
 
