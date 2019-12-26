@@ -18,7 +18,7 @@ const textStyle = {
 };
 
 class SectionHeaderContent extends React.Component {
-  onBackClick = () => {
+  onClickBack = () => {
     const { history, settings, resetGroup } = this.props;
 
     resetGroup();
@@ -38,7 +38,7 @@ class SectionHeaderContent extends React.Component {
           color="#A3A9AE"
           hoverColor="#657077"
           isFill={true}
-          onClick={this.onBackClick}
+          onClick={this.onClickBack}
         />
         <Headline type="content" style={textStyle}>{headerText}</Headline>
       </div>
