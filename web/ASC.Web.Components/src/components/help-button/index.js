@@ -5,24 +5,13 @@ import Tooltip from "../tooltip";
 import { handleAnyClick } from "../../utils/event";
 import uniqueId from "lodash/uniqueId";
 import Aside from "../aside";
-import { desktop, tablet } from "../../utils/device";
+import { desktop } from "../../utils/device";
 import Backdrop from "../backdrop";
 import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
-const HelpContainer = styled.div`
-  .help-icon {
-    @media ${desktop} {
-      margin-left: 8px;
-      margin-top: 8px;
-    }
-
-    @media ${tablet} {
-      padding: 8px;
-    }
-  }
-`;
+const HelpContainer = styled.div``;
 
 const Content = styled.div`
   box-sizing: border-box;
