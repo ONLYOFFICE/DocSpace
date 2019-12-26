@@ -344,7 +344,7 @@ class SectionBodyContent extends React.Component {
                 id="member-search"
                 isDisabled={inLoading}
                 scale={true}
-                placeholder="Search"
+                placeholder={t("SearchAddedMembers")}
                 value={searchValue}
                 onChange={this.onSearchChange}
               />

@@ -14,7 +14,7 @@ const StyledIconButton = styled.div`
 const StyledComboBox = styled(ComboBox)`
     display: block;
     float: left;
-    width: 20%;
+    width: 132px;
     margin-left: 8px;
 
     @media ${mobile} {

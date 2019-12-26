@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import styled from 'styled-components';
 import InputBlock from '../input-block';
 
-import isEqual from 'lodash/isEqual';
-
 const StyledSearchInput = styled.div`
   font-family: Open Sans;
   font-style: normal;

@@ -40,6 +40,7 @@
   "ChangeButton": "Изменить",
   "Phone": "Телефон",
   "ChangesSavedSuccessfully": "Изменения успешно сохранены",
+  "EditProfile": "Редактирование профиля",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",

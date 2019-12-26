@@ -24,7 +24,7 @@ const StyledFilterInput = styled.div`
 const StyledSearchInput = styled.div`
     display: block;
     float: left;
-    width: calc(80% - 8px);
+    width: calc(100% - 140px);
     @media ${mobile} {
         width: calc(100% - 58px);
     }
