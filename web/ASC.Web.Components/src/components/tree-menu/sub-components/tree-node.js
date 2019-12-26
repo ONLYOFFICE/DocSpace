@@ -204,6 +204,7 @@ const TreeNodeMenu = styled(TreeNode)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        color: #555F65;
     }
     span.rc-tree-title:first-child{
         max-width: 100%;
