@@ -1,0 +1,10 @@
+{
+  "Confirmation": "Подтверждение",
+  "DeleteUserConfirmation": "{{typeUser}} <strong>{{user}}</strong> будет удален.",
+  "NotBeUndone": "Внимание: это действие необратимо.",
+  "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
+  "OKButton": "OK",
+  "ReassignData": "Передать данные",
+  "Warning": "Внимание!",
+  "SuccessfullyDeleteUserInfoMessage": "Пользователь успешно удален"
+}

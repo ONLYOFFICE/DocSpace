@@ -70,7 +70,7 @@ const StyledMainButton = styled.div`
   box-sizing: border-box;
   background-color: ${props =>
     props.isDisabled ? disableBackgroundColor : backgroundColor};
-  padding: 5px 11px;
+  padding: 5px 10px;
   border-radius: 3px;
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;

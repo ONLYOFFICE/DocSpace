@@ -10,7 +10,7 @@
     ]
   },
   "dialogs": {
-    "Invite": {
+    "InviteDialog": {
       "Resource": [
         "HelpAnswerLinkInviteSettings",
         "CopyToClipboard",
@@ -22,6 +22,49 @@
       ],
     "ResourceJS": [
       "LinkCopySuccess"
+    ]
+  },
+  "ChangeEmailDialog":{
+    "Resource": [
+      "EmailChangeTitle",
+      "EnterEmail",
+      "EmailActivationDescription",
+      "SendButton"
+    ]
+  },
+  "DeleteSelfProfileDialog":{
+    "Resource": [
+      "DeleteProfileTitle",
+      "DeleteProfileInfo",
+      "CloseButton",
+      "SendButton"
+    ]
+  },
+  "ChangePhoneDialog":{
+    "Resource": [
+      "SendButton",
+      "MobilePhoneChangeTitle"
+    ]
+  },
+  "DeleteProfileEverDialog":{
+    "Resource": [
+      "Confirmation",
+      "DeleteUserConfirmation",
+      "Warning",
+      "DeleteUserDataConfirmation"      
+    ],
+    "PeopleResource": [
+      "SuccessfullyDeleteUserInfoMessage"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
+    ]
+  },
+  "ChangePasswordDialog":{
+    "Resource": [
+      "PasswordChangeTitle",
+      "MessageSendPasswordChangeInstructionsOnEmail",
+      "SendButton"
     ]
   }
 },

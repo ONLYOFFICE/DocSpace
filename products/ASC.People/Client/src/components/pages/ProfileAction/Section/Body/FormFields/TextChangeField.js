@@ -33,7 +33,8 @@ class TextChangeField extends React.Component {
       buttonTabIndex,
 
       tooltipContent,
-      helpButtonHeaderContent
+      helpButtonHeaderContent,
+      dataDialog
     } = this.props;
 
     return (
@@ -59,6 +60,7 @@ class TextChangeField extends React.Component {
             size="medium"
             style={{ marginLeft: "8px" }}
             tabIndex={buttonTabIndex}
+            data-dialog={dataDialog}
           />
         </InputContainer>
       </FieldContainer>

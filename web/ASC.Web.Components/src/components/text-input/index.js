@@ -57,22 +57,22 @@ const StyledInput = styled(Input).attrs((props) => ({
     transition: all 0.2s ease 0s;
 
     ::-webkit-input-placeholder {
-        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
         font-family: 'Open Sans',sans-serif
     }
 
     :-moz-placeholder {
-        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
         font-family: 'Open Sans',sans-serif
     }
 
     ::-moz-placeholder {
-        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
         font-family: 'Open Sans',sans-serif
     }
 
     :-ms-input-placeholder {
-        color: ${props => props.isDisabled ? '#D0D5DA' : '#A3A9AE'};
+        color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
         font-family: 'Open Sans',sans-serif
     }
 

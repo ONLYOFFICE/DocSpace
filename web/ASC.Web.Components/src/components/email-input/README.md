@@ -5,17 +5,23 @@ Email entry field with advanced capabilities for validation based on settings
 ### Usage
 
 ```js
-import { EmailInput } from "asc-web-components";
+import { EmailInput, utils } from "asc-web-components";
+
+const { EmailSettings } = utils.email;
+
+const settings = new EmailSettings();
+
+settings.allowDomainPunycode = true;
 ```
 
 ```jsx
 <EmailInput
   name="email"
   placeholder="email"
-  onValidateInput={isValidEmail =>
-    console.log("isValidEmail = ", isValidEmail);
-  }
   emailSettings={settings}
+  onValidateInput={result =>
+    console.log("onValidateInput", result.value, result.isValid, result.errors);
+  }
 />;
 ```
 
@@ -23,22 +29,22 @@ import { EmailInput } from "asc-web-components";
 
 You can apply all properties of the `TextInput` component to the component
 
-| Props                |                 Type                  | Required | Values |     Default     | Description                                                              |
-| -------------------- | :-----------------------------------: | :------: | :----: | :-------------: | ------------------------------------------------------------------------ |
-| `className`          |               `string`                |    -     |   -    |        -        | Accepts class                                                            |
-| `customValidateFunc` |                `func`                 |    -     |   -    |        -        | Function for your custom validation input value                          |
-| `emailSettings`      | `Object`, `Instance of EmailSettings` |    -     |   -    | `EmailSettings` | Settings for validating email                                            |
-| `id`                 |               `string`                |    -     |   -    |        -        | Accepts id                                                               |
-| `isValid`            |                `bool`                 |    -     |   -    |        -        | Used in your custom validation function for change border-color of input |
-| `onChange`           |                `func`                 |    -     |   -    |        -        | Function for your custom handling changes in input                       |
-| `onValidateInput`    |                `func`                 |    -     |   -    |        -        | Will be validate our value, return boolean validation result             |
-| `style`              |            `obj`, `array`             |    -     |   -    |        -        | Accepts css style                                                        |
+| Props                |                 Type                  | Required |             Values              |     Default     | Description                                                                                                                                                                          |
+| -------------------- | :-----------------------------------: | :------: | :-----------------------------: | :-------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `className`          |               `string`                |    -     |                -                |        -        | Accepts class                                                                                                                                                                        |
+| `customValidate` |                `func`                 |    -     |                -                |        -        | Function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors |
+| `emailSettings`      | `Object`, `EmailSettings` |    -     |                -                | { allowDomainPunycode: false, allowLocalPartPunycode: false, allowDomainIp: false, allowStrictLocalPart: true, allowSpaces: false, allowName: false, allowLocalDomainName: false } | Settings for validating email                                                                                                                                                        |
+| `hasError`           |                `bool`                 |    -     |                -                |        -        | Used in your custom validation                                                                                                                                                       |
+| `id`                 |               `string`                |    -     |                -                |        -        | Accepts id                                                                                                                                                                           |
+| `onChange`           |                `func`                 |    -     |                -                |        -        | Function for your custom handling changes in input                                                                                                                                   |
+| `onValidateInput`    |                `func`                 |    -     | { isValid: bool, errors: array} |        -        | Will be validate our value, return object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors                                              |
+| `style`              |            `obj`, `array`             |    -     |                -                |        -        | Accepts css style                                                                                                                                                                    |
 
 ### Validate email
 
-Our validation algorithm based on [An RFC 5322 email address parser](https://www.npmjs.com/package/email-addresses).
+Our validation algorithm based on [RFC 5322 email address parser](https://www.npmjs.com/package/email-addresses).
 
-For email validating you should use plain Object or our email utility with following settings:
+For email validating you should use plain Object or EmailSettings with following settings:
 
 | Props                    |  Type  | Required | Default | Description                                                                                                                                                 |
 | ------------------------ | :----: | :------: | :-----: | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -74,7 +80,7 @@ const { EmailSettings } = utils.email;
 
 const emailSettings = new EmailSettings();
 
-emailSettings.getSettings(); /* returned Object with default settings:
+emailSettings.toObject(); /* returned Object with default settings:
 {
   allowDomainPunycode: false,
   allowLocalPartPunycode: false,
@@ -87,7 +93,7 @@ emailSettings.getSettings(); /* returned Object with default settings:
 */
 email.allowName = true; // set allowName setting to true
 
-emailSettings.getSettings(); /* returned Object with NEW settings:
+emailSettings.toObject(); /* returned Object with NEW settings:
 {
   
   allowDomainPunycode: false,
@@ -104,62 +110,48 @@ emailSettings.getSettings(); /* returned Object with NEW settings:
 
 ### Custom validate email
 
-You should use custom validation with the `customValidateFunc` prop. Also you can change state of validation with the help of `isValid` prop.
-`isValid` prop allow you to change border-color of input.
+You should use custom validation with the `customValidate` prop. This prop contains function for your custom validation input value. Function must return object with following parameters: `value`: string value of input, `isValid`: boolean result of validating, `errors`(optional): array of errors.
 
-How are applied colors in component:
+Base colors:
 
 | Сomponent actions | isValid | border-color |
 | ----------------- | :-----: | :----------: |
-| `:focus`          | `false` |     #c30     |
-| `:focus`          | `true`  |   #2DA7DB    |
-| `:hover`          | `false` |     #c30     |
-| `:hover`          | `true`  |   #D0D5DA    |
-| `default`         | `false` |     #c30     |
-| `default`         | `true`  |   #D0D5DA    |
+| `:focus`          | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
+| `:focus`          | `true`  |  ![#2DA7DB](https://placehold.it/15/2DA7DB/000000?text=+) #2DA7DB    |
+| `:hover`          | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
+| `:hover`          | `true`  |  ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA    |
+| `default`         | `false` |  ![#c30](https://placehold.it/15/c30/000000?text=+)   #c30     |
+| `default`         | `true`  |  ![#D0D5DA](https://placehold.it/15/D0D5DA/000000?text=+) #D0D5DA    |
 
 ```js
-import React, { useState } from "react";
+import React from "react";
 import { EmailInput } from "asc-web-components";
 
-const [emailValid, setEmailValid] = useState(true);
-
-const customChangeFunc = (e) => {
+const onChange = (e) => {
   // your event handling
-  customValidateFunc(e.target.value);
+  customValidate(e.target.value);
 }
 
-const customValidateFunc = (value) => {
-  let validationResult;
-// your validating function
-  setEmailValid(validationResult);
+const customValidate = (value) => {
+  const isValid = !!(value && value.length > 0);
+  return { 
+    value,
+    isValid: isValid,
+    errors: isValid ? [] : ["incorrect email"]
+  }
 }
 
-const onValidateInput = (isValidEmail) => {
-    console.log(`isValidEmail = ${isValidEmail}`);
+const onValidateInput = (result) => {
+    console.log("onValidateInput", result);
 }
 
-return (
-<EmailInput
-  isValid={emailValid}
-  onChange={customChangeFunc}
-  customValidateFunc={customValidateFunc}
-  onValidateInput={onValidateInput}
-
-/>;
-);
 ```
 
-#### Email settings RFC 5321
+```jsx
+<EmailInput
+  customValidate={customValidate}
+  onChange={onChange}
+  onValidateInput={onValidateInput}
+/>;
 
-```js
-{
-  allowDomainPunycode: true,
-  allowLocalPartPunycode: true,
-  allowDomainIp: true,
-  allowStrictLocalPart: false,
-  allowSpaces: true,
-  allowName: false,
-  allowLocalDomainName: true
-}
 ```

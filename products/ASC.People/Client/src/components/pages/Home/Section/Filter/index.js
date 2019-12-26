@@ -247,6 +247,7 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
+        placeholder={t("FilterPlaceholder")}
       />
     );
   }
