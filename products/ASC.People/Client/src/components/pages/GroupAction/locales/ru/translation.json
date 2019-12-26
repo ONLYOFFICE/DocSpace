@@ -10,5 +10,6 @@
   "CustomEditDepartment": "Редактирование {{department, lowercase}}",
   "CustomDepartmentName": "Имя {{department}}",
   "Members": "Участники",
-  "AddMembers": "Добавить участников"
+  "AddMembers": "Добавить участников",
+  "SearchAddedMembers": "Поиск добавленных участников"
 }
