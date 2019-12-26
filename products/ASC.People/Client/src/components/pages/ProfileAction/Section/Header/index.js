@@ -22,7 +22,7 @@ const HeaderContainer = styled(Headline)`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { profile, history, settings, match } = props;
+  const { profile, history, match } = props;
   const { type } = match.params;
   const { t } = useTranslation();
 
@@ -34,7 +34,7 @@ const SectionHeaderContent = (props) => {
       ? profile.displayName
       : "";
 
-  const onClick = useCallback(() => {
+  const onClickBack = useCallback(() => {
     history.goBack();
   }, [history]);
 
@@ -46,7 +46,7 @@ const SectionHeaderContent = (props) => {
         size="16"
         hoverColor="#657077"
         isFill={true}
-        onClick={onClick}
+        onClick={onClickBack}
       />
       <HeaderContainer
         type='content'
