@@ -44,6 +44,7 @@ namespace ASC.Core.Data
         {
             FromDbQuotaToTenantQuota = r => new TenantQuota()
             {
+                Id = r.Tenant,
                 Name = r.Name,
                 ActiveUsers = r.ActiveUsers != 0 ? r.ActiveUsers : int.MaxValue,
                 AvangateId = r.AvangateId,
