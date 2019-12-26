@@ -49,6 +49,7 @@ const StyledContainer = styled.div`
 
       @media (max-width: 1024px) {
         margin-left: auto;
+        padding: 8px 0 8px 8px;
       }
     }
   }
