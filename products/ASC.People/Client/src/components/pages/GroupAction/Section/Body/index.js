@@ -45,10 +45,11 @@ const MainContainer = styled.div`
   .members_container {
     position: relative;
     max-width: 320px;
+    margin: 0;
   }
 
   .search_container {
-    margin-top: 16px;
+    margin-top: 32px;
   }
 
   .selected-members_container {
@@ -337,30 +338,32 @@ class SectionBodyContent extends React.Component {
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
-          <div className="search_container">
-            <SearchInput
-              id="member-search"
-              isDisabled={inLoading}
-              scale={true}
-              placeholder="Search"
-              value={searchValue}
-              onChange={this.onSearchChange}
-            />
-          </div>
+          <>
+            <div className="search_container">
+              <SearchInput
+                id="member-search"
+                isDisabled={inLoading}
+                scale={true}
+                placeholder="Search"
+                value={searchValue}
+                onChange={this.onSearchChange}
+              />
+            </div>
+            <div className="selected-members_container">
+              {groupMembers.map(member => (
+                <SelectedItem
+                  key={member.key}
+                  text={member.label}
+                  onClose={this.onSelectedItemClose.bind(this, member)}
+                  isInline={true}
+                  className="selected-item"
+                  isDisabled={inLoading}
+                />
+              ))}
+            </div>
+          </>
         )}
-        <div className="selected-members_container">
-          {groupMembers.map(member => (
-            <SelectedItem
-              key={member.key}
-              text={member.label}
-              onClose={this.onSelectedItemClose.bind(this, member)}
-              isInline={true}
-              className="selected-item"
-              isDisabled={inLoading}
-            />
-          ))}
-        </div>
-        <div>{error && <strong>{error}</strong>}</div>
+        {error && <div><strong>{error}</strong></div>}
         <div className="buttons_container">
           <Button
             label={t("SaveButton")}
