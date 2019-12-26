@@ -36,6 +36,10 @@ const CloseButton = styled.div`
 
     &:hover{
         cursor: pointer;
+
+        &:before, &:after {
+          background-color: #555F65;
+        }
     }
 
     &:before, &:after {
@@ -45,10 +49,6 @@ const CloseButton = styled.div`
         height: 20px;
         width: 1px;
         background-color: #D0D5DA;
-
-        :hover{
-          background-color: #555F65;
-      }
     }
 
     &:before {
