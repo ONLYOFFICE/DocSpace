@@ -65,11 +65,11 @@ class PureArticleMainButtonContent extends React.Component {
               label={t('InviteLinkTitle')}
               onClick={this.onInvitationDialogClick}
             />
-            <DropDownItem
+            {/* <DropDownItem
               icon="PlaneIcon"
               label={t('LblInviteAgain')}
               onClick={this.onNotImplementedClick.bind(this, "Invite again action")}
-            />
+            /> */}
             {false &&
               <DropDownItem
                 icon="ImportIcon"
