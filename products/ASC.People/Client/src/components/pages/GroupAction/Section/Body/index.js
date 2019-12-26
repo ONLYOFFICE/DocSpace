@@ -64,7 +64,7 @@ const MainContainer = styled.div`
   }
 
   .buttons_container {
-    margin-top: 60px;
+    margin-top: 40px;
 
     .cancel-button {
       margin-left: 8px;
@@ -320,7 +320,7 @@ class SectionBodyContent extends React.Component {
             isDisabled={inLoading}
             selectedOption={{
               key: 0,
-              label: t("CustomAddEmployee", { typeUser })
+              label: t("AddMembers")
             }}
             scaled={true}
             size="content"
