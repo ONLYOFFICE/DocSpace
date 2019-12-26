@@ -10,5 +10,6 @@
   "CustomEditDepartment": "Edit {{department, lowercase}}",
   "CustomDepartmentName": "{{department}} name",
   "Members": "Members",
-  "AddMembers": "Add members"
+  "AddMembers": "Add members",
+  "SearchAddedMembers": "Search added members"
 }
