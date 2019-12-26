@@ -31,7 +31,7 @@ const SectionHeaderContent = (props) => {
       ? t('CustomNewGuest', { typeGuest })
       : t('CustomNewEmployee', { typeUser })
     : profile
-      ? profile.displayName
+      ? `${t('EditProfile')} (${profile.displayName})`
       : "";
 
   const onClickBack = useCallback(() => {
