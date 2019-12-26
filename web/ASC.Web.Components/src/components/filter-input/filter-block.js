@@ -66,12 +66,9 @@ class FilterItem extends React.Component {
     this.state = {
       id: this.props.id
     };
-
-    this.onSelect = this.onSelect.bind(this);
-    this.onClick = this.onClick.bind(this);
   }
 
-  onSelect(option) {
+  onSelect = (option) => {
     this.props.onSelectFilterItem(null, {
       key: option.group + "_" + option.key,
       label: option.label,
@@ -79,8 +76,8 @@ class FilterItem extends React.Component {
       inSubgroup: !!option.inSubgroup
     });
   }
-  onClick(e){
-    !this.props.isDisabled && this.props.onClose(e, this.props.id);
+  onClick = () => {
+    !this.props.isDisabled && this.props.onClose(this.props.id);
   }
 
   render() {
@@ -115,6 +112,17 @@ class FilterItem extends React.Component {
     );
   }
 }
+FilterItem.propTypes = {
+  id: PropTypes.string,
+  opened: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  block: PropTypes.bool,
+  groupItems: PropTypes.array,
+  label: PropTypes.string,
+  groupLabel: PropTypes.string,
+  onClose:PropTypes.func,
+  onSelectFilterItem:PropTypes.func
+}
 
 class FilterBlock extends React.Component {
   constructor(props) {
@@ -125,15 +133,11 @@ class FilterBlock extends React.Component {
       openFilterItems: this.props.openFilterItems || []
     };
 
-    this.getData = this.getData.bind(this);
-    this.getFilterItems = this.getFilterItems.bind(this);
-    this.onDeleteFilterItem = this.onDeleteFilterItem.bind(this);
-
   }
-  onDeleteFilterItem(e, key) {
+  onDeleteFilterItem = (key) => {
     this.props.onDeleteFilterItem(key);
   }
-  getFilterItems() {
+  getFilterItems = () => {
     const _this = this;
     let result = [];
     let openItems = [];
@@ -183,7 +187,7 @@ class FilterBlock extends React.Component {
     result = hideItems.concat(openItems);
     return result;
   }
-  getData() {
+  getData = () => {
     const _this = this;
     const d = this.props.getFilterData();
     let result = [];

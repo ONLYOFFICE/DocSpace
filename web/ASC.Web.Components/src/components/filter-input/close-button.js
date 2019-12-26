@@ -19,7 +19,7 @@ const CloseButton = props => {
         iconName={'CrossIcon'}
         isFill={true}
         isDisabled={props.isDisabled}
-        onClick={!props.isDisabled ? (() => props.onClick()) : undefined}
+        onClick={!props.isDisabled ? props.onClick : undefined}
       />
     </StyledCloseButton>
   );
