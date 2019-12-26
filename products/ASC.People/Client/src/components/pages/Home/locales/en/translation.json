@@ -53,5 +53,7 @@
   "DirectionAscLabel":"A-Z",
   "DirectionDescLabel":"Z-A",
 
-  "DefaultSelectLabel": "Select"
+  "DefaultSelectLabel": "Select",
+
+  "FilterPlaceholder": "Search"
 }

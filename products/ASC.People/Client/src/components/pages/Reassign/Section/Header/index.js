@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { connect } from "react-redux";
 import { IconButton } from "asc-web-components";
 import { Headline } from 'asc-web-common';
@@ -19,6 +19,10 @@ const SectionHeaderContent = props => {
   const { history, settings } = props;
   const { t } = useTranslation();
 
+  const onClickBack = useCallback(() => {
+    history.push(settings.homepage);
+  }, [history, settings]);
+
   return (
     <div style={wrapperStyle}>
       <div style={{ width: "16px" }}>
@@ -28,7 +32,7 @@ const SectionHeaderContent = props => {
           size="16"
           hoverColor="#657077"
           isFill={true}
-          onClick={() => history.push(settings.homepage)}
+          onClick={onClickBack}
         />
       </div>
       <Headline type="content" truncate={true} style={textStyle}>

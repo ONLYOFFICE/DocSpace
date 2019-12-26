@@ -358,8 +358,10 @@ class SectionHeaderContent extends React.PureComponent {
     }
   };
 
-  goBack = () => {
-    this.props.history.goBack();
+  onClickBack = () => {
+    const { history, settings } = this.props;
+
+    history.push(settings.homepage);
   };
 
   render() {
@@ -375,7 +377,7 @@ class SectionHeaderContent extends React.PureComponent {
           size="16"
           hoverColor="#657077"
           isFill={true}
-          onClick={this.goBack}
+          onClick={this.onClickBack}
         />
         <HeaderContainer type='content' truncate={true}>
           {profile.displayName}

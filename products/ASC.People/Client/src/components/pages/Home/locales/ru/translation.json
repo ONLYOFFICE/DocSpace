@@ -53,5 +53,7 @@
   "DirectionAscLabel":"А-Я",
   "DirectionDescLabel":"Я-А",
 
-  "DefaultSelectLabel": "Выберите"
+  "DefaultSelectLabel": "Выберите",
+
+  "FilterPlaceholder": "Поиск"
 }
