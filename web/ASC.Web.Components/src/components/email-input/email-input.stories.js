@@ -53,7 +53,7 @@ storiesOf('Components|Input', module)
           id={id}
           name={name}
           emailSettings={settings}
-          onValidateInput={(isEmailValid) => action('isValidEmail')(isEmailValid)}
+          onValidateInput={(isEmailValid) => action('onValidateInput')(isEmailValid)}
         />
       </Section>
     );

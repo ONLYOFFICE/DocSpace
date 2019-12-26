@@ -1,0 +1,5 @@
+{
+  "PasswordChangeTitle": "Изменение пароля",
+  "MessageSendPasswordChangeInstructionsOnEmail": "Отправить инструкции по смене пароля на адрес <1>{{email}}</1>",
+  "SendButton": "Отправить"
+}

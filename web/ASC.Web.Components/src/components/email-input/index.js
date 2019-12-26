@@ -1,139 +1,156 @@
-import React from 'react'
-import styled from 'styled-components'
-import PropTypes from 'prop-types'
+import React from "react";
+import PropTypes from "prop-types";
 import isEqual from "lodash/isEqual";
-import TextInput from '../text-input'
-import { EmailSettings, parseAddress, checkAndConvertEmailSettings, isEqualEmailSettings } from '../../utils/email/';
+import TextInput from "../text-input";
+import {
+  EmailSettings,
+  parseAddress
+} from "../../utils/email/";
 
-const borderColor = {
-  default: '#D0D5DA',
-  isValid: '#2DA7DB',
-  isNotValid: '#c30'
-};
-
-// eslint-disable-next-line no-unused-vars
-const SimpleInput = ({ onValidateInput, isValidEmail, emailSettings, ...props }) => <TextInput {...props}></TextInput>;
-
-SimpleInput.propTypes = {
-  onValidateInput: PropTypes.func,
-  isValidEmail: PropTypes.bool,
-  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)])
-}
-
-const StyledTextInput = styled(SimpleInput)`
-
-  border-color: ${props => (props.isValidEmail ? borderColor.default : borderColor.isNotValid)};
-
-    :hover {
-      border-color: ${props => (props.isValidEmail ? borderColor.default : borderColor.isNotValid)};
-    }
-
-    :focus {
-      border-color: ${props => (props.isValidEmail ? borderColor.isValid : borderColor.isNotValid)};
-    }
-
-`;
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+const TextInputWrapper = ({
+  onValidateInput,
+  isValidEmail,
+  emailSettings,
+  ...props
+}) => <TextInput {...props}></TextInput>;
+/* eslint-enable react/prop-types */
+/* eslint-enable no-unused-vars */
 
 class EmailInput extends React.Component {
   constructor(props) {
     super(props);
 
     const { value, emailSettings } = this.props;
-    const validatedSettings = checkAndConvertEmailSettings(emailSettings);
+    const validatedSettings = EmailSettings.parse(emailSettings);
+    const isValidEmail = this.checkEmail(value, validatedSettings);
 
     this.state = {
-      isValidEmail: true,
+      isValidEmail,
       emailSettings: validatedSettings,
       inputValue: value
-    }
-  }
-
-  componentDidUpdate() {
-    const { emailSettings } = this.props;
-    if (isEqualEmailSettings(this.state.emailSettings, emailSettings)) return;
-
-    const validatedSettings = checkAndConvertEmailSettings(emailSettings);
-
-    this.setState({ emailSettings: validatedSettings }, function () {
-      this.checkEmail(this.state.inputValue);
-    });
-
-  }
-
-  checkEmail = (value) => {
-    if (!value.length) {
-      !this.state.isValidEmail && this.setState({ isValidEmail: true, inputValue: value });
-      return;
-    }
-
-    const emailObj = parseAddress(value, this.state.emailSettings);
-    const isValidEmail = emailObj.isValid();
-
-    this.props.onValidateInput
-      && this.props.onValidateInput(isValidEmail);
-
-    this.setState({ isValidEmail, inputValue: value });
-  }
-
-  onChangeAction = (e) => {
-    this.props.onChange && this.props.onChange(e);
-
-    this.props.customValidateFunc ? this.props.customValidateFunc(e) : this.checkEmail(e.target.value);
+    };
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
   }
 
+  componentDidUpdate(prevProps) {
+    const { emailSettings, value } = this.props;
+
+    if (!EmailSettings.equals(emailSettings, prevProps.emailSettings)) {
+      const validatedSettings = EmailSettings.parse(emailSettings);
+
+      this.setState({ emailSettings: validatedSettings }, () => {
+        this.validate(this.state.inputValue);
+      });
+    }
+
+    if (value !== prevProps.value) {
+      this.validate(value);
+    }
+  }
+
+  validate = (value) => {
+    const { onValidateInput } = this.props;
+    const isValidEmail = this.checkEmail(value);
+    this.setState({
+      inputValue: value,
+      isValidEmail
+    });
+    onValidateInput && onValidateInput(isValidEmail);
+  }
+
+  checkEmail = (value, emailSettings = this.state.emailSettings) => {
+    const { customValidate } = this.props;
+    if (customValidate) {
+      return customValidate(value);
+    } else {
+      const emailObj = parseAddress(value, emailSettings);
+      const isValidEmail = emailObj.isValid();
+      const parsedErrors = emailObj.parseErrors;
+      const errors = parsedErrors
+        ? parsedErrors.map(error => error.errorKey)
+        : [];
+      return {
+        value,
+        isValid: isValidEmail,
+        errors
+      };
+    }
+  };
+
+  onChange = e => {
+    const { onChange, onValidateInput } = this.props;
+    onChange ? onChange(e) : this.setState({ inputValue: e.target.value });
+
+    const isValidEmail = this.checkEmail(e.target.value);
+    this.setState({ isValidEmail });
+
+    onValidateInput && onValidateInput(isValidEmail);
+  };
+
   render() {
     //console.log('EmailInput render()');
     // eslint-disable-next-line no-unused-vars
-    const { onValidateInput, emailSettings, onChange, isValid, value, ...rest } = this.props;
+    const {
+      onValidateInput,
+      hasError
+    } = this.props;
 
     const { isValidEmail, inputValue } = this.state;
+    const isError =
+      typeof hasError === "boolean"
+        ? hasError
+        : Boolean(inputValue && !isValidEmail.isValid);
 
     return (
-      <StyledTextInput
-        isValidEmail={isValid || isValidEmail}
+      <TextInputWrapper
+        {...this.props}
+        hasError={isError}
         value={inputValue}
-        onChange={this.onChangeAction}
-        type='text'
+        onChange={this.onChange}
+        type="text"
         onValidateInput={onValidateInput}
-        {...rest}
       />
     );
   }
 }
 
 EmailInput.propTypes = {
-  onValidateInput: PropTypes.func,
-  onChange: PropTypes.func,
-  customValidateFunc: PropTypes.func,
-  value: PropTypes.string,
-  isValid: PropTypes.bool,
-  emailSettings: PropTypes.oneOfType([PropTypes.instanceOf(EmailSettings), PropTypes.objectOf(PropTypes.bool)]),
   className: PropTypes.string,
+  customValidate: PropTypes.func,
+  emailSettings: PropTypes.oneOfType([
+    PropTypes.instanceOf(EmailSettings),
+    PropTypes.objectOf(PropTypes.bool)
+  ]),
+  hasError: PropTypes.bool,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
-}
+  onChange: PropTypes.func,
+  onValidateInput: PropTypes.func,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  value: PropTypes.string
+};
 
 EmailInput.defaultProps = {
-  id: '',
-  name: '',
-  autoComplete: 'email',
-  maxLength: 255,
-  value: '',
+  autoComplete: "email",
+  className: "",
+  hasError: undefined,
+  id: "",
   isDisabled: false,
   isReadOnly: false,
-  size: 'base',
+  maxLength: 255,
+  name: "",
+  placeholder: "",
   scale: false,
+  size: "base",
+  title: "",
+  value: "",
   withBorder: true,
-  placeholder: '',
-  className: '',
-  title: '',
-  isValid: undefined,
 
   emailSettings: new EmailSettings()
-}
+};
 
 export default EmailInput;

@@ -186,7 +186,7 @@ class Confirm extends React.PureComponent {
         this.state.errorText && this.setState({ errorText: "" });;
     }
 
-    onValidateEmail = value => this.setState({emailValid: value });
+    onValidateEmail = value => this.setState({emailValid: value.isValid });
 
     onChangePassword = event => {
         this.setState({ password: event.target.value });

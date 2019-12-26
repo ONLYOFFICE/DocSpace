@@ -11,46 +11,31 @@ import {
   Textarea,
   Text
 } from "asc-web-components";
-import { withTranslation, I18nextProvider } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
-import styled from "styled-components";
+import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
 import { api } from "asc-web-common";
 const { getShortenedLink } = api.portal;
 
-const ModalDialogContainer = styled.div`
-  .margin-text {
-    margin: 12px 0;
-  }
-
-  .margin-link {
-    margin-right: 12px;
-  }
-
-  .margin-textarea {
-    margin-top: 12px;
-  }
-
-  .flex {
-    display: flex;
-    justify-content: space-between;
-  }
-`;
-
 const textAreaName = "link-textarea";
 
-class PureInviteDialog extends React.Component {
+class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    const { language, userInvitationLink, guestInvitationLink } = this.props;
     this.state = {
       isGuest: false,
-      userInvitationLink: this.props.userInvitationLink,
-      guestInvitationLink: this.props.guestInvitationLink,
+      userInvitationLink,
+      guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
       visible: false
     };
+
+    i18n.changeLanguage(language);
   }
 
   onCopyLinkToClipboard = () => {
@@ -94,7 +79,7 @@ class PureInviteDialog extends React.Component {
   };
 
   componentDidMount() {
-      this.onCopyLinkToClipboard();
+    this.onCopyLinkToClipboard();
   }
 
   onClickToCloseButton = () =>
@@ -113,16 +98,16 @@ class PureInviteDialog extends React.Component {
           headerContent={t("InviteLinkTitle")}
           bodyContent={
             <>
-              <Text className="margin-text" as="p">
+              <Text as="p">
                 {t("HelpAnswerLinkInviteSettings")}
               </Text>
-              <Text className="margin-text" as="p">
+              <Text className="text-dialog" as="p">
                 {t("InviteLinkValidInterval", { count: 7 })}
               </Text>
               <div className="flex">
                 <div>
                   <Link
-                    className="margin-link"
+                    className="link-dialog"
                     type="action"
                     isHovered={true}
                     onClick={this.onCopyLinkToClipboard}
@@ -147,7 +132,7 @@ class PureInviteDialog extends React.Component {
                 />
               </div>
               <Textarea
-                className="margin-textarea"
+                className="textarea-dialog"
                 isReadOnly={true}
                 isDisabled={this.state.isLoading}
                 name={textAreaName}
@@ -185,16 +170,15 @@ const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink
+    guestInvitationLink: state.portal.inviteLinks.guestLink,
+    language: state.auth.user.cultureName,
   };
 };
 
-const InviteDialogContainer = withTranslation()(PureInviteDialog);
+const InviteDialogTranslated = withTranslation()(InviteDialogComponent);
 
 const InviteDialog = props => (
-  <I18nextProvider i18n={i18n}>
-    <InviteDialogContainer {...props} />
-  </I18nextProvider>
+  <InviteDialogTranslated i18n={i18n} {...props} />
 );
 
 InviteDialog.propTypes = {

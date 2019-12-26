@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { Avatar, Button, Textarea, Text, toastr, ModalDialog, TextInput, AvatarEditor, Link } from 'asc-web-components'
+import { Avatar, Button, Textarea, Text, toastr, AvatarEditor, Link } from 'asc-web-components'
 import { withTranslation, Trans } from 'react-i18next';
 import { toEmployeeWrapper, getUserRole, getUserContactsPattern, getUserContacts, mapGroupsToGroupSelectorOptions, mapGroupSelectorOptionsToGroups, filterGroupSelectorOptions } from "../../../../../store/people/selectors";
 import { updateProfile, getUserPhoto } from '../../../../../store/profile/actions'
@@ -16,7 +16,14 @@ import InfoFieldContainer from './FormFields/InfoFieldContainer'
 import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 import styled from "styled-components";
 import { api } from "asc-web-common";
-const {sendInstructionsToChangePassword, sendInstructionsToChangeEmail, createThumbnailsAvatar, loadAvatar, deleteAvatar} = api.people;
+import { ChangeEmailDialog, ChangePasswordDialog, ChangePhoneDialog } from '../../../../dialogs';
+const { createThumbnailsAvatar, loadAvatar, deleteAvatar } = api.people;
+
+const dialogsDataset = {
+  changeEmail: 'changeEmail',
+  changePassword: 'changePassword',
+  changePhone: 'changePhone'
+};
 
 const Table = styled.table`
   width: 100%;
@@ -44,14 +51,6 @@ class UpdateUserForm extends React.Component {
     this.onBirthdayDateChange = this.onBirthdayDateChange.bind(this);
     this.onWorkFromDateChange = this.onWorkFromDateChange.bind(this);
     this.onCancel = this.onCancel.bind(this);
-
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onSendEmailChangeInstructions = this.onSendEmailChangeInstructions.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
-    this.onSendPasswordChangeInstructions = this.onSendPasswordChangeInstructions.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onSendPhoneChangeInstructions = this.onSendPhoneChangeInstructions.bind(this);
-    this.onDialogClose = this.onDialogClose.bind(this);
 
     this.onContactsItemAdd = this.onContactsItemAdd.bind(this);
     this.onContactsItemTypeChange = this.onContactsItemTypeChange.bind(this);
@@ -81,10 +80,10 @@ class UpdateUserForm extends React.Component {
   mapPropsToState = (props) => {
     var profile = toEmployeeWrapper(props.profile);
     var allOptions = mapGroupsToGroupSelectorOptions(props.groups);
-    var selected = mapGroupsToGroupSelectorOptions(profile.groups); 
+    var selected = mapGroupsToGroupSelectorOptions(profile.groups);
 
     getUserPhoto(profile.id).then(userPhotoData => {
-      if(userPhotoData.original){
+      if (userPhotoData.original) {
         let avatarDefaultSizes = /_(\d*)-(\d*)./g.exec(userPhotoData.original);
         if (avatarDefaultSizes !== null && avatarDefaultSizes.length > 2) {
           this.setState({
@@ -107,13 +106,6 @@ class UpdateUserForm extends React.Component {
       },
       profile: profile,
       visibleAvatarEditor: false,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: profile.email,
-      },
       selector: {
         visible: false,
         allOptions: allOptions,
@@ -121,10 +113,16 @@ class UpdateUserForm extends React.Component {
         selected: selected
       },
       avatar: {
-        tmpFile:"",
+        tmpFile: "",
         image: null,
         defaultWidth: 0,
         defaultHeight: 0
+      },
+      dialogsVisible: {
+        [dialogsDataset.changePassword]: false,
+        [dialogsDataset.changePhone]: false,
+        [dialogsDataset.changeEmail]: false,
+        currentDialog: ''
       }
     };
 
@@ -143,6 +141,20 @@ class UpdateUserForm extends React.Component {
     stateCopy.profile[event.target.name] = event.target.value;
     this.setState(stateCopy)
   }
+
+  toggleDialogsVisible = (e) => {
+    const stateCopy = Object.assign({}, {}, this.state.dialogsVisible);
+    const selectedDialog = e ? e.target.dataset.dialog : e;
+    if (selectedDialog) {
+      stateCopy[selectedDialog] = true;
+      stateCopy.currentDialog = selectedDialog;
+    }
+    else {
+      stateCopy[stateCopy.currentDialog] = false;
+      stateCopy.currentDialog = '';
+    }
+    this.setState({ dialogsVisible: stateCopy });
+  };
 
   onUserTypeChange(event) {
     var stateCopy = Object.assign({}, this.state);
@@ -181,10 +193,10 @@ class UpdateUserForm extends React.Component {
   }
 
   handleSubmit() {
-    if(!this.validate())
+    if (!this.validate())
       return false;
 
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     this.props.updateProfile(this.state.profile)
       .then((profile) => {
@@ -193,120 +205,12 @@ class UpdateUserForm extends React.Component {
       })
       .catch((error) => {
         toastr.error(error);
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       });
   }
 
   onCancel() {
     this.props.history.goBack();
-  }
-
-  onEmailChange(event) {
-    const emailRegex = /.+@.+\..+/;
-    const newEmail = event.target.value || this.state.dialog.newEmail;
-    const hasError = !emailRegex.test(newEmail);
-
-    const dialog = { 
-      visible: true,
-      header: "Change email",
-      body: (
-        <Text>
-          <span style={{display: "block", marginBottom: "8px"}}>The activation instructions will be sent to the entered email</span>
-          <TextInput
-            id="new-email"
-            scale={true}
-            isAutoFocussed={true}
-            value={newEmail}
-            onChange={this.onEmailChange}
-            hasError={hasError}
-          />
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendEmailChangeInstructions}
-          isDisabled={hasError}
-        />
-      ],
-      newEmail: newEmail
-     };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendEmailChangeInstructions() {
-    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.newEmail)
-      .then((res) => {
-        toastr.success(res);
-      })
-      .catch((error) => toastr.error(error))
-      .finally(this.onDialogClose);
-  }
-
-  onPasswordChange() {
-    const dialog = { 
-      visible: true,
-      header: "Change password",
-      body: (
-        <Text>
-          Send the password change instructions to the <a href={`mailto:${this.state.profile.email}`}>{this.state.profile.email}</a> email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPasswordChangeInstructions}
-        />
-      ]
-     };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendPasswordChangeInstructions() {
-    sendInstructionsToChangePassword(this.state.profile.email)
-      .then((res) => {
-        toastr.success(res);
-      })
-      .catch((error) => toastr.error(error))
-      .finally(this.onDialogClose);
-  }
-
-  onPhoneChange() {
-    const dialog = { 
-      visible: true,
-      header: "Change phone",
-      body: (
-        <Text>
-          The instructions on how to change the user mobile number will be sent to the user email address
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendPhoneChangeInstructions}
-        />
-      ]
-     };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendPhoneChangeInstructions() {
-    toastr.success("Context action: Change phone");
-    this.onDialogClose();
-  }
-
-  onDialogClose() {
-    const dialog = { visible: false, newEmail: this.state.profile.email }; 
-    this.setState({ dialog: dialog })
   }
 
   onContactsItemAdd(item) {
@@ -360,7 +264,7 @@ class UpdateUserForm extends React.Component {
           defaultWidth: avatarDefaultSizes[1],
           defaultHeight: avatarDefaultSizes[2]
         }
-      }) 
+      })
     }
     this.setState({
       visibleAvatarEditor: true,
@@ -376,14 +280,14 @@ class UpdateUserForm extends React.Component {
       .then((response) => {
         var img = new Image();
         img.onload = function () {
-            var stateCopy = Object.assign({}, _this.state);
-            stateCopy.avatar =  {
-              tmpFile: response.data,
-              image: response.data,
-              defaultWidth: img.width,
-              defaultHeight: img.height
-            }
-            _this.setState(stateCopy);
+          var stateCopy = Object.assign({}, _this.state);
+          stateCopy.avatar = {
+            tmpFile: response.data,
+            image: response.data,
+            defaultWidth: img.width,
+            defaultHeight: img.height
+          }
+          _this.setState(stateCopy);
         };
         img.src = response.data;
       })
@@ -391,33 +295,33 @@ class UpdateUserForm extends React.Component {
   }
 
   onSaveAvatar(isUpdate, result) {
-    if(isUpdate){
+    if (isUpdate) {
       createThumbnailsAvatar(this.state.profile.id, {
-        x: Math.round(result.x*this.state.avatar.defaultWidth - result.width/2),
-        y: Math.round(result.y*this.state.avatar.defaultHeight - result.height/2),
+        x: Math.round(result.x * this.state.avatar.defaultWidth - result.width / 2),
+        y: Math.round(result.y * this.state.avatar.defaultHeight - result.height / 2),
         width: result.width,
         height: result.height,
         tmpFile: this.state.avatar.tmpFile
       })
-      .then((response) => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.avatar.tmpFile = '';
-          stateCopy.profile.avatarMax = response.max + '?_='+Math.floor(Math.random() * Math.floor(10000));
+          stateCopy.profile.avatarMax = response.max + '?_=' + Math.floor(Math.random() * Math.floor(10000));
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
-      })
-      .catch((error) => toastr.error(error));
-    }else{
+        })
+        .catch((error) => toastr.error(error));
+    } else {
       deleteAvatar(this.state.profile.id)
-      .then((response) => {
+        .then((response) => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
           toastr.success(this.props.t("ChangesSavedSuccessfully"));
           this.setState(stateCopy);
-      })
-      .catch((error) => toastr.error(error));
+        })
+        .catch((error) => toastr.error(error));
     }
   }
 
@@ -461,17 +365,17 @@ class UpdateUserForm extends React.Component {
   }
 
   render() {
-    const { isLoading, errors, profile, dialog, selector } = this.state;
+    const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
     const { t, i18n } = this.props;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
-    const tooltipTypeContent = 
+    const tooltipTypeContent =
       <>
-        <Text 
-          style={{paddingBottom: 17}} 
+        <Text
+          style={{ paddingBottom: 17 }}
           fontSize='13px'>
-            {t("ProfileTypePopupHelper")}
+          {t("ProfileTypePopupHelper")}
         </Text>
 
         <Text fontSize='12px' as="div">
@@ -486,8 +390,8 @@ class UpdateUserForm extends React.Component {
                 <Th>
                   <Text isBold fontSize='13px'>
                     {t("Employee")}
-                    </Text>
-                  </Th>
+                  </Text>
+                </Th>
                 <Th>
                   <Text isBold fontSize='13px'>
                     {t("GuestCaption")}
@@ -528,16 +432,16 @@ class UpdateUserForm extends React.Component {
                 <Td>{t("Calendar")}</Td>
                 <Td>review</Td>
                 <Td>review</Td>
-              </tr>            
+              </tr>
             </tbody>
           </Table>
         </Text>
-        <Link 
-          color="#316DAA" 
-          isHovered={true} 
-          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block" 
-          style={{marginTop: 23}}>
-            {t("TermsOfUsePopupHelperLink")}
+        <Link
+          color="#316DAA"
+          isHovered={true}
+          href="https://helpcenter.onlyoffice.com/ru/gettingstarted/people.aspx#ManagingAccessRights_block"
+          style={{ marginTop: 23 }}>
+          {t("TermsOfUsePopupHelperLink")}
         </Link>
       </>;
 
@@ -561,10 +465,10 @@ class UpdateUserForm extends React.Component {
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
               headerLabel={t("editAvatar")}
-              chooseFileLabel ={t("chooseFileLabel")}
+              chooseFileLabel={t("chooseFileLabel")}
               unknownTypeError={t("unknownTypeError")}
               maxSizeFileError={t("maxSizeFileError")}
-              unknownError    ={t("unknownError")}
+              unknownError={t("unknownError")}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
@@ -574,7 +478,7 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.email}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onEmailChange}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={1}
 
               helpButtonHeaderContent={t("Mail")}
@@ -582,7 +486,7 @@ class UpdateUserForm extends React.Component {
                 <Text fontSize='13px' as="div">
                   <Trans i18nKey="EmailPopupHelper" i18n={i18n}>
                     The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications.
-                    <p style={{margin: "1rem 0"/*, height: "0", visibility: "hidden"*/}}>
+                    <p style={{ margin: "1rem 0"/*, height: "0", visibility: "hidden"*/ }}>
                       You can create a new mail on the domain as the primary.
                       In this case, you must set a one-time password so that the user can log in to the portal for the first time.
                     </p>
@@ -590,6 +494,7 @@ class UpdateUserForm extends React.Component {
                   </Trans>
                 </Text>
               }
+              dataDialog={dialogsDataset.changeEmail}
             />
             <TextChangeField
               labelText={`${t("Password")}:`}
@@ -597,8 +502,9 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.password}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onPasswordChange}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={2}
+              dataDialog={dialogsDataset.changePassword}
             />
             <TextChangeField
               labelText={`${t("Phone")}:`}
@@ -606,8 +512,9 @@ class UpdateUserForm extends React.Component {
               inputValue={profile.phone}
               buttonText={t("ChangeButton")}
               buttonIsDisabled={isLoading}
-              buttonOnClick={this.onPhoneChange}
+              buttonOnClick={this.toggleDialogsVisible}
               buttonTabIndex={3}
+              dataDialog={dialogsDataset.changePhone}
             />
             <TextField
               isRequired={true}
@@ -644,8 +551,8 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: t("SexMale")},
-                { value: 'female', label: t("SexFemale")}
+                { value: 'male', label: t("SexMale") },
+                { value: 'female', label: t("SexFemale") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -655,8 +562,8 @@ class UpdateUserForm extends React.Component {
               radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: t("CustomTypeGuest", { typeGuest })},
-                { value: "false", label: t("CustomTypeUser", { typeUser })}
+                { value: "true", label: t("CustomTypeGuest", { typeGuest }) },
+                { value: "false", label: t("CustomTypeUser", { typeUser }) }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
@@ -735,16 +642,33 @@ class UpdateUserForm extends React.Component {
           /> 
         </InfoFieldContainer>
         <div>
-          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11}/>
-          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12}/>
+          <Button label={t("SaveButton")} onClick={this.handleSubmit} primary isDisabled={isLoading} size="big" tabIndex={11} />
+          <Button label={t("CancelButton")} onClick={this.onCancel} isDisabled={isLoading} size="big" style={{ marginLeft: "8px" }} tabIndex={12} />
         </div>
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose}
-        />
+
+        {dialogsVisible.changeEmail &&
+          <ChangeEmailDialog
+            visible={dialogsVisible.changeEmail}
+            onClose={this.toggleDialogsVisible}
+            user={profile}
+          />
+        }
+
+        {dialogsVisible.changePassword &&
+          <ChangePasswordDialog
+            visible={dialogsVisible.changePassword}
+            onClose={this.toggleDialogsVisible}
+            email={profile.email}
+          />
+        }
+
+        {dialogsVisible.changePhone &&
+          <ChangePhoneDialog
+            visible={dialogsVisible.changePhone}
+            onClose={this.toggleDialogsVisible}
+            user={profile}
+          />
+        }
       </>
     );
   };

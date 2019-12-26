@@ -9,6 +9,28 @@ export class EmailSettings {
     this.allowLocalDomainName = false;
   }
 
+  static equals = (settings1, settings2) => {
+    const instance1 = EmailSettings.parse(settings1);
+    const instance2 = EmailSettings.parse(settings2);
+    const comparedProperties = [
+      'allowDomainPunycode',
+      'allowLocalPartPunycode',
+      'allowDomainIp',
+      'allowStrictLocalPart',
+      'allowSpaces',
+      'allowName',
+      'allowLocalDomainName'
+    ];
+    const propLength = comparedProperties.length;
+    for (let i = 0; i < propLength; i++) {
+      const comparedProp = comparedProperties[i]
+      if (instance1[comparedProp] !== instance2[comparedProp]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   get allowDomainPunycode() {
     return this._allowDomainPunycode;
   }
@@ -18,7 +40,7 @@ export class EmailSettings {
       this._allowDomainPunycode = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowDomainPunycode option. Use boolean value`);
     }
   }
 
@@ -31,7 +53,7 @@ export class EmailSettings {
       this._allowLocalPartPunycode = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowLocalPartPunycode option. Use boolean value`);
     }
   }
 
@@ -44,7 +66,7 @@ export class EmailSettings {
       this._allowDomainIp = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowDomainIp option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowDomainIp option. Use boolean value`);
     }
   }
 
@@ -57,7 +79,7 @@ export class EmailSettings {
       this._allowStrictLocalPart = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowStrictLocalPart option. Use boolean value`);
     }
   }
 
@@ -70,7 +92,7 @@ export class EmailSettings {
       this._allowSpaces = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowSpaces option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowSpaces option. Use boolean value`);
     }
   }
 
@@ -83,7 +105,7 @@ export class EmailSettings {
       this._allowName = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowName option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowName option. Use boolean value`);
     }
   }
 
@@ -96,11 +118,11 @@ export class EmailSettings {
       this._allowLocalDomainName = value;
     }
     else {
-      throw new TypeError (`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
+      throw new TypeError(`Invalid value ${value} for allowLocalDomainName option. Use boolean value`);
     }
   }
 
-  getSettings() {
+  toObject() {
     return {
       allowDomainPunycode: this.allowDomainPunycode,
       allowLocalPartPunycode: this.allowLocalPartPunycode,
@@ -121,40 +143,22 @@ export class EmailSettings {
     this.allowName = true;
     this.allowLocalDomainName = true;
   }
-}
 
-export const checkAndConvertEmailSettings = (settings) => {
-  if (typeof settings === 'object' && !(settings instanceof EmailSettings)) {
+  static parse = (settings) => {
+    if(settings instanceof EmailSettings)
+      return settings;
+
+    if(typeof settings !== 'object')
+      throw new Error("Invalid argument");
+
     const defaultSettings = new EmailSettings();
-    Object.keys(settings).map((item) => {
-      if (defaultSettings[item] !== null && defaultSettings[item] != settings[item]) {
-        defaultSettings[item] = settings[item];
-      }
+    Object.keys(settings).map((key) => {
+      if (!(key in defaultSettings) || defaultSettings[key] === settings[key]) 
+        return;
+
+      defaultSettings[key] = settings[key];
     });
+
     return defaultSettings;
   }
-
-  else if (typeof settings === 'object' && settings instanceof EmailSettings) {
-    return settings;
-  }
-}
-
-export const isEqualEmailSettings = (settings1, settings2) => {
-  const comparedProperties = [
-    'allowDomainPunycode',
-    'allowLocalPartPunycode',
-    'allowDomainIp',
-    'allowStrictLocalPart',
-    'allowSpaces',
-    'allowName',
-    'allowLocalDomainName'
-  ];
-  const propLength = comparedProperties.length;
-  for (let i = 0; i < propLength; i++) {
-    const comparedProp = comparedProperties[i]
-    if (settings1[comparedProp] !== settings2[comparedProp]) {
-      return false;
-    }
-  }
-  return true;
 }

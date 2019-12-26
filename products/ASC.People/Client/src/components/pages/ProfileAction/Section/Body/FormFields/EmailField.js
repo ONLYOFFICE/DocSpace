@@ -49,6 +49,7 @@ class EmailField extends React.Component {
           autoComplete='email'
           isDisabled={inputIsDisabled}
           onValidateInput={onValidateInput}
+          hasError={hasError}
         />
       </FieldContainer>
     );
