@@ -12,10 +12,6 @@ const Container = styled.div`
     width: 120px;
     margin: 0 8px 0 0;
   }
-
-  .field-select > div > div:first-child.combo-button-label {
-    color: #A3A9AE;
-  }
 `;
 
 const getOptions = (patterns, keyPrefix) => {
@@ -104,7 +100,8 @@ class ContactsField extends React.Component {
           selectedOption={{
             key: prefix,
             label: addItemText,
-            value: ""
+            value: "",
+            default: true
           }}
           isDisabled={isDisabled}
           scaled={true}
