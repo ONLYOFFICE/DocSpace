@@ -24,6 +24,10 @@ const StyledComboBox = styled(ComboBox)`
         }
     }
 
+    .combo-button-label {
+        color: #A3A9AE;
+    }
+
 `;
 
 class SortComboBox extends React.Component {
@@ -123,7 +127,7 @@ class SortComboBox extends React.Component {
             >
                 <StyledIconButton sortDirection={!!this.state.sortDirection}>
                     <IconButton
-                        color={"#D8D8D8"}
+                        color={"#A3A9AE"}
                         hoverColor={"#333"}
                         clickColor={"#333"}
                         size={10}

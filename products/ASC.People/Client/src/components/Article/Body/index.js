@@ -21,7 +21,7 @@ const getItems = data => {
               <Icons.CatalogDepartmentsIcon
                 size="scale"
                 isfill={true}
-                color="dimgray"
+                color="#657077"
               />
             ) : (
                 ""
@@ -41,7 +41,7 @@ const getItems = data => {
             <Icons.CatalogFolderIcon
               size="scale"
               isfill={true}
-              color="dimgray"
+              color="#657077"
             />
           ) : (
               ""

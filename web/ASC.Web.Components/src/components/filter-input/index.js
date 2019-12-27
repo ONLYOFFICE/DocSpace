@@ -31,6 +31,20 @@ const StyledSearchInput = styled.div`
 `;
 const StyledFilterBlock = styled.div`
     display: flex;
+
+    .filter-button {
+        div:active {
+            svg path:first-child { 
+            fill: #ECEEF1; 
+            }
+        }
+        div:first-child:hover {
+            svg path:not(:first-child) { 
+            stroke: #555F65; 
+            }
+        }
+    }
+
 `;
 const cloneObjectsArray = function (props) {
     return map(props, clone);

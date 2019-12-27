@@ -119,7 +119,7 @@ class ContextMenuButton extends React.Component {
         <DropDown directionX={directionX} open={isOpen}>
           {
             this.state.data.map((item, index) =>
-              (item && (item.label || item.icon)) && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
+              (item && (item.label || item.icon || item.key)) && <DropDownItem {...item} key={item.key || index} onClick={this.onDropDownItemClick.bind(this, item)}
               />
             )
           }

@@ -27,6 +27,7 @@ const StyledFilterItem = styled.div`
   font-size: 13px;
   line-height: 15px;
   box-sizing: border-box;
+  color: #555F65;
 
   &:last-child{
     margin-bottom: 0;
@@ -53,6 +54,9 @@ const StyledComboBox = styled(ComboBox)`
   > div:first-child{
     width: auto;
     padding-left: 4px;
+  }
+  .combo-button-label {
+    color: #555F65;
   }
 `;
 const StyledFilterName = styled.span`
