@@ -67,6 +67,10 @@ const StyledComboButton = styled.div`
       line-height: 15px;
       border-bottom: 1px dashed transparent;
     `}
+    
+    ${props => props.isOpen && props.noBorder && `
+      border-bottom: 1px dashed;
+    `};
   }
   .combo-button-label:hover{
     ${props => props.noBorder && !props.isDisabled && `
