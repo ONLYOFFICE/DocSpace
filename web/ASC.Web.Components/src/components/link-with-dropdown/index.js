@@ -9,13 +9,14 @@ import { handleAnyClick } from "../../utils/event";
 import isEqual from "lodash/isEqual";
 
 // eslint-disable-next-line no-unused-vars
-const SimpleLinkWithDropdown = ({ isBold, fontSize, isTextOverflow, isHovered, isSemitransparent, color, title, dropdownType, data,
+const SimpleLinkWithDropdown = ({ isBold, fontSize, fontWeight, isTextOverflow, isHovered, isSemitransparent, color, title, dropdownType, data,
   ...props
 }) => <a {...props}></a>;
 
 SimpleLinkWithDropdown.propTypes = {
   isBold: PropTypes.bool,
   fontSize: PropTypes.number,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isTextOverflow: PropTypes.bool,
   isHovered: PropTypes.bool,
   isSemitransparent: PropTypes.bool,
@@ -169,6 +170,7 @@ class LinkWithDropdown extends React.Component {
       dropdownType,
       isTextOverflow,
       fontSize,
+      fontWeight,
       color,
       isBold,
       title,
@@ -199,6 +201,7 @@ class LinkWithDropdown extends React.Component {
               isTextOverflow={isTextOverflow}
               truncate={isTextOverflow}
               fontSize={fontSize}
+              fontWeight={fontWeight}
               color={color}
               isBold={isBold}
               title={title}
@@ -238,6 +241,7 @@ LinkWithDropdown.propTypes = {
   data: PropTypes.array,
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]).isRequired,
   fontSize: PropTypes.string,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isBold: PropTypes.bool,
   isSemitransparent: PropTypes.bool,
   isTextOverflow: PropTypes.bool,
