@@ -36,7 +36,7 @@ const StyledFilterItem = styled.div`
 
 const StyledFilterItemContent = styled.div`
   display: flex;
-  padding: 5px 0 2px 7px;
+  padding: 5px 4px 2px 7px;
   ${props =>
     props.isOpen && !props.isDisabled &&
     css`
@@ -136,7 +136,6 @@ class FilterItem extends React.Component {
               opened={this.props.opened}
               directionX='left'
               toggleAction={(e,isOpen)=>{
-                console.log('toggleAction');
                 this.setState({
                   isOpen: !isOpen
                 })
