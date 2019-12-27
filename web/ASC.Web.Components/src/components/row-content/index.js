@@ -69,6 +69,12 @@ const SideContainerWrapper = styled.div`
   }
 
   align-self: center;
+  align-items: center;
+
+  > a {
+    vertical-align: middle;
+  }
+
   width: ${props => props.containerWidth ? props.containerWidth : '100px'};
   color: ${props => props.color && props.color};
 
