@@ -175,11 +175,13 @@ const StyledSelector = styled(Container)`
 
     &:hover {
       background-color: #f8f9f9;
+      border-radius: 3px;
     }
   }
 
   .row-block.selected {
     background-color: #eceef1;
+    border-radius: 3px;
   }
 
   .footer {
