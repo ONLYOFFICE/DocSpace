@@ -274,6 +274,7 @@ class SectionBodyContent extends React.Component {
             name="group-name"
             scale={true}
             isAutoFocussed={true}
+            isBold={true}
             tabIndex={1}
             value={groupName}
             onChange={this.onGroupChange}
