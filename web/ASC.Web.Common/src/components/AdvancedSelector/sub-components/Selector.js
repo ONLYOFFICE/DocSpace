@@ -334,6 +334,8 @@ const Selector = props => {
                 label={option.label}
                 isChecked={isChecked}
                 className="option_checkbox"
+                truncate={true}
+                title={option.label}
                 onChange={onOptionChange}
               />
             ) : (
@@ -343,6 +345,7 @@ const Selector = props => {
                 isTextOverflow={true}
                 className="option_link"
                 onClick={onLinkClick}
+                title={option.label}
               >
                 {option.label}
               </Link>
@@ -458,6 +461,7 @@ const Selector = props => {
       const isChecked = isGroupChecked(group);
       const isIndeterminate = isGroupIndeterminate(group);
       const isSelected = currentGroup.key === group.key;
+      const label = getGroupLabel(group);
 
       return (
         <div
@@ -471,18 +475,19 @@ const Selector = props => {
               isChecked={isChecked}
               isIndeterminate={isIndeterminate}
               className="group_checkbox"
+              truncate={true}
               onChange={onGroupChange}
             />
           )}
           <Link
-            as="span"
             key={group.key}
             data-index={index}
-            truncate={true}
+            isTextOverflow={true}
             className="group_link"
             onClick={onLinkGroupClick}
+            title={label}
           >
-            {getGroupLabel(group)}
+            {label}
           </Link>
         </div>
       );
@@ -568,6 +573,7 @@ const Selector = props => {
                     label={selectAllLabel}
                     isChecked={selectedAll}
                     isIndeterminate={false}
+                    truncate={true}
                     onChange={onSelectAllChange}
                   />
                 )}
