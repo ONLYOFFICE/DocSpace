@@ -34,7 +34,7 @@ storiesOf('Components|Link', module)
           type={select('type', type, 'page')}
           color={color('color', '#333333')}
           fontSize={text('fontSize', '13px')}
-          fontWeight={text('fontWeight', '700')}
+          fontWeight={text('fontWeight', '400')}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
           target={select('target', target, '_blank')}

@@ -17,6 +17,8 @@ storiesOf('Components|Input', module)
             value={text('value', 'value')}
             name={text('name', 'name')}
             label={text('label', 'Label')}
+            fontSize={text('fontSize', '13px')}
+            fontWeight={text('fontWeight', '400')}
             isDisabled={boolean('isDisabled', false)}
             isChecked={boolean('isChecked', false)}
             onClick={(e) => {

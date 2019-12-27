@@ -98,6 +98,7 @@ class SortComboBox extends React.Component {
                         spacing='0px'
                         name={'direction'}
                         options={sortDirectionArray}
+                        fontWeight ={600}
                     />
                 </DropDownItem>
                 <DropDownItem isSeparator />
@@ -110,6 +111,7 @@ class SortComboBox extends React.Component {
                         spacing='0px'
                         name={'sort'}
                         options={sortArray}
+                        fontWeight ={600}
                     />
                 </DropDownItem>
             </>

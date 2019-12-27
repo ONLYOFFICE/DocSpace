@@ -37,6 +37,7 @@ const StyledFilterItem = styled.div`
 const StyledFilterItemContent = styled.div`
   display: flex;
   padding: 5px 4px 2px 7px;
+  width: 100%;
   ${props =>
     props.isOpen && !props.isDisabled &&
     css`
