@@ -37,6 +37,8 @@ const StyledComboButton = styled.div`
     border: 1px solid #D0D5DA;
     border-radius: 3px;
   `}
+
+  border-color: ${props => props.isOpen && '#2DA7DB'};
   
   ${props => props.isDisabled && !props.noBorder && `
     border-color: #ECEEF1;
