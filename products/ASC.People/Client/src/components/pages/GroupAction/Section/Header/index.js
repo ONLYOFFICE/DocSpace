@@ -1,17 +1,24 @@
 import React from "react";
-import styled from 'styled-components';
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { IconButton, utils } from "asc-web-components";
-import { Headline } from 'asc-web-common';
+import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
-  align-Items: center;
+  align-items: center;
+
+  .arrow-button {
+    @media (max-width: 1024px) {
+      padding: 8px 0 8px 8px;
+      margin-left: -8px;
+    }
+  }
 `;
 
 const HeaderContainer = styled(Headline)`
@@ -45,10 +52,9 @@ class SectionHeaderContent extends React.Component {
           hoverColor="#657077"
           isFill={true}
           onClick={this.onClickBack}
+          className="arrow-button"
         />
-        <HeaderContainer
-          type="content"
-          truncate={true}>
+        <HeaderContainer type="content" truncate={true}>
           {headerText}
         </HeaderContainer>
       </Wrapper>

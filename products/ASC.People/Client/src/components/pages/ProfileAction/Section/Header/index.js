@@ -10,6 +10,13 @@ import { typeUser, typeGuest } from './../../../../../helpers/customNames';
 const Wrapper = styled.div`
   display: flex;
   align-Items: center;
+
+  .arrow-button {
+    @media (max-width: 1024px) {
+      padding: 8px 0 8px 8px;
+      margin-left: -8px;
+    }
+  }
 `;
 
 const HeaderContainer = styled(Headline)`
@@ -47,6 +54,7 @@ const SectionHeaderContent = (props) => {
         hoverColor="#657077"
         isFill={true}
         onClick={onClickBack}
+        className="arrow-button"
       />
       <HeaderContainer
         type='content'
