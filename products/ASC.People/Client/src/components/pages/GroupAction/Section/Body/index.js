@@ -124,7 +124,8 @@ class SectionBodyContent extends React.Component {
             }
           : {
               key: GUID_EMPTY,
-              label: t("CustomAddEmployee", { typeUser })
+              label: t("CustomAddEmployee", { typeUser }),
+              default: true
             }
     };
 
@@ -321,7 +322,8 @@ class SectionBodyContent extends React.Component {
             isDisabled={inLoading}
             selectedOption={{
               key: 0,
-              label: t("AddMembers")
+              label: t("AddMembers"),
+              default: true
             }}
             scaled={true}
             size="content"
