@@ -54,6 +54,20 @@ const DropZoneContainer = styled.div`
         margin: 0;
         cursor: default
     }
+    .desktop {
+        display: block;
+    };
+    .mobile {
+        display: none;
+    };
+    @media ${tablet} {
+        .desktop {
+            display: none;
+        };
+        .mobile {
+            display: block;
+        };
+    }
 `;
 const StyledAvatarContainer = styled.div`
     text-align: center;
@@ -276,7 +290,8 @@ class AvatarEditorBody extends React.Component {
                                 {...getRootProps()}
                             >
                                 <input {...getInputProps()} />
-                                <p>{this.props.chooseFileLabel}</p>
+                                <p className="desktop">{this.props.chooseFileLabel}</p>
+                                <p className="mobile">{this.props.chooseMobileFileLabel}</p>
                             </DropZoneContainer>
                         )}
                     </Dropzone> :
@@ -349,6 +364,7 @@ AvatarEditorBody.propTypes = {
     image: PropTypes.string,
     accept: PropTypes.arrayOf(PropTypes.string),
     chooseFileLabel: PropTypes.string,
+    chooseMobileFileLabel: PropTypes.string,
     unknownTypeError: PropTypes.string,
     maxSizeFileError: PropTypes.string,
     unknownError: PropTypes.string
@@ -359,6 +375,7 @@ AvatarEditorBody.defaultProps = {
     accept: ['image/png', 'image/jpeg'],
     maxSize: Number.MAX_SAFE_INTEGER,
     chooseFileLabel: "Drop files here, or click to select files",
+    chooseMobileFileLabel: "Click to select files",
     unknownTypeError: "Unknown image file type",
     maxSizeFileError: "Maximum file size exceeded",
     unknownError: "Error"

@@ -99,6 +99,7 @@ class AvatarEditor extends React.Component {
                         accept={this.props.accept}
                         image={this.props.image}
                         chooseFileLabel={this.props.chooseFileLabel}
+                        chooseMobileFileLabel={this.props.chooseMobileFileLabel}
                         unknownTypeError={this.props.unknownTypeError}
                         maxSizeFileError={this.props.maxSizeFileError}
                         unknownError={this.props.unknownError}
@@ -126,6 +127,7 @@ AvatarEditor.propTypes = {
     visible: PropTypes.bool,
     headerLabel: PropTypes.string,
     chooseFileLabel: PropTypes.string,
+    chooseMobileFileLabel: PropTypes.string,
     saveButtonLabel: PropTypes.string,
     maxSizeFileError: PropTypes.string,
     image: PropTypes.string,

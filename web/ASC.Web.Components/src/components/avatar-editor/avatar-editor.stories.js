@@ -75,6 +75,7 @@ class AvatarEditorStory extends React.Component  {
           onLoadFile={this.onLoadFile}
           headerLabel      ={text('headerLabel', 'Edit Photo')}
           chooseFileLabel  ={text('chooseFileLabel', 'Drop files here, or click to select files')}
+          chooseMobileFileLabel={text('chooseMobileFileLabel', 'Click to select files')}
           saveButtonLabel  ={text('saveButtonLabel', 'Save')}
           maxSizeFileError ={text('maxSizeFileError', 'Maximum file size exceeded')}
           unknownTypeError ={text('unknownTypeError', 'Unknown image file type')}

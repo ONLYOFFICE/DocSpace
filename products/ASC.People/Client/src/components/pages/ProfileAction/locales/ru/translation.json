@@ -52,6 +52,7 @@
   "CustomAddDepartments": "Добавить {{departments, lowercase}}",
 
   "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
+  "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
   "unknownTypeError": "Неизвестный тип файла изображения",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "unknownError":     "Ошибка",

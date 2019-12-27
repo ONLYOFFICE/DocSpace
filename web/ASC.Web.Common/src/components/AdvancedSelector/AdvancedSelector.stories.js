@@ -263,7 +263,7 @@ class ADSelectorExample extends React.Component {
   }
 }
 
-storiesOf("Components|AdvancedSelector2", module)
+storiesOf("Components|AdvancedSelector", module)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .addParameters({ options: { addonPanelInRight: false } })

@@ -8,7 +8,7 @@ const Container = styled.div`
   margin: 0 0 16px 0;
 
   .remove_icon {
-    margin-left: 8px;
+    padding-left: 8px;
   }
 `;
 

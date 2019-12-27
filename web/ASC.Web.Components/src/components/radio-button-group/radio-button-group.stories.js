@@ -54,6 +54,8 @@ storiesOf('Components|Input', module)
             orientation={select('orientation', orientation, 'horizontal')}
             width={text('width', '100%')}
             isDisabled={boolean('isDisabled', false)}
+            fontSize={text('fontSize', '13px')}
+            fontWeight={text('fontWeight', '400')}
             selected={values[0]}
             spacing={text('spacing', '15px')}
             name={text('name', 'group')}

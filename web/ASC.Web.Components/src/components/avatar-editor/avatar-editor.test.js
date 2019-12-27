@@ -6,6 +6,7 @@ const baseProps = {
   visible: true,
   headerLabel: 'test',
   chooseFileLabel: 'test',
+  chooseMobileFileLabel: 'test',
   saveButtonLabel: 'test',
   maxSizeFileError: 'test',
   image: '',

@@ -32,8 +32,8 @@ const dropdownStyles = css`
 
     display: grid;
     /* background-color: gold; */
-    padding: 16px 16px 0 16px;
-    grid-row-gap: 16px;
+    padding: 0 16px 0 16px;
+    grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
     grid-template-rows: 30px 1fr;
@@ -80,13 +80,16 @@ const StyledSelector = styled(Container)`
 
   ${props => (props.displayType === "dropdown" ? dropdownStyles : asideStyles)}
 
+  padding-top: 16px;
+
   .column-options {
     grid-area: column-options;
     box-sizing: border-box;
 
     display: grid;
     /* background-color: red; */
-    padding: 16px 16px 0 16px;
+    padding: 0 16px 0 16px;
+    grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
     grid-template-rows: ${props =>
@@ -153,7 +156,7 @@ const StyledSelector = styled(Container)`
 
       .row-block {
         padding-left: 8px;
-        margin-top: 8px;
+        padding-top: 8px;
 
         .option-info {
           position: absolute;
@@ -166,8 +169,9 @@ const StyledSelector = styled(Container)`
 
   .row-block {
     box-sizing: border-box;
-    line-height: 32px;
+    height: 32px;
     cursor: pointer;
+    padding-top: 8px;
 
     &:hover {
       background-color: #f8f9f9;
