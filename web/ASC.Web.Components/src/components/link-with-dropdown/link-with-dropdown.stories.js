@@ -40,6 +40,7 @@ storiesOf('Components|LinkWithDropdown', module)
           dropdownType={select('dropdownType', dropdownType, 'alwaysDashed')}
           color={color('color', '#333333')}
           fontSize={text('fontSize', '13px')}
+          fontWeight={text('fontWeight', '400')}
           isBold={boolean('isBold', false)}
           title={text('title', undefined)}
           isTextOverflow={boolean('isTextOverflow', false)}
