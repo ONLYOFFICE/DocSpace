@@ -34,4 +34,4 @@ When using component, it should be noted that parent must have CSS property _pos
 | `open`               |     `bool`     |    -     |        -        | `false`  | Tells when the dropdown should be opened                                               |
 | `style`              | `obj`, `array` |    -     |        -        |    -     | Accepts css style                                                                      |
 | `withArrow`          |     `bool`     |    -     |        -        | `false`  | It is used if it is necessary to display blue protruding angle as when viewing profile |
-| `withBackdrop`       |     `bool`     |    -     |        -        | `false`  | Used to display backdrop                                                               |
+| `withBackdrop`       |     `bool`     |    -     |        -        | `true`   | Used to display backdrop                                                               |
