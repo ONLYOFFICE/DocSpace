@@ -123,6 +123,8 @@ class RadioButton extends React.Component {
         <RadiobuttonIcon {...this.props} />
         <Text
           as='span'
+          fontSize={this.props.fontSize}
+          fontWeight={this.props.fontWeight}
           {...colorProps}
         >
           {this.props.label || this.props.value}
@@ -136,6 +138,8 @@ RadioButton.propTypes = {
   isChecked: PropTypes.bool,
   isDisabled: PropTypes.bool,
   label: PropTypes.string,
+  fontSize: PropTypes.string,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   onClick: PropTypes.func,
