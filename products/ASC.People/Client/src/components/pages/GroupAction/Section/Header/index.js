@@ -1,21 +1,27 @@
 import React from "react";
+import styled from 'styled-components';
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton } from "asc-web-components";
+import { IconButton, utils } from "asc-web-components";
 import { Headline } from 'asc-web-common';
 import { withTranslation } from "react-i18next";
 import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
+const Wrapper = styled.div`
+  display: flex;
+  align-Items: center;
+`;
 
-const textStyle = {
-  marginLeft: "16px"
-};
+const HeaderContainer = styled(Headline)`
+  margin-left: 16px;
+  max-width: calc(100vw - 430px);
+
+  @media ${utils.device.tablet} {
+    max-width: calc(100vw - 64px);
+  }
+`;
 
 class SectionHeaderContent extends React.Component {
   onClickBack = () => {
@@ -31,7 +37,7 @@ class SectionHeaderContent extends React.Component {
       ? t("CustomEditDepartment", { department })
       : t("CustomNewDepartment", { department });
     return (
-      <div style={wrapperStyle}>
+      <Wrapper>
         <IconButton
           iconName="ArrowPathIcon"
           size="16"
@@ -40,8 +46,12 @@ class SectionHeaderContent extends React.Component {
           isFill={true}
           onClick={this.onClickBack}
         />
-        <Headline type="content" style={textStyle}>{headerText}</Headline>
-      </div>
+        <HeaderContainer
+          type="content"
+          truncate={true}>
+          {headerText}
+        </HeaderContainer>
+      </Wrapper>
     );
   }
 }
