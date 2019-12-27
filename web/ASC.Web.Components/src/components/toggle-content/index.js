@@ -28,7 +28,7 @@ const StyledSpan = styled.span`
 `;
 
 const StyledText = styled(Heading)`
-  height: 26px;
+  height: 24px;
   line-height: 26px;
   box-sizing: border-box;
   font-style: normal;
