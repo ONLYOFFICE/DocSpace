@@ -21,9 +21,9 @@ SimpleInput.propTypes = {
 const StyledInput = styled(SimpleInput)`
   display: flex;
   align-items: center;
-  line-height: 45px;
+  line-height: 32px;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 
   @media ${tablet} {
     flex-wrap: wrap;
@@ -50,7 +50,7 @@ const PasswordProgress = styled.div`
 `;
 
 const NewPasswordButton = styled.div`
-  margin-left: 16px;
+  margin: 0 16px;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 
   svg {
@@ -66,7 +66,6 @@ const NewPasswordButton = styled.div`
 
 const CopyLink = styled.div`
   margin-top: -6px;
-  margin-left: 16px;
 
   @media ${tablet} {
     width: 100%;
