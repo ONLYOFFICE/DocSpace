@@ -32,8 +32,7 @@ const dropdownStyles = css`
 
     display: grid;
     /* background-color: gold; */
-    padding: 16px 16px 0 16px;
-    grid-row-gap: 16px;
+    padding: 0 16px 0 16px;
 
     grid-template-columns: 1fr;
     grid-template-rows: 30px 1fr;
@@ -80,13 +79,15 @@ const StyledSelector = styled(Container)`
 
   ${props => (props.displayType === "dropdown" ? dropdownStyles : asideStyles)}
 
+  padding-top: 16px;
+
   .column-options {
     grid-area: column-options;
     box-sizing: border-box;
 
     display: grid;
     /* background-color: red; */
-    padding: 16px 16px 0 16px;
+    padding: 0 16px 0 16px;
 
     grid-template-columns: 1fr;
     grid-template-rows: ${props =>
