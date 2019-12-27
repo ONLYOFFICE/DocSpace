@@ -7,11 +7,19 @@ import { Headline } from 'asc-web-common';
 import { withTranslation } from "react-i18next";
 import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
+import styled from "styled-components";
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  .arrow-button {
+    @media (max-width: 1024px) {
+      padding: 8px 0 8px 8px;
+      margin-left: -8px;
+    }
+  }
+`;
 
 const textStyle = {
   marginLeft: "16px"
@@ -31,7 +39,7 @@ class SectionHeaderContent extends React.Component {
       ? t("CustomEditDepartment", { department })
       : t("CustomNewDepartment", { department });
     return (
-      <div style={wrapperStyle}>
+      <Wrapper>
         <IconButton
           iconName="ArrowPathIcon"
           size="16"
@@ -39,9 +47,10 @@ class SectionHeaderContent extends React.Component {
           hoverColor="#657077"
           isFill={true}
           onClick={this.onClickBack}
+          className="arrow-button"
         />
         <Headline type="content" style={textStyle}>{headerText}</Headline>
-      </div>
+      </Wrapper>
     );
   }
 }

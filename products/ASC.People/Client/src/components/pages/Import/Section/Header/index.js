@@ -4,11 +4,19 @@ import { IconButton } from "asc-web-components";
 import { Headline } from 'asc-web-common';
 import { withRouter } from "react-router";
 // import { useTranslation } from 'react-i18next';
+import styled from "styled-components";
 
-const wrapperStyle = {
-  display: "flex",
-  alignItems: "center"
-};
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+
+  .arrow-button {
+    @media (max-width: 1024px) {
+      padding: 8px 0 8px 8px;
+      margin-left: -8px;
+    }
+  }
+`;
 
 const textStyle = {
   marginLeft: "16px",
@@ -24,7 +32,7 @@ const SectionHeaderContent = props => {
   }, [history, settings]);
 
   return (
-    <div style={wrapperStyle}>
+    <Wrapper>
       <div style={{ width: "16px" }}>
         <IconButton
           iconName="ArrowPathIcon"
@@ -33,12 +41,13 @@ const SectionHeaderContent = props => {
           hoverColor="#657077"
           isFill={true}
           onClick={onClickBack}
+          className="arrow-button"
         />
       </div>
       <Headline type="content" truncate={true} style={textStyle}>
         Add users to the portal (Development)
       </Headline>
-    </div>
+    </Wrapper>
   );
 };
 
