@@ -18,6 +18,7 @@ import { AvatarEditor } from "asc-web-components";
   onLoadFile={() => {}}
   headerLabel="Edit Photo"
   chooseFileLabel="Drop files here, or click to select files"
+  chooseMobileFileLabel="Click to select files"
   saveButtonLabel="Save"
   maxSizeFileError="Maximum file size exceeded"
   unknownTypeError="Unknown image file type"
@@ -34,7 +35,8 @@ import { AvatarEditor } from "asc-web-components";
 | `image`            | `string`,`file` |    -     |            -             |               -               | The URL of the image to use, or a File   |
 | `accept`           |     `array`     |    -     |            -             | `['image/png', 'image/jpeg']` | Accepted file types                      |
 | `displayType`      |     `oneOf`     |    -     | `auto`, `modal`, `aside` |            `auto`             | Display type                             |
-| `chooseFileLabel`  |    `string`     |    -     |            -             |        `Choose a file`        | Translation string for file selection    |
+| `chooseFileLabel`  |    `string`     |    -     |            -             | `Drop files here, or click to select files` | Translation string for file selection |
+| `chooseMobileFileLabel` |  `string`  |    -     |            -             |   `Click to select files`     | Translation string for file selection on mobile devices |
 | `headerLabel`      |    `string`     |    -     |            -             |         `Edit Photo`          | Translation string for title             |
 | `saveButtonLabel`  |    `string`     |    -     |            -             |            `Save`             | Translation string for save button       |
 | `maxSizeFileError` |    `string`     |    -     |            -             | `Maximum file size exceeded`  | Translation string for size warning      |
