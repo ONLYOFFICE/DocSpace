@@ -75,6 +75,10 @@ const StyledComboButton = styled.div`
 
 const StyledOptionalItem = styled.div`
   margin-right: 8px;
+
+  path {
+    fill: ${props => props.color && props.color};
+  }
 `;
 
 const StyledIcon = styled.div`
@@ -115,6 +119,7 @@ class ComboButton extends React.Component {
 
     const boxIconColor = isDisabled ? '#D0D5DA' : '#333333';
     const arrowIconColor = isDisabled ? '#D0D5DA' : '#A3A9AE';
+    const defaultIconColor = selectedOption.default ? arrowIconColor : boxIconColor;
 
     return (
       <StyledComboButton
@@ -128,16 +133,16 @@ class ComboButton extends React.Component {
         size={size}
       >
         {innerContainer &&
-          <StyledOptionalItem className={innerContainerClassName}>
+          <StyledOptionalItem className={innerContainerClassName} color={defaultIconColor}>
             {innerContainer}
           </StyledOptionalItem>
         }
         {selectedOption && selectedOption.icon &&
-          <StyledIcon>
+          <StyledIcon className="forceColor">
             {React.createElement(Icons[selectedOption.icon],
               {
                 size: 'scale',
-                color: selectedOption.default ? arrowIconColor : boxIconColor,
+                color: defaultIconColor,
                 isfill: true
               })
             }
