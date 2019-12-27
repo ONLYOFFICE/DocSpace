@@ -56,7 +56,7 @@ class ChangePasswordDialogComponent extends React.Component {
           <Text fontSize='13px'>
             <Trans i18nKey="MessageSendPasswordChangeInstructionsOnEmail" i18n={i18n}>
               Send the password change instructions to the
-              <Link type="page" href={`mailto:${email}`} isHovered title={email}>
+              <Link type="page" href={`mailto:${email}`} noHover color='#316DAA' title={email}>
                 {{ email }}
               </Link>
               email address

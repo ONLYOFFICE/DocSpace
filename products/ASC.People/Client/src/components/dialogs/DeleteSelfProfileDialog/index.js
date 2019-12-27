@@ -54,7 +54,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
           headerContent={t('DeleteProfileTitle')}
           bodyContent={
             <Text fontSize='13px'>
-              {t('DeleteProfileInfo')} <Link type="page" href={`mailto:${email}`} isHovered title={email}>
+              {t('DeleteProfileInfo')} <Link type="page" href={`mailto:${email}`} noHover color='#316DAA' title={email}>
                 {email}
               </Link>
             </Text>
