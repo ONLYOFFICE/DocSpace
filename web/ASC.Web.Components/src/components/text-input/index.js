@@ -7,7 +7,7 @@ import isEqual from "lodash/isEqual";
 
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder, keepCharPositions,  ...props }) => 
+const Input = ({ isAutoFocussed, isDisabled, isReadOnly, hasError, hasWarning, scale, withBorder, keepCharPositions, fontWeight, isBold,  ...props }) => 
     (props.mask != null) ? <MaskedInput keepCharPositions {...props}/> : <input {...props}/>;
 /* eslint-enable react/prop-types */
 /* eslint-enable no-unused-vars */
@@ -45,6 +45,11 @@ const StyledInput = styled(Input).attrs((props) => ({
         (props.size === 'big' && '16px') ||
         (props.size === 'huge' && '18px')
     };
+
+    font-weight: ${props => props.fontWeight
+        ? props.fontWeight
+        : props.isBold ? 600 : 'normal'};
+
     flex: 1 1 0%;
     outline: none;
     overflow: hidden;
@@ -116,7 +121,10 @@ TextInput.propTypes = {
     autoComplete: PropTypes.string,
 
     className: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+
+    fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    isBold: PropTypes.bool,
 }
 
 TextInput.defaultProps = {
@@ -130,7 +138,8 @@ TextInput.defaultProps = {
     hasWarning: false,
     autoComplete: 'off',
     withBorder: true,
-    keepCharPositions: false
+    keepCharPositions: false,
+    isBold: false
 }
 
 export default TextInput
