@@ -24,7 +24,7 @@ const StyledFilterInput = styled.div`
 const StyledSearchInput = styled.div`
     display: block;
     float: left;
-    width: calc(80% - 8px);
+    width: calc(100% - 140px);
     @media ${mobile} {
         width: calc(100% - 58px);
     }
@@ -425,10 +425,10 @@ class FilterInput extends React.Component {
     }
     render() {
         //console.log("FilterInput render");
-        let iconSize = 32;
+        let iconSize = 33;
         switch (this.props.size) {
             case 'base':
-                iconSize = 32;
+                iconSize = 33;
                 break;
             case 'middle':
             case 'big':
@@ -492,6 +492,7 @@ class FilterInput extends React.Component {
 }
 
 FilterInput.protoTypes = {
+    size: PropTypes.oneOf(['base', 'middle', 'big', 'huge']),
     autoRefresh: PropTypes.bool,
     selectedFilterData: PropTypes.object,
     directionAscLabel: PropTypes.string,
@@ -509,6 +510,7 @@ FilterInput.defaultProps = {
         filterValues: [],
         searchText: ''
     },
+    size: 'base',
     directionAscLabel: 'A-Z',
     directionDescLabel: 'Z-A'
 };

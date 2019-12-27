@@ -20,7 +20,7 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
             }
 
             return <Component {...props} />;
-        }, [token]);
+        }, [token, Component]);
 
     return (
         <Route

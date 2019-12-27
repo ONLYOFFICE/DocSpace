@@ -53,6 +53,12 @@ const StyledContainer = styled.div`
         margin-left: auto;
       }
     }
+    .arrow-button {
+      @media (max-width: 1024px) {
+        padding: 8px 0 8px 8px;
+        margin-left: -8px;
+      }
+    }
 `;
 
 class SectionHeaderContent extends React.PureComponent {
@@ -358,8 +364,10 @@ class SectionHeaderContent extends React.PureComponent {
     }
   };
 
-  goBack = () => {
-    this.props.history.goBack();
+  onClickBack = () => {
+    const { history, settings } = this.props;
+
+    history.push(settings.homepage);
   };
 
   render() {
@@ -375,7 +383,8 @@ class SectionHeaderContent extends React.PureComponent {
           size="16"
           hoverColor="#657077"
           isFill={true}
-          onClick={this.goBack}
+          onClick={this.onClickBack}
+          className="arrow-button"
         />
         <HeaderContainer type='content' truncate={true}>
           {profile.displayName}

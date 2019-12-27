@@ -11,13 +11,10 @@ import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
-const HelpContainer = styled.div`
-  .help-icon {
-    padding: 8px;
-  }
-`;
+const HelpContainer = styled.div``;
 
 const Content = styled.div`
+  box-sizing: border-box;
   position: relative;
   width: 100%;
   background-color: #fff;
@@ -121,7 +118,7 @@ class HelpButton extends React.Component {
   };
 
   onClick = () => {
-    this.setState({isOpen: !this.state.isOpen});
+    this.setState({ isOpen: !this.state.isOpen });
   };
 
   render() {
@@ -132,11 +129,11 @@ class HelpButton extends React.Component {
       offsetRight,
       offsetLeft,
       zIndex,
-      helpButtonHeaderContent, 
-      iconName, 
-      color, 
-      getContent, 
-      className, 
+      helpButtonHeaderContent,
+      iconName,
+      color,
+      getContent,
+      className,
       dataTip,
       style
     } = this.props;
@@ -154,48 +151,45 @@ class HelpButton extends React.Component {
           dataTip={dataTip}
           onClick={this.onClick}
         />
-        {displayType === "dropdown" ? 
-        getContent ? 
-        <Tooltip
-          id={this.id}
-          reference={this.refTooltip}
-          effect="solid"
-          place={place}
-          offsetRight={offsetRight}
-          offsetLeft={offsetLeft}
-          afterShow={this.afterShow}
-          afterHide={this.afterHide}
-          getContent={getContent}
-        />
-        :
-        <Tooltip
-          id={this.id}
-          reference={this.refTooltip}
-          effect="solid"
-          place={place}
-          offsetRight={offsetRight}
-          offsetLeft={offsetLeft}
-          afterShow={this.afterShow}
-          afterHide={this.afterHide}
-          getContent={getContent}
-        >
-          {tooltipContent}
-        </Tooltip>
-        : (
+        {displayType === "dropdown" ? (
+          getContent ? (
+            <Tooltip
+              id={this.id}
+              reference={this.refTooltip}
+              effect="solid"
+              place={place}
+              offsetRight={offsetRight}
+              offsetLeft={offsetLeft}
+              afterShow={this.afterShow}
+              afterHide={this.afterHide}
+              getContent={getContent}
+            />
+          ) : (
+            <Tooltip
+              id={this.id}
+              reference={this.refTooltip}
+              effect="solid"
+              place={place}
+              offsetRight={offsetRight}
+              offsetLeft={offsetLeft}
+              afterShow={this.afterShow}
+              afterHide={this.afterHide}
+              getContent={getContent}
+            >
+              {tooltipContent}
+            </Tooltip>
+          )
+        ) : (
           <>
             <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>
               <Content>
                 {helpButtonHeaderContent && (
-                    <HeaderContent>
-                      <Heading 
-                        className='header'
-                        size='medium'
-                        truncate={true}
-                        >
-                        {helpButtonHeaderContent}
-                      </Heading>
-                    </HeaderContent>
+                  <HeaderContent>
+                    <Heading className="header" size="medium" truncate={true}>
+                      {helpButtonHeaderContent}
+                    </Heading>
+                  </HeaderContent>
                 )}
                 <Body>{tooltipContent}</Body>
               </Content>

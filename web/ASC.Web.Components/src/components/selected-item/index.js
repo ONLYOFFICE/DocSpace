@@ -31,7 +31,7 @@ const StyledCloseButton = styled.div`
 
     &:hover{
         path{
-            ${props => !props.isDisabled && "fill: #333;"} 
+            ${props => !props.isDisabled && "fill: #555F65;"} 
         }
     }
 
@@ -42,13 +42,13 @@ const StyledCloseButton = styled.div`
 
 const SelectedItem = (props) => {
   const { isDisabled, text, onClose } = props;
-  const colorProps = isDisabled ? { color: "#D0D5DA" } : {};
+  const colorProps = { color: isDisabled ? "#D0D5DA" : "#555F65" };
 
   //console.log("SelectedItem render");
   return (
     <StyledSelectedItem {...props}>
       <StyledSelectedTextBox>
-        <Text as='span' truncate {...colorProps} >
+        <Text as='span' truncate {...colorProps} fontWeight={600}>
           {text}
         </Text>
       </StyledSelectedTextBox>

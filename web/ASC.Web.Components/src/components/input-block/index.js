@@ -15,7 +15,8 @@ const StyledIconBlock = styled.div`
   cursor: ${props =>
     props.isDisabled || !props.isClickable ? "default" : "pointer"};
   height: 100%;
-  padding-right: 7px;
+  padding-right: 8px;
+  padding-left: 1px;
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 `;
 
@@ -83,6 +84,7 @@ class InputBlock extends React.Component {
       keepCharPositions,
       iconName,
       iconColor,
+      hoverColor,
       isIconFill,
       onIconClick,
       iconSize
@@ -155,6 +157,7 @@ class InputBlock extends React.Component {
                 <IconButton
                   size={iconButtonSize}
                   color={iconColor}
+                  hoverColor={hoverColor}
                   iconName={iconName}
                   isFill={isIconFill}
                   isDisabled={isDisabled}
@@ -195,6 +198,7 @@ InputBlock.propTypes = {
   value: PropTypes.string,
   iconName: PropTypes.string,
   iconColor: PropTypes.string,
+  hoverColor: PropTypes.string,
   iconSize: PropTypes.number,
   isIconFill: PropTypes.bool,
   onIconClick: PropTypes.func,
@@ -222,6 +226,7 @@ InputBlock.defaultProps = {
   value: '',
   iconName: "",
   iconColor: "#ffffff",
+  hoverColor: "#ffffff",
   isIconFill: false,
   isDisabled: false,
   keepCharPositions: false

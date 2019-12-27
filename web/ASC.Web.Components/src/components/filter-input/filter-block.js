@@ -14,10 +14,10 @@ const StyledFilterBlock = styled.div`
 
 const StyledFilterItem = styled.div`
   display:  ${props => props.block ? 'flex' : 'inline-block'};
-  margin-bottom: ${props => props.block ? '3px' : '0'};
+  margin-bottom: ${props => props.block ? '8px' : '0'};
   position: relative;
   height: 100%;
-  padding: 3px 22px 3px 7px;
+  padding: 4px 22px 2px 7px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
@@ -50,8 +50,9 @@ const StyledComboBox = styled(ComboBox)`
   max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
-  div:first-child{
+  > div:first-child{
     width: auto;
+    padding-left: 4px;
   }
 `;
 const StyledFilterName = styled.span`

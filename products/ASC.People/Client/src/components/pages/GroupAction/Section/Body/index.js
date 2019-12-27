@@ -32,6 +32,7 @@ import { withTranslation } from "react-i18next";
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 1024px;
 
   .group-name_container {
     max-width: 320px;
@@ -45,26 +46,24 @@ const MainContainer = styled.div`
   .members_container {
     position: relative;
     max-width: 320px;
+    margin: 0;
   }
 
   .search_container {
-    margin-top: 16px;
+    margin-top: 32px;
   }
 
   .selected-members_container {
     margin-top: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-
-    .selected-item {
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 8px;
+    grid-column-gap: 16px;
+    margin-top: 16px;
   }
 
   .buttons_container {
-    margin-top: 60px;
+    margin-top: 40px;
 
     .cancel-button {
       margin-left: 8px;
@@ -72,8 +71,10 @@ const MainContainer = styled.div`
   }
 
   @media ${utils.device.tablet} {
-    .search_container {
-      max-width: 320px;
+    max-width: 320px;
+
+    .selected-members_container {
+      grid-template-columns: repeat(1, 1fr);
     }
   }
 `;
@@ -320,7 +321,7 @@ class SectionBodyContent extends React.Component {
             isDisabled={inLoading}
             selectedOption={{
               key: 0,
-              label: t("CustomAddEmployee", { typeUser })
+              label: t("AddMembers")
             }}
             scaled={true}
             size="content"
@@ -337,30 +338,32 @@ class SectionBodyContent extends React.Component {
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
-          <div className="search_container">
-            <SearchInput
-              id="member-search"
-              isDisabled={inLoading}
-              scale={true}
-              placeholder="Search"
-              value={searchValue}
-              onChange={this.onSearchChange}
-            />
-          </div>
+          <>
+            <div className="search_container">
+              <SearchInput
+                id="member-search"
+                isDisabled={inLoading}
+                scale={true}
+                placeholder={t("SearchAddedMembers")}
+                value={searchValue}
+                onChange={this.onSearchChange}
+              />
+            </div>
+            <div className="selected-members_container">
+              {groupMembers.map(member => (
+                <SelectedItem
+                  key={member.key}
+                  text={member.label}
+                  onClose={this.onSelectedItemClose.bind(this, member)}
+                  isInline={false}
+                  className="selected-item"
+                  isDisabled={inLoading}
+                />
+              ))}
+            </div>
+          </>
         )}
-        <div className="selected-members_container">
-          {groupMembers.map(member => (
-            <SelectedItem
-              key={member.key}
-              text={member.label}
-              onClose={this.onSelectedItemClose.bind(this, member)}
-              isInline={true}
-              className="selected-item"
-              isDisabled={inLoading}
-            />
-          ))}
-        </div>
-        <div>{error && <strong>{error}</strong>}</div>
+        {error && <div><strong>{error}</strong></div>}
         <div className="buttons_container">
           <Button
             label={t("SaveButton")}

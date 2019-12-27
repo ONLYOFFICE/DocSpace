@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 import styled from 'styled-components';
 import InputBlock from '../input-block';
 
-import isEqual from 'lodash/isEqual';
-
 const StyledSearchInput = styled.div`
   font-family: Open Sans;
   font-style: normal;
@@ -83,7 +81,8 @@ class SearchInput extends React.Component {
           iconName={!!this.state.inputValue || this.props.showClearButton ? "CrossIcon" : "SearchIcon"}
           isIconFill={true}
           iconSize={clearButtonSize}
-          iconColor={"#A3A9AE"}
+          iconColor={"#D0D5DA"}
+          hoverColor={!!this.state.inputValue || this.props.showClearButton ? "#555F65" : "#D0D5DA"}
           onIconClick={!!this.state.inputValue || this.props.showClearButton ? this.clearSearch : undefined}
           size={this.props.size}
           scale={true}

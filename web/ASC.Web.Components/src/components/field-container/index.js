@@ -28,7 +28,8 @@ function getHorizontalCss(labelWidth) {
     }
     .icon-button {
       position: relative;
-      margin-top: 1px;
+      margin-top: 10px;
+      margin-left: 8px;
     }
   `;
 }
@@ -41,21 +42,24 @@ function getVerticalCss() {
     margin: 0 0 16px 0;
 
     .field-label {
-      line-height: unset;
-      margin: 0 0 4px 0;
+      line-height: 13px;
+      height: 15px;
+      display: inline-block;
     }
     .field-label-icon {
       display: inline-flex;
       width: 100%;
-      line-height: 1.5;
+      margin: 0 0 8px 0;
     }
     .field-body {
       width: 100%;
     }
     .icon-button {
       position: relative;
-      line-height: unset;
-      margin-top: -12px;
+      margin: 0;
+      padding: 1px 8px;
+      width: 13px;
+      height: 13px;
     }
   `;
 }

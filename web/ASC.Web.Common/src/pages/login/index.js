@@ -56,8 +56,15 @@ const FormContainer = styled.form`
         }
       }
       .login-tooltip {
-        margin-left: 3px;
         display: inline-flex;
+        
+        @media(min-width: 1025px) {
+          margin-left: 8px;
+          margin-top: 4px;
+        }
+        @media(max-width: 1024px) {
+          padding: 4px 8px 8px 8px;
+        }        
       }
     }
     .login-link {

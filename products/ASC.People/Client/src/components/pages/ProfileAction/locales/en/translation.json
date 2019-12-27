@@ -40,6 +40,7 @@
   "ChangeButton": "Change",
   "Phone": "Phone",
   "ChangesSavedSuccessfully": "Changes saved successfully",
+  "EditProfile": "Edit profile",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",

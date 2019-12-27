@@ -42,7 +42,7 @@ const StyledHideFilter = styled.div`
 `;
 const DropDownStyle = styled.div`
   .drop-down {
-    padding: 8px;
+    padding: 16px;
   }
   position: relative;
 `;

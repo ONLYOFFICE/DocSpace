@@ -53,5 +53,13 @@
   "DirectionAscLabel":"А-Я",
   "DirectionDescLabel":"Я-А",
 
-  "DefaultSelectLabel": "Выберите"
+  "DefaultSelectLabel": "Выберите",
+
+  "FilterPlaceholder": "Поиск",
+
+  "CustomNewEmployee": "Новый {{typeUser, lowercase}}",
+  "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
+  "CustomNewDepartment": "Новый {{department, lowercase}}",
+  "MakeInvitationLink": "Создать пригласительную ссылку",
+  "SendInvitationAgain": "Отправить приглашение ещё раз"
 }

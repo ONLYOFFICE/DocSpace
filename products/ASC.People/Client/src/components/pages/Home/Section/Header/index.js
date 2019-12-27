@@ -1,12 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
   DropDownItem,
   toastr,
-  ContextMenuButton,
-  IconButton
+  ContextMenuButton
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
@@ -22,10 +21,13 @@ import {
 } from "../../../../../store/people/actions";
 import {
   typeUser,
-  typeGuest
+  typeGuest,
+  department
 } from "../../../../../helpers/../helpers/customNames";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
+import { InviteDialog } from '../../../../dialogs';
+
 const { isAdmin } = store.auth.selectors;
 const { resendUserInvites, deleteUsers } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
@@ -47,12 +49,15 @@ const StyledContainer = styled.div`
 
       @media (max-width: 1024px) {
         margin-left: auto;
+        padding: 8px 0 8px 8px;
       }
     }
   }
 `;
 
 const SectionHeaderContent = props => {
+  const [dialogVisible, setDialogVisible] = useState(false);
+
   const {
     isHeaderVisible,
     isHeaderIndeterminate,
@@ -175,7 +180,7 @@ const SectionHeaderContent = props => {
     );
   }, [deleteGroup, group]);
 
-  const getContextOptions = useCallback(() => {
+  const getContextOptionsGroup = useCallback(() => {
     return [
       {
         key: "edit-group",
@@ -190,9 +195,52 @@ const SectionHeaderContent = props => {
     ];
   }, [t, onEditGroup, onDeleteGroup]);
 
-  const onAddDepartmentsClick = useCallback(() => {
+  const goToEmployeeCreate = useCallback(() => {
+    history.push(`${settings.homepage}/create/user`);
+  }, [history, settings]);
+
+  const goToGuestCreate = useCallback(() => {
+    history.push(`${settings.homepage}/create/guest`);
+  }, [history, settings]);
+
+  const goToGroupCreate = useCallback(() => {
     history.push(`${settings.homepage}/group/create`);
   }, [history, settings]);
+
+  const onInvitationDialogClick = useCallback(() => 
+    setDialogVisible(!dialogVisible), [dialogVisible]
+  );
+
+  const getContextOptionsPlus = useCallback(() => {
+    return [
+      {
+        key: "new-employee",
+        label: t("CustomNewEmployee", { typeUser }),
+        onClick: goToEmployeeCreate
+      },
+      {
+        key: "new-guest",
+        label: t("CustomNewGuest", { typeGuest }),
+        onClick: goToGuestCreate
+      },
+      {
+        key: "new-group",
+        label: t("CustomNewDepartment", { department }),
+        onClick: goToGroupCreate
+      },
+      { key: 'separator', isSeparator: true },
+      {
+        key: "make-invitation-link",
+        label: t("MakeInvitationLink"),
+        onClick: onInvitationDialogClick
+      }/* ,
+      {
+        key: "send-invitation",
+        label: t("SendInvitationAgain"),
+        onClick: onSentInviteAgain
+      } */
+    ];
+  }, [t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
   return (
     <StyledContainer>
@@ -223,7 +271,7 @@ const SectionHeaderContent = props => {
                   iconName="VerticalDotsIcon"
                   size={16}
                   color="#A3A9AE"
-                  getData={getContextOptions.bind(this, t)}
+                  getData={getContextOptionsGroup}
                   isDisabled={false}
                 />
               )}
@@ -232,15 +280,25 @@ const SectionHeaderContent = props => {
             <>
               <Headline type="content">Departments</Headline>
               {isAdmin && (
-                <IconButton
+                <>
+                <ContextMenuButton
                   className="action-button"
-                  size={16}
+                  directionX="left"
+                  title={t("Actions")}
                   iconName="PlusIcon"
-                  color="#A3A9AE"
-                  hoverColor="#657077"
-                  isFill={true}
-                  onClick={onAddDepartmentsClick}
+                  size={16}
+                  color="#657077"
+                  getData={getContextOptionsPlus}
+                  isDisabled={false}
                 />
+                {dialogVisible &&
+                  <InviteDialog
+                    visible={dialogVisible}
+                    onClose={onInvitationDialogClick}
+                    onCloseButton={onInvitationDialogClick}
+                  />
+                }
+                </>
               )}
             </>
           )}
