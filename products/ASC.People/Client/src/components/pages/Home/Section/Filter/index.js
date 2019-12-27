@@ -190,8 +190,8 @@ class SectionFilterContent extends React.Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting") },
-      { key: "lastname", label: t("ByLastNameSorting") }
+      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
+      { key: "lastname", label: t("ByLastNameSorting"), default: true }
     ];
   };
 
