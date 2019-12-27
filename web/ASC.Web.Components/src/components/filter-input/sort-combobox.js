@@ -87,6 +87,8 @@ class SortComboBox extends React.Component {
             { value: '1', label: this.props.directionDescLabel }
         ];
 
+        const isMobile = window.innerWidth > 375; //TODO: Make some better
+
         const advancedOptions = (
             <>
                 <DropDownItem noHover >
@@ -124,6 +126,7 @@ class SortComboBox extends React.Component {
                 isDisabled={this.props.isDisabled}
                 selectedOption={this.props.selectedOption}
                 scaled={true}
+                scaledOptions={isMobile}
                 size="content"
                 directionX="right"
             >
