@@ -32,6 +32,8 @@ import { Checkbox } from "asc-web-components";
 | `isIndeterminate` |     `bool`     |    -     |   -    |    -    | If true, this state is shown as a rectangle in the checkbox |
 | `label`           |    `string`    |    -     |   -    |    -    | Label of the input                                          |
 | `name`            |    `string`    |    -     |   -    |    -    | Used as HTML `name` property                                |
-| `onChange`        |     `func`     |    ✅    |   -    |    -    | Will be triggered whenever an CheckboxInput is clicked      |
+| `onChange`        |     `func`     |    ✅    |   -    |    -    | Will be triggered whenever an CheckboxInput is clicked     |
 | `style`           | `obj`, `array` |    -     |   -    |    -    | Accepts css style                                           |
 | `value`           |    `string`    |    -     |   -    |    -    | Value of the input                                          |
+| `title`           | `bool`         |    -     |   -    |     -     | Title                                                     |
+| `truncate`        | `bool`         |    -     |   -    |  `false`  | Disables word wrapping                                    |

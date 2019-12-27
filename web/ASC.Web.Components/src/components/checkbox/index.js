@@ -105,7 +105,7 @@ class Checkbox extends React.Component {
 
   render() {
     //console.log("Checkbox render");
-    const { isDisabled, id, className, label, style, value } = this.props;
+    const { isDisabled, id, className, label, style, value, title, truncate } = this.props;
     const colorProps = isDisabled ? { color: disableColor } : {};
 
     return (
@@ -122,6 +122,8 @@ class Checkbox extends React.Component {
         {this.props.label && (
           <Text
             as="span"
+            title={title}
+            truncate={truncate}
             {...colorProps}
           >
             {label}
@@ -144,11 +146,14 @@ Checkbox.propTypes = {
 
   onChange: PropTypes.func,
   className: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  title: PropTypes.string,
+  truncate: PropTypes.bool
 };
 
 Checkbox.defaultProps = {
-  isChecked: false
+  isChecked: false,
+  truncate: false
 };
 
 export default Checkbox;
