@@ -32,6 +32,7 @@ import { withTranslation } from "react-i18next";
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 1024px;
 
   .group-name_container {
     max-width: 320px;
@@ -50,18 +51,15 @@ const MainContainer = styled.div`
 
   .search_container {
     margin-top: 32px;
+    display: none;
   }
 
   .selected-members_container {
-    margin-top: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-
-    .selected-item {
-      margin-right: 8px;
-      margin-bottom: 8px;
-    }
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 8px;
+    grid-column-gap: 16px;
   }
 
   .buttons_container {
@@ -73,8 +71,10 @@ const MainContainer = styled.div`
   }
 
   @media ${utils.device.tablet} {
-    .search_container {
-      max-width: 320px;
+    max-width: 320px;
+
+    .selected-members_container {
+      grid-template-columns: repeat(1, 1fr);
     }
   }
 `;
@@ -355,7 +355,7 @@ class SectionBodyContent extends React.Component {
                   key={member.key}
                   text={member.label}
                   onClose={this.onSelectedItemClose.bind(this, member)}
-                  isInline={true}
+                  isInline={false}
                   className="selected-item"
                   isDisabled={inLoading}
                 />

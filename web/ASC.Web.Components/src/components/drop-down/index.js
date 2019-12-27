@@ -114,7 +114,7 @@ class DropDown extends React.PureComponent {
     const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
     const { directionX, directionY, width } = this.state;
     const isTablet = window.innerWidth <= 1024; //TODO: Make some better
-    const itemHeight = isTablet ? 40 : 36;
+    const itemHeight = isTablet ? 36 : 32;
     const fullHeight = children && children.length * itemHeight;
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
@@ -170,7 +170,7 @@ DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
   withArrow: false,
-  withBackdrop: false
+  withBackdrop: true
 };
 
 export default DropDown

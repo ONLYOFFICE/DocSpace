@@ -16,6 +16,7 @@ class FilterButton extends React.PureComponent {
         getData={this.props.getData}
         iconHoverName='RectangleFilterHoverIcon'
         iconClickName='RectangleFilterClickIcon'
+        className='filter-button'
       ></ContextMenuButton>
     )
   }

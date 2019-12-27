@@ -111,6 +111,7 @@ class HideFilter extends React.Component {
             className="drop-down"
             manualY="8px"
             open={this.state.popoverOpen}
+            clickOutsideAction={this.handleClick}
           >
             {this.props.children}
           </DropDown>
