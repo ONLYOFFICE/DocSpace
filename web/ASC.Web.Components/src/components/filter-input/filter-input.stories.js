@@ -30,8 +30,8 @@ function getData() {
   }
 function getSortData() {
     return [
-        {key: 'name', label: 'Name'},
-        {key: 'surname', label: 'Surname'}
+        {key: 'name', label: 'Name', default: true},
+        {key: 'surname', label: 'Surname', default: true}
     ];
 }
 

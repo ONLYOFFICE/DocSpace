@@ -20,8 +20,8 @@ import { FilterInput } from "asc-web-components";
     { key: "0", group: "filter-example", label: "Test" }
   ]}
   getSortData={() => [
-    { key: "name", label: "Name" },
-    { key: "surname", label: "Surname" }
+    { key: "name", label: "Name", default: true },
+    { key: "surname", label: "Surname", default: true }
   ]}
   onFilter={result => {
     console.log(result);
