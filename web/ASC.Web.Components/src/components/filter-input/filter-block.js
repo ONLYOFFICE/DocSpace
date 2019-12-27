@@ -36,8 +36,12 @@ const StyledFilterItem = styled.div`
 
 const StyledFilterItemContent = styled.div`
   display: flex;
-  padding: 5px 0 2px 7px;
-  
+  padding: 5px 4px 2px 7px;
+  ${props =>
+    props.isOpen && !props.isDisabled &&
+    css`
+      background: #ECEEF1;
+  `}
   ${props =>
     !props.isDisabled &&
     css`
@@ -95,7 +99,8 @@ class FilterItem extends React.Component {
     super(props);
 
     this.state = {
-      id: this.props.id
+      id: this.props.id,
+      isOpen: false
     };
   }
 
@@ -114,7 +119,7 @@ class FilterItem extends React.Component {
   render() {
     return (
       <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} opened={this.props.opened} >
-        <StyledFilterItemContent isDisabled={this.props.isDisabled}>
+        <StyledFilterItemContent isDisabled={this.props.isDisabled} isOpen={this.state.isOpen}>
           {this.props.groupLabel}:
               {this.props.groupItems.length > 1 ?
             <StyledComboBox
@@ -130,6 +135,11 @@ class FilterItem extends React.Component {
               noBorder={true}
               opened={this.props.opened}
               directionX='left'
+              toggleAction={(e,isOpen)=>{
+                this.setState({
+                  isOpen: !isOpen
+                })
+              }}
             ></StyledComboBox>
             : <StyledFilterName>{this.props.label}</StyledFilterName>
           }
