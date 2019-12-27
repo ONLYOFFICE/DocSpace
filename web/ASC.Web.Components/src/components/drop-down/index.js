@@ -34,6 +34,8 @@ const StyledDropdown = styled.div`
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
+
+    padding: ${props => !props.maxHeight && `6px 0px`};
 `;
 
 const Arrow = styled.div`

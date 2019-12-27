@@ -52,16 +52,6 @@ const StyledDropdownItem = styled.div`
     &:hover {
       background-color: ${props => props.noHover ? 'white' : '#F8F9F9'};
       text-align: left;
-
-      
-      &:first-of-type {
-        border-radius: 6px 6px 0 0;
-      }
-
-      &:last-of-type {
-        border-radius: 0 0 6px 6px;
-      }
-      
     }
 
     ${props => props.isSeparator && 
