@@ -31,6 +31,7 @@ const getFormatedGroups = (user, status) => {
         type='action'
         title={temp[0].label}
         fontSize='12px'
+        fontWeight={600}
         color={linkColor}
         onClick={temp[0].onClick}
       >
@@ -43,6 +44,7 @@ const getFormatedGroups = (user, status) => {
         containerWidth='160px'
         title={temp[0].label}
         fontSize='12px'
+        fontWeight={600}
         color={linkColor}
         data={temp}
       >
@@ -95,6 +97,7 @@ const UserContent = ({ user, history, settings }) => {
             as="div"
             color={sideInfoColor}
             fontSize='12px'
+            fontWeight={600}
             title={title}
             truncate={true}
           >
@@ -103,8 +106,8 @@ const UserContent = ({ user, history, settings }) => {
         : <div style={headDepartmentStyle}></div>
       }
       {groups}
-      <Link type='page' title={mobilePhone} fontSize='12px' color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
-      <Link containerWidth='220px' type='page' title={email} fontSize='12px' color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
+      <Link type='page' title={mobilePhone} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
+      <Link containerWidth='220px' type='page' title={email} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
     </RowContent>
   );
 };
