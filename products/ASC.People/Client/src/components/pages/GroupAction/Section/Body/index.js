@@ -32,7 +32,7 @@ import { withTranslation } from "react-i18next";
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 992px;
+  max-width: 1024px;
 
   .group-name_container {
     max-width: 320px;
