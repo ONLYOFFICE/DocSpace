@@ -40,6 +40,7 @@
   "LearnMore": "Learn more...",
 
   "chooseFileLabel":  "Drop file here, or click to select file",
+  "chooseMobileFileLabel": "Click to select files",
   "unknownTypeError": "Unknown image file type",
   "maxSizeFileError": "Maximum file size exceeded",
   "unknownError":     "Error",

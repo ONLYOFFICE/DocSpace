@@ -411,6 +411,7 @@ class SectionHeaderContent extends React.PureComponent {
           onLoadFile={this.onLoadFileAvatar}
           headerLabel={t("editAvatar")}
           chooseFileLabel={t("chooseFileLabel")}
+          chooseMobileFileLabel={t("chooseMobileFileLabel")}
           unknownTypeError={t("unknownTypeError")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("unknownError")}
