@@ -59,7 +59,7 @@ const StyledComboButton = styled.div`
   }
   .combo-button-label{
     margin-right: ${props => props.noBorder ? `4px` : `8px`};
-    color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
+    /*color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};*/
     max-width: 175px;
     ${props => props.noBorder && `
       line-height: 15px;
@@ -137,7 +137,7 @@ class ComboButton extends React.Component {
             {React.createElement(Icons[selectedOption.icon],
               {
                 size: 'scale',
-                color: boxIconColor,
+                color: selectedOption.default ? arrowIconColor : boxIconColor,
                 isfill: true
               })
             }
@@ -150,7 +150,7 @@ class ComboButton extends React.Component {
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
-          color={boxIconColor + ' !important'}
+          color={selectedOption.default ? arrowIconColor : boxIconColor + ' !important'}
         >
           {selectedOption.label}
         </Text>

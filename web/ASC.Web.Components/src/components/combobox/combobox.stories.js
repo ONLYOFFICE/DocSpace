@@ -119,7 +119,8 @@ storiesOf('Components|Input', module)
                   onSelect={option => action("Selected option")(option)}
                   selectedOption={{
                     key: 0,
-                    label: 'Select'
+                    label: 'Select',
+                    default: true
                   }}
                   isDisabled={boolean('isDisabled', false)}
                   noBorder={boolean('noBorder', false)}
@@ -138,7 +139,8 @@ storiesOf('Components|Input', module)
                   onSelect={option => action("Selected option")(option)}
                   selectedOption={{
                     key: 0,
-                    label: 'Select'
+                    label: 'Select',
+                    default: true
                   }}
                   isDisabled={boolean('isDisabled', false)}
                   scaled={false}
