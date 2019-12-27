@@ -31,8 +31,8 @@ const StyledDropdownItem = styled.div`
     border: 0px;
     cursor: pointer;
     margin: 0px;
-    padding: 0 16px;
-    line-height: 36px;
+    padding: 0px 16px;
+    line-height: 32px;
     box-sizing: border-box;
     text-align: left;
     background: none;
@@ -53,6 +53,7 @@ const StyledDropdownItem = styled.div`
       background-color: ${props => props.noHover ? 'white' : '#F8F9F9'};
       text-align: left;
 
+      
       &:first-of-type {
         border-radius: 6px 6px 0 0;
       }
@@ -60,13 +61,15 @@ const StyledDropdownItem = styled.div`
       &:last-of-type {
         border-radius: 0 0 6px 6px;
       }
+      
     }
 
     ${props => props.isSeparator && 
       `
+        padding: 0px 16px;
         border: 0.5px solid #ECEEF1;
         cursor: default;
-        margin: 0px 16px;
+        margin: 6px 16px 4px;
         line-height: 1px;
         height: 1px;
         width: calc(100% - 32px);
@@ -86,7 +89,7 @@ const StyledDropdownItem = styled.div`
     }
 
     @media ${ tablet } {
-      line-height: 40px;
+      line-height: 36px;
     }
   
     ${props => props.disabled && disabledAndHeaderStyle }
