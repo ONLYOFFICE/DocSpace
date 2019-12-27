@@ -36,7 +36,7 @@ const dropdownStyles = css`
     grid-row-gap: 16px;
 
     grid-template-columns: 1fr;
-    grid-template-rows: 30px 0.98fr;
+    grid-template-rows: 30px 1fr;
     grid-template-areas: "header-groups" "body-groups";
 
     .header-groups {
@@ -100,7 +100,7 @@ const StyledSelector = styled(Container)`
               props.groups && props.groups.length > 0
                 ? "70px"
                 : "30px"
-          : "30px"} 0.98fr;
+          : "30px"} 1fr;
     grid-template-areas: "header-options" "body-options";
 
     .header-options {
