@@ -170,7 +170,7 @@ DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
   withArrow: false,
-  withBackdrop: false
+  withBackdrop: true
 };
 
 export default DropDown

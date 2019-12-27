@@ -69,7 +69,7 @@ const StyledDropdownItem = styled.div`
         padding: 0px 16px;
         border: 0.5px solid #ECEEF1;
         cursor: default;
-        margin: 6px 16px 4px;
+        margin: 6px 16px 6px;
         line-height: 1px;
         height: 1px;
         width: calc(100% - 32px);

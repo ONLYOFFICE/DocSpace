@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import FilterButton from './filter-button';
 import HideFilter from './hide-filter';
 import ComboBox from '../combobox';
@@ -17,12 +17,12 @@ const StyledFilterItem = styled.div`
   margin-bottom: ${props => props.block ? '8px' : '0'};
   position: relative;
   height: 100%;
-  padding: 4px 22px 2px 7px;
   margin-right: 2px;
   border: 1px solid #ECEEF1;
   border-radius: 3px;
   background-color: #F8F9F9;
-
+  padding-right: 22px;
+  
   font-weight: 600;
   font-size: 13px;
   line-height: 15px;
@@ -33,6 +33,20 @@ const StyledFilterItem = styled.div`
     margin-bottom: 0;
   }
 `;
+
+const StyledFilterItemContent = styled.div`
+  display: flex;
+  padding: 5px 0 2px 7px;
+  
+  ${props =>
+    !props.isDisabled &&
+    css`
+      &:active{
+        background: #ECEEF1;
+      }
+  `}
+`;
+
 const StyledCloseButtonBlock = styled.div`
   display: flex;
   cursor: ${props =>
@@ -43,7 +57,18 @@ const StyledCloseButtonBlock = styled.div`
   width: 25px;
   border-left: 1px solid #ECEEF1;
   right: 0;
-  top: 1px;
+  top: 0;
+  background-color: #F8F9F9;
+  ${props =>
+    !props.isDisabled &&
+    css`
+      &:active{
+        background: #ECEEF1;
+        svg path:first-child { 
+          fill: #333; 
+        }
+      }
+  `}
 `;
 const StyledComboBox = styled(ComboBox)`
   display: inline-block;
@@ -51,6 +76,7 @@ const StyledComboBox = styled(ComboBox)`
   max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
+  margin-top: -1px;
   > div:first-child{
     width: auto;
     padding-left: 4px;
@@ -87,27 +113,30 @@ class FilterItem extends React.Component {
 
   render() {
     return (
-      <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} >
-        {this.props.groupLabel}:
-            {this.props.groupItems.length > 1 ?
-          <StyledComboBox
-            options={this.props.groupItems}
-            isDisabled={this.props.isDisabled}
-            onSelect={this.onSelect}
-            selectedOption={{
-              key: this.state.id,
-              label: this.props.label
-            }}
-            size='content'
-            scaled={false}
-            noBorder={true}
-            opened={this.props.opened}
-            directionX='left'
-          ></StyledComboBox>
-          : <StyledFilterName>{this.props.label}</StyledFilterName>
-        }
+      <StyledFilterItem key={this.state.id} id={this.state.id} block={this.props.block} opened={this.props.opened} >
+        <StyledFilterItemContent isDisabled={this.props.isDisabled}>
+          {this.props.groupLabel}:
+              {this.props.groupItems.length > 1 ?
+            <StyledComboBox
+              options={this.props.groupItems}
+              isDisabled={this.props.isDisabled}
+              onSelect={this.onSelect}
+              selectedOption={{
+                key: this.state.id,
+                label: this.props.label
+              }}
+              size='content'
+              scaled={false}
+              noBorder={true}
+              opened={this.props.opened}
+              directionX='left'
+            ></StyledComboBox>
+            : <StyledFilterName>{this.props.label}</StyledFilterName>
+          }
+        </StyledFilterItemContent>
+        
 
-        <StyledCloseButtonBlock onClick={this.onClick}>
+        <StyledCloseButtonBlock onClick={this.onClick} isDisabled={this.props.isDisabled} isClickable={true}>
           <CloseButton
             isDisabled={this.props.isDisabled}
             onClick={this.onClick}

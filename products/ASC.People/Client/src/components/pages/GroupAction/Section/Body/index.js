@@ -51,15 +51,15 @@ const MainContainer = styled.div`
 
   .search_container {
     margin-top: 32px;
+    display: none;
   }
 
   .selected-members_container {
-    margin-top: 16px;
+    margin-top: 32px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-row-gap: 8px;
     grid-column-gap: 16px;
-    margin-top: 16px;
   }
 
   .buttons_container {
