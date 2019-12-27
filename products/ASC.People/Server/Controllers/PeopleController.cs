@@ -1384,7 +1384,8 @@ namespace ASC.Employee.Core.Controllers
             PermissionContext.DemandPermissions(new UserSecurityProvider(user.ID), Constants.Action_EditUser);
 
             if (contacts == null) return;
-            user.Contacts = contacts.Select(r => $"{r.Type}|{r.Value}").Aggregate((a, b) => $"{a}|{b}");
+            var values = contacts.Where(r => !string.IsNullOrEmpty(r.Value)).Select(r => $"{r.Type}|{r.Value}");
+            user.Contacts = string.Join('|', values);
         }
 
         private void DeleteContacts(IEnumerable<Contact> contacts, UserInfo user)
