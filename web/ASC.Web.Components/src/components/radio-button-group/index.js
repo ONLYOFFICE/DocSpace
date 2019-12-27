@@ -61,6 +61,8 @@ class RadioButtonGroup extends React.Component {
 
               isDisabled={this.props.isDisabled || option.disabled}
               label={option.label}
+              fontSize={this.props.fontSize}
+              fontWeight={this.props.fontWeight}
               spacing={this.props.spacing}
               orientation={this.props.orientation}
             />
@@ -89,6 +91,8 @@ RadioButtonGroup.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   orientation: PropTypes.oneOf(['horizontal', 'vertical']),
   width: PropTypes.string,
+  fontSize: PropTypes.string,
+  fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 }
 
 RadioButtonGroup.defaultProps = {
