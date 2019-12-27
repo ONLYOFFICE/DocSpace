@@ -44,3 +44,5 @@ const mask = [/\d/, /\d/, "/", /\d/, /\d/, "/", /\d/, /\d/, /\d/, /\d/];
 | `type`           |    `string`    |          |       `text`, `password`        | `text`  | Supported type of the input fields.                                                                    |
 | `value`          |    `string`    |    ✅    |                -                |    -    | Value of the input                                                                                     |
 | `withBorder`     |     `bool`     |    -     |                -                | `true`  | Indicates that component contain border                                                                |
+| `fontWeight`      | `number`, `string` |    -     |   -    |     -     | Sets the font weight                               |
+| `isBold`          |           `bool`            |    -     |   -    |  `false`  | Sets font weight value ​​to 600                     |
