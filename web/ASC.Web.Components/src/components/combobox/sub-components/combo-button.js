@@ -58,7 +58,8 @@ const StyledComboButton = styled.div`
     `}
   }
   .combo-button-label{
-    margin-right: 8px;
+    margin-right: ${props => props.noBorder ? `4px` : `8px`};
+    color: ${props => props.isDisabled ? '#D0D5DA' : '#333333'};
     max-width: 175px;
     ${props => props.noBorder && `
       line-height: 15px;
@@ -66,7 +67,7 @@ const StyledComboButton = styled.div`
     `}
   }
   .combo-button-label:hover{
-    ${props => props.noBorder && `
+    ${props => props.noBorder && !props.isDisabled && `
       border-bottom: 1px dashed;
     `}
   }
@@ -149,6 +150,7 @@ class ComboButton extends React.Component {
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
+          color={boxIconColor + ' !important'}
         >
           {selectedOption.label}
         </Text>
