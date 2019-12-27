@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 const StyledCloseButton = styled.div`
     margin-left: 7px;
-    margin-top: -2px;
+    margin-top: -1px;
 `;
 const CloseButton = props => {
   //console.log("CloseButton render");
@@ -13,7 +13,7 @@ const CloseButton = props => {
     <StyledCloseButton className={props.className}>
       <IconButton
         color={"#D8D8D8"}
-        hoverColor={"#333"}
+        hoverColor={"#D8D8D8"}
         clickColor={"#333"}
         size={10}
         iconName={'CrossIcon'}
