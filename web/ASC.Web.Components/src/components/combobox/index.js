@@ -39,6 +39,7 @@ class ComboBox extends React.Component {
   handleClick = (e) => {
     if (this.state.isOpen && !this.ref.current.contains(e.target)) {
       this.toggle(false);
+      this.props.toggleAction && this.props.toggleAction(e, true);
     }
   }
 
