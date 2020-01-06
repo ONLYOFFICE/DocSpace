@@ -3,22 +3,22 @@ pipeline {
     stages {
         stage('Build Components') {
             steps {
-				yarn install --cwd web/ASC.Web.Components --frozen-lockfile
-				yarn link --cwd packages/asc-web-components
+				sh 'yarn install --cwd web/ASC.Web.Components --frozen-lockfile'
+				sh 'yarn link --cwd packages/asc-web-components'
             }
         }
 		stage('Build Common') {
             steps {
-				yarn link "asc-web-components" --cwd web/ASC.Web.Common
-				yarn install --cwd web/ASC.Web.Common --frozen-lockfile
-				yarn link --cwd packages/asc-web-common
+				sh 'yarn link "asc-web-components" --cwd web/ASC.Web.Common'
+				sh 'yarn install --cwd web/ASC.Web.Common --frozen-lockfile'
+				sh 'yarn link --cwd packages/asc-web-common'
             }
         }		
 		stage('Build Client') {
             steps {
-				yarn link "asc-web-components" --cwd web/ASC.Web.Client
-				yarn link "asc-web-common" --cwd web/ASC.Web.Client
-				yarn install --cwd web/ASC.Web.Client --frozen-lockfile
+				sh 'yarn link "asc-web-components" --cwd web/ASC.Web.Client'
+				sh 'yarn link "asc-web-common" --cwd web/ASC.Web.Client'
+				sh 'yarn install --cwd web/ASC.Web.Client --frozen-lockfile'
             }
         }
     }
