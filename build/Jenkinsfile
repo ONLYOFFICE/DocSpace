@@ -1,5 +1,5 @@
 pipeline {
-    agent net-core 
+    agent { label 'net-core' }
     stages {
         stage('Stage 1') {
             steps {
