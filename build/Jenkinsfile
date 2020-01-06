@@ -1,9 +1,24 @@
 pipeline {
     agent { label 'net-core' }
     stages {
-        stage('Stage 1') {
+        stage('Build Components') {
             steps {
-                echo 'Hello world!' 
+				yarn install --cwd web/ASC.Web.Components --frozen-lockfile
+				yarn link --cwd packages/asc-web-components
+            }
+        }
+		stage('Build Common') {
+            steps {
+				yarn link "asc-web-components" --cwd web/ASC.Web.Common
+				yarn install --cwd web/ASC.Web.Common --frozen-lockfile
+				yarn link --cwd packages/asc-web-common
+            }
+        }		
+		stage('Build Client') {
+            steps {
+				yarn link "asc-web-components" --cwd web/ASC.Web.Client
+				yarn link "asc-web-common" --cwd web/ASC.Web.Client
+				yarn install --cwd web/ASC.Web.Client --frozen-lockfile
             }
         }
     }
