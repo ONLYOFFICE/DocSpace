@@ -34,7 +34,7 @@ pipeline {
         }
 		stage('Test') {
             steps {
-				sh 'cd web/ASC.Web.Component && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true'
+				sh "cd ${env.WORKSPACE}/web/ASC.Web.Component && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
             }
         }
     }
