@@ -32,5 +32,15 @@ pipeline {
                 }
             }
         }
+		stage('Test') {
+            steps {
+				sh 'yarn test:coverage --ci --reporters=default --reporters=jest-junit --cwd web/ASC.Web.Components || true'
+            }
+        }
+		post {
+			success {
+				junit 'web/ASC.Web.Components/junit.xml'
+			}
+		}
     }
 }
