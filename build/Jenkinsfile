@@ -3,8 +3,7 @@ pipeline {
     stages {
         stage('Build Components') {
             steps {
-				sh 'yarn install --cwd web/ASC.Web.Components --frozen-lockfile'
-				sh 'yarn link --cwd packages/asc-web-components'
+				sh 'build/scripts/components'
             }
         }
 		stage('Build Common') {
