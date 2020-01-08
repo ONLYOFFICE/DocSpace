@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build Components') {
             steps {
-				sh 'sh ./build/scripts/components'
+				sh 'sh ./build/scripts/components.bat'
             }
         }
 		stage('Build Common') {

@@ -6,9 +6,7 @@ call start\stop.bat
 
 PUSHD %~dp0..
 
-echo "ASC.Web.Components"
-call yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build\ASC.Web.Components.log
-call yarn link --cwd packages/asc-web-components
+call build\scripts\components.bat
 
 echo "ASC.Web.Common"
 call yarn link "asc-web-components" --cwd web/ASC.Web.Common
