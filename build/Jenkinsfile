@@ -36,11 +36,19 @@ pipeline {
             steps {
 				sh "cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
             }
+            post {
+                success {
+                    junit 'web/ASC.Web.Components/junit.xml'
+					publishHTML target: [
+						allowMissing         : false,
+						alwaysLinkToLastBuild: false,
+						keepAll             : true,
+						reportDir            : 'web/ASC.Web.Components/output/coverage/lcov-report',
+						reportFiles          : 'index.html',
+						reportName           : 'Test Report'
+				    ]
+                }
+            }
         }
     }
-	post {
-		success {
-			junit 'web/ASC.Web.Components/junit.xml'
-		}
-	}
 }
