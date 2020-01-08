@@ -3,24 +3,24 @@ pipeline {
     stages {
         stage('Build Components') {
             steps {
-				sh 'sh ./build/scripts/components.bat'
+				sh 'sh ./build/scripts/components.sh'
             }
         }
 		stage('Build Common') {
             steps {
-				sh 'sh ./build/scripts/common.bat'
+				sh 'sh ./build/scripts/common.sh'
             }
         }		
 		stage('Build Projects') {
             parallel {
                 stage('Build Client') {
                     steps {
-						sh 'sh ./build/scripts/client.bat'
+						sh 'sh ./build/scripts/client.sh'
                     }
                 }
                 stage('Build People') {
                     steps {
-						sh 'sh ./build/scripts/people.bat'
+						sh 'sh ./build/scripts/people.sh'
                     }
                 }
             }
