@@ -3,7 +3,7 @@ pipeline {
     stages {
 		stage('Build') {
 			matrix {
-				agent { label '${PLATFORM}' }
+				agent { label "${PLATFORM}" }
 				axes {
 					axis {
 						name 'PLATFORM'
