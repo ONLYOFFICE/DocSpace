@@ -8,25 +8,19 @@ pipeline {
         }
 		stage('Build Common') {
             steps {
-				sh 'yarn link "asc-web-components" --cwd web/ASC.Web.Common'
-				sh 'yarn install --cwd web/ASC.Web.Common --frozen-lockfile'
-				sh 'yarn link --cwd packages/asc-web-common'
+				sh 'sh ./build/scripts/common.bat'
             }
         }		
 		stage('Build Projects') {
             parallel {
                 stage('Build Client') {
                     steps {
-                        sh 'yarn link "asc-web-components" --cwd web/ASC.Web.Client'
-                        sh 'yarn link "asc-web-common" --cwd web/ASC.Web.Client'
-                        sh 'yarn install --cwd web/ASC.Web.Client --frozen-lockfile'
+						sh 'sh ./build/scripts/client.bat'
                     }
                 }
                 stage('Build People') {
                     steps {
-                        sh 'yarn link "asc-web-components" --cwd products/ASC.People/Client'
-                        sh 'yarn link "asc-web-common" --cwd products/ASC.People/Client'
-                        sh 'yarn install --cwd products/ASC.People/Client'
+						sh 'sh ./build/scripts/people.bat'
                     }
                 }
             }
