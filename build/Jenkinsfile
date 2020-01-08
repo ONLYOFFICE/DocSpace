@@ -43,7 +43,7 @@ pipeline {
 						allowMissing         : false,
 						alwaysLinkToLastBuild: false,
 						keepAll             : true,
-						reportDir            : 'web/ASC.Web.Components/output/coverage/lcov-report',
+						reportDir            : 'web/ASC.Web.Components/coverage/lcov-report',
 						reportFiles          : 'index.html',
 						reportName           : 'Test Report'
 				    ]
