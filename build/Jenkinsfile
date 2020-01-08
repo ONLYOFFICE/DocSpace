@@ -1,41 +1,62 @@
 pipeline {
-	agent none
+    agent none
     stages {
 		stage('Build') {
-			matrix {
-				agent { label "${PLATFORM}" }
-				axes {
-					axis {
-						name 'PLATFORM'
-						values 'net-core', 'master'
+			parallel {
+			    stage('Unix') {
+					agent { label 'net-core' }
+					stages {
+						stage('Components') {
+							steps {
+								sh 'sh ./build/scripts/components.sh'
+							}
+						}
+						stage('Common') {
+							steps {
+								sh 'sh ./build/scripts/common.sh'
+							}
+						}		
+						stage('Client') {
+							steps {
+								sh 'sh ./build/scripts/client.sh'
+							}
+						}
+						stage('People') {
+							steps {
+								sh 'sh ./build/scripts/people.sh'
+							}
+						}
 					}
 				}
-				stages {
-					stage('Build Components') {
-						steps {
-							sh 'sh ./build/scripts/components.sh'
+				stage('Windows') {
+					agent { label 'master' }
+					stages {
+						stage('Components') {
+							steps {
+								bat 'call build\\scripts\\components.sh'
+							}
+						}
+						stage('Common') {
+							steps {
+								bat 'call build\\scripts\\common.sh'
+							}
+						}		
+						stage('Client') {
+							steps {
+								bat 'call build\\scripts\\client.sh'
+							}
+						}
+						stage('People') {
+							steps {
+								bat 'call build\\scripts\\people.sh'
+							}
 						}
 					}
-					stage('Build Common') {
-						steps {
-							sh 'sh ./build/scripts/common.sh'
-						}
-					}		
-                    stage('Build Client') {
-                        steps {
-                            sh 'sh ./build/scripts/client.sh'
-                        }
-                    }
-                    stage('Build People') {
-                        steps {
-                            sh 'sh ./build/scripts/people.sh'
-                        }
-                    }
 				}
 			}
 		}
 		stage('Test') {
-		    agent { label 'net-core' }
+			agent { label 'net-core' }
             steps {
 				sh "cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
             }
