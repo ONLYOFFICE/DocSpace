@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import { handleAnyClick } from "../../utils/event";
+import PropTypes from 'prop-types';
 
 const Caret = styled.div`
   width: 7px;
@@ -54,7 +55,7 @@ class HideFilter extends React.Component {
     this.ref = React.createRef();
     this.dropDownRef = React.createRef();
     this.state = {
-      popoverOpen: false
+      popoverOpen: this.props.open
     };
   }
 
@@ -120,5 +121,10 @@ class HideFilter extends React.Component {
     );
   }
 }
-
+HideFilter.propTypes = {
+  children: PropTypes.any,
+  open: PropTypes.bool,
+  isDisabled: PropTypes.bool,
+  count: PropTypes.number
+}
 export default HideFilter;

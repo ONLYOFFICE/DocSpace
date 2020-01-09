@@ -78,6 +78,7 @@ class ContextMenuButton extends React.Component {
       clickColor,
       size,
       iconName,
+      iconOpenName,
       iconHoverName,
       iconClickName,
       isDisabled,
@@ -92,7 +93,7 @@ class ContextMenuButton extends React.Component {
     } = this.props;
 
     const { isOpen } = this.state;
-
+    const iconButtonName = isOpen && iconOpenName ? iconOpenName : iconName;
     return (
       <StyledOuter ref={this.ref} className={className} id={id} style={style}>
         <IconButton
@@ -100,7 +101,7 @@ class ContextMenuButton extends React.Component {
           hoverColor={hoverColor}
           clickColor={clickColor}
           size={size}
-          iconName={iconName}
+          iconName={iconButtonName}
           iconHoverName={iconHoverName}
           iconClickName={iconClickName}
           isFill={false}
@@ -143,6 +144,7 @@ ContextMenuButton.propTypes = {
 
   iconHoverName: PropTypes.string,
   iconClickName: PropTypes.string,
+  iconOpenName: PropTypes.string,
 
   onMouseEnter: PropTypes.func,
   onMouseLeave: PropTypes.func,
