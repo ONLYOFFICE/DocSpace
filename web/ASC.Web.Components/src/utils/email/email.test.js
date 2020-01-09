@@ -1,4 +1,4 @@
-import { parseAddress, checkAndConvertEmailSettings, Email, isEqualEmail, isValidDomainName, parseAddresses } from './index';
+import { parseAddress, EmailSettings, Email, isEqualEmail, isValidDomainName, parseAddresses } from './index';
 
 const emailSettingsObj = {
   allowDomainPunycode: true,
@@ -10,7 +10,7 @@ const emailSettingsObj = {
   allowLocalDomainName: true
 }
 
-const emailSettingsInstance = checkAndConvertEmailSettings(emailSettingsObj);
+const emailSettingsInstance = EmailSettings.parse(emailSettingsObj);
 
 describe('email', () => {
 
