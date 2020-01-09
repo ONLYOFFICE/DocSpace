@@ -3,7 +3,6 @@ import DropDown from '../drop-down'
 import DropDownItem from '../drop-down-item'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { handleAnyClick } from '../../utils/event';
 import isEqual from 'lodash/isEqual';
 import styled from 'styled-components';
 
@@ -31,25 +30,31 @@ class ComboBox extends React.Component {
       isOpen: props.opened,
       selectedOption: props.selectedOption
     };
-
-    if (props.opened)
-      handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) => {
-    if (this.state.isOpen && !this.ref.current.contains(e.target)) {
-      this.toggle(false);
-      this.props.toggleAction && this.props.toggleAction(e, true);
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    const needUpdate = !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
+
+    console.log("shouldComponentUpdate", needUpdate);
+
+    return needUpdate;
   }
 
   stopAction = (e) => e.preventDefault();
 
-  toggle = (isOpen) => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
+
+  handleClickOutside = e => {
+    // ..handling code goes here...
+    console.log(`ComboBox handleClickOutside`, e);
+
+    this.setIsOpen(!this.state.isOpen);
+    this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+  };
 
   comboBoxClick = (e) => {
     if (this.props.isDisabled || e && e.target.closest('.optionalBlock')) return;
-    this.toggle(!this.state.isOpen);
+    this.setIsOpen(!this.state.isOpen);
     this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
   };
 
@@ -62,21 +67,9 @@ class ComboBox extends React.Component {
     this.props.onSelect && this.props.onSelect(option);
   };
 
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened) {
-      handleAnyClick(this.props.opened, this.handleClick);
-    }
-
-    if (this.state.isOpen !== prevState.isOpen) {
-      handleAnyClick(this.state.isOpen, this.handleClick);
+      this.setIsOpen(this.props.opened);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
@@ -149,6 +142,7 @@ class ComboBox extends React.Component {
             directionY={directionY}
             manualY='102%'
             open={isOpen}
+            clickOutsideAction={this.handleClickOutside}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
           >

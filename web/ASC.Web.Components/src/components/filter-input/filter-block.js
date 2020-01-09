@@ -206,25 +206,28 @@ class FilterBlock extends React.Component {
       });
     }
     if (this.state.hideFilterItems.length > 0) {
+      var open = false;
+      var hideFilterItemsList = this.state.hideFilterItems.map(function (item) {
+        open = item.key.indexOf('_-1') == -1 ? false : true
+        return <FilterItem
+          block={true}
+          isDisabled={_this.props.isDisabled}
+          key={item.key}
+          groupItems={_this.props.getFilterData().filter(function (t) {
+            return (t.group == item.group && t.group != t.key);
+          })}
+          onSelectFilterItem={_this.props.onClickFilterItem}
+          id={item.key}
+          groupLabel={item.groupLabel}
+          opened={item.key.indexOf('_-1') == -1 ? false : true}
+          label={item.label}
+          onClose={_this.onDeleteFilterItem}>
+        </FilterItem>
+      })
       hideItems.push(
-        <HideFilter key="hide-filter" count={this.state.hideFilterItems.length} isDisabled={this.props.isDisabled}>
+        <HideFilter key="hide-filter" count={this.state.hideFilterItems.length} isDisabled={this.props.isDisabled} open={open}>
           {
-            this.state.hideFilterItems.map(function (item) {
-              return <FilterItem
-                block={true}
-                isDisabled={_this.props.isDisabled}
-                key={item.key}
-                groupItems={_this.props.getFilterData().filter(function (t) {
-                  return (t.group == item.group && t.group != t.key);
-                })}
-                onSelectFilterItem={_this.props.onClickFilterItem}
-                id={item.key}
-                groupLabel={item.groupLabel}
-                opened={false}
-                label={item.label}
-                onClose={_this.onDeleteFilterItem}>
-              </FilterItem>
-            })
+            hideFilterItemsList
           }
         </HideFilter>
       );

@@ -49,12 +49,26 @@ const dropdownStyles = css`
       margin-left: -8px;
       /* background-color: white; */
 
-      .row-block {
+      .row-group {
+        box-sizing: border-box;
+        height: 32px;
+        cursor: pointer;
+        padding-top: 8px;
         padding-left: 8px;
 
         .group_checkbox {
           display: inline-block;
         }
+
+        &:hover {
+          background-color: #f8f9f9;
+          border-radius: 3px;
+        }
+      }
+
+      .row-group.selected {
+        background-color: #eceef1;
+        border-radius: 3px;
       }
     }
   }
@@ -154,9 +168,12 @@ const StyledSelector = styled(Container)`
       margin-left: -8px;
       /* background-color: white; */
 
-      .row-block {
+      .row-option {
         padding-left: 8px;
         padding-top: 8px;
+        box-sizing: border-box;
+        height: 32px;
+        cursor: pointer;
 
         .option-info {
           position: absolute;
@@ -165,21 +182,6 @@ const StyledSelector = styled(Container)`
         }
       }
     }
-  }
-
-  .row-block {
-    box-sizing: border-box;
-    height: 32px;
-    cursor: pointer;
-    padding-top: 8px;
-
-    &:hover {
-      background-color: #f8f9f9;
-    }
-  }
-
-  .row-block.selected {
-    background-color: #eceef1;
   }
 
   .footer {

@@ -188,23 +188,25 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('causes function handleClick() with opened prop', () => {
+  //TODO: Remove or re-write duplicate test
+  /* it('causes function comboBoxClick() with opened prop', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
     const instance = wrapper.instance();
 
-    instance.handleClick(new Event('click'));
+    instance.comboBoxClick(new Event('click'));
 
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('causes function handleClick()', () => {
+  //TODO: Remove or re-write duplicate test
+  it('causes function comboBoxClick()', () => {
     const wrapper = mount(<ComboBox {...baseProps} />);
     const instance = wrapper.instance();
 
-    instance.handleClick(new Event('click'));
+    instance.comboBoxClick(new Event('click'));
 
     expect(wrapper.state('isOpen')).toBe(false);
-  });
+  }); */
 
   it('causes function handleClick() with simulate', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);

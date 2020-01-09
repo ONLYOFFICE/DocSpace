@@ -292,7 +292,7 @@ class SectionBodyContent extends React.Component {
             id="head-selector_button"
             tabIndex={2}
             options={[]}
-            isOpen={isHeadSelectorOpen}
+            opened={isHeadSelectorOpen}
             selectedOption={groupManager}
             scaled={true}
             isDisabled={inLoading}
@@ -319,7 +319,7 @@ class SectionBodyContent extends React.Component {
             id="users-selector_button"
             tabIndex={3}
             options={[]}
-            isOpen={isUsersSelectorOpen}
+            opened={isUsersSelectorOpen}
             isDisabled={inLoading}
             selectedOption={{
               key: 0,

@@ -10,6 +10,7 @@ class FilterButton extends React.PureComponent {
         id={this.props.id}
         title='Actions'
         iconName='RectangleFilterIcon'
+        iconOpenName='RectangleFilterHoverIcon'
         color='#A3A9AE'
         size={this.props.iconSize}
         isDisabled={this.props.isDisabled}
