@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import DropDownItem from '../drop-down-item'
 import DropDown from '../drop-down'
 import IconButton from '../icon-button'
-import { handleAnyClick } from '../../utils/event';
 
 const StyledOuter = styled.div`
   display: inline-block;
@@ -28,39 +27,35 @@ class ContextMenuButton extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.onIconButtonClick = this.onIconButtonClick.bind(this);
     this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
-
-    if (props.opened)
-      handleAnyClick(true, this.handleClick);
   }
 
   handleClick = (e) => this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
   stopAction = (e) => e.preventDefault();
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
-
-    if (this.state.isOpen !== prevState.isOpen) {
-      handleAnyClick(this.state.isOpen, this.handleClick);
-    }
   }
 
   onIconButtonClick = () => {
-    if (!this.props.isDisabled) {
-      this.setState({
-        data: this.props.getData(),
-        isOpen: !this.state.isOpen
-      });
+    if (this.props.isDisabled) {
+      this.stopAction;
+      return;
     }
-    else {
-      this.stopAction
-    }
+
+    console.log("ContextMenuButton onIconButtonClick (isOpen)", this.state.isOpen);
+
+    this.setState({
+      data: this.props.getData(),
+      isOpen: !this.state.isOpen
+    });
+  }
+
+  clickOutsideAction = () => {
+    console.log("ContextMenuButton clickOutsideAction", );
+    this.onIconButtonClick();
   }
 
   onDropDownItemClick = (item) => {
@@ -119,7 +114,7 @@ class ContextMenuButton extends React.Component {
         <DropDown 
           directionX={directionX} 
           open={isOpen}
-          clickOutsideAction={this.onIconButtonClick}
+          clickOutsideAction={this.clickOutsideAction}
         >
           {
             this.state.data.map((item, index) =>
