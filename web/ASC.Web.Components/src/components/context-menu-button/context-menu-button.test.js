@@ -140,15 +140,6 @@ describe('<ContextMenuButton />', () => {
     expect(wrapper.props()).toBe(wrapper.props());
   });
 
-  it('componentWillUnmount() props lifecycle test', () => {
-    const wrapper = shallow(<ContextMenuButton {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.componentWillUnmount();
-
-    expect(wrapper).toExist(false);
-  });
-
   it('accepts id', () => {
     const wrapper = mount(
       <ContextMenuButton {...baseProps} id="testId" />

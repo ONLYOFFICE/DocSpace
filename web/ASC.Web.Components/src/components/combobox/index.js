@@ -35,7 +35,7 @@ class ComboBox extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     const needUpdate = !isEqual(this.props, nextProps) || !isEqual(this.state, nextState);
 
-    console.log("shouldComponentUpdate", needUpdate);
+    //console.log("shouldComponentUpdate", needUpdate);
 
     return needUpdate;
   }
@@ -45,8 +45,7 @@ class ComboBox extends React.Component {
   setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
 
   handleClickOutside = e => {
-    // ..handling code goes here...
-    console.log(`ComboBox handleClickOutside`, e);
+    //console.log(`ComboBox handleClickOutside`, e);
     this.setState({ isOpen: !this.state.isOpen }, () => {
       this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
     })
@@ -68,9 +67,9 @@ class ComboBox extends React.Component {
     this.props.onSelect && this.props.onSelect(option);
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.opened !== prevProps.opened) {
-      this.setIsOpen(this.props.opened);
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.opened !== prevProps.opened && this.state.isOpen !== prevState.isOpen) {
+      this.setIsOpen(this.state.isOpen);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
