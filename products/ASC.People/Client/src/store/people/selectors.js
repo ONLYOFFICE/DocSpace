@@ -50,23 +50,23 @@ export const getUserRole = user => {
 export const getUserContactsPattern = () => {
     return {
         contact: [
-            { type: "mail", icon: "MailIcon" },
-            { type: "phone", icon: "PhoneIcon" },
-            { type: "mobphone", icon: "MobileIcon" },
-            { type: "gmail", icon: "GmailIcon" },
-            { type: "skype", icon: "SkypeIcon" },
+            { type: "mail", icon: "MailIcon", link: 'mailto:{0}' },
+            { type: "phone", icon: "PhoneIcon", link: 'tel:{0}' },
+            { type: "mobphone", icon: "MobileIcon", link: 'tel:{0}' },
+            { type: "gmail", icon: "GmailIcon", link: 'mailto:{0}' },
+            { type: "skype", icon: "SkypeIcon", link: 'skype:{0}?userinfo' },
             { type: "msn", icon: "WindowsMsnIcon" },
-            { type: "icq", icon: "IcqIcon" },
+            { type: "icq", icon: "IcqIcon", link: 'https://www.icq.com/people/{0}' },
             { type: "jabber", icon: "JabberIcon" },
             { type: "aim", icon: "AimIcon" }
         ],
         social: [
-            { type: "facebook", icon: "ShareFacebookIcon" },
-            { type: "livejournal", icon: "LivejournalIcon" },
-            { type: "myspace", icon: "MyspaceIcon" },
-            { type: "twitter", icon: "ShareTwitterIcon" },
-            { type: "blogger", icon: "BloggerIcon" },
-            { type: "yahoo", icon: "YahooIcon" }
+            { type: "facebook", icon: "ShareFacebookIcon", link: 'https://facebook.com/{0}' },
+            { type: "livejournal", icon: "LivejournalIcon", link: 'https://{0}.livejournal.com' },
+            { type: "myspace", icon: "MyspaceIcon", link: 'https://myspace.com/{0}' },
+            { type: "twitter", icon: "ShareTwitterIcon", link: 'https://twitter.com/{0}' },
+            { type: "blogger", icon: "BloggerIcon", link: 'https://{0}.blogspot.com' },
+            { type: "yahoo", icon: "YahooIcon", link: 'mailto:{0}@yahoo.com' }
         ]
     };
 };
