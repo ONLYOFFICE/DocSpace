@@ -47,15 +47,16 @@ class ComboBox extends React.Component {
   handleClickOutside = e => {
     // ..handling code goes here...
     console.log(`ComboBox handleClickOutside`, e);
-
-    this.setIsOpen(!this.state.isOpen);
-    this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+    this.setState({ isOpen: !this.state.isOpen }, () => {
+      this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+    })
   };
 
   comboBoxClick = (e) => {
     if (this.props.isDisabled || e && e.target.closest('.optionalBlock')) return;
-    this.setIsOpen(!this.state.isOpen);
-    this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+    this.setState({ isOpen: !this.state.isOpen }, () => {
+      this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+    })
   };
 
   optionClick = (option) => {

@@ -138,7 +138,7 @@ class FilterItem extends React.Component {
               directionX='left'
               toggleAction={(e,isOpen)=>{
                 this.setState({
-                  isOpen: !isOpen
+                  isOpen: isOpen
                 })
               }}
             ></StyledComboBox>
