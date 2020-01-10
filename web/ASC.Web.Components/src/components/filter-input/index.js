@@ -35,12 +35,15 @@ const StyledFilterBlock = styled.div`
     .filter-button {
         div:active {
             svg path:first-child { 
-            fill: #ECEEF1; 
+                fill: #ECEEF1; 
             }
         }
         div:first-child:hover {
+            svg path:first-child { 
+                stroke: #adb3b8; 
+            }
             svg path:not(:first-child) { 
-            stroke: #555F65; 
+                stroke: #555F65; 
             }
         }
     }

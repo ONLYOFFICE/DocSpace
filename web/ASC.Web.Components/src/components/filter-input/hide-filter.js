@@ -72,7 +72,7 @@ class HideFilter extends React.Component {
 
   handleClick = e => {
     this.state.popoverOpen &&
-      !this.ref.current.contains(e.target) &&
+      !this.dropDownRef.current.firstElementChild.contains(e.target) &&
       this.onClick(false);
   };
 

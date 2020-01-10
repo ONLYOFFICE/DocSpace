@@ -9,6 +9,7 @@ import {IconButton, ContextMenuButton, MainButton, SearchInput, Paging} from "as
 import withReadme from 'storybook-readme/with-readme';
 import { boolean, withKnobs } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
+import withProvider from "../../../.storybook/decorators/redux";
 
 const currentUser = {
   id: '00000000-0000-0000-0000-000000000000',
@@ -211,6 +212,7 @@ const sectionPagingContent = <Paging
 />
 
 storiesOf('Components|Layout', module)
+  .addDecorator(withProvider)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base', () => (
