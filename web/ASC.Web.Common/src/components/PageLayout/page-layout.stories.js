@@ -9,6 +9,7 @@ import {IconButton, ContextMenuButton, MainButton, SearchInput, Paging} from 'as
 import withReadme from 'storybook-readme/with-readme';
 import { boolean, withKnobs } from '@storybook/addon-knobs/react';
 import Readme from './README.md';
+import withProvider from "../../../.storybook/decorators/redux";
 
 const HeaderContent = styled.div`
   display: flex;
@@ -114,6 +115,7 @@ const sectionPagingContent = <Paging
 />
 
 storiesOf('Components|PageLayout', module)
+  .addDecorator(withProvider)
   .addDecorator(withKnobs)
   .addDecorator(withReadme(Readme))
   .add('base', () => (
