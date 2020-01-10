@@ -161,6 +161,12 @@ const StyledSelector = styled(Container)`
               }
             `}
         `}
+
+        .options_searcher input {
+          color: #A3A9AE;
+          font-size: 14px;
+          font-weight: 600;
+        }
     }
 
     .body-options {
