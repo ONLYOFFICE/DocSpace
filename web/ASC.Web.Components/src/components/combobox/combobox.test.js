@@ -32,13 +32,25 @@ const baseProps = {
   selectedOption: {
     key: 0,
     icon: 'CatalogFolderIcon',
-    label: "Select"
+    label: "Select",
+    default: true
   },
   options: baseOptions,
   opened: false,
   onSelect: () => jest.fn(),
   size: 'base',
   scaled: true
+};
+
+const toggleDisplayProps = {
+  options: [],
+  selectedOption: {
+    key: 0,
+    label: "Selected option"
+  },
+  scaled: false,
+  size: "content",
+  displayType: "toggle"
 };
 
 describe('<ComboBox />', () => {
@@ -74,6 +86,13 @@ describe('<ComboBox />', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
 
     expect(wrapper.prop('opened')).toEqual(true);
+  });
+
+  it('opened without borders', () => {
+    const wrapper = mount(<ComboBox {...baseProps} opened={true} noBorder={true} />);
+
+    expect(wrapper.prop('opened')).toEqual(true);
+    expect(wrapper.prop('noBorder')).toEqual(true);
   });
 
   it('with DropDown max height', () => {
@@ -188,26 +207,6 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  //TODO: Remove or re-write duplicate test
-  /* it('causes function comboBoxClick() with opened prop', () => {
-    const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
-    const instance = wrapper.instance();
-
-    instance.comboBoxClick(new Event('click'));
-
-    expect(wrapper.state('isOpen')).toBe(false);
-  });
-
-  //TODO: Remove or re-write duplicate test
-  it('causes function comboBoxClick()', () => {
-    const wrapper = mount(<ComboBox {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.comboBoxClick(new Event('click'));
-
-    expect(wrapper.state('isOpen')).toBe(false);
-  }); */
-
   it('causes function handleClick() with simulate', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
 
@@ -224,38 +223,35 @@ describe('<ComboBox />', () => {
     expect(wrapper.state('isOpen')).toBe(true);
   });
 
-  it('componentDidUpdate() state lifecycle test', () => {
+  it('componentDidUpdate() lifecycle test', () => {
     const wrapper = shallow(<ComboBox {...baseProps} />);
     const instance = wrapper.instance();
+    const newSelected = { key: 1, label: "Select" };
 
-    wrapper.setState({ isOpen: false });
+    jest.spyOn(instance, 'setIsOpen');
 
-    instance.componentDidUpdate(wrapper.props(), wrapper.state());
+    wrapper.setProps({
+      opened: true
+    });
 
-    expect(wrapper.state()).toBe(wrapper.state());
-  });
+    expect(wrapper.props().opened).toBe(true);
 
-  it('componentDidUpdate() props lifecycle test', () => {
-    const wrapper = shallow(<ComboBox {...baseProps} />);
-    const instance = wrapper.instance();
+    wrapper.setProps({
+      opened: false
+    });
+
+    expect(wrapper.props().opened).toBe(false);
 
     instance.componentDidUpdate({
       opened: true,
-      selectedOption: {
-        key: 1,
-        label: "Select"
-      }
-    }, wrapper.state());
+      selectedOption: newSelected
+    }, {
+      isOpen: true
+    });
 
-    expect(wrapper.props()).toBe(wrapper.props());
-  });
+    instance.forceUpdate(); //Need for manual re-render, enzyme issue
 
-  it('componentWillUnmount() lifecycle  test', () => {
-    const wrapper = mount(<ComboBox {...baseProps} opened={true} />);
-    const componentWillUnmount = jest.spyOn(wrapper.instance(), 'componentWillUnmount');
-
-    wrapper.unmount();
-    expect(componentWillUnmount).toHaveBeenCalled();
+    expect(instance.setIsOpen).toHaveBeenCalled();
   });
 
   it('accepts id', () => {
@@ -280,5 +276,51 @@ describe('<ComboBox />', () => {
     );
 
     expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+  });
+
+  it('render like toggle displayType', () => {
+    const onToggleClick = jest.fn();
+    const wrapper = mount(
+      <ComboBox
+        {...toggleDisplayProps}
+        toggleAction={onToggleClick}
+      />
+    );
+
+    expect(wrapper.prop('displayType')).toEqual('toggle');
+  });
+
+  it('click on toggle', () => {
+    const onToggleClick = jest.fn();
+    const wrapper = mount(
+      <ComboBox
+        {...toggleDisplayProps}
+        toggleAction={onToggleClick}
+      />
+    );
+
+    jest.spyOn(wrapper.instance(), 'setIsOpen');
+
+    wrapper.simulate('click');
+
+    expect(onToggleClick).toHaveBeenCalled();
+    expect(wrapper.instance().setIsOpen).toHaveBeenCalled();
+  });
+
+  it('click outside', () => {
+    const onToggleClick = jest.fn();
+    const wrapper = mount(<ComboBox {...baseProps} opened toggleAction={onToggleClick} />);
+    const instance = wrapper.instance();
+    
+    jest.spyOn(instance, 'setIsOpen');
+    jest.spyOn(instance, 'handleClickOutside');
+
+    instance.handleClickOutside(); //TODO: rework with simulation
+
+    expect(wrapper.state('isOpen')).toBe(false);
+    expect(wrapper.prop('opened')).toBe(true);
+    expect(instance.handleClickOutside).toHaveBeenCalled();
+    expect(onToggleClick).toHaveBeenCalled();
+    expect(instance.setIsOpen).toHaveBeenCalled();
   });
 });
