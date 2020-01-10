@@ -248,6 +248,12 @@ class SectionBodyContent extends React.Component {
     });
   };
 
+  onKeyPress = event => {
+    if (event.key === "Enter") {
+      this.onSave();
+    }
+  }
+
   render() {
     const { t } = this.props;
     const {
@@ -279,6 +285,7 @@ class SectionBodyContent extends React.Component {
             value={groupName}
             onChange={this.onGroupChange}
             isDisabled={inLoading}
+            onKeyUp={this.onKeyPress}
           />
         </FieldContainer>
         <FieldContainer
