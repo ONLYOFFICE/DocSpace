@@ -48,7 +48,7 @@ class IconButton extends React.PureComponent {
     onMouseEnter && onMouseEnter(e);
   }
   onMouseLeave(e) {
-    const { isDisabled, iconName, color, onMouseDown } = this.props;
+    const { isDisabled, iconName, color, onMouseLeave } = this.props;
 
     if (isDisabled) return;
 
@@ -57,7 +57,7 @@ class IconButton extends React.PureComponent {
       currentIconColor: color
     });
 
-    onMouseDown && onMouseDown(e);
+    onMouseLeave && onMouseLeave(e);
   }
   onMouseDown(e) {
     const {
@@ -177,6 +177,7 @@ IconButton.propTypes = {
   onMouseEnter: PropTypes.func,
   onMouseDown: PropTypes.func,
   onMouseUp: PropTypes.func,
+  onMouseLeave: PropTypes.func,
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   dataTip: PropTypes.string
