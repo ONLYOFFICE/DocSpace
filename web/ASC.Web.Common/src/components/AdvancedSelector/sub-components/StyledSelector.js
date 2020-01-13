@@ -162,10 +162,24 @@ const StyledSelector = styled(Container)`
             `}
         `}
 
-        .options_searcher input {
-          color: #A3A9AE;
-          font-size: 14px;
-          font-weight: 600;
+        .options_searcher {
+
+          div:first-child {
+            
+            :hover {
+              border-color: #D0D5DA;
+            }
+  
+            :focus, :focus-within {
+              border-color: #2DA7DB;
+            }
+
+            & > input {
+              color: #A3A9AE;
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
         }
     }
 

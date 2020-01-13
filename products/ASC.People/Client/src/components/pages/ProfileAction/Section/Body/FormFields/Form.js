@@ -44,17 +44,6 @@ const AvatarContainer = styled.div`
 
 const MainFieldsContainer = styled.div`
   flex-grow: 1;
-
-  .options_searcher {
-    div:first-child {
-      :hover {
-        border-color: #D0D5DA;
-      }
-      :focus, :focus-within {
-        border-color: #2DA7DB;
-      }
-    }
-  }
 `;
 
 export { MainContainer, AvatarContainer, MainFieldsContainer }
