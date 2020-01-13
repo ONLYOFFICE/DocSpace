@@ -2,7 +2,9 @@ pipeline {
     agent none
     stages {
 		stage('Telegram') {
-			telegramSend(message: 'Test', chatId:-381345297)
+			steps {
+				telegramSend(message: 'Test', chatId:-381345297)
+			}
 		}
 		stage('Build And Test') {
 			parallel {
