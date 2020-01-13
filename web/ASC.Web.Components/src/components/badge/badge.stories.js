@@ -13,7 +13,7 @@ storiesOf('Components|Badge', module)
   .add('base', () => (
     <Section>
       <Badge
-        number={number('number', 10)}
+        label={text('label', '10')}
         backgroundColor={color('backgroundColor', '#ED7309')}
         color={color('color', '#FFFFFF')}
         fontSize={text('fontSize', '11px')}
@@ -21,9 +21,46 @@ storiesOf('Components|Badge', module)
         borderRadius={text('borderRadius', '11px')}
         padding={text('padding', '0 5px')}
         maxWidth={text('maxWidth', '50px')}
-        onClick={(e)=>{
+        onClick={(e) => {
           action('onClick')(e);
         }}
       />
+      <br />
+      <Badge
+        label="New"
+        backgroundColor={color('backgroundColor', '#ED7309')}
+        color={color('color', '#FFFFFF')}
+        fontSize={text('fontSize', '11px')}
+        fontWeight={number('fontWeight', 800)}
+        borderRadius={text('borderRadius', '11px')}
+        padding={text('padding', '0 5px')}
+        maxWidth={text('maxWidth', '50px')}
+        onClick={(e) => {
+          action('onClick')(e);
+        }}
+      />
+      <br />
+      <Badge
+        label="Ver.2"
+        backgroundColor="#A3A9AE"
+        color={color('color', '#FFFFFF')}
+        fontSize={text('fontSize', '11px')}
+        fontWeight={number('fontWeight', 800)}
+        borderRadius={text('borderRadius', '11px')}
+        padding={text('padding', '0 5px')}
+        maxWidth={text('maxWidth', '50px')}
+        onClick={(e) => {
+          action('onClick')(e);
+        }}
+      />
+      <p>
+        Text with badge
+        <Badge
+          label="3"
+          onClick={(e) => {
+            action('onClick')(e);
+          }}
+        />
+      </p>
     </Section>
   ));
