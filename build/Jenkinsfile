@@ -3,7 +3,7 @@ pipeline {
     stages {
 		stage('Telegram') {
 			steps {
-				telegramSend(message: 'Test', chatId:-381345297)
+				telegramSend(message: 'Test', chatId: -381345297)
 			}
 		}
 		stage('Build And Test') {
