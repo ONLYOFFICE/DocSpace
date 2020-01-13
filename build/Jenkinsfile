@@ -33,22 +33,22 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								bat 'bash build\\scripts\\components.sh'
+								bat 'bash.exe build\\scripts\\components.sh'
 							}
 						}
 						stage('Common') {
 							steps {
-								bat 'bash build\\scripts\\common.sh'
+								bat 'bash.exe build\\scripts\\common.sh'
 							}
 						}		
 						stage('Client') {
 							steps {
-								bat 'bash build\\scripts\\client.sh'
+								bat 'bash.exe build\\scripts\\client.sh'
 							}
 						}
 						stage('People') {
 							steps {
-								bat 'bash build\\scripts\\people.sh'
+								bat 'bash.exe build\\scripts\\people.sh'
 							}
 						}
 					}
