@@ -75,7 +75,7 @@ const NavItem = React.memo(props => {
         )}
         <NavItemBadge
           opened={opened}
-          number={badgeNumber}
+          label={badgeNumber}
           onClick={onBadgeClick}
         />
       </NavItemWrapper>
