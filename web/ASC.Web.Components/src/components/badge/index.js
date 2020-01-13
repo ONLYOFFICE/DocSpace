@@ -4,15 +4,28 @@ import styled from 'styled-components';
 import Text from "../text";
 
 const StyledBadge = styled.div`
+  display: ${props => (props.label.length > 0 || props.label != '0') ? 'inline-block' : 'none'};
+  border: 1px solid transparent;
+  border-radius: ${props => props.borderRadius};
+  width: fit-content;
+  padding: 2px;
+  line-height: 0.8;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  :hover {
+    border-color: ${props => props.backgroundColor};
+  }
+`;
+
+const StyledInner = styled.div`
   background-color: ${props => props.backgroundColor};
   border-radius: ${props => props.borderRadius};
   padding: ${props => props.padding};
   max-width: ${props => props.maxWidth};
   text-align: center;
-  cursor: pointer;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: ${props => props.number > 0 ? 'inline-block' : 'none'};
   user-select: none;
   line-height: 1.5;
 `;
@@ -26,19 +39,21 @@ const Badge = props => {
       props.onClick(e);
     }
   };
-  
+
   const { fontSize, color, fontWeight } = props;
   return (
     <StyledBadge {...props} onClick={onClick}>
-      <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
-        {props.number}
-      </Text>
+      <StyledInner {...props}>
+        <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
+          {props.label}
+        </Text>
+      </StyledInner>
     </StyledBadge>
   );
 };
 
 Badge.propTypes = {
-  number: PropTypes.number,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   backgroundColor: PropTypes.string,
   color: PropTypes.string,
   fontSize: PropTypes.string,
@@ -53,7 +68,7 @@ Badge.propTypes = {
 };
 
 Badge.defaultProps = {
-  number: 0,
+  label: 0,
   backgroundColor: '#ED7309',
   color: '#FFFFFF',
   fontSize: "11px",
