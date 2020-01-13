@@ -2,9 +2,12 @@ pipeline {
     agent none
     stages {
 		stage('Telegram') {
-			agent { label 'master' }
+			agent { label 'net-core' }
+			environment {
+                Telegram_Token = credentials('telegram_token')
+            }
 			steps {
-				telegramSend 'Test'
+				sh 'curl -s -X GET https://api.telegram.org/bot$Telegram_Token/sendMessage?chat_id=-381345297&text=Test_Message'
 			}
 		}
 		stage('Build And Test') {
