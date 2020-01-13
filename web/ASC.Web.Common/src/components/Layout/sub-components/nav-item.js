@@ -60,7 +60,8 @@ const NavItem = React.memo(props => {
   return separator ? (
     <NavItemSeparator />
   ) : (
-      <NavItemWrapper 
+      <NavItemWrapper
+      noHover 
       href={url} 
       onClick={onClick}>
         {React.createElement(Icons[iconName], {
