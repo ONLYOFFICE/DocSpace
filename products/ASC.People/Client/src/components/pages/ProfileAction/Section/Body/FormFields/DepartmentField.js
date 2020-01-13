@@ -29,7 +29,8 @@ class DepartmentField extends React.Component {
 
       selectorIsVisible,
       selectorSelectedOptions,
-      selectorOnSelectGroups
+      selectorOnSelectGroups,
+      searchPlaceHolderLabel
     } = this.props;
 
     return (
@@ -50,6 +51,7 @@ class DepartmentField extends React.Component {
           isMultiSelect={true}
           onSelect={selectorOnSelectGroups}
           onCancel={onCloseGroupSelector}
+          searchPlaceHolderLabel={searchPlaceHolderLabel}
         />
         {selectorSelectedOptions.map(option => (
             <SelectedItem

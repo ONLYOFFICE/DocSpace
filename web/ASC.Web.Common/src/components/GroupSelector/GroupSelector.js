@@ -92,7 +92,8 @@ class GroupSelector extends React.Component {
       isDisabled,
       onSelect,
       onCancel,
-      t
+      t,
+      searchPlaceHolderLabel
     } = this.props;
 
     return (
@@ -110,7 +111,7 @@ class GroupSelector extends React.Component {
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={t("SearchPlaceholder")}
+        searchPlaceHolderLabel={searchPlaceHolderLabel || t("SearchPlaceholder")}
         selectButtonLabel={t("AddDepartmentsButtonLabel")}
         selectAllLabel={t("SelectAllLabel")}
         emptySearchOptionsLabel={t("EmptySearchOptionsLabel")}
@@ -125,17 +126,18 @@ class GroupSelector extends React.Component {
 }
 
 GroupSelector.propTypes = {
-  id: PropTypes.string,
   className: PropTypes.oneOf([PropTypes.string, PropTypes.array]),
-  style: PropTypes.object,
-  isOpen: PropTypes.bool,
-  onSelect: PropTypes.func,
-  onCancel: PropTypes.func,
-  useFake: PropTypes.bool,
-  isMultiSelect: PropTypes.bool,
+  id: PropTypes.string,
   isDisabled: PropTypes.bool,
+  isMultiSelect: PropTypes.bool,
+  isOpen: PropTypes.bool,
   language: PropTypes.string,
-  t: PropTypes.func
+  onCancel: PropTypes.func,
+  onSelect: PropTypes.func,
+  searchPlaceHolderLabel: PropTypes.string,
+  style: PropTypes.object,
+  t: PropTypes.func,
+  useFake: PropTypes.bool,
 };
 
 GroupSelector.defaultProps = {

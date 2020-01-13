@@ -16,7 +16,6 @@
   "ContactInformation": "Contact information",
   "AddContact": "Add contact",
   "SocialProfiles": "Social profiles",
-  "Search": "Search",
   "SelectAll": "Select all",
   "EmailPopupHelper": "The main e-mail is needed to restore access to the portal in case of loss of the password and send notifications. <1> You can create a new mail on the domain as the primary. In this case, you must set a one-time password so that the user can log in to the portal for the first time.</1> The main e-mail can be used as a login when logging in to the portal.",
   "ProfileTypePopupHelper": "Guests have limited access to some portal features and modules",
@@ -41,6 +40,7 @@
   "Phone": "Phone",
   "ChangesSavedSuccessfully": "Changes saved successfully",
   "EditProfile": "Edit profile",
+  "SearchDepartments": "Search departments",
 
   "CustomEmployedSinceDate": "{{employedSinceDate}}",
   "CustomPosition": "{{position}}",
