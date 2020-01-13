@@ -4,7 +4,7 @@ pipeline {
 		stage('Telegram') {
 			agent { label 'master' }
 			steps {
-				telegramSend(message: 'Test', chatId: -381345297)
+				telegramSend 'Test'
 			}
 		}
 		stage('Build And Test') {
