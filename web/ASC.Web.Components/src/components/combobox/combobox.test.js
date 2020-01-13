@@ -304,7 +304,6 @@ describe('<ComboBox />', () => {
     wrapper.simulate('click');
 
     expect(onToggleClick).toHaveBeenCalled();
-    expect(wrapper.instance().setIsOpen).toHaveBeenCalled();
   });
 
   it('click outside', () => {
@@ -312,7 +311,6 @@ describe('<ComboBox />', () => {
     const wrapper = mount(<ComboBox {...baseProps} opened toggleAction={onToggleClick} />);
     const instance = wrapper.instance();
     
-    jest.spyOn(instance, 'setIsOpen');
     jest.spyOn(instance, 'handleClickOutside');
 
     instance.handleClickOutside(); //TODO: rework with simulation
@@ -321,6 +319,5 @@ describe('<ComboBox />', () => {
     expect(wrapper.prop('opened')).toBe(true);
     expect(instance.handleClickOutside).toHaveBeenCalled();
     expect(onToggleClick).toHaveBeenCalled();
-    expect(instance.setIsOpen).toHaveBeenCalled();
   });
 });
