@@ -1,18 +1,20 @@
 pipeline {
-    agent none
-    stages {
+	agent none
+	stages {
 		stage('Telegram') {
 			agent { label 'net-core' }
+			options { skipDefaultCheckout() }
 			environment {
-                Telegram_Token = credentials('telegram_token')
-            }
+				Telegram_Token = credentials('telegram_token')
+				Chat_Id = -381345297
+			}
 			steps {
-				sh 'curl -s -X GET "https://api.telegram.org/bot$Telegram_Token/sendMessage?chat_id=-381345297&text=Test_Message"'
+				sh 'curl -s -X GET "https://api.telegram.org/bot$Telegram_Token/sendMessage?chat_id=$Chat_Id&text=Test_Message"'
 			}
 		}
 		stage('Build And Test') {
 			parallel {
-			    stage('Unix') {
+				stage('Unix') {
 					agent { label 'net-core' }
 					stages {
 						stage('Components') {
@@ -24,7 +26,7 @@ pipeline {
 							steps {
 								sh 'sh ./build/scripts/common.sh'
 							}
-						}		
+						}
 						stage('Client') {
 							steps {
 								sh 'sh ./build/scripts/client.sh'
