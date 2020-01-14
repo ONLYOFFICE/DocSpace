@@ -8,10 +8,6 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh 'echo "$CHANGE_ID"'
-								sh 'echo "$CHANGE_URL"'
-								sh 'echo "$CHANGE_TITLE"'
-								sh 'echo "$BUILD_URL"'
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
@@ -78,6 +74,7 @@ pipeline {
 								reportName           : 'Unix Test Report'
 							]
 							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
+							publishCoverageGithub(filepath:'web/ASC.Web.Components/coverage/cobertura-coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
 						}
 					}
 				}
@@ -110,10 +107,7 @@ pipeline {
 				Chat_Id = -381345297
 			}
 			steps {
-				script {
-					def message_text = env.BUILD_URL
-				}
-				sh 'curl -s -X GET "https://api.telegram.org/bot$Telegram_Token/sendMessage?chat_id=$Chat_Id&text=$message_text"'
+				sh 'curl -s -X GET -G "https://api.telegram.org/bot$Telegram_Token/sendMessage" --data-urlencode "chat_id=$Chat_Id"  --data-urlencode "text=Build Url: $BUILD_URL Branch Name:$BRANCH_NAME CHANGE URL:$CHANGE_URL"'
 			}
 		}
     }
