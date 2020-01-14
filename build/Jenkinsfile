@@ -19,7 +19,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								echo "$env"
+								sh 'sh echo "$env"'
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
@@ -85,7 +85,7 @@ pipeline {
 								reportFiles          : 'index.html',
 								reportName           : 'Unix Test Report'
 							]
-							step([$class: 'CoberturaPublisher', coberturaReportFile: 'output/coverage/jest/cobertura-coverage.xml'])
+							step([$class: 'CoberturaPublisher', coberturaReportFile: 'web/ASC.Web.Components/coverage/cobertura-coverage.xml'])
 						}
 					}
 				}
