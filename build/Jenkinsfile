@@ -19,6 +19,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
+								echo "$env"
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
@@ -84,6 +85,7 @@ pipeline {
 								reportFiles          : 'index.html',
 								reportName           : 'Unix Test Report'
 							]
+							step([$class: 'CoberturaPublisher', coberturaReportFile: 'output/coverage/jest/cobertura-coverage.xml'])
 						}
 					}
 				}
