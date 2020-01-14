@@ -56,6 +56,7 @@ pipeline {
 			}
 		}
 		stage('Test') {
+			when { changeRequest target: 'master' }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
@@ -74,7 +75,9 @@ pipeline {
 								reportName           : 'Unix Test Report'
 							]
 							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
-							publishCoverageGithub(filepath:'web/ASC.Web.Components/coverage/cobertura-coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
+							if (env.CHANGE_ID) {
+								publishCoverageGithub(filepath:'web/ASC.Web.Components/coverage/cobertura-coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
+							}
 						}
 					}
 				}
@@ -100,6 +103,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
+			when { changeRequest target: 'master' }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {
