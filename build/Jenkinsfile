@@ -19,7 +19,10 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh 'echo "$env"'
+								sh 'echo "$GIT_COMMIT"'
+								sh 'echo "$GIT_BRANCH"'
+								sh 'echo "$GIT_URL"'
+								sh 'echo "$GIT_AUTHOR_NAME"'
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
@@ -85,7 +88,7 @@ pipeline {
 								reportFiles          : 'index.html',
 								reportName           : 'Unix Test Report'
 							]
-							step([$class: 'CoberturaPublisher', coberturaReportFile: 'web/ASC.Web.Components/coverage/cobertura-coverage.xml'])
+							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
 						}
 					}
 				}
