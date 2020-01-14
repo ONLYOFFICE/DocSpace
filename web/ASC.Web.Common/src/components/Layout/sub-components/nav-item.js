@@ -22,8 +22,11 @@ const NavItemWrapper = styled(Link)`
   position: relative;
   box-sizing: border-box;
 
-  &:hover {
-    background: #0D3760;
+  ${props => !props.noHover && css`
+    &:hover {
+      background: #0D3760;
+      text-decoration: none;
+    }`
   }
 `;
 
@@ -34,8 +37,9 @@ const NavItemLabel = styled(Text)`
 
 const badgeCss = css`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 2px;
+  right: 4px;
+  overflow: inherit;
 `;
 
 const NavItemBadge = styled(Badge)`
@@ -53,7 +57,8 @@ const NavItem = React.memo(props => {
     badgeNumber,
     onClick,
     onBadgeClick,
-    url
+    url,
+    noHover
   } = props;
   const color = active ? activeColor : baseColor;
 
@@ -61,7 +66,7 @@ const NavItem = React.memo(props => {
     <NavItemSeparator />
   ) : (
       <NavItemWrapper
-      noHover 
+      noHover={noHover}
       href={url} 
       onClick={onClick}>
         {React.createElement(Icons[iconName], {
@@ -95,6 +100,7 @@ NavItem.propTypes = {
   onClick: PropTypes.func,
   opened: PropTypes.bool,
   separator: PropTypes.bool,
+  noHover: PropTypes.bool
 };
 
 export default NavItem;

@@ -37,6 +37,7 @@ const HeaderNav = React.memo(props => {
           badgeNumber={module.notifications}
           onClick={module.onClick}
           onBadgeClick={module.onBadgeClick}
+          noHover={true}
         />
       ))}
       {props.user && (

@@ -117,9 +117,14 @@ class Layout extends React.Component {
     });
   };
 
+  clearNavTimeout = () => {
+    if (this.timeout == null) return;
+    clearTimeout(this.timeout);
+    this.timeout = null;
+  }
+
   handleNavMouseEnter = () => {
     if (!this.state.isNavHoverEnabled) return;
-
     this.timeout = setTimeout(() => {
       this.setState({
         isBackdropVisible: false,
@@ -131,12 +136,7 @@ class Layout extends React.Component {
 
   handleNavMouseLeave = () => {
     if (!this.state.isNavHoverEnabled) return;
-
-    if (this.timeout != null) {
-      clearTimeout(this.timeout);
-      this.timeout = null;
-    }
-
+    this.clearNavTimeout();
     this.setState({
       isBackdropVisible: false,
       isNavOpened: false,
@@ -145,6 +145,7 @@ class Layout extends React.Component {
   };
 
   toggleAside = () => {
+    this.clearNavTimeout();
     this.setState({
       isBackdropVisible: true,
       isNavOpened: false,
@@ -198,8 +199,8 @@ class Layout extends React.Component {
                 badgeNumber={item.notifications}
                 onClick={item.onClick}
                 onBadgeClick={e => {
-                  item.onBadgeClick(e);
                   this.toggleAside();
+                  item.onBadgeClick(e);
                 }}
                 url={item.url}
               >
