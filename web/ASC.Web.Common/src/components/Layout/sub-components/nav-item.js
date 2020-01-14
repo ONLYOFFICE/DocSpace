@@ -34,8 +34,9 @@ const NavItemLabel = styled(Text)`
 
 const badgeCss = css`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 2px;
+  right: 4px;
+  overflow: inherit;
 `;
 
 const NavItemBadge = styled(Badge)`
