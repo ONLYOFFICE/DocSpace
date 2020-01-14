@@ -8,6 +8,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
+								sh 'echo "$CHANGE_ID"'
 								sh 'echo "$CHANGE_URL"'
 								sh 'echo "$CHANGE_TITLE"'
 								sh 'echo "$BUILD_URL"'
@@ -109,7 +110,9 @@ pipeline {
 				Chat_Id = -381345297
 			}
 			steps {
-				def message_text = '${GIT_COMMIT}'
+				script {
+					def message_text = '$BRANCH_NAME'
+				}
 				sh 'curl -s -X GET "https://api.telegram.org/bot$Telegram_Token/sendMessage?chat_id=$Chat_Id&text=$message_text"'
 			}
 		}
