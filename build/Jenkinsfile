@@ -8,9 +8,6 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh 'echo "$CHANGE_ID"'
-								sh 'echo "$CHANGE_URL"'
-								sh 'echo "$CHANGE_TITLE"'
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
@@ -59,7 +56,7 @@ pipeline {
 			}
 		}
 		stage('Test') {
-			when { branch 'master' }
+			when { changeRequest() }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
@@ -108,7 +105,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
-			when { branch 'master' }
+			when { changeRequest() }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {
