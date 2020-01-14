@@ -19,7 +19,7 @@ pipeline {
 					stages {
 						stage('Components') {
 							steps {
-								sh 'sh echo "$env"'
+								sh 'echo "$env"'
 								sh 'sh ./build/scripts/components.sh'
 							}
 						}
