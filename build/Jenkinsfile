@@ -56,7 +56,7 @@ pipeline {
 			}
 		}
 		stage('Test') {
-			when { changeRequest() }
+			when { expression { return env.CHANGE_ID; } }
 			parallel {
 				stage('Unix') {
 					agent { label 'net-core' }
@@ -105,7 +105,7 @@ pipeline {
 			}
 		}
 		stage('Notify') {
-			when { changeRequest() }
+			when { expression { return env.CHANGE_ID } }
 			agent { label 'net-core' }
 			options { skipDefaultCheckout() }
 			environment {
