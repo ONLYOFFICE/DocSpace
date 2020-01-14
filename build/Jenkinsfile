@@ -75,11 +75,6 @@ pipeline {
 								reportName           : 'Unix Test Report'
 							]
 							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
-							script{
-								if (env.CHANGE_ID) {
-									publishCoverageGithub(filepath:'web/ASC.Web.Components/coverage/cobertura-coverage.xml', coverageXmlType: 'cobertura', comparisonOption: [ value: 'optionFixedCoverage', fixedCoverage: '0.65' ], coverageRateType: 'Line')
-								}
-							}
 						}
 					}
 				}
