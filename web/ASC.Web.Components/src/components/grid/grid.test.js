@@ -172,7 +172,8 @@ describe('<Grid />', () => {
     expect(wrapper5.props().areasProp[2][2]).toEqual("footer");
   });
 
-  test('it applies styles', () => {
+  //TODO: Uncomment after fix https://github.com/styled-components/jest-styled-components/issues/294
+  /* test('it applies styles', () => {
     const tree = renderer.create(<Grid />).toJSON();
     expect(tree).toHaveStyleRule('display', 'grid');
 
@@ -210,6 +211,6 @@ describe('<Grid />', () => {
     expect(tree8).toHaveStyleRule('grid-template-areas', '"header header header" "navbar main sidebar" "footer footer footer"');
     expect(tree8).toHaveStyleRule('grid-template-columns', 'minmax(100px,1fr) 3fr minmax(100px,1fr)');
     expect(tree8).toHaveStyleRule('grid-template-rows', 'auto 1fr auto');
-  }); 
+  });  */
 
 });
