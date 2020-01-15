@@ -11,9 +11,7 @@ const StyledBadge = styled.div`
   padding: 2px;
   line-height: 0.8;
   cursor: pointer;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 
   :hover {
     border-color: ${props => props.backgroundColor};
@@ -34,17 +32,38 @@ const Badge = props => {
   //console.log("Badge render");
 
   const onClick = e => {
-    if (props.onClick) {
-      e.stopPropagation();
-      props.onClick(e);
-    }
+    if (!props.onClick) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    props.onClick(e);
   };
 
-  const { fontSize, color, fontWeight } = props;
+  const {
+    fontSize,
+    color,
+    fontWeight,
+    backgroundColor,
+    borderRadius,
+    padding,
+    maxWidth
+  } = props;
+
   return (
-    <StyledBadge {...props} onClick={onClick}>
-      <StyledInner {...props}>
-        <Text fontWeight={fontWeight} color={color} fontSize={fontSize}>
+    <StyledBadge
+      {...props}
+      onClick={onClick}
+    >
+      <StyledInner
+        backgroundColor={backgroundColor}
+        borderRadius={borderRadius}
+        padding={padding}
+        maxWidth={maxWidth}
+      >
+        <Text
+          fontWeight={fontWeight}
+          color={color}
+          fontSize={fontSize}>
           {props.label}
         </Text>
       </StyledInner>
