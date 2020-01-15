@@ -1,0 +1,115 @@
+pipeline {
+	agent none
+	stages {
+		stage('Build') {
+			parallel {
+				stage('Unix') {
+					agent { label 'net-core' }
+					stages {
+						stage('Components') {
+							steps {
+								sh 'sh ./build/scripts/components.sh'
+							}
+						}
+						stage('Common') {
+							steps {
+								sh 'sh ./build/scripts/common.sh'
+							}
+						}
+						stage('Client') {
+							steps {
+								sh 'sh ./build/scripts/client.sh'
+							}
+						}
+						stage('People') {
+							steps {
+								sh 'sh ./build/scripts/people.sh'
+							}
+						}
+					}
+				}
+				stage('Windows') {
+					agent { label 'master' }
+					stages {
+						stage('Components') {
+							steps {
+								bat 'sh build\\scripts\\components.sh'
+							}
+						}
+						stage('Common') {
+							steps {
+								bat 'sh build\\scripts\\common.sh'
+							}
+						}		
+						stage('Client') {
+							steps {
+								bat 'sh build\\scripts\\client.sh'
+							}
+						}
+						stage('People') {
+							steps {
+								bat 'sh build\\scripts\\people.sh'
+							}
+						}
+					}
+				}
+			}
+		}
+		stage('Test') {
+			when { expression { return env.CHANGE_ID; } }
+			parallel {
+				stage('Unix') {
+					agent { label 'net-core' }
+					steps {
+						sh "sh ./build/scripts/components.sh && cd ${env.WORKSPACE}/web/ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+					}
+					post {
+						success {
+							junit 'web/ASC.Web.Components/junit.xml'
+							publishHTML target: [
+								allowMissing         : false,
+								alwaysLinkToLastBuild: false,
+								keepAll             : true,
+								reportDir            : 'web/ASC.Web.Components/coverage/lcov-report',
+								reportFiles          : 'index.html',
+								reportName           : 'Unix Test Report'
+							]
+							publishCoverage adapters: [coberturaAdapter('web/ASC.Web.Components/coverage/cobertura-coverage.xml')]
+						}
+					}
+				}
+				stage('Windows') {
+					agent { label 'master' }
+					steps {
+						bat "sh build\\scripts\\components.sh && cd ${env.WORKSPACE}\\web\\ASC.Web.Components && yarn test:coverage --ci --reporters=default --reporters=jest-junit || true"
+					}
+					post {
+						success {
+							junit 'web\\ASC.Web.Components\\junit.xml'
+							publishHTML target: [
+								allowMissing         : false,
+								alwaysLinkToLastBuild: false,
+								keepAll             : true,
+								reportDir            : 'web\\ASC.Web.Components\\coverage\\lcov-report',
+								reportFiles          : 'index.html',
+								reportName           : 'Windows Test Report'
+							]
+						}
+					}
+				}
+			}
+		}
+		stage('Notify') {
+			when { expression { return env.CHANGE_ID } }
+			agent { label 'net-core' }
+			options { skipDefaultCheckout() }
+			environment {
+				Telegram_Token = credentials('telegram_token')
+				Chat_Id = credentials('telegram_chat')
+			}
+			steps {
+				sh 'curl -s -X GET -G "https://api.telegram.org/bot$Telegram_Token/sendMessage" --data-urlencode "chat_id=$Chat_Id"  --data "text=CHANGE URL:$CHANGE_URL %0A Build Url: $BUILD_URL %0A Branch Name:$CHANGE_TITLE"'
+			}
+		}
+    }
+}
