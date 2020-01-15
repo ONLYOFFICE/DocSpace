@@ -15,5 +15,7 @@ namespace ASC.Web.Api.Models
         public bool Show { get; set; } //tips
 
         public int VersionId { get; set; }
+
+        public Guid OwnerId { get; set; }
     }
 }

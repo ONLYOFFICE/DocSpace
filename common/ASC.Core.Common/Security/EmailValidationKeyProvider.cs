@@ -26,16 +26,19 @@
 
 using System;
 using System.Text;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Security.Cryptography
@@ -167,6 +170,9 @@ namespace ASC.Security.Cryptography
                     break;
                 case ConfirmType.LinkInvite:
                     checkKeyResult = provider.ValidateEmailKey(Type.ToString() + (int)EmplType, Key, provider.ValidInterval);
+                    break;
+                case ConfirmType.PortalOwnerChange:
+                    checkKeyResult = provider.ValidateEmailKey(Email + Type + UiD.HasValue, Key, provider.ValidInterval);
                     break;
                 case ConfirmType.EmailChange:
                     checkKeyResult = provider.ValidateEmailKey(Email + Type + authContext.CurrentAccount.ID, Key, provider.ValidInterval);
