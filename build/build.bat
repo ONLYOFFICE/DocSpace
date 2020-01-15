@@ -7,23 +7,16 @@ call start\stop.bat
 PUSHD %~dp0..
 
 echo "ASC.Web.Components"
-call yarn install --cwd web/ASC.Web.Components --frozen-lockfile > build\ASC.Web.Components.log
-call yarn link --cwd packages/asc-web-components
+call build\scripts\components.sh
 
 echo "ASC.Web.Common"
-call yarn link "asc-web-components" --cwd web/ASC.Web.Common
-call yarn install --cwd web/ASC.Web.Common --frozen-lockfile > build\ASC.Web.Common.log
-call yarn link --cwd packages/asc-web-common
+call build\scripts\common.sh
 
 echo "ASC.Web.Client"
-call yarn link "asc-web-components" --cwd web/ASC.Web.Client
-call yarn link "asc-web-common" --cwd web/ASC.Web.Client
-call yarn install --cwd web/ASC.Web.Client --frozen-lockfile > build\ASC.Web.Client.log
+call build\scripts\client.sh
 
 echo "ASC.Web.People.Client"
-call yarn link "asc-web-components" --cwd products/ASC.People/Client
-call yarn link "asc-web-common" --cwd products/ASC.People/Client
-call yarn install --cwd products/ASC.People/Client --frozen-lockfile > build\ASC.Web.People.Client.log
+call build\scripts\people.sh
 
 xcopy build\cra\*.* products\ASC.People\Client\node_modules\ /E /R /Y
 
