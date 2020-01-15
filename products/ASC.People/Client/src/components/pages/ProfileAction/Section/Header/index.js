@@ -9,7 +9,7 @@ import { typeUser, typeGuest } from './../../../../../helpers/customNames';
 
 const Wrapper = styled.div`
   display: flex;
-  align-Items: center;
+  align-items: center;
 
   .arrow-button {
     @media (max-width: 1024px) {
@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 
 const HeaderContainer = styled(Headline)`
   margin-left: 16px;
-  max-width: calc(100vw - 430px);
+  max-width: calc(100vw - 435px);
 
   @media ${utils.device.tablet} {
     max-width: calc(100vw - 64px);

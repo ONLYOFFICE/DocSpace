@@ -11,11 +11,23 @@ const StyledSectionHeader = styled.div`
   @media ${tablet} {
     margin-right: 16px;
   }
+
+  .section-header {
+    width: calc(100% - 76px);
+
+    @media ${tablet} {
+    width: 100%;
+    }
+  }
 `;
 
 const SectionHeader = React.memo(props => {
   //console.log("PageLayout SectionHeader render");
-  return <StyledSectionHeader {...props} />;
+  return (
+    <StyledSectionHeader>
+      <div className='section-header' {...props} />
+    </StyledSectionHeader>
+  );
 });
 
 SectionHeader.displayName = "SectionHeader";

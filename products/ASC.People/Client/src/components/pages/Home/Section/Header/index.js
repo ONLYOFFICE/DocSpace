@@ -5,7 +5,8 @@ import {
   GroupButtonsMenu,
   DropDownItem,
   toastr,
-  ContextMenuButton
+  ContextMenuButton,
+  utils
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
@@ -50,6 +51,14 @@ const StyledContainer = styled.div`
       @media (max-width: 1024px) {
         margin-left: auto;
         padding: 8px 0 8px 8px;
+      }
+    }
+
+    .headline-header { 
+      max-width: calc(100vw - 435px);
+
+      @media ${utils.device.tablet} {
+        max-width: calc(100vw - 64px);
       }
     }
   }
@@ -262,7 +271,7 @@ const SectionHeaderContent = props => {
         <div className="header-container">
           {group ? (
             <>
-              <Headline type="content" truncate={true}>{group.name}</Headline>
+              <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
               {isAdmin && (
                 <ContextMenuButton
                   className="action-button"
@@ -278,7 +287,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Headline type="content">Departments</Headline>
+              <Headline className='headline-header' truncate={true} type="content">Departments</Headline>
               {isAdmin && (
                 <>
                 <ContextMenuButton

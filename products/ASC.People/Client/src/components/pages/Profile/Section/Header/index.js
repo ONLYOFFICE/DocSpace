@@ -33,7 +33,7 @@ const { EmployeeStatus } = constants;
 
 const HeaderContainer = styled(Headline)`
   margin-left: 16px;
-  max-width: calc(100vw - 430px);
+  max-width: calc(100vw - 435px);
 
   @media ${utils.device.tablet} {
     max-width: calc(100vw - 96px);
