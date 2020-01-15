@@ -11,10 +11,12 @@ import Section from "../../../.storybook/decorators/section";
 import PeopleSelector from ".";
 import { BooleanValue } from "react-values";
 import { Button } from "asc-web-components";
+import withProvider from "../../../.storybook/decorators/redux";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";
 
 storiesOf("Components|PeopleSelector", module)
+  .addDecorator(withProvider)
   .addDecorator(withKnobs)
   //.addDecorator(withReadme(Readme))
   .addParameters({ options: { addonPanelInRight: false } })

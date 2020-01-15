@@ -10,7 +10,7 @@ import { Badge } from "asc-web-components";
 
 ```jsx
 <Badge
-  number={10}
+  label="10"
   backgroundColor="#ED7309"
   color="#FFFFFF"
   fontSize="11px"
@@ -34,7 +34,7 @@ import { Badge } from "asc-web-components";
 | `fontWeight`      |    `number`    |    -     |   -    |   `800`   | CSS font-weight      |
 | `id`              |    `string`    |    -     |   -    |     -     | Accepts id           |
 | `maxWidth`        |    `string`    |    -     |   -    |  `50px`   | CSS max-width        |
-| `number`          |    `number`    |    -     |   -    |    `0`    | Number value         |
+| `label`           |    `string`    |    -     |   -    |    `0`    | Value                |
 | `onClick`         |     `func`     |    -     |   -    |     -     | onClick event        |
 | `padding`         |    `string`    |    -     |   -    |  `0 5px`  | CSS padding          |
 | `style`           | `obj`, `array` |    -     |   -    |     -     | Accepts css style    |

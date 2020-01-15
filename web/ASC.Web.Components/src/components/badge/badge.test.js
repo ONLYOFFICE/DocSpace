@@ -11,12 +11,12 @@ describe('<Badge />', () => {
     expect(wrapper).toExist();
   });
 
-  it('displays number', () => {
+  it('displays label', () => {
     const wrapper = mount(
-      <Badge number={10} />
+      <Badge label='10' />
     );
 
-    expect(wrapper.prop('number')).toBe(10);
+    expect(wrapper.prop('label')).toBe('10');
   });
 
   it('call onClick()', () => {

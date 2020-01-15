@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Selector from "./sub-components/Selector";
 import { utils, Backdrop, DropDown, Aside } from "asc-web-components";
 import throttle from "lodash/throttle";
-import onClickOutside from "react-onclickoutside";
 const { desktop } = utils.device;
 
 const displayTypes = ["dropdown", "aside", "auto"];
@@ -22,15 +21,8 @@ class AdvancedSelector extends React.Component {
     this.throttledResize = throttle(this.resize, 300);
   }
 
-  handleClickOutside = e => {
-    // ..handling code goes here...
-    console.log(`ADSelector#${this.props.id} handleClickOutside`, e);
-    this.onClose(e);
-  };
-
   componentDidMount() {
     if(this.props.isOpen) {
-      this.props.enableOnClickOutside();
       window.addEventListener("resize", this.throttledResize);
     }
   }
@@ -57,12 +49,10 @@ class AdvancedSelector extends React.Component {
     if(this.props.isOpen !== prevProps.isOpen) {
       console.log(`ADSelector#${this.props.id} componentDidUpdate isOpen=${this.props.isOpen}`);
       if(this.props.isOpen) {
-        this.props.enableOnClickOutside();
         this.resize();
         window.addEventListener("resize", this.throttledResize);
       }
       else {
-        this.props.disableOnClickOutside();
         this.throttledResize.cancel();
         window.removeEventListener("resize", this.throttledResize);
       }
@@ -80,7 +70,6 @@ class AdvancedSelector extends React.Component {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
     }
-    this.props.disableOnClickOutside();
   }
 
   getTypeByWidth = () => {
@@ -103,7 +92,7 @@ class AdvancedSelector extends React.Component {
       <div ref={this.ref} id={id} className={className} style={style}>
         {displayType === "dropdown" 
         ? 
-            <DropDown open={isOpen} className="dropdown-container">
+            <DropDown open={isOpen} className="dropdown-container" clickOutsideAction={this.onClose}>
               <Selector {...this.props} displayType={displayType} />
             </DropDown>
         : 
@@ -153,9 +142,7 @@ AdvancedSelector.propTypes = {
   onGroupChange: PropTypes.func,
   onCancel: PropTypes.func,
   onAddNewClick: PropTypes.func,
-  loadNextPage: PropTypes.func,
-  enableOnClickOutside: PropTypes.func,
-  disableOnClickOutside: PropTypes.func
+  loadNextPage: PropTypes.func
 };
 
 AdvancedSelector.defaultProps = {
@@ -169,17 +156,4 @@ AdvancedSelector.defaultProps = {
   options: []
 };
 
-const EnhancedComponent = onClickOutside(AdvancedSelector);
-
-class AdvancedSelectorContainer extends React.Component {
-  render() {
-    console.log(`AdvancedSelectorContainer isOpen=${this.props.isOpen} enableOnClickOutside=${this.props.isOpen}`);
-    return <EnhancedComponent disableOnClickOutside={true} {...this.props} />;
-  }
-}
-
-AdvancedSelectorContainer.propTypes = {
-  isOpen: PropTypes.bool
-}
-
-export default AdvancedSelectorContainer;
+export default AdvancedSelector;

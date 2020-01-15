@@ -368,7 +368,7 @@ const Selector = props => {
       }
 
       return (
-        <div style={style} className="row-block" {...tooltipProps}>
+        <div style={style} className="row-option" {...tooltipProps}>
           {content}
         </div>
       );
@@ -466,7 +466,7 @@ const Selector = props => {
       return (
         <div
           style={style}
-          className={`row-block${isSelected ? " selected" : ""}`}
+          className={`row-group${isSelected ? " selected" : ""}`}
         >
           {isMultiSelect && allowGroupSelection && (
             <Checkbox
@@ -608,7 +608,7 @@ const Selector = props => {
           </AutoSizer>
 
           {!hasNextPage && itemCount === 0 && (
-            <div className="row-block">
+            <div className="row-option">
               <Text>
                 {!searchValue ? emptyOptionsLabel : emptySearchOptionsLabel}
               </Text>
@@ -626,7 +626,7 @@ const Selector = props => {
       {displayType === "dropdown" && groups && groups.length > 0 && (
         <Column className="column-groups" displayType={displayType} size={size}>
           <Header className="header-groups">
-            <Text as="p" className="group_header" fontSize="15px" isBold={true}>
+            <Text as="p" className="group_header" fontSize="15px" fontWeight={600}>
               {groupsHeaderLabel}
             </Text>
           </Header>

@@ -8,7 +8,7 @@ const styleCss = css`
   outline: 0 !important;
   font-weight: ${props => props.fontWeight
     ? props.fontWeight
-    : props.isBold == true ? 700 : 500};
+    : props.isBold == true ? 700 : 'normal'};
   ${props => props.isItalic == true && css`font-style: italic;`}
   ${props => props.backgroundColor && css`background-color: ${props => props.backgroundColor};`}
   ${props => props.isInline

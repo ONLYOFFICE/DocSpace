@@ -6,6 +6,7 @@ import Aside from "../aside";
 import Heading from "../heading";
 import { desktop } from "../../utils/device";
 import throttle from "lodash/throttle";
+import { Icons } from "../icons";
 
 const Dialog = styled.div`
   position: relative;
@@ -37,35 +38,22 @@ const StyledHeader = styled.div`
   border-bottom: 1px solid #dee2e6;
 `;
 
-const CloseButton = styled.a`
-  cursor: pointer;
-  position: absolute;
-  right: 16px;
-  top: 20px;
-  width: 16px;
-  height: 16px;
+const CloseButton = styled(Icons.CrossSidebarIcon)`
+cursor: pointer;
+position: absolute;
+
+width: 17px;
+height: 17px;
+min-width: 17px;
+min-height: 17px;
+
+right: 16px;
+top: 19px;
 
   &:hover {
-    &:before,
-    &:after {
-      background-color: #657077;
-    }
-  }
-
-  &:before,
-  &:after {
-    position: absolute;
-    left: 8px;
-    content: " ";
-    height: 16px;
-    width: 1px;
-    background-color: #d8d8d8;
-  }
-  &:before {
-    transform: rotate(45deg);
-  }
-  &:after {
-    transform: rotate(-45deg);
+      path {
+        fill: #657077;
+      }
   }
 `;
 

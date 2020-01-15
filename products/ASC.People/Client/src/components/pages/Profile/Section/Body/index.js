@@ -3,7 +3,8 @@ import {
   Button,
   IconButton,
   Text,
-  ToggleContent
+  ToggleContent,
+  Link
 } from "asc-web-components";
 import { getUserContacts, getUserRole } from "../../../../../store/people/selectors";
 
@@ -39,13 +40,6 @@ const EditButtonWrapper = styled.div`
   }
 `;
 
-const ContactTextTruncate = styled.div`
-  padding: 0 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
 const ToggleWrapper = styled.div`
   width: 100%;
   ${props => props.isSelf && `margin-bottom: 24px;`}
@@ -57,20 +51,36 @@ const ContactWrapper = styled.div`
   display: inline-flex;
   width: 300px;
   margin-bottom: 12px;
+
+  .contact-link {
+    padding: 0 8px;
+  }
 `;
 
 const createContacts = contacts => {
   const styledContacts = contacts.map((contact, index) => {
+    let url = null;
+    if (contact.link && contact.link.length > 0) {
+      url = stringFormat(contact.link, [contact.value]);
+    }
     return (
       <ContactWrapper key={index}>
         <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} />
-        <ContactTextTruncate>{contact.value}</ContactTextTruncate>
+        <Link
+          className='contact-link'
+          isTextOverflow
+          href={url}
+        >
+          {contact.value}
+        </Link>
       </ContactWrapper>
     );
   });
 
   return styledContacts;
 };
+
+const stringFormat = (string, data) => string.replace(/\{(\d+)\}/g, (m, n) => data[n] || m);
 
 class SectionBodyContent extends React.PureComponent {
 

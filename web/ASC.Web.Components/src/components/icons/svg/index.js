@@ -117,6 +117,7 @@ import OrigRectangleFilterHoverIcon from './rectangle.filter.hover.react.svg';
 import OrigRectangleFilterClickIcon from './rectangle.filter.click.react.svg';
 import OrigCatalogButtonIcon from './catalog.button.react.svg';
 import OrigCrossIcon from './cross.react.svg';
+import OrigCrossSidebarIcon from './cross.sidebar.react.svg';
 import OrigCheckboxIcon from './checkbox.react.svg';
 import OrigCheckboxCheckedIcon from './checkbox.checked.react.svg';
 import OrigCheckboxIndeterminateIcon from './checkbox.indeterminate.react.svg';
@@ -372,6 +373,10 @@ export const CrmIcon = createStyledIcon(
 export const CrossIcon = createStyledIcon(
   OrigCrossIcon,
   'CrossIcon'
+);
+export const CrossSidebarIcon = createStyledIcon(
+  OrigCrossSidebarIcon,
+  'CrossSidebarIcon'
 );
 export const DangerIcon = createStyledIcon(
   OrigDangerIcon,

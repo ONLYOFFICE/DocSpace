@@ -10,12 +10,12 @@ class FilterButton extends React.PureComponent {
         id={this.props.id}
         title='Actions'
         iconName='RectangleFilterIcon'
+        iconOpenName='RectangleFilterClickIcon'
         color='#A3A9AE'
         size={this.props.iconSize}
         isDisabled={this.props.isDisabled}
         getData={this.props.getData}
-        iconHoverName='RectangleFilterHoverIcon'
-        iconClickName='RectangleFilterClickIcon'
+
         className='filter-button'
       ></ContextMenuButton>
     )

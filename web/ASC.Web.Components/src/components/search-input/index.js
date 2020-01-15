@@ -6,6 +6,13 @@ import InputBlock from '../input-block';
 const StyledSearchInput = styled.div`
   font-family: Open Sans;
   font-style: normal;
+
+  .search-input-block {
+    & > input { 
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
 `;
 
 class SearchInput extends React.Component {
@@ -74,6 +81,7 @@ class SearchInput extends React.Component {
     return (
       <StyledSearchInput className={this.props.className} style={this.props.style}>
         <InputBlock
+          className='search-input-block'
           ref={this.input}
           id={this.props.id}
           name={this.props.name}

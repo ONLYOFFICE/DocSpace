@@ -29,6 +29,7 @@ const HeaderComponent = React.memo(props => {
         iconName="MenuIcon"
         badgeNumber={props.badgeNumber}
         onClick={props.onClick}
+        noHover={true}
       />
       <Headline type="header" color="#FFFFFF">
         {props.currentModule && props.currentModule.title}

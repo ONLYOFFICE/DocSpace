@@ -65,16 +65,16 @@ const StyledComboButton = styled.div`
     max-width: 175px;
     ${props => props.noBorder && `
       line-height: 15px;
-      border-bottom: 1px dashed transparent;
+      text-decoration: underline dashed transparent;
     `}
     
     ${props => props.isOpen && props.noBorder && `
-      border-bottom: 1px dashed;
+      text-decoration: underline dashed;
     `};
   }
   .combo-button-label:hover{
     ${props => props.noBorder && !props.isDisabled && `
-      border-bottom: 1px dashed;
+      text-decoration: underline dashed;
     `}
   }
 `;

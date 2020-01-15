@@ -5,6 +5,7 @@ import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-
 import DropDownItem from '../drop-down-item'
 import Backdrop from '../backdrop'
 import { FixedSizeList } from "react-window"
+import onClickOutside from "react-onclickoutside";
 
 const StyledDropdown = styled.div`
     font-family: 'Open Sans',sans-serif,Arial;
@@ -80,17 +81,41 @@ class DropDown extends React.PureComponent {
   }
 
   componentDidMount() {
-    this.checkPosition();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.open !== prevProps.open) {
+    if(this.props.open) {
+      this.props.enableOnClickOutside();
       this.checkPosition();
     }
   }
 
-  toggleDropDown = () => {
-    this.props.clickOutsideAction && this.props.clickOutsideAction(!this.props.open);
+  componentWillUnmount() {
+    this.props.disableOnClickOutside();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.open !== prevProps.open) {
+      if(this.props.open) {
+        this.props.enableOnClickOutside();
+        this.checkPosition();
+      }
+      else {
+        this.props.disableOnClickOutside();
+      }
+      
+    }
+  }
+
+  handleClickOutside = e => {
+    // ..handling code goes here...
+    console.log(`DropDown handleClickOutside`, e);
+
+    this.toggleDropDown(e);
+    //this.onClose(e);
+    //this.setIsOpen(!this.state.isOpen);
+    //this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
+  };
+
+  toggleDropDown = (e) => {
+    this.props.clickOutsideAction && this.props.clickOutsideAction(e, !this.props.open);
   }
 
   checkPosition = () => {
@@ -123,7 +148,6 @@ class DropDown extends React.PureComponent {
     //console.log("DropDown render");
     return (
       <>
-        {(withBackdrop && open && isTablet) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
         <StyledDropdown
           ref={this.dropDownRef}
           {...this.props}
@@ -145,6 +169,7 @@ class DropDown extends React.PureComponent {
             </FixedSizeList>
             : children}
         </StyledDropdown>
+        {(withBackdrop && open && isTablet) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
       </>
     );
   }
@@ -164,7 +189,9 @@ DropDown.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   withArrow: PropTypes.bool,
   withBackdrop: PropTypes.bool,
-  clickOutsideAction: PropTypes.func
+  clickOutsideAction: PropTypes.func,
+  enableOnClickOutside: PropTypes.func,
+  disableOnClickOutside: PropTypes.func
 };
 
 DropDown.defaultProps = {
@@ -174,4 +201,14 @@ DropDown.defaultProps = {
   withBackdrop: true
 };
 
-export default DropDown
+const EnhancedComponent = onClickOutside(DropDown);
+
+class DropDownContainer extends React.Component {
+  render() {
+    //console.log(`AdvancedSelectorContainer isOpen=${this.props.isOpen} enableOnClickOutside=${this.props.isOpen}`);
+    return <EnhancedComponent disableOnClickOutside={true} {...this.props} />;
+  }
+}
+
+
+export default DropDownContainer;
