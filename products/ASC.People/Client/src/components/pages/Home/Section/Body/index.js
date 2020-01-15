@@ -10,7 +10,6 @@ import {
   Icons,
   Link,
   RowContainer,
-  ModalDialog,
   Text,
 } from "asc-web-components";
 import UserContent from "./userContent";
@@ -42,12 +41,6 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-      },
       dialogsVisible: {
         changeEmail: false,
         changePassword: false,
@@ -287,12 +280,6 @@ class SectionBodyContent extends React.PureComponent {
     resetFilter().finally(() => onLoading(false));
   };
 
-  onDialogClose = () => {
-    this.setState({
-      dialog: { visible: false }
-    });
-  };
-
   needForUpdate = (currentProps, nextProps) => {
     if (currentProps.checked !== nextProps.checked) {
       return true;
@@ -309,7 +296,7 @@ class SectionBodyContent extends React.PureComponent {
   render() {
     console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t, filter } = this.props;
-    const { dialog, dialogsVisible, user } = this.state;
+    const { dialogsVisible, user } = this.state;
 
     return users.length > 0 ? (
       <>
@@ -350,13 +337,6 @@ class SectionBodyContent extends React.PureComponent {
             );
           })}
         </RowContainer>
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose}
-        />
 
         {dialogsVisible.changeEmail &&
           <ChangeEmailDialog
