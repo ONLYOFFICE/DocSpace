@@ -44,6 +44,8 @@ position: absolute;
 
 width: 17px;
 height: 17px;
+min-width: 17px;
+min-height: 17px;
 
 right: 16px;
 top: 19px;
