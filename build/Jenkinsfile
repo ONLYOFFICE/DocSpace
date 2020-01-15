@@ -108,7 +108,7 @@ pipeline {
 				Chat_Id = -381345297
 			}
 			steps {
-				sh 'curl -s -X GET -G "https://api.telegram.org/bot$Telegram_Token/sendMessage" --data-urlencode "chat_id=$Chat_Id"  --data-urlencode "text=Build Url: $BUILD_URL Branch Name:$BRANCH_NAME CHANGE URL:$CHANGE_URL"'
+				sh 'curl -s -X GET -G "https://api.telegram.org/bot$Telegram_Token/sendMessage" --data-urlencode "chat_id=$Chat_Id"  --data "text=CHANGE URL:$CHANGE_URL %0A Build Url: $BUILD_URL %0A Branch Name:%CHANGE_TITLE"'
 			}
 		}
     }
