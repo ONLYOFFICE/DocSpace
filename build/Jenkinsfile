@@ -105,7 +105,7 @@ pipeline {
 			options { skipDefaultCheckout() }
 			environment {
 				Telegram_Token = credentials('telegram_token')
-				Chat_Id = -381345297
+				Chat_Id = credentials('telegram_chat')
 			}
 			steps {
 				sh 'curl -s -X GET -G "https://api.telegram.org/bot$Telegram_Token/sendMessage" --data-urlencode "chat_id=$Chat_Id"  --data "text=CHANGE URL:$CHANGE_URL %0A Build Url: $BUILD_URL %0A Branch Name:$CHANGE_TITLE"'
