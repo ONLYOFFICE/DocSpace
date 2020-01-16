@@ -4,10 +4,10 @@ import styled, { css } from 'styled-components';
 import commonTextStyles from './common-text-styles';
 
 const styleCss = css`
-  font-size: ${props => props.fontSize};  
+  font-size: ${props => props.fontSizeProp};  
   outline: 0 !important;
-  font-weight: ${props => props.fontWeight
-    ? props.fontWeight
+  font-weight: ${props => props.fontWeightProp
+    ? props.fontWeightProp
     : props.isBold == true ? 700 : 'normal'};
   ${props => props.isItalic == true && css`font-style: italic;`}
   ${props => props.backgroundColor && css`background-color: ${props => props.backgroundColor};`}
@@ -22,10 +22,17 @@ const StyledText = styled.p`
   ${commonTextStyles};
 `;
 
-const Text = ({ title, tag, as, ...rest }) => {
+const Text = ({ title, tag, as, fontSize, fontWeight, color, ...rest }) => {
   //console.log("Text render", rest)
   return (
-    <StyledText as={!as && tag ? tag : as} title={title} {...rest} />
+    <StyledText
+      fontSizeProp={fontSize}
+      fontWeightProp={fontWeight}
+      colorProp={color}
+      as={!as && tag ? tag : as}
+      title={title}
+      {...rest}
+    />
   );
 };
 
@@ -45,7 +52,7 @@ Text.propTypes = {
 };
 
 Text.defaultProps = {
-  title: '',
+  title: null,
   color: '#333333',
   fontSize: '13px',
   truncate: false,

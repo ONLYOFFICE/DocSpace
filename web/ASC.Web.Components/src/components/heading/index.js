@@ -24,10 +24,11 @@ const StyledHeading = styled.h1`
       ${commonTextStyles};
    `;
 
-const Heading = ({ level, ...rest }) => {
+const Heading = ({ level, color, ...rest }) => {
    return (
       <StyledHeading
          as={`h${level}`}
+         colorProp={color}
          {...rest}>
       </StyledHeading>
    );
@@ -45,7 +46,7 @@ Heading.propTypes = {
 
 Heading.defaultProps = {
    color: '#333333',
-   title: '',
+   title: null,
    truncate: false,
    isInline: false,
    size: 'large',
