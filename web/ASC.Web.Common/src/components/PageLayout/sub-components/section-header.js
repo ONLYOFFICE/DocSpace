@@ -23,7 +23,7 @@ const StyledSectionHeader = styled.div`
       max-width: calc(100vw - 435px);
 
       @media ${tablet} {
-        ${props => !props.isArticlePinned ? css`max-width: calc(100vw - 96px);` : css`max-width: calc(100vw - 300px);`}
+        max-width: ${props => props.isArticlePinned ? `calc(100vw - 320px)` : `calc(100vw - 96px)`};
       }
     }
   }
