@@ -36,13 +36,14 @@ const MainContainerWrapper = styled.div`
   align-self: center;
   margin-right: auto;
   min-width: 140px;
-  width: 50%;
+  width: 48%;
 
   ${props => !props.disableSideInfo && `
     @media ${tablet} {
       min-width: 140px;
       margin-right: 8px;
       margin-top: 8px;
+      width: 95%;
     }
   `};
 `;
@@ -50,10 +51,11 @@ const MainContainerWrapper = styled.div`
 const MainContainer = styled.div`
   height: 20px;
   margin-right: 8px;
-  max-width: 100%;
+  max-width: 86%;
 
   @media ${tablet} {
     ${truncateCss};
+    max-width: 100%;
   }
 
 `;
