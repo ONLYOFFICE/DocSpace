@@ -3,18 +3,15 @@ import { Trans } from 'react-i18next';
 import { department as departmentName, position, employedSinceDate } from '../../../../../../helpers/customNames';
 import {
   Text,
-  TextInput,
-  Button,
   IconButton,
   Link,
   toastr,
-  ModalDialog,
   ComboBox,
   HelpButton
 } from "asc-web-components";
 import styled from 'styled-components';
 import { history, api } from "asc-web-common";
-const { resendUserInvites, sendInstructionsToChangeEmail } = api.people;
+const { resendUserInvites } = api.people;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -107,73 +104,16 @@ class ProfileInfo extends React.PureComponent {
   mapPropsToState = (props) => {
     const newState = {
       profile: props.profile,
-      dialog: {
-        visible: false,
-        header: "",
-        body: "",
-        buttons: [],
-        newEmail: props.profile.email,
-      }
     };
 
     return newState;
   };
-
-  onEmailChange = e => {
-    const emailRegex = /.+@.+\..+/;
-    const newEmail = e.target.value || this.state.dialog.newEmail || this.props.profile.email;
-    const hasError = !emailRegex.test(newEmail);
-
-    const dialog = {
-      visible: true,
-      header: "Change email",
-      body: (
-        <Text>
-          <span style={{ display: "block", marginBottom: "8px" }}>The activation instructions will be sent to the entered email</span>
-          <TextInput
-            id="new-email"
-            scale={true}
-            isAutoFocussed={true}
-            value={newEmail}
-            onChange={this.onEmailChange}
-            hasError={hasError}
-          />
-        </Text>
-      ),
-      buttons: [
-        <Button
-          key="SendBtn"
-          label="Send"
-          size="medium"
-          primary={true}
-          onClick={this.onSendEmailChangeInstructions}
-          isDisabled={hasError}
-        />
-      ],
-      value: newEmail
-    };
-    this.setState({ dialog: dialog })
-  }
-
-  onSendEmailChangeInstructions = () => {
-    sendInstructionsToChangeEmail(this.state.profile.id, this.state.dialog.value)
-      .then((res) => {
-        toastr.success(res);
-      })
-      .catch((error) => toastr.error(error))
-      .finally(this.onDialogClose);
-  }
 
   onSentInviteAgain = id => {
     resendUserInvites(new Array(id))
       .then(() => toastr.success("The invitation was successfully sent"))
       .catch(error => toastr.error(error));
   };
-
-  onDialogClose = value => {
-    const dialog = { visible: false, value: value };
-    this.setState({ dialog: dialog })
-  }
 
   onEmailClick = (e, email) => {
     if (e.target.title)
@@ -198,8 +138,7 @@ class ProfileInfo extends React.PureComponent {
   }
 
   render() {
-    const { dialog } = this.state;
-    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture, id } = this.props.profile;
+    const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
     const { t, i18n } = this.props;
@@ -364,13 +303,6 @@ class ProfileInfo extends React.PureComponent {
 
           </InfoItem>
         }
-        <ModalDialog
-          visible={dialog.visible}
-          headerContent={dialog.header}
-          bodyContent={dialog.body}
-          footerContent={dialog.buttons}
-          onClose={this.onDialogClose.bind(this, email)}
-        />
       </InfoContainer>
     );
   }
