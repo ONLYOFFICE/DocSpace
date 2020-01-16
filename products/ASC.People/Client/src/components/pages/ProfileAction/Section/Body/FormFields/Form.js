@@ -22,6 +22,7 @@ const MainContainer = styled.div`
   .departments-field {
     position: relative;
     margin: 0 0 40px 0;
+    max-width: 835px;
 
     .department-add-btn {
       margin: 0 8px 8px 0;
