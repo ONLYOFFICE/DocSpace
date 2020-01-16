@@ -98,6 +98,7 @@ namespace ASC.Api.Settings
         public ConsumerFactory ConsumerFactory { get; }
         public SmsProviderManager SmsProviderManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
+        public CustomNamingPeople CustomNamingPeople { get; }
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
         public TenantExtra TenantExtra { get; }
@@ -176,7 +177,8 @@ namespace ASC.Api.Settings
             EmployeeWraperHelper employeeWraperHelper,
             ConsumerFactory consumerFactory,
             SmsProviderManager smsProviderManager,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            CustomNamingPeople customNamingPeople)
         {
             Log = option.Get("ASC.Api");
             WebHostEnvironment = webHostEnvironment;
@@ -185,6 +187,7 @@ namespace ASC.Api.Settings
             ConsumerFactory = consumerFactory;
             SmsProviderManager = smsProviderManager;
             TimeZoneConverter = timeZoneConverter;
+            CustomNamingPeople = customNamingPeople;
             MessageService = messageService;
             StudioNotifyService = studioNotifyService;
             ApiContext = apiContext;
@@ -242,6 +245,35 @@ namespace ASC.Api.Settings
                 settings.UtcOffset = TimeZoneConverter.GetTimeZone(timeZone).GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
+
+                var currentSchemaId = CustomNamingPeople.Current.Id;
+                settings.Schemas = CustomNamingPeople.GetSchemas()
+                    .Select(r =>
+                    {
+                        var names = CustomNamingPeople.GetPeopleNames(r.Key);
+                        var schemaItem = new SchemaItemModel
+                        {
+                            Id = names.Id,
+                            UserCaption = names.UserCaption,
+                            UsersCaption = names.UsersCaption,
+                            GroupCaption = names.GroupCaption,
+                            GroupsCaption = names.GroupsCaption,
+                            UserPostCaption = names.UserPostCaption,
+                            RegDateCaption = names.RegDateCaption,
+                            GroupHeadCaption = names.GroupHeadCaption,
+                            GuestCaption = names.GuestCaption,
+                            GuestsCaption = names.GuestsCaption,
+                        };
+
+                        return new SchemaModel
+                        {
+                            Id = r.Key,
+                            Name = r.Value,
+                            Current = string.Equals(r.Key, currentSchemaId, StringComparison.InvariantCultureIgnoreCase),
+                            Items = schemaItem
+                        };
+                    })
+                    .ToList();
             }
 
             return settings;
@@ -1479,7 +1511,8 @@ namespace ASC.Api.Settings
                 .AddStatisticManagerService()
                 .AddEmployeeWraper()
                 .AddConsumerFactoryService()
-                .AddSmsProviderManagerService();
+                .AddSmsProviderManagerService()
+                .AddCustomNamingPeopleService();
         }
     }
 }

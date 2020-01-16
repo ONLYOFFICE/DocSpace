@@ -27,7 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
 using ASC.Core.Tenants;
+using ASC.Web.Api.Models;
 
 namespace ASC.Api.Settings
 {
@@ -59,6 +61,9 @@ namespace ASC.Api.Settings
 
         [DataMember(EmitDefaultValue = false)]
         public Guid OwnerId { get; set; }
+
+        [DataMember(EmitDefaultValue = false)]
+        public List<SchemaModel> Schemas { get; set; }
 
         public static SettingsWrapper GetSample()
         {
