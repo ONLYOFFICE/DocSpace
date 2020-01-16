@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from 'prop-types';
 import StyledHeading from "./StyledHeadline";
 
-const Headline = (props) => {
+const Headline = ({type, ...props}) => {
    //console.log("Headline render");
    return (
       <StyledHeading
+         headlineType={type}
          {...props} />
    );
 };
@@ -22,7 +23,7 @@ Headline.propTypes = {
 
 Headline.defaultProps = {
    color: '#333333',
-   title: '',
+   title: null,
    truncate: false,
    isInline: false,
    level: 1

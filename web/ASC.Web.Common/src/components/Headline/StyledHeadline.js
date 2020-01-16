@@ -16,8 +16,8 @@ const weight = {
 const StyledHeading = styled(Heading)`
   margin: 0;
   line-height: 56px;
-  font-size: ${props => size[props.type]};
-  font-weight: ${props => weight[props.type]};
+  font-size: ${props => size[props.headlineType]};
+  font-weight: ${props => weight[props.headlineType]};
 `;
 
 export default StyledHeading;
