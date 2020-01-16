@@ -33,7 +33,9 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.XPath;
+
 using ASC.Common.Logging;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -45,7 +47,7 @@ namespace ASC.Common.Utils
 
         private IEnumerable<MapZone> _mapZones;
 
-        private bool _isR7;
+        private bool _customMode;
 
         private Dictionary<string, string> _translations;
 
@@ -203,9 +205,9 @@ namespace ASC.Common.Utils
         {
             try
             {
-                _isR7 = Configuration["core:r7office"] == "true";
+                _customMode = Configuration["core:r7office"] == "true";
 
-                if (!_isR7)
+                if (!_customMode)
                 {
                     _translations = new Dictionary<string, string>();
                     return;
@@ -228,7 +230,7 @@ namespace ASC.Common.Utils
 
         public string GetTimeZoneName(TimeZoneInfo timeZone)
         {
-            if (!_isR7)
+            if (!_customMode)
                 return timeZone.DisplayName;
 
             return _translations.ContainsKey(timeZone.Id) ? _translations[timeZone.Id] : timeZone.DisplayName;
