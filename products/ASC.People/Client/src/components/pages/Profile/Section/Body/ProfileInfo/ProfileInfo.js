@@ -35,6 +35,7 @@ const InfoItemLabel = styled.div`
 
 const InfoItemValue = styled.div`
   width: 260px;
+  word-break: break-word;
 
   .language-combo {
     padding-top: 4px;
