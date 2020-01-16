@@ -5,8 +5,7 @@ import {
   GroupButtonsMenu,
   DropDownItem,
   toastr,
-  ContextMenuButton,
-  utils
+  ContextMenuButton
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
@@ -51,14 +50,6 @@ const StyledContainer = styled.div`
       @media (max-width: 1024px) {
         margin-left: auto;
         padding: 8px 0 8px 8px;
-      }
-    }
-
-    .headline-header { 
-      max-width: calc(100vw - 435px);
-
-      @media ${utils.device.tablet} {
-        max-width: calc(100vw - 64px);
       }
     }
   }

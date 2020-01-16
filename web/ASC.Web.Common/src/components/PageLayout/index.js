@@ -155,7 +155,7 @@ class PageLayoutComponent extends React.PureComponent {
         {this.state.isSectionAvailable && (
           <Section>
             {this.state.isSectionHeaderAvailable && (
-              <SectionHeader>{this.state.sectionHeaderContent}</SectionHeader>
+              <SectionHeader isArticlePinned={this.state.isArticlePinned}>{this.state.sectionHeaderContent}</SectionHeader>
             )}
 
             {this.state.isSectionBodyAvailable && (

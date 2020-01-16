@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
-import { IconButton, utils } from 'asc-web-components';
+import { IconButton } from 'asc-web-components';
 import { Headline } from 'asc-web-common';
 import { useTranslation } from 'react-i18next';
 import { typeUser, typeGuest } from './../../../../../helpers/customNames';
@@ -17,15 +17,10 @@ const Wrapper = styled.div`
       margin-left: -8px;
     }
   }
-`;
 
-const HeaderContainer = styled(Headline)`
-  margin-left: 16px;
-  max-width: calc(100vw - 435px);
-
-  @media ${utils.device.tablet} {
-    max-width: calc(100vw - 64px);
-  }
+  .header-headline {
+      margin-left: 16px;
+    }
 `;
 
 const SectionHeaderContent = (props) => {
@@ -56,12 +51,13 @@ const SectionHeaderContent = (props) => {
         onClick={onClickBack}
         className="arrow-button"
       />
-      <HeaderContainer
+      <Headline
+        className='header-headline'
         type='content'
         truncate={true}
       >
         {headerText}
-      </HeaderContainer>
+      </Headline>
     </Wrapper>
   );
 };

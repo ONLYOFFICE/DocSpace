@@ -5,7 +5,6 @@ import {
   IconButton,
   ContextMenuButton,
   toastr,
-  utils,
   AvatarEditor,
 } from "asc-web-components";
 import { Headline } from 'asc-web-common';
@@ -31,15 +30,6 @@ const {
 } = api.people;
 const { EmployeeStatus } = constants;
 
-const HeaderContainer = styled(Headline)`
-  margin-left: 16px;
-  max-width: calc(100vw - 435px);
-
-  @media ${utils.device.tablet} {
-    max-width: calc(100vw - 96px);
-  }
-`;
-
 const StyledContainer = styled.div`
   position: relative;
 
@@ -58,6 +48,10 @@ const StyledContainer = styled.div`
         padding: 8px 0 8px 8px;
         margin-left: -8px;
       }
+    }
+
+    .header-headline {
+      margin-left: 16px;
     }
 `;
 
@@ -386,10 +380,10 @@ class SectionHeaderContent extends React.PureComponent {
           onClick={this.onClickBack}
           className="arrow-button"
         />
-        <HeaderContainer type='content' truncate={true}>
+        <Headline className='header-headline' type='content' truncate={true}>
           {profile.displayName}
           {profile.isLDAP && ` (${t("LDAPLbl")})`}
-        </HeaderContainer>
+        </Headline>
         {((isAdmin && !profile.isOwner) || isMe(viewer, profile.userName)) && (
           <ContextMenuButton
             className="action-button"
