@@ -45,6 +45,7 @@ using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -721,22 +722,20 @@ namespace ASC.Web.Studio.Core.Notify
                         new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
         }
 
-
-        public void SendMsgConfirmChangeOwner(Tenant t, string newOwnerName, string confirmOwnerUpdateUrl)
+        public void SendMsgConfirmChangeOwner(UserInfo owner, UserInfo newOwner, string confirmOwnerUpdateUrl)
         {
-            var u = UserManager.GetUsers(t.OwnerId);
-
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
 
             client.SendNoticeToAsync(
-                        Actions.ConfirmOwnerChange,
-                        new IRecipient[] { u },
-                        new[] { EMailSenderName },
-                        TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
-                        new TagValue(Tags.UserName, newOwnerName),
-                        new TagValue(Tags.OwnerName, u.DisplayUserName(DisplayUserSettingsHelper)));
+                Actions.ConfirmOwnerChange,
+                null,
+                new IRecipient[] { owner },
+                new[] { EMailSenderName },
+                null,
+                TagValues.GreenButton(greenButtonText, confirmOwnerUpdateUrl),
+                new TagValue(Tags.UserName, newOwner.DisplayUserName(DisplayUserSettingsHelper)),
+                new TagValue(Tags.OwnerName, owner.DisplayUserName(DisplayUserSettingsHelper)));
         }
-
 
         public void SendCongratulations(UserInfo u)
         {
