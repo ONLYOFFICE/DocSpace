@@ -8,6 +8,15 @@ const StyledSectionBody = styled.div`
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+  
+  /* TODO: Fix overflow scrollbar */
+  ${props => props.withScroll && `
+    margin-left: -24px;
+
+    .scroll-body {
+      padding-left: 24px;
+    }
+  `}
 `;
 
 const StyledSectionWrapper = styled.div`
@@ -32,7 +41,7 @@ const SectionBody = React.memo(props => {
   const { children, withScroll, pinned } = props;
 
   return (
-    <StyledSectionBody>
+    <StyledSectionBody withScroll={withScroll}>
       {withScroll ? (
         <Scrollbar stype="mediumBlack">
           <StyledSectionWrapper>
