@@ -49,22 +49,17 @@ const Arrow = styled.div`
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
 `;
 
-// eslint-disable-next-line react/display-name
+// eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
 
   return (
     <DropDownItem
+      // eslint-disable-next-line react/prop-types
       {...option.props}
       style={style} />
   );
 });
-
-Row.propTypes = {
-  data: PropTypes.any,
-  index: PropTypes.number,
-  style: PropTypes.object
-};
 
 class DropDown extends React.PureComponent {
 
@@ -81,7 +76,7 @@ class DropDown extends React.PureComponent {
   }
 
   componentDidMount() {
-    if(this.props.open) {
+    if (this.props.open) {
       this.props.enableOnClickOutside();
       this.checkPosition();
     }
@@ -93,25 +88,20 @@ class DropDown extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
-      if(this.props.open) {
+      if (this.props.open) {
         this.props.enableOnClickOutside();
         this.checkPosition();
       }
       else {
         this.props.disableOnClickOutside();
       }
-      
+
     }
   }
 
   handleClickOutside = e => {
-    // ..handling code goes here...
-    console.log(`DropDown handleClickOutside`, e);
-
+    //console.log(`DropDown handleClickOutside`, e);
     this.toggleDropDown(e);
-    //this.onClose(e);
-    //this.setIsOpen(!this.state.isOpen);
-    //this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
   };
 
   toggleDropDown = (e) => {
@@ -205,10 +195,8 @@ const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
   render() {
-    //console.log(`AdvancedSelectorContainer isOpen=${this.props.isOpen} enableOnClickOutside=${this.props.isOpen}`);
     return <EnhancedComponent disableOnClickOutside={true} {...this.props} />;
   }
 }
-
 
 export default DropDownContainer;
