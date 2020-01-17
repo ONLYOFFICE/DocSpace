@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Text from "../text";
 import Scrollbar from "../scrollbar";
 
@@ -35,26 +35,37 @@ const Label = styled.div`
     user-select: none;
   }
 
-  ${props => (props.isDisabled ? `pointer-events: none;` : ``)}
+  ${props =>
+    props.isDisabled &&
+    css`
+      pointer-events: none;
+    `}
 
   ${props =>
     props.selected
-      ? `cursor: default
-         background-color: #265A8F
-         .title_style {
-           color: #fff
-          }`
-      : `
-    &:hover{
-      cursor: pointer;
-      background-color: #F8F9F9;
-    }`}
+      ? css`
+          cursor: default;
+          background-color: #265a8f;
+          .title_style {
+            color: #fff;
+          }
+        `
+      : css`
+          &:hover {
+            cursor: pointer;
+            background-color: #f8f9f9;
+          }
+        `}
 
   ${props =>
-    props.isDisabled && props.selected
-      ? `background-color: #ECEEF1
-       .title_style {color: #D0D5DA}`
-      : ``}
+    props.isDisabled &&
+    props.selected &&
+    css`
+      background-color: #eceef1;
+      .title_style {
+        color: #d0d5da;
+      }
+    `}
 `;
 
 const BodyContainer = styled.div`
@@ -224,7 +235,7 @@ class TabContainer extends Component {
                 selected={activeTab === index}
                 isDisabled={isDisabled}
               >
-                <Text className="title_style" fontSize='13px'>
+                <Text className="title_style" fontSize="13px">
                   {item.title}
                 </Text>
               </Label>
