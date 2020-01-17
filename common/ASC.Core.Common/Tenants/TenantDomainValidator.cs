@@ -26,6 +26,7 @@
 
 using System;
 using System.Text.RegularExpressions;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Core.Tenants
@@ -50,13 +51,10 @@ namespace ASC.Core.Tenants
 
         public void ValidateDomainLength(string domain)
         {
-            if (string.IsNullOrEmpty(domain))
+            if (string.IsNullOrEmpty(domain)
+                || domain.Length < MinLength || MaxLength < domain.Length)
             {
-                throw new TenantTooShortException("Tenant domain can not be empty.");
-            }
-            if (domain.Length < MinLength || MaxLength < domain.Length)
-            {
-                throw new TenantTooShortException("The domain name must be between " + MinLength + " and " + MaxLength + " characters long.");
+                throw new TenantTooShortException("The domain name must be between " + MinLength + " and " + MaxLength + " characters long.", MinLength, MaxLength);
             }
         }
 

@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Collections;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -264,6 +266,11 @@ namespace ASC.Core
                 {
                     throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
                 }
+            }
+
+            if (u.Status == EmployeeStatus.Terminated && u.ID == TenantManager.GetCurrentTenant().OwnerId)
+            {
+                throw new InvalidOperationException("Can not disable tenant owner.");
             }
 
             var newUser = UserService.SaveUser(Tenant.TenantId, u);

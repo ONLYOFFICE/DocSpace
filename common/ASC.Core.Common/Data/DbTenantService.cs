@@ -75,7 +75,8 @@ namespace ASC.Core.Data
                 TrustedDomainsType = r.TrustedDomainsEnabled,
                 AffiliateId = r.Partner != null ? r.Partner.AffiliateId : null,
                 PartnerId = r.Partner != null ? r.Partner.PartnerId : null,
-                TimeZone = r.TimeZone
+                TimeZone = r.TimeZone,
+                Campaign = r.Partner != null ? r.Partner.Campaign : null
             };
 
             var fromDbTenantToTenant = FromDbTenantToTenant.Compile();
@@ -260,7 +261,7 @@ namespace ASC.Core.Data
                 TenantDbContext.SaveChanges();
             }
 
-            if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId))
+            if (string.IsNullOrEmpty(t.PartnerId) && string.IsNullOrEmpty(t.AffiliateId) && string.IsNullOrEmpty(t.Campaign))
             {
                 var p = TenantDbContext.TenantPartner
                     .Where(r => r.TenantId == t.TenantId)
@@ -274,7 +275,8 @@ namespace ASC.Core.Data
                 {
                     TenantId = t.TenantId,
                     PartnerId = t.PartnerId,
-                    AffiliateId = t.AffiliateId
+                    AffiliateId = t.AffiliateId,
+                    Campaign = t.Campaign
                 };
 
                 TenantDbContext.TenantPartner.Add(tenantPartner);
