@@ -1,4 +1,5 @@
 export const AUTH_KEY = 'asc_auth_key';
+export const LANGUAGE = 'language';
 
 /**
  * Enum for employee activation status.
