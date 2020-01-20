@@ -170,7 +170,7 @@ class ArticleBodyContent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 }
 

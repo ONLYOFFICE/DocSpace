@@ -171,7 +171,7 @@ const mapStateToProps = state => {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
     guestInvitationLink: state.portal.inviteLinks.guestLink,
-    language: state.auth.user.cultureName,
+    language: state.auth.user.cultureName || state.auth.settings.culture,
   };
 };
 
