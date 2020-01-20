@@ -114,10 +114,9 @@ class Customization extends React.Component {
       const { setLanguageAndTime, t } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-            .then(() => {
-               this.setState({ isLoading: false })
-               toastr.success(t('SuccessfullySaveSettingsMessage'));
-            });
+            .then(() => toastr.success(t('SuccessfullySaveSettingsMessage')))
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoading: false }));
       })
    }
 
@@ -129,10 +128,9 @@ class Customization extends React.Component {
       const { setGreetingTitle, t } = this.props;
       this.setState({ isLoadingGreetingSave: true }, function () {
          setGreetingTitle(this.state.greetingTitle)
-            .then(() => {
-               this.setState({ isLoadingGreetingSave: false })
-               toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            });
+            .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingSave: false }));
       })
    }
 
