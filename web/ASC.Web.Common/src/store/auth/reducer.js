@@ -1,6 +1,6 @@
 import {
   SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_NEW_EMAIL,
-  GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
+  SET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, SET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
 } from './actions';
 import isEmpty from "lodash/isEmpty";
 
@@ -47,7 +47,7 @@ const authReducer = (state = initialState, action) => {
           return Object.assign({}, state, {
               settings: { ...state.settings, ...action.settings }
           });
-      case GET_PORTAL_CULTURES:
+      case SET_PORTAL_CULTURES:
           return Object.assign({}, state, {
               settings: { ...state.settings, cultures: action.cultures }
           });
@@ -67,7 +67,7 @@ const authReducer = (state = initialState, action) => {
           return Object.assign({}, state, {
               settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
           });
-      case GET_TIMEZONES:
+      case SET_TIMEZONES:
           return Object.assign({}, state, {
               settings: { ...state.settings, timezones: action.timezones }
           });
