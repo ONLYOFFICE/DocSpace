@@ -25,8 +25,6 @@ const StyledDropdown = styled.div`
     ${props => (props.directionX === 'right' && css`right: ${props => props.manualX ? props.manualX : '0px'};`)}
     ${props => (props.directionX === 'left' && css`left: ${props => props.manualX ? props.manualX : '0px'};`)}
     z-index: 150;
-    margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
-    margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
     display: ${props => (props.open ? 'block' : 'none')};
     background: #FFFFFF;
     border-radius: 6px;
@@ -37,16 +35,6 @@ const StyledDropdown = styled.div`
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
 
     padding: ${props => !props.maxHeight && `6px 0px`};
-`;
-
-const Arrow = styled.div`
-    position: absolute;
-    top: -6px;
-    ${props => (props.directionX === 'right' && css`right: 16px;`)}
-    ${props => (props.directionX === 'left' && css`left: 16px;`)}
-    width: 24px;
-    height: 6px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
 `;
 
 // eslint-disable-next-line react/display-name, react/prop-types
@@ -128,7 +116,7 @@ class DropDown extends React.PureComponent {
   }
 
   render() {
-    const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
+    const { maxHeight, withBackdrop, children, open } = this.props;
     const { directionX, directionY, width } = this.state;
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
     const itemHeight = isTablet ? 36 : 32;
@@ -145,7 +133,6 @@ class DropDown extends React.PureComponent {
           directionY={directionY}
           {...dropDownMaxHeightProp}
         >
-          {withArrow && <Arrow directionX={directionX} />}
           {maxHeight
             ? <FixedSizeList
               height={calculatedHeight}
@@ -177,7 +164,6 @@ DropDown.propTypes = {
   manualY: PropTypes.string,
   maxHeight: PropTypes.number,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withArrow: PropTypes.bool,
   withBackdrop: PropTypes.bool,
   clickOutsideAction: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
@@ -187,7 +173,6 @@ DropDown.propTypes = {
 DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
-  withArrow: false,
   withBackdrop: true
 };
 
