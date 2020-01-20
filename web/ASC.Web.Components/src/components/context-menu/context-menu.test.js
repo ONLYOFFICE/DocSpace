@@ -22,13 +22,13 @@ describe('<ContextMenu />', () => {
   });
 
   it('simulate handleClick() with change state to close context menu', () => {
-    const wrapper = mount(<ContextMenu {...baseProps} />);
-    const instance = wrapper.instance();
+    const wrapper = mount(<div id="container"><ContextMenu {...baseProps} id='container' /></div>);
+    const instance = wrapper.find(ContextMenu).instance();
 
-    wrapper.setState({ visible: true });
+    wrapper.find(ContextMenu).setState({ visible: true });
     instance.handleClick(new Event('click', { target: null }));
 
-    expect(wrapper.state('visible')).toEqual(false);
+    expect(wrapper.find(ContextMenu).state('visible')).toEqual(false);
   });
 
   it('simulate handleClick() to close context menu', () => {
@@ -36,24 +36,6 @@ describe('<ContextMenu />', () => {
     const instance = wrapper.instance();
 
     instance.handleClick(new Event('click', { target: null }));
-    expect(wrapper.state('visible')).toEqual(false);
-  });
-
-  it('simulate handleScroll() with change state to close context menu', () => {
-    const wrapper = mount(<ContextMenu {...baseProps} />);
-    const instance = wrapper.instance();
-
-    wrapper.setState({ visible: true });
-    instance.handleScroll();
-
-    expect(wrapper.state('visible')).toEqual(false);
-  });
-
-  it('simulate handleScroll() to close context menu', () => {
-    const wrapper = mount(<ContextMenu {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.handleScroll();
     expect(wrapper.state('visible')).toEqual(false);
   });
 
