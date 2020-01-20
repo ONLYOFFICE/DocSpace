@@ -145,8 +145,12 @@ namespace ASC.Core.Data
                 .Where(a => a.AceType == r.Reaction)
                 .FirstOrDefault();
 
-            CoreDbContext.Acl.Remove(record);
-            CoreDbContext.SaveChanges();
+            if (record != null)
+            {
+                CoreDbContext.Acl.Remove(record);
+                CoreDbContext.SaveChanges();
+            }
+
             tr.Commit();
         }
 
