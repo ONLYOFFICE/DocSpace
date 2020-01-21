@@ -6,6 +6,6 @@
   "CloseButton": "Close",
   "LinkCopySuccess": "Link has been copied to the clipboard",
   "GetShortenLink": "Get shortened link",
-  "InviteUsersAsCollaborators": "Add users as {{typeGuests, lowercase}}",
+  "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
   "LoadingProcessing": "Loading..."
 }

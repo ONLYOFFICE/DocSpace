@@ -12,7 +12,6 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { typeGuests } from "./../../../helpers/customNames";
 import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
 import { api, utils } from "asc-web-common";
@@ -87,7 +86,7 @@ class InviteDialogComponent extends React.Component {
 
   render() {
     console.log("InviteDialog render");
-    const { t, visible, settings } = this.props;
+    const { t, visible, settings, guestsCaption } = this.props;
 
     return (
       <ModalDialogContainer>
@@ -124,7 +123,7 @@ class InviteDialogComponent extends React.Component {
                   )}
                 </div>
                 <Checkbox
-                  label={t("InviteUsersAsCollaborators", { typeGuests })}
+                  label={t("InviteUsersAsCollaborators", { guestsCaption })}
                   isChecked={this.state.isGuest}
                   onChange={this.onCheckedGuest}
                   isDisabled={this.state.isLoading}
@@ -169,7 +168,8 @@ const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink
+    guestInvitationLink: state.portal.inviteLinks.guestLink,
+    guestsCaption: state.auth.settings.customNames.guestsCaption
   };
 };
 
