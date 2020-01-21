@@ -1,7 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -11,20 +9,19 @@ import {
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { sendInstructionsToChangePassword } = api.people;
+const { changeLanguage } = utils;
 
 class ChangePasswordDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { language } = props;
+  constructor() {
+    super();
 
     this.state = {
       isRequestRunning: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
   onSendPasswordChangeInstructions = () => {
     const { email, onClose } = this.props;
@@ -91,10 +88,4 @@ ChangePasswordDialog.propTypes = {
   email: PropTypes.string.isRequired,
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
-
-export default connect(mapStateToProps, {})(withRouter(ChangePasswordDialog));
+export default ChangePasswordDialog;
