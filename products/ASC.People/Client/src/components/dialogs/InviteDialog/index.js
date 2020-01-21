@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -186,4 +185,4 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps)(withRouter(InviteDialog));
+export default connect(mapStateToProps)(InviteDialog);
