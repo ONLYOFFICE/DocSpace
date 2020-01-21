@@ -29,6 +29,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Core.Common.WhiteLabel;
@@ -37,10 +38,12 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Textile.Resources;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Textile;
 using Textile.Blocks;
 
@@ -91,7 +94,8 @@ namespace ASC.Notify.Textile
 
             var template = GetTemplate(message);
             var analytics = GetAnalytics(message);
-            var logoImg = GetLogoImg(message);
+            var imagePath = GetImagePath(message);
+            var logoImg = GetLogoImg(message, imagePath);
             var logoText = GetLogoText(message);
             var mailSettings = GetMailSettings(message);
             var unsubscribeText = GetUnsubscribeText(message, mailSettings);
@@ -106,7 +110,8 @@ namespace ASC.Notify.Textile
                                    .Replace("%SITEURL%", mailSettings == null ? MailWhiteLabelSettingsHelper.DefaultMailSiteUrl : mailSettings.SiteUrl)
                                    .Replace("%FOOTER%", footerContent)
                                    .Replace("%FOOTERSOCIAL%", footerSocialContent)
-                                   .Replace("%TEXTFOOTER%", unsubscribeText);
+                                   .Replace("%TEXTFOOTER%", unsubscribeText)
+                                   .Replace("%IMAGEPATH%", imagePath);
         }
 
         private static string GetTemplate(NoticeMessage message)
@@ -134,13 +139,19 @@ namespace ASC.Notify.Textile
             return analyticsTag == null ? string.Empty : (string)analyticsTag.Value;
         }
 
-        private string GetLogoImg(NoticeMessage message)
+        private static string GetImagePath(NoticeMessage message)
+        {
+            var imagePathTag = message.GetArgument("ImagePath");
+            return imagePathTag == null ? string.Empty : (string)imagePathTag.Value;
+        }
+
+        private string GetLogoImg(NoticeMessage message, string imagePath)
         {
             string logoImg;
 
             if (CoreBaseSettings.Personal && !CoreBaseSettings.CustomMode)
             {
-                logoImg = "https://static.onlyoffice.com/media/newsletters/images-v10/mail_logo.png";
+                logoImg = imagePath + "/mail_logo.png";
             }
             else
             {
@@ -154,7 +165,7 @@ namespace ASC.Notify.Textile
                     }
                     else
                     {
-                        logoImg = "https://static.onlyoffice.com/media/newsletters/images-v10/mail_logo.png";
+                        logoImg = imagePath + "/mail_logo.png";
                     }
                 }
             }
@@ -210,13 +221,13 @@ namespace ASC.Notify.Textile
                     InitSocialFooter(settings, out footerSocialContent);
                     break;
                 case "personal":
-                    footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
+                    footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
                     break;
                 case "personalCustomMode":
                     break;
                 case "opensource":
-                    footerContent = NotifyTemplateResource.FooterOpensource;
-                    footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
+                    footerContent = NotifyTemplateResource.FooterOpensourceV10;
+                    footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
                     break;
             }
         }
@@ -229,21 +240,21 @@ namespace ASC.Notify.Textile
             if (settings == null)
             {
                 footerContent =
-                    NotifyTemplateResource.FooterCommon
+                    NotifyTemplateResource.FooterCommonV10
                                           .Replace("%SUPPORTURL%", MailWhiteLabelSettingsHelper.DefaultMailSupportUrl)
                                           .Replace("%SALESEMAIL%", MailWhiteLabelSettingsHelper.DefaultMailSalesEmail)
                                           .Replace("%DEMOURL%", MailWhiteLabelSettingsHelper.DefaultMailDemotUrl);
-                footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
+                footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
 
             }
             else if (settings.FooterEnabled)
             {
                 footerContent =
-                    NotifyTemplateResource.FooterCommon
+                    NotifyTemplateResource.FooterCommonV10
                     .Replace("%SUPPORTURL%", string.IsNullOrEmpty(settings.SupportUrl) ? "mailto:" + settings.SalesEmail : settings.SupportUrl)
                     .Replace("%SALESEMAIL%", settings.SalesEmail)
                     .Replace("%DEMOURL%", string.IsNullOrEmpty(settings.DemotUrl) ? "mailto:" + settings.SalesEmail : settings.DemotUrl);
-                footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooter : string.Empty;
+                footerSocialContent = settings.FooterSocialEnabled ? NotifyTemplateResource.SocialNetworksFooterV10 : string.Empty;
             }
         }
 
@@ -252,7 +263,7 @@ namespace ASC.Notify.Textile
             footerSocialContent = string.Empty;
 
             if (settings == null || (settings.FooterEnabled && settings.FooterSocialEnabled))
-                footerSocialContent = NotifyTemplateResource.SocialNetworksFooter;
+                footerSocialContent = NotifyTemplateResource.SocialNetworksFooterV10;
         }
 
         private string GetUnsubscribeText(NoticeMessage message, MailWhiteLabelSettings settings)
