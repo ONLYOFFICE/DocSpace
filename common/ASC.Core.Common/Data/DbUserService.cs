@@ -222,7 +222,7 @@ namespace ASC.Core.Data
 
             if (from != default)
             {
-                q = q.Where(r => r.LastModified == from);
+                q = q.Where(r => r.LastModified >= from);
             }
 
             return q.Select(FromUserGroupToUserGroupRef).ToDictionary(r => r.CreateKey(), r => r);
