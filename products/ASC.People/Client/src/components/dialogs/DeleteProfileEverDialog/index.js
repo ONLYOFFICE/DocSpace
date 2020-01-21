@@ -1,5 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import {
   toastr,
@@ -116,4 +117,4 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired
 };
 
-export default connect(null, { fetchPeople })(DeleteProfileEverDialog);
+export default connect(null, { fetchPeople })(withRouter(DeleteProfileEverDialog));
