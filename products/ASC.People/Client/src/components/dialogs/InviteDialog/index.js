@@ -16,16 +16,16 @@ import i18n from "./i18n";
 import { typeGuests } from "./../../../helpers/customNames";
 import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { getShortenedLink } = api.portal;
-
+const { changeLanguage } = utils;
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { language, userInvitationLink, guestInvitationLink } = this.props;
+    const { userInvitationLink, guestInvitationLink } = this.props;
     this.state = {
       isGuest: false,
       userInvitationLink,
@@ -35,7 +35,7 @@ class InviteDialogComponent extends React.Component {
       visible: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
 
   onCopyLinkToClipboard = () => {
@@ -170,8 +170,7 @@ const mapStateToProps = state => {
   return {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
-    guestInvitationLink: state.portal.inviteLinks.guestLink,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
+    guestInvitationLink: state.portal.inviteLinks.guestLink
   };
 };
 
