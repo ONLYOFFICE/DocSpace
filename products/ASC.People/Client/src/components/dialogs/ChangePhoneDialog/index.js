@@ -1,7 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -10,19 +8,18 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
+const { changeLanguage } = utils;
 
 class ChangePhoneDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { language } = props;
+  constructor() {
+    super();
 
     this.state = {
       isRequestRunning: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
 
   // TODO: add real api request for executing change phone
@@ -78,10 +75,4 @@ ChangePhoneDialog.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName,
-  };
-}
-
-export default connect(mapStateToProps, {})(withRouter(ChangePhoneDialog));
+export default ChangePhoneDialog;
