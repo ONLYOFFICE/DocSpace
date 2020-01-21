@@ -1,7 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -12,20 +10,19 @@ import {
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ModalDialogContainer from '../ModalDialogContainer';
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { sendInstructionsToDelete } = api.people;
+const { changeLanguage } = utils;
 
 class DeleteSelfProfileDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { language } = props;
+  constructor() {
+    super();
 
     this.state = {
       isRequestRunning: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
   onDeleteSelfProfileInstructions = () => {
     const { onClose } = this.props;
@@ -98,10 +95,4 @@ DeleteSelfProfileDialog.propTypes = {
   email: PropTypes.string.isRequired,
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
-
-export default connect(mapStateToProps, {})(withRouter(DeleteSelfProfileDialog));
+export default DeleteSelfProfileDialog;
