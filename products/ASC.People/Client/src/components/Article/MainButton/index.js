@@ -10,7 +10,6 @@ import {
 import { InviteDialog } from './../../dialogs';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
-import { typeUser, typeGuest, department } from './../../../helpers/customNames';
 import { store, utils } from 'asc-web-common';
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
@@ -51,6 +50,7 @@ class PureArticleMainButtonContent extends React.Component {
   render() {
     console.log("People ArticleMainButtonContent render");
     const { isAdmin, settings, t } = this.props;
+    const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
     return (
       isAdmin ?
@@ -62,17 +62,17 @@ class PureArticleMainButtonContent extends React.Component {
           >
             <DropDownItem
               icon="CatalogEmployeeIcon"
-              label={t('CustomNewEmployee', { typeUser })}
+              label={t('CustomNewEmployee', { userCaption })}
               onClick={this.goToEmployeeCreate}
             />
             <DropDownItem
               icon="CatalogGuestIcon"
-              label={t('CustomNewGuest', { typeGuest })}
+              label={t('CustomNewGuest', { guestCaption })}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
               icon="CatalogDepartmentsIcon"
-              label={t('CustomNewDepartment', { department })}
+              label={t('CustomNewDepartment', { groupCaption })}
               onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />

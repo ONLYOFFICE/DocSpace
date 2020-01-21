@@ -7,7 +7,6 @@ import {
   Icons
 } from "asc-web-components";
 import { selectGroup } from '../../../store/people/actions';
-import { departments } from './../../../helpers/customNames';
 
 const getItems = data => {
   return data.map(item => {
@@ -109,7 +108,7 @@ class ArticleBodyContent extends React.Component {
   };
 };
 
-const getTreeGroups = (groups) => {
+const getTreeGroups = (groups, departments) => {
   const treeData = [
       {
           key: "root",
@@ -128,7 +127,7 @@ const getTreeGroups = (groups) => {
 
 function mapStateToProps(state) {
   return {
-    data: getTreeGroups(state.people.groups),
+    data: getTreeGroups(state.people.groups, state.auth.settings.customNames.groupsCaption),
     selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
   };
 }

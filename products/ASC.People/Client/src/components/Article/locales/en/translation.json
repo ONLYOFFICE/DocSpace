@@ -3,7 +3,7 @@
   "ImportPeople": "Import people",
   "Actions": "Actions",
   "LblInviteAgain": "Invite again",
-  "CustomNewEmployee": "New {{typeUser, lowercase}}",
-  "CustomNewGuest": "New {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "New {{department, lowercase}}"
+  "CustomNewEmployee": "New {{userCaption, lowercase}}",
+  "CustomNewGuest": "New {{guestCaption, lowercase}}",
+  "CustomNewDepartment": "New {{groupCaption, lowercase}}"
 }

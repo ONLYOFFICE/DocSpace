@@ -3,7 +3,7 @@
   "ImportPeople": "Импортировать людей",
   "Actions": "Действия",
   "LblInviteAgain": "Отправить приглашение ещё раз",
-  "CustomNewEmployee": "Новый {{typeUser, lowercase}}",
-  "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "Новый {{department, lowercase}}"
+  "CustomNewEmployee": "Новый {{userCaption, lowercase}}",
+  "CustomNewGuest": "Новый {{guestCaption, lowercase}}",
+  "CustomNewDepartment": "Новый {{groupCaption, lowercase}}"
 }
