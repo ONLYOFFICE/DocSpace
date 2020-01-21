@@ -124,8 +124,11 @@ namespace ASC.Core.Data
                  .Where(r => r.Tenant == id)
                  .SingleOrDefault();
 
-            CoreDbContext.Quotas.Remove(d);
-            CoreDbContext.SaveChanges();
+            if (d != null)
+            {
+                CoreDbContext.Quotas.Remove(d);
+                CoreDbContext.SaveChanges();
+            }
 
             tr.Commit();
         }

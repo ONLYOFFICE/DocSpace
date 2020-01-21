@@ -140,7 +140,12 @@ namespace ASC.Core.Data
             }
 
             var sub = q.FirstOrDefault();
-            UserDbContext.Subscriptions.Remove(sub);
+
+            if (sub != null)
+            {
+                UserDbContext.Subscriptions.Remove(sub);
+            }
+
             tr.Commit();
         }
 
@@ -200,7 +205,13 @@ namespace ASC.Core.Data
                     .Where(r => r.Source == m.SourceId)
                     .Where(r => r.Recipient == m.RecipientId)
                     .Where(r => r.Action == m.ActionId);
-                UserDbContext.SubscriptionMethods.Remove(q.FirstOrDefault());
+
+                var sm = q.FirstOrDefault();
+
+                if (sm != null)
+                {
+                    UserDbContext.SubscriptionMethods.Remove(sm);
+                }
             }
             else
             {

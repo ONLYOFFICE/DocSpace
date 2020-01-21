@@ -4,7 +4,6 @@
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public bool Current { get; set; }
         public SchemaItemModel Items { get; set; }
     }
 
