@@ -1320,45 +1320,45 @@ namespace ASC.Api.Settings
         [Update("storage")]
         public StorageSettings UpdateStorage(StorageModel model)
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreBaseSettings.Standalone) return null;
-
-            var consumer = ConsumerFactory.GetByKey(model.Module);
-            if (!consumer.IsSet)
-                throw new ArgumentException("module");
-
-            var settings = SettingsManager.Load<StorageSettings>();
-            if (settings.Module == model.Module) return settings;
-
-            settings.Module = model.Module;
-            settings.Props = model.Props.ToDictionary(r => r.Key, b => b.Value);
-
             try
             {
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+                if (!CoreBaseSettings.Standalone) return null;
+
+                var consumer = ConsumerFactory.GetByKey(model.Module);
+                if (!consumer.IsSet)
+                    throw new ArgumentException("module");
+
+                var settings = SettingsManager.Load<StorageSettings>();
+                if (settings.Module == model.Module) return settings;
+
+                settings.Module = model.Module;
+                settings.Props = model.Props.ToDictionary(r => r.Key, b => b.Value);
+
                 StartMigrate(settings);
+                return settings;
             }
             catch (Exception e)
             {
                 Log.Error("UpdateStorage", e);
                 throw;
             }
-
-            return settings;
         }
 
         [Delete("storage")]
         public void ResetStorageToDefault()
         {
-            PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            if (!CoreBaseSettings.Standalone) return;
-
-            var settings = SettingsManager.Load<StorageSettings>();
-
-            settings.Module = null;
-            settings.Props = null;
-
             try
             {
+                PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+                if (!CoreBaseSettings.Standalone) return;
+
+                var settings = SettingsManager.Load<StorageSettings>();
+
+                settings.Module = null;
+                settings.Props = null;
+
+
                 StartMigrate(settings);
             }
             catch (Exception e)
@@ -1447,6 +1447,7 @@ namespace ASC.Api.Settings
             }
 
             Tenant.SetStatus(TenantStatus.Migrating);
+            TenantManager.SaveTenant(Tenant);
         }
 
         [Read("socket")]
