@@ -245,9 +245,17 @@ namespace ASC.Api.Settings
                 settings.UtcOffset = TimeZoneConverter.GetTimeZone(timeZone).GetUtcOffset(DateTime.UtcNow);
                 settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
                 settings.OwnerId = Tenant.OwnerId;
+                settings.NameSchemaId = CustomNamingPeople.Current.Id;
+            }
 
-                var currentSchemaId = CustomNamingPeople.Current.Id;
-                settings.Schemas = CustomNamingPeople.GetSchemas()
+            return settings;
+        }
+
+        [Read("customschemas")]
+        public List<SchemaModel> PeopleSchemas()
+        {
+            return CustomNamingPeople
+                    .GetSchemas()
                     .Select(r =>
                     {
                         var names = CustomNamingPeople.GetPeopleNames(r.Key);
@@ -269,14 +277,10 @@ namespace ASC.Api.Settings
                         {
                             Id = r.Key,
                             Name = r.Value,
-                            Current = string.Equals(r.Key, currentSchemaId, StringComparison.InvariantCultureIgnoreCase),
                             Items = schemaItem
                         };
                     })
                     .ToList();
-            }
-
-            return settings;
         }
 
         [Read("quota")]

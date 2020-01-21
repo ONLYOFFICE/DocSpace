@@ -43,7 +43,7 @@ namespace ASC.Core.Data
         public DbAzService(DbContextManager<CoreDbContext> dbContextManager)
         {
             CoreDbContext = dbContextManager.Value;
-            FromAclToAzRecord = r => new AzRecord()
+            FromAclToAzRecord = r => new AzRecord
             {
                 ActionId = r.Action,
                 ObjectId = r.Object,
@@ -145,8 +145,12 @@ namespace ASC.Core.Data
                 .Where(a => a.AceType == r.Reaction)
                 .FirstOrDefault();
 
-            CoreDbContext.Acl.Remove(record);
-            CoreDbContext.SaveChanges();
+            if (record != null)
+            {
+                CoreDbContext.Acl.Remove(record);
+                CoreDbContext.SaveChanges();
+            }
+
             tr.Commit();
         }
 
@@ -156,7 +160,7 @@ namespace ASC.Core.Data
             {
                 AceType = r.Reaction,
                 Action = r.ActionId,
-                Object = r.ObjectId,
+                Object = r.ObjectId ?? string.Empty,
                 Subject = r.SubjectId,
                 Tenant = r.Tenant
             };

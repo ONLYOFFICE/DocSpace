@@ -266,7 +266,10 @@ namespace ASC.Core.Data
                     .Where(r => r.TenantId == t.TenantId)
                     .FirstOrDefault();
 
-                TenantDbContext.TenantPartner.Remove(p);
+                if (p != null)
+                {
+                    TenantDbContext.TenantPartner.Remove(p);
+                }
             }
             else
             {
@@ -344,7 +347,11 @@ namespace ASC.Core.Data
                     .Where(r => r.Tenant == tenant)
                     .Where(r => r.Id == key)
                     .FirstOrDefault();
-                TenantDbContext.CoreSettings.Remove(settings);
+
+                if (settings != null)
+                {
+                    TenantDbContext.CoreSettings.Remove(settings);
+                }
             }
             else
             {

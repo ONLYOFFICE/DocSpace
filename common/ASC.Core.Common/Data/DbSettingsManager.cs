@@ -153,7 +153,10 @@ namespace ASC.Core.Data
                         .Where(r => r.UserId == userId)
                         .FirstOrDefault();
 
-                    WebstudioDbContext.WebstudioSettings.Remove(s);
+                    if (s != null)
+                    {
+                        WebstudioDbContext.WebstudioSettings.Remove(s);
+                    }
                 }
                 else
                 {

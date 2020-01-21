@@ -33,7 +33,7 @@ class ContextMenuButton extends React.Component {
   stopAction = (e) => e.preventDefault();
   toggle = (isOpen) => this.setState({ isOpen: isOpen });
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.opened !== prevProps.opened) {
       this.toggle(this.props.opened);
     }
@@ -45,16 +45,15 @@ class ContextMenuButton extends React.Component {
       return;
     }
 
-    console.log("ContextMenuButton onIconButtonClick (isOpen)", this.state.isOpen);
-
     this.setState({
       data: this.props.getData(),
       isOpen: !this.state.isOpen
     });
   }
 
-  clickOutsideAction = () => {
-    console.log("ContextMenuButton clickOutsideAction", );
+  clickOutsideAction = (e) => {
+    if (this.ref.current.contains(e.target)) return;
+    
     this.onIconButtonClick();
   }
 
