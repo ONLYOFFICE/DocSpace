@@ -1,12 +1,12 @@
 ﻿import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import { Text, Link } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
 import version from "../../../../package.json";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
+const { changeLanguage } = utils;
 
 const BodyStyle = styled.div`
   margin-top: 24px;
@@ -73,12 +73,12 @@ const VersionStyle = styled.div`
   padding: 8px 0px 20px 0px;
 `;
 
-const Body = ({ language }) => {
+const Body = () => {
   const { t } = useTranslation("translation", { i18n });
 
   useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
+    changeLanguage(i18n);
+  }, []);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";
@@ -191,10 +191,5 @@ const About = ({ language }) => (
   <PageLayout sectionBodyContent={<Body language={language} />} />
 );
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
-  };
-}
 
-export default connect(mapStateToProps)(About);
+export default About;
