@@ -9,18 +9,14 @@ const StyledSectionBody = styled.div`
   flex-grow: 1;
   height: 100%;
   
-  /* TODO: Fix overflow scrollbar */
   ${props => props.withScroll && `
     margin-left: -24px;
-
-    .scroll-body {
-      padding-left: 24px;
-    }
   `}
 `;
 
 const StyledSectionWrapper = styled.div`
   margin: 16px 8px 16px 0;
+  padding-left: 24px;
 
   @media ${tablet} {
     margin: 16px 0;
