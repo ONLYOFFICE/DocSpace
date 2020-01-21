@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -10,24 +9,23 @@ import {
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 import { typeUser } from "../../../helpers/customNames";
 import { fetchPeople } from '../../../store/people/actions';
 import ModalDialogContainer from '../ModalDialogContainer';
 const { deleteUser } = api.people;
 const { Filter } = api;
+const { changeLanguage } = utils;
 
 class DeleteProfileEverDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const { language } = props;
+  constructor() {
+    super();
 
     this.state = {
       isRequestRunning: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
   onDeleteProfileEver = () => {
     const { onClose, filter, fetchPeople, user, t } = this.props;
@@ -118,10 +116,4 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
-
-export default connect(mapStateToProps, { fetchPeople })(withRouter(DeleteProfileEverDialog));
+export default connect(null, { fetchPeople })(DeleteProfileEverDialog);
