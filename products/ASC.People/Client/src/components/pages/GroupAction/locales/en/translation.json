@@ -2,13 +2,10 @@
   "SaveButton": "Save",
   "CancelButton": "Cancel",
 
-
-
-  "CustomHeadOfDepartment": "{{headOfDepartment}}",
   "CustomAddEmployee": "Add {{typeUser, lowercase}}",
-  "CustomNewDepartment": "New {{department, lowercase}}",
-  "CustomEditDepartment": "Edit {{department, lowercase}}",
-  "CustomDepartmentName": "{{department}} name",
+  "CustomNewDepartment": "New {{groupCaption, lowercase}}",
+  "CustomEditDepartment": "Edit {{groupCaption, lowercase}}",
+  "CustomDepartmentName": "{{groupCaption}} name",
   "Members": "Members",
   "AddMembers": "Add members",
   "SearchAddedMembers": "Search added members"

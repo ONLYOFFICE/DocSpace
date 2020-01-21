@@ -15,11 +15,6 @@ import {
   resetGroup,
   updateGroup
 } from "../../../../../store/group/actions";
-import {
-  department,
-  headOfDepartment,
-  typeUser
-} from "../../../../../helpers/customNames";
 
 import { GUID_EMPTY } from "../../../../../helpers/constants";
 import PropTypes from "prop-types";
@@ -86,7 +81,7 @@ class SectionBodyContent extends React.Component {
   }
 
   mapPropsToState = () => {
-    const { group, users, groups, t } = this.props;
+    const { group, users, groups, t, userCaption } = this.props;
 
     const newState = {
       id: group ? group.id : "",
@@ -105,7 +100,7 @@ class SectionBodyContent extends React.Component {
           }
         : {
             key: 0,
-            label: t("CustomAddEmployee", { typeUser })
+            label: t("CustomAddEmployee", { typeUser: userCaption })
           },
       groupMembers:
         group && group.members
@@ -124,7 +119,7 @@ class SectionBodyContent extends React.Component {
             }
           : {
               key: GUID_EMPTY,
-              label: t("CustomAddEmployee", { typeUser }),
+              label: t("CustomAddEmployee", { typeUser: userCaption }),
               default: true
             }
     };
@@ -255,7 +250,7 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { t } = this.props;
+    const { t, groupCaption, groupHeadCaption } = this.props;
     const {
       groupName,
       groupMembers,
@@ -273,7 +268,7 @@ class SectionBodyContent extends React.Component {
           isRequired={true}
           hasError={false}
           isVertical={true}
-          labelText={t("CustomDepartmentName", { department })}
+          labelText={t("CustomDepartmentName", { groupCaption })}
         >
           <TextInput
             id="group-name"
@@ -293,7 +288,7 @@ class SectionBodyContent extends React.Component {
           isRequired={false}
           hasError={false}
           isVertical={true}
-          labelText={t("CustomHeadOfDepartment", { headOfDepartment })}
+          labelText={groupHeadCaption}
         >
           <ComboBox
             id="head-selector_button"
@@ -435,7 +430,10 @@ function mapStateToProps(state) {
     settings: state.auth.settings,
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
-    users: convertUsers(state.people.selector.users) //TODO: replace to api requests with search
+    users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
+    groupCaption: state.auth.settings.customNames.groupCaption,
+    groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
+    userCaption: state.auth.settings.customNames.userCaption
   };
 }
 

@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import { IconButton, utils } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
-import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
 import styled from "styled-components";
 
@@ -39,10 +38,10 @@ class SectionHeaderContent extends React.Component {
   };
 
   render() {
-    const { group, t } = this.props;
+    const { group, t, groupCaption } = this.props;
     const headerText = group
-      ? t("CustomEditDepartment", { department })
-      : t("CustomNewDepartment", { department });
+      ? t("CustomEditDepartment", { groupCaption })
+      : t("CustomNewDepartment", { groupCaption });
     return (
       <Wrapper>
         <IconButton
@@ -74,7 +73,8 @@ SectionHeaderContent.defaultProps = {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    group: state.group.targetGroup
+    group: state.group.targetGroup,
+    groupCaption: state.auth.settings.customNames.groupCaption
   };
 }
 
