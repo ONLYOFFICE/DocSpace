@@ -11,7 +11,6 @@ import {
 import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
-import { typeUser } from "../../../helpers/customNames";
 import { fetchPeople } from '../../../store/people/actions';
 import ModalDialogContainer from '../ModalDialogContainer';
 const { deleteUser } = api.people;
@@ -50,7 +49,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
 
   render() {
     console.log("DeleteProfileEverDialog render");
-    const { t, visible, user, onClose } = this.props;
+    const { t, visible, user, onClose, userCaption } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -63,7 +62,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
             <>
               <Text>
                 <Trans i18nKey='DeleteUserConfirmation' i18n={i18n}>
-                  {{ typeUser }} <strong>{{ user: user.displayName }}</strong> will be deleted.
+                  {{ userCaption }} <strong>{{ user: user.displayName }}</strong> will be deleted.
               </Trans>
               </Text>
               <Text>{t('NotBeUndone')}</Text>
@@ -117,4 +116,10 @@ DeleteProfileEverDialog.propTypes = {
   history: PropTypes.object.isRequired
 };
 
-export default connect(null, { fetchPeople })(withRouter(DeleteProfileEverDialog));
+function mapStateToProps(state) {
+  return {
+    userCaption: state.auth.settings.customNames.userCaption
+  };
+}
+
+export default connect(mapStateToProps, { fetchPeople })(withRouter(DeleteProfileEverDialog));
