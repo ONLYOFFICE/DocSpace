@@ -1,7 +1,7 @@
 import {
   SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_NEW_EMAIL,
   SET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, SET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
-} from './actions';
+  SET_CUSTOM_NAMES } from './actions';
 import isEmpty from "lodash/isEmpty";
 import { LANGUAGE } from '../../constants';
 
@@ -89,6 +89,10 @@ const authReducer = (state = initialState, action) => {
       case SET_GREETING_SETTINGS:
           return Object.assign({}, state, {
               settings: { ...state.settings, greetingSettings: action.title }
+          });
+      case SET_CUSTOM_NAMES:
+          return Object.assign({}, state, {
+              settings: { ...state.settings, customNames: action.customNames }
           });
       case LOGOUT:
           return Object.assign({}, initialState, {

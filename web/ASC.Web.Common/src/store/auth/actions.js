@@ -14,6 +14,7 @@ export const SET_TIMEZONES = "SET_TIMEZONES";
 export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
+export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 
 export function setCurrentUser(user) {
   return {
@@ -106,6 +107,13 @@ export function setGreetingSettings(title) {
   };
 }
 
+export function setCustomNames(customNames) {
+  return {
+    type: SET_CUSTOM_NAMES,
+    customNames
+  };
+}
+
 export function getUser(dispatch) {
   return api.people.getUser().then(user => dispatch(setCurrentUser(user)));
 }
@@ -113,7 +121,16 @@ export function getUser(dispatch) {
 export function getPortalSettings(dispatch) {
   return api.settings
     .getSettings()
-    .then(settings => dispatch(setSettings(settings)));
+    .then(settings => {
+      dispatch(setSettings(settings));
+      getCurrentCustomSchema(dispatch, settings.nameSchemaId);
+    });
+}
+export function getCurrentCustomSchema(dispatch, id) {
+
+    return api.settings
+    .getCurrentCustomSchema(id)
+    .then(customNames =>   dispatch(setCustomNames(customNames)));
 }
 
 export function getModules(dispatch) {
