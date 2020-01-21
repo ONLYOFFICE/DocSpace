@@ -32,5 +32,7 @@ export function getObjectByLocation(location) {
 }
 
 export function changeLanguage(i18nInstance) {
-  i18nInstance.language !== localStorage.getItem(LANGUAGE) && i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE));
+  localStorage.getItem(LANGUAGE) 
+  ? i18nInstance.language !== localStorage.getItem(LANGUAGE) && i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE)) 
+  : i18nInstance.changeLanguage('en');
 }
