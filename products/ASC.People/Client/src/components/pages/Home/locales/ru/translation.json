@@ -36,17 +36,16 @@
   "LblInviteAgain": "Выслать прилашение ещё раз",
   "ByFirstNameSorting": "По имени",
   "ByLastNameSorting": "По фамилии",
-  "LblInvited": "Invited",
+  "LblInvited": "Приглашен",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
 
   "CustomHeadOfDepartment": " {{headOfDepartment}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomMakeUser": "Сделать {{typeUser, lowercase}}",
-  "CustomMakeGuest": "Сделать {{typeGuest, lowercase}}",
-  "CustomDepartment": "{{department}}",
+  "CustomTypeGuest": "{{guestCaption}}",
+  "CustomTypeUser": "{{userCaption}}",
+  "CustomMakeUser": "Сделать {{userCaption, lowercase}}",
+  "CustomMakeGuest": "Сделать {{guestCaption, lowercase}}",
   "CountPerPage": "{{count}} на странице",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
 
@@ -57,9 +56,9 @@
 
   "FilterPlaceholder": "Поиск",
 
-  "CustomNewEmployee": "Новый {{typeUser, lowercase}}",
-  "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "Новый {{department, lowercase}}",
+  "CustomNewEmployee": "Новый {{userCaption, lowercase}}",
+  "CustomNewGuest": "Новый {{guestCaption, lowercase}}",
+  "CustomNewDepartment": "Новый {{groupCaption, lowercase}}",
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "SendInvitationAgain": "Отправить приглашение ещё раз"
 }

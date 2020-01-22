@@ -42,11 +42,10 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
 
   "CustomHeadOfDepartment": " {{headOfDepartment}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomMakeUser": "Make {{typeUser, lowercase}}",
-  "CustomMakeGuest": "Make {{typeGuest, lowercase}}",
-  "CustomDepartment": "{{department}}",
+  "CustomTypeGuest": "{{guestCaption}}",
+  "CustomTypeUser": "{{userCaption}}",
+  "CustomMakeUser": "Make {{userCaption, lowercase}}",
+  "CustomMakeGuest": "Make {{guestCaption, lowercase}}",
   "CountPerPage": "{{count}} per page",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
 
@@ -57,9 +56,9 @@
 
   "FilterPlaceholder": "Search",
 
-  "CustomNewEmployee": "New {{typeUser, lowercase}}",
-  "CustomNewGuest": "New {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "New {{department, lowercase}}",
+  "CustomNewEmployee": "New {{userCaption, lowercase}}",
+  "CustomNewGuest": "New {{guestCaption, lowercase}}",
+  "CustomNewDepartment": "New {{groupCaption, lowercase}}",
   "MakeInvitationLink": "Make invitation link",
   "SendInvitationAgain": "Send invitation once"
 }

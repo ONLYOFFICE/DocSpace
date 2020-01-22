@@ -19,11 +19,6 @@ import {
   updateUserType,
   fetchPeople
 } from "../../../../../store/people/actions";
-import {
-  typeUser,
-  typeGuest,
-  department
-} from "../../../../../helpers/../helpers/customNames";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
 import { InviteDialog } from '../../../../dialogs';
@@ -133,12 +128,12 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: t("CustomMakeUser", { typeUser }),
+      label: t("CustomMakeUser", { userCaption: settings.customNames.userCaption }),
       disabled: !selection.length,
       onClick: onSetEmployee
     },
     {
-      label: t("CustomMakeGuest", { typeGuest }),
+      label: t("CustomMakeGuest", { guestCaption: settings.customNames.guestCaption }),
       disabled: !selection.length,
       onClick: onSetGuest
     },
@@ -212,20 +207,21 @@ const SectionHeaderContent = props => {
   );
 
   const getContextOptionsPlus = useCallback(() => {
+    const { guestCaption, userCaption, groupCaption } = settings.customNames;
     return [
       {
         key: "new-employee",
-        label: t("CustomNewEmployee", { typeUser }),
+        label: t("CustomNewEmployee", { userCaption }),
         onClick: goToEmployeeCreate
       },
       {
         key: "new-guest",
-        label: t("CustomNewGuest", { typeGuest }),
+        label: t("CustomNewGuest", { guestCaption }),
         onClick: goToGuestCreate
       },
       {
         key: "new-group",
-        label: t("CustomNewDepartment", { department }),
+        label: t("CustomNewDepartment", { groupCaption }),
         onClick: goToGroupCreate
       },
       { key: 'separator', isSeparator: true },
@@ -240,7 +236,7 @@ const SectionHeaderContent = props => {
         onClick: onSentInviteAgain
       } */
     ];
-  }, [t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
+  }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
   return (
     <StyledContainer>
@@ -278,7 +274,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Headline className='headline-header' truncate={true} type="content">Departments</Headline>
+              <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
               {isAdmin && (
                 <>
                 <ContextMenuButton

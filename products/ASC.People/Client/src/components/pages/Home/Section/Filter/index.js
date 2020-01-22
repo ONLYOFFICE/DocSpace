@@ -5,11 +5,6 @@ import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
-import {
-  typeGuest,
-  typeUser,
-  department
-} from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { store } from 'asc-web-common';
@@ -98,7 +93,8 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { user, groups, t } = this.props;
+    const { user, groups, t, settings } = this.props;
+    const { guestCaption, userCaption, groupCaption } = settings.customNames;
 
     const options = !isAdmin(user)
       ? []
@@ -158,12 +154,12 @@ class SectionFilterContent extends React.Component {
       {
         key: "user",
         group: "filter-type",
-        label: t("CustomTypeUser", { typeUser })
+        label: t("CustomTypeUser", { userCaption })
       },
       {
         key: "guest",
         group: "filter-type",
-        label: t("CustomTypeGuest", { typeGuest })
+        label: t("CustomTypeGuest", { guestCaption })
       },
       {
         key: "filter-other",
@@ -175,7 +171,7 @@ class SectionFilterContent extends React.Component {
         key: "filter-type-group",
         group: "filter-other",
         subgroup: "filter-group",
-        label: t("CustomDepartment", { department }),
+        label: groupCaption,
         defaultSelectLabel: t("DefaultSelectLabel")
       },
       ...groupOptions
