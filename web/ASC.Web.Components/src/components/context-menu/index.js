@@ -25,28 +25,26 @@ class ContextMenu extends React.PureComponent {
   moveMenu = e => {
     const menu = document.getElementById(this.props.id);
 
-    //if (!menu) return;
-
     const bounds = (this.container !== document) && this.container.getBoundingClientRect();
     const clickX = e.clientX - bounds.left;
     const clickY = e.clientY - bounds.top;
     const containerWidth = this.container.offsetWidth;
     const containerHeight = this.container.offsetHeight;
-    const menuWidth = menu && menu.offsetWidth;
+    const menuWidth = menu && menu.offsetWidth || 180;
     const menuHeight = menu && menu.offsetHeight;
-    const right = (containerWidth - clickX) > menuWidth;
-    const left = !right;
+
+    const right = (containerWidth - clickX) < menuWidth && clickX > menuWidth;
     const bottom = (containerHeight - clickY) < menuHeight && clickY > menuHeight;
 
     let newTop = `0px`;
     let newLeft = `0px`;
 
-    newLeft = left ? `${clickX - menuWidth - 8}px` : `${clickX + 8}px`;
+    newLeft = right ? `${clickX - menuWidth - 8}px` : `${clickX + 8}px`;
     newTop = bottom ? `${clickY - menuHeight}px` : `${clickY}px`;
 
-    if(menu) {
-    menu.style.top = newTop;
-    menu.style.left = newLeft;
+    if (menu) {
+      menu.style.top = newTop;
+      menu.style.left = newLeft;
     }
   }
 
@@ -58,9 +56,7 @@ class ContextMenu extends React.PureComponent {
 
     this.setState({
       visible: true
-    });
-
-    if (e) this.moveMenu(e);
+    }, () => this.moveMenu(e));
   }
 
   handleClick = (e) => {
