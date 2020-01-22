@@ -9,9 +9,11 @@ import {
   HelpButton
 } from "asc-web-components";
 import styled from 'styled-components';
-import { history, api } from "asc-web-common";
+import { history, api, store as commonStore } from "asc-web-common";
 import { connect } from "react-redux";
+import store from "../../../../../../store/store";
 const { resendUserInvites } = api.people;
+const { getCurrentCustomSchema } = commonStore.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -123,11 +125,12 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture } = this.props;
+    const { profile, updateProfileCulture, nameSchemaId } = this.props;
 
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key);
+    getCurrentCustomSchema(store.dispatch, nameSchemaId);
   }
 
   getLanguages = () => {
@@ -313,7 +316,8 @@ function mapStateToProps(state) {
   return {
     groupCaption: state.auth.settings.customNames.groupCaption,
     regDateCaption: state.auth.settings.customNames.regDateCaption,
-    userPostCaption: state.auth.settings.customNames.userPostCaption
+    userPostCaption: state.auth.settings.customNames.userPostCaption,
+    nameSchemaId: state.auth.settings.nameSchemaId
   }
 }
 
