@@ -13,7 +13,6 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 import styled from "styled-components";
 import { api } from "asc-web-common";
 import { ChangeEmailDialog, ChangePasswordDialog, ChangePhoneDialog } from '../../../../dialogs';
@@ -366,7 +365,8 @@ class UpdateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
-    const { t, i18n } = this.props;
+    const { t, i18n, settings } = this.props;
+    const { guestCaption, userCaption, regDateCaption, userPostCaption, groupCaption, groupsCaption } = settings.customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -563,8 +563,8 @@ class UpdateUserForm extends React.Component {
               radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: t("CustomTypeGuest", { typeGuest }) },
-                { value: "false", label: t("CustomTypeUser", { typeUser }) }
+                { value: "true", label: guestCaption },
+                { value: "false", label: userCaption }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
@@ -574,7 +574,7 @@ class UpdateUserForm extends React.Component {
             />
             <DateField
               calendarHeaderContent={t("CalendarSelectDate")}
-              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              labelText={`${regDateCaption}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
               inputIsDisabled={isLoading}
@@ -590,7 +590,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={8}
             />
             <TextField
-              labelText={`${t("CustomPosition", { position })}:`}
+              labelText={`${userPostCaption}:`}
               inputName="title"
               inputValue={profile.title}
               inputIsDisabled={isLoading}
@@ -598,7 +598,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={9}
             />
             <DepartmentField
-              labelText={`${t("CustomDepartment", { department })}:`}
+              labelText={`${groupCaption}:`}
               isDisabled={isLoading}
               showGroupSelectorButtonTitle={t("AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
@@ -608,7 +608,7 @@ class UpdateUserForm extends React.Component {
               searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorAddButtonText={t("CustomAddDepartments", { departments })}
+              selectorAddButtonText={t("CustomAddDepartments", { groupsCaption })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}

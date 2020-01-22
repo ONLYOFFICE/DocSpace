@@ -42,14 +42,9 @@
   "EditProfile": "Edit profile",
   "SearchDepartments": "Search departments",
 
-  "CustomEmployedSinceDate": "{{employedSinceDate}}",
-  "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomNewEmployee": "New {{typeUser, lowercase}}",
-  "CustomNewGuest": "New {{typeGuest, lowercase}}",
-  "CustomAddDepartments": "Add {{departments, lowercase}}",
+  "CustomNewEmployee": "New {{userCaption, lowercase}}",
+  "CustomNewGuest": "New {{guestCaption, lowercase}}",
+  "CustomAddDepartments": "Add {{groupCaption, lowercase}}",
 
   "chooseFileLabel":  "Drop file here, or click to select file",
   "chooseMobileFileLabel": "Click to select files",

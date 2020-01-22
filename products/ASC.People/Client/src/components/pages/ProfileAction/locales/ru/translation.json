@@ -42,14 +42,9 @@
   "EditProfile": "Редактирование профиля",
   "SearchDepartments": "Поиск группы",
 
-  "CustomEmployedSinceDate": "{{employedSinceDate}}",
-  "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomNewEmployee": "Новый {{typeUser, lowercase}}",
-  "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
-  "CustomAddDepartments": "Добавить {{departments, lowercase}}",
+  "CustomNewEmployee": "Новый {{userCaption, lowercase}}",
+  "CustomNewGuest": "Новый {{guestCaption, lowercase}}",
+  "CustomAddDepartments": "Добавить {{groupCaption, lowercase}}",
 
   "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
   "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
