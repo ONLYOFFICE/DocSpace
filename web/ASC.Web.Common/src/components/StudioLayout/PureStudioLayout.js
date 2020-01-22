@@ -6,7 +6,8 @@ import Layout from "../Layout";
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps) {
     return this.props.hasChanges !== nextProps.hasChanges ||
-    this.props.currentModuleId !== nextProps.currentModuleId;
+    this.props.currentModuleId !== nextProps.currentModuleId ||
+    this.props.language !== nextProps.language;
   }
 
   onProfileClick = () => {
