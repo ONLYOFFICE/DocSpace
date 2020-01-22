@@ -1,6 +1,5 @@
 import React from "react";
 import { Trans } from 'react-i18next';
-import { department as departmentName, position, employedSinceDate } from '../../../../../../helpers/customNames';
 import {
   Text,
   IconButton,
@@ -11,6 +10,7 @@ import {
 } from "asc-web-components";
 import styled from 'styled-components';
 import { history, api } from "asc-web-common";
+import { connect } from "react-redux";
 const { resendUserInvites } = api.people;
 
 const InfoContainer = styled.div`
@@ -142,7 +142,7 @@ class ProfileInfo extends React.PureComponent {
     const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const { t, i18n } = this.props;
+    const { t, i18n, userPostCaption, regDateCaption, groupCaption } = this.props;
     const type = isVisitor ? "Guest" : "Employee";
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
@@ -238,7 +238,7 @@ class ProfileInfo extends React.PureComponent {
         {title &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomPosition", { position })}:
+              {userPostCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {title}
@@ -248,7 +248,7 @@ class ProfileInfo extends React.PureComponent {
         {department &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomDepartment", { department: departmentName })}:
+              {groupCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {formatedDepartments}
@@ -268,7 +268,7 @@ class ProfileInfo extends React.PureComponent {
         {workFrom &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomEmployedSinceDate", { employedSinceDate })}:
+              {regDateCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {workFromDate}
@@ -309,4 +309,12 @@ class ProfileInfo extends React.PureComponent {
   }
 };
 
-export default ProfileInfo;
+function mapStateToProps(state) {
+  return {
+    groupCaption: state.auth.settings.customNames.groupCaption,
+    regDateCaption: state.auth.settings.customNames.regDateCaption,
+    userPostCaption: state.auth.settings.customNames.userPostCaption
+  }
+}
+
+export default connect(mapStateToProps)(ProfileInfo);

@@ -31,9 +31,6 @@
   "LDAPLbl": "LDAP",
   "SocialProfiles": "Social profiles",
 
-  "CustomEmployedSinceDate": "{{employedSinceDate}}",
-  "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}",
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
   "Culture_ru-RU": "Russian (Russia)",
