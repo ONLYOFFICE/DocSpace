@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 
@@ -94,14 +95,14 @@ namespace ASC.Core.Users
             return UserPhotoManager.GetSmallPhotoURL(userInfo.ID);
         }
 
-        public static string RenderProfileLinkBase(this UserInfo userInfo, UserManager userManager, CommonLinkUtility commonLinkUtility, DisplayUserSettingsHelper displayUserSettingsHelper)
+        public static string RenderProfileLinkBase(this UserInfo userInfo, CommonLinkUtility commonLinkUtility, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             var sb = new StringBuilder();
 
             //check for removed users
-            if (userInfo == null || !userManager.UserExists(userInfo))
+            if (userInfo.ID == Constants.LostUser.ID)
             {
-                sb.Append("<span class='userLink text-medium-describe' style='white-space:nowrap;'>profile removed</span>");
+                sb.AppendFormat("<span class='userLink text-medium-describe' style='white-space:nowrap;'>{0}</span>", userInfo.DisplayUserName(displayUserSettingsHelper));
             }
             else
             {
