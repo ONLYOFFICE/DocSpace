@@ -1,16 +1,20 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
-import { connect } from 'react-redux';
 import {
   TreeMenu,
   TreeNode,
   Icons,
-  Link
+  Link,
+  utils
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
 import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement } from '../../../utils';
+import { constants, utils as commonUtils } from 'asc-web-common';
+import i18n from '../../../i18n';
+
+const { changeLanguage } = commonUtils;
+const { LANGUAGE } = constants;
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -58,10 +62,9 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { match, history, i18n, language } = props;
+    const { match, history } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
-    i18n.changeLanguage(language);
 
     if (locationPathname === fullSettingsUrl) {
       const defaultKey = ['0'];
@@ -114,6 +117,10 @@ class ArticleBodyContent extends React.Component {
       return true;
     }
 
+    if (this.props.i18n.language !== localStorage.getItem(LANGUAGE)) {
+      return true;
+    }
+
     return false;
   }
 
@@ -144,6 +151,7 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
+    changeLanguage(i18n);
     const { selectedKeys } = this.state;
     const { match, t } = this.props;
 
@@ -168,10 +176,4 @@ class ArticleBodyContent extends React.Component {
   };
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(withTranslation()(ArticleBodyContent)));
+export default withRouter(withTranslation()(ArticleBodyContent));

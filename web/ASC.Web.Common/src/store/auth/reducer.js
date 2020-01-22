@@ -71,6 +71,9 @@ const authReducer = (state = initialState, action) => {
               user: { ...state.user, email: action.email }
           });
       case SET_PORTAL_LANGUAGE_AND_TIME:
+        if (!state.user.cultureName) {
+            localStorage.setItem(LANGUAGE, action.newSettings.lng);
+        }
           return Object.assign({}, state, {
               settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
           });
