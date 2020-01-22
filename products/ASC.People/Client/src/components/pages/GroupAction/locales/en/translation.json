@@ -5,7 +5,7 @@
   "CustomAddEmployee": "Add {{userCaption, lowercase}}",
   "CustomNewDepartment": "New {{groupCaption, lowercase}}",
   "CustomEditDepartment": "Edit {{groupCaption, lowercase}}",
-  "CustomDepartmentName": "{{groupCaption}} name",
+  "CustomDepartmentName": "{{groupCaption, lowercase}} name",
   "Members": "Members",
   "AddMembers": "Add members",
   "SearchAddedMembers": "Search added members"

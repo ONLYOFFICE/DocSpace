@@ -5,7 +5,7 @@
   "CustomAddEmployee": "Добавить {{userCaption, lowercase}}",
   "CustomNewDepartment": "Новая {{groupCaption, lowercase}}",
   "CustomEditDepartment": "Редактирование {{groupCaption, lowercase}}",
-  "CustomDepartmentName": "Имя {{groupCaption}}",
+  "CustomDepartmentName": "Имя {{groupCaption, lowercase}}",
   "Members": "Участники",
   "AddMembers": "Добавить участников",
   "SearchAddedMembers": "Поиск добавленных участников"
