@@ -13,7 +13,7 @@ import { history, api, store as commonStore } from "asc-web-common";
 import { connect } from "react-redux";
 import store from "../../../../../../store/store";
 const { resendUserInvites } = api.people;
-const { getCurrentCustomSchema } = commonStore.auth.actions;
+const { getCurrentCustomSchema, getModules } = commonStore.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -131,6 +131,7 @@ class ProfileInfo extends React.PureComponent {
 
     updateProfileCulture(profile.id, language.key);
     getCurrentCustomSchema(store.dispatch, nameSchemaId);
+    getModules(store.dispatch);
   }
 
   getLanguages = () => {
