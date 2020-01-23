@@ -31,11 +31,13 @@ using System.IO;
 using System.Linq;
 using System.Resources;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Resource.Manager
 {
     public class ResxManager
     {
-        public static void Export(ResourceData resourceData, string project, string module, string fName, string language, string exportPath, string key = null)
+        public static void Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
@@ -45,6 +47,8 @@ namespace ASC.Resource.Manager
                 Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
+            var scope = serviceProvider.CreateScope();
+            var resourceData = scope.ServiceProvider.GetService<ResourceData>();
             var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
 
             if (!words.Any())
