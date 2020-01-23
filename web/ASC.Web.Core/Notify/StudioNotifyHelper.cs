@@ -27,14 +27,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Notify.Model;
 using ASC.Notify.Recipients;
+using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -51,10 +55,18 @@ namespace ASC.Web.Studio.Core.Notify
 
         public readonly IRecipientProvider RecipientsProvider;
 
+        private readonly int CountMailsToNotActivated;
+
+        private readonly string NotificationImagePath;
 
         private UserManager UserManager { get; }
+        public SettingsManager SettingsManager { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
         private SetupInfo SetupInfo { get; }
         private TenantManager TenantManager { get; }
+        public TenantExtra TenantExtra { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public WebImageSupplier WebImageSupplier { get; }
         private ILog Log { get; }
 
         public StudioNotifyHelper(
@@ -65,16 +77,28 @@ namespace ASC.Web.Studio.Core.Notify
             CommonLinkUtility commonLinkUtility,
             SetupInfo setupInfo,
             TenantManager tenantManager,
+            TenantExtra tenantExtra,
+            CoreBaseSettings coreBaseSettings,
+            WebImageSupplier webImageSupplier,
+            IConfiguration configuration,
             IOptionsMonitor<ILog> option)
         {
             Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
             NotifySource = studioNotifySource;
             UserManager = userManager;
+            SettingsManager = settingsManager;
+            CommonLinkUtility = commonLinkUtility;
             SetupInfo = setupInfo;
             TenantManager = tenantManager;
+            TenantExtra = tenantExtra;
+            CoreBaseSettings = coreBaseSettings;
+            WebImageSupplier = webImageSupplier;
             SubscriptionProvider = NotifySource.GetSubscriptionProvider();
             RecipientsProvider = NotifySource.GetRecipientsProvider();
             Log = option.CurrentValue;
+
+            int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
+            NotificationImagePath = configuration["web:notification:image:path"];
         }
 
 
@@ -121,10 +145,10 @@ namespace ASC.Web.Studio.Core.Notify
 
         public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
         {
-            return RecipientFromEmail(new[] { email }, checkActivation);
+            return RecipientFromEmail(new List<string> { email }, checkActivation);
         }
 
-        public IRecipient[] RecipientFromEmail(string[] emails, bool checkActivation)
+        public IRecipient[] RecipientFromEmail(List<string> emails, bool checkActivation)
         {
             var res = new List<IRecipient>();
 
@@ -133,6 +157,30 @@ namespace ASC.Web.Studio.Core.Notify
             res.AddRange(emails.
                              Select(email => email.ToLower()).
                              Select(e => new DirectRecipient(e, null, new[] { e }, checkActivation)));
+
+            if (!checkActivation
+                && CountMailsToNotActivated > 0
+                && TenantExtra.Saas && !CoreBaseSettings.Personal)
+            {
+                var tenant = TenantManager.GetCurrentTenant();
+                var tariff = TenantManager.GetTenantQuota(tenant.TenantId);
+                if (tariff.Free || tariff.Trial)
+                {
+                    var spamEmailSettings = SettingsManager.Load<SpamEmailSettings>();
+                    var sended = spamEmailSettings.MailsSended;
+
+                    var mayTake = Math.Max(0, CountMailsToNotActivated - sended);
+                    var tryCount = res.Count();
+                    if (mayTake < tryCount)
+                    {
+                        res = res.Take(mayTake).ToList();
+
+                        Log.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.TenantId, tryCount, mayTake));
+                    }
+                    spamEmailSettings.MailsSended = sended + tryCount;
+                    SettingsManager.Save(spamEmailSettings);
+                }
+            }
 
             return res.ToArray();
         }
@@ -156,6 +204,18 @@ namespace ASC.Web.Studio.Core.Notify
                                                TenantManager.GetCurrentTenant().TenantId,
                                                target,
                                                action.ID));
+        }
+
+        public string GetNotificationImageUrl(string imageFileName)
+        {
+            if (string.IsNullOrEmpty(NotificationImagePath))
+            {
+                return
+                    CommonLinkUtility.GetFullAbsolutePath(
+                        WebImageSupplier.GetAbsoluteWebPath("notification/" + imageFileName));
+            }
+
+            return NotificationImagePath.TrimEnd('/') + "/" + imageFileName;
         }
 
 
@@ -201,7 +261,10 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddAdditionalWhiteLabelSettingsService()
                 .AddCommonLinkUtilityService()
                 .AddTenantManagerService()
-                .AddSetupInfo();
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddCoreBaseSettingsService()
+                .AddWebImageSupplierService();
         }
     }
 }

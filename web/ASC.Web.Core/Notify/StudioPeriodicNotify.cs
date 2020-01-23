@@ -67,7 +67,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendSaasLetters(string senderName, DateTime scheduleDate)
         {
-            var now = scheduleDate.Date;
+            var nowDate = scheduleDate.Date;
             const string dbid = "webstudio";
 
             Log.Info("Start SendSaasTariffLetters");
@@ -86,11 +86,6 @@ namespace ASC.Web.Studio.Core.Notify
                     Log.Info("End SendSaasTariffLetters");
                     return;
                 }
-
-                monthQuotasIds = tenantManager.GetTenantQuotas()
-                                .Where(r => !r.Trial && r.Visible && !r.Year && !r.Year3 && !r.Free && !r.NonProfit)
-                                .Select(q => q.Id)
-                                .ToList();
             }
 
 
@@ -117,8 +112,13 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
-                    var duedate = tariff.DueDate.Date;
-                    var delayDuedate = tariff.DelayDueDate.Date;
+                    var createdDate = tenant.CreatedDateTime.Date;
+
+                    var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
+                    var dueDate = tariff.DueDate.Date;
+
+                    var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
+                    var delayDueDate = tariff.DelayDueDate.Date;
 
                     INotifyAction action = null;
                     var paymentMessage = true;
@@ -188,7 +188,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 3 days after registration to admins SAAS TRIAL + only 1 user
 
-                        if (tenant.CreatedDateTime.Date.AddDays(3) == now && userManager.GetUsers().Count() == 1)
+                        if (createdDate.AddDays(3) == nowDate && userManager.GetUsers().Count() == 1)
                         {
                             action = Actions.SaasAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -202,14 +202,14 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days after registration to admins SAAS TRAIL + without activity in 1 or more days
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(5) == now)
+                        else if (createdDate.AddDays(5) == nowDate)
                         {
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
                                 context.Get(dbid).FeedAggregates
                                 .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
-                                .Where(r => r.CreatedDate <= now.AddDays(-1))
+                                .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
                                 .Select(r => r.Key)
                                 .ToList();
@@ -226,40 +226,40 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 7 days after registration to admins and users SAAS TRIAL
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(7) == now)
+                        else if (createdDate.AddDays(7) == nowDate)
                         {
                             action = Actions.SaasAdminUserDocsTipsV10;
                             paymentMessage = false;
                             toadmins = true;
                             tousers = true;
 
-                            tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-formatting-100.png";
+                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                            tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-share-100.png";
+                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share;
 
-                            tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-coediting-100.png";
+                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting;
 
-                            tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-review-100.png";
+                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review;
 
-                            tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-3rdparty-100.png";
+                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty;
 
-                            tableItemImg6 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-attach-100.png";
+                            tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
                             tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach_hdr;
                             tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach;
 
-                            tableItemImg7 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-apps-100.png";
+                            tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                             tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps_hdr;
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
@@ -271,7 +271,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 14 days after registration to admins and users SAAS TRIAL
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(14) == now)
+                        else if (createdDate.AddDays(14) == nowDate)
                         {
                             action = Actions.SaasAdminUserComfortTipsV10;
                             paymentMessage = false;
@@ -283,7 +283,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 21 days after registration to admins and users SAAS TRIAL
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(21) == now)
+                        else if (createdDate.AddDays(21) == nowDate)
                         {
                             action = Actions.SaasAdminUserAppsTipsV10;
                             paymentMessage = false;
@@ -299,7 +299,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days before SAAS TRIAL ends to admins
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(-5) == now)
+                        else if (dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
                         {
                             toadmins = true;
                             action = Actions.SaasAdminTrialWarningBefore5V10;
@@ -336,7 +336,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region SAAS TRIAL expires today to admins
 
-                        else if (duedate == now)
+                        else if (dueDate == nowDate)
                         {
                             action = Actions.SaasAdminTrialWarningV10;
                             toadmins = true;
@@ -346,7 +346,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days after SAAS TRIAL expired to admins
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(5) == now && tenant.VersionChanged <= tenant.CreatedDateTime)
+                        else if (dueDateIsNotMax && dueDate.AddDays(5) == nowDate && tenant.VersionChanged <= tenant.CreatedDateTime)
                         {
                             action = Actions.SaasAdminTrialWarningAfter5V10;
                             toadmins = true;
@@ -358,7 +358,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 30 days after SAAS TRIAL expired + only 1 user
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(30) == now && userManager.GetUsers().Count() == 1)
+                        else if (dueDateIsNotMax && dueDate.AddDays(30) == nowDate && userManager.GetUsers().Count() == 1)
                         {
                             action = Actions.SaasAdminTrialWarningAfter30V10;
                             toadmins = true;
@@ -370,7 +370,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 6 months after SAAS TRIAL expired
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddMonths(6) == now)
+                        else if (dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
                         {
                             action = Actions.SaasAdminTrialWarningAfterHalfYearV10;
                             toowner = true;
@@ -379,13 +379,13 @@ namespace ASC.Web.Studio.Core.Notify
 
                             var owner = userManager.GetUsers(tenant.OwnerId);
                             greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                          Convert.ToBase64String(
+                                          System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
                                                                                  "\",\"alias\":\"" + tenant.TenantAlias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
+                                                                                 "\",\"email\":\"" + owner.Email + "\"}")));
                         }
-                        else if (duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
+                        else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
                             tenantManager.RemoveTenant(tenant.TenantId, true);
 
@@ -405,7 +405,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days before SAAS PAID expired to admins
 
-                        if (tariff.State == TariffState.Paid && duedate != DateTime.MaxValue && duedate.AddDays(-5) == now)
+                        if (tariff.State == TariffState.Paid && dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
                         {
                             action = Actions.SaasAdminPaymentWarningBefore5V10;
                             toadmins = true;
@@ -418,7 +418,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 1 day after SAAS PAID expired to admins
 
-                        else if (tariff.State >= TariffState.Paid && duedate != DateTime.MaxValue && duedate.AddDays(1) == now)
+                        else if (tariff.State >= TariffState.Paid && dueDateIsNotMax && dueDate.AddDays(1) == nowDate)
                         {
                             action = Actions.SaasAdminPaymentWarningAfter1V10;
                             toadmins = true;
@@ -429,9 +429,9 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #endregion
 
-                        #region 2 weeks after the payment of the monthly SAAS tariff
+                        #region  2 weeks before monthly SAAS PAID tariff expired to admins
 
-                        else if (tariff.State == TariffState.Paid && monthQuotasIds.Contains(tariff.QuotaId) && tariff.LicenseDate.AddDays(14) == now)
+                        else if (tariff.State == TariffState.Paid && !quota.Year && !quota.Year3 && dueDateIsNotMax && dueDate.AddDays(-14) == nowDate)
                         {
                             action = Actions.SaasAdminPaymentAfterMonthlySubscriptionsV10;
                             toadmins = true;
@@ -444,7 +444,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 6 months after SAAS PAID expired
 
-                        else if (tariff.State == TariffState.NotPaid && duedate != DateTime.MaxValue && duedate.AddMonths(6) == now)
+                        else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
                         {
                             action = Actions.SaasAdminTrialWarningAfterHalfYearV10;
                             toowner = true;
@@ -453,13 +453,13 @@ namespace ASC.Web.Studio.Core.Notify
 
                             var owner = userManager.GetUsers(tenant.OwnerId);
                             greenButtonUrl = setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
-                                          Convert.ToBase64String(
+                                          System.Web.HttpUtility.UrlEncode(Convert.ToBase64String(
                                               System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                  "\",\"lastname\":\"" + owner.LastName +
                                                                                  "\",\"alias\":\"" + tenant.TenantAlias +
-                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
+                                                                                 "\",\"email\":\"" + owner.Email + "\"}")));
                         }
-                        else if (tariff.State == TariffState.NotPaid && duedate != DateTime.MaxValue && duedate.AddMonths(6).AddDays(7) <= now)
+                        else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                         {
                             tenantManager.RemoveTenant(tenant.TenantId, true);
 
@@ -500,8 +500,8 @@ namespace ASC.Web.Studio.Core.Notify
                             new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
-                            new TagValue(Tags.DueDate, duedate.ToLongDateString()),
-                            new TagValue(Tags.DelayDueDate, (delayDuedate != DateTime.MaxValue ? delayDuedate : duedate).ToLongDateString()),
+                            new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
+                            new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                             TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
@@ -529,7 +529,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
         {
-            var now = scheduleDate.Date;
+            var nowDate = scheduleDate.Date;
             const string dbid = "webstudio";
 
             Log.Info("Start SendTariffEnterpriseLetters");
@@ -571,8 +571,13 @@ namespace ASC.Web.Studio.Core.Notify
 
                     var tariff = paymentManager.GetTariff(tenant.TenantId);
                     var quota = tenantManager.GetTenantQuota(tenant.TenantId);
-                    var duedate = tariff.DueDate.Date;
-                    var delayDuedate = tariff.DelayDueDate.Date;
+                    var createdDate = tenant.CreatedDateTime.Date;
+
+                    var dueDateIsNotMax = tariff.DueDate != DateTime.MaxValue;
+                    var dueDate = tariff.DueDate.Date;
+
+                    var delayDueDateIsNotMax = tariff.DelayDueDate != DateTime.MaxValue;
+                    var delayDueDate = tariff.DelayDueDate.Date;
 
                     INotifyAction action = null;
                     var paymentMessage = true;
@@ -639,29 +644,29 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 1 day after registration to admins ENTERPRISE TRIAL + defaultRebranding
 
-                        if (tenant.CreatedDateTime.Date.AddDays(1) == now)
+                        if (createdDate.AddDays(1) == nowDate)
                         {
                             action = Actions.EnterpriseAdminCustomizePortalV10;
                             paymentMessage = false;
                             toadmins = true;
 
-                            tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-brand-100.png";
+                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
-                            tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-regional-100.png";
+                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
 
-                            tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-customize-100.png";
+                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
 
-                            tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-modules-100.png";
+                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
-                            tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-3rdparty-100.png";
+                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
 
@@ -673,7 +678,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(4) == now && userManager.GetUsers().Count() == 1)
+                        else if (createdDate.AddDays(4) == nowDate && userManager.GetUsers().Count() == 1)
                         {
                             action = Actions.EnterpriseAdminInviteTeammatesV10;
                             paymentMessage = false;
@@ -687,14 +692,14 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 5 days after registration to admins ENTERPRISE TRAIL + without activity in 1 or more days + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(5) == now)
+                        else if (createdDate.AddDays(5) == nowDate)
                         {
                             List<DateTime> datesWithActivity;
 
                             datesWithActivity =
                                 context.Get(dbid).FeedAggregates
                                 .Where(r => r.Tenant == tenantManager.GetCurrentTenant().TenantId)
-                                .Where(r => r.CreatedDate <= now.AddDays(-1))
+                                .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
                                 .GroupBy(r => r.CreatedDate.Date)
                                 .Select(r => r.Key)
                                 .ToList();
@@ -711,40 +716,40 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 7 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(7) == now)
+                        else if (createdDate.AddDays(7) == nowDate)
                         {
                             action = Actions.EnterpriseAdminUserDocsTipsV10;
                             paymentMessage = false;
                             toadmins = true;
                             tousers = true;
 
-                            tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-formatting-100.png";
+                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_formatting;
-                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "onlyoffice-editors/index.aspx";
+                            tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
                             tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                            tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-share-100.png";
+                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_share;
 
-                            tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-coediting-100.png";
+                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_coediting;
 
-                            tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-review-100.png";
+                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_review;
 
-                            tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-3rdparty-100.png";
+                            tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
                             tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty_hdr;
                             tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_3rdparty;
 
-                            tableItemImg6 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-attach-100.png";
+                            tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
                             tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach_hdr;
                             tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_attach;
 
-                            tableItemImg7 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-documents-apps-100.png";
+                            tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                             tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps_hdr;
                             tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v10_item_apps;
 
@@ -756,7 +761,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 21 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
 
-                        else if (tenant.CreatedDateTime.Date.AddDays(21) == now)
+                        else if (createdDate.AddDays(21) == nowDate)
                         {
                             action = Actions.EnterpriseAdminUserAppsTipsV10;
                             paymentMessage = false;
@@ -772,7 +777,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 7 days before ENTERPRISE TRIAL ends to admins + defaultRebranding
 
-                        else if (duedate != DateTime.MaxValue && duedate.AddDays(-7) == now)
+                        else if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
                         {
                             action = Actions.EnterpriseAdminTrialWarningBefore7V10;
                             toadmins = true;
@@ -785,7 +790,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region ENTERPRISE TRIAL expires today to admins + defaultRebranding
 
-                        else if (duedate == now)
+                        else if (dueDate == nowDate)
                         {
                             action = Actions.EnterpriseAdminTrialWarningV10;
                             toadmins = true;
@@ -801,31 +806,31 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 1 day after registration to admins ENTERPRISE TRIAL + !defaultRebranding
 
-                        if (tenant.CreatedDateTime.Date.AddDays(1) == now)
+                        if (createdDate.AddDays(1) == nowDate)
                         {
                             action = Actions.EnterpriseWhitelabelAdminCustomizePortalV10;
                             paymentMessage = false;
                             toadmins = true;
 
-                            tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-brand-100.png";
+                            tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
                             tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
                             tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
 
-                            tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-regional-100.png";
+                            tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
                             tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
                             tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
 
-                            tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-customize-100.png";
+                            tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
                             tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
                             tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
 
-                            tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-modules-100.png";
+                            tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
                             tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
                             tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
 
                             if (!coreBaseSettings.CustomMode)
                             {
-                                tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images-v10/tips-customize-3rdparty-100.png";
+                                tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
                                 tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
                                 tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
                             }
@@ -844,7 +849,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region 7 days before ENTERPRISE PAID expired to admins
 
-                        if (duedate != DateTime.MaxValue && duedate.AddDays(-7) == now)
+                        if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
                         {
                             action = defaultRebranding
                                          ? Actions.EnterpriseAdminPaymentWarningBefore7V10
@@ -858,7 +863,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                         #region ENTERPRISE PAID expires today to admins
 
-                        else if (duedate == now)
+                        else if (dueDate == nowDate)
                         {
                             action = defaultRebranding
                                          ? Actions.EnterpriseAdminPaymentWarningV10
@@ -895,8 +900,8 @@ namespace ASC.Web.Studio.Core.Notify
                             new TagValue(Tags.ActiveUsers, userManager.GetUsers().Count()),
                             new TagValue(Tags.Price, rquota.Price),
                             new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
-                            new TagValue(Tags.DueDate, duedate.ToLongDateString()),
-                            new TagValue(Tags.DelayDueDate, (delayDuedate != DateTime.MaxValue ? delayDuedate : duedate).ToLongDateString()),
+                            new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
+                            new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                             TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
                             TagValues.GreenButton(greenButtonText, greenButtonUrl),
                             TagValues.TableTop(),
@@ -921,7 +926,7 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendOpensourceLetters(string senderName, DateTime scheduleDate)
         {
-            var now = scheduleDate.Date;
+            var nowDate = scheduleDate.Date;
 
             Log.Info("Start SendOpensourceTariffLetters");
 
@@ -953,6 +958,8 @@ namespace ASC.Web.Studio.Core.Notify
                     var displayUserSettingsHelper = scope.ServiceProvider.GetService<DisplayUserSettingsHelper>();
                     var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
                     var client = WorkContext.NotifyContext.NotifyService.RegisterClient(studioNotifyHelper.NotifySource, scope);
+
+                    var createdDate = tenant.CreatedDateTime.Date;
 
                     INotifyAction action = null;
 
@@ -1012,7 +1019,7 @@ namespace ASC.Web.Studio.Core.Notify
 
                     #region 7 days after registration to admins
 
-                    if (tenant.CreatedDateTime.Date.AddDays(7) == now)
+                    if (createdDate.AddDays(7) == nowDate)
                     {
                         action = Actions.OpensourceAdminSecurityTips;
 
@@ -1024,41 +1031,41 @@ namespace ASC.Web.Studio.Core.Notify
 
                     #region 3 weeks after registration to admins
 
-                    else if (tenant.CreatedDateTime.Date.AddDays(21) == now)
+                    else if (createdDate.AddDays(21) == nowDate)
                     {
                         action = Actions.OpensourceAdminDocsTips;
 
-                        tableItemImg1 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-01-100.png";
+                        tableItemImg1 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
                         tableItemComment1 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips1;
                         tableItemLearnMoreUrl1 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/CollaborativeEditing.aspx";
                         tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg2 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-02-100.png";
+                        tableItemImg2 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-docinfo-100.png");
                         tableItemComment2 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips2;
                         tableItemLearnMoreUrl2 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/ViewDocInfo.aspx";
                         tableItemLearnMoreText2 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg3 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-07-100.png";
+                        tableItemImg3 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
                         tableItemComment3 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips3;
                         tableItemLearnMoreUrl3 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/HelpfulHints/Review.aspx";
                         tableItemLearnMoreText3 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg4 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-03-100.png";
+                        tableItemImg4 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
                         tableItemComment4 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips4;
                         tableItemLearnMoreUrl4 = studioNotifyHelper.Helplink + "/gettingstarted/documents.aspx#SharingDocuments_block";
                         tableItemLearnMoreText4 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg5 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-04-100.png";
+                        tableItemImg5 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-mailmerge-100.png");
                         tableItemComment5 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips5;
                         tableItemLearnMoreUrl5 = studioNotifyHelper.Helplink + "/ONLYOFFICE-Editors/ONLYOFFICE-Document-Editor/UsageInstructions/UseMailMerge.aspx";
                         tableItemLearnMoreText5 = () => WebstudioNotifyPatternResource.LinkLearnMore;
 
-                        tableItemImg6 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-08-100.png";
+                        tableItemImg6 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-desktop-100.png");
                         tableItemComment6 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips6;
                         tableItemLearnMoreUrl6 = "http://www.onlyoffice.com/desktop.aspx";
                         tableItemLearnMoreText6 = () => WebstudioNotifyPatternResource.ButtonDownloadNow;
 
-                        tableItemImg7 = "https://static.onlyoffice.com/media/newsletters/images/tips-documents-05-100.png";
+                        tableItemImg7 = studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
                         tableItemComment7 = () => WebstudioNotifyPatternResource.ItemOpensourceDocsTips7;
                         tableItemLearnMoreUrl7 = "https://itunes.apple.com/us/app/onlyoffice-documents/id944896972";
                         tableItemLearnMoreText7 = () => WebstudioNotifyPatternResource.ButtonGoToAppStore;
@@ -1215,7 +1222,7 @@ namespace ASC.Web.Studio.Core.Notify
                         client.SendNoticeToAsync(
                           action,
                           null,
-                          studioNotifyHelper.RecipientFromEmail(new[] { user.Email.ToLower() }, true),
+                          studioNotifyHelper.RecipientFromEmail(user.Email, true),
                           new[] { senderName },
                           TagValues.PersonalHeaderStart(),
                           TagValues.PersonalHeaderEnd(),

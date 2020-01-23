@@ -42,12 +42,16 @@ namespace ASC.Web.Core.Utility.Skins
         public WebPath WebPath { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
         {
             WebItemManager = webItemManager;
             WebPath = webPath;
-            HttpContextAccessor = httpContextAccessor;
             FolderName = configuration["web:images"];
+        }
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+            : this(webItemManager, webPath, configuration)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public string GetAbsoluteWebPath(string imgFileName)

@@ -60,6 +60,7 @@ namespace ASC.Web.Studio.Core.Notify
                     Actions.PasswordChange,
                     Actions.ActivateEmail,
                     Actions.ProfileDelete,
+                    Actions.ProfileHasDeletedItself,
                     Actions.ReassignsCompleted,
                     Actions.ReassignsFailed,
                     Actions.RemoveUserDataCompleted,
