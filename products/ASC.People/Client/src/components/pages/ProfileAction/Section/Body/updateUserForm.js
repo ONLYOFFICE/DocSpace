@@ -608,7 +608,7 @@ class UpdateUserForm extends React.Component {
               searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorAddButtonText={t("CustomAddDepartments", { groupsCaption })}
+              // selectorAddButtonText={t("CustomAddDepartments", { groupsCaption })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}
