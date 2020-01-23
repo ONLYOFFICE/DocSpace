@@ -125,8 +125,8 @@ $activity.Key
 
   <!-- profile_has_deleted_itself -->
   <pattern id="profile_has_deleted_itself">
-    <subject resource="|subject_profile_has_deleted_itself|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Studio" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_profile_has_deleted_itself|ASC.Web.Studio.Core.Notify.WebstudioNotifyPatternResource,ASC.Web.Studio" />
+    <subject resource="|subject_profile_has_deleted_itself|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_profile_has_deleted_itself|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
   <!-- reassigns_completed -->
