@@ -37,7 +37,7 @@ class InviteDialogComponent extends React.Component {
   }
 
   onCopyLinkToClipboard = () => {
-    // console.log("COPY");
+    // console.log("COPY", this.props);
     const { t } = this.props;
     copy(
       this.state.isGuest
@@ -77,7 +77,9 @@ class InviteDialogComponent extends React.Component {
   };
 
   componentDidMount() {
-    this.onCopyLinkToClipboard();
+    i18n
+    .reloadResources(i18n.language)
+    .then(() => this.onCopyLinkToClipboard());
   }
 
   onClickToCloseButton = () =>
