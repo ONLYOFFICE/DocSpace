@@ -123,7 +123,7 @@ export function getPortalSettings(dispatch) {
     .getSettings()
     .then(settings => {
       dispatch(setSettings(settings));
-      getCurrentCustomSchema(dispatch, settings.nameSchemaId);
+      settings.nameSchemaId && getCurrentCustomSchema(dispatch, settings.nameSchemaId);
     });
 }
 export function getCurrentCustomSchema(dispatch, id) {
