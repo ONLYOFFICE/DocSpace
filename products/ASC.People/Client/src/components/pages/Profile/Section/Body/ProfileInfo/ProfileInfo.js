@@ -129,9 +129,11 @@ class ProfileInfo extends React.PureComponent {
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key);
-    getCurrentCustomSchema(store.dispatch, nameSchemaId);
-    getModules(store.dispatch);
+    updateProfileCulture(profile.id, language.key)
+      .then(() => {
+        getCurrentCustomSchema(store.dispatch, nameSchemaId);
+        getModules(store.dispatch);
+      })
   }
 
   getLanguages = () => {
@@ -297,13 +299,13 @@ class ProfileInfo extends React.PureComponent {
                 className='language-combo'
               />
               <HelpButton
-                  place="bottom"
-                  offsetLeft={50}
-                  offsetRight={0}
-                  tooltipContent={tooltipLanguage}
-                  helpButtonHeaderContent={t('Language')}
-                  className="help-icon"
-                />
+                place="bottom"
+                offsetLeft={50}
+                offsetRight={0}
+                tooltipContent={tooltipLanguage}
+                helpButtonHeaderContent={t('Language')}
+                className="help-icon"
+              />
             </InfoItemValue>
 
           </InfoItem>
