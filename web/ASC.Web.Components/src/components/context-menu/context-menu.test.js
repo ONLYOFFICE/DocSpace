@@ -31,14 +31,6 @@ describe('<ContextMenu />', () => {
     expect(wrapper.find(ContextMenu).state('visible')).toEqual(false);
   });
 
-  it('simulate handleClick() to close context menu', () => {
-    const wrapper = mount(<ContextMenu {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.handleClick(new Event('click', { target: null }));
-    expect(wrapper.state('visible')).toEqual(false);
-  });
-
   it('render with options', () => {
     const options = [
       { label: 'test' },
@@ -51,15 +43,6 @@ describe('<ContextMenu />', () => {
     wrapper.setState({ visible: true });
 
     expect(wrapper.props().options).toEqual(options);
-  });
-
-  it('simulate handleContextMenu() to close context menu', () => {
-    const wrapper = mount(<ContextMenu {...baseProps} />);
-    const instance = wrapper.instance();
-
-    instance.handleContextMenu();
-
-    expect(wrapper.state('visible')).toEqual(true);
   });
 
   it('simulate handleContextMenu(e) to close context menu', () => {
