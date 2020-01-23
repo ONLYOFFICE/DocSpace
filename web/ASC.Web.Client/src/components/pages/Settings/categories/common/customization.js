@@ -100,6 +100,15 @@ class Customization extends React.Component {
       if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
+      if (this.props.language !== prevProps.language) {
+         const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
+         const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
+
+         this.setState({
+            languages: newLocaleLanguages,
+            language: newLocaleSelectedLanguage
+         });
+      }
    }
 
    onLanguageSelect = (language) => {
