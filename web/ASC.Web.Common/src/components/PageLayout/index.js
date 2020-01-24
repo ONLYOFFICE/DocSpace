@@ -16,6 +16,7 @@ import SectionFilter from "./sub-components/section-filter";
 import SectionBody from "./sub-components/section-body";
 import SectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
+import { changeLanguage } from '../../utils';
 
 class PageLayoutComponent extends React.PureComponent {
   constructor(props) {
@@ -185,8 +186,7 @@ class PageLayoutComponent extends React.PureComponent {
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
 const Pagelayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <PageLayoutTranslated i18n={i18n} {...props} />
 }

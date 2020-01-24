@@ -4,9 +4,10 @@ import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { store } from 'asc-web-common';
+import { store, constants } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
 const { getPortalCultures } = store.auth.actions;
+const { LANGUAGE } = constants;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -101,13 +102,17 @@ class Customization extends React.Component {
          this.setState({ isLoadedData: true });
       }
       if (this.props.language !== prevProps.language) {
-         const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
-         const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
+         this.props.i18n
+            .loadLanguages(this.props.language)
+            .then(() => {
+               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
+               const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
 
-         this.setState({
-            languages: newLocaleLanguages,
-            language: newLocaleSelectedLanguage
-         });
+               this.setState({
+                  languages: newLocaleLanguages,
+                  language: newLocaleSelectedLanguage
+               });
+            });
       }
    }
 
@@ -123,7 +128,18 @@ class Customization extends React.Component {
       const { setLanguageAndTime, t } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-            .then(() => toastr.success(t('SuccessfullySaveSettingsMessage')))
+            .then(() => {
+               const { i18n } = this.props;
+               const currentLanguage = localStorage.getItem(LANGUAGE);
+               if (i18n.language !== currentLanguage) {
+                  i18n
+                     .reloadResources(currentLanguage)
+                     .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
+               }
+               else {
+                  toastr.success(t("SuccessfullySaveSettingsMessage"));
+               }
+            })
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
       })

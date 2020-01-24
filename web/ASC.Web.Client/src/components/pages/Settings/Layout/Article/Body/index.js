@@ -10,11 +10,6 @@ import { withRouter } from "react-router";
 import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
 import { getKeyByLink, settingsTree, getSelectedLinkByKey, selectKeyOfTreeElement } from '../../../utils';
-import { constants, utils as commonUtils } from 'asc-web-common';
-import i18n from '../../../i18n';
-
-const { changeLanguage } = commonUtils;
-const { LANGUAGE } = constants;
 
 const StyledTreeMenu = styled(TreeMenu)`
   .inherit-title-link {
@@ -104,24 +99,14 @@ class ArticleBodyContent extends React.Component {
     };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    if (!utils.array.isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)){
     const { selectedKeys } = this.state;
     const { match, history } = this.props;
     const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
     const newPath = match.path + settingsPath;
     history.push(newPath);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!utils.array.isArrayEqual(nextState.selectedKeys, this.state.selectedKeys)) {
-      return true;
     }
-
-    if (this.props.i18n.language !== localStorage.getItem(LANGUAGE)) {
-      return true;
-    }
-
-    return false;
   }
 
   onSelect = value => {
@@ -151,7 +136,6 @@ class ArticleBodyContent extends React.Component {
   };
 
   render() {
-    changeLanguage(i18n);
     const { selectedKeys } = this.state;
     const { match, t } = this.props;
 
