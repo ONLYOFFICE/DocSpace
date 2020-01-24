@@ -166,13 +166,18 @@ class AvatarEditorBody extends React.Component {
         fr.onload = function () {
             var img = new Image();
             img.onload= function () {
-                var canvas = resizeImage.resize2Canvas(img, 1024);
-                var data = resizeImage.resize(canvas, 1024);
+                var canvas = resizeImage.resize2Canvas(img, 1024, 1024);
+                var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
                 _this.setState({
                     image: data,
                     errorText: null
                 });
-                _this.props.onLoadFile(data);
+                fetch(data)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], "File name",{ type: "image/jpg" })
+                        _this.props.onLoadFile(file);
+                    })
             };
             img.src = fr.result;
         };
