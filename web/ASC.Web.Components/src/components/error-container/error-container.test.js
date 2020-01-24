@@ -5,10 +5,26 @@ import ErrorContainer from '.';
 describe('<ErrorContainer />', () => {
   it('renders without error', () => {
     const wrapper = mount(
-      <ErrorContainer>Some error has happened</ErrorContainer>
+      <ErrorContainer />
     );
 
     expect(wrapper).toExist();
+  });
+
+  it('renders with props', () => {
+    const wrapper = mount(
+      <ErrorContainer  
+        headerText="Some error has happened"
+        bodyText="Try again later"
+        buttonText="Go back"
+        buttonUrl="/page" />
+    );
+
+    expect(wrapper).toExist();
+    expect(wrapper.prop('headerText')).toEqual('Some error has happened');
+    expect(wrapper.prop('bodyText')).toEqual('Try again later');
+    expect(wrapper.prop('buttonText')).toEqual('Go back');
+    expect(wrapper.prop('buttonUrl')).toEqual('/page');
   });
 
   it('accepts id', () => {
