@@ -329,7 +329,6 @@ class SectionBodyContent extends React.PureComponent {
                 data={user}
                 element={element}
                 onSelect={this.onContentRowSelect}
-                contextOptions={contextOptions}
                 {...checkedProps}
                 {...contextOptionsProps}
                 needForUpdate={this.needForUpdate}
