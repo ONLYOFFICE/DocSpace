@@ -11,6 +11,7 @@ import {
   Link,
   RowContainer,
   Text,
+  utils
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -31,6 +32,7 @@ import isEqual from "lodash/isEqual";
 import { store, api, constants } from 'asc-web-common';
 import i18n from '../../i18n';
 import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
+const { isArrayEqual } = utils.array;
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
@@ -290,6 +292,9 @@ class SectionBodyContent extends React.PureComponent {
     if (!isEqual(currentProps.data, nextProps.data)) {
       return true;
     }
+    if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {
+      return true;
+    }
     return false;
   };
 
@@ -324,6 +329,7 @@ class SectionBodyContent extends React.PureComponent {
                 data={user}
                 element={element}
                 onSelect={this.onContentRowSelect}
+                contextOptions={contextOptions}
                 {...checkedProps}
                 {...contextOptionsProps}
                 needForUpdate={this.needForUpdate}
