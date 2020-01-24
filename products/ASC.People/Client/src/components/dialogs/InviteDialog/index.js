@@ -14,9 +14,10 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
-import { api, utils } from "asc-web-common";
+import { api, utils, constants } from "asc-web-common";
 const { getShortenedLink } = api.portal;
 const { changeLanguage } = utils;
+const { LANGUAGE } = constants;
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
@@ -44,7 +45,16 @@ class InviteDialogComponent extends React.Component {
         ? this.state.guestInvitationLink
         : this.state.userInvitationLink
     );
-    toastr.success(t("LinkCopySuccess"));
+
+    if (i18n.language !== localStorage.getItem(LANGUAGE)) {
+      i18n
+        .reloadResources(localStorage.getItem(LANGUAGE))
+        .then(() => toastr.success(t("LinkCopySuccess")));
+    }
+    else {
+      toastr.success(t("LinkCopySuccess"));
+    }
+
   };
 
   onCheckedGuest = () => this.setState({ isGuest: !this.state.isGuest });
@@ -77,9 +87,7 @@ class InviteDialogComponent extends React.Component {
   };
 
   componentDidMount() {
-    i18n
-    .reloadResources(i18n.language)
-    .then(() => this.onCopyLinkToClipboard());
+    this.onCopyLinkToClipboard();
   }
 
   onClickToCloseButton = () =>
