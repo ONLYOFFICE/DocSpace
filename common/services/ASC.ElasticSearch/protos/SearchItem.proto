@@ -1,0 +1,7 @@
+﻿syntax = "proto3";
+
+package ASC.ElasticSearch;
+
+message SearchItem {
+    string Id = 1;
+}

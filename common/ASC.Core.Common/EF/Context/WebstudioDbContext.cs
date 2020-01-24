@@ -9,6 +9,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
         public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
+        public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
