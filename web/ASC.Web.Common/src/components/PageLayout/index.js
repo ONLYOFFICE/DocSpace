@@ -159,7 +159,7 @@ class PageLayoutComponent extends React.PureComponent {
             )}
 
             {this.state.isSectionBodyAvailable && (
-              <SectionBody withScroll={this.props.withBodyScroll} pinned={this.state.isArticlePinned}>
+              <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
                 {this.state.isSectionFilterAvailable && (
                   <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
                 )}
@@ -184,14 +184,14 @@ class PageLayoutComponent extends React.PureComponent {
 }
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
-const Pagelayout = props => {
+const PageLayout = props => {
   const { language } = props;
   i18n.changeLanguage(language);
 
   return <PageLayoutTranslated i18n={i18n} {...props} />
 }
 
-Pagelayout.propTypes = {
+PageLayout.propTypes = {
   language:PropTypes.string,
 }
 
@@ -230,6 +230,7 @@ PageLayoutComponent.propTypes = {
   ]),
 
   withBodyScroll: PropTypes.bool,
+  withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
 };
 
@@ -237,7 +238,8 @@ PageLayoutComponent.defaultProps = {
   isBackdropVisible: false,
   isArticleVisible: false,
   isArticlePinned: false,
-  withBodyScroll: true
+  withBodyScroll: true,
+  withBodyAutoFocus: false
 };
 
 function mapStateToProps(state) {
@@ -249,4 +251,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Pagelayout);
+export default connect(mapStateToProps)(PageLayout);
