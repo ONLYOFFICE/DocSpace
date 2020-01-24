@@ -7,7 +7,7 @@ import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
 import Text from '../../text'
 import { tablet } from '../../../utils/device';
-
+import resizeImage from 'resize-image'
 const StyledErrorContainer = styled.div`
     p{
         text-align: center
@@ -160,11 +160,22 @@ class AvatarEditorBody extends React.Component {
         this.props.onLoadFileError(2);
     }
     onDropAccepted(acceptedFiles) {
-        this.setState({
-            image: acceptedFiles[0],
-            errorText: null
-        });
-        this.props.onLoadFile(acceptedFiles[0]);
+        const _this = this;
+        var fr = new FileReader();
+        fr.readAsDataURL(acceptedFiles[0]);
+        fr.onload = function () {
+            var img = new Image();
+            img.onload= function () {
+                var canvas = resizeImage.resize2Canvas(img, 1024);
+                var data = resizeImage.resize(canvas, 1024);
+                _this.setState({
+                    image: data,
+                    errorText: null
+                });
+                _this.props.onLoadFile(data);
+            };
+            img.src = fr.result;
+        };
     }
     deleteImage() {
         this.setState({

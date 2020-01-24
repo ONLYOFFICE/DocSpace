@@ -149,7 +149,7 @@ AvatarEditor.propTypes = {
 
 AvatarEditor.defaultProps = {
     visible: false,
-    maxSize: 1, //1MB
+    maxSize: 10, //10MB
     headerLabel: 'Edit Photo',
     saveButtonLabel: 'Save',
     accept: ['image/png', 'image/jpeg'],
