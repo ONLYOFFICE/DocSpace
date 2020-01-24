@@ -1057,7 +1057,7 @@ const StyledContainer = styled.div`
 const ErrorContainer = props => {
   //console.log("ErrorContainer render");
 
-  const { headerText, bodyText, returnText, returnUrl, ...rest } = props;
+  const { headerText, bodyText, buttonText, buttonUrl, ...rest } = props;
 
   return (
     <StyledContainer {...rest}>
@@ -1376,10 +1376,10 @@ const ErrorContainer = props => {
       </div>
       {headerText && <h1 id="header">{headerText}</h1>}
       {bodyText && <p id="text">{bodyText}</p>}
-      {returnUrl && returnText && 
+      {buttonText && buttonUrl && 
         <div id="button-container">
-            <a id="button" href={returnUrl}>
-            {returnText}
+            <a id="button" href={buttonUrl}>
+            {buttonText}
             </a>
         </div>
       }
