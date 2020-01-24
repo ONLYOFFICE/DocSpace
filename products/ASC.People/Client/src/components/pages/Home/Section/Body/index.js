@@ -35,6 +35,7 @@ import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, Delet
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
+const { Filter } = api;
 
 
 class SectionBodyContent extends React.PureComponent {
@@ -57,7 +58,10 @@ class SectionBodyContent extends React.PureComponent {
 
     if (users != null) return;
 
-    fetchPeople().catch(error => toastr.error(error));
+    const filter = Filter.getDefault();
+    filter.employeeStatus = EmployeeStatus.Active;
+
+    fetchPeople(filter).catch(error => toastr.error(error));
   }
 
   onEmailSentClick = email => {
