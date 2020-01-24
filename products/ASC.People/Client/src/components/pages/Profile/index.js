@@ -61,7 +61,7 @@ class PureProfile extends React.Component {
       sectionBodyContent: <Loader className="pageLoader" type="rombs" size='40px' />
     };
 
-    return <PageLayout {...articleProps} {...sectionProps} />;
+    return <PageLayout {...articleProps} {...sectionProps} withBodyAutoFocus={true}/>;
   };
 };
 

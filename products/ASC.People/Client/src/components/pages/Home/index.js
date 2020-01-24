@@ -113,6 +113,7 @@ class PureHome extends React.Component {
         />
         <PageLayout
           withBodyScroll={true}
+          withBodyAutoFocus={true}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
