@@ -28,6 +28,7 @@ import {
 } from "../../../../../store/people/selectors";
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
+import { Loader } from "asc-web-components";
 import { store, api, constants } from 'asc-web-common';
 import i18n from '../../i18n';
 import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
@@ -49,6 +50,14 @@ class SectionBodyContent extends React.PureComponent {
       },
       isEmailValid: false
     };
+  }
+
+  componentDidMount() {
+    const { users, fetchPeople } = this.props;
+
+    if (users != null) return;
+
+    fetchPeople().catch(error => toastr.error(error));
   }
 
   onEmailSentClick = email => {
@@ -298,7 +307,9 @@ class SectionBodyContent extends React.PureComponent {
     const { users, viewer, selection, history, settings, t, filter } = this.props;
     const { dialogsVisible, user } = this.state;
 
-    return users.length > 0 ? (
+    return users == null
+    ? (<Loader className="pageLoader" type="rombs" size='40px' />)
+    : users.length > 0 ? (
       <>
         <RowContainer useReactWindow={false}>
           {users.map(user => {
@@ -392,7 +403,7 @@ class SectionBodyContent extends React.PureComponent {
 }
 
 SectionBodyContent.defaultProps = {
-  users: []
+  users: null
 };
 
 const mapStateToProps = state => {
