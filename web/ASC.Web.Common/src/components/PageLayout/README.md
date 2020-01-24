@@ -29,3 +29,4 @@ import { PageLayout } from "asc-web-common";
 | `isNavOpened`       | `bool` |    -     |   -    | `false` | If you need display navigation            |
 | `isAsideVisible`    | `bool` |    -     |   -    | `false` | If you need display aside                 |
 | `withBodyScroll`    | `bool` |    -     |   -    | `true`  | If you need display scroll inside content |
+| `withBodyAutoFocus` | `bool` |    -     |   -    | `true`  | If you need set focus on content element  |
