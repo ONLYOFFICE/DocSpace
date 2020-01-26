@@ -86,5 +86,14 @@
   "CountPerPage": "{{count}} на странице",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "ByFirstNameSorting": "По имени",
-  "ByLastNameSorting": "По фамилии"
+  "ByLastNameSorting": "По фамилии",
+  "OwnerSettings": "Настройки владельца портата",
+  "AdminsSettings": "Настройки администраторов",
+  "ChangePortalOwner": "Сменить владельца портала",
+  "SetPeopleAdmin": "Установить администратора модуля Люди",
+  "SetPortalAdmin": "Установить администратора портала",
+  "PortalAdmin": "Администратор портала",
+  "PeopleAdmin": "Администратор модуля Люди",
+  "DirectionAscLabel":"А-Я",
+  "DirectionDescLabel":"Я-А"
 }

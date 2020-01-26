@@ -216,7 +216,7 @@ class PureOwnerSettings extends Component {
               className="button_offset"
               size="medium"
               primary={true}
-              label="Change portal owner"
+              label={t('ChangePortalOwner')}
               isDisabled={!isLoading ? selectedOwner === null : false}
               onClick={this.onChangeOwner}
             />
