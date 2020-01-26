@@ -21,10 +21,6 @@ newInstance.init({
 
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
-    format: function (value, format) {
-      if (format === 'lowercase') return value.toLowerCase();
-      return value;
-    }
   },
 
   react: {
