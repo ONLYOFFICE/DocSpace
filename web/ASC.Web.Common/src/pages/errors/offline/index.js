@@ -11,7 +11,7 @@ const ErrorOfflineContainer = ({language}) => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  return <ErrorContainer>{t("ErrorOfflineText")}</ErrorContainer>;
+  return <ErrorContainer headerText={t("ErrorOfflineText")} />;
 };
 
 function mapStateToProps(state) {

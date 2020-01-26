@@ -23,12 +23,12 @@ const Security = () => {
           component={AccessRightsSettings}
           selectedTab={1}
         />
-        <Route
+        {/* <Route
           exact
           path={[`${basePath}/accessrights/modules`, basePath]}
           component={AccessRightsSettings}
           selectedTab={2}
-        />
+        /> */}
       </Switch>
     </Suspense>
   );

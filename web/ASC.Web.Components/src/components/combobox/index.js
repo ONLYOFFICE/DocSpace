@@ -67,9 +67,9 @@ class ComboBox extends React.Component {
     this.props.onSelect && this.props.onSelect(option);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.opened !== prevProps.opened && this.state.isOpen !== prevState.isOpen) {
-      this.setIsOpen(this.state.isOpen);
+  componentDidUpdate(prevProps) {
+    if (this.props.opened !== prevProps.opened) {
+      this.setIsOpen(this.props.opened);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {

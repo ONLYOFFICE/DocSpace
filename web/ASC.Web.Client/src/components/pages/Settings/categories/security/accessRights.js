@@ -8,7 +8,7 @@ import { TabContainer } from "asc-web-components";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
-import ModulesSettings from "./sub-components/modules";
+// import ModulesSettings from "./sub-components/modules";
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -33,9 +33,10 @@ class PureAccessRights extends Component {
     let selectedTab = 0;
     if (activeStatus === "admins") {
       selectedTab = 1;
-    } else if (activeStatus === "modules") {
-      selectedTab = 2;
     }
+    // else if (activeStatus === "modules") {
+    //   selectedTab = 2;
+    // }
 
     this.state = {
       selectedTab
@@ -54,9 +55,9 @@ class PureAccessRights extends Component {
       case "1":
         history.push("/settings/security/accessrights/admins");
         break;
-      case "2":
-        history.push("/settings/security/accessrights/modules");
-        break;
+      // case "2":
+      //   history.push("/settings/security/accessrights/modules");
+      //   break;
       default:
         break;
     }
@@ -96,11 +97,11 @@ class PureAccessRights extends Component {
               title: "Admins settings",
               content: <AdminsSettings />
             },
-            {
-              key: "2",
-              title: "Portals settings",
-              content: <ModulesSettings />
-            }
+            // {
+            //   key: "2",
+            //   title: "Portals settings",
+            //   content: <ModulesSettings />
+            // }
           ]}
         </TabContainer>
       </MainContainer>

@@ -29,6 +29,7 @@ import {
 } from "../../../../../store/people/selectors";
 import { isMobileOnly } from "react-device-detect";
 import isEqual from "lodash/isEqual";
+import { Loader } from "asc-web-components";
 import { store, api, constants } from 'asc-web-common';
 import i18n from '../../i18n';
 import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
@@ -36,6 +37,7 @@ const { isArrayEqual } = utils.array;
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
+const { Filter } = api;
 
 
 class SectionBodyContent extends React.PureComponent {
@@ -51,6 +53,17 @@ class SectionBodyContent extends React.PureComponent {
       },
       isEmailValid: false
     };
+  }
+
+  componentDidMount() {
+    const { users, fetchPeople } = this.props;
+
+    if (users != null) return;
+
+    const filter = Filter.getDefault();
+    filter.employeeStatus = EmployeeStatus.Active;
+
+    fetchPeople(filter).catch(error => toastr.error(error));
   }
 
   onEmailSentClick = email => {
@@ -303,7 +316,9 @@ class SectionBodyContent extends React.PureComponent {
     const { users, viewer, selection, history, settings, t, filter } = this.props;
     const { dialogsVisible, user } = this.state;
 
-    return users.length > 0 ? (
+    return users == null
+    ? (<Loader className="pageLoader" type="rombs" size='40px' />)
+    : users.length > 0 ? (
       <>
         <RowContainer useReactWindow={false}>
           {users.map(user => {
@@ -397,7 +412,7 @@ class SectionBodyContent extends React.PureComponent {
 }
 
 SectionBodyContent.defaultProps = {
-  users: []
+  users: null
 };
 
 const mapStateToProps = state => {

@@ -1,6 +1,6 @@
 {
   "name": "asc-web-components",
-  "version": "1.0.321",
+  "version": "1.0.327",
   "description": "Ascensio System SIA component library",
   "license": "AGPL-3.0",
   "main": "dist/asc-web-components.js",
@@ -120,7 +120,8 @@
     "react-tooltip": "^3.11.2",
     "react-virtualized-auto-sizer": "^1.0.2",
     "react-window": "^1.8.5",
-    "react-window-infinite-loader": "^1.0.5"
+    "react-window-infinite-loader": "^1.0.5",
+    "resize-image": "^0.1.0"
   },
   "resolutions": {
     "js-yaml": "3.13.1"
