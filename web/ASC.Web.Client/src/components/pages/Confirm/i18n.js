@@ -15,10 +15,6 @@ if (process.env.NODE_ENV === "production") {
 
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default
-        format: function (value, format) {
-          if (format === 'lowercase') return value.toLowerCase();
-          return value;
-        }
       },
 
       react: {
@@ -47,10 +43,6 @@ if (process.env.NODE_ENV === "production") {
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
-      format: function (value, format) {
-        if (format === 'lowercase') return value.toLowerCase();
-        return value;
-      }
     },
 
     react: {
