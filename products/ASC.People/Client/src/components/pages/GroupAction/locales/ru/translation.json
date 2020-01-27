@@ -2,11 +2,13 @@
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
 
-  "CustomAddEmployee": "Добавить {{userCaption, lowercase}}",
-  "CustomNewDepartment": "Новая {{groupCaption, lowercase}}",
-  "CustomEditDepartment": "Редактирование {{groupCaption, lowercase}}",
-  "CustomDepartmentName": "Имя {{groupCaption, lowercase}}",
+  "CustomNewDepartment": "{{groupCaption}} (создание)",
   "Members": "Участники",
   "AddMembers": "Добавить участников",
-  "SearchAddedMembers": "Поиск добавленных участников"
+  "SearchAddedMembers": "Поиск добавленных участников",
+
+  "Select": "Выбрать",
+  "Name": "Название",
+  "AddButton": "Добавить",
+  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'"
 }

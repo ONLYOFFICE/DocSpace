@@ -81,13 +81,17 @@ class SectionBodyContent extends React.Component {
   }
 
   mapPropsToState = () => {
-    const { group, users, groups, t, userCaption } = this.props;
+    const { group, users, groups, t } = this.props;
+    const buttonLabel = group
+    ? t('SaveButton')
+    : t("AddButton");
 
     const newState = {
       id: group ? group.id : "",
       groupName: group ? group.name : "",
       searchValue: "",
       error: null,
+      buttonLabel,
       inLoading: false,
       isHeadSelectorOpen: false,
       isUsersSelectorOpen: false,
@@ -100,7 +104,7 @@ class SectionBodyContent extends React.Component {
           }
         : {
             key: 0,
-            label: t("CustomAddEmployee", { userCaption })
+            label: t("Select")
           },
       groupMembers:
         group && group.members
@@ -119,7 +123,7 @@ class SectionBodyContent extends React.Component {
             }
           : {
               key: GUID_EMPTY,
-              label: t("CustomAddEmployee", { userCaption }),
+              label: t("Select"),
               default: true
             }
     };
@@ -186,7 +190,7 @@ class SectionBodyContent extends React.Component {
   };
 
   onSave = () => {
-    const { group } = this.props;
+    const { group, t, groupCaption } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
     if (!groupName || !groupName.trim().length) return false;
@@ -203,7 +207,7 @@ class SectionBodyContent extends React.Component {
 
     this.save(newGroup)
       .then(group => {
-        toastr.success(`Group '${group.name}' has been saved successfully`);
+        toastr.success(t('SuccessSaveGroup', {groupCaption, groupName: group.name }));
       })
       .catch(error => {
         toastr.error(error);
@@ -250,7 +254,7 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { t, groupCaption, groupHeadCaption } = this.props;
+    const { t, groupHeadCaption, groupsCaption } = this.props;
     const {
       groupName,
       groupMembers,
@@ -259,7 +263,8 @@ class SectionBodyContent extends React.Component {
       inLoading,
       error,
       searchValue,
-      groupManager
+      groupManager,
+      buttonLabel
     } = this.state;
     return (
       <MainContainer>
@@ -268,7 +273,7 @@ class SectionBodyContent extends React.Component {
           isRequired={true}
           hasError={false}
           isVertical={true}
-          labelText={t("CustomDepartmentName", { groupCaption })}
+          labelText={t("Name")}
         >
           <TextInput
             id="group-name"
@@ -308,6 +313,7 @@ class SectionBodyContent extends React.Component {
             isOpen={isHeadSelectorOpen}
             onSelect={this.onHeadSelectorSelect}
             onCancel={this.onCancelSelector}
+            groupsCaption={groupsCaption}
           />
         </FieldContainer>
         <FieldContainer
@@ -340,6 +346,8 @@ class SectionBodyContent extends React.Component {
             isMultiSelect={true}
             onSelect={this.onUsersSelectorSelect}
             onCancel={this.onCancelSelector}
+            searchPlaceHolderLabel={t('SearchAddedMembers')}
+            groupsCaption={groupsCaption}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
@@ -371,7 +379,7 @@ class SectionBodyContent extends React.Component {
         {error && <div><strong>{error}</strong></div>}
         <div className="buttons_container">
           <Button
-            label={t("SaveButton")}
+            label={buttonLabel}
             primary
             type="submit"
             isLoading={inLoading}
@@ -431,9 +439,9 @@ function mapStateToProps(state) {
     group: state.group.targetGroup,
     groups: convertGroups(state.people.groups),
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
-    groupCaption: state.auth.settings.customNames.groupCaption,
     groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
-    userCaption: state.auth.settings.customNames.userCaption
+    groupsCaption: state.auth.settings.customNames.groupsCaption,
+    groupCaption: state.auth.settings.customNames.groupCaption
   };
 }
 

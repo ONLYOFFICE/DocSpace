@@ -2,11 +2,13 @@
   "SaveButton": "Save",
   "CancelButton": "Cancel",
 
-  "CustomAddEmployee": "Add {{userCaption, lowercase}}",
-  "CustomNewDepartment": "New {{groupCaption, lowercase}}",
-  "CustomEditDepartment": "Edit {{groupCaption, lowercase}}",
-  "CustomDepartmentName": "{{groupCaption, lowercase}} name",
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
   "Members": "Members",
   "AddMembers": "Add members",
-  "SearchAddedMembers": "Search added members"
+  "SearchAddedMembers": "Search added members",
+  
+  "Select": "Select",
+  "Name": "Name",
+  "AddButton": "Add",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
 }
