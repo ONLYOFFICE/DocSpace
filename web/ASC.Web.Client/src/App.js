@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
-import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline} from "asc-web-common";
+import { history, PrivateRoute, PublicRoute, Login, Error404, StudioLayout, Offline, ComingSoon} from "asc-web-common";
 import About from "./components/pages/About";
 
 const Home = lazy(() => import("./components/pages/Home"));
@@ -22,6 +22,7 @@ const App = () => {
             <PrivateRoute exact path={["/","/error=:error"]} component={Home} />
             <PrivateRoute exact path="/about" component={About} />
             <PrivateRoute restricted path="/settings" component={Settings} />
+            <PrivateRoute exact path={["/coming-soon"]} component={ComingSoon} />
             <PrivateRoute component={Error404} />
           </Switch>
         </Suspense>
