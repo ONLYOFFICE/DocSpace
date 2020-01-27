@@ -11,7 +11,7 @@ const Error404Container = ({language}) => {
     i18n.changeLanguage(language);
   }, [language]);
 
-  return <ErrorContainer>{t("Error404Text")}</ErrorContainer>;
+  return <ErrorContainer headerText={t("Error404Text")} />;
 };
 
 function mapStateToProps(state) {

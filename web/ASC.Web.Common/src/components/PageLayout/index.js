@@ -4,6 +4,7 @@ import { Backdrop } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
 import { connect } from "react-redux";
+import { ARTICLE_PINNED_KEY } from "../../constants";
 
 import Article from "./sub-components/article";
 import ArticleHeader from "./sub-components/article-header";
@@ -51,7 +52,8 @@ class PageLayoutComponent extends React.PureComponent {
       isSectionPagingAvailable = !!props.sectionPagingContent,
       isSectionBodyAvailable = !!props.sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
       isSectionAvailable = isSectionHeaderAvailable || isSectionFilterAvailable || isSectionBodyAvailable || isSectionPagingAvailable || isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable;
+      isBackdropAvailable = isArticleAvailable,
+      isArticleVisibleAndPinned = !!localStorage.getItem(ARTICLE_PINNED_KEY);
 
     let newState = {
       isBackdropAvailable: isBackdropAvailable,
@@ -65,9 +67,9 @@ class PageLayoutComponent extends React.PureComponent {
       isSectionBodyAvailable: isSectionBodyAvailable,
       isSectionPagingAvailable: isSectionPagingAvailable,
 
-      isBackdropVisible: props.isBackdropVisible,
-      isArticleVisible: props.isArticleVisible,
-      isArticlePinned: props.isArticlePinned,
+      isBackdropVisible: false,
+      isArticleVisible: isArticleVisibleAndPinned,
+      isArticlePinned: isArticleVisibleAndPinned,
 
       articleHeaderContent: props.articleHeaderContent,
       articleMainButtonContent: props.articleMainButtonContent,
@@ -95,6 +97,8 @@ class PageLayoutComponent extends React.PureComponent {
       isArticlePinned: true,
       isArticleVisible: true
     });
+
+    localStorage.setItem(ARTICLE_PINNED_KEY, true);
   };
 
   unpinArticle = () => {
@@ -103,6 +107,8 @@ class PageLayoutComponent extends React.PureComponent {
       isArticlePinned: false,
       isArticleVisible: true
     });
+
+    localStorage.removeItem(ARTICLE_PINNED_KEY);
   };
 
   showArticle = () => {
@@ -172,7 +178,7 @@ class PageLayoutComponent extends React.PureComponent {
 
             {this.state.isArticleAvailable && (
               <SectionToggler
-                visible={!this.state.isArticlePinned}
+                visible={!this.state.isArticleVisible}
                 onClick={this.showArticle}
               />
             )}
@@ -196,10 +202,6 @@ PageLayout.propTypes = {
 }
 
 PageLayoutComponent.propTypes = {
-  isBackdropVisible: PropTypes.bool,
-  isArticleVisible: PropTypes.bool,
-  isArticlePinned: PropTypes.bool,
-
   articleHeaderContent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -235,9 +237,6 @@ PageLayoutComponent.propTypes = {
 };
 
 PageLayoutComponent.defaultProps = {
-  isBackdropVisible: false,
-  isArticleVisible: false,
-  isArticlePinned: false,
   withBodyScroll: true,
   withBodyAutoFocus: false
 };

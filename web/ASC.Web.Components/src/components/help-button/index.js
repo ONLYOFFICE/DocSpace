@@ -11,7 +11,13 @@ import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
-const HelpContainer = styled.div``;
+const HelpContainer = styled.div`
+  * {
+    white-space: unset;
+    overflow: unset;
+    text-overflow: unset;
+  }
+`;
 
 const Content = styled.div`
   box-sizing: border-box;

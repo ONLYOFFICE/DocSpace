@@ -18,7 +18,7 @@ const toModuleWrapper = (item, iconName) => {
   return {
     id: item.id,
     title: item.title,
-    iconName: iconName || "PeopleIcon",
+    iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
     notifications: 0,
     url: item.link,
     onClick: (e) => {
@@ -26,7 +26,7 @@ const toModuleWrapper = (item, iconName) => {
         window.open(item.link, "_self");
         e.preventDefault();
       }
-  },
+    },
     onBadgeClick: e => console.log(iconName + " Badge Clicked", e)
   };
 };
