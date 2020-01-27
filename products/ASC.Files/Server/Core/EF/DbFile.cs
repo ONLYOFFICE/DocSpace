@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
     [Table("files_file")]
-    public class DbFile : BaseEntity
+    public class DbFile : BaseEntity, IDbFile
     {
         public int Id { get; set; }
         public int Version { get; set; }
@@ -54,7 +54,7 @@ namespace ASC.Files.Core.EF
         public string Comment { get; set; }
         public string Changes { get; set; }
         public bool Encrypted { get; set; }
-        public bool Forcesave { get; set; }
+        public ForcesaveType Forcesave { get; set; }
 
         public override object[] GetKeys()
         {

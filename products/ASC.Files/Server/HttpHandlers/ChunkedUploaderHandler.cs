@@ -45,7 +45,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using System.Web;
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.HttpHandlers
@@ -131,7 +130,7 @@ namespace ASC.Web.Files.HttpHandlers
                 {
                     CoreContext.TenantManager.SetCurrentTenant(uploadSession.TenantId);
                     SecurityContext.AuthenticateMe(CoreContext.Authentication.GetAccountByID(uploadSession.UserId));
-                    var culture = SetupInfo.EnabledCulturesPersonal.Find(c => String.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
+                    var culture = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, uploadSession.CultureName, StringComparison.InvariantCultureIgnoreCase));
                     if (culture != null)
                         Thread.CurrentThread.CurrentUICulture = culture;
                     return true;
@@ -316,7 +315,7 @@ namespace ASC.Web.Files.HttpHandlers
                     var culture = _request["culture"];
                     if (string.IsNullOrEmpty(culture)) culture = "en-US";
 
-                    return _cultureInfo = SetupInfo.EnabledCulturesPersonal.Find(c => String.Equals(c.Name, culture, StringComparison.InvariantCultureIgnoreCase));
+                    return _cultureInfo = SetupInfo.EnabledCulturesPersonal.Find(c => string.Equals(c.Name, culture, StringComparison.InvariantCultureIgnoreCase));
                 }
             }
 

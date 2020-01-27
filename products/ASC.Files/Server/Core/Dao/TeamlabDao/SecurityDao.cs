@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Files.Core.Security;
 
 namespace ASC.Files.Core.Data

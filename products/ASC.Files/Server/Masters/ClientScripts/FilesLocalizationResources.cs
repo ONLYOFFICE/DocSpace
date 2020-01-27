@@ -25,8 +25,6 @@
 
 
 using System.Collections.Generic;
-using System.Web;
-using ASC.Web.Core.Client.HttpHandlers;
 using ASC.Web.Files.Resources;
 
 namespace ASC.Web.Files.Masters.ClientScripts

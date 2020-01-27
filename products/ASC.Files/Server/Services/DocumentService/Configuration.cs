@@ -247,7 +247,7 @@ namespace ASC.Web.Files.Services.DocumentService
                             const string crumbsSeporator = " \\ ";
 
                             var breadCrumbsList = EntryManager.GetBreadCrumbs(File.FolderID);
-                            _breadCrumbs = String.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
+                            _breadCrumbs = string.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
                         }
 
                         return _breadCrumbs;
@@ -437,7 +437,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             private static string GetCreateUrl(FileType fileType)
             {
-                String title;
+                string title;
                 switch (fileType)
                 {
                     case FileType.Document:

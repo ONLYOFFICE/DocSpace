@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Files.Classes;
 

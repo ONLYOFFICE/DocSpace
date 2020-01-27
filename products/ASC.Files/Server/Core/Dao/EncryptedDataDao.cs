@@ -35,7 +35,7 @@ namespace ASC.Files.Core.Data
     {
         private static readonly object SyncRoot = new object();
 
-        public EncryptedDataDao(int tenantID, String storageKey)
+        public EncryptedDataDao(int tenantID, string storageKey)
             : base(tenantID, storageKey)
         {
         }

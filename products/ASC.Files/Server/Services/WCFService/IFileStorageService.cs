@@ -39,27 +39,27 @@ namespace ASC.Web.Files.Services.WCFService
     {
         #region Folder Manager
 
-        Folder GetFolder(String folderId);
+        Folder GetFolder(string folderId);
 
-        ItemList<Folder> GetFolders(String parentId);
+        ItemList<Folder> GetFolders(string parentId);
 
-        ItemList<object> GetPath(String folderId);
+        ItemList<object> GetPath(string folderId);
 
-        Folder CreateNewFolder(String parentId, String title);
+        Folder CreateNewFolder(string parentId, string title);
 
-        Folder FolderRename(String folderId, String title);
+        Folder FolderRename(string folderId, string title);
 
-        DataWrapper GetFolderItems(String parentId, int from, int count, FilterType filter, bool subjectGroup, String subjectID, String searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        DataWrapper GetFolderItems(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        object GetFolderItemsXml(String parentId, int from, int count, FilterType filter, bool subjectGroup, String subjectID, String searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        object GetFolderItemsXml(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        ItemList<FileEntry> GetItems(ItemList<String> items, FilterType filter, bool subjectGroup, String subjectID, String searchText);
+        ItemList<FileEntry> GetItems(ItemList<string> items, FilterType filter, bool subjectGroup, string subjectID, string searchText);
 
-        ItemDictionary<String, String> MoveOrCopyFilesCheck(ItemList<String> items, String destFolderId);
+        ItemDictionary<string, string> MoveOrCopyFilesCheck(ItemList<string> items, string destFolderId);
 
-        ItemList<FileOperationResult> MoveOrCopyItems(ItemList<String> items, String destFolderId, FileConflictResolveType resolveType, bool isCopyOperation, bool deleteAfter = false);
+        ItemList<FileOperationResult> MoveOrCopyItems(ItemList<string> items, string destFolderId, FileConflictResolveType resolveType, bool isCopyOperation, bool deleteAfter = false);
 
-        ItemList<FileOperationResult> DeleteItems(string action, ItemList<String> items, bool ignoreException = false, bool deleteAfter = false, bool immediately = false);
+        ItemList<FileOperationResult> DeleteItems(string action, ItemList<string> items, bool ignoreException = false, bool deleteAfter = false, bool immediately = false);
 
         void ReassignStorage(Guid userFromId, Guid userToId);
 
@@ -69,51 +69,51 @@ namespace ASC.Web.Files.Services.WCFService
 
         #region File Manager
 
-        File GetFile(String fileId, int version);
+        File GetFile(string fileId, int version);
 
-        File CreateNewFile(String parentId, String fileTitle);
+        File CreateNewFile(string parentId, string fileTitle);
 
-        File FileRename(String fileId, String title);
+        File FileRename(string fileId, string title);
 
-        KeyValuePair<File, ItemList<File>> UpdateToVersion(String fileId, int version);
+        KeyValuePair<File, ItemList<File>> UpdateToVersion(string fileId, int version);
 
-        KeyValuePair<File, ItemList<File>> CompleteVersion(String fileId, int version, bool continueVersion);
+        KeyValuePair<File, ItemList<File>> CompleteVersion(string fileId, int version, bool continueVersion);
 
-        String UpdateComment(String fileId, int version, String comment);
+        string UpdateComment(string fileId, int version, string comment);
 
-        ItemList<File> GetFileHistory(String fileId);
+        ItemList<File> GetFileHistory(string fileId);
 
-        ItemList<File> GetSiblingsFile(String fileId, String folderId, FilterType filter, bool subjectGroup, String subjectID, String searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        ItemList<File> GetSiblingsFile(string fileId, string folderId, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        KeyValuePair<bool, String> TrackEditFile(String fileId, Guid tabId, String docKeyForTrack, String doc, bool isFinish);
+        KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish);
 
-        ItemDictionary<String, String> CheckEditing(ItemList<String> filesId);
+        ItemDictionary<string, string> CheckEditing(ItemList<string> filesId);
 
-        File SaveEditing(String fileId, string fileExtension, string fileuri, Stream stream, String doc, bool forcesave);
+        File SaveEditing(string fileId, string fileExtension, string fileuri, Stream stream, string doc, bool forcesave);
 
-        File UpdateFileStream(String fileId, Stream stream, bool encrypted);
+        File UpdateFileStream(string fileId, Stream stream, bool encrypted);
 
-        string StartEdit(String fileId, bool editingAlone, String doc);
+        string StartEdit(string fileId, bool editingAlone, string doc);
 
-        ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<String>> filesIdVersion);
+        ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<string>> filesIdVersion);
 
-        File LockFile(String fileId, bool lockFile);
+        File LockFile(string fileId, bool lockFile);
 
-        ItemList<EditHistory> GetEditHistory(String fileId, String doc);
+        ItemList<EditHistory> GetEditHistory(string fileId, string doc);
 
-        EditHistoryData GetEditDiffUrl(String fileId, int version, String doc = null);
+        EditHistoryData GetEditDiffUrl(string fileId, int version, string doc = null);
 
-        ItemList<EditHistory> RestoreVersion(String fileId, int version, String url, String doc = null);
+        ItemList<EditHistory> RestoreVersion(string fileId, int version, string url, string doc = null);
 
-        Web.Core.Files.DocumentService.FileLink GetPresignedUri(String fileId);
+        Web.Core.Files.DocumentService.FileLink GetPresignedUri(string fileId);
 
         #endregion
 
         #region Utils
 
-        ItemList<FileEntry> ChangeOwner(ItemList<String> items, Guid userId);
+        ItemList<FileEntry> ChangeOwner(ItemList<string> items, Guid userId);
 
-        ItemList<FileOperationResult> BulkDownload(Dictionary<String, String> items);
+        ItemList<FileOperationResult> BulkDownload(Dictionary<string, string> items);
 
         ItemList<FileOperationResult> GetTasksStatuses();
 
@@ -121,7 +121,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         ItemList<FileOperationResult> TerminateTasks();
 
-        String GetShortenLink(String fileId);
+        string GetShortenLink(string fileId);
 
         bool StoreOriginal(bool store);
 
@@ -135,29 +135,29 @@ namespace ASC.Web.Files.Services.WCFService
 
         bool ChangeDeleteConfrim(bool update);
 
-        String GetHelpCenter();
+        string GetHelpCenter();
 
         #endregion
 
         #region Ace Manager
 
-        ItemList<AceWrapper> GetSharedInfo(ItemList<String> objectId);
+        ItemList<AceWrapper> GetSharedInfo(ItemList<string> objectId);
 
-        ItemList<AceShortWrapper> GetSharedInfoShort(String objectId);
+        ItemList<AceShortWrapper> GetSharedInfoShort(string objectId);
 
-        ItemList<String> SetAceObject(AceCollection aceCollection, bool notify);
+        ItemList<string> SetAceObject(AceCollection aceCollection, bool notify);
 
-        void RemoveAce(ItemList<String> items);
+        void RemoveAce(ItemList<string> items);
 
-        ItemList<FileOperationResult> MarkAsRead(ItemList<String> items);
+        ItemList<FileOperationResult> MarkAsRead(ItemList<string> items);
 
-        object GetNewItems(String folderId);
+        object GetNewItems(string folderId);
 
-        bool SetAceLink(String fileId, FileShare share);
+        bool SetAceLink(string fileId, FileShare share);
 
-        ItemList<MentionWrapper> SharedUsers(String fileId);
+        ItemList<MentionWrapper> SharedUsers(string fileId);
 
-        ItemList<AceShortWrapper> SendEditorNotify(String fileId, MentionMessageWrapper mentionMessage);
+        ItemList<AceShortWrapper> SendEditorNotify(string fileId, MentionMessageWrapper mentionMessage);
 
         #endregion
 
@@ -169,21 +169,21 @@ namespace ASC.Web.Files.Services.WCFService
 
         Folder SaveThirdParty(ThirdPartyParams thirdPartyParams);
 
-        object DeleteThirdParty(String providerId);
+        object DeleteThirdParty(string providerId);
 
         bool ChangeAccessToThirdparty(bool enableThirdpartySettings);
 
-        bool SaveDocuSign(String code);
+        bool SaveDocuSign(string code);
 
         object DeleteDocuSign();
 
-        String SendDocuSign(string fileId, DocuSignData docuSignData);
+        string SendDocuSign(string fileId, DocuSignData docuSignData);
 
         #endregion
 
         #region MailMerge
 
-        ItemList<String> GetMailAccounts();
+        ItemList<string> GetMailAccounts();
 
         #endregion
     }

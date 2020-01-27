@@ -26,7 +26,6 @@
 
 using ASC.Common.Caching;
 using ASC.Core;
-using ASC.Web.Files.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,18 +89,18 @@ namespace ASC.Web.Files.Utils
             return checkRight;
         }
 
-        public static void Remove(object fileId, Guid tabId = default(Guid), Guid userId = default(Guid))
+        public static void Remove(object fileId, Guid tabId = default, Guid userId = default)
         {
             var tracker = GetTracker(fileId);
             if (tracker != null)
             {
-                if (tabId != default(Guid))
+                if (tabId != default)
                 {
                     tracker._editingBy.Remove(tabId);
                     SetTracker(fileId, tracker);
                     return;
                 }
-                if (userId != default(Guid))
+                if (userId != default)
                 {
                     var listForRemove = tracker._editingBy
                                                .Where(b => tracker._editingBy[b.Key].UserId == userId)

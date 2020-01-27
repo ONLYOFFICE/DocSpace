@@ -29,7 +29,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
-using ASC.Api;
 using ASC.Core;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.Utility;
@@ -77,7 +76,7 @@ namespace ASC.Web.Files.Utils
 
         private void CreateDraftMail()
         {
-            var apiUrlCreate = String.Format("{0}mail/drafts/save.json", SetupInfo.WebApiBaseUrl);
+            var apiUrlCreate = string.Format("{0}mail/drafts/save.json", SetupInfo.WebApiBaseUrl);
             var bodyCreate =
                 string.Format(
                     MessageBodyFormat,
@@ -163,7 +162,7 @@ namespace ASC.Web.Files.Utils
 
         private string SendMail(string bodySendAttach)
         {
-            var apiUrlSend = String.Format("{0}mail/messages/send.json", SetupInfo.WebApiBaseUrl);
+            var apiUrlSend = string.Format("{0}mail/messages/send.json", SetupInfo.WebApiBaseUrl);
 
             var bodySend =
                 string.Format(

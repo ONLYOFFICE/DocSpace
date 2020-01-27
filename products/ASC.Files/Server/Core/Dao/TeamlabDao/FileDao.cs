@@ -29,9 +29,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -49,9 +47,10 @@ namespace ASC.Files.Core.Data
     {
         private static readonly object syncRoot = new object();
 
-        public FileDao(int tenantID, String storageKey)
+        public FileDao(FactoryIndexer<FilesWrapper> factoryIndexer, int tenantID, string storageKey)
             : base(tenantID, storageKey)
         {
+            FactoryIndexer = factoryIndexer;
         }
 
         public void InvalidateCache(object fileId)
@@ -74,9 +73,9 @@ namespace ASC.Files.Core.Data
                 .SingleOrDefault();
         }
 
-        public File GetFile(object parentId, String title)
+        public File GetFile(object parentId, string title)
         {
-            if (String.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
+            if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
             return dbManager
                 .ExecuteList(GetFileQuery(Exp.Eq("title", title) & Exp.Eq("current_version", true) & Exp.Eq("folder_id", parentId))
@@ -282,9 +281,9 @@ namespace ASC.Files.Core.Data
         public Uri GetPreSignedUri(File file, TimeSpan expires)
         {
             return Global.GetStore().GetPreSignedUri(string.Empty, GetUniqFilePath(file), expires,
-                                                     new List<String>
+                                                     new List<string>
                                                          {
-                                                             String.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
+                                                             string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
                                                          });
         }
 
@@ -338,8 +337,8 @@ namespace ASC.Files.Core.Data
 
                     file.ModifiedBy = SecurityContext.CurrentAccount.ID;
                     file.ModifiedOn = TenantUtil.DateTimeNow();
-                    if (file.CreateBy == default(Guid)) file.CreateBy = SecurityContext.CurrentAccount.ID;
-                    if (file.CreateOn == default(DateTime)) file.CreateOn = TenantUtil.DateTimeNow();
+                    if (file.CreateBy == default) file.CreateBy = SecurityContext.CurrentAccount.ID;
+                    if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                     dbManager.ExecuteNonQuery(
                         Update("files_file")
@@ -446,8 +445,8 @@ namespace ASC.Files.Core.Data
 
                     file.ModifiedBy = SecurityContext.CurrentAccount.ID;
                     file.ModifiedOn = TenantUtil.DateTimeNow();
-                    if (file.CreateBy == default(Guid)) file.CreateBy = SecurityContext.CurrentAccount.ID;
-                    if (file.CreateOn == default(DateTime)) file.CreateOn = TenantUtil.DateTimeNow();
+                    if (file.CreateBy == default) file.CreateBy = SecurityContext.CurrentAccount.ID;
+                    if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                     var sql = Update("files_file")
                         .Set("version", file.Version)
@@ -575,7 +574,7 @@ namespace ASC.Files.Core.Data
             FactoryIndexer<FilesWrapper>.DeleteAsync(new FilesWrapper { Id = (int)fileId });
         }
 
-        public bool IsExist(String title, object folderId)
+        public bool IsExist(string title, object folderId)
         {
             var fileCount = dbManager.ExecuteScalar<int>(
                 Query("files_file")
@@ -640,14 +639,14 @@ namespace ASC.Files.Core.Data
             if (file != null)
             {
                 var copy = new File
-                    {
-                        FileStatus = file.FileStatus,
-                        FolderID = toFolderId,
-                        Title = file.Title,
-                        ConvertedType = file.ConvertedType,
-                        Comment = FilesCommonResource.CommentCopy,
-                        Encrypted = file.Encrypted,
-                    };
+                {
+                    FileStatus = file.FileStatus,
+                    FolderID = toFolderId,
+                    Title = file.Title,
+                    ConvertedType = file.ConvertedType,
+                    Comment = FilesCommonResource.CommentCopy,
+                    Encrypted = file.Encrypted,
+                };
 
                 using (var stream = GetFileStream(file))
                 {
@@ -723,28 +722,28 @@ namespace ASC.Files.Core.Data
             return file.RootFolderType != FolderType.TRASH;
         }
 
-        public static String GetUniqFileDirectory(object fileIdObject)
+        public static string GetUniqFileDirectory(object fileIdObject)
         {
             if (fileIdObject == null) throw new ArgumentNullException("fileIdObject");
             var fileIdInt = Convert.ToInt32(Convert.ToString(fileIdObject));
             return string.Format("folder_{0}/file_{1}", (fileIdInt / 1000 + 1) * 1000, fileIdInt);
         }
 
-        public static String GetUniqFilePath(File file)
+        public static string GetUniqFilePath(File file)
         {
             return file != null
                        ? GetUniqFilePath(file, "content" + FileUtility.GetFileExtension(file.PureTitle))
                        : null;
         }
 
-        public static String GetUniqFilePath(File file, string fileTitle)
+        public static string GetUniqFilePath(File file, string fileTitle)
         {
             return file != null
                        ? string.Format("{0}/{1}", GetUniqFileVersionPath(file.ID, file.Version), fileTitle)
                        : null;
         }
 
-        public static String GetUniqFileVersionPath(object fileIdObject, int version)
+        public static string GetUniqFileVersionPath(object fileIdObject, int version)
         {
             return fileIdObject != null
                        ? string.Format("{0}/v{1}", GetUniqFileDirectory(fileIdObject), version)
@@ -816,13 +815,13 @@ namespace ASC.Files.Core.Data
             }
 
             return new File
-                {
-                    FolderID = uploadSession.File.FolderID,
-                    Title = uploadSession.File.Title,
-                    ContentLength = uploadSession.BytesTotal,
-                    Comment = FilesCommonResource.CommentUpload,
-                    Encrypted = uploadSession.Encrypted,
-                };
+            {
+                FolderID = uploadSession.File.FolderID,
+                Title = uploadSession.File.Title,
+                ContentLength = uploadSession.BytesTotal,
+                Comment = FilesCommonResource.CommentUpload,
+                Encrypted = uploadSession.Encrypted,
+            };
         }
 
         #endregion
@@ -851,7 +850,7 @@ namespace ASC.Files.Core.Data
 
                 var func = GetFuncForSearch(null, null, filterType, subjectGroup, subjectID, searchText, searchInContent, false);
 
-                if (FactoryIndexer<FilesWrapper>.TrySelectIds(s => func(s),  out searchIds))
+                if (FactoryIndexer<FilesWrapper>.TrySelectIds(s => func(s), out searchIds))
                 {
                     q.Where(Exp.In("id", searchIds));
                 }
@@ -895,7 +894,7 @@ namespace ASC.Files.Core.Data
                 .ConvertAll(ToFile);
         }
 
-        public IEnumerable<File> Search(String searchText, bool bunch)
+        public IEnumerable<File> Search(string searchText, bool bunch)
         {
             List<int> ids;
             if (FactoryIndexer<FilesWrapper>.TrySelectIds(s => s.MatchAll(searchText), out ids))
@@ -935,6 +934,9 @@ namespace ASC.Files.Core.Data
         }
 
         private const string DiffTitle = "diff.zip";
+
+        public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
+
         public void SaveEditHistory(File file, string changes, Stream differenceStream)
         {
             if (file == null) throw new ArgumentNullException("file");
@@ -976,14 +978,14 @@ namespace ASC.Files.Core.Data
                     .ConvertAll(r =>
                         {
                             var item = new EditHistory
-                                {
-                            ID = Convert.ToInt32(r[0]),
-                            Version = Convert.ToInt32(r[1]),
-                            VersionGroup = Convert.ToInt32(r[2]),
-                            ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
-                            ModifiedBy = new EditHistoryAuthor {Id = new Guid((string) r[4])},
-                            ChangesString = (string) (r[5]),
-                                };
+                            {
+                                ID = Convert.ToInt32(r[0]),
+                                Version = Convert.ToInt32(r[1]),
+                                VersionGroup = Convert.ToInt32(r[2]),
+                                ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
+                                ModifiedBy = new EditHistoryAuthor { Id = new Guid((string)r[4]) },
+                                ChangesString = (string)(r[5]),
+                            };
 
                             item.Key = DocumentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[6])));
                             return item;
@@ -1012,7 +1014,7 @@ namespace ASC.Files.Core.Data
             var result = new File
             {
                 ID = Convert.ToInt32(r[0]),
-                Title = (String)r[1],
+                Title = (string)r[1],
                 FolderID = Convert.ToInt32(r[2]),
                 CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
                 CreateBy = new Guid((string)r[4]),
@@ -1037,8 +1039,8 @@ namespace ASC.Files.Core.Data
         private static ForcesaveType ParseForcesaveType(object v)
         {
             return v != null
-                       ? (ForcesaveType)Enum.Parse(typeof (ForcesaveType), v.ToString().Substring(0, 1))
-                       : default(ForcesaveType);
+                       ? (ForcesaveType)Enum.Parse(typeof(ForcesaveType), v.ToString().Substring(0, 1))
+                       : default;
         }
 
         private Func<Selector<FilesWrapper>, Selector<FilesWrapper>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)

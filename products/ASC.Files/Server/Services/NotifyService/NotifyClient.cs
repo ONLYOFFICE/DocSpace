@@ -155,7 +155,7 @@ namespace ASC.Web.Files.Services.NotifyService
             }
         }
 
-        private static String GetAccessString(FileShare fileShare, CultureInfo cultureInfo)
+        private static string GetAccessString(FileShare fileShare, CultureInfo cultureInfo)
         {
             switch (fileShare)
             {
@@ -170,7 +170,7 @@ namespace ASC.Web.Files.Services.NotifyService
                 case FileShare.Comment:
                     return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_Comment", cultureInfo);
                 default:
-                    return String.Empty;
+                    return string.Empty;
             }
         }
     }

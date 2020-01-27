@@ -159,7 +159,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 nestedFolders = FilesSecurity.FilterRead(nestedFolders).ToList();
                 if (files.Count == 0 && nestedFolders.Count == 0)
                 {
-                    entriesPathId.Add(folderPath, String.Empty);
+                    entriesPathId.Add(folderPath, string.Empty);
                 }
 
                 var filesInFolder = GetFilesInFolders(nestedFolders.ConvertAll(f => f.ID), folderPath);

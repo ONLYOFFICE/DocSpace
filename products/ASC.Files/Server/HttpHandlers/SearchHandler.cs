@@ -27,12 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.UI;
 using ASC.Common.Utils;
 using ASC.Files.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.ModuleManagement.Common;
-using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
@@ -125,7 +123,7 @@ namespace ASC.Web.Files.Configuration
                             new SearchResultItem
                                 {
                                     Name = f.Title ?? string.Empty,
-                                    Description = String.Empty,
+                                    Description = string.Empty,
                                     URL = PathProvider.GetFolderUrl(f),
                                     Date = f.ModifiedOn,
                                     Additional = new Dictionary<string, object>
@@ -145,7 +143,7 @@ namespace ASC.Web.Files.Configuration
             get { return new ResultsView(); }
         }
 
-        private static String FolderPathBuilder(IEnumerable<Folder> folders)
+        private static string FolderPathBuilder(IEnumerable<Folder> folders)
         {
             var titles = folders.Select(f => f.Title).ToList();
             const string separator = " \\ ";

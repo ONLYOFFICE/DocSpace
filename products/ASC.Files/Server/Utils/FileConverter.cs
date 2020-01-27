@@ -47,7 +47,6 @@ using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
 using File = ASC.Files.Core.File;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -174,7 +173,7 @@ namespace ASC.Web.Files.Utils
             {
                 throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
             }
-            if (!String.IsNullOrEmpty(file.ConvertedType) || FileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
+            if (!string.IsNullOrEmpty(file.ConvertedType) || FileUtility.InternalExtension.Values.Contains(FileUtility.GetFileExtension(file.Title)))
             {
                 return;
             }
@@ -190,13 +189,13 @@ namespace ASC.Web.Files.Utils
 
                 var queueResult = new ConvertFileOperationResult
                     {
-                        Source = String.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+                        Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
                         OperationType = FileOperationType.Convert,
-                        Error = String.Empty,
+                        Error = string.Empty,
                         Progress = 0,
-                        Result = String.Empty,
+                        Result = string.Empty,
                         Processed = "",
-                        Id = String.Empty,
+                        Id = string.Empty,
                         TenantId = TenantProvider.CurrentTenantID,
                         Account = SecurityContext.CurrentAccount,
                         Delete = deleteAfter,
@@ -253,7 +252,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        private static String FileJsonSerializer(File file, string folderTitle)
+        private static string FileJsonSerializer(File file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -302,7 +301,7 @@ namespace ASC.Web.Files.Utils
                         }
 
                         filesIsConverting = conversionQueue
-                            .Where(x => String.IsNullOrEmpty(x.Value.Processed))
+                            .Where(x => string.IsNullOrEmpty(x.Value.Processed))
                             .Select(x => x.Key)
                             .ToList();
                     }
@@ -572,7 +571,7 @@ namespace ASC.Web.Files.Utils
                     using (var response = e.Response)
                     {
                         var httpResponse = (HttpWebResponse)response;
-                        var errorString = String.Format("WebException: {0}", httpResponse.StatusCode);
+                        var errorString = string.Format("WebException: {0}", httpResponse.StatusCode);
 
                         if (httpResponse.StatusCode != HttpStatusCode.NotFound)
                         {
@@ -583,7 +582,7 @@ namespace ASC.Web.Files.Utils
                                     using (var readStream = new StreamReader(responseStream))
                                     {
                                         var text = readStream.ReadToEnd();
-                                        errorString += String.Format(" Error message: {0}", text);
+                                        errorString += string.Format(" Error message: {0}", text);
                                     }
                                 }
                             }

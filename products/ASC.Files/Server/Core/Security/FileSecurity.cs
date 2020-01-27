@@ -33,7 +33,6 @@ using ASC.Web.Core;
 using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
-using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Security
 {
@@ -643,7 +642,7 @@ namespace ASC.Files.Core.Security
                     entries = entries.Where(r => !r.ProviderEntry).ToList();
                 }
 
-                var failedEntries = entries.Where(x => !String.IsNullOrEmpty(x.Error));
+                var failedEntries = entries.Where(x => !string.IsNullOrEmpty(x.Error));
                 var failedRecords = new List<FileShareRecord>();
 
                 foreach (var failedEntry in failedEntries)
@@ -662,7 +661,7 @@ namespace ASC.Files.Core.Security
                     securityDao.DeleteShareRecords(failedRecords);
                 }
 
-                return entries.Where(x => String.IsNullOrEmpty(x.Error)).ToList();
+                return entries.Where(x => string.IsNullOrEmpty(x.Error)).ToList();
             }
         }
 

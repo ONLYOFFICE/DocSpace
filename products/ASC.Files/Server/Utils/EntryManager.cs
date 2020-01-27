@@ -32,8 +32,6 @@ using System.Net;
 using System.Security;
 using System.Text;
 using System.Threading;
-using System.Web;
-using System.Web.Caching;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Users;
@@ -60,7 +58,7 @@ namespace ASC.Web.Files.Utils
         private static readonly ICache cache = AscCache.Default;
 
 
-        public static IEnumerable<FileEntry> GetEntries(IFolderDao folderDao, IFileDao fileDao, Folder parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, String searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
+        public static IEnumerable<FileEntry> GetEntries(IFolderDao folderDao, IFileDao fileDao, Folder parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
         {
             total = 0;
 
@@ -81,7 +79,7 @@ namespace ASC.Web.Files.Utils
                 {
                     var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
 
-                    var projectLastModified = responseApi["response"].Value<String>();
+                    var projectLastModified = responseApi["response"].Value<string>();
                     const string projectLastModifiedCacheKey = "documents/projectFolders/projectLastModified";
                     if (HttpRuntime.Cache.Get(projectLastModifiedCacheKey) == null || !HttpRuntime.Cache.Get(projectLastModifiedCacheKey).Equals(projectLastModified))
                     {
@@ -105,7 +103,7 @@ namespace ASC.Web.Files.Utils
                         foreach (JObject projectInfo in responseData.Children())
                         {
                             var projectID = projectInfo["id"].Value<int>();
-                            var projectTitle = Global.ReplaceInvalidCharsAndTruncate(projectInfo["title"].Value<String>());
+                            var projectTitle = Global.ReplaceInvalidCharsAndTruncate(projectInfo["title"].Value<string>());
 
                             JToken projectSecurityJToken;
                             if (projectInfo.TryGetValue("security", out projectSecurityJToken))
@@ -280,7 +278,7 @@ namespace ASC.Web.Files.Utils
             return folderList;
         }
 
-        public static IEnumerable<FileEntry> FilterEntries(IEnumerable<FileEntry> entries, FilterType filter, bool subjectGroup, Guid subjectId, String searchText, bool searchInContent)
+        public static IEnumerable<FileEntry> FilterEntries(IEnumerable<FileEntry> entries, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             if (entries == null || !entries.Any()) return entries;
 
@@ -533,7 +531,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static bool FileLockedForMe(object fileId, Guid userId = default(Guid))
+        public static bool FileLockedForMe(object fileId, Guid userId = default)
         {
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
@@ -541,7 +539,7 @@ namespace ASC.Web.Files.Utils
                 return false;
             }
 
-            userId = userId == default(Guid) ? SecurityContext.CurrentAccount.ID : userId;
+            userId = userId == default ? SecurityContext.CurrentAccount.ID : userId;
             using (var tagDao = Global.DaoFactory.GetTagDao())
             {
                 var lockedBy = FileLockedBy(fileId, tagDao);
@@ -556,7 +554,7 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public static File SaveEditing(String fileId, string fileExtension, string downloadUri, Stream stream, String doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null)
+        public static File SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, string comment = null, bool checkRight = true, bool encrypted = false, ForcesaveType? forcesave = null)
         {
             var newExtension = string.IsNullOrEmpty(fileExtension)
                               ? FileUtility.GetFileExtension(downloadUri)
@@ -731,7 +729,7 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public static File UpdateToVersionFile(object fileId, int version, String doc = null, bool checkRight = true)
+        public static File UpdateToVersionFile(object fileId, int version, string doc = null, bool checkRight = true)
         {
             using (var fileDao = Global.DaoFactory.GetFileDao())
             {
@@ -852,7 +850,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static bool FileRename(object fileId, String title, out File file)
+        public static bool FileRename(object fileId, string title, out File file)
         {
             using (var fileDao = Global.DaoFactory.GetFileDao())
             {
@@ -875,7 +873,7 @@ namespace ASC.Web.Files.Utils
                 var fileAccess = file.Access;
 
                 var renamed = false;
-                if (String.Compare(file.Title, title, false) != 0)
+                if (string.Compare(file.Title, title, false) != 0)
                 {
                     var newFileID = fileDao.FileRename(file, title);
 

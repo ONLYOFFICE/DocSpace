@@ -61,7 +61,7 @@ namespace ASC.Web.Files.Utils
 
         public static string Parse(string doc)
         {
-            return Signature.Read<string>(doc ?? String.Empty, Global.GetDocDbKey());
+            return Signature.Read<string>(doc ?? string.Empty, Global.GetDocDbKey());
         }
 
         public static bool Check(string doc, bool checkRead, IFileDao fileDao, out File file)

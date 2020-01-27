@@ -77,7 +77,7 @@ namespace ASC.Files.Core
         [DataMember(EmitDefaultValue = false, Name = "comment")]
         public string Comment { get; set; }
 
-        public String PureTitle
+        public string PureTitle
         {
             get { return base.Title; }
             set { base.Title = value; }
@@ -88,7 +88,7 @@ namespace ASC.Files.Core
         {
             get
             {
-                return String.IsNullOrEmpty(ConvertedType)
+                return string.IsNullOrEmpty(ConvertedType)
                            ? base.Title
                            : FileUtility.ReplaceFileExtension(base.Title, FileUtility.GetInternalExtension(base.Title));
             }
@@ -99,7 +99,7 @@ namespace ASC.Files.Core
         public long ContentLength { get; set; }
 
         [DataMember(EmitDefaultValue = false, Name = "content_length_string", IsRequired = true)]
-        public String ContentLengthString
+        public string ContentLengthString
         {
             get { return FileSizeComment.FilesSizeToString(ContentLength); }
             set { }
@@ -178,7 +178,7 @@ namespace ASC.Files.Core
 
         public ForcesaveType Forcesave { get; set; }
 
-        public String DownloadUrl
+        public string DownloadUrl
         {
             get { return FilesLinkUtility.GetFileDownloadUrl(ID); }
         }

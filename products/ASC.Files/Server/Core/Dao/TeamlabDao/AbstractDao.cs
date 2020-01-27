@@ -25,157 +25,145 @@
 
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Caching;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Tenants;
+using ASC.Files.Core.EF;
 using ASC.Security.Cryptography;
-using ASC.Web.Files.Core;
+
 using Autofac;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Files.Core.Data
 {
-    public class AbstractDao : IDisposable
+    public class AbstractDao
     {
-        protected int TenantID { get; private set; }
-        protected readonly ICache cache = AscCache.Default;
-        protected IDbManager dbManager { get; private set; }
-        protected ILifetimeScope scope { get; private set; }
+        protected readonly ICache cache;
 
+        public FilesDbContext FilesDbContext { get; }
 
-        protected AbstractDao(int tenantID, String storageKey)
+        internal int TenantID { get; }
+        public TenantUtil TenantUtil { get; }
+
+        protected AbstractDao(DbContextManager<FilesDbContext> dbContextManager, TenantManager tenantManager, TenantUtil tenantUtil, string storageKey)
         {
-            TenantID = tenantID;
-            scope = DIHelper.Resolve();
-            dbManager = scope.Resolve<IDbManager>();
-        }
-
-        public void Dispose()
-        {
-            scope.Dispose();
+            cache = AscCache.Memory;
+            FilesDbContext = dbContextManager.Value;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            TenantUtil = tenantUtil;
         }
 
 
-        protected SqlQuery Query(string table)
+        protected IQueryable<T> Query<T>(Expression<Func<FilesDbContext, DbSet<T>>> func) where T : class, IDbFile
         {
-            return new SqlQuery(table).Where(GetTenantColumnName(table), TenantID);
+            var compile = func.Compile();
+            return compile(FilesDbContext).Where(r => r.TenantId == 1);
         }
 
-        protected SqlDelete Delete(string table)
+        protected IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
         {
-            return new SqlDelete(table).Where(GetTenantColumnName(table), TenantID);
-        }
-
-        protected SqlInsert Insert(string table)
-        {
-            return new SqlInsert(table, true).InColumns(GetTenantColumnName(table)).Values(TenantID);
-        }
-
-        protected SqlUpdate Update(string table)
-        {
-            return new SqlUpdate(table).Where(GetTenantColumnName(table), TenantID);
-        }
-
-        protected string GetTenantColumnName(string table)
-        {
-            var tenant = "tenant_id";
-            if (!table.Contains(" ")) return tenant;
-            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
-        }
-
-        protected SqlQuery GetFileQuery(Exp where, bool checkShared = true)
-        {
-            return Query("files_file f")
-                .Select("f.id")
-                .Select("f.title")
-                .Select("f.folder_id")
-                .Select("f.create_on")
-                .Select("f.create_by")
-                .Select("f.version")
-                .Select("f.version_group")
-                .Select("f.content_length")
-                .Select("f.modified_on")
-                .Select("f.modified_by")
-                .Select(GetRootFolderType("folder_id"))
-                .Select(checkShared ? GetSharedQuery(FileEntryType.File) : new SqlQuery().Select("1"))
-                .Select("converted_type")
-                .Select("f.comment")
-                .Select("f.encrypted")
-                .Select("f.forcesave")
+            return Query(r => r.Files)
                 .Where(where);
         }
 
-        protected SqlQuery GetRootFolderType(string parentFolderColumnName)
+        protected List<File> FromQuery(IQueryable<DbFile> dbFiles, bool checkShared = true)
         {
-            return new SqlQuery("files_folder d")
-                .From("files_folder_tree t")
-                .Select("concat(cast(d.folder_type as char),d.create_by,cast(d.id as char))")
-                .Where(Exp.EqColumns("d.tenant_id", "f.tenant_id") &
-                        Exp.EqColumns("d.id", "t.parent_id") &
-                       Exp.EqColumns("t.folder_id", "f." + parentFolderColumnName))
-                .OrderBy("level", false)
-                .GroupBy("level")
-                .SetMaxResults(1);
+            return dbFiles
+                .Select(r => new { file = r, root = GetRootFolderType(r), shared = checkShared ? GetSharedQuery(FileEntryType.File, r) : true })
+                .ToList()
+                .Select(r => new File
+                {
+                    ID = r.file.Id,
+                    Title = r.file.Title,
+                    FolderID = r.file.FolderId,
+                    CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn),
+                    CreateBy = r.file.CreateBy,
+                    Version = r.file.Version,
+                    VersionGroup = r.file.VersionGroup,
+                    ContentLength = r.file.ContentLength,
+                    ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn),
+                    ModifiedBy = r.file.ModifiedBy,
+                    RootFolderType = ParseRootFolderType(r.root),
+                    RootFolderCreator = ParseRootFolderCreator(r.root),
+                    RootFolderId = ParseRootFolderId(r.root),
+                    Shared = r.shared,
+                    ConvertedType = r.file.ConvertedType,
+                    Comment = r.file.Comment,
+                    Encrypted = r.file.Encrypted,
+                    Forcesave = r.file.Forcesave
+                }).ToList();
+        }
+
+        protected string GetRootFolderType(DbFile file)
+        {
+            return FilesDbContext.Folders
+                .Join(FilesDbContext.FolderTree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                .Where(r => r.folder.TenantId == file.TenantId)
+                .Where(r => r.tree.FolderId == file.FolderId)
+                .OrderByDescending(r => r.tree.Level)
+                .Select(r => r.folder.FolderType + r.folder.CreateBy.ToString() + r.folder.Id.ToString())
+                .FirstOrDefault();
         }
 
         protected FolderType ParseRootFolderType(object v)
         {
             return v != null
                        ? (FolderType)Enum.Parse(typeof(FolderType), v.ToString().Substring(0, 1))
-                       : default(FolderType);
+                       : default;
         }
 
         protected Guid ParseRootFolderCreator(object v)
         {
-            return v != null ? new Guid(v.ToString().Substring(1, 36)) : default(Guid);
+            return v != null ? new Guid(v.ToString().Substring(1, 36)) : default;
         }
 
         protected int ParseRootFolderId(object v)
         {
-            return v != null ? int.Parse(v.ToString().Substring(1 + 36)) : default(int);
+            return v != null ? int.Parse(v.ToString().Substring(1 + 36)) : default;
         }
 
-        protected SqlQuery GetSharedQuery(FileEntryType type)
+        protected bool GetSharedQuery(FileEntryType type, DbFile dbFile)
         {
-            var result = Query("files_security s")
-                .SelectCount()
-                .Where(Exp.EqColumns("s.entry_id", "cast(f.id as char)"))
-                .Where("s.entry_type", (int) type)
-                .SetMaxResults(1);
-
-            return result;
+            return
+                FilesDbContext.FilesSecurity
+                .Where(r => r.EntryType == type)
+                .Where(r => r.EntryId == dbFile.Id.ToString())
+                .Any();
         }
 
-        protected SqlUpdate GetRecalculateFilesCountUpdate(object folderId)
+        protected void GetRecalculateFilesCountUpdate(int folderId)
         {
-            if (DbRegistry.GetSqlDialect("default").SupportMultiTableUpdate)
+            var folders = FilesDbContext.Folders
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => FilesDbContext.FolderTree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id));
+
+            foreach (var f in folders)
             {
-                return new SqlUpdate("files_folder d, files_folder_tree t")
-                    .Set(
-                        "d.filesCount = (select count(distinct f.id) from files_file f, files_folder_tree t2 where f.tenant_id = d.tenant_id and f.folder_id = t2.folder_id and t2.parent_id = d.id)")
-                    .Where(Exp.EqColumns("d.id", "t.parent_id") & Exp.Eq("t.folder_id", folderId) &
-                           Exp.Eq("d.tenant_id", TenantID));
+                var filesCount =
+                    FilesDbContext.Files
+                    .Join(FilesDbContext.FolderTree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+                    .Where(r => r.file.TenantId == f.TenantId)
+                    .Where(r => r.tree.ParentId == f.Id)
+                    .Count();
+
+                f.FilesCount = filesCount;
             }
-            else
-            {
-                return new SqlUpdate("files_folder")
-                    .Set(
-                        "filesCount = (select count(distinct f.id) from files_file f, files_folder_tree t2 where f.tenant_id = files_folder.tenant_id and f.folder_id = t2.folder_id and t2.parent_id = files_folder.id)")
-                    .Where(Exp.Eq("files_folder.tenant_id", TenantID) &
-                           Exp.In("files_folder.id",
-                                  new SqlQuery("files_folder_tree t").Select("t.parent_id").Where("t.folder_id",
-                                                                                                  folderId)));
-            }
+
+            FilesDbContext.SaveChanges();
         }
 
         protected object MappingID(object id, bool saveIfNotExist)
         {
             if (id == null) return null;
 
-            int n;
-
-            var isNumeric = int.TryParse(id.ToString(), out n);
+            var isNumeric = int.TryParse(id.ToString(), out var n);
 
             if (isNumeric) return n;
 
@@ -192,20 +180,21 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                result = dbManager.ExecuteScalar<String>(
-                    Query("files_thirdparty_id_mapping")
-                        .Select("id")
-                        .Where(Exp.Eq("hash_id", id))
-                    );
+                result = Query(r => r.FilesThirdpartyIdMapping)
+                    .Where(r => r.HashId == id.ToString())
+                    .Select(r => r.Id)
+                    .FirstOrDefault();
             }
 
             if (saveIfNotExist)
             {
-                dbManager.ExecuteNonQuery(
-                    Insert("files_thirdparty_id_mapping")
-                        .InColumnValue("id", id)
-                        .InColumnValue("hash_id", result)
-                    );
+                var newItem = new DbFilesThirdpartyIdMapping
+                {
+                    Id = id.ToString(),
+                    HashId = result.ToString()
+                };
+
+                FilesDbContext.AddOrUpdate(r => r.FilesThirdpartyIdMapping, newItem);
             }
 
             return result;
@@ -216,9 +205,9 @@ namespace ASC.Files.Core.Data
             return MappingID(id, false);
         }
 
-        public static Exp BuildSearch(string column, string text, SqlLike like = SqlLike.AnyWhere)
-        {
-            return Exp.Like(string.Format("lower({0})", column), text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_"), like);
-        }
+        //public static Exp BuildSearch(string column, string text, SqlLike like = SqlLike.AnyWhere)
+        //{
+        //    return Exp.Like(string.Format("lower({0})", column), text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_"), like);
+        //}
     }
 }

@@ -63,7 +63,7 @@ namespace ASC.Files.Core
         /// <returns>
         ///   file
         /// </returns>
-        File GetFile(object parentId, String title);
+        File GetFile(object parentId, string title);
 
         /// <summary>
         ///     Receive last file without forcesave
@@ -189,7 +189,7 @@ namespace ASC.Files.Core
         /// <param name="title">file name</param>
         /// <param name="folderId">folder id</param>
         /// <returns>Returns true if the file exists, otherwise false</returns>
-        bool IsExist(String title, object folderId);
+        bool IsExist(string title, object folderId);
 
         /// <summary>
         ///   Moves a file or set of files in a folder
@@ -218,7 +218,7 @@ namespace ASC.Files.Core
         /// <param name="fileId">file id</param>
         /// <param name="fileVersion">file version</param>
         /// <param name="comment">new comment</param>
-        string UpdateComment(object fileId, int fileVersion, String comment);
+        string UpdateComment(object fileId, int fileVersion, string comment);
 
         /// <summary>
         ///   Complete file version
@@ -279,7 +279,7 @@ namespace ASC.Files.Core
         /// <param name="text">search text</param>
         /// <param name="bunch"></param>
         /// <returns>list of files</returns>
-        IEnumerable<File> Search(String text, bool bunch = false);
+        IEnumerable<File> Search(string text, bool bunch = false);
 
         /// <summary>
         ///   Checks whether file exists on storage

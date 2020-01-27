@@ -25,7 +25,6 @@
 
 
 using System;
-using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
 

@@ -30,11 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Web;
 
-using ASC.Api;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
@@ -56,7 +52,7 @@ namespace ASC.Files.Core.Data
         private const string trash = "trash";
         private const string projects = "projects";
 
-        public FolderDao(int tenantID, String storageKey)
+        public FolderDao(int tenantID, string storageKey)
             : base(tenantID, storageKey)
         {
         }
@@ -69,9 +65,9 @@ namespace ASC.Files.Core.Data
                 .SingleOrDefault();
         }
 
-        public Folder GetFolder(String title, object parentId)
+        public Folder GetFolder(string title, object parentId)
         {
-            if (String.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
+            if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
             return dbManager
                 .ExecuteList(GetFolderQuery(Exp.Eq("title", title) & Exp.Eq("parent_id", parentId))
@@ -116,7 +112,7 @@ namespace ASC.Files.Core.Data
 
         public List<Folder> GetFolders(object parentId)
         {
-            return GetFolders(parentId, default(OrderBy), default(FilterType), false, default(Guid), string.Empty);
+            return GetFolders(parentId, default, default, false, default, string.Empty);
         }
 
         public List<Folder> GetFolders(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -260,8 +256,8 @@ namespace ASC.Files.Core.Data
             folder.ModifiedOn = TenantUtil.DateTimeNow();
             folder.ModifiedBy = SecurityContext.CurrentAccount.ID;
 
-            if (folder.CreateOn == default(DateTime)) folder.CreateOn = TenantUtil.DateTimeNow();
-            if (folder.CreateBy == default(Guid)) folder.CreateBy = SecurityContext.CurrentAccount.ID;
+            if (folder.CreateOn == default) folder.CreateOn = TenantUtil.DateTimeNow();
+            if (folder.CreateBy == default) folder.CreateBy = SecurityContext.CurrentAccount.ID;
 
             var isnew = false;
 
@@ -426,14 +422,14 @@ namespace ASC.Files.Core.Data
                 folder.FolderType = FolderType.DEFAULT;
 
             var copy = new Folder
-                {
-                    ParentFolderID = toFolderId,
-                    RootFolderId = toFolder.RootFolderId,
-                    RootFolderCreator = toFolder.RootFolderCreator,
-                    RootFolderType = toFolder.RootFolderType,
-                    Title = folder.Title,
-                    FolderType = folder.FolderType
-                };
+            {
+                ParentFolderID = toFolderId,
+                RootFolderId = toFolder.RootFolderId,
+                RootFolderCreator = toFolder.RootFolderCreator,
+                RootFolderType = toFolder.RootFolderType,
+                Title = folder.Title,
+                FolderType = folder.FolderType
+            };
 
             copy = GetFolder(SaveFolder(copy));
 
@@ -752,9 +748,9 @@ namespace ASC.Files.Core.Data
                 .Where(@where);
         }
 
-        public String GetBunchObjectID(object folderID)
+        public string GetBunchObjectID(object folderID)
         {
-            return dbManager.ExecuteScalar<String>(
+            return dbManager.ExecuteScalar<string>(
                 Query("files_bunch_objects")
                     .Select("right_node")
                     .Where(Exp.Eq("left_node", (folderID ?? string.Empty).ToString())));
@@ -766,10 +762,10 @@ namespace ASC.Files.Core.Data
                 Query("files_bunch_objects")
                     .Select("left_node", "right_node")
                     .Where(Exp.In("left_node", folderIDs.Select(folderID => (folderID ?? string.Empty).ToString()).ToList())))
-                    .ToDictionary(r=> r[0].ToString(), r=> r[1].ToString());
+                    .ToDictionary(r => r[0].ToString(), r => r[1].ToString());
         }
 
-        private String GetProjectTitle(object folderID)
+        private string GetProjectTitle(object folderID)
         {
             if (!ApiServer.Available)
             {
@@ -780,15 +776,15 @@ namespace ASC.Files.Core.Data
 
             var projectTitle = Convert.ToString(cache.Get<string>(cacheKey));
 
-            if (!String.IsNullOrEmpty(projectTitle)) return projectTitle;
+            if (!string.IsNullOrEmpty(projectTitle)) return projectTitle;
 
             var bunchObjectID = GetBunchObjectID(folderID);
 
-            if (String.IsNullOrEmpty(bunchObjectID))
+            if (string.IsNullOrEmpty(bunchObjectID))
                 throw new Exception("Bunch Object id is null for " + folderID);
 
             if (!bunchObjectID.StartsWith("projects/project/"))
-                return String.Empty;
+                return string.Empty;
 
             var bunchObjectIDParts = bunchObjectID.Split('/');
 
@@ -802,19 +798,19 @@ namespace ASC.Files.Core.Data
 
             var apiServer = new ApiServer();
 
-            var apiUrl = String.Format("{0}project/{1}.json?fields=id,title", SetupInfo.WebApiBaseUrl, projectID);
+            var apiUrl = string.Format("{0}project/{1}.json?fields=id,title", SetupInfo.WebApiBaseUrl, projectID);
 
             var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
 
             if (responseApi != null && responseApi.HasValues)
             {
-                projectTitle = Global.ReplaceInvalidCharsAndTruncate(responseApi["title"].Value<String>());
+                projectTitle = Global.ReplaceInvalidCharsAndTruncate(responseApi["title"].Value<string>());
             }
             else
             {
                 return string.Empty;
             }
-            if (!String.IsNullOrEmpty(projectTitle))
+            if (!string.IsNullOrEmpty(projectTitle))
             {
                 cache.Insert(cacheKey, projectTitle, TimeSpan.FromMinutes(15));
             }
@@ -824,22 +820,22 @@ namespace ASC.Files.Core.Data
         protected Folder ToFolder(object[] r)
         {
             var f = new Folder
-                {
-                    ID = Convert.ToInt32(r[0]),
-                    ParentFolderID = Convert.ToInt32(r[1]),
-                    Title = Convert.ToString(r[2]),
-                    CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
-                    CreateBy = new Guid(r[4].ToString()),
-                    ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-                    ModifiedBy = new Guid(r[6].ToString()),
-                    FolderType = (FolderType)Convert.ToInt32(r[7]),
-                    TotalSubFolders = Convert.ToInt32(r[8]),
-                    TotalFiles = Convert.ToInt32(r[9]),
-                    RootFolderType = ParseRootFolderType(r[10]),
-                    RootFolderCreator = ParseRootFolderCreator(r[10]),
-                    RootFolderId = ParseRootFolderId(r[10]),
-                    Shared = Convert.ToBoolean(r[11]),
-                };
+            {
+                ID = Convert.ToInt32(r[0]),
+                ParentFolderID = Convert.ToInt32(r[1]),
+                Title = Convert.ToString(r[2]),
+                CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
+                CreateBy = new Guid(r[4].ToString()),
+                ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
+                ModifiedBy = new Guid(r[6].ToString()),
+                FolderType = (FolderType)Convert.ToInt32(r[7]),
+                TotalSubFolders = Convert.ToInt32(r[8]),
+                TotalFiles = Convert.ToInt32(r[9]),
+                RootFolderType = ParseRootFolderType(r[10]),
+                RootFolderCreator = ParseRootFolderCreator(r[10]),
+                RootFolderId = ParseRootFolderId(r[10]),
+                Shared = Convert.ToBoolean(r[11]),
+            };
             switch (f.FolderType)
             {
                 case FolderType.COMMON:
@@ -870,7 +866,7 @@ namespace ASC.Files.Core.Data
             }
 
             if (f.FolderType != FolderType.DEFAULT && 0.Equals(f.ParentFolderID)) f.RootFolderType = f.FolderType;
-            if (f.FolderType != FolderType.DEFAULT && f.RootFolderCreator == default(Guid)) f.RootFolderCreator = f.CreateBy;
+            if (f.FolderType != FolderType.DEFAULT && f.RootFolderCreator == default) f.RootFolderCreator = f.CreateBy;
             if (f.FolderType != FolderType.DEFAULT && 0.Equals(f.RootFolderId)) f.RootFolderId = f.ID;
             return f;
         }

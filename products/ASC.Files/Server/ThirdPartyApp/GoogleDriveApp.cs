@@ -33,7 +33,6 @@ using System.Security;
 using System.Text;
 using System.Threading;
 using System.Web;
-using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -53,8 +52,6 @@ using ASC.Web.Files.HttpHandlers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Users;
-using ASC.Web.Studio.UserControls.Common;
 using ASC.Web.Studio.Utility;
 using Newtonsoft.Json.Linq;
 using File = ASC.Files.Core.File;
@@ -582,7 +579,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 if (string.IsNullOrEmpty(cultureName))
                     cultureName = Thread.CurrentThread.CurrentUICulture.Name;
 
-                var cultureInfo = SetupInfo.EnabledCultures.Find(c => String.Equals(c.Name, cultureName, StringComparison.InvariantCultureIgnoreCase));
+                var cultureInfo = SetupInfo.EnabledCultures.Find(c => string.Equals(c.Name, cultureName, StringComparison.InvariantCultureIgnoreCase));
                 if (cultureInfo != null)
                 {
                     userInfo.CultureName = cultureInfo.Name;

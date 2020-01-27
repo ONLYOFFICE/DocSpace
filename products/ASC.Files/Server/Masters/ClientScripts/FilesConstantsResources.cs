@@ -26,20 +26,16 @@
 
 using System.Collections.Generic;
 using System.Globalization;
-using System.Web;
 using ASC.Core;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Web.Core.Client;
-using ASC.Web.Core.Client.HttpHandlers;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.ThirdParty;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files.Masters.ClientScripts

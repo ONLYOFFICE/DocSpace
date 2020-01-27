@@ -28,8 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Core.Tenants;
 
 namespace ASC.Files.Core.Data
@@ -206,11 +204,11 @@ namespace ASC.Files.Core.Data
             dbManager.ExecuteNonQuery(Delete("files_tag").Where(Exp.In("id", tagsToRemove)));
         }
 
-        private Tag SaveTag(Tag t, Dictionary<String, int> cacheTagId, DateTime createOn)
+        private Tag SaveTag(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
         {
             int id;
 
-            var cacheTagIdKey = String.Join("/", new[] { TenantID.ToString(), t.Owner.ToString(), t.TagName, ((int)t.TagType).ToString(CultureInfo.InvariantCulture) });
+            var cacheTagIdKey = string.Join("/", new[] { TenantID.ToString(), t.Owner.ToString(), t.TagName, ((int)t.TagType).ToString(CultureInfo.InvariantCulture) });
 
             if (!cacheTagId.TryGetValue(cacheTagIdKey, out id))
             {

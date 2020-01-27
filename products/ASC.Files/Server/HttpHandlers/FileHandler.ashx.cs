@@ -32,7 +32,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Web;
-using System.Web.Services;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;

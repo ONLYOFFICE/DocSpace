@@ -41,13 +41,13 @@ namespace ASC.Web.Files.Classes
 {
     public static class PathProvider
     {
-        public static readonly String ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
+        public static readonly string ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
 
-        public static readonly String TemplatePath = "/Products/Files/Templates/";
+        public static readonly string TemplatePath = "/Products/Files/Templates/";
 
-        public static readonly String StartURL = FilesLinkUtility.FilesBaseVirtualPath;
+        public static readonly string StartURL = FilesLinkUtility.FilesBaseVirtualPath;
 
-        public static readonly String GetFileServicePath = CommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
+        public static readonly string GetFileServicePath = CommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
 
         public static string GetImagePath(string imgFileName)
         {
@@ -70,7 +70,7 @@ namespace ASC.Web.Files.Classes
             return fileName;
         }
 
-        public static String GetFileControlPath(String fileName)
+        public static string GetFileControlPath(string fileName)
         {
             return CommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
         }
@@ -101,7 +101,7 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        public static String GetFolderUrl(object folderId)
+        public static string GetFolderUrl(object folderId)
         {
             using (var folderDao = Global.DaoFactory.GetFolderDao())
             {

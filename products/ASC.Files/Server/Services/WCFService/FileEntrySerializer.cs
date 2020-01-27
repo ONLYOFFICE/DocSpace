@@ -54,8 +54,8 @@ namespace ASC.Web.Files.Services.WCFService
                 if (2 <= version.Length && (Convert.ToInt32(version[0]) * 1000 + Convert.ToInt32(version[1])) < 4002)
                 {
                     oldMonoSerializer = true;
-                    serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>), Type.EmptyTypes, UInt16.MaxValue, false, false, null, new FileEntryResolver());
-                    serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper), Type.EmptyTypes, UInt16.MaxValue, false, false, null, new FileEntryResolver());
+                    serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
+                    serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
                 }
             }
         }

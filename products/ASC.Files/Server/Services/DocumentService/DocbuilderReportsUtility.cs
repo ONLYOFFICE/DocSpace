@@ -30,10 +30,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Utility;
 using ASC.Common.Threading;
 
 namespace ASC.Web.Files.Services.DocumentService

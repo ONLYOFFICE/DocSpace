@@ -32,7 +32,6 @@ using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Studio.Core;
 
 namespace ASC.Web.Files.Core.Entries
 {
@@ -48,7 +47,7 @@ namespace ASC.Web.Files.Core.Entries
 
         public static IEnumerable<string> GetAddresses(string fileId)
         {
-            var fileShares = Global.FileStorageService.GetSharedInfo(new ItemList<string> { String.Format("file_{0}", fileId) }).ToList();
+            var fileShares = Global.FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup && !share.SubjectId.Equals(FileConstant.ShareLinkId) && share.Share == FileShare.ReadWrite).ToList();
             var accountsString = fileShares.Select(share => EncryptionLoginProvider.GetAddress(share.SubjectId)).Where(address => !string.IsNullOrEmpty(address));
             return accountsString;

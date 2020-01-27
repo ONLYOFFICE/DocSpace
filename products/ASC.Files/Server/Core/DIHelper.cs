@@ -24,8 +24,6 @@
 */
 
 
-using ASC.Common.Data;
-using ASC.Common.DependencyInjection;
 using Autofac;
 
 namespace ASC.Web.Files.Core

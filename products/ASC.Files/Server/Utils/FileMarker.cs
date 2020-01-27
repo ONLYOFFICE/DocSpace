@@ -26,12 +26,10 @@
 
 using ASC.Common.Caching;
 using ASC.Common.Threading.Workers;
-using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
-using ASC.Web.Studio.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -255,11 +253,11 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static void RemoveMarkAsNew(FileEntry fileEntry, Guid userID = default(Guid))
+        public static void RemoveMarkAsNew(FileEntry fileEntry, Guid userID = default)
         {
             if (CoreContext.Configuration.Personal) return;
 
-            userID = userID.Equals(default(Guid)) ? SecurityContext.CurrentAccount.ID : userID;
+            userID = userID.Equals(default) ? SecurityContext.CurrentAccount.ID : userID;
 
             if (fileEntry == null) return;
 

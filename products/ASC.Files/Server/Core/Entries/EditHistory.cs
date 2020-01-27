@@ -125,7 +125,7 @@ namespace ASC.Files.Core
         [DataMember(Name = "created")]
         public string ModifiedOnString
         {
-            get { return ModifiedOn.Equals(default(DateTime)) ? null : ModifiedOn.ToString("g"); }
+            get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
@@ -172,7 +172,7 @@ namespace ASC.Files.Core
         [DataMember(Name = "created")]
         public string Date
         {
-            get { return _date.Equals(default(DateTime)) ? null : _date.ToString("g"); }
+            get { return _date.Equals(default) ? null : _date.ToString("g"); }
             set
             {
                 if (DateTime.TryParse(value, out _date))

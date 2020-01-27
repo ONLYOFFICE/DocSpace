@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.MessagingSystem;
@@ -39,7 +38,6 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Threading;
-using System.Web;
 using File = ASC.Files.Core.File;
 using SecurityContext = ASC.Core.SecurityContext;
 

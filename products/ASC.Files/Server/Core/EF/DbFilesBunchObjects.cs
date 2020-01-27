@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
     [Table("files_bunch_objects")]
-    public class DbFilesBunchObjects
+    public class DbFilesBunchObjects : IDbFile
     {
         [Column("tenant_id")]
         public int TenantId { get; set; }

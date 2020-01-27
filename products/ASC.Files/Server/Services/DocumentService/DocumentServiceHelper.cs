@@ -29,7 +29,6 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
-using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Security.Cryptography;
@@ -264,7 +263,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public static string GetDocKey(object fileId, int fileVersion, DateTime modified)
         {
-            var str = String.Format("teamlab_{0}_{1}_{2}_{3}",
+            var str = string.Format("teamlab_{0}_{1}_{2}_{3}",
                                     fileId,
                                     fileVersion,
                                     modified.GetHashCode(),

@@ -79,7 +79,7 @@ namespace ASC.Files.Core
 
         public Folder()
         {
-            Title = String.Empty;
+            Title = string.Empty;
             FileEntryType = FileEntryType.Folder;
         }
     }

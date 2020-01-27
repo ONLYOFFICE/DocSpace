@@ -25,7 +25,6 @@
 
 
 using System;
-using ASC.Web.Core.Client.Bundling;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Web.Files.Masters

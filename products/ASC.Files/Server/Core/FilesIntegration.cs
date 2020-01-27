@@ -29,7 +29,6 @@ using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 

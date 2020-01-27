@@ -45,7 +45,7 @@ namespace ASC.Files.Core
         /// <param name="title"></param>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        Folder GetFolder(String title, object parentId);
+        Folder GetFolder(string title, object parentId);
 
         /// <summary>
         ///    Gets the root folder
@@ -270,7 +270,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="folderID"></param>
         /// <returns></returns>
-        String GetBunchObjectID(object folderID);
+        string GetBunchObjectID(object folderID);
 
         /// <summary>
         /// Return ids of related objects

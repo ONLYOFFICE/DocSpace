@@ -56,14 +56,14 @@ namespace ASC.Files.Core
         [DataMember(Name = "create_on")]
         public string CreateOnString
         {
-            get { return CreateOn.Equals(default(DateTime)) ? null : CreateOn.ToString("g"); }
+            get { return CreateOn.Equals(default) ? null : CreateOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
         [DataMember(Name = "modified_on")]
         public string ModifiedOnString
         {
-            get { return ModifiedOn.Equals(default(DateTime)) ? null : ModifiedOn.ToString("g"); }
+            get { return ModifiedOn.Equals(default) ? null : ModifiedOn.ToString("g"); }
             set { throw new NotImplementedException(); }
         }
 
@@ -129,9 +129,9 @@ namespace ASC.Files.Core
 
         public FileEntryType FileEntryType;
 
-        public String UniqID
+        public string UniqID
         {
-            get { return String.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
+            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
         }
 
         private string _modifiedByString;

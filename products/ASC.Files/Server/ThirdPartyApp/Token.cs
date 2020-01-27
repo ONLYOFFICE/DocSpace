@@ -27,10 +27,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
 using ASC.Files.Core;
@@ -42,7 +39,7 @@ namespace ASC.Web.Files.ThirdPartyApp
     [DebuggerDisplay("{App} - {AccessToken}")]
     public class Token : OAuth20Token
     {
-        public String App { get; private set; }
+        public string App { get; private set; }
 
         public Token(OAuth20Token oAuth20Token, string app)
             : base(oAuth20Token)
@@ -55,7 +52,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return GetRefreshedToken();
         }
 
-        public String GetRefreshedToken()
+        public string GetRefreshedToken()
         {
             if (IsExpired)
             {

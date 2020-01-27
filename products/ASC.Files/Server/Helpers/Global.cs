@@ -29,8 +29,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web.Configuration;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -45,8 +43,6 @@ using ASC.Web.Files.Core;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core.Users;
-using ASC.Web.Studio.Utility;
 
 using Autofac;
 
@@ -147,7 +143,7 @@ namespace ASC.Web.Files.Classes
 
         public static bool EnableUploadFilter
         {
-            get { return Boolean.TrueString.Equals(WebConfigurationManager.AppSettings["files.upload-filter"] ?? "false", StringComparison.InvariantCultureIgnoreCase); }
+            get { return bool.TrueString.Equals(WebConfigurationManager.AppSettings["files.upload-filter"] ?? "false", StringComparison.InvariantCultureIgnoreCase); }
         }
 
         public static TimeSpan StreamUrlExpire
@@ -176,7 +172,7 @@ namespace ASC.Web.Files.Classes
             const string dbKey = "UniqueDocument";
             var resultKey = CoreContext.Configuration.GetSetting(dbKey);
 
-            if (!String.IsNullOrEmpty(resultKey)) return resultKey;
+            if (!string.IsNullOrEmpty(resultKey)) return resultKey;
 
             resultKey = Guid.NewGuid().ToString();
             CoreContext.Configuration.SaveSetting(dbKey, resultKey);
@@ -340,7 +336,7 @@ namespace ASC.Web.Files.Classes
 
         public static IDataStore GetStoreTemplate()
         {
-            return StorageFactory.GetStorage(String.Empty, FileConstant.StorageTemplate);
+            return StorageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
         }
 
         public static FileSecurity GetFilesSecurity()
@@ -350,7 +346,7 @@ namespace ASC.Web.Files.Classes
 
         public static string ReplaceInvalidCharsAndTruncate(string title)
         {
-            if (String.IsNullOrEmpty(title)) return title;
+            if (string.IsNullOrEmpty(title)) return title;
             title = title.Trim();
             if (MaxTitle < title.Length)
             {

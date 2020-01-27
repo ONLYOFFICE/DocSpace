@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 using ASC.Web.Core.Files;
