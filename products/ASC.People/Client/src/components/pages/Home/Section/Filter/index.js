@@ -60,7 +60,7 @@ class SectionFilterContent extends React.Component {
 
     const newFilter = getFilterByLocation(location);
 
-    if(!newFilter || newFilter.equals(filter)) return;
+    if (!newFilter || newFilter.equals(filter)) return;
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
@@ -99,23 +99,23 @@ class SectionFilterContent extends React.Component {
     const options = !isAdmin(user)
       ? []
       : [
-          {
-            key: "filter-status",
-            group: "filter-status",
-            label: t("UserStatus"),
-            isHeader: true
-          },
-          {
-            key: "1",
-            group: "filter-status",
-            label: t("LblActive")
-          },
-          {
-            key: "2",
-            group: "filter-status",
-            label: t("LblTerminated")
-          }
-        ];
+        {
+          key: "filter-status",
+          group: "filter-status",
+          label: t("UserStatus"),
+          isHeader: true
+        },
+        {
+          key: "1",
+          group: "filter-status",
+          label: t("LblActive")
+        },
+        {
+          key: "2",
+          group: "filter-status",
+          label: t("LblTerminated")
+        }
+      ];
 
     const groupOptions = groups.map(group => {
       return {
@@ -232,9 +232,17 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
+  needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.language !== nextProps.language) {
+      return true;
+    }
+    return false;
+  };
+
+
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t } = this.props;
+    const { t, i18n } = this.props;
     return (
       <FilterInput
         getFilterData={this.getData}
@@ -244,6 +252,8 @@ class SectionFilterContent extends React.Component {
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
         placeholder={t("FilterPlaceholder")}
+        needForUpdate={this.needForUpdate}
+        language={i18n.language}
       />
     );
   }
