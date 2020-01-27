@@ -23,7 +23,7 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { language } = this.props;
+    const { language, groupsCaption, t } = this.props;
     i18n.changeLanguage(language);
 
     getGroupList(this.props.useFake)
@@ -32,7 +32,7 @@ class PeopleSelector extends React.Component {
           groups: [
             {
               key: "all",
-              label: "All groups",
+              label: t('CustomAllGroups', { groupsCaption }),
               total: 0
             }
           ].concat(this.convertGroups(groups))
@@ -160,7 +160,9 @@ class PeopleSelector extends React.Component {
       onSelect,
       size,
       onCancel,
-      t
+      t,
+      searchPlaceHolderLabel,
+      groupsCaption
     } = this.props;
 
     return (
@@ -180,10 +182,10 @@ class PeopleSelector extends React.Component {
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
+        searchPlaceHolderLabel={searchPlaceHolderLabel || t("SearchUsersPlaceholder")}
         selectButtonLabel={t("AddMembersButtonLabel")}
         selectAllLabel={t("SelectAllLabel")}
-        groupsHeaderLabel={t("CustomDepartments", { departments: "Groups" })} //TODO: Replace to variable from settings
+        groupsHeaderLabel={groupsCaption}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
         loadingLabel={t("LoadingLabel")}
@@ -210,6 +212,8 @@ PeopleSelector.propTypes = {
   size: PropTypes.oneOf(["full", "compact"]),
   language: PropTypes.string,
   t: PropTypes.func,
+  groupsCaption: PropTypes.string,
+  searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"])
 };
 
