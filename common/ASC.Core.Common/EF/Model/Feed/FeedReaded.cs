@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF.Model
         [Column("tenant_id")]
         public int Tenant { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Tenant, UserId, Module };
         }

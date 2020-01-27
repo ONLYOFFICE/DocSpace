@@ -22,7 +22,7 @@ namespace ASC.Core.Common.EF
         [Column("last_modified")]
         public DateTime LastModified { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Tenant, UserId, GroupId, RefType };
         }

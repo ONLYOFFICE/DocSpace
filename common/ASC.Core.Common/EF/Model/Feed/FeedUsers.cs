@@ -11,7 +11,7 @@ namespace ASC.Core.Common.EF.Model
         public string FeedId { get; set; }
         public Guid UserId { get; set; }
 
-        internal override object[] GetKeys() => new object[] { FeedId, UserId };
+        public override object[] GetKeys() => new object[] { FeedId, UserId };
     }
 
     public static class FeedUsersExtension

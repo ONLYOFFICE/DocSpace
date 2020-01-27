@@ -47,7 +47,7 @@ namespace ASC.Core.Common.EF
 
     public abstract class BaseEntity
     {
-        internal abstract object[] GetKeys();
+        public abstract object[] GetKeys();
     }
 
     public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()

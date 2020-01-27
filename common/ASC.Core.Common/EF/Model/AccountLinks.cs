@@ -14,7 +14,7 @@ namespace ASC.Core.Common.EF.Model
         public string Profile { get; set; }
         public DateTime Linked { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Id, UId };
         }
