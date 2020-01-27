@@ -366,7 +366,7 @@ class UpdateUserForm extends React.Component {
   render() {
     const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
     const { t, i18n, settings } = this.props;
-    const { guestCaption, userCaption, regDateCaption, userPostCaption, groupCaption, groupsCaption } = settings.customNames;
+    const { guestCaption, userCaption, regDateCaption, userPostCaption, groupCaption } = settings.customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -389,12 +389,12 @@ class UpdateUserForm extends React.Component {
                 </Th>
                 <Th>
                   <Text isBold fontSize='13px'>
-                    {t("Employee")}
+                    {userCaption}
                   </Text>
                 </Th>
                 <Th>
                   <Text isBold fontSize='13px'>
-                    {t("GuestCaption")}
+                    {guestCaption}
                   </Text>
                 </Th>
               </tr>
@@ -605,10 +605,8 @@ class UpdateUserForm extends React.Component {
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}
               selectorIsVisible={selector.visible}
-              searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              // selectorAddButtonText={t("CustomAddDepartments", { groupsCaption })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}

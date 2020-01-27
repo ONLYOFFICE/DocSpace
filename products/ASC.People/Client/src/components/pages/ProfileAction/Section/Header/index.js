@@ -30,8 +30,8 @@ const SectionHeaderContent = (props) => {
 
   const headerText = type
     ? type === "guest"
-      ? t('CustomNewGuest', { guestCaption })
-      : t('CustomNewEmployee', { userCaption })
+      ? t('CustomCreation', { user: guestCaption })
+      : t('CustomCreation', { user: userCaption })
     : profile
       ? `${t('EditProfile')} (${profile.displayName})`
       : "";

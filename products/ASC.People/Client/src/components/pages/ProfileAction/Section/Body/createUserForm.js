@@ -319,7 +319,7 @@ class CreateUserForm extends React.Component {
   render() {
     const { isLoading, errors, profile, selector } = this.state;
     const { t, settings, i18n } = this.props;
-    const { regDateCaption, userPostCaption, groupCaption, groupsCaption } = settings.customNames;
+    const { regDateCaption, userPostCaption, groupCaption } = settings.customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -471,10 +471,8 @@ class CreateUserForm extends React.Component {
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}
               selectorIsVisible={selector.visible}
-              searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              // selectorAddButtonText={t("CustomAddDepartments", { groupsCaption })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}

@@ -20,7 +20,6 @@
   "EmailPopupHelper": "Основной email нужен для восстановления доступа к порталу в случае потери пароля, а также для отправки оповещений. <1>Вы можете создать новый email на домене в качестве основного. В этом случае потребуется задать одноразовый пароль, чтобы пользователь смог войти на портал в первый раз.</1> Основной email можно использовать как логин при входе на портал.",
   "ProfileTypePopupHelper": "Гости имеют ограниченный доступ к некоторым функциям и модулям портала",
   "ProductsAndInstruments_Products": "Модули",
-  "GuestCaption": "Гость",
   "TermsOfUsePopupHelperLink": "Подробнее об условиях использования",
   "Mail": "Почта",
   "DocumentsProduct": "Документы",
@@ -29,10 +28,10 @@
   "People": "Люди",
   "Message": "Чат",
 
-  "ActivationLink": "Activation link",
+  "ActivationLink": "Ссылка для активации",
   "AddPhoto": "Добавить фотографию",
   "AddСomment": "Добавить комментарий",
-  "TemporaryPassword": "Temporary password",
+  "TemporaryPassword": "Временный пароль",
   "SexMale": "Мужской",
   "SexFemale": "Женский",
   "RequiredField": "Обязательное поле",
@@ -42,9 +41,7 @@
   "EditProfile": "Редактирование профиля",
   "SearchDepartments": "Поиск группы",
 
-  "CustomNewEmployee": "Новый {{userCaption, lowercase}}",
-  "CustomNewGuest": "Новый {{guestCaption, lowercase}}",
-  "CustomAddDepartments": "Добавить {{groupCaption, lowercase}}",
+  "CustomCreation": "{{user}} (создание)",
 
   "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
   "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
@@ -53,6 +50,5 @@
   "unknownError":     "Ошибка",
   "editAvatar": "Изменить фотографию",
   "CalendarSelectDate": "Выберите дату:",
-  "Employee": "Гость",
   "Calendar": "Календарь"
 }

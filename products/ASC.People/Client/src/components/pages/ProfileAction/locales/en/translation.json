@@ -42,9 +42,7 @@
   "EditProfile": "Edit profile",
   "SearchDepartments": "Search departments",
 
-  "CustomNewEmployee": "New {{userCaption, lowercase}}",
-  "CustomNewGuest": "New {{guestCaption, lowercase}}",
-  "CustomAddDepartments": "Add {{groupCaption, lowercase}}",
+  "CustomCreation": "{{user}} (creation)",
 
   "chooseFileLabel":  "Drop file here, or click to select file",
   "chooseMobileFileLabel": "Click to select files",
