@@ -165,7 +165,7 @@ const StyledContainer = styled.div`
     top: 27.4%;
     width: 35%;
     height: 33.7%;
-    z-index: 100;
+    z-index: 1;
     -webkit-animation: fadein_birds 1s;
     -moz-animation: fadein_birds 1s;
     -ms-animation: fadein_birds 1s;
@@ -235,7 +235,7 @@ const StyledContainer = styled.div`
     top: 63.01%;
     width: 25.46%;
     height: 35.61%;
-    z-index: 200;
+    z-index: 2;
     -webkit-animation: fadein_mountain-left 1s;
     -moz-animation: fadein_mountain-left 1s;
     -ms-animation: fadein_mountain-left 1s;
@@ -305,7 +305,7 @@ const StyledContainer = styled.div`
     top: 54.79%;
     width: 30.66%;
     height: 44.38%;
-    z-index: 300;
+    z-index: 3;
     -webkit-animation: fadein_mountain-right 1s;
     -moz-animation: fadein_mountain-right 1s;
     -ms-animation: fadein_mountain-right 1s;
@@ -375,7 +375,7 @@ const StyledContainer = styled.div`
     top: 45.47%;
     width: 48.53%;
     height: 66.3%;
-    z-index: 400;
+    z-index: 5;
     -webkit-animation: fadein_mountain-center 1s;
     -moz-animation: fadein_mountain-center 1s;
     -ms-animation: fadein_mountain-center 1s;
@@ -445,7 +445,7 @@ const StyledContainer = styled.div`
     top: 63.01%;
     width: 8.4%;
     height: 7.39%;
-    z-index: 350;
+    z-index: 4;
     -webkit-animation: fadein_white-cloud-behind 1s ease-in,
       move_white-cloud-behind 1s linear 1s infinite alternate;
     -moz-animation: fadein_white-cloud-behind 1s ease-in,
@@ -560,7 +560,7 @@ const StyledContainer = styled.div`
     top: 73.97%;
     width: 9.86%;
     height: 9.04%;
-    z-index: 600;
+    z-index: 6;
     -webkit-animation: fadein_white-cloud-center 1s ease-in,
       move_white-cloud-center 1s linear 1s infinite alternate;
     -moz-animation: fadein_white-cloud-center 1s ease-in,
@@ -675,7 +675,7 @@ const StyledContainer = styled.div`
     top: 80.82%;
     width: 24%;
     height: 21.91%;
-    z-index: 700;
+    z-index: 7;
     -webkit-animation: fadein_white-cloud-left 1s ease-in;
     -moz-animation: fadein_white-cloud-left 1s ease-in;
     -ms-animation: fadein_white-cloud-left 1s ease-in;
@@ -745,7 +745,7 @@ const StyledContainer = styled.div`
     top: 86.3%;
     width: 21.33%;
     height: 19.17%;
-    z-index: 800;
+    z-index: 8;
     -webkit-animation: fadein_white-cloud-right 1s ease-in;
     -moz-animation: fadein_white-cloud-right 1s ease-in;
     -ms-animation: fadein_white-cloud-right 1s ease-in;
@@ -815,7 +815,7 @@ const StyledContainer = styled.div`
     top: 43.83%;
     width: 8.4%;
     height: 6.57%;
-    z-index: 900;
+    z-index: 9;
     -webkit-animation: fadein_blue-cloud-left 1s ease-in;
     -moz-animation: fadein_blue-cloud-left 1s ease-in;
     -ms-animation: fadein_blue-cloud-left 1s ease-in;
@@ -885,7 +885,7 @@ const StyledContainer = styled.div`
     top: 24.65%;
     width: 11.33%;
     height: 9.04%;
-    z-index: 1000;
+    z-index: 1;
     -webkit-animation: fadein_blue-cloud-right 1s ease-in;
     -moz-animation: fadein_blue-cloud-right 1s ease-in;
     -ms-animation: fadein_blue-cloud-right 1s ease-in;
@@ -955,7 +955,7 @@ const StyledContainer = styled.div`
     top: 13.69%;
     width: 12.26%;
     height: 38.08%;
-    z-index: 1100;
+    z-index: 11;
     -webkit-animation: fadein_baloon 1s,
       move_baloon 1s linear 1s infinite alternate;
     -moz-animation: fadein_baloon 1s,
