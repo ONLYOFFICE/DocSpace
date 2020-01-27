@@ -8,6 +8,7 @@ import { getUserList } from "../../api/people";
 import { getGroupList } from "../../api/groups";
 import Filter from "../../api/people/filter";
 import UserTooltip from "./sub-components/UserTooltip";
+import { changeLanguage } from '../../utils';
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -23,8 +24,8 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { language, groupsCaption, t } = this.props;
-    i18n.changeLanguage(language);
+    const { groupsCaption, t } = this.props;
+    changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
       .then(groups =>
@@ -227,8 +228,7 @@ PeopleSelector.defaultProps = {
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
 
 const PeopleSelectorWithI18n = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <ExtendedPeopleSelector i18n={i18n} {...props} />;
 };
