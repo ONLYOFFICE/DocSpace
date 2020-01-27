@@ -154,12 +154,12 @@ class SectionFilterContent extends React.Component {
       {
         key: "user",
         group: "filter-type",
-        label: t("CustomTypeUser", { userCaption })
+        label: userCaption
       },
       {
         key: "guest",
         group: "filter-type",
-        label: t("CustomTypeGuest", { guestCaption })
+        label: guestCaption
       },
       {
         key: "filter-other",

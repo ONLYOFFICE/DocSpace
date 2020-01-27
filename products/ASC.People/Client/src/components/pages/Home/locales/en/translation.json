@@ -41,11 +41,6 @@
   "LblSetDisabled": "Set disabled",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
 
-  "CustomHeadOfDepartment": " {{headOfDepartment}}",
-  "CustomTypeGuest": "{{guestCaption}}",
-  "CustomTypeUser": "{{userCaption}}",
-  "CustomMakeUser": "Make {{userCaption, lowercase}}",
-  "CustomMakeGuest": "Make {{guestCaption, lowercase}}",
   "CountPerPage": "{{count}} per page",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
 
@@ -56,9 +51,11 @@
 
   "FilterPlaceholder": "Search",
 
-  "CustomNewEmployee": "New {{userCaption, lowercase}}",
-  "CustomNewGuest": "New {{guestCaption, lowercase}}",
-  "CustomNewDepartment": "New {{groupCaption, lowercase}}",
   "MakeInvitationLink": "Make invitation link",
-  "SendInvitationAgain": "Send invitation once"
+  "SendInvitationAgain": "Send invitation once again",
+
+  "SuccessfullyInvitationSent": "The invitation was successfully sent",
+  "SuccessfullyRemovedUsers": "Users have been removed successfully",
+  "SendEmailAction": "Send e-mail action",
+  "SuccessfullyRemovedGroup": "Group has been removed successfully"
 }

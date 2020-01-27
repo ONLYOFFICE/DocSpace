@@ -98,20 +98,20 @@ const SectionHeaderContent = props => {
 
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
-      .then(() => toastr.success("The invitation was successfully sent"))
+      .then(() => toastr.success(t('SuccessfullyInvitationSent')))
       .catch(error => toastr.error(error));
-  }, [selectedUserIds]);
+  }, [selectedUserIds, t]);
 
   const onDelete = useCallback(() => {
     onLoading(true);
     deleteUsers(selectedUserIds)
       .then(() => {
-        toastr.success("Users have been removed successfully");
+        toastr.success(t('SuccessfullyRemovedUsers'));
         return fetchPeople(filter);
       })
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
-  }, [selectedUserIds, onLoading, filter]);
+  }, [selectedUserIds, onLoading, filter, t]);
 
   const menuItems = [
     {
@@ -128,12 +128,12 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: t("CustomMakeUser", { userCaption: settings.customNames.userCaption }),
+      label: settings.customNames.userCaption,
       disabled: !selection.length,
       onClick: onSetEmployee
     },
     {
-      label: t("CustomMakeGuest", { guestCaption: settings.customNames.guestCaption }),
+      label: settings.customNames.guestCaption,
       disabled: !selection.length,
       onClick: onSetGuest
     },
@@ -155,7 +155,7 @@ const SectionHeaderContent = props => {
     {
       label: t("LblSendEmail"),
       disabled: !selection.length,
-      onClick: toastr.success.bind(this, "Send e-mail action")
+      onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
       label: t("DeleteButton"),
@@ -171,9 +171,9 @@ const SectionHeaderContent = props => {
 
   const onDeleteGroup = useCallback(() => {
     deleteGroup(group.id).then(() =>
-      toastr.success("Group has been removed successfully")
+      toastr.success(t("SuccessfullyRemovedGroup"))
     );
-  }, [deleteGroup, group]);
+  }, [deleteGroup, group, t]);
 
   const getContextOptionsGroup = useCallback(() => {
     return [
@@ -211,17 +211,17 @@ const SectionHeaderContent = props => {
     return [
       {
         key: "new-employee",
-        label: t("CustomNewEmployee", { userCaption }),
+        label: userCaption,
         onClick: goToEmployeeCreate
       },
       {
         key: "new-guest",
-        label: t("CustomNewGuest", { guestCaption }),
+        label: guestCaption,
         onClick: goToGuestCreate
       },
       {
         key: "new-group",
-        label: t("CustomNewDepartment", { groupCaption }),
+        label: groupCaption,
         onClick: goToGroupCreate
       },
       { key: 'separator', isSeparator: true },
