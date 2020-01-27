@@ -12,7 +12,7 @@ storiesOf('Components| ErrorContainer', module)
         <ErrorContainer 
             headerText={text("headerText", "Error 404. Page not found")}
             bodyText={text("bodyText", "This page was removed, renamed or doesn’t exist anymore.")}
-            returnText={text("buttonText", "Return to homepage")}
-            returnUrl={text("buttonUrl", "/")}
+            buttonText={text("buttonText", "Return to homepage")}
+            buttonUrl={text("buttonUrl", "/")}
         />
     ));
