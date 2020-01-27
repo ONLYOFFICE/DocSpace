@@ -15,12 +15,11 @@ const StyledSectionBody = styled.div`
 `;
 
 const StyledSectionWrapper = styled.div`
-  margin: 16px 8px 16px 0;
-  padding-left: 24px;
+  padding: 16px 8px 16px 24px;
   outline: none;
 
   @media ${tablet} {
-    margin: 16px 0;
+    padding: 16px 0 16px 24px;
   }
 `;
 
@@ -65,7 +64,7 @@ class SectionBody extends React.Component {
             </StyledSectionWrapper>
           </Scrollbar>
         ) : (
-          <StyledSectionWrapper {...focusProps}>
+          <StyledSectionWrapper>
             {children}
             <StyledSpacer pinned={pinned}/>
           </StyledSectionWrapper>
