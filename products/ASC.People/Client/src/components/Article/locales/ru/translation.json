@@ -2,8 +2,5 @@
   "InviteLinkTitle": "Пригласительная ссылка",
   "ImportPeople": "Импортировать людей",
   "Actions": "Действия",
-  "LblInviteAgain": "Отправить приглашение ещё раз",
-  "CustomNewEmployee": "Новый {{userCaption, lowercase}}",
-  "CustomNewGuest": "Новый {{guestCaption, lowercase}}",
-  "CustomNewDepartment": "Новый {{groupCaption, lowercase}}"
+  "LblInviteAgain": "Отправить приглашение ещё раз"
 }

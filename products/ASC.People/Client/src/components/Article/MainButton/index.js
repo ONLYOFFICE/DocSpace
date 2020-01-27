@@ -62,17 +62,17 @@ class PureArticleMainButtonContent extends React.Component {
           >
             <DropDownItem
               icon="CatalogEmployeeIcon"
-              label={t('CustomNewEmployee', { userCaption })}
+              label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
             <DropDownItem
               icon="CatalogGuestIcon"
-              label={t('CustomNewGuest', { guestCaption })}
+              label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
               icon="CatalogDepartmentsIcon"
-              label={t('CustomNewDepartment', { groupCaption })}
+              label={groupCaption}
               onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />

@@ -2,8 +2,5 @@
   "InviteLinkTitle": "Invitation link",
   "ImportPeople": "Import people",
   "Actions": "Actions",
-  "LblInviteAgain": "Invite again",
-  "CustomNewEmployee": "New {{userCaption, lowercase}}",
-  "CustomNewGuest": "New {{guestCaption, lowercase}}",
-  "CustomNewDepartment": "New {{groupCaption, lowercase}}"
+  "LblInviteAgain": "Invite again"
 }
