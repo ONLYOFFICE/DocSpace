@@ -411,6 +411,12 @@ class FilterInput extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.throttledResize);
     }
+    componentDidUpdate(){
+        if(this.props.needForUpdate){
+            let internalFilterData = convertToInternalData(this.props.getFilterData(), cloneObjectsArray(this.props.selectedFilterData.filterValues));
+            this.updateFilter(internalFilterData);
+        }
+    }
     shouldComponentUpdate(nextProps, nextState) {
         if (!isEqual(this.props.selectedFilterData, nextProps.selectedFilterData)) {
             let internalFilterData = cloneObjectsArray(this.state.filterValues);
@@ -516,7 +522,8 @@ FilterInput.protoTypes = {
     directionDescLabel: PropTypes.string,
     className: PropTypes.string,
     id: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    needForUpdate: PropTypes.bool
 };
 
 FilterInput.defaultProps = {
@@ -528,6 +535,7 @@ FilterInput.defaultProps = {
         searchText: ''
     },
     size: 'base',
+    needForUpdate: false,
     directionAscLabel: 'A-Z',
     directionDescLabel: 'Z-A'
 };
