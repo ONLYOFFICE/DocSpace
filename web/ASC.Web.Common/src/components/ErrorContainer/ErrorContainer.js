@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import StyledErrorContainer from './StyledErrorContainer';
+import StyledErrorContainer from "./StyledErrorContainer";
+import Headline from "../Headline";
+import { Text, Button } from "asc-web-components";
 
 const ErrorContainer = props => {
   //console.log("ErrorContainer render");
@@ -322,15 +324,24 @@ const ErrorContainer = props => {
           <ellipse cx="46" cy="46" rx="12" ry="46" fill="#D0E7F9" />
         </svg>
       </div>
-      {headerText && <h1 id="header">{headerText}</h1>}
-      {bodyText && <p id="text">{bodyText}</p>}
-      {buttonText && buttonUrl && 
+      {headerText && (
+        <Headline id="header" type="header">
+          {headerText}
+        </Headline>
+      )}
+      {bodyText && <Text id="text">{bodyText}</Text>}
+      {buttonText && buttonUrl && (
         <div id="button-container">
-            <a id="button" href={buttonUrl}>
-            {buttonText}
-            </a>
+          <Button
+            id="button"
+            size="big"
+            scale
+            primary
+            label={buttonText}
+            onClick={() => (window.location.href = buttonUrl)}
+          />
         </div>
-      }
+      )}
     </StyledErrorContainer>
   );
 };

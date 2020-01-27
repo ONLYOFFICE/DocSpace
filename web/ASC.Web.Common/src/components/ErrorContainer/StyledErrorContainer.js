@@ -15,12 +15,6 @@ const StyledErrorContainer = styled.div`
   border: 0;
   box-sizing: border-box;
 
-  #logo-container {
-    margin: 0 0 auto 0;
-    height: 35px;
-    max-height: 35px;
-  }
-
   #container {
     position: relative;
     margin: 12px 0 60px 0;
@@ -50,17 +44,7 @@ const StyledErrorContainer = styled.div`
 
   #button {
     display: inline-block;
-    background: #33b2e3;
-    border-radius: 3px;
-    color: #ffffff;
-    padding: 12px 20px;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 19px;
-    text-decoration: none;
-    text-align: center;
     margin: 0 0 36px 0;
-    box-sizing: border-box;
   }
 
   @media screen and (max-width: 960px) {
