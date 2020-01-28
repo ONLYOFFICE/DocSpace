@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Backdrop } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { connect } from "react-redux";
 import { ARTICLE_PINNED_KEY } from "../../constants";
 
 import Article from "./sub-components/article";
@@ -241,13 +240,5 @@ PageLayoutComponent.defaultProps = {
   withBodyAutoFocus: false
 };
 
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
 
-export default connect(mapStateToProps)(PageLayout);
+export default PageLayout;

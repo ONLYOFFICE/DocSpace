@@ -82,8 +82,7 @@ function mapStateToProps(state) {
     availableModules: getAvailableModules(state.auth.modules, state.auth.user),
     currentUser: state.auth.user,
     currentModuleId: state.auth.settings.currentProductId,
-    settings: state.auth.settings,
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    settings: state.auth.settings
   };
 }
 

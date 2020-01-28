@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import AdvancedSelector from "../AdvancedSelector";
 import { getGroupList } from "../../api/groups";
+import { changeLanguage } from '../../utils';
 
 class GroupSelector extends React.Component {
   constructor(props) {
@@ -15,8 +15,7 @@ class GroupSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { language } = this.props;
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
       .then(groups => this.setState({ groups: this.convertGroups(groups) }))
@@ -147,23 +146,9 @@ GroupSelector.defaultProps = {
 const ExtendedGroupSelector = withTranslation()(GroupSelector);
 
 const GroupSelectorWithI18n = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <ExtendedGroupSelector i18n={i18n} {...props} />;
 };
 
-GroupSelectorWithI18n.propTypes = {
-  language: PropTypes.string
-};
-
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
-
-export default connect(mapStateToProps)(GroupSelectorWithI18n);
+export default GroupSelectorWithI18n;

@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -237,13 +236,4 @@ PeopleSelectorWithI18n.propTypes = {
   language: PropTypes.string
 };
 
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
-
-export default connect(mapStateToProps)(PeopleSelectorWithI18n);
+export default PeopleSelectorWithI18n;
