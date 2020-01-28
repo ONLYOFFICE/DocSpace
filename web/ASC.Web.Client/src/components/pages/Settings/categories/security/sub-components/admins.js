@@ -447,7 +447,7 @@ class PureAdminsSettings extends Component {
 
                             <Text>
                               {user.isAdmin
-                                ? t('PortalAdmin')
+                                ? t('AccessRightsFullAccess')
                                 : t('PeopleAdmin')}
                             </Text>
 
