@@ -148,8 +148,8 @@ class ProfileInfo extends React.PureComponent {
     const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const { t, i18n, userPostCaption, regDateCaption, groupCaption } = this.props;
-    const type = isVisitor ? "Guest" : "Employee";
+    const { t, i18n, userPostCaption, regDateCaption, groupCaption, userCaption, guestCaption } = this.props;
+    const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
     const selectedLanguage = languages.find(item => item.key === language);
@@ -320,6 +320,8 @@ function mapStateToProps(state) {
     groupCaption: state.auth.settings.customNames.groupCaption,
     regDateCaption: state.auth.settings.customNames.regDateCaption,
     userPostCaption: state.auth.settings.customNames.userPostCaption,
+    userCaption: state.auth.settings.customNames.userCaption,
+    guestCaption: state.auth.settings.customNames.guestCaption,
     nameSchemaId: state.auth.settings.nameSchemaId
   }
 }
