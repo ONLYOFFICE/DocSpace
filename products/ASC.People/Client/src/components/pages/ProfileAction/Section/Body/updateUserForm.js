@@ -527,6 +527,7 @@ class UpdateUserForm extends React.Component {
               inputOnChange={this.onInputChange}
               inputAutoFocussed={true}
               inputTabIndex={4}
+              maxLength={50}
             />
             <TextField
               isRequired={true}
@@ -537,6 +538,7 @@ class UpdateUserForm extends React.Component {
               inputIsDisabled={isLoading}
               inputOnChange={this.onInputChange}
               inputTabIndex={5}
+              maxLength={50}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}

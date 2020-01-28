@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton, utils } from "asc-web-components";
+import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import { resetGroup } from "../../../../../store/group/actions";
@@ -13,19 +13,12 @@ const Wrapper = styled.div`
   align-items: center;
 
   .arrow-button {
+    margin-right: 16px;
+
     @media (max-width: 1024px) {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
     }
-  }
-`;
-
-const HeaderContainer = styled(Headline)`
-  margin-left: 16px;
-  max-width: calc(100vw - 430px);
-
-  @media ${utils.device.tablet} {
-    max-width: calc(100vw - 64px);
   }
 `;
 
@@ -62,9 +55,9 @@ class SectionHeaderContent extends React.Component {
           onClick={this.onClickBack}
           className="arrow-button"
         />
-        <HeaderContainer type="content" truncate={true}>
+        <Headline type="content" truncate={true}>
           {headerText}
-        </HeaderContainer>
+        </Headline>
       </Wrapper>
     );
   }

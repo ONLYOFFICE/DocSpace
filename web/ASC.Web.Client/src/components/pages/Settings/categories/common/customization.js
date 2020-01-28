@@ -42,14 +42,8 @@ const StyledComponent = styled.div`
       max-width: 500px;
    }
 
-   .dropdown-item-width {
-      & > div:last-child {
-         & > div:first-child {
-            div{
-               max-width: 100%;
-            }
-         }
-      }
+   .combo-button-label {
+      max-width: 100%;
    }
 `;
 class Customization extends React.Component {
