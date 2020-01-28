@@ -406,9 +406,9 @@ class SectionHeaderContent extends React.PureComponent {
           headerLabel={t("editAvatar")}
           chooseFileLabel={t("chooseFileLabel")}
           chooseMobileFileLabel={t("chooseMobileFileLabel")}
-          unknownTypeError={t("unknownTypeError")}
+          unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("unknownError")}
+          unknownError={t("Error")}
         />
 
         {dialogsVisible.deleteSelfProfile &&

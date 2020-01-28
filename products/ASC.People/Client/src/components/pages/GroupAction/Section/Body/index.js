@@ -104,7 +104,7 @@ class SectionBodyContent extends React.Component {
           }
         : {
             key: 0,
-            label: t("Select")
+            label: t("LblSelect")
           },
       groupMembers:
         group && group.members
@@ -123,7 +123,7 @@ class SectionBodyContent extends React.Component {
             }
           : {
               key: GUID_EMPTY,
-              label: t("Select"),
+              label: t("LblSelect"),
               default: true
             }
     };

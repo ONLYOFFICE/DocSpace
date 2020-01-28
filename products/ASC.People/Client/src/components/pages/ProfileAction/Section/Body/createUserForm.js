@@ -345,9 +345,9 @@ class CreateUserForm extends React.Component {
               headerLabel={t("editAvatar")}
               chooseFileLabel ={t("chooseFileLabel")}
               chooseMobileFileLabel={t("chooseMobileFileLabel")}
-              unknownTypeError={t("unknownTypeError")}
+              unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
-              unknownError    ={t("unknownError")}
+              unknownError    ={t("Error")}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
@@ -419,7 +419,7 @@ class CreateUserForm extends React.Component {
               passwordSettings={settings.passwordSettings}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -432,14 +432,14 @@ class CreateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: t("SexMale") },
-                { value: 'female', label: t("SexFemale") }
+                { value: 'male', label: t("MaleSexStatus") },
+                { value: 'female', label: t("FemaleSexStatus") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${regDateCaption}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
@@ -480,7 +480,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
-          <Textarea placeholder={t("AddСomment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
+          <Textarea placeholder={t("WriteComment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField

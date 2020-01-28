@@ -33,7 +33,7 @@ const SectionHeaderContent = (props) => {
       ? t('CustomCreation', { user: guestCaption })
       : t('CustomCreation', { user: userCaption })
     : profile
-      ? `${t('EditProfile')} (${profile.displayName})`
+      ? `${t('EditUserDialogTitle')} (${profile.displayName})`
       : "";
 
   const onClickBack = useCallback(() => {

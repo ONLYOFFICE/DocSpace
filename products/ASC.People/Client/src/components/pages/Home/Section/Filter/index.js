@@ -172,7 +172,7 @@ class SectionFilterContent extends React.Component {
         group: "filter-other",
         subgroup: "filter-group",
         label: groupCaption,
-        defaultSelectLabel: t("DefaultSelectLabel")
+        defaultSelectLabel: t("LblSelect")
       },
       ...groupOptions
     ];
@@ -251,7 +251,7 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("FilterPlaceholder")}
+        placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
         language={i18n.language}
       />

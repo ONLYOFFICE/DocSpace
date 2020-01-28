@@ -98,7 +98,7 @@ const SectionHeaderContent = props => {
 
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
-      .then(() => toastr.success(t('SuccessfullyInvitationSent')))
+      .then(() => toastr.success(t('SuccessSendInvitation')))
       .catch(error => toastr.error(error));
   }, [selectedUserIds, t]);
 
@@ -232,7 +232,7 @@ const SectionHeaderContent = props => {
       }/* ,
       {
         key: "send-invitation",
-        label: t("SendInvitationAgain"),
+        label: t("SendInviteAgain"),
         onClick: onSentInviteAgain
       } */
     ];

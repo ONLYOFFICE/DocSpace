@@ -1,14 +1,14 @@
 {
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
-
-  "CustomNewDepartment": "{{groupCaption}} (создание)",
   "Members": "Участники",
   "AddMembers": "Добавить участников",
-  "SearchAddedMembers": "Поиск добавленных участников",
-
-  "Select": "Выбрать",
+  "LblSelect": "Выбрать",
   "Name": "Название",
   "AddButton": "Добавить",
-  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'"
+
+  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'",
+  
+  "CustomNewDepartment": "{{groupCaption}} (создание)",
+  "SearchAddedMembers": "Поиск добавленных участников"
 }

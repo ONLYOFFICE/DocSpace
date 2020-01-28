@@ -1,14 +1,14 @@
 {
   "SaveButton": "Save",
   "CancelButton": "Cancel",
-
-  "CustomNewDepartment": "{{groupCaption}} (creation)",
   "Members": "Members",
   "AddMembers": "Add members",
-  "SearchAddedMembers": "Search added members",
-  
-  "Select": "Select",
+  "LblSelect": "Select",
   "Name": "Name",
   "AddButton": "Add",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
+
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully",
+  
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "SearchAddedMembers": "Search added members"
 }

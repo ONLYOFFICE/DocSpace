@@ -45,7 +45,7 @@ class ChangePhoneDialogComponent extends React.Component {
         headerContent={t('MobilePhoneChangeTitle')}
         bodyContent={
           <Text>
-            {t('MessageChangePhone')}
+            {t('MobilePhoneEraseDescription')}
           </Text>
         }
         footerContent={

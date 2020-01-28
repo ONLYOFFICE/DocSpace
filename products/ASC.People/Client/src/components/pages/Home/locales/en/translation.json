@@ -32,6 +32,13 @@
   "People": "People",
   "PreviousPage": "Previous",
   "NextPage": "Next",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
+  "Search": "Search",
+  "SendInviteAgain": "Send invitation once again",
+  "SuccessSendInvitation": "The invitation was successfully sent",
+
+  "CountPerPage": "{{count}} per page",
+  "PageOfTotalPage": "{{page}} of {{totalPage}}",
 
   "LblInviteAgain": "Invite again",
   "ByFirstNameSorting": "By first name",
@@ -39,22 +46,9 @@
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
-  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
-
-  "CountPerPage": "{{count}} per page",
-  "PageOfTotalPage": "{{page}} of {{totalPage}}",
-
   "DirectionAscLabel":"A-Z",
   "DirectionDescLabel":"Z-A",
-
-  "DefaultSelectLabel": "Select",
-
-  "FilterPlaceholder": "Search",
-
   "MakeInvitationLink": "Make invitation link",
-  "SendInvitationAgain": "Send invitation once again",
-
-  "SuccessfullyInvitationSent": "The invitation was successfully sent",
   "SuccessfullyRemovedUsers": "Users have been removed successfully",
   "SendEmailAction": "Send e-mail action",
   "SuccessfullyRemovedGroup": "Group has been removed successfully"

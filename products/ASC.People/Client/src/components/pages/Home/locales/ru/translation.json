@@ -40,19 +40,16 @@
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
+  "Search": "Поиск",
+  "SendInviteAgain": "Отправить приглашение ещё раз",
+  "SuccessSendInvitation": "Приглашение успешно отправлено",
 
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "CountPerPage": "{{count}} на странице",
 
   "DirectionAscLabel":"А-Я",
   "DirectionDescLabel":"Я-А",
-
-  "DefaultSelectLabel": "Выберите",
-
-  "FilterPlaceholder": "Поиск",
-
   "MakeInvitationLink": "Создать пригласительную ссылку",
-  "SendInvitationAgain": "Отправить приглашение ещё раз",
-  "SuccessfullyInvitationSent": "Приглашение успешно отправлено",
   "SuccessfullyRemovedUsers": "Пользователи были успешно удалены",
   "SendEmailAction": "Действие отправки e-mail",
   "SuccessfullyRemovedGroup": "Группа была успешно удалена"
