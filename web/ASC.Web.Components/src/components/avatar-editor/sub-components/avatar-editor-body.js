@@ -105,7 +105,6 @@ class AvatarEditorBody extends React.Component {
             image: this.props.image ? this.props.image : "",
             scale: 1,
             croppedImage: '',
-
             errorText: null
         }
 
@@ -126,7 +125,6 @@ class AvatarEditorBody extends React.Component {
 
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
-
 
         this.onPositionChange = this.onPositionChange.bind(this);
 
@@ -285,6 +283,10 @@ class AvatarEditorBody extends React.Component {
             this.setState({
                 image: this.props.image
             });
+        }else if(!prevProps.visible && this.props.visible){
+            this.setState({
+                image: this.props.image ? this.props.image : "",
+            });
         }
     }
     render() {
@@ -373,6 +375,7 @@ AvatarEditorBody.propTypes = {
     onImageChange: PropTypes.func,
     onPositionChange: PropTypes.func,
     onSizeChange: PropTypes.func,
+    visible: PropTypes.bool,
     onLoadFileError: PropTypes.func,
     onLoadFile: PropTypes.func,
     deleteImage: PropTypes.func,
@@ -384,12 +387,12 @@ AvatarEditorBody.propTypes = {
     unknownTypeError: PropTypes.string,
     maxSizeFileError: PropTypes.string,
     unknownError: PropTypes.string
-
 };
 
 AvatarEditorBody.defaultProps = {
     accept: ['image/png', 'image/jpeg'],
     maxSize: Number.MAX_SAFE_INTEGER,
+    visible: false,
     chooseFileLabel: "Drop files here, or click to select files",
     chooseMobileFileLabel: "Click to select files",
     unknownTypeError: "Unknown image file type",
