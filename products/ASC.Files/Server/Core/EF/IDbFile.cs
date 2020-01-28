@@ -4,4 +4,9 @@
     {
         public int TenantId { get; set; }
     }
+
+    public interface IDbSearch
+    {
+        public string Title { get; set; }
+    }
 }

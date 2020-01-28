@@ -30,7 +30,11 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Web;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -190,6 +194,17 @@ namespace ASC.Web.Studio.Core
             return hideSettings == null || !hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
         }
 
+        public long MaxChunkedUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+        {
+            var diskQuota = tenantExtra.GetTenantQuota();
+            if (diskQuota != null)
+            {
+                var usedSize = tenantStatisticsProvider.GetUsedSize();
+                var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
+                return Math.Min(freeSize, diskQuota.MaxFileSize);
+            }
+            return ChunkUploadSize;
+        }
 
         private string GetAppSettings(string key, string defaultValue)
         {

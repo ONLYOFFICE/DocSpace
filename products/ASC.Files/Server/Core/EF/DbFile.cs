@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace ASC.Files.Core.EF
 {
     [Table("files_file")]
-    public class DbFile : BaseEntity, IDbFile
+    public class DbFile : BaseEntity, IDbFile, IDbSearch
     {
         public int Id { get; set; }
         public int Version { get; set; }
@@ -17,7 +17,7 @@ namespace ASC.Files.Core.EF
         public int VersionGroup { get; set; }
 
         [Column("current_version")]
-        public int CurrentVersion { get; set; }
+        public bool CurrentVersion { get; set; }
 
         [Column("folder_id")]
         public int FolderId { get; set; }

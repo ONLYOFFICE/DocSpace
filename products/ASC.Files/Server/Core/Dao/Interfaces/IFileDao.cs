@@ -33,7 +33,7 @@ namespace ASC.Files.Core
     /// <summary>
     ///    Interface encapsulates access toFolderId files
     /// </summary>
-    public interface IFileDao : IDisposable
+    public interface IFileDao
     {
         /// <summary>
         ///     Clear the application cache for the specific file

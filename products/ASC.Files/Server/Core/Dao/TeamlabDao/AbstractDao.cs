@@ -49,10 +49,14 @@ namespace ASC.Files.Core.Data
 
         public FilesDbContext FilesDbContext { get; }
 
-        internal int TenantID { get; }
+        protected internal int TenantID { get; }
         public TenantUtil TenantUtil { get; }
 
-        protected AbstractDao(DbContextManager<FilesDbContext> dbContextManager, TenantManager tenantManager, TenantUtil tenantUtil, string storageKey)
+        protected AbstractDao(
+            DbContextManager<FilesDbContext> dbContextManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            string storageKey)
         {
             cache = AscCache.Memory;
             FilesDbContext = dbContextManager.Value;
@@ -104,7 +108,7 @@ namespace ASC.Files.Core.Data
         protected string GetRootFolderType(DbFile file)
         {
             return FilesDbContext.Folders
-                .Join(FilesDbContext.FolderTree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                 .Where(r => r.folder.TenantId == file.TenantId)
                 .Where(r => r.tree.FolderId == file.FolderId)
                 .OrderByDescending(r => r.tree.Level)
@@ -132,23 +136,23 @@ namespace ASC.Files.Core.Data
         protected bool GetSharedQuery(FileEntryType type, DbFile dbFile)
         {
             return
-                FilesDbContext.FilesSecurity
+                FilesDbContext.Security
                 .Where(r => r.EntryType == type)
                 .Where(r => r.EntryId == dbFile.Id.ToString())
                 .Any();
         }
 
-        protected void GetRecalculateFilesCountUpdate(int folderId)
+        protected void GetRecalculateFilesCountUpdate(object folderId)
         {
             var folders = FilesDbContext.Folders
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.FolderTree.Where(r => r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id));
+                .Where(r => FilesDbContext.Tree.Where(r => (object)r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id));
 
             foreach (var f in folders)
             {
                 var filesCount =
                     FilesDbContext.Files
-                    .Join(FilesDbContext.FolderTree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
+                    .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
                     .Where(r => r.file.TenantId == f.TenantId)
                     .Where(r => r.tree.ParentId == f.Id)
                     .Count();
@@ -180,7 +184,7 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                result = Query(r => r.FilesThirdpartyIdMapping)
+                result = Query(r => r.ThirdpartyIdMapping)
                     .Where(r => r.HashId == id.ToString())
                     .Select(r => r.Id)
                     .FirstOrDefault();
@@ -194,7 +198,7 @@ namespace ASC.Files.Core.Data
                     HashId = result.ToString()
                 };
 
-                FilesDbContext.AddOrUpdate(r => r.FilesThirdpartyIdMapping, newItem);
+                FilesDbContext.AddOrUpdate(r => r.ThirdpartyIdMapping, newItem);
             }
 
             return result;
@@ -205,9 +209,24 @@ namespace ASC.Files.Core.Data
             return MappingID(id, false);
         }
 
-        //public static Exp BuildSearch(string column, string text, SqlLike like = SqlLike.AnyWhere)
-        //{
-        //    return Exp.Like(string.Format("lower({0})", column), text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_"), like);
-        //}
+        internal static bool BuildSearch(IDbSearch dbSearch, string text, SearhTypeEnum searhTypeEnum)
+        {
+            var lowerTitle = dbSearch.Title.ToLower();
+            var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+            return searhTypeEnum switch
+            {
+                SearhTypeEnum.Start => lowerTitle.StartsWith(lowerText),
+                SearhTypeEnum.End => lowerTitle.EndsWith(lowerText),
+                SearhTypeEnum.Any => lowerTitle.Contains(lowerText),
+                _ => lowerTitle.EndsWith(lowerText),
+            };
+        }
+
+        internal enum SearhTypeEnum
+        {
+            Start,
+            End,
+            Any
+        }
     }
 }
