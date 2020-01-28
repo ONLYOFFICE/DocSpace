@@ -15,8 +15,8 @@ const { sendInstructionsToDelete } = api.people;
 const { changeLanguage } = utils;
 
 class DeleteSelfProfileDialogComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       isRequestRunning: false

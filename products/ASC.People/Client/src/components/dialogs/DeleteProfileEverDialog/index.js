@@ -18,8 +18,8 @@ const { Filter } = api;
 const { changeLanguage } = utils;
 
 class DeleteProfileEverDialogComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       isRequestRunning: false

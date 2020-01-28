@@ -12,8 +12,8 @@ import { api, utils } from "asc-web-common";
 const { changeLanguage } = utils;
 
 class ChangePhoneDialogComponent extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       isRequestRunning: false
