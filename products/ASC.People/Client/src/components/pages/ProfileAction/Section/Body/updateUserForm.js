@@ -464,7 +464,7 @@ class UpdateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
-              headerLabel={t("editAvatar")}
+              headerLabel={t("EditPhoto")}
               chooseFileLabel={t("chooseFileLabel")}
               chooseMobileFileLabel={t("chooseMobileFileLabel")}
               unknownTypeError={t("ErrorUnknownFileImageType")}

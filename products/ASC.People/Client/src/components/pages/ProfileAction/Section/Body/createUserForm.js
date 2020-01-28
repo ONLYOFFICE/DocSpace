@@ -333,7 +333,7 @@ class CreateUserForm extends React.Component {
               role={getUserRole(profile)}
               editing={true}
               source={this.state.croppedAvatarImage}
-              editLabel={t("AddPhoto")}
+              editLabel={t("AddButton")}
               editAction={this.openAvatarEditor}
             />
             <AvatarEditor
@@ -342,7 +342,7 @@ class CreateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
-              headerLabel={t("editAvatar")}
+              headerLabel={t("AddPhoto")}
               chooseFileLabel ={t("chooseFileLabel")}
               chooseMobileFileLabel={t("chooseMobileFileLabel")}
               unknownTypeError={t("ErrorUnknownFileImageType")}
