@@ -130,10 +130,8 @@ class ProfileInfo extends React.PureComponent {
     if (profile.cultureName === language.key) return;
 
     updateProfileCulture(profile.id, language.key)
-      .then(() => {
-        getCurrentCustomSchema(store.dispatch, nameSchemaId);
-        getModules(store.dispatch);
-      })
+      .then(() => getModules(store.dispatch))
+      .then(() => getCurrentCustomSchema(store.dispatch, nameSchemaId));
   }
 
   getLanguages = () => {
