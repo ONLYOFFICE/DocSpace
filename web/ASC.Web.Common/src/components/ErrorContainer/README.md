@@ -5,7 +5,7 @@ Used to display full page error
 ### Usage
 
 ```js
-import { ErrorContainer } from "asc-web-components";
+import { ErrorContainer } from "asc-web-common";
 ```
 
 ```jsx
