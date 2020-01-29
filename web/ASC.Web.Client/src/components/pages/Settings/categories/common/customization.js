@@ -97,7 +97,7 @@ class Customization extends React.Component {
       }
       if (this.props.language !== prevProps.language) {
          this.props.i18n
-            .loadLanguages(this.props.language)
+         .reloadResources([this.props.language])
             .then(() => {
                const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
                const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
