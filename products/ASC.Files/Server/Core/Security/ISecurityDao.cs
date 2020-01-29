@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core.Security
 {
-    public interface ISecurityDao : IDisposable
+    public interface ISecurityDao
     {
         void SetShare(FileShareRecord r);
 

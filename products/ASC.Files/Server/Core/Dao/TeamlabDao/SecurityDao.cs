@@ -27,44 +27,73 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
     internal class SecurityDao : AbstractDao, ISecurityDao
     {
-        public SecurityDao(int tenant, string key)
-            : base(tenant, key)
+        public SecurityDao(UserManager userManager,
+            DbContextManager<FilesDbContext> dbContextManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            SetupInfo setupInfo,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticProvider,
+            CoreBaseSettings coreBaseSettings,
+            CoreConfiguration coreConfiguration,
+            SettingsManager settingsManager,
+            AuthContext authContext,
+            string storageKey)
+            : base(dbContextManager,
+                  userManager,
+                  tenantManager,
+                  tenantUtil,
+                  setupInfo,
+                  tenantExtra,
+                  tenantStatisticProvider,
+                  coreBaseSettings,
+                  coreConfiguration,
+                  settingsManager,
+                  authContext,
+                  storageKey)
         {
         }
 
         public void DeleteShareRecords(IEnumerable<FileShareRecord> records)
         {
-            using (var tx = dbManager.BeginTransaction())
+            using var tx = FilesDbContext.Database.BeginTransaction();
+
+            foreach (var record in records)
             {
-                foreach (var record in records)
-                {
-                    var d1 = new SqlDelete("files_security")
-                        .Where("tenant_id", record.Tenant)
-                        .Where(Exp.Eq("entry_id", MappingID(record.EntryId).ToString()))
-                        .Where("entry_type", (int)record.EntryType)
-                        .Where("subject", record.Subject.ToString());
+                var query = FilesDbContext.Security
+                    .Where(r => r.TenantId == record.Tenant)
+                    .Where(r => r.EntryId == MappingID(record.EntryId).ToString())
+                    .Where(r => r.EntryType == record.EntryType)
+                    .Where(r => r.Subject == record.Subject);
 
-                    dbManager.ExecuteNonQuery(d1);
-                }
-
-                tx.Commit();
+                FilesDbContext.RemoveRange(query);
             }
+
+            tx.Commit();
         }
 
         public bool IsShared(object entryId, FileEntryType type)
         {
-            var q = Query("files_security s")
-                .SelectCount()
-                .Where(Exp.Eq("s.entry_id", MappingID(entryId).ToString()))
-                .Where("s.entry_type", (int)type);
-
-            return dbManager.ExecuteScalar<int>(q) > 0;
+            return Query(r => r.Security)
+                .Where(r => r.EntryId == MappingID(entryId).ToString())
+                .Where(r => r.EntryType == type)
+                .Any();
         }
 
         public void SetShare(FileShareRecord r)
@@ -74,34 +103,37 @@ namespace ASC.Files.Core.Data
                 var entryId = (MappingID(r.EntryId) ?? "").ToString();
                 if (string.IsNullOrEmpty(entryId)) return;
 
-                using (var tx = dbManager.BeginTransaction())
+                using (var tx = FilesDbContext.Database.BeginTransaction())
                 {
                     var files = new List<string>();
 
                     if (r.EntryType == FileEntryType.Folder)
                     {
                         var folders = new List<string>();
-                        int intEntryId;
-                        if (int.TryParse(entryId, out intEntryId))
+                        if (int.TryParse(entryId, out var intEntryId))
                         {
-                            var foldersInt = dbManager.ExecuteList(new SqlQuery("files_folder_tree").Select("folder_id").Where("parent_id", entryId))
-                                                      .ConvertAll(o => o[0]);
+                            var foldersInt = FilesDbContext.Tree
+                                .Where(r => r.ParentId.ToString() == entryId)
+                                .Select(r => r.FolderId)
+                                .ToList();
+
                             folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                            files.AddRange(dbManager.ExecuteList(Query("files_file").Select("id").Where(Exp.In("folder_id", foldersInt))).
-                                                     ConvertAll(o => o[0].ToString()));
+                            files.AddRange(Query(r => r.Files).Where(r => foldersInt.Any(a => a == r.FolderId)).Select(r => r.Id.ToString()));
                         }
                         else
                         {
                             folders.Add(entryId);
                         }
 
-                        var d1 = new SqlDelete("files_security")
-                            .Where("tenant_id", r.Tenant)
-                            .Where(Exp.In("entry_id", folders))
-                            .Where("entry_type", (int)FileEntryType.Folder)
-                            .Where("subject", r.Subject.ToString());
+                        var toDelete = FilesDbContext.Security
+                            .Where(a => a.TenantId == r.Tenant)
+                            .Where(a => folders.Any(b => b == a.EntryId))
+                            .Where(a => a.EntryType == FileEntryType.Folder)
+                            .Where(a => a.Subject == r.Subject);
 
-                        dbManager.ExecuteNonQuery(d1);
+                        FilesDbContext.Security.RemoveRange(toDelete);
+                        FilesDbContext.SaveChanges();
+
                     }
                     else
                     {
@@ -110,13 +142,14 @@ namespace ASC.Files.Core.Data
 
                     if (0 < files.Count)
                     {
-                        var d2 = new SqlDelete("files_security")
-                            .Where("tenant_id", r.Tenant)
-                            .Where(Exp.In("entry_id", files))
-                            .Where("entry_type", (int)FileEntryType.File)
-                            .Where("subject", r.Subject.ToString());
+                        var toDelete = FilesDbContext.Security
+                            .Where(a => a.TenantId == r.Tenant)
+                            .Where(a => files.Any(b => b == a.EntryId))
+                            .Where(a => a.EntryType == FileEntryType.File)
+                            .Where(a => a.Subject == r.Subject);
 
-                        dbManager.ExecuteNonQuery(d2);
+                        FilesDbContext.Security.RemoveRange(toDelete);
+                        FilesDbContext.SaveChanges();
                     }
 
                     tx.Commit();
@@ -124,23 +157,26 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                var i = new SqlInsert("files_security", true)
-                    .InColumnValue("tenant_id", r.Tenant)
-                    .InColumnValue("entry_id", MappingID(r.EntryId, true).ToString())
-                    .InColumnValue("entry_type", (int)r.EntryType)
-                    .InColumnValue("subject", r.Subject.ToString())
-                    .InColumnValue("owner", r.Owner.ToString())
-                    .InColumnValue("security", (int)r.Share)
-                    .InColumnValue("timestamp", DateTime.UtcNow);
+                var toInsert = new DbFilesSecurity
+                {
+                    TenantId = r.Tenant,
+                    EntryId = MappingID(r.EntryId, true).ToString(),
+                    EntryType = r.EntryType,
+                    Subject = r.Subject,
+                    Owner = r.Owner,
+                    Security = r.Share,
+                    TimeStamp = DateTime.UtcNow
+                };
 
-                dbManager.ExecuteNonQuery(i);
+                FilesDbContext.AddOrUpdate(r => r.Security, toInsert);
+                FilesDbContext.SaveChanges();
             }
         }
 
         public IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects)
         {
-            var q = GetQuery(Exp.In("subject", subjects.Select(s => s.ToString()).ToList()));
-            return dbManager.ExecuteList(q).ConvertAll(ToFileShareRecord);
+            var q = GetQuery(r => subjects.Any(a => r.Subject == a));
+            return FromQuery(q);
         }
 
         public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry> entries)
@@ -174,12 +210,14 @@ namespace ASC.Files.Core.Data
         {
             var result = new List<FileShareRecord>();
 
-            var q = GetQuery(Exp.In("s.entry_id", folders) & Exp.Eq("s.entry_type", (int)FileEntryType.Folder));
+            var q = GetQuery(r => folders.Any(a => a == r.EntryId) && r.EntryType == FileEntryType.Folder);
 
             if (files.Any())
-                q.Union(GetQuery(Exp.In("s.entry_id", files) & Exp.Eq("s.entry_type", (int)FileEntryType.File)));
+            {
+                q = q.Union(GetQuery(r => files.Any(q => q == r.EntryId) && r.EntryType == FileEntryType.File));
+            }
 
-            result.AddRange(dbManager.ExecuteList(q).ConvertAll(ToFileShareRecord));
+            result.AddRange(FromQuery(q));
 
             return result;
         }
@@ -234,28 +272,24 @@ namespace ASC.Files.Core.Data
                 folderId = entry.ID;
             }
 
-            int folderIdInt;
-            if (foldersInt != null && int.TryParse(folderId.ToString(), out folderIdInt) && !foldersInt.Contains(folderIdInt)) foldersInt.Add(folderIdInt);
+            if (foldersInt != null && int.TryParse(folderId.ToString(), out var folderIdInt) && !foldersInt.Contains(folderIdInt)) foldersInt.Add(folderIdInt);
 
             if (folders != null) folders.Add(MappingID(folderId).ToString());
         }
 
         private IEnumerable<FileShareRecord> SaveFilesAndFoldersForShare(List<string> files, List<int> folders)
         {
-            var q = Query("files_security s")
-                .Select("s.tenant_id", "cast(t.folder_id as char)", "s.entry_type", "s.subject", "s.owner", "s.security", "t.level")
-                .InnerJoin("files_folder_tree t", Exp.EqColumns("s.entry_id", "cast(t.parent_id as char)"))
-                .Where(Exp.In("t.folder_id", folders))
-                .Where("s.entry_type", (int)FileEntryType.Folder);
+            var q = Query(r => r.Security)
+                .Join(FilesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
+                .Where(r => folders.Any(f => f == r.DbFolderTree.FolderId))
+                .Where(r => r.DbFilesSecurity.EntryType == FileEntryType.Folder);
 
             if (0 < files.Count)
             {
-                q.Union(GetQuery(Exp.In("s.entry_id", files) & Exp.Eq("s.entry_type", (int)FileEntryType.File)).Select("-1"));
+                q = q.Union(GetQuery(r => files.Any(f => f == r.EntryId) && r.EntryType == FileEntryType.File).Select(r => new SecurityTreeRecord { DbFilesSecurity = r, DbFolderTree = new DbFolderTree() { Level = -1 } }));
             }
 
-            return dbManager
-                .ExecuteList(q)
-                .Select(ToFileShareRecord)
+            return FromQuery(q)
                 .OrderBy(r => r.Level)
                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                 .ToList();
@@ -263,37 +297,65 @@ namespace ASC.Files.Core.Data
 
         public void RemoveSubject(Guid subject)
         {
-            var batch = new List<ISqlInstruction>
-                {
-                    Delete("files_security").Where("subject", subject.ToString()),
-                    Delete("files_security").Where("owner", subject.ToString()),
-                };
+            using var tr = FilesDbContext.Database.BeginTransaction();
 
-            dbManager.ExecuteBatch(batch);
+            var toDelete1 = FilesDbContext.Security.Where(r => r.Subject == subject);
+            var toDelete2 = FilesDbContext.Security.Where(r => r.Owner == subject);
+
+            FilesDbContext.RemoveRange(toDelete1);
+            FilesDbContext.SaveChanges();
+
+            FilesDbContext.RemoveRange(toDelete2);
+            FilesDbContext.SaveChanges();
+
+            tr.Commit();
         }
 
-        private SqlQuery GetQuery(Exp where)
+        private IQueryable<DbFilesSecurity> GetQuery(Expression<Func<DbFilesSecurity, bool>> where = null)
         {
-            return Query("files_security s")
-                .Select("s.tenant_id", "s.entry_id", "s.entry_type", "s.subject", "s.owner", "s.security")
-                .Where(where);
+            var q = Query(r => r.Security);
+            if (q != null)
+            {
+                q = q.Where(where);
+            }
+            return q;
         }
 
-        private FileShareRecord ToFileShareRecord(object[] r)
+        protected List<FileShareRecord> FromQuery(IQueryable<DbFilesSecurity> filesSecurities)
         {
-            var result = new FileShareRecord
-                {
-                    Tenant = Convert.ToInt32(r[0]),
-                    EntryId = MappingID(r[1]),
-                    EntryType = (FileEntryType)Convert.ToInt32(r[2]),
-                    Subject = new Guid((string)r[3]),
-                    Owner = new Guid((string)r[4]),
-                    Share = (FileShare)Convert.ToInt32(r[5]),
-                    Level = 6 < r.Length ? Convert.ToInt32(r[6]) : 0,
-                };
+            return filesSecurities
+                .ToList()
+                .Select(ToFileShareRecord)
+                .ToList();
+        }
+        protected List<FileShareRecord> FromQuery(IQueryable<SecurityTreeRecord> filesSecurities)
+        {
+            return filesSecurities
+                .ToList()
+                .Select(ToFileShareRecord)
+                .ToList();
+        }
 
-
+        private FileShareRecord ToFileShareRecord(DbFilesSecurity r) => new FileShareRecord
+        {
+            Tenant = r.TenantId,
+            EntryId = MappingID(r.EntryId),
+            EntryType = r.EntryType,
+            Subject = r.Subject,
+            Owner = r.Owner,
+            Share = r.Security
+        };
+        private FileShareRecord ToFileShareRecord(SecurityTreeRecord r)
+        {
+            var result = ToFileShareRecord(r.DbFilesSecurity);
+            result.Level = r.DbFolderTree.Level;
             return result;
         }
+    }
+
+    internal class SecurityTreeRecord
+    {
+        public DbFilesSecurity DbFilesSecurity { get; set; }
+        public DbFolderTree DbFolderTree { get; set; }
     }
 }

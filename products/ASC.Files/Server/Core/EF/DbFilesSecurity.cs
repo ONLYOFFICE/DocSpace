@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 using ASC.Core.Common.EF;
+using ASC.Files.Core.Security;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,7 @@ namespace ASC.Files.Core.EF
 
         public Guid Subject { get; set; }
         public Guid Owner { get; set; }
-        public int Security { get; set; }
+        public FileShare Security { get; set; }
         public DateTime TimeStamp { get; set; }
 
         public override object[] GetKeys()
