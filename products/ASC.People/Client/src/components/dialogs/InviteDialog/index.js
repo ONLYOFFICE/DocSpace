@@ -48,7 +48,7 @@ class InviteDialogComponent extends React.Component {
 
     if (i18n.language !== localStorage.getItem(LANGUAGE)) {
       i18n
-        .reloadResources(localStorage.getItem(LANGUAGE))
+        .reloadResources([localStorage.getItem(LANGUAGE)])
         .then(() => toastr.success(t("LinkCopySuccess")));
     }
     else {

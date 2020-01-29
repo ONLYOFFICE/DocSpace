@@ -127,7 +127,7 @@ class Customization extends React.Component {
                const currentLanguage = localStorage.getItem(LANGUAGE);
                if (i18n.language !== currentLanguage) {
                   i18n
-                     .reloadResources(currentLanguage)
+                     .reloadResources([currentLanguage])
                      .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
                }
                else {
