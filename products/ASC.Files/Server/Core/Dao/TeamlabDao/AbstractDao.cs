@@ -33,9 +33,13 @@ using System.Text.RegularExpressions;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Files.Core.EF;
 using ASC.Security.Cryptography;
+using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 
 using Autofac;
 
@@ -50,18 +54,42 @@ namespace ASC.Files.Core.Data
         public FilesDbContext FilesDbContext { get; }
 
         protected internal int TenantID { get; }
+        public UserManager UserManager { get; }
         public TenantUtil TenantUtil { get; }
+        public SetupInfo SetupInfo { get; }
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticProvider { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreConfiguration CoreConfiguration { get; }
+        public SettingsManager SettingsManager { get; }
+        public AuthContext AuthContext { get; }
 
         protected AbstractDao(
             DbContextManager<FilesDbContext> dbContextManager,
+            UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
+            SetupInfo setupInfo,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticProvider,
+            CoreBaseSettings coreBaseSettings,
+            CoreConfiguration coreConfiguration,
+            SettingsManager settingsManager,
+            AuthContext authContext,
             string storageKey)
         {
             cache = AscCache.Memory;
             FilesDbContext = dbContextManager.Value;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
+            UserManager = userManager;
             TenantUtil = tenantUtil;
+            SetupInfo = setupInfo;
+            TenantExtra = tenantExtra;
+            TenantStatisticProvider = tenantStatisticProvider;
+            CoreBaseSettings = coreBaseSettings;
+            CoreConfiguration = coreConfiguration;
+            SettingsManager = settingsManager;
+            AuthContext = authContext;
         }
 
 
@@ -115,6 +143,16 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.folder.FolderType + r.folder.CreateBy.ToString() + r.folder.Id.ToString())
                 .FirstOrDefault();
         }
+        protected string GetRootFolderType(DbFolder folder)
+        {
+            return FilesDbContext.Folders
+                .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                .Where(r => r.folder.TenantId == folder.TenantId)
+                .Where(r => r.tree.FolderId == folder.ParentId)
+                .OrderByDescending(r => r.tree.Level)
+                .Select(r => r.folder.FolderType + r.folder.CreateBy.ToString() + r.folder.Id.ToString())
+                .FirstOrDefault();
+        }
 
         protected FolderType ParseRootFolderType(object v)
         {
@@ -134,6 +172,14 @@ namespace ASC.Files.Core.Data
         }
 
         protected bool GetSharedQuery(FileEntryType type, DbFile dbFile)
+        {
+            return
+                FilesDbContext.Security
+                .Where(r => r.EntryType == type)
+                .Where(r => r.EntryId == dbFile.Id.ToString())
+                .Any();
+        }
+        protected bool GetSharedQuery(FileEntryType type, DbFolder dbFile)
         {
             return
                 FilesDbContext.Security

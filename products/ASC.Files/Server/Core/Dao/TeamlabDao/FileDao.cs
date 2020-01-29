@@ -66,17 +66,21 @@ namespace ASC.Files.Core.Data
             SettingsManager settingsManager,
             AuthContext authContext,
             string storageKey)
-            : base(dbContextManager, tenantManager, tenantUtil, storageKey)
+            : base(
+                  dbContextManager,
+                  userManager,
+                  tenantManager,
+                  tenantUtil,
+                  setupInfo,
+                  tenantExtra,
+                  tenantStatisticProvider,
+                  coreBaseSettings,
+                  coreConfiguration,
+                  settingsManager,
+                  authContext,
+                  storageKey)
         {
             FactoryIndexer = factoryIndexer;
-            UserManager = userManager;
-            SetupInfo = setupInfo;
-            TenantExtra = tenantExtra;
-            TenantStatisticProvider = tenantStatisticProvider;
-            CoreBaseSettings = coreBaseSettings;
-            CoreConfiguration = coreConfiguration;
-            SettingsManager = settingsManager;
-            AuthContext = authContext;
         }
 
         public void InvalidateCache(object fileId)
@@ -1007,14 +1011,6 @@ namespace ASC.Files.Core.Data
         private const string DiffTitle = "diff.zip";
 
         public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
-        public UserManager UserManager { get; }
-        public SetupInfo SetupInfo { get; }
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticProvider { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreConfiguration CoreConfiguration { get; }
-        public SettingsManager SettingsManager { get; }
-        public AuthContext AuthContext { get; }
 
         public void SaveEditHistory(File file, string changes, Stream differenceStream)
         {
@@ -1086,33 +1082,6 @@ namespace ASC.Files.Core.Data
         }
 
         #endregion
-
-        private File ToFile(object[] r)
-        {
-            var result = new File
-            {
-                ID = Convert.ToInt32(r[0]),
-                Title = (string)r[1],
-                FolderID = Convert.ToInt32(r[2]),
-                CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
-                CreateBy = new Guid((string)r[4]),
-                Version = Convert.ToInt32(r[5]),
-                VersionGroup = Convert.ToInt32(r[6]),
-                ContentLength = Convert.ToInt64(r[7]),
-                ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[8])),
-                ModifiedBy = new Guid((string)r[9]),
-                RootFolderType = ParseRootFolderType(r[10]),
-                RootFolderCreator = ParseRootFolderCreator(r[10]),
-                RootFolderId = ParseRootFolderId(r[10]),
-                Shared = Convert.ToBoolean(r[11]),
-                ConvertedType = (string)r[12],
-                Comment = (string)r[13],
-                Encrypted = Convert.ToBoolean(r[14]),
-                Forcesave = ParseForcesaveType(r[15]),
-            };
-
-            return result;
-        }
 
         private static ForcesaveType ParseForcesaveType(object v)
         {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.Files.Core.EF
 {
     [Table("files_folder")]
-    public class DbFolder : IDbFile
+    public class DbFolder : IDbFile, IDbSearch
     {
         public int Id { get; set; }
 
@@ -14,7 +14,7 @@ namespace ASC.Files.Core.EF
         public string Title { get; set; }
 
         [Column("folder_type")]
-        public int FolderType { get; set; }
+        public FolderType FolderType { get; set; }
 
         [Column("create_by")]
         public Guid CreateBy { get; set; }

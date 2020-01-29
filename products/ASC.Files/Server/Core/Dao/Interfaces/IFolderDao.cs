@@ -30,7 +30,7 @@ using System.Threading;
 
 namespace ASC.Files.Core
 {
-    public interface IFolderDao : IDisposable
+    public interface IFolderDao
     {
         /// <summary>
         ///     Get folder by id.
