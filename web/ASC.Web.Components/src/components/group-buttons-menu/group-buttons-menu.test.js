@@ -3,6 +3,19 @@ import { mount, shallow } from 'enzyme';
 import GroupButtonsMenu from '.';
 import DropDownItem from '../drop-down-item';
 
+beforeEach(() => {
+  const div = document.createElement('div');
+  div.setAttribute('id', 'container');
+  document.body.appendChild(div);
+});
+
+afterEach(() => {
+  const div = document.getElementById('container');
+  if (div) {
+    document.body.removeChild(div);
+  }
+});
+
 const defaultMenuItems = [
   {
     label: 'Select',
@@ -28,6 +41,13 @@ const defaultMenuItems = [
     onClick: () => { }
   }
 ];
+
+const getMenuItems = (count = 10) => new Array(count).fill(
+  {
+    label: 'test item',
+    disabled: false,
+    onClick: jest.fn()
+  });
 
 const baseProps = {
   checked: false,
@@ -87,9 +107,11 @@ describe('<GroupButtonsMenu />', () => {
     const wrapper = mount(<GroupButtonsMenu {...baseProps} />);
     const instance = wrapper.instance();
 
+    instance.countMenuItems(null, 2, 1);
     instance.countMenuItems([], 2, 1);
     instance.countMenuItems([1, 2], 200, 2);
-    instance.countMenuItems([1,2,3,4], 1, 2);
+    instance.countMenuItems([1, 2, 3, 4, 5], 10, 100);
+    instance.countMenuItems([1, 2, 3, 4], 1, 2);
 
     expect(wrapper.state('visible')).toBe(true);
   });
@@ -114,7 +136,7 @@ describe('<GroupButtonsMenu />', () => {
     const wrapper = shallow(<GroupButtonsMenu {...baseProps} visible={false} />);
     const instance = wrapper.instance();
 
-    instance.componentDidUpdate({ visible: true, menuItems: defaultMenuItems }, wrapper.state());
+    instance.componentDidUpdate({ visible: true, menuItems: getMenuItems(3) }, wrapper.state());
 
     expect(wrapper.props()).toBe(wrapper.props());
   });
@@ -141,5 +163,130 @@ describe('<GroupButtonsMenu />', () => {
 
     expect(wrapper).toExist(false);
   });
+
+  it('render with 100% width', () => {
+    const wrapper = mount(
+      <div style={{ width: '100%' }}>
+        <GroupButtonsMenu {...baseProps} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('100%');
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(2);
+  });
+
+  it('render with 1024px width and 3 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '1024px' }}>
+        <GroupButtonsMenu {...baseProps} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('1024px');
+    expect(menuNode.props.menuItems.length).toEqual(3);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(2);
+  })
+
+  it('render with 1024px width and 10 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '1024px' }}>
+        <GroupButtonsMenu {...baseProps} menuItems={getMenuItems(10)} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('1024px');
+    expect(menuNode.props.menuItems.length).toEqual(10);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(9);
+  })
+
+  it('render with 1024px width and 100 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '1024px' }}>
+        <GroupButtonsMenu {...baseProps} menuItems={getMenuItems(100)} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('1024px');
+    expect(menuNode.props.menuItems.length).toEqual(100);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(99);
+  })
+
+  it('render with 500px width and 3 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '500px' }}>
+        <GroupButtonsMenu {...baseProps} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('500px');
+    expect(menuNode.props.menuItems.length).toEqual(3);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(2);
+  })
+
+  it('render with 500px width and 10 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '500px' }}>
+        <GroupButtonsMenu {...baseProps} menuItems={getMenuItems(10)} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('500px');
+    expect(menuNode.props.menuItems.length).toEqual(10);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(9);
+  })
+
+  it('render with 500px width and 100 items', () => {
+    const wrapper = mount(
+      <div style={{ width: '500px' }}>
+        <GroupButtonsMenu {...baseProps} menuItems={getMenuItems(100)} />
+      </div>, { attachTo: document.getElementById('container') });
+
+    const menuNodeStyle = wrapper.get(0).props.style;
+    const menuNode = wrapper.find(GroupButtonsMenu).instance();
+
+    const moreItemsCount = menuNode.state.moreItems.length;
+    const priorityItemsCount = menuNode.state.priorityItems.length;
+
+    expect(menuNodeStyle.width).toEqual('500px');
+    expect(menuNode.props.menuItems.length).toEqual(100);
+    expect(priorityItemsCount).toEqual(1);
+    expect(moreItemsCount).toEqual(99);
+  })
 
 });
