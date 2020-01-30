@@ -29,7 +29,7 @@
     "faker": "^4.1.0",
     "history": "4.10.1",
     "lodash": "4.17.15",
-    "lodash-es": "4.17.15",
+    "lodash-es": "4.17.14",
     "moment": "^2.24.0",
     "react-onclickoutside": "^6.9.0",
     "react-window-infinite-loader": "^1.0.5"
