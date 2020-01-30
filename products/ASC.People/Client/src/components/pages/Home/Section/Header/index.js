@@ -130,12 +130,12 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: settings.customNames.userCaption,
+      label: t('ChangeToUser', { userCaption: settings.customNames.userCaption }),
       disabled: !selection.length,
       onClick: onSetEmployee
     },
     {
-      label: settings.customNames.guestCaption,
+      label: t('ChangeToGuest', { guestCaption: settings.customNames.guestCaption }),
       disabled: !selection.length,
       onClick: onSetGuest
     },
