@@ -52,6 +52,10 @@ const ContactWrapper = styled.div`
   width: 300px;
   margin-bottom: 12px;
 
+  .icon-button {
+    min-width: 16px;
+  }
+
   .contact-link {
     padding: 0 8px;
   }
@@ -65,7 +69,7 @@ const createContacts = contacts => {
     }
     return (
       <ContactWrapper key={index}>
-        <IconButton color="#333333" size={16} iconName={contact.icon} isFill={true} />
+        <IconButton className='icon-button' color="#333333" size={16} iconName={contact.icon} isFill={true} />
         <Link
           className='contact-link'
           isTextOverflow
