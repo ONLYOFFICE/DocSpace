@@ -11,6 +11,18 @@ const StyledUserTooltip = styled.div`
     .email-text {
         padding-bottom: 8px;
     }
+
+    .block-avatar-name {
+        display: flex;
+        align-items: center;
+        padding-bottom: 8px;
+    }
+
+    .user-avatar {
+        margin-right: 10px;
+        min-width: 32px;
+    }
+
 `;
 
 export default StyledUserTooltip
