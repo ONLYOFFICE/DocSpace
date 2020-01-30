@@ -17,7 +17,7 @@ namespace ASC.Files.Core.EF
         public int TagId { get; set; }
 
         [Column("entry_type")]
-        public int EntryType { get; set; }
+        public FileEntryType EntryType { get; set; }
 
         [Column("entry_id")]
         public string EntryId { get; set; }
@@ -29,7 +29,7 @@ namespace ASC.Files.Core.EF
         public DateTime CreateOn { get; set; }
 
         [Column("tag_count")]
-        public DateTime TagCount { get; set; }
+        public int TagCount { get; set; }
 
         public override object[] GetKeys()
         {

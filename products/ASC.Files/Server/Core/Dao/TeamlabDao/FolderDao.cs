@@ -865,9 +865,9 @@ namespace ASC.Files.Core.Data
                     FolderType = r.file.FolderType,
                     TotalSubFolders = r.file.FoldersCount,
                     TotalFiles = r.file.FilesCount,
-                    RootFolderType = ParseRootFolderType(r.root),
-                    RootFolderCreator = ParseRootFolderCreator(r.root),
-                    RootFolderId = ParseRootFolderId(r.root),
+                    RootFolderType = r.root.FolderType,
+                    RootFolderCreator = r.root.CreateBy,
+                    RootFolderId = r.root.Id,
                     Shared = r.shared
                 }).ToList();
         }

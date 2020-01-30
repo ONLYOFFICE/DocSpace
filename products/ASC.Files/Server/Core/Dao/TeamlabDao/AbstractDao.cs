@@ -122,9 +122,9 @@ namespace ASC.Files.Core.Data
                     ContentLength = r.file.ContentLength,
                     ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn),
                     ModifiedBy = r.file.ModifiedBy,
-                    RootFolderType = ParseRootFolderType(r.root),
-                    RootFolderCreator = ParseRootFolderCreator(r.root),
-                    RootFolderId = ParseRootFolderId(r.root),
+                    RootFolderType = r.root.FolderType,
+                    RootFolderCreator = r.root.CreateBy,
+                    RootFolderId = r.root.Id,
                     Shared = r.shared,
                     ConvertedType = r.file.ConvertedType,
                     Comment = r.file.Comment,
@@ -133,24 +133,24 @@ namespace ASC.Files.Core.Data
                 }).ToList();
         }
 
-        protected string GetRootFolderType(DbFile file)
+        protected DbFolder GetRootFolderType(DbFile file)
         {
             return FilesDbContext.Folders
                 .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                 .Where(r => r.folder.TenantId == file.TenantId)
                 .Where(r => r.tree.FolderId == file.FolderId)
                 .OrderByDescending(r => r.tree.Level)
-                .Select(r => r.folder.FolderType + r.folder.CreateBy.ToString() + r.folder.Id.ToString())
+                .Select(r => r.folder)
                 .FirstOrDefault();
         }
-        protected string GetRootFolderType(DbFolder folder)
+        protected DbFolder GetRootFolderType(DbFolder folder)
         {
             return FilesDbContext.Folders
                 .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
                 .Where(r => r.folder.TenantId == folder.TenantId)
                 .Where(r => r.tree.FolderId == folder.ParentId)
                 .OrderByDescending(r => r.tree.Level)
-                .Select(r => r.folder.FolderType + r.folder.CreateBy.ToString() + r.folder.Id.ToString())
+                .Select(r => r.folder)
                 .FirstOrDefault();
         }
 

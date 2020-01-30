@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core
 {
-    public interface ITagDao : IDisposable
+    public interface ITagDao
     {
         IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry> fileEntries);
 

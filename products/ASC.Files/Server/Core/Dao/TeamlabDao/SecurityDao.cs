@@ -328,6 +328,7 @@ namespace ASC.Files.Core.Data
                 .Select(ToFileShareRecord)
                 .ToList();
         }
+
         protected List<FileShareRecord> FromQuery(IQueryable<SecurityTreeRecord> filesSecurities)
         {
             return filesSecurities

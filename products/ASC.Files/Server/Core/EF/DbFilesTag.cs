@@ -15,6 +15,6 @@ namespace ASC.Files.Core.EF
 
         public Guid Owner { get; set; }
 
-        public int Flag { get; set; }
+        public TagType Flag { get; set; }
     }
 }

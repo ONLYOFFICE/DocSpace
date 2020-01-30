@@ -605,7 +605,7 @@ namespace ASC.Files.Core.Data
             var toDeleteFiles = Query(r => r.Files).Where(r => r.Id == (int)fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
-            var toDeleteLinks = Query(r => r.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == (int)FileEntryType.File);
+            var toDeleteLinks = Query(r => r.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
             var tagsToRemove = Query(r => r.Tag)
