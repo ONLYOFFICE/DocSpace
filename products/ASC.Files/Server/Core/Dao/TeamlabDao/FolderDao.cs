@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -43,6 +44,7 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
 {
@@ -55,6 +57,8 @@ namespace ASC.Files.Core.Data
         private const string projects = "projects";
 
         public FactoryIndexer<FoldersWrapper> FactoryIndexer { get; }
+        public GlobalSpace GlobalSpace { get; }
+        public ILog Logger { get; }
 
         public FolderDao(
             FactoryIndexer<FoldersWrapper> factoryIndexer,
@@ -69,7 +73,8 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            string storageKey)
+            GlobalSpace globalSpace,
+            IOptionsMonitor<ILog> options)
             : base(
                   dbContextManager,
                   userManager,
@@ -81,10 +86,11 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext,
-                  storageKey)
+                  authContext)
         {
             FactoryIndexer = factoryIndexer;
+            GlobalSpace = globalSpace;
+            Logger = options.Get("ASC.Files");
         }
 
         public Folder GetFolder(object folderId)
@@ -393,7 +399,7 @@ namespace ASC.Files.Core.Data
 
                 var linkToDelete = Query(r => r.TagLink)
                     .Where(r => subfolders.Any(a => r.EntryId == a.ToString()))
-                    .Where(r => r.EntryType == (int)FileEntryType.Folder);
+                    .Where(r => r.EntryType == FileEntryType.Folder);
                 FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
                 var tagsToRemove = Query(r => r.Tag)
@@ -628,7 +634,7 @@ namespace ASC.Files.Core.Data
             var tmp = long.MaxValue;
 
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
-                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - Global.GetUserUsedSpace();
+                tmp = CoreConfiguration.PersonalMaxSpace(SettingsManager) - GlobalSpace.GetUserUsedSpace();
 
             return Math.Min(tmp, chunkedUpload ? SetupInfo.MaxChunkedUploadSize(TenantExtra, TenantStatisticProvider) : SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticProvider));
         }
@@ -983,7 +989,7 @@ namespace ASC.Files.Core.Data
                     }
                     catch (Exception e)
                     {
-                        Global.Logger.Error(e);
+                        Logger.Error(e);
                     }
                     break;
             }

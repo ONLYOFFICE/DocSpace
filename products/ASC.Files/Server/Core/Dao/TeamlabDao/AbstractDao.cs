@@ -75,11 +75,10 @@ namespace ASC.Files.Core.Data
             CoreBaseSettings coreBaseSettings,
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
-            AuthContext authContext,
-            string storageKey)
+            AuthContext authContext)
         {
             cache = AscCache.Memory;
-            FilesDbContext = dbContextManager.Value;
+            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             UserManager = userManager;
             TenantUtil = tenantUtil;

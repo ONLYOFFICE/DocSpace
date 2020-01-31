@@ -48,9 +48,14 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
-    internal class FileDao : AbstractDao, IFileDao
+    public class FileDao : AbstractDao, IFileDao
     {
         private static readonly object syncRoot = new object();
+        public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
+        public GlobalStore GlobalStore { get; }
+        public GlobalSpace GlobalSpace { get; }
+        public GlobalFolder GlobalFolder { get; }
+        public IFolderDao FolderDao { get; }
 
         public FileDao(
             FactoryIndexer<FilesWrapper> factoryIndexer,
@@ -65,7 +70,10 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
-            string storageKey)
+            GlobalStore globalStore,
+            GlobalSpace globalSpace,
+            GlobalFolder globalFolder,
+            IFolderDao folderDao)
             : base(
                   dbContextManager,
                   userManager,
@@ -77,10 +85,13 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext,
-                  storageKey)
+                  authContext)
         {
             FactoryIndexer = factoryIndexer;
+            GlobalStore = globalStore;
+            GlobalSpace = globalSpace;
+            GlobalFolder = globalFolder;
+            FolderDao = folderDao;
         }
 
         public void InvalidateCache(object fileId)
@@ -295,12 +306,12 @@ namespace ASC.Files.Core.Data
 
         public Stream GetFileStream(File file, long offset)
         {
-            return Global.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file), (int)offset);
+            return GlobalStore.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file), (int)offset);
         }
 
         public Uri GetPreSignedUri(File file, TimeSpan expires)
         {
-            return Global.GetStore().GetPreSignedUri(string.Empty, GetUniqFilePath(file), expires,
+            return GlobalStore.GetStore().GetPreSignedUri(string.Empty, GetUniqFilePath(file), expires,
                                                      new List<string>
                                                          {
                                                              string.Concat("Content-Disposition:", ContentDispositionUtil.GetHeaderValue(file.Title, withoutBase: true))
@@ -309,7 +320,7 @@ namespace ASC.Files.Core.Data
 
         public bool IsSupportedPreSignedUri(File file)
         {
-            return Global.GetStore().IsSupportedPreSignedUri;
+            return GlobalStore.GetStore().IsSupportedPreSignedUri;
         }
 
         public Stream GetFileStream(File file)
@@ -333,7 +344,7 @@ namespace ASC.Files.Core.Data
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - Global.GetUserUsedSpace(file.ID == null ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == null ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -435,7 +446,7 @@ namespace ASC.Files.Core.Data
                 {
                     if (isNew)
                     {
-                        var stored = Global.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
+                        var stored = GlobalStore.GetStore().IsDirectory(GetUniqFileDirectory(file.ID));
                         DeleteFile(file.ID, stored);
                     }
                     else if (!IsExistOnStorage(file))
@@ -466,7 +477,7 @@ namespace ASC.Files.Core.Data
             if (CoreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
             {
                 var personalMaxSpace = CoreConfiguration.PersonalMaxSpace(SettingsManager);
-                if (personalMaxSpace - Global.GetUserUsedSpace(file.ID == null ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
+                if (personalMaxSpace - GlobalSpace.GetUserUsedSpace(file.ID == null ? AuthContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
                 {
                     throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
                 }
@@ -580,14 +591,14 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
         }
 
-        private static void DeleteVersionStream(File file)
+        private void DeleteVersionStream(File file)
         {
-            Global.GetStore().DeleteDirectory(GetUniqFileVersionPath(file.ID, file.Version));
+            GlobalStore.GetStore().DeleteDirectory(GetUniqFileVersionPath(file.ID, file.Version));
         }
 
-        private static void SaveFileStream(File file, Stream stream)
+        private void SaveFileStream(File file, Stream stream)
         {
-            Global.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
+            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
         public void DeleteFile(object fileId)
@@ -659,7 +670,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = (int)toFolderId;
 
-                    if (Global.FolderTrash.Equals(toFolderId))
+                    if (GlobalFolder.GetFolderTrash(FolderDao).Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
@@ -998,19 +1009,17 @@ namespace ASC.Files.Core.Data
             }
         }
 
-        private static void DeleteFolder(object fileId)
+        private void DeleteFolder(object fileId)
         {
-            Global.GetStore().DeleteDirectory(GetUniqFileDirectory(fileId));
+            GlobalStore.GetStore().DeleteDirectory(GetUniqFileDirectory(fileId));
         }
 
         public bool IsExistOnStorage(File file)
         {
-            return Global.GetStore().IsFile(GetUniqFilePath(file));
+            return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
         private const string DiffTitle = "diff.zip";
-
-        public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
 
         public void SaveEditHistory(File file, string changes, Stream differenceStream)
         {
@@ -1031,7 +1040,7 @@ namespace ASC.Files.Core.Data
 
             FilesDbContext.SaveChanges();
 
-            Global.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
+            GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
         }
 
         public List<EditHistory> GetEditHistory(object fileId, int fileVersion = 0)
@@ -1069,7 +1078,7 @@ namespace ASC.Files.Core.Data
 
         public Stream GetDifferenceStream(File file)
         {
-            return Global.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file, DiffTitle));
+            return GlobalStore.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file, DiffTitle));
         }
 
         public bool ContainChanges(object fileId, int fileVersion)

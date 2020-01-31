@@ -30,34 +30,18 @@ namespace ASC.Files.Core.Data
 {
     public class DaoFactory : IDaoFactory
     {
-        public DaoFactory()
-        {
-            
-        }
+        public IFileDao FileDao { get; }
+        public IFolderDao FolderDao { get; }
+        public ITagDao TagDao { get; }
+        public ISecurityDao SecurityDao { get; }
+        public IProviderDao ProviderDao { get; }
 
-        public IFileDao GetFileDao()
+        public DaoFactory(IFileDao fileDao, IFolderDao folderDao, ITagDao tagDao, ISecurityDao securityDao)
         {
-            return new FileDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId);
-        }
-
-        public IFolderDao GetFolderDao()
-        {
-            return new FolderDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId);
-        }
-
-        public ITagDao GetTagDao()
-        {
-            return new TagDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId);
-        }
-
-        public ISecurityDao GetSecurityDao()
-        {
-            return new SecurityDao(CoreContext.TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId);
-        }
-
-        public IProviderDao GetProviderDao()
-        {
-            return null;
+            FileDao = fileDao;
+            FolderDao = folderDao;
+            TagDao = tagDao;
+            SecurityDao = securityDao;
         }
     }
 }

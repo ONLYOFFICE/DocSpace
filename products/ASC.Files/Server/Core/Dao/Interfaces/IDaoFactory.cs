@@ -30,14 +30,14 @@ namespace ASC.Files.Core
 {
     public interface IDaoFactory
     {
-        IFolderDao GetFolderDao();
+        IFolderDao FolderDao { get; }
 
-        IFileDao GetFileDao();
+        IFileDao FileDao { get; }
 
-        ITagDao GetTagDao();
+        ITagDao TagDao { get; }
 
-        ISecurityDao GetSecurityDao();
+        ISecurityDao SecurityDao { get; }
 
-        IProviderDao GetProviderDao();
+        IProviderDao ProviderDao { get; }
     }
 }

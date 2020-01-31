@@ -53,8 +53,7 @@ namespace ASC.Files.Core.Data
             CoreBaseSettings coreBaseSettings,
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
-            AuthContext authContext,
-            string storageKey)
+            AuthContext authContext)
             : base(dbContextManager,
                   userManager,
                   tenantManager,
@@ -65,8 +64,7 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext,
-                  storageKey)
+                  authContext)
         {
         }
 
