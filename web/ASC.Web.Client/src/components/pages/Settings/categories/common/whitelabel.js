@@ -221,6 +221,8 @@ class WhiteLabel extends React.Component {
                            isDisabled={!isPortalPaid}
                            isReadOnly={!isPortalPaid}
                            scale={true}
+                           isAutoFocussed={true}
+                           tabIndex={1}
                         />
                         {
                            isPortalPaid &&
@@ -230,6 +232,7 @@ class WhiteLabel extends React.Component {
                               size='medium'
                               label={t('UseAsLogoButton')}
                               onClick={this.onUseTextAsLogo}
+                              tabIndex={2}
                            />
                         }
                      </FieldContainer>

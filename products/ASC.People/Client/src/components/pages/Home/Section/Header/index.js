@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
@@ -33,8 +33,17 @@ const { resendUserInvites, deleteUsers } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
 const StyledContainer = styled.div`
+
+  @media (min-width: 1024px) {
+    ${props => props.isHeaderVisible && css`width: calc(100% + 76px);`}
+  }
+
   .group-button-menu-container {
     margin: 0 -16px;
+
+    @media (min-width: 1024px) {
+      margin: 0 -24px;
+    }
   }
 
   .header-container {
@@ -243,7 +252,7 @@ const SectionHeaderContent = props => {
   }, [t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
   return (
-    <StyledContainer>
+    <StyledContainer isHeaderVisible={isHeaderVisible}>
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu

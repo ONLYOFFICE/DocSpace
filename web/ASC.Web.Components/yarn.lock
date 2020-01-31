@@ -12348,6 +12348,11 @@ reserved-words@^0.1.2:
   resolved "https://registry.yarnpkg.com/reserved-words/-/reserved-words-0.1.2.tgz#00a0940f98cd501aeaaac316411d9adc52b31ab1"
   integrity sha1-AKCUD5jNUBrqqsMWQR2a3FKzGrE=
 
+resize-image@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/resize-image/-/resize-image-0.1.0.tgz#033d5f499cb7095def7827d48b8046f7e1c5776c"
+  integrity sha512-78cWCEX/IupMCwKi5Gg5gxjOZKoN6UXinL2eVOB4xzyG2QNjq64z6pJBnyBKg5/BsjEosLz1co5e3DHr99TgFg==
+
 resize-observer-polyfill@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"

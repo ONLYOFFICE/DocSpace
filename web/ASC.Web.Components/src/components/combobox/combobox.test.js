@@ -313,7 +313,7 @@ describe('<ComboBox />', () => {
     
     jest.spyOn(instance, 'handleClickOutside');
 
-    instance.handleClickOutside(); //TODO: rework with simulation
+    instance.handleClickOutside(new Event('click')); //TODO: rework with simulation
 
     expect(wrapper.state('isOpen')).toBe(false);
     expect(wrapper.prop('opened')).toBe(true);

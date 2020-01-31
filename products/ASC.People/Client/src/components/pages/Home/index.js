@@ -113,6 +113,7 @@ class PureHome extends React.Component {
         />
         <PageLayout
           withBodyScroll={true}
+          withBodyAutoFocus={true}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
@@ -153,7 +154,7 @@ const Home = (props) => {
 }
 
 Home.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool
 };

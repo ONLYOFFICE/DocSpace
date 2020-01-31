@@ -7,7 +7,6 @@ const baseProps = {
   isOpen: false,
   directionX: 'left',
   directionY: 'bottom',
-  withArrow: false,
   manualWidth: '100%'
 };
 

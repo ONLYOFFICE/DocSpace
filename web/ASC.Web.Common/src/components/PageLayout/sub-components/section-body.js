@@ -8,13 +8,18 @@ const StyledSectionBody = styled.div`
   ${props => props.displayBorder && `outline: 1px dotted;`}
   flex-grow: 1;
   height: 100%;
+  
+  ${props => props.withScroll && `
+    margin-left: -24px;
+  `}
 `;
 
 const StyledSectionWrapper = styled.div`
-  margin: 16px 8px 16px 0;
+  padding: 16px 8px 16px 24px;
+  outline: none;
 
   @media ${tablet} {
-    margin: 16px 0;
+    padding: 16px 0 16px 24px;
   }
 `;
 
@@ -27,33 +32,53 @@ const StyledSpacer = styled.div`
   }
 `;
 
-const SectionBody = React.memo(props => {
-  //console.log("PageLayout SectionBody render");
-  const { children, withScroll, pinned } = props;
+class SectionBody extends React.Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <StyledSectionBody>
-      {withScroll ? (
-        <Scrollbar stype="mediumBlack">
+    this.focusRef = React.createRef();
+  }
+  
+  componentDidMount() {
+    if (!this.props.autoFocus) return;
+    
+    this.focusRef.current.focus();
+  }
+
+  render() {
+    //console.log("PageLayout SectionBody render");
+    const { children, withScroll, autoFocus, pinned } = this.props;
+
+    const focusProps = autoFocus ? {
+      ref: this.focusRef,
+      tabIndex: 1
+    } : {};
+
+    return (
+      <StyledSectionBody withScroll={withScroll}>
+        {withScroll ? (
+          <Scrollbar stype="mediumBlack">
+            <StyledSectionWrapper {...focusProps}>
+              {children}
+              <StyledSpacer pinned={pinned}/>
+            </StyledSectionWrapper>
+          </Scrollbar>
+        ) : (
           <StyledSectionWrapper>
             {children}
             <StyledSpacer pinned={pinned}/>
           </StyledSectionWrapper>
-        </Scrollbar>
-      ) : (
-        <StyledSectionWrapper>
-          {children}
-          <StyledSpacer pinned={pinned}/>
-        </StyledSectionWrapper>
-      )}
-    </StyledSectionBody>
-  );
-});
+        )}
+      </StyledSectionBody>
+    );
+  }
+}
 
 SectionBody.displayName = "SectionBody";
 
 SectionBody.propTypes = {
   withScroll: PropTypes.bool,
+  autoFocus: PropTypes.bool,
   pinned: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -64,6 +89,7 @@ SectionBody.propTypes = {
 
 SectionBody.defaultProps = {
   withScroll: true,
+  autoFocus: false,
   pinned: false
 };
 

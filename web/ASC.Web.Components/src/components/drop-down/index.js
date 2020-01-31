@@ -25,8 +25,6 @@ const StyledDropdown = styled.div`
     ${props => (props.directionX === 'right' && css`right: ${props => props.manualX ? props.manualX : '0px'};`)}
     ${props => (props.directionX === 'left' && css`left: ${props => props.manualX ? props.manualX : '0px'};`)}
     z-index: 150;
-    margin-top: ${props => (props.isUserPreview ? '6px' : '0px')};
-    margin-right: ${props => (props.isUserPreview ? '6px' : '0px')};
     display: ${props => (props.open ? 'block' : 'none')};
     background: #FFFFFF;
     border-radius: 6px;
@@ -39,32 +37,17 @@ const StyledDropdown = styled.div`
     padding: ${props => !props.maxHeight && `6px 0px`};
 `;
 
-const Arrow = styled.div`
-    position: absolute;
-    top: -6px;
-    ${props => (props.directionX === 'right' && css`right: 16px;`)}
-    ${props => (props.directionX === 'left' && css`left: 16px;`)}
-    width: 24px;
-    height: 6px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.27954 1.12012C10.8122 -0.295972 13.1759 -0.295971 14.7086 1.12012L18.8406 4.93793C19.5796 5.62078 20.5489 6 21.5551 6H24H0H2.43299C3.4392 6 4.40845 5.62077 5.1475 4.93793L9.27954 1.12012Z' fill='%23206FA4'/%3E%3C/svg%3E");
-`;
-
-// eslint-disable-next-line react/display-name
+// eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
 
   return (
     <DropDownItem
+      // eslint-disable-next-line react/prop-types
       {...option.props}
       style={style} />
   );
 });
-
-Row.propTypes = {
-  data: PropTypes.any,
-  index: PropTypes.number,
-  style: PropTypes.object
-};
 
 class DropDown extends React.PureComponent {
 
@@ -81,7 +64,7 @@ class DropDown extends React.PureComponent {
   }
 
   componentDidMount() {
-    if(this.props.open) {
+    if (this.props.open) {
       this.props.enableOnClickOutside();
       this.checkPosition();
     }
@@ -93,25 +76,20 @@ class DropDown extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     if (this.props.open !== prevProps.open) {
-      if(this.props.open) {
+      if (this.props.open) {
         this.props.enableOnClickOutside();
         this.checkPosition();
       }
       else {
         this.props.disableOnClickOutside();
       }
-      
+
     }
   }
 
   handleClickOutside = e => {
-    // ..handling code goes here...
-    console.log(`DropDown handleClickOutside`, e);
-
+    //console.log(`DropDown handleClickOutside`, e);
     this.toggleDropDown(e);
-    //this.onClose(e);
-    //this.setIsOpen(!this.state.isOpen);
-    //this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
   };
 
   toggleDropDown = (e) => {
@@ -138,7 +116,7 @@ class DropDown extends React.PureComponent {
   }
 
   render() {
-    const { maxHeight, withArrow, withBackdrop, children, open } = this.props;
+    const { maxHeight, children } = this.props;
     const { directionX, directionY, width } = this.state;
     const isTablet = window.innerWidth < 1024; //TODO: Make some better
     const itemHeight = isTablet ? 36 : 32;
@@ -147,30 +125,26 @@ class DropDown extends React.PureComponent {
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
     //console.log("DropDown render");
     return (
-      <>
-        <StyledDropdown
-          ref={this.dropDownRef}
-          {...this.props}
-          directionX={directionX}
-          directionY={directionY}
-          {...dropDownMaxHeightProp}
-        >
-          {withArrow && <Arrow directionX={directionX} />}
-          {maxHeight
-            ? <FixedSizeList
-              height={calculatedHeight}
-              width={width}
-              itemSize={itemHeight}
-              itemCount={children.length}
-              itemData={children}
-              outerElementType={CustomScrollbarsVirtualList}
-            >
-              {Row}
-            </FixedSizeList>
-            : children}
-        </StyledDropdown>
-        {(withBackdrop && open && isTablet) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
-      </>
+      <StyledDropdown
+        ref={this.dropDownRef}
+        {...this.props}
+        directionX={directionX}
+        directionY={directionY}
+        {...dropDownMaxHeightProp}
+      >
+        {maxHeight
+          ? <FixedSizeList
+            height={calculatedHeight}
+            width={width}
+            itemSize={itemHeight}
+            itemCount={children.length}
+            itemData={children}
+            outerElementType={CustomScrollbarsVirtualList}
+          >
+            {Row}
+          </FixedSizeList>
+          : children}
+      </StyledDropdown>
     );
   }
 }
@@ -187,7 +161,6 @@ DropDown.propTypes = {
   manualY: PropTypes.string,
   maxHeight: PropTypes.number,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withArrow: PropTypes.bool,
   withBackdrop: PropTypes.bool,
   clickOutsideAction: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
@@ -197,18 +170,26 @@ DropDown.propTypes = {
 DropDown.defaultProps = {
   directionX: 'left',
   directionY: 'bottom',
-  withArrow: false,
-  withBackdrop: true
+  withBackdrop: false
 };
 
 const EnhancedComponent = onClickOutside(DropDown);
 
 class DropDownContainer extends React.Component {
   render() {
-    //console.log(`AdvancedSelectorContainer isOpen=${this.props.isOpen} enableOnClickOutside=${this.props.isOpen}`);
-    return <EnhancedComponent disableOnClickOutside={true} {...this.props} />;
+    const { withBackdrop = false, open } = this.props;
+    const isTablet = window.innerWidth < 1024; //TODO: Make some better
+    return (
+      <>
+        <EnhancedComponent disableOnClickOutside={true} {...this.props} />
+        {(withBackdrop && open && isTablet) && <Backdrop visible zIndex={149} onClick={this.toggleDropDown} />}
+      </>);
   }
 }
 
+DropDownContainer.propTypes = {
+  open: PropTypes.bool,
+  withBackdrop: PropTypes.bool
+}
 
 export default DropDownContainer;

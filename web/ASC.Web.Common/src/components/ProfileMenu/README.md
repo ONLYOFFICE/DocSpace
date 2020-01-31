@@ -1,13 +1,13 @@
-# DropDownProfileItem
+# ProfileMenu
 
 ### Usage
 
 ```js
-import { DropDownProfileItem } from "asc-web-components";
+import { ProfileMenu } from "asc-web-common";
 ```
 
 ```jsx
-<DropDownProfileItem
+<ProfileMenu
   avatarRole="admin"
   avatarSource=""
   displayName="Jane Doe"
@@ -15,9 +15,9 @@ import { DropDownProfileItem } from "asc-web-components";
 />
 ```
 
-To add preview of user profile, you must use DropDownProfileItem component inherited from DropDownItem and add isUserPreview parameter to DropDown.
+To add preview of user profile, you must use ProfileMenu component inherited from DropDownItem.
 
-To add an avatar username and email when you turn on isUserPreview parameter, you need to add parameters of Avatar component: avatarSource - link to user's avatar, avatarRole - user's role, displayName - user name and email - user’s email address.
+To add an avatar username and email, you need to add parameters of Avatar component: avatarSource - link to user's avatar, avatarRole - user's role, displayName - user name and email - user’s email address.
 
 ### Properties
 

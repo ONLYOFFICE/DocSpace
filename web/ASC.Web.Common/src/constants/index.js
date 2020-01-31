@@ -1,4 +1,5 @@
 export const AUTH_KEY = 'asc_auth_key';
+export const ARTICLE_PINNED_KEY = 'asc_article_pinned_key';
 
 /**
  * Enum for employee activation status.

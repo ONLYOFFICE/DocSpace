@@ -90,6 +90,7 @@ class AvatarEditor extends React.Component {
                 bodyContent={
                     <AvatarEditorBody
                         onImageChange={this.onImageChange}
+                        visible={this.state.visible}
                         onPositionChange={this.onPositionChange}
                         onSizeChange={this.onSizeChange}
                         onLoadFileError={this.onLoadFileError}
@@ -149,7 +150,7 @@ AvatarEditor.propTypes = {
 
 AvatarEditor.defaultProps = {
     visible: false,
-    maxSize: 1, //1MB
+    maxSize: 10, //10MB
     headerLabel: 'Edit Photo',
     saveButtonLabel: 'Save',
     accept: ['image/png', 'image/jpeg'],

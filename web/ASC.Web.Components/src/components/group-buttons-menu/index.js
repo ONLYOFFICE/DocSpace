@@ -117,14 +117,13 @@ class GroupButtonsMenu extends React.PureComponent {
 
   countMenuItems = (array, outerWidth, moreWidth) => {
     const itemsArray = array || []
-    const moreButton = moreWidth || 0;
-    let total = (moreButton + 80);
+    let total = (moreWidth || 0) + 80;
 
     for (let i = 0, len = itemsArray.length; i < len; i++) {
-      if (total + array[i] > outerWidth) {
+      if (total + itemsArray[i] > outerWidth) {
         return i < 1 ? 1 : i;
       } else {
-        total += array[i];
+        total += itemsArray[i];
       }
     }
   };

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDown, DropDownItem, DropDownProfileItem, utils, Link } from "asc-web-components";
+import { Avatar, DropDown, DropDownItem, utils, Link } from "asc-web-components";
+import ProfileMenu from "./../../ProfileMenu";
 const { handleAnyClick } = utils.event;
 
 class ProfileActions extends React.PureComponent {
@@ -83,13 +84,12 @@ class ProfileActions extends React.PureComponent {
           onClick={this.onAvatarClick}
         />
         <DropDown
-          isUserPreview
-          withArrow
+          className='profile-menu'
           directionX="right"
           open={this.state.opened}
           clickOutsideAction={this.onAvatarClick}
         >
-          <DropDownProfileItem
+          <ProfileMenu
             avatarRole={this.getUserRole(this.state.user)}
             avatarSource={this.state.user.avatarMedium}
             displayName={this.state.user.displayName}

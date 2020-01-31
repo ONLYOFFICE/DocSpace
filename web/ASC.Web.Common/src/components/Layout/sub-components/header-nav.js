@@ -15,6 +15,10 @@ const StyledNav = styled.nav`
   height: 56px;
   z-index: 190;
 
+  .profile-menu {
+    right: 12px;
+  }
+
   & > div {
     margin: 0 0 0 16px;
     padding: 0;

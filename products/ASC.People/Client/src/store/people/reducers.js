@@ -15,7 +15,7 @@ import { api } from "asc-web-common";
 const { Filter } = api;
 
 const initialState = {
-  users: [],
+  users: null,
   groups: [],
   selection: [],
   selected: "none",

@@ -3,10 +3,8 @@ import { mount } from 'enzyme';
 import PageLayout from '.';
 
 const baseProps = {
-  isBackdropVisible: false,
-  isArticleVisible: false,
-  isArticlePinned: false,
-  withBodyScroll: true
+  withBodyScroll: true,
+  withBodyAutoFocus: false
 }
 
 describe('<PageLayout />', () => {
