@@ -24,6 +24,14 @@
 */
 
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Security;
+using System.Threading;
+
+using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.MessagingSystem;
@@ -32,25 +40,50 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Core;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security;
-using System.Threading;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
+
 using File = ASC.Files.Core.File;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    public static class FileUploader
+    public class FileUploader
     {
-        public static File Exec(string folderId, string title, long contentLength, Stream data)
+        public FilesSettingsHelper FilesSettingsHelper { get; }
+        public FileUtility FileUtility { get; }
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public AuthContext AuthContext { get; }
+        public SetupInfo SetupInfo { get; }
+        public TenantExtra TenantExtra { get; }
+        public TenantStatisticsProvider TenantStatisticsProvider { get; }
+
+        public FileUploader(
+            FilesSettingsHelper filesSettingsHelper,
+            FileUtility fileUtility,
+            UserManager userManager,
+            TenantManager tenantManager,
+            AuthContext authContext,
+            SetupInfo setupInfo,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticsProvider)
         {
-            return Exec(folderId, title, contentLength, data, !FilesSettings.UpdateIfExist);
+            FilesSettingsHelper = filesSettingsHelper;
+            FileUtility = fileUtility;
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            AuthContext = authContext;
+            SetupInfo = setupInfo;
+            TenantExtra = tenantExtra;
+            TenantStatisticsProvider = tenantStatisticsProvider;
         }
 
-        public static File Exec(string folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
+        public File Exec(string folderId, string title, long contentLength, Stream data)
+        {
+            return Exec(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
+        }
+
+        public File Exec(string folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
         {
             if (contentLength <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
@@ -70,7 +103,7 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public static File VerifyFileUpload(string folderId, string fileName, bool updateIfExists, string relativePath = null)
+        public File VerifyFileUpload(string folderId, string fileName, bool updateIfExists, string relativePath = null)
         {
             fileName = Global.ReplaceInvalidCharsAndTruncate(fileName);
 
@@ -96,10 +129,10 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            return new File {FolderID = folderId, Title = fileName};
+            return new File { FolderID = folderId, Title = fileName };
         }
 
-        public static File VerifyFileUpload(string folderId, string fileName, long fileSize, bool updateIfExists)
+        public File VerifyFileUpload(string folderId, string fileName, long fileSize, bool updateIfExists)
         {
             if (fileSize <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
@@ -114,11 +147,11 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        private static bool CanEdit(File file)
+        private bool CanEdit(File file)
         {
             return file != null
                    && Global.GetFilesSecurity().CanEdit(file)
-                   && !CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor()
+                   && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
                    && !EntryManager.FileLockedForMe(file.ID)
                    && !FileTracker.IsEditing(file.ID)
                    && file.RootFolderType != FolderType.TRASH
@@ -147,7 +180,7 @@ namespace ASC.Web.Files.Utils
 
                         if (folder == null)
                         {
-                            folderId = folderDao.SaveFolder(new Folder {Title = subFolderTitle, ParentFolderID = folderId});
+                            folderId = folderDao.SaveFolder(new Folder { Title = subFolderTitle, ParentFolderID = folderId });
 
                             folder = folderDao.GetFolder(folderId);
                             FilesMessageService.Send(folder, HttpContext.Current.Request, MessageAction.FolderCreated, folder.Title);
@@ -166,7 +199,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public static File VerifyChunkedUpload(string folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public File VerifyChunkedUpload(string folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {
             var maxUploadSize = GetMaxFileSize(folderId, true);
 
@@ -179,7 +212,7 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public static ChunkedUploadSession InitiateUpload(string folderId, string fileId, string fileName, long contentLength, bool encrypted)
+        public ChunkedUploadSession InitiateUpload(string folderId, string fileId, string fileName, long contentLength, bool encrypted)
         {
             if (string.IsNullOrEmpty(folderId))
                 folderId = null;
@@ -188,12 +221,12 @@ namespace ASC.Web.Files.Utils
                 fileId = null;
 
             var file = new File
-                {
-                    ID = fileId,
-                    FolderID = folderId,
-                    Title = fileName,
-                    ContentLength = contentLength
-                };
+            {
+                ID = fileId,
+                FolderID = folderId,
+                Title = fileName,
+                ContentLength = contentLength
+            };
 
             using (var dao = Global.DaoFactory.GetFileDao())
             {
@@ -201,8 +234,8 @@ namespace ASC.Web.Files.Utils
 
                 uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
                 uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
-                uploadSession.TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId;
-                uploadSession.UserId = SecurityContext.CurrentAccount.ID;
+                uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
+                uploadSession.UserId = AuthContext.CurrentAccount.ID;
                 uploadSession.FolderId = folderId;
                 uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;
                 uploadSession.Encrypted = encrypted;
@@ -213,7 +246,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static ChunkedUploadSession UploadChunk(string uploadId, Stream stream, long chunkLength)
+        public ChunkedUploadSession UploadChunk(string uploadId, Stream stream, long chunkLength)
         {
             var uploadSession = ChunkedUploadSessionHolder.GetSession(uploadId);
             uploadSession.Expired = DateTime.UtcNow + ChunkedUploadSessionHolder.SlidingExpiration;
@@ -225,7 +258,7 @@ namespace ASC.Web.Files.Utils
 
             if (chunkLength > SetupInfo.ChunkUploadSize)
             {
-                throw FileSizeComment.GetFileSizeException(SetupInfo.MaxUploadSize);
+                throw FileSizeComment.GetFileSizeException(SetupInfo.MaxUploadSize(TenantExtra, TenantStatisticsProvider));
             }
 
             var maxUploadSize = GetMaxFileSize(uploadSession.FolderId, uploadSession.BytesTotal > 0);

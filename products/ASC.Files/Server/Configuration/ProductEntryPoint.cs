@@ -44,17 +44,20 @@ namespace ASC.Web.Files.Configuration
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
+        public Global Global { get; }
 
         public ProductEntryPoint(
             FilesSpaceUsageStatManager filesSpaceUsageStatManager,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            UserManager userManager)
+            UserManager userManager,
+            Global global)
         {
             FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             UserManager = userManager;
+            Global = global;
         }
 
         public static readonly Guid ID = WebItemManager.DocumentsProductID;

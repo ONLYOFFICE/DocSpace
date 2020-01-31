@@ -29,22 +29,28 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Files.Core;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
 
 using Autofac;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
 using File = ASC.Files.Core.File;
@@ -53,52 +59,59 @@ namespace ASC.Web.Files.Classes
 {
     public class Global
     {
-        private static readonly object Locker = new object();
-        private static bool isInit;
-        public static readonly ICacheNotify Notify = AscCache.Notify;
+        public ICacheNotify<AscCacheItem> Notify { get; set; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
+        public AuthContext AuthContext { get; }
+        public UserManager UserManager { get; }
+        public CoreSettings CoreSettings { get; }
+        public WebItemManager WebItemManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public TenantManager TenantManager { get; }
+        public StorageFactory StorageFactory { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public CustomNamingPeople CustomNamingPeople { get; }
+        public SettingsManager SettingsManager { get; }
 
-        static Global()
-        {
-            Init();
-        }
-
-        internal static void Init()
+        public Global(
+            IContainer container,
+            CoreBaseSettings coreBaseSettings,
+            IOptionsMonitor<ILog> options,
+            ICacheNotify<AscCacheItem> notify,
+            IConfiguration configuration,
+            AuthContext authContext,
+            UserManager userManager,
+            CoreSettings coreSettings,
+            WebItemManager webItemManager,
+            WebItemSecurity webItemSecurity,
+            TenantManager tenantManager,
+            StorageFactory storageFactory,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            CustomNamingPeople customNamingPeople,
+            SettingsManager settingsManager)
         {
             try
             {
-                if (isInit) return;
-
-                lock (Locker)
+                Logger = options.CurrentValue;
+                Notify = notify;
+                if (!container.TryResolve(out IDaoFactory factory))
                 {
-                    if (isInit) return;
+                    factory = new DaoFactory();
+                    Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.");
+                }
 
-                    DIHelper.Register();
+                if (!container.TryResolve(out IFileStorageService storageService))
+                {
+                    storageService = new FileStorageServiceController();
+                    Logger.Fatal("Could not resolve IFileStorageService instance. Using default FileStorageServiceController instead.");
+                }
 
-                    var container = DIHelper.Resolve();
-
-                    IDaoFactory factory;
-                    if (!container.TryResolve(out factory))
-                    {
-                        factory = new DaoFactory();
-                        Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.");
-                    }
-
-                    IFileStorageService storageService;
-                    if (!container.TryResolve(out storageService))
-                    {
-                        storageService = new FileStorageServiceController();
-                        Logger.Fatal("Could not resolve IFileStorageService instance. Using default FileStorageServiceController instead.");
-                    }
-
-                    DaoFactory = factory;
-                    FileStorageService = storageService;
-                    SocketManager = new SocketManager();
-                    if (CoreContext.Configuration.Standalone)
-                    {
-                        ClearCache();
-                    }
-
-                    isInit = true;
+                DaoFactory = factory;
+                FileStorageService = storageService;
+                SocketManager = new SocketManager();
+                if (coreBaseSettings.Standalone)
+                {
+                    ClearCache();
                 }
             }
             catch (Exception error)
@@ -107,13 +120,26 @@ namespace ASC.Web.Files.Classes
                 DaoFactory = new DaoFactory();
                 FileStorageService = new FileStorageServiceController();
             }
+
+            CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
+            AuthContext = authContext;
+            UserManager = userManager;
+            CoreSettings = coreSettings;
+            WebItemManager = webItemManager;
+            WebItemSecurity = webItemSecurity;
+            TenantManager = tenantManager;
+            StorageFactory = storageFactory;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            CustomNamingPeople = customNamingPeople;
+            SettingsManager = settingsManager;
         }
 
-        private static void ClearCache()
+        private void ClearCache()
         {
             try
             {
-                Notify.Subscribe<AscCacheItem>((item, action) =>
+                Notify.Subscribe((item) =>
                 {
                     try
                     {
@@ -127,7 +153,7 @@ namespace ASC.Web.Files.Classes
                     {
                         Logger.Fatal("ClearCache action", e);
                     }
-                });
+                }, CacheNotifyAction.Any);
             }
             catch (Exception e)
             {
@@ -141,41 +167,40 @@ namespace ASC.Web.Files.Classes
 
         public static readonly Regex InvalidTitleChars = new Regex("[\t*\\+:\"<>?|\\\\/\\p{Cs}]");
 
-        public static bool EnableUploadFilter
+        public bool EnableUploadFilter
         {
-            get { return bool.TrueString.Equals(WebConfigurationManager.AppSettings["files.upload-filter"] ?? "false", StringComparison.InvariantCultureIgnoreCase); }
+            get { return bool.TrueString.Equals(Configuration["files:upload-filter"] ?? "false", StringComparison.InvariantCultureIgnoreCase); }
         }
 
-        public static TimeSpan StreamUrlExpire
+        public TimeSpan StreamUrlExpire
         {
             get
             {
-                int validateTimespan;
-                int.TryParse(WebConfigurationManager.AppSettings["files.stream-url-minute"], out validateTimespan);
+                int.TryParse(Configuration["files:stream-url-minute"], out var validateTimespan);
                 if (validateTimespan <= 0) validateTimespan = 16;
                 return TimeSpan.FromMinutes(validateTimespan);
             }
         }
 
-        public static bool IsAdministrator
+        public bool IsAdministrator
         {
-            get { return FileSecurity.IsAdministrator(SecurityContext.CurrentAccount.ID); }
+            get { return FileSecurity.IsAdministrator(AuthContext.CurrentAccount.ID); }
         }
 
-        public static bool IsOutsider
+        public bool IsOutsider
         {
-            get { return CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsOutsider(); }
+            get { return UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsOutsider(UserManager); }
         }
 
-        public static string GetDocDbKey()
+        public string GetDocDbKey()
         {
             const string dbKey = "UniqueDocument";
-            var resultKey = CoreContext.Configuration.GetSetting(dbKey);
+            var resultKey = CoreSettings.GetSetting(dbKey);
 
             if (!string.IsNullOrEmpty(resultKey)) return resultKey;
 
             resultKey = Guid.NewGuid().ToString();
-            CoreContext.Configuration.SaveSetting(dbKey, resultKey);
+            CoreSettings.SaveSetting(dbKey, resultKey);
 
             return resultKey;
         }
@@ -185,22 +210,22 @@ namespace ASC.Web.Files.Classes
         private static readonly IDictionary<int, object> ProjectsRootFolderCache =
             new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public static object FolderProjects
+        public object FolderProjects
         {
             get
             {
-                if (CoreContext.Configuration.Personal) return null;
+                if (CoreBaseSettings.Personal) return null;
 
-                if (WebItemManager.Instance[WebItemManager.ProjectsProductID].IsDisabled()) return null;
+                if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return null;
 
                 using (var folderDao = DaoFactory.GetFolderDao())
                 {
                     object result;
-                    if (!ProjectsRootFolderCache.TryGetValue(TenantProvider.CurrentTenantID, out result))
+                    if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out result))
                     {
                         result = folderDao.GetFolderIDProjects(true);
 
-                        ProjectsRootFolderCache[TenantProvider.CurrentTenantID] = result;
+                        ProjectsRootFolderCache[TenantManager.GetCurrentTenant().TenantId] = result;
                     }
 
                     return result;
@@ -211,17 +236,16 @@ namespace ASC.Web.Files.Classes
         private static readonly IDictionary<string, object> UserRootFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public static object FolderMy
+        public object FolderMy
         {
             get
             {
-                if (!SecurityContext.IsAuthenticated) return 0;
-                if (CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor()) return 0;
+                if (!AuthContext.IsAuthenticated) return 0;
+                if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
 
-                var cacheKey = string.Format("my/{0}/{1}", TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID);
+                var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
-                object myFolderId;
-                if (!UserRootFolderCache.TryGetValue(cacheKey, out myFolderId))
+                if (!UserRootFolderCache.TryGetValue(cacheKey, out var myFolderId))
                 {
                     myFolderId = GetFolderIdAndProccessFirstVisit(true);
                     if (!Equals(myFolderId, 0))
@@ -231,7 +255,7 @@ namespace ASC.Web.Files.Classes
             }
             protected internal set
             {
-                var cacheKey = string.Format("my/{0}/{1}", TenantProvider.CurrentTenantID, value);
+                var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
                 UserRootFolderCache.Remove(cacheKey);
             }
         }
@@ -239,18 +263,17 @@ namespace ASC.Web.Files.Classes
         private static readonly IDictionary<int, object> CommonFolderCache =
             new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public static object FolderCommon
+        public object FolderCommon
         {
             get
             {
-                if (CoreContext.Configuration.Personal) return null;
+                if (CoreBaseSettings.Personal) return null;
 
-                object commonFolderId;
-                if (!CommonFolderCache.TryGetValue(TenantProvider.CurrentTenantID, out commonFolderId))
+                if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
                 {
                     commonFolderId = GetFolderIdAndProccessFirstVisit(false);
                     if (!Equals(commonFolderId, 0))
-                        CommonFolderCache[TenantProvider.CurrentTenantID] = commonFolderId;
+                        CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
                 }
                 return commonFolderId;
             }
@@ -259,15 +282,14 @@ namespace ASC.Web.Files.Classes
         private static readonly IDictionary<int, object> ShareFolderCache =
             new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public static object FolderShare
+        public object FolderShare
         {
             get
             {
-                if (CoreContext.Configuration.Personal) return null;
+                if (CoreBaseSettings.Personal) return null;
                 if (IsOutsider) return null;
 
-                object sharedFolderId;
-                if (!ShareFolderCache.TryGetValue(TenantProvider.CurrentTenantID, out sharedFolderId))
+                if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var sharedFolderId))
                 {
                     using (var folderDao = DaoFactory.GetFolderDao())
                     {
@@ -275,7 +297,7 @@ namespace ASC.Web.Files.Classes
                     }
 
                     if (!sharedFolderId.Equals(0))
-                        ShareFolderCache[TenantProvider.CurrentTenantID] = sharedFolderId;
+                        ShareFolderCache[TenantManager.GetCurrentTenant().TenantId] = sharedFolderId;
                 }
 
                 return sharedFolderId;
@@ -285,26 +307,25 @@ namespace ASC.Web.Files.Classes
         private static readonly IDictionary<string, object> TrashFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public static object FolderTrash
+        public object FolderTrash
         {
             get
             {
                 if (IsOutsider) return null;
 
-                var cacheKey = string.Format("trash/{0}/{1}", TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID);
+                var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
-                object trashFolderId;
-                if (!TrashFolderCache.TryGetValue(cacheKey, out trashFolderId))
+                if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
                 {
                     using (var folderDao = DaoFactory.GetFolderDao())
-                        trashFolderId = SecurityContext.IsAuthenticated ? folderDao.GetFolderIDTrash(true) : 0;
+                        trashFolderId = AuthContext.IsAuthenticated ? folderDao.GetFolderIDTrash(true) : 0;
                     TrashFolderCache[cacheKey] = trashFolderId;
                 }
                 return trashFolderId;
             }
             protected internal set
             {
-                var cacheKey = string.Format("trash/{0}/{1}", TenantProvider.CurrentTenantID, value);
+                var cacheKey = string.Format("trash/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, value);
                 TrashFolderCache.Remove(cacheKey);
             }
         }
@@ -313,28 +334,25 @@ namespace ASC.Web.Files.Classes
 
         #endregion
 
-        public static ILog Logger
-        {
-            get { return LogManager.GetLogger("ASC.Files"); }
-        }
+        public ILog Logger { get; set; }
 
         public static IDaoFactory DaoFactory { get; private set; }
 
-        public static EncryptedDataDao DaoEncryptedData
+        public EncryptedDataDao DaoEncryptedData
         {
-            get { return new EncryptedDataDao(TenantProvider.CurrentTenantID, FileConstant.DatabaseId); }
+            get { return new EncryptedDataDao(TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId); }
         }
 
         public static IFileStorageService FileStorageService { get; private set; }
 
         public static SocketManager SocketManager { get; private set; }
 
-        public static IDataStore GetStore(bool currentTenant = true)
+        public IDataStore GetStore(bool currentTenant = true)
         {
-            return StorageFactory.GetStorage(currentTenant ? TenantProvider.CurrentTenantID.ToString() : string.Empty, FileConstant.StorageModule);
+            return StorageFactory.GetStorage(currentTenant ? TenantManager.GetCurrentTenant().TenantId.ToString() : string.Empty, FileConstant.StorageModule);
         }
 
-        public static IDataStore GetStoreTemplate()
+        public IDataStore GetStoreTemplate()
         {
             return StorageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
         }
@@ -363,20 +381,20 @@ namespace ASC.Web.Files.Classes
             return InvalidTitleChars.Replace(title, "_");
         }
 
-        public static string GetUserName(Guid userId, bool alive = false)
+        public string GetUserName(Guid userId, bool alive = false)
         {
-            if (userId.Equals(SecurityContext.CurrentAccount.ID)) return FilesCommonResource.Author_Me;
+            if (userId.Equals(AuthContext.CurrentAccount.ID)) return FilesCommonResource.Author_Me;
             if (userId.Equals(Constants.Guest.ID)) return FilesCommonResource.Guest;
 
-            var userInfo = CoreContext.UserManager.GetUsers(userId);
+            var userInfo = UserManager.GetUsers(userId);
             if (userInfo.Equals(ASC.Core.Users.Constants.LostUser)) return alive ? FilesCommonResource.Guest : CustomNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");
 
-            return userInfo.DisplayUserName(false);
+            return userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
         }
 
         #region Generate start documents
 
-        private static object GetFolderIdAndProccessFirstVisit(bool my)
+        private object GetFolderIdAndProccessFirstVisit(bool my)
         {
             using (var folderDao = DaoFactory.GetFolderDao())
             using (var fileDao = DaoFactory.GetFileDao())
@@ -388,13 +406,13 @@ namespace ASC.Web.Files.Classes
                     id = my ? folderDao.GetFolderIDUser(true) : folderDao.GetFolderIDCommon(true);
 
                     //Copy start document
-                    if (AdditionalWhiteLabelSettings.Instance.StartDocsEnabled)
+                    if (AdditionalWhiteLabelSettings.Instance(SettingsManager).StartDocsEnabled)
                     {
                         try
                         {
                             var storeTemplate = GetStoreTemplate();
 
-                            var culture = my ? CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture() : CoreContext.TenantManager.GetCurrentTenant().GetCulture();
+                            var culture = my ? UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture() : TenantManager.GetCurrentTenant().GetCulture();
                             var path = FileConstant.StartDocPath + culture + "/";
 
                             if (!storeTemplate.IsDirectory(path))
@@ -419,15 +437,15 @@ namespace ASC.Web.Files.Classes
             foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
             {
                 SaveFile(fileDao, folderId, path + file, storeTemplate);
-            }            
+            }
 
             foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
             {
                 var subFolderId = folderDao.SaveFolder(new Folder
-                    {
-                        Title = folderName,
-                        ParentFolderID = folderId
-                    });
+                {
+                    Title = folderName,
+                    ParentFolderID = folderId
+                });
 
                 SaveStartDocument(folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
             }
@@ -439,12 +457,12 @@ namespace ASC.Web.Files.Classes
             {
                 var fileName = Path.GetFileName(filePath);
                 var file = new File
-                    {
-                        Title = fileName,
-                        ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath),
-                        FolderID = folder,
-                        Comment = FilesCommonResource.CommentCreate,
-                    };
+                {
+                    Title = fileName,
+                    ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath),
+                    FolderID = folder,
+                    Comment = FilesCommonResource.CommentCreate,
+                };
                 stream.Position = 0;
                 try
                 {
@@ -462,12 +480,12 @@ namespace ASC.Web.Files.Classes
         #endregion
 
 
-        public static long GetUserUsedSpace()
+        public long GetUserUsedSpace()
         {
-            return GetUserUsedSpace(SecurityContext.CurrentAccount.ID);
+            return GetUserUsedSpace(AuthContext.CurrentAccount.ID);
         }
-        
-        public static long GetUserUsedSpace(Guid userId)
+
+        public long GetUserUsedSpace(Guid userId)
         {
             var spaceUsageManager = new FilesSpaceUsageStatManager() as IUserSpaceUsage;
 
