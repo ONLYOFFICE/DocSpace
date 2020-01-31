@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core
 {
-    public interface IProviderDao : IDisposable
+    public interface IProviderDao
     {
         IProviderInfo GetProviderInfo(int linkId);
         List<IProviderInfo> GetProvidersInfo();

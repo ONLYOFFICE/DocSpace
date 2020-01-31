@@ -130,21 +130,13 @@ namespace ASC.Web.Files.Classes
                     Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.");
                 }
 
-                if (!container.TryResolve(out IFileStorageService storageService))
-                {
-                    storageService = new FileStorageServiceController();
-                    Logger.Fatal("Could not resolve IFileStorageService instance. Using default FileStorageServiceController instead.");
-                }
-
                 DaoFactory = factory;
-                FileStorageService = storageService;
                 SocketManager = new SocketManager();
             }
             catch (Exception error)
             {
                 Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.", error);
                 DaoFactory = daoFactory;
-                FileStorageService = new FileStorageServiceController();
             }
 
             Configuration = configuration;
@@ -199,7 +191,7 @@ namespace ASC.Web.Files.Classes
 
         public ILog Logger { get; set; }
 
-        public static IDaoFactory DaoFactory { get; private set; }
+        public IDaoFactory DaoFactory { get; private set; }
 
         public EncryptedDataDao DaoEncryptedData
         {
@@ -210,7 +202,7 @@ namespace ASC.Web.Files.Classes
 
         public static SocketManager SocketManager { get; private set; }
 
-        public static FileSecurity GetFilesSecurity()
+        public FileSecurity GetFilesSecurity()
         {
             return new FileSecurity(DaoFactory);
         }
@@ -391,7 +383,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, object> ShareFolderCache =
             new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object FolderShare(IFolderDao folderDao)
+        public object GetFolderShare(IFolderDao folderDao)
         {
             if (CoreBaseSettings.Personal) return null;
             if (IsOutsider) return null;
@@ -512,6 +504,64 @@ namespace ASC.Web.Files.Classes
         public bool IsOutsider
         {
             get { return UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsOutsider(UserManager); }
+        }
+    }
+
+    public class GlobalFolderHelper
+    {
+        public Global Global { get; }
+        public GlobalFolder GlobalFolder { get; }
+        public GlobalFolderHelper(Global global, GlobalFolder globalFolder)
+        {
+            Global = global;
+            GlobalFolder = globalFolder;
+        }
+
+        public object FolderProjects
+        {
+            get
+            {
+                return GlobalFolder.GetFolderProjects(Global.DaoFactory);
+            }
+        }
+        public object FolderCommon
+        {
+            get
+            {
+                return GlobalFolder.GetFolderCommon(Global.DaoFactory);
+            }
+        }
+
+        public object FolderMy
+        {
+            get
+            {
+                return GlobalFolder.GetFolderMy(Global.DaoFactory);
+            }
+            set
+            {
+                GlobalFolder.SetFolderMy(value);
+            }
+        }
+
+        public object FolderShare
+        {
+            get
+            {
+                return GlobalFolder.GetFolderShare(Global.DaoFactory.FolderDao);
+            }
+        }
+
+        public object FolderTrash
+        {
+            get
+            {
+                return GlobalFolder.GetFolderTrash(Global.DaoFactory.FolderDao);
+            }
+            set
+            {
+                GlobalFolder.SetFolderTrash(value);
+            }
         }
     }
 }
