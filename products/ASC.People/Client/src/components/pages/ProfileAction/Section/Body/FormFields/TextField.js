@@ -22,7 +22,8 @@ class TextField extends React.Component {
       inputAutoFocussed,
       inputTabIndex,
       tooltipContent,
-      helpButtonHeaderContent
+      helpButtonHeaderContent,
+      maxLength
     } = this.props;
 
     return (
@@ -42,6 +43,7 @@ class TextField extends React.Component {
           className="field-input"
           isAutoFocussed={inputAutoFocussed}
           tabIndex={inputTabIndex}
+          maxLength={maxLength}
         />
       </FieldContainer>
     );

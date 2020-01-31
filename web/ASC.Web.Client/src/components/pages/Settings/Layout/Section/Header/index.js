@@ -1,18 +1,8 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { utils } from 'asc-web-components';
 import { Headline } from 'asc-web-common';
-import styled from 'styled-components';
 import { withTranslation } from 'react-i18next';
 import { getKeyByLink, settingsTree, getTKeyByKey } from '../../../utils';
-
-const HeaderContainer = styled(Headline)`
-  margin-right: 16px;
-  max-width: calc(100vw - 430px);
-  @media ${utils.device.tablet} {
-    max-width: calc(100vw - 96px);
-  }
-`;
 
 class SectionHeaderContent extends React.Component {
 
@@ -57,9 +47,9 @@ class SectionHeaderContent extends React.Component {
     const { header } = this.state;
 
     return (
-      <HeaderContainer type='content' truncate={true}>
+      <Headline type='content' truncate={true}>
         {t(header)}
-      </HeaderContainer>
+      </Headline>
     );
   }
 };
