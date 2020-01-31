@@ -4,10 +4,12 @@ import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { store, constants } from 'asc-web-common';
+import { store, utils } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
-const { getPortalCultures } = store.auth.actions;
-const { LANGUAGE } = constants;
+import { default as clientStore } from '../../../../../store/store';
+
+const { changeLanguage } = utils;
+const { getPortalCultures, getModules } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -96,8 +98,8 @@ class Customization extends React.Component {
          this.setState({ isLoadedData: true });
       }
       if (this.props.language !== prevProps.language) {
-         this.props.i18n
-         .reloadResources([this.props.language])
+         changeLanguage(this.props.i18n)
+            .then(() => getModules(clientStore.dispatch))
             .then(() => {
                const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
                const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
@@ -124,15 +126,8 @@ class Customization extends React.Component {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
             .then(() => {
                const { i18n } = this.props;
-               const currentLanguage = localStorage.getItem(LANGUAGE);
-               if (i18n.language !== currentLanguage) {
-                  i18n
-                     .reloadResources([currentLanguage])
+                  changeLanguage(i18n)
                      .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
-               }
-               else {
-                  toastr.success(t("SuccessfullySaveSettingsMessage"));
-               }
             })
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
