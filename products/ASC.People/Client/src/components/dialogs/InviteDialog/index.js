@@ -14,27 +14,24 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
-import { api, utils, constants } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { getShortenedLink } = api.portal;
 const { changeLanguage } = utils;
-const { LANGUAGE } = constants;
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userInvitationLink, guestInvitationLink } = this.props;
+    const { userInvitationLink, guestInvitationLink } = props;
     this.state = {
       isGuest: false,
       userInvitationLink,
       guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
-      visible: false
+      visible: false,
     };
-
-    changeLanguage(i18n);
   }
 
   onCopyLinkToClipboard = () => {
@@ -46,15 +43,7 @@ class InviteDialogComponent extends React.Component {
         : this.state.userInvitationLink
     );
 
-    if (i18n.language !== localStorage.getItem(LANGUAGE)) {
-      i18n
-        .reloadResources([localStorage.getItem(LANGUAGE)])
-        .then(() => toastr.success(t("LinkCopySuccess")));
-    }
-    else {
-      toastr.success(t("LinkCopySuccess"));
-    }
-
+    toastr.success(t("LinkCopySuccess"));
   };
 
   onCheckedGuest = () => this.setState({ isGuest: !this.state.isGuest });
@@ -87,7 +76,12 @@ class InviteDialogComponent extends React.Component {
   };
 
   componentDidMount() {
-    this.onCopyLinkToClipboard();
+    const { t } = this.props;
+    copy(this.state.userInvitationLink);
+
+    changeLanguage(i18n)
+    .then(()=>  this.setState({visible: true}))
+    .then(()=>  toastr.success(t("LinkCopySuccess")));
   }
 
   onClickToCloseButton = () =>
@@ -99,6 +93,7 @@ class InviteDialogComponent extends React.Component {
     const { t, visible, settings, guestsCaption } = this.props;
 
     return (
+      this.state.visible &&
       <ModalDialogContainer>
         <ModalDialog
           visible={visible}
