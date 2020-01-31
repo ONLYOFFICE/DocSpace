@@ -139,6 +139,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   ${props =>
     !props.primary &&
