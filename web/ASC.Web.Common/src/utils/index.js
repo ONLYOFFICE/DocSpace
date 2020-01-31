@@ -32,7 +32,9 @@ export function getObjectByLocation(location) {
 }
 
 export function changeLanguage(i18nInstance) {
-  localStorage.getItem(LANGUAGE) 
-  ? i18nInstance.language !== localStorage.getItem(LANGUAGE) && i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE)) 
+  return localStorage.getItem(LANGUAGE) 
+  ? (i18nInstance.language !== localStorage.getItem(LANGUAGE) 
+    ? i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE))
+    : Promise.resolve()) 
   : i18nInstance.changeLanguage('en');
 }
