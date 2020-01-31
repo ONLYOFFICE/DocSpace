@@ -90,6 +90,7 @@ class AvatarEditor extends React.Component {
                 bodyContent={
                     <AvatarEditorBody
                         onImageChange={this.onImageChange}
+                        visible={this.state.visible}
                         onPositionChange={this.onPositionChange}
                         onSizeChange={this.onSizeChange}
                         onLoadFileError={this.onLoadFileError}
