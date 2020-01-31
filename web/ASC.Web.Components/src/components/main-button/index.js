@@ -173,7 +173,6 @@ class MainButton extends React.PureComponent {
         {this.props.isDropdown ? (
           <StyledDropDown
             open={this.state.isOpen}
-            withBackdrop
             clickOutsideAction={this.handleClick}
             {...this.props}
             onClick={this.onDropDownClick}
