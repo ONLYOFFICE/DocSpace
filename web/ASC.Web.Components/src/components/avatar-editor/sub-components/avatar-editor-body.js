@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { default as ASCAvatar } from '../../avatar/index'
 import accepts from 'attr-accept'
 import Text from '../../text'
+import IconButton from '../../icon-button'
 import { tablet } from '../../../utils/device';
 import resizeImage from 'resize-image'
 const StyledErrorContainer = styled.div`
@@ -79,6 +80,9 @@ const StyledAvatarContainer = styled.div`
     .avatar-container{
         display: inline-block;
         vertical-align: top;
+        @media ${tablet} {
+            display: none;
+        }
     }
     .editor-container{
         display: inline-block;
@@ -105,34 +109,15 @@ class AvatarEditorBody extends React.Component {
             image: this.props.image ? this.props.image : "",
             scale: 1,
             croppedImage: '',
-
-            errorText: null
+            errorText: null,
+            rotate: 0
         }
 
         this.setEditorRef = React.createRef();
 
-        this.handleScale = this.handleScale.bind(this);
-        this.onWheel = this.onWheel.bind(this);
-
-        this.onTouchStart = this.onTouchStart.bind(this);
-        this.onTouchMove = this.onTouchMove.bind(this);
-        this.onTouchEnd = this.onTouchEnd.bind(this);
-
-        this.distance = this.distance.bind(this);
-
-        this.onImageChange = this.onImageChange.bind(this);
-        this.onImageReady = this.onImageReady.bind(this);
-        this.deleteImage = this.deleteImage.bind(this);
-
-        this.onDropAccepted = this.onDropAccepted.bind(this);
-        this.onDropRejected = this.onDropRejected.bind(this);
-
-
-        this.onPositionChange = this.onPositionChange.bind(this);
-
     }
 
-    onPositionChange(position) {
+    onPositionChange = (position) => {
         this.props.onPositionChange({
             x: position.x,
             y: position.y,
@@ -140,7 +125,7 @@ class AvatarEditorBody extends React.Component {
             height: this.setEditorRef.current.getImage().height
         });
     }
-    onDropRejected(rejectedFiles) {
+    onDropRejected = (rejectedFiles) => {
         if (!accepts(rejectedFiles[0], this.props.accept)) {
             this.props.onLoadFileError(0);
             this.setState({
@@ -159,7 +144,7 @@ class AvatarEditorBody extends React.Component {
         })
         this.props.onLoadFileError(2);
     }
-    onDropAccepted(acceptedFiles) {
+    onDropAccepted = (acceptedFiles) => {
         const _this = this;
         var fr = new FileReader();
         fr.readAsDataURL(acceptedFiles[0]);
@@ -170,6 +155,7 @@ class AvatarEditorBody extends React.Component {
                 var data = resizeImage.resize(canvas, 1024, 1024, resizeImage.JPEG);
                 _this.setState({
                     image: data,
+                    rotate: 0,
                     errorText: null
                 });
                 fetch(data)
@@ -182,29 +168,32 @@ class AvatarEditorBody extends React.Component {
             img.src = fr.result;
         };
     }
-    deleteImage() {
+    deleteImage = () => {
         this.setState({
             image: '',
+            rotate: 0,
             croppedImage: ''
         });
         this.props.deleteImage();
     }
-    onImageChange() {
+    onImageChange = () => {
+
+        const image = this.setEditorRef.current.getImage().toDataURL();
         if(this.setEditorRef.current !== null){
             this.setState({
-                croppedImage: this.setEditorRef.current.getImage().toDataURL()
+                croppedImage: image
             });
-            this.props.onImageChange(this.setEditorRef.current.getImage().toDataURL());
+            this.props.onImageChange(image);
         }
     }
     dist = 0
     scaling = false
     curr_scale = 1.0
     scale_factor = 1.0
-    distance(p1, p2) {
+    distance = (p1, p2) => {
         return (Math.sqrt(Math.pow((p1.clientX - p2.clientX), 2) + Math.pow((p1.clientY - p2.clientY), 2)));
     }
-    onTouchStart(evt) {
+    onTouchStart = (evt) =>{
         evt.preventDefault();
         var tt = evt.targetTouches;
         if (tt.length >= 2) {
@@ -214,14 +203,14 @@ class AvatarEditorBody extends React.Component {
             this.scaling = false;
         }
     }
-    onTouchMove(evt) {
+    onTouchMove = (evt) => {
         evt.preventDefault();
         var tt = evt.targetTouches;
         if (this.scaling) {
             this.curr_scale = this.distance(tt[0], tt[1]) / this.dist * this.scale_factor;
-            let scale = (Math.round(this.curr_scale) * 10) / 10;
+            
             this.setState({
-                scale: scale < 1 ? 1 : scale > 5 ? 5 : scale
+                scale: this.curr_scale < 1 ? 1 : this.curr_scale > 5 ? 5 : this.curr_scale
             });
             this.props.onSizeChange({
                 width: this.setEditorRef.current.getImage().width,
@@ -229,15 +218,15 @@ class AvatarEditorBody extends React.Component {
             });
         }
     }
-    onTouchEnd(evt) {
+    onTouchEnd = (evt) => {
         var tt = evt.targetTouches;
         if (tt.length < 2) {
             this.scaling = false;
             if (this.curr_scale < 1) {
                 this.scale_factor = 1;
             } else {
-                if (this.curr_scale > 5) {
-                    this.scale_factor = 5;
+                if (this.curr_scale > 10) {
+                    this.scale_factor = 10;
                 } else {
                     this.scale_factor = this.curr_scale;
                 }
@@ -246,13 +235,13 @@ class AvatarEditorBody extends React.Component {
             this.scaling = true;
         }
     }
-    onWheel(e) {
+    onWheel = (e) => {
         e = e || window.event;
         const delta = e.deltaY || e.detail || e.wheelDelta;
         let scale = delta > 0 && this.state.scale === 1 ? 1 : this.state.scale - (delta / 100) * 0.1;
         scale = Math.round(scale * 10) / 10;
         this.setState({
-            scale: scale < 1 ? 1 : scale > 5 ? 5 : scale
+            scale: scale < 1 ? 1 : scale > 10 ? 10 : scale
         });
         this.props.onSizeChange({
             width: this.setEditorRef.current.getImage().width,
@@ -268,7 +257,7 @@ class AvatarEditorBody extends React.Component {
             height: this.setEditorRef.current.getImage().height
         });
     };
-    onImageReady() {
+    onImageReady = () => {
         this.setState({
             croppedImage: this.setEditorRef.current.getImage().toDataURL()
         });
@@ -280,10 +269,45 @@ class AvatarEditorBody extends React.Component {
             height: this.setEditorRef.current.getImage().height
         });
     }
+    rotateLeft = e => {
+        e.preventDefault()
+        this.setState({
+            rotate: this.state.rotate - 90,
+        })
+        var img = new Image();
+        var _this = this;
+        img.src = this.state.image;
+        img.onload = () => {
+            var canvas = document.createElement("canvas");
+            canvas.setAttribute('width', img.height);
+            canvas.setAttribute('height', img.width);
+            var context = canvas.getContext('2d');
+
+            context.translate(canvas.width/2,canvas.height/2);
+            context.rotate(-90 * Math.PI / 180);
+            context.drawImage(img,-img.width/2,-img.height/2);
+
+            var rotatedImageSrc =  canvas.toDataURL("image/jpeg");
+            fetch(rotatedImageSrc)
+                .then(res => res.blob())
+                .then(blob => {
+                    const file = new File([blob], "File name",{ type: "image/jpg" })
+                    _this.props.onLoadFile(file);
+                })
+        }
+    }
     componentDidUpdate(prevProps){
         if(prevProps.image !== this.props.image){
+            setTimeout(()=>{
+                this.setState({
+                    image: this.props.image,
+                    rotate: 0
+                });
+            },0);
+        }else if(!prevProps.visible && this.props.visible){
             this.setState({
-                image: this.props.image
+                image: this.props.image ? this.props.image : "",
+                rotate: 0
             });
         }
     }
@@ -316,11 +340,12 @@ class AvatarEditorBody extends React.Component {
                             <ReactAvatarEditor
                                 ref={this.setEditorRef}
                                 width={250}
+                                height={250}
                                 borderRadius={200}
                                 scale={this.state.scale}
-                                height={250}
                                 className="react-avatar-editor"
                                 image={this.state.image}
+                                rotate={this.state.rotate}
                                 color={[0, 0, 0, .5]}
                                 onImageChange={this.onImageChange}
                                 onPositionChange={this.onPositionChange}
@@ -335,6 +360,15 @@ class AvatarEditorBody extends React.Component {
                                 max='5'
                                 step='0.01'
                                 value={this.state.scale}
+                            />
+                            <IconButton
+                                iconName="RotateIcon"
+                                color="#A3A9AE"
+                                size="25"
+                                hoverColor="#657077"
+                                isFill={true}
+                                onClick={this.rotateLeft}
+                                className="arrow-button"
                             />
                             <CloseButton onClick={this.deleteImage}></CloseButton>
                         </div>
@@ -373,6 +407,7 @@ AvatarEditorBody.propTypes = {
     onImageChange: PropTypes.func,
     onPositionChange: PropTypes.func,
     onSizeChange: PropTypes.func,
+    visible: PropTypes.bool,
     onLoadFileError: PropTypes.func,
     onLoadFile: PropTypes.func,
     deleteImage: PropTypes.func,
@@ -384,12 +419,12 @@ AvatarEditorBody.propTypes = {
     unknownTypeError: PropTypes.string,
     maxSizeFileError: PropTypes.string,
     unknownError: PropTypes.string
-
 };
 
 AvatarEditorBody.defaultProps = {
     accept: ['image/png', 'image/jpeg'],
     maxSize: Number.MAX_SAFE_INTEGER,
+    visible: false,
     chooseFileLabel: "Drop files here, or click to select files",
     chooseMobileFileLabel: "Click to select files",
     unknownTypeError: "Unknown image file type",
