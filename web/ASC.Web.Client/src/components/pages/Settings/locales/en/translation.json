@@ -65,9 +65,11 @@
     "NotFoundTitle": "No results matching your search could be found",
     "NotFoundDescription": "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
     "ClearButton": "Reset filter",
+    "ProductUserOpportunities": "View profiles and groups",
+    "LearnMore": "Learn more...",
+    "AccessRightsChangeOwnerButtonText": "Change portal owner",
 
 
-    "ViewProfilesAndGroups": "View profiles and groups",
     "ProjectsUserCapabilityView": "View projects and take part in discussions",
     "ProjectsUserCapabilityCreate": "Create and edit milestones, tasks, discussions, documents",
     "ProjectsUserCapabilityTrack": "Track time for tasks, generate reports",
@@ -82,9 +84,15 @@
     "Culture_en": "English (United Kingdom)",
     "Culture_en-US": "English (United States)",
     "Culture_ru-RU": "Russian (Russia)",
-    "LearnMore": "Learn more...",
     "CountPerPage": "{{count}} per page",
     "PageOfTotalPage": "{{page}} of {{totalPage}}",
     "ByFirstNameSorting": "By first name",
-    "ByLastNameSorting": "By last name"
+    "ByLastNameSorting": "By last name",
+    "OwnerSettings": "Owner settings",
+    "AdminsSettings": "Admins settings",
+    "SetPeopleAdmin": "Set people admin",
+    "SetPortalAdmin": "Set portal admin",
+    "PeopleAdmin": "People module admin",
+    "DirectionAscLabel":"A-Z",
+    "DirectionDescLabel":"Z-A"
 }

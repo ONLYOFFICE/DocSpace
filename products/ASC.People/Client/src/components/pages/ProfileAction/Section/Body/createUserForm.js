@@ -14,7 +14,6 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { departments, department, position, employedSinceDate } from '../../../../../helpers/customNames';
 import { api } from "asc-web-common";
 const {
   createThumbnailsAvatar,
@@ -320,6 +319,7 @@ class CreateUserForm extends React.Component {
   render() {
     const { isLoading, errors, profile, selector } = this.state;
     const { t, settings, i18n } = this.props;
+    const { regDateCaption, userPostCaption, groupCaption } = settings.customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
@@ -333,7 +333,7 @@ class CreateUserForm extends React.Component {
               role={getUserRole(profile)}
               editing={true}
               source={this.state.croppedAvatarImage}
-              editLabel={t("AddPhoto")}
+              editLabel={t("AddButton")}
               editAction={this.openAvatarEditor}
             />
             <AvatarEditor
@@ -342,12 +342,12 @@ class CreateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
-              headerLabel={t("editAvatar")}
+              headerLabel={t("AddPhoto")}
               chooseFileLabel ={t("chooseFileLabel")}
               chooseMobileFileLabel={t("chooseMobileFileLabel")}
-              unknownTypeError={t("unknownTypeError")}
+              unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
-              unknownError    ={t("unknownError")}
+              unknownError    ={t("Error")}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
@@ -419,7 +419,7 @@ class CreateUserForm extends React.Component {
               passwordSettings={settings.passwordSettings}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -432,15 +432,15 @@ class CreateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: t("SexMale") },
-                { value: 'female', label: t("SexFemale") }
+                { value: 'male', label: t("MaleSexStatus") },
+                { value: 'female', label: t("FemaleSexStatus") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
-              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+              labelText={`${regDateCaption}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
               inputIsDisabled={isLoading}
@@ -456,7 +456,7 @@ class CreateUserForm extends React.Component {
               inputTabIndex={7}
             />
             <TextField
-              labelText={`${t("CustomPosition", { position })}:`}
+              labelText={`${userPostCaption}:`}
               inputName="title"
               inputValue={profile.title}
               inputIsDisabled={isLoading}
@@ -464,17 +464,15 @@ class CreateUserForm extends React.Component {
               inputTabIndex={8}
             />
             <DepartmentField
-              labelText={`${t("CustomDepartment", { department })}:`}
+              labelText={`${groupCaption}:`}
               isDisabled={isLoading}
               showGroupSelectorButtonTitle={t("AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}
               selectorIsVisible={selector.visible}
-              searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorAddButtonText={t("CustomAddDepartments", { departments })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}
@@ -482,7 +480,7 @@ class CreateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
-          <Textarea placeholder={t("AddСomment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
+          <Textarea placeholder={t("WriteComment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={9}/> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField

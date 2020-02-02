@@ -366,7 +366,7 @@ class PureAdminsSettings extends Component {
                     id="people-admin-selector_button"
                     size="medium"
                     primary={true}
-                    label="Set people admin"
+                    label={t('SetPeopleAdmin')}
                     isDisabled={isLoading}
                     onClick={this.onShowGroupSelector}
                   />
@@ -384,7 +384,7 @@ class PureAdminsSettings extends Component {
                     id="full-admin-selector_button"
                     size="medium"
                     primary={true}
-                    label="Set portal admin"
+                    label={t('SetPortalAdmin')}
                     isDisabled={isLoading}
                     onClick={this.onShowFullAdminGroupSelector}
                   />
@@ -404,6 +404,8 @@ class PureAdminsSettings extends Component {
                 getFilterData={() => []}
                 getSortData={this.getSortData}
                 onFilter={this.onFilter}
+                directionAscLabel={t("DirectionAscLabel")}
+                directionDescLabel={t("DirectionDescLabel")}
               />
 
               {admins.length > 0 ? (
@@ -445,8 +447,8 @@ class PureAdminsSettings extends Component {
 
                             <Text>
                               {user.isAdmin
-                                ? "Full access"
-                                : "People module admin"}
+                                ? t('AccessRightsFullAccess')
+                                : t('PeopleAdmin')}
                             </Text>
 
                             {!user.isOwner ? (

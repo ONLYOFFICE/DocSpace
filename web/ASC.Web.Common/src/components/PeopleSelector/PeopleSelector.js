@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -8,6 +7,7 @@ import { getUserList } from "../../api/people";
 import { getGroupList } from "../../api/groups";
 import Filter from "../../api/people/filter";
 import UserTooltip from "./sub-components/UserTooltip";
+import { changeLanguage } from '../../utils';
 
 class PeopleSelector extends React.Component {
   constructor(props) {
@@ -23,8 +23,8 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { language } = this.props;
-    i18n.changeLanguage(language);
+    const { groupsCaption, t } = this.props;
+    changeLanguage(i18n);
 
     getGroupList(this.props.useFake)
       .then(groups =>
@@ -32,7 +32,7 @@ class PeopleSelector extends React.Component {
           groups: [
             {
               key: "all",
-              label: "All groups",
+              label: t('CustomAllGroups', { groupsCaption }),
               total: 0
             }
           ].concat(this.convertGroups(groups))
@@ -160,7 +160,9 @@ class PeopleSelector extends React.Component {
       onSelect,
       size,
       onCancel,
-      t
+      t,
+      searchPlaceHolderLabel,
+      groupsCaption
     } = this.props;
 
     return (
@@ -180,10 +182,10 @@ class PeopleSelector extends React.Component {
         isOpen={isOpen}
         isMultiSelect={isMultiSelect}
         isDisabled={isDisabled}
-        searchPlaceHolderLabel={t("SearchUsersPlaceholder")}
+        searchPlaceHolderLabel={searchPlaceHolderLabel || t("SearchUsersPlaceholder")}
         selectButtonLabel={t("AddMembersButtonLabel")}
         selectAllLabel={t("SelectAllLabel")}
-        groupsHeaderLabel={t("CustomDepartments", { departments: "Groups" })} //TODO: Replace to variable from settings
+        groupsHeaderLabel={groupsCaption}
         emptySearchOptionsLabel={t("EmptySearchUsersResult")}
         emptyOptionsLabel={t("EmptyUsers")}
         loadingLabel={t("LoadingLabel")}
@@ -210,6 +212,8 @@ PeopleSelector.propTypes = {
   size: PropTypes.oneOf(["full", "compact"]),
   language: PropTypes.string,
   t: PropTypes.func,
+  groupsCaption: PropTypes.string,
+  searchPlaceHolderLabel: PropTypes.string,
   role: PropTypes.oneOf(["admin", "user", "guest"])
 };
 
@@ -223,8 +227,7 @@ PeopleSelector.defaultProps = {
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
 
 const PeopleSelectorWithI18n = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <ExtendedPeopleSelector i18n={i18n} {...props} />;
 };
@@ -233,13 +236,4 @@ PeopleSelectorWithI18n.propTypes = {
   language: PropTypes.string
 };
 
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
-
-export default connect(mapStateToProps)(PeopleSelectorWithI18n);
+export default PeopleSelectorWithI18n;

@@ -101,7 +101,9 @@
         "Employees",
         "AccessRightsChangeOwnerText",
         "DnsChangeMsg",
-        "AccessRightsChangeOwnerConfirmText"
+        "AccessRightsChangeOwnerConfirmText",
+        "LearnMore",
+        "AccessRightsChangeOwnerButtonText"
       ],
       "FeedResource": [
         "ProjectsProduct",
@@ -110,7 +112,8 @@
         "DocumentsProduct"
       ],
       "PeopleResource": [
-        "Settings"
+        "Settings",
+        "ProductUserOpportunities"
       ],
       "AuditResource": [
         "LoginHistoryNav",

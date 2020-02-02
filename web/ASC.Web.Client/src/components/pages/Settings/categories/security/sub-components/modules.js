@@ -107,7 +107,7 @@ class PureModulesSettings extends Component {
                 })}
               </Text>
               <Text fontSize='12px'>
-                <li>{t("ViewProfilesAndGroups")}</li>
+                <li>{t("ProductUserOpportunities")}</li>
               </Text>
             </ProjectsBody>
           </ProjectsContainer>

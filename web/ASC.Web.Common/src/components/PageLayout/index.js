@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Backdrop } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { connect } from "react-redux";
 import { ARTICLE_PINNED_KEY } from "../../constants";
 
 import Article from "./sub-components/article";
@@ -17,6 +16,7 @@ import SectionFilter from "./sub-components/section-filter";
 import SectionBody from "./sub-components/section-body";
 import SectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
+import { changeLanguage } from '../../utils';
 
 class PageLayoutComponent extends React.PureComponent {
   constructor(props) {
@@ -191,8 +191,7 @@ class PageLayoutComponent extends React.PureComponent {
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
 const PageLayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <PageLayoutTranslated i18n={i18n} {...props} />
 }
@@ -241,13 +240,5 @@ PageLayoutComponent.defaultProps = {
   withBodyAutoFocus: false
 };
 
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
 
-export default connect(mapStateToProps)(PageLayout);
+export default PageLayout;

@@ -283,6 +283,26 @@ namespace ASC.Api.Settings
                     .ToList();
         }
 
+        [Read("customschemas/{id}")]
+        public SchemaItemModel PeopleSchema(string id)
+        {
+            var names = CustomNamingPeople.GetPeopleNames(id);
+            var schemaItem = new SchemaItemModel
+            {
+                Id = names.Id,
+                UserCaption = names.UserCaption,
+                UsersCaption = names.UsersCaption,
+                GroupCaption = names.GroupCaption,
+                GroupsCaption = names.GroupsCaption,
+                UserPostCaption = names.UserPostCaption,
+                RegDateCaption = names.RegDateCaption,
+                GroupHeadCaption = names.GroupHeadCaption,
+                GuestCaption = names.GuestCaption,
+                GuestsCaption = names.GuestsCaption,
+            };
+            return schemaItem;
+        }
+
         [Read("quota")]
         public QuotaWrapper GetQuotaUsed()
         {

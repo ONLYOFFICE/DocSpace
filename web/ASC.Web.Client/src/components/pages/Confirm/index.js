@@ -1,11 +1,12 @@
 import React, { Suspense, lazy } from "react";
-import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Loader } from "asc-web-components";
 import ConfirmRoute from "../../../helpers/confirmRoute";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
-import { Error404 } from "asc-web-common";
+import { Error404, utils } from "asc-web-common";
+
+const { changeLanguage } = utils;
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -16,9 +17,9 @@ const ChangePhoneForm = lazy(() => import("./sub-components/changePhone"));
 const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 
-const Confirm = ({ match, language }) => {
+const Confirm = ({ match }) => {
 
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   //console.log("Confirm render");
   return (
@@ -74,10 +75,4 @@ const Confirm = ({ match, language }) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
-
-export default connect(mapStateToProps)(Confirm);
+export default Confirm;

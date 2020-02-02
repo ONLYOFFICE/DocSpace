@@ -1,11 +1,10 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
-import { connect } from 'react-redux';
 import {
   TreeMenu,
   TreeNode,
   Icons,
-  Link
+  Link,
+  utils
 } from "asc-web-components";
 import { withRouter } from "react-router";
 import styled from 'styled-components';
@@ -58,10 +57,9 @@ class ArticleBodyContent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { match, history, i18n, language } = props;
+    const { match, history } = props;
     const fullSettingsUrl = props.match.url;
     const locationPathname = props.location.pathname;
-    i18n.changeLanguage(language);
 
     if (locationPathname === fullSettingsUrl) {
       const defaultKey = ['0'];
@@ -101,20 +99,14 @@ class ArticleBodyContent extends React.Component {
     };
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
+    if (!utils.array.isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)){
     const { selectedKeys } = this.state;
     const { match, history } = this.props;
     const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
     const newPath = match.path + settingsPath;
     history.push(newPath);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if (!utils.array.isArrayEqual(nextState.selectedKeys, this.state.selectedKeys)) {
-      return true;
     }
-
-    return false;
   }
 
   onSelect = value => {
@@ -168,10 +160,4 @@ class ArticleBodyContent extends React.Component {
   };
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName,
-  };
-}
-
-export default connect(mapStateToProps)(withRouter(withTranslation()(ArticleBodyContent)));
+export default withRouter(withTranslation()(ArticleBodyContent));
