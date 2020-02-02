@@ -145,11 +145,6 @@ const StyledSelector = styled(Container)`
 
           .options_searcher {
             grid-area: options_searcher;
-
-            input {
-              font-weight: normal;
-              color: "#333"
-            }
           }
 
           .options_group_selector {
@@ -179,7 +174,7 @@ const StyledSelector = styled(Container)`
               border-color: #2DA7DB;
             }
 
-            & > input {
+            & > input::placeholder {
               color: #A3A9AE;
             }
           }
