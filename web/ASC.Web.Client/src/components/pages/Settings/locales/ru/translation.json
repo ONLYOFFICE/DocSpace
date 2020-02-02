@@ -94,5 +94,6 @@
   "SetPortalAdmin": "Установить администратора портала",
   "PeopleAdmin": "Администратор модуля Люди",
   "DirectionAscLabel":"А-Я",
-  "DirectionDescLabel":"Я-А"
+  "DirectionDescLabel":"Я-А",
+  "MeLabel": "Я"
 }

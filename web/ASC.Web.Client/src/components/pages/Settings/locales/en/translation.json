@@ -94,5 +94,6 @@
     "SetPortalAdmin": "Set portal admin",
     "PeopleAdmin": "People module admin",
     "DirectionAscLabel":"A-Z",
-    "DirectionDescLabel":"Z-A"
+    "DirectionDescLabel":"Z-A",
+    "MeLabel": "Me"
 }

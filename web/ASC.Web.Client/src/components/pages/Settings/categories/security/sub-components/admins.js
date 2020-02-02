@@ -332,7 +332,7 @@ class PureAdminsSettings extends Component {
   };
 
   render() {
-    const { t, admins, filter } = this.props;
+    const { t, admins, filter, me } = this.props;
     const {
       showSelector,
       isLoading,
@@ -377,6 +377,8 @@ class PureAdminsSettings extends Component {
                     role="user"
                     onSelect={this.onSelect}
                     onCancel={this.onCancelSelector}
+                    defaultOption={me}
+                    defaultOptionLabel={t('MeLabel')}
                   />
                 </div>
                 <div className="full-admin_container">
@@ -395,6 +397,8 @@ class PureAdminsSettings extends Component {
                     role="user"
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onCancelSelector}
+                    defaultOption={me}
+                    defaultOptionLabel={t('MeLabel')}
                   />
                 </div>
               </div>
@@ -541,12 +545,14 @@ const AdminsSettings = props => {
 
 function mapStateToProps(state) {
   const { admins, owner, filter } = state.settings.security.accessRight;
+  const { user: me } = state.auth;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
-    filter
+    filter,
+    me
   };
 }
 

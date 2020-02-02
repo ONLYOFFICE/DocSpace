@@ -10,6 +10,7 @@ import Section from "../../../.storybook/decorators/section";
 import PeopleSelector from ".";
 import { Button } from "asc-web-components";
 import withProvider from "../../../.storybook/decorators/redux";
+import { text } from "@storybook/addon-knobs";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";
 
@@ -53,7 +54,17 @@ class PeopleSelectorExample extends React.Component {
             this.toggle();
           }}
           onCancel={this.onCancel}
+          defaultOption={{
+            id: "777",
+            groups: [],
+            displayName: "Boris Johnson",
+            avatar: "",
+            title: "Prime Minister of the United Kingdom",
+            email: "boris.johnson@example.com"
+          }}
+          defaultOptionLabel={text("defaultOptionLabel", "Me")}
         />
+        
       </div>
     );
   }

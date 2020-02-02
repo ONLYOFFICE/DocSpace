@@ -127,7 +127,7 @@ class PureOwnerSettings extends Component {
   };
 
   render() {
-    const { t, owner } = this.props;
+    const { t, owner, me } = this.props;
     const {
       isLoading,
       showLoader,
@@ -234,6 +234,8 @@ class PureOwnerSettings extends Component {
                 size={"compact"}
                 onSelect={this.onSelect}
                 onCancel={this.onCancelSelector}
+                defaultOption={me}
+                defaultOptionLabel={t('MeLabel')}
               />
             </div>
           </OwnerContainer>
@@ -259,10 +261,12 @@ const OwnerSettings = props => {
 
 function mapStateToProps(state) {
   const { owner } = state.settings.security.accessRight;
+  const { user: me } = state.auth;
 
   return {
     ownerId: state.auth.settings.ownerId,
-    owner
+    owner,
+    me
   };
 }
 

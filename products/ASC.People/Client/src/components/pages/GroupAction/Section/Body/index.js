@@ -254,7 +254,7 @@ class SectionBodyContent extends React.Component {
   }
 
   render() {
-    const { t, groupHeadCaption, groupsCaption } = this.props;
+    const { t, groupHeadCaption, groupsCaption, me } = this.props;
     const {
       groupName,
       groupMembers,
@@ -314,6 +314,8 @@ class SectionBodyContent extends React.Component {
             onSelect={this.onHeadSelectorSelect}
             onCancel={this.onCancelSelector}
             groupsCaption={groupsCaption}
+            defaultOption={me}
+            defaultOptionLabel={t('MeLabel')}
           />
         </FieldContainer>
         <FieldContainer
@@ -348,6 +350,8 @@ class SectionBodyContent extends React.Component {
             onCancel={this.onCancelSelector}
             searchPlaceHolderLabel={t('SearchAddedMembers')}
             groupsCaption={groupsCaption}
+            defaultOption={me}
+            defaultOptionLabel={t('MeLabel')}
           />
         </FieldContainer>
         {groupMembers && groupMembers.length > 0 && (
@@ -441,7 +445,8 @@ function mapStateToProps(state) {
     users: convertUsers(state.people.selector.users), //TODO: replace to api requests with search
     groupHeadCaption: state.auth.settings.customNames.groupHeadCaption,
     groupsCaption: state.auth.settings.customNames.groupsCaption,
-    groupCaption: state.auth.settings.customNames.groupCaption
+    groupCaption: state.auth.settings.customNames.groupCaption,
+    me: state.auth.user
   };
 }
 

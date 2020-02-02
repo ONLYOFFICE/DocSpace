@@ -59,18 +59,20 @@ class PeopleSelector extends React.Component {
       : [];
   };
 
+  convertUser = (u) => {
+    return {
+      key: u.id,
+      groups: u.groups && u.groups.length ? u.groups.map(g => g.id) : [],
+      label: u.displayName,
+      email: u.email,
+      position: u.title,
+      avatarUrl: u.avatar
+    }
+  }
+
   convertUsers = users => {
     return users
-      ? users.map(u => {
-          return {
-            key: u.id,
-            groups: u.groups && u.groups.length ? u.groups.map(g => g.id) : [],
-            label: u.displayName,
-            email: u.email,
-            position: u.title,
-            avatarUrl: u.avatar
-          };
-        })
+      ? users.map(this.convertUser)
       : [];
   };
 
@@ -98,11 +100,44 @@ class PeopleSelector extends React.Component {
 
       if (currentGroup && currentGroup !== "all") filter.group = currentGroup;
 
+      const { defaultOption, defaultOptionLabel } = this.props;
+
       getUserList(filter, useFake)
         .then(response => {
-          const newOptions = (startIndex ? [...this.state.options] : []).concat(
-            this.convertUsers(response.items)
-          );
+          let newOptions = (startIndex ? [...this.state.options] : []);
+
+          
+
+          if (defaultOption) {
+            const inGroup = !currentGroup || currentGroup === "all" || (defaultOption.groups &&
+              defaultOption.groups.filter(g => g.id === currentGroup).length > 0);
+
+            if(searchValue) {
+              const exists = response.items.find(item => item.id === defaultOption.id);
+
+              if (exists && inGroup) {
+                newOptions.push(
+                  this.convertUser({
+                    ...defaultOption,
+                    displayName: defaultOptionLabel
+                  })
+                );
+              }
+            }
+            else if (!startIndex && response.items.length > 0 && inGroup) {
+              newOptions.push(
+                this.convertUser({
+                  ...defaultOption,
+                  displayName: defaultOptionLabel
+                })
+              );
+            }
+
+            newOptions = newOptions.concat(this.convertUsers(response.items.filter(item => item.id !== defaultOption.id)));
+          }
+          else {
+            newOptions = newOptions.concat(this.convertUsers(response.items));
+          }
 
           this.setState({
             hasNextPage: newOptions.length < response.total,
@@ -125,8 +160,12 @@ class PeopleSelector extends React.Component {
 
     // console.log("onOptionTooltipShow", index, user);
 
+    const { defaultOption } = this.props;
+
+    const label = defaultOption && defaultOption.id === user.key ? defaultOption.displayName : user.label;
+
     return (
-      <UserTooltip avatarUrl={user.avatarUrl} label={user.label} email={user.email} position={user.position} />
+      <UserTooltip avatarUrl={user.avatarUrl} label={label} email={user.email} position={user.position} />
     );
   };
 
@@ -209,6 +248,8 @@ PeopleSelector.propTypes = {
   useFake: PropTypes.bool,
   isMultiSelect: PropTypes.bool,
   isDisabled: PropTypes.bool,
+  defaultOption: PropTypes.object,
+  defaultOptionLabel: PropTypes.string,
   size: PropTypes.oneOf(["full", "compact"]),
   language: PropTypes.string,
   t: PropTypes.func,
@@ -221,7 +262,9 @@ PeopleSelector.defaultProps = {
   useFake: false,
   size: "full",
   language: "en",
-  role: null
+  role: null,
+  defaultOption: null,
+  defaultOptionLabel: "Me"
 };
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
