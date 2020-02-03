@@ -23,22 +23,23 @@ class PeopleSelector extends React.Component {
   }
 
   componentDidMount() {
-    const { groupsCaption, t } = this.props;
-    changeLanguage(i18n);
-
-    getGroupList(this.props.useFake)
-      .then(groups =>
-        this.setState({
-          groups: [
-            {
-              key: "all",
-              label: t('CustomAllGroups', { groupsCaption }),
-              total: 0
-            }
-          ].concat(this.convertGroups(groups))
-        })
-      )
-      .catch(error => console.log(error));
+    const { groupsCaption } = this.props;
+    changeLanguage(i18n)
+      .then((t) =>
+        getGroupList(this.props.useFake)
+          .then(groups =>
+            this.setState({
+              groups: [
+                {
+                  key: "all",
+                  label: t('CustomAllGroups', { groupsCaption }),
+                  total: 0
+                }
+              ].concat(this.convertGroups(groups))
+            })
+          )
+          .catch(error => console.log(error))
+      );
   }
 
   componentDidUpdate(prevProps) {
@@ -264,7 +265,8 @@ PeopleSelector.defaultProps = {
   language: "en",
   role: null,
   defaultOption: null,
-  defaultOptionLabel: "Me"
+  defaultOptionLabel: "Me",
+  groupsCaption: "Groups"
 };
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
