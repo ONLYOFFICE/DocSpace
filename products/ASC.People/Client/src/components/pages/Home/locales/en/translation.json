@@ -32,6 +32,15 @@
   "People": "People",
   "PreviousPage": "Previous",
   "NextPage": "Next",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
+  "Search": "Search",
+  "SendInviteAgain": "Send invitation once again",
+  "SuccessSendInvitation": "The invitation was successfully sent",
+
+  "CountPerPage": "{{count}} per page",
+  "PageOfTotalPage": "{{page}} of {{totalPage}}",
+  "ChangeToUser": "Change to {{userCaption}}",
+  "ChangeToGuest": "Change to {{guestCaption}}",
 
   "LblInviteAgain": "Invite again",
   "ByFirstNameSorting": "By first name",
@@ -39,27 +48,10 @@
   "LblInvited": "Invited",
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
-  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
-
-  "CustomHeadOfDepartment": " {{headOfDepartment}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomMakeUser": "Make {{typeUser, lowercase}}",
-  "CustomMakeGuest": "Make {{typeGuest, lowercase}}",
-  "CustomDepartment": "{{department}}",
-  "CountPerPage": "{{count}} per page",
-  "PageOfTotalPage": "{{page}} of {{totalPage}}",
-
   "DirectionAscLabel":"A-Z",
   "DirectionDescLabel":"Z-A",
-
-  "DefaultSelectLabel": "Select",
-
-  "FilterPlaceholder": "Search",
-
-  "CustomNewEmployee": "New {{typeUser, lowercase}}",
-  "CustomNewGuest": "New {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "New {{department, lowercase}}",
   "MakeInvitationLink": "Make invitation link",
-  "SendInvitationAgain": "Send invitation once"
+  "SuccessfullyRemovedUsers": "Users have been removed successfully",
+  "SendEmailAction": "Send e-mail action",
+  "SuccessfullyRemovedGroup": "Group has been removed successfully"
 }

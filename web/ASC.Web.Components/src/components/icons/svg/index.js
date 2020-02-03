@@ -145,6 +145,10 @@ import OrigShareFacebookIcon from './share.facebook.react.svg';
 import OrigShareTwitterIcon from './share.twitter.react.svg';
 import OrigShareLinkedInIcon from './share.linkedin.react.svg';
 
+import OrigAddDepartmentIcon from './add.department.react.svg';
+import OrigAddEmployeeIcon from './add.employee.react.svg';
+import OrigAddGuestIcon from './add.guest.react.svg';
+
 export const AZSortingIcon = createStyledIcon(
   OrigAZSortingIcon,
   'AZSortingIcon'
@@ -188,6 +192,18 @@ export const ActionsSpreadsheetIcon = createStyledIcon(
 export const ActionsUploadIcon = createStyledIcon(
   OrigActionsUploadIcon,
   'ActionsUploadIcon'
+);
+export const AddDepartmentIcon = createStyledIcon(
+  OrigAddDepartmentIcon,
+  'AddDepartmentIcon'
+);
+export const AddEmployeeIcon = createStyledIcon(
+  OrigAddEmployeeIcon,
+  'AddEmployeeIcon'
+);
+export const AddGuestIcon = createStyledIcon(
+  OrigAddGuestIcon,
+  'AddGuestIcon'
 );
 export const AdministratorIcon = createStyledIcon(
   OrigAdministratorIcon,

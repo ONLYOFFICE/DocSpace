@@ -23,26 +23,21 @@
   "Actions": "Действия",
   "ChangeEmailSuccess": "Email успешно изменен",
   "NotFoundLanguage": "Если Вы не можете найти свой язык в списке доступных, Вы всегда можете написать нам по адресу <1>{{supportEmail}}</1>, чтобы принять участие в переводе и получить до 1 года бесплатного использования.",
+  "LearnMore":  "Подробнее...",
+  "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
+  "Error": "Ошибка",
+  "SocialProfiles": "Социальные профили",
   
-  "PhoneChange": "Измененить номер телефона",
+  "PhoneChange": "Изменить номер телефона",
   "PhoneLbl": "Основной телефон",
   "EditSubscriptionsBtn": "Изменить подписки",
   "InviteAgainLbl": "Активировать адрес email ещё раз",
   "LDAPLbl": "LDAP",
-  "SocialProfiles": "Социальные профили",
-
-  "CustomEmployedSinceDate": "{{employedSinceDate}}",
-  "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}",
   "Culture_en": "Английский (Великобритания)",
   "Culture_en-US": "Английский (США)",
   "Culture_ru-RU": "Русский (Россия)",
-  "LearnMore":  "Подробнее...",
-
   "chooseFileLabel":  "Перетащите файл сюда или нажмите, чтобы выбрать файл",
   "chooseMobileFileLabel": "Нажмите сюда, чтобы выбрать файл",
-  "unknownTypeError": "Неизвестный тип файла изображения",
   "maxSizeFileError": "Превышен максимальный размер файла",
-  "unknownError":     "Ошибка",
-  "editAvatar": "Изменить фотографию"
+  "editAvatar": "Изменить"
 }

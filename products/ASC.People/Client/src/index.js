@@ -8,7 +8,7 @@ import "./custom.scss";
 import App from "./App";
 
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants } from "asc-web-common";
+import { store as commonStore, constants, ErrorBoundary} from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 import { getPortalInviteLinks } from './store/portal/actions';
 const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures } = commonStore.auth.actions;
@@ -45,7 +45,9 @@ else {
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </Provider>,
   document.getElementById("root")
 );

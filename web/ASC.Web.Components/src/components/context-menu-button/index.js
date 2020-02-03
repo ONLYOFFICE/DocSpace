@@ -9,6 +9,7 @@ const StyledOuter = styled.div`
   display: inline-block;
   position: relative;
   cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 class ContextMenuButton extends React.Component {

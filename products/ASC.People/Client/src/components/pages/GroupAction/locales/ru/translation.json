@@ -1,15 +1,15 @@
 {
   "SaveButton": "Сохранить",
   "CancelButton": "Отмена",
-
-
-
-  "CustomHeadOfDepartment": "{{headOfDepartment}}",
-  "CustomAddEmployee": "Добавить {{typeUser, lowercase}}",
-  "CustomNewDepartment": "Новый {{department, lowercase}}",
-  "CustomEditDepartment": "Редактирование {{department, lowercase}}",
-  "CustomDepartmentName": "Имя {{department}}",
   "Members": "Участники",
   "AddMembers": "Добавить участников",
-  "SearchAddedMembers": "Поиск добавленных участников"
+  "LblSelect": "Выбрать",
+  "Name": "Название",
+  "AddButton": "Добавить",
+
+  "SuccessSaveGroup": "Успешное сохранение: {{groupCaption, lowercase}} '{{ groupName }}'",
+  
+  "CustomNewDepartment": "{{groupCaption}} (создание)",
+  "SearchAddedMembers": "Поиск добавленных участников",
+  "MeLabel": "Я"
 }

@@ -136,7 +136,6 @@ namespace ASC.Core.Data
 
         private void DeleteRecord(AzRecord r)
         {
-            using var tr = CoreDbContext.Database.BeginTransaction();
             var record = CoreDbContext.Acl
                 .Where(a => a.Tenant == r.Tenant)
                 .Where(a => a.Subject == r.SubjectId)
@@ -150,8 +149,6 @@ namespace ASC.Core.Data
                 CoreDbContext.Acl.Remove(record);
                 CoreDbContext.SaveChanges();
             }
-
-            tr.Commit();
         }
 
         private void InsertRecord(AzRecord r)

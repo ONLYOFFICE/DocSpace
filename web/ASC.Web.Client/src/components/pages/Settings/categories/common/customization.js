@@ -4,9 +4,12 @@ import { withTranslation } from 'react-i18next';
 import { FieldContainer, Text, ComboBox, Loader, Button, toastr, Link, TextInput } from "asc-web-components";
 import styled from 'styled-components';
 import { Trans } from 'react-i18next';
-import { store } from 'asc-web-common';
+import { store, utils } from 'asc-web-common';
 import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreetingTitle } from '../../../../../store/settings/actions';
-const { getPortalCultures } = store.auth.actions;
+import { default as clientStore } from '../../../../../store/store';
+
+const { changeLanguage } = utils;
+const { getPortalCultures, getModules } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -94,6 +97,19 @@ class Customization extends React.Component {
       if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
+      if (this.props.language !== prevProps.language) {
+         changeLanguage(this.props.i18n)
+            .then(() => getModules(clientStore.dispatch))
+            .then(() => {
+               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
+               const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
+
+               this.setState({
+                  languages: newLocaleLanguages,
+                  language: newLocaleSelectedLanguage
+               });
+            });
+      }
    }
 
    onLanguageSelect = (language) => {
@@ -105,13 +121,16 @@ class Customization extends React.Component {
    };
 
    onSaveLngTZSettings = () => {
-      const { setLanguageAndTime, t } = this.props;
+      const { setLanguageAndTime } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
             .then(() => {
-               this.setState({ isLoading: false })
-               toastr.success(t('SuccessfullySaveSettingsMessage'));
-            });
+               const { i18n } = this.props;
+                  changeLanguage(i18n)
+                     .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
+            })
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoading: false }));
       })
    }
 
@@ -123,10 +142,9 @@ class Customization extends React.Component {
       const { setGreetingTitle, t } = this.props;
       this.setState({ isLoadingGreetingSave: true }, function () {
          setGreetingTitle(this.state.greetingTitle)
-            .then(() => {
-               this.setState({ isLoadingGreetingSave: false })
-               toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            });
+            .then(() => toastr.success(t('SuccessfullySaveGreetingSettingsMessage')))
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingSave: false }));
       })
    }
 

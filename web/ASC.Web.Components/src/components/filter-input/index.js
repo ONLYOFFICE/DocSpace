@@ -411,8 +411,8 @@ class FilterInput extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.throttledResize);
     }
-    componentDidUpdate(){
-        if(this.props.needForUpdate){
+    componentDidUpdate(prevProps){
+        if(this.props.needForUpdate && this.props.needForUpdate(prevProps, this.props)){
             let internalFilterData = convertToInternalData(this.props.getFilterData(), cloneObjectsArray(this.props.selectedFilterData.filterValues));
             this.updateFilter(internalFilterData);
         }

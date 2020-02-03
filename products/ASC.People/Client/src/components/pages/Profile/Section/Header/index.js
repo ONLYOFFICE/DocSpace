@@ -41,12 +41,18 @@ const StyledContainer = styled.div`
 
       @media (max-width: 1024px) {
         margin-left: auto;
+
+        & > div:first-child {
+          padding: 8px 16px 8px 16px;
+          margin-right: -16px;
+        }
       }
     }
     .arrow-button {
       @media (max-width: 1024px) {
-        padding: 8px 0 8px 8px;
-        margin-left: -8px;
+        padding: 8px 16px 8px 16px;
+        margin-left: -16px;
+        margin-right: -16px;
       }
     }
 
@@ -406,9 +412,9 @@ class SectionHeaderContent extends React.PureComponent {
           headerLabel={t("editAvatar")}
           chooseFileLabel={t("chooseFileLabel")}
           chooseMobileFileLabel={t("chooseMobileFileLabel")}
-          unknownTypeError={t("unknownTypeError")}
+          unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
-          unknownError={t("unknownError")}
+          unknownError={t("Error")}
         />
 
         {dialogsVisible.deleteSelfProfile &&

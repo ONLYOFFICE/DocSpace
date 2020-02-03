@@ -1,6 +1,5 @@
 import React from "react";
 import { Trans } from 'react-i18next';
-import { department as departmentName, position, employedSinceDate } from '../../../../../../helpers/customNames';
 import {
   Text,
   IconButton,
@@ -10,8 +9,11 @@ import {
   HelpButton
 } from "asc-web-components";
 import styled from 'styled-components';
-import { history, api } from "asc-web-common";
+import { history, api, store as commonStore } from "asc-web-common";
+import { connect } from "react-redux";
+import store from "../../../../../../store/store";
 const { resendUserInvites } = api.people;
+const { getCurrentCustomSchema, getModules } = commonStore.auth.actions;
 
 const InfoContainer = styled.div`
   margin-bottom: 24px;
@@ -123,11 +125,13 @@ class ProfileInfo extends React.PureComponent {
 
   onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
-    const { profile, updateProfileCulture } = this.props;
+    const { profile, updateProfileCulture, nameSchemaId } = this.props;
 
     if (profile.cultureName === language.key) return;
 
-    updateProfileCulture(profile.id, language.key);
+    updateProfileCulture(profile.id, language.key)
+      .then(() => getModules(store.dispatch))
+      .then(() => getCurrentCustomSchema(store.dispatch, nameSchemaId));
   }
 
   getLanguages = () => {
@@ -142,8 +146,8 @@ class ProfileInfo extends React.PureComponent {
     const { isVisitor, email, activationStatus, department, groups, title, mobilePhone, sex, workFrom, birthday, location, cultureName, currentCulture } = this.props.profile;
     const isAdmin = this.props.isAdmin;
     const isSelf = this.props.isSelf;
-    const { t, i18n } = this.props;
-    const type = isVisitor ? "Guest" : "Employee";
+    const { t, i18n, userPostCaption, regDateCaption, groupCaption, userCaption, guestCaption } = this.props;
+    const type = isVisitor ? guestCaption : userCaption;
     const language = cultureName || currentCulture || this.props.culture;
     const languages = this.getLanguages();
     const selectedLanguage = languages.find(item => item.key === language);
@@ -238,7 +242,7 @@ class ProfileInfo extends React.PureComponent {
         {title &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomPosition", { position })}:
+              {userPostCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {title}
@@ -248,7 +252,7 @@ class ProfileInfo extends React.PureComponent {
         {department &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomDepartment", { department: departmentName })}:
+              {groupCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {formatedDepartments}
@@ -268,7 +272,7 @@ class ProfileInfo extends React.PureComponent {
         {workFrom &&
           <InfoItem>
             <InfoItemLabel>
-              {t("CustomEmployedSinceDate", { employedSinceDate })}:
+              {regDateCaption}:
             </InfoItemLabel>
             <InfoItemValue>
               {workFromDate}
@@ -293,13 +297,13 @@ class ProfileInfo extends React.PureComponent {
                 className='language-combo'
               />
               <HelpButton
-                  place="bottom"
-                  offsetLeft={50}
-                  offsetRight={0}
-                  tooltipContent={tooltipLanguage}
-                  helpButtonHeaderContent={t('Language')}
-                  className="help-icon"
-                />
+                place="bottom"
+                offsetLeft={50}
+                offsetRight={0}
+                tooltipContent={tooltipLanguage}
+                helpButtonHeaderContent={t('Language')}
+                className="help-icon"
+              />
             </InfoItemValue>
 
           </InfoItem>
@@ -309,4 +313,15 @@ class ProfileInfo extends React.PureComponent {
   }
 };
 
-export default ProfileInfo;
+function mapStateToProps(state) {
+  return {
+    groupCaption: state.auth.settings.customNames.groupCaption,
+    regDateCaption: state.auth.settings.customNames.regDateCaption,
+    userPostCaption: state.auth.settings.customNames.userPostCaption,
+    userCaption: state.auth.settings.customNames.userCaption,
+    guestCaption: state.auth.settings.customNames.guestCaption,
+    nameSchemaId: state.auth.settings.nameSchemaId
+  }
+}
+
+export default connect(mapStateToProps)(ProfileInfo);

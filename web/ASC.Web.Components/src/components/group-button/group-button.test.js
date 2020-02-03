@@ -18,109 +18,187 @@ describe('<GroupButton />', () => {
 
   it('renders with child', () => {
     const wrapper = mount(
-    <GroupButton {...baseProps} isDropdown={true} >
-      <div key='demo' label='demo'>1</div>
-    </GroupButton>);
+      <GroupButton
+        {...baseProps}
+        isDropdown
+      >
+        <div
+          key='demo'
+          label='demo'
+        >
+          Test
+        </div>
+      </GroupButton>);
 
     expect(wrapper).toExist();
+    expect(wrapper.instance().props.isDropdown).toBe(true);
+  });
+
+  it('renders with child and open first item', () => {
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        isDropdown
+        opened
+      >
+        <div
+          key='demo'
+          label='demo'
+        >
+          Test
+        </div>
+      </GroupButton>);
+
+    expect(wrapper).toExist();
+    expect(wrapper.instance().props.isDropdown).toBe(true);
+    expect(wrapper.instance().props.opened).toBe(true);
   });
 
   it('applies disabled prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} disabled={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        disabled={true}
+      />);
 
     expect(wrapper.prop('disabled')).toEqual(true);
   });
 
   it('applies opened prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} opened={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        opened={true}
+      />);
 
     expect(wrapper.prop('opened')).toEqual(true);
     expect(wrapper.state('isOpen')).toEqual(true);
   });
 
   it('applies isDropdown prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} isDropdown={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        isDropdown={true}
+      />);
 
     expect(wrapper.prop('isDropdown')).toEqual(true);
   });
 
   it('applies activated prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} activated={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        activated={true}
+      />);
 
     expect(wrapper.prop('activated')).toEqual(true);
   });
 
   it('applies hovered prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} hovered={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        hovered={true}
+      />);
 
     expect(wrapper.prop('hovered')).toEqual(true);
   });
 
   it('applies isSeparator prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} isSeparator={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        isSeparator={true}
+      />);
 
     expect(wrapper.prop('isSeparator')).toEqual(true);
   });
 
   it('applies isSelect prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} isSelect={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        isSelect={true}
+      />);
 
     expect(wrapper.prop('isSelect')).toEqual(true);
   });
 
   it('applies checked prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} checked={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        checked={true}
+      />);
 
     expect(wrapper.prop('checked')).toEqual(true);
   });
 
   it('applies isIndeterminate prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} isIndeterminate={true} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        isIndeterminate={true}
+      />);
 
     expect(wrapper.prop('isIndeterminate')).toEqual(true);
   });
 
   it('applies dropDownMaxHeight prop', () => {
-    const wrapper = mount(<GroupButton {...baseProps} dropDownMaxHeight={100} />);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        dropDownMaxHeight={100}
+      />);
 
     expect(wrapper.prop('dropDownMaxHeight')).toEqual(100);
   });
 
-  it('componentDidUpdate() state lifecycle test', () => {
-    const wrapper = shallow(<GroupButton {...baseProps} />);
-    const instance = wrapper.instance();
 
-    wrapper.setState({ isOpen: true });
+  it('applies id', () => {
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        id="testId"
+      />
+    );
 
-    instance.componentDidUpdate(wrapper.props(), wrapper.state());
-
-    expect(wrapper.state()).toBe(wrapper.state());
+    expect(wrapper.prop('id')).toEqual('testId');
   });
 
-  it('componentDidUpdate() props lifecycle test', () => {
-    const wrapper = shallow(<GroupButton {...baseProps} />);
-    const instance = wrapper.instance();
+  it('applies className', () => {
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        className="test"
+      />
+    );
 
-    instance.componentDidUpdate({ opened: true }, wrapper.state());
-
-    expect(wrapper.props()).toBe(wrapper.props());
+    expect(wrapper.prop('className')).toEqual('test');
   });
 
-  it('componentWillUnmount() props lifecycle test', () => {
-    const wrapper = shallow(<GroupButton {...baseProps} />);
-    const instance = wrapper.instance();
+  it('applies style', () => {
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        style={{ color: 'red' }}
+      />
+    );
 
-    instance.componentWillUnmount();
-
-    expect(wrapper).toExist(false);
+    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
   });
 
   it('causes function dropDownItemClick()', () => {
     const onClick = jest.fn();
-    const onSelect = jest.fn()
-    const child = (<div onClick={onClick}>1</div>);
+    const onSelect = jest.fn();
+    const child = (<div onClick={onClick}>test</div>);
     const wrapper = shallow(
-      <GroupButton {...baseProps} opened={true} onSelect={onSelect} >
+      <GroupButton
+        {...baseProps}
+        opened={true}
+        onSelect={onSelect}
+      >
         {child}
       </GroupButton>);
     const instance = wrapper.instance();
@@ -132,8 +210,15 @@ describe('<GroupButton />', () => {
   });
 
   it('causes function dropDownToggleClick()', () => {
+    const child = (<div>test</div>);
     const wrapper = shallow(
-      <GroupButton {...baseProps} opened={true} />);
+      <GroupButton
+        {...baseProps}
+        opened
+        isDropdown
+      >
+        {child}
+      </GroupButton>);
     const instance = wrapper.instance();
 
     instance.dropDownToggleClick();
@@ -141,47 +226,82 @@ describe('<GroupButton />', () => {
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('causes function checkboxChange()', () => {
-    const wrapper = shallow(
-      <GroupButton {...baseProps} selected='demo' />);
+  it('causes function checkboxChange(e)', () => {
+    const child = (<div>test</div>);
+    const onChange = jest.fn();
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        opened
+        isSelect
+        isDropdown
+        onChange={onChange}
+        selected='test'
+      >
+        {child}
+      </GroupButton>);
     const instance = wrapper.instance();
+    const event = new Event('click', { target: { checked: true } });
 
-    instance.checkboxChange();
+    instance.checkboxChange(event);
 
-    expect(wrapper.state('selected')).toBe('demo');
+    /*  TODO: Way of normal simulation
+        wrapper.find('input[type="checkbox"]').simulate('change', {target:{checked:true}}) */
+
+    expect(onChange).toBeCalled();
+    expect(wrapper.state('selected')).toBe('test');
   });
 
-  it('causes function handleClick()', () => {
-    const wrapper = mount(<GroupButton {...baseProps} />);
+  it('causes function clickOutsideAction(e)', () => {
+    const child = (<div>test</div>);
+    const wrapper = mount(
+      <GroupButton
+        {...baseProps}
+        opened
+        isSelect
+        isDropdown
+        selected='test'
+      >
+        {child}
+      </GroupButton>);
     const instance = wrapper.instance();
+    const event = new Event('click', { target: {} });
 
-    instance.handleClick(new Event('click'));
+    instance.clickOutsideAction(event);
 
+    expect(wrapper.state('selected')).toBe('test');
     expect(wrapper.state('isOpen')).toBe(false);
   });
 
-  it('accepts id', () => {
+  it('calling componentDidUpdate()', () => {
+    const child = (<div>test</div>);
     const wrapper = mount(
-      <GroupButton {...baseProps}  id="testId" />
-    );
+      <GroupButton
+        {...baseProps}
+        opened
+        isSelect
+        isDropdown
+        selected='test'
+      >
+        {child}
+      </GroupButton>);
 
-    expect(wrapper.prop('id')).toEqual('testId');
-  });
+    expect(wrapper.state('selected')).toBe('test');
+    expect(wrapper.state('isOpen')).toBe(true);
 
-  it('accepts className', () => {
-    const wrapper = mount(
-      <GroupButton {...baseProps}  className="test" />
-    );
+    wrapper.setProps({
+      opened: false
+    });
 
-    expect(wrapper.prop('className')).toEqual('test');
-  });
+    expect(wrapper.state('selected')).toBe('test');
+    expect(wrapper.state('isOpen')).toBe(false);
 
-  it('accepts style', () => {
-    const wrapper = mount(
-      <GroupButton {...baseProps}  style={{ color: 'red' }} />
-    );
+    wrapper.setProps({
+      selected: 'new test'
+    });
 
-    expect(wrapper.getDOMNode().style).toHaveProperty('color', 'red');
+    expect(wrapper.state('selected')).toBe('new test');
+    expect(wrapper.state('isOpen')).toBe(false);
   });
 
 });

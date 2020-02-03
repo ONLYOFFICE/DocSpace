@@ -332,7 +332,7 @@ class PureAdminsSettings extends Component {
   };
 
   render() {
-    const { t, admins, filter } = this.props;
+    const { t, admins, filter, me } = this.props;
     const {
       showSelector,
       isLoading,
@@ -366,7 +366,7 @@ class PureAdminsSettings extends Component {
                     id="people-admin-selector_button"
                     size="medium"
                     primary={true}
-                    label="Set people admin"
+                    label={t('SetPeopleAdmin')}
                     isDisabled={isLoading}
                     onClick={this.onShowGroupSelector}
                   />
@@ -377,6 +377,8 @@ class PureAdminsSettings extends Component {
                     role="user"
                     onSelect={this.onSelect}
                     onCancel={this.onCancelSelector}
+                    defaultOption={me}
+                    defaultOptionLabel={t('MeLabel')}
                   />
                 </div>
                 <div className="full-admin_container">
@@ -384,7 +386,7 @@ class PureAdminsSettings extends Component {
                     id="full-admin-selector_button"
                     size="medium"
                     primary={true}
-                    label="Set portal admin"
+                    label={t('SetPortalAdmin')}
                     isDisabled={isLoading}
                     onClick={this.onShowFullAdminGroupSelector}
                   />
@@ -395,6 +397,8 @@ class PureAdminsSettings extends Component {
                     role="user"
                     onSelect={this.onSelectFullAdmin}
                     onCancel={this.onCancelSelector}
+                    defaultOption={me}
+                    defaultOptionLabel={t('MeLabel')}
                   />
                 </div>
               </div>
@@ -404,6 +408,8 @@ class PureAdminsSettings extends Component {
                 getFilterData={() => []}
                 getSortData={this.getSortData}
                 onFilter={this.onFilter}
+                directionAscLabel={t("DirectionAscLabel")}
+                directionDescLabel={t("DirectionDescLabel")}
               />
 
               {admins.length > 0 ? (
@@ -445,8 +451,8 @@ class PureAdminsSettings extends Component {
 
                             <Text>
                               {user.isAdmin
-                                ? "Full access"
-                                : "People module admin"}
+                                ? t('AccessRightsFullAccess')
+                                : t('PeopleAdmin')}
                             </Text>
 
                             {!user.isOwner ? (
@@ -539,12 +545,14 @@ const AdminsSettings = props => {
 
 function mapStateToProps(state) {
   const { admins, owner, filter } = state.settings.security.accessRight;
+  const { user: me } = state.auth;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
-    filter
+    filter,
+    me
   };
 }
 

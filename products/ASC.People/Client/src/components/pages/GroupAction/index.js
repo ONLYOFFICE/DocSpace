@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Loader } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
 import { fetchGroup, resetGroup } from "../../../store/group/actions";
+const { changeLanguage } = utils;
 
 class GroupAction extends React.Component {
 
@@ -32,9 +33,9 @@ class GroupAction extends React.Component {
   render() {
     console.log("GroupAction render")
 
-    const { group, match, language } = this.props;
+    const { group, match } = this.props;
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -62,7 +63,6 @@ class GroupAction extends React.Component {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
     group: state.group.targetGroup
   };
 }

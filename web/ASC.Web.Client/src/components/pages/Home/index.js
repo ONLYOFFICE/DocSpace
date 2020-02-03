@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Loader, toastr, Text } from 'asc-web-components';
-import { ModuleTile, PageLayout } from "asc-web-common";
+import { ModuleTile, PageLayout, utils } from "asc-web-common";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import styled from "styled-components";
+
+const { changeLanguage } = utils;
 
 const HomeContainer = styled.div`
     padding: 62px 15px 0 15px;
@@ -68,11 +70,13 @@ Tiles.propTypes = {
 
 const Body = ({ modules, match, isLoaded }) => {
     const { t } = useTranslation('translation', { i18n });
-    const { params } = match;
+    const { error } = match.params;
 
-    useEffect(() => {
-        params.error && toastr.error(params.error);
-    }, [params.error]);
+    useEffect(() => error && toastr.error(error), [error]);
+
+    useEffect(() => { 
+        changeLanguage(i18n);
+    }, []);
 
     return (
         !isLoaded
