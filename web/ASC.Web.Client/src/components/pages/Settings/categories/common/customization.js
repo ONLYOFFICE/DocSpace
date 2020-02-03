@@ -151,11 +151,12 @@ class Customization extends React.Component {
          restoreGreetingTitle()
             .then(() => {
                this.setState({
-                  isLoadingGreetingRestore: false,
                   greetingTitle: this.props.greetingSettings
                })
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            });
+            })
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingRestore: false }));
       })
    }
 
