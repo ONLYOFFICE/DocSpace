@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Backdrop, Aside } from "asc-web-components";
+import { Backdrop, Aside, utils } from "asc-web-components";
 import HeaderComponent from "./sub-components/header";
 import Nav from "./sub-components/nav";
 import Main from "./sub-components/main";
@@ -35,14 +35,17 @@ class Layout extends React.Component {
       hash += props.currentModuleId;
     }
     if (props.currentUser) {
-      const { id, displayName, email, avatarSmall } = props.currentUser;
-      hash += id + displayName + email + avatarSmall;
+      const { id, displayName, email, avatarSmall, cultureName } = props.currentUser;
+      hash += id + displayName + email + avatarSmall + cultureName;
     }
     if (props.availableModules) {
       for (let i = 0, l = props.availableModules.length; i < l; i++) {
         let item = props.availableModules[i];
         hash += item.id + item.notifications;
       }
+    }
+    if (props.availableModules && this.state.availableModules) {
+        hash += utils.array.isArrayEqual(this.state.availableModules, props.availableModules);
     }
     return hash;
   };

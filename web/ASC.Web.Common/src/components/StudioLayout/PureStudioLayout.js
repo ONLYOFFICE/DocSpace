@@ -1,12 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Toast } from "asc-web-components";
+import { Toast, utils } from "asc-web-components";
 import Layout from "../Layout";
 
 class PureStudioLayout extends React.Component {
   shouldComponentUpdate(nextProps) {
+    if (this.props.availableModules && nextProps.availableModules && 
+      !utils.array.isArrayEqual(nextProps.availableModules, this.props.availableModules)) {
+        return true;
+    }
     return this.props.hasChanges !== nextProps.hasChanges ||
-    this.props.currentModuleId !== nextProps.currentModuleId;
+    this.props.currentModuleId !== nextProps.currentModuleId ||
+    this.props.language !== nextProps.language;
   }
 
   onProfileClick = () => {
@@ -75,6 +80,7 @@ class PureStudioLayout extends React.Component {
 }
 
 PureStudioLayout.propTypes = {
+  availableModules: PropTypes.array,
   logout: PropTypes.func.isRequired,
   language: PropTypes.string,
   hasChanges: PropTypes.bool,

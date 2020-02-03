@@ -75,3 +75,10 @@ export function getSettings() {
       url: `/settings/whitelabel/logos.json`
     });
   }
+
+  export function getCurrentCustomSchema(id) {
+    return request({
+      method: "get",
+      url: `settings/customschemas/${id}.json`
+    });
+  }

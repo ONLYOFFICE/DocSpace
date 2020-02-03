@@ -295,37 +295,10 @@ const Selector = props => {
     onSelectOptions(selectedOptionList);
   }, [selectedOptionList]);
 
-  // Render an item or a loading indicator.
-  // eslint-disable-next-line react/prop-types
-  const renderOption = useCallback(
-    ({ index, style }) => {
-      let content;
-      const isLoaded = isItemLoaded(index);
-      let tooltipProps = {};
-      if (!isLoaded) {
-        content = (
-          <div key="loader">
-            <Loader
-              type="oval"
-              size="16px"
-              style={{
-                display: "inline",
-                marginRight: "10px"
-              }}
-            />
-            <Text as="span">{loadingLabel}</Text>
-          </div>
-        );
-      } else {
-        const option = options[index];
-        const isChecked = isOptionChecked(option);
-
-        if (displayType === "dropdown")
-          tooltipProps = { "data-for": "user", "data-tip": index };
-
-        ReactTooltip.rebuild();
-
-        content = (
+  const renderOptionItem = useCallback(
+    (index, style, option, isChecked, tooltipProps) => {
+      return (
+        <div style={style} className="row-option" {...tooltipProps}>
           <>
             {isMultiSelect ? (
               <Checkbox
@@ -364,22 +337,70 @@ const Selector = props => {
               />
             )}
           </>
-        );
-      }
-
-      return (
-        <div style={style} className="row-option" {...tooltipProps}>
-          {content}
         </div>
       );
     },
     [
+      isMultiSelect,
+      onOptionChange,
+      onLinkClick,
+      displayType,
+      getOptionTooltipContent
+    ]
+  );
+
+  const renderOptionLoader = useCallback(
+    style => {
+      return (
+        <div style={style} className="row-option">
+          <div key="loader">
+            <Loader
+              type="oval"
+              size="16px"
+              style={{
+                display: "inline",
+                marginRight: "10px"
+              }}
+            />
+            <Text as="span">{loadingLabel}</Text>
+          </div>
+        </div>
+      );
+    },
+    [loadingLabel]
+  );
+
+  // Render an item or a loading indicator.
+  // eslint-disable-next-line react/prop-types
+  const renderOption = useCallback(
+    ({ index, style }) => {
+      const isLoaded = isItemLoaded(index);
+
+      if (!isLoaded) {
+        return renderOptionLoader(style);
+      }
+
+      const option = options[index];
+      const isChecked = isOptionChecked(option);
+      let tooltipProps = {};
+
+      if (displayType === "dropdown")
+        tooltipProps = { "data-for": "user", "data-tip": index };
+
+      ReactTooltip.rebuild();
+
+      return renderOptionItem(index, style, option, isChecked, tooltipProps);
+    },
+    [
       isItemLoaded,
+      renderOptionLoader,
+      renderOptionItem,
       loadingLabel,
       options,
       isOptionChecked,
       displayType,
       isMultiSelect,
+      onOptionChange,
       onLinkClick,
       getOptionTooltipContent
     ]
@@ -522,7 +543,7 @@ const Selector = props => {
 
       //setLastIndex(startIndex);
 
-      console.log("loadMoreItems", options);
+      //console.log("loadMoreItems", options);
 
       loadNextPage && loadNextPage(options);
     },
@@ -626,7 +647,12 @@ const Selector = props => {
       {displayType === "dropdown" && groups && groups.length > 0 && (
         <Column className="column-groups" displayType={displayType} size={size}>
           <Header className="header-groups">
-            <Text as="p" className="group_header" fontSize="15px" fontWeight={600}>
+            <Text
+              as="p"
+              className="group_header"
+              fontSize="15px"
+              fontWeight={600}
+            >
               {groupsHeaderLabel}
             </Text>
           </Header>

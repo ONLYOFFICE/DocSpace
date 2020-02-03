@@ -30,7 +30,7 @@ const hoverCss = css`
 `;
 
 // eslint-disable-next-line no-unused-vars
-const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, ...props}) => <button type="button" {...props}></button>;
+const ButtonWrapper = ({primary, scale, size, isHovered, isClicked, isDisabled, isLoading, label, innerRef, ...props}) => <button ref={innerRef} type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
@@ -200,28 +200,21 @@ Icon.defaultProps = {
   icon: null
 };
 
-class Button extends React.Component {
-
-  shouldComponentUpdate(nextProps) {
-    return !isEqual(this.props, nextProps);
-}
-
-  render() {
-    // console.log("Button render");
-    const { isLoading, label, primary, size, icon } = this.props;
-    return (
-      <StyledButton {...this.props}>
-          {(isLoading || icon)
-              ? (isLoading 
-                  ? <Loader type="oval" size={size === "big" ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
-                  : <Icon {...this.props} />)
-              : ""
-          }
-          {label}
-      </StyledButton>
-    );
-  }
-}
+const Button = React.forwardRef((props, ref) => {
+  const { primary, size, isLoading, icon, label} = props;
+  const iconProps = { primary, size, icon };
+  return (
+    <StyledButton innerRef={ref} {...props} >
+      {(isLoading || icon)
+        ? (isLoading 
+            ? <Loader type="oval" size={size === "big" ? '16px' : '14px'} color={primary ? "#FFFFFF" : '#333333'} className="loader" />
+            : <Icon {...iconProps} />)
+        : ""
+      }
+      {label}
+    </StyledButton>
+  );
+});
 
 Button.propTypes = {
   label: PropTypes.string,
@@ -240,7 +233,7 @@ Button.propTypes = {
   isDisabled: PropTypes.bool,
   isLoading: PropTypes.bool,
 
-  onClick: PropTypes.func,
+  onClick: PropTypes.func
 };
 
 Button.defaultProps = {
@@ -257,5 +250,7 @@ Button.defaultProps = {
   isDisabled: false,
   isLoading: false
 };
+
+Button.displayName = "Button";
 
 export default Button;

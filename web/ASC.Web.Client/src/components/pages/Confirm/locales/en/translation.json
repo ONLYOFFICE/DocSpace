@@ -26,5 +26,5 @@
   "ConfirmOwnerPortalTitle": "Please confirm that you want to change portal owner to {{newOwner}}",
   "SaveButton": "Save",
   "CancelButton": "Cancel",
-  "ConfirmOwnerPortalSuccessMessage": "Владелец портала был успешно изменен. {0} Через 10 секунд вы будете перенаправлены {1} сюда {2}"
+  "ConfirmOwnerPortalSuccessMessage": "Portal owner has been successfully changed. {0}In 10 seconds you will be redirected {1}here{2}"
 }

@@ -6,6 +6,6 @@
 "CloseButton": "Закрыть",
 "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
 "GetShortenLink": "Получить сокращенную ссылку",
-"InviteUsersAsCollaborators": "Добавить со статусом {{typeGuests, lowercase}}",
+"InviteUsersAsCollaborators": "Добавить со статусом {{guestsCaption, lowercase}}",
 "LoadingProcessing": "Загрузка..."
 }

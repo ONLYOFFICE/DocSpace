@@ -1,7 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -13,14 +11,15 @@ import {
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import ModalDialogContainer from '../ModalDialogContainer';
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { sendInstructionsToChangeEmail } = api.people;
+const { changeLanguage } = utils;
 
 class ChangeEmailDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { user, language } = props;
+    const { user } = props;
     const { email } = user;
 
     this.state = {
@@ -32,7 +31,7 @@ class ChangeEmailDialogComponent extends React.Component {
       emailErrors: []
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
 
   componentDidMount() {
@@ -169,10 +168,5 @@ ChangeEmailDialog.propTypes = {
   user: PropTypes.object.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName,
-  };
-}
 
-export default connect(mapStateToProps, {})(withRouter(ChangeEmailDialog));
+export default ChangeEmailDialog;

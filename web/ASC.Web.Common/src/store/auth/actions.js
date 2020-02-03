@@ -8,12 +8,13 @@ export const SET_IS_LOADED = "SET_IS_LOADED";
 export const LOGOUT = "LOGOUT";
 export const SET_PASSWORD_SETTINGS = "SET_PASSWORD_SETTINGS";
 export const SET_NEW_EMAIL = "SET_NEW_EMAIL";
-export const GET_PORTAL_CULTURES = "GET_PORTAL_CULTURES";
+export const SET_PORTAL_CULTURES = "SET_PORTAL_CULTURES";
 export const SET_PORTAL_LANGUAGE_AND_TIME = "SET_PORTAL_LANGUAGE_AND_TIME";
-export const GET_TIMEZONES = "GET_TIMEZONES";
+export const SET_TIMEZONES = "SET_TIMEZONES";
 export const SET_CURRENT_PRODUCT_ID = "SET_CURRENT_PRODUCT_ID";
 export const SET_CURRENT_PRODUCT_HOME_PAGE = "SET_CURRENT_PRODUCT_HOME_PAGE";
 export const SET_GREETING_SETTINGS = "SET_GREETING_SETTINGS";
+export const SET_CUSTOM_NAMES = "SET_CUSTOM_NAMES";
 
 export function setCurrentUser(user) {
   return {
@@ -66,7 +67,7 @@ export function setNewEmail(email) {
 
 export function setPortalCultures(cultures) {
   return {
-    type: GET_PORTAL_CULTURES,
+    type: SET_PORTAL_CULTURES,
     cultures
   };
 }
@@ -80,7 +81,7 @@ export function setPortalLanguageAndTime(newSettings) {
 
 export function setTimezones(timezones) {
   return {
-    type: GET_TIMEZONES,
+    type: SET_TIMEZONES,
     timezones
   };
 }
@@ -106,6 +107,13 @@ export function setGreetingSettings(title) {
   };
 }
 
+export function setCustomNames(customNames) {
+  return {
+    type: SET_CUSTOM_NAMES,
+    customNames
+  };
+}
+
 export function getUser(dispatch) {
   return api.people.getUser().then(user => dispatch(setCurrentUser(user)));
 }
@@ -113,7 +121,16 @@ export function getUser(dispatch) {
 export function getPortalSettings(dispatch) {
   return api.settings
     .getSettings()
-    .then(settings => dispatch(setSettings(settings)));
+    .then(settings => {
+      dispatch(setSettings(settings));
+      settings.nameSchemaId && getCurrentCustomSchema(dispatch, settings.nameSchemaId);
+    });
+}
+export function getCurrentCustomSchema(dispatch, id) {
+
+    return api.settings
+    .getCurrentCustomSchema(id)
+    .then(customNames =>   dispatch(setCustomNames(customNames)));
 }
 
 export function getModules(dispatch) {

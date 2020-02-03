@@ -5,5 +5,5 @@
   "EmptySearchUsersResult": "Нет такого пользователя",
   "EmptyUsers": "Нет пользователей",
   "LoadingLabel": "Загрузка... Пожалуйста подождите...",
-  "CustomDepartments": "{{departments}}"
+  "CustomAllGroups":"Все {{ groupsCaption, lowercase }}"
 }

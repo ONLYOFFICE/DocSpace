@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import {
   toastr,
   ModalDialog,
@@ -13,39 +12,37 @@ import {
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { typeGuests } from "./../../../helpers/customNames";
 import ModalDialogContainer from '../ModalDialogContainer';
 import copy from "copy-to-clipboard";
-import { api } from "asc-web-common";
+import { api, utils } from "asc-web-common";
 const { getShortenedLink } = api.portal;
-
+const { changeLanguage } = utils;
 const textAreaName = "link-textarea";
 
 class InviteDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { language, userInvitationLink, guestInvitationLink } = this.props;
+    const { userInvitationLink, guestInvitationLink } = props;
     this.state = {
       isGuest: false,
       userInvitationLink,
       guestInvitationLink,
       isLoading: false,
       isLinkShort: false,
-      visible: false
+      visible: false,
     };
-
-    i18n.changeLanguage(language);
   }
 
   onCopyLinkToClipboard = () => {
-    // console.log("COPY");
+    // console.log("COPY", this.props);
     const { t } = this.props;
     copy(
       this.state.isGuest
         ? this.state.guestInvitationLink
         : this.state.userInvitationLink
     );
+
     toastr.success(t("LinkCopySuccess"));
   };
 
@@ -79,7 +76,12 @@ class InviteDialogComponent extends React.Component {
   };
 
   componentDidMount() {
-    this.onCopyLinkToClipboard();
+    const { t } = this.props;
+    copy(this.state.userInvitationLink);
+
+    changeLanguage(i18n)
+    .then(()=>  this.setState({visible: true}))
+    .then(()=>  toastr.success(t("LinkCopySuccess")));
   }
 
   onClickToCloseButton = () =>
@@ -88,9 +90,10 @@ class InviteDialogComponent extends React.Component {
 
   render() {
     console.log("InviteDialog render");
-    const { t, visible, settings } = this.props;
+    const { t, visible, settings, guestsCaption } = this.props;
 
     return (
+      this.state.visible &&
       <ModalDialogContainer>
         <ModalDialog
           visible={visible}
@@ -125,7 +128,7 @@ class InviteDialogComponent extends React.Component {
                   )}
                 </div>
                 <Checkbox
-                  label={t("InviteUsersAsCollaborators", { typeGuests })}
+                  label={t("InviteUsersAsCollaborators", { guestsCaption })}
                   isChecked={this.state.isGuest}
                   onChange={this.onCheckedGuest}
                   isDisabled={this.state.isLoading}
@@ -171,7 +174,7 @@ const mapStateToProps = state => {
     settings: state.auth.settings.hasShortenService,
     userInvitationLink: state.portal.inviteLinks.userLink,
     guestInvitationLink: state.portal.inviteLinks.guestLink,
-    language: state.auth.user.cultureName,
+    guestsCaption: state.auth.settings.customNames.guestsCaption
   };
 };
 
@@ -187,4 +190,4 @@ InviteDialog.propTypes = {
   onCloseButton: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps)(withRouter(InviteDialog));
+export default connect(mapStateToProps)(InviteDialog);

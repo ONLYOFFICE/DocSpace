@@ -1,15 +1,15 @@
 {
   "SaveButton": "Save",
   "CancelButton": "Cancel",
-
-
-
-  "CustomHeadOfDepartment": "{{headOfDepartment}}",
-  "CustomAddEmployee": "Add {{typeUser, lowercase}}",
-  "CustomNewDepartment": "New {{department, lowercase}}",
-  "CustomEditDepartment": "Edit {{department, lowercase}}",
-  "CustomDepartmentName": "{{department}} name",
   "Members": "Members",
   "AddMembers": "Add members",
-  "SearchAddedMembers": "Search added members"
+  "LblSelect": "Select",
+  "Name": "Name",
+  "AddButton": "Add",
+
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully",
+  
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "SearchAddedMembers": "Search added members",
+  "MeLabel": "Me"
 }

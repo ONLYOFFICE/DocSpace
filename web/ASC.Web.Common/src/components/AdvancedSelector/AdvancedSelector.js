@@ -47,7 +47,7 @@ class AdvancedSelector extends React.Component {
 
   componentDidUpdate(prevProps) {
     if(this.props.isOpen !== prevProps.isOpen) {
-      console.log(`ADSelector#${this.props.id} componentDidUpdate isOpen=${this.props.isOpen}`);
+      //console.log(`ADSelector componentDidUpdate isOpen=${this.props.isOpen}`);
       if(this.props.isOpen) {
         this.resize();
         window.addEventListener("resize", this.throttledResize);
@@ -59,7 +59,7 @@ class AdvancedSelector extends React.Component {
     }
 
     if (this.props.displayType !== prevProps.displayType) {
-      console.log(`ADSelector#${this.props.id} componentDidUpdate displayType=${this.props.displayType}`);
+      //console.log(`ADSelector componentDidUpdate displayType=${this.props.displayType}`);
       this.setState({ displayType: this.getTypeByWidth() });
     }
   }
@@ -86,7 +86,7 @@ class AdvancedSelector extends React.Component {
     const { displayType } = this.state;
     const { isOpen, id, className, style } = this.props;
 
-    console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
+    //console.log(`AdvancedSelector render() isOpen=${isOpen} displayType=${displayType}`);
 
     return (
       <div ref={this.ref} id={id} className={className} style={style}>

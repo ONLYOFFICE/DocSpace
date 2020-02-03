@@ -5,11 +5,6 @@ import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
-import {
-  typeGuest,
-  typeUser,
-  department
-} from "./../../../../../helpers/customNames";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { store } from 'asc-web-common';
@@ -65,7 +60,7 @@ class SectionFilterContent extends React.Component {
 
     const newFilter = getFilterByLocation(location);
 
-    if(!newFilter || newFilter.equals(filter)) return;
+    if (!newFilter || newFilter.equals(filter)) return;
 
     onLoading(true);
     fetchPeople(newFilter).finally(() => onLoading(false));
@@ -98,28 +93,29 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { user, groups, t } = this.props;
+    const { user, groups, t, settings } = this.props;
+    const { guestCaption, userCaption, groupCaption } = settings.customNames;
 
     const options = !isAdmin(user)
       ? []
       : [
-          {
-            key: "filter-status",
-            group: "filter-status",
-            label: t("UserStatus"),
-            isHeader: true
-          },
-          {
-            key: "1",
-            group: "filter-status",
-            label: t("LblActive")
-          },
-          {
-            key: "2",
-            group: "filter-status",
-            label: t("LblTerminated")
-          }
-        ];
+        {
+          key: "filter-status",
+          group: "filter-status",
+          label: t("UserStatus"),
+          isHeader: true
+        },
+        {
+          key: "1",
+          group: "filter-status",
+          label: t("LblActive")
+        },
+        {
+          key: "2",
+          group: "filter-status",
+          label: t("LblTerminated")
+        }
+      ];
 
     const groupOptions = groups.map(group => {
       return {
@@ -158,12 +154,12 @@ class SectionFilterContent extends React.Component {
       {
         key: "user",
         group: "filter-type",
-        label: t("CustomTypeUser", { typeUser })
+        label: userCaption
       },
       {
         key: "guest",
         group: "filter-type",
-        label: t("CustomTypeGuest", { typeGuest })
+        label: guestCaption
       },
       {
         key: "filter-other",
@@ -175,8 +171,8 @@ class SectionFilterContent extends React.Component {
         key: "filter-type-group",
         group: "filter-other",
         subgroup: "filter-group",
-        label: t("CustomDepartment", { department }),
-        defaultSelectLabel: t("DefaultSelectLabel")
+        label: groupCaption,
+        defaultSelectLabel: t("LblSelect")
       },
       ...groupOptions
     ];
@@ -236,9 +232,17 @@ class SectionFilterContent extends React.Component {
     return selectedFilterData;
   };
 
+  needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.language !== nextProps.language) {
+      return true;
+    }
+    return false;
+  };
+
+
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    const { t } = this.props;
+    const { t, i18n } = this.props;
     return (
       <FilterInput
         getFilterData={this.getData}
@@ -247,7 +251,9 @@ class SectionFilterContent extends React.Component {
         onFilter={this.onFilter}
         directionAscLabel={t("DirectionAscLabel")}
         directionDescLabel={t("DirectionDescLabel")}
-        placeholder={t("FilterPlaceholder")}
+        placeholder={t("Search")}
+        needForUpdate={this.needForUpdate}
+        language={i18n.language}
       />
     );
   }
