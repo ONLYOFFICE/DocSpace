@@ -70,13 +70,13 @@ Tiles.propTypes = {
 
 const Body = ({ modules, match, isLoaded }) => {
     const { t } = useTranslation('translation', { i18n });
-    const { params } = match;
+    const { error } = match.params;
 
-    useEffect(() => {
-        params.error && toastr.error(params.error);
-    }, [params.error]);
+    useEffect(() => error && toastr.error(error), [error]);
 
-    useEffect(() => changeLanguage(i18n), []);
+    useEffect(() => { 
+        changeLanguage(i18n);
+    }, []);
 
     return (
         !isLoaded
