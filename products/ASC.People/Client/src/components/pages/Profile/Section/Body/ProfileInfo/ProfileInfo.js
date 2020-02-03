@@ -42,6 +42,11 @@ const InfoItemValue = styled.div`
   .language-combo {
     padding-top: 4px;
     float: left;
+    margin-right: 8px;
+
+    & > div:first-child > div:last-child {
+      margin-right: 0;
+    }
 
     & > div {
       padding-left: 0px;
@@ -54,7 +59,7 @@ const InfoItemValue = styled.div`
       margin-top: 6px;
     }
     @media(max-width: 1024px) {
-      padding: 6px 8px 8px 8px;
+      padding: 6px 24px 8px 8px;
       margin-left: -8px;
     }  
   }
