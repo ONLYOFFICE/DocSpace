@@ -107,7 +107,9 @@ namespace ASC.Web.Files.ThirdPartyApp
         public SetupInfo SetupInfo { get; }
         public ILog Logger { get; }
 
-        public BoxApp() { }
+        public BoxApp()
+        {
+        }
 
         public BoxApp(
             TenantUtil tenantUtil,
@@ -125,11 +127,11 @@ namespace ASC.Web.Files.ThirdPartyApp
             PersonalSettingsHelper personalSettingsHelper,
             BaseCommonLinkUtility baseCommonLinkUtility,
             IOptionsSnapshot<AccountLinker> snapshot,
+            SetupInfo setupInfo,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
             ConsumerFactory consumerFactory,
-            SetupInfo setupInfo,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)

@@ -34,13 +34,16 @@ using System.Runtime.Serialization.Json;
 using System.Security.Permissions;
 using System.Text;
 using System.Web;
+
 using ASC.Common.Utils;
 using ASC.FederatedLogin.Helpers;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
+
 using Newtonsoft.Json;
 
 namespace ASC.FederatedLogin.Profile
