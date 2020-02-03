@@ -105,6 +105,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         public IOptionsSnapshot<AccountLinker> Snapshot { get; }
         public SetupInfo SetupInfo { get; }
+        public TokenHelper TokenHelper { get; }
         public ILog Logger { get; }
 
         public BoxApp()
@@ -128,6 +129,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             BaseCommonLinkUtility baseCommonLinkUtility,
             IOptionsSnapshot<AccountLinker> snapshot,
             SetupInfo setupInfo,
+            TokenHelper tokenHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -152,6 +154,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             BaseCommonLinkUtility = baseCommonLinkUtility;
             Snapshot = snapshot;
             SetupInfo = setupInfo;
+            TokenHelper = tokenHelper;
             Logger = option.CurrentValue;
         }
 
@@ -182,7 +185,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             Logger.Debug("BoxApp: get file " + fileId);
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
 
             var boxFile = GetBoxFile(fileId, token);
             editable = true;
@@ -261,7 +264,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                                      : " from stream"));
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
 
             var boxFile = GetBoxFile(fileId, token);
             if (boxFile == null)
@@ -417,7 +420,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            Token.SaveToken(token);
+            TokenHelper.SaveToken(token);
 
             var fileId = context.Request.Query["id"];
 
@@ -444,7 +447,13 @@ namespace ASC.Web.Files.ThirdPartyApp
                     throw exc;
                 }
 
-                var token = Token.GetToken(AppAttr, userId);
+                Token token = null;
+
+                if (Guid.TryParse(userId, out var userIdGuid))
+                {
+                    token = TokenHelper.GetToken(AppAttr, userIdGuid);
+                }
+
                 if (token == null)
                 {
                     Logger.Error("BoxApp: token is null");

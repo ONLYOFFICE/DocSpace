@@ -113,6 +113,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public IOptionsSnapshot<AccountLinker> Snapshot { get; }
         public SetupInfo SetupInfo { get; }
         public GoogleLoginProvider GoogleLoginProvider { get; }
+        public TokenHelper TokenHelper { get; }
 
         public GoogleDriveApp()
         {
@@ -139,6 +140,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             IOptionsSnapshot<AccountLinker> snapshot,
             SetupInfo setupInfo,
             GoogleLoginProvider googleLoginProvider,
+            TokenHelper tokenHelper,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -168,6 +170,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             Snapshot = snapshot;
             SetupInfo = setupInfo;
             GoogleLoginProvider = googleLoginProvider;
+            TokenHelper = tokenHelper;
         }
 
         public bool Request(HttpContext context)
@@ -204,7 +207,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             Logger.Debug("GoogleDriveApp: get file " + fileId);
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
             var driveFile = GetDriveFile(fileId, token);
             editable = false;
 
@@ -268,7 +271,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                                      : " from stream"));
             fileId = ThirdPartySelector.GetFileId(fileId);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
 
             var driveFile = GetDriveFile(fileId, token);
             if (driveFile == null)
@@ -421,7 +424,7 @@ namespace ASC.Web.Files.ThirdPartyApp
                 }
             }
 
-            Token.SaveToken(token);
+            TokenHelper.SaveToken(token);
 
             var action = stateJson.Value<string>("action");
             switch (action)
@@ -489,7 +492,19 @@ namespace ASC.Web.Files.ThirdPartyApp
                     throw exc;
                 }
 
-                var token = Token.GetToken(AppAttr, userId);
+                Token token = null;
+
+                if (Guid.TryParse(userId, out var userIdGuid))
+                {
+                    token = TokenHelper.GetToken(AppAttr, userIdGuid);
+                }
+
+                if (token == null)
+                {
+                    Logger.Error("BoxApp: token is null");
+                    throw new SecurityException("Access token is null");
+                }
+
                 var driveFile = GetDriveFile(fileId, token);
 
                 var jsonFile = JObject.Parse(driveFile);
@@ -542,7 +557,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var fileId = context.Request.Query[FilesLinkUtility.FileId];
             Logger.Debug("GoogleDriveApp: ConfirmConvertFile - " + fileId);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
 
             var driveFile = GetDriveFile(fileId, token);
             if (driveFile == null)
@@ -562,7 +577,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             var fileName = context.Request.Query[FilesLinkUtility.FileTitle];
             Logger.Debug("GoogleDriveApp: CreateFile folderId - " + folderId + " fileName - " + fileName);
 
-            var token = Token.GetToken(AppAttr);
+            var token = TokenHelper.GetToken(AppAttr);
 
             var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
             var storeTemplate = GlobalStore.GetStoreTemplate();
@@ -635,7 +650,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             LoginProfile loginProfile = null;
             try
             {
-                loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(token.ToString());
+                loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(token.GetRefreshedToken(TokenHelper));
             }
             catch (Exception ex)
             {

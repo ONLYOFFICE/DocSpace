@@ -16,6 +16,7 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesThirdpartyAccount> ThirdpartyAccount { get; set; }
         public DbSet<DbFilesTagLink> TagLink { get; set; }
         public DbSet<DbFilesTag> Tag { get; set; }
+        public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -25,7 +26,8 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesBunchObjects()
                 .AddDbFilesSecurity()
                 .AddDbFilesThirdpartyIdMapping()
-                .AddDbFilesTagLink();
+                .AddDbFilesTagLink()
+                .AddDbFilesThirdpartyApp();
         }
     }
 
