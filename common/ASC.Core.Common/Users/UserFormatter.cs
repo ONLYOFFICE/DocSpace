@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -43,6 +44,7 @@ namespace ASC.Core.Users
         public UserFormatter(IConfiguration configuration)
         {
             Configuration = configuration;
+            UserNameRegex = new Regex(Configuration["core:username:regex"] ?? "");
         }
 
         public string GetUserName(UserInfo userInfo, DisplayUserNameFormat format)
@@ -136,11 +138,11 @@ namespace ASC.Core.Users
             return format.IndexOf("{0}") < format.IndexOf("{1}") ? DisplayUserNameFormat.FirstLast : DisplayUserNameFormat.LastFirst;
         }
 
-        public static Regex UserNameRegex = new Regex(@"(?s)^(?!.*[:\/]).*$");
+        public Regex UserNameRegex;
 
         public IConfiguration Configuration { get; }
 
-        public static bool IsValidUserName(string firstName, string lastName)
+        public bool IsValidUserName(string firstName, string lastName)
         {
             return UserNameRegex.IsMatch(firstName + lastName);
         }

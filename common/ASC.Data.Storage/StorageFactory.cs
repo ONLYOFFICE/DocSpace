@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -35,6 +36,7 @@ using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 using ASC.Data.Storage.DiscStorage;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -212,7 +214,7 @@ namespace ASC.Data.Storage
         public IDataStore GetStorage(string configpath, string tenant, string module)
         {
             int.TryParse(tenant, out var tenantId);
-            return GetStorage(configpath, tenant, module, new TennantQuotaController(tenantId, TenantManager));
+            return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, TenantManager));
         }
 
         public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -228,7 +230,7 @@ namespace ASC.Data.Storage
             }
 
             //Make tennant path
-            tenant = TennantPath.CreatePath(tenant);
+            tenant = TenantPath.CreatePath(tenant);
 
             var store = DataStoreCache.Get(tenant, module);
             if (store == null)
@@ -251,7 +253,7 @@ namespace ASC.Data.Storage
             if (tenant == null) tenant = DefaultTenantName;
 
             //Make tennant path
-            tenant = TennantPath.CreatePath(tenant);
+            tenant = TenantPath.CreatePath(tenant);
 
             var section = StorageFactoryConfig.Section;
             if (section == null)
@@ -260,7 +262,7 @@ namespace ASC.Data.Storage
             }
 
             int.TryParse(tenant, out var tenantId);
-            return GetDataStore(tenant, module, consumer, new TennantQuotaController(tenantId, TenantManager));
+            return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, TenantManager));
         }
 
         private IDataStore GetStoreAndCache(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)

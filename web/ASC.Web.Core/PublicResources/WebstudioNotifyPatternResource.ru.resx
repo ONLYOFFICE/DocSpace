@@ -1077,6 +1077,13 @@ $GreenButton
 
 *Обратите внимание*: эта ссылка действительна только в течение 7 дней. Пожалуйста, выполните удаление профиля в течение этого времени.</value>
   </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Пользователь "$FromUserName":"$FromUserLink" удалил свой профиль, и сейчас этот профиль заблокирован. Все файлы пользователя по-прежнему занимают дисковое пространство и закреплены за ним. 
+
+Вы можете передать документы пользователя, доступные для других, другому активному пользователю, или удалить их, чтобы освободить место на портале.
+
+Перейдите к профилю пользователя по "этой ссылке":"$FromUserLink", чтобы передать документы другому пользователю или удалить данные.</value>
+  </data>
   <data name="pattern_profile_updated" xml:space="preserve">
     <value>h1.Ваш профиль на портале "$__VirtualRootPath":"$__VirtualRootPath" был изменен
 
@@ -1776,6 +1783,9 @@ $GreenButton
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Удаление Вашего профиля на портале ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Пользователь удалил свой профиль</value>
   </data>
   <data name="subject_profile_updated" xml:space="preserve">
     <value>Ваш профиль на портале ${__VirtualRootPath} был изменен</value>

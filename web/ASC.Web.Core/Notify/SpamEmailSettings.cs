@@ -24,30 +24,52 @@
 */
 
 
-#if DEBUG
 using System;
+using System.Runtime.Serialization;
 
-using Microsoft.Extensions.DependencyInjection;
+using ASC.Core.Common.Settings;
 
-using NUnit.Framework;
-
-namespace ASC.Core.Common.Tests
+namespace ASC.Web.Studio.Core.Notify
 {
-    [TestFixture]
-    public class ClientPaymentManagerTest
+    [Serializable]
+    [DataContract]
+    public class SpamEmailSettings : ISettings
     {
-        private readonly PaymentManager paymentManager = new PaymentManager(null, null, null);
-        private IServiceProvider serviceProvider;
+        [DataMember(Name = "MailsSendedCount")]
+        public int MailsSendedCount { get; set; }
 
-        [Test]
-        public void ActivateCuponTest()
+        [DataMember(Name = "MailsSendedDate")]
+        public DateTime MailsSendedDate { get; set; }
+
+        public Guid ID
         {
-            using var scope = serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            tenantManager.SetCurrentTenant(0);
+            get { return new Guid("{A9819A62-60AF-48E3-989C-08259772FA57}"); }
+        }
 
-            paymentManager.ActivateKey("IAALKCPBRY9ZSDLJZ4E2");
+        public ISettings GetDefault(IServiceProvider serviceProvider)
+        {
+            return new SpamEmailSettings
+            {
+                MailsSendedCount = 0,
+                MailsSendedDate = DateTime.UtcNow.AddDays(-2)
+            };
+        }
+
+        public int MailsSended
+        {
+            get { return GetCount(); }
+            set
+            {
+                MailsSendedDate = DateTime.UtcNow.Date;
+                MailsSendedCount = value;
+            }
+        }
+
+        private int GetCount()
+        {
+            return MailsSendedDate.Date < DateTime.UtcNow.Date
+                       ? 0
+                       : MailsSendedCount;
         }
     }
 }
-#endif

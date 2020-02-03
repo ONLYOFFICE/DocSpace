@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -37,6 +38,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -224,6 +226,33 @@ namespace ASC.Web.Studio.Utility
             return productID;
         }
 
+        public Guid GetAddonID()
+        {
+            var addonID = Guid.Empty;
+
+            if (HttpContext != null)
+            {
+                var addonName = GetAddonNameFromUrl(HttpContext.Request.Url().AbsoluteUri);
+
+                switch (addonName)
+                {
+                    case "mail":
+                        addonID = WebItemManager.MailProductID;
+                        break;
+                    case "talk":
+                        addonID = WebItemManager.TalkProductID;
+                        break;
+                    case "calendar":
+                        addonID = WebItemManager.CalendarProductID;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return addonID;
+        }
+
         public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
         {
             var currentURL = string.Empty;
@@ -365,20 +394,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    try
-                    {
-                        var pos = url.IndexOf("/addons/", StringComparison.InvariantCultureIgnoreCase);
-                        if (0 <= pos)
-                        {
-                            url = url.Substring(pos + 8).ToLower();
-                            pos = url.IndexOf('/');
-                            return 0 < pos ? url.Substring(0, pos) : url;
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    return null;
+                    return GetAddonNameFromUrl(name);
                 }
 
             }
@@ -394,6 +410,24 @@ namespace ASC.Web.Studio.Utility
                 if (0 <= pos)
                 {
                     url = url.Substring(pos + 10).ToLower();
+                    pos = url.IndexOf('/');
+                    return 0 < pos ? url.Substring(0, pos) : url;
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
+
+        private static string GetAddonNameFromUrl(string url)
+        {
+            try
+            {
+                var pos = url.IndexOf("/addons/", StringComparison.InvariantCultureIgnoreCase);
+                if (0 <= pos)
+                {
+                    url = url.Substring(pos + 8).ToLower();
                     pos = url.IndexOf('/');
                     return 0 < pos ? url.Substring(0, pos) : url;
                 }

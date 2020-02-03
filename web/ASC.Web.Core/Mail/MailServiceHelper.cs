@@ -61,7 +61,7 @@ namespace ASC.Web.Core.Mail
 
     public class MailServiceHelper
     {
-        public const string ConnectionStringFormat = "Server={0};Database={1};User ID={2};Password={3};Pooling=True;Character Set=utf8";
+        public readonly string ConnectionStringFormat;
         public const string MailServiceDbId = "mailservice";
         public readonly string DefaultDatabase;
         public const string DefaultUser = "mail_admin";
@@ -90,6 +90,7 @@ namespace ASC.Web.Core.Mail
             DbContextManager<MailDbContext> dbContext,
             EFLoggerFactory loggerFactory)
         {
+            ConnectionStringFormat = GetConnectionStringFormat(configuration);
             UserManager = userManager;
             AuthContext = authContext;
             Configuration = configuration;
@@ -100,6 +101,14 @@ namespace ASC.Web.Core.Mail
             Cache = mailServiceHelperStorage.Cache;
             DefaultDatabase = GetDefaultDatabase();
         }
+
+
+        private string GetConnectionStringFormat(IConfiguration configuration)
+        {
+            var value = configuration["mailservice:connection-string-format"];
+            return string.IsNullOrEmpty(value) ? "Server={0};Database={1};User ID={2};Password={3};Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true" : value;
+        }
+
 
         private string GetDefaultDatabase()
         {
@@ -150,7 +159,7 @@ namespace ASC.Web.Core.Mail
         }
 
 
-        public string[] GetDataFromExternalDatabase(string dbid, string connectionString, string ip)
+        public string GetTokenFromExternalDatabase(string connectionString)
         {
             DemandPermission();
 
@@ -166,22 +175,30 @@ namespace ASC.Web.Core.Mail
                 .Where(r => r.Id == 1)
                 .Select(r => r.AccessToken)
                 .FirstOrDefault();
+            return token;
+        }
 
-            string hostname;
+        public string GetHostnameFromExternalDatabase(string connectionString, string ip)
+        {
+            DemandPermission();
 
-            if (IPAddress.TryParse(ip, out var ipAddress))
-            {
-                hostname = mailDbContext.GreyListingWhiteList
-                    .Where(r => r.Source == "SenderIP:" + ip)
-                    .Select(r => r.Comment)
-                    .FirstOrDefault();
-            }
-            else
-            {
-                hostname = ip;
-            }
+            var dbContextOptionsBuilder = new DbContextOptionsBuilder<MailDbContext>();
+            var options = dbContextOptionsBuilder
+                .UseMySql(connectionString)
+                .UseLoggerFactory(LoggerFactory)
+                .Options;
 
-            return new[] { token, hostname };
+            using var mailDbContext = new MailDbContext(options);
+
+            if (!IPAddress.TryParse(ip, out var ipAddress))
+                return ip;
+
+            var hostname = mailDbContext.GreyListingWhiteList
+                .Where(r => r.Source == "SenderIP:" + ip)
+                .Select(r => r.Comment)
+                .FirstOrDefault();
+
+            return hostname;
         }
 
 

@@ -32,14 +32,14 @@ using ASC.Core.Tenants;
 
 namespace ASC.Data.Storage
 {
-    public class TennantQuotaController : IQuotaController
+    public class TenantQuotaController : IQuotaController
     {
         private readonly int tenant;
         private long currentSize;
 
         public TenantManager TenantManager { get; }
 
-        public TennantQuotaController(int tenant, TenantManager tenantManager)
+        public TenantQuotaController(int tenant, TenantManager tenantManager)
         {
             this.tenant = tenant;
             TenantManager = tenantManager;

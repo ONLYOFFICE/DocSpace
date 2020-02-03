@@ -27,9 +27,11 @@
 using System;
 using System.IO;
 using System.Linq;
+
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +60,7 @@ namespace ASC.Web.Core.WhiteLabel
             SettingsManager settingsManager,
             TenantInfoSettingsHelper tenantInfoSettingsHelper,
             TenantManager tenantManager,
+            AuthContext authContext,
             IConfiguration configuration,
             ICacheNotify<TenantLogoCacheItem> cacheNotify)
         {
@@ -65,6 +68,7 @@ namespace ASC.Web.Core.WhiteLabel
             SettingsManager = settingsManager;
             TenantInfoSettingsHelper = tenantInfoSettingsHelper;
             TenantManager = tenantManager;
+            AuthContext = authContext;
             Configuration = configuration;
             var hideSettings = (Configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
             WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
@@ -132,7 +136,7 @@ namespace ASC.Web.Core.WhiteLabel
         {
             if (WhiteLabelEnabled)
             {
-                var tenantWhiteLabelSettings = SettingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
+                var tenantWhiteLabelSettings = SettingsManager.Load<TenantWhiteLabelSettings>();
 
                 return tenantWhiteLabelSettings.GetLogoText(SettingsManager) ?? TenantWhiteLabelSettings.DefaultLogoText;
             }
@@ -141,7 +145,6 @@ namespace ASC.Web.Core.WhiteLabel
 
         public bool IsRetina(HttpRequest request)
         {
-            var isRetina = false;
             if (request != null)
             {
                 var cookie = request.Cookies["is_retina"];
@@ -149,11 +152,11 @@ namespace ASC.Web.Core.WhiteLabel
                 {
                     if (bool.TryParse(cookie, out var result))
                     {
-                        isRetina = result;
+                        return result;
                     }
                 }
             }
-            return isRetina;
+            return !AuthContext.IsAuthenticated;
         }
 
         public bool WhiteLabelPaid
@@ -168,6 +171,7 @@ namespace ASC.Web.Core.WhiteLabel
         public SettingsManager SettingsManager { get; }
         public TenantInfoSettingsHelper TenantInfoSettingsHelper { get; }
         public TenantManager TenantManager { get; }
+        public AuthContext AuthContext { get; }
         public IConfiguration Configuration { get; }
 
         /// <summary>

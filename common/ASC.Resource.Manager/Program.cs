@@ -6,8 +6,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+
 using ASC.Common.Utils;
+
 using CommandLine;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,16 +29,22 @@ namespace ASC.Resource.Manager
             var startup = new Startup();
             startup.ConfigureServices(services);
             var serviceProvider = services.BuildServiceProvider();
-            var ResourceData = serviceProvider.GetService<ResourceData>();
+            using var scope = serviceProvider.CreateScope();
+            var ResourceData = scope.ServiceProvider.GetService<ResourceData>();
 
             var cultures = new List<string>();
             var projects = new List<ResFile>();
             var enabledSettings = new EnabledSettings();
-            Action<ResourceData, string, string, string, string, string, string> export = null;
+            Action<IServiceProvider, string, string, string, string, string, string> export = null;
 
             try
             {
                 var (project, module, filePath, exportPath, culture, format, key) = options;
+
+                //project = "WebStudio";
+                //module = "Notify";
+                //filePath = "WebstudioNotifyPatternResource.resx";
+                //exportPath = @"C:\Git\portals_core\web\ASC.Web.Core\PublicResources";
 
                 if (format == "json")
                 {
@@ -65,6 +74,7 @@ namespace ASC.Resource.Manager
                 enabledSettings = serviceProvider.GetService<IConfiguration>().GetSetting<EnabledSettings>("enabled");
                 cultures = ResourceData.GetCultures().Where(r => r.Available).Select(r => r.Title).Intersect(enabledSettings.Langs).ToList();
                 projects = ResourceData.GetAllFiles();
+                //key = CheckExist("WebstudioNotifyPatternResource", "ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core");
 
                 ExportWithProject(project, module, filePath, culture, exportPath, key);
 
@@ -133,11 +143,11 @@ namespace ASC.Resource.Manager
             {
                 if (!string.IsNullOrEmpty(culture))
                 {
-                    export(ResourceData, projectName, moduleName, fileName, culture, exportPath, key);
+                    export(serviceProvider, projectName, moduleName, fileName, culture, exportPath, key);
                 }
                 else
                 {
-                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(ResourceData, projectName, moduleName, fileName, c, exportPath, key));
+                    ParallelEnumerable.ForAll(cultures.AsParallel(), c => export(serviceProvider, projectName, moduleName, fileName, c, exportPath, key));
                 }
             }
         }
