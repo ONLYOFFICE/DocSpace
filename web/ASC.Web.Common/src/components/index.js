@@ -11,3 +11,4 @@ export { default as PageLayout } from './PageLayout';
 export { default as Layout } from './Layout';
 export { default as ProfileMenu } from './ProfileMenu';
 export { default as ErrorContainer } from './ErrorContainer';
+export { default as ErrorBoundary } from './ErrorBoundary';
