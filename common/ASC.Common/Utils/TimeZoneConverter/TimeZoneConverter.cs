@@ -205,7 +205,7 @@ namespace ASC.Common.Utils
         {
             try
             {
-                _customMode = Configuration["core:r7office"] == "true";
+                _customMode = Configuration["core:custom-mode"] == "true";
 
                 if (!_customMode)
                 {

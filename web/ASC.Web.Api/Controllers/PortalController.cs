@@ -34,7 +34,6 @@ namespace ASC.Web.Api.Controllers
         public PaymentManager PaymentManager { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public UrlShortener UrlShortener { get; }
-        public PermissionContext PermissionContext { get; }
         public AuthContext AuthContext { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public ILog Log { get; }
@@ -48,7 +47,6 @@ namespace ASC.Web.Api.Controllers
             PaymentManager paymentManager,
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
-            PermissionContext permissionContext,
             AuthContext authContext,
             WebItemSecurity webItemSecurity
             )
@@ -60,7 +58,6 @@ namespace ASC.Web.Api.Controllers
             PaymentManager = paymentManager;
             CommonLinkUtility = commonLinkUtility;
             UrlShortener = urlShortener;
-            PermissionContext = permissionContext;
             AuthContext = authContext;
             WebItemSecurity = webItemSecurity;
         }
@@ -80,8 +77,7 @@ namespace ASC.Web.Api.Controllers
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            if (!UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsAdmin(UserManager)
-                && !WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
+            if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
             {
                 throw new SecurityException("Method not available");
             }
@@ -170,7 +166,6 @@ namespace ASC.Web.Api.Controllers
                 .AddEmailValidationKeyProviderService()
                 .AddPaymentManagerService()
                 .AddCommonLinkUtilityService()
-                .AddPermissionContextService()
                 .AddAuthContextService()
                 .AddWebItemSecurity();
         }

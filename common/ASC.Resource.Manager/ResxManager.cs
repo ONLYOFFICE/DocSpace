@@ -47,7 +47,7 @@ namespace ASC.Resource.Manager
                 Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
             };
 
-            var scope = serviceProvider.CreateScope();
+            using var scope = serviceProvider.CreateScope();
             var resourceData = scope.ServiceProvider.GetService<ResourceData>();
             var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
 
