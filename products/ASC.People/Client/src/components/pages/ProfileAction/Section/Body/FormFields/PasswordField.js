@@ -33,11 +33,11 @@ class PasswordField extends React.Component {
       inputOnChange,
       inputTabIndex,
 
-      copyLinkText
+      copyLinkText,
+      t
     } = this.props;
 
-    const tooltipPasswordLength =
-      "from " + passwordSettings.minLength + " to 30 characters";
+    const specialCharacters = '!@#$%^&*';
 
     return (
       <FieldContainer
@@ -62,14 +62,14 @@ class PasswordField extends React.Component {
           inputTabIndex={inputTabIndex}
           onChange={inputOnChange}
           clipActionResource={copyLinkText}
-          clipEmailResource="E-mail: "
-          clipPasswordResource="Password: "
-          tooltipPasswordTitle="Password must contain:"
-          tooltipPasswordLength={tooltipPasswordLength}
-          tooltipPasswordDigits="digits"
-          tooltipPasswordCapital="capital letters"
-          tooltipPasswordSpecial="special characters (!@#$%^&*)"
-          generatorSpecial="!@#$%^&*"
+          clipEmailResource={`${t('Email')}: `}
+          clipPasswordResource={`${t('Password')}: `}
+          tooltipPasswordTitle={`${t('ErrorPasswordMessage')}:`}
+          tooltipPasswordLength={t('ErrorPasswordLength', { from: passwordSettings.minLength, to: '30' })}
+          tooltipPasswordDigits={t('ErrorPasswordNoDigits')}
+          tooltipPasswordCapital={t('ErrorPasswordNoUpperCase')}
+          tooltipPasswordSpecial={`${t('ErrorPasswordNoSpecialSymbols')} (${specialCharacters})`}
+          generatorSpecial={specialCharacters}
           passwordSettings={passwordSettings}
           isDisabled={inputIsDisabled}
         />

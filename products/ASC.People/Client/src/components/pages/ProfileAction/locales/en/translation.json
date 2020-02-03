@@ -36,6 +36,11 @@
   "Error": "Error",
   "ReviewingCustomMode": "Review",
   "AccessRightsFullAccess": "Full access",
+  "ErrorPasswordMessage": "Password must contain",
+  "ErrorPasswordNoDigits": "digits",
+  "ErrorPasswordNoUpperCase": "capital letters",
+  "ErrorPasswordNoSpecialSymbols": "special characters",
+  "ErrorPasswordLength": "from {{from}} to {{to}} characters",
 
   "CustomCreation": "{{user}} (creation)",
 

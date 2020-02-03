@@ -35,6 +35,11 @@
   "Error": "Ошибка",
   "ReviewingCustomMode": "Рецензирование",
   "AccessRightsFullAccess": "Полный доступ",
+  "ErrorPasswordMessage": "Пароль должен содержать",
+  "ErrorPasswordNoDigits": "цифры",
+  "ErrorPasswordNoUpperCase": "заглавные буквы",
+  "ErrorPasswordNoSpecialSymbols": "специальные символы",
+  "ErrorPasswordLength": "от {{from}} до {{to}} символов",
   
   "CustomCreation": "{{user}} (создание)",
 

@@ -129,6 +129,11 @@
         "EditUserDialogTitle",
         "ErrorUnknownFileImageType",
         "AccessRightsFullAccess",
+        "ErrorPasswordMessage",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoSpecialSymbols",
         "Error"
       ],
       "FeedResource": [
