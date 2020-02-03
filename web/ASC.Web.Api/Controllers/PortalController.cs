@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security;
 
 using ASC.Api.Core;
 using ASC.Common.Logging;
@@ -10,6 +11,7 @@ using ASC.Core.Users;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
+using ASC.Web.Core;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
@@ -32,7 +34,8 @@ namespace ASC.Web.Api.Controllers
         public PaymentManager PaymentManager { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
         public UrlShortener UrlShortener { get; }
-        public PermissionContext PermissionContext { get; }
+        public AuthContext AuthContext { get; }
+        public WebItemSecurity WebItemSecurity { get; }
         public ILog Log { get; }
 
 
@@ -44,7 +47,8 @@ namespace ASC.Web.Api.Controllers
             PaymentManager paymentManager,
             CommonLinkUtility commonLinkUtility,
             UrlShortener urlShortener,
-            PermissionContext permissionContext
+            AuthContext authContext,
+            WebItemSecurity webItemSecurity
             )
         {
             Log = options.CurrentValue;
@@ -54,7 +58,8 @@ namespace ASC.Web.Api.Controllers
             PaymentManager = paymentManager;
             CommonLinkUtility = commonLinkUtility;
             UrlShortener = urlShortener;
-            PermissionContext = permissionContext;
+            AuthContext = authContext;
+            WebItemSecurity = webItemSecurity;
         }
 
         [Read("")]
@@ -72,7 +77,11 @@ namespace ASC.Web.Api.Controllers
         [Read("users/invite/{employeeType}")]
         public string GeInviteLink(EmployeeType employeeType)
         {
-            PermissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+            if (!WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, AuthContext.CurrentAccount.ID))
+            {
+                throw new SecurityException("Method not available");
+            }
+
             return CommonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType)
                    + $"&emplType={employeeType:d}";
         }
@@ -157,7 +166,8 @@ namespace ASC.Web.Api.Controllers
                 .AddEmailValidationKeyProviderService()
                 .AddPaymentManagerService()
                 .AddCommonLinkUtilityService()
-                .AddPermissionContextService();
+                .AddAuthContextService()
+                .AddWebItemSecurity();
         }
     }
 }

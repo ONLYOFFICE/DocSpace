@@ -233,7 +233,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
     <zone type="Antarctica/Syowa">Антарктида/Сёва</zone>
     <zone type="Antarctica/Troll">Антарктида/Тролль</zone>
     <zone type="Antarctica/Vostok">Антарктида/Восток</zone>
-    <zone type="Arctic/Longyearbyen">ru_Arctic/Лонгйир</zone>
+    <zone type="Arctic/Longyearbyen">Шпицберген/Лонгйир</zone>
     <zone type="Asia/Aden">Азия/Аден</zone>
     <zone type="Asia/Almaty">Азия/Алматы</zone>
     <zone type="Asia/Amman">Азия/Амман</zone>
@@ -361,7 +361,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
     <zone type="Australia/North">Австралия/Дарвин</zone>
     <zone type="Australia/NSW">Австралия/Сидней</zone>
     <zone type="Australia/Perth">Австралия/Перт</zone>
-    <zone type="Australia/Queensland">Australia/Квинсленд</zone>
+    <zone type="Australia/Queensland">Австралия/Квинсленд</zone>
     <zone type="Australia/South">Австралия/Аделаида</zone>
     <zone type="Australia/Sydney">Австралия/Сидней</zone>
     <zone type="Australia/Tasmania">Австралия/Тасмания</zone>

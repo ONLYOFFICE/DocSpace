@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 using ASC.Common.Caching;
 using ASC.Common.Utils;
@@ -35,6 +36,7 @@ using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 using Newtonsoft.Json.Linq;
@@ -86,6 +88,29 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional)
         {
+        }
+
+        public override LoginProfile ProcessAuthoriztion(HttpContext context, IDictionary<string, string> @params)
+        {
+            try
+            {
+                var token = Auth(context, Scopes, context.Request.Query["access_type"] == "offline"
+                                                      ? new Dictionary<string, string>
+                                                          {
+                                                              { "force_confirm", "true" }
+                                                          }
+                                                      : null);
+
+                return GetLoginProfile(token?.AccessToken);
+            }
+            catch (ThreadAbortException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                return LoginProfile.FromError(Signature, InstanceCrypto, ex);
+            }
         }
 
         public override LoginProfile GetLoginProfile(string accessToken)

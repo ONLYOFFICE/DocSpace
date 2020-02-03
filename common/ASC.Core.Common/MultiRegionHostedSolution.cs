@@ -37,7 +37,9 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
+using ASC.Core.Users;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -58,6 +60,8 @@ namespace ASC.Core
         public IOptionsMonitor<ILog> Options { get; }
         public TenantUtil TenantUtil { get; }
         public TenantDomainValidator TenantDomainValidator { get; }
+        public UserFormatter UserFormatter { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         public MultiRegionHostedSolution(string dbid,
             IConfiguration configuraion,
@@ -66,7 +70,9 @@ namespace ASC.Core
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options,
             TenantUtil tenantUtil,
-            TenantDomainValidator tenantDomainValidator)
+            TenantDomainValidator tenantDomainValidator,
+            UserFormatter userFormatter,
+            IHttpContextAccessor httpContextAccessor)
         {
             this.dbid = dbid;
             Configuraion = configuraion;
@@ -76,6 +82,8 @@ namespace ASC.Core
             Options = options;
             TenantUtil = tenantUtil;
             TenantDomainValidator = tenantDomainValidator;
+            UserFormatter = userFormatter;
+            HttpContextAccessor = httpContextAccessor;
             Initialize();
         }
 
@@ -218,14 +226,14 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), UserFormatter, name);
                     }
                 }
 
-                regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)));
+                regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), UserFormatter);
                 if (!regions.ContainsKey(string.Empty))
                 {
-                    regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)));
+                    regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), UserFormatter);
                 }
             }
             else
@@ -245,16 +253,16 @@ namespace ASC.Core
                     if (cs.Name.StartsWith(dbid + "."))
                     {
                         var name = cs.Name.Substring(dbid.Length + 1);
-                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), name);
+                        regions[name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), UserFormatter, name);
                         find = true;
                     }
                 }
                 if (find)
                 {
-                    regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)));
+                    regions[dbid] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), UserFormatter);
                     if (!regions.ContainsKey(string.Empty))
                     {
-                        regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)));
+                        regions[string.Empty] = new HostedSolution(Configuraion, dbConnectionStrings, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(dbConnectionStrings.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(dbConnectionStrings.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(dbConnectionStrings.ConnectionString)), UserFormatter);
                     }
                 }
                 else
@@ -279,10 +287,10 @@ namespace ASC.Core
 
                                 if (!regions.ContainsKey(string.Empty))
                                 {
-                                    regions[string.Empty] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), cs.Name);
+                                    regions[string.Empty] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), UserFormatter, cs.Name);
                                 }
 
-                                regions[cs.Name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), cs.Name);
+                                regions[cs.Name] = new HostedSolution(Configuraion, cs, TariffServiceStorage, Options, TenantUtil, TenantDomainValidator, new TenantDbContext(GetOptions<TenantDbContext>(cs.ConnectionString)), new UserDbContext(GetOptions<UserDbContext>(cs.ConnectionString)), new CoreDbContext(GetOptions<CoreDbContext>(cs.ConnectionString)), UserFormatter, cs.Name);
                             }
                         }
                         catch (DbException) { }

@@ -35,6 +35,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 
 using ASC.Common.Logging;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
@@ -87,7 +88,6 @@ namespace ASC.Core.Billing
             return new PaymentLast
             {
                 ProductId = GetValueString(dedicated.Element("product-id")),
-                StartDate = GetValueDateTime(dedicated.Element("start-date")),
                 EndDate = GetValueDateTime(dedicated.Element("end-date")),
                 Autorenewal = "enabled".Equals(autorenewal, StringComparison.InvariantCultureIgnoreCase),
             };
@@ -105,13 +105,10 @@ namespace ASC.Core.Billing
                 result = Request("GetListOfPaymentsByTimeSpan", portalId, Tuple.Create("StartDate", from.ToString("yyyy-MM-dd HH:mm:ss")), Tuple.Create("EndDate", to.ToString("yyyy-MM-dd HH:mm:ss")));
             }
             var xelement = ToXElement(result);
-            foreach (var x in xelement.Elements("payment"))
-            {
-                yield return ToPaymentInfo(x);
-            }
+            return xelement.Elements("payment").Select(ToPaymentInfo);
         }
 
-        public IDictionary<string, Tuple<Uri, Uri>> GetPaymentUrls(string portalId, string[] products, string affiliateId = null, string currency = null, string language = null, string customerId = null)
+        public IDictionary<string, Tuple<Uri, Uri>> GetPaymentUrls(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null)
         {
             var urls = new Dictionary<string, Tuple<Uri, Uri>>();
 
@@ -119,6 +116,10 @@ namespace ASC.Core.Billing
             if (!string.IsNullOrEmpty(affiliateId))
             {
                 additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
+            }
+            if (!string.IsNullOrEmpty(campaign))
+            {
+                additionalParameters.Add(Tuple.Create("campaign", campaign));
             }
             if (!string.IsNullOrEmpty(currency))
             {
@@ -176,27 +177,6 @@ namespace ASC.Core.Billing
             return urls;
         }
 
-        public string GetPaymentUrl(string portalId, string product, string language)
-        {
-            var parameters = new[] { Tuple.Create("ProductId", product), Tuple.Create("PaymentSystemId", "1") }.ToList();
-            if (!string.IsNullOrEmpty(language))
-            {
-                parameters.Add(Tuple.Create("Language", language.Split('-')[0]));
-            }
-            if (test)
-            {
-                parameters.Add(Tuple.Create("Test", "true"));
-            }
-
-            var result = Request("GetPaymentSystemUrl", portalId, parameters.ToArray());
-            var url = ToUrl(result);
-            if (string.IsNullOrEmpty(url))
-            {
-                throw new BillingException(result, new { PortalId = portalId, Product = product, Language = language });
-            }
-            return url;
-        }
-
         public Invoice GetInvoice(string paymentId)
         {
             var result = Request("GetInvoice", null, Tuple.Create("PaymentId", paymentId));
@@ -206,48 +186,6 @@ namespace ASC.Core.Billing
                 Sale = GetValueString(xelement.Element("sale")),
                 Refund = GetValueString(xelement.Element("refund")),
             };
-        }
-
-        public IEnumerable<PaymentLast> GetLastPaymentByEmail(string email)
-        {
-            var result = Request("GetActiveResourceInDetailsByEmail", null, Tuple.Create("Email", email));
-            var xelement = ToXElement("<root>" + result + "</root>");
-            return (from e in xelement.Elements()
-                    let options = (e.Element("payment-options") ?? new XElement("payment-options"))
-                     .Elements("payment-option")
-                     .ToDictionary(o => o.Attribute("name").Value, o => o.Attribute("value").Value)
-                    select new PaymentLast
-                    {
-                        CustomerId = GetValueString(e.Element("customer-id")),
-                        PaymentRef = GetValueString(e.Element("payment-ref")),
-                        ProductName = GetValueString(e.Element("product-name")),
-                        StartDate = GetValueDateTime(e.Element("start-date")),
-                        EndDate = GetValueDateTime(e.Element("end-date")),
-                        PaymentDate = GetValueDateTime(e.Element("payment-date")),
-                        SAAS = GetValueDecimal(e.Element("resource-type")) < 4m,
-                        Options = options,
-                    }).ToArray();
-        }
-
-        public string AuthorizedPartner(string partnerId, bool setAuthorized, DateTime startDate = default)
-        {
-            try
-            {
-                return Request("SetPartnerStatus",
-                               partnerId.Replace("-", ""),
-                               Tuple.Create("Security", Security),
-                               Tuple.Create("ProductId", PartnersProduct),
-                               Tuple.Create("Status", setAuthorized ? "1" : "0"),
-                               Tuple.Create("RecreateSKey", "0"),
-                               Tuple.Create("Renewal", (!setAuthorized || startDate == default || startDate == DateTime.MinValue
-                                                            ? string.Empty
-                                                            : startDate.ToString("yyyy-MM-dd HH:mm:ss"))));
-            }
-            catch (BillingException error)
-            {
-                log.Error(error);
-                return string.Empty;
-            }
         }
 
         public IDictionary<string, IEnumerable<Tuple<string, decimal>>> GetProductPriceInfo(params string[] productIds)
@@ -267,7 +205,7 @@ namespace ASC.Core.Billing
                     if (product != null)
                     {
                         prices = product.Parent.Element("prices").Elements("price-item")
-                            .Select(e => Tuple.Create(e.Element("currency").Value, decimal.Parse(e.Element("amount").Value)));
+                                        .Select(e => Tuple.Create(e.Element("currency").Value, decimal.Parse(e.Element("amount").Value)));
                     }
                     return new { ProductId = p, Prices = prices, };
                 })
@@ -285,22 +223,24 @@ namespace ASC.Core.Billing
             request.Add(parameters.Select(p => new XElement(p.Item1, p.Item2)).ToArray());
 
             var responce = Channel.Request(new Message { Type = MessageType.Data, Content = request.ToString(SaveOptions.DisableFormatting), });
+            if (responce.Content == null)
+            {
+                throw new BillingNotConfiguredException("Billing response is null");
+            }
             if (responce.Type == MessageType.Data)
             {
                 var result = responce.Content;
                 var invalidChar = ((char)65279).ToString();
                 return result.Contains(invalidChar) ? result.Replace(invalidChar, string.Empty) : result;
             }
-            else
+
+            var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
+            var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
+            if (responce.Content.Contains("error: cannot find "))
             {
-                var @params = (parameters ?? Enumerable.Empty<Tuple<string, string>>()).Select(p => string.Format("{0}: {1}", p.Item1, p.Item2));
-                var info = new { Method = method, PortalId = portalId, Params = string.Join(", ", @params) };
-                if (responce.Content.Contains("error: cannot find "))
-                {
-                    throw new BillingNotFoundException(responce.Content, info);
-                }
-                throw new BillingException(responce.Content, info);
+                throw new BillingNotFoundException(responce.Content, info);
             }
+            throw new BillingException(responce.Content, info);
         }
 
         private static XElement ToXElement(string xml)
@@ -353,8 +293,8 @@ namespace ASC.Core.Billing
         private static DateTime GetValueDateTime(XElement xelement)
         {
             return xelement != null ?
-                DateTime.ParseExact(xelement.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) :
-                default;
+                       DateTime.ParseExact(xelement.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) :
+                       default;
         }
 
         private static decimal GetValueDecimal(XElement xelement)
@@ -371,7 +311,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-                // Close();
+                Close();
             }
             catch (CommunicationException)
             {
@@ -397,26 +337,18 @@ namespace ASC.Core.Billing
         Message Request(Message message);
     }
 
-    [DataContract(Name = "Message", Namespace = "http://schemas.datacontract.org/2004/07/teamlabservice")]
+    [DataContract(Name = "Message", Namespace = "http://schemas.datacontract.org/2004/07/BillingService")]
     [Serializable]
     public class Message
     {
         [DataMember]
-        public string Content
-        {
-            get;
-            set;
-        }
+        public string Content { get; set; }
 
         [DataMember]
-        public MessageType Type
-        {
-            get;
-            set;
-        }
+        public MessageType Type { get; set; }
     }
 
-    [DataContract(Name = "MessageType", Namespace = "http://schemas.datacontract.org/2004/07/teamlabservice")]
+    [DataContract(Name = "MessageType", Namespace = "http://schemas.datacontract.org/2004/07/BillingService")]
     public enum MessageType
     {
         [EnumMember]
@@ -432,18 +364,15 @@ namespace ASC.Core.Billing
     [Serializable]
     public class BillingException : Exception
     {
-        public BillingException(string message, object debugInfo = null)
-            : base(message + (debugInfo != null ? " Debug info: " + debugInfo : string.Empty))
+        public BillingException(string message, object debugInfo = null) : base(message + (debugInfo != null ? " Debug info: " + debugInfo : string.Empty))
         {
         }
 
-        public BillingException(string message, Exception inner)
-            : base(message, inner)
+        public BillingException(string message, Exception inner) : base(message, inner)
         {
         }
 
-        protected BillingException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+        protected BillingException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
@@ -451,13 +380,11 @@ namespace ASC.Core.Billing
     [Serializable]
     public class BillingNotFoundException : BillingException
     {
-        public BillingNotFoundException(string message, object debugInfo = null)
-            : base(message, debugInfo)
+        public BillingNotFoundException(string message, object debugInfo = null) : base(message, debugInfo)
         {
         }
 
-        protected BillingNotFoundException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+        protected BillingNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }
@@ -465,18 +392,15 @@ namespace ASC.Core.Billing
     [Serializable]
     public class BillingNotConfiguredException : BillingException
     {
-        public BillingNotConfiguredException(string message, object debugInfo = null)
-            : base(message, debugInfo)
+        public BillingNotConfiguredException(string message, object debugInfo = null) : base(message, debugInfo)
         {
         }
 
-        public BillingNotConfiguredException(string message, Exception inner)
-            : base(message, inner)
+        public BillingNotConfiguredException(string message, Exception inner) : base(message, inner)
         {
         }
 
-        protected BillingNotConfiguredException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
+        protected BillingNotConfiguredException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

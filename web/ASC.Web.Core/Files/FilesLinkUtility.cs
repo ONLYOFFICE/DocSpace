@@ -28,9 +28,11 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
+
 using ASC.Core;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Core.Files
@@ -350,15 +352,16 @@ namespace ASC.Web.Core.Files
             return FileRedirectPreviewUrlString + "&" + (isFile ? FileId : FolderId) + "=" + HttpUtility.UrlEncode(enrtyId.ToString());
         }
 
-        public string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, SecurityContext securityContext)
+        public string GetInitiateUploadSessionUrl(int tenantId, object folderId, object fileId, string fileName, long contentLength, bool encrypted, SecurityContext securityContext)
         {
-            var queryString = string.Format("?initiate=true&{0}={1}&fileSize={2}&tid={3}&userid={4}&culture={5}",
+            var queryString = string.Format("?initiate=true&{0}={1}&fileSize={2}&tid={3}&userid={4}&culture={5}&encrypted={6}",
                                             FileTitle,
                                             HttpUtility.UrlEncode(fileName),
                                             contentLength,
                                             tenantId,
                                             HttpUtility.UrlEncode(InstanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
-                                            Thread.CurrentThread.CurrentUICulture.Name);
+                                            Thread.CurrentThread.CurrentUICulture.Name,
+                                            encrypted.ToString().ToLower());
 
             if (fileId != null)
                 queryString = queryString + "&" + FileId + "=" + HttpUtility.UrlEncode(fileId.ToString());
