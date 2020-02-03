@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import { Loader } from "asc-web-components";
 
 const CustomizationSettings = lazy(() => import("./customization"));
-const WhiteLabel = lazy(() => import("./whitelabel"));
+// const WhiteLabel = lazy(() => import("./whitelabel"));
 
 const Common = ({ match }) => {
   const basePath = '/settings/common';
@@ -17,11 +17,11 @@ const Common = ({ match }) => {
           path={[`${basePath}/customization`, '/common', match.path]}
           component={CustomizationSettings}
         />
-        <Route
+        {/* <Route
           exact
           path={`${basePath}/whitelabel`}
           component={WhiteLabel}
-        />
+        /> */}
       </Switch>
     </Suspense>
   );
