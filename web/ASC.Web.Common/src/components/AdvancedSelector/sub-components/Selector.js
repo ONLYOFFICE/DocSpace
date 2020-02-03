@@ -297,48 +297,58 @@ const Selector = props => {
 
   const renderOptionItem = useCallback(
     (index, style, option, isChecked, tooltipProps) => {
-      return (
-        <div style={style} className="row-option" {...tooltipProps}>
-          <>
-            {isMultiSelect ? (
-              <Checkbox
-                id={option.key}
-                value={`${index}`}
-                label={option.label}
-                isChecked={isChecked}
-                className="option_checkbox"
-                truncate={true}
-                title={option.label}
-                onChange={onOptionChange}
-              />
+      return isMultiSelect ? (
+              <div style={style} className="row-option" {...tooltipProps}>
+                <Checkbox
+                  id={option.key}
+                  value={`${index}`}
+                  label={option.label}
+                  isChecked={isChecked}
+                  className="option_checkbox"
+                  truncate={true}
+                  title={option.label}
+                  onChange={onOptionChange}
+                />
+                {displayType === "aside" && getOptionTooltipContent && (
+                  <HelpButton
+                    id={`info-${option.key}`}
+                    className="option-info"
+                    iconName="InfoIcon"
+                    color="#D8D8D8"
+                    getContent={getOptionTooltipContent}
+                    place="top"
+                    offsetLeft={160}
+                    dataTip={`${index}`}
+                    displayType="dropdown"
+                  />
+                )}
+              </div>
             ) : (
               <Link
                 key={option.key}
                 data-index={index}
                 isTextOverflow={true}
-                className="option_link"
+                style={style} 
+                className="row-option" 
+                {...tooltipProps}
                 onClick={onLinkClick}
-                title={option.label}
               >
                 {option.label}
+                {displayType === "aside" && getOptionTooltipContent && (
+                  <HelpButton
+                    id={`info-${option.key}`}
+                    className="option-info"
+                    iconName="InfoIcon"
+                    color="#D8D8D8"
+                    getContent={getOptionTooltipContent}
+                    place="top"
+                    offsetLeft={160}
+                    dataTip={`${index}`}
+                    displayType="dropdown"
+                  />
+                )}
               </Link>
-            )}
-            {displayType === "aside" && getOptionTooltipContent && (
-              <HelpButton
-                id={`info-${option.key}`}
-                className="option-info"
-                iconName="InfoIcon"
-                color="#D8D8D8"
-                getContent={getOptionTooltipContent}
-                place="top"
-                offsetLeft={160}
-                dataTip={`${index}`}
-                displayType="dropdown"
-              />
-            )}
-          </>
-        </div>
-      );
+            );
     },
     [
       isMultiSelect,
@@ -485,7 +495,12 @@ const Selector = props => {
       const label = getGroupLabel(group);
 
       return (
-        <div
+        <Link
+          key={group.key}
+          data-index={index}
+          isTextOverflow={true}
+          onClick={onLinkGroupClick}
+          title={label}
           style={style}
           className={`row-group${isSelected ? " selected" : ""}`}
         >
@@ -500,17 +515,8 @@ const Selector = props => {
               onChange={onGroupChange}
             />
           )}
-          <Link
-            key={group.key}
-            data-index={index}
-            isTextOverflow={true}
-            className="group_link"
-            onClick={onLinkGroupClick}
-            title={label}
-          >
             {label}
-          </Link>
-        </div>
+        </Link>
       );
     },
     [
