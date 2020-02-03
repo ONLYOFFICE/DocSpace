@@ -2,6 +2,9 @@ import styled from "styled-components";
 
 const StyledModuleTile = styled.div`
   width: auto;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+
   &:hover {
     .selectable {
       text-decoration: underline;
