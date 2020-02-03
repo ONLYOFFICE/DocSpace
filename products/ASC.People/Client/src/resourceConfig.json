@@ -128,6 +128,7 @@
         "FemaleSexStatus",
         "EditUserDialogTitle",
         "ErrorUnknownFileImageType",
+        "AccessRightsFullAccess",
         "Error"
       ],
       "FeedResource": [
@@ -136,6 +137,10 @@
         "CommunityProduct",
         "Message",
         "WriteComment"
+      ],
+      "CustomModeResource": [
+        "ReviewingCustomMode"
+        
       ]
     },
     "Home": {

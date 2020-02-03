@@ -34,6 +34,8 @@
   "EditUserDialogTitle": "Edit profile",
   "ErrorUnknownFileImageType": "Unknown image file type",
   "Error": "Error",
+  "ReviewingCustomMode": "Review",
+  "AccessRightsFullAccess": "Full access",
 
   "CustomCreation": "{{user}} (creation)",
 
@@ -50,5 +52,6 @@
   "maxSizeFileError": "Maximum file size exceeded",
   "editAvatar": "Edit",
   "CalendarSelectDate": "Select date",
-  "Calendar": "Calendar"
+  "Calendar": "Calendar",
+  "ViewAccess": "View"
 }

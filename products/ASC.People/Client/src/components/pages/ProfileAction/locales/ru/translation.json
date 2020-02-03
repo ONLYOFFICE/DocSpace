@@ -33,6 +33,8 @@
   "EditUserDialogTitle": "Редактирование профиля",
   "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
   "Error": "Ошибка",
+  "ReviewingCustomMode": "Рецензирование",
+  "AccessRightsFullAccess": "Полный доступ",
   
   "CustomCreation": "{{user}} (создание)",
 
@@ -49,5 +51,6 @@
   "maxSizeFileError": "Превышен максимальный размер файла",
   "editAvatar": "Изменить",
   "CalendarSelectDate": "Выберите дату",
-  "Calendar": "Календарь"
+  "Calendar": "Календарь",
+  "ViewAccess": "Просмотр"
 }

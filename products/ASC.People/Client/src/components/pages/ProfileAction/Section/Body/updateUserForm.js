@@ -370,6 +370,7 @@ class UpdateUserForm extends React.Component {
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent =
       <>
         <Text
@@ -400,38 +401,38 @@ class UpdateUserForm extends React.Component {
               </tr>
               <tr>
                 <Td>{t("Mail")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("DocumentsProduct")}</Td>
-                <Td>full access</Td>
-                <Td>view</Td>
+                <Td>{t('AccessRightsFullAccess')}</Td>
+                <Td>{t('ViewAccess')}</Td>
               </tr>
               <tr>
                 <Td>{t("ProjectsProduct")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("CommunityProduct")}</Td>
-                <Td>full access</Td>
-                <Td>view</Td>
+                <Td>{t('AccessRightsFullAccess')}</Td>
+                <Td>{t('ViewAccess')}</Td>
               </tr>
               <tr>
                 <Td>{t("People")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Message")}</Td>
-                <Td>review</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
               </tr>
               <tr>
                 <Td>{t("Calendar")}</Td>
-                <Td>review</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
               </tr>
             </tbody>
           </Table>
