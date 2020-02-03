@@ -35,6 +35,6 @@ export function changeLanguage(i18nInstance) {
   return localStorage.getItem(LANGUAGE) 
   ? (i18nInstance.language !== localStorage.getItem(LANGUAGE) 
     ? i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE))
-    : Promise.resolve(i18nInstance.t))
+    : Promise.resolve((...args) => i18nInstance.t(...args)))
   : i18nInstance.changeLanguage('en');
 }
