@@ -39,6 +39,7 @@ const StyledDropdownItem = styled.div`
     text-decoration: none;
     user-select: none;
     outline: 0 !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     ${fontStyle}
 

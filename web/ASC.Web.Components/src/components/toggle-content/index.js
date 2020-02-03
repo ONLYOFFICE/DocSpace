@@ -6,6 +6,8 @@ import PropTypes from 'prop-types'
 
 const StyledContainer = styled.div`
 
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
   .span-toggle-content {
     cursor: pointer;
     user-select: none;
