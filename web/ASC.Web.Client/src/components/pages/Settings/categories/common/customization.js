@@ -9,7 +9,7 @@ import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreeti
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
-const { getPortalCultures, getModules } = store.auth.actions;
+const { getPortalCultures, getModules, getCurrentCustomSchema } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -94,21 +94,24 @@ class Customization extends React.Component {
 
    componentDidUpdate(prevProps, prevState) {
       const { timezones, languages } = this.state;
+      const { i18n, language, nameSchemaId } = this.props;
+
       if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
-      if (this.props.language !== prevProps.language) {
-         changeLanguage(this.props.i18n)
-            .then(() => getModules(clientStore.dispatch))
-            .then(() => {
-               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
+      if (language !== prevProps.language) {
+         changeLanguage(i18n)
+            .then((t) => {
+               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, t);
                const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
 
                this.setState({
                   languages: newLocaleLanguages,
                   language: newLocaleSelectedLanguage
                });
-            });
+            })
+            .then(() => getModules(clientStore.dispatch))
+            .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
       }
    }
 
@@ -289,6 +292,7 @@ function mapStateToProps(state) {
       rawTimezones: state.auth.settings.timezones,
       rawCultures: state.auth.settings.cultures,
       greetingSettings: state.auth.settings.greetingSettings,
+      nameSchemaId: state.auth.settings.nameSchemaId
    };
 }
 
