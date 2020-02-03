@@ -121,14 +121,11 @@ class Customization extends React.Component {
    };
 
    onSaveLngTZSettings = () => {
-      const { setLanguageAndTime } = this.props;
+      const { setLanguageAndTime, i18n } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-            .then(() => {
-               const { i18n } = this.props;
-                  changeLanguage(i18n)
-                     .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
-            })
+            .then(() => changeLanguage(i18n))
+            .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
       })
