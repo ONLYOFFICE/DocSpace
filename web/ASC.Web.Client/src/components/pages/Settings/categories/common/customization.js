@@ -121,7 +121,7 @@ class Customization extends React.Component {
    };
 
    onSaveLngTZSettings = () => {
-      const { setLanguageAndTime, t } = this.props;
+      const { setLanguageAndTime } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
             .then(() => {
