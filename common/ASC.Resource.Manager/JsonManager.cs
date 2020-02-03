@@ -29,10 +29,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
+
 using ASC.Common.Logging;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Resource.Manager
@@ -101,16 +106,18 @@ namespace ASC.Resource.Manager
             }
         }
 
-        public static void Export(ResourceData resourceData, string project, string module, string fName, string language, string exportPath, string key = null)
+        public static void Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
         {
             var filter = new ResCurrent
             {
                 Project = new ResProject { Name = project },
                 Module = new ResModule { Name = module },
                 Language = new ResCulture { Title = language },
-                Word = new ResWord() { ResFile = new ResFile() { FileName = fName } }
+                Word = new ResWord { ResFile = new ResFile { FileName = fName } }
             };
 
+            using var scope = serviceProvider.CreateScope();
+            var resourceData = scope.ServiceProvider.GetService<ResourceData>();
             var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
 
             if (!words.Any())

@@ -28,20 +28,20 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Web;
-using System.Xml.Linq;
+
 using ASC.Core.Billing;
 using ASC.Core.Caching;
-using ASC.Core.Users;
+
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Newtonsoft.Json;
 
 
@@ -49,8 +49,6 @@ namespace ASC.Core
 {
     public class PaymentManager
     {
-        private readonly CoreSettings config;
-        private readonly IQuotaService quotaService;
         private readonly ITariffService tariffService;
         private readonly string partnerUrl;
         private readonly string partnerKey;
@@ -58,11 +56,9 @@ namespace ASC.Core
         public TenantManager TenantManager { get; }
         public IConfiguration Configuration { get; }
 
-        public PaymentManager(CoreSettings config, TenantManager tenantManager, IQuotaService quotaService, ITariffService tariffService, IConfiguration configuration)
+        public PaymentManager(TenantManager tenantManager, ITariffService tariffService, IConfiguration configuration)
         {
-            this.config = config;
             TenantManager = tenantManager;
-            this.quotaService = quotaService;
             this.tariffService = tariffService;
             Configuration = configuration;
             partnerUrl = (Configuration["core:payment:partners"] ?? "https://partners.onlyoffice.com/api").TrimEnd('/');
@@ -114,41 +110,6 @@ namespace ASC.Core
         {
             return tariffService.GetShoppingUri(null, quotaId, affiliateId, currency, language, customerId);
         }
-
-        public void SendTrialRequest(int tenant, UserInfo user)
-        {
-            var trial = quotaService.GetTenantQuotas().FirstOrDefault(q => q.Trial);
-            if (trial != null)
-            {
-                var uri = Configuration["core:payment:request"] ?? "http://billing.onlyoffice.com/avangate/requestatrialversion.aspx";
-                uri += uri.Contains('?') ? "&" : "?";
-                uri += "FIRSTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
-                    "&LASTNAME=" + HttpUtility.UrlEncode(user.FirstName) +
-                    "&CUSTOMEREMAIL=" + HttpUtility.UrlEncode(user.Email) +
-                    "&PORTALID=" + HttpUtility.UrlEncode(config.GetKey(tenant)) +
-                    "&PRODUCTID=" + HttpUtility.UrlEncode(trial.AvangateId);
-
-                using var webClient = new WebClient();
-                var result = webClient.DownloadString(uri);
-                var element = XElement.Parse(result);
-                if (element.Value != null &&
-                    (element.Value.StartsWith("error:", StringComparison.InvariantCultureIgnoreCase) ||
-                    element.Value.StartsWith("warning:", StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    throw new BillingException(element.Value, new { Tenant = tenant, User = user.ID });
-                }
-                var tariff = new Tariff
-                {
-                    QuotaId = trial.Id,
-                    State = TariffState.Trial,
-                    DueDate = DateTime.UtcNow.Date.AddMonths(1),
-                };
-                tariffService.SetTariff(tenant, tariff);
-                tariffService.GetTariff(tenant);
-            }
-        }
-
-
 
         public void ActivateKey(string key)
         {
@@ -225,7 +186,6 @@ namespace ASC.Core
             services.TryAddScoped<PaymentManager>();
 
             return services
-                .AddCoreSettingsService()
                 .AddTenantManagerService()
                 .AddQuotaService()
                 .AddTariffService();
