@@ -32,6 +32,7 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
@@ -43,6 +44,7 @@ using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -263,7 +265,7 @@ namespace ASC.Core
 
         public void Logout()
         {
-            AuthContext.Principal = null;
+            AuthContext.Logout();
         }
 
         public void SetUserPassword(Guid userID, string password)
@@ -331,6 +333,11 @@ namespace ASC.Core
         public bool IsAuthenticated
         {
             get { return CurrentAccount.IsAuthenticated; }
+        }
+
+        public void Logout()
+        {
+            Principal = null;
         }
 
         internal ClaimsPrincipal Principal

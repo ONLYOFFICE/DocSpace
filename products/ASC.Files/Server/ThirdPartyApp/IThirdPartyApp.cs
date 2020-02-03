@@ -26,6 +26,9 @@
 
 using System.IO;
 using System.Text.RegularExpressions;
+
+using Microsoft.AspNetCore.Http;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.ThirdPartyApp
