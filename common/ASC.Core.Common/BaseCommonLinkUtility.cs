@@ -28,12 +28,15 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Common.Web;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common
@@ -184,7 +187,7 @@ namespace ASC.Core.Common
             return ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
         }
 
-        public string ToAbsolute(string virtualPath)
+        public static string ToAbsolute(string virtualPath)
         {
             if (_vpath == null)
             {

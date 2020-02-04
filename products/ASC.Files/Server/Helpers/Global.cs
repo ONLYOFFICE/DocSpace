@@ -44,10 +44,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Files.Resources;
-using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
-
-using Autofac;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
@@ -110,35 +107,14 @@ namespace ASC.Web.Files.Classes
         public CustomNamingPeople CustomNamingPeople { get; }
 
         public Global(
-            IContainer container,
-            IOptionsMonitor<ILog> options,
             IConfiguration configuration,
             AuthContext authContext,
             UserManager userManager,
             CoreSettings coreSettings,
             TenantManager tenantManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            CustomNamingPeople customNamingPeople,
-            DaoFactory daoFactory)
+            CustomNamingPeople customNamingPeople)
         {
-            try
-            {
-                Logger = options.Get("ASC.Files");
-                if (!container.TryResolve(out IDaoFactory factory))
-                {
-                    factory = daoFactory;
-                    Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.");
-                }
-
-                DaoFactory = factory;
-                SocketManager = new SocketManager();
-            }
-            catch (Exception error)
-            {
-                Logger.Fatal("Could not resolve IDaoFactory instance. Using default DaoFactory instead.", error);
-                DaoFactory = daoFactory;
-            }
-
             Configuration = configuration;
             AuthContext = authContext;
             UserManager = userManager;
@@ -189,22 +165,9 @@ namespace ASC.Web.Files.Classes
 
         #endregion
 
-        public ILog Logger { get; set; }
-
-        public IDaoFactory DaoFactory { get; private set; }
-
         public EncryptedDataDao DaoEncryptedData
         {
             get { return new EncryptedDataDao(TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId); }
-        }
-
-        public static IFileStorageService FileStorageService { get; private set; }
-
-        public static SocketManager SocketManager { get; private set; }
-
-        public FileSecurity GetFilesSecurity()
-        {
-            return new FileSecurity(DaoFactory);
         }
 
         public static string ReplaceInvalidCharsAndTruncate(string title)
@@ -509,11 +472,12 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalFolderHelper
     {
-        public Global Global { get; }
+        public IDaoFactory DaoFactory { get; }
         public GlobalFolder GlobalFolder { get; }
-        public GlobalFolderHelper(Global global, GlobalFolder globalFolder)
+
+        public GlobalFolderHelper(IDaoFactory daoFactory, GlobalFolder globalFolder)
         {
-            Global = global;
+            DaoFactory = daoFactory;
             GlobalFolder = globalFolder;
         }
 
@@ -521,14 +485,14 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderProjects(Global.DaoFactory);
+                return GlobalFolder.GetFolderProjects(DaoFactory);
             }
         }
         public object FolderCommon
         {
             get
             {
-                return GlobalFolder.GetFolderCommon(Global.DaoFactory);
+                return GlobalFolder.GetFolderCommon(DaoFactory);
             }
         }
 
@@ -536,7 +500,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderMy(Global.DaoFactory);
+                return GlobalFolder.GetFolderMy(DaoFactory);
             }
             set
             {
@@ -548,7 +512,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderShare(Global.DaoFactory.FolderDao);
+                return GlobalFolder.GetFolderShare(DaoFactory.FolderDao);
             }
         }
 
@@ -556,7 +520,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderTrash(Global.DaoFactory.FolderDao);
+                return GlobalFolder.GetFolderTrash(DaoFactory.FolderDao);
             }
             set
             {

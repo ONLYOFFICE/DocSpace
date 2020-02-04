@@ -91,6 +91,11 @@ namespace ASC.Web.Files.Services.WCFService
         public CustomNamingPeople CustomNamingPeople { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
+        public DocuSignLoginProvider DocuSignLoginProvider { get; }
+        public PathProvider PathProvider { get; }
+        public FileSecurity FileSecurity { get; }
+        public SocketManager SocketManager { get; }
+        public IDaoFactory DaoFactory { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -109,7 +114,12 @@ namespace ASC.Web.Files.Services.WCFService
             CustomNamingPeople customNamingPeople,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> optionMonitor)
+            IOptionsMonitor<ILog> optionMonitor,
+            DocuSignLoginProvider docuSignLoginProvider,
+            PathProvider pathProvider,
+            FileSecurity fileSecurity,
+            SocketManager socketManager,
+            IDaoFactory daoFactory)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -126,6 +136,11 @@ namespace ASC.Web.Files.Services.WCFService
             CustomNamingPeople = customNamingPeople;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
+            DocuSignLoginProvider = docuSignLoginProvider;
+            PathProvider = pathProvider;
+            FileSecurity = fileSecurity;
+            SocketManager = socketManager;
+            DaoFactory = daoFactory;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -285,7 +300,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 if (fileEntry.RootFolderType == FolderType.USER
                     && !Equals(fileEntry.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                    && !Global.GetFilesSecurity().CanRead(folderDao.GetFolder(fileEntry.FolderIdDisplay)))
+                    && !FileSecurity.CanRead(folderDao.GetFolder(fileEntry.FolderIdDisplay)))
                     fileEntry.FolderIdDisplay = GlobalFolderHelper.FolderShare;
             }
 
@@ -326,7 +341,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folder = folderDao.GetFolder(folderId);
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(!FileSecurity.CanEdit(folder), FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
-            if (!Global.GetFilesSecurity().CanDelete(folder) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
+            if (!FileSecurity.CanDelete(folder) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
             ErrorIf(folder.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var folderAccess = folder.Access;
@@ -353,7 +368,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             if (folder.RootFolderType == FolderType.USER
                 && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID)
-                && !Global.GetFilesSecurity().CanRead(folderDao.GetFolder(folder.ParentFolderID)))
+                && !FileSecurity.CanRead(folderDao.GetFolder(folder.ParentFolderID)))
                 folder.FolderIdDisplay = GlobalFolderHelper.FolderShare;
 
             return folder;
@@ -381,7 +396,7 @@ namespace ASC.Web.Files.Services.WCFService
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!Global.GetFilesSecurity().CanRead(folderDao.GetFolder(file.FolderID)))
+                if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
                     file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
             }
 
@@ -532,7 +547,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (isFinish)
                 {
                     FileTracker.Remove(id, tabId);
-                    Global.SocketManager.FilesChangeEditors(id, true);
+                    SocketManager.FilesChangeEditors(id, true);
                 }
                 else
                 {
@@ -582,7 +597,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                Global.SocketManager.FilesChangeEditors(fileId, !forcesave);
+                SocketManager.FilesChangeEditors(fileId, !forcesave);
                 return file;
             }
             catch (Exception e)
@@ -605,7 +620,7 @@ namespace ASC.Web.Files.Services.WCFService
                 if (file != null)
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdated, file.Title);
 
-                Global.SocketManager.FilesChangeEditors(fileId, true);
+                SocketManager.FilesChangeEditors(fileId, true);
                 return file;
             }
             catch (Exception e)
@@ -690,7 +705,7 @@ namespace ASC.Web.Files.Services.WCFService
                     && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
                 {
                     var folderDao = GetFolderDao();
-                    if (!Global.GetFilesSecurity().CanRead(folderDao.GetFolder(file.FolderID)))
+                    if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
                         file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
                 }
 
@@ -722,7 +737,7 @@ namespace ASC.Web.Files.Services.WCFService
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!Global.GetFilesSecurity().CanRead(folderDao.GetFolder(file.FolderID)))
+                if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
                 {
                     file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
                 }
@@ -761,7 +776,7 @@ namespace ASC.Web.Files.Services.WCFService
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!Global.GetFilesSecurity().CanRead(folderDao.GetFolder(file.FolderID)))
+                if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
                     file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
             }
 
@@ -827,7 +842,7 @@ namespace ASC.Web.Files.Services.WCFService
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 var folderDao = GetFolderDao();
-                if (!Global.GetFilesSecurity().CanRead(folderDao.GetFolder(file.FolderID)))
+                if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
                     file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
             }
 
@@ -1415,7 +1430,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //move common thirdparty storage userFrom
                 foreach (var commonProviderInfo in commonProvidersInfo)
                 {
-                    Global.Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
+                    Logger.InfoFormat("Reassign provider {0} from {1} to {2}", commonProviderInfo.ID, userFrom.ID, userTo.ID);
                     providerDao.UpdateProviderInfo(commonProviderInfo.ID, null, null, FolderType.DEFAULT, userTo.ID);
                 }
             }
@@ -1463,7 +1478,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //delete thirdparty storage
                 foreach (var myProviderInfo in providersInfo)
                 {
-                    Global.Logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
+                    Logger.InfoFormat("Delete provider {0} for {1}", myProviderInfo.ID, userId);
                     providerDao.RemoveProviderInfo(myProviderInfo.ID);
                 }
             }
@@ -1799,7 +1814,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
             ErrorIf(!fileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(mentionMessage == null || mentionMessage.Emails == null, FilesCommonResource.ErrorMassage_BadRequest);
 
@@ -2064,24 +2079,19 @@ namespace ASC.Web.Files.Services.WCFService
 
         #region private
 
-        private FileSecurity FileSecurity
-        {
-            get { return Global.GetFilesSecurity(); }
-        }
-
         private IFolderDao GetFolderDao()
         {
-            return Global.DaoFactory.FolderDao;
+            return DaoFactory.FolderDao;
         }
 
         private IFileDao GetFileDao()
         {
-            return Global.DaoFactory.FileDao;
+            return DaoFactory.FileDao;
         }
 
         private ITagDao GetTagDao()
         {
-            return Global.DaoFactory.TagDao;
+            return DaoFactory.TagDao;
         }
 
         private IDataStore GetStoreTemplate()
@@ -2091,12 +2101,12 @@ namespace ASC.Web.Files.Services.WCFService
 
         private IProviderDao GetProviderDao()
         {
-            return Global.DaoFactory.ProviderDao;
+            return DaoFactory.ProviderDao;
         }
 
         private ISecurityDao GetSecurityDao()
         {
-            return Global.DaoFactory.SecurityDao;
+            return DaoFactory.SecurityDao;
         }
 
         private static void ParseArrayItems(IEnumerable<string> data, out List<object> foldersId, out List<object> filesId)

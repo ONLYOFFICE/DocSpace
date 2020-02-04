@@ -27,7 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Common.Settings;
+using ASC.Core.Tenants;
+using ASC.Files.Core.EF;
 using ASC.Web.Files.Core.Entries;
+using ASC.Web.Studio.Core;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
@@ -35,8 +44,30 @@ namespace ASC.Files.Core.Data
     {
         private static readonly object SyncRoot = new object();
 
-        public EncryptedDataDao(int tenantID, string storageKey)
-            : base(tenantID, storageKey)
+        public EncryptedDataDao(
+            DbContextManager<FilesDbContext> dbContextManager,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            SetupInfo setupInfo,
+            TenantExtra tenantExtra,
+            TenantStatisticsProvider tenantStatisticProvider,
+            CoreBaseSettings coreBaseSettings,
+            CoreConfiguration coreConfiguration,
+            SettingsManager settingsManager,
+            AuthContext authContext
+            )
+            : base(dbContextManager,
+                  userManager,
+                  tenantManager,
+                  tenantUtil,
+                  setupInfo,
+                  tenantExtra,
+                  tenantStatisticProvider,
+                  coreBaseSettings,
+                  coreConfiguration,
+                  settingsManager,
+                  authContext)
         {
         }
 
@@ -49,26 +80,26 @@ namespace ASC.Files.Core.Data
 
             lock (SyncRoot)
             {
-                using (var tx = dbManager.BeginTransaction())
+                using var tx = FilesDbContext.Database.BeginTransaction();
+                foreach (var test in ecnryptedDatas)
                 {
-                    foreach (var test in ecnryptedDatas)
+                    if (string.IsNullOrEmpty(test.PublicKey)
+                        || string.IsNullOrEmpty(test.FileHash)
+                        || string.IsNullOrEmpty(test.Data))
                     {
-                        if (string.IsNullOrEmpty(test.PublicKey)
-                            || string.IsNullOrEmpty(test.FileHash)
-                            || string.IsNullOrEmpty(test.Data))
-                        {
-                            continue;
-                        }
-
-                        var sql = Insert("encrypted_data")
-                            .InColumnValue("public_key", test.PublicKey)
-                            .InColumnValue("file_hash", test.FileHash)
-                            .InColumnValue("data", test.Data);
-                        dbManager.ExecuteNonQuery(sql);
+                        continue;
                     }
+                    var encryptedData = new DbEncryptedData
+                    {
+                        PublicKey = test.PublicKey,
+                        FileHash = test.FileHash,
+                        Data = test.Data
+                    };
 
-                    tx.Commit();               
+                    FilesDbContext.AddOrUpdate(r => r.EncryptedData, encryptedData);
                 }
+
+                tx.Commit();
             }
             return true;
         }
@@ -80,14 +111,10 @@ namespace ASC.Files.Core.Data
 
             lock (SyncRoot)
             {
-                var request = Query("encrypted_data")
-                    .Select("data")
-                    .Where("public_key", publicKey)
-                    .Where("file_hash", fileHash);
-
-                return dbManager
-                    .ExecuteList(request)
-                    .ConvertAll(r => (string)r[0])
+                return FilesDbContext.EncryptedData
+                    .Where(r => r.PublicKey == publicKey)
+                    .Where(r => r.FileHash == fileHash)
+                    .Select(r => r.Data)
                     .SingleOrDefault();
             }
         }

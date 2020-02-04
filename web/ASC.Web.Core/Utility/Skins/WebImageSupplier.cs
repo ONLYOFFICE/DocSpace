@@ -25,7 +25,9 @@
 
 
 using System;
+
 using ASC.Data.Storage;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,7 +100,7 @@ namespace ASC.Web.Core.Utility.Skins
             return folderName.TrimStart('~').ToLowerInvariant();
         }
 
-        private string GetAppThemeVirtualPath(IWebItem webitem)
+        private static string GetAppThemeVirtualPath(IWebItem webitem)
         {
             if (webitem == null || string.IsNullOrEmpty(webitem.StartURL))
             {

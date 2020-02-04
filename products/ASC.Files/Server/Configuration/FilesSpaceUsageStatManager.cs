@@ -49,13 +49,17 @@ namespace ASC.Web.Files
         public UserPhotoManager UserPhotoManager { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CommonLinkUtility CommonLinkUtility { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public PathProvider PathProvider { get; }
 
         public FilesSpaceUsageStatManager(DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             UserManager userManager,
             UserPhotoManager userPhotoManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            CommonLinkUtility commonLinkUtility)
+            CommonLinkUtility commonLinkUtility,
+            GlobalFolderHelper globalFolderHelper,
+            PathProvider pathProvider)
         {
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
             TenantManager = tenantManager;
@@ -63,6 +67,8 @@ namespace ASC.Web.Files
             UserPhotoManager = userPhotoManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CommonLinkUtility = commonLinkUtility;
+            GlobalFolderHelper = globalFolderHelper;
+            PathProvider = pathProvider;
         }
 
         public override List<UsageSpaceStatItem> GetStatData()
@@ -98,7 +104,7 @@ namespace ASC.Web.Files
                     {
                         item.Name = FilesUCResource.CorporateFiles;
                         item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = PathProvider.GetFolderUrl(Global.FolderCommon);
+                        item.Url = PathProvider.GetFolderUrl(GlobalFolderHelper.FolderCommon);
                     }
                     else
                     {

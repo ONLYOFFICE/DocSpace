@@ -24,30 +24,39 @@
 */
 
 
-using ASC.Data.Storage;
-using ASC.Files.Core;
-using ASC.Files.Core.Security;
-using ASC.Web.Files.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Data.Storage;
+using ASC.Files.Core;
+using ASC.Files.Core.Security;
+using ASC.Web.Files.Classes;
+
 namespace ASC.Web.Files.Api
 {
-    public static class FilesIntegration
+    public class FilesIntegration
     {
         private static readonly IDictionary<string, IFileSecurityProvider> providers = new Dictionary<string, IFileSecurityProvider>();
 
+        public IDaoFactory DaoFactory { get; }
+        public IFileSecurity FileSecurity { get; }
+        public GlobalStore GlobalStore { get; }
 
-        public static object RegisterBunch(string module, string bunch, string data)
+        public FilesIntegration(IDaoFactory daoFactory, IFileSecurity fileSecurity, GlobalStore globalStore)
         {
-            using (var folderDao = GetFolderDao())
-            {
-                return folderDao.GetFolderID(module, bunch, data, true);
-            }
+            DaoFactory = daoFactory;
+            FileSecurity = fileSecurity;
+            GlobalStore = globalStore;
         }
 
-        public static IEnumerable<object> RegisterBunchFolders(string module, string bunch, IEnumerable<string> data)
+        public object RegisterBunch(string module, string bunch, string data)
+        {
+            var folderDao = GetFolderDao();
+            return folderDao.GetFolderID(module, bunch, data, true);
+        }
+
+        public IEnumerable<object> RegisterBunchFolders(string module, string bunch, IEnumerable<string> data)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
@@ -56,13 +65,11 @@ namespace ASC.Web.Files.Api
             if (!data.Any())
                 return new List<object>();
 
-            using (var folderDao = GetFolderDao())
-            {
-                return folderDao.GetFolderIDs(module, bunch, data, true);
-            }
+            var folderDao = GetFolderDao();
+            return folderDao.GetFolderIDs(module, bunch, data, true);
         }
 
-        public static bool IsRegisteredFileSecurityProvider(string module, string bunch)
+        public bool IsRegisteredFileSecurityProvider(string module, string bunch)
         {
             lock (providers)
             {
@@ -71,7 +78,7 @@ namespace ASC.Web.Files.Api
 
         }
 
-        public static void RegisterFileSecurityProvider(string module, string bunch, IFileSecurityProvider securityProvider)
+        public void RegisterFileSecurityProvider(string module, string bunch, IFileSecurityProvider securityProvider)
         {
             lock (providers)
             {
@@ -79,29 +86,24 @@ namespace ASC.Web.Files.Api
             }
         }
 
-        public static IFileDao GetFileDao()
+        public IFileDao GetFileDao()
         {
-            return Global.DaoFactory.GetFileDao();
+            return DaoFactory.FileDao;
         }
 
-        public static IFolderDao GetFolderDao()
+        public IFolderDao GetFolderDao()
         {
-            return Global.DaoFactory.GetFolderDao();
+            return DaoFactory.FolderDao;
         }
 
-        public static ITagDao GetTagDao()
+        public ITagDao TagDao()
         {
-            return Global.DaoFactory.GetTagDao();
+            return DaoFactory.TagDao;
         }
 
-        public static FileSecurity GetFileSecurity()
+        public IDataStore GetStore()
         {
-            return Global.GetFilesSecurity();
-        }
-
-        public static IDataStore GetStore()
-        {
-            return Global.GetStore();
+            return GlobalStore.GetStore();
         }
 
 
@@ -117,7 +119,7 @@ namespace ASC.Web.Files.Api
             {
                 providers.TryGetValue(parts[0] + parts[1], out provider);
             }
-            return provider != null ? provider.GetFileSecurity(parts[2]) : null;
+            return provider?.GetFileSecurity(parts[2]);
         }
 
         internal static Dictionary<object, IFileSecurity> GetFileSecurity(Dictionary<string, string> paths)

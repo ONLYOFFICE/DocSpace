@@ -90,6 +90,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             get { return !string.IsNullOrEmpty(ClientID) && !string.IsNullOrEmpty(ClientSecret); }
         }
 
+        public PathProvider PathProvider { get; }
         public TenantUtil TenantUtil { get; }
         public AuthContext AuthContext { get; }
         public SecurityContext SecurityContext { get; }
@@ -113,6 +114,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         }
 
         public BoxApp(
+            PathProvider pathProvider,
             TenantUtil tenantUtil,
             IOptionsMonitor<ILog> option,
             AuthContext authContext,
@@ -139,6 +141,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             string name, int order, Dictionary<string, string> additional)
             : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
         {
+            PathProvider = pathProvider;
             TenantUtil = tenantUtil;
             AuthContext = authContext;
             SecurityContext = securityContext;

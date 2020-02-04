@@ -94,6 +94,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         }
 
         public ILog Logger { get; }
+        public PathProvider PathProvider { get; }
         public TenantUtil TenantUtil { get; }
         public AuthContext AuthContext { get; }
         public SecurityContext SecurityContext { get; }
@@ -120,6 +121,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         }
 
         public GoogleDriveApp(
+            PathProvider pathProvider,
             TenantUtil tenantUtil,
             AuthContext authContext,
             SecurityContext securityContext,
@@ -151,6 +153,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
         {
             Logger = option.CurrentValue;
+            PathProvider = pathProvider;
             TenantUtil = tenantUtil;
             AuthContext = authContext;
             SecurityContext = securityContext;

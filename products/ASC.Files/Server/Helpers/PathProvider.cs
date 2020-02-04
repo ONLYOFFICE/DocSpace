@@ -29,17 +29,21 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
+
+using ASC.Common.Web;
+using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Classes
 {
-    public static class PathProvider
+    public class PathProvider
     {
         public static readonly string ProjectVirtualPath = "~/Products/Projects/TMDocs.aspx";
 
@@ -47,9 +51,32 @@ namespace ASC.Web.Files.Classes
 
         public static readonly string StartURL = FilesLinkUtility.FilesBaseVirtualPath;
 
-        public static readonly string GetFileServicePath = CommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
+        public static readonly string GetFileServicePath = BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
 
-        public static string GetImagePath(string imgFileName)
+        public WebImageSupplier WebImageSupplier { get; }
+        public IDaoFactory DaoFactory { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
+        public GlobalStore GlobalStore { get; }
+
+        public PathProvider(
+            WebImageSupplier webImageSupplier,
+            IDaoFactory daoFactory,
+            CommonLinkUtility commonLinkUtility,
+            FilesLinkUtility filesLinkUtility,
+            EmailValidationKeyProvider emailValidationKeyProvider,
+            GlobalStore globalStore)
+        {
+            WebImageSupplier = webImageSupplier;
+            DaoFactory = daoFactory;
+            CommonLinkUtility = commonLinkUtility;
+            FilesLinkUtility = filesLinkUtility;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
+            GlobalStore = globalStore;
+        }
+
+        public string GetImagePath(string imgFileName)
         {
             return WebImageSupplier.GetAbsoluteWebPath(imgFileName, Configuration.ProductEntryPoint.ID);
         }
@@ -62,7 +89,7 @@ namespace ASC.Web.Files.Classes
                 case ".js": //Attention: Only for ResourceBundleControl
                     return VirtualPathUtility.ToAbsolute("~/Products/Files/js/" + fileName);
                 case ".ascx":
-                    return CommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
+                    return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
                 case ".css": //Attention: Only for ResourceBundleControl
                     return VirtualPathUtility.ToAbsolute("~/Products/Files/App_Themes/default/" + fileName);
             }
@@ -72,46 +99,42 @@ namespace ASC.Web.Files.Classes
 
         public static string GetFileControlPath(string fileName)
         {
-            return CommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
+            return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
         }
 
-        public static string GetFolderUrl(Folder folder, int projectID = 0)
+        public string GetFolderUrl(Folder folder, int projectID = 0)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
 
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
+            var folderDao = DaoFactory.FolderDao;
+
+            switch (folder.RootFolderType)
             {
-                switch (folder.RootFolderType)
-                {
-                    case FolderType.BUNCH:
-                        if (projectID == 0)
-                        {
-                            var path = folderDao.GetBunchObjectID(folder.RootFolderId);
+                case FolderType.BUNCH:
+                    if (projectID == 0)
+                    {
+                        var path = folderDao.GetBunchObjectID(folder.RootFolderId);
 
-                            var projectIDFromDao = path.Split('/').Last();
+                        var projectIDFromDao = path.Split('/').Last();
 
-                            if (string.IsNullOrEmpty(projectIDFromDao)) return string.Empty;
+                        if (string.IsNullOrEmpty(projectIDFromDao)) return string.Empty;
 
-                            projectID = Convert.ToInt32(projectIDFromDao);
-                        }
-                        return CommonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.ID));
-                    default:
-                        return CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.ID.ToString()));
-                }
+                        projectID = Convert.ToInt32(projectIDFromDao);
+                    }
+                    return CommonLinkUtility.GetFullAbsolutePath(string.Format("{0}?prjid={1}#{2}", ProjectVirtualPath, projectID, folder.ID));
+                default:
+                    return CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FilesBaseAbsolutePath + "#" + HttpUtility.UrlPathEncode(folder.ID.ToString()));
             }
         }
 
-        public static string GetFolderUrl(object folderId)
+        public string GetFolderUrl(object folderId)
         {
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
-            {
-                var folder = folderDao.GetFolder(folderId);
+            var folder = DaoFactory.FolderDao.GetFolder(folderId);
 
-                return GetFolderUrl(folder);
-            }
+            return GetFolderUrl(folder);
         }
 
-        public static string GetFileStreamUrl(File file, string doc = null, bool lastVersion = false)
+        public string GetFileStreamUrl(File file, string doc = null, bool lastVersion = false)
         {
             if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
 
@@ -135,29 +158,29 @@ namespace ASC.Web.Files.Classes
             return uriBuilder.Uri + "?" + query;
         }
 
-        public static string GetFileChangesUrl(File file, string doc = null)
+        public string GetFileChangesUrl(File file, string doc = null)
         {
             if (file == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
 
             var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
-            query += FilesLinkUtility.Action + "=diff&";
-            query += FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(file.ID.ToString()) + "&";
-            query += FilesLinkUtility.Version + "=" + file.Version + "&";
-            query += FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(file.ID + file.Version.ToString(CultureInfo.InvariantCulture));
+            query += $"{FilesLinkUtility.Action}=diff&";
+            query += $"{FilesLinkUtility.FileId}={HttpUtility.UrlEncode(file.ID.ToString())}&";
+            query += $"{FilesLinkUtility.Version}={file.Version}&";
+            query += $"{FilesLinkUtility.AuthKey}={EmailValidationKeyProvider.GetEmailKey(file.ID + file.Version.ToString(CultureInfo.InvariantCulture))}";
             if (!string.IsNullOrEmpty(doc))
             {
-                query += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(doc);
+                query += $"&{FilesLinkUtility.DocShareKey}={HttpUtility.UrlEncode(doc)}";
             }
 
-            return uriBuilder.Uri + "?" + query;
+            return $"{uriBuilder.Uri}?{query}";
         }
 
-        public static string GetTempUrl(Stream stream, string ext)
+        public string GetTempUrl(Stream stream, string ext)
         {
             if (stream == null) throw new ArgumentNullException("stream");
 
-            var store = Global.GetStore();
+            var store = GlobalStore.GetStore();
             var fileName = string.Format("{0}{1}", Guid.NewGuid(), ext);
             var path = Path.Combine("temp_stream", fileName);
 
@@ -170,21 +193,21 @@ namespace ASC.Web.Files.Classes
 
             var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
-            query += FilesLinkUtility.Action + "=tmp&";
-            query += FilesLinkUtility.FileTitle + "=" + HttpUtility.UrlEncode(fileName) + "&";
-            query += FilesLinkUtility.AuthKey + "=" + EmailValidationKeyProvider.GetEmailKey(fileName);
+            query += $"{FilesLinkUtility.Action}=tmp&";
+            query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(fileName)}&";
+            query += $"{FilesLinkUtility.AuthKey}={EmailValidationKeyProvider.GetEmailKey(fileName)}";
 
-            return uriBuilder.Uri + "?" + query;
+            return $"{uriBuilder.Uri}?{query}";
         }
 
-        public static string GetEmptyFileUrl(string extension)
+        public string GetEmptyFileUrl(string extension)
         {
             var uriBuilder = new UriBuilder(CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.FileHandlerPath));
             var query = uriBuilder.Query;
-            query += FilesLinkUtility.Action + "=empty&";
-            query += FilesLinkUtility.FileTitle + "=" + HttpUtility.UrlEncode(extension);
+            query += $"{FilesLinkUtility.Action}=empty&";
+            query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
-            return uriBuilder.Uri + "?" + query;
+            return $"{uriBuilder.Uri}?{query}";
         }
     }
 }

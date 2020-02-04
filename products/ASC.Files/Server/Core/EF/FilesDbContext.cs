@@ -17,6 +17,7 @@ namespace ASC.Files.Core.EF
         public DbSet<DbFilesTagLink> TagLink { get; set; }
         public DbSet<DbFilesTag> Tag { get; set; }
         public DbSet<DbFilesThirdpartyApp> ThirdpartyApp { get; set; }
+        public DbSet<DbEncryptedData> EncryptedData { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,7 +28,8 @@ namespace ASC.Files.Core.EF
                 .AddDbFilesSecurity()
                 .AddDbFilesThirdpartyIdMapping()
                 .AddDbFilesTagLink()
-                .AddDbFilesThirdpartyApp();
+                .AddDbFilesThirdpartyApp()
+                .AddDbEncryptedData();
         }
     }
 
