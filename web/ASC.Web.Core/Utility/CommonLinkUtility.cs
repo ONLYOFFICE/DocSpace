@@ -77,7 +77,6 @@ namespace ASC.Web.Studio.Utility
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public const string ParamName_ProductSysName = "product";
-        public const string ParamName_UserUserName = "user";
         public const string ParamName_UserUserID = "uid";
 
         public CommonLinkUtility(
@@ -125,7 +124,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetMyStaff()
         {
-            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/view/@self");
         }
 
         public string GetEmployees()
@@ -180,11 +179,11 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -192,10 +191,10 @@ namespace ASC.Web.Studio.Utility
 
         public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
+            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -205,7 +204,7 @@ namespace ASC.Web.Studio.Utility
             var queryParams = GetUserParamsPair(user);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -483,7 +482,7 @@ namespace ASC.Web.Studio.Utility
             if (user == null || string.IsNullOrEmpty(user.UserName) || !UserManager.UserExists(user))
                 return "";
 
-            return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));
+            return HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
         }
 
         #region Help Centr
