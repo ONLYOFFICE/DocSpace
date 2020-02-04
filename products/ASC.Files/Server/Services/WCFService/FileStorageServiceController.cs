@@ -96,6 +96,7 @@ namespace ASC.Web.Files.Services.WCFService
         public FileSecurity FileSecurity { get; }
         public SocketManager SocketManager { get; }
         public IDaoFactory DaoFactory { get; }
+        public FileMarker FileMarker { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -119,7 +120,8 @@ namespace ASC.Web.Files.Services.WCFService
             PathProvider pathProvider,
             FileSecurity fileSecurity,
             SocketManager socketManager,
-            IDaoFactory daoFactory)
+            IDaoFactory daoFactory,
+            FileMarker fileMarker)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -141,6 +143,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileSecurity = fileSecurity;
             SocketManager = socketManager;
             DaoFactory = daoFactory;
+            FileMarker = fileMarker;
             Logger = optionMonitor.Get("ASC.Files");
         }
 

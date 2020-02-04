@@ -38,7 +38,6 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
@@ -105,6 +104,7 @@ namespace ASC.Web.Files.Classes
         public TenantManager TenantManager { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
+        public FileSecurity FileSecurity { get; }
 
         public Global(
             IConfiguration configuration,
@@ -113,7 +113,8 @@ namespace ASC.Web.Files.Classes
             CoreSettings coreSettings,
             TenantManager tenantManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            CustomNamingPeople customNamingPeople)
+            CustomNamingPeople customNamingPeople,
+            FileSecurity fileSecurity)
         {
             Configuration = configuration;
             AuthContext = authContext;
@@ -122,6 +123,7 @@ namespace ASC.Web.Files.Classes
             TenantManager = tenantManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CustomNamingPeople = customNamingPeople;
+            FileSecurity = fileSecurity;
         }
 
         #region Property
@@ -164,11 +166,6 @@ namespace ASC.Web.Files.Classes
         }
 
         #endregion
-
-        public EncryptedDataDao DaoEncryptedData
-        {
-            get { return new EncryptedDataDao(TenantManager.GetCurrentTenant().TenantId, FileConstant.DatabaseId); }
-        }
 
         public static string ReplaceInvalidCharsAndTruncate(string title)
         {

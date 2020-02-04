@@ -24,22 +24,25 @@
 */
 
 
-using ASC.Common.Caching;
-using ASC.Common.Threading.Workers;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+
+using ASC.Common.Caching;
+using ASC.Common.Threading.Workers;
+using ASC.Core;
+using ASC.Core.Users;
+using ASC.Files.Core;
+using ASC.Files.Core.Security;
+using ASC.Web.Files.Classes;
+using ASC.Web.Files.Resources;
+
 using File = ASC.Files.Core.File;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    public static class FileMarker
+    public class FileMarker
     {
         private static readonly object locker = new object();
         private static readonly WorkerQueue<AsyncTaskData> tasks = new WorkerQueue<AsyncTaskData>(1, TimeSpan.FromSeconds(60), 1, false);
@@ -47,197 +50,216 @@ namespace ASC.Web.Files.Utils
 
         private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
+        public TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        public IDaoFactory DaoFactory { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public FileSecurity FileSecurity { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public AuthContext AuthContext { get; }
 
-        private static void ExecMarkFileAsNew(AsyncTaskData obj)
+        public FileMarker(
+            TenantManager tenantManager,
+            UserManager userManager,
+            IDaoFactory daoFactory,
+            GlobalFolderHelper globalFolderHelper,
+            FileSecurity fileSecurity,
+            CoreBaseSettings coreBaseSettings,
+            AuthContext authContext)
         {
-            CoreContext.TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
-
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
-            {
-                object parentFolderId;
-
-                if (obj.FileEntry.FileEntryType == FileEntryType.File)
-                    parentFolderId = ((File)obj.FileEntry).FolderID;
-                else
-                    parentFolderId = obj.FileEntry.ID;
-                var parentFolders = folderDao.GetParentFolders(parentFolderId);
-                parentFolders.Reverse();
-
-                var userIDs = obj.UserIDs;
-
-                var userEntriesData = new Dictionary<Guid, List<FileEntry>>();
-
-                if (obj.FileEntry.RootFolderType == FolderType.BUNCH)
-                {
-                    if (!userIDs.Any()) return;
-
-                    parentFolders.Add(folderDao.GetFolder(Global.FolderProjects));
-
-                    var entries = new List<FileEntry> { obj.FileEntry };
-                    entries = entries.Concat(parentFolders).ToList();
-
-                    userIDs.ForEach(userID =>
-                                            {
-                                                if (userEntriesData.ContainsKey(userID))
-                                                    userEntriesData[userID].AddRange(entries);
-                                                else
-                                                    userEntriesData.Add(userID, entries);
-
-                                                RemoveFromCahce(Global.FolderProjects, userID);
-                                            });
-                }
-                else
-                {
-                    var filesSecurity = Global.GetFilesSecurity();
-
-                    if (!userIDs.Any())
-                    {
-                        userIDs = filesSecurity.WhoCanRead(obj.FileEntry).Where(x => x != obj.CurrentAccountId).ToList();
-                    }
-                    if (obj.FileEntry.ProviderEntry)
-                    {
-                        userIDs = userIDs.Where(u => !CoreContext.UserManager.GetUsers(u).IsVisitor()).ToList();
-                    }
-
-                    parentFolders.ForEach(parentFolder =>
-                                          filesSecurity
-                                              .WhoCanRead(parentFolder)
-                                              .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId)
-                                              .ToList()
-                                              .ForEach(userID =>
-                                                           {
-                                                               if (userEntriesData.ContainsKey(userID))
-                                                                   userEntriesData[userID].Add(parentFolder);
-                                                               else
-                                                                   userEntriesData.Add(userID, new List<FileEntry> { parentFolder });
-                                                           })
-                        );
-
-
-
-                    if (obj.FileEntry.RootFolderType == FolderType.USER)
-                    {
-                        var folderShare = folderDao.GetFolder(Global.FolderShare);
-
-                        foreach (var userID in userIDs)
-                        {
-                            var userFolderId = folderDao.GetFolderIDUser(false, userID);
-                            if (Equals(userFolderId, 0)) continue;
-
-                            Folder rootFolder = null;
-                            if (obj.FileEntry.ProviderEntry)
-                            {
-                                rootFolder = obj.FileEntry.RootFolderCreator == userID
-                                                 ? folderDao.GetFolder(userFolderId)
-                                                 : folderShare;
-                            }
-                            else if (!Equals(obj.FileEntry.RootFolderId, userFolderId))
-                            {
-                                rootFolder = folderShare;
-                            }
-                            else
-                            {
-                                RemoveFromCahce(userFolderId, userID);
-                            }
-
-                            if (rootFolder == null) continue;
-
-                            if (userEntriesData.ContainsKey(userID))
-                                userEntriesData[userID].Add(rootFolder);
-                            else
-                                userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
-
-                            RemoveFromCahce(rootFolder.ID, userID);
-                        }
-                    }
-
-                    if (obj.FileEntry.RootFolderType == FolderType.COMMON)
-                    {
-                        userIDs.ForEach(userID => RemoveFromCahce(Global.FolderCommon, userID));
-
-                        if (obj.FileEntry.ProviderEntry)
-                        {
-                            var commonFolder = folderDao.GetFolder(Global.FolderCommon);
-                            userIDs.ForEach(userID =>
-                                                {
-                                                    if (userEntriesData.ContainsKey(userID))
-                                                        userEntriesData[userID].Add(commonFolder);
-                                                    else
-                                                        userEntriesData.Add(userID, new List<FileEntry> { commonFolder });
-
-                                                    RemoveFromCahce(Global.FolderCommon, userID);
-                                                });
-                        }
-                    }
-
-                    userIDs.ForEach(userID =>
-                                        {
-                                            if (userEntriesData.ContainsKey(userID))
-                                                userEntriesData[userID].Add(obj.FileEntry);
-                                            else
-                                                userEntriesData.Add(userID, new List<FileEntry> { obj.FileEntry });
-                                        });
-                }
-
-                using (var tagDao = Global.DaoFactory.GetTagDao())
-                {
-                    var newTags = new List<Tag>();
-                    var updateTags = new List<Tag>();
-
-                    foreach (var userID in userEntriesData.Keys)
-                    {
-                        if (tagDao.GetNewTags(userID, obj.FileEntry).Any())
-                            continue;
-
-                        var entries = userEntriesData[userID].Distinct().ToList();
-
-                        var exist = tagDao.GetNewTags(userID, entries).ToList();
-                        var update = exist.Where(t => t.EntryType == FileEntryType.Folder).ToList();
-                        update.ForEach(t => t.Count++);
-                        updateTags.AddRange(update);
-
-                        entries.ForEach(entry =>
-                                            {
-                                                if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
-                                                {
-                                                    newTags.Add(Tag.New(userID, entry));
-                                                }
-                                            });
-                    }
-
-                    if (updateTags.Any())
-                        tagDao.UpdateNewTags(updateTags);
-                    if (newTags.Any())
-                        tagDao.SaveTags(newTags);
-                }
-            }
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            DaoFactory = daoFactory;
+            GlobalFolderHelper = globalFolderHelper;
+            FileSecurity = fileSecurity;
+            CoreBaseSettings = coreBaseSettings;
+            AuthContext = authContext;
         }
 
-        public static void MarkAsNew(FileEntry fileEntry, List<Guid> userIDs = null)
+        private void ExecMarkFileAsNew(AsyncTaskData obj)
         {
-            if (CoreContext.Configuration.Personal) return;
+            TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
+
+            var folderDao = DaoFactory.FolderDao;
+            object parentFolderId;
+
+            if (obj.FileEntry.FileEntryType == FileEntryType.File)
+                parentFolderId = ((File)obj.FileEntry).FolderID;
+            else
+                parentFolderId = obj.FileEntry.ID;
+            var parentFolders = folderDao.GetParentFolders(parentFolderId);
+            parentFolders.Reverse();
+
+            var userIDs = obj.UserIDs;
+
+            var userEntriesData = new Dictionary<Guid, List<FileEntry>>();
+
+            if (obj.FileEntry.RootFolderType == FolderType.BUNCH)
+            {
+                if (!userIDs.Any()) return;
+
+                parentFolders.Add(folderDao.GetFolder(GlobalFolderHelper.FolderProjects));
+
+                var entries = new List<FileEntry> { obj.FileEntry };
+                entries = entries.Concat(parentFolders).ToList();
+
+                userIDs.ForEach(userID =>
+                                        {
+                                            if (userEntriesData.ContainsKey(userID))
+                                                userEntriesData[userID].AddRange(entries);
+                                            else
+                                                userEntriesData.Add(userID, entries);
+
+                                            RemoveFromCahce(GlobalFolderHelper.FolderProjects, userID);
+                                        });
+            }
+            else
+            {
+                var filesSecurity = FileSecurity;
+
+                if (!userIDs.Any())
+                {
+                    userIDs = filesSecurity.WhoCanRead(obj.FileEntry).Where(x => x != obj.CurrentAccountId).ToList();
+                }
+                if (obj.FileEntry.ProviderEntry)
+                {
+                    userIDs = userIDs.Where(u => !UserManager.GetUsers(u).IsVisitor(UserManager)).ToList();
+                }
+
+                parentFolders.ForEach(parentFolder =>
+                                      filesSecurity
+                                          .WhoCanRead(parentFolder)
+                                          .Where(userID => userIDs.Contains(userID) && userID != obj.CurrentAccountId)
+                                          .ToList()
+                                          .ForEach(userID =>
+                                                       {
+                                                           if (userEntriesData.ContainsKey(userID))
+                                                               userEntriesData[userID].Add(parentFolder);
+                                                           else
+                                                               userEntriesData.Add(userID, new List<FileEntry> { parentFolder });
+                                                       })
+                    );
+
+
+
+                if (obj.FileEntry.RootFolderType == FolderType.USER)
+                {
+                    var folderShare = folderDao.GetFolder(GlobalFolderHelper.FolderShare);
+
+                    foreach (var userID in userIDs)
+                    {
+                        var userFolderId = folderDao.GetFolderIDUser(false, userID);
+                        if (Equals(userFolderId, 0)) continue;
+
+                        Folder rootFolder = null;
+                        if (obj.FileEntry.ProviderEntry)
+                        {
+                            rootFolder = obj.FileEntry.RootFolderCreator == userID
+                                             ? folderDao.GetFolder(userFolderId)
+                                             : folderShare;
+                        }
+                        else if (!Equals(obj.FileEntry.RootFolderId, userFolderId))
+                        {
+                            rootFolder = folderShare;
+                        }
+                        else
+                        {
+                            RemoveFromCahce(userFolderId, userID);
+                        }
+
+                        if (rootFolder == null) continue;
+
+                        if (userEntriesData.ContainsKey(userID))
+                            userEntriesData[userID].Add(rootFolder);
+                        else
+                            userEntriesData.Add(userID, new List<FileEntry> { rootFolder });
+
+                        RemoveFromCahce(rootFolder.ID, userID);
+                    }
+                }
+
+                if (obj.FileEntry.RootFolderType == FolderType.COMMON)
+                {
+                    userIDs.ForEach(userID => RemoveFromCahce(GlobalFolderHelper.FolderCommon, userID));
+
+                    if (obj.FileEntry.ProviderEntry)
+                    {
+                        var commonFolder = folderDao.GetFolder(GlobalFolderHelper.FolderCommon);
+                        userIDs.ForEach(userID =>
+                                            {
+                                                if (userEntriesData.ContainsKey(userID))
+                                                    userEntriesData[userID].Add(commonFolder);
+                                                else
+                                                    userEntriesData.Add(userID, new List<FileEntry> { commonFolder });
+
+                                                RemoveFromCahce(GlobalFolderHelper.FolderCommon, userID);
+                                            });
+                    }
+                }
+
+                userIDs.ForEach(userID =>
+                                    {
+                                        if (userEntriesData.ContainsKey(userID))
+                                            userEntriesData[userID].Add(obj.FileEntry);
+                                        else
+                                            userEntriesData.Add(userID, new List<FileEntry> { obj.FileEntry });
+                                    });
+            }
+
+            var tagDao = DaoFactory.TagDao;
+            var newTags = new List<Tag>();
+            var updateTags = new List<Tag>();
+
+            foreach (var userID in userEntriesData.Keys)
+            {
+                if (tagDao.GetNewTags(userID, obj.FileEntry).Any())
+                    continue;
+
+                var entries = userEntriesData[userID].Distinct().ToList();
+
+                var exist = tagDao.GetNewTags(userID, entries).ToList();
+                var update = exist.Where(t => t.EntryType == FileEntryType.Folder).ToList();
+                update.ForEach(t => t.Count++);
+                updateTags.AddRange(update);
+
+                entries.ForEach(entry =>
+                                    {
+                                        if (entry != null && exist.All(tag => tag != null && !tag.EntryId.Equals(entry.ID)))
+                                        {
+                                            newTags.Add(Tag.New(userID, entry));
+                                        }
+                                    });
+            }
+
+            if (updateTags.Any())
+                tagDao.UpdateNewTags(updateTags);
+            if (newTags.Any())
+                tagDao.SaveTags(newTags);
+        }
+
+        public void MarkAsNew(FileEntry fileEntry, List<Guid> userIDs = null)
+        {
+            if (CoreBaseSettings.Personal) return;
 
             if (fileEntry == null) return;
             userIDs = userIDs ?? new List<Guid>();
 
             var taskData = new AsyncTaskData
-                {
-                    FileEntry = (FileEntry)fileEntry.Clone(),
-                    UserIDs = userIDs
-                };
+            {
+                FileEntry = (FileEntry)fileEntry.Clone(),
+                UserIDs = userIDs
+            };
 
             if (fileEntry.RootFolderType == FolderType.BUNCH && !userIDs.Any())
             {
-                using (var folderDao = Global.DaoFactory.GetFolderDao())
-                {
-                    var path = folderDao.GetBunchObjectID(fileEntry.RootFolderId);
+                var folderDao = DaoFactory.FolderDao;
+                var path = folderDao.GetBunchObjectID(fileEntry.RootFolderId);
 
-                    var projectID = path.Split('/').Last();
-                    if (string.IsNullOrEmpty(projectID)) return;
-                }
+                var projectID = path.Split('/').Last();
+                if (string.IsNullOrEmpty(projectID)) return;
 
-                var projectTeam = Global.GetFilesSecurity().WhoCanRead(fileEntry)
-                                        .Where(x => x != SecurityContext.CurrentAccount.ID).ToList();
+                var projectTeam = FileSecurity.WhoCanRead(fileEntry)
+                                        .Where(x => x != AuthContext.CurrentAccount.ID).ToList();
 
                 if (!projectTeam.Any()) return;
 
@@ -253,136 +275,132 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static void RemoveMarkAsNew(FileEntry fileEntry, Guid userID = default)
+        public void RemoveMarkAsNew(FileEntry fileEntry, Guid userID = default)
         {
-            if (CoreContext.Configuration.Personal) return;
+            if (CoreBaseSettings.Personal) return;
 
-            userID = userID.Equals(default) ? SecurityContext.CurrentAccount.ID : userID;
+            userID = userID.Equals(default) ? AuthContext.CurrentAccount.ID : userID;
 
             if (fileEntry == null) return;
 
-            using (var tagDao = Global.DaoFactory.GetTagDao())
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
+            var tagDao = DaoFactory.TagDao;
+            var folderDao = DaoFactory.FolderDao;
+            if (!tagDao.GetNewTags(userID, fileEntry).Any()) return;
+
+            object folderID;
+            int valueNew;
+            var userFolderId = folderDao.GetFolderIDUser(false, userID);
+
+            var removeTags = new List<Tag>();
+
+            if (fileEntry.FileEntryType == FileEntryType.File)
             {
-                if (!tagDao.GetNewTags(userID, fileEntry).Any()) return;
+                folderID = ((File)fileEntry).FolderID;
 
-                object folderID;
-                int valueNew;
-                var userFolderId = folderDao.GetFolderIDUser(false, userID);
-
-                var removeTags = new List<Tag>();
-
-                if (fileEntry.FileEntryType == FileEntryType.File)
-                {
-                    folderID = ((File)fileEntry).FolderID;
-
-                    removeTags.Add(Tag.New(userID, fileEntry));
-                    valueNew = 1;
-                }
-                else
-                {
-                    folderID = fileEntry.ID;
-
-                    var listTags = tagDao.GetNewTags(userID, (Folder)fileEntry, true).ToList();
-                    valueNew = listTags.FirstOrDefault(tag => tag.EntryId.Equals(fileEntry.ID)).Count;
-
-                    if (Equals(fileEntry.ID, userFolderId) || Equals(fileEntry.ID, Global.FolderCommon) || Equals(fileEntry.ID, Global.FolderShare))
-                    {
-                        var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
-
-                        var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder>(tag, folderDao.GetFolder(tag.EntryId)))
-                                                           .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
-
-                        foreach (var providerFolderTag in providerFolderTags)
-                        {
-                            listTags.Remove(providerFolderTag.Key);
-                            listTags.AddRange(tagDao.GetNewTags(userID, providerFolderTag.Value, true));
-                        }
-                    }
-
-                    removeTags.AddRange(listTags);
-                }
-
-                var parentFolders = folderDao.GetParentFolders(folderID);
-                parentFolders.Reverse();
-
-                var rootFolder = parentFolders.LastOrDefault();
-                object rootFolderId = null;
-                object cacheFolderId = null;
-                if (rootFolder == null)
-                {
-                }
-                else if (rootFolder.RootFolderType == FolderType.BUNCH)
-                {
-                    cacheFolderId = rootFolderId = Global.FolderProjects;
-                }
-                else if (rootFolder.RootFolderType == FolderType.COMMON)
-                {
-                    if (rootFolder.ProviderEntry)
-                        cacheFolderId = rootFolderId = Global.FolderCommon;
-                    else
-                        cacheFolderId = Global.FolderCommon;
-                }
-                else if (rootFolder.RootFolderType == FolderType.USER)
-                {
-                    if (rootFolder.ProviderEntry && rootFolder.RootFolderCreator == userID)
-                        cacheFolderId = rootFolderId = userFolderId;
-                    else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootFolderId, userFolderId)
-                             || rootFolder.ProviderEntry && rootFolder.RootFolderCreator != userID)
-                        cacheFolderId = rootFolderId = Global.FolderShare;
-                    else
-                        cacheFolderId = userFolderId;
-                }
-                else if (rootFolder.RootFolderType == FolderType.SHARE)
-                {
-                    cacheFolderId = Global.FolderShare;
-                }
-
-                if (rootFolderId != null)
-                {
-                    parentFolders.Add(folderDao.GetFolder(rootFolderId));
-                }
-                if (cacheFolderId != null)
-                {
-                    RemoveFromCahce(cacheFolderId, userID);
-                }
-
-                var updateTags = new List<Tag>();
-                foreach (var parentFolder in parentFolders)
-                {
-                    var parentTag = tagDao.GetNewTags(userID, parentFolder).FirstOrDefault();
-
-                    if (parentTag != null)
-                    {
-                        parentTag.Count -= valueNew;
-
-                        if (parentTag.Count > 0)
-                        {
-                            updateTags.Add(parentTag);
-                        }
-                        else
-                        {
-                            removeTags.Add(parentTag);
-                        }
-                    }
-                }
-
-                if (updateTags.Any())
-                    tagDao.UpdateNewTags(updateTags);
-                if (removeTags.Any())
-                    tagDao.RemoveTags(removeTags);
+                removeTags.Add(Tag.New(userID, fileEntry));
+                valueNew = 1;
             }
+            else
+            {
+                folderID = fileEntry.ID;
+
+                var listTags = tagDao.GetNewTags(userID, (Folder)fileEntry, true).ToList();
+                valueNew = listTags.FirstOrDefault(tag => tag.EntryId.Equals(fileEntry.ID)).Count;
+
+                if (Equals(fileEntry.ID, userFolderId) || Equals(fileEntry.ID, GlobalFolderHelper.FolderCommon) || Equals(fileEntry.ID, GlobalFolderHelper.FolderShare))
+                {
+                    var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
+
+                    var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder>(tag, folderDao.GetFolder(tag.EntryId)))
+                                                       .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
+
+                    foreach (var providerFolderTag in providerFolderTags)
+                    {
+                        listTags.Remove(providerFolderTag.Key);
+                        listTags.AddRange(tagDao.GetNewTags(userID, providerFolderTag.Value, true));
+                    }
+                }
+
+                removeTags.AddRange(listTags);
+            }
+
+            var parentFolders = folderDao.GetParentFolders(folderID);
+            parentFolders.Reverse();
+
+            var rootFolder = parentFolders.LastOrDefault();
+            object rootFolderId = null;
+            object cacheFolderId = null;
+            if (rootFolder == null)
+            {
+            }
+            else if (rootFolder.RootFolderType == FolderType.BUNCH)
+            {
+                cacheFolderId = rootFolderId = GlobalFolderHelper.FolderProjects;
+            }
+            else if (rootFolder.RootFolderType == FolderType.COMMON)
+            {
+                if (rootFolder.ProviderEntry)
+                    cacheFolderId = rootFolderId = GlobalFolderHelper.FolderCommon;
+                else
+                    cacheFolderId = GlobalFolderHelper.FolderCommon;
+            }
+            else if (rootFolder.RootFolderType == FolderType.USER)
+            {
+                if (rootFolder.ProviderEntry && rootFolder.RootFolderCreator == userID)
+                    cacheFolderId = rootFolderId = userFolderId;
+                else if (!rootFolder.ProviderEntry && !Equals(rootFolder.RootFolderId, userFolderId)
+                         || rootFolder.ProviderEntry && rootFolder.RootFolderCreator != userID)
+                    cacheFolderId = rootFolderId = GlobalFolderHelper.FolderShare;
+                else
+                    cacheFolderId = userFolderId;
+            }
+            else if (rootFolder.RootFolderType == FolderType.SHARE)
+            {
+                cacheFolderId = GlobalFolderHelper.FolderShare;
+            }
+
+            if (rootFolderId != null)
+            {
+                parentFolders.Add(folderDao.GetFolder(rootFolderId));
+            }
+            if (cacheFolderId != null)
+            {
+                RemoveFromCahce(cacheFolderId, userID);
+            }
+
+            var updateTags = new List<Tag>();
+            foreach (var parentFolder in parentFolders)
+            {
+                var parentTag = tagDao.GetNewTags(userID, parentFolder).FirstOrDefault();
+
+                if (parentTag != null)
+                {
+                    parentTag.Count -= valueNew;
+
+                    if (parentTag.Count > 0)
+                    {
+                        updateTags.Add(parentTag);
+                    }
+                    else
+                    {
+                        removeTags.Add(parentTag);
+                    }
+                }
+            }
+
+            if (updateTags.Any())
+                tagDao.UpdateNewTags(updateTags);
+            if (removeTags.Any())
+                tagDao.RemoveTags(removeTags);
         }
 
-        public static void RemoveMarkAsNewForAll(FileEntry fileEntry)
+        public void RemoveMarkAsNewForAll(FileEntry fileEntry)
         {
             List<Guid> userIDs;
 
-            using (var tagDao = Global.DaoFactory.GetTagDao())
-            {
-                var tags = tagDao.GetTags(fileEntry.ID, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New);
-                userIDs = tags.Select(tag => tag.Owner).Distinct().ToList();
-            }
+            var tagDao = DaoFactory.TagDao;
+            var tags = tagDao.GetTags(fileEntry.ID, fileEntry.FileEntryType == FileEntryType.File ? FileEntryType.File : FileEntryType.Folder, TagType.New);
+            userIDs = tags.Select(tag => tag.Owner).Distinct().ToList();
 
             foreach (var userID in userIDs)
             {
@@ -390,14 +408,14 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public static Dictionary<object, int> GetRootFoldersIdMarkedAsNew()
+        public Dictionary<object, int> GetRootFoldersIdMarkedAsNew()
         {
             var rootIds = new List<object>
                 {
-                    Global.FolderMy,
-                    Global.FolderCommon,
-                    Global.FolderShare,
-                    Global.FolderProjects
+                    GlobalFolderHelper.FolderMy,
+                    GlobalFolderHelper.FolderCommon,
+                    GlobalFolderHelper.FolderShare,
+                    GlobalFolderHelper.FolderProjects
                 };
 
             var requestIds = new List<object>();
@@ -419,12 +437,9 @@ namespace ASC.Web.Files.Utils
             if (requestIds.Any())
             {
                 IEnumerable<Tag> requestTags;
-                using (var tagDao = Global.DaoFactory.GetTagDao())
-                using (var folderDao = Global.DaoFactory.GetFolderDao())
-                {
-
-                    requestTags = tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, folderDao.GetFolders(requestIds.ToArray()));
-                }
+                var tagDao = DaoFactory.TagDao;
+                var folderDao = DaoFactory.FolderDao;
+                requestTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolders(requestIds.ToArray()));
 
                 requestIds.ForEach(requestId =>
                                        {
@@ -438,54 +453,52 @@ namespace ASC.Web.Files.Utils
             return news;
         }
 
-        public static List<FileEntry> MarkedItems(Folder folder)
+        public List<FileEntry> MarkedItems(Folder folder)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!Global.GetFilesSecurity().CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
-            if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, Global.FolderTrash)) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
+            if (!FileSecurity.CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
+            if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.ID, GlobalFolderHelper.FolderTrash)) throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
             var entryTags = new Dictionary<FileEntry, Tag>();
 
-            using (var tagDao = Global.DaoFactory.GetTagDao())
-            using (var fileDao = Global.DaoFactory.GetFileDao())
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
+            var tagDao = DaoFactory.TagDao;
+            var fileDao = DaoFactory.FileDao;
+            var folderDao = DaoFactory.FolderDao;
+            var tags = (tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();
+
+            if (!tags.Any()) return new List<FileEntry>();
+
+            if (Equals(folder.ID, GlobalFolderHelper.FolderMy) || Equals(folder.ID, GlobalFolderHelper.FolderCommon) || Equals(folder.ID, GlobalFolderHelper.FolderShare))
             {
-                var tags = (tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();
+                var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder);
 
-                if (!tags.Any()) return new List<FileEntry>();
+                var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder>(tag, folderDao.GetFolder(tag.EntryId)))
+                                                    .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
+                providerFolderTags.Reverse();
 
-                if (Equals(folder.ID, Global.FolderMy) || Equals(folder.ID, Global.FolderCommon) || Equals(folder.ID, Global.FolderShare))
+                foreach (var providerFolderTag in providerFolderTags)
                 {
-                    var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder);
-
-                    var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder>(tag, folderDao.GetFolder(tag.EntryId)))
-                                                       .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
-                    providerFolderTags.Reverse();
-
-                    foreach (var providerFolderTag in providerFolderTags)
-                    {
-                        tags.AddRange(tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, providerFolderTag.Value, true));
-                    }
+                    tags.AddRange(tagDao.GetNewTags(AuthContext.CurrentAccount.ID, providerFolderTag.Value, true));
                 }
+            }
 
-                tags = tags.Distinct().ToList();
-                tags.RemoveAll(tag => Equals(tag.EntryId, folder.ID));
-                tags = tags.Where(t => t.EntryType == FileEntryType.Folder)
-                           .Concat(tags.Where(t => t.EntryType == FileEntryType.File)).ToList();
+            tags = tags.Distinct().ToList();
+            tags.RemoveAll(tag => Equals(tag.EntryId, folder.ID));
+            tags = tags.Where(t => t.EntryType == FileEntryType.Folder)
+                        .Concat(tags.Where(t => t.EntryType == FileEntryType.File)).ToList();
 
-                foreach (var tag in tags)
+            foreach (var tag in tags)
+            {
+                var entry = tag.EntryType == FileEntryType.File
+                                ? (FileEntry)fileDao.GetFile(tag.EntryId)
+                                : (FileEntry)folderDao.GetFolder(tag.EntryId);
+                if (entry != null)
                 {
-                    var entry = tag.EntryType == FileEntryType.File
-                                    ? (FileEntry)fileDao.GetFile(tag.EntryId)
-                                    : (FileEntry)folderDao.GetFolder(tag.EntryId);
-                    if (entry != null)
-                    {
-                        entryTags.Add(entry, tag);
-                    }
-                    else
-                    {
-                        //todo: RemoveMarkAsNew(tag);
-                    }
+                    entryTags.Add(entry, tag);
+                }
+                else
+                {
+                    //todo: RemoveMarkAsNew(tag);
                 }
             }
 
@@ -520,132 +533,131 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public static IEnumerable<FileEntry> SetTagsNew(IFolderDao folderDao, Folder parent, IEnumerable<FileEntry> entries)
+        public IEnumerable<FileEntry> SetTagsNew(IFolderDao folderDao, Folder parent, IEnumerable<FileEntry> entries)
         {
-            using (var tagDao = Global.DaoFactory.GetTagDao())
+            var tagDao = DaoFactory.TagDao;
+            var totalTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, parent, false).ToList();
+
+            if (totalTags.Any())
             {
-                var totalTags = tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, parent, false).ToList();
+                var parentFolderTag = Equals(GlobalFolderHelper.FolderShare, parent.ID)
+                                            ? tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolder(GlobalFolderHelper.FolderShare)).FirstOrDefault()
+                                            : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
 
-                if (totalTags.Any())
+                totalTags.Remove(parentFolderTag);
+                var countSubNew = 0;
+                totalTags.ForEach(tag => countSubNew += tag.Count);
+
+                if (parentFolderTag == null)
                 {
-                    var parentFolderTag = Equals(Global.FolderShare, parent.ID)
-                                              ? tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, folderDao.GetFolder(Global.FolderShare)).FirstOrDefault()
-                                              : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.ID));
+                    parentFolderTag = Tag.New(AuthContext.CurrentAccount.ID, parent, 0);
+                    parentFolderTag.Id = -1;
+                }
 
-                    totalTags.Remove(parentFolderTag);
-                    var countSubNew = 0;
-                    totalTags.ForEach(tag => countSubNew += tag.Count);
-
-                    if (parentFolderTag == null)
+                if (parentFolderTag.Count != countSubNew)
+                {
+                    if (countSubNew > 0)
                     {
-                        parentFolderTag = Tag.New(SecurityContext.CurrentAccount.ID, parent, 0);
-                        parentFolderTag.Id = -1;
-                    }
+                        var diff = parentFolderTag.Count - countSubNew;
 
-                    if (parentFolderTag.Count != countSubNew)
-                    {
-                        if (countSubNew > 0)
+                        parentFolderTag.Count -= diff;
+                        if (parentFolderTag.Id == -1)
                         {
-                            var diff = parentFolderTag.Count - countSubNew;
-
-                            parentFolderTag.Count -= diff;
-                            if (parentFolderTag.Id == -1)
-                            {
-                                tagDao.SaveTags(parentFolderTag);
-                            }
-                            else
-                            {
-                                tagDao.UpdateNewTags(parentFolderTag);
-                            }
-
-                            var cacheFolderId = parent.ID;
-                            var parentsList = folderDao.GetParentFolders(parent.ID);
-                            parentsList.Reverse();
-                            parentsList.Remove(parent);
-
-                            if (parentsList.Any())
-                            {
-                                var rootFolder = parentsList.Last();
-                                object rootFolderId = null;
-                                cacheFolderId = rootFolder.ID;
-                                if (rootFolder.RootFolderType == FolderType.BUNCH)
-                                    cacheFolderId = rootFolderId = Global.FolderProjects;
-                                else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootFolderId, Global.FolderMy))
-                                    cacheFolderId = rootFolderId = Global.FolderShare;
-
-                                if (rootFolderId != null)
-                                {
-                                    parentsList.Add(folderDao.GetFolder(rootFolderId));
-                                }
-
-                                var fileSecurity = Global.GetFilesSecurity();
-
-                                foreach (var folderFromList in parentsList)
-                                {
-                                    var parentTreeTag = tagDao.GetNewTags(SecurityContext.CurrentAccount.ID, folderFromList).FirstOrDefault();
-
-                                    if (parentTreeTag == null)
-                                    {
-                                        if (fileSecurity.CanRead(folderFromList))
-                                        {
-                                            tagDao.SaveTags(Tag.New(SecurityContext.CurrentAccount.ID, folderFromList, -diff));
-                                        }
-                                    }
-                                    else
-                                    {
-                                        parentTreeTag.Count -= diff;
-                                        tagDao.UpdateNewTags(parentTreeTag);
-                                    }
-                                }
-                            }
-
-                            if (cacheFolderId != null)
-                            {
-                                RemoveFromCahce(cacheFolderId);
-                            }
+                            tagDao.SaveTags(parentFolderTag);
                         }
                         else
                         {
-                            RemoveMarkAsNew(parent);
+                            tagDao.UpdateNewTags(parentFolderTag);
+                        }
+
+                        var cacheFolderId = parent.ID;
+                        var parentsList = folderDao.GetParentFolders(parent.ID);
+                        parentsList.Reverse();
+                        parentsList.Remove(parent);
+
+                        if (parentsList.Any())
+                        {
+                            var rootFolder = parentsList.Last();
+                            object rootFolderId = null;
+                            cacheFolderId = rootFolder.ID;
+                            if (rootFolder.RootFolderType == FolderType.BUNCH)
+                                cacheFolderId = rootFolderId = GlobalFolderHelper.FolderProjects;
+                            else if (rootFolder.RootFolderType == FolderType.USER && !Equals(rootFolder.RootFolderId, GlobalFolderHelper.FolderMy))
+                                cacheFolderId = rootFolderId = GlobalFolderHelper.FolderShare;
+
+                            if (rootFolderId != null)
+                            {
+                                parentsList.Add(folderDao.GetFolder(rootFolderId));
+                            }
+
+                            var fileSecurity = FileSecurity;
+
+                            foreach (var folderFromList in parentsList)
+                            {
+                                var parentTreeTag = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderFromList).FirstOrDefault();
+
+                                if (parentTreeTag == null)
+                                {
+                                    if (fileSecurity.CanRead(folderFromList))
+                                    {
+                                        tagDao.SaveTags(Tag.New(AuthContext.CurrentAccount.ID, folderFromList, -diff));
+                                    }
+                                }
+                                else
+                                {
+                                    parentTreeTag.Count -= diff;
+                                    tagDao.UpdateNewTags(parentTreeTag);
+                                }
+                            }
+                        }
+
+                        if (cacheFolderId != null)
+                        {
+                            RemoveFromCahce(cacheFolderId);
                         }
                     }
-
-                    entries.ToList().ForEach(
-                        entry =>
-                        {
-                            var curTag = totalTags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.ID));
-
-                            if (entry.FileEntryType == FileEntryType.Folder)
-                            {
-                                ((Folder)entry).NewForMe = curTag != null ? curTag.Count : 0;
-                            }
-                            else if (curTag != null)
-                            {
-                                entry.IsNew = true;
-                            }
-                        });
+                    else
+                    {
+                        RemoveMarkAsNew(parent);
+                    }
                 }
+
+                entries.ToList().ForEach(
+                    entry =>
+                    {
+                        var curTag = totalTags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.ID));
+
+                        if (entry.FileEntryType == FileEntryType.Folder)
+                        {
+                            ((Folder)entry).NewForMe = curTag != null ? curTag.Count : 0;
+                        }
+                        else if (curTag != null)
+                        {
+                            entry.IsNew = true;
+                        }
+                    });
             }
+
 
             return entries;
         }
 
-        private static void InsertToCahce(object folderId, int count)
+        private void InsertToCahce(object folderId, int count)
         {
-            var key = string.Format(CacheKeyFormat, SecurityContext.CurrentAccount.ID, folderId);
+            var key = string.Format(CacheKeyFormat, AuthContext.CurrentAccount.ID, folderId);
             cache.Insert(key, count.ToString(), TimeSpan.FromMinutes(10));
         }
 
-        private static int GetCountFromCahce(object folderId)
+        private int GetCountFromCahce(object folderId)
         {
-            var key = string.Format(CacheKeyFormat, SecurityContext.CurrentAccount.ID, folderId);
+            var key = string.Format(CacheKeyFormat, AuthContext.CurrentAccount.ID, folderId);
             var count = cache.Get<string>(key);
             return count == null ? -1 : int.Parse(count);
         }
 
-        private static void RemoveFromCahce(object folderId)
+        private void RemoveFromCahce(object folderId)
         {
-            RemoveFromCahce(folderId, SecurityContext.CurrentAccount.ID);
+            RemoveFromCahce(folderId, AuthContext.CurrentAccount.ID);
         }
 
         private static void RemoveFromCahce(object folderId, Guid userId)
@@ -657,10 +669,10 @@ namespace ASC.Web.Files.Utils
 
         private class AsyncTaskData
         {
-            public AsyncTaskData()
+            public AsyncTaskData(TenantManager tenantManager, AuthContext authContext)
             {
-                TenantID = TenantProvider.CurrentTenantID;
-                CurrentAccountId = SecurityContext.CurrentAccount.ID;
+                TenantID = tenantManager.GetCurrentTenant().TenantId;
+                CurrentAccountId = authContext.CurrentAccount.ID;
             }
 
             public int TenantID { get; private set; }
