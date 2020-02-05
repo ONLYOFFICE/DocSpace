@@ -12,7 +12,6 @@ if (process.env.NODE_ENV === "production") {
     .init({
       lng: localStorage.getItem(LANGUAGE) || 'en',
       fallbackLng: "en",
-      debug: true,
 
       interpolation: {
         escapeValue: false // not needed for react as it escapes by default
