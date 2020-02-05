@@ -18,7 +18,6 @@ newInstance.init({
   resources: resources,
   lng: localStorage.getItem(LANGUAGE) || 'en',
   fallbackLng: "en",
-  debug: true,
 
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default
