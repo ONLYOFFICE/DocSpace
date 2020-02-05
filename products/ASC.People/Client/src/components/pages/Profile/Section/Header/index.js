@@ -171,7 +171,7 @@ class SectionHeaderContent extends React.PureComponent {
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
-          toastr.success("Success");
+          toastr.success(this.props.t('ChangesApplied'));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error))
@@ -182,7 +182,7 @@ class SectionHeaderContent extends React.PureComponent {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success("Success");
+          toastr.success(this.props.t('ChangesApplied'));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error));
@@ -415,6 +415,7 @@ class SectionHeaderContent extends React.PureComponent {
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
+          saveButtonLabel={t('SaveButton')}
         />
 
         {dialogsVisible.deleteSelfProfile &&

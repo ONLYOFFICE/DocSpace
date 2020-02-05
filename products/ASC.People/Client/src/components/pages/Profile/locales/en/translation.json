@@ -27,6 +27,8 @@
   "ErrorUnknownFileImageType": "Unknown image file type",
   "Error": "Error",
   "SocialProfiles": "Social profiles",
+  "SaveButton": "Save",
+  "ChangesApplied": "Changes are applied",
   
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",

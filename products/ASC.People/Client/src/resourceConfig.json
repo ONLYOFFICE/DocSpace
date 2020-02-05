@@ -99,7 +99,11 @@
         "NotFoundLanguage",
         "LearnMore",
         "ErrorUnknownFileImageType",
+        "SaveButton",
         "Error"
+      ],
+      "ResourceJS": [
+        "ChangesApplied"
       ]
     },
     "ProfileAction": {

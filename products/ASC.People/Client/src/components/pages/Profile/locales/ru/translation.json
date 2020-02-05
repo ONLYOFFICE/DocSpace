@@ -27,6 +27,8 @@
   "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
   "Error": "Ошибка",
   "SocialProfiles": "Социальные профили",
+  "SaveButton": "Сохранить",
+  "ChangesApplied": "Изменения успешно применены",
   
   "PhoneChange": "Изменить номер телефона",
   "PhoneLbl": "Основной телефон",
