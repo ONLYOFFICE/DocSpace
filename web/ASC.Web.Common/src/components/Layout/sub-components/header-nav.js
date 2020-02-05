@@ -17,6 +17,11 @@ const StyledNav = styled.nav`
 
   .profile-menu {
     right: 12px;
+
+    @media ${tablet} {
+      right: 6px;
+      top: 66px;
+    }
   }
 
   & > div {

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Avatar, DropDown, DropDownItem, utils, Link } from "asc-web-components";
+import { Avatar, DropDownItem, Link } from "asc-web-components";
 import ProfileMenu from "./../../ProfileMenu";
-const { handleAnyClick } = utils.event;
 
 class ProfileActions extends React.PureComponent {
   constructor(props) {
@@ -14,42 +13,20 @@ class ProfileActions extends React.PureComponent {
       opened: props.opened,
       user: props.user
     };
-
-    this.handleClick = this.handleClick.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.getUserRole = this.getUserRole.bind(this);
-    this.onAvatarClick = this.onAvatarClick.bind(this);
-    this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
-
-    if (props.opened) handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = e => {
-    this.state.opened &&
-      !this.ref.current.contains(e.target) &&
-      this.toggle(false);
-  };
-
-  toggle = opened => {
+  setOpened = opened => {
     this.setState({ opened: opened });
   };
 
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
 
     if (this.props.user !== prevProps.user) {
       this.setState({ user: this.props.user })
     }
 
     if (this.props.opened !== prevProps.opened) {
-      this.toggle(this.props.opened);
-    }
-
-    if (this.state.opened !== prevState.opened) {
-      handleAnyClick(this.state.opened, this.handleClick);
+      this.setOpened(this.props.opened);
     }
   }
 
@@ -62,56 +39,52 @@ class ProfileActions extends React.PureComponent {
     return "user";
   };
 
-  onAvatarClick = () => {
-    this.toggle(!this.state.opened);
-  };
+  onClose = (e) => {
+    if (this.ref.current.contains(e.target)) return;
 
-  onDropDownItemClick = action => {
-    action.onClick && action.onClick();
-    this.toggle(!this.state.opened);
-  };
+    this.setOpened(!this.state.opened);
+  }
+
+  onClick = (action, e) => {
+    action.onClick && action.onClick(e);
+
+    this.setOpened(!this.state.opened);
+  }
 
   render() {
     //console.log("Layout sub-component ProfileActions render");
+    const { user, opened } = this.state;
+    const userRole = this.getUserRole(user);
+
     return (
       <div ref={this.ref}>
         <Avatar
+          onClick={this.onClick}
+          role={userRole}
           size="small"
-          role={this.getUserRole(this.state.user)}
-          source={this.state.user.avatarSmall}
-          userName={this.state.user.displayName}
-          onClick={this.onAvatarClick}
+          source={user.avatarSmall}
+          userName={user.displayName}
         />
-        <DropDown
-          className='profile-menu'
-          directionX="right"
-          open={this.state.opened}
-          clickOutsideAction={this.onAvatarClick}
+        <ProfileMenu
+          className="profile-menu"
+          avatarRole={userRole}
+          avatarSource={user.avatarMedium}
+          displayName={user.displayName}
+          email={user.email}
+          open={opened}
+          clickOutsideAction={this.onClose}
         >
-          <ProfileMenu
-            avatarRole={this.getUserRole(this.state.user)}
-            avatarSource={this.state.user.avatarMedium}
-            displayName={this.state.user.displayName}
-            email={this.state.user.email}
-          />
           {this.props.userActions.map(action => (
             <Link
               noHover={true}
               key={action.key}
               href={action.url}
-              onClick={(e) => {
-                if (e) {
-                  this.onDropDownItemClick.bind(this, action);
-                  e.preventDefault();
-                }
-              }
-            }
-              >
-              <DropDownItem
-                {...action} />
+              //onClick={this.onClick.bind(this, action)}
+            >
+              <DropDownItem {...action} />
             </Link>
           ))}
-        </DropDown>
+        </ProfileMenu>
       </div>
     );
   }

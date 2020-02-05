@@ -1,55 +1,78 @@
-import React, { memo } from "react";
+import React from "react";
 import PropTypes from 'prop-types';
-import { Avatar } from 'asc-web-components';
+import { Avatar, DropDown } from 'asc-web-components';
 import {
-  StyledProfileMenu,
-  MenuContainer,
   AvatarContainer,
-  MainLabelContainer,
   LabelContainer,
+  MainLabelContainer,
+  MenuContainer,
+  StyledProfileMenu,
   TopArrow
 } from "./StyledProfileMenu";
 
-// eslint-disable-next-line react/display-name
-const ProfileMenu = memo(props => {
-  const {
-    displayName,
-    email,
-    avatarRole,
-    avatarSource
-  } = props;
+class ProfileMenu extends React.Component {
 
-  return (
-    <StyledProfileMenu {...props}>
-      <MenuContainer {...props}>
-        <AvatarContainer>
-          <Avatar
-            size='medium'
-            role={avatarRole}
-            source={avatarSource}
-            userName={displayName}
-          />
-        </AvatarContainer>
-        <MainLabelContainer>
-          {displayName}
-        </MainLabelContainer>
-        <LabelContainer>
-          {email}
-        </LabelContainer>
-      </MenuContainer>
-      <TopArrow />
-    </StyledProfileMenu>
-  );
-});
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {
+      avatarRole,
+      avatarSource,
+      children,
+      className,
+      displayName,
+      email,
+      clickOutsideAction,
+      open
+    } = this.props;
+
+    return (
+      <DropDown
+        className={className}
+        directionX='right'
+        open={open}
+        clickOutsideAction={clickOutsideAction}
+      >
+        <StyledProfileMenu>
+          <MenuContainer>
+            <AvatarContainer>
+              <Avatar
+                size='medium'
+                role={avatarRole}
+                source={avatarSource}
+                userName={displayName}
+              />
+            </AvatarContainer>
+            <MainLabelContainer>
+              {displayName}
+            </MainLabelContainer>
+            <LabelContainer>
+              {email}
+            </LabelContainer>
+          </MenuContainer>
+          <TopArrow />
+        </StyledProfileMenu>
+        {children}
+      </DropDown>
+    );
+  }
+}
+
+ProfileMenu.displayName = 'ProfileMenu';
 
 ProfileMenu.propTypes = {
   avatarRole: PropTypes.oneOf(['owner', 'admin', 'guest', 'user']),
   avatarSource: PropTypes.string,
+  children: PropTypes.any,
   className: PropTypes.string,
   displayName: PropTypes.string,
   email: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  open: PropTypes.bool,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  clickOutsideAction: PropTypes.func,
 };
 
 export default ProfileMenu
