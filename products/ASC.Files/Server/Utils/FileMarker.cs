@@ -533,7 +533,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public IEnumerable<FileEntry> SetTagsNew(IFolderDao folderDao, Folder parent, IEnumerable<FileEntry> entries)
+        public IEnumerable<FileEntry> SetTagsNew(Folder parent, IEnumerable<FileEntry> entries)
         {
             var tagDao = DaoFactory.TagDao;
             var totalTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, parent, false).ToList();
@@ -571,7 +571,7 @@ namespace ASC.Web.Files.Utils
                         }
 
                         var cacheFolderId = parent.ID;
-                        var parentsList = folderDao.GetParentFolders(parent.ID);
+                        var parentsList = DaoFactory.FolderDao.GetParentFolders(parent.ID);
                         parentsList.Reverse();
                         parentsList.Remove(parent);
 
@@ -587,7 +587,7 @@ namespace ASC.Web.Files.Utils
 
                             if (rootFolderId != null)
                             {
-                                parentsList.Add(folderDao.GetFolder(rootFolderId));
+                                parentsList.Add(DaoFactory.FolderDao.GetFolder(rootFolderId));
                             }
 
                             var fileSecurity = FileSecurity;
