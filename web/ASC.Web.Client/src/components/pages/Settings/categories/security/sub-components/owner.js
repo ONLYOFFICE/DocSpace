@@ -248,17 +248,11 @@ class PureOwnerSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureOwnerSettings);
 
-const OwnerSettings = props => {
-  const { language } = props;
-
-  i18n.changeLanguage(language);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <AccessRightsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const OwnerSettings = props => (
+  <I18nextProvider i18n={i18n}>
+    <AccessRightsContainer {...props} />
+  </I18nextProvider>
+);
 
 function mapStateToProps(state) {
   const { owner } = state.settings.security.accessRight;

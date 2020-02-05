@@ -544,17 +544,11 @@ class PureAdminsSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureAdminsSettings);
 
-const AdminsSettings = props => {
-  const { language } = props;
-
-  i18n.changeLanguage(language);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <AccessRightsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const AdminsSettings = props => (
+  <I18nextProvider i18n={i18n}>
+    <AccessRightsContainer {...props} />
+  </I18nextProvider>
+);
 
 function mapStateToProps(state) {
   const { admins, owner, filter } = state.settings.security.accessRight;
