@@ -58,17 +58,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FooterCommon" xml:space="preserve">
+  <data name="FooterCommonV10" xml:space="preserve">
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td colspan="3" style="height: 10px; line-height: 10px; background: #fff; padding: 0; margin: 0;"&gt; &lt;/td&gt;&lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 180px; height: 108px; background: #f6f6f6;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; border-top-right-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
@@ -92,13 +92,13 @@
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td colspan="3" style="height: 10px; line-height: 10px; background: #fff; padding: 0; margin: 0;"&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 180px; height: 108px; background: #f6f6f6;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; border-top-right-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
@@ -118,17 +118,17 @@
             &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
-  <data name="FooterOpensource" xml:space="preserve">
+  <data name="FooterOpensourceV10" xml:space="preserve">
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;&lt;td colspan="3" style="height: 10px; line-height: 10px; background: #fff; padding: 0; margin: 0;"&gt;&amp;nbsp;&lt;/td&gt;&lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topleft: 6px; -webkit-border-top-left-radius: 6px; border-top-left-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/tech-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 180px; height: 108px; background: #f6f6f6;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/mailus-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
             &lt;td style="vertical-align: top; margin: 0; padding: 34px 0 0 0; width: 210px; height: 108px; background: #f6f6f6; -moz-border-radius-topright: 6px; -webkit-border-top-right-radius: 6px; border-top-right-radius: 6px;"&gt;
-              &lt;img src="https://static.onlyoffice.com/media/newsletters/images/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
+              &lt;img src="%IMAGEPATH%/demo-100.png" style="width: 100px; height: 100px;margin: 0 auto;" /&gt;
             &lt;/td&gt;
         &lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
@@ -160,10 +160,10 @@
 									&lt;div style="width: 170px;"&gt;
 										&lt;div style="font-size:22px; font-weight: bold; margin-bottom: 5px;"&gt;Bleiben Sie dran!&lt;/div&gt;
 										&lt;div style="background-color: #b9e3f5; padding: 11px; margin: 0;"&gt;
-											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="https://www.facebook.com/pages/OnlyOffice/833032526736775"&gt;&lt;img style="vertical-align: middle; border: 0; width: 26px; height: 26px;" src="https://static.onlyoffice.com/media/newsletters/images/social_01.jpg" alt="Facebook" title="Facebook" /&gt;&lt;/a&gt;
-											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="http://twitter.com/ONLY_OFFICE"&gt;&lt;img src="https://static.onlyoffice.com/media/newsletters/images/social_02.jpg" alt="Twitter" title="Twitter" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
-											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="https://plus.google.com/u/0/+teamlab/"&gt;&lt;img src="https://static.onlyoffice.com/media/newsletters/images/social_03.jpg" alt="Google+" title="Google+" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
-											&lt;a target="_blank" style="color: #3D4A6B;" href="http://www.linkedin.com/groups?home=&amp;gid=3159387&amp;trk=anet_ug_hm"&gt;&lt;img src="https://static.onlyoffice.com/media/newsletters/images/social_04.jpg" alt="Linked In" title="Linked In" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
+											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="https://www.facebook.com/pages/OnlyOffice/833032526736775"&gt;&lt;img style="vertical-align: middle; border: 0; width: 26px; height: 26px;" src="%IMAGEPATH%/social_01.jpg" alt="Facebook" title="Facebook" /&gt;&lt;/a&gt;
+											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="http://twitter.com/ONLY_OFFICE"&gt;&lt;img src="%IMAGEPATH%/social_02.jpg" alt="Twitter" title="Twitter" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
+											&lt;a target="_blank" style="color: #3D4A6B; margin-right: 10px;" href="https://plus.google.com/u/0/+teamlab/"&gt;&lt;img src="%IMAGEPATH%/social_03.jpg" alt="Google+" title="Google+" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
+											&lt;a target="_blank" style="color: #3D4A6B;" href="http://www.linkedin.com/groups?home=&amp;gid=3159387&amp;trk=anet_ug_hm"&gt;&lt;img src="%IMAGEPATH%/social_04.jpg" alt="Linked In" title="Linked In" style="vertical-align: middle; border: 0; width: 26px; height: 26px;" /&gt;&lt;/a&gt;
 										&lt;/div&gt;
 										&lt;/div&gt;
 									&lt;/td&gt;
@@ -176,32 +176,32 @@
     <value>&lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 155px;"&gt;
               &lt;a href="https://www.facebook.com/pages/OnlyOffice/833032526736775" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-fb-40.png" alt="Facebook" style="width: 40px; height: 40px;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-fb-40.png" alt="Facebook" style="width: 40px; height: 40px;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
               &lt;a href="https://twitter.com/ONLY_OFFICE" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-tw-40.png" alt="Twitter" style="width: 40px; height: 40px;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-tw-40.png" alt="Twitter" style="width: 40px; height: 40px;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
               &lt;a href="https://plus.google.com/+Onlyoffice_Community" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-gplus-40.png" alt="Google+" style="width: 40px; height: 40px;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-gplus-40.png" alt="Google+" style="width: 40px; height: 40px;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
               &lt;a href="http://www.youtube.com/user/onlyofficeTV" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-youtube-40.png" alt="YouTube" style="width: 40px; height: 40x;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-youtube-40.png" alt="YouTube" style="width: 40px; height: 40x;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 5px 0 5px;"&gt;
               &lt;a href="http://vk.com/onlyoffice" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-vk-40.png" alt="VK" style="width: 40px; height: 40px;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-vk-40.png" alt="VK" style="width: 40px; height: 40px;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
           &lt;td style="width: 40px; vertical-align: top; margin: 0; padding: 22px 155px 0 5px;"&gt;
               &lt;a href="http://www.instagram.com/the_onlyoffice" style="width: 40px; height: 40px; display: block; margin: 0; padding: 0;" target="_blank"&gt;
-                  &lt;img src="https://static.onlyoffice.com/media/newsletters/images/social-inst-40.png" alt="Instagram" style="width: 40px; height: 40px;" /&gt;
+                  &lt;img src="%IMAGEPATH%/social-inst-40.png" alt="Instagram" style="width: 40px; height: 40px;" /&gt;
               &lt;/a&gt;
           &lt;/td&gt;
         &lt;/tr&gt;</value>
@@ -262,7 +262,7 @@
         &lt;/tr&gt;
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #f6f6f6; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;"&gt;
-            &lt;div style="width: 600px; height: 340px; background: url('https://d2nlctn12v279m.cloudfront.net/media/newsletters/images/personal-wellcome-bg.png') 0 0 no-repeat; margin: 0; padding: 0;  border: 0 none;"&gt;&lt;/div&gt;
+            &lt;div style="width: 600px; height: 340px; background: url('%IMAGEPATH%/personal-wellcome-bg.png') 0 0 no-repeat; margin: 0; padding: 0;  border: 0 none;"&gt;&lt;/div&gt;
 &lt;div style="font-family: Arial; font-size: 14px; color: #333; margin: 0; padding: 15px 30px 15px; width: 540px; height: auto; overflow: hidden; word-wrap: break-word; vertical-align: top; text-align: left; border: 0 none;"&gt;
               %CONTENT%
             &lt;/div&gt;

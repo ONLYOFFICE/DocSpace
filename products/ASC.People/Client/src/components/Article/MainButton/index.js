@@ -10,8 +10,8 @@ import {
 import { InviteDialog } from './../../dialogs';
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from '../i18n';
-import { typeUser, typeGuest, department } from './../../../helpers/customNames';
-import { store } from 'asc-web-common';
+import { store, utils } from 'asc-web-common';
+const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
@@ -50,6 +50,7 @@ class PureArticleMainButtonContent extends React.Component {
   render() {
     console.log("People ArticleMainButtonContent render");
     const { isAdmin, settings, t } = this.props;
+    const { userCaption, guestCaption, groupCaption } = settings.customNames;
     const { dialogVisible } = this.state;
     return (
       isAdmin ?
@@ -60,18 +61,18 @@ class PureArticleMainButtonContent extends React.Component {
             text={t('Actions')}
           >
             <DropDownItem
-              icon="CatalogEmployeeIcon"
-              label={t('CustomNewEmployee', { typeUser })}
+              icon="AddEmployeeIcon"
+              label={userCaption}
               onClick={this.goToEmployeeCreate}
             />
             <DropDownItem
-              icon="CatalogGuestIcon"
-              label={t('CustomNewGuest', { typeGuest })}
+              icon="AddGuestIcon"
+              label={guestCaption}
               onClick={this.goToGuestCreate}
             />
             <DropDownItem
-              icon="CatalogDepartmentsIcon"
-              label={t('CustomNewDepartment', { department })}
+              icon="AddDepartmentIcon"
+              label={groupCaption}
               onClick={this.goToGroupCreate}
             />
             <DropDownItem isSeparator />
@@ -110,8 +111,7 @@ class PureArticleMainButtonContent extends React.Component {
 const ArticleMainButtonContentContainer = withTranslation()(PureArticleMainButtonContent);
 
 const ArticleMainButtonContent = (props) => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
   return (<I18nextProvider i18n={i18n}><ArticleMainButtonContentContainer {...props} /></I18nextProvider>);
 };
 
@@ -123,7 +123,6 @@ ArticleMainButtonContent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     isAdmin: isAdmin(state.auth.user),
-    language: state.auth.user.cultureName || state.auth.settings.culture,
     settings: state.auth.settings
   }
 }

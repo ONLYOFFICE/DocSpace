@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import {
   GroupButtonsMenu,
@@ -19,11 +19,6 @@ import {
   updateUserType,
   fetchPeople
 } from "../../../../../store/people/actions";
-import {
-  typeUser,
-  typeGuest,
-  department
-} from "../../../../../helpers/../helpers/customNames";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
 import { InviteDialog } from '../../../../dialogs';
@@ -33,8 +28,17 @@ const { resendUserInvites, deleteUsers } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
 const StyledContainer = styled.div`
+
+  @media (min-width: 1024px) {
+    ${props => props.isHeaderVisible && css`width: calc(100% + 76px);`}
+  }
+
   .group-button-menu-container {
     margin: 0 -16px;
+
+    @media (min-width: 1024px) {
+      margin: 0 -24px;
+    }
   }
 
   .header-container {
@@ -49,7 +53,11 @@ const StyledContainer = styled.div`
 
       @media (max-width: 1024px) {
         margin-left: auto;
-        padding: 8px 0 8px 8px;
+
+        & > div:first-child {
+          padding: 8px 16px 8px 16px;
+          margin-right: -16px;
+        }
       }
     }
   }
@@ -103,20 +111,20 @@ const SectionHeaderContent = props => {
 
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
-      .then(() => toastr.success("The invitation was successfully sent"))
+      .then(() => toastr.success(t('SuccessSendInvitation')))
       .catch(error => toastr.error(error));
-  }, [selectedUserIds]);
+  }, [selectedUserIds, t]);
 
   const onDelete = useCallback(() => {
     onLoading(true);
     deleteUsers(selectedUserIds)
       .then(() => {
-        toastr.success("Users have been removed successfully");
+        toastr.success(t('SuccessfullyRemovedUsers'));
         return fetchPeople(filter);
       })
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
-  }, [selectedUserIds, onLoading, filter]);
+  }, [selectedUserIds, onLoading, filter, t]);
 
   const menuItems = [
     {
@@ -133,12 +141,12 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: t("CustomMakeUser", { typeUser }),
+      label: t('ChangeToUser', { userCaption: settings.customNames.userCaption }),
       disabled: !selection.length,
       onClick: onSetEmployee
     },
     {
-      label: t("CustomMakeGuest", { typeGuest }),
+      label: t('ChangeToGuest', { guestCaption: settings.customNames.guestCaption }),
       disabled: !selection.length,
       onClick: onSetGuest
     },
@@ -160,7 +168,7 @@ const SectionHeaderContent = props => {
     {
       label: t("LblSendEmail"),
       disabled: !selection.length,
-      onClick: toastr.success.bind(this, "Send e-mail action")
+      onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
       label: t("DeleteButton"),
@@ -176,9 +184,9 @@ const SectionHeaderContent = props => {
 
   const onDeleteGroup = useCallback(() => {
     deleteGroup(group.id).then(() =>
-      toastr.success("Group has been removed successfully")
+      toastr.success(t("SuccessfullyRemovedGroup"))
     );
-  }, [deleteGroup, group]);
+  }, [deleteGroup, group, t]);
 
   const getContextOptionsGroup = useCallback(() => {
     return [
@@ -212,20 +220,21 @@ const SectionHeaderContent = props => {
   );
 
   const getContextOptionsPlus = useCallback(() => {
+    const { guestCaption, userCaption, groupCaption } = settings.customNames;
     return [
       {
         key: "new-employee",
-        label: t("CustomNewEmployee", { typeUser }),
+        label: userCaption,
         onClick: goToEmployeeCreate
       },
       {
         key: "new-guest",
-        label: t("CustomNewGuest", { typeGuest }),
+        label: guestCaption,
         onClick: goToGuestCreate
       },
       {
         key: "new-group",
-        label: t("CustomNewDepartment", { department }),
+        label: groupCaption,
         onClick: goToGroupCreate
       },
       { key: 'separator', isSeparator: true },
@@ -236,14 +245,14 @@ const SectionHeaderContent = props => {
       }/* ,
       {
         key: "send-invitation",
-        label: t("SendInvitationAgain"),
+        label: t("SendInviteAgain"),
         onClick: onSentInviteAgain
       } */
     ];
-  }, [t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
+  }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
   return (
-    <StyledContainer>
+    <StyledContainer isHeaderVisible={isHeaderVisible}>
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu
@@ -278,7 +287,7 @@ const SectionHeaderContent = props => {
             </>
           ) : (
             <>
-              <Headline className='headline-header' truncate={true} type="content">Departments</Headline>
+              <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
               {isAdmin && (
                 <>
                 <ContextMenuButton

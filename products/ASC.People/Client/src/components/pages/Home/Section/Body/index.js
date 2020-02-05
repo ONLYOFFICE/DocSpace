@@ -11,6 +11,7 @@ import {
   Link,
   RowContainer,
   Text,
+  utils
 } from "asc-web-components";
 import UserContent from "./userContent";
 import {
@@ -32,9 +33,11 @@ import { Loader } from "asc-web-components";
 import { store, api, constants } from 'asc-web-common';
 import i18n from '../../i18n';
 import { ChangeEmailDialog, ChangePasswordDialog, DeleteSelfProfileDialog, DeleteProfileEverDialog } from '../../../../dialogs';
+const { isArrayEqual } = utils.array;
 const { isAdmin, isMe } = store.auth.selectors;
 const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
+const { Filter } = api;
 
 
 class SectionBodyContent extends React.PureComponent {
@@ -57,7 +60,10 @@ class SectionBodyContent extends React.PureComponent {
 
     if (users != null) return;
 
-    fetchPeople().catch(error => toastr.error(error));
+    const filter = Filter.getDefault();
+    filter.employeeStatus = EmployeeStatus.Active;
+
+    fetchPeople(filter).catch(error => toastr.error(error));
   }
 
   onEmailSentClick = email => {
@@ -297,6 +303,9 @@ class SectionBodyContent extends React.PureComponent {
       return true;
     }
     if (!isEqual(currentProps.data, nextProps.data)) {
+      return true;
+    }
+    if (!isArrayEqual(currentProps.contextOptions, nextProps.contextOptions)) {
       return true;
     }
     return false;

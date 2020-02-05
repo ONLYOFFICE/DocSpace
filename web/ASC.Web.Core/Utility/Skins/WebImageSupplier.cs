@@ -42,12 +42,16 @@ namespace ASC.Web.Core.Utility.Skins
         public WebPath WebPath { get; }
         public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IConfiguration configuration)
         {
             WebItemManager = webItemManager;
             WebPath = webPath;
-            HttpContextAccessor = httpContextAccessor;
             FolderName = configuration["web:images"];
+        }
+        public WebImageSupplier(WebItemManager webItemManager, WebPath webPath, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+            : this(webItemManager, webPath, configuration)
+        {
+            HttpContextAccessor = httpContextAccessor;
         }
 
         public string GetAbsoluteWebPath(string imgFileName)
@@ -70,7 +74,7 @@ namespace ASC.Web.Core.Utility.Skins
             if (HttpContextAccessor?.HttpContext == null) return string.Empty;
 
             var currentThemePath = GetPartImageFolderRel(moduleID);
-            return WebPath.GetPath(currentThemePath.ToLower());
+            return WebPath.GetPath(currentThemePath);
         }
 
         private string GetImageAbsoluteWebPath(string fileName, Guid partID)
@@ -80,7 +84,7 @@ namespace ASC.Web.Core.Utility.Skins
                 return string.Empty;
             }
             var filepath = GetPartImageFolderRel(partID) + "/" + fileName;
-            return WebPath.GetPath(filepath.ToLower());
+            return WebPath.GetPath(filepath);
         }
 
         private string GetPartImageFolderRel(Guid partID)
@@ -97,7 +101,7 @@ namespace ASC.Web.Core.Utility.Skins
 
                 folderName = itemFolder ?? folderName;
             }
-            return folderName.TrimStart('~').ToLowerInvariant();
+            return folderName.TrimStart('~');
         }
 
         private static string GetAppThemeVirtualPath(IWebItem webitem)
@@ -110,7 +114,7 @@ namespace ASC.Web.Core.Utility.Skins
             var dir = webitem.StartURL.Contains(".") ?
                           webitem.StartURL.Substring(0, webitem.StartURL.LastIndexOf("/")) :
                           webitem.StartURL.TrimEnd('/');
-            return dir + "/app_themes";
+            return dir + "/App_Themes";
         }
     }
 

@@ -5,9 +5,8 @@ import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Checkbox from "../checkbox";
-import { handleAnyClick } from '../../utils/event';
 import { tablet } from '../../utils/device'
- 
+
 const textColor = "#333333",
   disabledTextColor = "#A3A9AE";
 
@@ -115,56 +114,64 @@ class GroupButton extends React.PureComponent {
       isOpen: props.opened,
       selected: props.selected
     };
-
-    if (props.opened)
-      handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = (e) =>
-    this.state.isOpen && !this.ref.current.contains(e.target) && this.toggle(false);
+  setIsOpen = isOpen => this.setState({ isOpen: isOpen });
 
-  stopAction = (e) => e.preventDefault();
+  setSelected = selected => this.setState({ selected: selected });
 
-  toggle = (isOpen) => this.setState({ isOpen: isOpen });
+  componentDidUpdate(prevProps) {
+    if (this.props.opened !== prevProps.opened) {
+      this.setIsOpen(this.props.opened);
+    }
 
-  checkboxChange = (e) => {
-    this.props.onChange && this.props.onChange(e.target.checked);
-    this.setState({ selected: this.props.selected });
+    if (this.props.selected !== prevProps.selected) {
+      this.setSelected(this.props.selected);
+    }
+  }
+
+  clickOutsideAction = e => {
+    this.state.isOpen && !this.ref.current.contains(e.target) && this.setIsOpen(false);
+  }
+
+  checkboxChange = e => {
+    this.props.onChange && this.props.onChange(e.target && e.target.checked);
+
+    this.setSelected(this.props.selected);
   };
 
-  dropDownItemClick = (child) => {
+  dropDownItemClick = child => {
     child.props.onClick && child.props.onClick();
     this.props.onSelect && this.props.onSelect(child);
-    this.setState({ selected: child.props.label });
-    this.toggle(!this.state.isOpen);
+    this.setSelected(child.props.label);
+    this.setIsOpen(!this.state.isOpen);
   };
 
-  dropDownToggleClick = (e) => {
-    this.props.disabled ? this.stopAction(e) : this.toggle(!this.state.isOpen);
+  dropDownToggleClick = () => {
+    this.setIsOpen(!this.state.isOpen);
   };
-
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.opened !== prevProps.opened) {
-      this.toggle(this.props.opened);
-    }
-
-    if (this.state.isOpen !== prevState.isOpen) {
-      handleAnyClick(this.state.isOpen, this.handleClick);
-    }
-  }
 
   render() {
     //console.log("GroupButton render");
-    const { label, isDropdown, disabled, isSeparator, isSelect, isIndeterminate, children, checked, dropDownMaxHeight, id, className, style } = this.props;
+    const {
+      checked,
+      children,
+      className,
+      disabled,
+      dropDownMaxHeight,
+      id,
+      isDropdown,
+      isIndeterminate,
+      isSelect,
+      isSeparator,
+      label,
+      style
+    } = this.props;
 
     const color = disabled ? disabledTextColor : textColor;
     const itemLabel = !isSelect ? label : this.state.selected;
     const dropDownMaxHeightProp = dropDownMaxHeight ? { maxHeight: dropDownMaxHeight } : {};
-    const offsetSelectDropDown = isSelect ? { manualX : (window.innerWidth <= 1024) ? '16px' : '24px'} : {};
+    const offsetSelectDropDown = isSelect ? { manualX: (window.innerWidth <= 1024) ? '16px' : '24px' } : {};
 
     return (
       <StyledGroupButton ref={this.ref} id={id} className={className} style={style}>
@@ -197,8 +204,7 @@ class GroupButton extends React.PureComponent {
               {...offsetSelectDropDown}
               manualY='72px'
               open={this.state.isOpen}
-              clickOutsideAction={this.dropDownToggleClick}
-              withBackdrop={true}
+              clickOutsideAction={this.clickOutsideAction}
             >
               {React.Children.map(children, (child) =>
                 <DropDownItem
@@ -220,40 +226,40 @@ class GroupButton extends React.PureComponent {
 }
 
 GroupButton.propTypes = {
-  label: PropTypes.string,
-  disabled: PropTypes.bool,
   activated: PropTypes.bool,
-  opened: PropTypes.bool,
-  hovered: PropTypes.bool,
-  isDropdown: PropTypes.bool,
-  isSeparator: PropTypes.bool,
-  tabIndex: PropTypes.number,
-  onClick: PropTypes.func,
-  fontWeight: PropTypes.string,
-  onSelect: PropTypes.func,
-  isSelect: PropTypes.bool,
-  selected: PropTypes.string,
-  onChange: PropTypes.func,
-  isIndeterminate: PropTypes.bool,
-  children: PropTypes.any,
   checked: PropTypes.bool,
-  dropDownMaxHeight: PropTypes.number,
+  children: PropTypes.any,
   className: PropTypes.string,
+  disabled: PropTypes.bool,
+  dropDownMaxHeight: PropTypes.number,
+  fontWeight: PropTypes.string,
+  hovered: PropTypes.bool,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  isDropdown: PropTypes.bool,
+  isIndeterminate: PropTypes.bool,
+  isSelect: PropTypes.bool,
+  isSeparator: PropTypes.bool,
+  label: PropTypes.string,
+  onChange: PropTypes.func,
+  onClick: PropTypes.func,
+  onSelect: PropTypes.func,
+  opened: PropTypes.bool,
+  selected: PropTypes.string,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  tabIndex: PropTypes.number
 };
 
 GroupButton.defaultProps = {
-  label: "Group button",
-  disabled: false,
   activated: false,
-  opened: false,
+  disabled: false,
+  fontWeight: "600",
   hovered: false,
   isDropdown: false,
+  isSelect: false,
   isSeparator: false,
-  tabIndex: -1,
-  fontWeight: "600",
-  isSelect: false
+  label: "Group button",
+  opened: false,
+  tabIndex: -1
 };
 
 export default GroupButton;

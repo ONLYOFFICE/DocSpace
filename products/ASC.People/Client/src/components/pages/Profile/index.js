@@ -2,12 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader, toastr } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import { fetchProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
+const { changeLanguage } = utils;
 
 class PureProfile extends React.Component {
 
@@ -61,16 +62,15 @@ class PureProfile extends React.Component {
       sectionBodyContent: <Loader className="pageLoader" type="rombs" size='40px' />
     };
 
-    return <PageLayout {...articleProps} {...sectionProps} />;
+    return <PageLayout {...articleProps} {...sectionProps} withBodyAutoFocus={true}/>;
   };
 };
 
 const ProfileContainer = withTranslation()(PureProfile);
 
 const Profile = (props) => { 
-  const { language } = props;
 
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <I18nextProvider i18n={i18n}><ProfileContainer {...props} /></I18nextProvider>
 };
@@ -86,7 +86,6 @@ Profile.propTypes = {
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
     isVisitor: state.auth.user.isVisitor,
   };
 }

@@ -189,11 +189,8 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { language, match, i18n } = this.props;
+    const { match } = this.props;
     const { error, confirmedEmail } = match.params;
-
-    if(i18n.lng != language)
-      i18n.changeLanguage(language);
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });

@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./PureStudioLayout";
+import { changeLanguage } from '../../utils';
 
 const getSeparator = id => {
   return {
@@ -18,7 +19,7 @@ const toModuleWrapper = (item, iconName) => {
   return {
     id: item.id,
     title: item.title,
-    iconName: iconName || "PeopleIcon",
+    iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
     notifications: 0,
     url: item.link,
     onClick: (e) => {
@@ -26,7 +27,7 @@ const toModuleWrapper = (item, iconName) => {
         window.open(item.link, "_self");
         e.preventDefault();
       }
-  },
+    },
     onBadgeClick: e => console.log(iconName + " Badge Clicked", e)
   };
 };
@@ -65,8 +66,7 @@ const getAvailableModules = (modules, currentUser) => {
 const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 
 const StudioLayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <StudioLayoutContainer i18n={i18n} {...props} />;
 };
@@ -82,8 +82,7 @@ function mapStateToProps(state) {
     availableModules: getAvailableModules(state.auth.modules, state.auth.user),
     currentUser: state.auth.user,
     currentModuleId: state.auth.settings.currentProductId,
-    settings: state.auth.settings,
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    settings: state.auth.settings
   };
 }
 

@@ -2,10 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
-import { IconButton, utils } from "asc-web-components";
+import { IconButton } from "asc-web-components";
 import { Headline } from "asc-web-common";
 import { withTranslation } from "react-i18next";
-import { department } from "./../../../../../helpers/customNames";
 import { resetGroup } from "../../../../../store/group/actions";
 import styled from "styled-components";
 
@@ -14,6 +13,8 @@ const Wrapper = styled.div`
   align-items: center;
 
   .arrow-button {
+    margin-right: 16px;
+
     @media (max-width: 1024px) {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
@@ -21,16 +22,19 @@ const Wrapper = styled.div`
   }
 `;
 
-const HeaderContainer = styled(Headline)`
-  margin-left: 16px;
-  max-width: calc(100vw - 430px);
-
-  @media ${utils.device.tablet} {
-    max-width: calc(100vw - 64px);
-  }
-`;
-
 class SectionHeaderContent extends React.Component {
+
+  constructor(props) {
+    super(props);
+    const { group, t, groupCaption } = props;
+    const headerText = group
+      ? group.name
+      : t("CustomNewDepartment", { groupCaption });
+
+    this.state = {
+      headerText
+    }
+  }
   onClickBack = () => {
     const { history, settings, resetGroup } = this.props;
 
@@ -39,10 +43,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   render() {
-    const { group, t } = this.props;
-    const headerText = group
-      ? t("CustomEditDepartment", { department })
-      : t("CustomNewDepartment", { department });
+    const { headerText } = this.state;
     return (
       <Wrapper>
         <IconButton
@@ -54,9 +55,9 @@ class SectionHeaderContent extends React.Component {
           onClick={this.onClickBack}
           className="arrow-button"
         />
-        <HeaderContainer type="content" truncate={true}>
+        <Headline type="content" truncate={true}>
           {headerText}
-        </HeaderContainer>
+        </Headline>
       </Wrapper>
     );
   }
@@ -74,7 +75,8 @@ SectionHeaderContent.defaultProps = {
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
-    group: state.group.targetGroup
+    group: state.group.targetGroup,
+    groupCaption: state.auth.settings.customNames.groupCaption
   };
 }
 

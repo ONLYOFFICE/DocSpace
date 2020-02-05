@@ -213,7 +213,6 @@ const TreeNodeMenu = styled(TreeNode)`
         background: #DFE2E3;
         mix-blend-mode: normal;
         border-radius: 3px;
-        opacity: 0.8;
     }
     
 `;

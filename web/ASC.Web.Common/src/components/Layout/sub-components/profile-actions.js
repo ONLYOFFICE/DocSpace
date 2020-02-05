@@ -12,8 +12,7 @@ class ProfileActions extends React.PureComponent {
 
     this.state = {
       opened: props.opened,
-      user: props.user,
-      userActions: props.userActions
+      user: props.user
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -95,7 +94,7 @@ class ProfileActions extends React.PureComponent {
             displayName={this.state.user.displayName}
             email={this.state.user.email}
           />
-          {this.state.userActions.map(action => (
+          {this.props.userActions.map(action => (
             <Link
               noHover={true}
               key={action.key}

@@ -1098,6 +1098,9 @@ namespace ASC.Notify.Cron
 
         public virtual DateTime? GetTimeAfter(DateTime afterTimeUtc)
         {
+            if (afterTimeUtc == DateTime.MaxValue)
+                return null;
+
             afterTimeUtc = afterTimeUtc.AddSeconds(1);
 
             var d = CreateDateTimeWithoutMillis(afterTimeUtc);
@@ -1313,6 +1316,8 @@ namespace ASC.Notify.Cron
                         {
                             if (mon == 12)
                             {
+                                if (d.Year == DateTime.MaxValue.Year)
+                                    return null;
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
                             else
@@ -1366,6 +1371,9 @@ namespace ASC.Notify.Cron
                         {
                             if (mon == 12)
                             {
+                                if (d.Year == DateTime.MaxValue.Year)
+                                    return null;
+
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
                             else
@@ -1384,7 +1392,7 @@ namespace ASC.Notify.Cron
                     }
                     else
                     {
-                        var cDow = ((int)d.DayOfWeek);
+                        var cDow = ((int)d.DayOfWeek) + 1;
                         var dow = ((int)daysOfWeek.First());
 
                         st = daysOfWeek.TailSet(cDow);
@@ -1406,6 +1414,9 @@ namespace ASC.Notify.Cron
                         {
                             if (mon == 12)
                             {
+                                if (d.Year == DateTime.MaxValue.Year)
+                                    return null;
+
                                 d = new DateTime(d.Year, mon - 11, 1, 0, 0, 0).AddYears(1);
                             }
                             else

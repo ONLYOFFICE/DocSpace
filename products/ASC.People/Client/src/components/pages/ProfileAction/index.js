@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Loader } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import {
   ArticleHeaderContent,
   ArticleMainButtonContent,
@@ -16,6 +16,7 @@ import {
 import { fetchProfile } from "../../../store/profile/actions";
 import i18n from "./i18n";
 import { I18nextProvider } from "react-i18next";
+const { changeLanguage } = utils;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
@@ -41,10 +42,10 @@ class ProfileAction extends React.Component {
     console.log("ProfileAction render");
 
     let loaded = false;
-    const { profile, isVisitor, match, language } = this.props;
+    const { profile, isVisitor, match } = this.props;
     const { userId, type } = match.params;
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
 
     if (type) {
       loaded = true;
@@ -88,7 +89,6 @@ ProfileAction.propTypes = {
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
     isVisitor: state.auth.user.isVisitor,
   };
 }

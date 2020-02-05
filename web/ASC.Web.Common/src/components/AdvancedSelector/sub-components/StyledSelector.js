@@ -174,7 +174,7 @@ const StyledSelector = styled(Container)`
               border-color: #2DA7DB;
             }
 
-            & > input {
+            & > input::placeholder {
               color: #A3A9AE;
             }
           }

@@ -64,9 +64,11 @@
   "NotFoundTitle": "Результатов, соответствующих заданным критериям, не найдено",
   "NotFoundDescription": "В данном разделе нет людей, соответствующих фильтру. Пожалуйста, выберите другие параметры или очистите фильтр, чтобы просмотреть всех людей в этом разделе.",
   "ClearButton": "Сбросить фильтр",
+  "LearnMore":  "Подробнее...",
+  "AccessRightsChangeOwnerButtonText": "Сменить владельца портала",
 
 
-  "ViewProfilesAndGroups": "Просматривать профили и группы",
+  "ProductUserOpportunities": "Просматривать профили и группы",
   "AccessRightsAccessToProduct": "Доступ к модулю {{product}} предоставлен для",
   "ProjectsUserCapabilityView": "Просматривать проекты и участвовать в обсуждениях",
   "ProjectsUserCapabilityCreate": "Создавать и редактировать вехи, задачи, обсуждения, документы",
@@ -82,9 +84,16 @@
   "Culture_en": "Английский (Великобритания)",
   "Culture_en-US": "Английский (США)",
   "Culture_ru-RU": "Русский (Россия)",
-  "LearnMore":  "Подробнее...",
   "CountPerPage": "{{count}} на странице",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "ByFirstNameSorting": "По имени",
-  "ByLastNameSorting": "По фамилии"
+  "ByLastNameSorting": "По фамилии",
+  "OwnerSettings": "Настройки владельца портата",
+  "AdminsSettings": "Настройки администраторов",
+  "SetPeopleAdmin": "Установить администратора модуля Люди",
+  "SetPortalAdmin": "Установить администратора портала",
+  "PeopleAdmin": "Администратор модуля Люди",
+  "DirectionAscLabel":"А-Я",
+  "DirectionDescLabel":"Я-А",
+  "MeLabel": "Я"
 }

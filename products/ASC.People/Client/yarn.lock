@@ -2565,7 +2565,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.42"
+  version "1.0.58"
   dependencies:
     axios "^0.19.1"
     faker "^4.1.0"
@@ -2573,7 +2573,7 @@ asap@~2.0.6:
     react-window-infinite-loader "^1.0.5"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.309"
+  version "1.0.334"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
@@ -2591,6 +2591,7 @@ asap@~2.0.6:
     react-tooltip "^3.11.2"
     react-virtualized-auto-sizer "^1.0.2"
     react-window "^1.8.5"
+    resize-image "^0.1.0"
 
 asn1.js@^4.0.0:
   version "4.10.1"
@@ -10419,6 +10420,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
+
+resize-image@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/resize-image/-/resize-image-0.1.0.tgz#033d5f499cb7095def7827d48b8046f7e1c5776c"
+  integrity sha512-78cWCEX/IupMCwKi5Gg5gxjOZKoN6UXinL2eVOB4xzyG2QNjq64z6pJBnyBKg5/BsjEosLz1co5e3DHr99TgFg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

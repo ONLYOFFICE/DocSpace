@@ -23,6 +23,12 @@ const TooltipStyle = styled.div`
       border: none;
     }
   }
+
+  * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 class Tooltip extends Component {
@@ -63,10 +69,7 @@ class Tooltip extends Component {
     } = this.props;
 
     return (
-      <TooltipStyle
-        className={className}
-        style={style}
-      >
+      <TooltipStyle className={className} style={style}>
         <ReactTooltip
           id={id}
           ref={reference}

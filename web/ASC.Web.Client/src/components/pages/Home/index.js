@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from "react-router";
 import { Loader, toastr, Text } from 'asc-web-components';
-import { ModuleTile, PageLayout } from "asc-web-common";
+import { ModuleTile, PageLayout, utils } from "asc-web-common";
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
 import styled from "styled-components";
+
+const { changeLanguage } = utils;
 
 const HomeContainer = styled.div`
     padding: 62px 15px 0 15px;
@@ -43,35 +45,38 @@ const HomeContainer = styled.div`
     }
 `;
 
-const Tiles = ({ modules, isPrimary, history }) => {
+const Tiles = ({ modules, isPrimary }) => {
     let index = 0;
 
-    return (
+    const mapped = modules.filter(m => m.isPrimary === isPrimary);
+
+    return mapped.length > 0 ? (
         <div className="home-modules">
             {
-                modules.filter(m => m.isPrimary === isPrimary).map(module => (
+                mapped.map(module => (
                     <div className="home-module" key={++index}>
                         <ModuleTile {...module} onClick={() => window.open(module.link, '_self')} />
                     </div>
                 ))
             }
         </div>
-    );
+    ) : <></>;
 };
 
 Tiles.propTypes = {
     modules: PropTypes.array.isRequired,
-    isPrimary: PropTypes.bool.isRequired,
-    history: PropTypes.object.isRequired
+    isPrimary: PropTypes.bool.isRequired
 };
 
-const Body = ({ modules, match, history, isLoaded }) => {
+const Body = ({ modules, match, isLoaded }) => {
     const { t } = useTranslation('translation', { i18n });
-    const { params } = match;
+    const { error } = match.params;
 
-    useEffect(() => {
-        params.error && toastr.error(params.error);
-    }, [params.error]);
+    useEffect(() => error && toastr.error(error), [error]);
+
+    useEffect(() => { 
+        changeLanguage(i18n);
+    }, []);
 
     return (
         !isLoaded
@@ -80,8 +85,8 @@ const Body = ({ modules, match, history, isLoaded }) => {
             )
             : (
                 <HomeContainer>
-                    <Tiles modules={modules} isPrimary={true} history={history} />
-                    <Tiles modules={modules} isPrimary={false} history={history} />
+                    <Tiles modules={modules} isPrimary={true} />
+                    <Tiles modules={modules} isPrimary={false} />
 
                     {!modules || !modules.length ? (
                         <Text className="home-error-text" fontSize='14px' color="#c30">
@@ -98,7 +103,6 @@ const Home = props => <PageLayout sectionBodyContent={<Body {...props} />} />;
 
 Home.propTypes = {
     modules: PropTypes.array.isRequired,
-    history: PropTypes.object.isRequired,
     isLoaded: PropTypes.bool
 };
 

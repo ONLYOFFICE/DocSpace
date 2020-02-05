@@ -25,15 +25,18 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
@@ -125,14 +128,12 @@ namespace ASC.Data.Storage.DiscStorage
                 await stream.StreamCopyToAsync(context.Response.Body);
             }
 
+            var headersToCopy = new List<string> { "Content-Disposition", "Cache-Control", "Content-Encoding", "Content-Language", "Content-Type", "Expires" };
             foreach (var h in headers)
             {
-                if (h.StartsWith("Content-Disposition")) context.Response.Headers["Content-Disposition"] = h.Substring("Content-Disposition".Length + 1);
-                else if (h.StartsWith("Cache-Control")) context.Response.Headers["Cache-Control"] = h.Substring("Cache-Control".Length + 1);
-                else if (h.StartsWith("Content-Encoding")) context.Response.Headers["Content-Encoding"] = h.Substring("Content-Encoding".Length + 1);
-                else if (h.StartsWith("Content-Language")) context.Response.Headers["Content-Language"] = h.Substring("Content-Language".Length + 1);
-                else if (h.StartsWith("Content-Type")) context.Response.Headers["Content-Type"] = h.Substring("Content-Type".Length + 1);
-                else if (h.StartsWith("Expires")) context.Response.Headers["Expires"] = h.Substring("Expires".Length + 1);
+                var toCopy = headersToCopy.Find(x => h.StartsWith(x));
+                if (string.IsNullOrEmpty(toCopy)) continue;
+                context.Response.Headers[toCopy] = h.Substring(toCopy.Length + 1);
             }
 
             context.Response.ContentType = MimeMapping.GetMimeMapping(path);

@@ -3,7 +3,7 @@
 ## Usage
 
 ```js
-import { AdvancedSelector } from 'asc-web-components';
+import { AdvancedSelector } from 'asc-web-common';
 ```
 
 #### Description

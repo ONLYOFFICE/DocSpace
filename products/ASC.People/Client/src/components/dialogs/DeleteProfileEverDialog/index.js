@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 import { withRouter } from "react-router";
+import PropTypes from "prop-types";
 import {
   toastr,
   ModalDialog,
@@ -10,24 +10,22 @@ import {
 } from "asc-web-components";
 import { withTranslation, Trans } from "react-i18next";
 import i18n from "./i18n";
-import { api } from "asc-web-common";
-import { typeUser } from "../../../helpers/customNames";
+import { api, utils } from "asc-web-common";
 import { fetchPeople } from '../../../store/people/actions';
 import ModalDialogContainer from '../ModalDialogContainer';
 const { deleteUser } = api.people;
 const { Filter } = api;
+const { changeLanguage } = utils;
 
 class DeleteProfileEverDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { language } = props;
-
     this.state = {
       isRequestRunning: false
     };
 
-    i18n.changeLanguage(language);
+    changeLanguage(i18n);
   }
   onDeleteProfileEver = () => {
     const { onClose, filter, fetchPeople, user, t } = this.props;
@@ -51,7 +49,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
 
   render() {
     console.log("DeleteProfileEverDialog render");
-    const { t, visible, user, onClose } = this.props;
+    const { t, visible, user, onClose, userCaption } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -64,7 +62,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
             <>
               <Text>
                 <Trans i18nKey='DeleteUserConfirmation' i18n={i18n}>
-                  {{ typeUser }} <strong>{{ user: user.displayName }}</strong> will be deleted.
+                  {{ userCaption }} <strong>{{ user: user.displayName }}</strong> will be deleted.
               </Trans>
               </Text>
               <Text>{t('NotBeUndone')}</Text>
@@ -120,7 +118,7 @@ DeleteProfileEverDialog.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    language: state.auth.user.cultureName,
+    userCaption: state.auth.settings.customNames.userCaption
   };
 }
 

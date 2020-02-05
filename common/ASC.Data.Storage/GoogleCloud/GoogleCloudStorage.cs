@@ -33,16 +33,21 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 
@@ -55,7 +60,7 @@ namespace ASC.Data.Storage.GoogleCloud
         private PredefinedObjectAcl _moduleAcl;
 
         private string _bucket = "";
-        private string _jsonPath = "";
+        private string _json = "";
 
         private Uri _bucketRoot;
         private Uri _bucketSSlRoot;
@@ -113,7 +118,7 @@ namespace ASC.Data.Storage.GoogleCloud
                 bool.TryParse(props["lower"], out _lowerCasing);
             }
 
-            _jsonPath = props["jsonPath"];
+            _json = props["json"];
 
             if (props.ContainsKey("subdir"))
             {
@@ -125,13 +130,7 @@ namespace ASC.Data.Storage.GoogleCloud
 
         private StorageClient GetStorage()
         {
-            GoogleCredential credential = null;
-
-            using (var jsonStream = new FileStream(_jsonPath, FileMode.Open,
-                FileAccess.Read, FileShare.Read))
-            {
-                credential = GoogleCredential.FromStream(jsonStream);
-            }
+            var credential = GoogleCredential.FromJson(_json);
 
             return StorageClient.Create(credential);
         }
@@ -185,8 +184,8 @@ namespace ASC.Data.Storage.GoogleCloud
 
             using var storage = GetStorage();
 
-            var preSignedURL = UrlSigner.FromServiceAccountPath(_jsonPath)
-                                        .Sign(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
+            var preSignedURL = UrlSigner.FromServiceAccountData(stream).Sign(_bucket, MakePath(domain, path), expire, HttpMethod.Get);
 
             return MakeUri(preSignedURL);
         }
@@ -672,8 +671,8 @@ namespace ASC.Data.Storage.GoogleCloud
 
             storage.UpdateObject(uploaded);
 
-            var preSignedURL = UrlSigner.FromServiceAccountPath(_jsonPath)
-                            .Sign(_bucket, MakePath(domain, path), expires, null);
+            using var mStream = new MemoryStream(Encoding.UTF8.GetBytes(_json ?? ""));
+            var preSignedURL = UrlSigner.FromServiceAccountData(mStream).Sign(_bucket, MakePath(domain, path), expires, null);
 
             //TODO: CNAME!
             return preSignedURL;

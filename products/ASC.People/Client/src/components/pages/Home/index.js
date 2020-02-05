@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { RequestLoader } from "asc-web-components";
-import { PageLayout } from "asc-web-common";
+import { PageLayout, utils } from "asc-web-common";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import i18n from "./i18n";
 
@@ -19,6 +19,7 @@ import {
   SectionPagingContent
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
+const { changeLanguage } = utils;
 
 class PureHome extends React.Component {
   constructor(props) {
@@ -113,6 +114,7 @@ class PureHome extends React.Component {
         />
         <PageLayout
           withBodyScroll={true}
+          withBodyAutoFocus={true}
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={<ArticleMainButtonContent />}
           articleBodyContent={<ArticleBodyContent />}
@@ -147,13 +149,12 @@ class PureHome extends React.Component {
 const HomeContainer = withTranslation()(PureHome);
 
 const Home = (props) => { 
-  const {language} = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
   return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
 }
 
 Home.propTypes = {
-  users: PropTypes.array.isRequired,
+  users: PropTypes.array,
   history: PropTypes.object.isRequired,
   isLoaded: PropTypes.bool
 };
@@ -163,8 +164,7 @@ function mapStateToProps(state) {
     users: state.people.users,
     selection: state.people.selection,
     selected: state.people.selected,
-    isLoaded: state.auth.isLoaded,
-    language: state.auth.user.cultureName || state.auth.settings.culture,
+    isLoaded: state.auth.isLoaded
   };
 }
 

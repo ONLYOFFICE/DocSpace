@@ -1,26 +1,21 @@
 import React, { useEffect } from 'react';
-import { connect } from "react-redux";
-import { ErrorContainer } from 'asc-web-components';
+import ErrorContainer from '../../../components/ErrorContainer';
 import { useTranslation } from 'react-i18next';
 import i18n from './i18n';
+import { changeLanguage } from '../../../utils';
 
-const Error404Container = ({language}) => {
+const Error404Container = () => {
   const { t } = useTranslation('translation', { i18n });
 
   useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
+    changeLanguage(i18n);
+  }, []);
 
-  return <ErrorContainer>{t("Error401Text")}</ErrorContainer>;
+  return <ErrorContainer headerText={t("Error401Text")} />;
 };
 
-function mapStateToProps(state) {
-  return {
-      language: state.auth.user.cultureName || state.auth.settings.culture,
-  };
-}
 
-const Error401 = connect(mapStateToProps)(Error404Container);
+const Error401 = Error404Container;
 
 export default Error401;
 

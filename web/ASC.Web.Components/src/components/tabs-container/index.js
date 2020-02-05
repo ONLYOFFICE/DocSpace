@@ -68,10 +68,6 @@ const Label = styled.div`
     `}
 `;
 
-const BodyContainer = styled.div`
-  margin: 24px 16px 0px 16px;
-`;
-
 class TabContainer extends Component {
   constructor(props) {
     super(props);
@@ -242,7 +238,7 @@ class TabContainer extends Component {
             ))}
           </NavItem>
         </StyledScrollbar>
-        <BodyContainer>{children[activeTab].content}</BodyContainer>
+        <div>{children[activeTab].content}</div>
       </>
     );
   }

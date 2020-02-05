@@ -45,6 +45,7 @@ namespace ASC.Web.Core.Files
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
             FilesDbContext = dbContextManager;
+            CanForcesave = GetCanForcesave();
         }
 
         #region method
@@ -361,6 +362,14 @@ namespace ASC.Web.Core.Files
             if (string.IsNullOrEmpty(result))
                 result = "Authorization";
             return result;
+        }
+
+        public readonly bool CanForcesave;
+
+        private bool GetCanForcesave()
+        {
+            bool canForcesave;
+            return !bool.TryParse(Configuration["files:docservice:forcesave"] ?? "", out canForcesave) || canForcesave;
         }
 
         #endregion

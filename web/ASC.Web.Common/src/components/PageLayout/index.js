@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Backdrop } from "asc-web-components";
 import { withTranslation } from 'react-i18next';
 import i18n from './i18n';
-import { connect } from "react-redux";
+import { ARTICLE_PINNED_KEY } from "../../constants";
 
 import Article from "./sub-components/article";
 import ArticleHeader from "./sub-components/article-header";
@@ -16,6 +16,7 @@ import SectionFilter from "./sub-components/section-filter";
 import SectionBody from "./sub-components/section-body";
 import SectionPaging from "./sub-components/section-paging";
 import SectionToggler from "./sub-components/section-toggler";
+import { changeLanguage } from '../../utils';
 
 class PageLayoutComponent extends React.PureComponent {
   constructor(props) {
@@ -51,7 +52,8 @@ class PageLayoutComponent extends React.PureComponent {
       isSectionPagingAvailable = !!props.sectionPagingContent,
       isSectionBodyAvailable = !!props.sectionBodyContent || isSectionFilterAvailable || isSectionPagingAvailable,
       isSectionAvailable = isSectionHeaderAvailable || isSectionFilterAvailable || isSectionBodyAvailable || isSectionPagingAvailable || isArticleAvailable,
-      isBackdropAvailable = isArticleAvailable;
+      isBackdropAvailable = isArticleAvailable,
+      isArticleVisibleAndPinned = !!localStorage.getItem(ARTICLE_PINNED_KEY);
 
     let newState = {
       isBackdropAvailable: isBackdropAvailable,
@@ -65,9 +67,9 @@ class PageLayoutComponent extends React.PureComponent {
       isSectionBodyAvailable: isSectionBodyAvailable,
       isSectionPagingAvailable: isSectionPagingAvailable,
 
-      isBackdropVisible: props.isBackdropVisible,
-      isArticleVisible: props.isArticleVisible,
-      isArticlePinned: props.isArticlePinned,
+      isBackdropVisible: false,
+      isArticleVisible: isArticleVisibleAndPinned,
+      isArticlePinned: isArticleVisibleAndPinned,
 
       articleHeaderContent: props.articleHeaderContent,
       articleMainButtonContent: props.articleMainButtonContent,
@@ -95,6 +97,8 @@ class PageLayoutComponent extends React.PureComponent {
       isArticlePinned: true,
       isArticleVisible: true
     });
+
+    localStorage.setItem(ARTICLE_PINNED_KEY, true);
   };
 
   unpinArticle = () => {
@@ -103,6 +107,8 @@ class PageLayoutComponent extends React.PureComponent {
       isArticlePinned: false,
       isArticleVisible: true
     });
+
+    localStorage.removeItem(ARTICLE_PINNED_KEY);
   };
 
   showArticle = () => {
@@ -159,7 +165,7 @@ class PageLayoutComponent extends React.PureComponent {
             )}
 
             {this.state.isSectionBodyAvailable && (
-              <SectionBody withScroll={this.props.withBodyScroll} pinned={this.state.isArticlePinned}>
+              <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
                 {this.state.isSectionFilterAvailable && (
                   <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
                 )}
@@ -172,7 +178,7 @@ class PageLayoutComponent extends React.PureComponent {
 
             {this.state.isArticleAvailable && (
               <SectionToggler
-                visible={!this.state.isArticlePinned}
+                visible={!this.state.isArticleVisible}
                 onClick={this.showArticle}
               />
             )}
@@ -184,22 +190,17 @@ class PageLayoutComponent extends React.PureComponent {
 }
 
 const PageLayoutTranslated = withTranslation()(PageLayoutComponent);
-const Pagelayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+const PageLayout = props => {
+  changeLanguage(i18n);
 
   return <PageLayoutTranslated i18n={i18n} {...props} />
 }
 
-Pagelayout.propTypes = {
+PageLayout.propTypes = {
   language:PropTypes.string,
 }
 
 PageLayoutComponent.propTypes = {
-  isBackdropVisible: PropTypes.bool,
-  isArticleVisible: PropTypes.bool,
-  isArticlePinned: PropTypes.bool,
-
   articleHeaderContent: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -230,23 +231,14 @@ PageLayoutComponent.propTypes = {
   ]),
 
   withBodyScroll: PropTypes.bool,
+  withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
 };
 
 PageLayoutComponent.defaultProps = {
-  isBackdropVisible: false,
-  isArticleVisible: false,
-  isArticlePinned: false,
-  withBodyScroll: true
+  withBodyScroll: true,
+  withBodyAutoFocus: false
 };
 
-function mapStateToProps(state) {
-  return {
-    language:
-      state.auth &&
-      ((state.auth.user && state.auth.user.cultureName) ||
-        (state.auth.settings && state.auth.settings.culture))
-  };
-}
 
-export default connect(mapStateToProps)(Pagelayout);
+export default PageLayout;

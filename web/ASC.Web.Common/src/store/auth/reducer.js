@@ -1,8 +1,9 @@
 import {
   SET_CURRENT_USER, SET_MODULES, SET_SETTINGS, SET_IS_LOADED, LOGOUT, SET_PASSWORD_SETTINGS, SET_NEW_EMAIL,
-  GET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, GET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
-} from './actions';
+  SET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, SET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
+  SET_CUSTOM_NAMES } from './actions';
 import isEmpty from "lodash/isEmpty";
+import { LANGUAGE } from '../../constants';
 
 const initialState = {
   isAuthenticated: false,
@@ -35,6 +36,9 @@ const initialState = {
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
       case SET_CURRENT_USER:
+        action.user.cultureName 
+        && localStorage.getItem(LANGUAGE) !== action.user.cultureName
+        && localStorage.setItem(LANGUAGE, action.user.cultureName);
           return Object.assign({}, state, {
               isAuthenticated: !isEmpty(action.user),
               user: action.user
@@ -44,10 +48,13 @@ const authReducer = (state = initialState, action) => {
               modules: action.modules
           });
       case SET_SETTINGS:
+        if (!localStorage.getItem(LANGUAGE)) {
+            localStorage.setItem(LANGUAGE, action.settings.culture);
+        }
           return Object.assign({}, state, {
               settings: { ...state.settings, ...action.settings }
           });
-      case GET_PORTAL_CULTURES:
+      case SET_PORTAL_CULTURES:
           return Object.assign({}, state, {
               settings: { ...state.settings, cultures: action.cultures }
           });
@@ -64,10 +71,13 @@ const authReducer = (state = initialState, action) => {
               user: { ...state.user, email: action.email }
           });
       case SET_PORTAL_LANGUAGE_AND_TIME:
+        if (!state.user.cultureName) {
+            localStorage.setItem(LANGUAGE, action.newSettings.lng);
+        }
           return Object.assign({}, state, {
               settings: { ...state.settings, culture: action.newSettings.lng, timezone: action.newSettings.timeZoneID }
           });
-      case GET_TIMEZONES:
+      case SET_TIMEZONES:
           return Object.assign({}, state, {
               settings: { ...state.settings, timezones: action.timezones }
           });
@@ -82,6 +92,10 @@ const authReducer = (state = initialState, action) => {
       case SET_GREETING_SETTINGS:
           return Object.assign({}, state, {
               settings: { ...state.settings, greetingSettings: action.title }
+          });
+      case SET_CUSTOM_NAMES:
+          return Object.assign({}, state, {
+              settings: { ...state.settings, customNames: action.customNames }
           });
       case LOGOUT:
           return Object.assign({}, initialState, {
