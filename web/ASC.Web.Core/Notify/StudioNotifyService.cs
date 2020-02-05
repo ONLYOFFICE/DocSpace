@@ -40,6 +40,7 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Security.Cryptography;
+using ASC.Web.Core;
 using ASC.Web.Core.Notify;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
@@ -72,6 +73,8 @@ namespace ASC.Web.Studio.Core.Notify
         private IServiceProvider ServiceProvider { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public SettingsManager SettingsManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public WebItemManager WebItemManager { get; }
         private ILog Log { get; }
 
         public StudioNotifyService(
@@ -89,6 +92,8 @@ namespace ASC.Web.Studio.Core.Notify
             IServiceProvider serviceProvider,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             SettingsManager settingsManager,
+            WebItemSecurity webItemSecurity,
+            WebItemManager webItemManager,
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Notify");
@@ -104,6 +109,8 @@ namespace ASC.Web.Studio.Core.Notify
             ServiceProvider = serviceProvider;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
+            WebItemSecurity = webItemSecurity;
+            WebItemManager = webItemManager;
             UserManager = userManager;
             StudioNotifyHelper = studioNotifyHelper;
         }
@@ -259,29 +266,26 @@ namespace ASC.Web.Studio.Core.Notify
                 tags.Add(new TagValue(Tags.Login, login));
             }
 
-            foreach (var email in toEmails)
-            {
-                client.SendNoticeToAsync(
-                    skipSettings
-                        ? Actions.MailboxWithoutSettingsCreated
-                        : Actions.MailboxCreated,
-                    StudioNotifyHelper.RecipientFromEmail(email, false),
-                    new[] { EMailSenderName },
-                    tags.ToArray());
-            }
+            client.SendNoticeToAsync(
+                skipSettings
+                    ? Actions.MailboxWithoutSettingsCreated
+                    : Actions.MailboxCreated,
+                null,
+                StudioNotifyHelper.RecipientFromEmail(toEmails, false),
+                new[] { EMailSenderName },
+                null);
         }
 
         public void SendMailboxPasswordChanged(List<string> toEmails, string username, string address)
         {
-            foreach (var email in toEmails)
-            {
-                client.SendNoticeToAsync(
-                    Actions.MailboxPasswordChanged,
-                    StudioNotifyHelper.RecipientFromEmail(email, false),
-                    new[] { EMailSenderName },
-                    new TagValue(Tags.UserName, username ?? string.Empty),
-                    new TagValue(Tags.Address, address ?? string.Empty));
-            }
+            client.SendNoticeToAsync(
+                Actions.MailboxPasswordChanged,
+                null,
+                StudioNotifyHelper.RecipientFromEmail(toEmails, false),
+                new[] { EMailSenderName },
+                null,
+                new TagValue(Tags.UserName, username ?? string.Empty),
+                new TagValue(Tags.Address, address ?? string.Empty));
         }
 
         #endregion
@@ -320,8 +324,8 @@ namespace ASC.Web.Studio.Core.Notify
 
         public void SendJoinMsg(string email, EmployeeType emplType)
         {
-            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType, AuthContext.CurrentAccount.ID)
-                            + string.Format("&emplType={0}", emplType);
+            var inviteUrl = CommonLinkUtility.GetConfirmationUrl(email, ConfirmType.EmpInvite, (int)emplType)
+                            + string.Format("&emplType={0}", (int)emplType);
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
 
@@ -330,8 +334,7 @@ namespace ASC.Web.Studio.Core.Notify
                         StudioNotifyHelper.RecipientFromEmail(email, true),
                         new[] { EMailSenderName },
                         new TagValue(Tags.InviteLink, inviteUrl),
-                        TagValues.GreenButton(greenButtonText, inviteUrl),
-                        TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
+                        TagValues.GreenButton(greenButtonText, inviteUrl));
         }
 
         public void UserInfoAddedAfterInvite(UserInfo newUserInfo)
@@ -455,7 +458,6 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -491,7 +493,6 @@ namespace ASC.Web.Studio.Core.Notify
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
                 new TagValue(CommonTags.Footer, footer),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper),
                 new TagValue(CommonTags.Analytics, analytics));
         }
 
@@ -511,6 +512,42 @@ namespace ASC.Web.Studio.Core.Notify
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, confirmationUrl),
                 new TagValue(CommonTags.Culture, user.GetCulture().Name));
+        }
+
+        public void SendMsgProfileHasDeletedItself(UserInfo user)
+        {
+            var tenant = TenantManager.GetCurrentTenant();
+            var admins = UserManager.GetUsers()
+                        .Where(u => WebItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.ID));
+
+            ThreadPool.QueueUserWorkItem(_ =>
+            {
+                try
+                {
+                    TenantManager.SetCurrentTenant(tenant);
+
+                    foreach (var admin in admins)
+                    {
+                        var culture = string.IsNullOrEmpty(admin.CultureName) ? tenant.GetCulture() : admin.GetCulture();
+                        Thread.CurrentThread.CurrentCulture = culture;
+                        Thread.CurrentThread.CurrentUICulture = culture;
+
+                        client.SendNoticeToAsync(
+                            Actions.ProfileHasDeletedItself,
+                            null,
+                            new IRecipient[] { admin },
+                            new[] { EMailSenderName },
+                            null,
+                            new TagValue(Tags.FromUserName, user.DisplayUserName(DisplayUserSettingsHelper)),
+                            new TagValue(Tags.FromUserLink, GetUserProfileLink(user)));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            });
+
         }
 
         public void SendMsgReassignsCompleted(Guid recipientId, UserInfo fromUser, UserInfo toUser)
@@ -595,20 +632,19 @@ namespace ASC.Web.Studio.Core.Notify
                 tagValues.Add(new TagValue(CommonTags.Analytics, analytics));
 
                 tagValues.Add(TagValues.TableTop());
-                tagValues.Add(TagValues.TableItem(1, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-regional-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_regional, null, null));
-                tagValues.Add(TagValues.TableItem(2, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-brand-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_brand, null, null));
-                tagValues.Add(TagValues.TableItem(3, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-customize-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_customize, null, null));
-                tagValues.Add(TagValues.TableItem(4, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-security-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_security, null, null));
-                tagValues.Add(TagValues.TableItem(5, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-usertrack-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_usertrack, null, null));
-                tagValues.Add(TagValues.TableItem(6, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-backup-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_backup, null, null));
-                tagValues.Add(TagValues.TableItem(7, null, null, "https://static.onlyoffice.com/media/newsletters/images-v10/tips-welcome-telephony-50.png", () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_telephony, null, null));
+                tagValues.Add(TagValues.TableItem(1, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-regional-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_regional, null, null));
+                tagValues.Add(TagValues.TableItem(2, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-brand-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_brand, null, null));
+                tagValues.Add(TagValues.TableItem(3, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-customize-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_customize, null, null));
+                tagValues.Add(TagValues.TableItem(4, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-security-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_security, null, null));
+                tagValues.Add(TagValues.TableItem(5, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-usertrack-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_usertrack, null, null));
+                tagValues.Add(TagValues.TableItem(6, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-backup-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_backup, null, null));
+                tagValues.Add(TagValues.TableItem(7, null, null, StudioNotifyHelper.GetNotificationImageUrl("tips-welcome-telephony-50.png"), () => WebstudioNotifyPatternResource.pattern_saas_admin_welcome_v10_item_telephony, null, null));
                 tagValues.Add(TagValues.TableBottom());
 
                 tagValues.Add(new TagValue(CommonTags.Footer, "common"));
             }
 
             tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
-            tagValues.Add(TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
 
             client.SendNoticeToAsync(
                 notifyAction,
@@ -633,7 +669,7 @@ namespace ASC.Web.Studio.Core.Notify
             var owner = UserManager.GetUsers(tenant.OwnerId);
             var users =
                 notifyAllUsers
-                    ? StudioNotifyHelper.RecipientFromEmail(UserManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToArray(), false)
+                    ? StudioNotifyHelper.RecipientFromEmail(UserManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
                     : owner.ActivationStatus == EmployeeActivationStatus.Activated ? StudioNotifyHelper.RecipientFromEmail(owner.Email, false) : new IDirectRecipient[0];
 
             client.SendNoticeToAsync(
@@ -716,6 +752,7 @@ namespace ASC.Web.Studio.Core.Notify
                         Actions.DnsChange,
                         new IRecipient[] { u },
                         new[] { EMailSenderName },
+                        new TagValue("ConfirmDnsUpdate", confirmDnsUpdateUrl),//TODO: Tag is deprecated and replaced by TagGreenButton
                         TagValues.GreenButton(greenButtonText, confirmDnsUpdateUrl),
                         new TagValue("PortalAddress", AddHttpToUrl(portalAddress)),
                         new TagValue("PortalDns", AddHttpToUrl(portalDns ?? string.Empty)),
@@ -817,8 +854,7 @@ namespace ASC.Web.Studio.Core.Notify
                 StudioNotifyHelper.RecipientFromEmail(newUserInfo.Email, true),
                 new[] { EMailSenderName },
                 new TagValue(CommonTags.Footer, CoreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
-                new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"),
-                TagValues.SendFrom(TenantManager, UserManager, AuthContext, DisplayUserSettingsHelper));
+                new TagValue(CommonTags.MasterTemplate, "HtmlMasterPersonal"));
         }
 
         #endregion
@@ -943,7 +979,9 @@ namespace ASC.Web.Studio.Core.Notify
                 .AddTenantManagerService()
                 .AddCoreBaseSettingsService()
                 .AddCommonLinkUtilityService()
-                .AddSetupInfo();
+                .AddSetupInfo()
+                .AddWebItemSecurity()
+                .AddWebItemManager();
         }
     }
 }

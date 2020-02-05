@@ -417,6 +417,7 @@ class CreateUserForm extends React.Component {
               copyLinkText={t("CopyEmailAndPassword")}
               inputTabIndex={4}
               passwordSettings={settings.passwordSettings}
+              t={t}
             />
             <DateField
               calendarHeaderContent={`${t("CalendarSelectDate")}:`}

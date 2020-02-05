@@ -29,7 +29,7 @@ using System.Globalization;
 
 namespace ASC.Data.Storage
 {
-    public class TennantPath
+    public class TenantPath
     {
         public static string CreatePath(string tenant)
         {
@@ -38,10 +38,10 @@ namespace ASC.Data.Storage
                 throw new ArgumentNullException("tenant");
             }
 
-            if (long.TryParse(tenant, NumberStyles.Integer, CultureInfo.InvariantCulture, out var tennantId))
+            if (long.TryParse(tenant, NumberStyles.Integer, CultureInfo.InvariantCulture, out var tenantId))
             {
                 var culture = CultureInfo.InvariantCulture;
-                return tennantId == 0 ? tennantId.ToString(culture) : tennantId.ToString("00/00/00", culture);
+                return tenantId == 0 ? tenantId.ToString(culture) : tenantId.ToString("00/00/00", culture);
             }
             return tenant;
         }

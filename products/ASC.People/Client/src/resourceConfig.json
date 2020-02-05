@@ -128,6 +128,12 @@
         "FemaleSexStatus",
         "EditUserDialogTitle",
         "ErrorUnknownFileImageType",
+        "AccessRightsFullAccess",
+        "ErrorPasswordMessage",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoSpecialSymbols",
         "Error"
       ],
       "FeedResource": [
@@ -136,6 +142,10 @@
         "CommunityProduct",
         "Message",
         "WriteComment"
+      ],
+      "CustomModeResource": [
+        "ReviewingCustomMode"
+        
       ]
     },
     "Home": {

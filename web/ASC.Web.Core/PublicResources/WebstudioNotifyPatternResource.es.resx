@@ -1071,6 +1071,13 @@ $GreenButton
 
 *Note* : este enlace tiene una validez sólo de 7 días. Por favor, complete el proceso de eliminación de perfil dentro de ese período.</value>
   </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Usuario "$FromUserName":"$FromUserLink" ha eliminado su perfil, ahora este perfil está bloqueado. Todos los archivos de este usuario aún están asignados a él/ella y ocupan espacio en disco. 
+
+Usted puede reasignar los documentos de este usuario compartidos con los demás a otro usuario activo o eliminarlos para liberar espacio en disco en el portal.
+
+Por favor, vaya al perfil de usuario usando "este enlace":"$FromUserLink" para reasignar documentos a otro usuario o eliminar los datos.</value>
+  </data>
   <data name="pattern_profile_updated" xml:space="preserve">
     <value>h1.Su Perfil en "$__VirtualRootPath":"$__VirtualRootPath" ha sido cambiado
 
@@ -1773,6 +1780,9 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Eliminación de su perfil en el portal ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Usuario ha eliminado su perfil</value>
   </data>
   <data name="subject_profile_updated" xml:space="preserve">
     <value>Su perfil ${__VirtualRootPath} ha sido cambiado</value>

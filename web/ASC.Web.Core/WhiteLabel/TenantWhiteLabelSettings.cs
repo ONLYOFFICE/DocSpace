@@ -31,6 +31,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
@@ -38,9 +39,11 @@ using ASC.Core.Common.WhiteLabel;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility.Skins;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using TMResourceData;
 
 namespace ASC.Web.Core.WhiteLabel
@@ -209,6 +212,7 @@ namespace ASC.Web.Core.WhiteLabel
         public WhiteLabelHelper WhiteLabelHelper { get; }
         public TenantManager TenantManager { get; }
         public SettingsManager SettingsManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         public IOptionsMonitor<ILog> Option { get; }
 
         public ILog Log { get; set; }
@@ -220,6 +224,7 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper whiteLabelHelper,
             TenantManager tenantManager,
             SettingsManager settingsManager,
+            CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> option)
         {
             WebImageSupplier = webImageSupplier;
@@ -228,6 +233,7 @@ namespace ASC.Web.Core.WhiteLabel
             WhiteLabelHelper = whiteLabelHelper;
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
+            CoreBaseSettings = coreBaseSettings;
             Option = option;
             Log = option.CurrentValue;
         }
@@ -560,7 +566,7 @@ namespace ASC.Web.Core.WhiteLabel
         private void SetNewLogoText(TenantWhiteLabelSettings tenantWhiteLabelSettings, int tenantId, bool restore = false)
         {
             WhiteLabelHelper.DefaultLogoText = TenantWhiteLabelSettings.DefaultLogoText;
-            if (restore)
+            if (restore && !CoreBaseSettings.CustomMode)
             {
                 WhiteLabelHelper.RestoreOldText(tenantId);
             }
@@ -603,7 +609,8 @@ namespace ASC.Web.Core.WhiteLabel
                 .AddWebImageSupplierService()
                 .AddStorageFactoryService()
                 .AddWhiteLabelHelperService()
-                .AddSettingsManagerService();
+                .AddSettingsManagerService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

@@ -18,6 +18,7 @@ const StyledText = styled(PureText)`
   text-decoration: none;
   user-select: none;
   cursor: pointer;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   opacity: ${props => props.isSemitransparent && "0.5"};
 
   line-height: calc(100% + 6px);

@@ -16,6 +16,7 @@ const Label = styled.label`
   -o-user-select: none;
   -moz-user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .checkbox {
     margin-right: 8px;

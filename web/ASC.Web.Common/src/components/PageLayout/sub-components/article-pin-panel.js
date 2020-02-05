@@ -9,6 +9,7 @@ const StyledArticlePinPanel = styled.div`
   height: 56px;
   min-height: 56px;
   display: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media ${tablet} {
     display: block;

@@ -108,7 +108,7 @@ export function setFilterUrl(filter) {
   }
 
   if (filter.search) {
-    params.push(`${SEARCH}=${filter.search}`);
+    params.push(`${SEARCH}=${filter.search.trim()}`);
   }
 
   if (filter.pageCount !== defaultFilter.pageCount) {

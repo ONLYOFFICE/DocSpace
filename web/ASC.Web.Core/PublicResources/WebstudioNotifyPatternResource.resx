@@ -1085,6 +1085,13 @@ $GreenButton
 
 *Note*: this link is valid for 7 days only. Please complete the profile deletion process within that period.</value>
   </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>User "$FromUserName":"$FromUserLink" has deleted his/her profile, and this profile is now blocked. All user’s files are still assigned to him/her and occupy disk space. 
+
+You can reassign the user’s documents shared with others to another active user or remove them to free up the portal disk space.
+
+Please go to the user profile using "this link":"$FromUserLink" to reassign documents to another user or remove the data.</value>
+  </data>
   <data name="pattern_profile_updated" xml:space="preserve">
     <value>h1.Your profile at "$__VirtualRootPath":"$__VirtualRootPath" has been changed
 
@@ -1789,6 +1796,9 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Deletion of your profile from ${__VirtualRootPath} portal</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>User has deleted his/her profile</value>
   </data>
   <data name="subject_profile_updated" xml:space="preserve">
     <value>Your profile at ${__VirtualRootPath} has been changed</value>

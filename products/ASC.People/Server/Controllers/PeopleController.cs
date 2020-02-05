@@ -81,6 +81,7 @@ namespace ASC.Employee.Core.Controllers
         public IOptionsSnapshot<AccountLinker> AccountLinker { get; }
         public EmployeeWraperFullHelper EmployeeWraperFullHelper { get; }
         public EmployeeWraperHelper EmployeeWraperHelper { get; }
+        public UserFormatter UserFormatter { get; }
         public ILog Log { get; }
 
         public PeopleController(
@@ -114,7 +115,8 @@ namespace ASC.Employee.Core.Controllers
             IOptionsMonitor<ILog> option,
             IOptionsSnapshot<AccountLinker> accountLinker,
             EmployeeWraperFullHelper employeeWraperFullHelper,
-            EmployeeWraperHelper employeeWraperHelper)
+            EmployeeWraperHelper employeeWraperHelper,
+            UserFormatter userFormatter)
         {
             Log = option.Get("ASC.Api");
             MessageService = messageService;
@@ -147,6 +149,7 @@ namespace ASC.Employee.Core.Controllers
             AccountLinker = accountLinker;
             EmployeeWraperFullHelper = employeeWraperFullHelper;
             EmployeeWraperHelper = employeeWraperHelper;
+            UserFormatter = userFormatter;
         }
 
         [Read("info")]
@@ -1493,7 +1496,8 @@ namespace ASC.Employee.Core.Controllers
                 .AddUserManagerService()
                 .AddSettingsManagerService()
                 .AddEmployeeWraperFull()
-                .AddEmployeeWraper();
+                .AddEmployeeWraper()
+                .AddUserFormatter();
         }
     }
 }

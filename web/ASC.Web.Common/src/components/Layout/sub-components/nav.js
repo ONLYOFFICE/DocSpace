@@ -17,6 +17,7 @@ const StyledNav = styled.nav`
   transition: width 0.3s ease-in-out;
   width: ${props => (props.opened ? "240px" : "56px")};
   z-index: 200;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media ${tablet} {
     width: ${props => (props.opened ? "240px" : "0")};

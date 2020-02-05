@@ -316,6 +316,9 @@ $GreenButton
 
 *Remarque* : ce lien est valable pour 7 jours seulement. Veuillez compléter le processus de changementle de l'adresse du  portail au courant de cette période.</value>
   </data>
+  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
+    <value>Laissez vos membres de l'équipe utiliser Facebook, Twitter, Google ou LinkedIn pour se connecter. Reliez votre portail avec Box, Dropbox, OneDrive et Google pour transfér vos documents. Connectez DocuSign pour utiliser signature électronique, Twilio - pour VoIP, Bitly - pour raccourcir les liens et Firebase pour recevoir les notifications quand vous n'êtes pas connecté.</value>
+  </data>
   <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
     <value>Conseil #5 : Connectez parties tierces</value>
   </data>
@@ -763,6 +766,9 @@ $GreenButton
 
 *Note*: ce lien est valable pour 7 jours seulement. Veuillez compléter le processus de suppression du profil au cours de cette période.</value>
   </data>
+  <data name="pattern_profile_has_deleted_itself" xml:space="preserve">
+    <value>Utilisateur "$FromUserName":"$FromUserLink" a supprimeré son profil, et son profil est à présent bloqué. Tous les fichiers de l'utilisateur sont toujours lui attribué et occupent l'éspace sur le disque. </value>
+  </data>
   <data name="pattern_profile_updated" xml:space="preserve">
     <value>h1.Votre profil sur "$__VirtualRootPath":"$__VirtualRootPath" a été changé
 
@@ -892,6 +898,9 @@ Meilleures salutations,
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v10_item_attach_hdr" xml:space="preserve">
     <value>Joignez des fichiers aux projets et aux emails</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting" xml:space="preserve">
+    <value>Lors de la co-rédaction d'un document avec votre équipe en temps réel, passer au mode Rapide pour apercevoir les changements que votre co-éditeur fait ou au mode Stricte pour travailler en privé.</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v10_item_coediting_hdr" xml:space="preserve">
     <value>Choisissez la mode co-édition</value>
@@ -1148,6 +1157,9 @@ Meilleures salutations,
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Suppression de votre profil sur le portail ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_profile_has_deleted_itself" xml:space="preserve">
+    <value>Utilisateur a supprimé son profile</value>
   </data>
   <data name="subject_profile_updated" xml:space="preserve">
     <value>Votre profil à ${__VirtualRootPath} a été changé</value>

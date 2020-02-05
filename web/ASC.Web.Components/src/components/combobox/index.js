@@ -18,6 +18,7 @@ const StyledComboBox = styled.div`
 
   position: relative;
   outline: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   
   .dropdown-container {
     padding: ${props => props.advancedOptions && `6px 0px`};
