@@ -43,7 +43,7 @@ const StyledContainer = styled.div`
         margin-left: auto;
 
         & > div:first-child {
-          padding: 8px 16px 8px 16px;
+          padding: 8px 16px 8px 0px;
           margin-right: -16px;
         }
       }
