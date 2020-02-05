@@ -471,6 +471,7 @@ class UpdateUserForm extends React.Component {
               unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
               unknownError={t("Error")}
+              saveButtonLabel={t('SaveButton')}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
