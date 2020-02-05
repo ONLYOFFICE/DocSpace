@@ -3,7 +3,6 @@ import { withRouter } from "react-router";
 import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
-import { useTranslation } from 'react-i18next';
 import { history } from "asc-web-common";
 
 const getFormatedGroups = (user, status) => {
@@ -73,9 +72,8 @@ const UserContent = ({ user, history, settings }) => {
     [email]
   );
 
-  const nameColor = status === 'pending' ? '#A3A9AE' : '#333333';
+  const nameColor = status === 'disabled' ? '#A3A9AE' : '#333333';
   const sideInfoColor = ((status === 'pending') || (status === 'disabled')) ? '#D0D5DA' : '#A3A9AE';
-  //const { t } = useTranslation();
 
   const headDepartmentStyle = {
     width: '110px'
