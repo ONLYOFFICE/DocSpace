@@ -651,36 +651,39 @@ const Selector = props => {
         </Body>
       </Column>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <Column className="column-groups" displayType={displayType} size={size}>
-          <Header className="header-groups">
-            <Text
-              as="p"
-              className="group_header"
-              fontSize="15px"
-              fontWeight={600}
-            >
-              {groupsHeaderLabel}
-            </Text>
-          </Header>
-          <Body className="body-groups">
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  className="group_list"
-                  height={height}
-                  width={width + 8}
-                  itemSize={32}
-                  itemCount={groups.length}
-                  itemData={groups}
-                  outerElementType={CustomScrollbarsVirtualList}
-                  ref={listGroupsRef}
-                >
-                  {renderGroup}
-                </List>
-              )}
-            </AutoSizer>
-          </Body>
-        </Column>
+        <>
+          <div className="splitter"></div>
+          <Column className="column-groups" displayType={displayType} size={size}>
+            <Header className="header-groups">
+              <Text
+                as="p"
+                className="group_header"
+                fontSize="15px"
+                fontWeight={600}
+              >
+                {groupsHeaderLabel}
+              </Text>
+            </Header>
+            <Body className="body-groups">
+              <AutoSizer>
+                {({ height, width }) => (
+                  <List
+                    className="group_list"
+                    height={height}
+                    width={width + 8}
+                    itemSize={32}
+                    itemCount={groups.length}
+                    itemData={groups}
+                    outerElementType={CustomScrollbarsVirtualList}
+                    ref={listGroupsRef}
+                  >
+                    {renderGroup}
+                  </List>
+                )}
+              </AutoSizer>
+            </Body>
+          </Column>
+        </>
       )}
       <Footer
         className="footer"
