@@ -30,19 +30,45 @@ using ASC.Common.Logging;
 using ASC.Files.Core;
 using ASC.MessagingSystem;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Files.Helpers
 {
-    public static class FilesMessageService
+    public class FilesMessageService
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Messaging");
+        private readonly ILog log;
 
+        public MessageTarget MessageTarget { get; }
+        public MessageService MessageService { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
-        public static void Send(Dictionary<string, string> headers, MessageAction action)
+        public FilesMessageService(
+            IOptionsMonitor<ILog> options,
+            MessageTarget messageTarget,
+            MessageService messageService)
+        {
+            log = options.Get("ASC.Messaging");
+            MessageTarget = messageTarget;
+            MessageService = messageService;
+        }
+
+        public FilesMessageService(
+            IOptionsMonitor<ILog> options,
+            MessageTarget messageTarget,
+            MessageService messageService,
+            IHttpContextAccessor httpContextAccessor)
+            : this(options, messageTarget, messageService)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
+
+        public void Send(Dictionary<string, string> headers, MessageAction action)
         {
             SendHeadersMessage(headers, action, null);
         }
 
-        public static void Send(FileEntry entry, Dictionary<string, string> headers, MessageAction action, params string[] description)
+        public void Send(FileEntry entry, Dictionary<string, string> headers, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
@@ -50,7 +76,7 @@ namespace ASC.Web.Files.Helpers
             SendHeadersMessage(headers, action, MessageTarget.Create(entry.ID), description);
         }
 
-        public static void Send(FileEntry entry1, FileEntry entry2, Dictionary<string, string> headers, MessageAction action, params string[] description)
+        public void Send(FileEntry entry1, FileEntry entry2, Dictionary<string, string> headers, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry1 == null || entry2 == null || entry1.RootFolderType == FolderType.USER || entry2.RootFolderType == FolderType.USER) return;
@@ -58,7 +84,7 @@ namespace ASC.Web.Files.Helpers
             SendHeadersMessage(headers, action, MessageTarget.Create(new[] { entry1.ID, entry2.ID }), description);
         }
 
-        private static void SendHeadersMessage(Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
+        private void SendHeadersMessage(Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
         {
             if (headers == null)
             {
@@ -70,22 +96,22 @@ namespace ASC.Web.Files.Helpers
         }
 
 
-        public static void Send(FileEntry entry, HttpRequest request, MessageAction action, params string[] description)
+        public void Send(FileEntry entry, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
 
-            if (request == null)
+            if (HttpContextAccessor == null)
             {
                 log.Debug(string.Format("Empty Http Request for \"{0}\" type of event", action));
                 return;
             }
 
-            MessageService.Send(request, action, MessageTarget.Create(entry.ID), description);
+            MessageService.Send(action, MessageTarget.Create(entry.ID), description);
         }
 
 
-        public static void Send(FileEntry entry, MessageInitiator initiator, MessageAction action, params string[] description)
+        public void Send(FileEntry entry, MessageInitiator initiator, MessageAction action, params string[] description)
         {
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
 

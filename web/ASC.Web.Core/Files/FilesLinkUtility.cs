@@ -83,6 +83,7 @@ namespace ASC.Web.Core.Files
         public const string FolderUrl = "folderurl";
         public const string OutType = "outputtype";
         public const string AuthKey = "stream_auth";
+        public const string Anchor = "anchor";
 
         public string FileHandlerPath
         {

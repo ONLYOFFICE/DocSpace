@@ -93,6 +93,7 @@ namespace ASC.Web.Files
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public PathProvider PathProvider { get; }
         public DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
+        public FilesMessageService FilesMessageService { get; }
         public UserManager UserManager { get; }
         public ILog Logger { get; }
         public CookiesManager CookiesManager { get; }
@@ -118,7 +119,8 @@ namespace ASC.Web.Files
             GlobalFolderHelper globalFolderHelper,
             PathProvider pathProvider,
             UserManager userManager,
-            DocumentServiceTrackerHelper documentServiceTrackerHelper)
+            DocumentServiceTrackerHelper documentServiceTrackerHelper,
+            FilesMessageService filesMessageService)
         {
             Next = next;
             FilesLinkUtility = filesLinkUtility;
@@ -137,6 +139,7 @@ namespace ASC.Web.Files
             GlobalFolderHelper = globalFolderHelper;
             PathProvider = pathProvider;
             DocumentServiceTrackerHelper = documentServiceTrackerHelper;
+            FilesMessageService = filesMessageService;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
             CookiesManager = cookiesManager;
@@ -298,7 +301,7 @@ namespace ASC.Web.Files
                 //TODO
                 //context.Response.Headers.Charset = "utf-8";
 
-                FilesMessageService.Send(file, context.Request, MessageAction.FileDownloaded, file.Title);
+                FilesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
 
                 if (string.Equals(context.Request.Headers["If-None-Match"], GetEtag(file)))
                 {

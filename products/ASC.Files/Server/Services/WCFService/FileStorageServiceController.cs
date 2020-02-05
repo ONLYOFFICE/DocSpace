@@ -97,6 +97,11 @@ namespace ASC.Web.Files.Services.WCFService
         public SocketManager SocketManager { get; }
         public IDaoFactory DaoFactory { get; }
         public FileMarker FileMarker { get; }
+        public EntryManager EntryManager { get; }
+        public FilesMessageService FilesMessageService { get; }
+        public DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
+        public DocuSignToken DocuSignToken { get; }
+        public DocuSignHelper DocuSignHelper { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -121,7 +126,12 @@ namespace ASC.Web.Files.Services.WCFService
             FileSecurity fileSecurity,
             SocketManager socketManager,
             IDaoFactory daoFactory,
-            FileMarker fileMarker)
+            FileMarker fileMarker,
+            EntryManager entryManager,
+            FilesMessageService filesMessageService,
+            DocumentServiceTrackerHelper documentServiceTrackerHelper,
+            DocuSignToken docuSignToken,
+            DocuSignHelper docuSignHelper)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -144,6 +154,11 @@ namespace ASC.Web.Files.Services.WCFService
             SocketManager = socketManager;
             DaoFactory = daoFactory;
             FileMarker = fileMarker;
+            EntryManager = entryManager;
+            FilesMessageService = filesMessageService;
+            DocumentServiceTrackerHelper = documentServiceTrackerHelper;
+            DocuSignToken = docuSignToken;
+            DocuSignHelper = docuSignHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -165,11 +180,10 @@ namespace ASC.Web.Files.Services.WCFService
         public ItemList<Folder> GetFolders(string parentId)
         {
             var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
 
             try
             {
-                var folders = EntryManager.GetEntries(folderDao, fileDao, folderDao.GetFolder(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true), out var total);
+                var folders = EntryManager.GetEntries(folderDao.GetFolder(parentId), 0, 0, FilterType.FoldersOnly, false, Guid.Empty, string.Empty, false, false, new OrderBy(SortedByType.AZ, true), out var total);
                 return new ItemList<Folder>(folders.OfType<Folder>());
             }
             catch (Exception e)
@@ -231,7 +245,7 @@ namespace ASC.Web.Files.Services.WCFService
             IEnumerable<FileEntry> entries;
             try
             {
-                entries = EntryManager.GetEntries(folderDao, fileDao, parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, out total);
+                entries = EntryManager.GetEntries(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, out total);
             }
             catch (Exception e)
             {
@@ -451,7 +465,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 try
                 {
-                    entries = EntryManager.GetEntries(folderDao, fileDao, parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy, out var total);
+                    entries = EntryManager.GetEntries(parent, 0, 0, filter, subjectGroup, subjectId, search, searchInContent, withSubfolders, orderBy, out var total);
                 }
                 catch (Exception e)
                 {
@@ -674,7 +688,7 @@ namespace ASC.Web.Files.Services.WCFService
                         !string.IsNullOrEmpty(configuration.ErrorMessage) ? configuration.ErrorMessage : FilesCommonResource.ErrorMassage_SecurityException_EditFile);
                 var key = configuration.Document.Key;
 
-                if (!DocumentServiceTracker.StartTrack(fileId, key))
+                if (!DocumentServiceTrackerHelper.StartTrack(fileId, key))
                 {
                     throw new Exception(FilesCommonResource.ErrorMassage_StartEditing);
                 }
