@@ -187,7 +187,7 @@ namespace ASC.Core.Common
             return ServerRootPath + VirtualRoot.TrimEnd('/') + "/" + virtualPath.TrimStart('~', '/');
         }
 
-        public static string ToAbsolute(string virtualPath)
+        public string ToAbsolute(string virtualPath)
         {
             if (_vpath == null)
             {

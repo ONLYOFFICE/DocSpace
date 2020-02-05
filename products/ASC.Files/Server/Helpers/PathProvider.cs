@@ -51,7 +51,7 @@ namespace ASC.Web.Files.Classes
 
         public static readonly string StartURL = FilesLinkUtility.FilesBaseVirtualPath;
 
-        public static readonly string GetFileServicePath = BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
+        public readonly string GetFileServicePath;
 
         public WebImageSupplier WebImageSupplier { get; }
         public IDaoFactory DaoFactory { get; }
@@ -59,6 +59,7 @@ namespace ASC.Web.Files.Classes
         public FilesLinkUtility FilesLinkUtility { get; }
         public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
         public GlobalStore GlobalStore { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
         public PathProvider(
             WebImageSupplier webImageSupplier,
@@ -66,7 +67,8 @@ namespace ASC.Web.Files.Classes
             CommonLinkUtility commonLinkUtility,
             FilesLinkUtility filesLinkUtility,
             EmailValidationKeyProvider emailValidationKeyProvider,
-            GlobalStore globalStore)
+            GlobalStore globalStore,
+            BaseCommonLinkUtility baseCommonLinkUtility)
         {
             WebImageSupplier = webImageSupplier;
             DaoFactory = daoFactory;
@@ -74,6 +76,8 @@ namespace ASC.Web.Files.Classes
             FilesLinkUtility = filesLinkUtility;
             EmailValidationKeyProvider = emailValidationKeyProvider;
             GlobalStore = globalStore;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            GetFileServicePath = BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Services/WCFService/service.svc/");
         }
 
         public string GetImagePath(string imgFileName)
@@ -81,7 +85,7 @@ namespace ASC.Web.Files.Classes
             return WebImageSupplier.GetAbsoluteWebPath(imgFileName, Configuration.ProductEntryPoint.ID);
         }
 
-        public static string GetFileStaticRelativePath(string fileName)
+        public string GetFileStaticRelativePath(string fileName)
         {
             var ext = FileUtility.GetFileExtension(fileName);
             switch (ext)
@@ -97,7 +101,7 @@ namespace ASC.Web.Files.Classes
             return fileName;
         }
 
-        public static string GetFileControlPath(string fileName)
+        public string GetFileControlPath(string fileName)
         {
             return BaseCommonLinkUtility.ToAbsolute("~/Products/Files/Controls/" + fileName);
         }

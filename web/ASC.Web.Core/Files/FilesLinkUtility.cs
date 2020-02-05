@@ -44,14 +44,22 @@ namespace ASC.Web.Core.Files
         public const string EditorPage = "doceditor.aspx";
         private readonly string FilesUploaderURL;
         public CommonLinkUtility CommonLinkUtility { get; set; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
         public IConfiguration Configuration { get; }
         public InstanceCrypto InstanceCrypto { get; }
 
-        public FilesLinkUtility(CommonLinkUtility commonLinkUtility, CoreBaseSettings coreBaseSettings, CoreSettings coreSettings, IConfiguration configuration, InstanceCrypto instanceCrypto)
+        public FilesLinkUtility(
+            CommonLinkUtility commonLinkUtility,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            InstanceCrypto instanceCrypto)
         {
             CommonLinkUtility = commonLinkUtility;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             Configuration = configuration;
