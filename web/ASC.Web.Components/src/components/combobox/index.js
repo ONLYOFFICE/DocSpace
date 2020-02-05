@@ -18,6 +18,7 @@ const StyledComboBox = styled.div`
 
   position: relative;
   outline: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
 class ComboBox extends React.Component {

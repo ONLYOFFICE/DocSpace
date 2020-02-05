@@ -343,7 +343,7 @@ class PureAdminsSettings extends Component {
   };
 
   render() {
-    const { t, admins, filter, me } = this.props;
+    const { t, admins, filter, me, groupsCaption } = this.props;
     const {
       showSelector,
       isLoading,
@@ -390,6 +390,7 @@ class PureAdminsSettings extends Component {
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
                     defaultOptionLabel={t("MeLabel")}
+                    groupsCaption={groupsCaption}
                   />
                 </div>
                 <div className="full-admin_container">
@@ -410,6 +411,7 @@ class PureAdminsSettings extends Component {
                     onCancel={this.onCancelSelector}
                     defaultOption={me}
                     defaultOptionLabel={t("MeLabel")}
+                    groupsCaption={groupsCaption}
                   />
                 </div>
               </div>
@@ -557,13 +559,15 @@ const AdminsSettings = props => {
 function mapStateToProps(state) {
   const { admins, owner, filter } = state.settings.security.accessRight;
   const { user: me } = state.auth;
+  const groupsCaption = state.auth.settings.customNames.groupsCaption;
 
   return {
     admins,
     productId: state.auth.modules[0].id,
     owner,
     filter,
-    me
+    me,
+    groupsCaption
   };
 }
 

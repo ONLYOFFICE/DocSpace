@@ -31,10 +31,11 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(i18nInstance) {
-  return localStorage.getItem(LANGUAGE) 
-  ? (i18nInstance.language !== localStorage.getItem(LANGUAGE) 
-    ? i18nInstance.changeLanguage(localStorage.getItem(LANGUAGE))
-    : Promise.resolve((...args) => i18nInstance.t(...args)))
-  : i18nInstance.changeLanguage('en');
+export function changeLanguage(i18n) {
+  const currentLng = localStorage.getItem(LANGUAGE);
+  return currentLng 
+  ? (i18n.language !== currentLng 
+    ? i18n.changeLanguage(currentLng)
+    : Promise.resolve((...args) => i18n.t(...args)))
+  : i18n.changeLanguage('en');
 }

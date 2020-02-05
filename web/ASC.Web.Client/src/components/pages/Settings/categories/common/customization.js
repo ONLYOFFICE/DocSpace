@@ -9,7 +9,7 @@ import { setLanguageAndTime, getPortalTimezones, setGreetingTitle, restoreGreeti
 import { default as clientStore } from '../../../../../store/store';
 
 const { changeLanguage } = utils;
-const { getPortalCultures, getModules } = store.auth.actions;
+const { getPortalCultures, getModules, getCurrentCustomSchema } = store.auth.actions;
 
 const mapCulturesToArray = (cultures, t) => {
    return cultures.map((culture) => {
@@ -94,21 +94,24 @@ class Customization extends React.Component {
 
    componentDidUpdate(prevProps, prevState) {
       const { timezones, languages } = this.state;
+      const { i18n, language, nameSchemaId } = this.props;
+
       if (timezones.length && languages.length && !prevState.isLoadedData) {
          this.setState({ isLoadedData: true });
       }
-      if (this.props.language !== prevProps.language) {
-         changeLanguage(this.props.i18n)
-            .then(() => getModules(clientStore.dispatch))
-            .then(() => {
-               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, this.props.t);
+      if (language !== prevProps.language) {
+         changeLanguage(i18n)
+            .then((t) => {
+               const newLocaleLanguages = mapCulturesToArray(this.props.rawCultures, t);
                const newLocaleSelectedLanguage = findSelectedItemByKey(newLocaleLanguages, this.state.language.key) || newLocaleLanguages[0];
 
                this.setState({
                   languages: newLocaleLanguages,
                   language: newLocaleSelectedLanguage
                });
-            });
+            })
+            .then(() => getModules(clientStore.dispatch))
+            .then(() => getCurrentCustomSchema(clientStore.dispatch, nameSchemaId));
       }
    }
 
@@ -121,14 +124,11 @@ class Customization extends React.Component {
    };
 
    onSaveLngTZSettings = () => {
-      const { setLanguageAndTime } = this.props;
+      const { setLanguageAndTime, i18n } = this.props;
       this.setState({ isLoading: true }, function () {
          setLanguageAndTime(this.state.language.key, this.state.timezone.key)
-            .then(() => {
-               const { i18n } = this.props;
-                  changeLanguage(i18n)
-                     .then(() => toastr.success(i18n.t("SuccessfullySaveSettingsMessage")));
-            })
+            .then(() => changeLanguage(i18n))
+            .then((t) => toastr.success(t("SuccessfullySaveSettingsMessage")))
             .catch((error) => toastr.error(error))
             .finally(() => this.setState({ isLoading: false }));
       })
@@ -154,11 +154,12 @@ class Customization extends React.Component {
          restoreGreetingTitle()
             .then(() => {
                this.setState({
-                  isLoadingGreetingRestore: false,
                   greetingTitle: this.props.greetingSettings
                })
                toastr.success(t('SuccessfullySaveGreetingSettingsMessage'));
-            });
+            })
+            .catch((error) => toastr.error(error))
+            .finally(() => this.setState({ isLoadingGreetingRestore: false }));
       })
    }
 
@@ -291,6 +292,7 @@ function mapStateToProps(state) {
       rawTimezones: state.auth.settings.timezones,
       rawCultures: state.auth.settings.cultures,
       greetingSettings: state.auth.settings.greetingSettings,
+      nameSchemaId: state.auth.settings.nameSchemaId
    };
 }
 
