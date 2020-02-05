@@ -71,7 +71,7 @@ class Filter {
       sortorder: sortOrder,
       employeestatus: employeeStatus,
       activationstatus: activationStatus,
-      filtervalue: search,
+      filtervalue: (search ?? "").trim(),
       groupId: group
       //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,
       //listAdminModules,birthday,title,location,isLDAP,isSSO"
