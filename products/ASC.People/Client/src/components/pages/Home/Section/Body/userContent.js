@@ -8,7 +8,7 @@ import { history } from "asc-web-common";
 const getFormatedGroups = (user, status) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = status === 'pending' ? '#D0D5DA' : '#A3A9AE';
+  const linkColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
 
   if (!groups) temp.push({ key: 0, label: '' });
 
@@ -73,7 +73,7 @@ const UserContent = ({ user, history, settings }) => {
   );
 
   const nameColor = status === 'disabled' ? '#A3A9AE' : '#333333';
-  const sideInfoColor = ((status === 'pending') || (status === 'disabled')) ? '#D0D5DA' : '#A3A9AE';
+  const sideInfoColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
 
   const headDepartmentStyle = {
     width: '110px'
