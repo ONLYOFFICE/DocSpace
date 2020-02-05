@@ -34,7 +34,7 @@ const StyledDropdown = styled.div`
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
 
-    padding: ${props => !props.maxHeight && `6px 0px`};
+    padding: ${props => !props.maxHeight && props.children.length > 1 && `6px 0px`};
 `;
 
 // eslint-disable-next-line react/display-name, react/prop-types
