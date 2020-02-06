@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import en from "./locales/en/translation.json";
 import ru from "./locales/ru/translation.json";
+import { LANGUAGE } from '../../constants';
 
 const newInstance = i18n.createInstance();
 
@@ -15,9 +16,8 @@ const resources = {
 
 newInstance.init({
   resources: resources,
-  lng: 'en',
+  lng: localStorage.getItem(LANGUAGE) || 'en',
   fallbackLng: "en",
-  debug: true,
 
   interpolation: {
     escapeValue: false, // not needed for react as it escapes by default

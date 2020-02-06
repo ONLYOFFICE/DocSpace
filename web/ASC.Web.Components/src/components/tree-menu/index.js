@@ -8,6 +8,7 @@ const StyledTreeMenu = styled(Tree)`
 
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
         background: none;

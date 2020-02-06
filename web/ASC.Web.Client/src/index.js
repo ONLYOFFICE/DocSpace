@@ -5,7 +5,7 @@ import store from "./store/store";
 import "./custom.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, history } from "asc-web-common";
+import { store as commonStore, constants, history, ErrorBoundary} from "asc-web-common";
 const {
   getUserInfo,
   getPortalSettings,
@@ -27,7 +27,9 @@ if (!token) {
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
   </Provider>,
   document.getElementById("root")
 );

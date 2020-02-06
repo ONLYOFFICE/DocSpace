@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount, shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import Button from '.';
 
 const baseProps = {
@@ -17,7 +17,7 @@ describe('<Button />', () => {
     expect(wrapper).toExist();
   });
 
-  it('not re-render test', () => {
+  /* it('not re-render test', () => {
     const onClick = () => alert('Button clicked');
 
     const wrapper = shallow(<Button {...baseProps} onClick={onClick} />).instance();
@@ -38,7 +38,7 @@ describe('<Button />', () => {
     });
 
     expect(shouldUpdate).toBe(true);
-  });
+  }); */
 
   it('accepts id', () => {
     const wrapper = mount(

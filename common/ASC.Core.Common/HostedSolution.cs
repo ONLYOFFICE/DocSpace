@@ -56,6 +56,7 @@ namespace ASC.Core
         private readonly CoreSettings coreSettings;
 
         public TenantUtil TenantUtil { get; }
+        public UserFormatter UserFormatter { get; }
         public string Region
         {
             get;
@@ -71,8 +72,9 @@ namespace ASC.Core
             TenantDomainValidator tenantDomainValidator,
             TenantDbContext tenantDbContext,
             UserDbContext userDbContext,
-            CoreDbContext coreDbContext)
-            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, tenantDomainValidator, tenantDbContext, userDbContext, coreDbContext, null)
+            CoreDbContext coreDbContext,
+            UserFormatter userFormatter)
+            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, tenantDomainValidator, tenantDbContext, userDbContext, coreDbContext, userFormatter, null)
         {
         }
 
@@ -86,6 +88,7 @@ namespace ASC.Core
             TenantDbContext tenantDbContext,
             UserDbContext userDbContext,
             CoreDbContext coreDbContext,
+            UserFormatter userFormatter,
             string region)
         {
             tenantService = new DbTenantService(tenantDbContext, tenantDomainValidator);
@@ -98,6 +101,7 @@ namespace ASC.Core
             clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
             settingsManager = new DbSettingsManager(connectionString);
             TenantUtil = tenantUtil;
+            UserFormatter = userFormatter;
             Region = region ?? string.Empty;
         }
 
@@ -157,6 +161,7 @@ namespace ASC.Core
                 HostedRegion = ri.HostedRegion,
                 PartnerId = ri.PartnerId,
                 AffiliateId = ri.AffiliateId,
+                Campaign = ri.Campaign,
                 Industry = ri.Industry,
                 Spam = ri.Spam,
                 Calls = ri.Calls

@@ -102,7 +102,12 @@ namespace ASC.FederatedLogin.LoginProviders
         {
             try
             {
-                var token = Auth(context, Scopes);
+                var token = Auth(context, Scopes, context.Request.Query["access_type"] == "offline"
+                                      ? new Dictionary<string, string>
+                                          {
+                                                              { "revoke", "1" }
+                                          }
+                                      : null);
 
                 if (token == null)
                 {

@@ -14,6 +14,51 @@ import { Button } from "asc-web-components";
 //import withReadme from "storybook-readme/with-readme";
 //import Readme from "./README.md";
 
+class GroupSelectorExample extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.buttonRef = React.createRef();
+
+    this.state = {
+      isOpen: false
+    }
+  }
+
+  toggle = () => {
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
+  }
+
+  onCancel = (e) => {
+    if (this.buttonRef.current.contains(e.target)) { 
+      console.log("onCancel skipped");
+      return;
+    }
+
+    console.log("onCancel");
+    this.toggle();
+  }
+
+  render() {
+    return (
+      <div style={{ position: "relative" }}>
+        <Button label="Toggle dropdown" onClick={this.toggle} ref={this.buttonRef} />
+        <GroupSelector 
+          isOpen={this.state.isOpen} 
+          useFake={true} 
+          isMultiSelect={boolean("isMultiSelect", true)}
+          onSelect={(data) => {
+            console.log("onSelect", data);
+            this.toggle();
+          }}
+          onCancel={this.onCancel}
+        />
+      </div>
+    );
+  }
+}
 
 storiesOf("Components|GroupSelector", module)
   .addDecorator(withProvider)
@@ -23,22 +68,7 @@ storiesOf("Components|GroupSelector", module)
   .add("base", () => {
     return (
       <Section>
-        <BooleanValue>
-          {({ value, toggle }) => (
-            <div style={{ position: "relative" }}>
-              <Button label="Toggle dropdown" onClick={toggle} />
-              <GroupSelector 
-                isOpen={value} 
-                useFake={true} 
-                isMultiSelect={boolean("isMultiSelect", true)}
-                onSelect={(group) => {
-                  action("onSelect", group);
-                  toggle();
-                }} 
-              />
-            </div>
-          )}
-        </BooleanValue>
+        <GroupSelectorExample />
       </Section>
     );
   });

@@ -23,26 +23,23 @@
   "Actions": "Actions",
   "ChangeEmailSuccess": "Mail has been successfully changed",
   "NotFoundLanguage": "In case you cannot find your language in the list of the available ones, feel free to write to us at <1>{{supportEmail}}</1> to take part in the translation and get up to 1 year free of charge.",
+  "LearnMore": "Learn more...",
+  "ErrorUnknownFileImageType": "Unknown image file type",
+  "Error": "Error",
+  "SocialProfiles": "Social profiles",
+  "SaveButton": "Save",
+  "ChangesApplied": "Changes are applied",
   
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",
   "EditSubscriptionsBtn": "Edit subscriptions",
   "InviteAgainLbl": "Invite again",
   "LDAPLbl": "LDAP",
-  "SocialProfiles": "Social profiles",
-
-  "CustomEmployedSinceDate": "{{employedSinceDate}}",
-  "CustomPosition": "{{position}}",
-  "CustomDepartment": "{{department}}",
   "Culture_en": "English (United Kingdom)",
   "Culture_en-US": "English (United States)",
   "Culture_ru-RU": "Russian (Russia)",
-  "LearnMore": "Learn more...",
-
   "chooseFileLabel":  "Drop file here, or click to select file",
   "chooseMobileFileLabel": "Click to select files",
-  "unknownTypeError": "Unknown image file type",
   "maxSizeFileError": "Maximum file size exceeded",
-  "unknownError":     "Error",
-  "editAvatar": "Edit photo"
+  "editAvatar": "Edit"
 }

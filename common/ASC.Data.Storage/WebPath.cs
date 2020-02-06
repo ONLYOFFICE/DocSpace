@@ -30,10 +30,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -135,8 +137,8 @@ namespace ASC.Data.Storage
                     }
                 }
             }
-            //To LOWER! cause Amazon is CASE SENSITIVE!
-            return result.ToLowerInvariant();
+
+            return result;
         }
     }
 

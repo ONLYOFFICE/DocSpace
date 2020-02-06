@@ -26,13 +26,16 @@
 
 using System;
 using System.Text;
+
 using ASC.Core.Caching;
 using ASC.Core.Common.Settings;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Newtonsoft.Json;
 
 namespace ASC.Core
@@ -57,7 +60,11 @@ namespace ASC.Core
 
         public bool Personal
         {
-            get { return personal ?? (bool)(personal = Configuration["core.personal"] == "true"); }
+            get
+            {
+                //TODO:if (CustomMode && HttpContext.Current != null && HttpContext.Current.Request.SailfishApp()) return true;
+                return personal ?? (bool)(personal = Configuration["core.personal"] == "true");
+            }
         }
 
         public bool CustomMode
@@ -183,6 +190,15 @@ namespace ASC.Core
             var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.AffiliateId))
                 return t.AffiliateId;
+
+            return null;
+        }
+
+        public string GetCampaign(int tenant)
+        {
+            var t = TenantService.GetTenant(tenant);
+            if (t != null && !string.IsNullOrWhiteSpace(t.Campaign))
+                return t.Campaign;
 
             return null;
         }

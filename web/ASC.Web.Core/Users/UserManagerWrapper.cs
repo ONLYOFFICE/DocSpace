@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -38,6 +39,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -60,6 +62,7 @@ namespace ASC.Web.Core.Users
         public IPSecurity.IPSecurity IPSecurity { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public SettingsManager SettingsManager { get; }
+        public UserFormatter UserFormatter { get; }
 
         public UserManagerWrapper(
             StudioNotifyService studioNotifyService,
@@ -72,7 +75,8 @@ namespace ASC.Web.Core.Users
             CoreBaseSettings coreBaseSettings,
             IPSecurity.IPSecurity iPSecurity,
             DisplayUserSettingsHelper displayUserSettingsHelper,
-            SettingsManager settingsManager
+            SettingsManager settingsManager,
+            UserFormatter userFormatter
             )
         {
             StudioNotifyService = studioNotifyService;
@@ -86,6 +90,7 @@ namespace ASC.Web.Core.Users
             IPSecurity = iPSecurity;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             SettingsManager = settingsManager;
+            UserFormatter = userFormatter;
         }
 
         private bool TestUniqueUserName(string uniqueName)
@@ -377,7 +382,8 @@ namespace ASC.Web.Core.Users
                 .AddAuthContextService()
                 .AddMessageServiceService()
                 .AddDisplayUserSettingsService()
-                .AddCoreBaseSettingsService();
+                .AddCoreBaseSettingsService()
+                .AddUserFormatter();
         }
     }
 }

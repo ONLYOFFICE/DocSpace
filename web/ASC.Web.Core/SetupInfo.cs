@@ -30,7 +30,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Web;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -52,7 +54,7 @@ namespace ASC.Web.Studio.Core
         public List<CultureInfo> EnabledCulturesPersonal { get; private set; }
         public decimal ExchangeRateRuble { get; private set; }
         public long MaxImageUploadSize { get; private set; }
-        public static long AvailableFileSize { get { return 100L * 1024L * 1024L; } }
+        public static long AvailableFileSize { get; private set; }
         public string TeamlabSiteRedirect { get; private set; }
         public long ChunkUploadSize { get; private set; }
         public bool ThirdPartyAuthEnabled { get; private set; }
@@ -102,6 +104,7 @@ namespace ASC.Web.Studio.Core
         public string RecaptchaPrivateKey { get; private set; }
         public string RecaptchaVerifyUrl { get; private set; }
         public int LoginThreshold { get; private set; }
+        public string AmiMetaUrl { get; private set; }
         public IConfiguration Configuration { get; }
 
         public SetupInfo(IConfiguration configuration)
@@ -130,6 +133,7 @@ namespace ASC.Web.Studio.Core
 
             ExchangeRateRuble = GetAppSettings("exchange-rate.ruble", 65);
             MaxImageUploadSize = GetAppSettings<long>("web.max-upload-size", 1024 * 1024);
+            AvailableFileSize = GetAppSettings("web.available-file-size", 100L * 1024L * 1024L);
 
             TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
             ChunkUploadSize = GetAppSettings("files.uploader.chunk-size", 5 * 1024 * 1024);
@@ -157,7 +161,7 @@ namespace ASC.Web.Studio.Core
             web_display_mobapps_banner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             DisplayPersonalBanners = GetAppSettings("web.display.personal.banners", false);
             ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
-            ShareFacebookUrl = GetAppSettings("web.share.facebook", "http://www.facebook.com/sharer.php?s=100&p[url]={0}&p[title]={1}&p[images][0]={2}&p[summary]={3}");
+            ShareFacebookUrl = GetAppSettings("web.share.facebook", "");
             ControlPanelUrl = GetAppSettings("web.controlpanel.url", "");
             FontOpenSansUrl = GetAppSettings("web.font.opensans.url", "");
             VoipEnabled = GetAppSettings("voip.enabled", "false");
@@ -176,6 +180,7 @@ namespace ASC.Web.Studio.Core
             TfaAppSender = GetAppSettings("web.tfaapp.backup.title", "ONLYOFFICE");
 
             NotifyAnalyticsUrl = GetAppSettings("core.notify.analytics.url", "");
+            AmiMetaUrl = GetAppSettings("web:ami:meta", "");
         }
 
 

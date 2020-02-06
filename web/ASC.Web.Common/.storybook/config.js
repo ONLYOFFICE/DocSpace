@@ -27,7 +27,7 @@ addParameters({
   options:
   {
     name: 'ASC Web Common Storybook',
-    sortStoriesByKind: true,
+    storySort: (a, b) => a[1].kind === b[1].kind ? 0 : a[1].id.localeCompare(b[1].id, { numeric: true }),
     showAddonPanel: true,
     addonPanelInRight: true
   },

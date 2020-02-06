@@ -1,6 +1,8 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
 import config from "../../../../package.json";
+import { constants } from 'asc-web-common';
+const { LANGUAGE } = constants;
 
 const newInstance = i18n.createInstance();
 
@@ -8,16 +10,11 @@ if (process.env.NODE_ENV === "production") {
   newInstance
     .use(Backend)
     .init({
-      lng: 'en',
+      lng: localStorage.getItem(LANGUAGE) || 'en',
       fallbackLng: "en",
-      debug: true,
 
       interpolation: {
         escapeValue: false, // not needed for react as it escapes by default
-        format: function (value, format) {
-          if (format === 'lowercase') return value.toLowerCase();
-          return value;
-        }
       },
 
       react: {
@@ -40,16 +37,12 @@ if (process.env.NODE_ENV === "production") {
 
   newInstance.init({
     resources: resources,
-    lng: 'en',
+    lng: localStorage.getItem(LANGUAGE) || 'en',
     fallbackLng: "en",
     debug: true,
 
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
-      format: function (value, format) {
-        if (format === 'lowercase') return value.toLowerCase();
-        return value;
-      }
     },
 
     react: {

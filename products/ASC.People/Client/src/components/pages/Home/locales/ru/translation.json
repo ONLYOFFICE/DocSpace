@@ -32,34 +32,26 @@
   "People": "Люди",
   "PreviousPage": "Предыдущая",
   "NextPage": "Следующая",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
+  "Search": "Поиск",
+  "SendInviteAgain": "Отправить приглашение ещё раз",
+  "SuccessSendInvitation": "Приглашение успешно отправлено",
+
+  "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "CountPerPage": "{{count}} на странице",
+  "ChangeToUser": "Изменить на {{userCaption}}",
+  "ChangeToGuest": "Изменить на {{guestCaption}}",
 
   "LblInviteAgain": "Выслать прилашение ещё раз",
   "ByFirstNameSorting": "По имени",
   "ByLastNameSorting": "По фамилии",
-  "LblInvited": "Invited",
+  "LblInvited": "Приглашен",
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
-
-  "CustomHeadOfDepartment": " {{headOfDepartment}}",
-  "CustomTypeGuest": "{{typeGuest}}",
-  "CustomTypeUser": "{{typeUser}}",
-  "CustomMakeUser": "Сделать {{typeUser, lowercase}}",
-  "CustomMakeGuest": "Сделать {{typeGuest, lowercase}}",
-  "CustomDepartment": "{{department}}",
-  "CountPerPage": "{{count}} на странице",
-  "PageOfTotalPage": "{{page}} из {{totalPage}}",
-
   "DirectionAscLabel":"А-Я",
   "DirectionDescLabel":"Я-А",
-
-  "DefaultSelectLabel": "Выберите",
-
-  "FilterPlaceholder": "Поиск",
-
-  "CustomNewEmployee": "Новый {{typeUser, lowercase}}",
-  "CustomNewGuest": "Новый {{typeGuest, lowercase}}",
-  "CustomNewDepartment": "Новый {{department, lowercase}}",
   "MakeInvitationLink": "Создать пригласительную ссылку",
-  "SendInvitationAgain": "Отправить приглашение ещё раз"
+  "SuccessfullyRemovedUsers": "Пользователи были успешно удалены",
+  "SendEmailAction": "Действие отправки e-mail",
+  "SuccessfullyRemovedGroup": "Группа была успешно удалена"
 }

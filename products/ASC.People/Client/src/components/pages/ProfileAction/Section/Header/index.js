@@ -5,7 +5,6 @@ import { withRouter } from "react-router";
 import { IconButton } from 'asc-web-components';
 import { Headline } from 'asc-web-common';
 import { useTranslation } from 'react-i18next';
-import { typeUser, typeGuest } from './../../../../../helpers/customNames';
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,16 +23,17 @@ const Wrapper = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const { profile, history, match } = props;
+  const { profile, history, match, settings } = props;
+  const { userCaption, guestCaption } = settings.customNames;
   const { type } = match.params;
   const { t } = useTranslation();
 
   const headerText = type
     ? type === "guest"
-      ? t('CustomNewGuest', { typeGuest })
-      : t('CustomNewEmployee', { typeUser })
+      ? t('CustomCreation', { user: guestCaption })
+      : t('CustomCreation', { user: userCaption })
     : profile
-      ? `${t('EditProfile')} (${profile.displayName})`
+      ? `${t('EditUserDialogTitle')} (${profile.displayName})`
       : "";
 
   const onClickBack = useCallback(() => {

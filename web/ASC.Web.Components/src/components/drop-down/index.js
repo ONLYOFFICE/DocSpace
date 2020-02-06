@@ -34,7 +34,7 @@ const StyledDropdown = styled.div`
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
 
-    padding: ${props => !props.maxHeight && `6px 0px`};
+    padding: ${props => !props.maxHeight && props.children && props.children.length > 1 && `6px 0px`};
 `;
 
 // eslint-disable-next-line react/display-name, react/prop-types
@@ -50,7 +50,6 @@ const Row = memo(({ data, index, style }) => {
 });
 
 class DropDown extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
@@ -83,12 +82,10 @@ class DropDown extends React.PureComponent {
       else {
         this.props.disableOnClickOutside();
       }
-
     }
   }
 
   handleClickOutside = e => {
-    //console.log(`DropDown handleClickOutside`, e);
     this.toggleDropDown(e);
   };
 
@@ -101,10 +98,8 @@ class DropDown extends React.PureComponent {
 
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const container = { width: window.innerWidth, height: window.innerHeight };
-
     const left = rects.left < 0;
-    const right = rects.right > container.width;
-
+    const right = rects.right > container.width || container.width < rects.right + rects.left;
     let newDirection = {};
 
     newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;

@@ -43,7 +43,8 @@
   "ChangePhoneDialog":{
     "Resource": [
       "SendButton",
-      "MobilePhoneChangeTitle"
+      "MobilePhoneChangeTitle",
+      "MobilePhoneEraseDescription"
     ]
   },
   "DeleteProfileEverDialog":{
@@ -95,7 +96,14 @@
         "EditButton",
         "ChangeEmailSuccess",
         "Actions",
-        "NotFoundLanguage"
+        "NotFoundLanguage",
+        "LearnMore",
+        "ErrorUnknownFileImageType",
+        "SaveButton",
+        "Error"
+      ],
+      "ResourceJS": [
+        "ChangesApplied"
       ]
     },
     "ProfileAction": {
@@ -113,20 +121,35 @@
         "CopyEmailAndPassword",
         "UserType",
         "CancelButton",
-
         "EmailPopupHelper",
         "ProfileTypePopupHelper",
         "ProductsAndInstruments_Products",
         "GuestCaption",
         "TermsOfUsePopupHelperLink",
         "Mail",
-        "People"
+        "People",
+        "MaleSexStatus",
+        "FemaleSexStatus",
+        "EditUserDialogTitle",
+        "ErrorUnknownFileImageType",
+        "AccessRightsFullAccess",
+        "ErrorPasswordMessage",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoSpecialSymbols",
+        "Error"
       ],
       "FeedResource": [
         "DocumentsProduct",
         "ProjectsProduct",
         "CommunityProduct",
-        "Message"
+        "Message",
+        "WriteComment"
+      ],
+      "CustomModeResource": [
+        "ReviewingCustomMode"
+        
       ]
     },
     "Home": {
@@ -150,7 +173,9 @@
         "Actions",
         "People",
         "MessageEmailActivationInstuctionsSentOnEmail",
-        "EnableUserButton"
+        "EnableUserButton",
+        "Search",
+        "SendInviteAgain"
       ],
       "PeopleResource": [
         "LblSendEmail",
@@ -166,7 +191,8 @@
       ],
       "PeopleJSResource": [
         "SuccessChangeUserStatus",
-        "SuccessChangeUserType"
+        "SuccessChangeUserType",
+        "SuccessSendInvitation"
       ],
       "UserControlsCommonResource": [
         "NextPage",
@@ -186,7 +212,18 @@
   "GroupAction": {
     "Resource": [
       "SaveButton",
-      "CancelButton"
+      "CancelButton",
+      "Name"
+    ],
+    "PeopleResource": [
+      "Members",
+      "AddMembers",
+      "AddButton"
+    ],
+    "UserControlsCommonResource": [
+      "Members",
+      "AddMembers",
+      "LblSelect"
     ]
   },
   "Reassign":{
@@ -202,7 +239,7 @@
       "ReassignButton",
       "ReassignsToUser"
     ],
-    "UserControlsCommonResource.resx":[
+    "UserControlsCommonResource":[
       "NotBeUndone"
     ],
     "PeopleJSResource":[

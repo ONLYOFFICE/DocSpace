@@ -158,7 +158,7 @@ namespace ASC.Data.Storage.Configuration
         internal void ClearDataStoreCache()
         {
             var tenantId = TenantManager.GetCurrentTenant().TenantId.ToString();
-            var path = TennantPath.CreatePath(tenantId);
+            var path = TenantPath.CreatePath(tenantId);
             foreach (var module in StorageFactoryConfig.GetModuleList("", true))
             {
                 Cache.Publish(new DataStoreCacheItem() { TenantId = path, Module = module }, CacheNotifyAction.Remove);

@@ -1,3 +1,5 @@
+import { LANGUAGE } from '../constants';
+
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -27,4 +29,13 @@ export function getObjectByLocation(location) {
   );
 
   return object;
+}
+
+export function changeLanguage(i18n) {
+  const currentLng = localStorage.getItem(LANGUAGE);
+  return currentLng 
+  ? (i18n.language !== currentLng 
+    ? i18n.changeLanguage(currentLng)
+    : Promise.resolve((...args) => i18n.t(...args)))
+  : i18n.changeLanguage('en');
 }

@@ -6,6 +6,7 @@ import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { logout } from "../../store/auth/actions";
 import PureStudioLayout from "./PureStudioLayout";
+import { changeLanguage } from '../../utils';
 
 const getSeparator = id => {
   return {
@@ -65,8 +66,7 @@ const getAvailableModules = (modules, currentUser) => {
 const StudioLayoutContainer = withTranslation()(PureStudioLayout);
 
 const StudioLayout = props => {
-  const { language } = props;
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return <StudioLayoutContainer i18n={i18n} {...props} />;
 };
@@ -83,7 +83,7 @@ function mapStateToProps(state) {
     currentUser: state.auth.user,
     currentModuleId: state.auth.settings.currentProductId,
     settings: state.auth.settings,
-    language: state.auth.user.cultureName || state.auth.settings.culture
+    modules: state.auth.modules
   };
 }
 

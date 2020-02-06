@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TabContainer } from "asc-web-components";
+import { utils } from 'asc-web-common';
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
 // import ModulesSettings from "./sub-components/modules";
+
+const { changeLanguage } = utils;
 
 const MainContainer = styled.div`
   padding-bottom: 16px;
@@ -43,8 +45,6 @@ class PureAccessRights extends Component {
     };
   }
 
-  componentDidMount() {}
-
   onSelectPage = page => {
     const { history } = this.props;
 
@@ -76,6 +76,7 @@ class PureAccessRights extends Component {
 
   render() {
     const { isLoading, selectedTab } = this.state;
+    const { t } = this.props;
 
     console.log("accessRight render_");
 
@@ -89,12 +90,12 @@ class PureAccessRights extends Component {
           {[
             {
               key: "0",
-              title: "Owner settings",
+              title: t('OwnerSettings'),
               content: <OwnerSettings />
             },
             {
               key: "1",
-              title: "Admins settings",
+              title: t('AdminsSettings'),
               content: <AdminsSettings />
             },
             // {
@@ -112,9 +113,8 @@ class PureAccessRights extends Component {
 const AccessRightsContainer = withTranslation()(PureAccessRights);
 
 const AccessRights = props => {
-  const { language } = props;
 
-  i18n.changeLanguage(language);
+  changeLanguage(i18n);
 
   return (
     <I18nextProvider i18n={i18n}>
@@ -123,4 +123,4 @@ const AccessRights = props => {
   );
 };
 
-export default connect(null, {})(withRouter(AccessRights));
+export default withRouter(AccessRights);

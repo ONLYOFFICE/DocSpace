@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -37,6 +38,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -75,7 +77,6 @@ namespace ASC.Web.Studio.Utility
         private static readonly Regex RegFilePathTrim = new Regex("/[^/]*\\.aspx", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
         public const string ParamName_ProductSysName = "product";
-        public const string ParamName_UserUserName = "user";
         public const string ParamName_UserUserID = "uid";
 
         public CommonLinkUtility(
@@ -123,7 +124,7 @@ namespace ASC.Web.Studio.Utility
 
         public string GetMyStaff()
         {
-            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/profile.aspx");
+            return CoreBaseSettings.Personal ? ToAbsolute("~/my.aspx") : ToAbsolute("~/products/people/view/@self");
         }
 
         public string GetEmployees()
@@ -178,11 +179,11 @@ namespace ASC.Web.Studio.Utility
                     }
                 }
 
-                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user);
+                queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
             }
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -190,10 +191,10 @@ namespace ASC.Web.Studio.Utility
 
         public string GetUserProfile(UserInfo user, bool absolute = true)
         {
-            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : ParamName_UserUserName + "=" + HttpUtility.UrlEncode(user.UserName);
+            var queryParams = user.ID != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -203,7 +204,7 @@ namespace ASC.Web.Studio.Utility
             var queryParams = GetUserParamsPair(user);
 
             var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
-            url += "profile.aspx?";
+            url += "view/";
             url += queryParams;
 
             return url;
@@ -222,6 +223,33 @@ namespace ASC.Web.Studio.Utility
             }
 
             return productID;
+        }
+
+        public Guid GetAddonID()
+        {
+            var addonID = Guid.Empty;
+
+            if (HttpContext != null)
+            {
+                var addonName = GetAddonNameFromUrl(HttpContext.Request.Url().AbsoluteUri);
+
+                switch (addonName)
+                {
+                    case "mail":
+                        addonID = WebItemManager.MailProductID;
+                        break;
+                    case "talk":
+                        addonID = WebItemManager.TalkProductID;
+                        break;
+                    case "calendar":
+                        addonID = WebItemManager.CalendarProductID;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return addonID;
         }
 
         public void GetLocationByRequest(out IProduct currentProduct, out IModule currentModule)
@@ -365,20 +393,7 @@ namespace ASC.Web.Studio.Utility
                 name = GetProductNameFromUrl(url);
                 if (string.IsNullOrEmpty(name))
                 {
-                    try
-                    {
-                        var pos = url.IndexOf("/addons/", StringComparison.InvariantCultureIgnoreCase);
-                        if (0 <= pos)
-                        {
-                            url = url.Substring(pos + 8).ToLower();
-                            pos = url.IndexOf('/');
-                            return 0 < pos ? url.Substring(0, pos) : url;
-                        }
-                    }
-                    catch
-                    {
-                    }
-                    return null;
+                    return GetAddonNameFromUrl(name);
                 }
 
             }
@@ -394,6 +409,24 @@ namespace ASC.Web.Studio.Utility
                 if (0 <= pos)
                 {
                     url = url.Substring(pos + 10).ToLower();
+                    pos = url.IndexOf('/');
+                    return 0 < pos ? url.Substring(0, pos) : url;
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
+
+        private static string GetAddonNameFromUrl(string url)
+        {
+            try
+            {
+                var pos = url.IndexOf("/addons/", StringComparison.InvariantCultureIgnoreCase);
+                if (0 <= pos)
+                {
+                    url = url.Substring(pos + 8).ToLower();
                     pos = url.IndexOf('/');
                     return 0 < pos ? url.Substring(0, pos) : url;
                 }
@@ -449,7 +482,7 @@ namespace ASC.Web.Studio.Utility
             if (user == null || string.IsNullOrEmpty(user.UserName) || !UserManager.UserExists(user))
                 return "";
 
-            return string.Format("{0}={1}", ParamName_UserUserName, HttpUtility.UrlEncode(user.UserName.ToLowerInvariant()));
+            return HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
         }
 
         #region Help Centr

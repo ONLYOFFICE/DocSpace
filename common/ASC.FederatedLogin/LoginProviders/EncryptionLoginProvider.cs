@@ -27,13 +27,16 @@
 using System;
 using System.Linq;
 using System.Security;
+
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
+
 using Microsoft.Extensions.Options;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
@@ -55,7 +58,7 @@ namespace ASC.Web.Studio.Core
 
             var loginProfile = new LoginProfile(signature, instanceCrypto)
             {
-                Provider = ProviderConstants.Blockchain,
+                Provider = ProviderConstants.Encryption,
             };
 
             var linker = snapshot.Get("webstudio");
@@ -79,7 +82,7 @@ namespace ASC.Web.Studio.Core
         public static string GetAddress(Guid userId, IOptionsSnapshot<AccountLinker> snapshot)
         {
             var linker = snapshot.Get("webstudio");
-            var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Blockchain).FirstOrDefault();
+            var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
             if (profile == null) return null;
 
             var account = Crypto.GetV(profile.Name, 1, false);

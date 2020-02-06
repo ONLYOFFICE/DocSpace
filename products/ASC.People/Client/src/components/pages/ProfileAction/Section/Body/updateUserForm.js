@@ -13,7 +13,6 @@ import RadioField from './FormFields/RadioField'
 import DepartmentField from './FormFields/DepartmentField'
 import ContactsField from './FormFields/ContactsField'
 import InfoFieldContainer from './FormFields/InfoFieldContainer'
-import { departments, department, position, employedSinceDate, typeGuest, typeUser } from '../../../../../helpers/customNames';
 import styled from "styled-components";
 import { api } from "asc-web-common";
 import { ChangeEmailDialog, ChangePasswordDialog, ChangePhoneDialog } from '../../../../dialogs';
@@ -366,10 +365,12 @@ class UpdateUserForm extends React.Component {
 
   render() {
     const { isLoading, errors, profile, selector, dialogsVisible } = this.state;
-    const { t, i18n } = this.props;
+    const { t, i18n, settings } = this.props;
+    const { guestCaption, userCaption, regDateCaption, userPostCaption, groupCaption } = settings.customNames;
 
     const pattern = getUserContactsPattern();
     const contacts = getUserContacts(profile.contacts);
+    //TODO: inject guestsCaption in 'ProfileTypePopupHelper' key instead of hardcoded 'Guests'
     const tooltipTypeContent =
       <>
         <Text
@@ -389,49 +390,49 @@ class UpdateUserForm extends React.Component {
                 </Th>
                 <Th>
                   <Text isBold fontSize='13px'>
-                    {t("Employee")}
+                    {userCaption}
                   </Text>
                 </Th>
                 <Th>
                   <Text isBold fontSize='13px'>
-                    {t("GuestCaption")}
+                    {guestCaption}
                   </Text>
                 </Th>
               </tr>
               <tr>
                 <Td>{t("Mail")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("DocumentsProduct")}</Td>
-                <Td>full access</Td>
-                <Td>view</Td>
+                <Td>{t('AccessRightsFullAccess')}</Td>
+                <Td>{t('ViewAccess')}</Td>
               </tr>
               <tr>
                 <Td>{t("ProjectsProduct")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("CommunityProduct")}</Td>
-                <Td>full access</Td>
-                <Td>view</Td>
+                <Td>{t('AccessRightsFullAccess')}</Td>
+                <Td>{t('ViewAccess')}</Td>
               </tr>
               <tr>
                 <Td>{t("People")}</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
                 <Td>-</Td>
               </tr>
               <tr>
                 <Td>{t("Message")}</Td>
-                <Td>review</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
               </tr>
               <tr>
                 <Td>{t("Calendar")}</Td>
-                <Td>review</Td>
-                <Td>review</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
+                <Td>{t('ReviewingCustomMode')}</Td>
               </tr>
             </tbody>
           </Table>
@@ -455,7 +456,7 @@ class UpdateUserForm extends React.Component {
               source={profile.avatarMax}
               userName={profile.displayName}
               editing={true}
-              editLabel={t("EditPhoto")}
+              editLabel={t("editAvatar")}
               editAction={this.openAvatarEditor}
             />
             <AvatarEditor
@@ -464,12 +465,13 @@ class UpdateUserForm extends React.Component {
               onClose={this.onCloseAvatarEditor}
               onSave={this.onSaveAvatar}
               onLoadFile={this.onLoadFileAvatar}
-              headerLabel={t("editAvatar")}
+              headerLabel={t("EditPhoto")}
               chooseFileLabel={t("chooseFileLabel")}
               chooseMobileFileLabel={t("chooseMobileFileLabel")}
-              unknownTypeError={t("unknownTypeError")}
+              unknownTypeError={t("ErrorUnknownFileImageType")}
               maxSizeFileError={t("maxSizeFileError")}
-              unknownError={t("unknownError")}
+              unknownError={t("Error")}
+              saveButtonLabel={t('SaveButton')}
             />
           </AvatarContainer>
           <MainFieldsContainer ref={this.mainFieldsContainerRef}>
@@ -541,7 +543,7 @@ class UpdateUserForm extends React.Component {
               maxLength={50}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
               labelText={`${t("Birthdate")}:`}
               inputName="birthday"
               inputValue={profile.birthday ? new Date(profile.birthday) : undefined}
@@ -554,8 +556,8 @@ class UpdateUserForm extends React.Component {
               radioName="sex"
               radioValue={profile.sex}
               radioOptions={[
-                { value: 'male', label: t("SexMale") },
-                { value: 'female', label: t("SexFemale") }
+                { value: 'male', label: t("MaleSexStatus") },
+                { value: 'female', label: t("FemaleSexStatus") }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onInputChange}
@@ -565,8 +567,8 @@ class UpdateUserForm extends React.Component {
               radioName="isVisitor"
               radioValue={profile.isVisitor.toString()}
               radioOptions={[
-                { value: "true", label: t("CustomTypeGuest", { typeGuest }) },
-                { value: "false", label: t("CustomTypeUser", { typeUser }) }
+                { value: "true", label: guestCaption },
+                { value: "false", label: userCaption }
               ]}
               radioIsDisabled={isLoading}
               radioOnChange={this.onUserTypeChange}
@@ -575,8 +577,8 @@ class UpdateUserForm extends React.Component {
               helpButtonHeaderContent={t('UserType')}
             />
             <DateField
-              calendarHeaderContent={t("CalendarSelectDate")}
-              labelText={`${t("CustomEmployedSinceDate", { employedSinceDate })}:`}
+              calendarHeaderContent={`${t("CalendarSelectDate")}:`}
+              labelText={`${regDateCaption}:`}
               inputName="workFrom"
               inputValue={profile.workFrom ? new Date(profile.workFrom) : undefined}
               inputIsDisabled={isLoading}
@@ -592,7 +594,7 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={8}
             />
             <TextField
-              labelText={`${t("CustomPosition", { position })}:`}
+              labelText={`${userPostCaption}:`}
               inputName="title"
               inputValue={profile.title}
               inputIsDisabled={isLoading}
@@ -600,17 +602,15 @@ class UpdateUserForm extends React.Component {
               inputTabIndex={9}
             />
             <DepartmentField
-              labelText={`${t("CustomDepartment", { department })}:`}
+              labelText={`${groupCaption}:`}
               isDisabled={isLoading}
               showGroupSelectorButtonTitle={t("AddButton")}
               onShowGroupSelector={this.onShowGroupSelector}
               onCloseGroupSelector={this.onCloseGroupSelector}
               onRemoveGroup={this.onRemoveGroup}
               selectorIsVisible={selector.visible}
-              searchPlaceHolderLabel={t("SearchDepartments")}
               selectorOptions={selector.options}
               selectorSelectedOptions={selector.selected}
-              selectorAddButtonText={t("CustomAddDepartments", { departments })}
               selectorSelectAllText={t("SelectAll")}
               selectorOnSearchGroups={this.onSearchGroups}
               selectorOnSelectGroups={this.onSelectGroups}
@@ -618,7 +618,7 @@ class UpdateUserForm extends React.Component {
           </MainFieldsContainer>
         </MainContainer>
         <InfoFieldContainer headerText={t("Comments")}>
-          <Textarea placeholder={t("AddСomment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
+          <Textarea placeholder={t("WriteComment")} name="notes" value={profile.notes} isDisabled={isLoading} onChange={this.onInputChange} tabIndex={10}/> 
         </InfoFieldContainer>
         <InfoFieldContainer headerText={t("ContactInformation")}>
           <ContactsField

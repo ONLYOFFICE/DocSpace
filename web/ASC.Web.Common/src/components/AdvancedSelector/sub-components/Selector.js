@@ -295,15 +295,74 @@ const Selector = props => {
     onSelectOptions(selectedOptionList);
   }, [selectedOptionList]);
 
-  // Render an item or a loading indicator.
-  // eslint-disable-next-line react/prop-types
-  const renderOption = useCallback(
-    ({ index, style }) => {
-      let content;
-      const isLoaded = isItemLoaded(index);
-      let tooltipProps = {};
-      if (!isLoaded) {
-        content = (
+  const renderOptionItem = useCallback(
+    (index, style, option, isChecked, tooltipProps) => {
+      return isMultiSelect ? (
+              <div style={style} className="row-option" {...tooltipProps}>
+                <Checkbox
+                  id={option.key}
+                  value={`${index}`}
+                  label={option.label}
+                  isChecked={isChecked}
+                  className="option_checkbox"
+                  truncate={true}
+                  title={option.label}
+                  onChange={onOptionChange}
+                />
+                {displayType === "aside" && getOptionTooltipContent && (
+                  <HelpButton
+                    id={`info-${option.key}`}
+                    className="option-info"
+                    iconName="InfoIcon"
+                    color="#D8D8D8"
+                    getContent={getOptionTooltipContent}
+                    place="top"
+                    offsetLeft={160}
+                    dataTip={`${index}`}
+                    displayType="dropdown"
+                  />
+                )}
+              </div>
+            ) : (
+              <Link
+                key={option.key}
+                data-index={index}
+                isTextOverflow={true}
+                style={style} 
+                className="row-option" 
+                {...tooltipProps}
+                onClick={onLinkClick}
+              >
+                {option.label}
+                {displayType === "aside" && getOptionTooltipContent && (
+                  <HelpButton
+                    id={`info-${option.key}`}
+                    className="option-info"
+                    iconName="InfoIcon"
+                    color="#D8D8D8"
+                    getContent={getOptionTooltipContent}
+                    place="top"
+                    offsetLeft={160}
+                    dataTip={`${index}`}
+                    displayType="dropdown"
+                  />
+                )}
+              </Link>
+            );
+    },
+    [
+      isMultiSelect,
+      onOptionChange,
+      onLinkClick,
+      displayType,
+      getOptionTooltipContent
+    ]
+  );
+
+  const renderOptionLoader = useCallback(
+    style => {
+      return (
+        <div style={style} className="row-option">
           <div key="loader">
             <Loader
               type="oval"
@@ -315,71 +374,43 @@ const Selector = props => {
             />
             <Text as="span">{loadingLabel}</Text>
           </div>
-        );
-      } else {
-        const option = options[index];
-        const isChecked = isOptionChecked(option);
-
-        if (displayType === "dropdown")
-          tooltipProps = { "data-for": "user", "data-tip": index };
-
-        ReactTooltip.rebuild();
-
-        content = (
-          <>
-            {isMultiSelect ? (
-              <Checkbox
-                id={option.key}
-                value={`${index}`}
-                label={option.label}
-                isChecked={isChecked}
-                className="option_checkbox"
-                truncate={true}
-                title={option.label}
-                onChange={onOptionChange}
-              />
-            ) : (
-              <Link
-                key={option.key}
-                data-index={index}
-                isTextOverflow={true}
-                className="option_link"
-                onClick={onLinkClick}
-                title={option.label}
-              >
-                {option.label}
-              </Link>
-            )}
-            {displayType === "aside" && getOptionTooltipContent && (
-              <HelpButton
-                id={`info-${option.key}`}
-                className="option-info"
-                iconName="InfoIcon"
-                color="#D8D8D8"
-                getContent={getOptionTooltipContent}
-                place="top"
-                offsetLeft={160}
-                dataTip={`${index}`}
-                displayType="dropdown"
-              />
-            )}
-          </>
-        );
-      }
-
-      return (
-        <div style={style} className="row-option" {...tooltipProps}>
-          {content}
         </div>
       );
     },
+    [loadingLabel]
+  );
+
+  // Render an item or a loading indicator.
+  // eslint-disable-next-line react/prop-types
+  const renderOption = useCallback(
+    ({ index, style }) => {
+      const isLoaded = isItemLoaded(index);
+
+      if (!isLoaded) {
+        return renderOptionLoader(style);
+      }
+
+      const option = options[index];
+      const isChecked = isOptionChecked(option);
+      let tooltipProps = {};
+
+      if (displayType === "dropdown")
+        tooltipProps = { "data-for": "user", "data-tip": index };
+
+      ReactTooltip.rebuild();
+
+      return renderOptionItem(index, style, option, isChecked, tooltipProps);
+    },
     [
       isItemLoaded,
+      renderOptionLoader,
+      renderOptionItem,
       loadingLabel,
       options,
       isOptionChecked,
       displayType,
       isMultiSelect,
+      onOptionChange,
       onLinkClick,
       getOptionTooltipContent
     ]
@@ -464,7 +495,12 @@ const Selector = props => {
       const label = getGroupLabel(group);
 
       return (
-        <div
+        <Link
+          key={group.key}
+          data-index={index}
+          isTextOverflow={true}
+          onClick={onLinkGroupClick}
+          title={label}
           style={style}
           className={`row-group${isSelected ? " selected" : ""}`}
         >
@@ -479,17 +515,8 @@ const Selector = props => {
               onChange={onGroupChange}
             />
           )}
-          <Link
-            key={group.key}
-            data-index={index}
-            isTextOverflow={true}
-            className="group_link"
-            onClick={onLinkGroupClick}
-            title={label}
-          >
             {label}
-          </Link>
-        </div>
+        </Link>
       );
     },
     [
@@ -522,7 +549,7 @@ const Selector = props => {
 
       //setLastIndex(startIndex);
 
-      console.log("loadMoreItems", options);
+      //console.log("loadMoreItems", options);
 
       loadNextPage && loadNextPage(options);
     },
@@ -624,31 +651,39 @@ const Selector = props => {
         </Body>
       </Column>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <Column className="column-groups" displayType={displayType} size={size}>
-          <Header className="header-groups">
-            <Text as="p" className="group_header" fontSize="15px" fontWeight={600}>
-              {groupsHeaderLabel}
-            </Text>
-          </Header>
-          <Body className="body-groups">
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  className="group_list"
-                  height={height}
-                  width={width + 8}
-                  itemSize={32}
-                  itemCount={groups.length}
-                  itemData={groups}
-                  outerElementType={CustomScrollbarsVirtualList}
-                  ref={listGroupsRef}
-                >
-                  {renderGroup}
-                </List>
-              )}
-            </AutoSizer>
-          </Body>
-        </Column>
+        <>
+          <div className="splitter"></div>
+          <Column className="column-groups" displayType={displayType} size={size}>
+            <Header className="header-groups">
+              <Text
+                as="p"
+                className="group_header"
+                fontSize="15px"
+                fontWeight={600}
+              >
+                {groupsHeaderLabel}
+              </Text>
+            </Header>
+            <Body className="body-groups">
+              <AutoSizer>
+                {({ height, width }) => (
+                  <List
+                    className="group_list"
+                    height={height}
+                    width={width + 8}
+                    itemSize={32}
+                    itemCount={groups.length}
+                    itemData={groups}
+                    outerElementType={CustomScrollbarsVirtualList}
+                    ref={listGroupsRef}
+                  >
+                    {renderGroup}
+                  </List>
+                )}
+              </AutoSizer>
+            </Body>
+          </Column>
+        </>
       )}
       <Footer
         className="footer"

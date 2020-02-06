@@ -19,11 +19,6 @@ import {
   updateUserType,
   fetchPeople
 } from "../../../../../store/people/actions";
-import {
-  typeUser,
-  typeGuest,
-  department
-} from "../../../../../helpers/../helpers/customNames";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
 import { InviteDialog } from '../../../../dialogs';
@@ -40,6 +35,15 @@ const StyledContainer = styled.div`
 
   .group-button-menu-container {
     margin: 0 -16px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    
+    @media (max-width: 1024px) {
+      & > div:first-child {
+      position: absolute;
+      top: 56px;
+      z-index: 180;
+      }
+    }
 
     @media (min-width: 1024px) {
       margin: 0 -24px;
@@ -58,7 +62,11 @@ const StyledContainer = styled.div`
 
       @media (max-width: 1024px) {
         margin-left: auto;
-        padding: 8px 0 8px 8px;
+
+        & > div:first-child {
+          padding: 8px 16px 8px 16px;
+          margin-right: -16px;
+        }
       }
     }
   }
@@ -112,20 +120,20 @@ const SectionHeaderContent = props => {
 
   const onSentInviteAgain = useCallback(() => {
     resendUserInvites(selectedUserIds)
-      .then(() => toastr.success("The invitation was successfully sent"))
+      .then(() => toastr.success(t('SuccessSendInvitation')))
       .catch(error => toastr.error(error));
-  }, [selectedUserIds]);
+  }, [selectedUserIds, t]);
 
   const onDelete = useCallback(() => {
     onLoading(true);
     deleteUsers(selectedUserIds)
       .then(() => {
-        toastr.success("Users have been removed successfully");
+        toastr.success(t('SuccessfullyRemovedUsers'));
         return fetchPeople(filter);
       })
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
-  }, [selectedUserIds, onLoading, filter]);
+  }, [selectedUserIds, onLoading, filter, t]);
 
   const menuItems = [
     {
@@ -142,12 +150,12 @@ const SectionHeaderContent = props => {
       onSelect: item => onSelect(item.key)
     },
     {
-      label: t("CustomMakeUser", { typeUser }),
+      label: t('ChangeToUser', { userCaption: settings.customNames.userCaption }),
       disabled: !selection.length,
       onClick: onSetEmployee
     },
     {
-      label: t("CustomMakeGuest", { typeGuest }),
+      label: t('ChangeToGuest', { guestCaption: settings.customNames.guestCaption }),
       disabled: !selection.length,
       onClick: onSetGuest
     },
@@ -169,7 +177,7 @@ const SectionHeaderContent = props => {
     {
       label: t("LblSendEmail"),
       disabled: !selection.length,
-      onClick: toastr.success.bind(this, "Send e-mail action")
+      onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
       label: t("DeleteButton"),
@@ -185,9 +193,9 @@ const SectionHeaderContent = props => {
 
   const onDeleteGroup = useCallback(() => {
     deleteGroup(group.id).then(() =>
-      toastr.success("Group has been removed successfully")
+      toastr.success(t("SuccessfullyRemovedGroup"))
     );
-  }, [deleteGroup, group]);
+  }, [deleteGroup, group, t]);
 
   const getContextOptionsGroup = useCallback(() => {
     return [
@@ -216,25 +224,26 @@ const SectionHeaderContent = props => {
     history.push(`${settings.homepage}/group/create`);
   }, [history, settings]);
 
-  const onInvitationDialogClick = useCallback(() => 
+  const onInvitationDialogClick = useCallback(() =>
     setDialogVisible(!dialogVisible), [dialogVisible]
   );
 
   const getContextOptionsPlus = useCallback(() => {
+    const { guestCaption, userCaption, groupCaption } = settings.customNames;
     return [
       {
         key: "new-employee",
-        label: t("CustomNewEmployee", { typeUser }),
+        label: userCaption,
         onClick: goToEmployeeCreate
       },
       {
         key: "new-guest",
-        label: t("CustomNewGuest", { typeGuest }),
+        label: guestCaption,
         onClick: goToGuestCreate
       },
       {
         key: "new-group",
-        label: t("CustomNewDepartment", { department }),
+        label: groupCaption,
         onClick: goToGroupCreate
       },
       { key: 'separator', isSeparator: true },
@@ -245,11 +254,11 @@ const SectionHeaderContent = props => {
       }/* ,
       {
         key: "send-invitation",
-        label: t("SendInvitationAgain"),
+        label: t("SendInviteAgain"),
         onClick: onSentInviteAgain
       } */
     ];
-  }, [t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
+  }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -268,51 +277,51 @@ const SectionHeaderContent = props => {
           />
         </div>
       ) : (
-        <div className="header-container">
-          {group ? (
-            <>
-              <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
-              {isAdmin && (
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="right"
-                  title={t("Actions")}
-                  iconName="VerticalDotsIcon"
-                  size={16}
-                  color="#A3A9AE"
-                  getData={getContextOptionsGroup}
-                  isDisabled={false}
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <Headline className='headline-header' truncate={true} type="content">Departments</Headline>
-              {isAdmin && (
-                <>
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="left"
-                  title={t("Actions")}
-                  iconName="PlusIcon"
-                  size={16}
-                  color="#657077"
-                  getData={getContextOptionsPlus}
-                  isDisabled={false}
-                />
-                {dialogVisible &&
-                  <InviteDialog
-                    visible={dialogVisible}
-                    onClose={onInvitationDialogClick}
-                    onCloseButton={onInvitationDialogClick}
+          <div className="header-container">
+            {group ? (
+              <>
+                <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
+                {isAdmin && (
+                  <ContextMenuButton
+                    className="action-button"
+                    directionX="right"
+                    title={t("Actions")}
+                    iconName="VerticalDotsIcon"
+                    size={16}
+                    color="#A3A9AE"
+                    getData={getContextOptionsGroup}
+                    isDisabled={false}
                   />
-                }
+                )}
+              </>
+            ) : (
+                <>
+                  <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
+                  {isAdmin && (
+                    <>
+                      <ContextMenuButton
+                        className="action-button"
+                        directionX="left"
+                        title={t("Actions")}
+                        iconName="PlusIcon"
+                        size={16}
+                        color="#657077"
+                        getData={getContextOptionsPlus}
+                        isDisabled={false}
+                      />
+                      {dialogVisible &&
+                        <InviteDialog
+                          visible={dialogVisible}
+                          onClose={onInvitationDialogClick}
+                          onCloseButton={onInvitationDialogClick}
+                        />
+                      }
+                    </>
+                  )}
                 </>
               )}
-            </>
-          )}
-        </div>
-      )}
+          </div>
+        )}
     </StyledContainer>
   );
 };

@@ -35,6 +35,7 @@ const StyledToastContainer = styled(ToastContainer)`
   top: 1em;
   right: 1em;
   margin-top: 40px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media only screen and (max-width: 480px) {
     width: 100vw;

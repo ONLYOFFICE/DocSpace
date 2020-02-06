@@ -32,6 +32,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+
 using Amazon;
 using Amazon.CloudFront;
 using Amazon.CloudFront.Model;
@@ -39,12 +40,15 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using Amazon.Util;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage.Configuration;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Data.Storage.S3
@@ -1084,7 +1088,8 @@ namespace ASC.Data.Storage.S3
                 DestinationKey = GetRecyclePath(key),
                 CannedACL = GetDomainACL(domain),
                 MetadataDirective = S3MetadataDirective.REPLACE,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256
+                ServerSideEncryptionMethod = ServerSideEncryptionMethod.AES256,
+                StorageClass = S3StorageClass.Glacier
             };
 
             client.CopyObjectAsync(copyObjectRequest).Wait();

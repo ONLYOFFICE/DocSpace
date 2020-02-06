@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
-import { connect } from "react-redux";
 import ErrorContainer from '../../../components/ErrorContainer';
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
+import { changeLanguage } from '../../../utils';
 
-const ComingSoonContainer = ({ language }) => {
+const ComingSoonContainer = () => {
   const { t } = useTranslation("translation", { i18n });
 
   useEffect(() => {
-    i18n.changeLanguage(language);
-  }, [language]);
+    changeLanguage(i18n);
+  }, []);
 
   return (
     <ErrorContainer
@@ -21,12 +21,6 @@ const ComingSoonContainer = ({ language }) => {
   );
 };
 
-function mapStateToProps(state) {
-  return {
-    language: state.auth.user.cultureName || state.auth.settings.culture
-  };
-}
-
-const ComingSoon = connect(mapStateToProps)(ComingSoonContainer);
+const ComingSoon = ComingSoonContainer;
 
 export default ComingSoon;

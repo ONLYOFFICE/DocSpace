@@ -48,9 +48,11 @@ using ASC.Web.Core.WhiteLabel;
 using ASC.Web.Studio.Utility;
 
 using Google.Protobuf;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+
 using MimeKit.Utils;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -270,6 +272,7 @@ namespace ASC.Web.Studio.Core.Notify
             var coreBaseSettings = scope.ServiceProvider.GetService<CoreBaseSettings>();
             var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
             var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
+            var studioNotifyHelper = scope.ServiceProvider.GetService<StudioNotifyHelper>();
             var log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
 
             commonLinkUtility.GetLocationByRequest(out var product, out var module);
@@ -294,14 +297,12 @@ namespace ASC.Web.Studio.Core.Notify
             request.Arguments.Add(new TagValue(CommonTags.DateTime, tenantUtil.DateTimeNow()));
             request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SYS_RECIPIENT_ID));
             request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, commonLinkUtility.GetFullAbsolutePath(commonLinkUtility.GetMyStaff())));
+            request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, commonLinkUtility.GetMyStaff()));
             request.Arguments.Add(new TagValue(CommonTags.HelpLink, commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false)));
             request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
             request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(settingsManager)));
-
-            if (!request.Arguments.Any(x => CommonTags.SendFrom.Equals(x.Tag)))
-            {
-                request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
-            }
+            request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
+            request.Arguments.Add(new TagValue(CommonTags.ImagePath, studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
             AddLetterLogo(request, tenantExtra, tenantLogoManager, coreBaseSettings, commonLinkUtility, log);
         }

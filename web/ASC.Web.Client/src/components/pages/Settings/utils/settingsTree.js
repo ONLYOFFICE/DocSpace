@@ -14,12 +14,12 @@ export const settingsTree = [
                 link: 'customization',
                 tKey: 'Customization',
             },
-            {
-                key: '0-2',
-                icon: '',
-                link: 'whitelabel',
-                tKey: 'WhiteLabel',
-            },
+            // {
+            //     key: '0-2',
+            //     icon: '',
+            //     link: 'whitelabel',
+            //     tKey: 'WhiteLabel',
+            // },
         ]
     },
     {

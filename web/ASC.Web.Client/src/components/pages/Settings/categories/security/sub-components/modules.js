@@ -5,6 +5,9 @@ import i18n from "../../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Text, ToggleContent, RadioButtonGroup } from "asc-web-components";
+import { utils } from 'asc-web-common';
+
+const { changeLanguage } = utils;
 
 const ProjectsContainer = styled.div`
   display: flex;
@@ -107,7 +110,7 @@ class PureModulesSettings extends Component {
                 })}
               </Text>
               <Text fontSize='12px'>
-                <li>{t("ViewProfilesAndGroups")}</li>
+                <li>{t("ProductUserOpportunities")}</li>
               </Text>
             </ProjectsBody>
           </ProjectsContainer>
@@ -119,16 +122,10 @@ class PureModulesSettings extends Component {
 
 const AccessRightsContainer = withTranslation()(PureModulesSettings);
 
-const ModulesSettings = props => {
-  const { language } = props;
-
-  i18n.changeLanguage(language);
-
-  return (
-    <I18nextProvider i18n={i18n}>
-      <AccessRightsContainer {...props} />
-    </I18nextProvider>
-  );
-};
+const ModulesSettings = props => (
+  <I18nextProvider i18n={i18n}>
+    <AccessRightsContainer {...props} />
+  </I18nextProvider>
+);
 
 export default connect(null, {})(withRouter(ModulesSettings));
