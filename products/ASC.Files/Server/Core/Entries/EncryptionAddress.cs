@@ -43,9 +43,6 @@ namespace ASC.Web.Files.Core.Entries
 
         [DataMember(Name = "publicKey")]
         public string PublicKey;
-
-
-
     }
 
     public class EncryptionAddressHelper

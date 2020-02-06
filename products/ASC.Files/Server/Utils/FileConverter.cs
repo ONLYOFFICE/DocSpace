@@ -84,6 +84,8 @@ namespace ASC.Web.Files.Utils
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FilesMessageService FilesMessageService { get; }
         public FileShareLink FileShareLink { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
         public IServiceProvider ServiceProvider { get; }
         public IHttpContextAccessor HttpContextAccesor { get; }
         public ILog Logger { get; }
@@ -104,6 +106,8 @@ namespace ASC.Web.Files.Utils
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
             IServiceProvider serviceProvider)
         {
             FileUtility = fileUtility;
@@ -120,6 +124,8 @@ namespace ASC.Web.Files.Utils
             GlobalFolderHelper = globalFolderHelper;
             FilesMessageService = filesMessageService;
             FileShareLink = fileShareLink;
+            DocumentServiceHelper = documentServiceHelper;
+            DocumentServiceConnector = documentServiceConnector;
             ServiceProvider = serviceProvider;
             Logger = options.CurrentValue;
         }
@@ -139,11 +145,14 @@ namespace ASC.Web.Files.Utils
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
+            DocumentServiceHelper documentServiceHelper,
+            DocumentServiceConnector documentServiceConnector,
             IServiceProvider serviceProvider,
             IHttpContextAccessor httpContextAccesor)
             : this(fileUtility, filesLinkUtility, daoFactory, setupInfo, pathProvider, fileSecurity,
                   fileMarker, tenantManager, authContext, entryManager, options, filesSettingsHelper,
-                  globalFolderHelper, filesMessageService, fileShareLink, serviceProvider)
+                  globalFolderHelper, filesMessageService, fileShareLink, documentServiceHelper, documentServiceConnector,
+                  serviceProvider)
         {
             HttpContextAccesor = httpContextAccesor;
         }

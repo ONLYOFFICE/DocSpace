@@ -28,44 +28,90 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+
+using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
+using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Files.Services.WCFService;
-using SecurityContext = ASC.Core.SecurityContext;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
-    public static class FileSharing
+    public class FileSharing
     {
-        public static bool CanSetAccess(FileEntry entry)
+        public Global Global { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public FileSecurity FileSecurity { get; }
+        public AuthContext AuthContext { get; }
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public FileMarker FileMarker { get; }
+        public FileShareLink FileShareLink { get; }
+        public FileUtility FileUtility { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public ILog Logger { get; }
+
+        public FileSharing(
+            Global global,
+            GlobalFolderHelper globalFolderHelper,
+            FileSecurity fileSecurity,
+            AuthContext authContext,
+            UserManager userManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            FileMarker fileMarker,
+            FileShareLink fileShareLink,
+            FileUtility fileUtility,
+            DocumentServiceHelper documentServiceHelper,
+            CoreBaseSettings coreBaseSettings)
+        {
+            Global = global;
+            GlobalFolderHelper = globalFolderHelper;
+            FileSecurity = fileSecurity;
+            AuthContext = authContext;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            FileMarker = fileMarker;
+            FileShareLink = fileShareLink;
+            FileUtility = fileUtility;
+            DocumentServiceHelper = documentServiceHelper;
+            CoreBaseSettings = coreBaseSettings;
+            Logger = optionsMonitor.CurrentValue;
+        }
+
+        public bool CanSetAccess(FileEntry entry)
         {
             return
                 entry != null
                 && (entry.RootFolderType == FolderType.COMMON && Global.IsAdministrator
                     || entry.RootFolderType == FolderType.USER
-                    && (Equals(entry.RootFolderId, Global.FolderMy) || Global.GetFilesSecurity().CanEdit(entry))
-                    && !CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor());
+                    && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy) || FileSecurity.CanEdit(entry))
+                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager));
         }
 
-        public static List<AceWrapper> GetSharedInfo(FileEntry entry)
+        public List<AceWrapper> GetSharedInfo(FileEntry entry)
         {
             if (entry == null) throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
             if (!CanSetAccess(entry))
             {
-                Global.Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", SecurityContext.CurrentAccount.ID, (entry.FileEntryType == FileEntryType.File ? "file" : "folder"), entry.ID);
+                Logger.ErrorFormat("User {0} can't get shared info for {1} {2}", AuthContext.CurrentAccount.ID, (entry.FileEntryType == FileEntryType.File ? "file" : "folder"), entry.ID);
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
             }
 
             var linkAccess = FileShare.Restrict;
             var result = new List<AceWrapper>();
 
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
 
             var records = fileSecurity
                 .GetShares(entry)
@@ -82,13 +128,13 @@ namespace ASC.Web.Files.Utils
                     continue;
                 }
 
-                var u = CoreContext.UserManager.GetUsers(r.Subject);
+                var u = UserManager.GetUsers(r.Subject);
                 var isgroup = false;
-                var title = u.DisplayUserName(false);
+                var title = u.DisplayUserName(false, DisplayUserSettingsHelper);
 
                 if (u.ID == Constants.LostUser.ID)
                 {
-                    var g = CoreContext.UserManager.GetGroupInfo(r.Subject);
+                    var g = UserManager.GetGroupInfo(r.Subject);
                     isgroup = true;
                     title = g.Name;
 
@@ -105,17 +151,17 @@ namespace ASC.Web.Files.Utils
                 }
 
                 var w = new AceWrapper
-                    {
-                        SubjectId = r.Subject,
-                        SubjectName = title,
-                        SubjectGroup = isgroup,
-                        Share = r.Share,
-                        Owner =
+                {
+                    SubjectId = r.Subject,
+                    SubjectName = title,
+                    SubjectGroup = isgroup,
+                    Share = r.Share,
+                    Owner =
                             entry.RootFolderType == FolderType.USER
                                 ? entry.RootFolderCreator == r.Subject
                                 : entry.CreateBy == r.Subject,
-                        LockedRights = r.Subject == SecurityContext.CurrentAccount.ID
-                    };
+                    LockedRights = r.Subject == AuthContext.CurrentAccount.ID
+                };
                 result.Add(w);
             }
 
@@ -124,13 +170,13 @@ namespace ASC.Web.Files.Utils
                 && !((File)entry).Encrypted)
             {
                 var w = new AceWrapper
-                    {
-                        SubjectId = FileConstant.ShareLinkId,
-                        Link = FileShareLink.GetLink((File)entry),
-                        SubjectGroup = true,
-                        Share = linkAccess,
-                        Owner = false
-                    };
+                {
+                    SubjectId = FileConstant.ShareLinkId,
+                    Link = FileShareLink.GetLink((File)entry),
+                    SubjectGroup = true,
+                    Share = linkAccess,
+                    Owner = false
+                };
                 result.Add(w);
             }
 
@@ -138,19 +184,19 @@ namespace ASC.Web.Files.Utils
             {
                 var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootFolderCreator : entry.CreateBy;
                 var w = new AceWrapper
-                    {
-                        SubjectId = ownerId,
-                        SubjectName = Global.GetUserName(ownerId),
-                        SubjectGroup = false,
-                        Share = FileShare.ReadWrite,
-                        Owner = true
-                    };
+                {
+                    SubjectId = ownerId,
+                    SubjectName = Global.GetUserName(ownerId),
+                    SubjectGroup = false,
+                    Share = FileShare.ReadWrite,
+                    Owner = true
+                };
                 result.Add(w);
             }
 
-            if (result.Any(w => w.SubjectId == SecurityContext.CurrentAccount.ID))
+            if (result.Any(w => w.SubjectId == AuthContext.CurrentAccount.ID))
             {
-                result.Single(w => w.SubjectId == SecurityContext.CurrentAccount.ID).LockedRights = true;
+                result.Single(w => w.SubjectId == AuthContext.CurrentAccount.ID).LockedRights = true;
             }
 
             if (entry.RootFolderType == FolderType.COMMON)
@@ -158,27 +204,27 @@ namespace ASC.Web.Files.Utils
                 if (result.All(w => w.SubjectId != Constants.GroupAdmin.ID))
                 {
                     var w = new AceWrapper
-                        {
-                            SubjectId = Constants.GroupAdmin.ID,
-                            SubjectName = FilesCommonResource.Admin,
-                            SubjectGroup = true,
-                            Share = FileShare.ReadWrite,
-                            Owner = false,
-                            LockedRights = true,
-                        };
+                    {
+                        SubjectId = Constants.GroupAdmin.ID,
+                        SubjectName = FilesCommonResource.Admin,
+                        SubjectGroup = true,
+                        Share = FileShare.ReadWrite,
+                        Owner = false,
+                        LockedRights = true,
+                    };
                     result.Add(w);
                 }
                 if (result.All(w => w.SubjectId != Constants.GroupEveryone.ID))
                 {
                     var w = new AceWrapper
-                        {
-                            SubjectId = Constants.GroupEveryone.ID,
-                            SubjectName = FilesCommonResource.Everyone,
-                            SubjectGroup = true,
-                            Share = fileSecurity.DefaultCommonShare,
-                            Owner = false,
-                            DisableRemove = true
-                        };
+                    {
+                        SubjectId = Constants.GroupEveryone.ID,
+                        SubjectName = FilesCommonResource.Everyone,
+                        SubjectGroup = true,
+                        Share = fileSecurity.DefaultCommonShare,
+                        Owner = false,
+                        DisableRemove = true
+                    };
                     result.Add(w);
                 }
             }
@@ -186,12 +232,12 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public static bool SetAceObject(List<AceWrapper> aceWrappers, FileEntry entry, bool notify, string message)
+        public bool SetAceObject(List<AceWrapper> aceWrappers, FileEntry entry, bool notify, string message)
         {
             if (entry == null) throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
             if (!CanSetAccess(entry)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
 
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
 
             var entryType = entry.FileEntryType;
             var recipients = new Dictionary<Guid, FileShare>();
@@ -211,8 +257,8 @@ namespace ASC.Web.Files.Utils
 
                 if (w.SubjectId == FileConstant.ShareLinkId)
                 {
-                    if (w.Share == FileShare.ReadWrite && CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor()) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
-                    if (CoreContext.Configuration.Personal && !FileUtility.CanWebView(entry.Title) && w.Share != FileShare.Restrict) throw new SecurityException(FilesCommonResource.ErrorMassage_BadRequest);
+                    if (w.Share == FileShare.ReadWrite && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+                    if (CoreBaseSettings.Personal && !FileUtility.CanWebView(entry.Title) && w.Share != FileShare.Restrict) throw new SecurityException(FilesCommonResource.ErrorMassage_BadRequest);
                     share = w.Share == FileShare.Restrict ? FileShare.None : w.Share;
                 }
 
@@ -227,10 +273,10 @@ namespace ASC.Web.Files.Utils
                 var listUsersId = new List<Guid>();
 
                 if (w.SubjectGroup)
-                    listUsersId = CoreContext.UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
+                    listUsersId = UserManager.GetUsersByGroup(w.SubjectId).Select(ui => ui.ID).ToList();
                 else
                     listUsersId.Add(w.SubjectId);
-                listUsersId.Remove(SecurityContext.CurrentAccount.ID);
+                listUsersId.Remove(AuthContext.CurrentAccount.ID);
 
                 if (entryType == FileEntryType.File)
                 {
@@ -261,7 +307,7 @@ namespace ASC.Web.Files.Utils
 
             if (entryType == FileEntryType.File)
             {
-                DocumentServiceHelper.CheckUsersForDrop((File) entry);
+                DocumentServiceHelper.CheckUsersForDrop((File)entry);
             }
 
             if (recipients.Any())
@@ -285,18 +331,18 @@ namespace ASC.Web.Files.Utils
             return changed;
         }
 
-        public static void RemoveAce(List<FileEntry> entries)
+        public void RemoveAce(List<FileEntry> entries)
         {
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
 
             entries.ForEach(
                 entry =>
                     {
-                        if (entry.RootFolderType != FolderType.USER || Equals(entry.RootFolderId, Global.FolderMy))
+                        if (entry.RootFolderType != FolderType.USER || Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy))
                             return;
 
                         var entryType = entry.FileEntryType;
-                        fileSecurity.Share(entry.ID, entryType, SecurityContext.CurrentAccount.ID, fileSecurity.DefaultMyShare);
+                        fileSecurity.Share(entry.ID, entryType, AuthContext.CurrentAccount.ID, fileSecurity.DefaultMyShare);
 
                         if (entryType == FileEntryType.File)
                         {

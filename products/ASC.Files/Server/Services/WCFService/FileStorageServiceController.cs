@@ -104,6 +104,10 @@ namespace ASC.Web.Files.Services.WCFService
         public DocuSignHelper DocuSignHelper { get; }
         public FileShareLink FileShareLink { get; }
         public FileConverter FileConverter { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
+        public FileSharing FileSharing { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -135,7 +139,11 @@ namespace ASC.Web.Files.Services.WCFService
             DocuSignToken docuSignToken,
             DocuSignHelper docuSignHelper,
             FileShareLink fileShareLink,
-            FileConverter fileConverter)
+            FileConverter fileConverter,
+            DocumentServiceHelper documentServiceHelper,
+            ThirdpartyConfiguration thirdpartyConfiguration,
+            DocumentServiceConnector documentServiceConnector,
+            FileSharing fileSharing)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -165,6 +173,10 @@ namespace ASC.Web.Files.Services.WCFService
             DocuSignHelper = docuSignHelper;
             FileShareLink = fileShareLink;
             FileConverter = fileConverter;
+            DocumentServiceHelper = documentServiceHelper;
+            ThirdpartyConfiguration = thirdpartyConfiguration;
+            DocumentServiceConnector = documentServiceConnector;
+            FileSharing = fileSharing;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -885,7 +897,7 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(!readLink && !FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             ErrorIf(file.ProviderEntry, FilesCommonResource.ErrorMassage_BadRequest);
 
-            return new ItemList<EditHistory>(fileDao.GetEditHistory(file.ID));
+            return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
         }
 
         [Microsoft.AspNetCore.Authorization.AllowAnonymous]
@@ -988,7 +1000,7 @@ namespace ASC.Web.Files.Services.WCFService
             FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileRestoreVersion, file.Title, version.ToString(CultureInfo.InvariantCulture));
 
             fileDao = GetFileDao();
-            return new ItemList<EditHistory>(fileDao.GetEditHistory(file.ID));
+            return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
         }
 
         [Read("presigned")]

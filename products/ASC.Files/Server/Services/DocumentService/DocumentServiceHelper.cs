@@ -29,53 +29,93 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Text;
+
+using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Security;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
+
 using JWT;
+
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
-using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
-    public static class DocumentServiceHelper
+    public class DocumentServiceHelper
     {
-        public static File GetParams(object fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
-        {
-            File file;
+        public IDaoFactory DaoFactory { get; }
+        public FileShareLink FileShareLink { get; }
+        public UserManager UserManager { get; }
+        public AuthContext AuthContext { get; }
+        public FileSecurity FileSecurity { get; }
+        public SetupInfo SetupInfo { get; }
+        public EntryManager EntryManager { get; }
+        public FileUtility FileUtility { get; }
+        public MachinePseudoKeys MachinePseudoKeys { get; }
+        public Global Global { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
 
+        public DocumentServiceHelper(
+            IDaoFactory daoFactory,
+            FileShareLink fileShareLink,
+            UserManager userManager,
+            AuthContext authContext,
+            FileSecurity fileSecurity,
+            SetupInfo setupInfo,
+            EntryManager entryManager,
+            FileUtility fileUtility,
+            MachinePseudoKeys machinePseudoKeys,
+            Global global,
+            DocumentServiceConnector documentServiceConnector)
+        {
+            DaoFactory = daoFactory;
+            FileShareLink = fileShareLink;
+            UserManager = userManager;
+            AuthContext = authContext;
+            FileSecurity = fileSecurity;
+            SetupInfo = setupInfo;
+            EntryManager = entryManager;
+            FileUtility = fileUtility;
+            MachinePseudoKeys = machinePseudoKeys;
+            Global = global;
+            DocumentServiceConnector = documentServiceConnector;
+        }
+
+        public File GetParams(object fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        {
             var lastVersion = true;
             FileShare linkRight;
 
-            using (var fileDao = Global.DaoFactory.GetFileDao())
+            var fileDao = DaoFactory.FileDao;
+
+            linkRight = FileShareLink.Check(doc, fileDao, out var file);
+
+            if (file == null)
             {
-                linkRight = FileShareLink.Check(doc, fileDao, out file);
+                var curFile = fileDao.GetFile(fileId);
 
-                if (file == null)
+                if (curFile != null && 0 < version && version < curFile.Version)
                 {
-                    var curFile = fileDao.GetFile(fileId);
-
-                    if (curFile != null && 0 < version && version < curFile.Version)
-                    {
-                        file = fileDao.GetFile(fileId, version);
-                        lastVersion = false;
-                    }
-                    else
-                    {
-                        file = curFile;
-                    }
+                    file = fileDao.GetFile(fileId, version);
+                    lastVersion = false;
+                }
+                else
+                {
+                    file = curFile;
                 }
             }
+
             return GetParams(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth, out configuration);
         }
 
-        public static File GetParams(File file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        public File GetParams(File file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
         {
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
@@ -89,7 +129,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var rightToComment = rightToEdit;
             var commentPossible = editPossible;
 
-            if (linkRight == FileShare.Restrict && CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).IsVisitor())
+            if (linkRight == FileShare.Restrict && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))
             {
                 rightToEdit = false;
                 rightToReview = false;
@@ -97,7 +137,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 rightToComment = false;
             }
 
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite
                               || fileSecurity.CanEdit(file));
@@ -207,18 +247,16 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
             {
-                using (var fileDao = Global.DaoFactory.GetFileDao())
-                {
-                    fileStable = fileDao.GetFileStable(file.ID, file.Version);
-                }
+                var fileDao = DaoFactory.FileDao;
+                fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
             var docKey = GetDocKey(fileStable);
             var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
             configuration = new Configuration(file)
-                {
-                    Document =
+            {
+                Document =
                         {
                             Key = docKey,
                             Permissions =
@@ -231,12 +269,12 @@ namespace ASC.Web.Files.Services.DocumentService
                                     ChangeHistory = rightChangeHistory,
                                 }
                         },
-                    EditorConfig =
+                EditorConfig =
                         {
                             ModeWrite = modeWrite,
                         },
-                    ErrorMessage = strError,
-                };
+                ErrorMessage = strError,
+            };
 
             if (!lastVersion)
             {
@@ -247,7 +285,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public static string GetSignature(object payload)
+        public string GetSignature(object payload)
         {
             if (string.IsNullOrEmpty(FileUtility.SignatureSecret)) return null;
 
@@ -256,12 +294,12 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public static string GetDocKey(File file)
+        public string GetDocKey(File file)
         {
             return GetDocKey(file.ID, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
         }
 
-        public static string GetDocKey(object fileId, int fileVersion, DateTime modified)
+        public string GetDocKey(object fileId, int fileVersion, DateTime modified)
         {
             var str = string.Format("teamlab_{0}_{1}_{2}_{3}",
                                     fileId,
@@ -278,9 +316,9 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public static void CheckUsersForDrop(File file)
+        public void CheckUsersForDrop(File file)
         {
-            var fileSecurity = Global.GetFilesSecurity();
+            var fileSecurity = FileSecurity;
             var sharedLink =
                 fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
                 || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
@@ -290,7 +328,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var usersDrop = FileTracker.GetEditingBy(file.ID)
                                        .Where(uid =>
                                            {
-                                               if (!CoreContext.UserManager.UserExists(uid))
+                                               if (!UserManager.UserExists(uid))
                                                {
                                                    return !sharedLink;
                                                }
@@ -303,22 +341,20 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)
             {
-                using (var fileDao = Global.DaoFactory.GetFileDao())
-                {
-                    fileStable = fileDao.GetFileStable(file.ID, file.Version);
-                }
+                var fileDao = DaoFactory.FileDao;
+                fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
             var docKey = GetDocKey(fileStable);
             DropUser(docKey, usersDrop, file.ID);
         }
 
-        public static bool DropUser(string docKeyForTrack, string[] users, object fileId = null)
+        public bool DropUser(string docKeyForTrack, string[] users, object fileId = null)
         {
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
         }
 
-        public static bool RenameFile(File file, IFileDao fileDao)
+        public bool RenameFile(File file, IFileDao fileDao)
         {
             if (!FileUtility.CanWebView(file.Title)
                 && !FileUtility.CanWebEdit(file.Title)

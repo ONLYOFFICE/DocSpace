@@ -161,6 +161,7 @@ namespace ASC.Web.Files.Helpers
         public FileMarker FileMarker { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FilesMessageService FilesMessageService { get; }
+        public DocuSignHandler DocuSignHandler { get; }
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
@@ -174,7 +175,8 @@ namespace ASC.Web.Files.Helpers
             DisplayUserSettingsHelper displayUserSettingsHelper,
             FileMarker fileMarker,
             GlobalFolderHelper globalFolderHelper,
-            FilesMessageService filesMessageService)
+            FilesMessageService filesMessageService,
+            DocuSignHandler docuSignHandler)
         {
             DocuSignToken = docuSignToken;
             DocuSignLoginProvider = docuSignLoginProvider;
@@ -187,6 +189,7 @@ namespace ASC.Web.Files.Helpers
             FileMarker = fileMarker;
             GlobalFolderHelper = globalFolderHelper;
             FilesMessageService = filesMessageService;
+            DocuSignHandler = docuSignHandler;
             Log = options.CurrentValue;
         }
 

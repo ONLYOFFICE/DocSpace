@@ -115,6 +115,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         public SetupInfo SetupInfo { get; }
         public GoogleLoginProvider GoogleLoginProvider { get; }
         public TokenHelper TokenHelper { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
+        public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
 
         public GoogleDriveApp()
         {
@@ -143,6 +145,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             SetupInfo setupInfo,
             GoogleLoginProvider googleLoginProvider,
             TokenHelper tokenHelper,
+            DocumentServiceConnector documentServiceConnector,
+            ThirdPartyAppHandler thirdPartyAppHandler,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -174,6 +178,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             SetupInfo = setupInfo;
             GoogleLoginProvider = googleLoginProvider;
             TokenHelper = tokenHelper;
+            DocumentServiceConnector = documentServiceConnector;
+            ThirdPartyAppHandler = thirdPartyAppHandler;
         }
 
         public bool Request(HttpContext context)

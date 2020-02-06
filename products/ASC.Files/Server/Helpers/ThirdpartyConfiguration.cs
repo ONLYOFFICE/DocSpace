@@ -27,32 +27,59 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Files.Classes;
+using ASC.Files.Core;
+
+using Microsoft.Extensions.Configuration;
 
 namespace ASC.Web.Files.Helpers
 {
-    public static class ThirdpartyConfiguration
+    public class ThirdpartyConfiguration
     {
-        public static IEnumerable<string> ThirdPartyProviders
+        public IConfiguration Configuration { get; }
+        public IDaoFactory DaoFactory { get; }
+        public BoxLoginProvider BoxLoginProvider { get; }
+        public DropboxLoginProvider DropboxLoginProvider { get; }
+        public OneDriveLoginProvider OneDriveLoginProvider { get; }
+        public DocuSignLoginProvider DocuSignLoginProvider { get; }
+        public GoogleLoginProvider GoogleLoginProvider { get; }
+
+        public ThirdpartyConfiguration(
+            IConfiguration configuration,
+            IDaoFactory daoFactory,
+            BoxLoginProvider boxLoginProvider,
+            DropboxLoginProvider dropboxLoginProvider,
+            OneDriveLoginProvider oneDriveLoginProvider,
+            DocuSignLoginProvider docuSignLoginProvider,
+            GoogleLoginProvider googleLoginProvider)
         {
-            get { return (WebConfigurationManager.AppSettings["files.thirdparty.enable"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries); }
+            Configuration = configuration;
+            DaoFactory = daoFactory;
+            BoxLoginProvider = boxLoginProvider;
+            DropboxLoginProvider = dropboxLoginProvider;
+            OneDriveLoginProvider = oneDriveLoginProvider;
+            DocuSignLoginProvider = docuSignLoginProvider;
+            GoogleLoginProvider = googleLoginProvider;
         }
 
-        public static bool SupportInclusion
+        public IEnumerable<string> ThirdPartyProviders
+        {
+            get { return (Configuration["files:thirdparty:enable"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries); }
+        }
+
+        public bool SupportInclusion
         {
             get
             {
-                using (var providerDao = Global.DaoFactory.GetProviderDao())
-                {
-                    if (providerDao == null) return false;
-                }
+                var providerDao = DaoFactory.ProviderDao;
+                if (providerDao == null) return false;
 
                 return SupportBoxInclusion || SupportDropboxInclusion || SupportDocuSignInclusion || SupportGoogleDriveInclusion || SupportOneDriveInclusion || SupportSharePointInclusion || SupportWebDavInclusion || SupportNextcloudInclusion || SupportOwncloudInclusion || SupportYandexInclusion;
             }
         }
 
-        public static bool SupportBoxInclusion
+        public bool SupportBoxInclusion
         {
             get
             {
@@ -60,7 +87,7 @@ namespace ASC.Web.Files.Helpers
             }
         }
 
-        public static bool SupportDropboxInclusion
+        public bool SupportDropboxInclusion
         {
             get
             {
@@ -68,7 +95,7 @@ namespace ASC.Web.Files.Helpers
             }
         }
 
-        public static bool SupportOneDriveInclusion
+        public bool SupportOneDriveInclusion
         {
             get
             {
@@ -76,42 +103,42 @@ namespace ASC.Web.Files.Helpers
             }
         }
 
-        public static bool SupportSharePointInclusion
+        public bool SupportSharePointInclusion
         {
             get { return ThirdPartyProviders.Contains("sharepoint"); }
         }
 
-        public static bool SupportWebDavInclusion
+        public bool SupportWebDavInclusion
         {
             get { return ThirdPartyProviders.Contains("webdav"); }
         }
 
-        public static bool SupportNextcloudInclusion
+        public bool SupportNextcloudInclusion
         {
             get { return ThirdPartyProviders.Contains("nextcloud"); }
         }
 
-        public static bool SupportOwncloudInclusion
+        public bool SupportOwncloudInclusion
         {
             get { return ThirdPartyProviders.Contains("owncloud"); }
         }
 
-        public static bool SupportYandexInclusion
+        public bool SupportYandexInclusion
         {
             get { return ThirdPartyProviders.Contains("yandex"); }
         }
 
-        public static string DropboxAppKey
+        public string DropboxAppKey
         {
             get { return DropboxLoginProvider.Instance["dropboxappkey"]; }
         }
 
-        public static string DropboxAppSecret
+        public string DropboxAppSecret
         {
             get { return DropboxLoginProvider.Instance["dropboxappsecret"]; }
         }
 
-        public static bool SupportDocuSignInclusion
+        public bool SupportDocuSignInclusion
         {
             get
             {
@@ -119,7 +146,7 @@ namespace ASC.Web.Files.Helpers
             }
         }
 
-        public static bool SupportGoogleDriveInclusion
+        public bool SupportGoogleDriveInclusion
         {
             get
             {

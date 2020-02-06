@@ -536,6 +536,7 @@ namespace ASC.Web.Files.Utils
         public IEnumerable<FileEntry> SetTagsNew(Folder parent, IEnumerable<FileEntry> entries)
         {
             var tagDao = DaoFactory.TagDao;
+            var folderDao = DaoFactory.FolderDao;
             var totalTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, parent, false).ToList();
 
             if (totalTags.Any())

@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+using ASC.Web.Files.Services.DocumentService;
+
 namespace ASC.Files.Core
 {
     /// <summary>
@@ -290,7 +292,7 @@ namespace ASC.Files.Core
 
         void SaveEditHistory(File file, string changes, Stream differenceStream);
 
-        List<EditHistory> GetEditHistory(object fileId, int fileVersion = 0);
+        List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, object fileId, int fileVersion = 0);
 
         Stream GetDifferenceStream(File file);
 

@@ -183,6 +183,12 @@ namespace ASC.Web.Files.Services.DocumentService
         public GlobalStore GlobalStore { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public IDaoFactory DaoFactory { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public EntryManager EntryManager { get; }
+        public FileShareLink FileShareLink { get; }
+        public FilesMessageService FilesMessageService { get; }
+        public EncryptionAddressHelper EncryptionAddressHelper { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(
@@ -196,7 +202,13 @@ namespace ASC.Web.Files.Services.DocumentService
             GlobalStore globalStore,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             IDaoFactory daoFactory,
-            IOptionsMonitor<ILog> options)
+            IOptionsMonitor<ILog> options,
+            DocumentServiceHelper documentServiceHelper,
+            EntryManager entryManager,
+            FileShareLink fileShareLink,
+            FilesMessageService filesMessageService,
+            EncryptionAddressHelper encryptionAddressHelper,
+            DocumentServiceConnector documentServiceConnector)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -208,6 +220,12 @@ namespace ASC.Web.Files.Services.DocumentService
             GlobalStore = globalStore;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             DaoFactory = daoFactory;
+            DocumentServiceHelper = documentServiceHelper;
+            EntryManager = entryManager;
+            FileShareLink = fileShareLink;
+            FilesMessageService = filesMessageService;
+            EncryptionAddressHelper = encryptionAddressHelper;
+            DocumentServiceConnector = documentServiceConnector;
             Logger = options.CurrentValue;
         }
 
@@ -449,7 +467,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var result = new TrackResponse { Message = saveMessage };
             if (string.IsNullOrEmpty(saveMessage) && file != null && file.Encrypted)
             {
-                result.Addresses = EncryptionAddress.GetAddresses(file.ID.ToString()).ToArray();
+                result.Addresses = EncryptionAddressHelper.GetAddresses(file.ID.ToString()).ToArray();
             }
             return result;
         }

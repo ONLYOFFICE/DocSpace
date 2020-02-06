@@ -107,6 +107,8 @@ namespace ASC.Web.Files.ThirdPartyApp
         public IOptionsSnapshot<AccountLinker> Snapshot { get; }
         public SetupInfo SetupInfo { get; }
         public TokenHelper TokenHelper { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
+        public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
         public ILog Logger { get; }
 
         public BoxApp()
@@ -132,6 +134,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             IOptionsSnapshot<AccountLinker> snapshot,
             SetupInfo setupInfo,
             TokenHelper tokenHelper,
+            DocumentServiceConnector documentServiceConnector,
+            ThirdPartyAppHandler thirdPartyAppHandler,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -158,6 +162,8 @@ namespace ASC.Web.Files.ThirdPartyApp
             Snapshot = snapshot;
             SetupInfo = setupInfo;
             TokenHelper = tokenHelper;
+            DocumentServiceConnector = documentServiceConnector;
+            ThirdPartyAppHandler = thirdPartyAppHandler;
             Logger = option.CurrentValue;
         }
 

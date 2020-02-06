@@ -78,6 +78,8 @@ namespace ASC.Web.Files.Utils
         public FilesSettingsHelper FilesSettingsHelper { get; }
         public UserManager UserManager { get; }
         public FileShareLink FileShareLink { get; }
+        public DocumentServiceHelper DocumentServiceHelper { get; }
+        public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         public ILog Logger { get; }
 
         public EntryManager(
@@ -96,7 +98,9 @@ namespace ASC.Web.Files.Utils
             FilesSettingsHelper filesSettingsHelper,
             UserManager userManager,
             IOptionsMonitor<ILog> optionsMonitor,
-            FileShareLink fileShareLink)
+            FileShareLink fileShareLink,
+            DocumentServiceHelper documentServiceHelper,
+            ThirdpartyConfiguration thirdpartyConfiguration)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -113,6 +117,8 @@ namespace ASC.Web.Files.Utils
             FilesSettingsHelper = filesSettingsHelper;
             UserManager = userManager;
             FileShareLink = fileShareLink;
+            DocumentServiceHelper = documentServiceHelper;
+            ThirdpartyConfiguration = thirdpartyConfiguration;
             Logger = optionsMonitor.CurrentValue;
         }
 

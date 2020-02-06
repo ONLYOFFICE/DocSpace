@@ -1043,7 +1043,7 @@ namespace ASC.Files.Core.Data
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
         }
 
-        public List<EditHistory> GetEditHistory(object fileId, int fileVersion = 0)
+        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, object fileId, int fileVersion = 0)
         {
             var query = Query(r => r.Files)
                 .Where(r => r.Id == (int)fileId)
@@ -1070,7 +1070,7 @@ namespace ASC.Files.Core.Data
                                 ChangesString = r.Changes
                             };
 
-                            item.Key = DocumentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
+                            item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
                             return item;
                         })
                     .ToList();
