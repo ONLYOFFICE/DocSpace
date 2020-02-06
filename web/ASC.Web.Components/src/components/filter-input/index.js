@@ -12,7 +12,7 @@ import clone from 'lodash/clone';
 
 const StyledFilterInput = styled.div`
     width: 100%;
-
+    min-width: 255px;
     &:after {
         content: " ";
         display: block;
