@@ -38,6 +38,14 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    
+    @media (max-width: 1024px) {
+      & > div:first-child {
+      position: absolute;
+      top: 56px;
+      z-index: 180;
+      }
+    }
 
     @media (min-width: 1024px) {
       margin: 0 -24px;
