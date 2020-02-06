@@ -13,7 +13,7 @@ import {
   getUserStatus,
   toEmployeeWrapper
 } from "../../../../../store/people/selectors";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import {
   updateUserStatus
 } from "../../../../../store/people/actions";
@@ -21,6 +21,7 @@ import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
 import { DeleteSelfProfileDialog, ChangePasswordDialog, ChangeEmailDialog, DeleteProfileEverDialog } from '../../../../dialogs';
+import i18n from '../../i18n';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
@@ -205,11 +206,12 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onUpdateUserStatus = (status, userId) => {
-    const { fetchProfile, updateUserStatus } = this.props;
+    const { fetchProfile, updateUserStatus, t } = this.props;
 
-    updateUserStatus(status, new Array(userId)).then(() =>
-      fetchProfile(userId)
-    );
+    updateUserStatus(status, new Array(userId))
+      .then(() => fetchProfile(userId))
+      .then(() => toastr.success(t('SuccessChangeUserStatus')))
+      .catch(error => toastr.error(error))
   };
 
   onDisableClick = () =>
@@ -241,10 +243,10 @@ class SectionHeaderContent extends React.PureComponent {
     resendUserInvites(new Array(this.state.profile.id))
       .then(() =>
         toastr.success(
-          <Text>
-            The email activation instructions have been sent to the{" "}
-            <b>{this.state.profile.email}</b> email address
-          </Text>
+          <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+            The email activation instructions have been sent to the
+                <strong>{{ email: this.state.profile.email }}</strong> email address
+          </Trans>
         )
       )
       .catch(error => toastr.error(error));
