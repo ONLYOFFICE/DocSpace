@@ -2,6 +2,7 @@ import React from 'react';
 import styled, {css} from 'styled-components';
 import FilterButton from './filter-button';
 import HideFilter from './hide-filter';
+import throttle from 'lodash/throttle';
 import ComboBox from '../combobox';
 import CloseButton from './close-button';
 import isEqual from 'lodash/isEqual';
@@ -178,6 +179,8 @@ class FilterBlock extends React.Component {
       openFilterItems: this.props.openFilterItems || []
     };
 
+    this.throttledRender = throttle(this.onRender, 100);
+
   }
   onDeleteFilterItem = (key) => {
     this.props.onDeleteFilterItem(key);
@@ -252,6 +255,9 @@ class FilterBlock extends React.Component {
     return result;
   }
   componentDidUpdate() {
+    this.throttledRender();
+  }
+  onRender = () => {
     this.props.onRender();
   }
   shouldComponentUpdate(nextProps, nextState) {
