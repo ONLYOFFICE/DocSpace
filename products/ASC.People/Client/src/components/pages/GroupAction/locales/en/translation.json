@@ -11,5 +11,6 @@
   
   "CustomNewDepartment": "{{groupCaption}} (creation)",
   "SearchAddedMembers": "Search added members",
-  "MeLabel": "Me"
+  "MeLabel": "Me",
+  "EmptyFieldError": "Empty field"
 }

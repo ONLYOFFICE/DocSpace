@@ -125,7 +125,8 @@ class SectionBodyContent extends React.Component {
               key: GUID_EMPTY,
               label: t("LblSelect"),
               default: true
-            }
+            },
+      nameError: null
     };
 
     return newState;
@@ -193,7 +194,10 @@ class SectionBodyContent extends React.Component {
     const { group, t, groupCaption } = this.props;
     const { groupName, groupManager, groupMembers } = this.state;
 
-    if (!groupName || !groupName.trim().length) return false;
+    if (!groupName || !groupName.trim().length) { 
+      this.setState({nameError: t('EmptyFieldError')});
+      return false;
+    }
 
     this.setState({ inLoading: true });
 
@@ -253,6 +257,11 @@ class SectionBodyContent extends React.Component {
     }
   }
 
+  onFocusName = () => {
+    if(this.state.nameError)
+      this.setState({ nameError: null });
+  } 
+
   render() {
     const { t, groupHeadCaption, groupsCaption, me } = this.props;
     const {
@@ -264,14 +273,16 @@ class SectionBodyContent extends React.Component {
       error,
       searchValue,
       groupManager,
-      buttonLabel
+      buttonLabel,
+      nameError
     } = this.state;
     return (
       <MainContainer>
         <FieldContainer
           className="group-name_container"
           isRequired={true}
-          hasError={false}
+          hasError={!!nameError}
+          errorMessage={nameError}
           isVertical={true}
           labelText={t("Name")}
         >
@@ -283,9 +294,11 @@ class SectionBodyContent extends React.Component {
             isBold={true}
             tabIndex={1}
             value={groupName}
+            hasError={!!nameError}
             onChange={this.onGroupChange}
             isDisabled={inLoading}
             onKeyUp={this.onKeyPress}
+            onFocus={this.onFocusName}
           />
         </FieldContainer>
         <FieldContainer
