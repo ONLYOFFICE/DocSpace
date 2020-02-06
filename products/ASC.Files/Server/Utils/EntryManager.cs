@@ -77,6 +77,7 @@ namespace ASC.Web.Files.Utils
         public SetupInfo SetupInfo { get; }
         public FilesSettingsHelper FilesSettingsHelper { get; }
         public UserManager UserManager { get; }
+        public FileShareLink FileShareLink { get; }
         public ILog Logger { get; }
 
         public EntryManager(
@@ -94,7 +95,8 @@ namespace ASC.Web.Files.Utils
             SetupInfo setupInfo,
             FilesSettingsHelper filesSettingsHelper,
             UserManager userManager,
-            IOptionsMonitor<ILog> optionsMonitor)
+            IOptionsMonitor<ILog> optionsMonitor,
+            FileShareLink fileShareLink)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -110,6 +112,7 @@ namespace ASC.Web.Files.Utils
             SetupInfo = setupInfo;
             FilesSettingsHelper = filesSettingsHelper;
             UserManager = userManager;
+            FileShareLink = fileShareLink;
             Logger = optionsMonitor.CurrentValue;
         }
 

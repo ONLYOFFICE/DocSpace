@@ -102,6 +102,8 @@ namespace ASC.Web.Files.Services.WCFService
         public DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
         public DocuSignToken DocuSignToken { get; }
         public DocuSignHelper DocuSignHelper { get; }
+        public FileShareLink FileShareLink { get; }
+        public FileConverter FileConverter { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -131,7 +133,9 @@ namespace ASC.Web.Files.Services.WCFService
             FilesMessageService filesMessageService,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
             DocuSignToken docuSignToken,
-            DocuSignHelper docuSignHelper)
+            DocuSignHelper docuSignHelper,
+            FileShareLink fileShareLink,
+            FileConverter fileConverter)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -159,6 +163,8 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceTrackerHelper = documentServiceTrackerHelper;
             DocuSignToken = docuSignToken;
             DocuSignHelper = docuSignHelper;
+            FileShareLink = fileShareLink;
+            FileConverter = fileConverter;
             Logger = optionMonitor.Get("ASC.Files");
         }
 

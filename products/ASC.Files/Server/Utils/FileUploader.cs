@@ -34,6 +34,7 @@ using System.Threading;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -57,6 +58,14 @@ namespace ASC.Web.Files.Utils
         public SetupInfo SetupInfo { get; }
         public TenantExtra TenantExtra { get; }
         public TenantStatisticsProvider TenantStatisticsProvider { get; }
+        public FileMarker FileMarker { get; }
+        public FileConverter FileConverter { get; }
+        public IDaoFactory DaoFactory { get; }
+        public Global Global { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public FilesMessageService FilesMessageService { get; }
+        public FileSecurity FileSecurity { get; }
+        public EntryManager EntryManager { get; }
 
         public FileUploader(
             FilesSettingsHelper filesSettingsHelper,
@@ -66,7 +75,15 @@ namespace ASC.Web.Files.Utils
             AuthContext authContext,
             SetupInfo setupInfo,
             TenantExtra tenantExtra,
-            TenantStatisticsProvider tenantStatisticsProvider)
+            TenantStatisticsProvider tenantStatisticsProvider,
+            FileMarker fileMarker,
+            FileConverter fileConverter,
+            IDaoFactory daoFactory,
+            Global global,
+            FilesLinkUtility filesLinkUtility,
+            FilesMessageService filesMessageService,
+            FileSecurity fileSecurity,
+            EntryManager entryManager)
         {
             FilesSettingsHelper = filesSettingsHelper;
             FileUtility = fileUtility;
@@ -76,6 +93,14 @@ namespace ASC.Web.Files.Utils
             SetupInfo = setupInfo;
             TenantExtra = tenantExtra;
             TenantStatisticsProvider = tenantStatisticsProvider;
+            FileMarker = fileMarker;
+            FileConverter = fileConverter;
+            DaoFactory = daoFactory;
+            Global = global;
+            FilesLinkUtility = filesLinkUtility;
+            FilesMessageService = filesMessageService;
+            FileSecurity = fileSecurity;
+            EntryManager = entryManager;
         }
 
         public File Exec(string folderId, string title, long contentLength, Stream data)
@@ -90,10 +115,8 @@ namespace ASC.Web.Files.Utils
 
             var file = VerifyFileUpload(folderId, title, contentLength, !createNewIfExist);
 
-            using (var dao = Global.DaoFactory.GetFileDao())
-            {
-                file = dao.SaveFile(file, data);
-            }
+            var dao = DaoFactory.FileDao;
+            file = dao.SaveFile(file, data);
 
             FileMarker.MarkAsNew(file);
 
@@ -112,21 +135,19 @@ namespace ASC.Web.Files.Utils
 
             folderId = GetFolderId(folderId, string.IsNullOrEmpty(relativePath) ? null : relativePath.Split('/').ToList());
 
-            using (var fileDao = Global.DaoFactory.GetFileDao())
+            var fileDao = DaoFactory.FileDao;
+            var file = fileDao.GetFile(folderId, fileName);
+
+            if (updateIfExists && CanEdit(file))
             {
-                var file = fileDao.GetFile(folderId, fileName);
+                file.Title = fileName;
+                file.ConvertedType = null;
+                file.Comment = FilesCommonResource.CommentUpload;
+                file.Version++;
+                file.VersionGroup++;
+                file.Encrypted = false;
 
-                if (updateIfExists && CanEdit(file))
-                {
-                    file.Title = fileName;
-                    file.ConvertedType = null;
-                    file.Comment = FilesCommonResource.CommentUpload;
-                    file.Version++;
-                    file.VersionGroup++;
-                    file.Encrypted = false;
-
-                    return file;
-                }
+                return file;
             }
 
             return new File { FolderID = folderId, Title = fileName };
@@ -150,7 +171,7 @@ namespace ASC.Web.Files.Utils
         private bool CanEdit(File file)
         {
             return file != null
-                   && Global.GetFilesSecurity().CanEdit(file)
+                   && FileSecurity.CanEdit(file)
                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
                    && !EntryManager.FileLockedForMe(file.ID)
                    && !FileTracker.IsEditing(file.ID)
@@ -158,39 +179,37 @@ namespace ASC.Web.Files.Utils
                    && !file.Encrypted;
         }
 
-        private static string GetFolderId(object folderId, IList<string> relativePath)
+        private string GetFolderId(object folderId, IList<string> relativePath)
         {
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
+            var folderDao = DaoFactory.FolderDao;
+            var folder = folderDao.GetFolder(folderId);
+
+            if (folder == null)
+                throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
+
+            if (!FileSecurity.CanCreate(folder))
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+
+            if (relativePath != null && relativePath.Any())
             {
-                var folder = folderDao.GetFolder(folderId);
+                var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
 
-                if (folder == null)
-                    throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
-
-                if (!Global.GetFilesSecurity().CanCreate(folder))
-                    throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
-
-                if (relativePath != null && relativePath.Any())
+                if (!string.IsNullOrEmpty(subFolderTitle))
                 {
-                    var subFolderTitle = Global.ReplaceInvalidCharsAndTruncate(relativePath.FirstOrDefault());
+                    folder = folderDao.GetFolder(subFolderTitle, folder.ID);
 
-                    if (!string.IsNullOrEmpty(subFolderTitle))
+                    if (folder == null)
                     {
-                        folder = folderDao.GetFolder(subFolderTitle, folder.ID);
+                        folderId = folderDao.SaveFolder(new Folder { Title = subFolderTitle, ParentFolderID = folderId });
 
-                        if (folder == null)
-                        {
-                            folderId = folderDao.SaveFolder(new Folder { Title = subFolderTitle, ParentFolderID = folderId });
-
-                            folder = folderDao.GetFolder(folderId);
-                            FilesMessageService.Send(folder, HttpContext.Current.Request, MessageAction.FolderCreated, folder.Title);
-                        }
-
-                        folderId = folder.ID;
-
-                        relativePath.RemoveAt(0);
-                        folderId = GetFolderId(folderId, relativePath);
+                        folder = folderDao.GetFolder(folderId);
+                        FilesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                     }
+
+                    folderId = folder.ID;
+
+                    relativePath.RemoveAt(0);
+                    folderId = GetFolderId(folderId, relativePath);
                 }
             }
 
@@ -228,22 +247,20 @@ namespace ASC.Web.Files.Utils
                 ContentLength = contentLength
             };
 
-            using (var dao = Global.DaoFactory.GetFileDao())
-            {
-                var uploadSession = dao.CreateUploadSession(file, contentLength);
+            var dao = DaoFactory.FileDao;
+            var uploadSession = dao.CreateUploadSession(file, contentLength);
 
-                uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
-                uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
-                uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
-                uploadSession.UserId = AuthContext.CurrentAccount.ID;
-                uploadSession.FolderId = folderId;
-                uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;
-                uploadSession.Encrypted = encrypted;
+            uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
+            uploadSession.Location = FilesLinkUtility.GetUploadChunkLocationUrl(uploadSession.Id);
+            uploadSession.TenantId = TenantManager.GetCurrentTenant().TenantId;
+            uploadSession.UserId = AuthContext.CurrentAccount.ID;
+            uploadSession.FolderId = folderId;
+            uploadSession.CultureName = Thread.CurrentThread.CurrentUICulture.Name;
+            uploadSession.Encrypted = encrypted;
 
-                ChunkedUploadSessionHolder.StoreSession(uploadSession);
+            ChunkedUploadSessionHolder.StoreSession(uploadSession);
 
-                return uploadSession;
-            }
+            return uploadSession;
         }
 
         public ChunkedUploadSession UploadChunk(string uploadId, Stream stream, long chunkLength)
@@ -269,10 +286,8 @@ namespace ASC.Web.Files.Utils
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
             }
 
-            using (var dao = Global.DaoFactory.GetFileDao())
-            {
-                dao.UploadChunk(uploadSession, stream, chunkLength);
-            }
+            var dao = DaoFactory.FileDao;
+            dao.UploadChunk(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
@@ -287,27 +302,22 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public static void AbortUpload(string uploadId)
+        public void AbortUpload(string uploadId)
         {
             AbortUpload(ChunkedUploadSessionHolder.GetSession(uploadId));
         }
 
-        private static void AbortUpload(ChunkedUploadSession uploadSession)
+        private void AbortUpload(ChunkedUploadSession uploadSession)
         {
-            using (var dao = Global.DaoFactory.GetFileDao())
-            {
-                dao.AbortUploadSession(uploadSession);
-            }
+            DaoFactory.FileDao.AbortUploadSession(uploadSession);
 
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }
 
-        private static long GetMaxFileSize(object folderId, bool chunkedUpload = false)
+        private long GetMaxFileSize(object folderId, bool chunkedUpload = false)
         {
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
-            {
-                return folderDao.GetMaxUploadSize(folderId, chunkedUpload);
-            }
+            var folderDao = DaoFactory.FolderDao;
+            return folderDao.GetMaxUploadSize(folderId, chunkedUpload);
         }
 
         #endregion

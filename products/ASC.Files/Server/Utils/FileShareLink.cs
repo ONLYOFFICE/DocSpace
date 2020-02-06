@@ -24,26 +24,48 @@
 */
 
 
-using System;
 using System.Web;
+
 using ASC.Common.Utils;
+using ASC.Core.Common;
 using ASC.Files.Core;
+using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Studio.Utility;
+
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
 {
-    public static class FileShareLink
+    public class FileShareLink
     {
-        public static string GetLink(File file, bool withHash = true)
+        public FileUtility FileUtility { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        public Global Global { get; }
+        public FileSecurity FileSecurity { get; }
+
+        public FileShareLink(
+            FileUtility fileUtility,
+            FilesLinkUtility filesLinkUtility,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            Global global,
+            FileSecurity fileSecurity)
+        {
+            FileUtility = fileUtility;
+            FilesLinkUtility = filesLinkUtility;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            Global = global;
+            FileSecurity = fileSecurity;
+        }
+
+        public string GetLink(File file, bool withHash = true)
         {
             var url = file.DownloadUrl;
 
             if (FileUtility.CanWebView(file.Title))
-                url = FilesLinkUtility.GetFileWebPreviewUrl(file.Title, file.ID);
+                url = FilesLinkUtility.GetFileWebPreviewUrl(FileUtility, file.Title, file.ID);
 
             if (withHash)
             {
@@ -51,27 +73,27 @@ namespace ASC.Web.Files.Utils
                 url += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(linkParams);
             }
 
-            return CommonLinkUtility.GetFullAbsolutePath(url);
+            return BaseCommonLinkUtility.GetFullAbsolutePath(url);
         }
 
-        public static string CreateKey(string fileId)
+        public string CreateKey(string fileId)
         {
             return Signature.Create(fileId, Global.GetDocDbKey());
         }
 
-        public static string Parse(string doc)
+        public string Parse(string doc)
         {
             return Signature.Read<string>(doc ?? string.Empty, Global.GetDocDbKey());
         }
 
-        public static bool Check(string doc, bool checkRead, IFileDao fileDao, out File file)
+        public bool Check(string doc, bool checkRead, IFileDao fileDao, out File file)
         {
             var fileShare = Check(doc, fileDao, out file);
             return (!checkRead && (fileShare == FileShare.ReadWrite || fileShare == FileShare.Review || fileShare == FileShare.FillForms || fileShare == FileShare.Comment))
                 || (checkRead && fileShare != FileShare.Restrict);
         }
 
-        public static FileShare Check(string doc, IFileDao fileDao, out File file)
+        public FileShare Check(string doc, IFileDao fileDao, out File file)
         {
             file = null;
             if (string.IsNullOrEmpty(doc)) return FileShare.Restrict;
@@ -79,7 +101,7 @@ namespace ASC.Web.Files.Utils
             file = fileDao.GetFile(fileId);
             if (file == null) return FileShare.Restrict;
 
-            var filesSecurity = Global.GetFilesSecurity();
+            var filesSecurity = FileSecurity;
             if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
             if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return FileShare.Review;
             if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return FileShare.FillForms;

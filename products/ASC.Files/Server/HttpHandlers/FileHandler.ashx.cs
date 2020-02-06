@@ -94,6 +94,8 @@ namespace ASC.Web.Files
         public PathProvider PathProvider { get; }
         public DocumentServiceTrackerHelper DocumentServiceTrackerHelper { get; }
         public FilesMessageService FilesMessageService { get; }
+        public FileShareLink FileShareLink { get; }
+        public FileConverter FileConverter { get; }
         public UserManager UserManager { get; }
         public ILog Logger { get; }
         public CookiesManager CookiesManager { get; }
@@ -120,7 +122,9 @@ namespace ASC.Web.Files
             PathProvider pathProvider,
             UserManager userManager,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            FilesMessageService filesMessageService)
+            FilesMessageService filesMessageService,
+            FileShareLink fileShareLink,
+            FileConverter fileConverter)
         {
             Next = next;
             FilesLinkUtility = filesLinkUtility;
@@ -140,6 +144,8 @@ namespace ASC.Web.Files
             PathProvider = pathProvider;
             DocumentServiceTrackerHelper = documentServiceTrackerHelper;
             FilesMessageService = filesMessageService;
+            FileShareLink = fileShareLink;
+            FileConverter = fileConverter;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
             CookiesManager = cookiesManager;
