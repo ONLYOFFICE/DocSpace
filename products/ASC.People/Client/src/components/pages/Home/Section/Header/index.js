@@ -27,6 +27,8 @@ const { isAdmin } = store.auth.selectors;
 const { resendUserInvites, deleteUsers } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
+const isRefetchPeople = true;
+
 const StyledContainer = styled.div`
 
   @media (min-width: 1024px) {
@@ -99,14 +101,20 @@ const SectionHeaderContent = props => {
   //console.log("SectionHeaderContent render", selection, selectedUserIds);
 
   const onSetActive = useCallback(() => {
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
-  }, [selectedUserIds, updateUserStatus, t]);
+    onLoading(true);
+    updateUserStatus(EmployeeStatus.Active, selectedUserIds, isRefetchPeople)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .catch(error => toastr.error(error))
+      .finally(() => onLoading(false));
+  }, [selectedUserIds, updateUserStatus, t, onLoading]);
 
   const onSetDisabled = useCallback(() => {
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
-  }, [selectedUserIds, updateUserStatus, t]);
+    onLoading(true);
+    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds, isRefetchPeople)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .catch(error => toastr.error(error))
+      .finally(() => onLoading(false));
+  }, [selectedUserIds, updateUserStatus, t, onLoading]);
 
   const onSetEmployee = useCallback(() => {
     updateUserType(EmployeeType.User, selectedUserIds);

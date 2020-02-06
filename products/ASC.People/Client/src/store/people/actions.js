@@ -160,14 +160,14 @@ export function fetchPeople(filter, dispatchFunc = null) {
   return dispatchFunc
     ? fetchPeopleByFilter(dispatchFunc, filter)
     : (dispatch, getState) => {
-        if (filter) {
-          return fetchPeopleByFilter(dispatch, filter);
-        } else {
-          const { people } = getState();
-          const { filter } = people;
-          return fetchPeopleByFilter(dispatch, filter);
-        }
-      };
+      if (filter) {
+        return fetchPeopleByFilter(dispatch, filter);
+      } else {
+        const { people } = getState();
+        const { filter } = people;
+        return fetchPeopleByFilter(dispatch, filter);
+      }
+    };
 }
 
 function fetchPeopleByFilter(dispatch, filter) {
@@ -189,15 +189,15 @@ function fetchPeopleByFilter(dispatch, filter) {
   });
 }
 
-export function updateUserStatus(status, userIds) {
+export function updateUserStatus(status, userIds, isRefetchPeople = false) {
   return (dispatch, getState) => {
-    return api.people.updateUserStatus(status, userIds).then(users => {
-      const { people } = getState();
-      const { users: currentUsers } = people;
-
-      const newUsers = unionBy(users, currentUsers, "id");
-
-      dispatch(setUsers(newUsers));
+    return api.people.updateUserStatus(status, userIds)
+      .then(users => {
+        const { people } = getState();
+        const { filter } = people;
+        return isRefetchPeople
+          ? fetchPeople(filter, dispatch)
+          : Promise.resolve();
       });
   };
 }

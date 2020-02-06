@@ -29,6 +29,8 @@
   "SocialProfiles": "Social profiles",
   "SaveButton": "Save",
   "ChangesApplied": "Changes are applied",
+  "SuccessChangeUserStatus": "The user status was successfully changed",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   
   "PhoneChange": "Change phone",
   "PhoneLbl": "Phone",
