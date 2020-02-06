@@ -11,7 +11,6 @@ import {
   PAGE,
   PAGE_COUNT
 } from "../../helpers/constants";
-import unionBy from 'lodash/unionBy';
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 

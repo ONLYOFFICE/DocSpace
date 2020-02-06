@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  Text,
   IconButton,
   ContextMenuButton,
   toastr,
@@ -17,6 +16,9 @@ import { withTranslation, Trans } from "react-i18next";
 import {
   updateUserStatus
 } from "../../../../../store/people/actions";
+import {
+  updateProfile
+} from "../../../../../store/profile/actions";
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
@@ -172,11 +174,18 @@ class SectionHeaderContent extends React.PureComponent {
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
-          toastr.success(this.props.t('ChangesApplied'));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error))
-        .then(() => this.props.fetchProfile(this.state.profile.id));
+        .then(() => this.props.fetchProfile(this.state.profile.id))
+        .then(() => this.props.updateProfile(this.state.profile))
+        .then((profile) => {
+          toastr.success(this.props.t("ChangesApplied"));
+          this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+        })
+        .catch((error) => {
+          toastr.error(error);
+        });
     } else {
       deleteAvatar(this.state.profile.id)
         .then(response => {
@@ -211,6 +220,10 @@ class SectionHeaderContent extends React.PureComponent {
     updateUserStatus(status, new Array(userId))
       .then(() => fetchProfile(userId))
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
+      .then(() => this.props.updateProfile(this.props.profile))
+      .then((profile) => {
+        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
+      })
       .catch(error => toastr.error(error))
   };
 
@@ -471,5 +484,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, fetchProfile }
+  { updateUserStatus, fetchProfile, updateProfile }
 )(withRouter(withTranslation()(SectionHeaderContent)));
