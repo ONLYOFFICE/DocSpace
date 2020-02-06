@@ -25,67 +25,93 @@
 
 
 using System;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
+
+using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Web.Files.Classes;
+using ASC.Core.Common;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Files.HttpHandlers
 {
-    public class ThirdPartyAppHandler : IHttpHandler
+    public class ThirdPartyAppHandler //: IHttpHandler
     {
-        public bool IsReusable
+        public RequestDelegate Next { get; }
+        public AuthContext AuthContext { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
+        private ILog Log { get; set; }
+
+        public string HandlerPath { get; set; }
+
+        public ThirdPartyAppHandler(
+            RequestDelegate next,
+            IOptionsMonitor<ILog> optionsMonitor,
+            AuthContext authContext,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            CommonLinkUtility commonLinkUtility)
         {
-            get { return false; }
+            Next = next;
+            AuthContext = authContext;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
+            CommonLinkUtility = commonLinkUtility;
+            Log = optionsMonitor.CurrentValue;
+            HandlerPath = baseCommonLinkUtility.ToAbsolute("~/thirdpartyapp");
         }
 
-        public static string HandlerPath = CommonLinkUtility.ToAbsolute("~/thirdpartyapp");
-
-        public void ProcessRequest(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
-            Global.Logger.Debug("ThirdPartyApp: handler request - " + context.Request.Url);
+            Log.Debug("ThirdPartyApp: handler request - " + context.Request.Url());
 
             var message = string.Empty;
 
             try
             {
-                var app = ThirdPartySelector.GetApp(context.Request[ThirdPartySelector.AppAttr]);
-                Global.Logger.Debug("ThirdPartyApp: app - " + app);
+                var app = ThirdPartySelector.GetApp(context.Request.Query[ThirdPartySelector.AppAttr]);
+                Log.Debug("ThirdPartyApp: app - " + app);
 
                 if (app.Request(context))
                 {
+                    await Next.Invoke(context);
                     return;
                 }
             }
             catch (ThreadAbortException)
             {
+                await Next.Invoke(context);
                 //Thats is responce ending
                 return;
             }
             catch (Exception e)
             {
-                Global.Logger.Error("ThirdPartyApp", e);
+                Log.Error("ThirdPartyApp", e);
                 message = e.Message;
             }
 
             if (string.IsNullOrEmpty(message))
             {
-                if ((context.Request["error"] ?? "").ToLower() == "access_denied")
+                if ((context.Request.Query["error"].FirstOrDefault() ?? "").ToLower() == "access_denied")
                 {
-                    message = context.Request["error_description"] ?? FilesCommonResource.AppAccessDenied;
+                    message = context.Request.Query["error_description"].FirstOrDefault() ?? FilesCommonResource.AppAccessDenied;
                 }
             }
 
             var redirectUrl = CommonLinkUtility.GetDefault();
             if (!string.IsNullOrEmpty(message))
             {
-                redirectUrl += SecurityContext.IsAuthenticated ? "#error/" : "?m=";
+                redirectUrl += AuthContext.IsAuthenticated ? "#error/" : "?m=";
                 redirectUrl += HttpUtility.UrlEncode(message);
             }
             context.Response.Redirect(redirectUrl, true);
+            await Next.Invoke(context);
         }
     }
 }

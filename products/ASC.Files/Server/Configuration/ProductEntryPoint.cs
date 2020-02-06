@@ -31,6 +31,7 @@ using System.Reflection;
 
 using ASC.Core;
 using ASC.Web.Core;
+using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 
@@ -68,13 +69,11 @@ namespace ASC.Web.Files.Configuration
 
         public override void Init()
         {
-            Global.Init();
-
-            Func<List<string>> adminOpportunities = () => (CoreBaseSettings.CustomMode
+            List<string> adminOpportunities() => (CoreBaseSettings.CustomMode
                                                                ? CustomModeResource.ProductAdminOpportunitiesCustomMode
                                                                : FilesCommonResource.ProductAdminOpportunities).Split('|').ToList();
 
-            Func<List<string>> userOpportunities = () => (CoreBaseSettings.CustomMode
+            List<string> userOpportunities() => (CoreBaseSettings.CustomMode
                                          ? CustomModeResource.ProductUserOpportunitiesCustomMode
                                          : FilesCommonResource.ProductUserOpportunities).Split('|').ToList();
 

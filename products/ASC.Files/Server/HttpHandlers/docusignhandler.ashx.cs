@@ -25,44 +25,72 @@
 
 
 using System;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
+
 using ASC.Common.Logging;
+using ASC.Common.Web;
 using ASC.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.NotifyService;
-using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
 {
-    public class DocuSignHandler : IHttpHandler
+    public class DocuSignHandler
     {
-        public static string Path
+        public string Path
         {
             get { return FilesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx"; }
         }
 
-        private static ILog Log
+        private ILog Log { get; set; }
+
+        public RequestDelegate Next { get; }
+
+        public FilesLinkUtility FilesLinkUtility { get; }
+
+        public TenantExtra TenantExtra { get; }
+        public DocuSignHelper DocuSignHelper { get; }
+        public SecurityContext SecurityContext { get; }
+
+        public DocuSignHandler(
+            RequestDelegate next,
+            IOptionsMonitor<ILog> optionsMonitor,
+            FilesLinkUtility filesLinkUtility,
+            TenantExtra tenantExtra,
+            DocuSignHelper docuSignHelper,
+            SecurityContext securityContext)
         {
-            get { return Global.Logger; }
+            Next = next;
+            FilesLinkUtility = filesLinkUtility;
+            TenantExtra = tenantExtra;
+            DocuSignHelper = docuSignHelper;
+            SecurityContext = securityContext;
+            Log = optionsMonitor.CurrentValue;
         }
 
-        public void ProcessRequest(HttpContext context)
+        public async Task Invoke(HttpContext context)
         {
-            if (TenantStatisticsProvider.IsNotPaid())
+            if (TenantExtra.IsNotPaid())
             {
-                context.Response.StatusCode = (int) HttpStatusCode.PaymentRequired;
-                context.Response.StatusDescription = "Payment Required.";
+                context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
+                context.Response.WriteAsync("Payment Required.").Wait();
                 return;
             }
 
             try
             {
-                switch ((context.Request[FilesLinkUtility.Action] ?? "").ToLower())
+                switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
                 {
                     case "redirect":
                         Redirect(context);
@@ -71,20 +99,22 @@ namespace ASC.Web.Files.HttpHandlers
                         Webhook(context);
                         break;
                     default:
-                        throw new HttpException((int) HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
+                        throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);
                 }
             }
             catch (InvalidOperationException e)
             {
-                throw new HttpException((int) HttpStatusCode.InternalServerError, FilesCommonResource.ErrorMassage_BadRequest, e);
+                throw new HttpException((int)HttpStatusCode.InternalServerError, FilesCommonResource.ErrorMassage_BadRequest, e);
             }
+
+            await Next.Invoke(context);
         }
 
-        private static void Redirect(HttpContext context)
+        private void Redirect(HttpContext context)
         {
             Log.Info("DocuSign redirect query: " + context.Request.QueryString);
 
-            var eventRedirect = context.Request["event"];
+            var eventRedirect = context.Request.Query["event"].FirstOrDefault();
             switch (eventRedirect.ToLower())
             {
                 case "send":
@@ -104,14 +134,14 @@ namespace ASC.Web.Files.HttpHandlers
 
         private const string XmlPrefix = "docusign";
 
-        private static void Webhook(HttpContext context)
+        private void Webhook(HttpContext context)
         {
-            Global.Logger.Info("DocuSign webhook: " + context.Request.QueryString);
+            Log.Info("DocuSign webhook: " + context.Request.QueryString);
             try
             {
                 var xmldoc = new XmlDocument();
-                xmldoc.Load(context.Request.InputStream);
-                Global.Logger.Info("DocuSign webhook outerXml: " + xmldoc.OuterXml);
+                xmldoc.Load(context.Request.Body);
+                Log.Info("DocuSign webhook outerXml: " + xmldoc.OuterXml);
 
                 var mgr = new XmlNamespaceManager(xmldoc.NameTable);
                 mgr.AddNamespace(XmlPrefix, "http://www.docusign.net/API/3.0");
@@ -121,13 +151,12 @@ namespace ASC.Web.Files.HttpHandlers
                 var subject = GetSingleNode(envelopeStatusNode, "Subject", mgr).InnerText;
 
                 var statusString = GetSingleNode(envelopeStatusNode, "Status", mgr).InnerText;
-                DocuSignStatus status;
-                if (!Enum.TryParse(statusString, true, out status))
+                if (!Enum.TryParse(statusString, true, out DocuSignStatus status))
                 {
                     throw new Exception("DocuSign webhook unknown status: " + statusString);
                 }
 
-                Global.Logger.Info("DocuSign webhook: " + envelopeId + " " + subject + " " + status);
+                Log.Info("DocuSign webhook: " + envelopeId + " " + subject + " " + status);
 
                 var customFieldUserIdNode = GetSingleNode(envelopeStatusNode, "CustomFields/" + XmlPrefix + ":CustomField[" + XmlPrefix + ":Name='" + DocuSignHelper.UserField + "']", mgr);
                 var userIdString = GetSingleNode(customFieldUserIdNode, "Value", mgr).InnerText;
@@ -169,7 +198,7 @@ namespace ASC.Web.Files.HttpHandlers
                             }
                             catch (Exception ex)
                             {
-                                Global.Logger.Error("DocuSign webhook save document: " + documentStatus.InnerText, ex);
+                                Log.Error("DocuSign webhook save document: " + documentStatus.InnerText, ex);
                             }
                         }
                         break;
@@ -184,16 +213,15 @@ namespace ASC.Web.Files.HttpHandlers
             }
             catch (Exception e)
             {
-                Global.Logger.Error("DocuSign webhook", e);
+                Log.Error("DocuSign webhook", e);
 
-                throw new HttpException((int) HttpStatusCode.BadRequest, e.Message);
+                throw new HttpException((int)HttpStatusCode.BadRequest, e.Message);
             }
         }
 
-        private static void Auth(string userIdString)
+        private void Auth(string userIdString)
         {
-            Guid userId;
-            if (!Guid.TryParse(userIdString ?? "", out userId))
+            if (!Guid.TryParse(userIdString ?? "", out var userId))
             {
                 throw new Exception("DocuSign incorrect User ID: " + userIdString);
             }
@@ -206,11 +234,6 @@ namespace ASC.Web.Files.HttpHandlers
             var result = node.SelectSingleNode(XmlPrefix + ":" + xpath, mgr);
             if (!canMiss && result == null) throw new Exception(xpath + " is null");
             return result;
-        }
-
-        public bool IsReusable
-        {
-            get { return false; }
         }
     }
 }

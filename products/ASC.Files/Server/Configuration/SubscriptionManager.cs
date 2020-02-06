@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
 using ASC.Web.Files.Resources;
@@ -45,6 +47,11 @@ namespace ASC.Web.Files.Classes
         public GroupByType GroupByType
         {
             get { return GroupByType.Simple; }
+        }
+
+        public SubscriptionManager(CoreBaseSettings coreBaseSettings)
+        {
+            CoreBaseSettings = coreBaseSettings;
         }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
@@ -90,7 +97,7 @@ namespace ASC.Web.Files.Classes
                                             },
                                     };
 
-            if (CoreContext.Configuration.CustomMode) return subscriptionTypes;
+            if (CoreBaseSettings.CustomMode) return subscriptionTypes;
 
             subscriptionTypes.AddRange(new List<SubscriptionType>
                                     {
@@ -119,6 +126,8 @@ namespace ASC.Web.Files.Classes
         {
             get { return NotifySource.Instance.GetSubscriptionProvider(); }
         }
+
+        public CoreBaseSettings CoreBaseSettings { get; }
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {
