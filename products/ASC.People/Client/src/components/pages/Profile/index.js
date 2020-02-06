@@ -5,7 +5,7 @@ import { Loader, toastr } from "asc-web-components";
 import { PageLayout, utils } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
-import { fetchProfile } from '../../../store/profile/actions';
+import { fetchProfile, resetProfile } from '../../../store/profile/actions';
 import i18n from "./i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 const { changeLanguage } = utils;
@@ -42,6 +42,10 @@ class PureProfile extends React.Component {
     if (userId !== undefined && userId !== prevUserId) {
       fetchProfile(userId);
     }
+  }
+
+  componentWillUnmount(){
+    this.props.resetProfile();
   }
 
   render() {
@@ -91,5 +95,5 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  fetchProfile
+  fetchProfile, resetProfile
 })(Profile);
