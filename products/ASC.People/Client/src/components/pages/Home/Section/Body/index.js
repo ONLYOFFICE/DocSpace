@@ -39,7 +39,7 @@ const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 
-
+const isRefetchPeople = true;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -102,7 +102,7 @@ class SectionBodyContent extends React.PureComponent {
     const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
-    updateUserStatus(EmployeeStatus.Disabled, [user.id])
+    updateUserStatus(EmployeeStatus.Disabled, [user.id], isRefetchPeople)
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
@@ -112,7 +112,7 @@ class SectionBodyContent extends React.PureComponent {
     const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
-    updateUserStatus(EmployeeStatus.Active, [user.id])
+    updateUserStatus(EmployeeStatus.Active, [user.id], isRefetchPeople)
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
