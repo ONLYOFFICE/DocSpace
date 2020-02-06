@@ -25,33 +25,45 @@
 
 
 using System;
+
 using ASC.Common.Logging;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.ThirdPartyApp;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Files.Helpers
 {
     public class WordpressToken
     {
-        public static ILog Log = Global.Logger;
+        public ILog Log { get; set; }
+        public TokenHelper TokenHelper { get; }
+
         public const string AppAttr = "wordpress";
 
-        public static OAuth20Token GetToken()
+        public WordpressToken(IOptionsMonitor<ILog> optionsMonitor, TokenHelper tokenHelper)
         {
-            return Token.GetToken(AppAttr);
+            Log = optionsMonitor.CurrentValue;
+            TokenHelper = tokenHelper;
         }
 
-        public static void SaveToken(OAuth20Token token)
+        public OAuth20Token GetToken()
         {
-            if (token == null) throw new ArgumentNullException("token");
-            Token.SaveToken(new Token(token, AppAttr));
+            return TokenHelper.GetToken(AppAttr);
         }
-        public static void DeleteToken(OAuth20Token token)
+
+        public void SaveToken(OAuth20Token token)
         {
             if (token == null) throw new ArgumentNullException("token");
-            Token.DeleteToken(AppAttr);
+            TokenHelper.SaveToken(new Token(token, AppAttr));
+        }
+
+        public void DeleteToken(OAuth20Token token)
+        {
+            if (token == null) throw new ArgumentNullException("token");
+            TokenHelper.DeleteToken(AppAttr);
 
         }
     }
@@ -75,7 +87,7 @@ namespace ASC.Web.Files.Helpers
                 Log.Error("Get Wordpress info about me ", ex);
                 return "";
             }
-           
+
         }
 
         public static bool CreateWordpressPost(string title, string content, int status, string blogId, OAuth20Token token)

@@ -26,23 +26,29 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
-using ASC.Web.Files.Classes;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Files.Helpers
 {
     public class EasyBibHelper : Consumer
     {
-        public static ILog Log = Global.Logger;
+        public ILog Log { get; set; }
 
-        static string   searchBookUrl = "https://worldcat.citation-api.com/query?search=",
+        static string searchBookUrl = "https://worldcat.citation-api.com/query?search=",
                         searchJournalUrl = "https://crossref.citation-api.com/query?search=",
                         searchWebSiteUrl = "https://web.citation-api.com/query?search=",
                         easyBibStyles = "http://easybib-csl.herokuapp.com/1.0/styles";
-        
+
         public enum EasyBibSource
         {
             book = 0,
@@ -57,15 +63,27 @@ namespace ASC.Web.Files.Helpers
 
         public EasyBibHelper()
         {
-            
+
         }
 
-        public EasyBibHelper(string name, int order,  Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(name, order, props, additional)
+        public EasyBibHelper(
+            IOptionsMonitor<ILog> option,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            ConsumerFactory consumerFactory,
+            IConfiguration configuration,
+            ICacheNotify<ConsumerCacheItem> cache,
+            string name,
+            int order,
+            Dictionary<string, string> props,
+            Dictionary<string, string> additional = null)
+            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
+            Log = option.CurrentValue;
         }
 
-        public static string GetEasyBibCitationsList(int source,  string data)
+        public static string GetEasyBibCitationsList(int source, string data)
         {
             var uri = "";
             switch (source)
@@ -85,7 +103,7 @@ namespace ASC.Web.Files.Helpers
             uri += data;
 
             const string method = "GET";
-            var headers = new Dictionary<string, string>(){};
+            var headers = new Dictionary<string, string>() { };
             try
             {
                 return RequestHelper.PerformRequest(uri, "", method, "", headers);
@@ -99,9 +117,9 @@ namespace ASC.Web.Files.Helpers
 
         public static string GetEasyBibStyles()
         {
-             
+
             const string method = "GET";
-            var headers = new Dictionary<string, string>(){};
+            var headers = new Dictionary<string, string>() { };
             try
             {
                 return RequestHelper.PerformRequest(easyBibStyles, "", method, "", headers);
@@ -111,7 +129,7 @@ namespace ASC.Web.Files.Helpers
                 return "error";
             }
         }
-        public static object GetEasyBibCitation(string data)
+        public object GetEasyBibCitation(string data)
         {
             try
             {
@@ -128,14 +146,14 @@ namespace ASC.Web.Files.Helpers
                 var headers = new Dictionary<string, string>() { };
 
                 return RequestHelper.PerformRequest(uri, contentType, method, body, headers);
-                
+
             }
             catch (Exception)
             {
                 return null;
                 throw;
             }
-            
+
         }
     }
 }
