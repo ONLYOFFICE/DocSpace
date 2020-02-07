@@ -177,12 +177,9 @@ class SectionHeaderContent extends React.PureComponent {
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error))
+        .then(() => this.props.updateProfile(this.props.profile))
         .then(() => this.props.fetchProfile(this.state.profile.id))
-        .then(() => this.props.updateProfile(this.state.profile))
-        .then((profile) => {
-          toastr.success(this.props.t("ChangesApplied"));
-          this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
-        })
+        .then(() => toastr.success(this.props.t("ChangesApplied")))
         .catch((error) => {
           toastr.error(error);
         });
@@ -218,12 +215,9 @@ class SectionHeaderContent extends React.PureComponent {
     const { fetchProfile, updateUserStatus, t } = this.props;
 
     updateUserStatus(status, new Array(userId))
+      .then(() => this.props.updateProfile(this.props.profile))
       .then(() => fetchProfile(userId))
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
-      .then(() => this.props.updateProfile(this.props.profile))
-      .then((profile) => {
-        this.props.history.push(`${this.props.settings.homepage}/view/${profile.userName}`);
-      })
       .catch(error => toastr.error(error))
   };
 
