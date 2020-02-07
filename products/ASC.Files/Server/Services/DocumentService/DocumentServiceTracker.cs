@@ -189,6 +189,8 @@ namespace ASC.Web.Files.Services.DocumentService
         public FilesMessageService FilesMessageService { get; }
         public EncryptionAddressHelper EncryptionAddressHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
+        public NotifyClient NotifyClient { get; }
+        public MailMergeTaskRunner MailMergeTaskRunner { get; }
         public ILog Logger { get; }
 
         public DocumentServiceTrackerHelper(
@@ -208,7 +210,9 @@ namespace ASC.Web.Files.Services.DocumentService
             FileShareLink fileShareLink,
             FilesMessageService filesMessageService,
             EncryptionAddressHelper encryptionAddressHelper,
-            DocumentServiceConnector documentServiceConnector)
+            DocumentServiceConnector documentServiceConnector,
+            NotifyClient notifyClient,
+            MailMergeTaskRunner mailMergeTaskRunner)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -226,6 +230,8 @@ namespace ASC.Web.Files.Services.DocumentService
             FilesMessageService = filesMessageService;
             EncryptionAddressHelper = encryptionAddressHelper;
             DocumentServiceConnector = documentServiceConnector;
+            NotifyClient = notifyClient;
+            MailMergeTaskRunner = mailMergeTaskRunner;
             Logger = options.CurrentValue;
         }
 
@@ -565,7 +571,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         Attach = attach
                     })
                 {
-                    var response = mailMergeTask.Run();
+                    var response = MailMergeTaskRunner.Run(mailMergeTask);
                     Logger.InfoFormat("DocService mailMerge {0}/{1} send: {2}",
                                              fileData.MailMerge.RecordIndex + 1, fileData.MailMerge.RecordCount, response);
                 }

@@ -59,6 +59,7 @@ namespace ASC.Web.Files.Utils
         public FileUtility FileUtility { get; }
         public DocumentServiceHelper DocumentServiceHelper { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public NotifyClient NotifyClient { get; }
         public ILog Logger { get; }
 
         public FileSharing(
@@ -73,7 +74,8 @@ namespace ASC.Web.Files.Utils
             FileShareLink fileShareLink,
             FileUtility fileUtility,
             DocumentServiceHelper documentServiceHelper,
-            CoreBaseSettings coreBaseSettings)
+            CoreBaseSettings coreBaseSettings,
+            NotifyClient notifyClient)
         {
             Global = global;
             GlobalFolderHelper = globalFolderHelper;
@@ -86,6 +88,7 @@ namespace ASC.Web.Files.Utils
             FileUtility = fileUtility;
             DocumentServiceHelper = documentServiceHelper;
             CoreBaseSettings = coreBaseSettings;
+            NotifyClient = notifyClient;
             Logger = optionsMonitor.CurrentValue;
         }
 

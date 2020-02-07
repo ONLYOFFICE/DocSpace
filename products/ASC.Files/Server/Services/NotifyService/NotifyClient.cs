@@ -27,47 +27,62 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Notify;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
-using ASC.Web.Studio.Utility;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.NotifyService
 {
-    public static class NotifyClient
+    public class NotifyClient
     {
-        public static INotifyClient Instance { get; private set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        static NotifyClient()
+        public NotifyClient(IServiceProvider serviceProvider)
         {
-            Instance = WorkContext.NotifyContext.NotifyService.RegisterClient(NotifySource.Instance);
+            ServiceProvider = serviceProvider;
         }
 
-        public static void SendDocuSignComplete(File file, string sourceTitle)
+        public void SendDocuSignComplete(File file, string sourceTitle)
         {
-            var recipient = NotifySource.Instance.GetRecipientsProvider().GetRecipient(SecurityContext.CurrentAccount.ID.ToString());
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
+            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
+            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            Instance.SendNoticeAsync(
+            var recipient = NotifySource.Instance.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
+
+            client.SendNoticeAsync(
                 NotifyConstants.Event_DocuSignComplete,
                 file.UniqID,
                 recipient,
                 true,
-                new TagValue(NotifyConstants.Tag_DocumentUrl, CommonLinkUtility.GetFullAbsolutePath(FilesLinkUtility.GetFileWebPreviewUrl(file.Title, file.ID))),
+                new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(filesLinkUtility.GetFileWebPreviewUrl(fileUtility, file.Title, file.ID))),
                 new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
                 new TagValue(NotifyConstants.Tag_Message, sourceTitle)
                 );
         }
 
-        public static void SendDocuSignStatus(string subject, string status)
+        public void SendDocuSignStatus(string subject, string status)
         {
-            var recipient = NotifySource.Instance.GetRecipientsProvider().GetRecipient(SecurityContext.CurrentAccount.ID.ToString());
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            Instance.SendNoticeAsync(
+            var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
+
+            client.SendNoticeAsync(
                 NotifyConstants.Event_DocuSignStatus,
                 null,
                 recipient,
@@ -77,11 +92,15 @@ namespace ASC.Web.Files.Services.NotifyService
                 );
         }
 
-        public static void SendMailMergeEnd(Guid userId, int countMails, int countError)
+        public void SendMailMergeEnd(Guid userId, int countMails, int countError)
         {
-            var recipient = NotifySource.Instance.GetRecipientsProvider().GetRecipient(userId.ToString());
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            Instance.SendNoticeAsync(
+            var recipient = notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
+
+            client.SendNoticeAsync(
                 NotifyConstants.Event_MailMergeEnd,
                 null,
                 recipient,
@@ -91,65 +110,79 @@ namespace ASC.Web.Files.Services.NotifyService
                 );
         }
 
-        public static void SendShareNotice(FileEntry fileEntry, Dictionary<Guid, FileShare> recipients, string message)
+        public void SendShareNotice(FileEntry fileEntry, Dictionary<Guid, FileShare> recipients, string message)
         {
             if (fileEntry == null || recipients.Count == 0) return;
 
-            using (var folderDao = Global.DaoFactory.GetFolderDao())
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
+            var fileUtility = scope.ServiceProvider.GetService<FileUtility>();
+            var pathProvider = scope.ServiceProvider.GetService<PathProvider>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+
+            var folderDao = daoFactory.FolderDao;
+            if (fileEntry.FileEntryType == FileEntryType.File && folderDao.GetFolder(((File)fileEntry).FolderID) == null) return;
+
+            var url = fileEntry.FileEntryType == FileEntryType.File
+                          ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
+                          : pathProvider.GetFolderUrl(((Folder)fileEntry));
+
+            var recipientsProvider = NotifySource.Instance.GetRecipientsProvider();
+
+            foreach (var recipientPair in recipients)
             {
-                if (fileEntry.FileEntryType == FileEntryType.File
-                    && folderDao.GetFolder(((File)fileEntry).FolderID) == null) return;
+                var u = userManager.GetUsers(recipientPair.Key);
+                var culture = string.IsNullOrEmpty(u.CultureName)
+                                  ? tenantManager.GetCurrentTenant().GetCulture()
+                                  : CultureInfo.GetCultureInfo(u.CultureName);
 
-                var url = fileEntry.FileEntryType == FileEntryType.File
-                              ? FilesLinkUtility.GetFileWebPreviewUrl(fileEntry.Title, fileEntry.ID)
-                              : PathProvider.GetFolderUrl(((Folder)fileEntry));
+                var aceString = GetAccessString(recipientPair.Value, culture);
+                var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
-                var recipientsProvider = NotifySource.Instance.GetRecipientsProvider();
-
-                foreach (var recipientPair in recipients)
-                {
-                    var u = CoreContext.UserManager.GetUsers(recipientPair.Key);
-                    var culture = string.IsNullOrEmpty(u.CultureName)
-                                      ? CoreContext.TenantManager.GetCurrentTenant().GetCulture()
-                                      : CultureInfo.GetCultureInfo(u.CultureName);
-
-                    var aceString = GetAccessString(recipientPair.Value, culture);
-                    var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
-
-                    Instance.SendNoticeAsync(
-                        fileEntry.FileEntryType == FileEntryType.File ? NotifyConstants.Event_ShareDocument : NotifyConstants.Event_ShareFolder,
-                        fileEntry.UniqID,
-                        recipient,
-                        true,
-                        new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
-                        new TagValue(NotifyConstants.Tag_FolderID, fileEntry.ID),
-                        new TagValue(NotifyConstants.Tag_DocumentUrl, CommonLinkUtility.GetFullAbsolutePath(url)),
-                        new TagValue(NotifyConstants.Tag_AccessRights, aceString),
-                        new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
-                        );
-                }
+                client.SendNoticeAsync(
+                    fileEntry.FileEntryType == FileEntryType.File ? NotifyConstants.Event_ShareDocument : NotifyConstants.Event_ShareFolder,
+                    fileEntry.UniqID,
+                    recipient,
+                    true,
+                    new TagValue(NotifyConstants.Tag_DocumentTitle, fileEntry.Title),
+                    new TagValue(NotifyConstants.Tag_FolderID, fileEntry.ID),
+                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(url)),
+                    new TagValue(NotifyConstants.Tag_AccessRights, aceString),
+                    new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
+                    );
             }
         }
 
-        public static void SendEditorMentions(FileEntry file, string documentUrl, List<Guid> recipientIds, string message)
+        public void SendEditorMentions(FileEntry file, string documentUrl, List<Guid> recipientIds, string message)
         {
             if (file == null || recipientIds.Count == 0) return;
+
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var userManager = scope.ServiceProvider.GetService<UserManager>();
+            var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var recipientsProvider = NotifySource.Instance.GetRecipientsProvider();
 
             foreach (var recipientId in recipientIds)
             {
-                var u = CoreContext.UserManager.GetUsers(recipientId);
+                var u = userManager.GetUsers(recipientId);
 
                 var recipient = recipientsProvider.GetRecipient(u.ID.ToString());
 
-                Instance.SendNoticeAsync(
+                client.SendNoticeAsync(
                     NotifyConstants.Event_EditorMentions,
                     file.UniqID,
                     recipient,
                     true,
                     new TagValue(NotifyConstants.Tag_DocumentTitle, file.Title),
-                    new TagValue(NotifyConstants.Tag_DocumentUrl, CommonLinkUtility.GetFullAbsolutePath(documentUrl)),
+                    new TagValue(NotifyConstants.Tag_DocumentUrl, baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
                     new TagValue(NotifyConstants.Tag_Message, message.HtmlEncode())
                     );
             }

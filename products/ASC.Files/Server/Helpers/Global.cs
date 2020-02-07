@@ -302,7 +302,7 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<string, object> UserRootFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderMy(IDaoFactory daoFactory)
+        public object GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return 0;
             if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
@@ -311,7 +311,7 @@ namespace ASC.Web.Files.Classes
 
             if (!UserRootFolderCache.TryGetValue(cacheKey, out var myFolderId))
             {
-                myFolderId = GetFolderIdAndProccessFirstVisit(daoFactory, true);
+                myFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, true);
                 if (!Equals(myFolderId, 0))
                     UserRootFolderCache[cacheKey] = myFolderId;
             }
@@ -327,13 +327,13 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<int, object> CommonFolderCache =
                 new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderCommon(IDaoFactory daoFactory)
+        public object GetFolderCommon(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return null;
 
             if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
             {
-                commonFolderId = GetFolderIdAndProccessFirstVisit(daoFactory, false);
+                commonFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, false);
                 if (!Equals(commonFolderId, 0))
                     CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
             }
@@ -382,7 +382,7 @@ namespace ASC.Web.Files.Classes
             TrashFolderCache.Remove(cacheKey);
         }
 
-        private object GetFolderIdAndProccessFirstVisit(IDaoFactory daoFactory, bool my)
+        private object GetFolderIdAndProccessFirstVisit(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
         {
             var folderDao = daoFactory.FolderDao;
             var fileDao = daoFactory.FileDao;
@@ -407,7 +407,7 @@ namespace ASC.Web.Files.Classes
                             path = FileConstant.StartDocPath + "default/";
                         path += my ? "my/" : "corporate/";
 
-                        SaveStartDocument(folderDao, fileDao, id, path, storeTemplate);
+                        SaveStartDocument(fileMarker, folderDao, fileDao, id, path, storeTemplate);
                     }
                     catch (Exception ex)
                     {
@@ -419,11 +419,11 @@ namespace ASC.Web.Files.Classes
             return id;
         }
 
-        private void SaveStartDocument(IFolderDao folderDao, IFileDao fileDao, object folderId, string path, IDataStore storeTemplate)
+        private void SaveStartDocument(FileMarker fileMarker, IFolderDao folderDao, IFileDao fileDao, object folderId, string path, IDataStore storeTemplate)
         {
             foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
             {
-                SaveFile(fileDao, folderId, path + file, storeTemplate);
+                SaveFile(fileMarker, fileDao, folderId, path + file, storeTemplate);
             }
 
             foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
@@ -434,11 +434,11 @@ namespace ASC.Web.Files.Classes
                     ParentFolderID = folderId
                 });
 
-                SaveStartDocument(folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+                SaveStartDocument(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
             }
         }
 
-        private void SaveFile(IFileDao fileDao, object folder, string filePath, IDataStore storeTemp)
+        private void SaveFile(FileMarker fileMarker, IFileDao fileDao, object folder, string filePath, IDataStore storeTemp)
         {
             using var stream = storeTemp.GetReadStream("", filePath);
             var fileName = Path.GetFileName(filePath);
@@ -454,7 +454,7 @@ namespace ASC.Web.Files.Classes
             {
                 file = fileDao.SaveFile(file, stream);
 
-                FileMarker.MarkAsNew(file);
+                fileMarker.MarkAsNew(file);
             }
             catch (Exception ex)
             {
@@ -469,11 +469,13 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalFolderHelper
     {
+        public FileMarker FileMarker { get; }
         public IDaoFactory DaoFactory { get; }
         public GlobalFolder GlobalFolder { get; }
 
-        public GlobalFolderHelper(IDaoFactory daoFactory, GlobalFolder globalFolder)
+        public GlobalFolderHelper(FileMarker fileMarker, IDaoFactory daoFactory, GlobalFolder globalFolder)
         {
+            FileMarker = fileMarker;
             DaoFactory = daoFactory;
             GlobalFolder = globalFolder;
         }
@@ -489,7 +491,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderCommon(DaoFactory);
+                return GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
             }
         }
 
@@ -497,7 +499,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderMy(DaoFactory);
+                return GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
             }
             set
             {

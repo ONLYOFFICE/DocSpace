@@ -24,7 +24,10 @@
 */
 
 
+using ASC.Core;
 using ASC.Core.Notify.Signalr;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
@@ -32,14 +35,17 @@ namespace ASC.Web.Files.Utils
     {
         private readonly SignalrServiceClient _signalrServiceClient;
 
-        public SocketManager()
+        public SocketManager(IOptionsSnapshot<SignalrServiceClient> optionsSnapshot, TenantManager tenantManager)
         {
-            _signalrServiceClient = new SignalrServiceClient("files");
+            _signalrServiceClient = optionsSnapshot.Get("files");
+            TenantManager = tenantManager;
         }
+
+        public TenantManager TenantManager { get; }
 
         public void FilesChangeEditors(object fileId, bool finish = false)
         {
-            _signalrServiceClient.FilesChangeEditors(TenantProvider.CurrentTenantID, fileId.ToString(), finish);
+            _signalrServiceClient.FilesChangeEditors(TenantManager.GetCurrentTenant().TenantId, fileId.ToString(), finish);
         }
     }
 }

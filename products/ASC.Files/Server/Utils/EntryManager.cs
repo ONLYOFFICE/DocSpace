@@ -80,6 +80,7 @@ namespace ASC.Web.Files.Utils
         public FileShareLink FileShareLink { get; }
         public DocumentServiceHelper DocumentServiceHelper { get; }
         public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
+        public DocumentServiceConnector DocumentServiceConnector { get; }
         public ILog Logger { get; }
 
         public EntryManager(
@@ -100,7 +101,8 @@ namespace ASC.Web.Files.Utils
             IOptionsMonitor<ILog> optionsMonitor,
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
-            ThirdpartyConfiguration thirdpartyConfiguration)
+            ThirdpartyConfiguration thirdpartyConfiguration,
+            DocumentServiceConnector documentServiceConnector)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -119,6 +121,7 @@ namespace ASC.Web.Files.Utils
             FileShareLink = fileShareLink;
             DocumentServiceHelper = documentServiceHelper;
             ThirdpartyConfiguration = thirdpartyConfiguration;
+            DocumentServiceConnector = documentServiceConnector;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -674,7 +677,7 @@ namespace ASC.Web.Files.Utils
                 }
                 file.Version++;
             }
-            file.Forcesave = forcesave.HasValue ? forcesave.Value : ForcesaveType.None;
+            file.Forcesave = forcesave ?? ForcesaveType.None;
 
             if (string.IsNullOrEmpty(comment))
                 comment = FilesCommonResource.CommentEdit;

@@ -1,5 +1,3 @@
-using ASC.Common.Logging;
-using ASC.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,11 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common.Logging;
+using ASC.Core;
+
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
 namespace ASC.Web.Files.Services.FFmpegService
 {
     public class FFmpegService
     {
-        public static List<string> MustConvertable
+        public List<string> MustConvertable
         {
             get
             {
@@ -21,12 +25,12 @@ namespace ASC.Web.Files.Services.FFmpegService
             }
         }
 
-        public static bool IsConvertable(string extension)
+        public bool IsConvertable(string extension)
         {
             return MustConvertable.Contains(extension.TrimStart('.'));
         }
 
-        public static Stream Convert(Stream inputStream, string inputFormat)
+        public Stream Convert(Stream inputStream, string inputFormat)
         {
             if (inputStream == null) throw new ArgumentException();
             if (string.IsNullOrEmpty(inputFormat)) throw new ArgumentException();
@@ -46,11 +50,13 @@ namespace ASC.Web.Files.Services.FFmpegService
             }
         }
 
-        static FFmpegService()
+        public FFmpegService(IOptionsMonitor<ILog> optionsMonitor, IConfiguration configuration)
         {
-            logger = LogManager.GetLogger("ASC.Files");
+            logger = optionsMonitor.CurrentValue;
+            FFmpegPath = configuration["files:ffmpeg"];
+            FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
-            var exts = WebConfigurationManager.AppSettings["files.ffmpeg.exts"];
+            var exts = configuration["files:ffmpeg:exts"];
             ConvertableMedia = new List<string>();
 
             if (!string.IsNullOrEmpty(exts))
@@ -89,14 +95,14 @@ namespace ASC.Web.Files.Services.FFmpegService
             }
         }
 
-        private static readonly List<string> ConvertableMedia;
-        private static readonly List<string> FFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
-        private static readonly string FFmpegPath = WebConfigurationManager.AppSettings["files.ffmpeg"];
-        private static readonly string FFmpegArgs = WebConfigurationManager.AppSettings["files.ffmpeg.args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
+        private readonly List<string> ConvertableMedia;
+        private readonly List<string> FFmpegExecutables = new List<string>() { "ffmpeg", "avconv" };
+        private readonly string FFmpegPath;
+        private readonly string FFmpegArgs;
 
-        private static readonly ILog logger;
+        private readonly ILog logger;
 
-        private static ProcessStartInfo PrepareFFmpeg(string inputFormat)
+        private ProcessStartInfo PrepareFFmpeg(string inputFormat)
         {
             if (!ConvertableMedia.Contains(inputFormat.TrimStart('.'))) throw new ArgumentException();
 
@@ -153,15 +159,13 @@ namespace ASC.Web.Files.Services.FFmpegService
             return total;
         }
 
-        private static async void ProcessLog(Stream stream)
+        private async void ProcessLog(Stream stream)
         {
-            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
             {
-                string line;
-                while ((line = await reader.ReadLineAsync()) != null)
-                {
-                    logger.Info(line);
-                }
+                logger.Info(line);
             }
         }
     }

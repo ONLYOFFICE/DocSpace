@@ -29,7 +29,6 @@ using System;
 using ASC.Common.Logging;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
-using ASC.Web.Files.Classes;
 using ASC.Web.Files.ThirdPartyApp;
 
 using Microsoft.Extensions.Options;
@@ -69,14 +68,19 @@ namespace ASC.Web.Files.Helpers
     }
     public class WordpressHelper
     {
-        public static ILog Log = Global.Logger;
+        public ILog Log { get; set; }
         public enum WordpressStatus
         {
             draft = 0,
             publish = 1
         }
 
-        public static string GetWordpressMeInfo(string token)
+        public WordpressHelper(IOptionsMonitor<ILog> optionsMonitor)
+        {
+            Log = optionsMonitor.CurrentValue;
+        }
+
+        public string GetWordpressMeInfo(string token)
         {
             try
             {
@@ -90,7 +94,7 @@ namespace ASC.Web.Files.Helpers
 
         }
 
-        public static bool CreateWordpressPost(string title, string content, int status, string blogId, OAuth20Token token)
+        public bool CreateWordpressPost(string title, string content, int status, string blogId, OAuth20Token token)
         {
             try
             {

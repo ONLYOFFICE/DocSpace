@@ -46,19 +46,22 @@ namespace ASC.Web.Files.Configuration
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
         public Global Global { get; }
+        public SubscriptionManager SubscriptionManager { get; }
 
         public ProductEntryPoint(
             FilesSpaceUsageStatManager filesSpaceUsageStatManager,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             UserManager userManager,
-            Global global)
+            Global global,
+            SubscriptionManager subscriptionManager)
         {
             FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             UserManager = userManager;
             Global = global;
+            SubscriptionManager = subscriptionManager;
         }
 
         public static readonly Guid ID = WebItemManager.DocumentsProductID;
@@ -84,7 +87,7 @@ namespace ASC.Web.Files.Configuration
                     IconFileName = "product_logo.png",
                     LargeIconFileName = "product_logolarge.svg",
                     DefaultSortOrder = 10,
-                    SubscriptionManager = new SubscriptionManager(),
+                    SubscriptionManager = SubscriptionManager,
                     SpaceUsageStatManager = FilesSpaceUsageStatManager,
                     AdminOpportunities = adminOpportunities,
                     UserOpportunities = userOpportunities,

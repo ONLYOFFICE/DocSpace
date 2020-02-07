@@ -31,10 +31,13 @@ using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
@@ -61,6 +64,12 @@ namespace ASC.Core.Notify.Signalr
             Timeout = TimeSpan.FromSeconds(1);
         }
 
+        public SignalrServiceClient()
+        {
+
+        }
+
+        //TODO: moveto options
         public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<ILog> options)
         {
             Log = options.CurrentValue;

@@ -29,16 +29,19 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+
+using ASC.Common.Web;
 using ASC.Core;
+using ASC.Core.Common;
 using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Utility;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Files.Utils
 {
     public class MailMergeTask : IDisposable
     {
-        private const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
+        internal const string MessageBodyFormat = "id={0}&from={1}&subject={2}&to%5B%5D={3}&body={4}&mimeReplyToId=";
 
         public string From;
         public string Subject;
@@ -49,6 +52,24 @@ namespace ASC.Web.Files.Utils
         public int MessageId;
         public string StreamId;
 
+        public MailMergeTask()
+        {
+            MessageId = 0;
+        }
+
+        public void Dispose()
+        {
+            if (Attach != null)
+                Attach.Dispose();
+        }
+    }
+
+    public class MailMergeTaskRunner
+    {
+        public SetupInfo SetupInfo { get; }
+        public SecurityContext SecurityContext { get; }
+        public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
+
         private ApiServer _apiServer;
 
         protected ApiServer Api
@@ -56,69 +77,70 @@ namespace ASC.Web.Files.Utils
             get { return _apiServer ?? (_apiServer = new ApiServer()); }
         }
 
-
-        public MailMergeTask()
+        public MailMergeTaskRunner(SetupInfo setupInfo, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
-            MessageId = 0;
+            SetupInfo = setupInfo;
+            SecurityContext = securityContext;
+            BaseCommonLinkUtility = baseCommonLinkUtility;
         }
 
-        public string Run()
+        public string Run(MailMergeTask mailMergeTask)
         {
-            if (string.IsNullOrEmpty(From)) throw new ArgumentException("From is null");
-            if (string.IsNullOrEmpty(To)) throw new ArgumentException("To is null");
+            if (string.IsNullOrEmpty(mailMergeTask.From)) throw new ArgumentException("From is null");
+            if (string.IsNullOrEmpty(mailMergeTask.To)) throw new ArgumentException("To is null");
 
-            CreateDraftMail();
+            CreateDraftMail(mailMergeTask);
 
-            var bodySendAttach = AttachToMail();
+            var bodySendAttach = AttachToMail(mailMergeTask);
 
-            return SendMail(bodySendAttach);
+            return SendMail(mailMergeTask, bodySendAttach);
         }
 
-        private void CreateDraftMail()
+        private void CreateDraftMail(MailMergeTask mailMergeTask)
         {
             var apiUrlCreate = string.Format("{0}mail/drafts/save.json", SetupInfo.WebApiBaseUrl);
             var bodyCreate =
                 string.Format(
-                    MessageBodyFormat,
-                    MessageId,
-                    HttpUtility.UrlEncode(From),
-                    HttpUtility.UrlEncode(Subject),
-                    HttpUtility.UrlEncode(To),
-                    HttpUtility.UrlEncode(Message));
+                    MailMergeTask.MessageBodyFormat,
+                    mailMergeTask.MessageId,
+                    HttpUtility.UrlEncode(mailMergeTask.From),
+                    HttpUtility.UrlEncode(mailMergeTask.Subject),
+                    HttpUtility.UrlEncode(mailMergeTask.To),
+                    HttpUtility.UrlEncode(mailMergeTask.Message));
 
             var responseCreateString = Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
             var responseCreate = JObject.Parse(responseCreateString);
 
-            if (responseCreate["statusCode"].Value<int>() != (int) HttpStatusCode.OK)
+            if (responseCreate["statusCode"].Value<int>() != (int)HttpStatusCode.OK)
             {
                 throw new Exception("Create draft failed: " + responseCreate["error"]["message"].Value<string>());
             }
 
-            MessageId = responseCreate["response"]["id"].Value<int>();
-            StreamId = responseCreate["response"]["streamId"].Value<string>();
+            mailMergeTask.MessageId = responseCreate["response"]["id"].Value<int>();
+            mailMergeTask.StreamId = responseCreate["response"]["streamId"].Value<string>();
         }
 
-        private string AttachToMail()
+        private string AttachToMail(MailMergeTask mailMergeTask)
         {
-            if (Attach == null) return string.Empty;
+            if (mailMergeTask.Attach == null) return string.Empty;
 
-            if (string.IsNullOrEmpty(AttachTitle)) AttachTitle = "attach.pdf";
+            if (string.IsNullOrEmpty(mailMergeTask.AttachTitle)) mailMergeTask.AttachTitle = "attach.pdf";
 
             var apiUrlAttach = string.Format("{0}mail/messages/attachment/add?id_message={1}&name={2}",
                                              SetupInfo.WebApiBaseUrl,
-                                             MessageId,
-                                             AttachTitle);
+                                             mailMergeTask.MessageId,
+                                             mailMergeTask.AttachTitle);
 
-            var request = (HttpWebRequest) WebRequest.Create(CommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
+            var request = (HttpWebRequest)WebRequest.Create(BaseCommonLinkUtility.GetFullAbsolutePath(apiUrlAttach));
             request.Method = "POST";
-            request.ContentType = MimeMapping.GetMimeMapping(AttachTitle);
-            request.ContentLength = Attach.Length;
+            request.ContentType = MimeMapping.GetMimeMapping(mailMergeTask.AttachTitle);
+            request.ContentLength = mailMergeTask.Attach.Length;
             request.Headers.Add("Authorization", SecurityContext.AuthenticateMe(SecurityContext.CurrentAccount.ID));
 
             const int bufferSize = 2048;
             var buffer = new byte[bufferSize];
             int readed;
-            while ((readed = Attach.Read(buffer, 0, bufferSize)) > 0)
+            while ((readed = mailMergeTask.Attach.Read(buffer, 0, bufferSize)) > 0)
             {
                 request.GetRequestStream().Write(buffer, 0, readed);
             }
@@ -142,7 +164,7 @@ namespace ASC.Web.Files.Utils
 
             var responseAttach = JObject.Parse(responseAttachString);
 
-            if (responseAttach["statusCode"].Value<int>() != (int) HttpStatusCode.Created)
+            if (responseAttach["statusCode"].Value<int>() != (int)HttpStatusCode.Created)
             {
                 throw new Exception("Attach failed: " + responseAttach["error"]["message"].Value<string>());
             }
@@ -160,18 +182,18 @@ namespace ASC.Web.Files.Utils
             return bodySendAttach;
         }
 
-        private string SendMail(string bodySendAttach)
+        private string SendMail(MailMergeTask mailMergeTask, string bodySendAttach)
         {
             var apiUrlSend = string.Format("{0}mail/messages/send.json", SetupInfo.WebApiBaseUrl);
 
             var bodySend =
                 string.Format(
-                    MessageBodyFormat,
-                    MessageId,
-                    HttpUtility.UrlEncode(From),
-                    HttpUtility.UrlEncode(Subject),
-                    HttpUtility.UrlEncode(To),
-                    HttpUtility.UrlEncode(Message));
+                    MailMergeTask.MessageBodyFormat,
+                    mailMergeTask.MessageId,
+                    HttpUtility.UrlEncode(mailMergeTask.From),
+                    HttpUtility.UrlEncode(mailMergeTask.Subject),
+                    HttpUtility.UrlEncode(mailMergeTask.To),
+                    HttpUtility.UrlEncode(mailMergeTask.Message));
 
             bodySend += bodySendAttach;
 
@@ -183,12 +205,6 @@ namespace ASC.Web.Files.Utils
                 throw new Exception("Create draft failed: " + responseSend["error"]["message"].Value<string>());
             }
             return responseSend["response"].Value<string>();
-        }
-
-        public void Dispose()
-        {
-            if (Attach != null)
-                Attach.Dispose();
         }
     }
 }

@@ -108,6 +108,7 @@ namespace ASC.Web.Files.Services.WCFService
         public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public FileSharing FileSharing { get; }
+        public NotifyClient NotifyClient { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -143,7 +144,8 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceHelper documentServiceHelper,
             ThirdpartyConfiguration thirdpartyConfiguration,
             DocumentServiceConnector documentServiceConnector,
-            FileSharing fileSharing)
+            FileSharing fileSharing,
+            NotifyClient notifyClient)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -177,6 +179,7 @@ namespace ASC.Web.Files.Services.WCFService
             ThirdpartyConfiguration = thirdpartyConfiguration;
             DocumentServiceConnector = documentServiceConnector;
             FileSharing = fileSharing;
+            NotifyClient = notifyClient;
             Logger = optionMonitor.Get("ASC.Files");
         }
 

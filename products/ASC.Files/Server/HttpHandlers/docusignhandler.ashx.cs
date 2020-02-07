@@ -62,6 +62,7 @@ namespace ASC.Web.Files.HttpHandlers
         public TenantExtra TenantExtra { get; }
         public DocuSignHelper DocuSignHelper { get; }
         public SecurityContext SecurityContext { get; }
+        public NotifyClient NotifyClient { get; }
 
         public DocuSignHandler(
             RequestDelegate next,
@@ -69,13 +70,15 @@ namespace ASC.Web.Files.HttpHandlers
             FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
             DocuSignHelper docuSignHelper,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            NotifyClient notifyClient)
         {
             Next = next;
             FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
             DocuSignHelper = docuSignHelper;
             SecurityContext = securityContext;
+            NotifyClient = notifyClient;
             Log = optionsMonitor.CurrentValue;
         }
 
