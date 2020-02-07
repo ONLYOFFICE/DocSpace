@@ -27,20 +27,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.MessagingSystem;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    class FileDeleteOperation : FileOperation
+    internal class FileDeleteOperationData : FileOperationData
+    {
+        public bool IgnoreException { get; }
+        public bool Immediately { get; }
+        public Dictionary<string, string> Headers { get; }
+
+        public FileDeleteOperationData(List<object> folders, List<object> files, Tenant tenant,
+            bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
+            : base(folders, files, tenant, holdResult)
+        {
+            IgnoreException = ignoreException;
+            Immediately = immediately;
+            Headers = headers;
+        }
+    }
+
+    class FileDeleteOperation : FileOperation<FileDeleteOperationData>
     {
         private object _trashId;
-        private readonly bool _ignoreException;
-        private readonly bool _immediately;
-        private readonly Dictionary<string, string> _headers;
+        private bool _ignoreException;
+        private bool _immediately;
+        private Dictionary<string, string> _headers;
 
         public override FileOperationType OperationType
         {
@@ -48,18 +68,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDeleteOperation(List<object> folders, List<object> files, bool ignoreException = false, bool holdResult = true, bool immediately = false, Dictionary<string, string> headers = null)
-            : base(folders, files, holdResult)
+        public FileDeleteOperation(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            _ignoreException = ignoreException;
-            _immediately = immediately;
-            _headers = headers;
         }
 
 
-        protected override void Do()
+        protected override void Do(FileDeleteOperationData fileOperationData, IServiceScope scope)
         {
             _trashId = FolderDao.GetFolderIDTrash(true);
+            _ignoreException = fileOperationData.IgnoreException;
+            _immediately = fileOperationData.Immediately;
+            _headers = fileOperationData.Headers;
+
             Folder root = null;
             if (0 < Folders.Count)
             {
@@ -71,15 +92,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (root != null)
             {
-                Status += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
+                Status += string.Format("folder_{0}{1}", root.ID, FileOperation.SPLIT_CHAR);
             }
 
-            DeleteFiles(Files);
-            DeleteFolders(Folders);
+            DeleteFiles(Files, scope);
+            DeleteFolders(Folders, scope);
         }
 
-        private void DeleteFolders(IEnumerable<object> folderIds)
+        private void DeleteFolders(IEnumerable<object> folderIds, IServiceScope scope)
         {
+            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+
             foreach (var folderId in folderIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
@@ -104,13 +128,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? null : folderId;
 
-                    FileMarker.RemoveMarkAsNewForAll(folder);
+                    fileMarker.RemoveMarkAsNewForAll(folder);
                     if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
                     {
                         if (ProviderDao != null)
                         {
                             ProviderDao.RemoveProviderInfo(folder.ProviderId);
-                            FilesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
+                            filesMessageService.Send(folder, _headers, MessageAction.ThirdPartyDeleted, folder.ID.ToString(), folder.ProviderKey);
                         }
 
                         ProcessedFolder(folderId);
@@ -120,13 +144,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
                         if (immediately && FolderDao.UseRecursiveOperation(folder.ID, null))
                         {
-                            DeleteFiles(FileDao.GetFiles(folder.ID));
-                            DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList());
+                            DeleteFiles(FileDao.GetFiles(folder.ID), scope);
+                            DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);
 
                             if (FolderDao.IsEmpty(folder.ID))
                             {
                                 FolderDao.DeleteFolder(folder.ID);
-                                FilesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
 
                                 ProcessedFolder(folderId);
                             }
@@ -134,8 +158,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         else
                         {
                             var files = FileDao.GetFiles(folder.ID, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, true);
-                            string tmpError;
-                            if (!_ignoreException && WithError(files, true, out tmpError))
+                            if (!_ignoreException && WithError(scope, files, true, out var tmpError))
                             {
                                 Error = tmpError;
                             }
@@ -144,12 +167,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 if (immediately)
                                 {
                                     FolderDao.DeleteFolder(folder.ID);
-                                    FilesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
+                                    filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
                                 }
                                 else
                                 {
                                     FolderDao.MoveFolder(folder.ID, _trashId, CancellationToken);
-                                    FilesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
+                                    filesMessageService.Send(folder, _headers, MessageAction.FolderMovedToTrash, folder.Title);
                                 }
 
                                 ProcessedFolder(folderId);
@@ -161,36 +184,38 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private void DeleteFiles(IEnumerable<object> fileIds)
+        private void DeleteFiles(IEnumerable<object> fileIds, IServiceScope scope)
         {
+            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+            var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+
             foreach (var fileId in fileIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var file = FileDao.GetFile(fileId);
-                string tmpError;
                 if (file == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!_ignoreException && WithError(new[] { file }, false, out tmpError))
+                else if (!_ignoreException && WithError(scope, new[] { file }, false, out var tmpError))
                 {
                     Error = tmpError;
                 }
                 else
                 {
-                    FileMarker.RemoveMarkAsNewForAll(file);
+                    fileMarker.RemoveMarkAsNewForAll(file);
                     if (!_immediately && FileDao.UseTrashForRemove(file))
                     {
                         FileDao.MoveFile(file.ID, _trashId);
-                        FilesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
+                        filesMessageService.Send(file, _headers, MessageAction.FileMovedToTrash, file.Title);
                     }
                     else
                     {
                         try
                         {
                             FileDao.DeleteFile(file.ID);
-                            FilesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
+                            filesMessageService.Send(file, _headers, MessageAction.FileDeleted, file.Title);
                         }
                         catch (Exception ex)
                         {
@@ -204,8 +229,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private bool WithError(IEnumerable<File> files, bool folder, out string error)
+        private bool WithError(IServiceScope scope, IEnumerable<File> files, bool folder, out string error)
         {
+            var entryManager = scope.ServiceProvider.GetService<EntryManager>();
+
             error = null;
             foreach (var file in files)
             {
@@ -214,7 +241,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
                     return true;
                 }
-                if (EntryManager.FileLockedForMe(file.ID))
+                if (entryManager.FileLockedForMe(file.ID))
                 {
                     error = FilesCommonResource.ErrorMassage_LockedFile;
                     return true;

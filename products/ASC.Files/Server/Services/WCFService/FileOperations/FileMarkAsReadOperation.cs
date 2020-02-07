@@ -24,16 +24,28 @@
 */
 
 
-using ASC.Common.Security.Authentication;
-using ASC.Files.Core;
-using ASC.Web.Files.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common.Security.Authentication;
+using ASC.Core.Tenants;
+using ASC.Files.Core;
+using ASC.Web.Files.Utils;
+
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    class FileMarkAsReadOperation : FileOperation
+    class FileMarkAsReadOperationData : FileOperationData
+    {
+        public FileMarkAsReadOperationData(List<object> folders, List<object> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+        {
+        }
+    }
+
+    class FileMarkAsReadOperation : FileOperation<FileMarkAsReadOperationData>
     {
         public override FileOperationType OperationType
         {
@@ -41,8 +53,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileMarkAsReadOperation(List<object> folders, List<object> files)
-            : base(folders, files)
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
         }
 
@@ -52,8 +64,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return Files.Count + Folders.Count;
         }
 
-        protected override void Do()
+        protected override void Do(FileMarkAsReadOperationData fileOperationData, IServiceScope scope)
         {
+            var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var entries = new List<FileEntry>();
             if (Folders.Any())
             {
@@ -67,7 +80,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 CancellationToken.ThrowIfCancellationRequested();
 
-                FileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+                fileMarker.RemoveMarkAsNew(x, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
@@ -80,11 +93,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 ProgressStep();
             });
 
-            var newrootfolder = FileMarker
+            var newrootfolder = fileMarker
                 .GetRootFoldersIdMarkedAsNew()
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
-            Status += string.Join(SPLIT_CHAR, newrootfolder.ToArray());
+            Status += string.Join(FileOperation.SPLIT_CHAR, newrootfolder.ToArray());
         }
     }
 }

@@ -109,6 +109,7 @@ namespace ASC.Web.Files.Services.WCFService
         public FileSharing FileSharing { get; }
         public NotifyClient NotifyClient { get; }
         public FileOperationsManagerHelper FileOperationsManagerHelper { get; }
+        public UrlShortener UrlShortener { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -146,7 +147,8 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceConnector documentServiceConnector,
             FileSharing fileSharing,
             NotifyClient notifyClient,
-            FileOperationsManagerHelper fileOperationsManagerHelper)
+            FileOperationsManagerHelper fileOperationsManagerHelper,
+            UrlShortener urlShortener)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -182,6 +184,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileSharing = fileSharing;
             NotifyClient = notifyClient;
             FileOperationsManagerHelper = fileOperationsManagerHelper;
+            UrlShortener = urlShortener;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
