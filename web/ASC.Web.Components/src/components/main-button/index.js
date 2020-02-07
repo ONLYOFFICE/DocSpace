@@ -64,6 +64,7 @@ const StyledDropDown = styled(DropDown)`
 `;
 
 const StyledMainButton = styled.div`
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   position: relative;
   display: block;
   vertical-align: middle;
