@@ -12,11 +12,9 @@ import throttle from "lodash/throttle";
 import styled from "styled-components";
 
 const HelpContainer = styled.div`
-  * {
     white-space: unset;
     overflow: unset;
     text-overflow: unset;
-  }
 `;
 
 const Content = styled.div`
@@ -132,6 +130,8 @@ class HelpButton extends React.Component {
     const {
       tooltipContent,
       place,
+      offsetTop,
+      offsetBottom,
       offsetRight,
       offsetLeft,
       zIndex,
@@ -164,6 +164,8 @@ class HelpButton extends React.Component {
               reference={this.refTooltip}
               effect="solid"
               place={place}
+              offsetTop={offsetTop}
+              offsetBottom={offsetBottom}
               offsetRight={offsetRight}
               offsetLeft={offsetLeft}
               afterShow={this.afterShow}
@@ -180,7 +182,6 @@ class HelpButton extends React.Component {
               offsetLeft={offsetLeft}
               afterShow={this.afterShow}
               afterHide={this.afterHide}
-              getContent={getContent}
             >
               {tooltipContent}
             </Tooltip>
@@ -214,10 +215,12 @@ HelpButton.propTypes = {
   ]),
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   offsetRight: PropTypes.number,
+  offsetLeft: PropTypes.number,
+  offsetTop: PropTypes.number,
+  offsetBottom: PropTypes.number,
   tooltipMaxWidth: PropTypes.number,
   tooltipId: PropTypes.string,
   place: PropTypes.string,
-  offsetLeft: PropTypes.number,
   zIndex: PropTypes.number,
   displayType: PropTypes.oneOf(["dropdown", "aside", "auto"]),
   helpButtonHeaderContent: PropTypes.string,
@@ -234,6 +237,8 @@ HelpButton.defaultProps = {
   place: "top",
   offsetRight: 120,
   offsetLeft: 0,
+  offsetTop: 0,
+  offsetBottom: 0,
   zIndex: 310,
   displayType: "auto",
   className: "icon-button",
