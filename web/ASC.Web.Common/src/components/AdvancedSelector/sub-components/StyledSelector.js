@@ -200,6 +200,10 @@ const StyledSelector = styled(Container)`
         height: 32px;
         cursor: pointer;
 
+        .option_checkbox {
+          width: 273px;
+        }
+
         .option-info {
           position: absolute;
           top: 10px;
