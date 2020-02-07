@@ -30,6 +30,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Caching;
 
 namespace ASC.Common.Threading
@@ -174,6 +175,21 @@ namespace ASC.Common.Threading
                 task.Publication = GetPublication();
             }
             return task;
+        }
+
+        public void SetTask(DistributedTask task)
+        {
+            DistributedTaskCacheNotify.SetTask(task);
+        }
+
+        public void RemoveTask(string id)
+        {
+            DistributedTaskCacheNotify.RemoveTask(id, key);
+        }
+
+        public void CancelTask(string id)
+        {
+            DistributedTaskCacheNotify.CancelTask(id);
         }
 
         private void OnCompleted(Task task, string id)

@@ -28,30 +28,35 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Web.Files.Resources;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    class FileOperationsManager
+    public class FileOperationsManager
     {
-        private DistributedTaskQueue tasks = new DistributedTaskQueue("fileOperations", 10);
-        
+        private readonly DistributedTaskQueue tasks;
 
-        public ItemList<FileOperationResult> GetOperationResults()
+        public FileOperationsManager(DistributedTaskCacheNotify distributedTaskCacheNotify)
+        {
+            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "fileOperations", 10);
+        }
+
+        public ItemList<FileOperationResult> GetOperationResults(AuthContext authContext)
         {
             var operations = tasks.GetTasks();
             var processlist = Process.GetProcesses();
 
-            foreach (var o in operations.Where(o => string.IsNullOrEmpty(o.InstanseId)
-                                                    || processlist.All(p => p.Id != int.Parse(o.InstanseId))))
+            foreach (var o in operations.Where(o => string.IsNullOrEmpty(o.InstanceId)
+                                                    || processlist.All(p => p.Id != int.Parse(o.InstanceId))))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
                 tasks.RemoveTask(o.Id);
             }
 
-            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == SecurityContext.CurrentAccount.ID);
+            operations = operations.Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID);
             foreach (var o in operations.Where(o => DistributedTaskStatus.Running < o.Status))
             {
                 o.SetProperty(FileOperation.PROGRESS, 100);
@@ -61,44 +66,44 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var results = operations
                 .Where(o => o.GetProperty<bool>(FileOperation.HOLD) || o.GetProperty<int>(FileOperation.PROGRESS) != 100)
                 .Select(o => new FileOperationResult
-                    {
-                        Id = o.Id,
-                        OperationType = o.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE),
-                        Source = o.GetProperty<string>(FileOperation.SOURCE),
-                        Progress = o.GetProperty<int>(FileOperation.PROGRESS),
-                        Processed = o.GetProperty<int>(FileOperation.PROCESSED).ToString(),
-                        Result = o.GetProperty<string>(FileOperation.RESULT),
-                        Error = o.GetProperty<string>(FileOperation.ERROR),
-                        Finished = o.GetProperty<bool>(FileOperation.FINISHED),
-                    });
+                {
+                    Id = o.Id,
+                    OperationType = o.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE),
+                    Source = o.GetProperty<string>(FileOperation.SOURCE),
+                    Progress = o.GetProperty<int>(FileOperation.PROGRESS),
+                    Processed = o.GetProperty<int>(FileOperation.PROCESSED).ToString(),
+                    Result = o.GetProperty<string>(FileOperation.RESULT),
+                    Error = o.GetProperty<string>(FileOperation.ERROR),
+                    Finished = o.GetProperty<bool>(FileOperation.FINISHED),
+                });
 
             return new ItemList<FileOperationResult>(results);
         }
 
-        public ItemList<FileOperationResult> CancelOperations()
+        public ItemList<FileOperationResult> CancelOperations(AuthContext authContext)
         {
             var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == SecurityContext.CurrentAccount.ID);
+                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID);
 
             foreach (var o in operations)
             {
                 tasks.CancelTask(o.Id);
             }
 
-            return GetOperationResults();
+            return GetOperationResults(authContext);
         }
 
 
-        public ItemList<FileOperationResult> MarkAsRead(List<object> folderIds, List<object> fileIds)
+        public ItemList<FileOperationResult> MarkAsRead(AuthContext authContext, List<object> folderIds, List<object> fileIds)
         {
             var op = new FileMarkAsReadOperation(folderIds, fileIds);
-            return QueueTask(op);
+            return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Download(Dictionary<object, string> folders, Dictionary<object, string> files, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Download(AuthContext authContext, Dictionary<object, string> folders, Dictionary<object, string> files, Dictionary<string, string> headers)
         {
             var operations = tasks.GetTasks()
-                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == SecurityContext.CurrentAccount.ID)
+                .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID)
                 .Where(t => t.GetProperty<FileOperationType>(FileOperation.OPERATION_TYPE) == FileOperationType.Download);
 
             if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
@@ -107,26 +112,50 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
 
             var op = new FileDownloadOperation(folders, files, headers);
-            return QueueTask(op);
+            return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy(List<object> folders, List<object> files, string destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(AuthContext authContext, List<object> folders, List<object> files, string destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
         {
             var op = new FileMoveCopyOperation(folders, files, destFolderId, copy, resolveType, holdResult, headers);
-            return QueueTask(op);
+            return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Delete(List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete(AuthContext authContext, List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
         {
             var op = new FileDeleteOperation(folders, files, ignoreException, holdResult, immediately, headers);
-            return QueueTask(op);
+            return QueueTask(authContext, op);
         }
 
 
-        private ItemList<FileOperationResult> QueueTask(FileOperation op)
+        private ItemList<FileOperationResult> QueueTask(AuthContext authContext, FileOperation op)
         {
             tasks.QueueTask(op.RunJob, op.GetDistributedTask());
-            return GetOperationResults();
+            return GetOperationResults(authContext);
         }
+    }
+
+    public class FileOperationsManagerHelper
+    {
+        public FileOperationsManager FileOperationsManager { get; }
+        public AuthContext AuthContext { get; }
+
+        public FileOperationsManagerHelper(FileOperationsManager fileOperationsManager, AuthContext authContext)
+        {
+            FileOperationsManager = fileOperationsManager;
+            AuthContext = authContext;
+        }
+
+        public ItemList<FileOperationResult> GetOperationResults() => FileOperationsManager.GetOperationResults(AuthContext);
+        public ItemList<FileOperationResult> CancelOperations() => FileOperationsManager.CancelOperations(AuthContext);
+        public ItemList<FileOperationResult> MarkAsRead(List<object> folderIds, List<object> fileIds) => FileOperationsManager.MarkAsRead(AuthContext, folderIds, fileIds);
+        public ItemList<FileOperationResult> Download(Dictionary<object, string> folders, Dictionary<object, string> files, Dictionary<string, string> headers)
+            => FileOperationsManager.Download(AuthContext, folders, files, headers);
+
+        public ItemList<FileOperationResult> MoveOrCopy(List<object> folders, List<object> files, string destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+            => FileOperationsManager.MoveOrCopy(AuthContext, folders, files, destFolderId, copy, resolveType, holdResult, headers);
+
+        public ItemList<FileOperationResult> Delete(List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+            => FileOperationsManager.Delete(AuthContext, folders, files, ignoreException, holdResult, immediately, headers);
     }
 }

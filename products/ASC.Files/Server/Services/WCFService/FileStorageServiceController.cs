@@ -74,7 +74,6 @@ namespace ASC.Web.Files.Services.WCFService
     [ApiController]
     public class FileStorageServiceController : ControllerBase, IFileStorageService
     {
-        private static readonly FileOperationsManager fileOperations = new FileOperationsManager();
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
         public Global Global { get; }
         public GlobalStore GlobalStore { get; }
@@ -109,6 +108,7 @@ namespace ASC.Web.Files.Services.WCFService
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public FileSharing FileSharing { get; }
         public NotifyClient NotifyClient { get; }
+        public FileOperationsManagerHelper FileOperationsManagerHelper { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -145,7 +145,8 @@ namespace ASC.Web.Files.Services.WCFService
             ThirdpartyConfiguration thirdpartyConfiguration,
             DocumentServiceConnector documentServiceConnector,
             FileSharing fileSharing,
-            NotifyClient notifyClient)
+            NotifyClient notifyClient,
+            FileOperationsManagerHelper fileOperationsManagerHelper)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -180,6 +181,7 @@ namespace ASC.Web.Files.Services.WCFService
             DocumentServiceConnector = documentServiceConnector;
             FileSharing = fileSharing;
             NotifyClient = notifyClient;
+            FileOperationsManagerHelper = fileOperationsManagerHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -1063,7 +1065,7 @@ namespace ASC.Web.Files.Services.WCFService
 
             ParseArrayItems(items, out var foldersId, out var filesId);
 
-            return fileOperations.MarkAsRead(foldersId, filesId);
+            return FileOperationsManagerHelper.MarkAsRead(foldersId, filesId);
         }
 
         #endregion
@@ -1267,7 +1269,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return fileOperations.GetOperationResults();
+            return FileOperationsManagerHelper.GetOperationResults();
         }
 
         [Read("tasks")]
@@ -1275,7 +1277,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
 
-            return fileOperations.CancelOperations();
+            return FileOperationsManagerHelper.CancelOperations();
         }
 
         [Create("bulkdownload")]
@@ -1284,7 +1286,7 @@ namespace ASC.Web.Files.Services.WCFService
             ParseArrayItems(items, out var folders, out var files);
             ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
-            return fileOperations.Download(folders, files, GetHttpHeaders());
+            return FileOperationsManagerHelper.Download(folders, files, GetHttpHeaders());
         }
 
         [Create("folders-files-moveOrCopyFilesCheck")]
@@ -1359,11 +1361,11 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 ParseArrayItems(items, out var foldersId, out var filesId);
 
-                result = fileOperations.MoveOrCopy(foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+                result = FileOperationsManagerHelper.MoveOrCopy(foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
             }
             else
             {
-                result = fileOperations.GetOperationResults();
+                result = FileOperationsManagerHelper.GetOperationResults();
             }
             return result;
         }
@@ -1373,7 +1375,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             ParseArrayItems(items, out var foldersId, out var filesId);
 
-            return fileOperations.Delete(foldersId, filesId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManagerHelper.Delete(foldersId, filesId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         [Read("emptytrash")]
@@ -1385,7 +1387,7 @@ namespace ASC.Web.Files.Services.WCFService
             var foldersId = folderDao.GetFolders(trashId).Select(f => f.ID).ToList();
             var filesId = fileDao.GetFiles(trashId).ToList();
 
-            return fileOperations.Delete(foldersId, filesId, false, true, false, GetHttpHeaders());
+            return FileOperationsManagerHelper.Delete(foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
         [Create("checkconversion")]
