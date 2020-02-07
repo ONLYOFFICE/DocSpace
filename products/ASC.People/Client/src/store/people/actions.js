@@ -172,7 +172,6 @@ export function fetchPeople(filter, dispatchFunc = null) {
 
 function fetchPeopleByFilter(dispatch, filter) {
   let filterData = filter && filter.clone();
-  // console.log(history.location.pathname, history.location.pathname.includes('/people/view'));
 
   if (!filterData) {
     filterData = Filter.getDefault();
