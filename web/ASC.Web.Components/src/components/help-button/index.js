@@ -11,12 +11,6 @@ import Heading from "../heading";
 import throttle from "lodash/throttle";
 import styled from "styled-components";
 
-const HelpContainer = styled.div`
-    white-space: unset;
-    overflow: unset;
-    text-overflow: unset;
-`;
-
 const Content = styled.div`
   box-sizing: border-box;
   position: relative;
@@ -145,7 +139,7 @@ class HelpButton extends React.Component {
     } = this.props;
 
     return (
-      <HelpContainer ref={this.ref} style={style}>
+      <div ref={this.ref} style={style}>
         <IconButton
           id={this.id}
           className={`${className} help-icon`}
@@ -203,7 +197,7 @@ class HelpButton extends React.Component {
             </Aside>
           </>
         )}
-      </HelpContainer>
+      </div>
     );
   }
 }

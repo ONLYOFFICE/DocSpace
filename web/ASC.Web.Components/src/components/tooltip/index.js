@@ -23,12 +23,6 @@ const TooltipStyle = styled.div`
       border: none;
     }
   }
-
-  * {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
 `;
 
 class Tooltip extends Component {
