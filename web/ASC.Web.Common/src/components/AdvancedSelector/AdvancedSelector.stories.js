@@ -16,6 +16,7 @@ import Section from "../../../.storybook/decorators/section";
 import {Button, Avatar, Text} from "asc-web-components";
 import isEqual from "lodash/isEqual";
 import { name, image, internet } from "faker";
+import UserTooltip from "../PeopleSelector/sub-components/UserTooltip";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
@@ -223,39 +224,7 @@ class ADSelectorExample extends React.Component {
 
             // console.log("onOptionTooltipShow", index, user);
 
-            return (
-              <div
-                style={{
-                  width: 253,
-                  minHeight: 63,
-                  display: "grid",
-                  gridTemplateColumns: "30px 1fr",
-                  gridTemplateRows: "1fr",
-                  gridColumnGap: 8
-                }}
-              >
-                <Avatar
-                  size="small"
-                  role="user"
-                  source={user.avatarUrl}
-                  userName=""
-                  editing={false}
-                />
-                <div>
-                  <Text isBold={true} fontSize="13px" fontWeight={700}>
-                    {user.label}
-                  </Text>
-                  <Text
-                    color="#A3A9AE"
-                    fontSize="13px"
-                    style={{ paddingBottom: 8 }}
-                  >
-                    {user.email}
-                  </Text>
-                  <Text fontSize="13px" fontWeight={600}>{user.position}</Text>
-                </div>
-              </div>
-            );
+            return (<UserTooltip avatarUrl={user.avatarUrl} label={user.label} email={user.email} position={user.position} />);
           }}
         />
       </div>

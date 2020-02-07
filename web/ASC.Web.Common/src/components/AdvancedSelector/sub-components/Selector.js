@@ -317,7 +317,10 @@ const Selector = props => {
                     color="#D8D8D8"
                     getContent={getOptionTooltipContent}
                     place="top"
-                    offsetLeft={160}
+                    offsetLeft={150}
+                    offsetRight={0}
+                    offsetTop={60}
+                    offsetBottom={0}
                     dataTip={`${index}`}
                     displayType="dropdown"
                   />
@@ -342,7 +345,10 @@ const Selector = props => {
                     color="#D8D8D8"
                     getContent={getOptionTooltipContent}
                     place="top"
-                    offsetLeft={160}
+                    offsetLeft={150}
+                    offsetRight={0}
+                    offsetTop={60}
+                    offsetBottom={0}
                     dataTip={`${index}`}
                     displayType="dropdown"
                   />

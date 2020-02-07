@@ -201,14 +201,20 @@ const StyledSelector = styled(Container)`
         cursor: pointer;
 
         .option_checkbox {
-          width: 273px;
+          width: 265px;
         }
 
         .option-info {
           position: absolute;
           top: 10px;
           right: 10px;
+          padding: 8px 0 8px 8px;
+          margin-top: -8px;
         }
+
+        /* .__react_component_tooltip {
+          left: 8px !important;
+        } */
       }
     }
   }
