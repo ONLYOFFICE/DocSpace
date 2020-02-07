@@ -15,16 +15,16 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
         userName=""
         editing={false}
       />
-      <Text isBold={true} fontSize="13px" fontWeight={700}>
+      <Text isBold={true} fontSize="13px" truncate fontWeight={700}>
         {label}
       </Text>
     </div>
     <div>
 
-      <Text color="#A3A9AE" fontSize="13px" className="email-text">
+      <Text color="#A3A9AE" fontSize="13px" truncate className="email-text">
         {email}
       </Text>
-      <Text fontSize="13px" fontWeight={600}>
+      <Text fontSize="13px" truncate fontWeight={600}>
         {position}
       </Text>
     </div>
