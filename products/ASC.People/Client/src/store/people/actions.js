@@ -118,7 +118,8 @@ export function setFilterUrl(filter) {
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  if (params.length > 0) {
+  const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
+  if (params.length > 0 && !isProfileView) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
   }
 }
@@ -171,6 +172,7 @@ export function fetchPeople(filter, dispatchFunc = null) {
 
 function fetchPeopleByFilter(dispatch, filter) {
   let filterData = filter && filter.clone();
+  // console.log(history.location.pathname, history.location.pathname.includes('/people/view'));
 
   if (!filterData) {
     filterData = Filter.getDefault();
