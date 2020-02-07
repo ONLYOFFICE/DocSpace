@@ -24,7 +24,29 @@ class PageLayoutComponent extends React.PureComponent {
     this.state = this.mapPropsToState(props);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidMount() { 
+    window.addEventListener("orientationchange", this.orientationChangeHandler);
+  }
+
+  componentWillUnmount () { 
+    window.removeEventListener("orientationchange", this.orientationChangeHandler);
+  }
+
+  orientationChangeHandler = () => {
+    const isOrientationVertical = !(screen.orientation.angle % 180);
+    const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
+    const articleWidth = document.getElementsByTagName('article')[0].offsetWidth;
+    const isArticleWide = articleWidth > screen.availWidth - articleWidth;
+
+    if (isOrientationVertical && isArticleWide && isValueExist){
+      this.backdropClick();
+    }
+    if (!isOrientationVertical && isValueExist){
+      this.pinArticle();
+    }
+  }
+
+  componentDidUpdate(prevProps) {    
     if (this.hasChanges(this.props, prevProps)) {
       this.setState(this.mapPropsToState(this.props));
     }
