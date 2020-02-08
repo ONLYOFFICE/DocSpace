@@ -25,14 +25,17 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using ASC.Core;
-using ASC.Web.Files.Classes;
+
+using ASC.Common.Logging;
 using ASC.Common.Threading;
+using ASC.Core;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
@@ -51,10 +54,38 @@ namespace ASC.Web.Files.Services.DocumentService
         Failed
     }
 
+    public class ReportStateData
+    {
+        public string FileName { get; }
+        public string TmpFileName { get; }
+        public string Script { get; }
+        public int ReportType { get; }
+        public ReportOrigin Origin { get; }
+        public Action<ReportState, string> SaveFileAction { get; }
+        public object Obj { get; }
+        public int TenantId { get; }
+        public Guid UserId { get; }
+
+        public ReportStateData(string fileName, string tmpFileName, string script, int reportType, ReportOrigin origin,
+            Action<ReportState, string> saveFileAction, object obj,
+            int tenantId, Guid userId)
+        {
+            FileName = fileName;
+            TmpFileName = tmpFileName;
+            Script = script;
+            ReportType = reportType;
+            Origin = origin;
+            SaveFileAction = saveFileAction;
+            Obj = obj;
+            TenantId = tenantId;
+            UserId = userId;
+        }
+    }
+
     public class ReportState
     {
-        public string Id { get; set; } 
-        public string FileName { get; set; } 
+        public string Id { get; set; }
+        public string FileName { get; set; }
         public int FileId { get; set; }
         public int ReportType { get; set; }
 
@@ -74,21 +105,21 @@ namespace ASC.Web.Files.Services.DocumentService
         public object Obj { get; set; }
 
         protected DistributedTask TaskInfo { get; private set; }
+        public IServiceProvider ServiceProvider { get; }
 
-        public ReportState(string fileName, string tmpFileName, string script, int reportType, ReportOrigin origin, Action<ReportState, string> saveFileAction, object obj)
+        public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData)
         {
-            Id = DocbuilderReportsUtility.GetCacheKey(origin);
-            Origin = origin;
-            FileName = fileName;
-            TmpFileName = tmpFileName;
-            Script = script;
-            ReportType = reportType;
-            SaveFileAction = saveFileAction;
             TaskInfo = new DistributedTask();
-            TenantId = TenantProvider.CurrentTenantID;
-            UserId = SecurityContext.CurrentAccount.ID;
-            ContextUrl = HttpContext.Current != null ? HttpContext.Current.Request.GetUrlRewriter().ToString() : null;
-            Obj = obj;
+            ServiceProvider = serviceProvider;
+            FileName = reportStateData.FileName;
+            TmpFileName = reportStateData.TmpFileName;
+            Script = reportStateData.Script;
+            ReportType = reportStateData.ReportType;
+            Origin = reportStateData.Origin;
+            SaveFileAction = reportStateData.SaveFileAction;
+            Obj = reportStateData.Obj;
+            TenantId = reportStateData.TenantId;
+            UserId = reportStateData.UserId;
         }
 
         public static ReportState FromTask(DistributedTask task)
@@ -102,7 +133,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 null,
                 null)
             {
-                Id =  task.GetProperty<string>("id"),
+                Id = task.GetProperty<string>("id"),
                 FileId = task.GetProperty<int>("fileId"),
                 Status = task.GetProperty<ReportStatus>("status"),
                 Exception = task.GetProperty<string>("exception")
@@ -111,23 +142,33 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
         {
+            using var scope = ServiceProvider.CreateScope();
+            var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+
             try
             {
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                tenantManager.SetCurrentTenant(TenantId);
+                var authContext = scope.ServiceProvider.GetService<AuthContext>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
+
+                ContextUrl = HttpContext.Current != null ? HttpContext.Current.Request.GetUrlRewriter().ToString() : null;
+
                 Status = ReportStatus.Started;
                 PublishTaskInfo();
 
-                if (HttpContext.Current == null && !WorkContext.IsMono && !string.IsNullOrEmpty(ContextUrl))
-                {
-                    HttpContext.Current = new HttpContext(
-                        new HttpRequest("hack", ContextUrl, string.Empty),
-                        new HttpResponse(new System.IO.StringWriter()));
-                }
+                //if (HttpContext.Current == null && !WorkContext.IsMono && !string.IsNullOrEmpty(ContextUrl))
+                //{
+                //    HttpContext.Current = new HttpContext(
+                //        new HttpRequest("hack", ContextUrl, string.Empty),
+                //        new HttpResponse(new System.IO.StringWriter()));
+                //}
 
-                CoreContext.TenantManager.SetCurrentTenant(TenantId);
-                SecurityContext.AuthenticateMe(UserId);
+                tenantManager.SetCurrentTenant(TenantId);
+                securityContext.AuthenticateMe(UserId);
 
-                Dictionary<string, string> urls;
-                BuilderKey = DocumentServiceConnector.DocbuilderRequest(null, Script, true, out urls);
+                BuilderKey = documentServiceConnector.DocbuilderRequest(null, Script, true, out var urls);
 
                 while (true)
                 {
@@ -137,7 +178,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
 
                     Task.Delay(1500, cancellationToken).Wait(cancellationToken);
-                    var builderKey = DocumentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
+                    var builderKey = documentServiceConnector.DocbuilderRequest(BuilderKey, null, true, out urls);
                     if (builderKey == null)
                         throw new NullReferenceException();
 
@@ -158,7 +199,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
             catch (Exception e)
             {
-                Global.Logger.Error("DocbuilderReportsUtility error", e);
+                logger.Error("DocbuilderReportsUtility error", e);
                 Exception = e.Message;
                 Status = ReportStatus.Failed;
             }
@@ -175,7 +216,7 @@ namespace ASC.Web.Files.Services.DocumentService
         protected void PublishTaskInfo()
         {
             var tries = 3;
-            while (tries -- > 0)
+            while (tries-- > 0)
             {
                 try
                 {
@@ -204,10 +245,10 @@ namespace ASC.Web.Files.Services.DocumentService
         }
     }
 
-    public static class DocbuilderReportsUtility
+    public class DocbuilderReportsUtility
     {
-        private static readonly DistributedTaskQueue tasks;
-        private static readonly object Locker;
+        private readonly DistributedTaskQueue tasks;
+        private readonly object Locker;
 
         public static string TmpFileName
         {
@@ -217,25 +258,25 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        static DocbuilderReportsUtility()
+        public DocbuilderReportsUtility(DistributedTaskCacheNotify distributedTaskCacheNotify)
         {
-            tasks = new DistributedTaskQueue("DocbuilderReportsUtility", 10);
+            tasks = new DistributedTaskQueue(distributedTaskCacheNotify, "DocbuilderReportsUtility", 10);
             Locker = new object();
         }
 
-        public static void Enqueue(ReportState state)
+        public void Enqueue(ReportState state)
         {
             lock (Locker)
             {
-                tasks.QueueTask(state.GenerateReport, state.GetDistributedTask());
+                tasks.QueueTask(state.GenerateReport(), state.GetDistributedTask());
             }
         }
 
-        public static void Terminate(ReportOrigin origin)
+        public void Terminate(ReportOrigin origin, int tenantId, Guid userId)
         {
             lock (Locker)
             {
-                var result = tasks.GetTasks().Where(Predicate(origin));
+                var result = tasks.GetTasks().Where(Predicate(origin, tenantId, userId));
 
                 foreach (var t in result)
                 {
@@ -244,15 +285,15 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public static ReportState Status(ReportOrigin origin)
+        public ReportState Status(ReportOrigin origin, int tenantId, Guid userId)
         {
             lock (Locker)
             {
-                var task = tasks.GetTasks().LastOrDefault(Predicate(origin));
+                var task = tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
                 if (task == null) return null;
-                
+
                 var result = ReportState.FromTask(task);
-                if ((int) result.Status > 1)
+                if ((int)result.Status > 1)
                 {
                     tasks.RemoveTask(task.Id);
                 }
@@ -261,14 +302,40 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        private static Func<DistributedTask, bool> Predicate(ReportOrigin origin)
+        private static Func<DistributedTask, bool> Predicate(ReportOrigin origin, int tenantId, Guid userId)
         {
-            return t => t.GetProperty<string>("id") == GetCacheKey(origin);
+            return t => t.GetProperty<string>("id") == GetCacheKey(origin, tenantId, userId);
         }
 
-        internal static string GetCacheKey(ReportOrigin origin)
+        internal static string GetCacheKey(ReportOrigin origin, int tenantId, Guid userId)
         {
-            return string.Format("{0}_{1}_{2}", TenantProvider.CurrentTenantID, SecurityContext.CurrentAccount.ID, (int)origin);
+            return $"{tenantId}_{userId}_{(int)origin}";
         }
+    }
+
+    public class DocbuilderReportsUtilityHelper
+    {
+        public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+
+        public DocbuilderReportsUtilityHelper(
+            DocbuilderReportsUtility docbuilderReportsUtility,
+            AuthContext authContext,
+            TenantManager tenantManager)
+        {
+            DocbuilderReportsUtility = docbuilderReportsUtility;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            TenantId = TenantManager.GetCurrentTenant().TenantId;
+            UserId = AuthContext.CurrentAccount.ID;
+        }
+
+        private int TenantId { get; set; }
+        private Guid UserId { get; set; }
+
+        public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
+        public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
+        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, TenantId, UserId);
     }
 }

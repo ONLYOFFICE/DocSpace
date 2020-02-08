@@ -121,25 +121,23 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public abstract FileOperationType OperationType { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        protected FileOperation(IServiceProvider serviceProvider)
+        protected FileOperation(IServiceProvider serviceProvider, T fileOperationData)
         {
             principal = Thread.CurrentPrincipal;
             culture = Thread.CurrentThread.CurrentCulture.Name;
 
             TaskInfo = new DistributedTask();
             ServiceProvider = serviceProvider;
+            Files = fileOperationData.Files;
+            Folders = fileOperationData.Folders;
+            HoldResult = fileOperationData.HoldResult;
+            CurrentTenant = fileOperationData.Tenant;
         }
 
-        public Action<DistributedTask, CancellationToken> RunJob(T fileOperationData)
-            => (_, cancellationToken) =>
+        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             try
             {
-                Files = fileOperationData.Files;
-                Folders = fileOperationData.Folders;
-                HoldResult = fileOperationData.HoldResult;
-                CurrentTenant = fileOperationData.Tenant;
-
                 CancellationToken = cancellationToken;
 
                 using var scope = ServiceProvider.CreateScope();
@@ -164,7 +162,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 total = InitTotalProgressSteps();
 
-                Do(fileOperationData, scope);
+                Do(scope);
             }
             catch (AuthorizingException authError)
             {
@@ -191,7 +189,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 catch { /* ignore */ }
             }
-        };
+        }
 
         public virtual DistributedTask GetDistributedTask()
         {
@@ -260,6 +258,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TaskInfo.PublishChanges();
         }
 
-        protected abstract void Do(T fileOperationData, IServiceScope serviceScope);
+        protected abstract void Do(IServiceScope serviceScope);
     }
 }

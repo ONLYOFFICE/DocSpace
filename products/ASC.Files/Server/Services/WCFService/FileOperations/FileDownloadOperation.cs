@@ -66,8 +66,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     class FileDownloadOperation : FileOperation<FileDownloadOperationData>
     {
-        private Dictionary<object, string> files;
-        private Dictionary<string, string> headers;
+        private readonly Dictionary<object, string> files;
+        private readonly Dictionary<string, string> headers;
 
         public override FileOperationType OperationType
         {
@@ -75,17 +75,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDownloadOperation(IServiceProvider serviceProvider)
-            : base(serviceProvider)
-        {
-        }
-
-
-        protected override void Do(FileDownloadOperationData fileDownloadOperationData, IServiceScope scope)
+        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData fileDownloadOperationData)
+            : base(serviceProvider, fileDownloadOperationData)
         {
             files = fileDownloadOperationData.FilesDownload;
             headers = fileDownloadOperationData.Headers;
+        }
 
+
+        protected override void Do(IServiceScope scope)
+        {
             var entriesPathId = GetEntriesPathId(scope);
             if (entriesPathId == null || entriesPathId.Count == 0)
             {

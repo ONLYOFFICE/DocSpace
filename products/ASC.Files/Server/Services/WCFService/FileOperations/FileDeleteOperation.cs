@@ -58,9 +58,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
     class FileDeleteOperation : FileOperation<FileDeleteOperationData>
     {
         private object _trashId;
-        private bool _ignoreException;
-        private bool _immediately;
-        private Dictionary<string, string> _headers;
+        private readonly bool _ignoreException;
+        private readonly bool _immediately;
+        private readonly Dictionary<string, string> _headers;
 
         public override FileOperationType OperationType
         {
@@ -68,18 +68,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDeleteOperation(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData fileOperationData)
+            : base(serviceProvider, fileOperationData)
         {
-        }
-
-
-        protected override void Do(FileDeleteOperationData fileOperationData, IServiceScope scope)
-        {
-            _trashId = FolderDao.GetFolderIDTrash(true);
             _ignoreException = fileOperationData.IgnoreException;
             _immediately = fileOperationData.Immediately;
             _headers = fileOperationData.Headers;
+        }
+
+
+        protected override void Do(IServiceScope scope)
+        {
+            _trashId = FolderDao.GetFolderIDTrash(true);
 
             Folder root = null;
             if (0 < Folders.Count)

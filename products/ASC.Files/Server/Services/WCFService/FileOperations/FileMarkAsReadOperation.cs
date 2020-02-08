@@ -53,8 +53,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileMarkAsReadOperation(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData fileOperationData)
+            : base(serviceProvider, fileOperationData)
         {
         }
 
@@ -64,7 +64,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return Files.Count + Folders.Count;
         }
 
-        protected override void Do(FileMarkAsReadOperationData fileOperationData, IServiceScope scope)
+        protected override void Do(IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var entries = new List<FileEntry>();

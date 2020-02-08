@@ -61,31 +61,30 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     class FileMoveCopyOperation : FileOperation<FileMoveCopyOperationData>
     {
-        private string _toFolderId;
-        private bool _copy;
-        private FileConflictResolveType _resolveType;
+        private readonly string _toFolderId;
+        private readonly bool _copy;
+        private readonly FileConflictResolveType _resolveType;
         private readonly List<FileEntry> _needToMark = new List<FileEntry>();
 
-        private Dictionary<string, string> _headers;
+        private readonly Dictionary<string, string> _headers;
 
         public override FileOperationType OperationType
         {
             get { return _copy ? FileOperationType.Copy : FileOperationType.Move; }
         }
 
-        public FileMoveCopyOperation(IServiceProvider serviceProvider)
-            : base(serviceProvider)
-        {
-        }
-
-        protected override void Do(FileMoveCopyOperationData data, IServiceScope scope)
+        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData data)
+            : base(serviceProvider, data)
         {
             _toFolderId = data.ToFolderId;
             _copy = data.Copy;
             _resolveType = data.ResolveType;
 
             _headers = data.Headers;
+        }
 
+        protected override void Do(IServiceScope scope)
+        {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
 
             Status += string.Format("folder_{0}{1}", _toFolderId, FileOperation.SPLIT_CHAR);
