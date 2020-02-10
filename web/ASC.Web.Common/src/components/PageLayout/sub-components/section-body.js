@@ -15,11 +15,11 @@ const StyledSectionBody = styled.div`
 `;
 
 const StyledSectionWrapper = styled.div`
-  padding: 16px 8px 16px 24px;
+  padding: 0px 8px 16px 24px;
   outline: none;
 
   @media ${tablet} {
-    padding: 16px 0 16px 24px;
+    padding: 0px 0 16px 24px;
   }
 `;
 
