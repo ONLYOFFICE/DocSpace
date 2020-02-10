@@ -96,7 +96,7 @@ class ArticleBodyContent extends React.Component {
         draggable={false}
         disabled={false}
         multiple={false}
-        showIcon={true}
+        showIcon={false}
         defaultExpandAll={true}
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
