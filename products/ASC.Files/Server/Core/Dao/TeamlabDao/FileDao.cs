@@ -46,6 +46,8 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Files.Core.Data
 {
     public class FileDao : AbstractDao, IFileDao
@@ -70,6 +72,7 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
+            IServiceProvider serviceProvider,
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
@@ -85,7 +88,8 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext)
+                  authContext,
+                  serviceProvider)
         {
             FactoryIndexer = factoryIndexer;
             GlobalStore = globalStore;
@@ -708,15 +712,13 @@ namespace ASC.Files.Core.Data
             var file = GetFile(fileId);
             if (file != null)
             {
-                var copy = new File
-                {
-                    FileStatus = file.FileStatus,
-                    FolderID = toFolderId,
-                    Title = file.Title,
-                    ConvertedType = file.ConvertedType,
-                    Comment = FilesCommonResource.CommentCopy,
-                    Encrypted = file.Encrypted,
-                };
+                var copy = ServiceProvider.GetService<File>();
+                copy.FileStatus = file.FileStatus;
+                copy.FolderID = toFolderId;
+                copy.Title = file.Title;
+                copy.ConvertedType = file.ConvertedType;
+                copy.Comment = FilesCommonResource.CommentCopy;
+                copy.Encrypted = file.Encrypted;
 
                 using (var stream = GetFileStream(file))
                 {
@@ -898,15 +900,14 @@ namespace ASC.Files.Core.Data
                 file.Encrypted = uploadSession.Encrypted;
                 return file;
             }
+            var result = ServiceProvider.GetService<File>();
+            result.FolderID = uploadSession.File.FolderID;
+            result.Title = uploadSession.File.Title;
+            result.ContentLength = uploadSession.BytesTotal;
+            result.Comment = FilesCommonResource.CommentUpload;
+            result.Encrypted = uploadSession.Encrypted;
 
-            return new File
-            {
-                FolderID = uploadSession.File.FolderID,
-                Title = uploadSession.File.Title,
-                ContentLength = uploadSession.BytesTotal,
-                Comment = FilesCommonResource.CommentUpload,
-                Encrypted = uploadSession.Encrypted,
-            };
+            return result;
         }
 
         #endregion
@@ -1060,17 +1061,18 @@ namespace ASC.Files.Core.Data
                     .ToList()
                     .Select(r =>
                         {
-                            var item = new EditHistory
-                            {
-                                ID = r.Id,
-                                Version = r.Version,
-                                VersionGroup = r.VersionGroup,
-                                ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn),
-                                ModifiedBy = new EditHistoryAuthor { Id = r.ModifiedBy },
-                                ChangesString = r.Changes
-                            };
+                            var item = ServiceProvider.GetService<EditHistory>();
+                            var editHistoryAuthor = ServiceProvider.GetService<EditHistoryAuthor>();
 
+                            editHistoryAuthor.Id = r.ModifiedBy;
+                            item.ID = r.Id;
+                            item.Version = r.Version;
+                            item.VersionGroup = r.VersionGroup;
+                            item.ModifiedOn = TenantUtil.DateTimeFromUtc(r.ModifiedOn);
+                            item.ModifiedBy = editHistoryAuthor;
+                            item.ChangesString = r.Changes;
                             item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, TenantUtil.DateTimeFromUtc(r.CreateOn));
+
                             return item;
                         })
                     .ToList();

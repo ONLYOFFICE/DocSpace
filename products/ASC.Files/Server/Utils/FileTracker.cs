@@ -24,12 +24,12 @@
 */
 
 
-using ASC.Common.Caching;
-using ASC.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+
+using ASC.Common.Caching;
 
 namespace ASC.Web.Files.Utils
 {
@@ -52,14 +52,14 @@ namespace ASC.Web.Files.Utils
 
         private FileTracker(Guid tabId, Guid userId, bool newScheme, bool editingAlone)
         {
-            _editingBy = new Dictionary<Guid, TrackInfo> {{tabId, new TrackInfo(userId, newScheme, editingAlone)}};
+            _editingBy = new Dictionary<Guid, TrackInfo> { { tabId, new TrackInfo(userId, newScheme, editingAlone) } };
         }
 
 
-        public static Guid Add(object fileId)
+        public static Guid Add(Guid userId, object fileId)
         {
             var tabId = Guid.NewGuid();
-            ProlongEditing(fileId, tabId, SecurityContext.CurrentAccount.ID);
+            ProlongEditing(fileId, tabId, userId);
             return tabId;
         }
 
@@ -117,13 +117,13 @@ namespace ASC.Web.Files.Utils
             SetTracker(fileId, null);
         }
 
-        public static void RemoveAllOther(object fileId)
+        public static void RemoveAllOther(Guid userId, object fileId)
         {
             var tracker = GetTracker(fileId);
             if (tracker != null)
             {
                 var listForRemove = tracker._editingBy
-                                           .Where(b => b.Value.UserId != SecurityContext.CurrentAccount.ID)
+                                           .Where(b => b.Value.UserId != userId)
                                            .ToList();
                 if (listForRemove.Count() != tracker._editingBy.Count)
                 {

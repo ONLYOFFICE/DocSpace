@@ -58,6 +58,7 @@ using ASC.Web.Studio.Utility;
 using JWT;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -96,6 +97,8 @@ namespace ASC.Web.Files
         public FilesMessageService FilesMessageService { get; }
         public FileShareLink FileShareLink { get; }
         public FileConverter FileConverter { get; }
+        public FFmpegService FFmpegService { get; }
+        public IServiceProvider ServiceProvider { get; }
         public UserManager UserManager { get; }
         public ILog Logger { get; }
         public CookiesManager CookiesManager { get; }
@@ -124,7 +127,9 @@ namespace ASC.Web.Files
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
             FilesMessageService filesMessageService,
             FileShareLink fileShareLink,
-            FileConverter fileConverter)
+            FileConverter fileConverter,
+            FFmpegService fFmpegService,
+            IServiceProvider serviceProvider)
         {
             Next = next;
             FilesLinkUtility = filesLinkUtility;
@@ -146,6 +151,8 @@ namespace ASC.Web.Files
             FilesMessageService = filesMessageService;
             FileShareLink = fileShareLink;
             FileConverter = fileConverter;
+            FFmpegService = fFmpegService;
+            ServiceProvider = serviceProvider;
             UserManager = userManager;
             Logger = optionsMonitor.CurrentValue;
             CookiesManager = cookiesManager;
@@ -987,15 +994,13 @@ namespace ASC.Web.Files
             }
             else
             {
-                fileTitle = fileTitle + fileExt;
+                fileTitle += fileExt;
             }
 
-            var file = new File
-            {
-                Title = fileTitle,
-                FolderID = folder.ID,
-                Comment = FilesCommonResource.CommentCreate,
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.Title = fileTitle;
+            file.FolderID = folder.ID;
+            file.Comment = FilesCommonResource.CommentCreate;
 
             var fileDao = DaoFactory.FileDao;
             var stream = storeTemplate.GetReadStream("", templatePath);
@@ -1008,12 +1013,10 @@ namespace ASC.Web.Files
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
 
-            var file = new File
-            {
-                Title = fileTitle,
-                FolderID = folder.ID,
-                Comment = FilesCommonResource.CommentCreate,
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.Title = fileTitle;
+            file.FolderID = folder.ID;
+            file.Comment = FilesCommonResource.CommentCreate;
 
             var req = (HttpWebRequest)WebRequest.Create(fileUri);
 

@@ -44,6 +44,8 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Utils
@@ -66,6 +68,7 @@ namespace ASC.Web.Files.Utils
         public FilesMessageService FilesMessageService { get; }
         public FileSecurity FileSecurity { get; }
         public EntryManager EntryManager { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public FileUploader(
             FilesSettingsHelper filesSettingsHelper,
@@ -83,7 +86,8 @@ namespace ASC.Web.Files.Utils
             FilesLinkUtility filesLinkUtility,
             FilesMessageService filesMessageService,
             FileSecurity fileSecurity,
-            EntryManager entryManager)
+            EntryManager entryManager,
+            IServiceProvider serviceProvider)
         {
             FilesSettingsHelper = filesSettingsHelper;
             FileUtility = fileUtility;
@@ -101,6 +105,7 @@ namespace ASC.Web.Files.Utils
             FilesMessageService = filesMessageService;
             FileSecurity = fileSecurity;
             EntryManager = entryManager;
+            ServiceProvider = serviceProvider;
         }
 
         public File Exec(string folderId, string title, long contentLength, Stream data)
@@ -150,7 +155,10 @@ namespace ASC.Web.Files.Utils
                 return file;
             }
 
-            return new File { FolderID = folderId, Title = fileName };
+            var newFile = ServiceProvider.GetService<File>();
+            newFile.FolderID = folderId;
+            newFile.Title = fileName;
+            return newFile;
         }
 
         public File VerifyFileUpload(string folderId, string fileName, long fileSize, bool updateIfExists)
@@ -239,13 +247,11 @@ namespace ASC.Web.Files.Utils
             if (string.IsNullOrEmpty(fileId))
                 fileId = null;
 
-            var file = new File
-            {
-                ID = fileId,
-                FolderID = folderId,
-                Title = fileName,
-                ContentLength = contentLength
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.ID = fileId;
+            file.FolderID = folderId;
+            file.Title = fileName;
+            file.ContentLength = contentLength;
 
             var dao = DaoFactory.FileDao;
             var uploadSession = dao.CreateUploadSession(file, contentLength);

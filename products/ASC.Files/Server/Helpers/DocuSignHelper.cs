@@ -54,6 +54,7 @@ using ASC.Web.Studio.Core;
 using DocuSign.eSign.Api;
 using DocuSign.eSign.Model;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -162,6 +163,7 @@ namespace ASC.Web.Files.Helpers
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FilesMessageService FilesMessageService { get; }
         public DocuSignHandler DocuSignHandler { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
@@ -176,7 +178,8 @@ namespace ASC.Web.Files.Helpers
             FileMarker fileMarker,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
-            DocuSignHandler docuSignHandler)
+            DocuSignHandler docuSignHandler,
+            IServiceProvider serviceProvider)
         {
             DocuSignToken = docuSignToken;
             DocuSignLoginProvider = docuSignLoginProvider;
@@ -190,6 +193,7 @@ namespace ASC.Web.Files.Helpers
             GlobalFolderHelper = globalFolderHelper;
             FilesMessageService = filesMessageService;
             DocuSignHandler = docuSignHandler;
+            ServiceProvider = serviceProvider;
             Log = options.CurrentValue;
         }
 
@@ -401,12 +405,10 @@ namespace ASC.Web.Files.Helpers
                 }
             }
 
-            var file = new File
-            {
-                FolderID = folderId,
-                Comment = FilesCommonResource.CommentCreateByDocuSign,
-                Title = FileUtility.ReplaceFileExtension(documentName, ".pdf"),
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.FolderID = folderId;
+            file.Comment = FilesCommonResource.CommentCreateByDocuSign;
+            file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");
 
             var envelopesApi = new EnvelopesApi(configuration);
             Log.Info("DocuSign webhook get stream: " + documentId);

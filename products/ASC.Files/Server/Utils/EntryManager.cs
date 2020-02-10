@@ -49,6 +49,7 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -81,6 +82,7 @@ namespace ASC.Web.Files.Utils
         public DocumentServiceHelper DocumentServiceHelper { get; }
         public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
         public EntryManager(
@@ -102,7 +104,8 @@ namespace ASC.Web.Files.Utils
             FileShareLink fileShareLink,
             DocumentServiceHelper documentServiceHelper,
             ThirdpartyConfiguration thirdpartyConfiguration,
-            DocumentServiceConnector documentServiceConnector)
+            DocumentServiceConnector documentServiceConnector,
+            IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
             FileSecurity = fileSecurity;
@@ -122,6 +125,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper = documentServiceHelper;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             DocumentServiceConnector = documentServiceConnector;
+            ServiceProvider = serviceProvider;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -814,22 +818,21 @@ namespace ASC.Web.Files.Utils
             try
             {
                 var currFile = fileDao.GetFile(fileId);
-                var newFile = new File
-                {
-                    ID = fromFile.ID,
-                    Version = currFile.Version + 1,
-                    VersionGroup = currFile.VersionGroup,
-                    Title = FileUtility.ReplaceFileExtension(currFile.Title, FileUtility.GetFileExtension(fromFile.Title)),
-                    FileStatus = currFile.FileStatus,
-                    FolderID = currFile.FolderID,
-                    CreateBy = currFile.CreateBy,
-                    CreateOn = currFile.CreateOn,
-                    ModifiedBy = fromFile.ModifiedBy,
-                    ModifiedOn = fromFile.ModifiedOn,
-                    ConvertedType = fromFile.ConvertedType,
-                    Comment = string.Format(FilesCommonResource.CommentRevert, fromFile.ModifiedOnString),
-                    Encrypted = fromFile.Encrypted,
-                };
+                var newFile = ServiceProvider.GetService<File>();
+
+                newFile.ID = fromFile.ID;
+                newFile.Version = currFile.Version + 1;
+                newFile.VersionGroup = currFile.VersionGroup;
+                newFile.Title = FileUtility.ReplaceFileExtension(currFile.Title, FileUtility.GetFileExtension(fromFile.Title));
+                newFile.FileStatus = currFile.FileStatus;
+                newFile.FolderID = currFile.FolderID;
+                newFile.CreateBy = currFile.CreateBy;
+                newFile.CreateOn = currFile.CreateOn;
+                newFile.ModifiedBy = fromFile.ModifiedBy;
+                newFile.ModifiedOn = fromFile.ModifiedOn;
+                newFile.ConvertedType = fromFile.ConvertedType;
+                newFile.Comment = string.Format(FilesCommonResource.CommentRevert, fromFile.ModifiedOnString);
+                newFile.Encrypted = fromFile.Encrypted;
 
                 using (var stream = fileDao.GetFileStream(fromFile))
                 {

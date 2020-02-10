@@ -634,7 +634,8 @@ namespace ASC.Web.Files.Utils
 
                 if (newFile == null)
                 {
-                    newFile = new File { FolderID = folderId };
+                    newFile = ServiceProvider.GetService<File>();
+                    newFile.FolderID = folderId;
                 }
             }
 

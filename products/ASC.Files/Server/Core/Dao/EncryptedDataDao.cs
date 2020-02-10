@@ -55,7 +55,8 @@ namespace ASC.Files.Core.Data
             CoreBaseSettings coreBaseSettings,
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
-            AuthContext authContext
+            AuthContext authContext,
+            IServiceProvider serviceProvider
             )
             : base(dbContextManager,
                   userManager,
@@ -67,7 +68,8 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext)
+                  authContext,
+                  serviceProvider)
         {
         }
 

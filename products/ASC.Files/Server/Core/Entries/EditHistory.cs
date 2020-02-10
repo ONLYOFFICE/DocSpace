@@ -29,11 +29,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Web.Files.Classes;
+using ASC.Web.Core.Users;
 using ASC.Web.Files.Resources;
+
+using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Files.Core
@@ -42,6 +47,20 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{ID} v{Version}")]
     public class EditHistory
     {
+        public EditHistory(
+            IOptionsMonitor<ILog> options,
+            TenantUtil tenantUtil,
+            AuthContext authContext,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
+        {
+            Logger = options.CurrentValue;
+            TenantUtil = tenantUtil;
+            AuthContext = authContext;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+        }
+
         public int ID;
         [DataMember(Name = "key")] public string Key;
         [DataMember(Name = "version")] public int Version;
@@ -72,15 +91,15 @@ namespace ASC.Files.Core
                                       .Select(jChange =>
                                           {
                                               var jUser = jChange.Value<JObject>("user");
-                                              return new EditHistoryChanges
+                                              return new EditHistoryChanges(TenantUtil)
+                                              {
+                                                  Date = jChange.Value<string>("created"),
+                                                  Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
                                                   {
-                                                      Date = jChange.Value<string>("created"),
-                                                      Author = new EditHistoryAuthor
-                                                          {
-                                                              Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
-                                                              Name = jUser.Value<string>("name"),
-                                                          },
-                                                  };
+                                                      Id = new Guid(jUser.Value<string>("id") ?? Guid.Empty.ToString()),
+                                                      Name = jUser.Value<string>("name"),
+                                                  },
+                                              };
                                           })
                                       .ToList();
                     return changes;
@@ -98,21 +117,21 @@ namespace ASC.Files.Core
 
                     changes = jChanges.Children<JObject>()
                                       .Select(jChange =>
-                                              new EditHistoryChanges
+                                              new EditHistoryChanges(TenantUtil)
+                                              {
+                                                  Date = jChange.Value<string>("date"),
+                                                  Author = new EditHistoryAuthor(AuthContext, UserManager, DisplayUserSettingsHelper)
                                                   {
-                                                      Date = jChange.Value<string>("date"),
-                                                      Author = new EditHistoryAuthor
-                                                          {
-                                                              Id = new Guid(jChange.Value<string>("userid") ?? Guid.Empty.ToString()),
-                                                              Name = jChange.Value<string>("username")
-                                                          }
-                                                  })
+                                                      Id = new Guid(jChange.Value<string>("userid") ?? Guid.Empty.ToString()),
+                                                      Name = jChange.Value<string>("username")
+                                                  }
+                                              })
                                       .ToList();
                 }
                 catch (Exception ex)
                 {
-                    Global.Logger.Error("DeSerialize new scheme exception", newSchemeException);
-                    Global.Logger.Error("DeSerialize old scheme exception", ex);
+                    Logger.Error("DeSerialize new scheme exception", newSchemeException);
+                    Logger.Error("DeSerialize old scheme exception", ex);
                 }
 
                 return changes;
@@ -129,6 +148,12 @@ namespace ASC.Files.Core
             set { throw new NotImplementedException(); }
         }
 
+        public ILog Logger { get; }
+        public TenantUtil TenantUtil { get; }
+        public AuthContext AuthContext { get; }
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
         [DataMember(Name = "serverVersion", EmitDefaultValue = false)] public string ServerVersion;
     }
 
@@ -136,6 +161,16 @@ namespace ASC.Files.Core
     [DebuggerDisplay("{Id} {Name}")]
     public class EditHistoryAuthor
     {
+        public EditHistoryAuthor(
+            AuthContext authContext,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
+        {
+            AuthContext = authContext;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+        }
+
         [DataMember(Name = "id")] public Guid Id;
 
         private string _name;
@@ -147,24 +182,33 @@ namespace ASC.Files.Core
             {
                 UserInfo user;
                 return
-                    Id.Equals(SecurityContext.CurrentAccount.ID)
+                    Id.Equals(AuthContext.CurrentAccount.ID)
                         ? FilesCommonResource.Author_Me
                         : Id.Equals(Guid.Empty)
                           || Id.Equals(ASC.Core.Configuration.Constants.Guest.ID)
-                          || (user = CoreContext.UserManager.GetUsers(Id)).Equals(Constants.LostUser)
+                          || (user = UserManager.GetUsers(Id)).Equals(Constants.LostUser)
                               ? string.IsNullOrEmpty(_name)
                                     ? FilesCommonResource.Guest
                                     : _name
-                              : user.DisplayUserName(false);
+                              : user.DisplayUserName(false, DisplayUserSettingsHelper);
             }
             set { _name = value; }
         }
+
+        public AuthContext AuthContext { get; }
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
     }
 
     [DataContract(Name = "change", Namespace = "")]
     [DebuggerDisplay("{Author.Name}")]
     public class EditHistoryChanges
     {
+        public EditHistoryChanges(TenantUtil tenantUtil)
+        {
+            TenantUtil = tenantUtil;
+        }
+
         [DataMember(Name = "user")] public EditHistoryAuthor Author;
 
         private DateTime _date;
@@ -181,6 +225,8 @@ namespace ASC.Files.Core
                 }
             }
         }
+
+        public TenantUtil TenantUtil { get; }
     }
 
     [DataContract(Name = "data")]

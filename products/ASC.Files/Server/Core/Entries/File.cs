@@ -24,14 +24,15 @@
 */
 
 
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.WCFService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Text;
+
+using ASC.Web.Core.Files;
+using ASC.Web.Files.Services.WCFService;
+using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 
 namespace ASC.Files.Core
 {
@@ -59,11 +60,17 @@ namespace ASC.Files.Core
     {
         private FileStatus _status;
 
-        public File()
+        public File(
+            FilesLinkUtility filesLinkUtility,
+            FileUtility fileUtility,
+            FileConverter fileConverter)
         {
             Version = 1;
             VersionGroup = 1;
             FileEntryType = FileEntryType.File;
+            FilesLinkUtility = filesLinkUtility;
+            FileUtility = fileUtility;
+            FileConverter = fileConverter;
         }
 
         public object FolderID { get; set; }
@@ -166,7 +173,7 @@ namespace ASC.Files.Core
             get { return (_status & FileStatus.IsNew) == FileStatus.IsNew; }
             set
             {
-                if(value)
+                if (value)
                     _status |= FileStatus.IsNew;
                 else
                     _status ^= FileStatus.IsNew;
@@ -206,6 +213,9 @@ namespace ASC.Files.Core
         }
 
         public object NativeAccessor { get; set; }
+        public FilesLinkUtility FilesLinkUtility { get; }
+        public FileUtility FileUtility { get; }
+        public FileConverter FileConverter { get; }
 
         public static string Serialize(File file)
         {

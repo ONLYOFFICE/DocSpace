@@ -63,6 +63,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -117,6 +118,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public TokenHelper TokenHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public GoogleDriveApp()
         {
@@ -147,6 +149,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             TokenHelper tokenHelper,
             DocumentServiceConnector documentServiceConnector,
             ThirdPartyAppHandler thirdPartyAppHandler,
+            IServiceProvider serviceProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -180,6 +183,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             TokenHelper = tokenHelper;
             DocumentServiceConnector = documentServiceConnector;
             ThirdPartyAppHandler = thirdPartyAppHandler;
+            ServiceProvider = serviceProvider;
         }
 
         public bool Request(HttpContext context)
@@ -224,16 +228,14 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(driveFile);
 
-            var file = new File
-            {
-                ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id")),
-                Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile)),
-                CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime")),
-                ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime")),
-                ContentLength = Convert.ToInt64(jsonFile.Value<string>("size")),
-                ModifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>(),
-                ProviderKey = "Google"
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile));
+            file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
+            file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modifiedTime"));
+            file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
+            file.ModifiedByString = jsonFile["lastModifyingUser"]["displayName"].Value<string>();
+            file.ProviderKey = "Google";
 
             var owners = jsonFile["owners"];
             if (owners != null)

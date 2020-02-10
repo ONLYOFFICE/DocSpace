@@ -44,6 +44,7 @@ using ASC.Web.Studio.Utility;
 using Autofac;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
@@ -63,6 +64,7 @@ namespace ASC.Files.Core.Data
         public CoreConfiguration CoreConfiguration { get; }
         public SettingsManager SettingsManager { get; }
         public AuthContext AuthContext { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         protected AbstractDao(
             DbContextManager<FilesDbContext> dbContextManager,
@@ -75,7 +77,8 @@ namespace ASC.Files.Core.Data
             CoreBaseSettings coreBaseSettings,
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
-            AuthContext authContext)
+            AuthContext authContext,
+            IServiceProvider serviceProvider)
         {
             cache = AscCache.Memory;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
@@ -89,6 +92,7 @@ namespace ASC.Files.Core.Data
             CoreConfiguration = coreConfiguration;
             SettingsManager = settingsManager;
             AuthContext = authContext;
+            ServiceProvider = serviceProvider;
         }
 
 
@@ -109,27 +113,30 @@ namespace ASC.Files.Core.Data
             return dbFiles
                 .Select(r => new { file = r, root = GetRootFolderType(r), shared = checkShared ? GetSharedQuery(FileEntryType.File, r) : true })
                 .ToList()
-                .Select(r => new File
+                .Select(r =>
                 {
-                    ID = r.file.Id,
-                    Title = r.file.Title,
-                    FolderID = r.file.FolderId,
-                    CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn),
-                    CreateBy = r.file.CreateBy,
-                    Version = r.file.Version,
-                    VersionGroup = r.file.VersionGroup,
-                    ContentLength = r.file.ContentLength,
-                    ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn),
-                    ModifiedBy = r.file.ModifiedBy,
-                    RootFolderType = r.root.FolderType,
-                    RootFolderCreator = r.root.CreateBy,
-                    RootFolderId = r.root.Id,
-                    Shared = r.shared,
-                    ConvertedType = r.file.ConvertedType,
-                    Comment = r.file.Comment,
-                    Encrypted = r.file.Encrypted,
-                    Forcesave = r.file.Forcesave
-                }).ToList();
+                    var file = ServiceProvider.GetService<File>();
+                    file.ID = r.file.Id;
+                    file.Title = r.file.Title;
+                    file.FolderID = r.file.FolderId;
+                    file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
+                    file.CreateBy = r.file.CreateBy;
+                    file.Version = r.file.Version;
+                    file.VersionGroup = r.file.VersionGroup;
+                    file.ContentLength = r.file.ContentLength;
+                    file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
+                    file.ModifiedBy = r.file.ModifiedBy;
+                    file.RootFolderType = r.root.FolderType;
+                    file.RootFolderCreator = r.root.CreateBy;
+                    file.RootFolderId = r.root.Id;
+                    file.Shared = r.shared;
+                    file.ConvertedType = r.file.ConvertedType;
+                    file.Comment = r.file.Comment;
+                    file.Encrypted = r.file.Encrypted;
+                    file.Forcesave = r.file.Forcesave;
+                    return file;
+                }
+                ).ToList();
         }
 
         protected DbFolder GetRootFolderType(DbFile file)

@@ -46,6 +46,7 @@ using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
@@ -254,6 +255,7 @@ namespace ASC.Web.Files.Classes
         public UserManager UserManager { get; }
         public SettingsManager SettingsManager { get; }
         public GlobalStore GlobalStore { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
         public GlobalFolder(
@@ -265,7 +267,8 @@ namespace ASC.Web.Files.Classes
             UserManager userManager,
             SettingsManager settingsManager,
             GlobalStore globalStore,
-            IOptionsMonitor<ILog> options
+            IOptionsMonitor<ILog> options,
+            IServiceProvider serviceProvider
         )
         {
             CoreBaseSettings = coreBaseSettings;
@@ -276,6 +279,7 @@ namespace ASC.Web.Files.Classes
             UserManager = userManager;
             SettingsManager = settingsManager;
             GlobalStore = globalStore;
+            ServiceProvider = serviceProvider;
             Logger = options.Get("ASC.Files");
         }
 
@@ -442,13 +446,13 @@ namespace ASC.Web.Files.Classes
         {
             using var stream = storeTemp.GetReadStream("", filePath);
             var fileName = Path.GetFileName(filePath);
-            var file = new File
-            {
-                Title = fileName,
-                ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath),
-                FolderID = folder,
-                Comment = FilesCommonResource.CommentCreate,
-            };
+            var file = ServiceProvider.GetService<File>();
+
+            file.Title = fileName;
+            file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
+            file.FolderID = folder;
+            file.Comment = FilesCommonResource.CommentCreate;
+
             stream.Position = 0;
             try
             {

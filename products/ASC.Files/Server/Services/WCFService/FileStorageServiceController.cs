@@ -62,6 +62,7 @@ using ASC.Web.Files.Utils;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using File = ASC.Files.Core.File;
@@ -110,6 +111,7 @@ namespace ASC.Web.Files.Services.WCFService
         public NotifyClient NotifyClient { get; }
         public FileOperationsManagerHelper FileOperationsManagerHelper { get; }
         public UrlShortener UrlShortener { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -148,7 +150,8 @@ namespace ASC.Web.Files.Services.WCFService
             FileSharing fileSharing,
             NotifyClient notifyClient,
             FileOperationsManagerHelper fileOperationsManagerHelper,
-            UrlShortener urlShortener)
+            UrlShortener urlShortener,
+            IServiceProvider serviceProvider)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -185,6 +188,7 @@ namespace ASC.Web.Files.Services.WCFService
             NotifyClient = notifyClient;
             FileOperationsManagerHelper = fileOperationsManagerHelper;
             UrlShortener = urlShortener;
+            ServiceProvider = serviceProvider;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -526,11 +530,9 @@ namespace ASC.Web.Files.Services.WCFService
             ErrorIf(folder.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_CreateNewFolderInTrash);
             ErrorIf(!FileSecurity.CanCreate(folder), FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            var file = new File
-            {
-                FolderID = folder.ID,
-                Comment = FilesCommonResource.CommentCreate
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.FolderID = folder.ID;
+            file.Comment = FilesCommonResource.CommentCreate;
 
             var fileExt = FileUtility.GetInternalExtension(title);
             if (!FileUtility.InternalExtension.Values.Contains(fileExt))
@@ -1417,13 +1419,11 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (file == null)
                 {
-                    files.Add(new KeyValuePair<File, bool>(
-                                    new File
-                                    {
-                                        ID = fileId,
-                                        Version = version
-                                    },
-                                    true));
+                    var newFile = ServiceProvider.GetService<File>();
+                    newFile.ID = fileId;
+                    newFile.Version = version;
+
+                    files.Add(new KeyValuePair<File, bool>(newFile, true));
                     continue;
                 }
 
@@ -2023,20 +2023,18 @@ namespace ASC.Web.Files.Services.WCFService
                 var newFile = file;
                 if (file.CreateBy != userInfo.ID)
                 {
-                    newFile = new File
-                    {
-                        ID = file.ID,
-                        Version = file.Version + 1,
-                        VersionGroup = file.VersionGroup + 1,
-                        Title = file.Title,
-                        FileStatus = file.FileStatus,
-                        FolderID = file.FolderID,
-                        CreateBy = userInfo.ID,
-                        CreateOn = file.CreateOn,
-                        ConvertedType = file.ConvertedType,
-                        Comment = FilesCommonResource.CommentChangeOwner,
-                        Encrypted = file.Encrypted,
-                    };
+                    newFile = ServiceProvider.GetService<File>();
+                    newFile.ID = file.ID;
+                    newFile.Version = file.Version + 1;
+                    newFile.VersionGroup = file.VersionGroup + 1;
+                    newFile.Title = file.Title;
+                    newFile.FileStatus = file.FileStatus;
+                    newFile.FolderID = file.FolderID;
+                    newFile.CreateBy = userInfo.ID;
+                    newFile.CreateOn = file.CreateOn;
+                    newFile.ConvertedType = file.ConvertedType;
+                    newFile.Comment = FilesCommonResource.CommentChangeOwner;
+                    newFile.Encrypted = file.Encrypted;
 
                     using (var stream = fileDao.GetFileStream(file))
                     {

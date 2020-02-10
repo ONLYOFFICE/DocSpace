@@ -73,6 +73,7 @@ namespace ASC.Files.Core.Data
             CoreConfiguration coreConfiguration,
             SettingsManager settingsManager,
             AuthContext authContext,
+            IServiceProvider serviceProvider,
             GlobalSpace globalSpace,
             IOptionsMonitor<ILog> options)
             : base(
@@ -86,7 +87,8 @@ namespace ASC.Files.Core.Data
                   coreBaseSettings,
                   coreConfiguration,
                   settingsManager,
-                  authContext)
+                  authContext,
+                  serviceProvider)
         {
             FactoryIndexer = factoryIndexer;
             GlobalSpace = globalSpace;

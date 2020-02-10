@@ -61,6 +61,7 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -109,6 +110,7 @@ namespace ASC.Web.Files.ThirdPartyApp
         public TokenHelper TokenHelper { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public ThirdPartyAppHandler ThirdPartyAppHandler { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
         public BoxApp()
@@ -136,6 +138,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             TokenHelper tokenHelper,
             DocumentServiceConnector documentServiceConnector,
             ThirdPartyAppHandler thirdPartyAppHandler,
+            IServiceProvider serviceProvider,
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
@@ -164,6 +167,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             TokenHelper = tokenHelper;
             DocumentServiceConnector = documentServiceConnector;
             ThirdPartyAppHandler = thirdPartyAppHandler;
+            ServiceProvider = serviceProvider;
             Logger = option.CurrentValue;
         }
 
@@ -203,15 +207,13 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(boxFile);
 
-            var file = new File
-            {
-                ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id")),
-                Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name")),
-                CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at")),
-                ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modified_at")),
-                ContentLength = Convert.ToInt64(jsonFile.Value<string>("size")),
-                ProviderKey = "Box"
-            };
+            var file = ServiceProvider.GetService<File>();
+            file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name"));
+            file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));
+            file.ModifiedOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("modified_at"));
+            file.ContentLength = Convert.ToInt64(jsonFile.Value<string>("size"));
+            file.ProviderKey = "Box";
 
             var modifiedBy = jsonFile.Value<JObject>("modified_by");
             if (modifiedBy != null)
