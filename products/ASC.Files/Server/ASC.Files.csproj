@@ -20,6 +20,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
+    <PackageReference Include="DotNetZip" Version="1.13.5" />
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
   </ItemGroup>
   <ItemGroup>

@@ -34,6 +34,7 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -107,7 +108,7 @@ namespace ASC.Web.Files.Services.DocumentService
         protected DistributedTask TaskInfo { get; private set; }
         public IServiceProvider ServiceProvider { get; }
 
-        public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData)
+        public ReportState(IServiceProvider serviceProvider, ReportStateData reportStateData, IHttpContextAccessor httpContextAccessor)
         {
             TaskInfo = new DistributedTask();
             ServiceProvider = serviceProvider;
@@ -120,24 +121,34 @@ namespace ASC.Web.Files.Services.DocumentService
             Obj = reportStateData.Obj;
             TenantId = reportStateData.TenantId;
             UserId = reportStateData.UserId;
+            ContextUrl = httpContextAccessor.HttpContext?.Request.GetUrlRewriter().ToString();
         }
 
-        public static ReportState FromTask(DistributedTask task)
+        public static ReportState FromTask(
+            DistributedTask task,
+            IHttpContextAccessor httpContextAccessor,
+            int tenantId,
+            Guid userId)
         {
-            return new ReportState(
+            var data = new ReportStateData(
                 task.GetProperty<string>("fileName"),
                 task.GetProperty<string>("tmpFileName"),
                 task.GetProperty<string>("script"),
                 task.GetProperty<int>("reportType"),
                 task.GetProperty<ReportOrigin>("reportOrigin"),
                 null,
-                null)
+                null,
+                tenantId,
+                userId
+                );
+            return new ReportState(null, data, httpContextAccessor)
             {
                 Id = task.GetProperty<string>("id"),
                 FileId = task.GetProperty<int>("fileId"),
                 Status = task.GetProperty<ReportStatus>("status"),
                 Exception = task.GetProperty<string>("exception")
             };
+
         }
 
         public void GenerateReport(DistributedTask task, CancellationToken cancellationToken)
@@ -153,10 +164,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
                 var documentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
 
-                ContextUrl = HttpContext.Current != null ? HttpContext.Current.Request.GetUrlRewriter().ToString() : null;
-
                 Status = ReportStatus.Started;
-                PublishTaskInfo();
+                PublishTaskInfo(logger);
 
                 //if (HttpContext.Current == null && !WorkContext.IsMono && !string.IsNullOrEmpty(ContextUrl))
                 //{
@@ -204,7 +213,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 Status = ReportStatus.Failed;
             }
 
-            PublishTaskInfo();
+            PublishTaskInfo(logger);
         }
 
         public DistributedTask GetDistributedTask()
@@ -213,7 +222,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return TaskInfo;
         }
 
-        protected void PublishTaskInfo()
+        protected void PublishTaskInfo(ILog logger)
         {
             var tries = 3;
             while (tries-- > 0)
@@ -226,7 +235,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
                 catch (Exception e)
                 {
-                    LogManager.GetLogger("ASC").Error(" PublishTaskInfo DocbuilderReportsUtility", e);
+                    logger.Error(" PublishTaskInfo DocbuilderReportsUtility", e);
                     if (tries == 0) throw;
                 }
             }
@@ -268,7 +277,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             lock (Locker)
             {
-                tasks.QueueTask(state.GenerateReport(), state.GetDistributedTask());
+                tasks.QueueTask(state.GenerateReport, state.GetDistributedTask());
             }
         }
 
@@ -285,15 +294,18 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        public ReportState Status(ReportOrigin origin, int tenantId, Guid userId)
+        public ReportState Status(ReportOrigin origin, IHttpContextAccessor httpContextAccessor, int tenantId, Guid userId)
         {
             lock (Locker)
             {
                 var task = tasks.GetTasks().LastOrDefault(Predicate(origin, tenantId, userId));
                 if (task == null) return null;
 
-                var result = ReportState.FromTask(task);
-                if ((int)result.Status > 1)
+                var result = ReportState.FromTask(task, httpContextAccessor, tenantId, userId);
+                var status = task.GetProperty<ReportStatus>("status");
+                var id = task.GetProperty<ReportStatus>("status");
+
+                if ((int)status > 1)
                 {
                     tasks.RemoveTask(task.Id);
                 }
@@ -318,6 +330,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
         public AuthContext AuthContext { get; }
         public TenantManager TenantManager { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         public DocbuilderReportsUtilityHelper(
             DocbuilderReportsUtility docbuilderReportsUtility,
@@ -331,11 +344,21 @@ namespace ASC.Web.Files.Services.DocumentService
             UserId = AuthContext.CurrentAccount.ID;
         }
 
+        public DocbuilderReportsUtilityHelper(
+            DocbuilderReportsUtility docbuilderReportsUtility,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            IHttpContextAccessor httpContextAccessor)
+            : this(docbuilderReportsUtility, authContext, tenantManager)
+        {
+            HttpContextAccessor = httpContextAccessor;
+        }
+
         private int TenantId { get; set; }
         private Guid UserId { get; set; }
 
         public void Enqueue(ReportState state) => DocbuilderReportsUtility.Enqueue(state);
         public void Terminate(ReportOrigin origin) => DocbuilderReportsUtility.Terminate(origin, TenantId, UserId);
-        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, TenantId, UserId);
+        public ReportState Status(ReportOrigin origin) => DocbuilderReportsUtility.Status(origin, HttpContextAccessor, TenantId, UserId);
     }
 }

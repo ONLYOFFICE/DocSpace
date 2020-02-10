@@ -24,8 +24,6 @@
 */
 
 
-extern alias ionic;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -44,6 +42,8 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
+
+using Ionic.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -199,10 +199,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
 
             var stream = TempStream.Create();
-            using (var zip = new ionic::Ionic.Zip.ZipOutputStream(stream, true))
+            using (var zip = new ZipOutputStream(stream, true))
             {
-                zip.CompressionLevel = ionic::Ionic.Zlib.CompressionLevel.Level3;
-                zip.AlternateEncodingUsage = ionic::Ionic.Zip.ZipOption.AsNecessary;
+                zip.CompressionLevel = Ionic.Zlib.CompressionLevel.Level3;
+                zip.AlternateEncodingUsage = Ionic.Zip.ZipOption.AsNecessary;
                 zip.AlternateEncoding = Encoding.UTF8;
 
                 foreach (var path in entriesPathId.AllKeys)
