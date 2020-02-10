@@ -8,7 +8,7 @@ import { history } from "asc-web-common";
 const getFormatedGroups = (user, status) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
+  const linkColor = "#333";
 
   if (!groups) temp.push({ key: 0, label: '' });
 
@@ -30,7 +30,7 @@ const getFormatedGroups = (user, status) => {
         type='action'
         title={temp[0].label}
         fontSize='12px'
-        fontWeight={600}
+        fontWeight={400}
         color={linkColor}
         onClick={temp[0].onClick}
       >
@@ -43,7 +43,7 @@ const getFormatedGroups = (user, status) => {
         containerWidth='160px'
         title={temp[0].label}
         fontSize='12px'
-        fontWeight={600}
+        fontWeight={400}
         color={linkColor}
         data={temp}
       >
@@ -72,8 +72,8 @@ const UserContent = ({ user, history, settings }) => {
     [email]
   );
 
-  const nameColor = status === 'disabled' ? '#A3A9AE' : '#333333';
-  const sideInfoColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
+  const nameColor = "#333";
+  const sideInfoColor = "#333";
 
   const headDepartmentStyle = {
     width: '110px'
@@ -83,7 +83,7 @@ const UserContent = ({ user, history, settings }) => {
     <RowContent
       sideColor={sideInfoColor}
     >
-      <Link type='page' title={displayName} fontWeight={600} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
+      <Link type='page' title={displayName} fontWeight="bold" fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
@@ -104,8 +104,8 @@ const UserContent = ({ user, history, settings }) => {
         : <div style={headDepartmentStyle}></div>
       }
       {groups}
-      <Link type='page' title={mobilePhone} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
-      <Link containerWidth='220px' type='page' title={email} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
+      <Link type='page' title={mobilePhone} fontSize='12px' fontWeight={400} color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
+      <Link containerWidth='220px' type='page' title={email} fontSize='12px' fontWeight={400} color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
     </RowContent>
   );
 };
