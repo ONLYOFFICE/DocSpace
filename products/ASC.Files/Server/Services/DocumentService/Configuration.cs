@@ -54,6 +54,8 @@ using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Services.DocumentService
@@ -80,38 +82,13 @@ namespace ASC.Web.Files.Services.DocumentService
 
         public Configuration(
             File file,
-            DocumentServiceConnector documentServiceConnector,
-            PathProvider pathProvider,
-            UserManager userManager,
-            AuthContext authContext,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            FilesLinkUtility filesLinkUtility,
-            BaseCommonLinkUtility baseCommonLinkUtility,
-            EntryManager entryManager,
-            FileSharing fileSharing,
-            ConsumerFactory consumerFactory,
-            CoreBaseSettings coreBaseSettings,
-            SettingsManager settingsManager,
-            FileUtility fileUtility,
-            FileSecurity fileSecurity,
-            FilesSettingsHelper filesSettingsHelper,
-            IDaoFactory daoFactory,
-            GlobalFolderHelper globalFolderHelper,
-            WebImageSupplier webImageSupplier,
-            TenantLogoHelper tenantLogoHelper
+            IServiceProvider serviceProvider
             )
         {
-            Document = new DocumentConfig(documentServiceConnector, pathProvider, entryManager, fileSharing)
-            {
-                Info =
-                        {
-                            File = file,
-                        },
-            };
-            EditorConfig = new EditorConfiguration(this,
-                userManager, authContext, displayUserSettingsHelper, filesLinkUtility, baseCommonLinkUtility, consumerFactory,
-                coreBaseSettings, settingsManager, fileUtility, filesSettingsHelper, fileSecurity, daoFactory, globalFolderHelper,
-                pathProvider, webImageSupplier, tenantLogoHelper);
+            Document = serviceProvider.GetService<DocumentConfig>();
+            Document.Info.File = file;
+            EditorConfig = serviceProvider.GetService<EditorConfiguration>();
+            EditorConfig.SetConfiguration(this);
         }
 
         public EditorType Type
@@ -181,9 +158,9 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             public string SharedLinkKey;
 
-            public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, EntryManager entryManager, FileSharing fileSharing)
+            public DocumentConfig(DocumentServiceConnector documentServiceConnector, PathProvider pathProvider, InfoConfig infoConfig)
             {
-                Info = new InfoConfig(entryManager, fileSharing);
+                Info = infoConfig;
                 Permissions = new PermissionsConfig();
                 DocumentServiceConnector = documentServiceConnector;
                 PathProvider = pathProvider;
@@ -365,34 +342,22 @@ namespace ASC.Web.Files.Services.DocumentService
         public class EditorConfiguration
         {
             public EditorConfiguration(
-                Configuration configuration,
                 UserManager userManager,
                 AuthContext authContext,
                 DisplayUserSettingsHelper displayUserSettingsHelper,
                 FilesLinkUtility filesLinkUtility,
                 BaseCommonLinkUtility baseCommonLinkUtility,
-                ConsumerFactory consumerFactory,
-                CoreBaseSettings coreBaseSettings,
-                SettingsManager settingsManager,
-                FileUtility fileUtility,
-                FilesSettingsHelper filesSettingsHelper,
-                FileSecurity fileSecurity,
-                IDaoFactory daoFactory,
-                GlobalFolderHelper globalFolderHelper,
-                PathProvider pathProvider,
-                WebImageSupplier webImageSupplier,
-                TenantLogoHelper tenantLogoHelper)
+                PluginsConfig pluginsConfig,
+                EmbeddedConfig embeddedConfig,
+                CustomizationConfig customizationConfig)
             {
-                _configuration = configuration;
                 UserManager = userManager;
                 AuthContext = authContext;
                 FilesLinkUtility = filesLinkUtility;
                 BaseCommonLinkUtility = baseCommonLinkUtility;
-                Customization = new CustomizationConfig(_configuration, coreBaseSettings, settingsManager,
-                    fileUtility, filesSettingsHelper, authContext, fileSecurity, daoFactory, globalFolderHelper,
-                    pathProvider, webImageSupplier, baseCommonLinkUtility, tenantLogoHelper);
-                Plugins = new PluginsConfig(consumerFactory, baseCommonLinkUtility);
-                Embedded = new EmbeddedConfig(baseCommonLinkUtility, filesLinkUtility);
+                Customization = customizationConfig;
+                Plugins = pluginsConfig;
+                Embedded = embeddedConfig;
                 _userInfo = userManager.GetUsers(authContext.CurrentAccount.ID);
 
                 User = _userInfo.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID)
@@ -410,7 +375,14 @@ namespace ASC.Web.Files.Services.DocumentService
 
             public bool ModeWrite = false;
 
-            private readonly Configuration _configuration;
+            private Configuration _configuration;
+
+            internal void SetConfiguration(Configuration configuration)
+            {
+                _configuration = configuration;
+                Customization.SetConfiguration(_configuration);
+            }
+
             private readonly UserInfo _userInfo;
             private EmbeddedConfig _embeddedConfig;
 
@@ -641,7 +613,6 @@ namespace ASC.Web.Files.Services.DocumentService
             public class CustomizationConfig
             {
                 public CustomizationConfig(
-                    Configuration configuration,
                     CoreBaseSettings coreBaseSettings,
                     SettingsManager settingsManager,
                     FileUtility fileUtility,
@@ -653,9 +624,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     PathProvider pathProvider,
                     WebImageSupplier webImageSupplier,
                     BaseCommonLinkUtility baseCommonLinkUtility,
-                    TenantLogoHelper tenantLogoHelper)
+                    CustomerConfig customerConfig,
+                    LogoConfig logoConfig)
                 {
-                    _configuration = configuration;
                     CoreBaseSettings = coreBaseSettings;
                     SettingsManager = settingsManager;
                     FileUtility = fileUtility;
@@ -667,11 +638,19 @@ namespace ASC.Web.Files.Services.DocumentService
                     PathProvider = pathProvider;
                     WebImageSupplier = webImageSupplier;
                     BaseCommonLinkUtility = baseCommonLinkUtility;
-                    Customer = new CustomerConfig(_configuration, settingsManager, baseCommonLinkUtility, tenantLogoHelper);
-                    Logo = new LogoConfig(_configuration, settingsManager, baseCommonLinkUtility, tenantLogoHelper);
+                    Customer = customerConfig;
+                    Logo = logoConfig;
                 }
 
-                private readonly Configuration _configuration;
+                private Configuration _configuration;
+
+                internal void SetConfiguration(Configuration configuration)
+                {
+                    _configuration = configuration;
+                    Customer.SetConfiguration(_configuration);
+                    Logo.SetConfiguration(_configuration);
+                }
+
                 public string GobackUrl;
                 public bool IsRetina = false;
 
@@ -814,19 +793,21 @@ namespace ASC.Web.Files.Services.DocumentService
                 public class CustomerConfig
                 {
                     public CustomerConfig(
-                        Configuration configuration,
                         SettingsManager settingsManager,
                         BaseCommonLinkUtility baseCommonLinkUtility,
                         TenantLogoHelper tenantLogoHelper)
                     {
-                        _configuration = configuration;
                         SettingsManager = settingsManager;
                         BaseCommonLinkUtility = baseCommonLinkUtility;
                         TenantLogoHelper = tenantLogoHelper;
                     }
 
-                    private readonly Configuration _configuration;
+                    private Configuration _configuration;
 
+                    internal void SetConfiguration(Configuration configuration)
+                    {
+                        _configuration = configuration;
+                    }
 
                     [DataMember(Name = "logo")]
                     public string Logo
@@ -872,19 +853,20 @@ namespace ASC.Web.Files.Services.DocumentService
                 public class LogoConfig
                 {
                     public LogoConfig(
-                        Configuration configuration,
                         SettingsManager settingsManager,
                         BaseCommonLinkUtility baseCommonLinkUtility,
                         TenantLogoHelper tenantLogoHelper)
                     {
-                        _configuration = configuration;
                         BaseCommonLinkUtility = baseCommonLinkUtility;
                         TenantLogoHelper = tenantLogoHelper;
                         SettingsManager = settingsManager;
                     }
 
-                    private readonly Configuration _configuration;
-
+                    private Configuration _configuration;
+                    internal void SetConfiguration(Configuration configuration)
+                    {
+                        _configuration = configuration;
+                    }
 
                     [DataMember(Name = "image")]
                     public string Image

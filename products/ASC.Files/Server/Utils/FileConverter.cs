@@ -64,7 +64,7 @@ namespace ASC.Web.Files.Utils
     {
         private static readonly object locker = new object();
         private static readonly IDictionary<File, ConvertFileOperationResult> conversionQueue = new Dictionary<File, ConvertFileOperationResult>(new FileComparer());
-        private static readonly ICache cache = AscCache.Default;
+        private readonly ICache cache;
 
         private static Timer timer;
         private static readonly object singleThread = new object();
@@ -128,6 +128,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceConnector = documentServiceConnector;
             ServiceProvider = serviceProvider;
             Logger = options.CurrentValue;
+            cache = AscCache.Memory;
         }
         public FileConverter(
             FileUtility fileUtility,

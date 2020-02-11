@@ -62,7 +62,7 @@ namespace ASC.Web.Files.Utils
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
-        private static readonly ICache cache = AscCache.Default;
+        private readonly ICache cache;
 
         public IDaoFactory DaoFactory { get; }
         public FileSecurity FileSecurity { get; }
@@ -127,6 +127,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceConnector = documentServiceConnector;
             ServiceProvider = serviceProvider;
             Logger = optionsMonitor.CurrentValue;
+            cache = AscCache.Memory;
         }
 
         public IEnumerable<FileEntry> GetEntries(Folder parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
@@ -152,13 +153,8 @@ namespace ASC.Web.Files.Utils
 
                     var projectLastModified = responseApi["response"].Value<string>();
                     const string projectLastModifiedCacheKey = "documents/projectFolders/projectLastModified";
-                    if (HttpRuntime.Cache.Get(projectLastModifiedCacheKey) == null || !HttpRuntime.Cache.Get(projectLastModifiedCacheKey).Equals(projectLastModified))
-                    {
-                        HttpRuntime.Cache.Remove(projectLastModifiedCacheKey);
-                        HttpRuntime.Cache.Insert(projectLastModifiedCacheKey, projectLastModified);
-                    }
                     var projectListCacheKey = string.Format("documents/projectFolders/{0}", AuthContext.CurrentAccount.ID);
-                    var folderIDProjectTitle = (Dictionary<object, KeyValuePair<int, string>>)HttpRuntime.Cache.Get(projectListCacheKey);
+                    Dictionary<object, KeyValuePair<int, string>> folderIDProjectTitle = null;
 
                     if (folderIDProjectTitle == null)
                     {
@@ -197,12 +193,9 @@ namespace ASC.Web.Files.Utils
                             if (!folderIDProjectTitle.ContainsKey(projectFolderID))
                                 folderIDProjectTitle.Add(projectFolderID, new KeyValuePair<int, string>(projectID, projectTitle));
 
-                            AscCache.Default.Remove("documents/folders/" + projectFolderID);
-                            AscCache.Default.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
+                            AscCache.Memory.Remove("documents/folders/" + projectFolderID);
+                            AscCache.Memory.Insert("documents/folders/" + projectFolderID, projectTitle, TimeSpan.FromMinutes(30));
                         }
-
-                        HttpRuntime.Cache.Remove(projectListCacheKey);
-                        HttpRuntime.Cache.Insert(projectListCacheKey, folderIDProjectTitle, new CacheDependency(null, new[] { projectLastModifiedCacheKey }), Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(15));
                     }
 
                     var rootKeys = folderIDProjectTitle.Keys.ToArray();

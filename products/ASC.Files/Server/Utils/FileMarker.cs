@@ -38,6 +38,8 @@ using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Utils
@@ -46,7 +48,7 @@ namespace ASC.Web.Files.Utils
     {
         private static readonly object locker = new object();
         private static readonly WorkerQueue<AsyncTaskData> tasks = new WorkerQueue<AsyncTaskData>(1, TimeSpan.FromSeconds(60), 1, false);
-        private static readonly ICache cache = AscCache.Default;
+        private readonly ICache cache;
 
         private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
@@ -57,6 +59,7 @@ namespace ASC.Web.Files.Utils
         public FileSecurity FileSecurity { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public FileMarker(
             TenantManager tenantManager,
@@ -65,7 +68,8 @@ namespace ASC.Web.Files.Utils
             GlobalFolderHelper globalFolderHelper,
             FileSecurity fileSecurity,
             CoreBaseSettings coreBaseSettings,
-            AuthContext authContext)
+            AuthContext authContext,
+            IServiceProvider serviceProvider)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -74,6 +78,8 @@ namespace ASC.Web.Files.Utils
             FileSecurity = fileSecurity;
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
+            ServiceProvider = serviceProvider;
+            cache = AscCache.Memory;
         }
 
         private void ExecMarkFileAsNew(AsyncTaskData obj)
@@ -242,13 +248,11 @@ namespace ASC.Web.Files.Utils
             if (CoreBaseSettings.Personal) return;
 
             if (fileEntry == null) return;
-            userIDs = userIDs ?? new List<Guid>();
+            userIDs ??= new List<Guid>();
 
-            var taskData = new AsyncTaskData
-            {
-                FileEntry = (FileEntry)fileEntry.Clone(),
-                UserIDs = userIDs
-            };
+            var taskData = ServiceProvider.GetService<AsyncTaskData>();
+            taskData.FileEntry = (FileEntry)fileEntry.Clone();
+            taskData.UserIDs = userIDs;
 
             if (fileEntry.RootFolderType == FolderType.BUNCH && !userIDs.Any())
             {
@@ -661,7 +665,7 @@ namespace ASC.Web.Files.Utils
             RemoveFromCahce(folderId, AuthContext.CurrentAccount.ID);
         }
 
-        private static void RemoveFromCahce(object folderId, Guid userId)
+        private void RemoveFromCahce(object folderId, Guid userId)
         {
             var key = string.Format(CacheKeyFormat, userId, folderId);
             cache.Remove(key);

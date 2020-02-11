@@ -37,7 +37,7 @@ namespace ASC.Web.Files.Utils
     public class FileTracker
     {
         private const string TRACKER = "filesTracker";
-        private static readonly ICache cache = AscCache.Default;
+        private static readonly ICache cache = AscCache.Memory;
 
         public static readonly TimeSpan TrackTimeout = TimeSpan.FromSeconds(12);
         public static readonly TimeSpan CacheTimeout = TimeSpan.FromSeconds(60);

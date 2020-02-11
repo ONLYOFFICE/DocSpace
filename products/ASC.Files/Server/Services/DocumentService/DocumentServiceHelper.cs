@@ -61,6 +61,7 @@ namespace ASC.Web.Files.Services.DocumentService
         public MachinePseudoKeys MachinePseudoKeys { get; }
         public Global Global { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
             IDaoFactory daoFactory,
@@ -73,7 +74,8 @@ namespace ASC.Web.Files.Services.DocumentService
             FileUtility fileUtility,
             MachinePseudoKeys machinePseudoKeys,
             Global global,
-            DocumentServiceConnector documentServiceConnector)
+            DocumentServiceConnector documentServiceConnector,
+            IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
             FileShareLink = fileShareLink;
@@ -86,6 +88,7 @@ namespace ASC.Web.Files.Services.DocumentService
             MachinePseudoKeys = machinePseudoKeys;
             Global = global;
             DocumentServiceConnector = documentServiceConnector;
+            ServiceProvider = serviceProvider;
         }
 
         public File GetParams(object fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
@@ -254,7 +257,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var docKey = GetDocKey(fileStable);
             var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
-            configuration = new Configuration(file)
+            configuration = new Configuration(file, ServiceProvider)
             {
                 Document =
                         {
