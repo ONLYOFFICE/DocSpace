@@ -98,14 +98,12 @@ class DropDown extends React.PureComponent {
 
     const rects = this.dropDownRef.current.getBoundingClientRect();
     const container = { width: window.innerWidth, height: window.innerHeight };
-    const left = rects.left < 0;
-    const right = rects.right > container.width || container.width < rects.right + rects.left;
-    let newDirection = {};
-
-    newDirection.directionX = left ? 'left' : right ? 'right' : this.props.directionX;
+    const left = rects.left < 0 && rects.width < container.width;
+    const right = rects.left < 250 && rects.left > rects.width && rects.width < container.width;
+    const x = left ? 'left' : right ? 'right' : this.props.directionX;
 
     this.setState({
-      directionX: newDirection.directionX,
+      directionX: x,
       width: rects.width
     });
   }
@@ -147,19 +145,19 @@ class DropDown extends React.PureComponent {
 DropDown.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
+  clickOutsideAction: PropTypes.func,
   directionX: PropTypes.oneOf(['left', 'right']),
   directionY: PropTypes.oneOf(['bottom', 'top']),
+  disableOnClickOutside: PropTypes.func,
+  enableOnClickOutside: PropTypes.func,
   id: PropTypes.string,
-  open: PropTypes.bool,
   manualWidth: PropTypes.string,
   manualX: PropTypes.string,
   manualY: PropTypes.string,
   maxHeight: PropTypes.number,
+  open: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withBackdrop: PropTypes.bool,
-  clickOutsideAction: PropTypes.func,
-  enableOnClickOutside: PropTypes.func,
-  disableOnClickOutside: PropTypes.func
+  withBackdrop: PropTypes.bool
 };
 
 DropDown.defaultProps = {
