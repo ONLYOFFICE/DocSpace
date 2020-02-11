@@ -24,29 +24,33 @@ class PageLayoutComponent extends React.PureComponent {
     this.state = this.mapPropsToState(props);
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
   }
 
-  componentWillUnmount () { 
+  componentWillUnmount() {
     window.removeEventListener("orientationchange", this.orientationChangeHandler);
   }
 
   orientationChangeHandler = () => {
-    const isOrientationVertical = !(screen.orientation.angle % 180);
+    const articleElement = document.getElementsByTagName('article')[0];
+
+    if (!articleElement) return;
+
+    const isOrientationVertical = !(screen.orientation ? screen.orientation.angle % 180 :  window.matchMedia("(orientation: portrait)"));
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const articleWidth = document.getElementsByTagName('article')[0].offsetWidth;
+    const articleWidth = articleElement.offsetWidth;
     const isArticleWide = articleWidth > screen.availWidth - articleWidth;
 
-    if (isOrientationVertical && isArticleWide && isValueExist){
+    if (isOrientationVertical && isArticleWide && isValueExist) {
       this.backdropClick();
     }
-    if (!isOrientationVertical && isValueExist){
+    if (!isOrientationVertical && isValueExist) {
       this.pinArticle();
     }
   }
 
-  componentDidUpdate(prevProps) {    
+  componentDidUpdate(prevProps) {
     if (this.hasChanges(this.props, prevProps)) {
       this.setState(this.mapPropsToState(this.props));
     }
@@ -219,7 +223,7 @@ const PageLayout = props => {
 }
 
 PageLayout.propTypes = {
-  language:PropTypes.string,
+  language: PropTypes.string,
 }
 
 PageLayoutComponent.propTypes = {
