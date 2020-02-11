@@ -24,14 +24,14 @@
 */
 
 
-using ASC.Core;
-using ASC.Files.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml;
+
+using ASC.Files.Core;
 
 namespace ASC.Web.Files.Services.WCFService
 {
@@ -47,17 +47,17 @@ namespace ASC.Web.Files.Services.WCFService
             serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>));
             serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper));
 
-            if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
-            {
-                // in version higher 4.0 use standard DataContractResolver
-                var version = WorkContext.MonoVersion.Split('.', ' ');
-                if (2 <= version.Length && (Convert.ToInt32(version[0]) * 1000 + Convert.ToInt32(version[1])) < 4002)
-                {
-                    oldMonoSerializer = true;
-                    serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
-                    serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
-                }
-            }
+            //if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
+            //{
+            //    // in version higher 4.0 use standard DataContractResolver
+            //    var version = WorkContext.MonoVersion.Split('.', ' ');
+            //    if (2 <= version.Length && (Convert.ToInt32(version[0]) * 1000 + Convert.ToInt32(version[1])) < 4002)
+            //    {
+            //        oldMonoSerializer = true;
+            //        serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
+            //        serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper), Type.EmptyTypes, ushort.MaxValue, false, false, null, new FileEntryResolver());
+            //    }
+            //}
         }
 
         public System.IO.MemoryStream ToXml(object o)

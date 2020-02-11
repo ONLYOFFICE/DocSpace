@@ -46,6 +46,8 @@ using Autofac;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Nest;
 
 namespace ASC.ElasticSearch
@@ -65,13 +67,13 @@ namespace ASC.ElasticSearch
             }, CacheNotifyAction.Any);
         }
 
-        public void Clear<T>(T t) where T : Wrapper, new()
+        public void Clear<T>(T t) where T : Wrapper
         {
             Notify.Publish(new SearchItem() { Id = t.IndexName }, CacheNotifyAction.Any);
         }
     }
 
-    public class BaseIndexer<T> : IIndexer where T : Wrapper, new()
+    public class BaseIndexer<T> : IIndexer where T : Wrapper
     {
         private static readonly object Locker = new object();
 
@@ -85,6 +87,7 @@ namespace ASC.ElasticSearch
         public TenantManager TenantManager { get; }
         public SearchSettingsHelper SearchSettingsHelper { get; }
         public BaseIndexerHelper BaseIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
         public WebstudioDbContext WebstudioDbContext { get; }
 
         public BaseIndexer(
@@ -94,7 +97,8 @@ namespace ASC.ElasticSearch
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
-            BaseIndexerHelper baseIndexerHelper)
+            BaseIndexerHelper baseIndexerHelper,
+            IServiceProvider serviceProvider)
         {
             Wrapper = factoryIndexer.Builder.Resolve<T>();
             Client = client;
@@ -102,6 +106,7 @@ namespace ASC.ElasticSearch
             TenantManager = tenantManager;
             SearchSettingsHelper = searchSettingsHelper;
             BaseIndexerHelper = baseIndexerHelper;
+            ServiceProvider = serviceProvider;
             WebstudioDbContext = dbContextManager.Value;
         }
 
@@ -268,7 +273,7 @@ namespace ASC.ElasticSearch
 
         void IIndexer.Check()
         {
-            var data = new T();
+            var data = ServiceProvider.GetService<T>();
             if (!CheckExist(data)) return;
 
             var result = false;
@@ -347,13 +352,13 @@ namespace ASC.ElasticSearch
             Log.DebugFormat("Delete {0}", Wrapper.IndexName);
             Client.Instance.DeleteIndex(Wrapper.IndexName);
             BaseIndexerHelper.Clear(Wrapper);
-            CreateIfNotExist(new T());
+            CreateIfNotExist(ServiceProvider.GetService<T>());
         }
 
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId = false)
         {
             var func = expression.Compile();
-            var selector = new Selector<T>();
+            var selector = ServiceProvider.GetService<Selector<T>>();
             var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
             return Client.Instance.Search(descriptor.GetDescriptor(this, onlyId)).Documents;
         }
@@ -361,7 +366,7 @@ namespace ASC.ElasticSearch
         internal IReadOnlyCollection<T> Select(Expression<Func<Selector<T>, Selector<T>>> expression, bool onlyId, out long total)
         {
             var func = expression.Compile();
-            var selector = new Selector<T>();
+            var selector = ServiceProvider.GetService<Selector<T>>();
             var descriptor = func(selector).Where(r => r.TenantId, TenantManager.GetCurrentTenant().TenantId);
             var result = Client.Instance.Search(descriptor.GetDescriptor(this, onlyId));
             total = result.Total;
@@ -683,7 +688,7 @@ namespace ASC.ElasticSearch
         private Func<DeleteByQueryDescriptor<T>, IDeleteByQueryRequest> GetDescriptorForDelete(Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true)
         {
             var func = expression.Compile();
-            var selector = new Selector<T>();
+            var selector = ServiceProvider.GetService<Selector<T>>();
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForDelete(this, immediately);
         }
@@ -691,7 +696,7 @@ namespace ASC.ElasticSearch
         private Func<UpdateByQueryDescriptor<T>, IUpdateByQueryRequest> GetDescriptorForUpdate(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
             var func = expression.Compile();
-            var selector = new Selector<T>();
+            var selector = ServiceProvider.GetService<Selector<T>>();
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptUpdateByQuery(data, fields), immediately);
         }
@@ -699,7 +704,7 @@ namespace ASC.ElasticSearch
         private Func<UpdateByQueryDescriptor<T>, IUpdateByQueryRequest> GetDescriptorForUpdate(T data, Expression<Func<Selector<T>, Selector<T>>> expression, int tenantId, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
             var func = expression.Compile();
-            var selector = new Selector<T>();
+            var selector = ServiceProvider.GetService<Selector<T>>();
             var descriptor = func(selector).Where(r => r.TenantId, tenantId);
             return descriptor.GetDescriptorForUpdate(this, GetScriptForUpdate(data, action, fields), immediately);
         }

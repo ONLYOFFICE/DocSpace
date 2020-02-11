@@ -34,6 +34,8 @@ using ASC.Core.Common.Settings;
 
 using Autofac;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using Newtonsoft.Json;
 
 namespace ASC.ElasticSearch.Core
@@ -84,17 +86,20 @@ namespace ASC.ElasticSearch.Core
         public SettingsManager SettingsManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public FactoryIndexer FactoryIndexer { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public SearchSettingsHelper(
             TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
-            FactoryIndexer factoryIndexer)
+            FactoryIndexer factoryIndexer,
+            IServiceProvider serviceProvider)
         {
             TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
             FactoryIndexer = factoryIndexer;
+            ServiceProvider = serviceProvider;
         }
 
         public List<SearchSettingsItem> GetAllItems()
@@ -142,7 +147,7 @@ namespace ASC.ElasticSearch.Core
             //}
         }
 
-        public bool CanSearchByContent<T>(int tenantId) where T : Wrapper, new()
+        public bool CanSearchByContent<T>(int tenantId) where T : Wrapper
         {
             if (!SearchByContentEnabled) return false;
 
@@ -153,7 +158,7 @@ namespace ASC.ElasticSearch.Core
 
             var settings = SettingsManager.LoadForTenant<SearchSettings>(tenantId);
 
-            return settings.IsEnabled(new T().IndexName);
+            return settings.IsEnabled(ServiceProvider.GetService<T>().IndexName);
         }
 
         private bool SearchByContentEnabled

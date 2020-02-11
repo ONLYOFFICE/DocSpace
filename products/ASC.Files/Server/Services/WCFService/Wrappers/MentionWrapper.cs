@@ -26,7 +26,9 @@
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
 using ASC.Core.Users;
+using ASC.Web.Core.Users;
 
 namespace ASC.Web.Files.Services.WCFService
 {
@@ -53,15 +55,18 @@ namespace ASC.Web.Files.Services.WCFService
         [DataMember(Name = "name", EmitDefaultValue = false)]
         public string Name
         {
-            get { return User.DisplayUserName(false); }
+            get { return User.DisplayUserName(false, DisplayUserSettingsHelper); }
             set { }
         }
 
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
         public UserInfo User;
 
-        public MentionWrapper(UserInfo user)
+        public MentionWrapper(UserInfo user, DisplayUserSettingsHelper displayUserSettingsHelper)
         {
             User = user;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
     }
 

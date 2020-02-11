@@ -58,6 +58,7 @@ namespace ASC.Files.Core.Data
         public GlobalSpace GlobalSpace { get; }
         public GlobalFolder GlobalFolder { get; }
         public IFolderDao FolderDao { get; }
+        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
 
         public FileDao(
             FactoryIndexer<FilesWrapper> factoryIndexer,
@@ -76,7 +77,8 @@ namespace ASC.Files.Core.Data
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
-            IFolderDao folderDao)
+            IFolderDao folderDao,
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
             : base(
                   dbContextManager,
                   userManager,
@@ -96,6 +98,7 @@ namespace ASC.Files.Core.Data
             GlobalSpace = globalSpace;
             GlobalFolder = globalFolder;
             FolderDao = folderDao;
+            ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
         }
 
         public void InvalidateCache(object fileId)
@@ -461,7 +464,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
 
             return GetFile(file.ID);
         }
@@ -564,7 +567,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(file, parentFoldersIds));
+            FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
 
             return GetFile(file.ID);
         }
@@ -642,7 +645,9 @@ namespace ASC.Files.Core.Data
             if (deleteFolder)
                 DeleteFolder(fileId);
 
-            FactoryIndexer.DeleteAsync(new FilesWrapper { Id = (int)fileId });
+            var wrapper = ServiceProvider.GetService<FilesWrapper>();
+            wrapper.Id = (int)fileId;
+            FactoryIndexer.DeleteAsync(wrapper);
         }
 
         public bool IsExist(string title, object folderId)
@@ -695,12 +700,11 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.ParentId)
                 .ToList();
 
-            FactoryIndexer.Update(
-                new FilesWrapper()
-                {
-                    Id = (int)fileId,
-                    Folders = parentFoldersIds.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList(),
-                },
+            var wrapper = ServiceProvider.GetService<FilesWrapper>();
+            wrapper.Id = (int)fileId;
+            wrapper.Folders = parentFoldersIds.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList();
+
+            FactoryIndexer.Update(wrapper,
                 UpdateAction.Replace,
                 w => w.Folders);
 

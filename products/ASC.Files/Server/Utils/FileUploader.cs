@@ -69,6 +69,7 @@ namespace ASC.Web.Files.Utils
         public FileSecurity FileSecurity { get; }
         public EntryManager EntryManager { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
 
         public FileUploader(
             FilesSettingsHelper filesSettingsHelper,
@@ -87,7 +88,8 @@ namespace ASC.Web.Files.Utils
             FilesMessageService filesMessageService,
             FileSecurity fileSecurity,
             EntryManager entryManager,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
         {
             FilesSettingsHelper = filesSettingsHelper;
             FileUtility = fileUtility;
@@ -106,6 +108,7 @@ namespace ASC.Web.Files.Utils
             FileSecurity = fileSecurity;
             EntryManager = entryManager;
             ServiceProvider = serviceProvider;
+            ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
         }
 
         public File Exec(string folderId, string title, long contentLength, Stream data)

@@ -43,6 +43,7 @@ using Autofac;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -62,10 +63,9 @@ namespace ASC.ElasticSearch
             FactoryIndexer = factoryIndexer;
         }
 
-        public bool Support<T>() where T : Wrapper, new()
+        public bool Support<T>(T t) where T : Wrapper
         {
             if (!FactoryIndexer.CheckState()) return false;
-            var t = new T();
 
             var cacheTime = DateTime.UtcNow.AddMinutes(15);
             var key = "elasticsearch " + t.IndexName;
@@ -96,7 +96,7 @@ namespace ASC.ElasticSearch
 
     }
 
-    public class FactoryIndexer<T> where T : Wrapper, new()
+    public class FactoryIndexer<T> where T : Wrapper
     {
         private static readonly TaskScheduler Scheduler = new LimitedConcurrencyLevelTaskScheduler(10);
 
@@ -108,6 +108,7 @@ namespace ASC.ElasticSearch
         public FactoryIndexer FactoryIndexerCommon { get; }
         public BaseIndexer<T> Indexer { get; }
         public Client Client { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public FactoryIndexer(
             IOptionsMonitor<ILog> options,
@@ -116,7 +117,8 @@ namespace ASC.ElasticSearch
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
             BaseIndexer<T> baseIndexer,
-            Client client)
+            Client client,
+            IServiceProvider serviceProvider)
         {
             Logger = options.Get("ASC.Indexer");
             FactoryIndexerHelper = factoryIndexerSupport;
@@ -125,11 +127,13 @@ namespace ASC.ElasticSearch
             FactoryIndexerCommon = factoryIndexer;
             Indexer = baseIndexer;
             Client = client;
+            ServiceProvider = serviceProvider;
         }
 
         public bool TrySelect(Expression<Func<Selector<T>, Selector<T>>> expression, out IReadOnlyCollection<T> result)
         {
-            if (!FactoryIndexerHelper.Support<T>() || !Indexer.CheckExist(new T()))
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t) || !Indexer.CheckExist(t))
             {
                 result = new List<T>();
                 return false;
@@ -150,7 +154,8 @@ namespace ASC.ElasticSearch
 
         public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result)
         {
-            if (!FactoryIndexerHelper.Support<T>() || !Indexer.CheckExist(new T()))
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t) || !Indexer.CheckExist(t))
             {
                 result = new List<int>();
                 return false;
@@ -172,7 +177,8 @@ namespace ASC.ElasticSearch
 
         public bool TrySelectIds(Expression<Func<Selector<T>, Selector<T>>> expression, out List<int> result, out long total)
         {
-            if (!FactoryIndexerHelper.Support<T>() || !Indexer.CheckExist(new T()))
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t) || !Indexer.CheckExist(t))
             {
                 result = new List<int>();
                 total = 0;
@@ -201,7 +207,8 @@ namespace ASC.ElasticSearch
 
         public bool Index(T data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return false;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return false;
 
             try
             {
@@ -217,7 +224,8 @@ namespace ASC.ElasticSearch
 
         public void Index(List<T> data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>() || !data.Any()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t) || !data.Any()) return;
 
             try
             {
@@ -248,7 +256,8 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
 
             try
             {
@@ -262,7 +271,9 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, UpdateAction action, Expression<Func<T, IList>> field, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
+
             try
             {
                 Indexer.Update(data, action, field, immediately);
@@ -275,7 +286,9 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
+
             try
             {
                 var tenant = TenantManager.GetCurrentTenant().TenantId;
@@ -289,7 +302,9 @@ namespace ASC.ElasticSearch
 
         public void Update(T data, Expression<Func<Selector<T>, Selector<T>>> expression, UpdateAction action, Expression<Func<T, IList>> fields, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
+
             try
             {
                 var tenant = TenantManager.GetCurrentTenant().TenantId;
@@ -303,7 +318,9 @@ namespace ASC.ElasticSearch
 
         public void Delete(T data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
+
             try
             {
                 Indexer.Delete(data, immediately);
@@ -316,7 +333,9 @@ namespace ASC.ElasticSearch
 
         public void Delete(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
+
             var tenant = TenantManager.GetCurrentTenant().TenantId;
 
             try
@@ -331,31 +350,36 @@ namespace ASC.ElasticSearch
 
         public Task<bool> IndexAsync(T data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return Task.FromResult(false);
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return Task.FromResult(false);
             return Queue(() => Indexer.Index(data, immediately));
         }
 
         public Task<bool> IndexAsync(List<T> data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return Task.FromResult(false);
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return Task.FromResult(false);
             return Queue(() => Indexer.Index(data, immediately));
         }
 
         public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return Task.FromResult(false);
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return Task.FromResult(false);
             return Queue(() => Indexer.Update(data, immediately, fields));
         }
 
         public Task<bool> DeleteAsync(T data, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return Task.FromResult(false);
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return Task.FromResult(false);
             return Queue(() => Indexer.Delete(data, immediately));
         }
 
         public Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
         {
-            if (!FactoryIndexerHelper.Support<T>()) return Task.FromResult(false);
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return Task.FromResult(false);
             var tenant = TenantManager.GetCurrentTenant().TenantId;
             return Queue(() => Indexer.Delete(expression, tenant, immediately));
         }
@@ -363,13 +387,15 @@ namespace ASC.ElasticSearch
 
         public void Flush()
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
             Indexer.Flush();
         }
 
         public void Refresh()
         {
-            if (!FactoryIndexerHelper.Support<T>()) return;
+            var t = ServiceProvider.GetService<T>();
+            if (!FactoryIndexerHelper.Support(t)) return;
             Indexer.Refresh();
         }
 

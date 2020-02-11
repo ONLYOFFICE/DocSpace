@@ -28,20 +28,30 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using Nest;
 
 namespace ASC.ElasticSearch
 {
-    public class Selector<T> where T : Wrapper, new()
+    public class Selector<T> where T : Wrapper
     {
         private readonly QueryContainerDescriptor<T> queryContainerDescriptor = new QueryContainerDescriptor<T>();
         private SortDescriptor<T> sortContainerDescriptor = new SortDescriptor<T>();
         private QueryContainer queryContainer = new QueryContainer();
         private int limit = 1000, offset;
 
+        public IServiceProvider ServiceProvider { get; }
+
+        public Selector(IServiceProvider serviceProvider)
+        {
+            ServiceProvider = serviceProvider;
+        }
+
         public Selector<T> Where<TProperty>(Expression<Func<T, TProperty>> selector, TProperty value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r)=> r.Term(w, value));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.Term(w, value));
             return this;
         }
 
@@ -53,43 +63,43 @@ namespace ASC.ElasticSearch
 
         public Selector<T> Gt(Expression<Func<T, object>> selector, double? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w, r)=> r.Range(a => a.Field(w).GreaterThan(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.Range(a => a.Field(w).GreaterThan(value)));
             return this;
         }
 
         public Selector<T> Lt(Expression<Func<T, object>> selector, double? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w, r)=> r.Range(a => a.Field(w).LessThan(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.Range(a => a.Field(w).LessThan(value)));
             return this;
         }
 
         public Selector<T> Gt(Expression<Func<T, object>> selector, DateTime? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r) => r.DateRange(a => a.Field(w).GreaterThan(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).GreaterThan(value)));
             return this;
         }
 
         public Selector<T> Ge(Expression<Func<T, object>> selector, DateTime? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r) => r.DateRange(a => a.Field(w).GreaterThanOrEquals(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).GreaterThanOrEquals(value)));
             return this;
         }
 
         public Selector<T> Lt(Expression<Func<T, object>> selector, DateTime? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r) => r.DateRange(a => a.Field(w).LessThan(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).LessThan(value)));
             return this;
         }
 
         public Selector<T> Le(Expression<Func<T, object>> selector, DateTime? value)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r) => r.DateRange(a => a.Field(w).LessThanOrEquals(value)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.DateRange(a => a.Field(w).LessThanOrEquals(value)));
             return this;
         }
 
         public Selector<T> In<TValue>(Expression<Func<T, object>> selector, TValue[] values)
         {
-            queryContainer = queryContainer && +Wrap(selector, (w,r) => r.Terms(a => a.Field(w).Terms(values)));
+            queryContainer = queryContainer && +Wrap(selector, (w, r) => r.Terms(a => a.Field(w).Terms(values)));
 
             return this;
         }
@@ -110,11 +120,11 @@ namespace ASC.ElasticSearch
 
             if (IsExactlyPhrase(value))
             {
-                queryContainer = queryContainer & Wrap(selector, (a,w) => w.MatchPhrase(r => r.Field(a).Query(value.TrimQuotes())));
+                queryContainer = queryContainer & Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value.TrimQuotes())));
             }
             else if (value.HasOtherLetter() || IsExactly(value))
             {
-                queryContainer = queryContainer & Wrap(selector, (a,w) => w.Match(r => r.Field(a).Query(value.TrimQuotes())));
+                queryContainer = queryContainer & Wrap(selector, (a, w) => w.Match(r => r.Field(a).Query(value.TrimQuotes())));
             }
             else
             {
@@ -124,19 +134,19 @@ namespace ASC.ElasticSearch
                     foreach (var p in phrase)
                     {
                         var p1 = p;
-                        queryContainer = queryContainer & Wrap(selector, (a,w) => w.Wildcard(r => r.Field(a).Value(p1.WrapAsterisk())));
+                        queryContainer = queryContainer & Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(p1.WrapAsterisk())));
                     }
                 }
                 else
                 {
-                    queryContainer = queryContainer & Wrap(selector, (a,w) =>w.Wildcard(r => r.Field(a).Value(value.WrapAsterisk())));
+                    queryContainer = queryContainer & Wrap(selector, (a, w) => w.Wildcard(r => r.Field(a).Value(value.WrapAsterisk())));
                 }
 
             }
 
             if (IsExactly(value))
             {
-                queryContainer = queryContainer | Wrap(selector, (a,w) => w.MatchPhrase(r => r.Field(a).Query(value)));
+                queryContainer = queryContainer | Wrap(selector, (a, w) => w.MatchPhrase(r => r.Field(a).Query(value)));
             }
 
             return this;
@@ -189,7 +199,7 @@ namespace ASC.ElasticSearch
 
         public Selector<T> MatchAll(string value)
         {
-            Match(() => new T().GetContentProperties(), value);
+            Match(() => ServiceProvider.GetService<T>().GetContentProperties(), value);
 
             return this;
         }
@@ -212,17 +222,17 @@ namespace ASC.ElasticSearch
 
         public Selector<T> Or(Expression<Func<Selector<T>, Selector<T>>> selectorLeft, Expression<Func<Selector<T>, Selector<T>>> selectorRight)
         {
-            return new Selector<T>
+            return new Selector<T>(ServiceProvider)
             {
                 queryContainer = queryContainer &
-                    (selectorLeft.Compile()(new Selector<T>()).queryContainer |
-                    selectorRight.Compile()(new Selector<T>()).queryContainer)
+                    (selectorLeft.Compile()(new Selector<T>(ServiceProvider)).queryContainer |
+                    selectorRight.Compile()(new Selector<T>(ServiceProvider)).queryContainer)
             };
         }
 
         public static Selector<T> Or(Selector<T> selectorLeft, Selector<T> selectorRight)
         {
-            return new Selector<T>
+            return new Selector<T>(selectorLeft.ServiceProvider)
             {
                 queryContainer = selectorLeft.queryContainer | selectorRight.queryContainer
             };
@@ -230,15 +240,15 @@ namespace ASC.ElasticSearch
 
         public Selector<T> Not(Expression<Func<Selector<T>, Selector<T>>> selector)
         {
-            return new Selector<T>
+            return new Selector<T>(ServiceProvider)
             {
-                queryContainer = queryContainer & !selector.Compile()(new Selector<T>()).queryContainer
+                queryContainer = queryContainer & !selector.Compile()(new Selector<T>(ServiceProvider)).queryContainer
             };
         }
 
         public static Selector<T> Not(Selector<T> selector)
         {
-            return new Selector<T>
+            return new Selector<T>(selector.ServiceProvider)
             {
                 queryContainer = !selector.queryContainer
             };
@@ -246,7 +256,7 @@ namespace ASC.ElasticSearch
 
         public static Selector<T> operator &(Selector<T> selectorLeft, Selector<T> selectorRight)
         {
-            return new Selector<T>
+            return new Selector<T>(selectorLeft.ServiceProvider)
             {
                 queryContainer = selectorLeft.queryContainer & selectorRight.queryContainer
             };
@@ -315,13 +325,13 @@ namespace ASC.ElasticSearch
             };
         }
 
-        private QueryContainer Wrap(Field fieldSelector, Func<Field,QueryContainerDescriptor<T>, QueryContainer> selector)
+        private QueryContainer Wrap(Field fieldSelector, Func<Field, QueryContainerDescriptor<T>, QueryContainer> selector)
         {
             var path = IsNested(fieldSelector);
 
-            if (string.IsNullOrEmpty(path) && 
+            if (string.IsNullOrEmpty(path) &&
                 !string.IsNullOrEmpty(fieldSelector.Name) &&
-                fieldSelector.Name.StartsWith(JoinTypeEnum.Sub + ":") && 
+                fieldSelector.Name.StartsWith(JoinTypeEnum.Sub + ":") &&
                 fieldSelector.Name.IndexOf(".", StringComparison.InvariantCulture) > 0)
             {
                 var splitted = fieldSelector.Name.Split(':')[1];
@@ -339,14 +349,11 @@ namespace ASC.ElasticSearch
 
         private string IsNested(Field selector)
         {
-            var lambdaExpression = selector.Expression as LambdaExpression;
-            if (lambdaExpression == null) return null;
+            if (!(selector.Expression is LambdaExpression lambdaExpression)) return null;
 
-            var methodCallExpression = lambdaExpression.Body as MethodCallExpression;
-            if (methodCallExpression != null && methodCallExpression.Arguments.Count > 1)
+            if (lambdaExpression.Body is MethodCallExpression methodCallExpression && methodCallExpression.Arguments.Count > 1)
             {
-                var pathMember = methodCallExpression.Arguments[0] as MemberExpression;
-                if (pathMember == null) return null;
+                if (!(methodCallExpression.Arguments[0] is MemberExpression pathMember)) return null;
 
                 return pathMember.Member.Name.ToLowerCamelCase();
             }
@@ -444,7 +451,7 @@ namespace ASC.ElasticSearch
 
         public static string PrepareToSearch(this string value)
         {
-            return value.ReplaceBackslash().ToLowerInvariant().Replace('ё','е').Replace('Ё', 'Е');
+            return value.ReplaceBackslash().ToLowerInvariant().Replace('ё', 'е').Replace('Ё', 'Е');
         }
     }
 }

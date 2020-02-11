@@ -60,7 +60,7 @@ namespace ASC.Web.Files.Services.NotifyService
             var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            var recipient = NotifySource.Instance.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
+            var recipient = notifySource.GetRecipientsProvider().GetRecipient(securityContext.CurrentAccount.ID.ToString());
 
             client.SendNoticeAsync(
                 NotifyConstants.Event_DocuSignComplete,
@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Services.NotifyService
                           ? filesLinkUtility.GetFileWebPreviewUrl(fileUtility, fileEntry.Title, fileEntry.ID)
                           : pathProvider.GetFolderUrl(((Folder)fileEntry));
 
-            var recipientsProvider = NotifySource.Instance.GetRecipientsProvider();
+            var recipientsProvider = notifySource.GetRecipientsProvider();
 
             foreach (var recipientPair in recipients)
             {
@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Services.NotifyService
             var baseCommonLinkUtility = scope.ServiceProvider.GetService<BaseCommonLinkUtility>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            var recipientsProvider = NotifySource.Instance.GetRecipientsProvider();
+            var recipientsProvider = notifySource.GetRecipientsProvider();
 
             foreach (var recipientId in recipientIds)
             {

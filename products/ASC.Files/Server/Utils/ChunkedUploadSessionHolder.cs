@@ -24,26 +24,30 @@
 */
 
 
-using ASC.Files.Core;
-using ASC.Web.Files.Classes;
 using System;
 using System.IO;
+
+using ASC.Common.Logging;
 using ASC.Core.ChunkedUploader;
+using ASC.Files.Core;
+using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Utils
 {
-    static class ChunkedUploadSessionHolder
+    public class ChunkedUploadSessionHolder
     {
         public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
-        private static CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
-        {
-            return new CommonChunkedUploadSessionHolder(Global.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
-        }
+        public IOptionsMonitor<ILog> Options { get; }
+        public GlobalStore GlobalStore { get; }
+        public SetupInfo SetupInfo { get; }
 
-        static ChunkedUploadSessionHolder()
+        public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo)
         {
             // clear old sessions
             try
@@ -52,55 +56,64 @@ namespace ASC.Web.Files.Utils
             }
             catch (Exception err)
             {
-                Global.Logger.Error(err);
+                options.CurrentValue.Error(err);
             }
+
+            Options = options;
+            GlobalStore = globalStore;
+            SetupInfo = setupInfo;
         }
 
-        public static void StoreSession(ChunkedUploadSession s)
+        public void StoreSession(ChunkedUploadSession s)
         {
             CommonSessionHolder(false).Store(s);
         }
 
-        public static void RemoveSession(ChunkedUploadSession s)
+        public void RemoveSession(ChunkedUploadSession s)
         {
             CommonSessionHolder(false).Remove(s);
         }
 
-        public static ChunkedUploadSession GetSession(string sessionId)
+        public ChunkedUploadSession GetSession(string sessionId)
         {
             return (ChunkedUploadSession)CommonSessionHolder(false).Get(sessionId);
         }
 
-        public static ChunkedUploadSession CreateUploadSession(File file, long contentLength)
+        public ChunkedUploadSession CreateUploadSession(File file, long contentLength)
         {
             var result = new ChunkedUploadSession(file, contentLength);
             CommonSessionHolder().Init(result);
             return result;
         }
 
-        public static void UploadChunk(ChunkedUploadSession uploadSession, Stream stream, long length)
+        public void UploadChunk(ChunkedUploadSession uploadSession, Stream stream, long length)
         {
             CommonSessionHolder().UploadChunk(uploadSession, stream, length);
         }
 
-        public static void FinalizeUploadSession(ChunkedUploadSession uploadSession)
+        public void FinalizeUploadSession(ChunkedUploadSession uploadSession)
         {
             CommonSessionHolder().Finalize(uploadSession);
         }
 
-        public static void Move(ChunkedUploadSession chunkedUploadSession, string newPath)
+        public void Move(ChunkedUploadSession chunkedUploadSession, string newPath)
         {
             CommonSessionHolder().Move(chunkedUploadSession, newPath);
         }
 
-        public static void AbortUploadSession(ChunkedUploadSession uploadSession)
+        public void AbortUploadSession(ChunkedUploadSession uploadSession)
         {
             CommonSessionHolder().Abort(uploadSession);
         }
 
-        public static Stream UploadSingleChunk(ChunkedUploadSession uploadSession, Stream stream, long chunkLength)
+        public Stream UploadSingleChunk(ChunkedUploadSession uploadSession, Stream stream, long chunkLength)
         {
             return CommonSessionHolder().UploadSingleChunk(uploadSession, stream, chunkLength);
+        }
+
+        private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
+        {
+            return new CommonChunkedUploadSessionHolder(Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
         }
     }
 }

@@ -49,9 +49,10 @@ namespace ASC.Web.Files.Classes
             get { return GroupByType.Simple; }
         }
 
-        public SubscriptionManager(CoreBaseSettings coreBaseSettings)
+        public SubscriptionManager(CoreBaseSettings coreBaseSettings, NotifySource notifySource)
         {
             CoreBaseSettings = coreBaseSettings;
+            NotifySource = notifySource;
         }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
@@ -124,10 +125,11 @@ namespace ASC.Web.Files.Classes
 
         public ISubscriptionProvider SubscriptionProvider
         {
-            get { return NotifySource.Instance.GetSubscriptionProvider(); }
+            get { return NotifySource.GetSubscriptionProvider(); }
         }
 
         public CoreBaseSettings CoreBaseSettings { get; }
+        public NotifySource NotifySource { get; }
 
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {

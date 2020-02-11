@@ -47,7 +47,8 @@ namespace ASC.Web.Files.Utils
     public class FileMarker
     {
         private static readonly object locker = new object();
-        private static readonly WorkerQueue<AsyncTaskData> tasks = new WorkerQueue<AsyncTaskData>(1, TimeSpan.FromSeconds(60), 1, false);
+        //TODO:Configure
+        private readonly WorkerQueue<AsyncTaskData> tasks;
         private readonly ICache cache;
 
         private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
@@ -69,7 +70,8 @@ namespace ASC.Web.Files.Utils
             FileSecurity fileSecurity,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            WorkerQueueOptionsManager<AsyncTaskData> workerQueueOptionsManager)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -80,6 +82,7 @@ namespace ASC.Web.Files.Utils
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
             cache = AscCache.Memory;
+            tasks = workerQueueOptionsManager.Value;
         }
 
         private void ExecMarkFileAsNew(AsyncTaskData obj)
@@ -672,7 +675,7 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        private class AsyncTaskData
+        public class AsyncTaskData
         {
             public AsyncTaskData(TenantManager tenantManager, AuthContext authContext)
             {

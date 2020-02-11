@@ -360,7 +360,7 @@ namespace ASC.Files.Core.Data
                 RecalculateFoldersCount(folder.ID);
             }
 
-            FactoryIndexer.IndexAsync(folder);
+            FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
             return folder.ID;
         }
 
@@ -514,7 +514,7 @@ namespace ASC.Files.Core.Data
 
             copy = GetFolder(SaveFolder(copy));
 
-            FactoryIndexer.IndexAsync(copy);
+            FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, copy));
             return copy;
         }
 

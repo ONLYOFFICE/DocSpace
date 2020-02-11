@@ -28,11 +28,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
+using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
+using ASC.Files.Core;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
+
+using Microsoft.Extensions.DependencyInjection;
+
 using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Core.Search
@@ -72,60 +77,64 @@ namespace ASC.Web.Files.Core.Search
 
         protected override string Table { get { return "files_file"; } }
 
-        public static FilesWrapper GetFilesWrapper(File d, List<object> parentFolders)
+
+        public FilesWrapper(IServiceProvider serviceProvider, TenantManager tenantManager, FileUtility fileUtility, IDaoFactory daoFactory)
         {
-            var wrapper = (FilesWrapper)d;
-            wrapper.Folders = parentFolders.Select(r => new FilesFoldersWrapper() { FolderId = r.ToString() }).ToList();
+            ServiceProvider = serviceProvider;
+            TenantManager = tenantManager;
+            FileUtility = fileUtility;
+            DaoFactory = daoFactory;
+        }
+
+        public static FilesWrapper GetFilesWrapper(IServiceProvider serviceProvider, File d, List<object> parentFolders = null)
+        {
+            var wrapper = serviceProvider.GetService<FilesWrapper>();
+            var tenantManager = serviceProvider.GetService<TenantManager>();
+
+            wrapper.Id = (int)d.ID;
+            wrapper.Title = d.Title;
+            wrapper.Version = d.Version;
+            wrapper.Encrypted = d.Encrypted;
+            wrapper.ContentLength = d.ContentLength;
+            wrapper.LastModifiedOn = d.ModifiedOn;
+            wrapper.TenantId = tenantManager.GetCurrentTenant().TenantId;
+
+            if (parentFolders != null)
+            {
+                wrapper.Folders = parentFolders.Select(r => new FilesFoldersWrapper { FolderId = r.ToString() }).ToList();
+            }
             return wrapper;
-        }
-
-        public static implicit operator FilesWrapper(File d)
-        {
-            return new FilesWrapper
-            {
-                Id = (int)d.ID,
-                Title = d.Title,
-                Version = d.Version,
-                Encrypted = d.Encrypted,
-                ContentLength = d.ContentLength,
-                LastModifiedOn = d.ModifiedOn,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId,
-            };
-        }
-
-        public static explicit operator File(FilesWrapper d)
-        {
-            return new File
-            {
-                ID = d.Id,
-                Title = d.Title,
-                Version = d.Version,
-                ContentLength = d.ContentLength
-            };
         }
 
         protected override Stream GetDocumentStream()
         {
-            CoreContext.TenantManager.SetCurrentTenant(TenantId);
+            TenantManager.SetCurrentTenant(TenantId);
 
             if (Encrypted) return null;
             if (!FileUtility.CanIndex(Title)) return null;
 
-            using (var fileDao = Global.DaoFactory.GetFileDao())
-            {
-                var file = (File) this;
+            var fileDao = DaoFactory.FileDao;
+            var file = ServiceProvider.GetService<File>();
+            file.ID = Id;
+            file.Title = Title;
+            file.Version = Version;
+            file.ContentLength = ContentLength;
 
-                if (!fileDao.IsExistOnStorage(file)) return null;
-                if (file.ContentLength > MaxContentLength) return null;
+            if (!fileDao.IsExistOnStorage(file)) return null;
+            if (file.ContentLength > MaxContentLength) return null;
 
-                return fileDao.GetFileStream(file);
-            }
+            return fileDao.GetFileStream(file);
         }
 
         public override string SettingsTitle
         {
             get { return FilesCommonResource.IndexTitle; }
         }
+
+        public IServiceProvider ServiceProvider { get; }
+        public TenantManager TenantManager { get; }
+        public FileUtility FileUtility { get; }
+        public IDaoFactory DaoFactory { get; }
     }
 
     public sealed class FilesFoldersWrapper : Wrapper

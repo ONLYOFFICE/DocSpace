@@ -25,8 +25,12 @@
 
 
 using System;
+
+using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Core.Search
 {
@@ -40,13 +44,15 @@ namespace ASC.Web.Files.Core.Search
 
         protected override string Table { get { return "files_folder"; } }
 
-        public static implicit operator FoldersWrapper(Folder d)
+        public static FoldersWrapper GetFolderWrapper(IServiceProvider serviceProvider, Folder d)
         {
+            var tenantManager = serviceProvider.GetService<TenantManager>();
+
             return new FoldersWrapper
             {
                 Id = (int)d.ID,
                 Title = d.Title,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantManager.GetCurrentTenant().TenantId
             };
         }
     }

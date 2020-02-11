@@ -66,6 +66,7 @@ namespace ASC.Web.Files.HttpHandlers
         public SetupInfo SetupInfo { get; }
         public EntryManager EntryManager { get; }
         public InstanceCrypto InstanceCrypto { get; }
+        public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
         public ILog Logger { get; }
 
         public ChunkedUploaderHandler(
@@ -78,7 +79,8 @@ namespace ASC.Web.Files.HttpHandlers
             SecurityContext securityContext,
             SetupInfo setupInfo,
             EntryManager entryManager,
-            InstanceCrypto instanceCrypto)
+            InstanceCrypto instanceCrypto,
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
         {
             Next = next;
             TenantManager = tenantManager;
@@ -89,6 +91,7 @@ namespace ASC.Web.Files.HttpHandlers
             SetupInfo = setupInfo;
             EntryManager = entryManager;
             InstanceCrypto = instanceCrypto;
+            ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -364,8 +367,8 @@ namespace ASC.Web.Files.HttpHandlers
                     if (_file != null)
                         return _file;
 
-                    if (_request.Files.Count > 0)
-                        return _file = new HttpPostedFileWrapper(_request.Files[0]);
+                    if (_request.Form.Files.Count > 0)
+                        return _file = _request.Form.Files[0];
 
                     throw new Exception("HttpRequest.Files is empty");
                 }

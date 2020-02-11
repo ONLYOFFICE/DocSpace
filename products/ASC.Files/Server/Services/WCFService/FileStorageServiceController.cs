@@ -73,6 +73,7 @@ namespace ASC.Web.Files.Services.WCFService
 {
     [DefaultRoute]
     [ApiController]
+    [TypeFilter(typeof(FileExceptionFilterAttribute))]
     public class FileStorageServiceController : ControllerBase, IFileStorageService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
@@ -407,7 +408,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 if (!folder.ProviderEntry)
                 {
-                    FoldersIndexer.IndexAsync(folder);
+                    FoldersIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, folder));
                 }
             }
 
@@ -746,7 +747,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                     if (!file.ProviderEntry)
                     {
-                        FilesIndexer.UpdateAsync(file, true, r => r.Title);
+                        FilesIndexer.UpdateAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file), true, r => r.Title);
                     }
                 }
 
@@ -1839,7 +1840,7 @@ namespace ASC.Web.Files.Services.WCFService
             var users = UserManager.GetUsersByGroup(Constants.GroupEveryone.ID)
                                    .Where(user => !user.ID.Equals(AuthContext.CurrentAccount.ID)
                                                   && !user.ID.Equals(Constants.LostUser.ID))
-                                   .Select(user => new MentionWrapper(user) { HasAccess = usersIdWithAccess.Contains(user.ID) })
+                                   .Select(user => new MentionWrapper(user, DisplayUserSettingsHelper) { HasAccess = usersIdWithAccess.Contains(user.ID) })
                                    .ToList();
 
             users = users

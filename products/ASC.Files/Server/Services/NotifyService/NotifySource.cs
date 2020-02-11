@@ -37,11 +37,6 @@ namespace ASC.Web.Files.Services.NotifyService
 {
     public class NotifySource : NotifySourceBase
     {
-        public static NotifySource Instance
-        {
-            get { return instance; }
-        }
-
         public NotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
             : base(new Guid("6FE286A4-479E-4c25-A8D9-0156E332B0C0"), userManager, recipientsProvider, subscriptionManager)
         {
