@@ -201,6 +201,12 @@ La eliminación de datos personales permitió liberar:
 
 ^Ha recibido este mensaje de email porque Usted es un usuario registrado del portal "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Hacer lo mismo que el usuario|Enlazar Dropbox, Box y otras cuentas en la sección 'Documentos comunes'|Dar derechos de acceso a los documentos y carpetas en la sección 'Documentos comunes'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Crear y editar sus propios documentos y documentos compartidos con los derechos de acceso propios|Dar derechos de acceso a otros usuarios para leer/editar los documentos y carpetas|Enlazar Dropbox, Box y otras cuentas en la sección de 'Mis documentos'</value>
+  </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bienvenido al ONLYOFFICE Personal</value>
   </data>

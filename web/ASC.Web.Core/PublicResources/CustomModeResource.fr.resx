@@ -58,8 +58,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Faire la même chose qu'un utilisateur|Lier Dropbox, Box et d'autres comptes dans la section 'Documents communs'|Définir les droits d'accès aux documents et aux dossiers dans la section 'Documents communs'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Créez et travaillez sur vos propres documents ainsi que les documents partagés avec les droits d'accès appropriés|Déléguez les autorisations d'accès Lecture /Modification pour les autres utilisateurs aux documents et dossiers|Connectez Dropbox, Box et d'autres comptes dans la section 'Mes documents'</value>
+  </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Bienvenue dans ONLYOFFICE Personal</value>
+  </data>
   <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
     <value>Connectez votre stockage cloud préféré à ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_custom_mode_change_email" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Demande de changement d'adresse électronique</value>
+  </data>
+  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
+    <value>Assistance du mot de passe ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Veuillez activer votre adresse mail</value>
+  </data>
+  <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
+    <value>La Fermeture de compte ONLYOFFICE Personal</value>
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Supprimer les données utilisateur est terminé</value>
