@@ -17,14 +17,15 @@ import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
   updateUserType,
-  fetchPeople
+  fetchPeople,
+  removeUser
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
 import { InviteDialog } from '../../../../dialogs';
 
 const { isAdmin } = store.auth.selectors;
-const { resendUserInvites, deleteUsers } = api.people;
+const { resendUserInvites } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
 const isRefetchPeople = true;
@@ -94,7 +95,8 @@ const SectionHeaderContent = props => {
     filter,
     history,
     settings,
-    deleteGroup
+    deleteGroup,
+    removeUser
   } = props;
 
   const selectedUserIds = getSelectionIds(selection);
@@ -134,14 +136,14 @@ const SectionHeaderContent = props => {
 
   const onDelete = useCallback(() => {
     onLoading(true);
-    deleteUsers(selectedUserIds)
+    removeUser(selectedUserIds, filter)
       .then(() => {
         toastr.success(t('SuccessfullyRemovedUsers'));
         return fetchPeople(filter);
       })
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
-  }, [selectedUserIds, onLoading, filter, t]);
+  }, [selectedUserIds, removeUser, onLoading, filter, t]);
 
   const menuItems = [
     {
@@ -346,5 +348,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, updateUserType, fetchPeople, deleteGroup }
+  { updateUserStatus, updateUserType, fetchPeople, deleteGroup, removeUser }
 )(withTranslation()(withRouter(SectionHeaderContent)));
