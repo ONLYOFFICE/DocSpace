@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -101,21 +100,22 @@ namespace ASC.Common.DependencyInjection
             void LoadAssembly(string type)
             {
                 var dll = type.Substring(type.IndexOf(",") + 1).Trim();
-                var productPath = Path.Combine(productsDir, dll, subfolder);
-                var path = GetPath(Path.Combine(productPath, "bin"), dll, SearchOption.AllDirectories) ?? GetPath(productPath, dll, SearchOption.TopDirectoryOnly);
+                var path = GetFullPath(dll);
 
                 if (!string.IsNullOrEmpty(path))
                 {
-                    AssemblyLoadContext.Default.Resolving += Default_Resolving(path);
-
-                    Func<AssemblyLoadContext, AssemblyName, Assembly> Default_Resolving(string path)
+                    AssemblyLoadContext.Default.Resolving += (c, n) =>
                     {
-                        return (c, n) =>
-                        {
-                            return c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll"));
-                        };
-                    }
+                        var path = GetFullPath(n.Name);
+                        return c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll"));
+                    };
                 }
+            }
+
+            string GetFullPath(string n)
+            {
+                var productPath = Path.Combine(productsDir, n, subfolder);
+                return GetPath(Path.Combine(productPath, "bin"), n, SearchOption.AllDirectories) ?? GetPath(productPath, n, SearchOption.TopDirectoryOnly);
             }
 
             string GetPath(string dirPath, string dll, SearchOption searchOption)
