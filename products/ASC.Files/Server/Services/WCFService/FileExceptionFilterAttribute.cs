@@ -24,31 +24,40 @@
 */
 
 
+
+
 using System;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.Serialization;
-using System.Web.Http.Filters;
 
 using ASC.Common.Logging;
 using ASC.Web.Files.Resources;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    class FileExceptionFilterAttribute : ExceptionFilterAttribute
+    class FileExceptionFilterAttribute : IExceptionFilter
     {
-        private static readonly ILog log = LogManager.GetLogger("ASC.Files");
+        private readonly ILog log;
 
-
-        public override void OnException(HttpActionExecutedContext actionExecutedContext)
+        public FileExceptionFilterAttribute(IOptionsMonitor<ILog> options)
         {
-            if (actionExecutedContext.Exception != null && actionExecutedContext.Response == null)
+            log = options.Get("ASC.Files");
+        }
+
+        public void OnException(ExceptionContext actionExecutedContext)
+        {
+            if (actionExecutedContext.Exception != null)
             {
                 var fileError = new FileError(actionExecutedContext.Exception);
-                actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.BadRequest, fileError);
+                actionExecutedContext.Result = new ObjectResult(fileError)
+                {
+                    StatusCode = (int)HttpStatusCode.BadRequest
+                };
             }
             LogException(actionExecutedContext.Exception);
         }
