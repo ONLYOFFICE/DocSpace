@@ -68,6 +68,12 @@ class ContextMenu extends React.PureComponent {
       this.setState({ visible: false });
   }
 
+  itemClick = (action, e) => {
+    action && action(e);
+
+    this.setState({ visible: false });
+  }
+
   render() {
     const { visible } = this.state;
     const { options, id, className, style } = this.props;
@@ -82,7 +88,7 @@ class ContextMenu extends React.PureComponent {
       >
         {options.map((item) => {
           if (item && item.key !== undefined) {
-            return <DropDownItem key={item.key} {...item} />
+            return <DropDownItem key={item.key} {...item} onClick={this.itemClick.bind(this, item.onClick)} />
           }
         })}
       </DropDown>

@@ -9,6 +9,7 @@ const StyledSectionToggler = styled.div`
   position: fixed;
   bottom: 0;
   display: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   @media ${tablet} {
     display: ${props => (props.visible ? "block" : "none")};

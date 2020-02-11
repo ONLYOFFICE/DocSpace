@@ -303,12 +303,13 @@ namespace ASC.Core.Data
         public void RemoveGroup(int tenant, Guid id, bool immediate)
         {
             var ids = CollectGroupChilds(tenant, id);
+            var stringIds = ids.Select(r => r.ToString()).ToList();
 
             using var tr = UserDbContext.Database.BeginTransaction();
 
             UserDbContext.Acl.RemoveRange(UserDbContext.Acl.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Subject)));
-            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && ids.Any(i => i.ToString() == r.Recipient)));
-            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && ids.Any(i => i.ToString() == r.Recipient)));
+            UserDbContext.Subscriptions.RemoveRange(UserDbContext.Subscriptions.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
+            UserDbContext.SubscriptionMethods.RemoveRange(UserDbContext.SubscriptionMethods.Where(r => r.Tenant == tenant && stringIds.Any(i => i == r.Recipient)));
 
             var userGroups = UserDbContext.UserGroups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.GroupId));
             var groups = UserDbContext.Groups.Where(r => r.Tenant == tenant && ids.Any(i => i == r.Id));
@@ -633,11 +634,11 @@ namespace ASC.Core.Data
             if (!string.IsNullOrEmpty(text))
             {
                 q = q.Where(
-                    u => u.FirstName.Contains(text) ||
-                    u.LastName.Contains(text) ||
-                    u.Title.Contains(text) ||
-                    u.Location.Contains(text) ||
-                    u.Email.Contains(text));
+                    u => u.FirstName.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                    u.LastName.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                    u.Title.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                    u.Location.Contains(text, StringComparison.InvariantCultureIgnoreCase) ||
+                    u.Email.Contains(text, StringComparison.InvariantCultureIgnoreCase));
             }
 
             return q;

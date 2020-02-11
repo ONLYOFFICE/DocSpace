@@ -1,6 +1,6 @@
 import React from "react";
 import { storiesOf } from "@storybook/react";
-import { withKnobs } from "@storybook/addon-knobs/react";
+import { withKnobs, number } from "@storybook/addon-knobs/react";
 import withReadme from "storybook-readme/with-readme";
 import Readme from "./README.md";
 import HelpButton from ".";
@@ -28,6 +28,10 @@ storiesOf("Components|Buttons", module)
         <IconButtons>
           <HelpButton
             displayType="dropdown"
+            offsetTop={number("offsetTop", 0)}
+            offsetRight={number("offsetRight", 0)}
+            offsetBottom={number("offsetBottom", 0)}
+            offsetLeft={number("offsetLeft", 0)}
             tooltipContent={
               <Text fontSize='13px'>
                 Paste you tooltip content here

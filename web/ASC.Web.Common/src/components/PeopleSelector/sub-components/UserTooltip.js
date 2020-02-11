@@ -6,7 +6,7 @@ import StyledUserTooltip from "./StyledUserTooltip";
 const UserTooltip = ({ avatarUrl, label, email, position }) => (
 
   <StyledUserTooltip>
-    <div className='block-avatar-name'>
+    <div className='block-avatar'>
       <Avatar
         className='user-avatar'
         size="small"
@@ -15,16 +15,16 @@ const UserTooltip = ({ avatarUrl, label, email, position }) => (
         userName=""
         editing={false}
       />
-      <Text isBold={true} fontSize="13px" fontWeight={700}>
+    </div>
+
+    <div className='block-info'>
+      <Text isBold={true} fontSize="13px" fontWeight={700} truncate={true} title={label}>
         {label}
       </Text>
-    </div>
-    <div>
-
-      <Text color="#A3A9AE" fontSize="13px" className="email-text">
+      <Text color="#A3A9AE" fontSize="13px" className="email-text" truncate={true} title={email}>
         {email}
       </Text>
-      <Text fontSize="13px" fontWeight={600}>
+      <Text fontSize="13px" fontWeight={600} truncate={true} title={position}>
         {position}
       </Text>
     </div>

@@ -1,7 +1,8 @@
 import React from 'react';
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components';
 import FilterButton from './filter-button';
 import HideFilter from './hide-filter';
+import throttle from 'lodash/throttle';
 import ComboBox from '../combobox';
 import CloseButton from './close-button';
 import isEqual from 'lodash/isEqual';
@@ -86,6 +87,9 @@ const StyledComboBox = styled(ComboBox)`
     width: auto;
     padding-left: 4px;
   }
+  > div:last-child{
+    max-width: 220px;
+  }
   .combo-button-label {
     color: #555F65;
   }
@@ -136,7 +140,7 @@ class FilterItem extends React.Component {
               noBorder={true}
               opened={this.props.opened}
               directionX='left'
-              toggleAction={(e,isOpen)=>{
+              toggleAction={(e, isOpen) => {
                 this.setState({
                   isOpen: isOpen
                 })
@@ -145,7 +149,7 @@ class FilterItem extends React.Component {
             : <StyledFilterName>{this.props.label}</StyledFilterName>
           }
         </StyledFilterItemContent>
-        
+
 
         <StyledCloseButtonBlock onClick={this.onClick} isDisabled={this.props.isDisabled} isClickable={true}>
           <CloseButton
@@ -165,8 +169,8 @@ FilterItem.propTypes = {
   groupItems: PropTypes.array,
   label: PropTypes.string,
   groupLabel: PropTypes.string,
-  onClose:PropTypes.func,
-  onSelectFilterItem:PropTypes.func
+  onClose: PropTypes.func,
+  onSelectFilterItem: PropTypes.func
 }
 
 class FilterBlock extends React.Component {
@@ -177,6 +181,8 @@ class FilterBlock extends React.Component {
       hideFilterItems: this.props.hideFilterItems || [],
       openFilterItems: this.props.openFilterItems || []
     };
+
+    this.throttledRender = throttle(this.onRender, 100);
 
   }
   onDeleteFilterItem = (key) => {
@@ -252,6 +258,9 @@ class FilterBlock extends React.Component {
     return result;
   }
   componentDidUpdate() {
+    this.throttledRender();
+  }
+  onRender = () => {
     this.props.onRender();
   }
   shouldComponentUpdate(nextProps, nextState) {

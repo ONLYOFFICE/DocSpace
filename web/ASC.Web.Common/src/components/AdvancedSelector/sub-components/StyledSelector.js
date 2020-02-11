@@ -17,22 +17,20 @@ const Container = ({
 
 const dropdownStyles = css`
   grid-auto-rows: max-content;
-  grid-template-areas: "column-options column-groups" "footer footer";
+  
+  ${props =>
+      props.groups && props.groups.length > 0 
+        ? css`grid-template-areas: "column-options splitter column-groups" "footer footer footer"`
+        : css`grid-template-areas: "column-options column-groups" "footer footer"`
+   };
 
   .column-groups {
     box-sizing: border-box;
     grid-area: column-groups;
 
-    ${props =>
-      props.groups && props.groups.length > 0
-        ? css`
-            border-left: 1px solid #eceef1;
-          `
-        : ""}
-
     display: grid;
     /* background-color: gold; */
-    padding: 0 16px 0 16px;
+    padding: 16px 16px 0 16px;
     grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
@@ -72,6 +70,17 @@ const dropdownStyles = css`
       }
     }
   }
+
+  ${props =>
+      props.groups && props.groups.length > 0 && 
+      css `
+        .splitter {
+          grid-area: splitter;
+          border-left: 1px solid #eceef1;
+          margin-top: 16px;
+        }
+      `
+  }
 `;
 
 const asideStyles = css`
@@ -94,15 +103,13 @@ const StyledSelector = styled(Container)`
 
   ${props => (props.displayType === "dropdown" ? dropdownStyles : asideStyles)}
 
-  padding-top: 16px;
-
   .column-options {
     grid-area: column-options;
     box-sizing: border-box;
 
     display: grid;
     /* background-color: red; */
-    padding: 0 16px 0 16px;
+    padding: 16px 16px 0 16px;
     grid-row-gap: 2px;
 
     grid-template-columns: 1fr;
@@ -193,11 +200,21 @@ const StyledSelector = styled(Container)`
         height: 32px;
         cursor: pointer;
 
+        .option_checkbox {
+          width: 265px;
+        }
+
         .option-info {
           position: absolute;
           top: 10px;
           right: 10px;
+          padding: 8px 0 8px 8px;
+          margin-top: -8px;
         }
+
+        /* .__react_component_tooltip {
+          left: 8px !important;
+        } */
       }
     }
   }

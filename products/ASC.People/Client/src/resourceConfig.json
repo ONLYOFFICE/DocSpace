@@ -99,7 +99,15 @@
         "NotFoundLanguage",
         "LearnMore",
         "ErrorUnknownFileImageType",
+        "SaveButton",
+        "MessageEmailActivationInstuctionsSentOnEmail",
         "Error"
+      ],
+      "ResourceJS": [
+        "ChangesApplied"
+      ],
+      "PeopleJSResource": [
+        "SuccessChangeUserStatus"
       ]
     },
     "ProfileAction": {

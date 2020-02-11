@@ -27,6 +27,10 @@
   "ErrorUnknownFileImageType": "Неизвестный тип файла изображения",
   "Error": "Ошибка",
   "SocialProfiles": "Социальные профили",
+  "SaveButton": "Сохранить",
+  "ChangesApplied": "Изменения успешно применены",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   
   "PhoneChange": "Изменить номер телефона",
   "PhoneLbl": "Основной телефон",

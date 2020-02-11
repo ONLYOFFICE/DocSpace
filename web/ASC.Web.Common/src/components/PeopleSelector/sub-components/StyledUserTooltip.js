@@ -1,26 +1,20 @@
 import styled from "styled-components";
 
 const StyledUserTooltip = styled.div`
-    width: 253px;
+    width: 233px;
     min-height: 63px;
-    display: "grid";
-    grid-template-columns: "30px 1fr";
-    grid-template-rows: "1fr";
-    grid-column-gap: 8px;
+    display: grid;
+    grid-template-columns: 33px 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 12px;
 
-    .email-text {
-        padding-bottom: 8px;
-    }
+    .block-info {
+        display: grid;
+        grid-template-rows: 1fr;
 
-    .block-avatar-name {
-        display: flex;
-        align-items: center;
-        padding-bottom: 8px;
-    }
-
-    .user-avatar {
-        margin-right: 10px;
-        min-width: 32px;
+        .email-text {
+            padding-bottom: 8px;
+        }
     }
 
 `;

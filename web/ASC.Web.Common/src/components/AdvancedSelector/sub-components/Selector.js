@@ -317,7 +317,10 @@ const Selector = props => {
                     color="#D8D8D8"
                     getContent={getOptionTooltipContent}
                     place="top"
-                    offsetLeft={160}
+                    offsetLeft={150}
+                    offsetRight={0}
+                    offsetTop={60}
+                    offsetBottom={0}
                     dataTip={`${index}`}
                     displayType="dropdown"
                   />
@@ -342,7 +345,10 @@ const Selector = props => {
                     color="#D8D8D8"
                     getContent={getOptionTooltipContent}
                     place="top"
-                    offsetLeft={160}
+                    offsetLeft={150}
+                    offsetRight={0}
+                    offsetTop={60}
+                    offsetBottom={0}
                     dataTip={`${index}`}
                     displayType="dropdown"
                   />
@@ -651,36 +657,39 @@ const Selector = props => {
         </Body>
       </Column>
       {displayType === "dropdown" && groups && groups.length > 0 && (
-        <Column className="column-groups" displayType={displayType} size={size}>
-          <Header className="header-groups">
-            <Text
-              as="p"
-              className="group_header"
-              fontSize="15px"
-              fontWeight={600}
-            >
-              {groupsHeaderLabel}
-            </Text>
-          </Header>
-          <Body className="body-groups">
-            <AutoSizer>
-              {({ height, width }) => (
-                <List
-                  className="group_list"
-                  height={height}
-                  width={width + 8}
-                  itemSize={32}
-                  itemCount={groups.length}
-                  itemData={groups}
-                  outerElementType={CustomScrollbarsVirtualList}
-                  ref={listGroupsRef}
-                >
-                  {renderGroup}
-                </List>
-              )}
-            </AutoSizer>
-          </Body>
-        </Column>
+        <>
+          <div className="splitter"></div>
+          <Column className="column-groups" displayType={displayType} size={size}>
+            <Header className="header-groups">
+              <Text
+                as="p"
+                className="group_header"
+                fontSize="15px"
+                fontWeight={600}
+              >
+                {groupsHeaderLabel}
+              </Text>
+            </Header>
+            <Body className="body-groups">
+              <AutoSizer>
+                {({ height, width }) => (
+                  <List
+                    className="group_list"
+                    height={height}
+                    width={width + 8}
+                    itemSize={32}
+                    itemCount={groups.length}
+                    itemData={groups}
+                    outerElementType={CustomScrollbarsVirtualList}
+                    ref={listGroupsRef}
+                  >
+                    {renderGroup}
+                  </List>
+                )}
+              </AutoSizer>
+            </Body>
+          </Column>
+        </>
       )}
       <Footer
         className="footer"

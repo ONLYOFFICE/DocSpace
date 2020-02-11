@@ -11,7 +11,6 @@ import {
   PAGE,
   PAGE_COUNT
 } from "../../helpers/constants";
-import unionBy from 'lodash/unionBy';
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 
@@ -119,7 +118,8 @@ export function setFilterUrl(filter) {
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  if (params.length > 0) {
+  const isProfileView = history.location.pathname.includes('/people/view') || history.location.pathname.includes('/people/edit');
+  if (params.length > 0 && !isProfileView) {
     history.push(`${config.homepage}/filter?${params.join("&")}`);
   }
 }
@@ -160,14 +160,14 @@ export function fetchPeople(filter, dispatchFunc = null) {
   return dispatchFunc
     ? fetchPeopleByFilter(dispatchFunc, filter)
     : (dispatch, getState) => {
-        if (filter) {
-          return fetchPeopleByFilter(dispatch, filter);
-        } else {
-          const { people } = getState();
-          const { filter } = people;
-          return fetchPeopleByFilter(dispatch, filter);
-        }
-      };
+      if (filter) {
+        return fetchPeopleByFilter(dispatch, filter);
+      } else {
+        const { people } = getState();
+        const { filter } = people;
+        return fetchPeopleByFilter(dispatch, filter);
+      }
+    };
 }
 
 function fetchPeopleByFilter(dispatch, filter) {
@@ -189,15 +189,15 @@ function fetchPeopleByFilter(dispatch, filter) {
   });
 }
 
-export function updateUserStatus(status, userIds) {
+export function updateUserStatus(status, userIds, isRefetchPeople = false) {
   return (dispatch, getState) => {
-    return api.people.updateUserStatus(status, userIds).then(users => {
-      const { people } = getState();
-      const { users: currentUsers } = people;
-
-      const newUsers = unionBy(users, currentUsers, "id");
-
-      dispatch(setUsers(newUsers));
+    return api.people.updateUserStatus(status, userIds)
+      .then(users => {
+        const { people } = getState();
+        const { filter } = people;
+        return isRefetchPeople
+          ? fetchPeople(filter, dispatch)
+          : Promise.resolve();
       });
   };
 }

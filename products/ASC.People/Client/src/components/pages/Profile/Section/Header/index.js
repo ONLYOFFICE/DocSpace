@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import {
-  Text,
   IconButton,
   ContextMenuButton,
   toastr,
@@ -13,14 +12,18 @@ import {
   getUserStatus,
   toEmployeeWrapper
 } from "../../../../../store/people/selectors";
-import { withTranslation } from "react-i18next";
+import { withTranslation, Trans } from "react-i18next";
 import {
   updateUserStatus
 } from "../../../../../store/people/actions";
+import {
+  updateProfile
+} from "../../../../../store/profile/actions";
 import { fetchProfile, getUserPhoto } from "../../../../../store/profile/actions";
 import styled from "styled-components";
 import { store, api, constants } from "asc-web-common";
 import { DeleteSelfProfileDialog, ChangePasswordDialog, ChangeEmailDialog, DeleteProfileEverDialog } from '../../../../dialogs';
+import i18n from '../../i18n';
 const { isAdmin, isMe } = store.auth.selectors;
 const {
   resendUserInvites,
@@ -43,7 +46,7 @@ const StyledContainer = styled.div`
         margin-left: auto;
 
         & > div:first-child {
-          padding: 8px 16px 8px 16px;
+          padding: 8px 16px 8px 0px;
           margin-right: -16px;
         }
       }
@@ -171,18 +174,22 @@ class SectionHeaderContent extends React.PureComponent {
             response.max +
             "?_=" +
             Math.floor(Math.random() * Math.floor(10000));
-          toastr.success("Success");
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error))
-        .then(() => this.props.fetchProfile(this.state.profile.id));
+        .then(() => this.props.updateProfile(this.props.profile))
+        .then(() => this.props.fetchProfile(this.state.profile.id))
+        .then(() => toastr.success(this.props.t("ChangesApplied")))
+        .catch((error) => {
+          toastr.error(error);
+        });
     } else {
       deleteAvatar(this.state.profile.id)
         .then(response => {
           let stateCopy = Object.assign({}, this.state);
           stateCopy.visibleAvatarEditor = false;
           stateCopy.profile.avatarMax = response.big;
-          toastr.success("Success");
+          toastr.success(this.props.t('ChangesApplied'));
           this.setState(stateCopy);
         })
         .catch(error => toastr.error(error));
@@ -205,11 +212,13 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   onUpdateUserStatus = (status, userId) => {
-    const { fetchProfile, updateUserStatus } = this.props;
+    const { fetchProfile, updateUserStatus, t } = this.props;
 
-    updateUserStatus(status, new Array(userId)).then(() =>
-      fetchProfile(userId)
-    );
+    updateUserStatus(status, new Array(userId))
+      .then(() => this.props.updateProfile(this.props.profile))
+      .then(() => fetchProfile(userId))
+      .then(() => toastr.success(t('SuccessChangeUserStatus')))
+      .catch(error => toastr.error(error))
   };
 
   onDisableClick = () =>
@@ -241,10 +250,10 @@ class SectionHeaderContent extends React.PureComponent {
     resendUserInvites(new Array(this.state.profile.id))
       .then(() =>
         toastr.success(
-          <Text>
-            The email activation instructions have been sent to the{" "}
-            <b>{this.state.profile.email}</b> email address
-          </Text>
+          <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+            The email activation instructions have been sent to the
+                <strong>{{ email: this.state.profile.email }}</strong> email address
+          </Trans>
         )
       )
       .catch(error => toastr.error(error));
@@ -415,6 +424,7 @@ class SectionHeaderContent extends React.PureComponent {
           unknownTypeError={t("ErrorUnknownFileImageType")}
           maxSizeFileError={t("maxSizeFileError")}
           unknownError={t("Error")}
+          saveButtonLabel={t('SaveButton')}
         />
 
         {dialogsVisible.deleteSelfProfile &&
@@ -468,5 +478,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, fetchProfile }
+  { updateUserStatus, fetchProfile, updateProfile }
 )(withRouter(withTranslation()(SectionHeaderContent)));

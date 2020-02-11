@@ -39,7 +39,7 @@ const { resendUserInvites } = api.people;
 const { EmployeeStatus } = constants;
 const { Filter } = api;
 
-
+const isRefetchPeople = true;
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -102,7 +102,7 @@ class SectionBodyContent extends React.PureComponent {
     const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
-    updateUserStatus(EmployeeStatus.Disabled, [user.id])
+    updateUserStatus(EmployeeStatus.Disabled, [user.id], isRefetchPeople)
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
@@ -112,7 +112,7 @@ class SectionBodyContent extends React.PureComponent {
     const { updateUserStatus, onLoading, t } = this.props;
 
     onLoading(true);
-    updateUserStatus(EmployeeStatus.Active, [user.id])
+    updateUserStatus(EmployeeStatus.Active, [user.id], isRefetchPeople)
       .then(() => toastr.success(t('SuccessChangeUserStatus')))
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
@@ -153,12 +153,10 @@ class SectionBodyContent extends React.PureComponent {
     resendUserInvites([user.id])
       .then(() =>
         toastr.success(
-          <Text>
-            <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
-                The email activation instructions have been sent to the
-                <strong>{{email: user.email}}</strong> email address
+          <Trans i18nKey='MessageEmailActivationInstuctionsSentOnEmail' i18n={i18n}>
+            The email activation instructions have been sent to the
+                <strong>{{ email: user.email }}</strong> email address
             </Trans>
-          </Text>
         )
       )
       .catch(error => toastr.error(error))
@@ -317,97 +315,97 @@ class SectionBodyContent extends React.PureComponent {
     const { dialogsVisible, user } = this.state;
 
     return users == null
-    ? (<Loader className="pageLoader" type="rombs" size='40px' />)
-    : users.length > 0 ? (
-      <>
-        <RowContainer useReactWindow={false}>
-          {users.map(user => {
-            const contextOptions = this.getUserContextOptions(user, viewer);
-            const contextOptionsProps = !contextOptions.length
-              ? {}
-              : { contextOptions };
-            const checked = isUserSelected(selection, user.id);
-            const checkedProps = isAdmin(viewer) ? { checked } : {};
-            const element = (
-              <Avatar
-                size="small"
-                role={getUserRole(user)}
-                userName={user.displayName}
-                source={user.avatar}
-              />
-            );
-
-            return (
-              <Row
-                key={user.id}
-                status={getUserStatus(user)}
-                data={user}
-                element={element}
-                onSelect={this.onContentRowSelect}
-                {...checkedProps}
-                {...contextOptionsProps}
-                needForUpdate={this.needForUpdate}
-              >
-                <UserContent
-                  user={user}
-                  history={history}
-                  settings={settings}
+      ? (<Loader className="pageLoader" type="rombs" size='40px' />)
+      : users.length > 0 ? (
+        <>
+          <RowContainer useReactWindow={false}>
+            {users.map(user => {
+              const contextOptions = this.getUserContextOptions(user, viewer);
+              const contextOptionsProps = !contextOptions.length
+                ? {}
+                : { contextOptions };
+              const checked = isUserSelected(selection, user.id);
+              const checkedProps = isAdmin(viewer) ? { checked } : {};
+              const element = (
+                <Avatar
+                  size="small"
+                  role={getUserRole(user)}
+                  userName={user.displayName}
+                  source={user.avatar}
                 />
-              </Row>
-            );
-          })}
-        </RowContainer>
+              );
 
-        {dialogsVisible.changeEmail &&
-          <ChangeEmailDialog
-            visible={dialogsVisible.changeEmail}
-            onClose={this.toggleChangeEmailDialog}
-            user={user}
-          />
-        }
-        {dialogsVisible.changePassword &&
-          <ChangePasswordDialog
-            visible={dialogsVisible.changePassword}
-            onClose={this.toggleChangePasswordDialog}
-            email={user.email}
-          />
-        }
+              return (
+                <Row
+                  key={user.id}
+                  status={getUserStatus(user)}
+                  data={user}
+                  element={element}
+                  onSelect={this.onContentRowSelect}
+                  {...checkedProps}
+                  {...contextOptionsProps}
+                  needForUpdate={this.needForUpdate}
+                >
+                  <UserContent
+                    user={user}
+                    history={history}
+                    settings={settings}
+                  />
+                </Row>
+              );
+            })}
+          </RowContainer>
 
-        {dialogsVisible.deleteSelfProfile &&
-          <DeleteSelfProfileDialog
-            visible={dialogsVisible.deleteSelfProfile}
-            onClose={this.toggleDeleteSelfProfileDialog}
-            email={user.email}
-          />
-        }
-
-        {dialogsVisible.deleteProfileEver &&
-          <DeleteProfileEverDialog
-            visible={dialogsVisible.deleteProfileEver}
-            onClose={this.toggleDeleteProfileEverDialog}
-            user={user}
-            filter={filter}
-            settings={settings}
-            history={history}
-          />
-        }
-      </>
-    ) : (
-        <EmptyScreenContainer
-          imageSrc="images/empty_screen_filter.png"
-          imageAlt="Empty Screen Filter image"
-          headerText={t("NotFoundTitle")}
-          descriptionText={t("NotFoundDescription")}
-          buttons={
-            <>
-              <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
-              <Link type="action" isHovered={true} onClick={this.onResetFilter}>
-                {t("ClearButton")}
-              </Link>
-            </>
+          {dialogsVisible.changeEmail &&
+            <ChangeEmailDialog
+              visible={dialogsVisible.changeEmail}
+              onClose={this.toggleChangeEmailDialog}
+              user={user}
+            />
           }
-        />
-      );
+          {dialogsVisible.changePassword &&
+            <ChangePasswordDialog
+              visible={dialogsVisible.changePassword}
+              onClose={this.toggleChangePasswordDialog}
+              email={user.email}
+            />
+          }
+
+          {dialogsVisible.deleteSelfProfile &&
+            <DeleteSelfProfileDialog
+              visible={dialogsVisible.deleteSelfProfile}
+              onClose={this.toggleDeleteSelfProfileDialog}
+              email={user.email}
+            />
+          }
+
+          {dialogsVisible.deleteProfileEver &&
+            <DeleteProfileEverDialog
+              visible={dialogsVisible.deleteProfileEver}
+              onClose={this.toggleDeleteProfileEverDialog}
+              user={user}
+              filter={filter}
+              settings={settings}
+              history={history}
+            />
+          }
+        </>
+      ) : (
+          <EmptyScreenContainer
+            imageSrc="images/empty_screen_filter.png"
+            imageAlt="Empty Screen Filter image"
+            headerText={t("NotFoundTitle")}
+            descriptionText={t("NotFoundDescription")}
+            buttons={
+              <>
+                <Icons.CrossIcon size="small" style={{ marginRight: "4px" }} />
+                <Link type="action" isHovered={true} onClick={this.onResetFilter}>
+                  {t("ClearButton")}
+                </Link>
+              </>
+            }
+          />
+        );
   }
 }
 

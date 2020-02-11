@@ -27,6 +27,8 @@ const { isAdmin } = store.auth.selectors;
 const { resendUserInvites, deleteUsers } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
+const isRefetchPeople = true;
+
 const StyledContainer = styled.div`
 
   @media (min-width: 1024px) {
@@ -35,6 +37,15 @@ const StyledContainer = styled.div`
 
   .group-button-menu-container {
     margin: 0 -16px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    
+    @media (max-width: 1024px) {
+      & > div:first-child {
+      position: absolute;
+      top: 56px;
+      z-index: 180;
+      }
+    }
 
     @media (min-width: 1024px) {
       margin: 0 -24px;
@@ -90,14 +101,20 @@ const SectionHeaderContent = props => {
   //console.log("SectionHeaderContent render", selection, selectedUserIds);
 
   const onSetActive = useCallback(() => {
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
-  }, [selectedUserIds, updateUserStatus, t]);
+    onLoading(true);
+    updateUserStatus(EmployeeStatus.Active, selectedUserIds, isRefetchPeople)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .catch(error => toastr.error(error))
+      .finally(() => onLoading(false));
+  }, [selectedUserIds, updateUserStatus, t, onLoading]);
 
   const onSetDisabled = useCallback(() => {
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds);
-    toastr.success(t("SuccessChangeUserStatus"));
-  }, [selectedUserIds, updateUserStatus, t]);
+    onLoading(true);
+    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds, isRefetchPeople)
+      .then(() => toastr.success(t("SuccessChangeUserStatus")))
+      .catch(error => toastr.error(error))
+      .finally(() => onLoading(false));
+  }, [selectedUserIds, updateUserStatus, t, onLoading]);
 
   const onSetEmployee = useCallback(() => {
     updateUserType(EmployeeType.User, selectedUserIds);
@@ -215,7 +232,7 @@ const SectionHeaderContent = props => {
     history.push(`${settings.homepage}/group/create`);
   }, [history, settings]);
 
-  const onInvitationDialogClick = useCallback(() => 
+  const onInvitationDialogClick = useCallback(() =>
     setDialogVisible(!dialogVisible), [dialogVisible]
   );
 
@@ -268,51 +285,51 @@ const SectionHeaderContent = props => {
           />
         </div>
       ) : (
-        <div className="header-container">
-          {group ? (
-            <>
-              <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
-              {isAdmin && (
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="right"
-                  title={t("Actions")}
-                  iconName="VerticalDotsIcon"
-                  size={16}
-                  color="#A3A9AE"
-                  getData={getContextOptionsGroup}
-                  isDisabled={false}
-                />
-              )}
-            </>
-          ) : (
-            <>
-              <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
-              {isAdmin && (
-                <>
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="left"
-                  title={t("Actions")}
-                  iconName="PlusIcon"
-                  size={16}
-                  color="#657077"
-                  getData={getContextOptionsPlus}
-                  isDisabled={false}
-                />
-                {dialogVisible &&
-                  <InviteDialog
-                    visible={dialogVisible}
-                    onClose={onInvitationDialogClick}
-                    onCloseButton={onInvitationDialogClick}
+          <div className="header-container">
+            {group ? (
+              <>
+                <Headline className='headline-header' type="content" truncate={true}>{group.name}</Headline>
+                {isAdmin && (
+                  <ContextMenuButton
+                    className="action-button"
+                    directionX="right"
+                    title={t("Actions")}
+                    iconName="VerticalDotsIcon"
+                    size={16}
+                    color="#A3A9AE"
+                    getData={getContextOptionsGroup}
+                    isDisabled={false}
                   />
-                }
+                )}
+              </>
+            ) : (
+                <>
+                  <Headline className='headline-header' truncate={true} type="content">{settings.customNames.groupsCaption}</Headline>
+                  {isAdmin && (
+                    <>
+                      <ContextMenuButton
+                        className="action-button"
+                        directionX="right"
+                        title={t("Actions")}
+                        iconName="PlusIcon"
+                        size={16}
+                        color="#657077"
+                        getData={getContextOptionsPlus}
+                        isDisabled={false}
+                      />
+                      {dialogVisible &&
+                        <InviteDialog
+                          visible={dialogVisible}
+                          onClose={onInvitationDialogClick}
+                          onCloseButton={onInvitationDialogClick}
+                        />
+                      }
+                    </>
+                  )}
                 </>
               )}
-            </>
-          )}
-        </div>
-      )}
+          </div>
+        )}
     </StyledContainer>
   );
 };
