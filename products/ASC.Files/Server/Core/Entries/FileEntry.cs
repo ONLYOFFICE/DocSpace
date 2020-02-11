@@ -26,17 +26,23 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
     [DataContract(Name = "entry", Namespace = "")]
-    [KnownType(typeof (Folder))]
-    [KnownType(typeof (File))]
+    [KnownType(typeof(Folder))]
+    [KnownType(typeof(File))]
     [Serializable]
     public abstract class FileEntry : ICloneable
     {
+        public FileEntry(Global global)
+        {
+            Global = global;
+        }
+
         [DataMember(Name = "id")]
         public object ID { get; set; }
 
@@ -133,6 +139,8 @@ namespace ASC.Files.Core
         {
             get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
         }
+
+        public Global Global { get; }
 
         private string _modifiedByString;
         private string _createByString;

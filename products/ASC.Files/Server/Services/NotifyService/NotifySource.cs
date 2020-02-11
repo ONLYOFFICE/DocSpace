@@ -25,23 +25,25 @@
 
 
 using System;
+
+using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
+using ASC.Notify.Recipients;
+
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
 namespace ASC.Web.Files.Services.NotifyService
 {
     public class NotifySource : NotifySourceBase
     {
-        private static NotifySource instance = new NotifySource();
-
         public static NotifySource Instance
         {
             get { return instance; }
         }
 
-        public NotifySource()
-            : base(new Guid("6FE286A4-479E-4c25-A8D9-0156E332B0C0"))
+        public NotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : base(new Guid("6FE286A4-479E-4c25-A8D9-0156E332B0C0"), userManager, recipientsProvider, subscriptionManager)
         {
         }
 

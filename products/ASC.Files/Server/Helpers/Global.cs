@@ -106,6 +106,7 @@ namespace ASC.Web.Files.Classes
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
         public FileSecurity FileSecurity { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public Global(
             IConfiguration configuration,
@@ -115,7 +116,8 @@ namespace ASC.Web.Files.Classes
             TenantManager tenantManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             CustomNamingPeople customNamingPeople,
-            FileSecurity fileSecurity)
+            FileSecurity fileSecurity,
+            IServiceProvider serviceProvider)
         {
             Configuration = configuration;
             AuthContext = authContext;
@@ -125,6 +127,7 @@ namespace ASC.Web.Files.Classes
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CustomNamingPeople = customNamingPeople;
             FileSecurity = fileSecurity;
+            ServiceProvider = serviceProvider;
         }
 
         #region Property
@@ -432,11 +435,11 @@ namespace ASC.Web.Files.Classes
 
             foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
             {
-                var subFolderId = folderDao.SaveFolder(new Folder
-                {
-                    Title = folderName,
-                    ParentFolderID = folderId
-                });
+                var folder = ServiceProvider.GetService<Folder>();
+                folder.Title = folderName;
+                folder.ParentFolderID = folderId;
+
+                var subFolderId = folderDao.SaveFolder(folder);
 
                 SaveStartDocument(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
             }

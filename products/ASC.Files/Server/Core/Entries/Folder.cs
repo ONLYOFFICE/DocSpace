@@ -28,6 +28,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
 
+using ASC.Web.Files.Classes;
+
 namespace ASC.Files.Core
 {
     [DataContract(Namespace = "")]
@@ -77,7 +79,8 @@ namespace ASC.Files.Core
             set { NewForMe = Convert.ToInt32(value); }
         }
 
-        public Folder()
+        public Folder(Global global)
+            : base(global)
         {
             Title = string.Empty;
             FileEntryType = FileEntryType.Folder;

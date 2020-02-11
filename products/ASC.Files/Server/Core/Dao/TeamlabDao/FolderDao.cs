@@ -44,6 +44,7 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
@@ -503,15 +504,13 @@ namespace ASC.Files.Core.Data
             if (folder.FolderType == FolderType.BUNCH)
                 folder.FolderType = FolderType.DEFAULT;
 
-            var copy = new Folder
-            {
-                ParentFolderID = toFolderId,
-                RootFolderId = toFolder.RootFolderId,
-                RootFolderCreator = toFolder.RootFolderCreator,
-                RootFolderType = toFolder.RootFolderType,
-                Title = folder.Title,
-                FolderType = folder.FolderType
-            };
+            var copy = ServiceProvider.GetService<Folder>();
+            copy.ParentFolderID = toFolderId;
+            copy.RootFolderId = toFolder.RootFolderId;
+            copy.RootFolderCreator = toFolder.RootFolderCreator;
+            copy.RootFolderType = toFolder.RootFolderType;
+            copy.Title = folder.Title;
+            copy.FolderType = folder.FolderType;
 
             copy = GetFolder(SaveFolder(copy));
 
@@ -710,7 +709,7 @@ namespace ASC.Files.Core.Data
                 string folderId = null;
                 if (createIfNotExists && !folderIdsDictionary.TryGetValue(key, out folderId))
                 {
-                    var folder = new Folder { ParentFolderID = 0 };
+                    var folder = ServiceProvider.GetService<Folder>();
                     switch (bunch)
                     {
                         case my:
@@ -772,7 +771,8 @@ namespace ASC.Files.Core.Data
 
             if (createIfNotExists && folderId == null)
             {
-                var folder = new Folder { ParentFolderID = 0 };
+                var folder = ServiceProvider.GetService<Folder>();
+                folder.ParentFolderID = 0;
                 switch (bunch)
                 {
                     case my:
@@ -861,22 +861,24 @@ namespace ASC.Files.Core.Data
             return dbFiles
                 .Select(r => new { file = r, root = GetRootFolderType(r), shared = checkShared ? GetSharedQuery(FileEntryType.Folder, r) : true })
                 .ToList()
-                .Select(r => new Folder
+                .Select(r =>
                 {
-                    ID = r.file.Id,
-                    ParentFolderID = r.file.ParentId,
-                    Title = r.file.Title,
-                    CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn),
-                    CreateBy = r.file.CreateBy,
-                    ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn),
-                    ModifiedBy = r.file.ModifiedBy,
-                    FolderType = r.file.FolderType,
-                    TotalSubFolders = r.file.FoldersCount,
-                    TotalFiles = r.file.FilesCount,
-                    RootFolderType = r.root.FolderType,
-                    RootFolderCreator = r.root.CreateBy,
-                    RootFolderId = r.root.Id,
-                    Shared = r.shared
+                    var result = ServiceProvider.GetService<Folder>();
+                    result.ID = r.file.Id;
+                    result.ParentFolderID = r.file.ParentId;
+                    result.Title = r.file.Title;
+                    result.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
+                    result.CreateBy = r.file.CreateBy;
+                    result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
+                    result.ModifiedBy = r.file.ModifiedBy;
+                    result.FolderType = r.file.FolderType;
+                    result.TotalSubFolders = r.file.FoldersCount;
+                    result.TotalFiles = r.file.FilesCount;
+                    result.RootFolderType = r.root.FolderType;
+                    result.RootFolderCreator = r.root.CreateBy;
+                    result.RootFolderId = r.root.Id;
+                    result.Shared = r.shared;
+                    return result;
                 }).ToList();
         }
 
@@ -946,60 +948,6 @@ namespace ASC.Files.Core.Data
             //    cache.Insert(cacheKey, projectTitle, TimeSpan.FromMinutes(15));
             //}
             //return projectTitle;
-        }
-
-        protected Folder ToFolder(object[] r)
-        {
-            var f = new Folder
-            {
-                ID = Convert.ToInt32(r[0]),
-                ParentFolderID = Convert.ToInt32(r[1]),
-                Title = Convert.ToString(r[2]),
-                CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[3])),
-                CreateBy = new Guid(r[4].ToString()),
-                ModifiedOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(r[5])),
-                ModifiedBy = new Guid(r[6].ToString()),
-                FolderType = (FolderType)Convert.ToInt32(r[7]),
-                TotalSubFolders = Convert.ToInt32(r[8]),
-                TotalFiles = Convert.ToInt32(r[9]),
-                RootFolderType = ParseRootFolderType(r[10]),
-                RootFolderCreator = ParseRootFolderCreator(r[10]),
-                RootFolderId = ParseRootFolderId(r[10]),
-                Shared = Convert.ToBoolean(r[11]),
-            };
-            switch (f.FolderType)
-            {
-                case FolderType.COMMON:
-                    f.Title = FilesUCResource.CorporateFiles;
-                    break;
-                case FolderType.USER:
-                    f.Title = FilesUCResource.MyFiles;
-                    break;
-                case FolderType.SHARE:
-                    f.Title = FilesUCResource.SharedForMe;
-                    break;
-                case FolderType.TRASH:
-                    f.Title = FilesUCResource.Trash;
-                    break;
-                case FolderType.Projects:
-                    f.Title = FilesUCResource.ProjectFiles;
-                    break;
-                case FolderType.BUNCH:
-                    try
-                    {
-                        f.Title = GetProjectTitle(f.ID);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.Error(e);
-                    }
-                    break;
-            }
-
-            if (f.FolderType != FolderType.DEFAULT && 0.Equals(f.ParentFolderID)) f.RootFolderType = f.FolderType;
-            if (f.FolderType != FolderType.DEFAULT && f.RootFolderCreator == default) f.RootFolderCreator = f.CreateBy;
-            if (f.FolderType != FolderType.DEFAULT && 0.Equals(f.RootFolderId)) f.RootFolderId = f.ID;
-            return f;
         }
     }
 }

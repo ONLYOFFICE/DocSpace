@@ -208,7 +208,11 @@ namespace ASC.Web.Files.Utils
 
                     if (folder == null)
                     {
-                        folderId = folderDao.SaveFolder(new Folder { Title = subFolderTitle, ParentFolderID = folderId });
+                        var newFolder = ServiceProvider.GetService<Folder>();
+                        newFolder.Title = subFolderTitle;
+                        newFolder.ParentFolderID = folderId;
+
+                        folderId = folderDao.SaveFolder(newFolder);
 
                         folder = folderDao.GetFolder(folderId);
                         FilesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);

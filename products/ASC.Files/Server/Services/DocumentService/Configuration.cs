@@ -226,10 +226,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 public EditorType Type = EditorType.Desktop;
                 private string _breadCrumbs;
 
-                public InfoConfig(EntryManager entryManager, FileSharing fileSharing)
+                public InfoConfig(EntryManager entryManager, FileSharing fileSharing, IFileStorageService fileStorageService)
                 {
                     EntryManager = entryManager;
                     FileSharing = fileSharing;
+                    FileStorageService = fileStorageService;
                 }
 
                 [Obsolete("Use owner (since v5.4)")]
@@ -293,7 +294,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                         try
                         {
-                            return Global.FileStorageService.GetSharedInfoShort(File.UniqID);
+                            return FileStorageService.GetSharedInfoShort(File.UniqID);
                         }
                         catch
                         {
@@ -304,6 +305,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                 public EntryManager EntryManager { get; }
                 public FileSharing FileSharing { get; }
+                public IFileStorageService FileStorageService { get; }
             }
 
             [DataContract(Name = "permissions", Namespace = "")]

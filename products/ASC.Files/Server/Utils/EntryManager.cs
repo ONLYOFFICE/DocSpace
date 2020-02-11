@@ -471,29 +471,30 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public static Folder GetFakeThirdpartyFolder(IProviderInfo providerInfo, object parentFolderId = null)
+        public Folder GetFakeThirdpartyFolder(IProviderInfo providerInfo, object parentFolderId = null)
         {
             //Fake folder. Don't send request to third party
-            return new Folder
-            {
-                ParentFolderID = parentFolderId,
+            var folder = ServiceProvider.GetService<Folder>();
 
-                ID = providerInfo.RootFolderId,
-                CreateBy = providerInfo.Owner,
-                CreateOn = providerInfo.CreateOn,
-                FolderType = FolderType.DEFAULT,
-                ModifiedBy = providerInfo.Owner,
-                ModifiedOn = providerInfo.CreateOn,
-                ProviderId = providerInfo.ID,
-                ProviderKey = providerInfo.ProviderKey,
-                RootFolderCreator = providerInfo.Owner,
-                RootFolderId = providerInfo.RootFolderId,
-                RootFolderType = providerInfo.RootFolderType,
-                Shareable = false,
-                Title = providerInfo.CustomerTitle,
-                TotalFiles = 0,
-                TotalSubFolders = 0
-            };
+            folder.ParentFolderID = parentFolderId;
+
+            folder.ID = providerInfo.RootFolderId;
+            folder.CreateBy = providerInfo.Owner;
+            folder.CreateOn = providerInfo.CreateOn;
+            folder.FolderType = FolderType.DEFAULT;
+            folder.ModifiedBy = providerInfo.Owner;
+            folder.ModifiedOn = providerInfo.CreateOn;
+            folder.ProviderId = providerInfo.ID;
+            folder.ProviderKey = providerInfo.ProviderKey;
+            folder.RootFolderCreator = providerInfo.Owner;
+            folder.RootFolderId = providerInfo.RootFolderId;
+            folder.RootFolderType = providerInfo.RootFolderType;
+            folder.Shareable = false;
+            folder.Title = providerInfo.CustomerTitle;
+            folder.TotalFiles = 0;
+            folder.TotalSubFolders = 0;
+
+            return folder;
         }
 
 

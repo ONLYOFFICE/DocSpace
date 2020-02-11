@@ -368,7 +368,11 @@ namespace ASC.Web.Files.Services.WCFService
 
             try
             {
-                var folderId = folderDao.SaveFolder(new Folder { Title = title, ParentFolderID = parent.ID });
+                var newFolder = ServiceProvider.GetService<Folder>();
+                newFolder.Title = title;
+                newFolder.ParentFolderID = parent.ID;
+
+                var folderId = folderDao.SaveFolder(newFolder);
                 var folder = folderDao.GetFolder(folderId);
                 FilesMessageService.Send(folder, GetHttpHeaders(), MessageAction.FolderCreated, folder.Title);
 
@@ -1489,11 +1493,11 @@ namespace ASC.Web.Files.Services.WCFService
                 {
                     //create folder with name userFrom in folder userTo
                     var folderIdToMy = folderDao.GetFolderIDUser(true, userTo.ID);
-                    var newFolderTo = folderDao.SaveFolder(new Folder
-                    {
-                        Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper)),
-                        ParentFolderID = folderIdToMy
-                    });
+                    var newFolder = ServiceProvider.GetService<Folder>();
+                    newFolder.Title = string.Format(CustomNamingPeople.Substitute<FilesCommonResource>("TitleDeletedUserFolder"), userFrom.DisplayUserName(false, DisplayUserSettingsHelper));
+                    newFolder.ParentFolderID = folderIdToMy;
+
+                    var newFolderTo = folderDao.SaveFolder(newFolder);
 
                     //move items from userFrom to userTo
                     EntryManager.MoveSharedItems(folderIdFromMy, newFolderTo, folderDao, fileDao);

@@ -30,6 +30,7 @@ using System.Runtime.Serialization;
 using System.Text;
 
 using ASC.Web.Core.Files;
+using ASC.Web.Files.Classes;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
@@ -60,10 +61,11 @@ namespace ASC.Files.Core
     {
         private FileStatus _status;
 
-        public File(
+        public File(Global global,
             FilesLinkUtility filesLinkUtility,
             FileUtility fileUtility,
             FileConverter fileConverter)
+            : base(global)
         {
             Version = 1;
             VersionGroup = 1;
