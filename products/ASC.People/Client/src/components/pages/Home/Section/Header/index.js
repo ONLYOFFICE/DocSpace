@@ -309,7 +309,7 @@ const SectionHeaderContent = props => {
                     <>
                       <ContextMenuButton
                         className="action-button"
-                        directionX="left"
+                        directionX="right"
                         title={t("Actions")}
                         iconName="PlusIcon"
                         size={16}
