@@ -27,7 +27,6 @@
 using System;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Web;
 
 using ASC.Common.Web;
@@ -70,12 +69,12 @@ namespace ASC.Web.Files.Utils
         public SecurityContext SecurityContext { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
 
-        private ApiServer _apiServer;
+        //private ApiServer _apiServer;
 
-        protected ApiServer Api
-        {
-            get { return _apiServer ?? (_apiServer = new ApiServer()); }
-        }
+        //protected ApiServer Api
+        //{
+        //    get { return _apiServer ?? (_apiServer = new ApiServer()); }
+        //}
 
         public MailMergeTaskRunner(SetupInfo setupInfo, SecurityContext securityContext, BaseCommonLinkUtility baseCommonLinkUtility)
         {
@@ -108,7 +107,7 @@ namespace ASC.Web.Files.Utils
                     HttpUtility.UrlEncode(mailMergeTask.To),
                     HttpUtility.UrlEncode(mailMergeTask.Message));
 
-            var responseCreateString = Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
+            string responseCreateString = null; //TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlCreate, "PUT", bodyCreate)));
             var responseCreate = JObject.Parse(responseCreateString);
 
             if (responseCreate["statusCode"].Value<int>() != (int)HttpStatusCode.OK)
@@ -197,7 +196,7 @@ namespace ASC.Web.Files.Utils
 
             bodySend += bodySendAttach;
 
-            var responseSendString = Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
+            string responseSendString = null;//TODO: Encoding.UTF8.GetString(Convert.FromBase64String(Api.GetApiResponse(apiUrlSend, "PUT", bodySend)));
             var responseSend = JObject.Parse(responseSendString);
 
             if (responseSend["statusCode"].Value<int>() != (int)HttpStatusCode.OK)

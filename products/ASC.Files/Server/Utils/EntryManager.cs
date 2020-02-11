@@ -143,10 +143,11 @@ namespace ASC.Web.Files.Utils
 
             if (parent.FolderType == FolderType.Projects && parent.ID.Equals(GlobalFolderHelper.FolderProjects))
             {
-                var apiServer = new ASC.Api.ApiServer();
-                var apiUrl = string.Format("{0}project/maxlastmodified.json", SetupInfo.WebApiBaseUrl);
+                //TODO
+                //var apiServer = new ASC.Api.ApiServer();
+                //var apiUrl = string.Format("{0}project/maxlastmodified.json", SetupInfo.WebApiBaseUrl);
 
-                var responseBody = apiServer.GetApiResponse(apiUrl, "GET");
+                string responseBody = null;// apiServer.GetApiResponse(apiUrl, "GET");
                 if (responseBody != null)
                 {
                     var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(responseBody)));
@@ -158,9 +159,9 @@ namespace ASC.Web.Files.Utils
 
                     if (folderIDProjectTitle == null)
                     {
-                        apiUrl = string.Format("{0}project/filter.json?sortBy=title&sortOrder=ascending&status=open&fields=id,title,security,projectFolder", SetupInfo.WebApiBaseUrl);
+                        //apiUrl = string.Format("{0}project/filter.json?sortBy=title&sortOrder=ascending&status=open&fields=id,title,security,projectFolder", SetupInfo.WebApiBaseUrl);
 
-                        responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))));
+                        responseApi = JObject.Parse(""); //Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))));
 
                         var responseData = responseApi["response"];
 

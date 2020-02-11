@@ -52,6 +52,7 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 using DocuSign.eSign.Api;
+using DocuSign.eSign.Client;
 using DocuSign.eSign.Model;
 
 using Microsoft.Extensions.DependencyInjection;
