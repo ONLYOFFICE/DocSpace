@@ -147,6 +147,7 @@ class FilterItem extends React.Component {
                   isOpen: isOpen
                 })
               }}
+              dropDownMaxHeight={200}
             ></StyledComboBox>
             : <StyledFilterName>{this.props.label}</StyledFilterName>
           }
