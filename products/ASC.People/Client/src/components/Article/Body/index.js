@@ -32,21 +32,7 @@ const getItems = data => {
       );
     }
     return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
+      <TreeNode key={item.key} title={item.title} />
     );
   });
 };
@@ -96,7 +82,7 @@ class ArticleBodyContent extends React.Component {
         draggable={false}
         disabled={false}
         multiple={false}
-        showIcon={false}
+        showIcon={true}
         defaultExpandAll={true}
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
