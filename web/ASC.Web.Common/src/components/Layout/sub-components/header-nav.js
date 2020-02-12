@@ -34,7 +34,6 @@ const StyledNav = styled.nav`
     padding: 0 16px;
   }
 `;
-
 const HeaderNav = React.memo(props => {
   //console.log("HeaderNav render");
   return (
@@ -43,6 +42,7 @@ const HeaderNav = React.memo(props => {
         <NavItem
           key={module.id}
           iconName={module.iconName}
+          iconUrl={module.iconUrl}
           badgeNumber={module.notifications}
           onClick={module.onClick}
           onBadgeClick={module.onBadgeClick}
