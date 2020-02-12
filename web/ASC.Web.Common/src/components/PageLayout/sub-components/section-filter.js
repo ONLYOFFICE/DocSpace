@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledSectionFilter = styled.div`
-  margin: 16px 0 8px 0;
+  margin: 16px 16px 8px 0;
 `;
 
 const SectionFilter = React.memo(props => {

@@ -39,7 +39,7 @@ const ArticleBody = React.memo(props => {
   return (
     <StyledArticleBody>
       <Scrollbar className="custom-scrollbar" stype="mediumBlack">
-        <StyledArticleWrapper className="aaa">{children}</StyledArticleWrapper>
+        <StyledArticleWrapper>{children}</StyledArticleWrapper>
       </Scrollbar>
     </StyledArticleBody>
   );
