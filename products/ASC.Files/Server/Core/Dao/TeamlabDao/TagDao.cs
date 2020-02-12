@@ -38,6 +38,8 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Files.Core.Data
 {
     internal class TagDao : AbstractDao, ITagDao
@@ -597,5 +599,23 @@ namespace ASC.Files.Core.Data
         public DbFilesTag Tag { get; set; }
 
         public DbFilesTagLink Link { get; set; }
+    }
+    public static class TagDaoExtention
+    {
+        public static IServiceCollection AddTagDaoService(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddFilesDbContextService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddCoreBaseSettingsService()
+                .AddCoreConfigurationService()
+                .AddSettingsManagerService()
+                .AddAuthContextService();
+        }
     }
 }

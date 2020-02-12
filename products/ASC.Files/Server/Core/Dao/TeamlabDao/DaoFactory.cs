@@ -55,7 +55,9 @@ namespace ASC.Files.Core.Data
             services.TryAddScoped<IDaoFactory, DaoFactory>();
             return services
                 .AddFileDaoService()
-                .AddFolderDaoService();
+                .AddFolderDaoService()
+                .AddTagDaoService()
+                .AddSecurityDaoService();
         }
     }
 }

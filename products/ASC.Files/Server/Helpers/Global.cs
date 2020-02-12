@@ -38,6 +38,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
@@ -583,6 +584,17 @@ namespace ASC.Web.Files.Classes
                 .AddUserManagerService()
                 .AddSettingsManagerService()
                 .AddGlobalStoreService();
+        }
+
+        public static IServiceCollection AddGlobalFolderHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<GlobalFolderHelper>();
+
+            return services
+                .AddGlobalFolderService()
+                .AddDaoFactoryService()
+                .AddFileMarkerService()
+                ;
         }
     }
 }

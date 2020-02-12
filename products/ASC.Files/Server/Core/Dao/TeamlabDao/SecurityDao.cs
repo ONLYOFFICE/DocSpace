@@ -39,6 +39,8 @@ using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Files.Core.Data
 {
     internal class SecurityDao : AbstractDao, ISecurityDao
@@ -358,5 +360,24 @@ namespace ASC.Files.Core.Data
     {
         public DbFilesSecurity DbFilesSecurity { get; set; }
         public DbFolderTree DbFolderTree { get; set; }
+    }
+
+    public static class SecurityDaoExtention
+    {
+        public static IServiceCollection AddSecurityDaoService(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddFilesDbContextService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddCoreBaseSettingsService()
+                .AddCoreConfigurationService()
+                .AddSettingsManagerService()
+                .AddAuthContextService();
+        }
     }
 }

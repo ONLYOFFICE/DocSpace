@@ -45,6 +45,7 @@ using ASC.Data.Storage;
 using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
@@ -2190,27 +2191,30 @@ namespace ASC.Web.Files.Services.WCFService
     {
         public static IServiceCollection AddFileStorageServiceController(this IServiceCollection services)
         {
+            return services
+                .AddGlobalService()
+                .AddGlobalStoreService()
+                .AddGlobalFolderHelperService()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddFactoryIndexerService<FoldersWrapper>()
+                .AddFactoryIndexerService<FilesWrapper>()
+                .AddFilesLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddCustomNamingPeopleService()
+                .AddDisplayUserSettingsService()
+                .AddPathProviderService()
+                .AddDaoFactoryService()
+                .AddFileMarkerService()
+                ;
+
             /*
-            GlobalFolderHelper globalFolderHelper,
             FilesSettingsHelper filesSettingsHelper,
-            AuthContext authContext,
-            UserManager userManager,
-            FactoryIndexer<FoldersWrapper> foldersIndexer,
-            FactoryIndexer<FilesWrapper> filesIndexer,
             FileUtility fileUtility,
-            FilesLinkUtility filesLinkUtility,
-            BaseCommonLinkUtility baseCommonLinkUtility,
-            CoreBaseSettings coreBaseSettings,
-            CustomNamingPeople customNamingPeople,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            IHttpContextAccessor httpContextAccessor,
-            IOptionsMonitor<ILog> optionMonitor,
             DocuSignLoginProvider docuSignLoginProvider,
-            PathProvider pathProvider,
             FileSecurity fileSecurity,
             SocketManager socketManager,
-            IDaoFactory daoFactory,
-            FileMarker fileMarker,
             EntryManager entryManager,
             FilesMessageService filesMessageService,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
@@ -2226,9 +2230,6 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManagerHelper fileOperationsManagerHelper,
             UrlShortener urlShortener,
              */
-            return services
-                .AddGlobalService()
-                .AddGlobalStoreService();
         }
     }
 }
