@@ -375,91 +375,36 @@ namespace ASC.Files.Core.Data
             }
         }
 
-        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry> fileEntries)
-        {
-            return GetNewTags(subject, () =>
-            {
-                while (fileEntries.Any())
-                {
-                    var insertQuery = new SqlInsert("files_tag_temporary", true)
-                        .InColumns(new[] { GetTenantColumnName("files_tag_temporary"), "entry_id", "entry_type" });
-
-                    foreach (var fileEntrie in fileEntries.Take(100).Where(fileEntrie => fileEntrie != null))
-                    {
-                        insertQuery.Values(new[]
-                        {
-                            TenantID,
-                            MappingID(fileEntrie.ID),
-                            (fileEntrie.FileEntryType == FileEntryType.File) ? (int)FileEntryType.File : (int)FileEntryType.Folder
-                        });
-                    }
-
-                    dbManager.ExecuteNonQuery(insertQuery);
-
-                    fileEntries = fileEntries.Skip(100).ToArray();
-                }
-            });
-        }
-
         public IEnumerable<Tag> GetNewTags(Guid subject, FileEntry fileEntry)
         {
-            return GetNewTags(subject, () =>
-            {
-                var insertQuery = new SqlInsert("files_tag_temporary", true)
-                    .InColumns(new[] { GetTenantColumnName("files_tag_temporary"), "entry_id", "entry_type" });
-
-                insertQuery.Values(new[]
-                {
-                    TenantID,
-                    MappingID(fileEntry.ID),
-                    (int)fileEntry.FileEntryType
-                });
-
-                dbManager.ExecuteNonQuery(insertQuery);
-            });
+            return GetNewTags(subject, new List<FileEntry>(1) { fileEntry });
         }
 
-        private IEnumerable<Tag> GetNewTags(Guid subject, Action insert)
+        public IEnumerable<Tag> GetNewTags(Guid subject, IEnumerable<FileEntry> fileEntries)
         {
             List<Tag> result;
 
-            using (var tx = FilesDbContext.Database.BeginTransaction())
+            var tags = fileEntries.Select(r => new DbFilesTagLink
             {
-                var sqlQuery = Query(r => r.Tag)
-                    .Distinct()
-                    .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
-                    .Where(r => r.Link.TenantId == r.Tag.TenantId)
-                    .Where(r => r.Tag.Flag == TagType.New);
+                TenantId = TenantID,
+                EntryId = MappingID(r.ID).ToString(),
+                EntryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder
+            });
 
-                if (subject != Guid.Empty)
-                {
-                    sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
-                }
+            var sqlQuery = Query(r => r.Tag)
+                .Distinct()
+                .Join(FilesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
+                .Where(r => r.Link.TenantId == r.Tag.TenantId)
+                .Where(r => r.Tag.Flag == TagType.New)
+                .Where(x => x.Link.EntryId != null)
+                .Where(r => tags.Any(t => t.TenantId == r.Link.TenantId && t.EntryId == r.Link.EntryId && t.EntryType == r.Link.EntryType));
 
-                const string sqlQueryStr =
-                    @"
-                                CREATE  TEMPORARY TABLE IF NOT EXISTS `files_tag_temporary` (
-                                `tenant_id` INT(10) NOT NULL,
-	                            `entry_id` VARCHAR(255) NOT NULL,
-	                            `entry_type` INT(10) NOT NULL,
-	                            PRIMARY KEY (`tenant_id`, `entry_id`, `entry_type`)
-                            );";
-
-                dbManager.ExecuteNonQuery(sqlQueryStr);
-
-                insert();
-
-                var resultSql = sqlQuery
-                    .InnerJoin("files_tag_temporary ftt", Exp.EqColumns("ftl.tenant_id", "ftt.tenant_id") &
-                                                            Exp.EqColumns("ftl.entry_id", "ftt.entry_id") &
-                                                            Exp.EqColumns("ftl.entry_type", "ftt.entry_type"));
-
-                result = dbManager.ExecuteList(resultSql).ConvertAll(ToTag).Where(x => x.EntryId != null).ToList();
-
-                dbManager.ExecuteNonQuery(Delete("files_tag_temporary"));
-
-                tx.Commit();
+            if (subject != Guid.Empty)
+            {
+                sqlQuery = sqlQuery.Where(r => r.Tag.Owner == subject);
             }
+
+            result = FromQuery(sqlQuery);
 
             return result;
         }
