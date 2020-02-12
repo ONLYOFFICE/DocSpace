@@ -35,7 +35,7 @@ var checkboxIcon,
 const TreeNodeMenu = styled(TreeNode)`
     
     padding: 0;
-    margin: 0 0 12px 0;
+    margin: 0 0 6px 0;
     list-style: none;
     white-space: nowrap;
     outline: 0;
