@@ -82,7 +82,7 @@ const TreeNodeMenu = styled(TreeNode)`
         max-width: 100%;
         display: inline-block;
         padding: 1px 5px 0 4px;
-        margin: 0 0 12px 0;
+        margin: 0 0 6px 0;
         cursor: pointer;
         height: 24px;
         text-decoration: none;
@@ -204,7 +204,7 @@ const TreeNodeMenu = styled(TreeNode)`
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        color: #555F65;
+        color: #333;
     }
     span.rc-tree-title:first-child{
         max-width: 100%;
