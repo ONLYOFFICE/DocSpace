@@ -33,6 +33,8 @@ using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using File = ASC.Files.Core.File;
@@ -114,6 +116,17 @@ namespace ASC.Web.Files.Utils
         private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
         {
             return new CommonChunkedUploadSessionHolder(Options, GlobalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, SetupInfo.ChunkUploadSize);
+        }
+    }
+
+    public static class ChunkedUploadSessionHolderExtention
+    {
+        public static IServiceCollection AddChunkedUploadSessionHolderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<ChunkedUploadSessionHolder>();
+            return services
+                .AddGlobalStoreService()
+                .AddSetupInfo();
         }
     }
 }

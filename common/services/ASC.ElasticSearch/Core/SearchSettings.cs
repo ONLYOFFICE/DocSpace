@@ -35,6 +35,7 @@ using ASC.Core.Common.Settings;
 using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json;
 
@@ -82,20 +83,17 @@ namespace ASC.ElasticSearch.Core
 
     public class SearchSettingsHelper
     {
-        public TenantManager TenantManager { get; }
         public SettingsManager SettingsManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public FactoryIndexer FactoryIndexer { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public SearchSettingsHelper(
-            TenantManager tenantManager,
             SettingsManager settingsManager,
             CoreBaseSettings coreBaseSettings,
             FactoryIndexer factoryIndexer,
             IServiceProvider serviceProvider)
         {
-            TenantManager = tenantManager;
             SettingsManager = settingsManager;
             CoreBaseSettings = coreBaseSettings;
             FactoryIndexer = factoryIndexer;
@@ -181,5 +179,18 @@ namespace ASC.ElasticSearch.Core
         public bool Enabled { get; set; }
 
         public string Title { get; set; }
+    }
+
+    public static class SearchSettingsHelperExtention
+    {
+        public static IServiceCollection AddSearchSettingsHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SearchSettingsHelper>();
+
+            return services
+                .AddSettingsManagerService()
+                .AddCoreBaseSettingsService()
+                .AddFactoryIndexerService();
+        }
     }
 }

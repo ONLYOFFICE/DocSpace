@@ -47,6 +47,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -1174,6 +1175,32 @@ namespace ASC.Files.Core.Data
 
                return result;
            };
+        }
+    }
+
+    public static class FileDaoExtention
+    {
+        public static IServiceCollection AddFileDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IFileDao, FileDao>();
+            return services
+                .AddFilesDbContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddCoreBaseSettingsService()
+                .AddCoreConfigurationService()
+                .AddSettingsManagerService()
+                .AddAuthContextService()
+                .AddGlobalStoreService()
+                .AddGlobalSpaceService()
+                .AddFactoryIndexerService<FilesWrapper>()
+                .AddGlobalFolderService()
+                .AddChunkedUploadSessionHolderService()
+                .AddFolderDaoService();
         }
     }
 }

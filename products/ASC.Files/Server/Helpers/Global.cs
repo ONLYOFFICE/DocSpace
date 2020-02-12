@@ -47,6 +47,7 @@ using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
@@ -102,32 +103,26 @@ namespace ASC.Web.Files.Classes
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
         public CoreSettings CoreSettings { get; }
-        public TenantManager TenantManager { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CustomNamingPeople CustomNamingPeople { get; }
-        public FileSecurity FileSecurity { get; }
-        public IServiceProvider ServiceProvider { get; }
+        public FileSecurityCommon FileSecurityCommon { get; }
 
         public Global(
             IConfiguration configuration,
             AuthContext authContext,
             UserManager userManager,
             CoreSettings coreSettings,
-            TenantManager tenantManager,
             DisplayUserSettingsHelper displayUserSettingsHelper,
             CustomNamingPeople customNamingPeople,
-            FileSecurity fileSecurity,
-            IServiceProvider serviceProvider)
+            FileSecurityCommon fileSecurityCommon)
         {
             Configuration = configuration;
             AuthContext = authContext;
             UserManager = userManager;
             CoreSettings = coreSettings;
-            TenantManager = tenantManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             CustomNamingPeople = customNamingPeople;
-            FileSecurity = fileSecurity;
-            ServiceProvider = serviceProvider;
+            FileSecurityCommon = fileSecurityCommon;
         }
 
         #region Property
@@ -153,7 +148,7 @@ namespace ASC.Web.Files.Classes
 
         public bool IsAdministrator
         {
-            get { return FileSecurity.IsAdministrator(AuthContext.CurrentAccount.ID); }
+            get { return FileSecurityCommon.IsAdministrator(AuthContext.CurrentAccount.ID); }
         }
 
         public string GetDocDbKey()
@@ -226,12 +221,12 @@ namespace ASC.Web.Files.Classes
 
     public class GlobalSpace
     {
-        public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
+        public FilesUserSpaceUsage FilesUserSpaceUsage { get; }
         public AuthContext AuthContext { get; }
 
-        public GlobalSpace(FilesSpaceUsageStatManager filesSpaceUsageStatManager, AuthContext authContext)
+        public GlobalSpace(FilesUserSpaceUsage filesUserSpaceUsage, AuthContext authContext)
         {
-            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
+            FilesUserSpaceUsage = filesUserSpaceUsage;
             AuthContext = authContext;
         }
 
@@ -242,9 +237,7 @@ namespace ASC.Web.Files.Classes
 
         public long GetUserUsedSpace(Guid userId)
         {
-            var spaceUsageManager = FilesSpaceUsageStatManager as IUserSpaceUsage;
-
-            return spaceUsageManager.GetUserSpaceUsage(userId);
+            return FilesUserSpaceUsage.GetUserSpaceUsage(userId);
         }
     }
 
@@ -532,6 +525,64 @@ namespace ASC.Web.Files.Classes
             {
                 GlobalFolder.SetFolderTrash(value);
             }
+        }
+    }
+
+    public static class GlobalExtention
+    {
+        public static IServiceCollection AddGlobalNotifyService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<GlobalNotify>();
+
+            return services
+                .AddKafkaService()
+                .AddCoreBaseSettingsService();
+        }
+
+        public static IServiceCollection AddGlobalService(this IServiceCollection services)
+        {
+            services.TryAddScoped<Global>();
+
+            return services
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddCoreSettingsService()
+                .AddTenantManagerService()
+                .AddDisplayUserSettingsService()
+                .AddCustomNamingPeopleService()
+                .AddFileSecurityCommonService();
+        }
+
+        public static IServiceCollection AddGlobalStoreService(this IServiceCollection services)
+        {
+            services.TryAddScoped<GlobalStore>();
+
+            return services
+                .AddStorageFactoryService()
+                .AddTenantManagerService();
+        }
+
+        public static IServiceCollection AddGlobalSpaceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<GlobalSpace>();
+
+            return services
+                .AddFilesUserSpaceUsageService()
+                .AddAuthContextService();
+        }
+        public static IServiceCollection AddGlobalFolderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<GlobalFolder>();
+
+            return services
+                .AddCoreBaseSettingsService()
+                .AddWebItemManager()
+                .AddWebItemSecurity()
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddSettingsManagerService()
+                .AddGlobalStoreService();
         }
     }
 }

@@ -26,6 +26,9 @@
 
 using ASC.Files.Core.Security;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Files.Core.Data
 {
     public class DaoFactory : IDaoFactory
@@ -42,6 +45,17 @@ namespace ASC.Files.Core.Data
             FolderDao = folderDao;
             TagDao = tagDao;
             SecurityDao = securityDao;
+        }
+    }
+
+    public static class DaoFactoryExtention
+    {
+        public static IServiceCollection AddDaoFactoryService(this IServiceCollection services)
+        {
+            services.TryAddScoped<IDaoFactory, DaoFactory>();
+            return services
+                .AddFileDaoService()
+                .AddFolderDaoService();
         }
     }
 }

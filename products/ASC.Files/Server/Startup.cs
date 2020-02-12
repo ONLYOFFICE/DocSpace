@@ -7,6 +7,7 @@ using ASC.Api.Core.Middleware;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
+using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -87,6 +88,8 @@ namespace ASC.Files
             });
 
             services.AddNLogManager("ASC.Files");
+
+            services.AddFileStorageServiceController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

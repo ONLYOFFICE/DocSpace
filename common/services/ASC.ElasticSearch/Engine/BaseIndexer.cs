@@ -47,6 +47,8 @@ using Autofac;
 using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 using Nest;
 
@@ -93,7 +95,7 @@ namespace ASC.ElasticSearch
         public BaseIndexer(
             FactoryIndexer factoryIndexer,
             Client client,
-            ILog log,
+            IOptionsMonitor<ILog> log,
             DbContextManager<WebstudioDbContext> dbContextManager,
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
@@ -102,7 +104,7 @@ namespace ASC.ElasticSearch
         {
             Wrapper = factoryIndexer.Builder.Resolve<T>();
             Client = client;
-            Log = log;
+            Log = log.CurrentValue;
             TenantManager = tenantManager;
             SearchSettingsHelper = searchSettingsHelper;
             BaseIndexerHelper = baseIndexerHelper;
@@ -724,5 +726,28 @@ namespace ASC.ElasticSearch
         Add,
         Replace,
         Remove
+    }
+
+    public static class BaseIndexerExtention
+    {
+        public static IServiceCollection AddBaseIndexerHelperService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<BaseIndexerHelper>();
+            return services.AddKafkaService();
+        }
+
+        public static IServiceCollection AddBaseIndexerService<T>(this IServiceCollection services) where T : Wrapper
+        {
+            services.TryAddScoped<BaseIndexer<T>>();
+
+            return services
+                .AddFactoryIndexerService()
+                .AddClientService()
+                .AddWebstudioDbContextService()
+                .AddTenantManagerService()
+                .AddSearchSettingsHelperService()
+                .AddBaseIndexerHelperService()
+                ;
+        }
     }
 }

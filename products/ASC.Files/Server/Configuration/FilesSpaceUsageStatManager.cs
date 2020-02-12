@@ -39,9 +39,12 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Web.Files
 {
-    public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
+    public class FilesSpaceUsageStatManager : SpaceUsageStatManager
     {
         public ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
         public TenantManager TenantManager { get; }
@@ -52,7 +55,8 @@ namespace ASC.Web.Files
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public PathProvider PathProvider { get; }
 
-        public FilesSpaceUsageStatManager(DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
+        public FilesSpaceUsageStatManager(
+            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
             TenantManager tenantManager,
             UserManager userManager,
             UserPhotoManager userPhotoManager,
@@ -119,6 +123,20 @@ namespace ASC.Web.Files
                 .ToList();
 
         }
+    }
+
+    public class FilesUserSpaceUsage : IUserSpaceUsage
+    {
+        public ASC.Files.Core.EF.FilesDbContext FilesDbContext { get; }
+        public TenantManager TenantManager { get; }
+
+        public FilesUserSpaceUsage(
+            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
+            TenantManager tenantManager)
+        {
+            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
+            TenantManager = tenantManager;
+        }
 
         public long GetUserSpaceUsage(Guid userId)
         {
@@ -132,6 +150,34 @@ namespace ASC.Web.Files
                 .GroupBy(r => r.file.CreateBy)
                 .Select(r => r.Sum(f => f.file.ContentLength))
                 .FirstOrDefault();
+        }
+    }
+
+    public static class FilesSpaceUsageStatManagerExtention
+    {
+        public static IServiceCollection AddFilesSpaceUsageStatManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FilesSpaceUsageStatManager>();
+            /*
+            GlobalFolderHelper globalFolderHelper,
+             */
+            return services
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddUserPhotoManagerService()
+                .AddDisplayUserSettingsService()
+                .AddCommonLinkUtilityService()
+                .AddFilesDbContextService()
+                .AddPathProviderService();
+        }
+
+        public static IServiceCollection AddFilesUserSpaceUsageService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FilesUserSpaceUsage>();
+
+            return services
+                .AddTenantManagerService()
+                .AddFilesDbContextService();
         }
     }
 }

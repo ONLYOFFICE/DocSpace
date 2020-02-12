@@ -47,7 +47,6 @@ namespace ASC.Web.Files.Utils
     public class FileMarker
     {
         private static readonly object locker = new object();
-        //TODO:Configure
         private readonly WorkerQueue<AsyncTaskData> tasks;
         private readonly ICache cache;
 

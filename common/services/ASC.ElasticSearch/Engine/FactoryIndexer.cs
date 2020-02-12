@@ -44,6 +44,7 @@ using Autofac;
 using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -563,6 +564,37 @@ namespace ASC.ElasticSearch
             {
                 indexer.ReIndex();
             }
+        }
+    }
+
+    public static class FactoryIndexerExtention
+    {
+        public static IServiceCollection AddFactoryIndexerService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<FactoryIndexer>();
+            return services
+                .AddClientService()
+                .AddCoreBaseSettingsService();
+        }
+
+        public static IServiceCollection AddFactoryIndexerHelperService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<FactoryIndexerHelper>();
+            return services
+                .AddFactoryIndexerService();
+        }
+
+        public static IServiceCollection AddFactoryIndexerService<T>(this IServiceCollection services) where T : Wrapper
+        {
+            services.TryAddScoped<FactoryIndexer<T>>();
+
+            return services
+                .AddFactoryIndexerHelperService()
+                .AddTenantManagerService()
+                .AddFactoryIndexerService()
+                .AddClientService()
+                .AddSearchSettingsHelperService()
+                .AddBaseIndexerService<T>();
         }
     }
 }

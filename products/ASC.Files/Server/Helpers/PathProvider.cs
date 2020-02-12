@@ -33,11 +33,15 @@ using System.Web;
 using ASC.Common.Web;
 using ASC.Core.Common;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using File = ASC.Files.Core.File;
 
@@ -212,6 +216,23 @@ namespace ASC.Web.Files.Classes
             query += $"{FilesLinkUtility.FileTitle}={HttpUtility.UrlEncode(extension)}";
 
             return $"{uriBuilder.Uri}?{query}";
+        }
+    }
+
+    public static class PathProviderExtention
+    {
+        public static IServiceCollection AddPathProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<PathProvider>();
+
+            return services
+                .AddWebImageSupplierService()
+                .AddCommonLinkUtilityService()
+                .AddEmailValidationKeyProviderService()
+                .AddGlobalStoreService()
+                .AddBaseCommonLinkUtilityService()
+                .AddFilesLinkUtilityService()
+                .AddDaoFactoryService();
         }
     }
 }

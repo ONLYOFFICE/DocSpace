@@ -35,17 +35,31 @@ using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
 
+using Microsoft.Extensions.DependencyInjection;
+
 namespace ASC.Files.Core.Security
 {
-    public class FileSecurity : IFileSecurity
+    public class FileSecurityCommon
     {
-        private readonly IDaoFactory daoFactory;
+        public UserManager UserManager { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+
+        public FileSecurityCommon(UserManager userManager, WebItemSecurity webItemSecurity)
+        {
+            UserManager = userManager;
+            WebItemSecurity = webItemSecurity;
+        }
 
         public bool IsAdministrator(Guid userId)
         {
             return UserManager.IsUserInGroup(userId, Constants.GroupAdmin.ID) ||
                    WebItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, userId);
         }
+    }
+
+    public class FileSecurity : IFileSecurity
+    {
+        private readonly IDaoFactory daoFactory;
 
         public FileShare DefaultMyShare
         {
@@ -64,27 +78,27 @@ namespace ASC.Files.Core.Security
 
         public UserManager UserManager { get; }
         public TenantManager TenantManager { get; }
-        public WebItemSecurity WebItemSecurity { get; }
         public AuthContext AuthContext { get; }
         public AuthManager AuthManager { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
+        public FileSecurityCommon FileSecurityCommon { get; }
 
         public FileSecurity(
             IDaoFactory daoFactory,
             UserManager userManager,
             TenantManager tenantManager,
-            WebItemSecurity webItemSecurity,
             AuthContext authContext,
             AuthManager authManager,
-            GlobalFolderHelper globalFolderHelper)
+            GlobalFolderHelper globalFolderHelper,
+            FileSecurityCommon fileSecurityCommon)
         {
             this.daoFactory = daoFactory;
             UserManager = userManager;
             TenantManager = tenantManager;
-            WebItemSecurity = webItemSecurity;
             AuthContext = authContext;
             AuthManager = authManager;
             GlobalFolderHelper = globalFolderHelper;
+            FileSecurityCommon = fileSecurityCommon;
         }
 
         public List<Tuple<FileEntry, bool>> CanRead(IEnumerable<FileEntry> entry, Guid userId)
@@ -384,7 +398,7 @@ namespace ASC.Files.Core.Security
                         continue;
                     }
 
-                    if (e.RootFolderType == FolderType.COMMON && IsAdministrator(userId))
+                    if (e.RootFolderType == FolderType.COMMON && FileSecurityCommon.IsAdministrator(userId))
                     {
                         // administrator in Common has all right
                         result.Add(e);
@@ -522,7 +536,7 @@ namespace ASC.Files.Core.Security
                 }
             }
 
-            if (IsAdministrator(userId))
+            if (FileSecurityCommon.IsAdministrator(userId))
             {
                 // administrator can work with crashed entries (crash in files_folder_tree)
                 filter = f => f.RootFolderType == FolderType.DEFAULT;
@@ -685,7 +699,7 @@ namespace ASC.Files.Core.Security
                 return result;
 
             result.AddRange(UserManager.GetUserGroups(userId).Select(g => g.ID));
-            if (IsAdministrator(userId)) result.Add(Constants.GroupAdmin.ID);
+            if (FileSecurityCommon.IsAdministrator(userId)) result.Add(Constants.GroupAdmin.ID);
             result.Add(Constants.GroupEveryone.ID);
 
             return result;
@@ -729,6 +743,21 @@ namespace ASC.Files.Core.Security
             Create,
             Edit,
             Delete,
+        }
+    }
+
+    public static class FileSecurityExtention
+    {
+        public static IServiceCollection AddFileSecurityCommonService(this IServiceCollection services)
+        {
+            return services
+                .AddUserManagerService()
+                .AddWebItemSecurity();
+        }
+
+        public static IServiceCollection AddFileSecurityService(this IServiceCollection services)
+        {
+            return services;
         }
     }
 }

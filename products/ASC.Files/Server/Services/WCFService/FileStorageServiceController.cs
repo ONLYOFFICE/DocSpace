@@ -193,8 +193,6 @@ namespace ASC.Web.Files.Services.WCFService
             Logger = optionMonitor.Get("ASC.Files");
         }
 
-        #region Folder Manager
-
         [Read("folders-folder")]
         public Folder GetFolder(string folderId)
         {
@@ -425,10 +423,6 @@ namespace ASC.Web.Files.Services.WCFService
 
             return folder;
         }
-
-        #endregion
-
-        #region File Manager
 
         [Read("folders-files-getversion")]
         public File GetFile(string fileId, int version)
@@ -1033,10 +1027,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        #endregion
-
-        #region News
-
         [Read("getnews")]
         public object GetNewItems(string folderId)
         {
@@ -1077,10 +1067,6 @@ namespace ASC.Web.Files.Services.WCFService
 
             return FileOperationsManagerHelper.MarkAsRead(foldersId, filesId);
         }
-
-        #endregion
-
-        #region ThirdParty
 
         public ItemList<ThirdPartyParams> GetThirdParty()
         {
@@ -1269,10 +1255,6 @@ namespace ASC.Web.Files.Services.WCFService
                 throw GenerateException(e);
             }
         }
-
-        #endregion
-
-        #region Operation
 
         [Read("tasks-statuses")]
         public ItemList<FileOperationResult> GetTasksStatuses()
@@ -1575,10 +1557,6 @@ namespace ASC.Web.Files.Services.WCFService
 
             EntryManager.ReassignItems(GlobalFolderHelper.FolderCommon, userId, AuthContext.CurrentAccount.ID, folderDao, fileDao);
         }
-
-        #endregion
-
-        #region Ace Manager
 
         [Create("sharedinfo")]
         public ItemList<AceWrapper> GetSharedInfo(ItemList<string> objectIds)
@@ -1943,10 +1921,6 @@ namespace ASC.Web.Files.Services.WCFService
             return changed ? GetSharedInfoShort("file_" + fileId) : null;
         }
 
-        #endregion
-
-        #region MailMerge
-
         [Read("mailaccounts")]
         public ItemList<string> GetMailAccounts()
         {
@@ -1976,8 +1950,6 @@ namespace ASC.Web.Files.Services.WCFService
 
             //return new ItemList<string>(accounts);
         }
-
-        #endregion
 
         [Create("changeowner")]
         public ItemList<FileEntry> ChangeOwner(ItemList<string> items, Guid userId)
@@ -2123,8 +2095,6 @@ namespace ASC.Web.Files.Services.WCFService
             return ""; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
         }
 
-        #region private
-
         private IFolderDao GetFolderDao()
         {
             return DaoFactory.FolderDao;
@@ -2214,7 +2184,51 @@ namespace ASC.Web.Files.Services.WCFService
             }
             return null;
         }
+    }
 
-        #endregion
+    public static class FileStorageServiceControllerExtention
+    {
+        public static IServiceCollection AddFileStorageServiceController(this IServiceCollection services)
+        {
+            /*
+            GlobalFolderHelper globalFolderHelper,
+            FilesSettingsHelper filesSettingsHelper,
+            AuthContext authContext,
+            UserManager userManager,
+            FactoryIndexer<FoldersWrapper> foldersIndexer,
+            FactoryIndexer<FilesWrapper> filesIndexer,
+            FileUtility fileUtility,
+            FilesLinkUtility filesLinkUtility,
+            BaseCommonLinkUtility baseCommonLinkUtility,
+            CoreBaseSettings coreBaseSettings,
+            CustomNamingPeople customNamingPeople,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> optionMonitor,
+            DocuSignLoginProvider docuSignLoginProvider,
+            PathProvider pathProvider,
+            FileSecurity fileSecurity,
+            SocketManager socketManager,
+            IDaoFactory daoFactory,
+            FileMarker fileMarker,
+            EntryManager entryManager,
+            FilesMessageService filesMessageService,
+            DocumentServiceTrackerHelper documentServiceTrackerHelper,
+            DocuSignToken docuSignToken,
+            DocuSignHelper docuSignHelper,
+            FileShareLink fileShareLink,
+            FileConverter fileConverter,
+            DocumentServiceHelper documentServiceHelper,
+            ThirdpartyConfiguration thirdpartyConfiguration,
+            DocumentServiceConnector documentServiceConnector,
+            FileSharing fileSharing,
+            NotifyClient notifyClient,
+            FileOperationsManagerHelper fileOperationsManagerHelper,
+            UrlShortener urlShortener,
+             */
+            return services
+                .AddGlobalService()
+                .AddGlobalStoreService();
+        }
     }
 }

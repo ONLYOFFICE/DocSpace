@@ -950,4 +950,24 @@ namespace ASC.Files.Core.Data
             //return projectTitle;
         }
     }
+    public static class FolderDaoExtention
+    {
+        public static IServiceCollection AddFolderDaoService(this IServiceCollection services)
+        {
+            return services
+                .AddFactoryIndexerService<FoldersWrapper>()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddFilesDbContextService()
+                .AddTenantUtilService()
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddCoreBaseSettingsService()
+                .AddCoreConfigurationService()
+                .AddSettingsManagerService()
+                .AddAuthContextService()
+                .AddGlobalSpaceService();
+        }
+    }
 }

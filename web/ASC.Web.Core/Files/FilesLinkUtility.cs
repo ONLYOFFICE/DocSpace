@@ -35,6 +35,8 @@ using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Files
 {
@@ -428,6 +430,20 @@ namespace ASC.Web.Core.Files
         private string GetSettingsKey(string key)
         {
             return "DocKey_" + key;
+        }
+    }
+    public static class FilesLinkUtilityExtention
+    {
+        public static IServiceCollection AddFilesLinkUtilityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FilesLinkUtility>();
+
+            return services
+                .AddCommonLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddInstanceCryptoService();
         }
     }
 }

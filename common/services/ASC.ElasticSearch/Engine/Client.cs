@@ -34,6 +34,8 @@ using ASC.ElasticSearch.Service;
 
 using Elasticsearch.Net;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -95,6 +97,16 @@ namespace ASC.ElasticSearch
                     return client = new ElasticClient(settings);
                 }
             }
+        }
+    }
+
+    public static class ClientExtention
+    {
+        public static IServiceCollection AddClientService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<Client>();
+            return services
+                .AddCoreConfigurationService();
         }
     }
 }
