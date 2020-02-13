@@ -46,6 +46,11 @@ const NavItemBadge = styled(Badge)`
   ${props => (props.opened ? "" : badgeCss)}
 `;
 
+const NavCustomIcon = styled.img`
+  width: 24px;
+  height: 24px; 
+`;
+
 const NavItem = React.memo(props => {
   //console.log("NavItem render");
   const {
@@ -53,6 +58,7 @@ const NavItem = React.memo(props => {
     opened,
     active,
     iconName,
+    iconUrl,
     children,
     badgeNumber,
     onClick,
@@ -69,7 +75,9 @@ const NavItem = React.memo(props => {
       noHover={noHover}
       href={url} 
       onClick={onClick}>
-        {React.createElement(Icons[iconName], {
+        {iconUrl
+        ? (<NavCustomIcon src={iconUrl}/>)
+        : React.createElement(Icons[iconName], {
           size: "big",
           isfill: true,
           color: color
@@ -96,6 +104,7 @@ NavItem.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]),
   url: PropTypes.string,
   iconName: PropTypes.string,
+  iconUrl: PropTypes.string,
   onBadgeClick: PropTypes.func,
   onClick: PropTypes.func,
   opened: PropTypes.bool,

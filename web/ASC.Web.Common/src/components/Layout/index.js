@@ -199,6 +199,7 @@ class Layout extends React.Component {
                 opened={this.state.isNavOpened}
                 active={item.id == this.state.currentModuleId}
                 iconName={item.iconName}
+                iconUrl={item.iconUrl}
                 badgeNumber={item.notifications}
                 onClick={item.onClick}
                 onBadgeClick={e => {
