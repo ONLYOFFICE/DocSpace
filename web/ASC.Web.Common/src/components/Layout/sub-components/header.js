@@ -14,6 +14,7 @@ const Header = styled.header`
   z-index: 185;
   position: absolute;
   width: 100vw;
+  height: 56px;
 
   .header-module-title {
     display: block;
