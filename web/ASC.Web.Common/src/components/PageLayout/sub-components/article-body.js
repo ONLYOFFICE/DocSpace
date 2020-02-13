@@ -9,7 +9,7 @@ const StyledArticleBody = styled.div`
   height: 100%;
 
   .people-tree-menu {
-    margin-right: 30px;
+    margin-right: 0;
   }
 
   .custom-scrollbar {
