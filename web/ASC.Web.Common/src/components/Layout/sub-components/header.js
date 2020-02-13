@@ -18,6 +18,7 @@ const Header = styled.header`
   .header-module-title {
     display: block;
     font-size: 21px;
+    line-height: 0;
 
     @media(min-width: 1024px) {
       display: none;
