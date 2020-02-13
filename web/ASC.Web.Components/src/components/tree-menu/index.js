@@ -29,7 +29,10 @@ const StyledTreeMenu = styled(Tree)`
         display: block;
 
         li:first-child{
-            margin-top: 12px;
+            margin-top: 6px;
+        }
+        span.rc-tree-iconEle{
+            margin: 3px 7px 3px 20px;
         }
     }
     .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),

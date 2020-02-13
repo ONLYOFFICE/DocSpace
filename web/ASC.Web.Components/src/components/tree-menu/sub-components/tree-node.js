@@ -82,7 +82,7 @@ const TreeNodeMenu = styled(TreeNode)`
     .rc-tree-node-content-wrapper {
         width: 100%;
         display: inline-block;
-        padding: 1px 8px 0 4px;
+        padding: 1px 8px 0 8px;
         
         cursor: pointer;
         height: 24px;
@@ -91,7 +91,7 @@ const TreeNodeMenu = styled(TreeNode)`
 
         position: absolute;
         left: 0;
-        padding-left: ${props => props.icon ? '16px' : '24px'};
+
     }
     span.rc-tree-switcher,
     span.rc-tree-iconEle {
@@ -119,13 +119,12 @@ const TreeNodeMenu = styled(TreeNode)`
         position: relative;
     }
     span.rc-tree-iconEle{
-
-        margin: 3px 7px 3px 0px;
+        margin: 3px 7px 3px 12px;
         height: 17px;
         width: 17px;
     }
     span.rc-tree-switcher{
-        margin: 9px 4px 0 1px;
+        margin: 9px 4px 0 4px;
         height: 8px;
         width: 8px;
     }
@@ -206,12 +205,12 @@ const TreeNodeMenu = styled(TreeNode)`
     }
     span.rc-tree-title{
         display: inline-block;
-        width: auto;
-        max-width: ${props => props.icon ? 'calc(100% - 18px)' : '100%'};
+        width: ${props => props.icon ? 'calc(100% - 36px)' : 'calc(100% - 20px)'};
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         color: #333;
+        padding-left: ${props => props.icon ? '0' : '20px'};
     }
     span.rc-tree-title:first-child{
         max-width: 100%;
