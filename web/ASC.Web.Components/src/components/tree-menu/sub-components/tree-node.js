@@ -125,7 +125,7 @@ const TreeNodeMenu = styled(TreeNode)`
         width: 17px;
     }
     span.rc-tree-switcher{
-        margin: 9px 4px 0 1px;
+        margin: 9px 4px 0 4px;
         height: 8px;
         width: 8px;
     }
