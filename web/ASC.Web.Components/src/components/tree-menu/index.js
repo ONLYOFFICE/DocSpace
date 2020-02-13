@@ -27,6 +27,10 @@ const StyledTreeMenu = styled(Tree)`
     }
     .rc-tree-child-tree-open {
         display: block;
+
+        li:first-child{
+            margin-top: 12px;
+        }
     }
     .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
     .rc-tree-treenode-disabled > a,
