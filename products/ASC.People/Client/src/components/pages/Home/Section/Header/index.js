@@ -39,12 +39,14 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    padding-bottom: 56px;
     
     @media (max-width: 1024px) {
       & > div:first-child {
-      position: absolute;
-      top: 56px;
-      z-index: 180;
+        ${props => props.isArticlePinned && css`width: calc(100% - 240px);`}
+        position: absolute;
+        top: 56px;
+        z-index: 180;
       }
     }
 
@@ -270,8 +272,10 @@ const SectionHeaderContent = props => {
     ];
   }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
+  const isArticlePinned = window.localStorage.getItem('asc_article_pinned_key');
+
   return (
-    <StyledContainer isHeaderVisible={isHeaderVisible}>
+    <StyledContainer isHeaderVisible={isHeaderVisible} isArticlePinned={isArticlePinned}>
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu
