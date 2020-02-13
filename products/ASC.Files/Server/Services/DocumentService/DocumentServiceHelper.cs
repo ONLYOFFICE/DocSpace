@@ -33,6 +33,7 @@ using System.Text;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
@@ -42,6 +43,9 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 using JWT;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -56,11 +60,11 @@ namespace ASC.Web.Files.Services.DocumentService
         public AuthContext AuthContext { get; }
         public FileSecurity FileSecurity { get; }
         public SetupInfo SetupInfo { get; }
-        public EntryManager EntryManager { get; }
         public FileUtility FileUtility { get; }
         public MachinePseudoKeys MachinePseudoKeys { get; }
         public Global Global { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
+        public LockerManager LockerManager { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public DocumentServiceHelper(
@@ -70,11 +74,11 @@ namespace ASC.Web.Files.Services.DocumentService
             AuthContext authContext,
             FileSecurity fileSecurity,
             SetupInfo setupInfo,
-            EntryManager entryManager,
             FileUtility fileUtility,
             MachinePseudoKeys machinePseudoKeys,
             Global global,
             DocumentServiceConnector documentServiceConnector,
+            LockerManager lockerManager,
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -83,11 +87,11 @@ namespace ASC.Web.Files.Services.DocumentService
             AuthContext = authContext;
             FileSecurity = fileSecurity;
             SetupInfo = setupInfo;
-            EntryManager = entryManager;
             FileUtility = fileUtility;
             MachinePseudoKeys = machinePseudoKeys;
             Global = global;
             DocumentServiceConnector = documentServiceConnector;
+            LockerManager = lockerManager;
             ServiceProvider = serviceProvider;
         }
 
@@ -185,7 +189,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             string strError = null;
             if ((editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && EntryManager.FileLockedForMe(file.ID))
+                && LockerManager.FileLockedForMe(file.ID))
             {
                 if (tryEdit)
                 {
@@ -371,6 +375,25 @@ namespace ASC.Web.Files.Services.DocumentService
 
             var meta = new Web.Core.Files.DocumentService.MetaData { Title = file.Title };
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Meta, docKeyForTrack, file.ID, meta: meta);
+        }
+    }
+    public static class DocumentServiceHelperExtention
+    {
+        public static IServiceCollection AddDocumentServiceHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocumentServiceHelper>();
+            return services
+                .AddDaoFactoryService()
+                .AddFileShareLinkService()
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddFileSecurityService()
+                .AddSetupInfo()
+                .AddLockerManagerService()
+                .AddFileUtilityService()
+                .AddMachinePseudoKeysService()
+                .AddGlobalService()
+                .AddDocumentServiceConnectorService();
         }
     }
 }

@@ -51,6 +51,7 @@ using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
+using ASC.Web.Core.Utility;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Helpers;
@@ -2207,28 +2208,28 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddPathProviderService()
                 .AddDaoFactoryService()
                 .AddFileMarkerService()
+                .AddFilesSettingsHelperService()
+                .AddFileUtilityService()
+                .AddFileSecurityService()
+                .AddFilesMessageService()
+                .AddFileShareLinkService()
+                .AddDocumentServiceConnectorService()
+                .AddDocuSignLoginProviderService()
+                .AddEntryManagerService()
+                .AddDocumentServiceHelperService()
+                .AddThirdpartyConfigurationService()
+                .AddUrlShortener()
+                .AddDocuSignHelperService()
+                .AddDocuSignTokenService()
+                .AddFileConverterService()
+                .AddNotifyClientService()
                 ;
 
             /*
-            FilesSettingsHelper filesSettingsHelper,
-            FileUtility fileUtility,
-            DocuSignLoginProvider docuSignLoginProvider,
-            FileSecurity fileSecurity,
             SocketManager socketManager,
-            EntryManager entryManager,
-            FilesMessageService filesMessageService,
             DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            DocuSignToken docuSignToken,
-            DocuSignHelper docuSignHelper,
-            FileShareLink fileShareLink,
-            FileConverter fileConverter,
-            DocumentServiceHelper documentServiceHelper,
-            ThirdpartyConfiguration thirdpartyConfiguration,
-            DocumentServiceConnector documentServiceConnector,
             FileSharing fileSharing,
-            NotifyClient notifyClient,
             FileOperationsManagerHelper fileOperationsManagerHelper,
-            UrlShortener urlShortener,
              */
         }
     }

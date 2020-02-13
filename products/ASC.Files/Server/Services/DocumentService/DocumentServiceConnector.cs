@@ -40,6 +40,8 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -375,6 +377,23 @@ namespace ASC.Web.Files.Services.DocumentService
 
             Logger.Error("DocService error", ex);
             return new Exception(error, ex);
+        }
+    }
+    public static class DocumentServiceConnectorExtension
+    {
+        public static IServiceCollection AddDocumentServiceConnectorService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocumentServiceConnector>();
+
+            return services
+                .AddFilesLinkUtilityService()
+                .AddFileUtilityService()
+                .AddPathProviderService()
+                .AddGlobalStoreService()
+                .AddBaseCommonLinkUtilityService()
+                .AddTenantManagerService()
+                .AddTenantExtraService()
+                .AddCoreSettingsService();
         }
     }
 }

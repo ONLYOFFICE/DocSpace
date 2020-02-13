@@ -34,13 +34,18 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Files
 {
     public class FileUtility
     {
         public DbContextManager<FilesDbContext> FilesDbContext { get; set; }
-        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbContextManager<FilesDbContext> dbContextManager)
+        public FileUtility(
+            IConfiguration configuration,
+            FilesLinkUtility filesLinkUtility,
+            DbContextManager<FilesDbContext> dbContextManager)
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
@@ -373,5 +378,16 @@ namespace ASC.Web.Core.Files
         }
 
         #endregion
+    }
+
+    public static class FileUtilityExtention
+    {
+        public static IServiceCollection AddFileUtilityService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileUtility>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddFilesDbContextService();
+        }
     }
 }

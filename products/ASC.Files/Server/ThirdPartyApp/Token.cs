@@ -37,6 +37,8 @@ using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Security.Cryptography;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.ThirdPartyApp
@@ -159,6 +161,19 @@ namespace ASC.Web.Files.ThirdPartyApp
         private OAuth20Token DecryptToken(string token)
         {
             return string.IsNullOrEmpty(token) ? null : Token.FromJson(InstanceCrypto.Decrypt(token));
+        }
+    }
+
+    public static class TokenHelperExtension
+    {
+        public static IServiceCollection AddTokenHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TokenHelper>();
+            return services
+                .AddFilesDbContextService()
+                .AddInstanceCryptoService()
+                .AddAuthContextService()
+                .AddTenantManagerService();
         }
     }
 }

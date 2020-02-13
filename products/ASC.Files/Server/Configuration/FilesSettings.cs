@@ -31,6 +31,9 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Files.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Web.Files.Classes
 {
     [Serializable]
@@ -219,6 +222,16 @@ namespace ASC.Web.Files.Classes
                 SettingsManager.Save(setting);
             }
             get { return !CoreBaseSettings.Personal && SettingsManager.Load<FilesSettings>().StoreForcesaveSetting; }
+        }
+    }
+    public static class FilesSettingsHelperExtention
+    {
+        public static IServiceCollection AddFilesSettingsHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<SettingsManager>();
+            return services
+                .AddSettingsManagerService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

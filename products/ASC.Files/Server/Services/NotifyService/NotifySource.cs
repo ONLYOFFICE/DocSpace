@@ -27,9 +27,13 @@
 using System;
 
 using ASC.Core;
+using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
@@ -52,6 +56,19 @@ namespace ASC.Web.Files.Services.NotifyService
         protected override IPatternProvider CreatePatternsProvider()
         {
             return new XmlPatternProvider2(FilesPatternResource.patterns);
+        }
+    }
+
+    public static class FilesNotifySourceExtension
+    {
+        public static IServiceCollection AddFilesNotifySourceService(this IServiceCollection services)
+        {
+            services.TryAddScoped<NotifySource>();
+
+            return services
+                .AddUserManagerService()
+                .AddRecipientProviderImplService()
+                .AddSubscriptionManagerService();
         }
     }
 }

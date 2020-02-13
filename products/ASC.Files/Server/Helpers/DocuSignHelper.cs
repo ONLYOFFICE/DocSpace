@@ -39,6 +39,7 @@ using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -56,6 +57,7 @@ using DocuSign.eSign.Client;
 using DocuSign.eSign.Model;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -163,7 +165,7 @@ namespace ASC.Web.Files.Helpers
         public FileMarker FileMarker { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FilesMessageService FilesMessageService { get; }
-        public DocuSignHandler DocuSignHandler { get; }
+        public FilesLinkUtility FilesLinkUtility { get; }
         public IServiceProvider ServiceProvider { get; }
 
         public DocuSignHelper(
@@ -179,7 +181,7 @@ namespace ASC.Web.Files.Helpers
             FileMarker fileMarker,
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
-            DocuSignHandler docuSignHandler,
+            FilesLinkUtility filesLinkUtility,
             IServiceProvider serviceProvider)
         {
             DocuSignToken = docuSignToken;
@@ -193,7 +195,7 @@ namespace ASC.Web.Files.Helpers
             FileMarker = fileMarker;
             GlobalFolderHelper = globalFolderHelper;
             FilesMessageService = filesMessageService;
-            DocuSignHandler = docuSignHandler;
+            FilesLinkUtility = filesLinkUtility;
             ServiceProvider = serviceProvider;
             Log = options.CurrentValue;
         }
@@ -315,7 +317,7 @@ namespace ASC.Web.Files.Helpers
                 //        new RecipientEvent {RecipientEventStatusCode = "AuthenticationFailed"},
                 //        new RecipientEvent {RecipientEventStatusCode = "AutoResponded"},
                 //    },
-                Url = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path + "?" + FilesLinkUtility.Action + "=webhook"),
+                Url = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=webhook"),
             };
 
             Log.Debug("DocuSign hook url: " + eventNotification.Url);
@@ -367,7 +369,7 @@ namespace ASC.Web.Files.Helpers
             var envelopeId = envelopeSummary.EnvelopeId;
             var url = envelopesApi.CreateSenderView(accountId, envelopeId, new ReturnUrlRequest
             {
-                ReturnUrl = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path + "?" + FilesLinkUtility.Action + "=redirect")
+                ReturnUrl = BaseCommonLinkUtility.GetFullAbsolutePath(DocuSignHandler.Path(FilesLinkUtility) + "?" + FilesLinkUtility.Action + "=redirect")
             });
             Log.Debug("DocuSign senderView: " + url.Url);
 
@@ -471,5 +473,37 @@ namespace ASC.Web.Files.Helpers
         Completed,
         Declined,
         Voided,
+    }
+
+    public static class DocuSignHelperExtension
+    {
+        public static IServiceCollection AddDocuSignTokenService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocuSignToken>();
+            return services
+                .AddAuthContextService()
+                .AddDocuSignLoginProviderService()
+                .AddTokenHelperService();
+        }
+
+        public static IServiceCollection AddDocuSignHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocuSignHelper>();
+
+            return services
+                .AddDocuSignLoginProviderService()
+                .AddFileSecurityService()
+                .AddDaoFactoryService()
+                .AddBaseCommonLinkUtilityService()
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddDisplayUserSettingsService()
+                .AddFileMarkerService()
+                .AddGlobalFolderHelperService()
+                .AddFilesMessageService()
+                .AddDocuSignTokenService()
+                .AddFilesLinkUtilityService()
+                ;
+        }
     }
 }

@@ -38,6 +38,8 @@ using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json.Linq;
 
@@ -178,6 +180,22 @@ namespace ASC.FederatedLogin.LoginProviders
         private class GoogleMetadata
         {
             public bool primary = false;
+        }
+    }
+
+    public static class GoogleLoginProviderExtension
+    {
+        public static IServiceCollection AddGoogleLoginProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<GoogleLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService()
+                .AddSignatureService()
+                .AddInstanceCryptoService();
         }
     }
 }

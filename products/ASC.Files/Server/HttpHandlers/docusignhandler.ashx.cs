@@ -42,22 +42,22 @@ using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
 {
     public class DocuSignHandler
     {
-        public string Path
+        public static string Path(FilesLinkUtility filesLinkUtility)
         {
-            get { return FilesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx"; }
+            return filesLinkUtility.FilesBaseAbsolutePath + "httphandlers/docusignhandler.ashx";
         }
 
         private ILog Log { get; set; }
 
         public RequestDelegate Next { get; }
-
-        public FilesLinkUtility FilesLinkUtility { get; }
 
         public TenantExtra TenantExtra { get; }
         public DocuSignHelper DocuSignHelper { get; }
@@ -67,14 +67,12 @@ namespace ASC.Web.Files.HttpHandlers
         public DocuSignHandler(
             RequestDelegate next,
             IOptionsMonitor<ILog> optionsMonitor,
-            FilesLinkUtility filesLinkUtility,
             TenantExtra tenantExtra,
             DocuSignHelper docuSignHelper,
             SecurityContext securityContext,
             NotifyClient notifyClient)
         {
             Next = next;
-            FilesLinkUtility = filesLinkUtility;
             TenantExtra = tenantExtra;
             DocuSignHelper = docuSignHelper;
             SecurityContext = securityContext;
@@ -237,6 +235,20 @@ namespace ASC.Web.Files.HttpHandlers
             var result = node.SelectSingleNode(XmlPrefix + ":" + xpath, mgr);
             if (!canMiss && result == null) throw new Exception(xpath + " is null");
             return result;
+        }
+    }
+
+    public static class DocuSignHandlerExtension
+    {
+        public static IServiceCollection AddDocuSignHandlerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocuSignHandler>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddTenantExtraService()
+                .AddDocuSignHelperService()
+                .AddSecurityContextService()
+                .AddNotifyClientService();
         }
     }
 }

@@ -34,6 +34,8 @@ using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -131,6 +133,19 @@ namespace ASC.FederatedLogin.LoginProviders
             refreshed.RedirectUri = RedirectUri;
             refreshed.RefreshToken ??= refreshToken;
             return refreshed;
+        }
+    }
+    public static class DocuSignLoginProviderExtension
+    {
+        public static IServiceCollection AddDocuSignLoginProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocuSignLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

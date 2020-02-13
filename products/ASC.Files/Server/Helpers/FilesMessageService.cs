@@ -31,6 +31,8 @@ using ASC.Files.Core;
 using ASC.MessagingSystem;
 
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Helpers
@@ -116,6 +118,17 @@ namespace ASC.Web.Files.Helpers
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
 
             MessageService.Send(initiator, action, MessageTarget.Create(entry.ID), description);
+        }
+    }
+
+    public static class FilesMessageServiceExtension
+    {
+        public static IServiceCollection AddFilesMessageService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FilesMessageService>();
+            return services
+                .AddMessageTargetService()
+                .AddMessageServiceService();
         }
     }
 }

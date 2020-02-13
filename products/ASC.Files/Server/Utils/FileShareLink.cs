@@ -33,6 +33,9 @@ using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
@@ -108,6 +111,19 @@ namespace ASC.Web.Files.Utils
             if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;
             if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return FileShare.Read;
             return FileShare.Restrict;
+        }
+    }
+    public static class FileShareLinkExtension
+    {
+        public static IServiceCollection AddFileShareLinkService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileShareLink>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddFileUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddGlobalService()
+                .AddFileSecurityService();
         }
     }
 }

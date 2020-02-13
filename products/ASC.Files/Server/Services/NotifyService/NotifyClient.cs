@@ -31,6 +31,7 @@ using System.Globalization;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Notify.Patterns;
 using ASC.Web.Core.Files;
@@ -38,6 +39,7 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Services.NotifyService
 {
@@ -205,6 +207,26 @@ namespace ASC.Web.Files.Services.NotifyService
                 default:
                     return string.Empty;
             }
+        }
+    }
+
+    public static class NotifyClientExtension
+    {
+        public static IServiceCollection AddNotifyClientService(this IServiceCollection services)
+        {
+            services.TryAddScoped<NotifyClient>();
+
+            return services
+                .AddFilesNotifySourceService()
+                .AddBaseCommonLinkUtilityService()
+                .AddUserManagerService()
+                .AddSecurityContextService()
+                .AddFilesLinkUtilityService()
+                .AddFileUtilityService()
+                .AddPathProviderService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                ;
         }
     }
 }

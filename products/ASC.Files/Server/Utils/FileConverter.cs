@@ -40,6 +40,7 @@ using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
@@ -53,6 +54,7 @@ using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using File = ASC.Files.Core.File;
@@ -722,6 +724,31 @@ namespace ASC.Web.Files.Utils
             public bool Delete { get; set; }
             public string Url { get; set; }
             public string Password { get; set; }
+        }
+    }
+
+    public static class FileConverterExtension
+    {
+        public static IServiceCollection AddFileConverterService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileConverter>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddFileUtilityService()
+                .AddDaoFactoryService()
+                .AddSetupInfo()
+                .AddPathProviderService()
+                .AddFileSecurityService()
+                .AddFileMarkerService()
+                .AddTenantManagerService()
+                .AddAuthContextService()
+                .AddEntryManagerService()
+                .AddFilesSettingsHelperService()
+                .AddGlobalFolderHelperService()
+                .AddFilesMessageService()
+                .AddFileShareLinkService()
+                .AddDocumentServiceHelperService()
+                .AddDocumentServiceConnectorService();
         }
     }
 }

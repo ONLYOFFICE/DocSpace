@@ -31,6 +31,8 @@ using ASC.Core;
 using ASC.Core.Common.Configuration;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -73,6 +75,20 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
+        }
+    }
+
+    public static class BoxLoginProviderExtension
+    {
+        public static IServiceCollection AddBoxLoginProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<BoxLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

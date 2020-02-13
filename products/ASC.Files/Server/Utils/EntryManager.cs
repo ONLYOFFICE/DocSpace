@@ -38,6 +38,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Api;
@@ -47,9 +48,9 @@ using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.ThirdPartyApp;
-using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -59,6 +60,38 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
 {
+    public class LockerManager
+    {
+        public AuthContext AuthContext { get; }
+        public IDaoFactory DaoFactory { get; }
+
+        public LockerManager(AuthContext authContext, IDaoFactory daoFactory)
+        {
+            AuthContext = authContext;
+            DaoFactory = daoFactory;
+        }
+
+        public bool FileLockedForMe(object fileId, Guid userId = default)
+        {
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
+            if (app != null)
+            {
+                return false;
+            }
+
+            userId = userId == default ? AuthContext.CurrentAccount.ID : userId;
+            var tagDao = DaoFactory.TagDao;
+            var lockedBy = FileLockedBy(fileId, tagDao);
+            return lockedBy != Guid.Empty && lockedBy != userId;
+        }
+
+        public Guid FileLockedBy(object fileId, ITagDao tagDao)
+        {
+            var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
+            return tagLock != null ? tagLock.Owner : Guid.Empty;
+        }
+    }
+
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
@@ -75,13 +108,13 @@ namespace ASC.Web.Files.Utils
         public Global Global { get; }
         public GlobalStore GlobalStore { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
-        public SetupInfo SetupInfo { get; }
         public FilesSettingsHelper FilesSettingsHelper { get; }
         public UserManager UserManager { get; }
         public FileShareLink FileShareLink { get; }
         public DocumentServiceHelper DocumentServiceHelper { get; }
         public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
+        public LockerManager LockerManager { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
@@ -97,7 +130,6 @@ namespace ASC.Web.Files.Utils
             Global global,
             GlobalStore globalStore,
             CoreBaseSettings coreBaseSettings,
-            SetupInfo setupInfo,
             FilesSettingsHelper filesSettingsHelper,
             UserManager userManager,
             IOptionsMonitor<ILog> optionsMonitor,
@@ -105,6 +137,7 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper documentServiceHelper,
             ThirdpartyConfiguration thirdpartyConfiguration,
             DocumentServiceConnector documentServiceConnector,
+            LockerManager lockerManager,
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -118,13 +151,13 @@ namespace ASC.Web.Files.Utils
             Global = global;
             GlobalStore = globalStore;
             CoreBaseSettings = coreBaseSettings;
-            SetupInfo = setupInfo;
             FilesSettingsHelper = filesSettingsHelper;
             UserManager = userManager;
             FileShareLink = fileShareLink;
             DocumentServiceHelper = documentServiceHelper;
             ThirdpartyConfiguration = thirdpartyConfiguration;
             DocumentServiceConnector = documentServiceConnector;
+            LockerManager = lockerManager;
             ServiceProvider = serviceProvider;
             Logger = optionsMonitor.CurrentValue;
             cache = AscCache.Memory;
@@ -590,22 +623,12 @@ namespace ASC.Web.Files.Utils
 
         public bool FileLockedForMe(object fileId, Guid userId = default)
         {
-            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
-            if (app != null)
-            {
-                return false;
-            }
-
-            userId = userId == default ? AuthContext.CurrentAccount.ID : userId;
-            var tagDao = DaoFactory.TagDao;
-            var lockedBy = FileLockedBy(fileId, tagDao);
-            return lockedBy != Guid.Empty && lockedBy != userId;
+            return LockerManager.FileLockedForMe(fileId, userId);
         }
 
         public Guid FileLockedBy(object fileId, ITagDao tagDao)
         {
-            var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
-            return tagLock != null ? tagLock.Owner : Guid.Empty;
+            return LockerManager.FileLockedBy(fileId, tagDao);
         }
 
 
@@ -998,6 +1021,45 @@ namespace ASC.Web.Files.Utils
                                      .Where(folder => folder.CreateBy == fromUserId).Select(folder => folder.ID);
 
             folderDao.ReassignFolders(folderIds.ToArray(), toUserId);
+        }
+    }
+
+    public static class EntryManagerExtension
+    {
+        public static IServiceCollection AddEntryManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<EntryManager>();
+            return services
+                .AddDaoFactoryService()
+                .AddFileSecurityService()
+                .AddGlobalFolderHelperService()
+                .AddPathProviderService()
+                .AddAuthContextService()
+                .AddFileMarkerService()
+                .AddFileUtilityService()
+                .AddGlobalService()
+                .AddGlobalStoreService()
+                .AddCoreBaseSettingsService()
+                .AddFilesSettingsHelperService()
+                .AddUserManagerService()
+                .AddFileShareLinkService()
+                .AddDocumentServiceConnectorService()
+                .AddDocumentServiceHelperService()
+                .AddFilesIntegrationService()
+                .AddThirdpartyConfigurationService()
+                .AddLockerManagerService()
+                ;
+        }
+    }
+
+    public static class LockerManagerExtension
+    {
+        public static IServiceCollection AddLockerManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<LockerManager>();
+            return services
+                .AddAuthContextService()
+                .AddDaoFactoryService();
         }
     }
 }
