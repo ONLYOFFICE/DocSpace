@@ -36,17 +36,22 @@ namespace ASC.Calendar.Controllers
     {
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
+
+        public UserManager UserManager { get; }
+
         public ILog Log { get; }
 
         public CalendarController(
            
             ApiContext apiContext,
-            
+             
+            UserManager userManager,
+
             IOptionsMonitor<ILog> option)
         {
             Log = option.Get("ASC.Api");
             ApiContext = apiContext;
-           
+            UserManager = userManager;
         }
 
         [Read("info")]
