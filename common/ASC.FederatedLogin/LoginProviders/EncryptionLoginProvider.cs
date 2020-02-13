@@ -35,6 +35,8 @@ using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -103,6 +105,21 @@ namespace ASC.Web.Studio.Core
 
             var account = Crypto.GetV(profile.Name, 1, false);
             return account;
+        }
+    }
+    public static class EncryptionLoginProviderExtension
+    {
+        public static IServiceCollection AddEncryptionLoginProviderService(this IServiceCollection services)
+        {
+            services.TryAddScoped<EncryptionLoginProvider>();
+
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddSignatureService()
+                .AddInstanceCryptoService()
+                .AddAccountLinker();
         }
     }
 }

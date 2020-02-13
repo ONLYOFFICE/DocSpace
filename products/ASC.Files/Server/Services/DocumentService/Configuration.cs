@@ -41,6 +41,7 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
@@ -55,6 +56,12 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
+using static ASC.Web.Files.Services.DocumentService.Configuration;
+using static ASC.Web.Files.Services.DocumentService.Configuration.DocumentConfig;
+using static ASC.Web.Files.Services.DocumentService.Configuration.EditorConfiguration;
+using static ASC.Web.Files.Services.DocumentService.Configuration.EditorConfiguration.CustomizationConfig;
 
 using File = ASC.Files.Core.File;
 
@@ -923,5 +930,107 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
         #endregion
+    }
+
+    public static class ConfigurationExtention
+    {
+        public static IServiceCollection AddConfigurationService(this IServiceCollection services)
+        {
+            return services
+                .AddDocumentConfigService()
+                .AddEditorConfigurationService();
+        }
+
+        public static IServiceCollection AddDocumentConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<DocumentConfig>();
+
+            return services
+                .AddDocumentServiceConnectorService()
+                .AddPathProviderService()
+                .AddInfoConfigService();
+        }
+
+        public static IServiceCollection AddInfoConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<InfoConfig>();
+
+            return services
+                .AddEntryManagerService()
+                .AddFileSharingService();
+        }
+
+        public static IServiceCollection AddEditorConfigurationService(this IServiceCollection services)
+        {
+            services.TryAddTransient<EditorConfiguration>();
+
+            return services
+                .AddUserManagerService()
+                .AddAuthContextService()
+                .AddDisplayUserSettingsService()
+                .AddFilesLinkUtilityService()
+                .AddBaseCommonLinkUtilityService()
+                .AddPluginsConfigService()
+                .AddEmbeddedConfigService()
+                .AddCustomizationConfigService();
+        }
+
+        public static IServiceCollection AddPluginsConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<PluginsConfig>();
+
+            return services
+                .AddConsumerFactoryService()
+                .AddBaseCommonLinkUtilityService();
+        }
+
+        public static IServiceCollection AddEmbeddedConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<EmbeddedConfig>();
+
+            return services
+                .AddFilesLinkUtilityService()
+                .AddBaseCommonLinkUtilityService();
+        }
+
+        public static IServiceCollection AddCustomizationConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<EmbeddedConfig>();
+
+            return services
+                .AddCoreBaseSettingsService()
+                .AddSettingsManagerService()
+                .AddFileUtilityService()
+                .AddFilesSettingsHelperService()
+                .AddAuthContextService()
+                .AddFileSecurityService()
+                .AddDaoFactoryService()
+                .AddGlobalFolderHelperService()
+                .AddPathProviderService()
+                .AddWebImageSupplierService()
+                .AddBaseCommonLinkUtilityService()
+                .AddCustomerConfigService()
+                .AddLogoConfigService();
+        }
+
+        public static IServiceCollection AddCustomerConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<CustomerConfig>();
+
+            return services
+                .AddSettingsManagerService()
+                .AddBaseCommonLinkUtilityService()
+                .AddTenantLogoHelperService();
+        }
+
+        public static IServiceCollection AddLogoConfigService(this IServiceCollection services)
+        {
+            services.TryAddTransient<LogoConfig>();
+
+            return services
+                .AddSettingsManagerService()
+                .AddBaseCommonLinkUtilityService()
+                .AddTenantLogoHelperService();
+        }
     }
 }

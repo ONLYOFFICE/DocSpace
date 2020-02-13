@@ -42,6 +42,7 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
@@ -55,6 +56,8 @@ using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
@@ -655,6 +658,35 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 Logger.Error("DocService save history error", ex);
             }
+        }
+    }
+    public static class DocumentServiceTrackerHelperExtension
+    {
+        public static IServiceCollection AddDocumentServiceTrackerHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DocumentServiceTrackerHelper>();
+            return services
+                .AddSecurityContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddFilesLinkUtilityService()
+                .AddEmailValidationKeyProviderService()
+                .AddBaseCommonLinkUtilityService()
+                .AddGlobalStoreService()
+                .AddDisplayUserSettingsService()
+                .AddDaoFactoryService()
+                .AddDocumentServiceHelperService()
+                .AddEntryManagerService()
+                .AddFileShareLinkService()
+                .AddFilesMessageService()
+                .AddDocumentServiceConnectorService()
+                .AddNotifyClientService()
+                .AddEncryptionAddressHelperService()
+                .AddSocketManagerService();
+
+            /*
+MailMergeTaskRunner mailMergeTaskRunner
+ */
         }
     }
 }

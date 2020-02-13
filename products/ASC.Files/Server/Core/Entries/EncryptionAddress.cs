@@ -31,7 +31,11 @@ using System.Runtime.Serialization;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
+using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Core.Entries
 {
@@ -47,21 +51,31 @@ namespace ASC.Web.Files.Core.Entries
 
     public class EncryptionAddressHelper
     {
-        public IFileStorageService FileStorageService { get; }
+        public FileSharing FileSharing { get; }
         public EncryptionLoginProvider EncryptionLoginProvider { get; }
 
-        public EncryptionAddressHelper(IFileStorageService fileStorageService, EncryptionLoginProvider encryptionLoginProvider)
+        public EncryptionAddressHelper(FileSharing fileSharing, EncryptionLoginProvider encryptionLoginProvider)
         {
-            FileStorageService = fileStorageService;
+            FileSharing = fileSharing;
             EncryptionLoginProvider = encryptionLoginProvider;
         }
 
         public IEnumerable<string> GetAddresses(string fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
+            var fileShares = FileSharing.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) }).ToList();
             fileShares = fileShares.Where(share => !share.SubjectGroup && !share.SubjectId.Equals(FileConstant.ShareLinkId) && share.Share == FileShare.ReadWrite).ToList();
             var accountsString = fileShares.Select(share => EncryptionLoginProvider.GetAddress(share.SubjectId)).Where(address => !string.IsNullOrEmpty(address));
             return accountsString;
+        }
+    }
+    public static class EncryptionAddressHelperExtension
+    {
+        public static IServiceCollection AddEncryptionAddressHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<EncryptionAddressHelper>();
+            return services
+                .AddEncryptionLoginProviderService()
+                .AddFileSharingService();
         }
     }
 }

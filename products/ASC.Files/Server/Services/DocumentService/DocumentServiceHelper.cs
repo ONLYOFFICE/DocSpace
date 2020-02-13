@@ -393,7 +393,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddFileUtilityService()
                 .AddMachinePseudoKeysService()
                 .AddGlobalService()
-                .AddDocumentServiceConnectorService();
+                .AddDocumentServiceConnectorService()
+                .AddConfigurationService();
         }
     }
 }

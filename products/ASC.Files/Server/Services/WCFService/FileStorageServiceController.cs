@@ -1563,125 +1563,13 @@ namespace ASC.Web.Files.Services.WCFService
         [Create("sharedinfo")]
         public ItemList<AceWrapper> GetSharedInfo(ItemList<string> objectIds)
         {
-            ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-
-            var result = new List<AceWrapper>();
-
-            var folderDao = GetFolderDao();
-            var fileDao = GetFileDao();
-            foreach (var objectId in objectIds)
-            {
-                ErrorIf(string.IsNullOrEmpty(objectId), FilesCommonResource.ErrorMassage_BadRequest);
-
-                Debug.Assert(objectId != null, "objectId != null");
-                var entryType = objectId.StartsWith("file_") ? FileEntryType.File : FileEntryType.Folder;
-                var entryId = objectId.Substring((entryType == FileEntryType.File ? "file_" : "folder_").Length);
-
-                var entry = entryType == FileEntryType.File
-                                ? (FileEntry)fileDao.GetFile(entryId)
-                                : (FileEntry)folderDao.GetFolder(entryId);
-
-                IEnumerable<AceWrapper> acesForObject;
-                try
-                {
-                    acesForObject = FileSharing.GetSharedInfo(entry);
-                }
-                catch (Exception e)
-                {
-                    throw GenerateException(e);
-                }
-
-                foreach (var aceForObject in acesForObject)
-                {
-                    var duplicate = result.FirstOrDefault(ace => ace.SubjectId == aceForObject.SubjectId);
-                    if (duplicate == null)
-                    {
-                        if (result.Any())
-                        {
-                            aceForObject.Owner = false;
-                            aceForObject.Share = FileShare.Varies;
-                        }
-                        continue;
-                    }
-
-                    if (duplicate.Share != aceForObject.Share)
-                    {
-                        aceForObject.Share = FileShare.Varies;
-                    }
-                    if (duplicate.Owner != aceForObject.Owner)
-                    {
-                        aceForObject.Owner = false;
-                        aceForObject.Share = FileShare.Varies;
-                    }
-                    result.Remove(duplicate);
-                }
-
-                var withoutAce = result.Where(ace =>
-                                                acesForObject.FirstOrDefault(aceForObject =>
-                                                                            aceForObject.SubjectId == ace.SubjectId) == null);
-                foreach (var ace in withoutAce)
-                {
-                    ace.Share = FileShare.Varies;
-                }
-
-                var notOwner = result.Where(ace =>
-                                            ace.Owner &&
-                                            acesForObject.FirstOrDefault(aceForObject =>
-                                                                            aceForObject.Owner
-                                                                            && aceForObject.SubjectId == ace.SubjectId) == null);
-                foreach (var ace in notOwner)
-                {
-                    ace.Owner = false;
-                    ace.Share = FileShare.Varies;
-                }
-
-                result.AddRange(acesForObject);
-            }
-
-
-            var ownerAce = result.FirstOrDefault(ace => ace.Owner);
-            result.Remove(ownerAce);
-
-            var meAce = result.FirstOrDefault(ace => ace.SubjectId == AuthContext.CurrentAccount.ID);
-            result.Remove(meAce);
-
-            AceWrapper linkAce = null;
-            if (objectIds.Count > 1)
-            {
-                result.RemoveAll(ace => ace.SubjectId == FileConstant.ShareLinkId);
-            }
-            else
-            {
-                linkAce = result.FirstOrDefault(ace => ace.SubjectId == FileConstant.ShareLinkId);
-            }
-
-            result.Sort((x, y) => string.Compare(x.SubjectName, y.SubjectName));
-
-            if (ownerAce != null)
-            {
-                result = new List<AceWrapper> { ownerAce }.Concat(result).ToList();
-            }
-            if (meAce != null)
-            {
-                result = new List<AceWrapper> { meAce }.Concat(result).ToList();
-            }
-            if (linkAce != null)
-            {
-                result.Remove(linkAce);
-                result = new List<AceWrapper> { linkAce }.Concat(result).ToList();
-            }
-
-            return new ItemList<AceWrapper>(result);
+            return FileSharing.GetSharedInfo(objectIds);
         }
 
         [Read("sharedinfoshort")]
         public ItemList<AceShortWrapper> GetSharedInfoShort(string objectId)
         {
-            var aces = GetSharedInfo(new ItemList<string> { objectId });
-
-            return new ItemList<AceShortWrapper>(
-                aces.Where(aceWrapper => !aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId) || aceWrapper.Share != FileShare.Restrict)
-                    .Select(aceWrapper => new AceShortWrapper(aceWrapper)));
+            return FileSharing.GetSharedInfoShort(objectId);
         }
 
         [Create("setaceobject")]
@@ -2223,12 +2111,13 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddDocuSignTokenService()
                 .AddFileConverterService()
                 .AddNotifyClientService()
-                ;
+                .AddFileSharingService()
+                .AddDocumentServiceTrackerHelperService()
+                .AddSocketManagerService()
+                .AddFileOperationsManagerHelperService();
+            ;
 
             /*
-            SocketManager socketManager,
-            DocumentServiceTrackerHelper documentServiceTrackerHelper,
-            FileSharing fileSharing,
             FileOperationsManagerHelper fileOperationsManagerHelper,
              */
         }

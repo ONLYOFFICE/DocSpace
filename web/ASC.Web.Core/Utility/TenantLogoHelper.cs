@@ -27,6 +27,9 @@
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.WhiteLabel;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Web.Studio.Utility
 {
     public class TenantLogoHelper
@@ -80,6 +83,19 @@ namespace ASC.Web.Studio.Utility
 
             return imgUrl;
 
+        }
+    }
+    public static class TenantLogoHelperExtention
+    {
+        public static IServiceCollection AddTenantLogoHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<TenantLogoHelper>();
+
+            return services
+                .AddTenantLogoManagerService()
+                .AddSettingsManagerService()
+                .AddTenantWhiteLabelSettingsService()
+                .AddTenantInfoSettingsService();
         }
     }
 }

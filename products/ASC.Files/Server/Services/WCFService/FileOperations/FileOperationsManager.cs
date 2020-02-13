@@ -33,6 +33,9 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Web.Files.Resources;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     public class FileOperationsManager
@@ -166,5 +169,20 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public ItemList<FileOperationResult> Delete(List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
             => FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
+    }
+
+    public static class FileOperationsManagerHelperExtention
+    {
+        public static IServiceCollection AddFileOperationsManagerHelperService(this IServiceCollection services)
+        {
+            services.TryAddSingleton<DistributedTaskCacheNotify>();
+            services.TryAddSingleton<FileOperationsManager>();
+            services.TryAddScoped<FileOperationsManagerHelper>();
+
+            return services
+                .AddAuthContextService()
+                .AddTenantManagerService()
+                ;
+        }
     }
 }
