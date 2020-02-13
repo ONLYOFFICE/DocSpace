@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
-import { Icons } from "asc-web-components"
+import { Icons, utils } from "asc-web-components"
+const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
 
@@ -14,13 +15,14 @@ const Header = styled.header`
   z-index: 185;
   position: absolute;
   width: 100vw;
+  height: 56px;
 
   .header-module-title {
     display: block;
     font-size: 21px;
     line-height: 0;
 
-    @media(min-width: 1024px) {
+    @media ${desktop} {
       display: none;
     }
    }
