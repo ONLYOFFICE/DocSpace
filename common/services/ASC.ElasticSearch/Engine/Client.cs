@@ -104,7 +104,7 @@ namespace ASC.ElasticSearch
     {
         public static IServiceCollection AddClientService(this IServiceCollection services)
         {
-            services.TryAddSingleton<Client>();
+            services.TryAddScoped<Client>();
             return services
                 .AddCoreConfigurationService();
         }

@@ -30,12 +30,14 @@ using System.Linq;
 
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Files.Core.Data;
 using ASC.Web.Core;
 using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Security
 {
@@ -80,7 +82,7 @@ namespace ASC.Files.Core.Security
         public TenantManager TenantManager { get; }
         public AuthContext AuthContext { get; }
         public AuthManager AuthManager { get; }
-        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public GlobalFolder GlobalFolder { get; }
         public FileSecurityCommon FileSecurityCommon { get; }
 
         public FileSecurity(
@@ -89,7 +91,7 @@ namespace ASC.Files.Core.Security
             TenantManager tenantManager,
             AuthContext authContext,
             AuthManager authManager,
-            GlobalFolderHelper globalFolderHelper,
+            GlobalFolder globalFolder,
             FileSecurityCommon fileSecurityCommon)
         {
             this.daoFactory = daoFactory;
@@ -97,7 +99,7 @@ namespace ASC.Files.Core.Security
             TenantManager = tenantManager;
             AuthContext = authContext;
             AuthManager = authManager;
-            GlobalFolderHelper = globalFolderHelper;
+            GlobalFolder = globalFolder;
             FileSecurityCommon = fileSecurityCommon;
         }
 
@@ -617,7 +619,7 @@ namespace ASC.Files.Core.Security
                         if (fileIds.ContainsKey(x.ID))
                         {
                             x.Access = fileIds[x.ID];
-                            x.FolderIdDisplay = GlobalFolderHelper.FolderShare;
+                            x.FolderIdDisplay = GlobalFolder.GetFolderShare(folderDao);
                         }
                     });
 
@@ -637,7 +639,7 @@ namespace ASC.Files.Core.Security
                         if (folderIds.ContainsKey(x.ID))
                         {
                             x.Access = folderIds[x.ID];
-                            x.FolderIdDisplay = GlobalFolderHelper.FolderShare;
+                            x.FolderIdDisplay = GlobalFolder.GetFolderShare(folderDao);
                         }
                     });
 
@@ -750,6 +752,8 @@ namespace ASC.Files.Core.Security
     {
         public static IServiceCollection AddFileSecurityCommonService(this IServiceCollection services)
         {
+            services.TryAddScoped<FileSecurityCommon>();
+
             return services
                 .AddUserManagerService()
                 .AddWebItemSecurity();
@@ -757,7 +761,17 @@ namespace ASC.Files.Core.Security
 
         public static IServiceCollection AddFileSecurityService(this IServiceCollection services)
         {
-            return services;
+            services.TryAddScoped<FileSecurity>();
+            services.TryAddScoped<IFileSecurity, FileSecurity>();
+
+            return services
+                .AddDaoFactoryService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddAuthContextService()
+                .AddAuthManager()
+                .AddGlobalFolderService()
+                .AddFileSecurityCommonService();
         }
     }
 }

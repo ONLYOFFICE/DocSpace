@@ -41,7 +41,7 @@ namespace ASC.Files
         {
             services.AddHttpContextAccessor();
 
-            services.AddControllers().AddControllersAsServices()
+            services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();
 

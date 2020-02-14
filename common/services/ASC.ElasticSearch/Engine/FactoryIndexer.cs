@@ -571,7 +571,7 @@ namespace ASC.ElasticSearch
     {
         public static IServiceCollection AddFactoryIndexerService(this IServiceCollection services)
         {
-            services.TryAddSingleton<FactoryIndexer>();
+            services.TryAddScoped<FactoryIndexer>();
             return services
                 .AddClientService()
                 .AddCoreBaseSettingsService();
@@ -579,7 +579,7 @@ namespace ASC.ElasticSearch
 
         public static IServiceCollection AddFactoryIndexerHelperService(this IServiceCollection services)
         {
-            services.TryAddSingleton<FactoryIndexerHelper>();
+            services.TryAddScoped<FactoryIndexerHelper>();
             return services
                 .AddFactoryIndexerService();
         }

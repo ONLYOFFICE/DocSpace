@@ -34,6 +34,9 @@ using ASC.Core;
 using ASC.Core.Common;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Files.Utils
@@ -204,6 +207,18 @@ namespace ASC.Web.Files.Utils
                 throw new Exception("Create draft failed: " + responseSend["error"]["message"].Value<string>());
             }
             return responseSend["response"].Value<string>();
+        }
+    }
+
+    public static class MailMergeTaskRunnerExtension
+    {
+        public static IServiceCollection AddMailMergeTaskRunnerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailMergeTaskRunner>();
+            return services
+                .AddSetupInfo()
+                .AddSecurityContextService()
+                .AddBaseCommonLinkUtilityService();
         }
     }
 }

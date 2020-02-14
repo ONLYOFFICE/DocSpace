@@ -2116,10 +2116,6 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddSocketManagerService()
                 .AddFileOperationsManagerHelperService();
             ;
-
-            /*
-            FileOperationsManagerHelper fileOperationsManagerHelper,
-             */
         }
     }
 }

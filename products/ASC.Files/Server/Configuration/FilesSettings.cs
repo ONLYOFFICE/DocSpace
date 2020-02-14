@@ -228,7 +228,7 @@ namespace ASC.Web.Files.Classes
     {
         public static IServiceCollection AddFilesSettingsHelperService(this IServiceCollection services)
         {
-            services.TryAddScoped<SettingsManager>();
+            services.TryAddScoped<FilesSettingsHelper>();
             return services
                 .AddSettingsManagerService()
                 .AddCoreBaseSettingsService();

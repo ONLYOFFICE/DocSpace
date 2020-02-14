@@ -233,10 +233,10 @@ namespace ASC.Web.Files.Services.DocumentService
                 public EditorType Type = EditorType.Desktop;
                 private string _breadCrumbs;
 
-                public InfoConfig(EntryManager entryManager, FileSharing fileSharing, IFileStorageService fileStorageService)
+                public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharingHelper fileSharingHelper, IFileStorageService fileStorageService)
                 {
-                    EntryManager = entryManager;
-                    FileSharing = fileSharing;
+                    BreadCrumbsManager = breadCrumbsManager;
+                    FileSharingHelper = fileSharingHelper;
                     FileStorageService = fileStorageService;
                 }
 
@@ -267,7 +267,7 @@ namespace ASC.Web.Files.Services.DocumentService
                         {
                             const string crumbsSeporator = " \\ ";
 
-                            var breadCrumbsList = EntryManager.GetBreadCrumbs(File.FolderID);
+                            var breadCrumbsList = BreadCrumbsManager.GetBreadCrumbs(File.FolderID);
                             _breadCrumbs = string.Join(crumbsSeporator, breadCrumbsList.Select(folder => folder.Title).ToArray());
                         }
 
@@ -297,7 +297,7 @@ namespace ASC.Web.Files.Services.DocumentService
                     {
                         if (Type == EditorType.Embedded
                             || Type == EditorType.External
-                            || !FileSharing.CanSetAccess(File)) return null;
+                            || !FileSharingHelper.CanSetAccess(File)) return null;
 
                         try
                         {
@@ -310,8 +310,8 @@ namespace ASC.Web.Files.Services.DocumentService
                     }
                 }
 
-                public EntryManager EntryManager { get; }
-                public FileSharing FileSharing { get; }
+                public BreadCrumbsManager BreadCrumbsManager { get; }
+                public FileSharingHelper FileSharingHelper { get; }
                 public IFileStorageService FileStorageService { get; }
             }
 
@@ -956,8 +956,8 @@ namespace ASC.Web.Files.Services.DocumentService
             services.TryAddTransient<InfoConfig>();
 
             return services
-                .AddEntryManagerService()
-                .AddFileSharingService();
+                .AddBreadCrumbsManagerService()
+                .AddFileSharingHelperService();
         }
 
         public static IServiceCollection AddEditorConfigurationService(this IServiceCollection services)

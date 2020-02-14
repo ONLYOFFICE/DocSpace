@@ -40,6 +40,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -366,6 +367,8 @@ namespace ASC.Files.Core.Data
     {
         public static IServiceCollection AddSecurityDaoService(this IServiceCollection services)
         {
+            services.TryAddScoped<ISecurityDao, SecurityDao>();
+
             return services
                 .AddUserManagerService()
                 .AddFilesDbContextService()

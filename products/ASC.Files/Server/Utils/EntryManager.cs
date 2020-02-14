@@ -92,6 +92,83 @@ namespace ASC.Web.Files.Utils
         }
     }
 
+    public class BreadCrumbsManager
+    {
+        public IDaoFactory DaoFactory { get; }
+        public FileSecurity FileSecurity { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public AuthContext AuthContext { get; }
+
+        public BreadCrumbsManager(
+            IDaoFactory daoFactory,
+            FileSecurity fileSecurity,
+            GlobalFolderHelper globalFolderHelper,
+            AuthContext authContext)
+        {
+            DaoFactory = daoFactory;
+            FileSecurity = fileSecurity;
+            GlobalFolderHelper = globalFolderHelper;
+            AuthContext = authContext;
+        }
+
+        public List<Folder> GetBreadCrumbs(object folderId)
+        {
+            var folderDao = DaoFactory.FolderDao;
+            return GetBreadCrumbs(folderId, folderDao);
+        }
+
+        public List<Folder> GetBreadCrumbs(object folderId, IFolderDao folderDao)
+        {
+            if (folderId == null) return new List<Folder>();
+            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).ToList();
+
+            var firstVisible = breadCrumbs.ElementAtOrDefault(0);
+
+            object rootId = null;
+            if (firstVisible == null)
+            {
+                rootId = GlobalFolderHelper.FolderShare;
+            }
+            else
+            {
+                switch (firstVisible.FolderType)
+                {
+                    case FolderType.DEFAULT:
+                        if (!firstVisible.ProviderEntry)
+                        {
+                            rootId = GlobalFolderHelper.FolderShare;
+                        }
+                        else
+                        {
+                            switch (firstVisible.RootFolderType)
+                            {
+                                case FolderType.USER:
+                                    rootId = AuthContext.CurrentAccount.ID == firstVisible.RootFolderCreator
+                                        ? GlobalFolderHelper.FolderMy
+                                        : GlobalFolderHelper.FolderShare;
+                                    break;
+                                case FolderType.COMMON:
+                                    rootId = GlobalFolderHelper.FolderCommon;
+                                    break;
+                            }
+                        }
+                        break;
+
+                    case FolderType.BUNCH:
+                        rootId = GlobalFolderHelper.FolderProjects;
+                        break;
+                }
+            }
+
+            if (rootId != null)
+            {
+                breadCrumbs.Insert(0, folderDao.GetFolder(rootId));
+            }
+
+            return breadCrumbs;
+        }
+    }
+
     public class EntryManager
     {
         private const string UPDATE_LIST = "filesUpdateList";
@@ -115,6 +192,7 @@ namespace ASC.Web.Files.Utils
         public ThirdpartyConfiguration ThirdpartyConfiguration { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public LockerManager LockerManager { get; }
+        public BreadCrumbsManager BreadCrumbsManager { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Logger { get; }
 
@@ -138,6 +216,7 @@ namespace ASC.Web.Files.Utils
             ThirdpartyConfiguration thirdpartyConfiguration,
             DocumentServiceConnector documentServiceConnector,
             LockerManager lockerManager,
+            BreadCrumbsManager breadCrumbsManager,
             IServiceProvider serviceProvider)
         {
             DaoFactory = daoFactory;
@@ -158,6 +237,7 @@ namespace ASC.Web.Files.Utils
             ThirdpartyConfiguration = thirdpartyConfiguration;
             DocumentServiceConnector = documentServiceConnector;
             LockerManager = lockerManager;
+            BreadCrumbsManager = breadCrumbsManager;
             ServiceProvider = serviceProvider;
             Logger = optionsMonitor.CurrentValue;
             cache = AscCache.Memory;
@@ -534,59 +614,12 @@ namespace ASC.Web.Files.Utils
 
         public List<Folder> GetBreadCrumbs(object folderId)
         {
-            var folderDao = DaoFactory.FolderDao;
-            return GetBreadCrumbs(folderId, folderDao);
+            return BreadCrumbsManager.GetBreadCrumbs(folderId);
         }
 
         public List<Folder> GetBreadCrumbs(object folderId, IFolderDao folderDao)
         {
-            if (folderId == null) return new List<Folder>();
-            var breadCrumbs = FileSecurity.FilterRead(folderDao.GetParentFolders(folderId)).ToList();
-
-            var firstVisible = breadCrumbs.ElementAtOrDefault(0);
-
-            object rootId = null;
-            if (firstVisible == null)
-            {
-                rootId = GlobalFolderHelper.FolderShare;
-            }
-            else
-            {
-                switch (firstVisible.FolderType)
-                {
-                    case FolderType.DEFAULT:
-                        if (!firstVisible.ProviderEntry)
-                        {
-                            rootId = GlobalFolderHelper.FolderShare;
-                        }
-                        else
-                        {
-                            switch (firstVisible.RootFolderType)
-                            {
-                                case FolderType.USER:
-                                    rootId = AuthContext.CurrentAccount.ID == firstVisible.RootFolderCreator
-                                        ? GlobalFolderHelper.FolderMy
-                                        : GlobalFolderHelper.FolderShare;
-                                    break;
-                                case FolderType.COMMON:
-                                    rootId = GlobalFolderHelper.FolderCommon;
-                                    break;
-                            }
-                        }
-                        break;
-
-                    case FolderType.BUNCH:
-                        rootId = GlobalFolderHelper.FolderProjects;
-                        break;
-                }
-            }
-
-            if (rootId != null)
-            {
-                breadCrumbs.Insert(0, folderDao.GetFolder(rootId));
-            }
-
-            return breadCrumbs;
+            return BreadCrumbsManager.GetBreadCrumbs(folderId, folderDao);
         }
 
 
@@ -1048,6 +1081,7 @@ namespace ASC.Web.Files.Utils
                 .AddFilesIntegrationService()
                 .AddThirdpartyConfigurationService()
                 .AddLockerManagerService()
+                .AddBreadCrumbsManagerService()
                 ;
         }
     }
@@ -1060,6 +1094,19 @@ namespace ASC.Web.Files.Utils
             return services
                 .AddAuthContextService()
                 .AddDaoFactoryService();
+        }
+    }
+
+    public static class BreadCrumbsManagerExtension
+    {
+        public static IServiceCollection AddBreadCrumbsManagerService(this IServiceCollection services)
+        {
+            services.TryAddScoped<BreadCrumbsManager>();
+            return services
+                .AddDaoFactoryService()
+                .AddFileSecurityService()
+                .AddGlobalFolderHelperService()
+                .AddAuthContextService();
         }
     }
 }

@@ -49,6 +49,39 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
+    public class FileSharingHelper
+    {
+        public FileSharingHelper(
+            Global global,
+            GlobalFolderHelper globalFolderHelper,
+            FileSecurity fileSecurity,
+            AuthContext authContext,
+            UserManager userManager)
+        {
+            Global = global;
+            GlobalFolderHelper = globalFolderHelper;
+            FileSecurity = fileSecurity;
+            AuthContext = authContext;
+            UserManager = userManager;
+        }
+
+        public Global Global { get; }
+        public GlobalFolderHelper GlobalFolderHelper { get; }
+        public FileSecurity FileSecurity { get; }
+        public AuthContext AuthContext { get; }
+        public UserManager UserManager { get; }
+
+        public bool CanSetAccess(FileEntry entry)
+        {
+            return
+                entry != null
+                && (entry.RootFolderType == FolderType.COMMON && Global.IsAdministrator
+                    || entry.RootFolderType == FolderType.USER
+                    && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy) || FileSecurity.CanEdit(entry))
+                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager));
+        }
+    }
+
     public class FileSharing
     {
         public Global Global { get; }
@@ -64,6 +97,7 @@ namespace ASC.Web.Files.Utils
         public CoreBaseSettings CoreBaseSettings { get; }
         public NotifyClient NotifyClient { get; }
         public IDaoFactory DaoFactory { get; }
+        public FileSharingHelper FileSharingHelper { get; }
         public ILog Logger { get; }
 
         public FileSharing(
@@ -80,7 +114,8 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper documentServiceHelper,
             CoreBaseSettings coreBaseSettings,
             NotifyClient notifyClient,
-            IDaoFactory daoFactory)
+            IDaoFactory daoFactory,
+            FileSharingHelper fileSharingHelper)
         {
             Global = global;
             GlobalFolderHelper = globalFolderHelper;
@@ -95,17 +130,13 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings = coreBaseSettings;
             NotifyClient = notifyClient;
             DaoFactory = daoFactory;
+            FileSharingHelper = fileSharingHelper;
             Logger = optionsMonitor.CurrentValue;
         }
 
         public bool CanSetAccess(FileEntry entry)
         {
-            return
-                entry != null
-                && (entry.RootFolderType == FolderType.COMMON && Global.IsAdministrator
-                    || entry.RootFolderType == FolderType.USER
-                    && (Equals(entry.RootFolderId, GlobalFolderHelper.FolderMy) || FileSecurity.CanEdit(entry))
-                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager));
+            return FileSharingHelper.CanSetAccess(entry);
         }
 
         public List<AceWrapper> GetSharedInfo(FileEntry entry)
@@ -509,7 +540,22 @@ namespace ASC.Web.Files.Utils
                 .AddFileUtilityService()
                 .AddDocumentServiceHelperService()
                 .AddNotifyClientService()
-                .AddDaoFactoryService();
+                .AddDaoFactoryService()
+                .AddFileSharingHelperService();
+        }
+    }
+
+    public static class FileSharingHelperExtension
+    {
+        public static IServiceCollection AddFileSharingHelperService(this IServiceCollection services)
+        {
+            services.TryAddScoped<FileSharingHelper>();
+            return services
+                .AddGlobalService()
+                .AddGlobalFolderHelperService()
+                .AddFileSecurityService()
+                .AddAuthContextService()
+                .AddUserManagerService();
         }
     }
 }

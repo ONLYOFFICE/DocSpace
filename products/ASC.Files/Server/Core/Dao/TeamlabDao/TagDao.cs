@@ -39,6 +39,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -604,6 +605,7 @@ namespace ASC.Files.Core.Data
     {
         public static IServiceCollection AddTagDaoService(this IServiceCollection services)
         {
+            services.TryAddScoped<ITagDao, TagDao>();
             return services
                 .AddUserManagerService()
                 .AddFilesDbContextService()

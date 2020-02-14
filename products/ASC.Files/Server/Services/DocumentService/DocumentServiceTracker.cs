@@ -682,11 +682,8 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddDocumentServiceConnectorService()
                 .AddNotifyClientService()
                 .AddEncryptionAddressHelperService()
-                .AddSocketManagerService();
-
-            /*
-MailMergeTaskRunner mailMergeTaskRunner
- */
+                .AddSocketManagerService()
+                .AddMailMergeTaskRunnerService();
         }
     }
 }

@@ -45,6 +45,7 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
@@ -954,6 +955,7 @@ namespace ASC.Files.Core.Data
     {
         public static IServiceCollection AddFolderDaoService(this IServiceCollection services)
         {
+            services.TryAddScoped<IFolderDao, FolderDao>();
             return services
                 .AddFactoryIndexerService<FoldersWrapper>()
                 .AddTenantManagerService()
