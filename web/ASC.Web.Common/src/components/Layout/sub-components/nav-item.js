@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactSVG } from 'react-svg'
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { Badge, Icons, Link, Text } from "asc-web-components";
@@ -28,6 +29,12 @@ const NavItemWrapper = styled(Link)`
       text-decoration: none;
     }`
   }
+
+  .injected-svg {
+    path {
+      fill: ${props => props.iconColor && props.iconColor};
+    }
+  }
 `;
 
 const NavItemLabel = styled(Text)`
@@ -44,11 +51,6 @@ const badgeCss = css`
 
 const NavItemBadge = styled(Badge)`
   ${props => (props.opened ? "" : badgeCss)}
-`;
-
-const NavCustomIcon = styled.img`
-  width: 24px;
-  height: 24px; 
 `;
 
 const NavItem = React.memo(props => {
@@ -68,20 +70,29 @@ const NavItem = React.memo(props => {
   } = props;
   const color = active ? activeColor : baseColor;
 
+  console.log(active);
+
   return separator ? (
     <NavItemSeparator />
   ) : (
       <NavItemWrapper
-      noHover={noHover}
-      href={url} 
-      onClick={onClick}>
+        noHover={noHover}
+        href={url}
+        onClick={onClick}
+        iconColor={color}>
         {iconUrl
-        ? (<NavCustomIcon src={iconUrl}/>)
-        : React.createElement(Icons[iconName], {
-          size: "big",
-          isfill: true,
-          color: color
-        })}
+          ? (<ReactSVG
+            src={iconUrl}
+            beforeInjection={svg => {
+              svg.setAttribute('style', `width: 24px; height: 24px;`);
+              svg.setAttribute('fill', color);
+            }}
+          />)
+          : React.createElement(Icons[iconName], {
+            size: "big",
+            isfill: true,
+            color: color
+          })}
         {children && (
           <NavItemLabel opened={opened} color={color} fontSize="16px" fontWeight="bold" truncate>
             {children}
