@@ -33,17 +33,23 @@ const StyledFilterBlock = styled.div`
     display: flex;
 
     .filter-button {
+
+        svg {
+            path:not(:first-child) {
+                stroke: #A3A9AE;
+            }
+        }
+
+        stroke: #A3A9AE;
         div:active {
             svg path:first-child { 
                 fill: #ECEEF1; 
+                stroke: #A3A9AE;
             }
         }
         div:first-child:hover {
-            svg path:first-child { 
-                stroke: #adb3b8; 
-            }
             svg path:not(:first-child) { 
-                stroke: #555F65; 
+                stroke: #A3A9AE; 
             }
         }
     }

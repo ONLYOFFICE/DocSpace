@@ -32,21 +32,7 @@ const getItems = data => {
       );
     }
     return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
+      <TreeNode key={item.key} title={item.title} />
     );
   });
 };

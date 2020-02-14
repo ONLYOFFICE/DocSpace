@@ -63,22 +63,26 @@ const StyledInput = styled(Input).attrs((props) => ({
 
     ::-webkit-input-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
-        font-family: 'Open Sans',sans-serif
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
     }
 
     :-moz-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
-        font-family: 'Open Sans',sans-serif
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
     }
 
     ::-moz-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
-        font-family: 'Open Sans',sans-serif
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
     }
 
     :-ms-input-placeholder {
         color: ${props => props.isDisabled ? '#D0D5DA' : '#D0D5DA'};
-        font-family: 'Open Sans',sans-serif
+        font-family: 'Open Sans',sans-serif;
+        user-select: none;
     }
 
     ${props => !props.withBorder && `border: none;`}

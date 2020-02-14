@@ -1,23 +1,49 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils } from "asc-web-components";
-const { tablet } = utils.device;
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
+import { Icons, utils } from "asc-web-components"
+const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
 
 const Header = styled.header`
   align-items: center;
   background-color: ${backgroundColor};
-  display: none;
+  display: flex;
   z-index: 185;
   position: absolute;
   width: 100vw;
+  height: 56px;
 
-  @media ${tablet} {
-    display: flex;
+  .header-module-title {
+    display: block;
+    font-size: 21px;
+    line-height: 0;
+
+    @media ${desktop} {
+      display: none;
+    }
+   }
+
+  .header-logo-min_icon {
+    display: none;
+
+    @media(max-width: 620px) {
+      padding: 0 12px 0 0px;
+      display: block;
+    }
+  }
+
+  .header-logo-icon {
+    width: 160px;
+    position: relative;
+    padding: 0 12px 0 0px;
+
+    @media(max-width: 620px) {
+      display: none;
+    }
   }
 `;
 
@@ -31,7 +57,9 @@ const HeaderComponent = React.memo(props => {
         onClick={props.onClick}
         noHover={true}
       />
-      <Headline type="header" color="#FFFFFF">
+      <Icons.NavLogoIcon className="header-logo-min_icon" />
+      <Icons.NavLogoOpenedIcon className="header-logo-icon" />
+      <Headline className="header-module-title" type="header" color="#FFFFFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
     </Header>

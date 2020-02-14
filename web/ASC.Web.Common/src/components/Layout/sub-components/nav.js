@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { utils, Scrollbar } from "asc-web-components";
-const { tablet } = utils.device;
+import { Scrollbar } from "asc-web-components";
 
 const backgroundColor = "#0F4071";
 
@@ -15,13 +14,9 @@ const StyledNav = styled.nav`
   position: fixed;
   top: 0;
   transition: width 0.3s ease-in-out;
-  width: ${props => (props.opened ? "240px" : "56px")};
+  width: ${props => (props.opened ? "240px" : "0")};
   z-index: 200;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-
-  @media ${tablet} {
-    width: ${props => (props.opened ? "240px" : "0")};
-  }
 `;
 
 const StyledScrollbar = styled(Scrollbar)`
