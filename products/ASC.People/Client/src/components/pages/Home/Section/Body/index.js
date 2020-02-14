@@ -20,7 +20,8 @@ import {
   setSelection,
   updateUserStatus,
   resetFilter,
-  fetchPeople
+  fetchPeople,
+  selectGroup
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
@@ -350,6 +351,7 @@ class SectionBodyContent extends React.PureComponent {
                     user={user}
                     history={history}
                     settings={settings}
+                    selectGroup={this.props.selectGroup}
                   />
                 </Row>
               );
@@ -426,5 +428,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople }
+  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople, selectGroup }
 )(withRouter(withTranslation()(SectionBodyContent)));

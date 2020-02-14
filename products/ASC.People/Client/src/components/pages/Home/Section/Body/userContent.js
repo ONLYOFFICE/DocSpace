@@ -3,9 +3,8 @@ import { withRouter } from "react-router";
 import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
-import { history } from "asc-web-common";
 
-const getFormatedGroups = (user, status) => {
+const getFormatedGroups = (user, status, selectGroup) => {
   let temp = [];
   const groups = user.groups;
   const linkColor = "#333";
@@ -17,7 +16,7 @@ const getFormatedGroups = (user, status) => {
       {
         key: group.id,
         label: group.name,
-        onClick: () => history.push(`/products/people/filter?group=${group.id}`)
+        onClick: () => selectGroup(group.id)
       }
     )
   );
@@ -52,10 +51,10 @@ const getFormatedGroups = (user, status) => {
   }
 };
 
-const UserContent = ({ user, history, settings }) => {
+const UserContent = ({ user, history, settings, selectGroup }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
-  const groups = getFormatedGroups(user, status);
+  const groups = getFormatedGroups(user, status, selectGroup);
 
   const onUserNameClick = useCallback(
     () => history.push(`${settings.homepage}/view/${userName}`),
