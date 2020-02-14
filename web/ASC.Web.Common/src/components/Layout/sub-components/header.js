@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import NavItem from "./nav-item";
 import Headline from "../../Headline";
-import { Icons, utils } from "asc-web-components";
+import { utils } from "asc-web-components";
 const { desktop } = utils.device;
 
 const backgroundColor = "#0F4071";
@@ -32,16 +32,19 @@ const Header = styled.header`
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
+    width: 24px;
+    height: 24px;
     @media (max-width: 620px) {
-      padding: 0 12px 0 0px;
+      padding: 0 12px 0 0;
       display: ${props => props.module && "block"};
     }
   }
 
   .header-logo-icon {
-    width: 160px;
+    width: 146px;
+    height: 24px;
     position: relative;
-    padding: 0 12px 0 0px;
+    padding: 4px 20px 0 6px;
     cursor: pointer;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -62,14 +65,13 @@ const HeaderComponent = React.memo(props => {
         onClick={props.onClick}
         noHover={true}
       />
-      <Icons.NavLogoIcon
-        className="header-logo-min_icon"
-        onClick={props.onLogoClick}
-      />
-      <Icons.NavLogoOpenedIcon
-        className="header-logo-icon"
-        onClick={props.onLogoClick}
-      />
+      <a href="/">
+        <img className="header-logo-min_icon" src="images/nav.logo.react.svg" />
+        <img
+          className="header-logo-icon"
+          src="images/nav.logo.opened.react.svg"
+        />
+      </a>
       <Headline className="header-module-title" type="header" color="#FFF">
         {props.currentModule && props.currentModule.title}
       </Headline>
