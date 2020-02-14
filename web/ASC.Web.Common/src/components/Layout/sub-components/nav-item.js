@@ -70,8 +70,6 @@ const NavItem = React.memo(props => {
   } = props;
   const color = active ? activeColor : baseColor;
 
-  console.log(active);
-
   return separator ? (
     <NavItemSeparator />
   ) : (
