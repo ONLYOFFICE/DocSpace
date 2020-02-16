@@ -102,46 +102,28 @@ namespace ASC.Mail.Core.Engine
             //if (accountInfoList != null)
             //    return accountInfoList;
 
-            //List<Account> accounts;
-            //List<MailSignatureData> signatures;
-            //List<MailAutoreplyData> autoreplies;
-
-            //using (var daoFactory = new DaoFactory())
-            //{
-            //    accounts = daoFactory.CreateAccountDao(Tenant, User)
-            //        .GetAccounts();
-
-            //    var mailboxIds = accounts.Select(a => a.MailboxId).ToList();
-
-            //    signatures = daoFactory.CreateMailboxSignatureDao(Tenant, User)
-            //        .GetSignatures(mailboxIds)
-            //        .ConvertAll(s => new MailSignatureData(s.MailboxId, s.Tenant, s.Html, s.IsActive))
-            //        .ToList();
-
-            //    autoreplies = daoFactory.CreateMailboxAutoreplyDao(Tenant, User)
-            //        .GetAutoreplies(mailboxIds)
-            //        .ConvertAll(
-            //            r =>
-            //                new MailAutoreplyData(r.MailboxId, r.Tenant, r.TurnOn, r.OnlyContacts, r.TurnOnToDate,
-            //                    r.FromDate, r.ToDate, r.Subject, r.Html))
-            //        .ToList();
-            //}
-
-            //accountInfoList = ToAccountInfoList(accounts, signatures, autoreplies);
-
-            //CacheEngine.Set(User, accountInfoList);
-
-            //return accountInfoList;
-
-            //var accounts = new List<Account>();
-            var signatures = new List<MailSignatureData>();
-            var autoreplies = new List<MailAutoreplyData>();
-
             var mailboxes = MailDb.MailMailbox
                 .Where(mb => mb.Tenant == Tenant && mb.IdUser == UserId && !mb.IsRemoved)
                 .ToList();
 
+            var mailboxIds = mailboxes.Select(a => a.Id).ToList();
+
+            var signatures = MailDb.MailMailboxSignature
+                .Where(mbs => mailboxIds.Contains(mbs.IdMailbox))
+                .ToList()
+                .ConvertAll(s => new MailSignatureData((int)s.IdMailbox, s.Tenant, s.Html, s.IsActive))
+                .ToList();
+
+            var autoreplies = MailDb.MailMailboxAutoreply
+                .Where(mba => mailboxIds.Contains(mba.IdMailbox))
+                .ToList()
+                .ConvertAll(r => new MailAutoreplyData((int)r.IdMailbox, r.Tenant, r.TurnOn, 
+                    r.OnlyContacts, r.TurnOnToDate, r.FromDate, r.ToDate, r.Subject, r.Html))
+                .ToList();
+
             var accountInfoList = ToAccountInfoList(mailboxes, signatures, autoreplies);
+
+            //CacheEngine.Set(User, accountInfoList);
 
             return accountInfoList;
         }
@@ -534,13 +516,29 @@ namespace ASC.Mail.Core.Engine
         private static List<AccountInfo> ToAccountInfoList(IEnumerable<Dao.Entities.MailMailbox> mailboxes,
             IReadOnlyCollection<MailSignatureData> signatures, IReadOnlyCollection<MailAutoreplyData> autoreplies)
         {
-            return mailboxes.Select(mb => {
+            return mailboxes.Select(mb =>
+            {
+                var signature = signatures.FirstOrDefault(s => s.MailboxId == mb.Id);
+                var autoreply = autoreplies.FirstOrDefault(s => s.MailboxId == mb.Id);
+
+                var authErrorType = MailBoxData.AuthProblemType.NoProblems;
+
+                if (mb.DateAuthError.HasValue)
+                {
+                    var authErrorDate = mb.DateAuthError.Value;
+
+                    if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorDisableTimeout)
+                        authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
+                    else if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorWarningTimeout)
+                        authErrorType = MailBoxData.AuthProblemType.ConnectError;
+                }
+
                 return new AccountInfo(
-                    mb.Id, mb.Address, mb.Name, mb.Enabled, mb.QuotaError, MailBoxData.AuthProblemType.NoProblems, 
-                    null, null, !string.IsNullOrEmpty(mb.Token), mb.EmailInFolder, mb.IsServerMailbox, false);
+                    mb.Id, mb.Address, mb.Name, mb.Enabled, mb.QuotaError, authErrorType,
+                    signature, autoreply, !string.IsNullOrEmpty(mb.Token), mb.EmailInFolder, mb.IsServerMailbox, false);
             })
             .ToList();
-        
+
             //var accountInfoList = new List<AccountInfo>();
 
             //foreach (var mailbox in mailboxes)
