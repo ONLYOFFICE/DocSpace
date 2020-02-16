@@ -34,7 +34,7 @@ namespace ASC.Mail.Models
     public class MailAccountData
     {
         [DataMember(IsRequired = false, Name = "mailboxId")]
-        public int MailboxId { get; set; }
+        public uint MailboxId { get; set; }
 
         [DataMember(IsRequired = true, Name = "email")]
         public string Email { get; set; }

@@ -137,7 +137,7 @@ namespace ASC.Mail.Core.Engine
             var signatures = new List<MailSignatureData>();
             var autoreplies = new List<MailAutoreplyData>();
 
-            var mailboxes = MailDb.Mailbox
+            var mailboxes = MailDb.MailMailbox
                 .Where(mb => mb.Tenant == Tenant && mb.IdUser == UserId && !mb.IsRemoved)
                 .ToList();
 
@@ -531,7 +531,7 @@ namespace ASC.Mail.Core.Engine
         //    return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
         //}
 
-        private static List<AccountInfo> ToAccountInfoList(IEnumerable<Dao.Model.Mailbox> mailboxes,
+        private static List<AccountInfo> ToAccountInfoList(IEnumerable<Dao.Entities.MailMailbox> mailboxes,
             IReadOnlyCollection<MailSignatureData> signatures, IReadOnlyCollection<MailAutoreplyData> autoreplies)
         {
             return mailboxes.Select(mb => {

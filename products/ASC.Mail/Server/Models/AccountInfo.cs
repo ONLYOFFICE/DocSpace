@@ -30,7 +30,7 @@ namespace ASC.Mail.Models
 {
     public class AccountInfo
     {
-        public int Id { get; set; }
+        public uint Id { get; set; }
 
         public string Email { get; set; }
 
@@ -63,7 +63,7 @@ namespace ASC.Mail.Models
             return Name + " <" + Email + ">";
         }
 
-        public AccountInfo(int id, string address, string name, bool enabled,
+        public AccountInfo(uint id, string address, string name, bool enabled,
             bool quotaError, MailBoxData.AuthProblemType authError, MailSignatureData signature, MailAutoreplyData autoreply,
             bool oauthConnection, string emailInFolder, bool isTeamlabMailbox, bool isSharedDomainMailbox)
         {
