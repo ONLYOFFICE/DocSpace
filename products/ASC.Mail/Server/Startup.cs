@@ -44,21 +44,15 @@ namespace ASC.Mail
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                .AddControllersAsServices()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();
 
             services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
-            services.AddMemoryCache();
-
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
             services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            var builder = services.AddMvc(config =>
+            services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder()
                     .RequireAuthenticatedUser()
@@ -85,38 +79,10 @@ namespace ASC.Mail
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            //services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
-            //{
-            //    r.workerCount = 2;
-            //    r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
-            //    r.errorCount = 1;
-            //    r.stopAfterFinsih = true;
-            //});
-
-            //services.Configure<ProgressQueue<ReassignProgressItem>>(r =>
-            //{
-            //    r.workerCount = 1;
-            //    r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-            //    r.removeAfterCompleted = true;
-            //    r.stopAfterFinsih = false;
-            //    r.errorCount = 0;
-            //});
-
-            //services.Configure<ProgressQueue<RemoveProgressItem>>(r =>
-            //{
-            //    r.workerCount = 1;
-            //    r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
-            //    r.removeAfterCompleted = true;
-            //    r.stopAfterFinsih = false;
-            //    r.errorCount = 0;
-            //});
-
             services.AddNLogManager("ASC.Api", "ASC.Web");
 
             services
                 .AddMailController();
-            //    .AddPeopleController()
-            //    .AddGroupController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -140,8 +106,6 @@ namespace ASC.Mail
                     .AllowAnyMethod());
 
             app.UseRouting();
-
-            app.UseSession();
 
             app.UseAuthentication();
 
