@@ -87,6 +87,7 @@ class ContextMenuButton extends React.Component {
       onMouseOver,
       onMouseOut,
       directionX,
+      directionY,
       className,
       id,
       style
@@ -113,7 +114,8 @@ class ContextMenuButton extends React.Component {
           onMouseOut={onMouseOut}
         />
         <DropDown 
-          directionX={directionX} 
+          directionX={directionX}
+          directionY={directionY}
           open={isOpen}
           clickOutsideAction={this.clickOutsideAction}
         >
@@ -152,6 +154,7 @@ ContextMenuButton.propTypes = {
   onMouseOut: PropTypes.func,
 
   directionX: PropTypes.string,
+  directionY: PropTypes.string,
 
   className: PropTypes.string,
   id: PropTypes.string,
