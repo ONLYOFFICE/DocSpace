@@ -10,6 +10,10 @@ const LogoItem = styled.div`
   padding: 0 16px;
   cursor: pointer;
 
+  .nav-logo-wrapper {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   .nav-logo-icon {
     display: ${props => (props.opened ? "block" : "none")};
   }
@@ -19,7 +23,7 @@ const NavLogoItem = React.memo(props => {
   //console.log("NavLogoItem render");
   return (
     <LogoItem opened={props.opened}>
-      <a href="/">
+      <a className="nav-logo-wrapper" href="/">
         <img className="nav-logo-icon" src="images/nav.logo.opened.react.svg" />
       </a>
     </LogoItem>
