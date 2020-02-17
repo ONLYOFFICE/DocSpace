@@ -28,6 +28,12 @@ const StyledSearchInput = styled.div`
     @media ${mobile} {
         width: calc(100% - 58px);
     }
+
+    .search-input-block {
+        & > input { 
+            height: 30px; 
+        }
+  }
 `;
 const StyledFilterBlock = styled.div`
     display: flex;
