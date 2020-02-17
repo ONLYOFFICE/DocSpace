@@ -11,6 +11,7 @@ namespace ASC.Common
         public List<string> Singleton { get; set; }
         public List<string> Scoped { get; set; }
         public List<string> Transient { get; set; }
+        public List<string> Configured { get; set; }
         public IServiceCollection ServiceCollection { get; }
 
         public DIHelper(IServiceCollection serviceCollection)
@@ -18,6 +19,7 @@ namespace ASC.Common
             Singleton = new List<string>();
             Scoped = new List<string>();
             Transient = new List<string>();
+            Configured = new List<string>();
             ServiceCollection = serviceCollection;
         }
 
@@ -142,13 +144,25 @@ namespace ASC.Common
 
         public DIHelper Configure<TOptions>(Action<TOptions> configureOptions) where TOptions : class
         {
-            ServiceCollection.Configure(configureOptions);
+            var serviceName = $"{typeof(TOptions)}";
+            if (!Configured.Contains(serviceName))
+            {
+                Configured.Add(serviceName);
+                ServiceCollection.Configure(configureOptions);
+            }
+
             return this;
         }
 
         public DIHelper Configure<TOptions>(string name, Action<TOptions> configureOptions) where TOptions : class
         {
-            ServiceCollection.Configure(name, configureOptions);
+            var serviceName = $"{typeof(TOptions)}{name}";
+            if (!Configured.Contains(serviceName))
+            {
+                Configured.Add(serviceName);
+                ServiceCollection.Configure(name, configureOptions);
+            }
+
             return this;
         }
     }
