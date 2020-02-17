@@ -56,11 +56,6 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
   const status = getUserStatus(user);
   const groups = getFormatedGroups(user, status, selectGroup);
 
-  const onUserNameClick = useCallback(
-    () => history.push(`${settings.homepage}/view/${userName}`),
-    [history, settings.homepage, userName]
-  );
-
   const onPhoneClick = useCallback(
     () => window.open(`sms:${mobilePhone}`),
     [mobilePhone]
@@ -82,7 +77,9 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
     <RowContent
       sideColor={sideInfoColor}
     >
-      <Link type='page' title={displayName} fontWeight="bold" fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
+      <Link type='page' href={`/products/people/view/${userName}`} title={displayName} fontWeight="bold" fontSize='15px' color={nameColor} isTextOverflow={true}>
+        {displayName}
+      </Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
