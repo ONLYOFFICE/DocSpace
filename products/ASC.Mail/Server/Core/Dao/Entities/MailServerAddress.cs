@@ -22,9 +22,9 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("id_mailbox", TypeName = "int(11)")]
         public int IdMailbox { get; set; }
         [Column("is_mail_group", TypeName = "int(10)")]
-        public int IsMailGroup { get; set; }
+        public bool IsMailGroup { get; set; }
         [Column("is_alias", TypeName = "int(10)")]
-        public int IsAlias { get; set; }
+        public bool IsAlias { get; set; }
         [Column("date_created", TypeName = "datetime")]
         public DateTime DateCreated { get; set; }
     }

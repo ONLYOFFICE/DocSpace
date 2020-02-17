@@ -78,6 +78,15 @@ namespace ASC.Mail.Core
             DbContext = dbContext;
         }
 
+        private AccountEngine _accountEngine;
+        public AccountEngine AccountEngine
+        {
+            get
+            {
+                return _accountEngine ?? (_accountEngine = new AccountEngine(DbContext, ApiContext, SecurityContext, LogOption));
+            }
+        }
+
         //private AutoreplyEngine _autoreplyEngine;
         //public AutoreplyEngine AutoreplyEngine
         //{
@@ -130,14 +139,6 @@ namespace ASC.Mail.Core
         //{
         //    get { return _mailboxEngine ?? (_mailboxEngine = new MailboxEngine(DbContext, Tenant, UserId, Log)); }
         //}
-
-        private AccountEngine _accountEngine;
-        public AccountEngine AccountEngine
-        {
-            get { 
-                return _accountEngine ?? (_accountEngine = new AccountEngine(DbContext, ApiContext, SecurityContext, LogOption));
-            }
-        }
 
         //private QuotaEngine _quotaEngine;
         //public QuotaEngine QuotaEngine

@@ -11,7 +11,7 @@ namespace ASC.Mail.Core.Dao.Entities
     {
         [Key]
         [Column("id", TypeName = "int(11) unsigned")]
-        public uint Id { get; set; }
+        public int Id { get; set; }
         [Column("tenant", TypeName = "int(11)")]
         public int Tenant { get; set; }
         [Required]

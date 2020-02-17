@@ -13,7 +13,7 @@ namespace ASC.Mail.Core.Dao.Entities
         public int Tenant { get; set; }
         [Key]
         [Column("id_mailbox", TypeName = "int(11)")]
-        public uint IdMailbox { get; set; }
+        public int IdMailbox { get; set; }
         [Column("html", TypeName = "text")]
         public string Html { get; set; }
         [Column("is_active", TypeName = "tinyint(4)")]

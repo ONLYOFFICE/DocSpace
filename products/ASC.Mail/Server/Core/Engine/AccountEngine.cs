@@ -86,7 +86,6 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             Log = option.Get("ASC.Api");
 
-            MailDb = dbContext.Get("mail");
             //Log = log ?? LogManager.GetLogger("ASC.Mail.AccountEngine");
 
             //var engine = new EngineFactory(dbContext, tenant, user);
@@ -102,26 +101,117 @@ namespace ASC.Mail.Core.Engine
             //if (accountInfoList != null)
             //    return accountInfoList;
 
-            var mailboxes = MailDb.MailMailbox
-                .Where(mb => mb.Tenant == Tenant && mb.IdUser == UserId && !mb.IsRemoved)
-                .ToList();
+            var accounts = from mb in MailDb.MailMailbox
+                           join signature in MailDb.MailMailboxSignature on mb.Id equals signature.IdMailbox into Signature
+                           from sig in Signature.DefaultIfEmpty()
+                           join autoreply in MailDb.MailMailboxAutoreply on mb.Id equals autoreply.IdMailbox into Autoreply
+                           from reply in Autoreply.DefaultIfEmpty()
+                           join address in MailDb.MailServerAddress on mb.Id equals address.IdMailbox into Address
+                           from sa in Address.DefaultIfEmpty()
+                           join domain in MailDb.MailServerDomain on sa.IdDomain equals domain.Id into Domain
+                           from sd in Domain.DefaultIfEmpty()
+                           join groupXaddress in MailDb.MailServerMailGroupXMailServerAddress on sa.Id equals groupXaddress.IdAddress into GroupXaddress
+                           from sgxa in GroupXaddress.DefaultIfEmpty()
+                           join servergroup in MailDb.MailServerMailGroup on sgxa.IdMailGroup equals servergroup.Id into ServerGroup
+                           from sg in ServerGroup.DefaultIfEmpty()
+                           where mb.Tenant == Tenant && mb.IsRemoved == false && mb.IdUser == UserId
+                           orderby sa.IsAlias
+                           select new {
+                               MailboxId = mb.Id,
+                               MailboxAddress = mb.Address,
+                               MailboxEnabled = mb.Enabled,
+                               MailboxAddressName = mb.Name,
+                               MailboxQuotaError = mb.QuotaError,
+                               MailboxDateAuthError = mb.DateAuthError,
+                               MailboxOAuthToken = mb.Token,
+                               MailboxIsServerMailbox = mb.IsServerMailbox,
+                               MailboxEmailInFolder = mb.EmailInFolder,
+                               ServerAddressId = sa.Id,
+                               ServerAddressName = sa.Name,
+                               ServerAddressIsAlias = sa.IsAlias,
+                               ServerDomainId = sd.Id,
+                               ServerDomainName = sd.Name,
+                               ServerDomainTenant = sd.Tenant,
+                               ServerMailGroupId = sg.Id,
+                               ServerMailGroupAddress = sg.Address,
+                               MailboxSignature = sig != null 
+                                ? new MailSignatureData(mb.Id, mb.Tenant, sig.Html, sig.IsActive)
+                                : new MailSignatureData(mb.Id, mb.Tenant, string.Empty, false),
+                               MailboxAutoreply = reply != null 
+                                ? new MailAutoreplyData(mb.Id, mb.Tenant, reply.TurnOn, reply.OnlyContacts, 
+                                    reply.TurnOnToDate, reply.FromDate, reply.ToDate, reply.Subject, reply.Html) 
+                                : new MailAutoreplyData(mb.Id, mb.Tenant, false, false,
+                                    false, DateTime.MinValue, DateTime.MinValue, string.Empty, string.Empty)
+                            };
 
-            var mailboxIds = mailboxes.Select(a => a.Id).ToList();
 
-            var signatures = MailDb.MailMailboxSignature
-                .Where(mbs => mailboxIds.Contains(mbs.IdMailbox))
-                .ToList()
-                .ConvertAll(s => new MailSignatureData((int)s.IdMailbox, s.Tenant, s.Html, s.IsActive))
-                .ToList();
+            var accountInfoList = new List<AccountInfo>();
 
-            var autoreplies = MailDb.MailMailboxAutoreply
-                .Where(mba => mailboxIds.Contains(mba.IdMailbox))
-                .ToList()
-                .ConvertAll(r => new MailAutoreplyData((int)r.IdMailbox, r.Tenant, r.TurnOn, 
-                    r.OnlyContacts, r.TurnOnToDate, r.FromDate, r.ToDate, r.Subject, r.Html))
-                .ToList();
+            foreach (var account in accounts)
+            {
+                var mailboxId = account.MailboxId;
+                var accountIndex = accountInfoList.FindIndex(a => a.Id == mailboxId);
 
-            var accountInfoList = ToAccountInfoList(mailboxes, signatures, autoreplies);
+                var isAlias = account.ServerAddressIsAlias;
+
+                if (!isAlias)
+                {
+                    var groupAddress = account.ServerMailGroupAddress;
+                    MailAddressInfo group = null;
+
+                    if (!string.IsNullOrEmpty(groupAddress))
+                    {
+                        group = new MailAddressInfo(account.ServerMailGroupId,
+                            groupAddress,
+                            account.ServerDomainId);
+                    }
+
+                    if (accountIndex == -1)
+                    {
+                        var authErrorType = MailBoxData.AuthProblemType.NoProblems;
+
+                        if (account.MailboxDateAuthError.HasValue)
+                        {
+                            var authErrorDate = account.MailboxDateAuthError.Value;
+
+                            if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorDisableTimeout)
+                                authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
+                            else if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorWarningTimeout)
+                                authErrorType = MailBoxData.AuthProblemType.ConnectError;
+                        }
+
+                        var accountInfo = new AccountInfo(
+                            mailboxId,
+                            account.MailboxAddress,
+                            account.MailboxAddressName,
+                            account.MailboxEnabled,
+                            account.MailboxQuotaError,
+                            authErrorType, 
+                            account.MailboxSignature, 
+                            account.MailboxAutoreply,
+                            !string.IsNullOrEmpty(account.MailboxOAuthToken),
+                            account.MailboxEmailInFolder,
+                            account.MailboxIsServerMailbox,
+                            account.ServerDomainTenant == Defines.SHARED_TENANT_ID);
+
+                        if (group != null) accountInfo.Groups.Add(group);
+
+                        accountInfoList.Add(accountInfo);
+                    }
+                    else if (group != null)
+                    {
+                        accountInfoList[accountIndex].Groups.Add(group);
+                    }
+                }
+                else
+                {
+                    var alias = new MailAddressInfo(account.ServerAddressId,
+                        string.Format("{0}@{1}", account.ServerAddressName, account.ServerDomainName),
+                        account.ServerDomainId);
+
+                    accountInfoList[accountIndex].Aliases.Add(alias);
+                }
+            }
 
             //CacheEngine.Set(User, accountInfoList);
 
@@ -512,102 +602,5 @@ namespace ASC.Mail.Core.Engine
 
         //    return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
         //}
-
-        private static List<AccountInfo> ToAccountInfoList(IEnumerable<Dao.Entities.MailMailbox> mailboxes,
-            IReadOnlyCollection<MailSignatureData> signatures, IReadOnlyCollection<MailAutoreplyData> autoreplies)
-        {
-            return mailboxes.Select(mb =>
-            {
-                var signature = signatures.FirstOrDefault(s => s.MailboxId == mb.Id);
-                var autoreply = autoreplies.FirstOrDefault(s => s.MailboxId == mb.Id);
-
-                var authErrorType = MailBoxData.AuthProblemType.NoProblems;
-
-                if (mb.DateAuthError.HasValue)
-                {
-                    var authErrorDate = mb.DateAuthError.Value;
-
-                    if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorDisableTimeout)
-                        authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
-                    else if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorWarningTimeout)
-                        authErrorType = MailBoxData.AuthProblemType.ConnectError;
-                }
-
-                return new AccountInfo(
-                    mb.Id, mb.Address, mb.Name, mb.Enabled, mb.QuotaError, authErrorType,
-                    signature, autoreply, !string.IsNullOrEmpty(mb.Token), mb.EmailInFolder, mb.IsServerMailbox, false);
-            })
-            .ToList();
-
-            //var accountInfoList = new List<AccountInfo>();
-
-            //foreach (var mailbox in mailboxes)
-            //{
-            //    var mailboxId = mailbox.Id;
-            //    var accountIndex = accountInfoList.FindIndex(a => a.Id == mailboxId);
-
-            //    var signature = signatures.First(s => s.MailboxId == mailboxId);
-            //    var autoreply = autoreplies.First(s => s.MailboxId == mailboxId);
-            //    var isAlias = mailbox.ServerAddressIsAlias;
-
-            //    if (!isAlias)
-            //    {
-            //        var groupAddress = mailbox.ServerMailGroupAddress;
-            //        MailAddressInfo group = null;
-
-            //        if (!string.IsNullOrEmpty(groupAddress))
-            //        {
-            //            group = new MailAddressInfo(mailbox.ServerMailGroupId,
-            //                groupAddress,
-            //                mailbox.ServerDomainId);
-            //        }
-
-            //        if (accountIndex == -1)
-            //        {
-            //            var authErrorType = MailBoxData.AuthProblemType.NoProblems;
-
-            //            if (mailbox.MailboxDateAuthError.HasValue)
-            //            {
-            //                var authErrorDate = mailbox.MailboxDateAuthError.Value;
-
-            //                if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorDisableTimeout)
-            //                    authErrorType = MailBoxData.AuthProblemType.TooManyErrors;
-            //                else if (DateTime.UtcNow - authErrorDate > Defines.AuthErrorWarningTimeout)
-            //                    authErrorType = MailBoxData.AuthProblemType.ConnectError;
-            //            }
-
-            //            var accountInfo = new AccountInfo(
-            //                mailboxId,
-            //                mailbox.MailboxAddress,
-            //                mailbox.MailboxAddressName,
-            //                mailbox.MailboxEnabled,
-            //                mailbox.MailboxQuotaError,
-            //                authErrorType, signature, autoreply,
-            //                !string.IsNullOrEmpty(mailbox.MailboxOAuthToken),
-            //                mailbox.MailboxEmailInFolder,
-            //                mailbox.MailboxIsTeamlabMailbox,
-            //                mailbox.ServerDomainTenant == Defines.SHARED_TENANT_ID);
-
-            //            if (group != null) accountInfo.Groups.Add(group);
-
-            //            accountInfoList.Add(accountInfo);
-            //        }
-            //        else if (group != null)
-            //        {
-            //            accountInfoList[accountIndex].Groups.Add(group);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var alias = new MailAddressInfo(mailbox.ServerAddressId,
-            //            string.Format("{0}@{1}", mailbox.ServerAddressName, mailbox.ServerDomainName),
-            //            mailbox.ServerDomainId);
-
-            //        accountInfoList[accountIndex].Aliases.Add(alias);
-            //    }
-            //}
-
-            //return accountInfoList;
-        }
     }
 }
