@@ -15,6 +15,8 @@ class GroupAction extends React.Component {
     const { match, fetchGroup } = this.props;
     const { groupId } = match.params;
 
+    document.title = "Create group – People";
+
     if (groupId) {
       fetchGroup(groupId);
     }

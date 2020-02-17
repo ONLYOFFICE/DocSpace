@@ -23,6 +23,8 @@ class ProfileAction extends React.Component {
     const { match, fetchProfile } = this.props;
     const { userId } = match.params;
 
+    document.title = "Profile action – People";
+
     if (userId) {
       fetchProfile(userId);
     }

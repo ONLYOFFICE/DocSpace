@@ -76,7 +76,6 @@ class ArticleBodyContent extends React.Component {
     const { data, selectedKeys } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-
     return (
       <TreeMenu
         className="people-tree-menu"
@@ -97,25 +96,35 @@ class ArticleBodyContent extends React.Component {
 };
 
 const getTreeGroups = (groups, departments) => {
-  const linkStyles = { fontSize: "14px", fontWeight: 600, noHover: true };
+  const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
   const link = history.location.search.slice(1);
   let newLink = link.split("&");
-  const index = newLink.find(x => x.includes("group"));
+  const index = newLink.findIndex(x => x.includes("group"));
   index && newLink.splice(1, 1);
   newLink = newLink.join('&');
+
+  const onGroupClick = group => {
+    document.title = `${group.name} – People`;
+  }
+
+  const onTitleClick = () => {
+    history.push("/products/people/");
+    document.title = "Groups – People";
+  }
 
   const treeData = [
       {
           key: "root",
-          title: <Link {...linkStyles} href={`${history.location.pathname}`}>{departments}</Link>,
+          title: <Link {...linkProps} onClick={onTitleClick} href={`${history.location.pathname}`}>{departments}</Link>,
           root: true,
           children: groups.map(g => {
               return {
                 key: g.id,
                 title: (
                   <Link
-                    {...linkStyles}
+                    {...linkProps}
                     href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                    onClick={onGroupClick.bind(this, g)}
                   >
                     {g.name}
                   </Link>
