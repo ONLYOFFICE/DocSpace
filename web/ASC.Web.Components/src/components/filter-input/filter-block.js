@@ -84,7 +84,7 @@ const StyledComboBox = styled(ComboBox)`
   max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
-  margin-top: -1px;
+  margin-top: -2px;
   > div:first-child{
     width: auto;
     padding-left: 4px;

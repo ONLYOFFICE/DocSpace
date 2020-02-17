@@ -26,6 +26,8 @@ class PageLayoutComponent extends React.PureComponent {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+    const articleElement = document.getElementsByTagName('article') && document.getElementsByTagName('article')[0];
+    articleElement && this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
