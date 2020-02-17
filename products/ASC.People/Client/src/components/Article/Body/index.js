@@ -9,6 +9,7 @@ import {
 } from "asc-web-components";
 import { history } from "asc-web-common";
 import { selectGroup } from '../../../store/people/actions';
+import { getSelectedGroup } from "../../../store/people/selectors";
 
 const getItems = data => {
   return data.map(item => {
@@ -54,7 +55,13 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    this.props.selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+    const { selectGroup, groups } = this.props;
+
+    const currentGroup = getSelectedGroup(groups, data[0]);
+    if(currentGroup) {
+      document.title = currentGroup && `${currentGroup.name} – People`;
+    }
+    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   switcherIcon = obj => {
@@ -103,10 +110,6 @@ const getTreeGroups = (groups, departments) => {
   index && newLink.splice(1, 1);
   newLink = newLink.join('&');
 
-  const onGroupClick = group => {
-    document.title = `${group.name} – People`;
-  }
-
   const onTitleClick = () => {
     history.push("/products/people/");
     document.title = "Groups – People";
@@ -124,7 +127,6 @@ const getTreeGroups = (groups, departments) => {
                   <Link
                     {...linkProps}
                     href={`${history.location.pathname}?group=${g.id}&${newLink}`}
-                    onClick={onGroupClick.bind(this, g)}
                   >
                     {g.name}
                   </Link>
@@ -139,9 +141,12 @@ const getTreeGroups = (groups, departments) => {
 };
 
 function mapStateToProps(state) {
+  const groups = state.people.groups;
+
   return {
-    data: getTreeGroups(state.people.groups, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
+    data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
+    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"],
+    groups
   };
 }
 
