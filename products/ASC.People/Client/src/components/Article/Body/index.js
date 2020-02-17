@@ -1,11 +1,13 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
 import { connect } from 'react-redux';
 import {
+  utils,
   TreeMenu,
   TreeNode,
-  Icons
+  Icons,
+  Link
 } from "asc-web-components";
+import { history } from "asc-web-common";
 import { selectGroup } from '../../../store/people/actions';
 
 const getItems = data => {
@@ -95,14 +97,25 @@ class ArticleBodyContent extends React.Component {
 };
 
 const getTreeGroups = (groups, departments) => {
+  const linkStyles = { fontSize: "14px", fontWeight: 600, noHover: true };
+  const link = history.location.search.slice(1);
   const treeData = [
       {
           key: "root",
-          title: departments,
+          title: <Link {...linkStyles} href={`${history.location.pathname}`}>{departments}</Link>,
           root: true,
           children: groups.map(g => {
               return {
-                  key: g.id, title: g.name, root: false
+                key: g.id,
+                title: (
+                  <Link
+                    {...linkStyles}
+                    href={`${history.location.pathname}?group=${g.id}&${link}`}
+                  >
+                    {g.name}
+                  </Link>
+                ),
+                root: false
               };
           }) || []
       }
