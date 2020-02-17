@@ -27,15 +27,16 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Web;
+
+using ASC.Common;
 using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Notify.Textile
 {
@@ -116,7 +117,7 @@ namespace ASC.Notify.Textile
 
     public static class StylerExtension
     {
-        public static IServiceCollection AddStylerService(this IServiceCollection services)
+        public static DIHelper AddStylerService(this DIHelper services)
         {
             return services
                 .AddCoreBaseSettingsService()
@@ -124,7 +125,7 @@ namespace ASC.Notify.Textile
                 .AddMailWhiteLabelSettingsService()
                 ;
         }
-        public static IServiceCollection AddJabberStylerService(this IServiceCollection services)
+        public static DIHelper AddJabberStylerService(this DIHelper services)
         {
             services.TryAddScoped<JabberStyler>();
             return services.AddStylerService();

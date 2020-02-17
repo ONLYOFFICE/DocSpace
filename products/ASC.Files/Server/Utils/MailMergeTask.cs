@@ -29,13 +29,11 @@ using System.IO;
 using System.Net;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json.Linq;
 
@@ -212,7 +210,7 @@ namespace ASC.Web.Files.Utils
 
     public static class MailMergeTaskRunnerExtension
     {
-        public static IServiceCollection AddMailMergeTaskRunnerService(this IServiceCollection services)
+        public static DIHelper AddMailMergeTaskRunnerService(this DIHelper services)
         {
             services.TryAddScoped<MailMergeTaskRunner>();
             return services

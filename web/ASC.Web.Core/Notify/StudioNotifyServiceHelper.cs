@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Studio.Core.Notify;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Notify
 {
@@ -112,7 +111,7 @@ namespace ASC.Web.Core.Notify
 
     public static class StudioNotifyServiceHelperExtension
     {
-        public static IServiceCollection AddStudioNotifyServiceHelper(this IServiceCollection services)
+        public static DIHelper AddStudioNotifyServiceHelper(this DIHelper services)
         {
             services.TryAddScoped<StudioNotifyServiceHelper>();
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));

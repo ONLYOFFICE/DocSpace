@@ -32,12 +32,11 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -394,7 +393,7 @@ namespace ASC.Core.Notify.Signalr
 
     public static class SignalrServiceClientExtension
     {
-        public static IServiceCollection AddSignalrServiceClient(this IServiceCollection services)
+        public static DIHelper AddSignalrServiceClient(this DIHelper services)
         {
             services.TryAddScoped<SignalrServiceClient>();
             services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();

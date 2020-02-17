@@ -28,10 +28,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
@@ -107,7 +107,7 @@ namespace ASC.Web.Api.Models
 
     public static class GroupWraperFullExtension
     {
-        public static IServiceCollection AddGroupWraperFull(this IServiceCollection services)
+        public static DIHelper AddGroupWraperFull(this DIHelper services)
         {
             services.TryAddScoped<GroupWraperFullHelper>();
 

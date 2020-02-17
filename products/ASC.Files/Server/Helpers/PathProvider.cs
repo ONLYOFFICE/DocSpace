@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core.Common;
 using ASC.Files.Core;
@@ -39,9 +40,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using File = ASC.Files.Core.File;
 
@@ -221,7 +219,7 @@ namespace ASC.Web.Files.Classes
 
     public static class PathProviderExtention
     {
-        public static IServiceCollection AddPathProviderService(this IServiceCollection services)
+        public static DIHelper AddPathProviderService(this DIHelper services)
         {
             services.TryAddScoped<PathProvider>();
 

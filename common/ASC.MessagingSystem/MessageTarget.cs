@@ -27,9 +27,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
@@ -97,7 +98,7 @@ namespace ASC.MessagingSystem
 
     public static class MessageTargetExtension
     {
-        public static IServiceCollection AddMessageTargetService(this IServiceCollection services)
+        public static DIHelper AddMessageTargetService(this DIHelper services)
         {
             services.TryAddSingleton<MessageTarget>();
 

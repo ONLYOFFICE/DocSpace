@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
@@ -40,7 +41,6 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using static ASC.Web.Files.Utils.FileMarker;
 
@@ -697,7 +697,7 @@ namespace ASC.Web.Files.Utils
     }
     public static class FileMarkerExtention
     {
-        public static IServiceCollection AddFileMarkerService(this IServiceCollection services)
+        public static DIHelper AddFileMarkerService(this DIHelper services)
         {
             services.TryAddScoped<FileMarker>();
             services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData>>();

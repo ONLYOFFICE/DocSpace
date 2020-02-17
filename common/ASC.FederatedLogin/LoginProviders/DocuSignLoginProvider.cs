@@ -28,14 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.Helpers;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -137,7 +136,7 @@ namespace ASC.FederatedLogin.LoginProviders
     }
     public static class DocuSignLoginProviderExtension
     {
-        public static IServiceCollection AddDocuSignLoginProviderService(this IServiceCollection services)
+        public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
         {
             services.TryAddScoped<DocuSignLoginProvider>();
             return services

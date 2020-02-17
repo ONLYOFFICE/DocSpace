@@ -28,15 +28,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
@@ -303,7 +303,7 @@ namespace ASC.Web.Api.Models
 
     public static class EmployeeWraperFullExtension
     {
-        public static IServiceCollection AddEmployeeWraperFull(this IServiceCollection services)
+        public static DIHelper AddEmployeeWraperFull(this DIHelper services)
         {
             services.TryAddScoped<EmployeeWraperFullHelper>();
 

@@ -26,13 +26,12 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.FederatedLogin.LoginProviders
 {
@@ -80,7 +79,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public static class OneDriveLoginProviderExtension
     {
-        public static IServiceCollection AddOneDriveLoginProviderService(this IServiceCollection services)
+        public static DIHelper AddOneDriveLoginProviderService(this DIHelper services)
         {
             services.TryAddScoped<OneDriveLoginProvider>();
             return services

@@ -29,14 +29,13 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Files
 {
@@ -434,7 +433,7 @@ namespace ASC.Web.Core.Files
     }
     public static class FilesLinkUtilityExtention
     {
-        public static IServiceCollection AddFilesLinkUtilityService(this IServiceCollection services)
+        public static DIHelper AddFilesLinkUtilityService(this DIHelper services)
         {
             services.TryAddScoped<FilesLinkUtility>();
 

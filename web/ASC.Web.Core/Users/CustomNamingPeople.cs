@@ -30,10 +30,10 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
+
+using ASC.Common;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.PublicResources;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -392,7 +392,7 @@ namespace ASC.Web.Core.Users
 
     public static class CustomNamingPeopleExtension
     {
-        public static IServiceCollection AddCustomNamingPeopleService(this IServiceCollection services)
+        public static DIHelper AddCustomNamingPeopleService(this DIHelper services)
         {
             services.TryAddScoped<CustomNamingPeople>();
 

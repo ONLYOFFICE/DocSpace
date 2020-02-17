@@ -28,10 +28,11 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+
+using ASC.Common;
 using ASC.Common.Security;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Security.Cryptography
 {
@@ -77,7 +78,7 @@ namespace ASC.Security.Cryptography
     }
     public static class MachinePseudoKeysExtension
     {
-        public static IServiceCollection AddMachinePseudoKeysService(this IServiceCollection services)
+        public static DIHelper AddMachinePseudoKeysService(this DIHelper services)
         {
             services.TryAddSingleton<MachinePseudoKeys>();
 

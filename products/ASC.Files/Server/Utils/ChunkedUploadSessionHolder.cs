@@ -27,14 +27,13 @@
 using System;
 using System.IO;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.ChunkedUploader;
 using ASC.Files.Core;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using File = ASC.Files.Core.File;
@@ -121,7 +120,7 @@ namespace ASC.Web.Files.Utils
 
     public static class ChunkedUploadSessionHolderExtention
     {
-        public static IServiceCollection AddChunkedUploadSessionHolderService(this IServiceCollection services)
+        public static DIHelper AddChunkedUploadSessionHolderService(this DIHelper services)
         {
             services.TryAddScoped<ChunkedUploadSessionHolder>();
             return services

@@ -27,10 +27,12 @@
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core.Common.Settings;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -212,7 +214,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public static class AdditionalWhiteLabelSettingsExtension
     {
-        public static IServiceCollection AddAdditionalWhiteLabelSettingsService(this IServiceCollection services)
+        public static DIHelper AddAdditionalWhiteLabelSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<AdditionalWhiteLabelSettingsHelper>();
             return services;

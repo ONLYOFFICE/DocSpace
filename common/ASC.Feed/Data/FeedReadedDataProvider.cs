@@ -28,12 +28,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Feed.Data
 {
@@ -130,7 +129,7 @@ namespace ASC.Feed.Data
 
     public static class FeedReadedDataProviderExtension
     {
-        public static IServiceCollection AddFeedReadedDataProvider(this IServiceCollection services)
+        public static DIHelper AddFeedReadedDataProvider(this DIHelper services)
         {
             return services
                 .AddAuthContextService()

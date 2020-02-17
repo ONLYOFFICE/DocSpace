@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -40,7 +41,6 @@ using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -311,14 +311,14 @@ namespace ASC.Data.Storage
 
     public static class StorageFactoryExtension
     {
-        public static IServiceCollection AddStorageFactoryConfigService(this IServiceCollection services)
+        public static DIHelper AddStorageFactoryConfigService(this DIHelper services)
         {
             services.TryAddSingleton<StorageFactoryConfig>();
 
             return services;
         }
 
-        public static IServiceCollection AddStorageFactoryService(this IServiceCollection services)
+        public static DIHelper AddStorageFactoryService(this DIHelper services)
         {
             services.TryAddScoped<StorageFactory>();
             services.TryAddSingleton<StorageFactoryListener>();
@@ -328,7 +328,6 @@ namespace ASC.Data.Storage
                 .AddCoreBaseSettingsService()
                 .AddPathUtilsService()
                 .AddEmailValidationKeyProviderService()
-                .AddHttpContextAccessor()
                 .AddStorageSettingsService()
                 .AddStorageFactoryConfigService();
         }

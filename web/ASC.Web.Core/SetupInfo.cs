@@ -31,13 +31,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -253,7 +252,7 @@ namespace ASC.Web.Studio.Core
 
     public static class SetupInfoExtension
     {
-        public static IServiceCollection AddSetupInfo(this IServiceCollection services)
+        public static DIHelper AddSetupInfo(this DIHelper services)
         {
             services.TryAddSingleton<SetupInfo>();
 

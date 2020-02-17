@@ -27,14 +27,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Web.Core.WebZones;
 
 using Autofac;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Core
@@ -256,12 +257,12 @@ namespace ASC.Web.Core
 
     public static class WebItemManagerExtension
     {
-        public static IServiceCollection AddWebItemManager(this IServiceCollection services)
+        public static DIHelper AddWebItemManager(this DIHelper services)
         {
             services.TryAddSingleton<WebItemManager>();
             return services;
         }
-        public static IServiceCollection AddWebItemManagerSecurity(this IServiceCollection services)
+        public static DIHelper AddWebItemManagerSecurity(this DIHelper services)
         {
             services.TryAddScoped<WebItemManagerSecurity>();
             return services

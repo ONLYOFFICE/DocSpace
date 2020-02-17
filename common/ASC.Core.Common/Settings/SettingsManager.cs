@@ -25,12 +25,13 @@
 
 
 using System;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Common.Settings
@@ -52,7 +53,7 @@ namespace ASC.Core.Common.Settings
 
     public static class SettingsManagerExtention
     {
-        public static IServiceCollection AddSettingsManagerService(this IServiceCollection services)
+        public static DIHelper AddSettingsManagerService(this DIHelper services)
         {
             services.TryAddScoped<SettingsManager>();
 

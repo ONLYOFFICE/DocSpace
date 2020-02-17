@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core.Data;
@@ -35,9 +36,6 @@ using ASC.Web.Core;
 using ASC.Web.Files.Api;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Configuration;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Security
 {
@@ -750,7 +748,7 @@ namespace ASC.Files.Core.Security
 
     public static class FileSecurityExtention
     {
-        public static IServiceCollection AddFileSecurityCommonService(this IServiceCollection services)
+        public static DIHelper AddFileSecurityCommonService(this DIHelper services)
         {
             services.TryAddScoped<FileSecurityCommon>();
 
@@ -759,7 +757,7 @@ namespace ASC.Files.Core.Security
                 .AddWebItemSecurity();
         }
 
-        public static IServiceCollection AddFileSecurityService(this IServiceCollection services)
+        public static DIHelper AddFileSecurityService(this DIHelper services)
         {
             services.TryAddScoped<FileSecurity>();
             services.TryAddScoped<IFileSecurity, FileSecurity>();

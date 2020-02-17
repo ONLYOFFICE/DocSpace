@@ -30,6 +30,7 @@ using System.Linq;
 using System.Security;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
@@ -43,9 +44,6 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
 using JWT;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -379,7 +377,7 @@ namespace ASC.Web.Files.Services.DocumentService
     }
     public static class DocumentServiceHelperExtention
     {
-        public static IServiceCollection AddDocumentServiceHelperService(this IServiceCollection services)
+        public static DIHelper AddDocumentServiceHelperService(this DIHelper services)
         {
             services.TryAddScoped<DocumentServiceHelper>();
             return services

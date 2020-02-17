@@ -28,14 +28,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Core.Entries
 {
@@ -70,7 +68,7 @@ namespace ASC.Web.Files.Core.Entries
     }
     public static class EncryptionAddressHelperExtension
     {
-        public static IServiceCollection AddEncryptionAddressHelperService(this IServiceCollection services)
+        public static DIHelper AddEncryptionAddressHelperService(this DIHelper services)
         {
             services.TryAddScoped<EncryptionAddressHelper>();
             return services

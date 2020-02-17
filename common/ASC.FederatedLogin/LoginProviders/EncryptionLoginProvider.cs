@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Security;
 
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
@@ -35,8 +36,6 @@ using ASC.FederatedLogin;
 using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -109,7 +108,7 @@ namespace ASC.Web.Studio.Core
     }
     public static class EncryptionLoginProviderExtension
     {
-        public static IServiceCollection AddEncryptionLoginProviderService(this IServiceCollection services)
+        public static DIHelper AddEncryptionLoginProviderService(this DIHelper services)
         {
             services.TryAddScoped<EncryptionLoginProvider>();
 

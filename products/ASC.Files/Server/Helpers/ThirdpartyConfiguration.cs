@@ -28,13 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Helpers
 {
@@ -159,7 +158,7 @@ namespace ASC.Web.Files.Helpers
     }
     public static class ThirdpartyConfigurationExtension
     {
-        public static IServiceCollection AddThirdpartyConfigurationService(this IServiceCollection services)
+        public static DIHelper AddThirdpartyConfigurationService(this DIHelper services)
         {
             services.TryAddScoped<ThirdpartyConfiguration>();
             return services

@@ -37,6 +37,7 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -56,8 +57,6 @@ using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
@@ -662,7 +661,7 @@ namespace ASC.Web.Files.Services.DocumentService
     }
     public static class DocumentServiceTrackerHelperExtension
     {
-        public static IServiceCollection AddDocumentServiceTrackerHelperService(this IServiceCollection services)
+        public static DIHelper AddDocumentServiceTrackerHelperService(this DIHelper services)
         {
             services.TryAddScoped<DocumentServiceTrackerHelper>();
             return services

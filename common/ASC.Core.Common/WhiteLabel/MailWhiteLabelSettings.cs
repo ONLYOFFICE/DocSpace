@@ -26,11 +26,13 @@
 
 using System;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core.Common;
 using ASC.Core.Common.Settings;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -165,7 +167,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public static class MailWhiteLabelSettingsExtention
     {
-        public static IServiceCollection AddMailWhiteLabelSettingsService(this IServiceCollection services)
+        public static DIHelper AddMailWhiteLabelSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<MailWhiteLabelSettingsHelper>();
             return services.AddSettingsManagerService();

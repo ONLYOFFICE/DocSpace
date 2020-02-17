@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -38,9 +39,6 @@ using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files
 {
@@ -155,7 +153,7 @@ namespace ASC.Web.Files
 
     public static class FilesSpaceUsageStatManagerExtention
     {
-        public static IServiceCollection AddFilesSpaceUsageStatManagerService(this IServiceCollection services)
+        public static DIHelper AddFilesSpaceUsageStatManagerService(this DIHelper services)
         {
             services.TryAddScoped<FilesSpaceUsageStatManager>();
             /*
@@ -171,7 +169,7 @@ namespace ASC.Web.Files
                 .AddPathProviderService();
         }
 
-        public static IServiceCollection AddFilesUserSpaceUsageService(this IServiceCollection services)
+        public static DIHelper AddFilesUserSpaceUsageService(this DIHelper services)
         {
             services.TryAddScoped<FilesUserSpaceUsage>();
 

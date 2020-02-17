@@ -1,4 +1,6 @@
 ﻿using System;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
@@ -6,9 +8,10 @@ using ASC.Security.Cryptography;
 using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+
 using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 
 namespace ASC.Web.Api.Controllers
@@ -131,7 +134,7 @@ namespace ASC.Web.Api.Controllers
 
     public static class AuthenticationControllerExtension
     {
-        public static IServiceCollection AddAuthenticationController(this IServiceCollection services)
+        public static DIHelper AddAuthenticationController(this DIHelper services)
         {
             return services
                 .AddUserManagerService()

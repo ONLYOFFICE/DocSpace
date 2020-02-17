@@ -27,10 +27,11 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core.Common.Settings;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Web.Core.Utility
@@ -145,7 +146,7 @@ namespace ASC.Web.Core.Utility
 
     public static class ColorThemesSettingsHelperExtension
     {
-        public static IServiceCollection AddColorThemesSettingsHelperService(this IServiceCollection services)
+        public static DIHelper AddColorThemesSettingsHelperService(this DIHelper services)
         {
             services.TryAddScoped<ColorThemesSettingsHelper>();
             return services.AddSettingsManagerService();

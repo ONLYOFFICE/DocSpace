@@ -28,14 +28,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Api
 {
@@ -161,7 +159,7 @@ namespace ASC.Web.Files.Api
     }
     public static class FilesIntegrationExtension
     {
-        public static IServiceCollection AddFilesIntegrationService(this IServiceCollection services)
+        public static DIHelper AddFilesIntegrationService(this DIHelper services)
         {
             services.TryAddScoped<FilesIntegration>();
             return services

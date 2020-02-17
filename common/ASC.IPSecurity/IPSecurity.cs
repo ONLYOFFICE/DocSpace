@@ -28,14 +28,15 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Web;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.IPSecurity
@@ -143,14 +144,13 @@ namespace ASC.IPSecurity
 
     public static class IPSecurityExtension
     {
-        public static IServiceCollection AddIPSecurityService(this IServiceCollection services)
+        public static DIHelper AddIPSecurityService(this DIHelper services)
         {
             services.TryAddScoped<IPSecurity>();
 
             return services
                 .AddIPRestrictionsService()
                 .AddSettingsManagerService()
-                .AddHttpContextAccessor()
                 .AddAuthContextService()
                 .AddTenantManagerService();
         }

@@ -1,10 +1,10 @@
-﻿using ASC.Common.Logging;
+﻿using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Resource.Manager
 {
@@ -22,11 +22,12 @@ namespace ASC.Resource.Manager
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var diHelper = new DIHelper(services);
             services.AddLogging();
-            services.TryAddScoped<ResourceData>();
-            services.AddDbContextManagerService<ResourceDbContext>();
-            services.AddLoggerService();
-            services.TryAddSingleton(Configuration);
+            diHelper.TryAddScoped<ResourceData>();
+            diHelper.AddDbContextManagerService<ResourceDbContext>();
+            diHelper.AddLoggerService();
+            diHelper.TryAddSingleton(Configuration);
         }
     }
 }

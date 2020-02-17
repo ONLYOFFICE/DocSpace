@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Files.Core;
@@ -39,7 +40,6 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Services.NotifyService
 {
@@ -212,7 +212,7 @@ namespace ASC.Web.Files.Services.NotifyService
 
     public static class NotifyClientExtension
     {
-        public static IServiceCollection AddNotifyClientService(this IServiceCollection services)
+        public static DIHelper AddNotifyClientService(this DIHelper services)
         {
             services.TryAddScoped<NotifyClient>();
 

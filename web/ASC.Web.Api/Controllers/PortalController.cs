@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -17,7 +18,6 @@ using ASC.Web.Studio.Core.Notify;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Api.Controllers
@@ -152,7 +152,7 @@ namespace ASC.Web.Api.Controllers
 
     public static class PortalControllerExtension
     {
-        public static IServiceCollection AddPortalController(this IServiceCollection services)
+        public static DIHelper AddPortalController(this DIHelper services)
         {
             return services
                 .AddUrlShortener()

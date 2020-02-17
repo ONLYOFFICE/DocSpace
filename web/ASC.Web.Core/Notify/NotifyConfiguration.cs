@@ -31,6 +31,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
@@ -371,7 +372,7 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class NotifyConfigurationExtension
     {
-        public static IServiceCollection AddNotifyConfiguration(this IServiceCollection services)
+        public static DIHelper AddNotifyConfiguration(this DIHelper services)
         {
             return services
                 .AddJabberStylerService()

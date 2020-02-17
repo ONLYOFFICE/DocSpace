@@ -243,7 +243,7 @@ namespace ASC.Common.Caching
 
     public static class KafkaExtention
     {
-        public static IServiceCollection AddKafkaService(this IServiceCollection services)
+        public static DIHelper AddKafkaService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
 

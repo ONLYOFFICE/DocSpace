@@ -29,14 +29,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Tenants;
 
 using Autofac;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Common.Configuration
 {
@@ -431,7 +430,7 @@ namespace ASC.Core.Common.Configuration
 
     public static class ConsumerFactoryExtension
     {
-        public static IServiceCollection AddConsumerFactoryService(this IServiceCollection services)
+        public static DIHelper AddConsumerFactoryService(this DIHelper services)
         {
             services.TryAddScoped<ConsumerFactory>();
             return services;

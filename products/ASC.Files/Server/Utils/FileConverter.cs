@@ -35,6 +35,7 @@ using System.Security;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
@@ -54,7 +55,6 @@ using ASC.Web.Studio.Core;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using File = ASC.Files.Core.File;
@@ -729,7 +729,7 @@ namespace ASC.Web.Files.Utils
 
     public static class FileConverterExtension
     {
-        public static IServiceCollection AddFileConverterService(this IServiceCollection services)
+        public static DIHelper AddFileConverterService(this DIHelper services)
         {
             services.TryAddScoped<FileConverter>();
             return services

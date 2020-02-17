@@ -26,12 +26,12 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
@@ -114,7 +114,7 @@ namespace ASC.Web.Api.Models
 
     public static class EmployeeWraperExtension
     {
-        public static IServiceCollection AddEmployeeWraper(this IServiceCollection services)
+        public static DIHelper AddEmployeeWraper(this DIHelper services)
         {
             services.TryAddScoped<EmployeeWraperHelper>();
 

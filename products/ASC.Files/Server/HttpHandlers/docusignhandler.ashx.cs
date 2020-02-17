@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
@@ -42,8 +43,6 @@ using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.HttpHandlers
@@ -240,7 +239,7 @@ namespace ASC.Web.Files.HttpHandlers
 
     public static class DocuSignHandlerExtension
     {
-        public static IServiceCollection AddDocuSignHandlerService(this IServiceCollection services)
+        public static DIHelper AddDocuSignHandlerService(this DIHelper services)
         {
             services.TryAddScoped<DocuSignHandler>();
             return services

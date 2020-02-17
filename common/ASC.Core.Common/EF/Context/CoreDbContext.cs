@@ -1,6 +1,7 @@
 ﻿
+using ASC.Common;
+
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF
 {
@@ -30,7 +31,7 @@ namespace ASC.Core.Common.EF
 
     public static class CoreDbExtension
     {
-        public static IServiceCollection AddCoreDbContextService(this IServiceCollection services)
+        public static DIHelper AddCoreDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<CoreDbContext>();
         }

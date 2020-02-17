@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -22,7 +22,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class FeedDbExtension
     {
-        public static IServiceCollection AddFeedDbService(this IServiceCollection services)
+        public static DIHelper AddFeedDbService(this DIHelper services)
         {
             return services.AddDbContextManagerService<FeedDbContext>();
         }

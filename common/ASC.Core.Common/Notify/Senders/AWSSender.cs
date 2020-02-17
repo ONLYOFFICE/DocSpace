@@ -29,16 +29,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+
 using Amazon;
 using Amazon.Runtime;
 using Amazon.SimpleEmail;
 using Amazon.SimpleEmail.Model;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
@@ -230,7 +233,7 @@ namespace ASC.Core.Notify.Senders
 
     public static class AWSSenderExtension
     {
-        public static IServiceCollection AddAWSSenderService(this IServiceCollection services)
+        public static DIHelper AddAWSSenderService(this DIHelper services)
         {
             services.TryAddSingleton<AWSSender>();
             return services

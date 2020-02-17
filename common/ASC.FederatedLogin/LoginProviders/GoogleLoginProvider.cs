@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -38,8 +39,6 @@ using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json.Linq;
 
@@ -185,7 +184,7 @@ namespace ASC.FederatedLogin.LoginProviders
 
     public static class GoogleLoginProviderExtension
     {
-        public static IServiceCollection AddGoogleLoginProviderService(this IServiceCollection services)
+        public static DIHelper AddGoogleLoginProviderService(this DIHelper services)
         {
             services.TryAddScoped<GoogleLoginProvider>();
             return services

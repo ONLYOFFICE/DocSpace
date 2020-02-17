@@ -27,9 +27,9 @@
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+
+using ASC.Common;
 using ASC.Core.Common.Notify.Jabber;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify.Jabber
 {
@@ -242,7 +242,7 @@ namespace ASC.Core.Notify.Jabber
 
     public static class JabberServiceClientExtension
     {
-        public static IServiceCollection AddJabberServiceClient(this IServiceCollection services)
+        public static DIHelper AddJabberServiceClient(this DIHelper services)
         {
             services.TryAddScoped<JabberServiceClient>();
             return services

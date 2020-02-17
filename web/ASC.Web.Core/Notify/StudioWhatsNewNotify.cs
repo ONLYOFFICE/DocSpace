@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -42,9 +44,9 @@ using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -305,7 +307,7 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class StudioWhatsNewNotifyExtension
     {
-        public static IServiceCollection AddStudioWhatsNewNotify(this IServiceCollection services)
+        public static DIHelper AddStudioWhatsNewNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioWhatsNewNotify>();
 

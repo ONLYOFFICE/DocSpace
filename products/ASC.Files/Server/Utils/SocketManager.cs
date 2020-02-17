@@ -24,11 +24,10 @@
 */
 
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
@@ -52,7 +51,7 @@ namespace ASC.Web.Files.Utils
     }
     public static class SocketManagerExtension
     {
-        public static IServiceCollection AddSocketManagerService(this IServiceCollection services)
+        public static DIHelper AddSocketManagerService(this DIHelper services)
         {
             services.TryAddScoped<SocketManager>();
             return services

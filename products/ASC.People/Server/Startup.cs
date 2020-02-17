@@ -4,6 +4,7 @@ using System;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
@@ -42,7 +43,7 @@ namespace ASC.People
         {
             services.AddHttpContextAccessor();
 
-            services.AddControllers().AddControllersAsServices()
+            services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();
 
@@ -73,7 +74,9 @@ namespace ASC.People
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+
+            diHelper
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
@@ -108,9 +111,9 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddPeopleController()
                 .AddGroupController();
 

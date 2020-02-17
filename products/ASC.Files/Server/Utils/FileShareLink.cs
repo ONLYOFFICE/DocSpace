@@ -26,15 +26,13 @@
 
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
@@ -115,7 +113,7 @@ namespace ASC.Web.Files.Utils
     }
     public static class FileShareLinkExtension
     {
-        public static IServiceCollection AddFileShareLinkService(this IServiceCollection services)
+        public static DIHelper AddFileShareLinkService(this DIHelper services)
         {
             services.TryAddScoped<FileShareLink>();
             return services

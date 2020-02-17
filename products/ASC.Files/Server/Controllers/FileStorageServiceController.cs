@@ -37,6 +37,7 @@ using System.Security;
 using System.Web;
 using System.Web.Http;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -115,6 +116,7 @@ namespace ASC.Web.Files.Services.WCFService
         public FileOperationsManagerHelper FileOperationsManagerHelper { get; }
         public UrlShortener UrlShortener { get; }
         public IServiceProvider ServiceProvider { get; }
+        public FileSharingAceHelper FileSharingAceHelper { get; }
         public ILog Logger { get; set; }
 
         public FileStorageServiceController(
@@ -154,7 +156,8 @@ namespace ASC.Web.Files.Services.WCFService
             NotifyClient notifyClient,
             FileOperationsManagerHelper fileOperationsManagerHelper,
             UrlShortener urlShortener,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            FileSharingAceHelper fileSharingAceHelper)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -192,6 +195,7 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManagerHelper = fileOperationsManagerHelper;
             UrlShortener = urlShortener;
             ServiceProvider = serviceProvider;
+            FileSharingAceHelper = fileSharingAceHelper;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -1589,7 +1593,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 try
                 {
-                    var changed = FileSharing.SetAceObject(aceCollection.Aces, entry, notify, aceCollection.Message);
+                    var changed = FileSharingAceHelper.SetAceObject(aceCollection.Aces, entry, notify, aceCollection.Message);
                     if (changed)
                     {
                         FilesMessageService.Send(entry, GetHttpHeaders(),
@@ -1624,7 +1628,7 @@ namespace ASC.Web.Files.Services.WCFService
             entries.AddRange(filesId.Select(fileId => fileDao.GetFile(fileId)));
             entries.AddRange(foldersId.Select(folderDao.GetFolder));
 
-            FileSharing.RemoveAce(entries);
+            FileSharingAceHelper.RemoveAce(entries);
         }
 
         [Read("shorten")]
@@ -1665,7 +1669,7 @@ namespace ASC.Web.Files.Services.WCFService
             try
             {
 
-                var changed = FileSharing.SetAceObject(aces, file, false, null);
+                var changed = FileSharingAceHelper.SetAceObject(aces, file, false, null);
                 if (changed)
                 {
                     FilesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccess, file.Title);
@@ -1772,7 +1776,7 @@ namespace ASC.Web.Files.Services.WCFService
                                     }
                             };
 
-                        changed |= FileSharing.SetAceObject(aces, file, false, null);
+                        changed |= FileSharingAceHelper.SetAceObject(aces, file, false, null);
 
                         recipients.Add(recipient.ID);
                     }
@@ -2078,7 +2082,7 @@ namespace ASC.Web.Files.Services.WCFService
 
     public static class FileStorageServiceControllerExtention
     {
-        public static IServiceCollection AddFileStorageServiceController(this IServiceCollection services)
+        public static DIHelper AddFileStorageServiceController(this DIHelper services)
         {
             return services
                 .AddGlobalService()

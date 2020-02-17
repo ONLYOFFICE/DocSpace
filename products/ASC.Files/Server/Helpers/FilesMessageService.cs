@@ -26,13 +26,12 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Files.Core;
 using ASC.MessagingSystem;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Helpers
@@ -123,7 +122,7 @@ namespace ASC.Web.Files.Helpers
 
     public static class FilesMessageServiceExtension
     {
-        public static IServiceCollection AddFilesMessageService(this IServiceCollection services)
+        public static DIHelper AddFilesMessageService(this DIHelper services)
         {
             services.TryAddScoped<FilesMessageService>();
             return services

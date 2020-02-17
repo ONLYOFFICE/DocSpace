@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -37,9 +38,6 @@ using ASC.Files.Core.EF;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -603,7 +601,7 @@ namespace ASC.Files.Core.Data
     }
     public static class TagDaoExtention
     {
-        public static IServiceCollection AddTagDaoService(this IServiceCollection services)
+        public static DIHelper AddTagDaoService(this DIHelper services)
         {
             services.TryAddScoped<ITagDao, TagDao>();
             return services

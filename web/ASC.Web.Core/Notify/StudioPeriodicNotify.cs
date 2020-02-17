@@ -30,6 +30,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -49,7 +50,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Core.Notify
@@ -1254,7 +1254,7 @@ namespace ASC.Web.Studio.Core.Notify
     }
     public static class StudioPeriodicNotifyExtension
     {
-        public static IServiceCollection AddStudioPeriodicNotify(this IServiceCollection services)
+        public static DIHelper AddStudioPeriodicNotify(this DIHelper services)
         {
             services.TryAddSingleton<StudioPeriodicNotify>();
             services.TryAddSingleton<CouponManager>();

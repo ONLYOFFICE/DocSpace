@@ -33,6 +33,7 @@ using System.Security;
 using System.Text;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -50,7 +51,6 @@ using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.ThirdPartyApp;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
@@ -1059,7 +1059,7 @@ namespace ASC.Web.Files.Utils
 
     public static class EntryManagerExtension
     {
-        public static IServiceCollection AddEntryManagerService(this IServiceCollection services)
+        public static DIHelper AddEntryManagerService(this DIHelper services)
         {
             services.TryAddScoped<EntryManager>();
             return services
@@ -1088,7 +1088,7 @@ namespace ASC.Web.Files.Utils
 
     public static class LockerManagerExtension
     {
-        public static IServiceCollection AddLockerManagerService(this IServiceCollection services)
+        public static DIHelper AddLockerManagerService(this DIHelper services)
         {
             services.TryAddScoped<LockerManager>();
             return services
@@ -1099,7 +1099,7 @@ namespace ASC.Web.Files.Utils
 
     public static class BreadCrumbsManagerExtension
     {
-        public static IServiceCollection AddBreadCrumbsManagerService(this IServiceCollection services)
+        public static DIHelper AddBreadCrumbsManagerService(this DIHelper services)
         {
             services.TryAddScoped<BreadCrumbsManager>();
             return services

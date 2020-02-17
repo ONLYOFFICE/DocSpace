@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF;
+﻿using ASC.Common;
+using ASC.Core.Common.EF;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.EF
 {
@@ -35,7 +35,7 @@ namespace ASC.Files.Core.EF
 
     public static class FilesDbExtension
     {
-        public static IServiceCollection AddFilesDbContextService(this IServiceCollection services)
+        public static DIHelper AddFilesDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<FilesDbContext>();
         }

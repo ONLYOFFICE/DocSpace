@@ -31,6 +31,7 @@ using System.IO;
 using System.Runtime.Serialization;
 using System.Security;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -57,7 +58,6 @@ using DocuSign.eSign.Client;
 using DocuSign.eSign.Model;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -477,7 +477,7 @@ namespace ASC.Web.Files.Helpers
 
     public static class DocuSignHelperExtension
     {
-        public static IServiceCollection AddDocuSignTokenService(this IServiceCollection services)
+        public static DIHelper AddDocuSignTokenService(this DIHelper services)
         {
             services.TryAddScoped<DocuSignToken>();
             return services
@@ -486,7 +486,7 @@ namespace ASC.Web.Files.Helpers
                 .AddTokenHelperService();
         }
 
-        public static IServiceCollection AddDocuSignHelperService(this IServiceCollection services)
+        public static DIHelper AddDocuSignHelperService(this DIHelper services)
         {
             services.TryAddScoped<DocuSignHelper>();
 

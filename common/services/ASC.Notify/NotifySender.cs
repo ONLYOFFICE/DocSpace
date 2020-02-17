@@ -30,11 +30,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Notify.Config;
 using ASC.Notify.Messages;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -150,7 +150,7 @@ namespace ASC.Notify
 
     public static class NotifySenderExtension
     {
-        public static IServiceCollection AddNotifySender(this IServiceCollection services)
+        public static DIHelper AddNotifySender(this DIHelper services)
         {
             services.TryAddSingleton<NotifySender>();
 

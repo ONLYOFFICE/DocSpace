@@ -27,10 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+using ASC.Common;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
 namespace ASC.Data.Storage
@@ -119,7 +120,7 @@ namespace ASC.Data.Storage
 
     public static class PathUtilsExtension
     {
-        public static IServiceCollection AddPathUtilsService(this IServiceCollection services)
+        public static DIHelper AddPathUtilsService(this DIHelper services)
         {
             services.TryAddSingleton<PathUtils>();
 

@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Common.Caching;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.IPSecurity
 {
@@ -89,7 +89,7 @@ namespace ASC.IPSecurity
 
     public static class IPRestrictionsServiceExtension
     {
-        public static IServiceCollection AddIPRestrictionsService(this IServiceCollection services)
+        public static DIHelper AddIPRestrictionsService(this DIHelper services)
         {
             services.TryAddScoped<IPRestrictionsService>();
             services.TryAddSingleton<IPRestrictionsServiceCache>();

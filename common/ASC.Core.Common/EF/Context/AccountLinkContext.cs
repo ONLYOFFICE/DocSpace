@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -17,7 +17,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class AccountLinkContextExtension
     {
-        public static IServiceCollection AddAccountLinkContextService(this IServiceCollection services)
+        public static DIHelper AddAccountLinkContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<AccountLinkContext>();
         }

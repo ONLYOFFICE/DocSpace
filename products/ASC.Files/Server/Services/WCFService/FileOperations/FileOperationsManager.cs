@@ -29,12 +29,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Web.Files.Resources;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
@@ -173,7 +171,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     public static class FileOperationsManagerHelperExtention
     {
-        public static IServiceCollection AddFileOperationsManagerHelperService(this IServiceCollection services)
+        public static DIHelper AddFileOperationsManagerHelperService(this DIHelper services)
         {
             services.TryAddSingleton<DistributedTaskCacheNotify>();
             services.TryAddSingleton<FileOperationsManager>();

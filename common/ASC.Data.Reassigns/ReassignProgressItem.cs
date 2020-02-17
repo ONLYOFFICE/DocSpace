@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Common.Logging;
 //using System.Web;
 using ASC.Common.Threading.Progress;
@@ -41,7 +43,6 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
@@ -218,7 +219,7 @@ namespace ASC.Data.Reassigns
 
     public static class ReassignProgressItemExtension
     {
-        public static IServiceCollection AddReassignProgressItemService(this IServiceCollection services)
+        public static DIHelper AddReassignProgressItemService(this DIHelper services)
         {
             services.TryAddSingleton<ProgressQueueOptionsManager<ReassignProgressItem>>();
             services.TryAddSingleton<ProgressQueue<ReassignProgressItem>>();

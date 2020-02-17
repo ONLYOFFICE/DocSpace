@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
@@ -43,7 +45,6 @@ using ASC.Web.Studio.Core.Notify;
 //using CrmDaoFactory = ASC.CRM.Core.Dao.DaoFactory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Reassigns
@@ -254,7 +255,7 @@ namespace ASC.Data.Reassigns
 
     public static class RemoveProgressItemExtension
     {
-        public static IServiceCollection AddRemoveProgressItemService(this IServiceCollection services)
+        public static DIHelper AddRemoveProgressItemService(this DIHelper services)
         {
 
             services.TryAddSingleton<ProgressQueueOptionsManager<RemoveProgressItem>>();

@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -14,7 +14,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class VoipDbExtension
     {
-        public static IServiceCollection AddVoipDbContextService(this IServiceCollection services)
+        public static DIHelper AddVoipDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<VoipDbContext>();
         }

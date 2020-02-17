@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -47,7 +48,6 @@ using Autofac;
 using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -730,13 +730,13 @@ namespace ASC.ElasticSearch
 
     public static class BaseIndexerExtention
     {
-        public static IServiceCollection AddBaseIndexerHelperService(this IServiceCollection services)
+        public static DIHelper AddBaseIndexerHelperService(this DIHelper services)
         {
             services.TryAddSingleton<BaseIndexerHelper>();
             return services.AddKafkaService();
         }
 
-        public static IServiceCollection AddBaseIndexerService<T>(this IServiceCollection services) where T : Wrapper
+        public static DIHelper AddBaseIndexerService<T>(this DIHelper services) where T : Wrapper
         {
             services.TryAddScoped<BaseIndexer<T>>();
 

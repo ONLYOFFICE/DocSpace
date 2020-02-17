@@ -28,16 +28,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
+
 using MailKit;
 using MailKit.Security;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using MimeKit;
 
 namespace ASC.Core.Notify.Senders
@@ -320,7 +324,7 @@ namespace ASC.Core.Notify.Senders
 
     public static class SmtpSenderExtension
     {
-        public static IServiceCollection AddSmtpSenderService(this IServiceCollection services)
+        public static DIHelper AddSmtpSenderService(this DIHelper services)
         {
             services.TryAddSingleton<SmtpSender>();
             return services

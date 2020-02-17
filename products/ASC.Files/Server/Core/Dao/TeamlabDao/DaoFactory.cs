@@ -24,10 +24,8 @@
 */
 
 
+using ASC.Common;
 using ASC.Files.Core.Security;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -50,14 +48,15 @@ namespace ASC.Files.Core.Data
 
     public static class DaoFactoryExtention
     {
-        public static IServiceCollection AddDaoFactoryService(this IServiceCollection services)
+        public static DIHelper AddDaoFactoryService(this DIHelper services)
         {
             services.TryAddScoped<IDaoFactory, DaoFactory>();
             return services
                 .AddFileDaoService()
                 .AddFolderDaoService()
                 .AddTagDaoService()
-                .AddSecurityDaoService();
+                .AddSecurityDaoService()
+                ;
         }
     }
 }

@@ -34,6 +34,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Common.Configuration;
@@ -56,7 +57,6 @@ using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using static ASC.Web.Files.Services.DocumentService.Configuration;
 using static ASC.Web.Files.Services.DocumentService.Configuration.DocumentConfig;
@@ -233,11 +233,10 @@ namespace ASC.Web.Files.Services.DocumentService
                 public EditorType Type = EditorType.Desktop;
                 private string _breadCrumbs;
 
-                public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharingHelper fileSharingHelper, IFileStorageService fileStorageService)
+                public InfoConfig(BreadCrumbsManager breadCrumbsManager, FileSharing fileSharing)
                 {
                     BreadCrumbsManager = breadCrumbsManager;
-                    FileSharingHelper = fileSharingHelper;
-                    FileStorageService = fileStorageService;
+                    FileSharing = fileSharing;
                 }
 
                 [Obsolete("Use owner (since v5.4)")]
@@ -297,11 +296,11 @@ namespace ASC.Web.Files.Services.DocumentService
                     {
                         if (Type == EditorType.Embedded
                             || Type == EditorType.External
-                            || !FileSharingHelper.CanSetAccess(File)) return null;
+                            || !FileSharing.CanSetAccess(File)) return null;
 
                         try
                         {
-                            return FileStorageService.GetSharedInfoShort(File.UniqID);
+                            return FileSharing.GetSharedInfoShort(File.UniqID);
                         }
                         catch
                         {
@@ -311,8 +310,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
 
                 public BreadCrumbsManager BreadCrumbsManager { get; }
-                public FileSharingHelper FileSharingHelper { get; }
-                public IFileStorageService FileStorageService { get; }
+                public FileSharing FileSharing { get; }
             }
 
             [DataContract(Name = "permissions", Namespace = "")]
@@ -934,14 +932,14 @@ namespace ASC.Web.Files.Services.DocumentService
 
     public static class ConfigurationExtention
     {
-        public static IServiceCollection AddConfigurationService(this IServiceCollection services)
+        public static DIHelper AddConfigurationService(this DIHelper services)
         {
             return services
                 .AddDocumentConfigService()
                 .AddEditorConfigurationService();
         }
 
-        public static IServiceCollection AddDocumentConfigService(this IServiceCollection services)
+        public static DIHelper AddDocumentConfigService(this DIHelper services)
         {
             services.TryAddTransient<DocumentConfig>();
 
@@ -951,16 +949,16 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddInfoConfigService();
         }
 
-        public static IServiceCollection AddInfoConfigService(this IServiceCollection services)
+        public static DIHelper AddInfoConfigService(this DIHelper services)
         {
             services.TryAddTransient<InfoConfig>();
 
             return services
                 .AddBreadCrumbsManagerService()
-                .AddFileSharingHelperService();
+                .AddFileSharingService();
         }
 
-        public static IServiceCollection AddEditorConfigurationService(this IServiceCollection services)
+        public static DIHelper AddEditorConfigurationService(this DIHelper services)
         {
             services.TryAddTransient<EditorConfiguration>();
 
@@ -975,7 +973,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddCustomizationConfigService();
         }
 
-        public static IServiceCollection AddPluginsConfigService(this IServiceCollection services)
+        public static DIHelper AddPluginsConfigService(this DIHelper services)
         {
             services.TryAddTransient<PluginsConfig>();
 
@@ -984,7 +982,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddBaseCommonLinkUtilityService();
         }
 
-        public static IServiceCollection AddEmbeddedConfigService(this IServiceCollection services)
+        public static DIHelper AddEmbeddedConfigService(this DIHelper services)
         {
             services.TryAddTransient<EmbeddedConfig>();
 
@@ -993,9 +991,9 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddBaseCommonLinkUtilityService();
         }
 
-        public static IServiceCollection AddCustomizationConfigService(this IServiceCollection services)
+        public static DIHelper AddCustomizationConfigService(this DIHelper services)
         {
-            services.TryAddTransient<EmbeddedConfig>();
+            services.TryAddTransient<CustomizationConfig>();
 
             return services
                 .AddCoreBaseSettingsService()
@@ -1013,7 +1011,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddLogoConfigService();
         }
 
-        public static IServiceCollection AddCustomerConfigService(this IServiceCollection services)
+        public static DIHelper AddCustomerConfigService(this DIHelper services)
         {
             services.TryAddTransient<CustomerConfig>();
 
@@ -1023,7 +1021,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 .AddTenantLogoHelperService();
         }
 
-        public static IServiceCollection AddLogoConfigService(this IServiceCollection services)
+        public static DIHelper AddLogoConfigService(this DIHelper services)
         {
             services.TryAddTransient<LogoConfig>();
 

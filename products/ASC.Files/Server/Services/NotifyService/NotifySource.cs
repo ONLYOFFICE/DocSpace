@@ -26,14 +26,12 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Notify;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
 
@@ -61,7 +59,7 @@ namespace ASC.Web.Files.Services.NotifyService
 
     public static class FilesNotifySourceExtension
     {
-        public static IServiceCollection AddFilesNotifySourceService(this IServiceCollection services)
+        public static DIHelper AddFilesNotifySourceService(this DIHelper services)
         {
             services.TryAddScoped<NotifySource>();
 

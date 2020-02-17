@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Core.Common.WhiteLabel;
@@ -41,8 +42,6 @@ using ASC.Web.Core.WhiteLabel;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Textile;
 using Textile.Blocks;
@@ -329,7 +328,7 @@ namespace ASC.Notify.Textile
 
     public static class TextileStylerExtension
     {
-        public static IServiceCollection AddTextileStylerService(this IServiceCollection services)
+        public static DIHelper AddTextileStylerService(this DIHelper services)
         {
             services.TryAddScoped<TextileStyler>();
             return services.AddStylerService();

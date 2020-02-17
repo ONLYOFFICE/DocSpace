@@ -24,11 +24,9 @@
 */
 
 
+using ASC.Common;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.WhiteLabel;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Utility
 {
@@ -87,7 +85,7 @@ namespace ASC.Web.Studio.Utility
     }
     public static class TenantLogoHelperExtention
     {
-        public static IServiceCollection AddTenantLogoHelperService(this IServiceCollection services)
+        public static DIHelper AddTenantLogoHelperService(this DIHelper services)
         {
             services.TryAddScoped<TenantLogoHelper>();
 

@@ -30,6 +30,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -45,7 +46,6 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
@@ -953,7 +953,7 @@ namespace ASC.Files.Core.Data
     }
     public static class FolderDaoExtention
     {
-        public static IServiceCollection AddFolderDaoService(this IServiceCollection services)
+        public static DIHelper AddFolderDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFolderDao, FolderDao>();
             return services

@@ -26,9 +26,9 @@
 
 using System;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Core.Caching;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core
 {
@@ -151,7 +151,7 @@ namespace ASC.Core
 
     public static class SubscriptionConfigExtension
     {
-        public static IServiceCollection AddSubscriptionManagerService(this IServiceCollection services)
+        public static DIHelper AddSubscriptionManagerService(this DIHelper services)
         {
             services.TryAddScoped<SubscriptionManager>();
             return services

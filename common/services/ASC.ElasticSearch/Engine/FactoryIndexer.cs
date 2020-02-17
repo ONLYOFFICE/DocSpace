@@ -32,6 +32,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
@@ -44,7 +45,6 @@ using Autofac;
 using Elasticsearch.Net;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -569,7 +569,7 @@ namespace ASC.ElasticSearch
 
     public static class FactoryIndexerExtention
     {
-        public static IServiceCollection AddFactoryIndexerService(this IServiceCollection services)
+        public static DIHelper AddFactoryIndexerService(this DIHelper services)
         {
             services.TryAddScoped<FactoryIndexer>();
             return services
@@ -577,14 +577,14 @@ namespace ASC.ElasticSearch
                 .AddCoreBaseSettingsService();
         }
 
-        public static IServiceCollection AddFactoryIndexerHelperService(this IServiceCollection services)
+        public static DIHelper AddFactoryIndexerHelperService(this DIHelper services)
         {
             services.TryAddScoped<FactoryIndexerHelper>();
             return services
                 .AddFactoryIndexerService();
         }
 
-        public static IServiceCollection AddFactoryIndexerService<T>(this IServiceCollection services) where T : Wrapper
+        public static DIHelper AddFactoryIndexerService<T>(this DIHelper services) where T : Wrapper
         {
             services.TryAddScoped<FactoryIndexer<T>>();
 

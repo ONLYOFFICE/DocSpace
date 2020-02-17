@@ -27,14 +27,13 @@
 using System;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Caching;
 using ASC.Core.Common.Settings;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json;
 
@@ -331,13 +330,13 @@ namespace ASC.Core
 
     public static class CoreSettingsConfigExtension
     {
-        public static IServiceCollection AddCoreBaseSettingsService(this IServiceCollection services)
+        public static DIHelper AddCoreBaseSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<CoreBaseSettings>();
             return services;
         }
 
-        public static IServiceCollection AddCoreSettingsService(this IServiceCollection services)
+        public static DIHelper AddCoreSettingsService(this DIHelper services)
         {
             services.TryAddScoped<CoreSettings>();
             services.TryAddScoped<CoreConfiguration>();
@@ -345,7 +344,7 @@ namespace ASC.Core
                 .AddCoreBaseSettingsService()
                 .AddTenantService();
         }
-        public static IServiceCollection AddCoreConfigurationService(this IServiceCollection services)
+        public static DIHelper AddCoreConfigurationService(this DIHelper services)
         {
             services.TryAddScoped<CoreConfiguration>();
             return services

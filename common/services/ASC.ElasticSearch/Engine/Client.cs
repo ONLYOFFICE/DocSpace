@@ -27,6 +27,7 @@
 using System;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -34,8 +35,6 @@ using ASC.ElasticSearch.Service;
 
 using Elasticsearch.Net;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Nest;
@@ -102,7 +101,7 @@ namespace ASC.ElasticSearch
 
     public static class ClientExtention
     {
-        public static IServiceCollection AddClientService(this IServiceCollection services)
+        public static DIHelper AddClientService(this DIHelper services)
         {
             services.TryAddScoped<Client>();
             return services

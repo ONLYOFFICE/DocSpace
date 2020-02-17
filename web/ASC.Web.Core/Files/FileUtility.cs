@@ -30,12 +30,11 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Files
 {
@@ -382,7 +381,7 @@ namespace ASC.Web.Core.Files
 
     public static class FileUtilityExtention
     {
-        public static IServiceCollection AddFileUtilityService(this IServiceCollection services)
+        public static DIHelper AddFileUtilityService(this DIHelper services)
         {
             services.TryAddScoped<FileUtility>();
             return services

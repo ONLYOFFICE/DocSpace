@@ -36,6 +36,7 @@ using System.Runtime.Caching;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -43,8 +44,6 @@ using ASC.Core.Common.EF.Context;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace TMResourceData
@@ -375,7 +374,7 @@ namespace TMResourceData
 
     public static class WhiteLabelHelperExtension
     {
-        public static IServiceCollection AddWhiteLabelHelperService(this IServiceCollection services)
+        public static DIHelper AddWhiteLabelHelperService(this DIHelper services)
         {
             services.TryAddSingleton<WhiteLabelHelper>();
             return services;

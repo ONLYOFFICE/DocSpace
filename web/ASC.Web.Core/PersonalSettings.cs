@@ -27,10 +27,8 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Core.Common.Settings;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -92,7 +90,7 @@ namespace ASC.Web.Studio.Core
 
     public static class PersonalSettingsExtention
     {
-        public static IServiceCollection AddTenantCookieSettingsService(this IServiceCollection services)
+        public static DIHelper AddTenantCookieSettingsService(this DIHelper services)
         {
             services.TryAddScoped<PersonalSettingsHelper>();
             return services.AddSettingsManagerService();

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using ASC.Api.Core;
 using ASC.Api.Utils;
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Users;
@@ -12,8 +14,8 @@ using ASC.Web.Api.Models;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Employee.Core.Controllers
 {
@@ -220,7 +222,7 @@ namespace ASC.Employee.Core.Controllers
 
     public static class GroupControllerExtention
     {
-        public static IServiceCollection AddGroupController(this IServiceCollection services)
+        public static DIHelper AddGroupController(this DIHelper services)
         {
             return services
                 .AddGroupWraperFull()

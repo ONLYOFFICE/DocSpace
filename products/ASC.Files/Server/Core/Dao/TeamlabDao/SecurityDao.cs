@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -38,9 +39,6 @@ using ASC.Files.Core.Security;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Files.Core.Data
 {
@@ -365,7 +363,7 @@ namespace ASC.Files.Core.Data
 
     public static class SecurityDaoExtention
     {
-        public static IServiceCollection AddSecurityDaoService(this IServiceCollection services)
+        public static DIHelper AddSecurityDaoService(this DIHelper services)
         {
             services.TryAddScoped<ISecurityDao, SecurityDao>();
 

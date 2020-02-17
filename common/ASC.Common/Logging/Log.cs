@@ -28,13 +28,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+
 using ASC.Common.Utils;
+
 using log4net.Config;
 using log4net.Core;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using NLog;
 
 namespace ASC.Common.Logging
@@ -865,7 +868,7 @@ namespace ASC.Common.Logging
 
     public static class StudioNotifyHelperExtension
     {
-        public static IServiceCollection AddLogManager<T>(this IServiceCollection services, params string[] additionalLoggers) where T : class, ILog, new()
+        public static DIHelper AddLogManager<T>(this DIHelper services, params string[] additionalLoggers) where T : class, ILog, new()
         {
             const string baseName = "ASC";
             var baseSqlName = $"{baseName}.SQL";
@@ -882,7 +885,7 @@ namespace ASC.Common.Logging
             return services;
         }
 
-        public static IServiceCollection AddNLogManager(this IServiceCollection services, params string[] additionalLoggers)
+        public static DIHelper AddNLogManager(this DIHelper services, params string[] additionalLoggers)
         {
             services.TryAddSingleton<IConfigureOptions<LogNLog>, ConfigureLogNLog>();
             return services.AddLogManager<LogNLog>(additionalLoggers);

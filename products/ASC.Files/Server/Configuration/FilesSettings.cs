@@ -27,12 +27,10 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Files.Core;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Files.Classes
 {
@@ -226,7 +224,7 @@ namespace ASC.Web.Files.Classes
     }
     public static class FilesSettingsHelperExtention
     {
-        public static IServiceCollection AddFilesSettingsHelperService(this IServiceCollection services)
+        public static DIHelper AddFilesSettingsHelperService(this DIHelper services)
         {
             services.TryAddScoped<FilesSettingsHelper>();
             return services

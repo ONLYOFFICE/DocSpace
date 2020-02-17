@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model.Resource;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model.Resource;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -25,7 +25,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class ResourceDbExtension
     {
-        public static IServiceCollection AddResourceDbService(this IServiceCollection services)
+        public static DIHelper AddResourceDbService(this DIHelper services)
         {
             return services.AddDbContextManagerService<ResourceDbContext>();
         }

@@ -31,6 +31,7 @@ using System.IO;
 using System.Net;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -40,8 +41,6 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -381,7 +380,7 @@ namespace ASC.Web.Files.Services.DocumentService
     }
     public static class DocumentServiceConnectorExtension
     {
-        public static IServiceCollection AddDocumentServiceConnectorService(this IServiceCollection services)
+        public static DIHelper AddDocumentServiceConnectorService(this DIHelper services)
         {
             services.TryAddScoped<DocumentServiceConnector>();
 

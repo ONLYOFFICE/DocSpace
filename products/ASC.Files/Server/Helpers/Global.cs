@@ -531,7 +531,7 @@ namespace ASC.Web.Files.Classes
 
     public static class GlobalExtention
     {
-        public static IServiceCollection AddGlobalNotifyService(this IServiceCollection services)
+        public static DIHelper AddGlobalNotifyService(this DIHelper services)
         {
             services.TryAddSingleton<GlobalNotify>();
 
@@ -540,7 +540,7 @@ namespace ASC.Web.Files.Classes
                 .AddCoreBaseSettingsService();
         }
 
-        public static IServiceCollection AddGlobalService(this IServiceCollection services)
+        public static DIHelper AddGlobalService(this DIHelper services)
         {
             services.TryAddScoped<Global>();
 
@@ -554,7 +554,7 @@ namespace ASC.Web.Files.Classes
                 .AddFileSecurityCommonService();
         }
 
-        public static IServiceCollection AddGlobalStoreService(this IServiceCollection services)
+        public static DIHelper AddGlobalStoreService(this DIHelper services)
         {
             services.TryAddScoped<GlobalStore>();
 
@@ -563,7 +563,7 @@ namespace ASC.Web.Files.Classes
                 .AddTenantManagerService();
         }
 
-        public static IServiceCollection AddGlobalSpaceService(this IServiceCollection services)
+        public static DIHelper AddGlobalSpaceService(this DIHelper services)
         {
             services.TryAddScoped<GlobalSpace>();
 
@@ -571,7 +571,7 @@ namespace ASC.Web.Files.Classes
                 .AddFilesUserSpaceUsageService()
                 .AddAuthContextService();
         }
-        public static IServiceCollection AddGlobalFolderService(this IServiceCollection services)
+        public static DIHelper AddGlobalFolderService(this DIHelper services)
         {
             services.TryAddScoped<GlobalFolder>();
 
@@ -586,7 +586,7 @@ namespace ASC.Web.Files.Classes
                 .AddGlobalStoreService();
         }
 
-        public static IServiceCollection AddGlobalFolderHelperService(this IServiceCollection services)
+        public static DIHelper AddGlobalFolderHelperService(this DIHelper services)
         {
             services.TryAddScoped<GlobalFolderHelper>();
 

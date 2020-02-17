@@ -29,13 +29,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 
 using Autofac;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json;
 
@@ -183,7 +183,7 @@ namespace ASC.ElasticSearch.Core
 
     public static class SearchSettingsHelperExtention
     {
-        public static IServiceCollection AddSearchSettingsHelperService(this IServiceCollection services)
+        public static DIHelper AddSearchSettingsHelperService(this DIHelper services)
         {
             services.TryAddScoped<SearchSettingsHelper>();
 

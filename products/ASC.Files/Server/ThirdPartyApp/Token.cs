@@ -28,6 +28,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,8 +38,6 @@ using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Security.Cryptography;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.ThirdPartyApp
@@ -166,7 +165,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
     public static class TokenHelperExtension
     {
-        public static IServiceCollection AddTokenHelperService(this IServiceCollection services)
+        public static DIHelper AddTokenHelperService(this DIHelper services)
         {
             services.TryAddScoped<TokenHelper>();
             return services

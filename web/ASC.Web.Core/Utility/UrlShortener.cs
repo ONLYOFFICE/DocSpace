@@ -4,13 +4,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core.Common.Configuration;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Utility
 {
@@ -120,7 +119,7 @@ namespace ASC.Web.Core.Utility
 
     public static class UrlShortenerExtension
     {
-        public static IServiceCollection AddUrlShortener(this IServiceCollection services)
+        public static DIHelper AddUrlShortener(this DIHelper services)
         {
             services.TryAddScoped<UrlShortener>();
             return services

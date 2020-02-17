@@ -4,6 +4,7 @@ using System;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
@@ -71,7 +72,8 @@ namespace ASC.Files
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+            diHelper
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()
@@ -87,9 +89,9 @@ namespace ASC.Files
                 r.stopAfterFinsih = false;
             });
 
-            services.AddNLogManager("ASC.Files");
+            diHelper.AddNLogManager("ASC.Files");
 
-            services.AddFileStorageServiceController();
+            diHelper.AddFileStorageServiceController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
