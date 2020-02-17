@@ -99,6 +99,11 @@ class ArticleBodyContent extends React.Component {
 const getTreeGroups = (groups, departments) => {
   const linkStyles = { fontSize: "14px", fontWeight: 600, noHover: true };
   const link = history.location.search.slice(1);
+  let newLink = link.split("&");
+  const index = newLink.find(x => x.includes("group"));
+  index && newLink.splice(1, 1);
+  newLink = newLink.join('&');
+
   const treeData = [
       {
           key: "root",
@@ -110,7 +115,7 @@ const getTreeGroups = (groups, departments) => {
                 title: (
                   <Link
                     {...linkStyles}
-                    href={`${history.location.pathname}?group=${g.id}&${link}`}
+                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
                   >
                     {g.name}
                   </Link>
