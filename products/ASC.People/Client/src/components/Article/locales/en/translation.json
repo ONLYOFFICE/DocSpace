@@ -1,6 +1,9 @@
 {
+  "People": "People",
+
   "InviteLinkTitle": "Invitation link",
   "ImportPeople": "Import people",
   "Actions": "Actions",
-  "LblInviteAgain": "Invite again"
+  "LblInviteAgain": "Invite again",
+  "OrganizationName": "ONLYOFFICE"
 }

@@ -1,6 +1,9 @@
 {
+  "People": "Люди",
+
   "InviteLinkTitle": "Пригласительная ссылка",
   "ImportPeople": "Импортировать людей",
   "Actions": "Действия",
-  "LblInviteAgain": "Отправить приглашение ещё раз"
+  "LblInviteAgain": "Отправить приглашение ещё раз",
+  "OrganizationName": "ONLYOFFICE"
 }

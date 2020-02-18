@@ -31,6 +31,8 @@
   "ChangesApplied": "Изменения успешно применены",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
+  "People": "Люди",
+  "Profile": "Профиль",
   
   "PhoneChange": "Изменить номер телефона",
   "PhoneLbl": "Основной телефон",

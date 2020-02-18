@@ -15,7 +15,7 @@ class PureProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    document.title = "Profile – People";
+    document.title = `${props.t("Profile")} – ${props.t("People")}`;
 
     this.state = {
       queryString: `${props.location.search.slice(1)}`

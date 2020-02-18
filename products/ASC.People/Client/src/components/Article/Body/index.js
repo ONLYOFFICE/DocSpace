@@ -10,6 +10,11 @@ import {
 import { history } from "asc-web-common";
 import { selectGroup } from '../../../store/people/actions';
 import { getSelectedGroup } from "../../../store/people/selectors";
+import { withTranslation, I18nextProvider } from 'react-i18next';
+import i18n from '../i18n';
+import { utils as commonUtils } from 'asc-web-common';
+
+const { changeLanguage } = commonUtils;
 
 const getItems = data => {
   return data.map(item => {
@@ -55,12 +60,12 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    const { selectGroup, groups } = this.props;
+    const { selectGroup, groups, t } = this.props;
 
     const currentGroup = getSelectedGroup(groups, data[0]);
-    if(currentGroup) {
-      document.title = currentGroup && `${currentGroup.name} – People`;
-    }
+    document.title = currentGroup
+      ? `${currentGroup.name} – ${t("People")}`
+      : `${t("People")} – ${t("OrganizationName")}`;
     selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
@@ -112,7 +117,6 @@ const getTreeGroups = (groups, departments) => {
 
   const onTitleClick = () => {
     history.push("/products/people/");
-    document.title = "Groups – People";
   }
 
   const treeData = [
@@ -140,6 +144,13 @@ const getTreeGroups = (groups, departments) => {
   return treeData;
 };
 
+const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
+
+const BodyContent = (props) => {
+  changeLanguage(i18n);
+  return (<I18nextProvider i18n={i18n}><ArticleBodyContentWrapper {...props} /></I18nextProvider>);
+};
+
 function mapStateToProps(state) {
   const groups = state.people.groups;
 
@@ -150,4 +161,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { selectGroup })(ArticleBodyContent);
+export default connect(mapStateToProps, { selectGroup })(BodyContent);
