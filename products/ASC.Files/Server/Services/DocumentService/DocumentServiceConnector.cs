@@ -36,9 +36,9 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
 using ASC.Core.Tenants;
+using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Options;

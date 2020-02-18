@@ -38,9 +38,9 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Resources;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
-using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Core;
 using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
@@ -99,7 +99,7 @@ namespace ASC.Files.Core.Data
 
         public Folder GetFolder(object folderId)
         {
-            var query = GetFolderQuery(r => r.Id == (int)folderId);
+            var query = GetFolderQuery(r => r.Id.ToString() == folderId.ToString());
             return FromQuery(query).SingleOrDefault();
         }
 
@@ -263,7 +263,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            return FromQuery(q, checkShare);
+            return checkShare ? FromQueryWithShared(q) : FromQuery(q);
         }
 
         public List<Folder> GetParentFolders(object folderId)
@@ -857,10 +857,62 @@ namespace ASC.Files.Core.Data
             return q;
         }
 
-        protected List<Folder> FromQuery(IQueryable<DbFolder> dbFiles, bool checkShared = true)
+        protected List<Folder> FromQueryWithShared(IQueryable<DbFolder> dbFiles)
         {
             return dbFiles
-                .Select(r => new { file = r, root = GetRootFolderType(r), shared = checkShared ? GetSharedQuery(FileEntryType.Folder, r) : true })
+                .Select(r => new
+                {
+                    file = r,
+                    root = FilesDbContext.Folders
+                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == r.TenantId)
+                            .Where(x => x.tree.FolderId == r.ParentId)
+                            .OrderByDescending(r => r.tree.Level)
+                            .Select(r => r.folder)
+                            .FirstOrDefault(),
+                    shared =
+                FilesDbContext.Security
+                .Where(r => r.EntryType == FileEntryType.Folder)
+                .Where(x => x.EntryId == r.Id.ToString())
+                .Any()
+                })
+                .ToList()
+                .Select(r =>
+                {
+                    var result = ServiceProvider.GetService<Folder>();
+                    result.ID = r.file.Id;
+                    result.ParentFolderID = r.file.ParentId;
+                    result.Title = r.file.Title;
+                    result.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
+                    result.CreateBy = r.file.CreateBy;
+                    result.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
+                    result.ModifiedBy = r.file.ModifiedBy;
+                    result.FolderType = r.file.FolderType;
+                    result.TotalSubFolders = r.file.FoldersCount;
+                    result.TotalFiles = r.file.FilesCount;
+                    result.RootFolderType = r.root.FolderType;
+                    result.RootFolderCreator = r.root.CreateBy;
+                    result.RootFolderId = r.root.Id;
+                    result.Shared = r.shared;
+                    return result;
+                }).ToList();
+        }
+
+        protected List<Folder> FromQuery(IQueryable<DbFolder> dbFiles)
+        {
+            return dbFiles
+                .Select(r => new
+                {
+                    file = r,
+                    root = FilesDbContext.Folders
+                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == r.TenantId)
+                            .Where(x => x.tree.FolderId == r.ParentId)
+                            .OrderByDescending(x => x.tree.Level)
+                            .Select(x => x.folder)
+                            .FirstOrDefault(),
+                    shared = true
+                })
                 .ToList()
                 .Select(r =>
                 {
@@ -956,6 +1008,7 @@ namespace ASC.Files.Core.Data
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFolderDao, FolderDao>();
+            services.TryAddTransient<Folder>();
             return services
                 .AddFactoryIndexerService<FoldersWrapper>()
                 .AddTenantManagerService()

@@ -34,10 +34,10 @@ using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Files

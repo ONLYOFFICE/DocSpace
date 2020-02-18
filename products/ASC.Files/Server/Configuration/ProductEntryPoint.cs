@@ -30,10 +30,10 @@ using System.Linq;
 using System.Reflection;
 
 using ASC.Core;
+using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
-using ASC.Web.Files.Resources;
 
 using SubscriptionManager = ASC.Web.Files.Classes.SubscriptionManager;
 

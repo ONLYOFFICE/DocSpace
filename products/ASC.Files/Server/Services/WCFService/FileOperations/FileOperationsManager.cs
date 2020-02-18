@@ -32,7 +32,7 @@ using System.Linq;
 using ASC.Common;
 using ASC.Common.Threading;
 using ASC.Core;
-using ASC.Web.Files.Resources;
+using ASC.Files.Resources;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {

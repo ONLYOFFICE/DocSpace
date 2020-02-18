@@ -26,9 +26,10 @@
 
 using System;
 using System.Runtime.Serialization;
+
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Web.Files.Resources;
+using ASC.Files.Resources;
 
 namespace ASC.Web.Files.Services.WCFService
 {

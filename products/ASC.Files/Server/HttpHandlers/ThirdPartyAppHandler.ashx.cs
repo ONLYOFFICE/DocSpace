@@ -33,7 +33,7 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
-using ASC.Web.Files.Resources;
+using ASC.Files.Resources;
 using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Studio.Utility;
 

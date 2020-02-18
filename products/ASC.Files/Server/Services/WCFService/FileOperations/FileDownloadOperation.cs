@@ -35,11 +35,11 @@ using ASC.Common.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Files.Core;
+using ASC.Files.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 

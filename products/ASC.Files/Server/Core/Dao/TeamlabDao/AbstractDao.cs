@@ -44,7 +44,6 @@ using ASC.Web.Studio.Utility;
 using Autofac;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
@@ -106,92 +105,6 @@ namespace ASC.Files.Core.Data
         {
             return Query(r => r.Files)
                 .Where(where);
-        }
-
-        protected List<File> FromQuery(IQueryable<DbFile> dbFiles, bool checkShared = true)
-        {
-            return dbFiles
-                .Select(r => new { file = r, root = GetRootFolderType(r), shared = checkShared ? GetSharedQuery(FileEntryType.File, r) : true })
-                .ToList()
-                .Select(r =>
-                {
-                    var file = ServiceProvider.GetService<File>();
-                    file.ID = r.file.Id;
-                    file.Title = r.file.Title;
-                    file.FolderID = r.file.FolderId;
-                    file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
-                    file.CreateBy = r.file.CreateBy;
-                    file.Version = r.file.Version;
-                    file.VersionGroup = r.file.VersionGroup;
-                    file.ContentLength = r.file.ContentLength;
-                    file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
-                    file.ModifiedBy = r.file.ModifiedBy;
-                    file.RootFolderType = r.root.FolderType;
-                    file.RootFolderCreator = r.root.CreateBy;
-                    file.RootFolderId = r.root.Id;
-                    file.Shared = r.shared;
-                    file.ConvertedType = r.file.ConvertedType;
-                    file.Comment = r.file.Comment;
-                    file.Encrypted = r.file.Encrypted;
-                    file.Forcesave = r.file.Forcesave;
-                    return file;
-                }
-                ).ToList();
-        }
-
-        protected DbFolder GetRootFolderType(DbFile file)
-        {
-            return FilesDbContext.Folders
-                .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                .Where(r => r.folder.TenantId == file.TenantId)
-                .Where(r => r.tree.FolderId == file.FolderId)
-                .OrderByDescending(r => r.tree.Level)
-                .Select(r => r.folder)
-                .FirstOrDefault();
-        }
-        protected DbFolder GetRootFolderType(DbFolder folder)
-        {
-            return FilesDbContext.Folders
-                .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
-                .Where(r => r.folder.TenantId == folder.TenantId)
-                .Where(r => r.tree.FolderId == folder.ParentId)
-                .OrderByDescending(r => r.tree.Level)
-                .Select(r => r.folder)
-                .FirstOrDefault();
-        }
-
-        protected FolderType ParseRootFolderType(object v)
-        {
-            return v != null
-                       ? (FolderType)Enum.Parse(typeof(FolderType), v.ToString().Substring(0, 1))
-                       : default;
-        }
-
-        protected Guid ParseRootFolderCreator(object v)
-        {
-            return v != null ? new Guid(v.ToString().Substring(1, 36)) : default;
-        }
-
-        protected int ParseRootFolderId(object v)
-        {
-            return v != null ? int.Parse(v.ToString().Substring(1 + 36)) : default;
-        }
-
-        protected bool GetSharedQuery(FileEntryType type, DbFile dbFile)
-        {
-            return
-                FilesDbContext.Security
-                .Where(r => r.EntryType == type)
-                .Where(r => r.EntryId == dbFile.Id.ToString())
-                .Any();
-        }
-        protected bool GetSharedQuery(FileEntryType type, DbFolder dbFile)
-        {
-            return
-                FilesDbContext.Security
-                .Where(r => r.EntryType == type)
-                .Where(r => r.EntryId == dbFile.Id.ToString())
-                .Any();
         }
 
         protected void GetRecalculateFilesCountUpdate(object folderId)

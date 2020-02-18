@@ -32,7 +32,7 @@ using System.Net;
 using System.Runtime.Serialization;
 
 using ASC.Common.Logging;
-using ASC.Web.Files.Resources;
+using ASC.Files.Resources;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;

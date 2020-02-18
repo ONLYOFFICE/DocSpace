@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
@@ -54,6 +55,15 @@ namespace ASC.Web.Files.Core.Search
                 Title = d.Title,
                 TenantId = tenantManager.GetCurrentTenant().TenantId
             };
+        }
+    }
+    public static class FoldersWrapperExtention
+    {
+        public static DIHelper AddFoldersWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<FoldersWrapper>();
+            return services
+                .AddFactoryIndexerService<FoldersWrapper>();
         }
     }
 }

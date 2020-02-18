@@ -30,12 +30,12 @@ using System.Linq;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
+using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.ModuleManagement.Common;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 

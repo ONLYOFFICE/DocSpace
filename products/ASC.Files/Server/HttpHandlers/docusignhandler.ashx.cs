@@ -35,10 +35,10 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
+using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Studio.Utility;
 

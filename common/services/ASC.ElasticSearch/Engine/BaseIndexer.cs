@@ -79,7 +79,7 @@ namespace ASC.ElasticSearch
     {
         private static readonly object Locker = new object();
 
-        protected internal T Wrapper { get; set; }
+        protected internal T Wrapper { get { return ServiceProvider.GetService<T>(); } }
 
         public string IndexName { get { return Wrapper.IndexName; } }
 
@@ -93,7 +93,6 @@ namespace ASC.ElasticSearch
         public WebstudioDbContext WebstudioDbContext { get; }
 
         public BaseIndexer(
-            FactoryIndexer factoryIndexer,
             Client client,
             IOptionsMonitor<ILog> log,
             DbContextManager<WebstudioDbContext> dbContextManager,
@@ -102,7 +101,6 @@ namespace ASC.ElasticSearch
             BaseIndexerHelper baseIndexerHelper,
             IServiceProvider serviceProvider)
         {
-            Wrapper = factoryIndexer.Builder.Resolve<T>();
             Client = client;
             Log = log.CurrentValue;
             TenantManager = tenantManager;

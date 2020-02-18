@@ -48,6 +48,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
+using ASC.Files.Resources;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
@@ -56,7 +57,6 @@ using ASC.Web.Core.Utility;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Files.Helpers;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Files.Services.NotifyService;
 using ASC.Web.Files.Services.WCFService.FileOperations;
@@ -2090,8 +2090,8 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddGlobalFolderHelperService()
                 .AddAuthContextService()
                 .AddUserManagerService()
-                .AddFactoryIndexerService<FoldersWrapper>()
-                .AddFactoryIndexerService<FilesWrapper>()
+                .AddFoldersWrapperService()
+                .AddFilesWrapperService()
                 .AddFilesLinkUtilityService()
                 .AddBaseCommonLinkUtilityService()
                 .AddCoreBaseSettingsService()
@@ -2118,7 +2118,8 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddFileSharingService()
                 .AddDocumentServiceTrackerHelperService()
                 .AddSocketManagerService()
-                .AddFileOperationsManagerHelperService();
+                .AddFileOperationsManagerHelperService()
+                .AddFileSharingAceHelperService();
             ;
         }
     }

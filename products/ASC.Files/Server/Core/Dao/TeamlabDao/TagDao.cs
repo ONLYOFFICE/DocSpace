@@ -453,7 +453,17 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.file.TenantId == r.tagLink.Link.TenantId)
                     .Where(r => r.file.CreateBy != subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.File)
-                    .Select(r => new { r.tagLink, root = GetRootFolderType(r.file) })
+                    .Select(r => new
+                    {
+                        r.tagLink,
+                        root = FilesDbContext.Folders
+                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == r.file.TenantId)
+                            .Where(x => x.tree.FolderId == r.file.FolderId)
+                            .OrderByDescending(r => r.tree.Level)
+                            .Select(r => r.folder)
+                            .FirstOrDefault()
+                    })
                     .Where(r => r.root.FolderType == FolderType.USER)
                     .Select(r => r.tagLink);
 
@@ -466,7 +476,17 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.folder.TenantId == r.tagLink.Link.TenantId)
                     .Where(r => r.folder.CreateBy != subject)
                     .Where(r => r.tagLink.Link.EntryType == FileEntryType.Folder)
-                    .Select(r => new { r.tagLink, root = GetRootFolderType(r.folder) })
+                    .Select(r => new
+                    {
+                        r.tagLink,
+                        root = FilesDbContext.Folders
+                            .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                            .Where(x => x.folder.TenantId == r.folder.TenantId)
+                            .Where(x => x.tree.FolderId == r.folder.ParentId)
+                            .OrderByDescending(r => r.tree.Level)
+                            .Select(r => r.folder)
+                            .FirstOrDefault()
+                    })
                     .Where(r => r.root.FolderType == FolderType.USER)
                     .Select(r => r.tagLink);
 

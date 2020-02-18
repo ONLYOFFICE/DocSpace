@@ -29,12 +29,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
+using ASC.Files.Resources;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Resources;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -152,5 +154,18 @@ namespace ASC.Web.Files.Core.Search
         public override DateTime LastModifiedOn { get; set; }
 
         protected override string Table { get { return "files_folder_tree"; } }
+    }
+
+    public static class FilesWrapperExtention
+    {
+        public static DIHelper AddFilesWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<FilesWrapper>();
+            return services
+                .AddTenantManagerService()
+                .AddFileUtilityService()
+                .AddDaoFactoryService()
+                .AddFactoryIndexerService<FilesWrapper>();
+        }
     }
 }

@@ -34,8 +34,8 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+using ASC.Files.Resources;
 using ASC.Web.Core.Users;
-using ASC.Web.Files.Resources;
 
 using Microsoft.Extensions.Options;
 

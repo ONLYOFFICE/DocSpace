@@ -35,10 +35,10 @@ using ASC.Common.Web;
 using ASC.Core.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Resources;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Files.Resources;
 using ASC.Web.Studio.Utility;
 
 using File = ASC.Files.Core.File;

@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Core;
+using ASC.Files.Resources;
 using ASC.Notify.Model;
 using ASC.Web.Core.Subscriptions;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Services.NotifyService;
 
 namespace ASC.Web.Files.Classes

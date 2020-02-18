@@ -41,7 +41,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Web.Files.Resources;
+using ASC.Files.Resources;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

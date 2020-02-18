@@ -40,15 +40,14 @@ using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
+using ASC.Files.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Files.Resources;
 using ASC.Web.Files.Utils;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
