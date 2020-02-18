@@ -36,7 +36,7 @@ using ASC.Mail.Models;
 
 namespace ASC.Mail.Extensions
 {
-    public static class DataContractsExtensions
+    public static class ModelExtensions
     {
         public static List<MailAccountData> ToAccountData(this AccountInfo account)
         {

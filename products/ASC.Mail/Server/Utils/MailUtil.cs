@@ -186,76 +186,76 @@ namespace ASC.Mail.Utils
             return result;
         }
 
-        //public static Ical.Net.CalendarCollection ParseICalendar(string icalFormat)
-        //{
-        //    using (TextReader sr = new StringReader(icalFormat))
-        //    {
-        //        return Ical.Net.CalendarCollection.Load(sr);
-        //    }
-        //}
+        public static Ical.Net.CalendarCollection ParseICalendar(string icalFormat)
+        {
+            using (TextReader sr = new StringReader(icalFormat))
+            {
+                return Ical.Net.CalendarCollection.Load(sr);
+            }
+        }
 
-        //public static Ical.Net.Calendar ParseValidCalendar(string icalFormat, ILog log = null)
-        //{
-        //    log = log ?? new NullLog();
+        public static Ical.Net.Calendar ParseValidCalendar(string icalFormat, ILog log = null)
+        {
+            log = log ?? new NullLog();
 
-        //    try
-        //    {
-        //        var calendars = ParseICalendar(icalFormat);
+            try
+            {
+                var calendars = ParseICalendar(icalFormat);
 
-        //        if (!calendars.Any())
-        //            throw new InvalidDataException("Calendars not found");
+                if (!calendars.Any())
+                    throw new InvalidDataException("Calendars not found");
 
-        //        if(calendars.Count > 1)
-        //            throw new InvalidDataException("Too many calendars");
+                if (calendars.Count > 1)
+                    throw new InvalidDataException("Too many calendars");
 
-        //        var calendar = calendars.First();
+                var calendar = calendars.First();
 
-        //        if (calendar.Version != "2.0")
-        //            throw new InvalidDataException(string.Format("Calendar version is not supported (version == {0})",
-        //                calendar.Version));
+                if (calendar.Version != "2.0")
+                    throw new InvalidDataException(string.Format("Calendar version is not supported (version == {0})",
+                        calendar.Version));
 
-        //        if (string.IsNullOrEmpty(calendar.Method)
-        //            || (!calendar.Method.Equals(Defines.ICAL_REQUEST, StringComparison.InvariantCultureIgnoreCase)
-        //            && !calendar.Method.Equals(Defines.ICAL_REPLY, StringComparison.InvariantCultureIgnoreCase)
-        //            && !calendar.Method.Equals(Defines.ICAL_CANCEL, StringComparison.InvariantCultureIgnoreCase)))
-        //        {
-        //            throw new InvalidDataException(string.Format("Calendar method is not supported (method == {0})",
-        //                calendar.Method));
-        //        }
+                if (string.IsNullOrEmpty(calendar.Method)
+                    || (!calendar.Method.Equals(Defines.ICAL_REQUEST, StringComparison.InvariantCultureIgnoreCase)
+                    && !calendar.Method.Equals(Defines.ICAL_REPLY, StringComparison.InvariantCultureIgnoreCase)
+                    && !calendar.Method.Equals(Defines.ICAL_CANCEL, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    throw new InvalidDataException(string.Format("Calendar method is not supported (method == {0})",
+                        calendar.Method));
+                }
 
-        //        if(!calendar.Events.Any())
-        //            throw new InvalidDataException("Calendar events not found");
+                if (!calendar.Events.Any())
+                    throw new InvalidDataException("Calendar events not found");
 
-        //        if (calendar.Events.Count > 1)
-        //            throw new InvalidDataException("Too many calendar events");
+                if (calendar.Events.Count > 1)
+                    throw new InvalidDataException("Too many calendar events");
 
-        //        var icalEvent = calendar.Events.First();
+                var icalEvent = calendar.Events.First();
 
-        //        if(string.IsNullOrEmpty(icalEvent.Uid))
-        //            throw new InvalidDataException("Calendar event uid is empty");
+                if (string.IsNullOrEmpty(icalEvent.Uid))
+                    throw new InvalidDataException("Calendar event uid is empty");
 
-        //        return calendar;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("ParseValidCalendar() Exception: {0}", ex.ToString());
-        //    }
+                return calendar;
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("ParseValidCalendar() Exception: {0}", ex.ToString());
+            }
 
-        //    return null;
-        //}
+            return null;
+        }
 
-        //public static string SerializeCalendar(Ical.Net.Calendar calendar)
-        //{
-        //    try
-        //    {
-        //        var serializer = new Ical.Net.Serialization.CalendarSerializer(calendar);
-        //        return serializer.SerializeToString(calendar);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
+        public static string SerializeCalendar(Ical.Net.Calendar calendar)
+        {
+            try
+            {
+                var serializer = new Ical.Net.Serialization.CalendarSerializer(calendar);
+                return serializer.SerializeToString(calendar);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
         public static string CreateFullEmail(string displayName, string email)
         {
@@ -582,46 +582,46 @@ namespace ASC.Mail.Utils
         }
 
         /// <summary>
-        /// Creates Rfc 2822 3.6.4 message-id. Syntax: id-left '@' id-right
+        /// Creates Rfc 2822 3.6.4 message-id.Syntax: id-left '@' id-right
         /// </summary>
-        //public static string CreateMessageId(ILog log = null)
-        //{
-        //    if (log == null)
-        //        log = new NullLog();
+        public static string CreateMessageId(ILog log = null)
+        {
+            if (log == null)
+                log = new NullLog();
 
-        //    var domain = "";
+            var domain = "";
 
-        //    try
-        //    {
-        //        var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            //try
+            //{
+            //    var tenant = CoreContext.TenantManager.GetCurrentTenant();
 
-        //        if (tenant != null)
-        //            domain = tenant.GetTenantDomain();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("CreateMessageId: GetTenantDomain failed: Exception\r\n{0}\r\n", ex.ToString());
-        //    }
+            //    if (tenant != null)
+            //        domain = tenant.GetTenantDomain();
+            //}
+            //catch (Exception ex)
+            //{
+            //    log.ErrorFormat("CreateMessageId: GetTenantDomain failed: Exception\r\n{0}\r\n", ex.ToString());
+            //}
 
-        //    if (string.IsNullOrEmpty(domain))
-        //        domain = System.Net.Dns.GetHostName();
+            //if (string.IsNullOrEmpty(domain))
+                domain = System.Net.Dns.GetHostName();
 
-        //    try
-        //    {
-        //        var indexСolon = domain.IndexOf(":", StringComparison.Ordinal);
+            try
+            {
+                var indexСolon = domain.IndexOf(":", StringComparison.Ordinal);
 
-        //        if (indexСolon != -1)
-        //        {
-        //            domain = domain.Remove(indexСolon, domain.Length - indexСolon);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("CreateMessageId: Remove colon failed: Exception\r\n{0}\r\n", ex.ToString());
-        //    }
+                if (indexСolon != -1)
+                {
+                    domain = domain.Remove(indexСolon, domain.Length - indexСolon);
+                }
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("CreateMessageId: Remove colon failed: Exception\r\n{0}\r\n", ex.ToString());
+            }
 
-        //    return string.Format("AU{0}@{1}", GetUniqueString(), domain);
-        //}
+            return string.Format("AU{0}@{1}", GetUniqueString(), domain);
+        }
 
         public static string GetUniqueString()
         {

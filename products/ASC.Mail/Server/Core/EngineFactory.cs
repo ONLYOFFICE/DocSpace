@@ -237,6 +237,7 @@ namespace ASC.Mail.Core
 
             return services
                 .AddMailDbContextService()
+                .AddMailboxEngineService()
                 .AddAccountEngineService();
         }
     }

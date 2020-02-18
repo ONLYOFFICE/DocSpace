@@ -27,12 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ASC.Api.Core;
 //using System.Net.Mail;
 //using System.Threading;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
+using ASC.Mail.Clients;
 //using ASC.FederatedLogin.Helpers;
 //using ASC.FederatedLogin.LoginProviders;
 //using ASC.Mail.Authorization;
@@ -73,6 +75,8 @@ namespace ASC.Mail.Core.Engine
 
         public ILog Log { get; }
 
+        public MailboxEngine MailboxEngine { get; }
+
         public MailDbContext MailDb { get; }
 
 
@@ -80,6 +84,7 @@ namespace ASC.Mail.Core.Engine
             DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext,
+            MailboxEngine mailboxEngine,
             IOptionsMonitor<ILog> option)
         {
             ApiContext = apiContext;
@@ -87,6 +92,8 @@ namespace ASC.Mail.Core.Engine
             Log = option.Get("ASC.Mail.AccountEngine");
 
             MailDb = dbContext.Get("mail");
+
+            MailboxEngine = mailboxEngine;
         }
 
         public List<AccountInfo> GetAccountInfoList()
@@ -212,32 +219,32 @@ namespace ASC.Mail.Core.Engine
             return accountInfoList;
         }
 
-        //public AccountInfo CreateAccount(MailBoxData mbox, out LoginResult loginResult)
-        //{
-        //    if (mbox == null)
-        //        throw new NullReferenceException("mbox");
+        public AccountInfo TryCreateAccount(MailBoxData mbox, out LoginResult loginResult)
+        {
+            if (mbox == null)
+                throw new NullReferenceException("mbox");
 
-        //    using (var client = new MailClient(mbox, CancellationToken.None,
-        //            certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
-        //    {
-        //        loginResult = client.TestLogin();
-        //    }
+            using (var client = new MailClient(mbox, CancellationToken.None,
+                    certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+            {
+                loginResult = client.TestLogin();
+            }
 
-        //    if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
-        //        return null;
+            if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
+                return null;
 
-        //    if (!MailboxEngine.SaveMailBox(mbox))
-        //        throw new Exception(string.Format("SaveMailBox {0} failed", mbox.EMail));
+            if (!MailboxEngine.SaveMailBox(mbox))
+                throw new Exception(string.Format("SaveMailBox {0} failed", mbox.EMail));
 
-        //    CacheEngine.Clear(User);
+            //CacheEngine.Clear(User);
 
-        //    var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
-        //        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
-        //        new MailAutoreplyData(mbox.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
-        //            DateTime.MinValue, string.Empty, string.Empty), false, mbox.EMailInFolder, false, false);
+            var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
+                new MailAutoreplyData(mbox.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
+                    DateTime.MinValue, string.Empty, string.Empty), false, mbox.EMailInFolder, false, false);
 
-        //    return account;
-        //}
+            return account;
+        }
 
         //public AccountInfo CreateAccountSimple(string email, string password, out List<LoginResult> loginResults)
         //{
