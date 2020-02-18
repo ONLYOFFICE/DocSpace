@@ -68,7 +68,7 @@ class ProfileActions extends React.PureComponent {
           onClick={this.onClick}
           role={userRole}
           size="small"
-          source={user.avatarSmall}
+          source={user.avatar}
           userName={user.displayName}
         />
         <ProfileMenu
