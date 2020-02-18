@@ -78,8 +78,8 @@ const Body = () => {
 
   useEffect(() => {
     changeLanguage(i18n);
-    document.title = "About – People";
-  }, []);
+    document.title = `${t("AboutTitle")} – ${t("People")}`;
+  }, [t]);
 
   const gitHub = "GitHub";
   const license = "AGPL-3.0";
@@ -191,6 +191,5 @@ const Body = () => {
 const About = ({ language }) => (
   <PageLayout sectionBodyContent={<Body language={language} />} />
 );
-
 
 export default About;

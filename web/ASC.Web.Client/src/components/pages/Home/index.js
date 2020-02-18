@@ -72,6 +72,8 @@ const Body = ({ modules, match, isLoaded }) => {
     const { t } = useTranslation('translation', { i18n });
     const { error } = match.params;
 
+    document.title = `${t("OrganizationName")}`;
+
     useEffect(() => error && toastr.error(error), [error]);
 
     useEffect(() => { 
