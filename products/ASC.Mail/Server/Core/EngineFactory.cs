@@ -24,68 +24,35 @@
 */
 
 
-using ASC.Api.Core;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
+//using ASC.Api.Core;
+//using ASC.Common.Logging;
+//using ASC.Core;
+//using ASC.Core.Common.EF;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Dao;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
+//using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core
 {
     public class EngineFactory
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
-        public int Tenant
+        public AccountEngine AccountEngine { get; }
+
+        public EngineFactory(AccountEngine accountEngine)
         {
-            get
-            {
-                return ApiContext.Tenant.TenantId;
-            }
+            AccountEngine = accountEngine;
         }
 
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
-
-        public ILog Log { get; }
-
-        public IOptionsMonitor<ILog> LogOption { get; }
-
-        public EngineFactory(
-            DbContextManager<MailDbContext> dbContext, 
-            ApiContext apiContext,
-            SecurityContext securityContext,
-            IOptionsMonitor<ILog> option)
-        {
-            ApiContext = apiContext;
-            SecurityContext = securityContext;
-            LogOption = option;
-
-            Log = option.Get("ASC.Api");
-
-            DbContext = dbContext;
-        }
-
-        private AccountEngine _accountEngine;
-        public AccountEngine AccountEngine
-        {
-            get
-            {
-                return _accountEngine ?? (_accountEngine = new AccountEngine(DbContext, ApiContext, SecurityContext, LogOption));
-            }
-        }
+        //private AccountEngine _accountEngine;
+        //public AccountEngine AccountEngine
+        //{
+        //    get
+        //    {
+        //        return _accountEngine ?? (_accountEngine = new AccountEngine(DbContext, ApiContext, SecurityContext, LogOption));
+        //    }
+        //}
 
         //private AutoreplyEngine _autoreplyEngine;
         //public AutoreplyEngine AutoreplyEngine
@@ -268,14 +235,9 @@ namespace ASC.Mail.Core
             //services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<EngineFactory>();
 
-            return services.AddMailDbContextService();
-
-            //return services
-            //    .AddUserService()
-            //    .AddHttpContextAccessor()
-            //    .AddTenantManagerService()
-            //    .AddConstantsService()
-            //    .AddPermissionContextService();
+            return services
+                .AddMailDbContextService()
+                .AddAccountEngineService();
         }
     }
 }

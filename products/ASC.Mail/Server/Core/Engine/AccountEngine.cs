@@ -41,6 +41,8 @@ using ASC.Core.Common.EF;
 //using ASC.Mail.Core.Entities;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 //using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 
@@ -71,8 +73,6 @@ namespace ASC.Mail.Core.Engine
 
         public ILog Log { get; }
 
-        //private MailboxEngine MailboxEngine { get; set; }
-
         public MailDbContext MailDb { get; }
 
 
@@ -84,19 +84,14 @@ namespace ASC.Mail.Core.Engine
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
-            Log = option.Get("ASC.Api");
-
-            //Log = log ?? LogManager.GetLogger("ASC.Mail.AccountEngine");
-
-            //var engine = new EngineFactory(dbContext, tenant, user);
-
-            //MailboxEngine = engine.MailboxEngine;
+            Log = option.Get("ASC.Mail.AccountEngine");
 
             MailDb = dbContext.Get("mail");
         }
 
         public List<AccountInfo> GetAccountInfoList()
         {
+            //TODO: Find better solution for cache
             //var accountInfoList = CacheEngine.Get(User);
             //if (accountInfoList != null)
             //    return accountInfoList;
@@ -143,7 +138,6 @@ namespace ASC.Mail.Core.Engine
                                 : new MailAutoreplyData(mb.Id, mb.Tenant, false, false,
                                     false, DateTime.MinValue, DateTime.MinValue, string.Empty, string.Empty)
                             };
-
 
             var accountInfoList = new List<AccountInfo>();
 
@@ -602,5 +596,15 @@ namespace ASC.Mail.Core.Engine
 
         //    return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
         //}
+    }
+
+    public static class AccountEngineExtension
+    {
+        public static IServiceCollection AddAccountEngineService(this IServiceCollection services)
+        {
+            services.TryAddScoped<AccountEngine>();
+
+            return services;
+        }
     }
 }
