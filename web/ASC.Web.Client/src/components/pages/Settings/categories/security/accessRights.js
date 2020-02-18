@@ -26,6 +26,8 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
+    document.title = "Security – ONLYOFFICE";
+
     //console.log("props", props);
 
     const url = props.history.location.pathname;

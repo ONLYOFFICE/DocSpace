@@ -8,6 +8,7 @@ const CustomizationSettings = lazy(() => import("./customization"));
 
 const Common = ({ match }) => {
   const basePath = '/settings/common';
+  document.title = "Customization – ONLYOFFICE";
 
   return (
     <Suspense fallback={<Loader className="pageLoader" type="rombs" size='40px' />}>

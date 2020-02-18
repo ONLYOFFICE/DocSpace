@@ -8,8 +8,23 @@ const StyledArticleBody = styled.div`
   flex-grow: 1;
   height: 100%;
 
-  .people-tree-menu{
-    margin-right: 30px;
+  .people-tree-menu {
+    margin-right: 0;
+  }
+
+  .custom-scrollbar {
+    .nav-thumb-vertical {
+      opacity: 0;
+      transition: opacity 200ms ease;
+    }
+  }
+
+  :hover {
+    .custom-scrollbar {
+      .nav-thumb-vertical {
+        opacity: 1;
+      }
+    }
   }
 `;
 
@@ -23,7 +38,7 @@ const ArticleBody = React.memo(props => {
 
   return (
     <StyledArticleBody>
-      <Scrollbar>
+      <Scrollbar className="custom-scrollbar" stype="mediumBlack">
         <StyledArticleWrapper>{children}</StyledArticleWrapper>
       </Scrollbar>
     </StyledArticleBody>

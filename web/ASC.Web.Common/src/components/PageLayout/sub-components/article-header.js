@@ -9,7 +9,7 @@ const StyledArticleHeader = styled.div`
 
   @media ${tablet} {
     display: none;
-  }
+    }
 `;
 
 const ArticleHeader = React.memo(props => {

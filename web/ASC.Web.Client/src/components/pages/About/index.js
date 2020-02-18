@@ -78,6 +78,7 @@ const Body = () => {
 
   useEffect(() => {
     changeLanguage(i18n);
+    document.title = "About – People";
   }, []);
 
   const gitHub = "GitHub";

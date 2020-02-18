@@ -30,9 +30,14 @@ const InfoItem = styled.div`
 `;
 
 const InfoItemLabel = styled.div`
-  width: 130px;
+  width: 200px;
+
+  @media (max-width: 620px) {
+    width: 130px;
+  }
+
   white-space: nowrap;
-  color: #A3A9AE;
+  color: #83888d;
 `;
 
 const InfoItemValue = styled.div`

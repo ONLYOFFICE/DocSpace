@@ -39,6 +39,8 @@ const StyledFilterItemContent = styled.div`
   display: flex;
   padding: 5px 4px 2px 7px;
   width: 100%;
+  user-select: none;
+  color: #333;
   ${props =>
     props.isOpen && !props.isDisabled &&
     css`
@@ -71,7 +73,7 @@ const StyledCloseButtonBlock = styled.div`
       &:active{
         background: #ECEEF1;
         svg path:first-child { 
-          fill: #333; 
+          fill: #A3A9AE; 
         }
       }
   `}
@@ -82,7 +84,7 @@ const StyledComboBox = styled(ComboBox)`
   max-width: 185px;
   cursor: pointer;
   vertical-align: middle;
-  margin-top: -1px;
+  margin-top: -2px;
   > div:first-child{
     width: auto;
     padding-left: 4px;
@@ -91,7 +93,7 @@ const StyledComboBox = styled(ComboBox)`
     max-width: 220px;
   }
   .combo-button-label {
-    color: #555F65;
+    color: #333;
   }
 `;
 const StyledFilterName = styled.span`
@@ -145,6 +147,7 @@ class FilterItem extends React.Component {
                   isOpen: isOpen
                 })
               }}
+              dropDownMaxHeight={200}
             ></StyledComboBox>
             : <StyledFilterName>{this.props.label}</StyledFilterName>
           }

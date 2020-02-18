@@ -17,14 +17,15 @@ import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
   updateUserType,
-  fetchPeople
+  fetchPeople,
+  removeUser
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
 import { InviteDialog } from '../../../../dialogs';
 
 const { isAdmin } = store.auth.selectors;
-const { resendUserInvites, deleteUsers } = api.people;
+const { resendUserInvites } = api.people;
 const { EmployeeStatus, EmployeeType } = constants;
 
 const isRefetchPeople = true;
@@ -38,12 +39,14 @@ const StyledContainer = styled.div`
   .group-button-menu-container {
     margin: 0 -16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    padding-bottom: 56px;
     
     @media (max-width: 1024px) {
       & > div:first-child {
-      position: absolute;
-      top: 56px;
-      z-index: 180;
+        ${props => props.isArticlePinned && css`width: calc(100% - 240px);`}
+        position: absolute;
+        top: 56px;
+        z-index: 180;
       }
     }
 
@@ -94,7 +97,8 @@ const SectionHeaderContent = props => {
     filter,
     history,
     settings,
-    deleteGroup
+    deleteGroup,
+    removeUser
   } = props;
 
   const selectedUserIds = getSelectionIds(selection);
@@ -134,14 +138,14 @@ const SectionHeaderContent = props => {
 
   const onDelete = useCallback(() => {
     onLoading(true);
-    deleteUsers(selectedUserIds)
+    removeUser(selectedUserIds, filter)
       .then(() => {
         toastr.success(t('SuccessfullyRemovedUsers'));
         return fetchPeople(filter);
       })
       .catch(error => toastr.error(error))
       .finally(() => onLoading(false));
-  }, [selectedUserIds, onLoading, filter, t]);
+  }, [selectedUserIds, removeUser, onLoading, filter, t]);
 
   const menuItems = [
     {
@@ -268,8 +272,10 @@ const SectionHeaderContent = props => {
     ];
   }, [settings, t, goToEmployeeCreate, goToGuestCreate, goToGroupCreate, onInvitationDialogClick/* , onSentInviteAgain */]);
 
+  const isArticlePinned = window.localStorage.getItem('asc_article_pinned_key');
+
   return (
-    <StyledContainer isHeaderVisible={isHeaderVisible}>
+    <StyledContainer isHeaderVisible={isHeaderVisible} isArticlePinned={isArticlePinned}>
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu
@@ -346,5 +352,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { updateUserStatus, updateUserType, fetchPeople, deleteGroup }
+  { updateUserStatus, updateUserType, fetchPeople, deleteGroup, removeUser }
 )(withTranslation()(withRouter(SectionHeaderContent)));

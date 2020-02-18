@@ -1,12 +1,15 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
 import { connect } from 'react-redux';
 import {
+  utils,
   TreeMenu,
   TreeNode,
-  Icons
+  Icons,
+  Link
 } from "asc-web-components";
+import { history } from "asc-web-common";
 import { selectGroup } from '../../../store/people/actions';
+import { getSelectedGroup } from "../../../store/people/selectors";
 
 const getItems = data => {
   return data.map(item => {
@@ -32,21 +35,7 @@ const getItems = data => {
       );
     }
     return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
+      <TreeNode key={item.key} title={item.title} />
     );
   });
 };
@@ -66,7 +55,13 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    this.props.selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+    const { selectGroup, groups } = this.props;
+
+    const currentGroup = getSelectedGroup(groups, data[0]);
+    if(currentGroup) {
+      document.title = currentGroup && `${currentGroup.name} – People`;
+    }
+    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   switcherIcon = obj => {
@@ -88,7 +83,6 @@ class ArticleBodyContent extends React.Component {
     const { data, selectedKeys } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-
     return (
       <TreeMenu
         className="people-tree-menu"
@@ -109,14 +103,35 @@ class ArticleBodyContent extends React.Component {
 };
 
 const getTreeGroups = (groups, departments) => {
+  const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
+  const link = history.location.search.slice(1);
+  let newLink = link.split("&");
+  const index = newLink.findIndex(x => x.includes("group"));
+  index && newLink.splice(1, 1);
+  newLink = newLink.join('&');
+
+  const onTitleClick = () => {
+    history.push("/products/people/");
+    document.title = "Groups – People";
+  }
+
   const treeData = [
       {
           key: "root",
-          title: departments,
+          title: <Link {...linkProps} onClick={onTitleClick} href={`${history.location.pathname}`}>{departments}</Link>,
           root: true,
           children: groups.map(g => {
               return {
-                  key: g.id, title: g.name, root: false
+                key: g.id,
+                title: (
+                  <Link
+                    {...linkProps}
+                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                  >
+                    {g.name}
+                  </Link>
+                ),
+                root: false
               };
           }) || []
       }
@@ -126,9 +141,12 @@ const getTreeGroups = (groups, departments) => {
 };
 
 function mapStateToProps(state) {
+  const groups = state.people.groups;
+
   return {
-    data: getTreeGroups(state.people.groups, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
+    data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
+    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"],
+    groups
   };
 }
 

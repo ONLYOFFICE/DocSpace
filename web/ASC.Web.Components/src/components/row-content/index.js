@@ -80,6 +80,7 @@ const SideContainerWrapper = styled.div`
   }
 
   width: ${props => props.containerWidth ? props.containerWidth : '100px'};
+  min-width: 100px;
   color: ${props => props.color && props.color};
 
   ${props => !props.disableSideInfo && `

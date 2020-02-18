@@ -135,18 +135,18 @@ storiesOf('EXAMPLES|Row', module)
               contextOptions={user.contextOptions}
             >
               <RowContent>
-                <Link type='page' title={user.userName} isBold={true} fontSize='15px' color={nameColor} >{user.userName}</Link>
+                <Link type='page' title={user.userName} isBold={true} fontSize='15px' color={nameColor} isTextOverflow={true}>{user.userName}</Link>
                 <>
                   {user.status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
                   {user.status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
                 </>
                 {user.isHead 
-                  ? <Link type='page' title='Head of department' fontSize='12px' color={sideInfoColor} >Head of department</Link> 
-                  : <></>
+                  ? <Link containerWidth='110px' type='page' title='Head of department' fontSize='12px' color={sideInfoColor} isTextOverflow={true}>Head of department</Link> 
+                  : <div style={{width: '110px'}}></div>
                 }
-                <Link type='action' title={user.department} fontSize='12px' color={sideInfoColor} >{user.department}</Link>
-                <Link type='page' title={user.mobilePhone} fontSize='12px' color={sideInfoColor} >{user.mobilePhone}</Link>
-                <Link type='page' title={user.email} fontSize='12px' color={sideInfoColor} >{user.email}</Link>
+                <Link type='action' title={user.department} fontSize='12px' color={sideInfoColor} isTextOverflow={true}>{user.department}</Link>
+                <Link type='page' title={user.mobilePhone} fontSize='12px' color={sideInfoColor} isTextOverflow={true}>{user.mobilePhone}</Link>
+                <Link containerWidth='220px' type='page' title={user.email} fontSize='12px' color={sideInfoColor} isTextOverflow={true}>{user.email}</Link>
               </RowContent>
             </Row>
           );
