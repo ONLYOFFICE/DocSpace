@@ -76,7 +76,7 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
 
         public MailboxEngine MailboxEngine { get; }
-
+        public DaoFactory DaoFactory { get; }
         public MailDbContext MailDb { get; }
 
 
@@ -85,7 +85,8 @@ namespace ASC.Mail.Core.Engine
             ApiContext apiContext,
             SecurityContext securityContext,
             MailboxEngine mailboxEngine,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            DaoFactory daoFactory)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -94,6 +95,7 @@ namespace ASC.Mail.Core.Engine
             MailDb = dbContext.Get("mail");
 
             MailboxEngine = mailboxEngine;
+            DaoFactory = daoFactory;
         }
 
         public List<AccountInfo> GetAccountInfoList()
@@ -103,48 +105,7 @@ namespace ASC.Mail.Core.Engine
             //if (accountInfoList != null)
             //    return accountInfoList;
 
-            var accounts = from mb in MailDb.MailMailbox
-                           join signature in MailDb.MailMailboxSignature on mb.Id equals signature.IdMailbox into Signature
-                           from sig in Signature.DefaultIfEmpty()
-                           join autoreply in MailDb.MailMailboxAutoreply on mb.Id equals autoreply.IdMailbox into Autoreply
-                           from reply in Autoreply.DefaultIfEmpty()
-                           join address in MailDb.MailServerAddress on mb.Id equals address.IdMailbox into Address
-                           from sa in Address.DefaultIfEmpty()
-                           join domain in MailDb.MailServerDomain on sa.IdDomain equals domain.Id into Domain
-                           from sd in Domain.DefaultIfEmpty()
-                           join groupXaddress in MailDb.MailServerMailGroupXMailServerAddress on sa.Id equals groupXaddress.IdAddress into GroupXaddress
-                           from sgxa in GroupXaddress.DefaultIfEmpty()
-                           join servergroup in MailDb.MailServerMailGroup on sgxa.IdMailGroup equals servergroup.Id into ServerGroup
-                           from sg in ServerGroup.DefaultIfEmpty()
-                           where mb.Tenant == Tenant && mb.IsRemoved == false && mb.IdUser == UserId
-                           orderby sa.IsAlias
-                           select new {
-                               MailboxId = mb.Id,
-                               MailboxAddress = mb.Address,
-                               MailboxEnabled = mb.Enabled,
-                               MailboxAddressName = mb.Name,
-                               MailboxQuotaError = mb.QuotaError,
-                               MailboxDateAuthError = mb.DateAuthError,
-                               MailboxOAuthToken = mb.Token,
-                               MailboxIsServerMailbox = mb.IsServerMailbox,
-                               MailboxEmailInFolder = mb.EmailInFolder,
-                               ServerAddressId = sa.Id,
-                               ServerAddressName = sa.Name,
-                               ServerAddressIsAlias = sa.IsAlias,
-                               ServerDomainId = sd.Id,
-                               ServerDomainName = sd.Name,
-                               ServerDomainTenant = sd.Tenant,
-                               ServerMailGroupId = sg.Id,
-                               ServerMailGroupAddress = sg.Address,
-                               MailboxSignature = sig != null 
-                                ? new MailSignatureData(mb.Id, mb.Tenant, sig.Html, sig.IsActive)
-                                : new MailSignatureData(mb.Id, mb.Tenant, string.Empty, false),
-                               MailboxAutoreply = reply != null 
-                                ? new MailAutoreplyData(mb.Id, mb.Tenant, reply.TurnOn, reply.OnlyContacts, 
-                                    reply.TurnOnToDate, reply.FromDate, reply.ToDate, reply.Subject, reply.Html) 
-                                : new MailAutoreplyData(mb.Id, mb.Tenant, false, false,
-                                    false, DateTime.MinValue, DateTime.MinValue, string.Empty, string.Empty)
-                            };
+            var accounts = DaoFactory.AccountDao.GetAccounts();
 
             var accountInfoList = new List<AccountInfo>();
 
