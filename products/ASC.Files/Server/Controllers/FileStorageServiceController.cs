@@ -522,15 +522,15 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<File>(result);
         }
 
-        [Read("folders-files-createfile")]
-        public File CreateNewFile(string parentId, string title)
+        [Create("folders-files-createfile")]
+        public File CreateNewFile(FileWrapper fileWrapper)
         {
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(parentId)) throw new ArgumentException();
+            if (string.IsNullOrEmpty(fileWrapper.Title) || string.IsNullOrEmpty(fileWrapper.ParentId)) throw new ArgumentException();
 
             var fileDao = GetFileDao();
             var folderDao = GetFolderDao();
 
-            var folder = folderDao.GetFolder(parentId);
+            var folder = folderDao.GetFolder(fileWrapper.ParentId);
             ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
             ErrorIf(folder.RootFolderType == FolderType.TRASH, FilesCommonResource.ErrorMassage_CreateNewFolderInTrash);
             ErrorIf(!FileSecurity.CanCreate(folder), FilesCommonResource.ErrorMassage_SecurityException_Create);
@@ -539,15 +539,15 @@ namespace ASC.Web.Files.Services.WCFService
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
-            var fileExt = FileUtility.GetInternalExtension(title);
+            var fileExt = FileUtility.GetInternalExtension(fileWrapper.Title);
             if (!FileUtility.InternalExtension.Values.Contains(fileExt))
             {
                 fileExt = FileUtility.InternalExtension[FileType.Document];
-                file.Title = title + fileExt;
+                file.Title = fileWrapper.Title + fileExt;
             }
             else
             {
-                file.Title = FileUtility.ReplaceFileExtension(title, fileExt);
+                file.Title = FileUtility.ReplaceFileExtension(fileWrapper.Title, fileExt);
             }
 
             var culture = UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture();
@@ -619,7 +619,7 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new ItemDictionary<string, string>();
 
             var fileDao = GetFileDao();
-            var ids = filesId.Where(FileTracker.IsEditing).Select(id => (object)id).ToArray();
+            var ids = filesId.Where(FileTracker.IsEditing).Select(id => id).ToArray();
 
             foreach (var file in fileDao.GetFiles(ids))
             {
@@ -2122,5 +2122,11 @@ namespace ASC.Web.Files.Services.WCFService
                 .AddFileSharingAceHelperService();
             ;
         }
+    }
+
+    public class FileWrapper
+    {
+        public string ParentId { get; set; }
+        public string Title { get; set; }
     }
 }

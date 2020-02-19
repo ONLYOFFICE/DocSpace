@@ -539,7 +539,7 @@ namespace ASC.Files.Core.Data
                 subFoldersSqlQuery = subFoldersSqlQuery.Where(r => r.Level == 1);
             }
 
-            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.Select(r => (object)r.FolderId));
+            monitorFolderIds = monitorFolderIds.Concat(subFoldersSqlQuery.Select(r => r.FolderId).ToList().ConvertAll(r => (object)r));
 
             var newTagsForFolders = getBaseSqlQuery()
                 .Where(r => monitorFolderIds.Any(a => r.Link.EntryId == a.ToString()))

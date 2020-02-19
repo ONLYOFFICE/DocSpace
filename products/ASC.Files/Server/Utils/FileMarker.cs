@@ -31,6 +31,7 @@ using System.Security;
 
 using ASC.Common;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
 using ASC.Core.Users;
@@ -41,6 +42,7 @@ using ASC.Files.Resources;
 using ASC.Web.Files.Classes;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using static ASC.Web.Files.Utils.FileMarker;
 
@@ -48,6 +50,33 @@ using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Utils
 {
+    public class FileMarkerHelper
+    {
+        private IServiceProvider ServiceProvider { get; }
+        public ILog Log { get; }
+
+        public FileMarkerHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> optionsMonitor)
+        {
+            ServiceProvider = serviceProvider;
+            Log = optionsMonitor.CurrentValue;
+        }
+
+        internal void ExecMarkFileAsNew(AsyncTaskData obj)
+        {
+            try
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
+                fileMarker.ExecMarkFileAsNew(obj);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+        }
+
+    }
+
     public class FileMarker
     {
         private static readonly object locker = new object();
@@ -64,6 +93,7 @@ namespace ASC.Web.Files.Utils
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public IServiceProvider ServiceProvider { get; }
+        public FileMarkerHelper FileMarkerHelper { get; }
 
         public FileMarker(
             TenantManager tenantManager,
@@ -74,7 +104,8 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
             IServiceProvider serviceProvider,
-            WorkerQueueOptionsManager<AsyncTaskData> workerQueueOptionsManager)
+            WorkerQueueOptionsManager<AsyncTaskData> workerQueueOptionsManager,
+            FileMarkerHelper fileMarkerHelper)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -84,11 +115,12 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
+            FileMarkerHelper = fileMarkerHelper;
             cache = AscCache.Memory;
             tasks = workerQueueOptionsManager.Value;
         }
 
-        private void ExecMarkFileAsNew(AsyncTaskData obj)
+        internal void ExecMarkFileAsNew(AsyncTaskData obj)
         {
             TenantManager.SetCurrentTenant(Convert.ToInt32(obj.TenantID));
 
@@ -281,7 +313,7 @@ namespace ASC.Web.Files.Utils
                 tasks.Add(taskData);
 
                 if (!tasks.IsStarted)
-                    tasks.Start(ExecMarkFileAsNew);
+                    tasks.Start(FileMarkerHelper.ExecMarkFileAsNew);
             }
         }
 
@@ -699,8 +731,21 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileMarkerService(this DIHelper services)
         {
-            services.TryAddScoped<FileMarker>();
-            services.TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData>>();
+            _ = services
+                .TryAddTransient<AsyncTaskData>()
+                .TryAddScoped<FileMarker>()
+                .TryAddSingleton<FileMarkerHelper>()
+                .TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData>>()
+                .TryAddSingleton<WorkerQueue<AsyncTaskData>>()
+                .AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData>>, ConfigureWorkerQueue<AsyncTaskData>>();
+
+            _ = services.Configure<WorkerQueue<AsyncTaskData>>(r =>
+            {
+                r.workerCount = 1;
+                r.waitInterval = (int)TimeSpan.FromSeconds(60).TotalMilliseconds;
+                r.errorCount = 1;
+                r.stopAfterFinsih = false;
+            });
 
             return services
                 .AddTenantManagerService()

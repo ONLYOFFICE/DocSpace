@@ -85,7 +85,7 @@ namespace ASC.People
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
+            diHelper.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
             {
                 r.workerCount = 2;
                 r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
@@ -93,7 +93,7 @@ namespace ASC.People
                 r.stopAfterFinsih = true;
             });
 
-            services.Configure<ProgressQueue<ReassignProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<ReassignProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -102,7 +102,7 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.Configure<ProgressQueue<RemoveProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<RemoveProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;

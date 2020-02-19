@@ -232,20 +232,20 @@ namespace ASC.Data.Storage
             //Make tennant path
             tenant = TenantPath.CreatePath(tenant);
 
-            var store = DataStoreCache.Get(tenant, module);
-            if (store == null)
+            //remove cache
+            //var store = DataStoreCache.Get(tenant, module);
+            //if (store == null)
+            //{
+            var section = StorageFactoryConfig.Section;
+            if (section == null)
             {
-                var section = StorageFactoryConfig.Section;
-                if (section == null)
-                {
-                    throw new InvalidOperationException("config section not found");
-                }
-
-                var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
-
-                store = GetStoreAndCache(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
+                throw new InvalidOperationException("config section not found");
             }
-            return store;
+
+            var settings = SettingsManager.LoadForTenant<StorageSettings>(tenantId);
+
+            //}
+            return GetDataStore(tenant, module, StorageSettingsHelper.DataStoreConsumer(settings), controller);
         }
 
         public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)

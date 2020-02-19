@@ -80,6 +80,11 @@ namespace ASC.Web.Files.Core.Search
         protected override string Table { get { return "files_file"; } }
 
 
+        public FilesWrapper()
+        {
+
+        }
+
         public FilesWrapper(IServiceProvider serviceProvider, TenantManager tenantManager, FileUtility fileUtility, IDaoFactory daoFactory)
         {
             ServiceProvider = serviceProvider;
@@ -88,7 +93,7 @@ namespace ASC.Web.Files.Core.Search
             DaoFactory = daoFactory;
         }
 
-        public static FilesWrapper GetFilesWrapper(IServiceProvider serviceProvider, File d, List<object> parentFolders = null)
+        public static FilesWrapper GetFilesWrapper(IServiceProvider serviceProvider, File d, List<int> parentFolders = null)
         {
             var wrapper = serviceProvider.GetService<FilesWrapper>();
             var tenantManager = serviceProvider.GetService<TenantManager>();
@@ -133,10 +138,10 @@ namespace ASC.Web.Files.Core.Search
             get { return FilesCommonResource.IndexTitle; }
         }
 
-        public IServiceProvider ServiceProvider { get; }
-        public TenantManager TenantManager { get; }
-        public FileUtility FileUtility { get; }
-        public IDaoFactory DaoFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
+        private TenantManager TenantManager { get; }
+        private FileUtility FileUtility { get; }
+        private IDaoFactory DaoFactory { get; }
     }
 
     public sealed class FilesFoldersWrapper : Wrapper

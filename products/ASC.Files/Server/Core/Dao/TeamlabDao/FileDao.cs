@@ -217,9 +217,10 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion).Select(r => r.Id);
 
             return Query(r => r.Files)
-                .Where(r => (object)r.FolderId == parentId && r.CurrentVersion)
-                .Select(r => (object)r.Id)
-                .ToList();
+                .Where(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion)
+                .Select(r => r.Id)
+                .ToList()
+                .ConvertAll(r => (object)r);
         }
 
         public List<File> GetFiles(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -359,7 +360,7 @@ namespace ASC.Files.Core.Data
             }
 
             var isNew = false;
-            List<object> parentFoldersIds;
+            List<int> parentFoldersIds;
             lock (syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
@@ -382,12 +383,14 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 var toUpdate = FilesDbContext.Files
-                    .Where(r => (object)r.Id == file.ID && r.CurrentVersion && r.TenantId == TenantID)
+                    .Where(r => r.Id.ToString() == file.ID.ToString() && r.CurrentVersion && r.TenantId == TenantID)
                     .FirstOrDefault();
 
-                toUpdate.CurrentVersion = false;
-                FilesDbContext.SaveChanges();
-
+                if (toUpdate != null)
+                {
+                    toUpdate.CurrentVersion = false;
+                    FilesDbContext.SaveChanges();
+                }
 
                 var toInsert = new DbFile
                 {
@@ -421,13 +424,13 @@ namespace ASC.Files.Core.Data
                     FilesDbContext.Tree
                     .Where(r => r.FolderId == (int)file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => (object)r.ParentId)
+                    .Select(r => r.ParentId)
                     .ToList();
 
                 if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
-                        .Where(r => parentFoldersIds.Any(a => a == (object)r.Id));
+                        .Where(r => parentFoldersIds.Any(a => a == r.Id));
 
                     foreach (var f in folderToUpdate)
                     {
@@ -491,7 +494,7 @@ namespace ASC.Files.Core.Data
                 }
             }
 
-            List<object> parentFoldersIds;
+            List<int> parentFoldersIds;
             lock (syncRoot)
             {
                 using var tx = FilesDbContext.Database.BeginTransaction();
@@ -506,7 +509,7 @@ namespace ASC.Files.Core.Data
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
                 var toUpdate = FilesDbContext.Files
-                    .Where(r => (object)r.Id == file.ID && r.Version == file.Version)
+                    .Where(r => r.Id.ToString() == file.ID.ToString() && r.Version == file.Version)
                     .FirstOrDefault();
 
                 toUpdate.Version = file.Version;
@@ -533,13 +536,13 @@ namespace ASC.Files.Core.Data
                 parentFoldersIds = FilesDbContext.Tree
                     .Where(r => r.FolderId == (int)file.FolderID)
                     .OrderByDescending(r => r.Level)
-                    .Select(r => (object)r.ParentId)
+                    .Select(r => r.ParentId)
                     .ToList();
 
                 if (parentFoldersIds.Count > 0)
                 {
                     var folderToUpdate = FilesDbContext.Folders
-                        .Where(r => parentFoldersIds.Any(a => a == (object)r.Id));
+                        .Where(r => parentFoldersIds.Any(a => a == r.Id));
 
                     foreach (var f in folderToUpdate)
                     {
@@ -923,7 +926,7 @@ namespace ASC.Files.Core.Data
         {
             var toUpdate = Query(r => r.Files)
                 .Where(r => r.CurrentVersion)
-                .Where(r => fileIds.Any(a => a == (object)r.Id));
+                .Where(r => fileIds.Any(a => a.ToString() == r.Id.ToString()));
 
             foreach (var f in toUpdate)
             {
@@ -939,7 +942,7 @@ namespace ASC.Files.Core.Data
 
             var q = GetFileQuery(r => r.CurrentVersion)
                 .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
-                .Where(r => parentIds.Any(a => a == (object)r.tree.ParentId))
+                .Where(r => parentIds.Any(a => a.ToString() == r.tree.ParentId.ToString()))
                 .Select(r => r.file);
 
             if (!string.IsNullOrEmpty(searchText))
@@ -1099,13 +1102,6 @@ namespace ASC.Files.Core.Data
 
         #endregion
 
-        private static ForcesaveType ParseForcesaveType(object v)
-        {
-            return v != null
-                       ? (ForcesaveType)Enum.Parse(typeof(ForcesaveType), v.ToString().Substring(0, 1))
-                       : default;
-        }
-
         private Func<Selector<FilesWrapper>, Selector<FilesWrapper>> GetFuncForSearch(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
         {
             return s =>
@@ -1180,7 +1176,7 @@ namespace ASC.Files.Core.Data
         protected List<File> FromQueryWithShared(IQueryable<DbFile> dbFiles)
         {
             return dbFiles
-                .Select(r => new
+                .Select(r => new DbFileQuery
                 {
                     file = r,
                     root =
@@ -1198,36 +1194,14 @@ namespace ASC.Files.Core.Data
                         .Any()
                 })
                 .ToList()
-                .Select(r =>
-                {
-                    var file = ServiceProvider.GetService<File>();
-                    file.ID = r.file.Id;
-                    file.Title = r.file.Title;
-                    file.FolderID = r.file.FolderId;
-                    file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
-                    file.CreateBy = r.file.CreateBy;
-                    file.Version = r.file.Version;
-                    file.VersionGroup = r.file.VersionGroup;
-                    file.ContentLength = r.file.ContentLength;
-                    file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
-                    file.ModifiedBy = r.file.ModifiedBy;
-                    file.RootFolderType = r.root.FolderType;
-                    file.RootFolderCreator = r.root.CreateBy;
-                    file.RootFolderId = r.root.Id;
-                    file.Shared = r.shared;
-                    file.ConvertedType = r.file.ConvertedType;
-                    file.Comment = r.file.Comment;
-                    file.Encrypted = r.file.Encrypted;
-                    file.Forcesave = r.file.Forcesave;
-                    return file;
-                }
-                ).ToList();
+                .Select(ToFile)
+                .ToList();
         }
 
         protected List<File> FromQuery(IQueryable<DbFile> dbFiles)
         {
             return dbFiles
-                .Select(r => new
+                .Select(r => new DbFileQuery
                 {
                     file = r,
                     root = FilesDbContext.Folders
@@ -1240,31 +1214,40 @@ namespace ASC.Files.Core.Data
                     shared = true
                 })
                 .ToList()
-                .Select(r =>
-                {
-                    var file = ServiceProvider.GetService<File>();
-                    file.ID = r.file.Id;
-                    file.Title = r.file.Title;
-                    file.FolderID = r.file.FolderId;
-                    file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
-                    file.CreateBy = r.file.CreateBy;
-                    file.Version = r.file.Version;
-                    file.VersionGroup = r.file.VersionGroup;
-                    file.ContentLength = r.file.ContentLength;
-                    file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
-                    file.ModifiedBy = r.file.ModifiedBy;
-                    file.RootFolderType = r.root.FolderType;
-                    file.RootFolderCreator = r.root.CreateBy;
-                    file.RootFolderId = r.root.Id;
-                    file.Shared = r.shared;
-                    file.ConvertedType = r.file.ConvertedType;
-                    file.Comment = r.file.Comment;
-                    file.Encrypted = r.file.Encrypted;
-                    file.Forcesave = r.file.Forcesave;
-                    return file;
-                }
-                ).ToList();
+                .Select(ToFile)
+                .ToList();
         }
+
+        public File ToFile(DbFileQuery r)
+        {
+            var file = ServiceProvider.GetService<File>();
+            file.ID = r.file.Id;
+            file.Title = r.file.Title;
+            file.FolderID = r.file.FolderId;
+            file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
+            file.CreateBy = r.file.CreateBy;
+            file.Version = r.file.Version;
+            file.VersionGroup = r.file.VersionGroup;
+            file.ContentLength = r.file.ContentLength;
+            file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
+            file.ModifiedBy = r.file.ModifiedBy;
+            file.RootFolderType = r.root?.FolderType ?? default;
+            file.RootFolderCreator = r.root?.CreateBy ?? default;
+            file.RootFolderId = r.root?.Id ?? default;
+            file.Shared = r.shared;
+            file.ConvertedType = r.file.ConvertedType;
+            file.Comment = r.file.Comment;
+            file.Encrypted = r.file.Encrypted;
+            file.Forcesave = r.file.Forcesave;
+            return file;
+        }
+    }
+
+    public class DbFileQuery
+    {
+        public DbFile file { get; set; }
+        public DbFolder root { get; set; }
+        public bool shared { get; set; }
     }
 
     public static class FileDaoExtention

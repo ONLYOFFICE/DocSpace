@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using ASC.Files.Core;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.WCFService.FileOperations;
+
 using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
@@ -71,7 +73,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         File GetFile(string fileId, int version);
 
-        File CreateNewFile(string parentId, string fileTitle);
+        File CreateNewFile(FileWrapper fileWrapper);
 
         File FileRename(string fileId, string title);
 

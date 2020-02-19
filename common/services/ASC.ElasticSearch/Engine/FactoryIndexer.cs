@@ -441,6 +441,9 @@ namespace ASC.ElasticSearch
             IOptionsMonitor<ILog> options,
             CoreBaseSettings coreBaseSettings)
         {
+            Client = client;
+            CoreBaseSettings = coreBaseSettings;
+
             try
             {
                 Log = options.Get("ASC.Indexer");
@@ -450,26 +453,11 @@ namespace ASC.ElasticSearch
                     Builder = container;
                     Init = true;
                 }
-                else
-                {
-                    return;
-                }
-
-                if (CheckState())
-                {
-                    client.Instance.PutPipeline("attachments", p => p
-                        .Processors(pp => pp
-                            .Attachment<Attachment>(a => a.Field("document.data").TargetField("document.attachment"))
-                        ));
-                }
             }
             catch (Exception e)
             {
                 Log.Fatal("FactoryIndexer", e);
             }
-
-            Client = client;
-            CoreBaseSettings = coreBaseSettings;
         }
 
         public bool CheckState(bool cacheState = true)

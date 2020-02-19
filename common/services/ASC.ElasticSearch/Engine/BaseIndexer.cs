@@ -500,7 +500,7 @@ namespace ASC.ElasticSearch
 
         private IIndexRequest<T> GetMeta(IndexDescriptor<T> request, T data, bool immediately = true)
         {
-            var result = request.Index(IndexName).Id(data.Id);
+            var result = request.Index(data.IndexName).Id(data.Id);
 
             if (immediately)
             {

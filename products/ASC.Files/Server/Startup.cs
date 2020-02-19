@@ -1,13 +1,10 @@
 
-using System;
-
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Workers;
 using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.AspNetCore.Authentication;
@@ -22,8 +19,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-
-using static ASC.Web.Files.Utils.FileMarker;
 
 namespace ASC.Files
 {
@@ -80,14 +75,6 @@ namespace ASC.Files
                 .AddPaymentFilter()
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
-
-            services.Configure<WorkerQueue<AsyncTaskData>>(r =>
-            {
-                r.workerCount = 1;
-                r.waitInterval = (int)TimeSpan.FromSeconds(60).TotalMilliseconds;
-                r.errorCount = 1;
-                r.stopAfterFinsih = false;
-            });
 
             diHelper.AddNLogManager("ASC.Files");
 

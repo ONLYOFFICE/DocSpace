@@ -98,7 +98,7 @@ namespace ASC.Files.Core.Data
         protected IQueryable<T> Query<T>(Expression<Func<FilesDbContext, DbSet<T>>> func) where T : class, IDbFile
         {
             var compile = func.Compile();
-            return compile(FilesDbContext).Where(r => r.TenantId == 1);
+            return compile(FilesDbContext).Where(r => r.TenantId == TenantID);
         }
 
         protected IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
@@ -111,7 +111,8 @@ namespace ASC.Files.Core.Data
         {
             var folders = FilesDbContext.Folders
                 .Where(r => r.TenantId == TenantID)
-                .Where(r => FilesDbContext.Tree.Where(r => (object)r.FolderId == folderId).Select(r => r.ParentId).Any(a => a == r.Id));
+                .Where(r => FilesDbContext.Tree.Where(r => r.FolderId.ToString() == folderId.ToString()).Select(r => r.ParentId).Any(a => a == r.Id))
+                .ToList();
 
             foreach (var f in folders)
             {

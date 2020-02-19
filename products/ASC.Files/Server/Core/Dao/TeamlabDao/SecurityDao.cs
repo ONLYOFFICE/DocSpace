@@ -283,14 +283,18 @@ namespace ASC.Files.Core.Data
             var q = Query(r => r.Security)
                 .Join(FilesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
                 .Where(r => folders.Any(f => f == r.DbFolderTree.FolderId))
-                .Where(r => r.DbFilesSecurity.EntryType == FileEntryType.Folder);
+                .Where(r => r.DbFilesSecurity.EntryType == FileEntryType.Folder)
+                .ToList();
 
             if (0 < files.Count)
             {
-                q = q.Union(GetQuery(r => files.Any(f => f == r.EntryId) && r.EntryType == FileEntryType.File).Select(r => new SecurityTreeRecord { DbFilesSecurity = r, DbFolderTree = new DbFolderTree() { Level = -1 } }));
+                var q1 = GetQuery(r => files.Any(f => f == r.EntryId) && r.EntryType == FileEntryType.File)
+                    .Select(r => new SecurityTreeRecord { DbFilesSecurity = r })
+                    .ToList();
+                q = q.Union(q1).ToList();
             }
 
-            return FromQuery(q)
+            return q.Select(ToFileShareRecord)
                 .OrderBy(r => r.Level)
                 .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
                 .ToList();
@@ -350,7 +354,7 @@ namespace ASC.Files.Core.Data
         private FileShareRecord ToFileShareRecord(SecurityTreeRecord r)
         {
             var result = ToFileShareRecord(r.DbFilesSecurity);
-            result.Level = r.DbFolderTree.Level;
+            result.Level = r.DbFolderTree?.Level ?? -1;
             return result;
         }
     }

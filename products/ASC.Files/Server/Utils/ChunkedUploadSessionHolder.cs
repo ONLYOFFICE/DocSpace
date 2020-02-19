@@ -50,6 +50,10 @@ namespace ASC.Web.Files.Utils
 
         public ChunkedUploadSessionHolder(IOptionsMonitor<ILog> options, GlobalStore globalStore, SetupInfo setupInfo)
         {
+            Options = options;
+            GlobalStore = globalStore;
+            SetupInfo = setupInfo;
+
             // clear old sessions
             try
             {
@@ -59,10 +63,6 @@ namespace ASC.Web.Files.Utils
             {
                 options.CurrentValue.Error(err);
             }
-
-            Options = options;
-            GlobalStore = globalStore;
-            SetupInfo = setupInfo;
         }
 
         public void StoreSession(ChunkedUploadSession s)
