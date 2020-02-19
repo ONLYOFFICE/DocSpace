@@ -38,7 +38,13 @@ const ModalDialogContainer = styled.div`
 
   .field-body {
     position: relative;
-}
+  }
+
+  .delete-group-users_dialog {
+    .heading-toggle-content { 
+      font-size: 16px;
+    }
+  }
 `;
 
 export default ModalDialogContainer;

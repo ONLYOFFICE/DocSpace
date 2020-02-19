@@ -27,7 +27,7 @@ import {
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, api, constants } from 'asc-web-common';
-import { InviteDialog } from '../../../../dialogs';
+import { InviteDialog, DeleteGroupUsersDialog } from '../../../../dialogs';
 
 const { isAdmin } = store.auth.selectors;
 const { resendUserInvites } = api.people;
@@ -84,6 +84,7 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
   const [dialogVisible, setDialogVisible] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
 
   const {
     isHeaderVisible,
@@ -103,7 +104,6 @@ const SectionHeaderContent = props => {
     history,
     settings,
     deleteGroup,
-    removeUser,
     userType,
     guestType,
     activeStatus,
@@ -148,16 +148,10 @@ const SectionHeaderContent = props => {
       .catch(error => toastr.error(error));
   }, [selectedUserIds, t]);
 
-  const onDelete = useCallback(() => {
-    onLoading(true);
-    removeUser(selectedUserIds, filter)
-      .then(() => {
-        toastr.success(t('SuccessfullyRemovedUsers'));
-        return fetchPeople(filter);
-      })
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, removeUser, onLoading, filter, t]);
+  const onDelete = useCallback(() => 
+    setDeleteDialog(!deleteDialog), [deleteDialog]
+  );
+
 
   const menuItems = [
     {
@@ -288,6 +282,17 @@ const SectionHeaderContent = props => {
 
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible} isArticlePinned={isArticlePinned}>
+      {deleteDialog &&
+        <DeleteGroupUsersDialog
+          visible={deleteDialog}
+          onClose={onDelete}
+          users={selection}
+          filter={filter}
+          settings={settings}
+          history={history}
+        />
+      }
+
       {isHeaderVisible ? (
         <div className="group-button-menu-container">
           <GroupButtonsMenu
