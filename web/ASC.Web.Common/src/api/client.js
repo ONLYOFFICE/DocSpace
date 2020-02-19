@@ -28,7 +28,7 @@ client.interceptors.response.use(
     }
 
     if (error.response.status === 502) {
-      window.location.href = `/error/${error.response.status}`;
+      // window.location.href = `/error/${error.response.status}`;
     }
 
     return error;
