@@ -67,6 +67,17 @@
       "MessageSendPasswordChangeInstructionsOnEmail",
       "SendButton"
     ]
+  },
+  "DeleteGroupUsersDialog":{
+    "Resource": [
+      "OKButton",
+      "CancelButton",
+      "Warning",
+      "DeleteUserDataConfirmation"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
+    ]
   }
 },
   "pages": {
