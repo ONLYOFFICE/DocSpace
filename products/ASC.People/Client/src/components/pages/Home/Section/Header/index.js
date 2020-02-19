@@ -11,7 +11,12 @@ import { Headline } from 'asc-web-common';
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
-  getSelectionIds
+  getSelectionIds,  
+  getUserType,
+  getGuestType,  
+  getUsersStatus,
+  getInactiveUsers,
+  getDeleteUsers
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
@@ -98,7 +103,14 @@ const SectionHeaderContent = props => {
     history,
     settings,
     deleteGroup,
-    removeUser
+    removeUser,
+    userType,
+    guestType,
+    activeStatus,
+    disabledUser,
+    inviteLink,
+    sendMessage,
+    removeUsers
   } = props;
 
   const selectedUserIds = getSelectionIds(selection);
@@ -163,37 +175,37 @@ const SectionHeaderContent = props => {
     },
     {
       label: t('ChangeToUser', { userCaption: settings.customNames.userCaption }),
-      disabled: !selection.length,
+      disabled: userType,
       onClick: onSetEmployee
     },
     {
       label: t('ChangeToGuest', { guestCaption: settings.customNames.guestCaption }),
-      disabled: !selection.length,
+      disabled: guestType,
       onClick: onSetGuest
     },
     {
       label: t("LblSetActive"),
-      disabled: !selection.length,
+      disabled: activeStatus,
       onClick: onSetActive
     },
     {
       label: t("LblSetDisabled"),
-      disabled: !selection.length,
+      disabled: disabledUser,
       onClick: onSetDisabled
     },
     {
       label: t("LblInviteAgain"),
-      disabled: !selection.length,
+      disabled: inviteLink,
       onClick: onSentInviteAgain
     },
     {
       label: t("LblSendEmail"),
-      disabled: !selection.length,
+      disabled: sendMessage,
       onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
       label: t("DeleteButton"),
-      disabled: !selection.length,
+      disabled: removeUsers,
       onClick: onDelete
     }
   ];
@@ -341,12 +353,24 @@ const SectionHeaderContent = props => {
 };
 
 const mapStateToProps = state => {
+  const selection = state.people.selection;
+  const activeUsers = 1;
+  const disabledUsers = 2;
+
   return {
     group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
-    selection: state.people.selection,
+    selection,
     isAdmin: isAdmin(state.auth.user),
     filter: state.people.filter,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+
+    userType: getUserType(selection),
+    guestType: getGuestType(selection),
+    activeStatus: getUsersStatus(selection, activeUsers),
+    disabledUser: getUsersStatus(selection, disabledUsers),
+    inviteLink: getInactiveUsers(selection),
+    sendMessage: !selection.length,
+    removeUsers: getDeleteUsers(selection)
   };
 };
 

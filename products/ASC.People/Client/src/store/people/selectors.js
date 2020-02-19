@@ -172,3 +172,34 @@ export function filterGroupSelectorOptions(options, template) {
         return template ? option.label.indexOf(template) > -1 : true;
     })
 }
+
+export function getUserType(users) {
+    const disabledUserType = users.filter(
+      x => !x.isAdmin && !x.isOwner && x.isVisitor && x.status !== 2
+    );
+    return !disabledUserType.length;
+  }
+  
+  export function getGuestType(users) {
+    const disabledUserType = users.filter(
+      x => !x.isAdmin && !x.isOwner && !x.isVisitor && x.status !== 2
+    );
+    return !disabledUserType.length;
+  }
+  
+  export function getUsersStatus(users, status) {
+    const disabledOwnerStatus = users.filter(
+      x => !x.isOwner && x.status !== status
+    );
+    return !disabledOwnerStatus.length;
+  }
+  
+  export function getInactiveUsers(users) {
+    const disabledStatus = users.filter(x => x.activationStatus === 2);
+    return !disabledStatus.length;
+  }
+  
+  export function getDeleteUsers(users) {
+    const disabledUsers = users.filter(x => x.status === 2);
+    return !disabledUsers.length;
+  }
