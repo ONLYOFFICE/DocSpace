@@ -29,16 +29,22 @@ using System.Collections.Generic;
 using System.Linq;
 using ASC.Calendar.BusinessObjects;
 using ASC.Core;
+using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.ExternalCalendars
 {
+    /*
     public sealed class SharedEventsCalendar : BaseCalendar
     {
         public static string CalendarId { get { return "shared_events"; } }
 
-        public SharedEventsCalendar()
+        private TenantManager TenantManager { get; }
+
+        public SharedEventsCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter, TenantManager tenantManager)
+        : base(authContext, timeZoneConverter)
         {
+            TenantManager = tenantManager;
             Id = CalendarId;
             Context.HtmlBackgroundColor = "#0797ba";
             Context.HtmlTextColor = "#000000";
@@ -53,7 +59,7 @@ namespace ASC.Calendar.ExternalCalendars
         {
             using (var provider = new DataProvider())
             {
-                var events = provider.LoadSharedEvents(userId, CoreContext.TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
+                var events = provider.LoadSharedEvents(userId, TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
                 events.ForEach(e => e.CalendarId = Id);
                 var ievents = new List<IEvent>(events.Select(e => (IEvent)e));
                 return ievents;
@@ -79,7 +85,7 @@ namespace ASC.Calendar.ExternalCalendars
         {
             get
             {
-                return SecurityContext.CurrentAccount.ID;
+                return AuthContext.CurrentAccount.ID;
             }
         }
 
@@ -88,9 +94,10 @@ namespace ASC.Calendar.ExternalCalendars
         {
             get
             {
-                return _timeZone ?? CoreContext.TenantManager.GetCurrentTenant().TimeZone;
+                return _timeZone ?? TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
             }
             set { _timeZone = value; }
         }
     }
+    */
 }

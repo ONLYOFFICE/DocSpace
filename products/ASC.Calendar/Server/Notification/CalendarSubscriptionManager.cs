@@ -30,6 +30,7 @@ using ASC.Web.Core.Subscriptions;
 
 namespace ASC.Calendar.Notification
 {
+    /*
     public class CalendarSubscriptionManager : IProductSubscriptionManager
     {
         public SubscriptionType CalendarSharingSubscription
@@ -95,4 +96,5 @@ namespace ASC.Calendar.Notification
 
         #endregion
     }
+    */
 }

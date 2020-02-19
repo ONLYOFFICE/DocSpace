@@ -32,6 +32,7 @@ using ASC.Calendar.iCalParser;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "eventHistory", Namespace = "")]
     public class EventHistoryWrapper
     {
@@ -101,4 +102,5 @@ namespace ASC.Calendar.Models
             };
         }
     }
+    */
 }

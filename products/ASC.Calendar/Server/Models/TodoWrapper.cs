@@ -29,16 +29,20 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Core.Users;
-using ASC.Specific;
+using ASC.Api.Core;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "todo", Namespace = "")]
     public class TodoWrapper
     {        
         private TimeZoneInfo _timeZone;
 
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public Guid UserId { get; private set; }
 
         protected ITodo _baseTodo;
@@ -93,7 +97,7 @@ namespace ASC.Calendar.Models
                 var startD = _utcStartDate != DateTime.MinValue ? _utcStartDate : _baseTodo.UtcStartDate;
                 startD =new DateTime(startD.Ticks, DateTimeKind.Utc);
 
-                return new ApiDateTime(startD, _timeZone);
+                return new ApiDateTime(startD, _timeZone.GetOffset());
             }
         }
 
@@ -104,7 +108,7 @@ namespace ASC.Calendar.Models
             {
                 var completedD = _utcCompletedDate != DateTime.MinValue ? _utcCompletedDate : _baseTodo.Completed;
                 completedD = new DateTime(completedD.Ticks, DateTimeKind.Utc);
-                return new ApiDateTime(completedD, _timeZone);
+                return new ApiDateTime(completedD, _timeZone.GetOffset());
             }
         }
 
@@ -115,7 +119,7 @@ namespace ASC.Calendar.Models
             {
                 var owner = new UserParams() { Id = _baseTodo.OwnerId, Name = "" };
                 if (_baseTodo.OwnerId != Guid.Empty)
-                    owner.Name = CoreContext.UserManager.GetUsers(_baseTodo.OwnerId).DisplayUserName();
+                    owner.Name = UserManager.GetUsers(_baseTodo.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
 
                 return owner;
             }
@@ -127,13 +131,14 @@ namespace ASC.Calendar.Models
             return new
             {
                 owner = UserParams.GetSample(),
-                start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc),
+                start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc.GetOffset()),
                 description = "Todo Description",
                 title = "Todo Name",
                 objectId = "1",
                 sourceId = "calendarID",
-                completed = new ApiDateTime(DateTime.MinValue, TimeZoneInfo.Utc)
+                completed = new ApiDateTime(DateTime.MinValue, TimeZoneInfo.Utc.GetOffset())
             };
         }
     }
+    */
 }

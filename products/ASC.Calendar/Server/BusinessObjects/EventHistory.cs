@@ -32,6 +32,7 @@ using ASC.Calendar.iCalParser;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    /*
     public class EventHistory
     {
         public EventHistory(int calendarId, string eventUid, int eventId, string ics)
@@ -195,4 +196,5 @@ namespace ASC.Calendar.BusinessObjects
             return targetCalendar;
         }
     }
+    */
 }

@@ -30,12 +30,14 @@ using System.Runtime.Serialization;
 using ASC.Calendar.BusinessObjects;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "calendar", Namespace = "")]
     public class CalendarWrapper
     {        
@@ -43,6 +45,14 @@ namespace ASC.Calendar.Models
         protected UserViewSettings _userViewSettings;
         protected Guid _userId;
 
+        public AuthContext AuthContext { get; }
+        private PermissionContext PermissionContext { get; }
+        private AuthManager Authentication { get; }
+        public UserManager UserManager { get; }
+
+        public TenantManager TenantManager { get; }
+
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public CalendarWrapper(BaseCalendar calendar) : this(calendar, null){}
         public CalendarWrapper(BaseCalendar calendar, UserViewSettings userViewSettings)
         {
@@ -50,13 +60,13 @@ namespace ASC.Calendar.Models
             if (_userViewSettings == null && calendar is ASC.Calendar.BusinessObjects.Calendar)
             { 
                 _userViewSettings = (calendar as ASC.Calendar.BusinessObjects.Calendar)
-                                    .ViewSettings.Find(s=> s.UserId == SecurityContext.CurrentAccount.ID);
+                                    .ViewSettings.Find(s=> s.UserId == AuthContext.CurrentAccount.ID);
             }
 
             if (_userViewSettings == null)
             {
                 UserCalendar = calendar;
-                _userId = SecurityContext.CurrentAccount.ID;
+                _userId = AuthContext.CurrentAccount.ID;
             }
             else
             {
@@ -150,9 +160,9 @@ namespace ASC.Calendar.Models
                 foreach (var item in UserCalendar.SharingOptions.PublicItems)
                 {
                     if (item.IsGroup)
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetGroupInfo(item.Id).Name });
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
                     else
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetUsers(item.Id).DisplayUserName() });
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
                 }
                 return p;
             }
@@ -168,7 +178,7 @@ namespace ASC.Calendar.Models
                     return false;
 
                 if (UserCalendar is ISecurityObject)
-                    return SecurityContext.PermissionResolver.Check(CoreContext.Authentication.GetAccountByID(_userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
+                    return PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
 
                 return false;
             }
@@ -235,7 +245,7 @@ namespace ASC.Calendar.Models
             {
                 var owner = new UserParams() { Id = UserCalendar.OwnerId , Name = ""};
                 if (UserCalendar.OwnerId != Guid.Empty)
-                    owner.Name = CoreContext.UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName();
+                    owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
 
                 return owner;
             }
@@ -307,4 +317,5 @@ namespace ASC.Calendar.Models
         }
 
     }
+    */
 }

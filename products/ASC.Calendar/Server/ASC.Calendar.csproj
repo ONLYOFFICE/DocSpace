@@ -22,6 +22,10 @@
     <DebugSymbols>false</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ical.Net" Version="4.1.11" />
+  </ItemGroup>
   
   <ItemGroup>
     <ProjectReference Include="..\..\..\common\ASC.Api.Core\ASC.Api.Core.csproj" />
@@ -50,5 +54,9 @@
     <EmbeddedResource Update="Resources\CalendarResource.ru.resx">
       <DependentUpon>CalendarResource.resx</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Core\Dao\" />
   </ItemGroup>
 </Project>

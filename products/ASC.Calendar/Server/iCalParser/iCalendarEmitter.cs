@@ -32,7 +32,7 @@ using ASC.Web.Core.Calendars;
 using System.Globalization;
 
 namespace ASC.Calendar.iCalParser
-{
+{/*
     public class iCalendarEmitter : IEmitter
     {
         private iCalendar _curCalendar;
@@ -311,4 +311,5 @@ namespace ASC.Calendar.iCalParser
             }
         }
     }    
+    */
 }

@@ -32,6 +32,7 @@ using System.IO;
 
 namespace ASC.Calendar.iCalParser
 {
+    /*
     internal class iCalendarCacheParams
     {
         public string FolderCachePath { get; private set; }
@@ -136,4 +137,5 @@ namespace ASC.Calendar.iCalParser
             }
         }
     }
+*/
 }

@@ -30,15 +30,23 @@ using System.Runtime.Serialization;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
 using ASC.Core;
+using ASC.Core.Common;
+using ASC.Web.Core.Users;
 using ASC.Core.Users;
-using ASC.Specific;
+using ASC.Api.Core;
 using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.Models
-{
+{/*
     [DataContract(Name = "event", Namespace = "")]
     public class EventWrapper
-    {        
+    {
+        private PermissionContext PermissionContext { get; }
+        private AuthManager Authentication { get; }
+        private TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+
         private TimeZoneInfo _timeZone;
         public Guid UserId { get; private set; }
 
@@ -48,6 +56,20 @@ namespace ASC.Calendar.Models
         private DateTime _utcEndDate = DateTime.MinValue;
         private DateTime _utcUpdateDate = DateTime.MinValue;
 
+        public EventWrapper(
+            PermissionContext permissionContext,
+            AuthManager authentication,
+            TenantManager tenantManager,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper
+           )
+        {
+            PermissionContext = permissionContext;
+            Authentication = authentication;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+        }
         private EventWrapper(IEvent baseEvent, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate, DateTime utcEndDate, DateTime utcUpdateDate)
             :this(baseEvent, userId, timeZone)
         {
@@ -131,7 +153,7 @@ namespace ASC.Calendar.Models
                 var updateD = _utcUpdateDate != DateTime.MinValue ? _utcUpdateDate : _baseEvent.UtcStartDate;
                 
                 if (_baseEvent.AllDayLong && _baseEvent.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length > 0)
-                    return new ApiDateTime(startD, TimeZoneInfo.Utc);
+                    return new ApiDateTime(startD, TimeZoneInfo.Utc.GetOffset());
 
                 //if(_baseEvent is iCalParser.iCalEvent)
                 //    if (_baseEvent.AllDayLong)
@@ -142,7 +164,7 @@ namespace ASC.Calendar.Models
                 if (_baseEvent.GetType().Namespace == new BusinessObjects.Event().GetType().Namespace)
                     return new ApiDateTime(startD, _timeZone.GetOffset(false, updateD));
 
-                return new ApiDateTime(startD, _timeZone);
+                return new ApiDateTime(startD, _timeZone.GetOffset());
             }
         }
 
@@ -157,7 +179,7 @@ namespace ASC.Calendar.Models
                 var updateD = _utcUpdateDate != DateTime.MinValue ? _utcUpdateDate : _baseEvent.UtcStartDate;
 
                 if (_baseEvent.AllDayLong && _baseEvent.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length > 0)
-                    return new ApiDateTime(endD, TimeZoneInfo.Utc);
+                    return new ApiDateTime(endD, TimeZoneInfo.Utc.GetOffset());
 
                 //if (_baseEvent is iCalParser.iCalEvent)
                 //    if (_baseEvent.AllDayLong)
@@ -168,7 +190,7 @@ namespace ASC.Calendar.Models
                 if (_baseEvent.GetType().Namespace == new BusinessObjects.Event().GetType().Namespace)
                     return new ApiDateTime(endD, _timeZone.GetOffset(false, updateD));
 
-                return new ApiDateTime(endD, _timeZone);
+                return new ApiDateTime(endD, _timeZone.GetOffset());
             }
         }
 
@@ -214,7 +236,7 @@ namespace ASC.Calendar.Models
             get
             {
                 if (_baseEvent is ISecurityObject)
-                    return SecurityContext.PermissionResolver.Check(CoreContext.Authentication.GetAccountByID(this.UserId), (ISecurityObject)_baseEvent, null, CalendarAccessRights.FullAccessAction);
+                    return PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, this.UserId), (ISecurityObject)_baseEvent, null, CalendarAccessRights.FullAccessAction);
 
                 return false;
             }
@@ -229,9 +251,9 @@ namespace ASC.Calendar.Models
                 foreach (var item in _baseEvent.SharingOptions.PublicItems)
                 {
                     if (item.IsGroup)
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetGroupInfo(item.Id).Name });
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
                     else
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetUsers(item.Id).DisplayUserName() });
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
                 }
                 return p;
             }
@@ -244,7 +266,7 @@ namespace ASC.Calendar.Models
             {
                 var owner = new UserParams() { Id = _baseEvent.OwnerId, Name = "" };
                 if (_baseEvent.OwnerId != Guid.Empty)
-                    owner.Name = CoreContext.UserManager.GetUsers(_baseEvent.OwnerId).DisplayUserName();
+                    owner.Name = UserManager.GetUsers(_baseEvent.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
 
                 return owner;
             }
@@ -271,8 +293,8 @@ namespace ASC.Calendar.Models
                 isShared = true,
                 alert = EventAlertWrapper.GetSample(),
                 repeatRule = "",
-                start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc),
-                end = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc),
+                start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc.GetOffset()),
+                end = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc.GetOffset()),
                 allDay = false,
                 description = "Event Description",
                 title = "Event Name",
@@ -282,4 +304,5 @@ namespace ASC.Calendar.Models
             };
         }
     }
+*/
 }

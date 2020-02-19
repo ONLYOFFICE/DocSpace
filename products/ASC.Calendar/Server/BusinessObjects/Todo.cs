@@ -34,7 +34,7 @@ using ASC.Web.Core.Calendars;
 using ASC.Core.Tenants;
 
 namespace ASC.Calendar.BusinessObjects
-{    
+{    /*
     [AllDayLongUTCAttribute]
     public class Todo : BaseTodo, ISecurityObject
     {
@@ -92,5 +92,5 @@ namespace ASC.Calendar.BusinessObjects
         #endregion
        
     }
-
+    */
 }

@@ -37,9 +37,6 @@ using System.Threading.Tasks;
 using System.Web;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Calendar.iCalParser;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -50,7 +47,7 @@ using ASC.Web.Core.WhiteLabel;
 
 namespace ASC.Calendar.BusinessObjects
 {
-    public class DataProvider:IDisposable
+    /*public class DataProvider:IDisposable
     {
         private IDbManager db;
         private const string DBId = "calendar";
@@ -61,8 +58,17 @@ namespace ASC.Calendar.BusinessObjects
         private const string _todoTable = "calendar_todos td";
         private const string _eventItemTable = "calendar_event_item evt_itm";
 
-        public DataProvider()
+        public AuthContext AuthContext { get; }
+        public TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        public AuthManager AuthManager { get; }
+
+        public DataProvider(AuthContext authContext, TenantManager tenantManager, UserManager userManager, AuthManager authManager)
         {
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            AuthManager = authManager;
             db = DbManager.FromHttpContext(DBId);
         }
 
@@ -213,7 +219,7 @@ namespace ASC.Calendar.BusinessObjects
             if (data.Count > 0)
                 return data.Select(r => TimeZoneConverter.GetTimeZone(Convert.ToString(r[0]))).First();
 
-            return TenantManager.GetCurrentTenant().TimeZone;
+            return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
         }
 
         public TimeZoneInfo GetTimeZoneForCalendar(Guid userId, int caledarId)
@@ -670,10 +676,10 @@ namespace ASC.Calendar.BusinessObjects
 
                         LogManager.GetLogger("ASC.Calendar").Info("RADICALE REWRITE URL: " + myUri);
 
-                        var currentUserName = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + "@" + caldavHost;
-                        var _email = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email;
-                        string currentAccountPaswd = Authentication.GetUserPasswordHash(UserManager.GetUserByEmail(_email).ID);
-                        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
+                        var currentUserName = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower() + "@" + caldavHost;
+                        var _email = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email;
+                        string currentAccountPaswd = AuthManager.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
+                        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
 
                         var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
                         caldavTask.Start();
@@ -744,8 +750,8 @@ namespace ASC.Calendar.BusinessObjects
                 .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "t.calendar_id"))
                 .Where("t.tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where(Exp.Like("t.uid", todoUid))
-                .Where("t.owner_id", SecurityContext.CurrentAccount.ID)
-                .Where("c.owner_id", SecurityContext.CurrentAccount.ID)
+                .Where("t.owner_id", AuthContext.CurrentAccount.ID)
+                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
                 .Where("c.ical_url", null);
 
             var todoId = db.ExecuteScalar<int>(sql);
@@ -825,7 +831,7 @@ namespace ASC.Calendar.BusinessObjects
         }
         public Todo GetTodoById(int todoId)
         {
-            var todos = GetTodosByIds(new object[] { todoId }, SecurityContext.CurrentAccount.ID);
+            var todos = GetTodosByIds(new object[] { todoId }, AuthContext.CurrentAccount.ID);
             if (todos.Count > 0)
                 return todos[0];
 
@@ -913,7 +919,7 @@ namespace ASC.Calendar.BusinessObjects
         internal List<Event> LoadSharedEvents(Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
-            groups.AddRange(CoreContext.UserManager.GetUserGroups(userId, Core.Users.Constants.SysGroupCategoryId).Select(g => g.ID));
+            groups.AddRange(UserManager.GetUserGroups(userId, Core.Users.Constants.SysGroupCategoryId).Select(g => g.ID));
 
             var evIds = db.ExecuteList(
                 new SqlQuery(_eventTable).Select("evt.id")
@@ -962,7 +968,7 @@ namespace ASC.Calendar.BusinessObjects
 
         public Event GetEventById(int eventId)
         {
-            var events = GetEventsByIds(new object[] { eventId }, SecurityContext.CurrentAccount.ID);
+            var events = GetEventsByIds(new object[] { eventId }, AuthContext.CurrentAccount.ID);
             if (events.Count > 0)
                 return events[0];
 
@@ -1081,10 +1087,10 @@ namespace ASC.Calendar.BusinessObjects
             var sql = new SqlQuery("calendar_events e")
                 .Select("e.id")
                 .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "e.calendar_id"))
-                .Where("e.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("e.tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where("e.uid", eventUid)
-                .Where("e.owner_id", SecurityContext.CurrentAccount.ID)
-                .Where("c.owner_id", SecurityContext.CurrentAccount.ID)
+                .Where("e.owner_id", AuthContext.CurrentAccount.ID)
+                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
                 .Where("c.ical_url", null);
 
             var eventId = db.ExecuteScalar<int>(sql);
@@ -1095,7 +1101,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             var sql = new SqlQuery("calendar_events e")
                 .Select("e.id")
-                .Where("e.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("e.tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where("e.uid", eventUid);
 
             var eventId = db.ExecuteScalar<int>(sql);
@@ -1138,7 +1144,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             using (var tr = db.BeginTransaction())
             {
-                var tenant = CoreContext.TenantManager.GetCurrentTenant().TenantId;
+                var tenant = TenantManager.GetCurrentTenant().TenantId;
 
                 db.ExecuteNonQuery(new SqlDelete("calendar_events").Where("id", eventId).Where("tenant", tenant));
                 db.ExecuteNonQuery(new SqlDelete("calendar_event_item").Where("event_id", eventId));
@@ -1171,7 +1177,7 @@ namespace ASC.Calendar.BusinessObjects
                 eventId = db.ExecuteScalar<int>(new SqlInsert("calendar_events")
                                                             .InColumnValue("id", 0)
                                                             .InColumnValue("tenant",
-                                                                            CoreContext.TenantManager.GetCurrentTenant
+                                                                            TenantManager.GetCurrentTenant
                                                                                 ().TenantId)
                                                             .InColumnValue("name", name)
                                                             .InColumnValue("description", description)
@@ -1238,12 +1244,12 @@ namespace ASC.Calendar.BusinessObjects
                     .Set("status", (int) status)
                     .Where(Exp.Eq("id", eventId));
 
-                if (ownerId.Equals(SecurityContext.CurrentAccount.ID))
+                if (ownerId.Equals(AuthContext.CurrentAccount.ID))
                     query = query.Set("alert_type", (int) alertType);
                 else
                     db.ExecuteNonQuery(new SqlInsert("calendar_event_user", true)
                                                     .InColumnValue("event_id", eventId)
-                                                    .InColumnValue("user_id", SecurityContext.CurrentAccount.ID)
+                                                    .InColumnValue("user_id", AuthContext.CurrentAccount.ID)
                                                     .InColumnValue("alert_type", alertType));
 
 
@@ -1256,7 +1262,7 @@ namespace ASC.Calendar.BusinessObjects
 
                 foreach (var usrId in userIds)
                 {
-                    if (!publicItems.Exists(i => (i.IsGroup && CoreContext.UserManager.IsUserInGroup(usrId, i.Id))
+                    if (!publicItems.Exists(i => (i.IsGroup && UserManager.IsUserInGroup(usrId, i.Id))
                                                     || (!i.IsGroup && i.Id.Equals(usrId))))
                     {
                         db.ExecuteNonQuery(new SqlDelete("calendar_event_user")
@@ -1299,10 +1305,10 @@ namespace ASC.Calendar.BusinessObjects
                 .Select("h.ics")
                 .InnerJoin("calendar_events e", Exp.EqColumns("e.uid", "h.event_uid"))
                 .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "h.calendar_id"))
-                .Where("h.tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("h.tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where("h.event_uid", eventUid)
-                .Where("e.owner_id", SecurityContext.CurrentAccount.ID)
-                .Where("c.owner_id", SecurityContext.CurrentAccount.ID)
+                .Where("e.owner_id", AuthContext.CurrentAccount.ID)
+                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
                 .Where("c.ical_url", null);
 
             var items = db.ExecuteList(sql).ConvertAll(ToEventHistory);
@@ -1317,7 +1323,7 @@ namespace ASC.Calendar.BusinessObjects
                 .Select("event_uid")
                 .Select("event_id")
                 .Select("ics")
-                .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where(Exp.In("event_id", eventIds));
 
             return db.ExecuteList(sql).ConvertAll(ToEventHistory);
@@ -1350,7 +1356,7 @@ namespace ASC.Calendar.BusinessObjects
                     history = new EventHistory(calendarId, eventUid, eventId, ics);
 
                     sql = new SqlInsert("calendar_event_history")
-                        .InColumnValue("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                        .InColumnValue("tenant", TenantManager.GetCurrentTenant().TenantId)
                         .InColumnValue("calendar_id", calendarId)
                         .InColumnValue("event_uid", eventUid)
                         .InColumnValue("event_id", eventId)
@@ -1371,7 +1377,7 @@ namespace ASC.Calendar.BusinessObjects
 
                     sql = new SqlUpdate("calendar_event_history")
                         .Set("ics", history.Ics)
-                        .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                        .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
                         .Where("calendar_id", calendarId)
                         .Where("event_uid", eventUid);
                 }
@@ -1387,7 +1393,7 @@ namespace ASC.Calendar.BusinessObjects
         public void RemoveEventHistory(int calendarId, string eventUid)
         {
             var sql = new SqlDelete("calendar_event_history")
-                .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where("calendar_id", calendarId)
                 .Where("event_uid", eventUid);
 
@@ -1397,7 +1403,7 @@ namespace ASC.Calendar.BusinessObjects
         public void RemoveEventHistory(int eventId)
         {
             var sql = new SqlDelete("calendar_event_history")
-                .Where("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
                 .Where("event_id", eventId);
 
             db.ExecuteNonQuery(sql);
@@ -1512,7 +1518,7 @@ namespace ASC.Calendar.BusinessObjects
             foreach (var item in eventPublicItems)
             {
                 if (item.IsGroup)
-                    eventUsers.AddRange(CoreContext.UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
+                    eventUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
                 else
                     eventUsers.Add(new UserAlertType(item.Id, baseEventAlertType, calendarTimeZone));
             }
@@ -1584,7 +1590,7 @@ namespace ASC.Calendar.BusinessObjects
             foreach (var item in eventPublicItems)
             {
                 if (item.IsGroup)
-                    calendarUsers.AddRange(CoreContext.UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
+                    calendarUsers.AddRange(UserManager.GetUsersByGroup(item.Id).Select(u => new UserAlertType(u.ID, baseEventAlertType, calendarTimeZone)));
                 else
                     calendarUsers.Add(new UserAlertType(item.Id, baseEventAlertType, calendarTimeZone));
             }
@@ -1655,7 +1661,7 @@ namespace ASC.Calendar.BusinessObjects
                                                                                         .InColumnValue("event_id", eventId)
                                                                                         .InColumnValue("rrule", rrule.ToString())
                                                                                         .InColumnValue("alert_type", (int)u.AlertType)
-                                                                                        .InColumnValue("tenant", CoreContext.TenantManager.GetCurrentTenant().TenantId)
+                                                                                        .InColumnValue("tenant", TenantManager.GetCurrentTenant().TenantId)
                                                                                         .InColumnValue("notify_date", alertDate)
                                                                                         .InColumnValue("time_zone", u.TimeZone.Id));
                 }
@@ -1730,5 +1736,5 @@ namespace ASC.Calendar.BusinessObjects
                 db.Dispose();
             }
         }
-    }
+    }*/
 }

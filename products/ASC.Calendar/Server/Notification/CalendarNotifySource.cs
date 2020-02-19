@@ -41,6 +41,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Calendar.Notification
 {
+    /*
     public class CalendarNotifyClient
     {
         private static INotifyClient _notifyClient;
@@ -208,9 +209,9 @@ namespace ASC.Calendar.Notification
             return CommonLinkUtility.GetFullAbsolutePath(url);
         }
     }
+    */
 
-
-    public class CalendarNotifySource : NotifySource
+    /*public class CalendarNotifySource : NotifySource
     {
         public static INotifyAction CalendarSharing = new NotifyAction("CalendarSharingPattern");
         public static INotifyAction EventAlert = new NotifyAction("EventAlertPattern");
@@ -243,5 +244,5 @@ namespace ASC.Calendar.Notification
         {
             return new XmlPatternProvider2(CalendarPatterns.calendar_patterns);
         }
-    }
+    }*/
 }

@@ -38,8 +38,10 @@ using ASC.Core;
 
 namespace ASC.Calendar.iCalParser
 {
+    /*
     public class iCalendar : BaseCalendar
     {
+        public TenantManager TenantManager { get; }
         public static iCalendar GetFromStream(TextReader reader)
         {
             var emitter = new iCalendarEmitter();
@@ -98,8 +100,13 @@ namespace ASC.Calendar.iCalParser
 
         public List<iCalEvent> Events { get; set; }
 
-        public iCalendar()
+        public iCalendar(
+            AuthContext context,
+            TimeZoneConverter timeZoneConverter,
+            TenantManager tenantManager)
+        : base(context, timeZoneConverter)
         {
+            TenantManager = tenantManager;
             this.Context.CanChangeAlertType = false;
             this.Context.CanChangeTimeZone = false;
             this.Context.GetGroupMethod = delegate() { return Resources.CalendarApiResource.iCalCalendarsGroup; };
@@ -145,7 +152,7 @@ namespace ASC.Calendar.iCalParser
 
                 if (String.IsNullOrEmpty(TZID))
                 {
-                    _timeZone = CoreContext.TenantManager.GetCurrentTenant().TimeZone;
+                    _timeZone = TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
                     return _timeZone;
                 }
 
@@ -168,4 +175,5 @@ namespace ASC.Calendar.iCalParser
             return Events.Cast<IEvent>().ToList();
         }       
     }
+    */
 }

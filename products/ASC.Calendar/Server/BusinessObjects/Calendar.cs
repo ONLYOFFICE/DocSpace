@@ -30,17 +30,19 @@ using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
 using ASC.Core;
+using ASC.Api.Core;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.Models;
-using ASC.Specific;
 using System.Net;
 using System.IO;
 using ASC.Calendar.iCalParser;
+using ASC.Common.Utils;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    /*
     public static class CalendarExtention
     {
         public static bool IsiCalStream(this BaseCalendar calendar)
@@ -132,7 +134,10 @@ namespace ASC.Calendar.BusinessObjects
         public static string DefaultBackgroundColor { get { return "#9bb845"; } }
         public static string DefaultTodoBackgroundColor { get { return "#ffb45e"; } }
 
-        public Calendar()
+        public Calendar(
+            AuthContext context,
+            TimeZoneConverter timeZoneConverter)
+        : base(context, timeZoneConverter)
         {
             this.ViewSettings = new List<UserViewSettings>();
             this.Context.CanChangeAlertType = true;
@@ -216,4 +221,5 @@ namespace ASC.Calendar.BusinessObjects
             }
         }
     }    
+    */
 }

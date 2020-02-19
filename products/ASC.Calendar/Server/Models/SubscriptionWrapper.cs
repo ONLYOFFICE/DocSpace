@@ -32,6 +32,7 @@ using System.Collections.Generic;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "subscription", Namespace = "")]
     public class SubscriptionWrapper : CalendarWrapper
     {
@@ -109,4 +110,5 @@ namespace ASC.Calendar.Models
             };
         }
     }
+    */
 }

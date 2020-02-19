@@ -36,6 +36,7 @@ using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.iCalParser
 {
+    /*
     class DDayICalParser
     {
         public static Ical.Net.CalendarCollection DeserializeCalendar(string iCalCalendarString)
@@ -414,5 +415,5 @@ namespace ASC.Calendar.iCalParser
 
             return dateTime.Value - utcOffse;
         }
-    }
+    }*/
 }

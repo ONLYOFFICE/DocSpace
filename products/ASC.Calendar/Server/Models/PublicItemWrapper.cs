@@ -32,7 +32,7 @@ using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 
 namespace ASC.Calendar.Models
-{
+{/*
     [DataContract(Name ="publicItem")]
     public class PublicItemWrapper : ASC.Web.Core.Calendars.SharingOptions.PublicItem
     {
@@ -106,7 +106,7 @@ namespace ASC.Calendar.Models
             set { }
         }
 
-        [DataMember(Name = "selectedAction", Order = 50)]
+        /*[DataMember(Name = "selectedAction", Order = 50)]
         public AccessOption SharingOption
         {
             get {
@@ -132,12 +132,13 @@ namespace ASC.Calendar.Models
                 return AccessOption.ReadOption;
             }
             set { }
-        }
+        }*/
 
-        public static object GetSample()
+      /*  public static object GetSample()
         {
             return new { selectedAction = AccessOption.GetSample(), canEdit = true, isGroup = true, 
                          name = "Everyone", id = "2fdfe577-3c26-4736-9df9-b5a683bb8520" };
         }
-    }
+    }*/
+    
 }

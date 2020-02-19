@@ -74,7 +74,6 @@ namespace ASC.Calendar
             });
 
             services
-                //.AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()

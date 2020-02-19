@@ -31,6 +31,7 @@ using ASC.Web.Core.Calendars;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Api.Core;
+using ASC.Web.Core.Users;
 using ASC.Common.Utils;
 
 namespace ASC.Calendar.ExternalCalendars
@@ -40,14 +41,17 @@ namespace ASC.Calendar.ExternalCalendars
         public readonly static string CalendarId = "users_birthdays";
 
         public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public BirthdayReminderCalendar(
             AuthContext context, 
             TimeZoneConverter timeZoneConverter, 
-            UserManager userManager)
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         : base(context, timeZoneConverter)
         {
             UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
             Id = CalendarId;
             Context.HtmlBackgroundColor = "#f08e1c";
             Context.HtmlTextColor = "#000000";
@@ -87,7 +91,7 @@ namespace ASC.Calendar.ExternalCalendars
 
                     if (bd >= utcStartDate && bd <= utcEndDate)
                     {
-                        events.Add(new BirthdayEvent(usr.ID.ToString(), usr.DisplayUserName(), usr.BirthDate.Value));
+                        events.Add(new BirthdayEvent(usr.ID.ToString(), usr.DisplayUserName(DisplayUserSettingsHelper), usr.BirthDate.Value));
                         continue;
                     }
                 }
@@ -97,7 +101,7 @@ namespace ASC.Calendar.ExternalCalendars
                     bd = new DateTime(utcEndDate.Year, usr.BirthDate.Value.Month, usr.BirthDate.Value.Day);
 
                     if (bd >= utcStartDate && bd <= utcEndDate)
-                        events.Add(new BirthdayEvent(usr.ID.ToString(), usr.DisplayUserName(), usr.BirthDate.Value));
+                        events.Add(new BirthdayEvent(usr.ID.ToString(), usr.DisplayUserName(DisplayUserSettingsHelper), usr.BirthDate.Value));
                 }
             }
             return events;

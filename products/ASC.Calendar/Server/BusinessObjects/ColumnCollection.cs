@@ -33,6 +33,7 @@ using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    /*
     internal class ColumnCollection
     {   
         private List<SelectColumnInfo> _columns = new List<SelectColumnInfo>();
@@ -95,4 +96,6 @@ namespace ASC.Calendar.BusinessObjects
             }
         }
     }
+    */
+
 }

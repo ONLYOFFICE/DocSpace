@@ -32,6 +32,7 @@ using System.Runtime.Serialization;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "timeZone", Namespace = "")]
     public class TimeZoneWrapper
     {
@@ -78,5 +79,5 @@ namespace ASC.Calendar.Models
 
 
     }
-
+*/
 }

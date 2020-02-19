@@ -29,6 +29,7 @@ using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.BusinessObjects
 {
+    /*
     public class EventNotificationData
     {
         public int TenantId { get; set; }
@@ -69,4 +70,5 @@ namespace ASC.Calendar.BusinessObjects
         }
 
     }
+    */
 }

@@ -35,6 +35,7 @@ using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.Models
 {
+    /*
     [DataContract(Name = "sharing", Namespace = "")]
     public class PublicItemCollection
     {
@@ -104,4 +105,5 @@ namespace ASC.Calendar.Models
         }
 
     }
+    */
 }
