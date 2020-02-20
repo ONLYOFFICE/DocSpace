@@ -93,7 +93,9 @@ namespace ASC.ApiSystem.Controllers
 
         public IMemoryCache MemoryCache { get; }
 
-        public CommonController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache)
+        public IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
+
+        public CommonController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -129,8 +131,9 @@ namespace ASC.ApiSystem.Controllers
 
             MemoryCache = memoryCache;
 
-            //TODO!!! replace null with DI
-            HostedSolution = new HostedSolution(configuration, Configuration.GetConnectionStrings(CommonConstants.BaseDbConnKeyString), null, option, null, tenantDomainValidator, null, null, null, userFormatter, null);
+            HostedSolutionOptions = hostedSolutionOptions;
+
+            HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
         }
 
 
@@ -362,7 +365,8 @@ namespace ASC.ApiSystem.Controllers
                 .AddUserFormatter()
                 .AddUserManagerWrapperService()
                 .AddSettingsManagerService()
-                .AddSecurityContextService();
+                .AddSecurityContextService()
+                .AddHostedSolutionService();
         }
     }
 }
