@@ -1,0 +1,10 @@
+{
+  "CancelButton": "Отмена",
+  "GuestCaption": "Гость",
+  "UserCol": "Пользователь",
+
+  "ChangeUserTypeHeader": "Изменение типа пользователя",
+  "ChangeUserTypeButton": "Изменить тип",
+  "ChangeUserTypeMessage": "Пользователи с типом '{{ firstType }}' будут переведены в тип '{{ secondType }}' Вы не можете изменить тип для администраторов портала и для самого себя",
+  "ShowUsersList": "View users list"
+}

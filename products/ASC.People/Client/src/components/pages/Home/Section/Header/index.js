@@ -11,9 +11,7 @@ import { Headline } from "asc-web-common";
 import { connect } from "react-redux";
 import {
   getSelectedGroup,
-  getSelectionIds,
   getUserType,
-  getGuestType,
   getUsersStatus,
   getInactiveUsers,
   getDeleteUsers
@@ -21,7 +19,6 @@ import {
 import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
-  updateUserType,
   fetchPeople,
   removeUser
 } from "../../../../../store/people/actions";
@@ -31,7 +28,8 @@ import {
   InviteDialog,
   DeleteGroupUsersDialog,
   SendInviteDialog,
-  ChangeUserStatusDialog
+  ChangeUserStatusDialog,
+  ChangeUserTypeDialog
 } from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
@@ -97,6 +95,8 @@ const SectionHeaderContent = props => {
   const [showSendInviteDialog, setSendInviteDialog] = useState(false);
   const [showDisableDialog, setShowDisableDialog] = useState(false);
   const [showActiveDialog, setShowActiveDialog] = useState(false);
+  const [showGuestDialog, setShowGuestDialog] = useState(false);
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
 
   const {
     isHeaderVisible,
@@ -108,14 +108,12 @@ const SectionHeaderContent = props => {
     group,
     isAdmin,
     t,
-    selection,
-    updateUserType,
     filter,
     history,
     settings,
     deleteGroup,
-    userType,
-    guestType,
+    employeeTypeUsers,
+    guestTypeUsers,
     activeStatus,
     disabledUser,
     inviteLinkUsers,
@@ -123,18 +121,16 @@ const SectionHeaderContent = props => {
     removeUsers
   } = props;
 
-  const selectedUserIds = getSelectionIds(selection);
-  //console.log("SectionHeaderContent render", selection, selectedUserIds);
+  //console.log("SectionHeaderContent render");
 
-  const onSetEmployee = useCallback(() => {
-    updateUserType(EmployeeType.User, selectedUserIds);
-    toastr.success(t("SuccessChangeUserType"));
-  }, [selectedUserIds, updateUserType, t]);
+  const onSetEmployee = useCallback(
+    () => setShowEmployeeDialog(!showEmployeeDialog),
+    [showEmployeeDialog]
+  );
 
-  const onSetGuest = useCallback(() => {
-    updateUserType(EmployeeType.Guest, selectedUserIds);
-    toastr.success(t("SuccessChangeUserType"));
-  }, [selectedUserIds, updateUserType, t]);
+  const onSetGuest = useCallback(() => setShowGuestDialog(!showGuestDialog), [
+    showGuestDialog
+  ]);
 
   const onSetActive = useCallback(
     () => setShowActiveDialog(!showActiveDialog),
@@ -173,14 +169,14 @@ const SectionHeaderContent = props => {
       label: t("ChangeToUser", {
         userCaption: settings.customNames.userCaption
       }),
-      disabled: userType,
+      disabled: !employeeTypeUsers.length,
       onClick: onSetEmployee
     },
     {
       label: t("ChangeToGuest", {
         guestCaption: settings.customNames.guestCaption
       }),
-      disabled: guestType,
+      disabled: !guestTypeUsers.length,
       onClick: onSetGuest
     },
     {
@@ -299,6 +295,23 @@ const SectionHeaderContent = props => {
       isHeaderVisible={isHeaderVisible}
       isArticlePinned={isArticlePinned}
     >
+      {showEmployeeDialog && (
+        <ChangeUserTypeDialog
+          visible={showEmployeeDialog}
+          users={employeeTypeUsers}
+          onClose={onSetEmployee}
+          userType={EmployeeType.User}
+        />
+      )}
+
+      {showGuestDialog && (
+        <ChangeUserTypeDialog
+          visible={showGuestDialog}
+          users={guestTypeUsers}
+          onClose={onSetGuest}
+          userType={EmployeeType.Guest}
+        />
+      )}
       {showActiveDialog && (
         <ChangeUserStatusDialog
           visible={showActiveDialog}
@@ -414,6 +427,8 @@ const mapStateToProps = state => {
   const activeUsers = 1;
   const disabledUsers = 2;
   const currentUserId = state.auth.user.id;
+  const userStatus = true;
+  const guestStatus = false;
 
   return {
     group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
@@ -422,8 +437,8 @@ const mapStateToProps = state => {
     filter: state.people.filter,
     settings: state.auth.settings,
 
-    userType: getUserType(selection),
-    guestType: getGuestType(selection),
+    employeeTypeUsers: getUserType(selection, userStatus, currentUserId),
+    guestTypeUsers: getUserType(selection, guestStatus, currentUserId),
     activeStatus: getUsersStatus(selection, activeUsers, currentUserId),
     disabledUser: getUsersStatus(selection, disabledUsers, currentUserId),
     inviteLinkUsers: getInactiveUsers(selection),
@@ -434,7 +449,6 @@ const mapStateToProps = state => {
 
 export default connect(mapStateToProps, {
   updateUserStatus,
-  updateUserType,
   fetchPeople,
   deleteGroup,
   removeUser
