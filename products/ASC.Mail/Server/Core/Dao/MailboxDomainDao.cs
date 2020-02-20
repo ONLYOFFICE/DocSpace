@@ -34,6 +34,7 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using System.Linq;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -56,29 +57,28 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxDomain GetDomain(string domainName)
         {
-            //var query = Query()
-            //    .Where(MailboxDomainTable.Columns.DomainName, domainName);
+            var domain = MailDb.MailMailboxDomain
+                .Where(d => d.Name == domainName)
+                .Select(ToMailboxDomain)
+                .FirstOrDefault();
 
-            //return Db.ExecuteList(query)
-            //    .ConvertAll(ToMailboxDomain)
-            //    .FirstOrDefault();
-
-            return null;
+            return domain;
         }
 
         public int SaveDomain(MailboxDomain domain)
         {
-            //var query = new SqlInsert(MailboxDomainTable.TABLE_NAME, true)
-            //    .InColumnValue(MailboxDomainTable.Columns.Id, domain.Id)
-            //    .InColumnValue(MailboxDomainTable.Columns.ProviderId, domain.ProviderId)
-            //    .InColumnValue(MailboxDomainTable.Columns.DomainName, domain.Name)
-            //    .Identity(0, 0, true);
+            var mailboxDomain = new MailMailboxDomain
+            {
+                Id = domain.Id,
+                IdProvider = domain.ProviderId,
+                Name = domain.Name
+            };
 
-            //var id = Db.ExecuteScalar<int>(query);
+            var result = MailDb.MailMailboxDomain.Add(mailboxDomain).Entity;
 
-            //return id;
+            MailDb.SaveChanges();
 
-            return -1;
+            return result.Id;
         }
 
         protected MailboxDomain ToMailboxDomain(MailMailboxDomain r)
