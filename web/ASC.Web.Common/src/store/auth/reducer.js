@@ -3,7 +3,7 @@ import {
   SET_PORTAL_CULTURES, SET_PORTAL_LANGUAGE_AND_TIME, SET_TIMEZONES, SET_CURRENT_PRODUCT_ID, SET_CURRENT_PRODUCT_HOME_PAGE, SET_GREETING_SETTINGS,
   SET_CUSTOM_NAMES } from './actions';
 import isEmpty from "lodash/isEmpty";
-import { LANGUAGE } from '../../constants';
+import { LANGUAGE, AUTH_KEY } from '../../constants';
 
 const initialState = {
   isAuthenticated: false,
@@ -40,7 +40,7 @@ const authReducer = (state = initialState, action) => {
         && localStorage.getItem(LANGUAGE) !== action.user.cultureName
         && localStorage.setItem(LANGUAGE, action.user.cultureName);
           return Object.assign({}, state, {
-              isAuthenticated: !isEmpty(action.user),
+              isAuthenticated: !isEmpty(action.user) || localStorage.getItem(AUTH_KEY),
               user: action.user
           });
       case SET_MODULES:
