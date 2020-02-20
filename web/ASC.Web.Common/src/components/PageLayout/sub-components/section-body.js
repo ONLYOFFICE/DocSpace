@@ -58,7 +58,7 @@ class SectionBody extends React.Component {
       <StyledSectionBody withScroll={withScroll}>
         {withScroll ? (
           <Scrollbar stype="mediumBlack">
-            <StyledSectionWrapper {...focusProps}>
+            <StyledSectionWrapper className="sectionWrapper" {...focusProps}>
               {children}
               <StyledSpacer pinned={pinned}/>
             </StyledSectionWrapper>

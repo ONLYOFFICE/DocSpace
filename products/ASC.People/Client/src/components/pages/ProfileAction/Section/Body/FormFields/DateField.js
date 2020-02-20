@@ -32,7 +32,7 @@ class DateField extends React.Component {
         <DatePicker
           name={inputName}
           selectedDate={inputValue}
-          disabled={inputIsDisabled}
+          isDisabled={inputIsDisabled}
           onChange={inputOnChange}
           hasError={hasError}
           tabIndex={inputTabIndex}

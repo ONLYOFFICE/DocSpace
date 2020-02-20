@@ -5,7 +5,6 @@ import { Icons } from "../icons";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import Text from "../text";
-import { handleAnyClick } from "../../utils/event";
 import isEqual from "lodash/isEqual";
 
 // eslint-disable-next-line no-unused-vars
@@ -58,7 +57,6 @@ const Caret = styled(ExpanderDownIcon)`
 `;
 
 const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
-
   cursor: pointer;
   text-decoration: none;
   user-select: none;
@@ -95,7 +93,6 @@ const StyledLinkWithDropdown = styled(SimpleLinkWithDropdown)`
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const SimpleText = ({ color, ...props }) => (<Text as="span" {...props} />);
 const StyledText = styled(SimpleText)`
-
   color: ${color};
 
   ${props => props.isTextOverflow && css`
@@ -105,7 +102,11 @@ const StyledText = styled(SimpleText)`
 `;
 
 const StyledSpan = styled.span`
-position: relative;
+  position: relative;
+
+  .fixed-max-width {
+    max-width: 260px;
+  }
 `;
 class LinkWithDropdown extends React.Component {
 
@@ -117,44 +118,32 @@ class LinkWithDropdown extends React.Component {
     };
 
     this.ref = React.createRef();
-
-    this.handleClick = this.handleClick.bind(this);
-    this.toggleDropdown = this.toggleDropdown.bind(this);
-    this.onDropDownItemClick = this.onDropDownItemClick.bind(this);
-
-    if (props.isOpen) handleAnyClick(true, this.handleClick);
   }
 
-  handleClick = e =>
-    this.state.isOpen &&
-    !this.ref.current.contains(e.target) &&
-    this.toggleDropdown(false);
+  setIsOpen = isOpen => this.setState({ isOpen: isOpen });
 
-  toggleDropdown = isOpen => this.setState({ isOpen });
-
-  clickToDropdown = () => this.setState({ isOpen: !this.state.isOpen });
-
-
-  componentWillUnmount() {
-    handleAnyClick(false, this.handleClick);
+  onOpen = () => {
+    this.setIsOpen(!this.state.isOpen);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  onClose = (e) => {
+    if (this.ref.current.contains(e.target)) return;
+
+    this.setIsOpen(!this.state.isOpen);
+  }
+
+  componentDidUpdate(prevProps) {
     if (this.props.dropdownType !== prevProps.dropdownType) {
       if (this.props.isOpen !== prevProps.isOpen) {
-        this.toggleDropdown(this.props.isOpen);
+        this.setIsOpen(this.props.isOpen);
       }
     } else if (this.props.isOpen !== prevProps.isOpen) {
-      this.toggleDropdown(this.props.isOpen);
-    }
-
-    if (this.state.isOpen !== prevState.isOpen) {
-      handleAnyClick(this.state.isOpen, this.handleClick);
+      this.setIsOpen(this.props.isOpen);
     }
   }
 
-  onDropDownItemClick = item => {
-    this.toggleDropdown(!this.state.isOpen);
+  onClickDropDownItem = item => {
+    this.setIsOpen(!this.state.isOpen);
     item.onClick && item.onClick();
   };
 
@@ -164,7 +153,6 @@ class LinkWithDropdown extends React.Component {
 
   render() {
     // console.log("LinkWithDropdown render");
-
     const {
       isSemitransparent,
       dropdownType,
@@ -178,21 +166,20 @@ class LinkWithDropdown extends React.Component {
       data,
       id,
       style,
-      isOpen,
       ...rest
     } = this.props;
+
     return (
       <StyledSpan
         className={className}
         id={id}
         style={style}
+        ref={this.ref}
       >
         <span
-          ref={this.ref}
-          onClick={this.clickToDropdown}
+          onClick={this.onOpen}
         >
           <StyledLinkWithDropdown
-
             isSemitransparent={isSemitransparent}
             dropdownType={dropdownType}
             color={color}
@@ -209,7 +196,6 @@ class LinkWithDropdown extends React.Component {
             >
               {this.props.children}
             </StyledText>
-
             <Caret
               color={color}
               dropdownType={dropdownType}
@@ -217,16 +203,18 @@ class LinkWithDropdown extends React.Component {
             />
           </StyledLinkWithDropdown>
         </span>
-
         <DropDown
+          className='fixed-max-width'
           open={this.state.isOpen}
           withArrow={false}
+          clickOutsideAction={this.onClose}
+          maxHeight={200}
           {...rest}
         >
           {data.map(item => (
             <DropDownItem
               key={item.key}
-              onClick={this.onDropDownItemClick.bind(this.props, item)}
+              onClick={this.onClickDropDownItem.bind(this.props, item)}
               {...item}
             />
           ))}

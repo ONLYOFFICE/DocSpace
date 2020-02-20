@@ -95,5 +95,6 @@
   "PeopleAdmin": "Администратор модуля Люди",
   "DirectionAscLabel":"А-Я",
   "DirectionDescLabel":"Я-А",
-  "MeLabel": "Я"
+  "MeLabel": "Я",
+  "OrganizationName": "ONLYOFFICE"
 }

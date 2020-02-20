@@ -24,29 +24,35 @@ class PageLayoutComponent extends React.PureComponent {
     this.state = this.mapPropsToState(props);
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+    const articleElement = document.getElementsByTagName('article') && document.getElementsByTagName('article')[0];
+    articleElement && this.orientationChangeHandler();
   }
 
-  componentWillUnmount () { 
+  componentWillUnmount() {
     window.removeEventListener("orientationchange", this.orientationChangeHandler);
   }
 
   orientationChangeHandler = () => {
-    const isOrientationVertical = !(screen.orientation.angle % 180);
+    const articleElement = document.getElementsByTagName('article')[0];
+
+    if (!articleElement) return;
+
+    const isOrientationVertical = !(screen.orientation ? screen.orientation.angle % 180 :  window.matchMedia("(orientation: portrait)"));
     const isValueExist = !!localStorage.getItem(ARTICLE_PINNED_KEY);
-    const articleWidth = document.getElementsByTagName('article')[0].offsetWidth;
+    const articleWidth = articleElement.offsetWidth;
     const isArticleWide = articleWidth > screen.availWidth - articleWidth;
 
-    if (isOrientationVertical && isArticleWide && isValueExist){
+    if (isOrientationVertical && isArticleWide && isValueExist) {
       this.backdropClick();
     }
-    if (!isOrientationVertical && isValueExist){
+    if (!isOrientationVertical && isValueExist) {
       this.pinArticle();
     }
   }
 
-  componentDidUpdate(prevProps) {    
+  componentDidUpdate(prevProps) {
     if (this.hasChanges(this.props, prevProps)) {
       this.setState(this.mapPropsToState(this.props));
     }
@@ -185,12 +191,14 @@ class PageLayoutComponent extends React.PureComponent {
             {this.state.isSectionHeaderAvailable && (
               <SectionHeader isArticlePinned={this.state.isArticlePinned}>{this.state.sectionHeaderContent}</SectionHeader>
             )}
-
+            {this.state.isSectionFilterAvailable && (
+              <SectionFilter className="section-header_filter">{this.state.sectionFilterContent}</SectionFilter>
+            )}
             {this.state.isSectionBodyAvailable && (
               <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
                 {this.state.isSectionFilterAvailable && (
-                  <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
-                )}
+              <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
+            )}
                 {this.state.sectionBodyContent}
                 {this.state.isSectionPagingAvailable && (
                   <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>
@@ -219,7 +227,7 @@ const PageLayout = props => {
 }
 
 PageLayout.propTypes = {
-  language:PropTypes.string,
+  language: PropTypes.string,
 }
 
 PageLayoutComponent.propTypes = {

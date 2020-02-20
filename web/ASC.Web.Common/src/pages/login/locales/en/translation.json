@@ -12,5 +12,7 @@
   "CancelButton": "Cancel",
   "Remember": "Remember",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to the settings.",
-  "CookieSettingsTitle": "Session Lifetime"
+  "CookieSettingsTitle": "Session Lifetime",
+  "Authorization": "Authorization",
+  "OrganizationName": "ONLYOFFICE"
 }

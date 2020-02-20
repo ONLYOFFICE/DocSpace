@@ -36,6 +36,7 @@ using ASC.Core.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -69,13 +70,13 @@ namespace ASC.Core
         private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
         public UserManager(
-            IUserService service,
+            IOptionsSnapshot<CachedUserService> service,
             IHttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             PermissionContext permissionContext,
             UserManagerConstants userManagerConstants)
         {
-            UserService = service;
+            UserService = service.Value;
             Accessor = httpContextAccessor;
             TenantManager = tenantManager;
             PermissionContext = permissionContext;

@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Icons } from "asc-web-components";
 
 const LogoItem = styled.div`
   display: flex;
@@ -10,32 +9,23 @@ const LogoItem = styled.div`
   align-items: center;
   padding: 0 16px;
   cursor: pointer;
+
+  .nav-logo-wrapper {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  .nav-logo-icon {
+    display: ${props => (props.opened ? "block" : "none")};
+  }
 `;
 
 const NavLogoItem = React.memo(props => {
   //console.log("NavLogoItem render");
-  const navLogoIconStyle = {
-    display: props.opened ? "none" : "block"
-  };
-
-  const navLogoOpenedIconStyle = {
-    display: props.opened ? "block" : "none",
-    width: "141px",
-    minWidth: "141px",
-    height: "22px",
-    minHeight: "22px",
-    position: "absolute",
-    top: "17px",
-    left: "13px"
-  };
-
   return (
-    <LogoItem>
-      <Icons.NavLogoIcon style={navLogoIconStyle} onClick={props.onClick} />
-      <Icons.NavLogoOpenedIcon
-        style={navLogoOpenedIconStyle}
-        onClick={props.onClick}
-      />
+    <LogoItem opened={props.opened}>
+      <a className="nav-logo-wrapper" href="/">
+        <img className="nav-logo-icon" src="images/nav.logo.opened.react.svg" />
+      </a>
     </LogoItem>
   );
 });
