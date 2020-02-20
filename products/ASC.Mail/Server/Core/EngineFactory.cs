@@ -42,13 +42,17 @@ namespace ASC.Mail.Core
 
         public AlertEngine AlertEngine { get; }
 
+        public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
+
         public EngineFactory(
             AccountEngine accountEngine,
-            AlertEngine alertEngine
+            AlertEngine alertEngine,
+            DisplayImagesAddressEngine displayImagesAddressEngine
             )
         {
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
+            DisplayImagesAddressEngine = displayImagesAddressEngine;
         }
 
         //private AccountEngine _accountEngine;
@@ -241,7 +245,8 @@ namespace ASC.Mail.Core
                 .AddDaoFactoryService()
                 .AddMailboxEngineService()
                 .AddAccountEngineService()
-                .AddAlertEngineService();
+                .AddAlertEngineService()
+                .AddDisplayImagesAddressEngineService();
         }
     }
 }
