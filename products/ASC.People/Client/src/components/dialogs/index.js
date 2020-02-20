@@ -4,7 +4,8 @@ import ChangePhoneDialog from "./ChangePhoneDialog";
 import DeleteProfileEverDialog from "./DeleteProfileEverDialog";
 import DeleteSelfProfileDialog from "./DeleteSelfProfileDialog";
 import DeleteGroupUsersDialog from "./DeleteGroupUsersDialog";
-import InviteDialog from './InviteDialog';
+import InviteDialog from "./InviteDialog";
+import SendInviteDialog from "./SendInviteDialog";
 
 export {
   ChangeEmailDialog,
@@ -13,5 +14,6 @@ export {
   DeleteProfileEverDialog,
   DeleteSelfProfileDialog,
   DeleteGroupUsersDialog,
-  InviteDialog
+  InviteDialog,
+  SendInviteDialog
 };

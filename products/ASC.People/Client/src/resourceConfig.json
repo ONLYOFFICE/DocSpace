@@ -78,6 +78,13 @@
     "UserControlsCommonResource":[
       "NotBeUndone"
     ]
+  },
+  "SendInviteDialog":{
+    "Resource": [
+      "OKButton",
+      "CancelButton",
+      "SendInviteAgain"
+    ]
   }
 },
   "pages": {

@@ -195,7 +195,7 @@ export function getUserType(users) {
   }
   
   export function getInactiveUsers(users) {
-    const disabledStatus = users.filter(x => x.activationStatus === 2);
+    const disabledStatus = users.filter(x => x.activationStatus === 2 && x.status === 1);
     return !disabledStatus.length;
   }
   
