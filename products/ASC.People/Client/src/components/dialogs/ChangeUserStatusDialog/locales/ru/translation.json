@@ -1,0 +1,13 @@
+{
+  "CancelButton": "Отмена",
+  
+  "DeleteGroupUsersShowUsers": "Показать список пользователей",  
+  "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",
+  "ChangeUserStatusDialog": "Пользователи со статусом '{{ userStatus }}' будут  {{ status }}.",
+  "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца портала и свой собственный статус",
+  "ChangeUsersStatusButton": "Изменить статус",
+  "ChangeUsersActiveUserStatus": "Активный",
+  "ChangeUsersDisableUserStatus": "Заблокирован",
+  "ChangeUsersDisableStatus": "заблокированы",
+  "ChangeUsersActiveStatus": "разблокированы"
+}

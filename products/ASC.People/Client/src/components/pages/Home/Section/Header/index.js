@@ -31,13 +31,11 @@ import {
   InviteDialog,
   DeleteGroupUsersDialog,
   SendInviteDialog,
-  SetDisabledDialog
+  ChangeUserStatusDialog
 } from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
-const { EmployeeStatus, EmployeeType } = constants;
-
-const isRefetchPeople = true;
+const { EmployeeType, EmployeeStatus } = constants;
 
 const StyledContainer = styled.div`
   @media (min-width: 1024px) {
@@ -98,6 +96,7 @@ const SectionHeaderContent = props => {
   const [showDeleteDialog, setDeleteDialog] = useState(false);
   const [showSendInviteDialog, setSendInviteDialog] = useState(false);
   const [showDisableDialog, setShowDisableDialog] = useState(false);
+  const [showActiveDialog, setShowActiveDialog] = useState(false);
 
   const {
     isHeaderVisible,
@@ -110,9 +109,7 @@ const SectionHeaderContent = props => {
     isAdmin,
     t,
     selection,
-    updateUserStatus,
     updateUserType,
-    onLoading,
     filter,
     history,
     settings,
@@ -129,14 +126,6 @@ const SectionHeaderContent = props => {
   const selectedUserIds = getSelectionIds(selection);
   //console.log("SectionHeaderContent render", selection, selectedUserIds);
 
-  const onSetActive = useCallback(() => {
-    onLoading(true);
-    updateUserStatus(EmployeeStatus.Active, selectedUserIds, isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, updateUserStatus, t, onLoading]);
-
   const onSetEmployee = useCallback(() => {
     updateUserType(EmployeeType.User, selectedUserIds);
     toastr.success(t("SuccessChangeUserType"));
@@ -146,6 +135,11 @@ const SectionHeaderContent = props => {
     updateUserType(EmployeeType.Guest, selectedUserIds);
     toastr.success(t("SuccessChangeUserType"));
   }, [selectedUserIds, updateUserType, t]);
+
+  const onSetActive = useCallback(
+    () => setShowActiveDialog(!showActiveDialog),
+    [showActiveDialog]
+  );
 
   const onSetDisabled = useCallback(
     () => setShowDisableDialog(!showDisableDialog),
@@ -191,7 +185,7 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("LblSetActive"),
-      //disabled: activeStatus,
+      disabled: !activeStatus.length,
       onClick: onSetActive
     },
     {
@@ -305,11 +299,20 @@ const SectionHeaderContent = props => {
       isHeaderVisible={isHeaderVisible}
       isArticlePinned={isArticlePinned}
     >
+      {showActiveDialog && (
+        <ChangeUserStatusDialog
+          visible={showActiveDialog}
+          users={activeStatus}
+          onClose={onSetActive}
+          userStatus={EmployeeStatus.Active}
+        />
+      )}
       {showDisableDialog && (
-        <SetDisabledDialog
+        <ChangeUserStatusDialog
           visible={showDisableDialog}
           users={disabledUser}
           onClose={onSetDisabled}
+          userStatus={EmployeeStatus.Disabled}
         />
       )}
 
