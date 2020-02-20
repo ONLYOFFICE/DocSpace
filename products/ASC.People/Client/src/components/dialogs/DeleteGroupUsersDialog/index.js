@@ -51,19 +51,16 @@ const DeleteGroupUsersDialogComponent = props => {
         headerContent={t("DeleteGroupUsersMessageHeader")}
         bodyContent={
           <>
-            <div>
-              <Text>{t("DeleteGroupUsersMessage")}</Text>
-              <Text>{t("NotBeUndone")}</Text>
-              <br />
-              <Text color="#c30" fontSize="18px">
-                {t("Warning")}
-              </Text>
-              <br />
-              <Text>{t("DeleteUserDataConfirmation")}</Text>
-            </div>
-
+            <Text>{t("DeleteGroupUsersMessage")}</Text>
+            <Text>{t("NotBeUndone")}</Text>
+            <br />
+            <Text color="#c30" fontSize="18px">
+              {t("Warning")}
+            </Text>
+            <br />
+            <Text>{t("DeleteUserDataConfirmation")}</Text>
             <ToggleContent
-              className="delete-group-users_dialog"
+              className="toggle-content-dialog"
               label={t("DeleteGroupUsersShowUsers")}
             >
               {users.map((item, index) => (
@@ -75,16 +72,14 @@ const DeleteGroupUsersDialogComponent = props => {
         footerContent={
           <>
             <Button
-              key="OKBtn"
               label={t("OKButton")}
               size="medium"
-              primary={true}
+              primary
               onClick={onDeleteGroupUsers}
               isLoading={isRequestRunning}
             />
             <Button
               className="button-dialog"
-              key="ReassignBtn"
               label={t("CancelButton")}
               size="medium"
               onClick={onClose}
@@ -111,16 +106,9 @@ DeleteGroupUsersDialog.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  removeUser: PropTypes.func.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    userCaption: state.auth.settings.customNames.userCaption
-  };
-}
-
-export default connect(mapStateToProps, { fetchPeople, removeUser })(
+export default connect(null, { fetchPeople, removeUser })(
   withRouter(DeleteGroupUsersDialog)
 );
