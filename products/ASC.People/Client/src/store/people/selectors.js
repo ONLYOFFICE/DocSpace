@@ -187,19 +187,14 @@ export function getUserType(users) {
     return !disabledUserType.length;
   }
   
-  export function getUsersStatus(users, status) {
-    const disabledOwnerStatus = users.filter(
-      x => !x.isOwner && x.status !== status
-    );
-    return !disabledOwnerStatus.length;
+  export function getUsersStatus(users, status, currentUserId) {
+    return users.filter(x => !x.isOwner && x.status !== status && x.id !== currentUserId);
   }
-  
+
   export function getInactiveUsers(users) {
-    const disabledStatus = users.filter(x => x.activationStatus === 2 && x.status === 1);
-    return !disabledStatus.length;
+    return users.filter(x => x.activationStatus === 2 && x.status === 1);
   }
-  
+
   export function getDeleteUsers(users) {
-    const disabledUsers = users.filter(x => x.status === 2);
-    return !disabledUsers.length;
+    return users.filter(x => x.status === 2);
   }
