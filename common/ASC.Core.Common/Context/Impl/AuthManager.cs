@@ -26,13 +26,16 @@
 
 using System;
 using System.Linq;
+
 using ASC.Common.Security.Authentication;
 using ASC.Core.Caching;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -43,9 +46,9 @@ namespace ASC.Core
         public UserManager UserManager { get; }
         public UserFormatter UserFormatter { get; }
 
-        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
+        public AuthManager(IOptionsSnapshot<CachedUserService> service, UserManager userManager, UserFormatter userFormatter)
         {
-            userService = service;
+            userService = service.Value;
             UserManager = userManager;
             UserFormatter = userFormatter;
         }
