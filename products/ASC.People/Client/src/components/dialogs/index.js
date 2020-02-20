@@ -6,6 +6,7 @@ import DeleteSelfProfileDialog from "./DeleteSelfProfileDialog";
 import DeleteGroupUsersDialog from "./DeleteGroupUsersDialog";
 import InviteDialog from "./InviteDialog";
 import SendInviteDialog from "./SendInviteDialog";
+import SetDisabledDialog from "./SetDisabledDialog";
 
 export {
   ChangeEmailDialog,
@@ -15,5 +16,6 @@ export {
   DeleteSelfProfileDialog,
   DeleteGroupUsersDialog,
   InviteDialog,
-  SendInviteDialog
+  SendInviteDialog,
+  SetDisabledDialog
 };

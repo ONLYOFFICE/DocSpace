@@ -85,6 +85,11 @@
       "CancelButton",
       "SendInviteAgain"
     ]
+  },
+  "SetDisabledDialog":{
+    "Resource": [
+      "CancelButton"
+    ]
   }
 },
   "pages": {

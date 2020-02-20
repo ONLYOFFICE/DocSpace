@@ -1,0 +1,10 @@
+{
+  "CancelButton": "Cancel",
+  
+  "DeleteGroupUsersShowUsers": "View users list",
+  "SendInviteAgainDialog": "The invitation to the portal will be sent once again to the selected users with the 'Pending' status who are not disabled. After the users confirm the invitation to the portal their status will change to 'Active'",
+  "ChangeUserStatusDialogHeader": "Change user status",
+  "ChangeUserStatusDialog": "The users with the 'Active' status will be disabled.",
+  "ChangeUserStatusDialogMessage": "You cannot change the status for portal owner and for yourself",
+  "ChangeUsersStatusButton": "Change user status"
+}

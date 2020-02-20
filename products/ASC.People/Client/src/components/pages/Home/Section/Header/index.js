@@ -30,7 +30,8 @@ import { store, constants } from "asc-web-common";
 import {
   InviteDialog,
   DeleteGroupUsersDialog,
-  SendInviteDialog
+  SendInviteDialog,
+  SetDisabledDialog
 } from "../../../../dialogs";
 
 const { isAdmin } = store.auth.selectors;
@@ -94,8 +95,9 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
   const [dialogVisible, setDialogVisible] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState(false);
-  const [sendInviteDialog, setSendInviteDialog] = useState(false);
+  const [showDeleteDialog, setDeleteDialog] = useState(false);
+  const [showSendInviteDialog, setSendInviteDialog] = useState(false);
+  const [showDisableDialog, setShowDisableDialog] = useState(false);
 
   const {
     isHeaderVisible,
@@ -119,7 +121,7 @@ const SectionHeaderContent = props => {
     guestType,
     activeStatus,
     disabledUser,
-    inviteLink,
+    inviteLinkUsers,
     sendMessage,
     removeUsers
   } = props;
@@ -135,14 +137,6 @@ const SectionHeaderContent = props => {
       .finally(() => onLoading(false));
   }, [selectedUserIds, updateUserStatus, t, onLoading]);
 
-  const onSetDisabled = useCallback(() => {
-    onLoading(true);
-    updateUserStatus(EmployeeStatus.Disabled, selectedUserIds, isRefetchPeople)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error))
-      .finally(() => onLoading(false));
-  }, [selectedUserIds, updateUserStatus, t, onLoading]);
-
   const onSetEmployee = useCallback(() => {
     updateUserType(EmployeeType.User, selectedUserIds);
     toastr.success(t("SuccessChangeUserType"));
@@ -153,13 +147,18 @@ const SectionHeaderContent = props => {
     toastr.success(t("SuccessChangeUserType"));
   }, [selectedUserIds, updateUserType, t]);
 
-  const onSentInviteAgain = useCallback(
-    () => setSendInviteDialog(!sendInviteDialog),
-    [sendInviteDialog]
+  const onSetDisabled = useCallback(
+    () => setShowDisableDialog(!showDisableDialog),
+    [showDisableDialog]
   );
 
-  const onDelete = useCallback(() => setDeleteDialog(!deleteDialog), [
-    deleteDialog
+  const onSendInviteAgain = useCallback(
+    () => setSendInviteDialog(!showSendInviteDialog),
+    [showSendInviteDialog]
+  );
+
+  const onDelete = useCallback(() => setDeleteDialog(!showDeleteDialog), [
+    showDeleteDialog
   ]);
 
   const menuItems = [
@@ -192,18 +191,18 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("LblSetActive"),
-      disabled: activeStatus,
+      //disabled: activeStatus,
       onClick: onSetActive
     },
     {
       label: t("LblSetDisabled"),
-      disabled: disabledUser,
+      disabled: !disabledUser.length,
       onClick: onSetDisabled
     },
     {
       label: t("LblInviteAgain"),
-      disabled: inviteLink,
-      onClick: onSentInviteAgain
+      disabled: !inviteLinkUsers.length,
+      onClick: onSendInviteAgain
     },
     {
       label: t("LblSendEmail"),
@@ -212,7 +211,7 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("DeleteButton"),
-      disabled: removeUsers,
+      disabled: !removeUsers.length,
       onClick: onDelete
     }
   ];
@@ -306,19 +305,28 @@ const SectionHeaderContent = props => {
       isHeaderVisible={isHeaderVisible}
       isArticlePinned={isArticlePinned}
     >
-      {deleteDialog && (
-        <DeleteGroupUsersDialog
-          visible={deleteDialog}
-          onClose={onDelete}
-          users={selection}
-          filter={filter}
+      {showDisableDialog && (
+        <SetDisabledDialog
+          visible={showDisableDialog}
+          users={disabledUser}
+          onClose={onSetDisabled}
         />
       )}
-      {sendInviteDialog && (
+
+      {showSendInviteDialog && (
         <SendInviteDialog
-          visible={sendInviteDialog}
-          onClose={onSentInviteAgain}
-          users={selection}
+          visible={showSendInviteDialog}
+          onClose={onSendInviteAgain}
+          users={inviteLinkUsers}
+        />
+      )}
+
+      {showDeleteDialog && (
+        <DeleteGroupUsersDialog
+          visible={showDeleteDialog}
+          onClose={onDelete}
+          users={removeUsers}
+          filter={filter}
         />
       )}
 
@@ -402,6 +410,7 @@ const mapStateToProps = state => {
   const selection = state.people.selection;
   const activeUsers = 1;
   const disabledUsers = 2;
+  const currentUserId = state.auth.user.id;
 
   return {
     group: getSelectedGroup(state.people.groups, state.people.selectedGroup),
@@ -412,10 +421,10 @@ const mapStateToProps = state => {
 
     userType: getUserType(selection),
     guestType: getGuestType(selection),
-    activeStatus: getUsersStatus(selection, activeUsers),
-    disabledUser: getUsersStatus(selection, disabledUsers),
-    inviteLink: getInactiveUsers(selection),
-    sendMessage: !selection.length,
+    activeStatus: getUsersStatus(selection, activeUsers, currentUserId),
+    disabledUser: getUsersStatus(selection, disabledUsers, currentUserId),
+    inviteLinkUsers: getInactiveUsers(selection),
+    sendMessageUsers: !selection.length,
     removeUsers: getDeleteUsers(selection)
   };
 };
