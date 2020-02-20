@@ -18,7 +18,7 @@ import { updateUserType } from "../../../store/people/actions";
 const { changeLanguage } = utils;
 
 const ChangeUserTypeDialogComponent = props => {
-  const { t, onClose, visible, users, userType } = props;
+  const { t, onClose, visible, users, userType, updateUserType } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
@@ -35,7 +35,7 @@ const ChangeUserTypeDialogComponent = props => {
         setIsRequestRunning(false);
         onClose();
       });
-  }, [t, onClose, usersId, userType]);
+  }, [t, onClose, usersId, updateUserType, userType]);
 
   const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
   const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
