@@ -115,7 +115,9 @@ export function setCustomNames(customNames) {
 }
 
 export function getUser(dispatch) {
-  return api.people.getUser().then(user => dispatch(setCurrentUser(user)));
+  return api.people.getUser()
+    .then(user => dispatch(setCurrentUser(user)))
+    .catch(err => dispatch(setCurrentUser({})));
 }
 
 export function getPortalSettings(dispatch) {
@@ -144,7 +146,7 @@ export const loadInitInfo = dispatch => {
 };
 
 export function getUserInfo(dispatch) {
-  return getUser(dispatch).then(() => loadInitInfo(dispatch));
+  return getUser(dispatch).finally(() => loadInitInfo(dispatch));
 }
 
 export function login(user, pass) {
