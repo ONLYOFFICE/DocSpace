@@ -43,8 +43,8 @@ const ChangeUserStatusDialogComponent = props => {
       : t("ChangeUsersDisableStatus");
   const userStatusTranslation =
     userStatus === 1
-      ? t("ChangeUsersDisableUserStatus")
-      : t("ChangeUsersActiveUserStatus");
+      ? t("DisabledEmployeeTitle")
+      : t("ActiveEmployeeTitle");
 
   return (
     <ModalDialogContainer>

@@ -83,12 +83,22 @@
     "Resource": [
       "OKButton",
       "CancelButton",
-      "SendInviteAgain"
+      "SendInviteAgain",
+      "DisabledEmployeeTitle"
     ]
   },
-  "SetDisabledDialog":{
+  "ChangeUserStatusDialog":{
     "Resource": [
       "CancelButton"
+    ]
+  },
+  "ChangeUserTypeDialog":{
+    "Resource": [
+      "CancelButton",
+      "GuestCaption"
+    ],
+    "AuditResource": [
+      "UserCol"
     ]
   }
 },

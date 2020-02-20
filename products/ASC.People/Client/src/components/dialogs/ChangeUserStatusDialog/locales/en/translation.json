@@ -1,13 +1,13 @@
 {
   "CancelButton": "Cancel",
+  "DisabledEmployeeTitle": "Disabled",
   
   "ShowUsersList": "View users list",
   "ChangeUserStatusDialogHeader": "Change user status",
   "ChangeUserStatusDialog": "The users with the '{{ status }}' status will be disabled.",
   "ChangeUserStatusDialogMessage": "You cannot change the status for portal owner and for yourself",
   "ChangeUsersStatusButton": "Change user status",
-  "ChangeUsersActiveUserStatus": "Active",
-  "ChangeUsersDisableUserStatus": "Disabled",
+  "ActiveEmployeeTitle": "Active",
   "ChangeUsersActiveStatus": "disabled",
   "ChangeUsersDisableStatus": "enabled"
 }
