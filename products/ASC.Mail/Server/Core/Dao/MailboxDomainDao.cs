@@ -87,7 +87,7 @@ namespace ASC.Mail.Core.Dao
     {
         public static IServiceCollection AddMailboxDomainDaoService(this IServiceCollection services)
         {
-            services.TryAddScoped<MailboxDomain>();
+            services.TryAddScoped<MailboxDomainDao>();
 
             return services;
         }

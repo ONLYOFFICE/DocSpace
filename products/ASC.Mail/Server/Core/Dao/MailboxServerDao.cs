@@ -125,7 +125,7 @@ namespace ASC.Mail.Core.Dao
     {
         public static IServiceCollection AddMailboxServerDaoService(this IServiceCollection services)
         {
-            services.TryAddScoped<MailboxServer>();
+            services.TryAddScoped<MailboxServerDao>();
 
             return services;
         }

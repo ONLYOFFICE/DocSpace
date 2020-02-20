@@ -102,7 +102,7 @@ namespace ASC.Mail.Core.Dao
     {
         public static IServiceCollection AddMailboxProviderDaoService(this IServiceCollection services)
         {
-            services.TryAddScoped<MailboxProvider>();
+            services.TryAddScoped<MailboxProviderDao>();
 
             return services;
         }
