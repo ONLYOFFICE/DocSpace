@@ -34,6 +34,7 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using System.Linq;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -56,43 +57,40 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxProvider GetProvider(int id)
         {
-            /*var query = Query()
-               .Where(MailboxProviderTable.Columns.Id, id);
+            var provider = MailDb.MailMailboxProvider
+                .Where(d => d.Id == id)
+                .Select(ToMailboxProvider)
+                .FirstOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailboxProvider)
-                .FirstOrDefault();*/
-
-            return null;
+            return provider;
         }
 
         public MailboxProvider GetProvider(string providerName)
         {
-            //var query = Query()
-            //    .Where(MailboxProviderTable.Columns.ProviderName, providerName);
+            var provider = MailDb.MailMailboxProvider
+                .Where(d => d.Name == providerName)
+                .Select(ToMailboxProvider)
+                .FirstOrDefault();
 
-            //return Db.ExecuteList(query)
-            //    .ConvertAll(ToMailboxProvider)
-            //    .FirstOrDefault();
-            return null;
+            return provider;
         }
 
-        public int SaveProvider(MailboxProvider mailboxProvider)
+        public int SaveProvider(MailboxProvider provider)
         {
-            //var query = new SqlInsert(MailboxProviderTable.TABLE_NAME, true)
-            //    .InColumnValue(MailboxProviderTable.Columns.Id, mailboxProvider.Id)
-            //    .InColumnValue(MailboxProviderTable.Columns.ProviderName, mailboxProvider.Name)
-            //    .InColumnValue(MailboxProviderTable.Columns.DisplayName, mailboxProvider.DisplayName)
-            //    .InColumnValue(MailboxProviderTable.Columns.DisplayShortName,
-            //        mailboxProvider.DisplayShortName)
-            //    .InColumnValue(MailboxProviderTable.Columns.Documentation,
-            //        mailboxProvider.Url)
-            //    .Identity(0, 0, true);
+            var mailboxProvider = new MailMailboxProvider
+            {
+                Id = provider.Id,
+                Name = provider.Name,
+                DisplayName = provider.DisplayName,
+                DisplayShortName = provider.DisplayShortName,
+                Documentation = provider.Url
+            };
 
-            //var idProvider = Db.ExecuteScalar<int>(query);
+            var result = MailDb.MailMailboxProvider.Add(mailboxProvider).Entity;
 
-            //return idProvider;
-            return -1;
+            MailDb.SaveChanges();
+
+            return result.Id;
         }
 
         protected MailboxProvider ToMailboxProvider(MailMailboxProvider r)
