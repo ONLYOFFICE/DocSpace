@@ -299,7 +299,16 @@ namespace ASC.Core
         {
             services.AddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
 
-            return services;
+            return services
+                .AddUserFormatter()
+                .AddTenantService()
+                .AddUserService()
+                .AddQuotaService()
+                .AddTariffService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddDbSettingsManagerService()
+                .AddCoreSettingsService();
         }
     }
 }
