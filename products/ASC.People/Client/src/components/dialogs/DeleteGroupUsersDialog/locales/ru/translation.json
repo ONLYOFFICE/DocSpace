@@ -8,6 +8,6 @@
   "DeleteGroupUsersMessage": "Выбранные заблокированные пользователи будут удалены с портала.",
   "DeleteGroupUsersMessageHeader": "Удаление пользователей с портала",
   "DeleteGroupUsersSuccessMessage": "Пользователи были успешно удалены",
-  "DeleteGroupUsersShowUsers": "Показать список пользователей"
+  "ShowUsersList": "Показать список пользователей"
 
 }

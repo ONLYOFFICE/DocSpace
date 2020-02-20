@@ -8,5 +8,5 @@
   "DeleteGroupUsersMessage": "The selected disabled users will be deleted from the portal.",
   "DeleteGroupUsersMessageHeader": "Delete the users from portal",
   "DeleteGroupUsersSuccessMessage": "Users have been successfully deleted.",
-  "DeleteGroupUsersShowUsers": "View users list"
+  "ShowUsersList": "View users list"
 }

@@ -60,7 +60,7 @@ const DeleteGroupUsersDialogComponent = props => {
             <Text>{t("DeleteUserDataConfirmation")}</Text>
             <ToggleContent
               className="toggle-content-dialog"
-              label={t("DeleteGroupUsersShowUsers")}
+              label={t("ShowUsersList")}
             >
               {users.map((item, index) => (
                 <Text key={index}>{item.displayName}</Text>

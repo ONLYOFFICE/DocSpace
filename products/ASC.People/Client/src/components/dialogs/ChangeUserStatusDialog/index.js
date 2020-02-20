@@ -63,7 +63,7 @@ const ChangeUserStatusDialogComponent = props => {
             <Text>{t("ChangeUserStatusDialogMessage")}</Text>
             <ToggleContent
               className="toggle-content-dialog"
-              label={t("DeleteGroupUsersShowUsers")}
+              label={t("ShowUsersList")}
             >
               {users.map((item, index) => (
                 <Text key={index}>{item.displayName}</Text>
