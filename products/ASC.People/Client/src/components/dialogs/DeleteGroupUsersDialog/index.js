@@ -19,8 +19,7 @@ const { Filter } = api;
 const { changeLanguage } = utils;
 
 const DeleteGroupUsersDialogComponent = props => {
-  const { t, filter, fetchPeople, onClose, removeUser, visible } = props;
-  const users = props.users.filter(x => x.status === 2);
+  const { t, filter, fetchPeople, onClose, removeUser, visible, users } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 

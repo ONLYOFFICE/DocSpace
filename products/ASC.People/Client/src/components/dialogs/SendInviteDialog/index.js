@@ -17,8 +17,7 @@ const { resendUserInvites } = api.people;
 const { changeLanguage } = utils;
 
 const SendInviteDialogComponent = props => {
-  const { t, onClose, visible } = props;
-  const users = props.users.filter(x => x.status === 2);
+  const { t, onClose, visible, users } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
