@@ -24,13 +24,14 @@
 */
 
 
-//using System.Net.Mail;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using System.Net.Mail;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class ConcreteUserServerMailboxExp : СoncreteUserMailboxExp
+    public class ConcreteUserServerMailboxExp : СoncreteUserMailboxExp
     {
         public ConcreteUserServerMailboxExp(int id, int tenant, string user, bool? isRemoved = null)
             : base(id, tenant, user, isRemoved)
@@ -42,13 +43,13 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
         {
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(MailboxTable.Columns.IsServerMailbox, true);
+            exp = exp.And(mb => mb.IsServerMailbox == true);
 
             return exp;
         }
-    }*/
+    }
 }

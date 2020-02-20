@@ -24,12 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class СoncreteUserNextMailboxExp : UserMailboxExp
+    public class СoncreteUserNextMailboxExp : UserMailboxExp
     {
         private readonly int _id;
 
@@ -39,13 +40,22 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             _id = id;
         }
 
-        public override Exp GetExpression()
+        //public override Exp GetExpression()
+        //{
+        //    var exp = base.GetExpression();
+
+        //    exp = exp & Exp.Gt(MailboxTable.Columns.Id, _id);
+
+        //    return exp;
+        //}
+
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Gt(MailboxTable.Columns.Id, _id);
+            exp = exp.And(mb => mb.Id > _id);
 
             return exp;
         }
-    }*/
+    }
 }

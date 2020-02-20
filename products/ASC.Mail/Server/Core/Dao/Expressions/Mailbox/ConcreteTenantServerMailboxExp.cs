@@ -24,25 +24,26 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class ConcreteTenantServerMailboxExp : ConcreteTenantMailboxExp
+    public class ConcreteTenantServerMailboxExp : ConcreteTenantMailboxExp
     {
         public ConcreteTenantServerMailboxExp(int id, int tenant, bool? isRemoved) 
             : base(id, tenant, isRemoved)
         {
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(MailboxTable.Columns.IsServerMailbox, true);
+            exp = exp.And(mb => mb.IsServerMailbox == true);
 
             return exp;
         }
-    }*/
+    }
 }

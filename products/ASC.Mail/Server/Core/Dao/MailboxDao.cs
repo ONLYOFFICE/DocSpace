@@ -38,28 +38,44 @@
 //using ASC.Mail.Core.Entities;
 //using ASC.Mail.Utils;
 
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Expressions.Mailbox;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Security.Cryptography;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Linq;
+
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxDao : BaseDao, IMailboxDao
+    public class MailboxDao : BaseDao, IMailboxDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxTable>();
-
-        public MailboxDao(IDbManager dbManager) : 
-            base(table, dbManager, -1)
+        public InstanceCrypto InstanceCrypto { get; }
+        public MailboxDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext,
+            InstanceCrypto instanceCrypto) : 
+            base(apiContext, securityContext, dbContext)
         {
+            InstanceCrypto = instanceCrypto;
         }
 
         public Mailbox GetMailBox(IMailboxExp exp)
         {
-            var query = Query()
-                .Where(exp.GetExpression());
-
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailbox)
+            var mailbox = MailDb.MailMailbox
+                .Where(exp.GetExpression())
+                .Select(ToMailbox)
                 .SingleOrDefault();
+
+            return mailbox;
         }
 
-        public List<Mailbox> GetMailBoxes(IMailboxesExp exp)
+        /*public List<Mailbox> GetMailBoxes(IMailboxesExp exp)
         {
             var query = Query()
                 .Where(exp.GetExpression());
@@ -116,11 +132,11 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(r => new Tuple<int, string>(Convert.ToInt32(r[0]), Convert.ToString(r[1])));
 
             return list;
-        }
+        }*/
 
         public int SaveMailBox(Mailbox mailbox)
         {
-            var query = new SqlInsert(MailboxTable.TABLE_NAME, true)
+            /*var query = new SqlInsert(MailboxTable.TABLE_NAME, true)
                 .InColumnValue(MailboxTable.Columns.Id, mailbox.Id)
                 .InColumnValue(MailboxTable.Columns.Tenant, mailbox.Tenant)
                 .InColumnValue(MailboxTable.Columns.User, mailbox.User)
@@ -161,10 +177,12 @@ namespace ASC.Mail.Core.Dao
 
             var result = Db.ExecuteScalar<int>(query);
 
-            return result;
+            return result;*/
+
+            return -1;
         }
 
-        public bool SetMailboxRemoved(Mailbox mailbox)
+        /*public bool SetMailboxRemoved(Mailbox mailbox)
         {
             var query = new SqlUpdate(MailboxTable.TABLE_NAME)
                 .Set(MailboxTable.Columns.IsRemoved, true)
@@ -400,64 +418,91 @@ namespace ASC.Mail.Core.Dao
             };
 
             return status;
-        }
+        }*/
 
-        protected Mailbox ToMailbox(object[] r)
+        protected Mailbox ToMailbox(MailMailbox r)
         {
             var mb = new Mailbox
             {
-                Id = Convert.ToInt32(r[0]),
-                User = Convert.ToString(r[1]),
-                Tenant = Convert.ToInt32(r[2]),
-                Address = Convert.ToString(r[3]),
-                Enabled = Convert.ToBoolean(r[4]),
+                Id = r.Id,
+                User = r.IdUser,
+                Tenant = r.Tenant,
+                Address = r.Address,
+                Enabled = r.Enabled,
 
-                MsgCountLast = Convert.ToInt32(r[6]),
-                SizeLast = Convert.ToInt32(r[7]),
+                MsgCountLast = r.MsgCountLast,
+                SizeLast = r.SizeLast,
 
-                Name = Convert.ToString(r[9]),
-                LoginDelay = Convert.ToInt32(r[10]),
-                IsProcessed = Convert.ToBoolean(r[11]),
-                IsRemoved = Convert.ToBoolean(r[12]),
-                IsDefault = Convert.ToBoolean(r[13]),
-                QuotaError = Convert.ToBoolean(r[14]),
-                Imap = Convert.ToBoolean(r[15]),
-                BeginDate = Convert.ToDateTime(r[16]),
-                OAuthType = Convert.ToInt32(r[17]),
+                Name = r.Name,
+                LoginDelay = r.LoginDelay,
+                IsProcessed = r.IsProcessed,
+                IsRemoved = r.IsRemoved,
+                IsDefault = r.IsDefault,
+                QuotaError = r.QuotaError,
+                Imap = r.Imap,
+                BeginDate = r.BeginDate,
+                OAuthType = r.TokenType,
 
-                ImapIntervals = Convert.ToString(r[19]),
-                SmtpServerId = Convert.ToInt32(r[20]),
-                ServerId = Convert.ToInt32(r[21]),
-                EmailInFolder = Convert.ToString(r[22]),
-                IsTeamlabMailbox = Convert.ToBoolean(r[23]),
-                DateCreated = Convert.ToDateTime(r[24]),
-                DateChecked = Convert.ToDateTime(r[25]),
-                DateUserChecked = Convert.ToDateTime(r[26]),
-                UserOnline = Convert.ToBoolean(r[27]),
-                DateLoginDelayExpires = Convert.ToDateTime(r[28]),
-                DateAuthError = r[29] == null ? (DateTime?) null : Convert.ToDateTime(r[29])
+                ImapIntervals = r.ImapIntervals,
+                SmtpServerId =r.IdSmtpServer,
+                ServerId = r.IdInServer,
+                EmailInFolder = r.EmailInFolder,
+                IsTeamlabMailbox = r.IsServerMailbox,
+                DateCreated = r.DateCreated.GetValueOrDefault(),
+                DateChecked = r.DateChecked.GetValueOrDefault(),
+                DateUserChecked = r.DateUserChecked.GetValueOrDefault(),
+                UserOnline = r.UserOnline,
+                DateLoginDelayExpires = r.DateLoginDelayExpires,
+                DateAuthError =r.DateAuthError
             };
 
-            string password = Convert.ToString(r[5]),
-                smtpPassword = Convert.ToString(r[8]),
-                oAuthToken = Convert.ToString(r[18]);
+            string password = r.Pop3Password,
+                smtpPassword = r.SmtpPassword,
+                oAuthToken = r.Token;
 
-            MailUtil.TryDecryptPassword(password, out password);
+            TryDecryptPassword(password, out password);
 
             mb.Password = password;
 
             if (!string.IsNullOrEmpty(smtpPassword))
             {
-                MailUtil.TryDecryptPassword(smtpPassword, out smtpPassword);
+                TryDecryptPassword(smtpPassword, out smtpPassword);
             }
 
             mb.SmtpPassword = smtpPassword ?? "";
 
-            MailUtil.TryDecryptPassword(oAuthToken, out oAuthToken);
+            TryDecryptPassword(oAuthToken, out oAuthToken);
 
             mb.OAuthToken = oAuthToken;
 
             return mb;
         }
-    }*/
+
+        public bool TryDecryptPassword(string encryptedPassword, out string password)
+        {
+            password = "";
+            try
+            {
+                if (string.IsNullOrEmpty(encryptedPassword))
+                    return false;
+
+                password = InstanceCrypto.Decrypt(encryptedPassword);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+    }
+
+    public static class MailboxDaoExtension
+    {
+        public static IServiceCollection AddMailboxDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailboxDao>();
+
+            return services;
+        }
+    }
 }

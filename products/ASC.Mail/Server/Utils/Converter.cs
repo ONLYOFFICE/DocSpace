@@ -108,20 +108,20 @@ namespace ASC.Mail.Utils
         //    }
         //}
 
-        //public static string ToNameString(this EncryptionType encryptionType)
-        //{
-        //    switch (encryptionType)
-        //    {
-        //        case EncryptionType.SSL:
-        //            return Defines.SSL;
-        //        case EncryptionType.StartTLS:
-        //            return Defines.START_TLS;
-        //        case EncryptionType.None:
-        //            return Defines.PLAIN;
-        //        default:
-        //            throw new ArgumentException("Unknown mail server EncryptionType: " + Enum.GetName(typeof(EncryptionType), encryptionType));
-        //    }
-        //}
+        public static string ToNameString(this EncryptionType encryptionType)
+        {
+            switch (encryptionType)
+            {
+                case EncryptionType.SSL:
+                    return Defines.SSL;
+                case EncryptionType.StartTLS:
+                    return Defines.START_TLS;
+                case EncryptionType.None:
+                    return Defines.PLAIN;
+                default:
+                    throw new ArgumentException("Unknown mail server EncryptionType: " + Enum.GetName(typeof(EncryptionType), encryptionType));
+            }
+        }
 
         //public static SaslMechanism ToSaslMechanism(this string type)
         //{
@@ -140,58 +140,58 @@ namespace ASC.Mail.Utils
         //    }
         //}
 
-        //public static string ToNameString(this SaslMechanism saslType)
-        //{
-        //    switch (saslType)
-        //    {
-        //        case SaslMechanism.Login:
-        //            return "";
-        //        case SaslMechanism.None:
-        //            return Defines.NONE;
-        //        case SaslMechanism.CramMd5:
-        //            return Defines.PASSWORD_ENCRYPTED;
-        //        default:
-        //            throw new ArgumentException("Unknown mail server SaslMechanism: " + Enum.GetName(typeof(SaslMechanism), saslType));
-        //    }
-        //}
+        public static string ToNameString(this SaslMechanism saslType)
+        {
+            switch (saslType)
+            {
+                case SaslMechanism.Login:
+                    return "";
+                case SaslMechanism.None:
+                    return Defines.NONE;
+                case SaslMechanism.CramMd5:
+                    return Defines.PASSWORD_ENCRYPTED;
+                default:
+                    throw new ArgumentException("Unknown mail server SaslMechanism: " + Enum.GetName(typeof(SaslMechanism), saslType));
+            }
+        }
 
-        //public static string ToLoginFormat(this MailAddress address, string username)
-        //{
-        //    var addressLower = address.Address.ToLower();
-        //    var usernameLower = username.ToLower();
-        //    var mailparts = addressLower.Split('@');
+        public static string ToLoginFormat(this MailAddress address, string username)
+        {
+            var addressLower = address.Address.ToLower();
+            var usernameLower = username.ToLower();
+            var mailparts = addressLower.Split('@');
 
-        //    var localpart = mailparts[0];
-        //    var domain = mailparts[1];
-        //    var hostNameVariant1 = Path.GetFileNameWithoutExtension(domain);
-        //    var hostNameVariant2 = domain.Split('.')[0];
+            var localpart = mailparts[0];
+            var domain = mailparts[1];
+            var hostNameVariant1 = Path.GetFileNameWithoutExtension(domain);
+            var hostNameVariant2 = domain.Split('.')[0];
 
-        //    var resultFormat = usernameLower.Replace(addressLower, "%EMAILADDRESS%");
-        //    var pos = resultFormat.IndexOf(localpart, StringComparison.InvariantCulture);
-        //    if (pos >= 0)
-        //    {
-        //        resultFormat = resultFormat.Substring(0, pos) + "%EMAILLOCALPART%" + resultFormat.Substring(pos + localpart.Length);
-        //    }
-        //    resultFormat = resultFormat.Replace(domain, "%EMAILDOMAIN%");
-        //    if (hostNameVariant1 != null)
-        //        resultFormat = resultFormat.Replace(hostNameVariant1, "%EMAILHOSTNAME%");
-        //    resultFormat = resultFormat.Replace(hostNameVariant2, "%EMAILHOSTNAME%");
+            var resultFormat = usernameLower.Replace(addressLower, "%EMAILADDRESS%");
+            var pos = resultFormat.IndexOf(localpart, StringComparison.InvariantCulture);
+            if (pos >= 0)
+            {
+                resultFormat = resultFormat.Substring(0, pos) + "%EMAILLOCALPART%" + resultFormat.Substring(pos + localpart.Length);
+            }
+            resultFormat = resultFormat.Replace(domain, "%EMAILDOMAIN%");
+            if (hostNameVariant1 != null)
+                resultFormat = resultFormat.Replace(hostNameVariant1, "%EMAILHOSTNAME%");
+            resultFormat = resultFormat.Replace(hostNameVariant2, "%EMAILHOSTNAME%");
 
-        //    return resultFormat == usernameLower ? null : resultFormat;
-        //}
+            return resultFormat == usernameLower ? null : resultFormat;
+        }
 
-        //public static string ToLogin(this MailAddress address, string format)
-        //{
-        //    return format.Replace("%EMAILADDRESS%", address.Address)
-        //                 .Replace("%EMAILLOCALPART%", address.User)
-        //                 .Replace("%EMAILDOMAIN%", address.Host.ToLowerInvariant())
-        //                 .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(address.Host.ToLowerInvariant()));
-        //}
+        public static string ToLogin(this MailAddress address, string format)
+        {
+            return format.Replace("%EMAILADDRESS%", address.Address)
+                         .Replace("%EMAILLOCALPART%", address.User)
+                         .Replace("%EMAILDOMAIN%", address.Host.ToLowerInvariant())
+                         .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(address.Host.ToLowerInvariant()));
+        }
 
-        //public static string ToHost(this string host, string format)
-        //{
-        //    return format.Replace("%EMAILDOMAIN%", host);
-        //}
+        public static string ToHost(this string host, string format)
+        {
+            return format.Replace("%EMAILDOMAIN%", host);
+        }
 
         //public static MailWrapper ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
         //{

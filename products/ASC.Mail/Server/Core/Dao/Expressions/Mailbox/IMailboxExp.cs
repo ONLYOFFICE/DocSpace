@@ -25,11 +25,13 @@
 
 
 //using ASC.Common.Data.Sql.Expressions;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public interface IMailboxExp
+    public interface IMailboxExp
     {
-        Exp GetExpression();
-    }*/
+        Expression<Func<Entities.MailMailbox, bool>> GetExpression();
+    }
 }

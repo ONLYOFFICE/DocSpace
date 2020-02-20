@@ -52,7 +52,6 @@ namespace ASC.Mail.Core.Engine
 {
     public class AccountEngine
     {
-        public DbContextManager<MailDbContext> DbContext { get; }
         public int Tenant
         {
             get
@@ -81,7 +80,6 @@ namespace ASC.Mail.Core.Engine
 
 
         public AccountEngine(
-            DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext,
             MailboxEngine mailboxEngine,
@@ -91,8 +89,6 @@ namespace ASC.Mail.Core.Engine
             ApiContext = apiContext;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AccountEngine");
-
-            MailDb = dbContext.Get("mail");
 
             MailboxEngine = mailboxEngine;
             DaoFactory = daoFactory;

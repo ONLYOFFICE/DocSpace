@@ -43,7 +43,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("size_last", TypeName = "int(11)")]
         public int SizeLast { get; set; }
         [Column("login_delay", TypeName = "int(11) unsigned")]
-        public uint LoginDelay { get; set; }
+        public int LoginDelay { get; set; }
         [Column("quota_error")]
         public bool QuotaError { get; set; }
         [Column("imap_intervals", TypeName = "mediumtext")]

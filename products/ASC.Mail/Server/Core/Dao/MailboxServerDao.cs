@@ -35,80 +35,108 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using System.Collections.Generic;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxServerDao : BaseDao, IMailboxServerDao
+    public class MailboxServerDao : BaseDao, IMailboxServerDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxServerTable>();
-
-        public MailboxServerDao(IDbManager dbManager) 
-            : base(table, dbManager, -1)
+        public MailboxServerDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext) 
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public MailboxServer GetServer(int id)
         {
-            var query = Query()
+            /*var query = Query()
                 .Where(MailboxServerTable.Columns.Id, id);
 
             return Db.ExecuteList(query)
                 .ConvertAll(ToMailboxServer)
-               .SingleOrDefault();
+               .SingleOrDefault();*/
+
+            return null;
         }
 
         public List<MailboxServer> GetServers(int providerId, bool isUserData = false)
         {
-            var query = Query()
-                .Where(MailboxServerTable.Columns.ProviderId, providerId)
-                .Where(MailboxServerTable.Columns.IsUserData, isUserData);
+            //var query = Query()
+            //    .Where(MailboxServerTable.Columns.ProviderId, providerId)
+            //    .Where(MailboxServerTable.Columns.IsUserData, isUserData);
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailboxServer);
+            //return Db.ExecuteList(query)
+            //    .ConvertAll(ToMailboxServer);
+
+            return null;
         }
 
         public int SaveServer(MailboxServer mailboxServer)
         {
-            var query = new SqlInsert(MailboxServerTable.TABLE_NAME, true)
-                .InColumnValue(MailboxServerTable.Columns.Id, mailboxServer.Id)
-                .InColumnValue(MailboxServerTable.Columns.ProviderId, mailboxServer.ProviderId)
-                .InColumnValue(MailboxServerTable.Columns.Type, mailboxServer.Type)
-                .InColumnValue(MailboxServerTable.Columns.Hostname,  mailboxServer.Hostname)
-                .InColumnValue(MailboxServerTable.Columns.Port,  mailboxServer.Port)
-                .InColumnValue(MailboxServerTable.Columns.SocketType,  mailboxServer.SocketType)
-                .InColumnValue(MailboxServerTable.Columns.Username,  mailboxServer.Username)
-                .InColumnValue(MailboxServerTable.Columns.Authentication, mailboxServer.Authentication)
-                .InColumnValue(MailboxServerTable.Columns.IsUserData, mailboxServer.IsUserData)
-                .Identity(0, 0, true);
+            //var query = new SqlInsert(MailboxServerTable.TABLE_NAME, true)
+            //    .InColumnValue(MailboxServerTable.Columns.Id, mailboxServer.Id)
+            //    .InColumnValue(MailboxServerTable.Columns.ProviderId, mailboxServer.ProviderId)
+            //    .InColumnValue(MailboxServerTable.Columns.Type, mailboxServer.Type)
+            //    .InColumnValue(MailboxServerTable.Columns.Hostname,  mailboxServer.Hostname)
+            //    .InColumnValue(MailboxServerTable.Columns.Port,  mailboxServer.Port)
+            //    .InColumnValue(MailboxServerTable.Columns.SocketType,  mailboxServer.SocketType)
+            //    .InColumnValue(MailboxServerTable.Columns.Username,  mailboxServer.Username)
+            //    .InColumnValue(MailboxServerTable.Columns.Authentication, mailboxServer.Authentication)
+            //    .InColumnValue(MailboxServerTable.Columns.IsUserData, mailboxServer.IsUserData)
+            //    .Identity(0, 0, true);
 
-            var id = Db.ExecuteScalar<int>(query);
+            //var id = Db.ExecuteScalar<int>(query);
 
-            return id;
+            //return id;
+
+            return -1;
         }
 
         public int DelteServer(int id)
         {
-            var query = new SqlDelete(MailboxServerTable.TABLE_NAME)
-                .Where(MailboxServerTable.Columns.Id, id);
+            //var query = new SqlDelete(MailboxServerTable.TABLE_NAME)
+            //    .Where(MailboxServerTable.Columns.Id, id);
 
-            return Db.ExecuteNonQuery(query);
+            //return Db.ExecuteNonQuery(query);
+
+            return -1;
         }
 
-        protected MailboxServer ToMailboxServer(object[] r)
+        protected MailboxServer ToMailboxServer(MailMailboxServer r)
         {
             var s = new MailboxServer
             {
-                Id = Convert.ToInt32(r[0]),
-                ProviderId = Convert.ToInt32(r[1]),
-                Type = Convert.ToString(r[2]),
-                Hostname = Convert.ToString(r[3]),
-                Port = Convert.ToInt32(r[4]),
-                SocketType = Convert.ToString(r[5]),
-                Username = Convert.ToString(r[6]),
-                Authentication = Convert.ToString(r[7]),
-                IsUserData = Convert.ToBoolean(r[8])
+                Id = r.Id,
+                ProviderId = r.IdProvider,
+                Type = r.Type,
+                Hostname = r.Hostname,
+                Port = r.Port,
+                SocketType = r.SocketType,
+                Username = r.Username,
+                Authentication = r.Authentication,
+                IsUserData = r.IsUserData
             };
 
             return s;
         }
-    }*/
+    }
+
+    public static class MailboxServerDaoExtension
+    {
+        public static IServiceCollection AddMailboxServerDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailboxServer>();
+
+            return services;
+        }
+    }
 }

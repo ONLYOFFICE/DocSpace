@@ -25,7 +25,6 @@
 
 
 using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -34,10 +33,24 @@ namespace ASC.Mail.Core
     public class DaoFactory
     {
         public AccountDao AccountDao { get; }
+        public MailboxDao MailboxDao { get; }
+        public MailboxServerDao MailboxServerDao { get; }
+        public MailboxDomainDao MailboxDomainDao { get; }
+        public MailboxProviderDao MailboxProviderDao { get; }
 
-        public DaoFactory(AccountDao accountDao)
+        public DaoFactory(
+            AccountDao accountDao,
+            MailboxDao mailboxDao,
+            MailboxServerDao mailboxServerDao,
+            MailboxDomainDao mailboxDomainDao,
+            MailboxProviderDao mailboxProviderDao
+            )
         {
             AccountDao = accountDao;
+            MailboxDao = mailboxDao;
+            MailboxServerDao = mailboxServerDao;
+            MailboxDomainDao = mailboxDomainDao;
+            MailboxProviderDao = mailboxProviderDao;
         }
 
         //public IFolderDao CreateFolderDao(int tenant, string user)
@@ -225,6 +238,10 @@ namespace ASC.Mail.Core
 
             return services
                 .AddMailDbContextService()
+                .AddMailboxProviderDaoService()
+                .AddMailboxDomainDaoService()
+                .AddMailboxServerDaoService()
+                .AddMailboxDaoService()
                 .AddAccountDaoService();
         }
     }

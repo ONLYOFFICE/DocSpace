@@ -32,11 +32,17 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Authorization;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Expressions.Mailbox;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 using ASC.Mail.Models;
+using ASC.Mail.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -67,16 +73,21 @@ namespace ASC.Mail.Core.Engine
 
         public MailDbContext MailDb { get; }
 
+        public DaoFactory DaoFactory { get; }
+
         public MailboxEngine(DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option)
+            IOptionsMonitor<ILog> option,
+            DaoFactory daoFactory)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AccountEngine");
 
             MailDb = dbContext.Get("mail");
+
+            DaoFactory = daoFactory;
         }
 
         //public MailBoxData GetMailboxData(IMailboxExp exp)
@@ -301,174 +312,163 @@ namespace ASC.Mail.Core.Engine
             if (mailbox.IsTeamlab)
                 throw new ArgumentException("Mailbox with specified email can't be updated");
 
-            //TODO: Re-write old code with EF
+            using var tx = MailDb.Database.BeginTransaction();
 
-            //using (var daoFactory = new DaoFactory())
-            //{
-            //    using (var tx = daoFactory.DbManager.BeginTransaction())
-            //    {
-            //        var daoMailbox = daoFactory.CreateMailboxDao();
-            //        var daoMailboxServer = daoFactory.CreateMailboxServerDao();
-            //        var daoMailboxDomain = daoFactory.CreateMailboxDomainDao();
-            //        var daoMailboxProvider = daoFactory.CreateMailboxProviderDao();
+            var existingMailbox = DaoFactory.MailboxDao.GetMailBox(
+                new СoncreteUserMailboxExp(
+                    mailbox.EMail,
+                    mailbox.TenantId, mailbox.UserId));
 
-            //        var existingMailbox = daoMailbox.GetMailBox(
-            //            new СoncreteUserMailboxExp(
-            //                mailbox.EMail,
-            //                mailbox.TenantId, mailbox.UserId));
+            int newInServerId, newOutServerId;
 
-            //        int newInServerId, newOutServerId;
+            var mailboxId = 0;
+            var dateCreated = DateTime.UtcNow;
+            var enabled = true;
+            var host = authType == AuthorizationServiceType.Google ? Defines.GOOGLE_HOST : mailbox.EMail.Host;
 
-            //        var mailboxId = 0;
-            //        var dateCreated = DateTime.UtcNow;
-            //        var enabled = true;
-            //        var host = authType == AuthorizationServiceType.Google ? Defines.GOOGLE_HOST : mailbox.EMail.Host;
+            // Get new imap/pop3 server from MailBoxData
+            var newInServer = new MailboxServer
+            {
+                Hostname = mailbox.Server,
+                Port = mailbox.Port,
+                Type = mailbox.Imap ? Defines.IMAP : Defines.POP3,
+                Username = mailbox.EMail.ToLoginFormat(mailbox.Account) ?? mailbox.Account,
+                SocketType = mailbox.Encryption.ToNameString(),
+                Authentication = mailbox.Authentication.ToNameString()
+            };
 
-            //        // Get new imap/pop3 server from MailBoxData
-            //        var newInServer = new MailboxServer
-            //        {
-            //            Hostname = mailbox.Server,
-            //            Port = mailbox.Port,
-            //            Type = mailbox.Imap ? Defines.IMAP : Defines.POP3,
-            //            Username = mailbox.EMail.ToLoginFormat(mailbox.Account) ?? mailbox.Account,
-            //            SocketType = mailbox.Encryption.ToNameString(),
-            //            Authentication = mailbox.Authentication.ToNameString()
-            //        };
+            // Get new smtp server from MailBoxData
+            var newOutServer = new MailboxServer
+            {
+                Hostname = mailbox.SmtpServer,
+                Port = mailbox.SmtpPort,
+                Type = Defines.SMTP,
+                Username =
+                    mailbox.SmtpAuthentication != SaslMechanism.None
+                        ? mailbox.EMail.ToLoginFormat(mailbox.SmtpAccount) ?? mailbox.SmtpAccount
+                        : "",
+                SocketType = mailbox.SmtpEncryption.ToNameString(),
+                Authentication = mailbox.SmtpAuthentication.ToNameString()
+            };
 
-            //        // Get new smtp server from MailBoxData
-            //        var newOutServer = new MailboxServer
-            //        {
-            //            Hostname = mailbox.SmtpServer,
-            //            Port = mailbox.SmtpPort,
-            //            Type = Defines.SMTP,
-            //            Username =
-            //                mailbox.SmtpAuthentication != SaslMechanism.None
-            //                    ? mailbox.EMail.ToLoginFormat(mailbox.SmtpAccount) ?? mailbox.SmtpAccount
-            //                    : "",
-            //            SocketType = mailbox.SmtpEncryption.ToNameString(),
-            //            Authentication = mailbox.SmtpAuthentication.ToNameString()
-            //        };
+            if (existingMailbox != null)
+            {
+                mailboxId = existingMailbox.Id;
+                enabled = existingMailbox.Enabled;
+                dateCreated = existingMailbox.DateCreated;
 
-            //        if (existingMailbox != null)
-            //        {
-            //            mailboxId = existingMailbox.Id;
-            //            enabled = existingMailbox.Enabled;
-            //            dateCreated = existingMailbox.DateCreated;
+                // Get existing settings by existing ids
+                var dbInServer = DaoFactory.MailboxServerDao.GetServer(existingMailbox.ServerId);
+                var dbOutServer = DaoFactory.MailboxServerDao.GetServer(existingMailbox.SmtpServerId);
 
-            //            // Get existing settings by existing ids
-            //            var dbInServer = daoMailboxServer.GetServer(existingMailbox.ServerId);
-            //            var dbOutServer = daoMailboxServer.GetServer(existingMailbox.SmtpServerId);
+                // Compare existing settings with new
+                if (!dbInServer.Equals(newInServer) || !dbOutServer.Equals(newOutServer))
+                {
+                    var domain = DaoFactory.MailboxDomainDao.GetDomain(host);
 
-            //            // Compare existing settings with new
-            //            if (!dbInServer.Equals(newInServer) || !dbOutServer.Equals(newOutServer))
-            //            {
-            //                var domain = daoMailboxDomain.GetDomain(host);
+                    List<MailboxServer> trustedServers = null;
+                    if (domain != null)
+                        trustedServers = DaoFactory.MailboxServerDao.GetServers(domain.ProviderId);
 
-            //                List<MailboxServer> trustedServers = null;
-            //                if (domain != null)
-            //                    trustedServers = daoMailboxServer.GetServers(domain.ProviderId);
+                    newInServerId = GetMailboxServerId(dbInServer, newInServer, trustedServers);
+                    newOutServerId = GetMailboxServerId(dbOutServer, newOutServer,
+                        trustedServers);
+                }
+                else
+                {
+                    newInServerId = existingMailbox.ServerId;
+                    newOutServerId = existingMailbox.SmtpServerId;
+                }
+            }
+            else
+            {
+                //Find settings by host
 
-            //                newInServerId = GetMailboxServerId(daoMailboxServer, dbInServer, newInServer, trustedServers);
-            //                newOutServerId = GetMailboxServerId(daoMailboxServer, dbOutServer, newOutServer,
-            //                    trustedServers);
-            //            }
-            //            else
-            //            {
-            //                newInServerId = existingMailbox.ServerId;
-            //                newOutServerId = existingMailbox.SmtpServerId;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            //Find settings by host
+                var domain = DaoFactory.MailboxDomainDao.GetDomain(host);
 
-            //            var domain = daoMailboxDomain.GetDomain(host);
+                if (domain != null)
+                {
+                    //Get existing servers with isUserData = 0
+                    var trustedServers = DaoFactory.MailboxServerDao.GetServers(domain.ProviderId);
 
-            //            if (domain != null)
-            //            {
-            //                //Get existing servers with isUserData = 0
-            //                var trustedServers = daoMailboxServer.GetServers(domain.ProviderId);
+                    //Compare existing settings with new
 
-            //                //Compare existing settings with new
+                    var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newInServer));
+                    var foundOutServer = trustedServers.FirstOrDefault(ts => ts.Equals(newOutServer));
 
-            //                var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newInServer));
-            //                var foundOutServer = trustedServers.FirstOrDefault(ts => ts.Equals(newOutServer));
+                    //Use existing or save new servers
+                    newInServerId = foundInServer != null
+                        ? foundInServer.Id
+                        : SaveMailboxServer(newInServer, domain.ProviderId);
 
-            //                //Use existing or save new servers
-            //                newInServerId = foundInServer != null
-            //                    ? foundInServer.Id
-            //                    : SaveMailboxServer(daoMailboxServer, newInServer, domain.ProviderId);
+                    newOutServerId = foundOutServer != null
+                        ? foundOutServer.Id
+                        : SaveMailboxServer(newOutServer, domain.ProviderId);
+                }
+                else
+                {
+                    //Save new servers
+                    var newProvider = new MailboxProvider
+                    {
+                        Id = 0,
+                        Name = host,
+                        DisplayShortName = "",
+                        DisplayName = "",
+                        Url = ""
+                    };
 
-            //                newOutServerId = foundOutServer != null
-            //                    ? foundOutServer.Id
-            //                    : SaveMailboxServer(daoMailboxServer, newOutServer, domain.ProviderId);
-            //            }
-            //            else
-            //            {
-            //                //Save new servers
-            //                var newProvider = new MailboxProvider
-            //                {
-            //                    Id = 0,
-            //                    Name = host,
-            //                    DisplayShortName = "",
-            //                    DisplayName = "",
-            //                    Url = ""
-            //                };
+                    newProvider.Id = DaoFactory.MailboxProviderDao.SaveProvider(newProvider);
 
-            //                newProvider.Id = daoMailboxProvider.SaveProvider(newProvider);
+                    var newDomain = new MailboxDomain
+                    {
+                        Id = 0,
+                        Name = host,
+                        ProviderId = newProvider.Id
+                    };
 
-            //                var newDomain = new MailboxDomain
-            //                {
-            //                    Id = 0,
-            //                    Name = host,
-            //                    ProviderId = newProvider.Id
-            //                };
+                    DaoFactory.MailboxDomainDao.SaveDomain(newDomain);
 
-            //                daoMailboxDomain.SaveDomain(newDomain);
+                    newInServerId = SaveMailboxServer(newInServer, newProvider.Id);
+                    newOutServerId = SaveMailboxServer(newOutServer, newProvider.Id);
+                }
+            }
 
-            //                newInServerId = SaveMailboxServer(daoMailboxServer, newInServer, newProvider.Id);
-            //                newOutServerId = SaveMailboxServer(daoMailboxServer, newOutServer, newProvider.Id);
-            //            }
-            //        }
+            var loginDelayTime = GetLoginDelayTime(mailbox);
 
-            //        var loginDelayTime = GetLoginDelayTime(mailbox);
+            //Save Mailbox to DB
+            var mb = new Mailbox
+            {
+                Id = mailboxId,
+                Tenant = mailbox.TenantId,
+                User = mailbox.UserId,
+                Address = mailbox.EMail.Address.ToLowerInvariant(),
+                Name = mailbox.Name,
+                Password = mailbox.Password,
+                MsgCountLast = mailbox.MessagesCount,
+                SmtpPassword = mailbox.SmtpPassword,
+                SizeLast = mailbox.Size,
+                LoginDelay = loginDelayTime,
+                Enabled = enabled,
+                Imap = mailbox.Imap,
+                BeginDate = mailbox.BeginDate,
+                OAuthType = mailbox.OAuthType,
+                OAuthToken = mailbox.OAuthToken,
+                ServerId = newInServerId,
+                SmtpServerId = newOutServerId,
+                DateCreated = dateCreated
+            };
 
-            //        //Save Mailbox to DB
-            //        var mb = new Mailbox
-            //        {
-            //            Id = mailboxId,
-            //            Tenant = mailbox.TenantId,
-            //            User = mailbox.UserId,
-            //            Address = mailbox.EMail.Address.ToLowerInvariant(),
-            //            Name = mailbox.Name,
-            //            Password = mailbox.Password,
-            //            MsgCountLast = mailbox.MessagesCount,
-            //            SmtpPassword = mailbox.SmtpPassword,
-            //            SizeLast = mailbox.Size,
-            //            LoginDelay = loginDelayTime,
-            //            Enabled = enabled,
-            //            Imap = mailbox.Imap,
-            //            BeginDate = mailbox.BeginDate,
-            //            OAuthType = mailbox.OAuthType,
-            //            OAuthToken = mailbox.OAuthToken,
-            //            ServerId = newInServerId,
-            //            SmtpServerId = newOutServerId,
-            //            DateCreated = dateCreated
-            //        };
+            var mailBoxId = DaoFactory.MailboxDao.SaveMailBox(mb);
 
-            //        var mailBoxId = daoMailbox.SaveMailBox(mb);
+            mailbox.MailBoxId = mailBoxId;
 
-            //        mailbox.MailBoxId = mailBoxId;
+            if (mailBoxId < 1)
+            {
+                tx.Rollback();
+                return false;
+            }
 
-            //        if (mailBoxId < 1)
-            //        {
-            //            tx.Rollback();
-            //            return false;
-            //        }
-
-            //        tx.Commit();
-            //    }
-            //}
+            tx.Commit();
 
             return true;
         }
@@ -870,96 +870,96 @@ namespace ASC.Mail.Core.Engine
         //    return mailboxes;
         //}
 
-        //private static int GetMailboxServerId(IMailboxServerDao daoMailboxServer, MailboxServer dbServer,
-        //    MailboxServer newServer, List<MailboxServer> trustedServers)
-        //{
-        //    int serverId;
+        private int GetMailboxServerId(MailboxServer dbServer,
+            MailboxServer newServer, List<MailboxServer> trustedServers)
+        {
+            int serverId;
 
-        //    if (!dbServer.Equals(newServer))
-        //    {
-        //        // Server settings have been changed
-        //        if (dbServer.IsUserData)
-        //        {
-        //            if (trustedServers != null)
-        //            {
-        //                var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newServer));
-        //                if (foundInServer != null)
-        //                {
-        //                    daoMailboxServer.DelteServer(dbServer.Id);
-        //                    newServer.Id = foundInServer.Id;
-        //                    newServer.IsUserData = false;
-        //                }
-        //                else
-        //                {
-        //                    newServer.Id = dbServer.Id;
-        //                    newServer.Id = SaveMailboxServer(daoMailboxServer, newServer, dbServer.ProviderId);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                newServer.Id = dbServer.Id;
-        //                newServer.Id = SaveMailboxServer(daoMailboxServer, newServer, dbServer.ProviderId);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            if (trustedServers != null)
-        //            {
-        //                var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newServer));
-        //                if (foundInServer != null)
-        //                {
-        //                    newServer.Id = foundInServer.Id;
-        //                    newServer.IsUserData = false;
-        //                }
-        //                else
-        //                {
-        //                    newServer.Id = SaveMailboxServer(daoMailboxServer, newServer, dbServer.ProviderId);
-        //                }
-        //            }
-        //            else
-        //            {
-        //                newServer.Id = SaveMailboxServer(daoMailboxServer, newServer, dbServer.ProviderId);
+            if (!dbServer.Equals(newServer))
+            {
+                // Server settings have been changed
+                if (dbServer.IsUserData)
+                {
+                    if (trustedServers != null)
+                    {
+                        var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newServer));
+                        if (foundInServer != null)
+                        {
+                            DaoFactory.MailboxServerDao.DelteServer(dbServer.Id);
+                            newServer.Id = foundInServer.Id;
+                            newServer.IsUserData = false;
+                        }
+                        else
+                        {
+                            newServer.Id = dbServer.Id;
+                            newServer.Id = SaveMailboxServer(newServer, dbServer.ProviderId);
+                        }
+                    }
+                    else
+                    {
+                        newServer.Id = dbServer.Id;
+                        newServer.Id = SaveMailboxServer(newServer, dbServer.ProviderId);
+                    }
+                }
+                else
+                {
+                    if (trustedServers != null)
+                    {
+                        var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newServer));
+                        if (foundInServer != null)
+                        {
+                            newServer.Id = foundInServer.Id;
+                            newServer.IsUserData = false;
+                        }
+                        else
+                        {
+                            newServer.Id = SaveMailboxServer(newServer, dbServer.ProviderId);
+                        }
+                    }
+                    else
+                    {
+                        newServer.Id = SaveMailboxServer(newServer, dbServer.ProviderId);
 
-        //            }
-        //        }
+                    }
+                }
 
-        //        serverId = newServer.Id;
-        //    }
-        //    else
-        //    {
-        //        serverId = dbServer.Id;
-        //    }
+                serverId = newServer.Id;
+            }
+            else
+            {
+                serverId = dbServer.Id;
+            }
 
-        //    return serverId;
-        //}
+            return serverId;
+        }
 
-        //private static int SaveMailboxServer(IMailboxServerDao daoMailboxServer, MailboxServer server,
-        //    int providerId)
-        //{
-        //    server.IsUserData = true;
-        //    server.ProviderId = providerId;
-        //    return daoMailboxServer.SaveServer(server);
-        //}
+        private int SaveMailboxServer(MailboxServer server,
+            int providerId)
+        {
+            server.IsUserData = true;
+            server.ProviderId = providerId;
+            return DaoFactory.MailboxServerDao.SaveServer(server);
+        }
 
-        //private static int GetLoginDelayTime(MailBoxData mailbox)
-        //{
-        //    //Todo: This hardcode inserted because pop3.live.com doesn't support CAPA command.
-        //    //Right solution for that collision type:
-        //    //1) Create table in DB: mail_login_delays. With REgexs and delays
-        //    //1.1) Example of mail_login_delays data:
-        //    //    .*@outlook.com    900
-        //    //    .*@hotmail.com    900
-        //    //    .*                30
-        //    //1.2) Load this table to aggregator cache. Update it on changing.
-        //    //1.3) Match email addreess of account with regexs from mail_login_delays
-        //    //1.4) If email matched then set delay from that record.
-        //    if (mailbox.Server == "pop3.live.com")
-        //        return Defines.HARDCODED_LOGIN_TIME_FOR_MS_MAIL;
+        private static int GetLoginDelayTime(MailBoxData mailbox)
+        {
+            //Todo: This hardcode inserted because pop3.live.com doesn't support CAPA command.
+            //Right solution for that collision type:
+            //1) Create table in DB: mail_login_delays. With REgexs and delays
+            //1.1) Example of mail_login_delays data:
+            //    .*@outlook.com    900
+            //    .*@hotmail.com    900
+            //    .*                30
+            //1.2) Load this table to aggregator cache. Update it on changing.
+            //1.3) Match email addreess of account with regexs from mail_login_delays
+            //1.4) If email matched then set delay from that record.
+            if (mailbox.Server == "pop3.live.com")
+                return Defines.HARDCODED_LOGIN_TIME_FOR_MS_MAIL;
 
-        //    return mailbox.ServerLoginDelay < MailBoxData.DefaultServerLoginDelay
-        //               ? MailBoxData.DefaultServerLoginDelay
-        //               : mailbox.ServerLoginDelay;
-        //}
+            return mailbox.ServerLoginDelay < MailBoxData.DefaultServerLoginDelay
+                       ? MailBoxData.DefaultServerLoginDelay
+                       : mailbox.ServerLoginDelay;
+        }
 
         //private static Tuple<MailBoxData, Mailbox> GetMailbox(IDaoFactory daoFactory, Mailbox mailbox)
         //{

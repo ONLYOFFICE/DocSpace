@@ -38,38 +38,13 @@ using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao
 {
-    public class AccountDao : IAccountDao
+    public class AccountDao : BaseDao, IAccountDao
     {
-        public int Tenant
-        {
-            get
-            {
-                return ApiContext.Tenant.TenantId;
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                return SecurityContext.CurrentAccount.ID.ToString();
-            }
-        }
-
-        public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
-
-        public MailDbContext MailDb { get; }
-
-        public AccountDao(DbContextManager<MailDbContext> dbContext,
+         public AccountDao(DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext)
+            :base(apiContext, securityContext, dbContext)
         {
-            ApiContext = apiContext;
-            SecurityContext = securityContext;
-
-            MailDb = dbContext.Get("mail");
         }
 
         public List<Account> GetAccounts()
@@ -120,9 +95,6 @@ namespace ASC.Mail.Core.Dao
                            .ToList();
 
             return accounts;
-
-            //return Db.ExecuteList(query)
-            //    .ConvertAll(ToAccount);
         }
     }
 

@@ -34,66 +34,89 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxProviderDao : BaseDao, IMailboxProviderDao
+    public class MailboxProviderDao : BaseDao, IMailboxProviderDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxProviderTable>();
-
-        public MailboxProviderDao(IDbManager dbManager) 
-            : base(table, dbManager, -1)
+        public MailboxProviderDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public MailboxProvider GetProvider(int id)
         {
-            var query = Query()
+            /*var query = Query()
                .Where(MailboxProviderTable.Columns.Id, id);
 
             return Db.ExecuteList(query)
                 .ConvertAll(ToMailboxProvider)
-                .FirstOrDefault();
+                .FirstOrDefault();*/
+
+            return null;
         }
 
         public MailboxProvider GetProvider(string providerName)
         {
-            var query = Query()
-                .Where(MailboxProviderTable.Columns.ProviderName, providerName);
+            //var query = Query()
+            //    .Where(MailboxProviderTable.Columns.ProviderName, providerName);
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailboxProvider)
-                .FirstOrDefault();
+            //return Db.ExecuteList(query)
+            //    .ConvertAll(ToMailboxProvider)
+            //    .FirstOrDefault();
+            return null;
         }
 
         public int SaveProvider(MailboxProvider mailboxProvider)
         {
-            var query = new SqlInsert(MailboxProviderTable.TABLE_NAME, true)
-                .InColumnValue(MailboxProviderTable.Columns.Id, mailboxProvider.Id)
-                .InColumnValue(MailboxProviderTable.Columns.ProviderName, mailboxProvider.Name)
-                .InColumnValue(MailboxProviderTable.Columns.DisplayName, mailboxProvider.DisplayName)
-                .InColumnValue(MailboxProviderTable.Columns.DisplayShortName,
-                    mailboxProvider.DisplayShortName)
-                .InColumnValue(MailboxProviderTable.Columns.Documentation,
-                    mailboxProvider.Url)
-                .Identity(0, 0, true);
+            //var query = new SqlInsert(MailboxProviderTable.TABLE_NAME, true)
+            //    .InColumnValue(MailboxProviderTable.Columns.Id, mailboxProvider.Id)
+            //    .InColumnValue(MailboxProviderTable.Columns.ProviderName, mailboxProvider.Name)
+            //    .InColumnValue(MailboxProviderTable.Columns.DisplayName, mailboxProvider.DisplayName)
+            //    .InColumnValue(MailboxProviderTable.Columns.DisplayShortName,
+            //        mailboxProvider.DisplayShortName)
+            //    .InColumnValue(MailboxProviderTable.Columns.Documentation,
+            //        mailboxProvider.Url)
+            //    .Identity(0, 0, true);
 
-            var idProvider = Db.ExecuteScalar<int>(query);
+            //var idProvider = Db.ExecuteScalar<int>(query);
 
-            return idProvider;
+            //return idProvider;
+            return -1;
         }
 
-        protected MailboxProvider ToMailboxProvider(object[] r)
+        protected MailboxProvider ToMailboxProvider(MailMailboxProvider r)
         {
             var p = new MailboxProvider
             {
-                Id = Convert.ToInt32(r[0]),
-                Name = Convert.ToString(r[1]),
-                DisplayName = Convert.ToString(r[2]),
-                DisplayShortName = Convert.ToString(r[3]),
-                Url = Convert.ToString(r[4])
+                Id = r.Id,
+                Name = r.Name,
+                DisplayName = r.DisplayName,
+                DisplayShortName = r.DisplayShortName,
+                Url = r.Documentation
             };
 
             return p;
         }
-    }*/
+    }
+
+    public static class MailboxProviderDaoExtension
+    {
+        public static IServiceCollection AddMailboxProviderDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailboxProvider>();
+
+            return services;
+        }
+    }
 }

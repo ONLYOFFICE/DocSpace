@@ -30,6 +30,6 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("authentication", TypeName = "varchar(255)")]
         public string Authentication { get; set; }
         [Column("is_user_data", TypeName = "tinyint(4)")]
-        public sbyte IsUserData { get; set; }
+        public bool IsUserData { get; set; }
     }
 }

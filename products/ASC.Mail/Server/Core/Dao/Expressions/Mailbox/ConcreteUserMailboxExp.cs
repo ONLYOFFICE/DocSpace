@@ -24,13 +24,14 @@
 */
 
 
-//using System.Net.Mail;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
+using System.Net.Mail;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class СoncreteUserMailboxExp : UserMailboxExp
+    public class СoncreteUserMailboxExp : UserMailboxExp
     {
         private readonly string _email;
         private readonly int? _id;
@@ -47,16 +48,15 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             _email = address.Address.ToLowerInvariant();
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp &
-                  (_id.HasValue
-                      ? Exp.Eq(MailboxTable.Columns.Id, _id)
-                      : Exp.Eq(MailboxTable.Columns.Address, _email));
+            exp = _id.HasValue 
+                ? exp.And(mb => mb.Id == _id.Value) 
+                : exp.And(mb => mb.Address == _email);
 
             return exp;
         }
-    }*/
+    }
 }

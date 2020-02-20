@@ -27,9 +27,13 @@
 //using ASC.Common.Data.Sql.Expressions;
 //using ASC.Mail.Core.DbSchema.Tables;
 
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class TenantMailboxExp : SimpleMailboxExp
+    public class TenantMailboxExp : SimpleMailboxExp
     {
         private readonly int _tenant;
 
@@ -39,13 +43,13 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             _tenant = tenant;
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(MailboxTable.Columns.Tenant, _tenant);
+            exp = exp.And(mb => mb.Tenant == _tenant);
 
             return exp;
         }
-    }*/
+    }
 }

@@ -34,50 +34,73 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxDomainDao : BaseDao, IMailboxDomainDao
+    public class MailboxDomainDao : BaseDao, IMailboxDomainDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxDomainTable>();
-
-        public MailboxDomainDao(IDbManager dbManager) 
-            : base(table, dbManager, -1)
+        public MailboxDomainDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public MailboxDomain GetDomain(string domainName)
         {
-            var query = Query()
-                .Where(MailboxDomainTable.Columns.DomainName, domainName);
+            //var query = Query()
+            //    .Where(MailboxDomainTable.Columns.DomainName, domainName);
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailboxDomain)
-                .FirstOrDefault();
+            //return Db.ExecuteList(query)
+            //    .ConvertAll(ToMailboxDomain)
+            //    .FirstOrDefault();
+
+            return null;
         }
 
         public int SaveDomain(MailboxDomain domain)
         {
-            var query = new SqlInsert(MailboxDomainTable.TABLE_NAME, true)
-                .InColumnValue(MailboxDomainTable.Columns.Id, domain.Id)
-                .InColumnValue(MailboxDomainTable.Columns.ProviderId, domain.ProviderId)
-                .InColumnValue(MailboxDomainTable.Columns.DomainName, domain.Name)
-                .Identity(0, 0, true);
+            //var query = new SqlInsert(MailboxDomainTable.TABLE_NAME, true)
+            //    .InColumnValue(MailboxDomainTable.Columns.Id, domain.Id)
+            //    .InColumnValue(MailboxDomainTable.Columns.ProviderId, domain.ProviderId)
+            //    .InColumnValue(MailboxDomainTable.Columns.DomainName, domain.Name)
+            //    .Identity(0, 0, true);
 
-            var id = Db.ExecuteScalar<int>(query);
+            //var id = Db.ExecuteScalar<int>(query);
 
-            return id;
+            //return id;
+
+            return -1;
         }
 
-        protected MailboxDomain ToMailboxDomain(object[] r)
+        protected MailboxDomain ToMailboxDomain(MailMailboxDomain r)
         {
             var d = new MailboxDomain
             {
-                Id = Convert.ToInt32(r[0]),
-                ProviderId = Convert.ToInt32(r[1]),
-                Name = Convert.ToString(r[2])
+                Id = r.Id,
+                ProviderId = r.IdProvider,
+                Name = r.Name
             };
 
             return d;
         }
-    }*/
+    }
+
+    public static class MailboxDomainDaoExtension
+    {
+        public static IServiceCollection AddMailboxDomainDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<MailboxDomain>();
+
+            return services;
+        }
+    }
 }

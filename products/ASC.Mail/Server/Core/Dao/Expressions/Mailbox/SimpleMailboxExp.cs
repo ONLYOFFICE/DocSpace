@@ -27,9 +27,13 @@
 //using ASC.Common.Data.Sql.Expressions;
 //using ASC.Mail.Core.DbSchema.Tables;
 
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class SimpleMailboxExp : IMailboxExp
+    public class SimpleMailboxExp : IMailboxExp
     {
         private readonly bool? _isRemoved;
 
@@ -38,13 +42,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             _isRemoved = isRemoved;
         }
 
-        public virtual Exp GetExpression()
+        public virtual Expression<Func<MailMailbox, bool>> GetExpression()
         {
-            if (!_isRemoved.HasValue) 
-                return Exp.Empty;
+            if (!_isRemoved.HasValue)
+                return mb => true;
 
-            var exp = Exp.Eq(MailboxTable.Columns.IsRemoved, _isRemoved);
-            return exp;
+            return mb => mb.IsRemoved == _isRemoved;
         }
-    }*/
+    }
 }
