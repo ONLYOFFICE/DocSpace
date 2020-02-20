@@ -42,7 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
-    public class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
+    class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
     {
         public UserFormatter UserFormatter { get; }
         public IOptionsSnapshot<CachedTenantService> TenantService { get; }

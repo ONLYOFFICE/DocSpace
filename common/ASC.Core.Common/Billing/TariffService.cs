@@ -165,6 +165,35 @@ namespace ASC.Core.Billing
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
         }
 
+        public TariffService(
+            IQuotaService quotaService,
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            DbContextManager<CoreDbContext> coreDbContextManager,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> options)
+            : this()
+
+        {
+            Log = options.CurrentValue;
+            QuotaService = quotaService;
+            TenantService = tenantService;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            TariffServiceStorage = tariffServiceStorage;
+            Options = options;
+            CoreBaseSettings = coreBaseSettings;
+            Test = configuration["core:payment:test"] == "true";
+            int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
+
+            PaymentDelay = paymentDelay;
+
+            Cache = TariffServiceStorage.Cache;
+            Notify = TariffServiceStorage.Notify;
+            CoreDbContext = coreDbContextManager.Value;
+        }
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
@@ -664,6 +693,7 @@ namespace ASC.Core.Billing
 
             services.TryAddSingleton<TariffServiceStorage>();
 
+            services.TryAddScoped<ITariffService, TariffService>();
             services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
 
             return services;

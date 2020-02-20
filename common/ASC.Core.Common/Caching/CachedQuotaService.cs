@@ -108,7 +108,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedQuotaService : IQuotaService
+    class CachedQuotaService : IQuotaService
     {
         internal IQuotaService Service { get; set; }
         internal ICache Cache { get; set; }
@@ -124,6 +124,13 @@ namespace ASC.Core.Caching
             CacheExpiration = TimeSpan.FromMinutes(10);
         }
 
+        public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            QuotaServiceCache = quotaServiceCache;
+            Cache = quotaServiceCache.Cache;
+            CacheNotify = quotaServiceCache.CacheNotify;
+        }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
@@ -240,6 +247,7 @@ namespace ASC.Core.Caching
 
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<QuotaServiceCache>();
+
             services.TryAddScoped<DbQuotaService>();
             services.TryAddScoped<IQuotaService, CachedQuotaService>();
 

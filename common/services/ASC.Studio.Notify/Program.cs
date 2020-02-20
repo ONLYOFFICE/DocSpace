@@ -44,6 +44,7 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddHttpContextAccessor();
                     services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
                     services.AddServiceLauncher();

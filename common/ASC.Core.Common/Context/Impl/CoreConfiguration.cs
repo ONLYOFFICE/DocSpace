@@ -148,11 +148,11 @@ namespace ASC.Core
         }
 
         public CoreSettings(
-            IOptionsSnapshot<CachedTenantService> tenantService,
+            ITenantService tenantService,
             CoreBaseSettings coreBaseSettings,
             IConfiguration configuration)
         {
-            TenantService = tenantService.Value;
+            TenantService = tenantService;
             CoreBaseSettings = coreBaseSettings;
             Configuration = configuration;
         }

@@ -182,6 +182,12 @@ namespace ASC.Core.Data
             };
         }
 
+        public EFUserService(DbContextManager<UserDbContext> userDbContextManager) : this()
+        {
+            UserDbContextManager = userDbContextManager;
+            UserDbContext = UserDbContextManager.Value;
+        }
+
         public Group GetGroup(int tenant, Guid id)
         {
             return GetGroupQuery(UserDbContext, tenant, default)

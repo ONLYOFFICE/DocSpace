@@ -181,7 +181,7 @@ namespace ASC.Core.Caching
         }
     }
 
-    public class CachedTenantService : ITenantService
+    class CachedTenantService : ITenantService
     {
         internal ITenantService Service { get; set; }
 
@@ -198,6 +198,13 @@ namespace ASC.Core.Caching
             SettingsExpiration = TimeSpan.FromMinutes(2);
         }
 
+        public CachedTenantService(DbTenantService service, TenantServiceCache tenantServiceCache) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            TenantServiceCache = tenantServiceCache;
+            CacheNotifyItem = tenantServiceCache.CacheNotifyItem;
+            CacheNotifySettings = tenantServiceCache.CacheNotifySettings;
+        }
 
         public void ValidateDomain(string domain)
         {
@@ -305,6 +312,9 @@ namespace ASC.Core.Caching
             services.TryAddSingleton<TenantDomainValidator>();
             services.TryAddSingleton<TimeZoneConverter>();
             services.TryAddSingleton<TenantServiceCache>();
+
+            services.TryAddScoped<DbTenantService>();
+            services.TryAddScoped<ITenantService, CachedTenantService>();
 
             services.TryAddScoped<IConfigureOptions<DbTenantService>, ConfigureDbTenantService>();
             services.TryAddScoped<IConfigureOptions<CachedTenantService>, ConfigureCachedTenantService>();

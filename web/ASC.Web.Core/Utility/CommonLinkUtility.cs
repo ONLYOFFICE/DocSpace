@@ -556,7 +556,6 @@ namespace ASC.Web.Studio.Utility
             services.TryAddScoped<CommonLinkUtility>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddUserManagerService()
                 .AddBaseCommonLinkUtilityService()
                 .AddWebItemManagerSecurity()

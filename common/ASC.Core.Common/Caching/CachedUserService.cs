@@ -42,7 +42,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Caching
 {
-    class UserServiceCache
+    public class UserServiceCache
     {
         public const string USERS = "users";
         private const string GROUPS = "groups";
@@ -198,6 +198,22 @@ namespace ASC.Core.Caching
             PhotoExpiration = TimeSpan.FromMinutes(10);
         }
 
+        public CachedUserService(
+            EFUserService service,
+            CoreBaseSettings coreBaseSettings,
+            UserServiceCache userServiceCache
+            ) : this()
+        {
+            Service = service ?? throw new ArgumentNullException("service");
+            CoreBaseSettings = coreBaseSettings;
+            UserServiceCache = userServiceCache;
+            Cache = userServiceCache.Cache;
+            CacheUserInfoItem = userServiceCache.CacheUserInfoItem;
+            CacheUserPhotoItem = userServiceCache.CacheUserPhotoItem;
+            CacheGroupCacheItem = userServiceCache.CacheGroupCacheItem;
+            CacheUserGroupRefItem = userServiceCache.CacheUserGroupRefItem;
+            TrustInterval = userServiceCache.TrustInterval;
+        }
 
         public IDictionary<Guid, UserInfo> GetUsers(int tenant, DateTime from)
         {
@@ -507,6 +523,9 @@ namespace ASC.Core.Caching
                 .AddCoreSettingsService()
                 .AddLoggerService()
                 .AddUserDbContextService();
+
+            services.TryAddScoped<EFUserService>();
+            services.TryAddScoped<IUserService, CachedUserService>();
 
             services.TryAddScoped<IConfigureOptions<EFUserService>, ConfigureEFUserService>();
             services.TryAddScoped<IConfigureOptions<CachedUserService>, ConfigureCachedUserService>();
