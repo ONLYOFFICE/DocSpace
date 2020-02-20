@@ -885,7 +885,7 @@ namespace ASC.Mail.Core.Engine
                         var foundInServer = trustedServers.FirstOrDefault(ts => ts.Equals(newServer));
                         if (foundInServer != null)
                         {
-                            DaoFactory.MailboxServerDao.DelteServer(dbServer.Id);
+                            DaoFactory.MailboxServerDao.DeleteServer(dbServer.Id);
                             newServer.Id = foundInServer.Id;
                             newServer.IsUserData = false;
                         }

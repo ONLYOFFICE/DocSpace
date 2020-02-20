@@ -37,6 +37,6 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         int SaveServer(MailboxServer mailboxServer);
 
-        int DelteServer(int id);
+        int DeleteServer(int id);
     }
 }

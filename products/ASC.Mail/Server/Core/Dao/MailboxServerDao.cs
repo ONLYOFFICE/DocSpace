@@ -35,6 +35,7 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using System.Linq;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -58,57 +59,58 @@ namespace ASC.Mail.Core.Dao
 
         public MailboxServer GetServer(int id)
         {
-            /*var query = Query()
-                .Where(MailboxServerTable.Columns.Id, id);
+            var server = MailDb.MailMailboxServer
+                .Where(s => s.Id == id)
+                .Select(ToMailboxServer)
+                .FirstOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailboxServer)
-               .SingleOrDefault();*/
-
-            return null;
+            return server;
         }
 
         public List<MailboxServer> GetServers(int providerId, bool isUserData = false)
         {
-            //var query = Query()
-            //    .Where(MailboxServerTable.Columns.ProviderId, providerId)
-            //    .Where(MailboxServerTable.Columns.IsUserData, isUserData);
+            var servers = MailDb.MailMailboxServer
+               .Where(s => s.IdProvider == providerId && s.IsUserData == isUserData)
+               .Select(ToMailboxServer)
+               .ToList();
 
-            //return Db.ExecuteList(query)
-            //    .ConvertAll(ToMailboxServer);
-
-            return null;
+            return servers;
         }
 
         public int SaveServer(MailboxServer mailboxServer)
         {
-            //var query = new SqlInsert(MailboxServerTable.TABLE_NAME, true)
-            //    .InColumnValue(MailboxServerTable.Columns.Id, mailboxServer.Id)
-            //    .InColumnValue(MailboxServerTable.Columns.ProviderId, mailboxServer.ProviderId)
-            //    .InColumnValue(MailboxServerTable.Columns.Type, mailboxServer.Type)
-            //    .InColumnValue(MailboxServerTable.Columns.Hostname,  mailboxServer.Hostname)
-            //    .InColumnValue(MailboxServerTable.Columns.Port,  mailboxServer.Port)
-            //    .InColumnValue(MailboxServerTable.Columns.SocketType,  mailboxServer.SocketType)
-            //    .InColumnValue(MailboxServerTable.Columns.Username,  mailboxServer.Username)
-            //    .InColumnValue(MailboxServerTable.Columns.Authentication, mailboxServer.Authentication)
-            //    .InColumnValue(MailboxServerTable.Columns.IsUserData, mailboxServer.IsUserData)
-            //    .Identity(0, 0, true);
+            var server = new MailMailboxServer
+            {
+                Id = mailboxServer.Id,
+                IdProvider = mailboxServer.ProviderId,
+                Type = mailboxServer.Type,
+                Hostname = mailboxServer.Hostname,
+                Port = mailboxServer.Port,
+                SocketType = mailboxServer.SocketType,
+                Username = mailboxServer.Username,
+                Authentication = mailboxServer.Authentication,
+                IsUserData = mailboxServer.IsUserData
+            };
 
-            //var id = Db.ExecuteScalar<int>(query);
+            var result = MailDb.MailMailboxServer.Add(server).Entity;
 
-            //return id;
+            MailDb.SaveChanges();
 
-            return -1;
+            return result.Id;
         }
 
-        public int DelteServer(int id)
+        public int DeleteServer(int id)
         {
-            //var query = new SqlDelete(MailboxServerTable.TABLE_NAME)
-            //    .Where(MailboxServerTable.Columns.Id, id);
+            var server = MailDb.MailMailboxServer
+               .Where(s => s.Id == id)
+               .First();
 
-            //return Db.ExecuteNonQuery(query);
 
-            return -1;
+            var result = MailDb.MailMailboxServer.Remove(server);
+
+            MailDb.SaveChanges();
+
+            return result.State == Microsoft.EntityFrameworkCore.EntityState.Deleted ? id : -1;
         }
 
         protected MailboxServer ToMailboxServer(MailMailboxServer r)
