@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -123,7 +124,7 @@ namespace ASC.Common.Logging
             services.TryAddScoped<EFLoggerFactory>();
             services.TryAddScoped<EFLoggerProvider>();
 
-            return services.AddNLogManager();
+            return services;
         }
     }
 }
