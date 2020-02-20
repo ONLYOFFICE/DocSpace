@@ -40,9 +40,15 @@ namespace ASC.Mail.Core
     {
         public AccountEngine AccountEngine { get; }
 
-        public EngineFactory(AccountEngine accountEngine)
+        public AlertEngine AlertEngine { get; }
+
+        public EngineFactory(
+            AccountEngine accountEngine,
+            AlertEngine alertEngine
+            )
         {
             AccountEngine = accountEngine;
+            AlertEngine = alertEngine;
         }
 
         //private AccountEngine _accountEngine;
@@ -71,11 +77,6 @@ namespace ASC.Mail.Core
         //    get { return _calendarEngine ?? (_calendarEngine = new CalendarEngine(Log)); }
         //}
 
-        //private AlertEngine _alertEngine;
-        //public AlertEngine AlertEngine
-        //{
-        //    get { return _alertEngine ?? (_alertEngine = new AlertEngine(Tenant, UserId, Log)); }
-        //}
 
         //private TagEngine _tagEngine;
         //public TagEngine TagEngine
@@ -239,7 +240,8 @@ namespace ASC.Mail.Core
                 .AddMailDbContextService()
                 .AddDaoFactoryService()
                 .AddMailboxEngineService()
-                .AddAccountEngineService();
+                .AddAccountEngineService()
+                .AddAlertEngineService();
         }
     }
 }

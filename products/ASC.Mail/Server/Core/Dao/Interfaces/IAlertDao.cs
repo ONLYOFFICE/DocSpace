@@ -51,7 +51,7 @@ namespace ASC.Mail.Core.Dao.Interfaces
         int SaveAlert(Alert alert, bool unique = false);
 
         /// <summary>
-        ///     Delete alert
+        ///     Delete alertс
         /// </summary>
         /// <param name="id">id</param>
         int DeleteAlert(long id);
