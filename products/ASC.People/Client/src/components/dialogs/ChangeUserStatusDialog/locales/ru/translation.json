@@ -1,6 +1,7 @@
 {
   "CancelButton": "Отмена",
   "DisabledEmployeeTitle": "Заблокирован",
+  "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   
   "ShowUsersList": "Показать список пользователей",  
   "ChangeUserStatusDialogHeader": "Изменение статуса пользователя",

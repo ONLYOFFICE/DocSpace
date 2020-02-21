@@ -2,9 +2,10 @@
   "CancelButton": "Отмена",
   "GuestCaption": "Гость",
   "UserCol": "Пользователь",
+  "SuccessChangeUserType": "Тип пользователя успешно изменен",
 
   "ChangeUserTypeHeader": "Изменение типа пользователя",
   "ChangeUserTypeButton": "Изменить тип",
   "ChangeUserTypeMessage": "Пользователи с типом '{{ firstType }}' будут переведены в тип '{{ secondType }}' Вы не можете изменить тип для администраторов портала и для самого себя",
-  "ShowUsersList": "View users list"
+  "ShowUsersList": "Показать список пользователей"
 }
