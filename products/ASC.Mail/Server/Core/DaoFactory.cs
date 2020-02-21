@@ -39,6 +39,7 @@ namespace ASC.Mail.Core
         public MailboxProviderDao MailboxProviderDao { get; }
         public AlertDao AlertDao { get; }
         public DisplayImagesAddressDao DisplayImagesAddressDao { get; }
+        public MailboxSignatureDao MailboxSignatureDao { get; }
         public DaoFactory(
             AccountDao accountDao,
             MailboxDao mailboxDao,
@@ -46,7 +47,8 @@ namespace ASC.Mail.Core
             MailboxDomainDao mailboxDomainDao,
             MailboxProviderDao mailboxProviderDao,
             AlertDao alertDao,
-            DisplayImagesAddressDao displayImagesAddressDao)
+            DisplayImagesAddressDao displayImagesAddressDao,
+            MailboxSignatureDao mailboxSignatureDao)
         {
             AccountDao = accountDao;
             MailboxDao = mailboxDao;
@@ -55,6 +57,7 @@ namespace ASC.Mail.Core
             MailboxProviderDao = mailboxProviderDao;
             AlertDao = alertDao;
             DisplayImagesAddressDao = displayImagesAddressDao;
+            MailboxSignatureDao = mailboxSignatureDao;
         }
 
         //public IFolderDao CreateFolderDao(int tenant, string user)
@@ -248,7 +251,8 @@ namespace ASC.Mail.Core
                 .AddMailboxDaoService()
                 .AddAccountDaoService()
                 .AddAlertDaoService()
-                .AddDisplayImagesAddressDaoService();
+                .AddDisplayImagesAddressDaoService()
+                .AddMailboxSignatureDaoService();
         }
     }
 }

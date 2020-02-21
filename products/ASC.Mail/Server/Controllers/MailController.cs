@@ -62,6 +62,7 @@ namespace ASC.Mail.Controllers
             return new Module(product, false);
         }
 
+        #region Api.Accounts
         /// <summary>
         ///    Returns lists of all mailboxes, aliases and groups for user.
         /// </summary>
@@ -74,41 +75,6 @@ namespace ASC.Mail.Controllers
         {
             var accounts = MailEngineFactory.AccountEngine.GetAccountInfoList();
             return accounts.ToAccountData();
-        }
-
-
-        /// <summary>
-        ///    Returns the list of alerts for the authenticated user
-        /// </summary>
-        /// <returns>Alerts list</returns>
-        /// <short>Get alerts list</short> 
-        /// <category>Alerts</category>
-        [Read("alert")]
-        public IList<MailAlertData> GetAlerts()
-        {
-            var alerts = MailEngineFactory.AlertEngine.GetAlerts();
-            return alerts;
-        }
-
-        /// <summary>
-        ///    Deletes the alert with the ID specified in the request
-        /// </summary>
-        /// <param name="id">Alert ID</param>
-        /// <returns>Deleted alert id. Same as request parameter.</returns>
-        /// <short>Delete alert by ID</short> 
-        /// <category>Alerts</category>
-        [Delete("alert/{id}")]
-        public long DeleteAlert(long id)
-        {
-            if (id < 0)
-                throw new ArgumentException(@"Invalid alert id. Id must be positive integer.", "id");
-
-            var success = MailEngineFactory.AlertEngine.DeleteAlert(id);
-
-            if (!success)
-                throw new Exception("Delete failed");
-
-            return id;
         }
 
         /// <summary>
@@ -186,7 +152,43 @@ namespace ASC.Mail.Controllers
 
             return accountInfo.ToAccountData().FirstOrDefault();
         }
+        #endregion
+        #region Api.Alerts
+        /// <summary>
+        ///    Returns the list of alerts for the authenticated user
+        /// </summary>
+        /// <returns>Alerts list</returns>
+        /// <short>Get alerts list</short> 
+        /// <category>Alerts</category>
+        [Read("alert")]
+        public IList<MailAlertData> GetAlerts()
+        {
+            var alerts = MailEngineFactory.AlertEngine.GetAlerts();
+            return alerts;
+        }
 
+        /// <summary>
+        ///    Deletes the alert with the ID specified in the request
+        /// </summary>
+        /// <param name="id">Alert ID</param>
+        /// <returns>Deleted alert id. Same as request parameter.</returns>
+        /// <short>Delete alert by ID</short> 
+        /// <category>Alerts</category>
+        [Delete("alert/{id}")]
+        public long DeleteAlert(long id)
+        {
+            if (id < 0)
+                throw new ArgumentException(@"Invalid alert id. Id must be positive integer.", "id");
+
+            var success = MailEngineFactory.AlertEngine.DeleteAlert(id);
+
+            if (!success)
+                throw new Exception("Delete failed");
+
+            return id;
+        }
+        #endregion
+        #region Api.Images
         /// <summary>
         ///    Returns list of all trusted addresses for image displaying.
         /// </summary>
@@ -230,6 +232,46 @@ namespace ASC.Mail.Controllers
 
             return address;
         }
+        #endregion
+        #region Api.Signature
+        /// <summary>
+        /// This method needed for getting mailbox signature.
+        /// </summary>
+        /// <param name="mailbox_id"></param>
+        /// <returns>Signature object</returns>
+        [Read("signature/{mailbox_id}")]
+        public MailSignatureData GetSignature(int mailbox_id)
+        {
+            var accounts = GetAccounts();
+
+            var account = accounts.FirstOrDefault(a => a.MailboxId == mailbox_id);
+
+            if (account == null)
+                throw new ArgumentException("Mailbox not found");
+
+            return account.Signature;
+        }
+
+        /// <summary>
+        /// This method needed for update or create signature.
+        /// </summary>
+        /// <param name="mailbox_id">Id of updated mailbox.</param>
+        /// <param name="html">New signature value.</param>
+        /// <param name="is_active">New signature status.</param>
+        [Create("signature/update/{mailbox_id}")]
+        public MailSignatureData UpdateSignature(int mailbox_id, string html, bool is_active)
+        {
+            var accounts = GetAccounts();
+
+            var account = accounts.FirstOrDefault(a => a.MailboxId == mailbox_id);
+
+            if (account == null)
+                throw new ArgumentException("Mailbox not found");
+
+            return MailEngineFactory.SignatureEngine.SaveSignature(mailbox_id, html, is_active);
+        }
+
+        #endregion
     }
 
     public static class MailControllerExtention
