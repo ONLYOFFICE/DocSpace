@@ -206,8 +206,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="GoogleAuthenticator" Version="1.2.1" />
-    <PackageReference Include="Grpc.Tools" Version="2.25.0">
+    <PackageReference Include="GoogleAuthenticator" Version="2.0.1" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
