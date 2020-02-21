@@ -24,12 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class SimpleMailboxesExp : IMailboxesExp
+    public class SimpleMailboxesExp : IMailboxesExp
     {
         private readonly bool? _isRemoved;
         public string OrderBy { get; private set; }
@@ -44,13 +45,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             Limit = null;
         }
 
-        public virtual Exp GetExpression()
+        public virtual Expression<Func<MailMailbox, bool>> GetExpression()
         {
             if (!_isRemoved.HasValue)
-                return Exp.Empty;
+                return mb => true;
 
-            var exp = Exp.Eq(MailboxTable.Columns.IsRemoved, _isRemoved);
-            return exp;
+            return mb => mb.IsRemoved == _isRemoved;
         }
-    }*/
+    }
 }

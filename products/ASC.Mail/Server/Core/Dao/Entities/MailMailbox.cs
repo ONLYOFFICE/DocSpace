@@ -41,7 +41,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("msg_count_last", TypeName = "int(11)")]
         public int MsgCountLast { get; set; }
         [Column("size_last", TypeName = "int(11)")]
-        public int SizeLast { get; set; }
+        public long SizeLast { get; set; }
         [Column("login_delay", TypeName = "int(11) unsigned")]
         public int LoginDelay { get; set; }
         [Column("quota_error")]
@@ -57,7 +57,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("smtp_password", TypeName = "varchar(255)")]
         public string SmtpPassword { get; set; }
         [Column("token_type", TypeName = "tinyint(4)")]
-        public sbyte TokenType { get; set; }
+        public int TokenType { get; set; }
         [Column("token", TypeName = "text")]
         public string Token { get; set; }
         [Column("id_smtp_server", TypeName = "int(11)")]

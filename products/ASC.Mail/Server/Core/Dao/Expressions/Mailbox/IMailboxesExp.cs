@@ -24,18 +24,19 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-   /* public interface IMailboxesExp
+    public interface IMailboxesExp
     {
         string OrderBy { get; }
-        
+
         bool? OrderAsc { get; }
 
         int? Limit { get; }
 
-        Exp GetExpression();
-    }*/
+        Expression<Func<Entities.MailMailbox, bool>> GetExpression();
+    }
 }

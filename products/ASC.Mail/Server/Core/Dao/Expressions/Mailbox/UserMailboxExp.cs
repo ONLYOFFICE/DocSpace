@@ -24,9 +24,6 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-
 using ASC.Mail.Core.Dao.Entities;
 using System;
 using System.Linq.Expressions;
@@ -42,15 +39,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
         {
             _user = user;
         }
-
-        //public override Exp GetExpression()
-        //{
-        //    var exp = base.GetExpression();
-
-        //    exp = exp & Exp.Eq(MailboxTable.Columns.User, _user);
-
-        //    return exp;
-        //}
 
         public override Expression<Func<MailMailbox, bool>> GetExpression()
         {

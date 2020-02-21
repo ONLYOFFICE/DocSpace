@@ -24,12 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class UserMailboxesExp : TenantMailboxesExp
+    public class UserMailboxesExp : TenantMailboxesExp
     {
         private readonly string _user;
         private readonly bool? _onlyTeamlab;
@@ -41,18 +42,18 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             _onlyTeamlab = onlyTeamlab;
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMailbox, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(MailboxTable.Columns.User, _user);
+            exp = exp.And(mb => mb.IdUser == _user);
 
             if (_onlyTeamlab.HasValue)
             {
-                exp = exp & Exp.Eq(MailboxTable.Columns.IsServerMailbox, _onlyTeamlab.Value);
+                exp = exp.And(mb => mb.IsServerMailbox == _onlyTeamlab.Value);
             }
 
             return exp;
         }
-    }*/
+    }
 }

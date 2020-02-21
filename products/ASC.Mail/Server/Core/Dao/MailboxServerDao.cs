@@ -97,9 +97,7 @@ namespace ASC.Mail.Core.Dao
 
             var result = MailDb.MailMailboxServer.Remove(server);
 
-            MailDb.SaveChanges();
-
-            return result.State == Microsoft.EntityFrameworkCore.EntityState.Deleted ? id : -1;
+            return MailDb.SaveChanges();
         }
 
         protected MailboxServer ToMailboxServer(MailMailboxServer r)

@@ -24,20 +24,6 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Expressions.Mailbox;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Utils;
-
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -49,6 +35,7 @@ using ASC.Security.Cryptography;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ASC.Mail.Core.Dao
@@ -75,138 +62,143 @@ namespace ASC.Mail.Core.Dao
             return mailbox;
         }
 
-        /*public List<Mailbox> GetMailBoxes(IMailboxesExp exp)
+        public List<Mailbox> GetMailBoxes(IMailboxesExp exp)
         {
-            var query = Query()
-                .Where(exp.GetExpression());
+            var query = MailDb.MailMailbox
+                 .Where(exp.GetExpression())
+                 .Select(ToMailbox);
 
             if (!string.IsNullOrEmpty(exp.OrderBy) && exp.OrderAsc.HasValue)
             {
-                query.OrderBy(exp.OrderBy, exp.OrderAsc.Value);
+                //TODO: Fix
+                ///query.OrderBy(mb => mb.
+                //query.OrderBy(exp.OrderBy, exp.OrderAsc.Value);
             }
 
             if (exp.Limit.HasValue)
             {
-                query.SetMaxResults(exp.Limit.Value);
+                query.Take(exp.Limit.Value);
             }
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMailbox);
+            var mailboxes = query.ToList();
+
+            return mailboxes;
         }
 
         public Mailbox GetNextMailBox(IMailboxExp exp)
         {
-            var query = Query()
-                .Where(exp.GetExpression())
-                .OrderBy(MailboxTable.Columns.Id, true)
-                .SetMaxResults(1);
-
-            var mailbox = Db.ExecuteList(query)
-                .ConvertAll(ToMailbox)
-                .SingleOrDefault();
+            var mailbox = MailDb.MailMailbox
+                 .Where(exp.GetExpression())
+                 .OrderBy(mb => mb.Id)
+                 .Select(ToMailbox)
+                 .Take(1)
+                 .SingleOrDefault();
 
             return mailbox;
         }
 
         public Tuple<int, int> GetRangeMailboxes(IMailboxExp exp)
         {
-            var query = new SqlQuery(MailboxTable.TABLE_NAME)
-                .SelectMin(MailboxTable.Columns.Id)
-                .SelectMax(MailboxTable.Columns.Id)
-                .Where(exp.GetExpression());
+            var range = MailDb.MailMailbox
+                 .Where(exp.GetExpression())
+                 .GroupBy(mb => mb.Id)
+                 .Select(mb => new
+                 {
+                     Min = mb.Min(o => o.Id),
+                     Max = mb.Max(o => o.Id)
+                 })
+                 .SingleOrDefault();
 
-            var range = Db.ExecuteList(query)
-                .ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1])))
-                .SingleOrDefault();
-
-            return range;
+            return new Tuple<int, int>(range.Min, range.Max);
         }
 
         public List<Tuple<int, string>> GetMailUsers(IMailboxExp exp)
         {
-            var query = Query()
-                .Select(MailboxTable.Columns.Tenant, MailboxTable.Columns.User)
-                .Where(exp.GetExpression());
-
-            var list = Db.ExecuteList(query)
-                .ConvertAll(r => new Tuple<int, string>(Convert.ToInt32(r[0]), Convert.ToString(r[1])));
+            var list = MailDb.MailMailbox
+                .Where(exp.GetExpression())
+                .Select(mb => new Tuple<int, string>(mb.Tenant, mb.IdUser))
+                .ToList();
 
             return list;
-        }*/
+        }
 
         public int SaveMailBox(Mailbox mailbox)
         {
-            /*var query = new SqlInsert(MailboxTable.TABLE_NAME, true)
-                .InColumnValue(MailboxTable.Columns.Id, mailbox.Id)
-                .InColumnValue(MailboxTable.Columns.Tenant, mailbox.Tenant)
-                .InColumnValue(MailboxTable.Columns.User, mailbox.User)
-                .InColumnValue(MailboxTable.Columns.Address, mailbox.Address)
-                .InColumnValue(MailboxTable.Columns.Name, mailbox.Name)
-                .InColumnValue(MailboxTable.Columns.Enabled, mailbox.Enabled)
-                .InColumnValue(MailboxTable.Columns.IsRemoved, mailbox.IsRemoved)
-                .InColumnValue(MailboxTable.Columns.IsProcessed, mailbox.IsProcessed)
-                .InColumnValue(MailboxTable.Columns.IsServerMailbox, mailbox.IsTeamlabMailbox)
-                .InColumnValue(MailboxTable.Columns.Imap, mailbox.Imap)
-                .InColumnValue(MailboxTable.Columns.UserOnline, mailbox.UserOnline)
-                .InColumnValue(MailboxTable.Columns.IsDefault, mailbox.IsDefault)
-                .InColumnValue(MailboxTable.Columns.MsgCountLast, mailbox.MsgCountLast)
-                .InColumnValue(MailboxTable.Columns.SizeLast, mailbox.SizeLast)
-                .InColumnValue(MailboxTable.Columns.LoginDelay, mailbox.LoginDelay)
-                .InColumnValue(MailboxTable.Columns.QuotaError, mailbox.QuotaError)
-                .InColumnValue(MailboxTable.Columns.ImapIntervals, mailbox.ImapIntervals)
-                .InColumnValue(MailboxTable.Columns.BeginDate, mailbox.BeginDate)
-                .InColumnValue(MailboxTable.Columns.EmailInFolder, mailbox.EmailInFolder)
-                .InColumnValue(MailboxTable.Columns.Password, MailUtil.EncryptPassword(mailbox.Password))
-                .InColumnValue(MailboxTable.Columns.SmtpPassword,
-                    !string.IsNullOrEmpty(mailbox.SmtpPassword)
-                        ? MailUtil.EncryptPassword(mailbox.SmtpPassword)
-                        : "")
-                .InColumnValue(MailboxTable.Columns.OAuthToken,
-                    !string.IsNullOrEmpty(mailbox.OAuthToken)
-                        ? MailUtil.EncryptPassword(mailbox.OAuthToken)
-                        : "")
-                .InColumnValue(MailboxTable.Columns.OAuthType, mailbox.OAuthType)
-                .InColumnValue(MailboxTable.Columns.SmtpServerId, mailbox.SmtpServerId)
-                .InColumnValue(MailboxTable.Columns.ServerId, mailbox.ServerId)
-                .InColumnValue(MailboxTable.Columns.DateChecked, mailbox.DateChecked)
-                .InColumnValue(MailboxTable.Columns.DateUserChecked, mailbox.DateUserChecked)
-                .InColumnValue(MailboxTable.Columns.DateLoginDelayExpires, mailbox.DateLoginDelayExpires)
-                .InColumnValue(MailboxTable.Columns.DateAuthError, mailbox.DateAuthError)
-                .InColumnValue(MailboxTable.Columns.DateCreated, mailbox.DateCreated)
-                .Identity(0, 0, true);
+            var mailMailbox = new MailMailbox { 
+                Id = mailbox.Id,
+                Tenant = mailbox.Tenant,
+                IdUser = mailbox.User,
+                Address = mailbox.Address,
+                Name = mailbox.Name,
+                Enabled = mailbox.Enabled,
+                IsRemoved = mailbox.IsRemoved,
+                IsProcessed = mailbox.IsProcessed,
+                IsServerMailbox = mailbox.IsTeamlabMailbox,
+                Imap = mailbox.Imap,
+                UserOnline = mailbox.UserOnline,
+                IsDefault = mailbox.IsDefault,
+                MsgCountLast = mailbox.MsgCountLast,
+                SizeLast = mailbox.SizeLast,
+                LoginDelay = mailbox.LoginDelay,
+                QuotaError = mailbox.QuotaError,
+                ImapIntervals = mailbox.ImapIntervals,
+                BeginDate = mailbox.BeginDate,
+                EmailInFolder = mailbox.EmailInFolder,
+                Pop3Password = InstanceCrypto.Encrypt(mailbox.Password),
+                SmtpPassword = !string.IsNullOrEmpty(mailbox.SmtpPassword)
+                        ? InstanceCrypto.Encrypt(mailbox.SmtpPassword)
+                        : "",
+                Token = !string.IsNullOrEmpty(mailbox.OAuthToken)
+                        ? InstanceCrypto.Encrypt(mailbox.OAuthToken)
+                        : "",
+                TokenType = mailbox.OAuthType,
+                IdSmtpServer = mailbox.SmtpServerId,
+                IdInServer = mailbox.ServerId,
+                DateChecked = mailbox.DateChecked,
+                DateUserChecked = mailbox.DateUserChecked,
+                DateLoginDelayExpires = mailbox.DateLoginDelayExpires,
+                DateAuthError = mailbox.DateAuthError,
+                DateCreated = mailbox.DateCreated
+            };
 
-            var result = Db.ExecuteScalar<int>(query);
+            var result = MailDb.MailMailbox.Add(mailMailbox).Entity;
 
-            return result;*/
+            MailDb.SaveChanges();
 
-            return -1;
+            return result.Id;
         }
 
-        /*public bool SetMailboxRemoved(Mailbox mailbox)
+        public bool SetMailboxRemoved(Mailbox mailbox)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.IsRemoved, true)
-                .Where(MailboxTable.Columns.Id, mailbox.Id)
-                .Where(MailboxTable.Columns.Tenant, mailbox.Tenant)
-                .Where(MailTable.Columns.User, mailbox.User);
+            var mailMailbox = new MailMailbox
+            {
+                Id = mailbox.Id,
+                IsRemoved = true
+            };
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailMailbox.Attach(mailMailbox);
+            MailDb.Entry(mailMailbox).Property(x => x.IsRemoved).IsModified = true;
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
         public bool RemoveMailbox(Mailbox mailbox)
         {
-            var query = new SqlDelete(MailboxTable.TABLE_NAME)
-                .Where(MailboxTable.Columns.Id, mailbox.Id)
-                .Where(MailboxTable.Columns.Tenant, mailbox.Tenant)
-                .Where(MailTable.Columns.User, mailbox.User);
-            var result = Db.ExecuteNonQuery(query);
+            var mailMailbox = new MailMailbox
+            {
+                Id = mailbox.Id
+            };
+
+            MailDb.MailMailbox.Remove(mailMailbox);
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
-        public bool Enable(IMailboxExp exp, bool enabled)
+        /*public bool Enable(IMailboxExp exp, bool enabled)
         {
             var query = new SqlUpdate(MailboxTable.TABLE_NAME)
                 .Set(MailboxTable.Columns.Enabled, enabled)
