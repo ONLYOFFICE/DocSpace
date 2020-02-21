@@ -18,7 +18,15 @@ import { updateUserStatus } from "../../../store/people/actions";
 const { changeLanguage } = utils;
 
 const ChangeUserStatusDialogComponent = props => {
-  const { t, onClose, visible, users, userStatus, updateUserStatus } = props;
+  const {
+    t,
+    onClose,
+    visible,
+    users,
+    userStatus,
+    updateUserStatus,
+    setSelected
+  } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
@@ -33,18 +41,17 @@ const ChangeUserStatusDialogComponent = props => {
       .catch(error => toastr.error(error))
       .finally(() => {
         setIsRequestRunning(false);
+        setSelected("close");
         onClose();
       });
-  }, [t, usersId, userStatus, updateUserStatus, onClose]);
+  }, [t, usersId, userStatus, updateUserStatus, setSelected, onClose]);
 
   const statusTranslation =
     userStatus === 1
       ? t("ChangeUsersActiveStatus")
       : t("ChangeUsersDisableStatus");
   const userStatusTranslation =
-    userStatus === 1
-      ? t("DisabledEmployeeTitle")
-      : t("ActiveEmployeeTitle");
+    userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
 
   return (
     <ModalDialogContainer>
@@ -105,6 +112,7 @@ const ChangeUserStatusDialog = props => (
 ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 

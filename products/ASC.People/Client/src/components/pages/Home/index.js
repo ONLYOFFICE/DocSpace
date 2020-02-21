@@ -85,14 +85,9 @@ class PureHome extends React.Component {
   };
 
   onClose = () => {
-    const { selection, setSelected } = this.props;
-
-    if (!selection.length) {
-      setSelected("none");
-      this.setState({ isHeaderVisible: false });
-    } else {
-      setSelected("close");
-    }
+    const { setSelected } = this.props;
+    setSelected("none");
+    this.setState({ isHeaderVisible: false });
   };
 
   onLoading = status => {

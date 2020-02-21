@@ -17,7 +17,7 @@ const { resendUserInvites } = api.people;
 const { changeLanguage } = utils;
 
 const SendInviteDialogComponent = props => {
-  const { t, onClose, visible, users } = props;
+  const { t, onClose, visible, users, setSelected } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
@@ -30,8 +30,12 @@ const SendInviteDialogComponent = props => {
     resendUserInvites(usersId)
       .then(() => toastr.success(t("SuccessSendInvitation")))
       .catch(error => toastr.error(error))
-      .finally(() => setIsRequestRunning(false));
-  }, [t, usersId]);
+      .finally(() => {
+        setIsRequestRunning(false);
+        setSelected("close");
+        onClose();
+      });
+  }, [t, setSelected, onClose, usersId]);
 
   //console.log("SendInviteDialog render");
   return (
@@ -85,7 +89,8 @@ const SendInviteDialog = props => (
 SendInviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  users: PropTypes.arrayOf(PropTypes.object).isRequired
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  setSelected: PropTypes.func.isRequired
 };
 
 export default withRouter(SendInviteDialog);

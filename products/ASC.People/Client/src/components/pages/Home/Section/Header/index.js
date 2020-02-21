@@ -20,7 +20,8 @@ import { withTranslation } from "react-i18next";
 import {
   updateUserStatus,
   fetchPeople,
-  removeUser
+  removeUser,
+  setSelected
 } from "../../../../../store/people/actions";
 import { deleteGroup } from "../../../../../store/group/actions";
 import { store, constants } from "asc-web-common";
@@ -118,7 +119,8 @@ const SectionHeaderContent = props => {
     disabledUser,
     inviteLinkUsers,
     sendMessage,
-    removeUsers
+    removeUsers,
+    setSelected
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -301,6 +303,7 @@ const SectionHeaderContent = props => {
           users={employeeTypeUsers}
           onClose={onSetEmployee}
           userType={EmployeeType.User}
+          setSelected={setSelected}
         />
       )}
 
@@ -310,6 +313,7 @@ const SectionHeaderContent = props => {
           users={guestTypeUsers}
           onClose={onSetGuest}
           userType={EmployeeType.Guest}
+          setSelected={setSelected}
         />
       )}
       {showActiveDialog && (
@@ -318,6 +322,7 @@ const SectionHeaderContent = props => {
           users={activeStatus}
           onClose={onSetActive}
           userStatus={EmployeeStatus.Active}
+          setSelected={setSelected}
         />
       )}
       {showDisableDialog && (
@@ -326,6 +331,7 @@ const SectionHeaderContent = props => {
           users={disabledUser}
           onClose={onSetDisabled}
           userStatus={EmployeeStatus.Disabled}
+          setSelected={setSelected}
         />
       )}
 
@@ -334,6 +340,7 @@ const SectionHeaderContent = props => {
           visible={showSendInviteDialog}
           onClose={onSendInviteAgain}
           users={inviteLinkUsers}
+          setSelected={setSelected}
         />
       )}
 
@@ -343,6 +350,7 @@ const SectionHeaderContent = props => {
           onClose={onDelete}
           users={removeUsers}
           filter={filter}
+          setSelected={setSelected}
         />
       )}
 
@@ -427,7 +435,7 @@ const mapStateToProps = state => {
   const activeUsers = 1;
   const disabledUsers = 2;
   const currentUserId = state.auth.user.id;
-  const userStatus = true;
+  const employeeStatus = true;
   const guestStatus = false;
 
   return {
@@ -437,7 +445,7 @@ const mapStateToProps = state => {
     filter: state.people.filter,
     settings: state.auth.settings,
 
-    employeeTypeUsers: getUserType(selection, userStatus, currentUserId),
+    employeeTypeUsers: getUserType(selection, employeeStatus, currentUserId),
     guestTypeUsers: getUserType(selection, guestStatus, currentUserId),
     activeStatus: getUsersStatus(selection, activeUsers, currentUserId),
     disabledUser: getUsersStatus(selection, disabledUsers, currentUserId),
@@ -451,5 +459,6 @@ export default connect(mapStateToProps, {
   updateUserStatus,
   fetchPeople,
   deleteGroup,
-  removeUser
+  removeUser,
+  setSelected
 })(withTranslation()(withRouter(SectionHeaderContent)));

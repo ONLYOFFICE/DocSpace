@@ -19,7 +19,16 @@ const { Filter } = api;
 const { changeLanguage } = utils;
 
 const DeleteGroupUsersDialogComponent = props => {
-  const { t, filter, fetchPeople, onClose, removeUser, visible, users } = props;
+  const {
+    t,
+    filter,
+    fetchPeople,
+    onClose,
+    removeUser,
+    visible,
+    users,
+    setSelected
+  } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
@@ -37,9 +46,10 @@ const DeleteGroupUsersDialogComponent = props => {
       .catch(error => toastr.error(error))
       .finally(() => {
         setIsRequestRunning(false);
+        setSelected("close");
         onClose();
       });
-  }, [removeUser, fetchPeople, filter, onClose, t, usersId]);
+  }, [removeUser, fetchPeople, filter, setSelected, onClose, t, usersId]);
 
   //console.log("DeleteGroupUsersDialog render");
   return (
@@ -102,6 +112,7 @@ const DeleteGroupUsersDialog = props => (
 DeleteGroupUsersDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   filter: PropTypes.instanceOf(Filter).isRequired,
   fetchPeople: PropTypes.func.isRequired,

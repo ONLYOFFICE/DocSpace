@@ -18,7 +18,15 @@ import { updateUserType } from "../../../store/people/actions";
 const { changeLanguage } = utils;
 
 const ChangeUserTypeDialogComponent = props => {
-  const { t, onClose, visible, users, userType, updateUserType } = props;
+  const {
+    t,
+    onClose,
+    visible,
+    users,
+    userType,
+    updateUserType,
+    setSelected
+  } = props;
   const usersId = [];
   users.map(item => usersId.push(item.id));
 
@@ -33,9 +41,10 @@ const ChangeUserTypeDialogComponent = props => {
       .catch(error => toastr.error(error))
       .finally(() => {
         setIsRequestRunning(false);
+        setSelected("close");
         onClose();
       });
-  }, [t, onClose, usersId, updateUserType, userType]);
+  }, [t, onClose, usersId, updateUserType, setSelected, userType]);
 
   const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
   const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
@@ -99,6 +108,7 @@ const ChangeUserTypeDialog = props => (
 ChangeUserTypeDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  setSelected: PropTypes.func.isRequired,
   users: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
