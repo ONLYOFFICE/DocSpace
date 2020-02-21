@@ -66,9 +66,9 @@ namespace ASC.Calendar.Models
             }
         }
 
-        public static object GetSample()
+        public static AccessOption GetSample()
         {
-            return new { id = "read", name = "Read only", defaultAction = true };
+            return new AccessOption { Id = "read", Name = "Read only", Default = true };
         }
     }
 }

@@ -32,113 +32,131 @@ using ASC.Core.Users;
 using ASC.Api.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Calendar.Models
 {
-    /*
     [DataContract(Name = "todo", Namespace = "")]
     public class TodoWrapper
-    {        
-        private TimeZoneInfo _timeZone;
+    {
+        public Guid UserId { get; set; }
 
-        public UserManager UserManager { get; }
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public Guid UserId { get; private set; }
+        [DataMember(Name = "objectId", Order = 0)]
+        public string Id { get; set; }
 
-        protected ITodo _baseTodo;
+        [DataMember(Name = "uniqueId", Order = 140)]
+        public string Uid { get; set; }
 
-        private DateTime _utcStartDate = DateTime.MinValue;
-        private DateTime _utcCompletedDate = DateTime.MinValue;
+        public int TenantId { get; set; }
 
-        private TodoWrapper(ITodo baseTodo, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate)
-            :this(baseTodo, userId, timeZone)
-        {
-            _utcStartDate = utcStartDate;
-        }
+        [DataMember(Name = "sourceId", Order = 10)]
+        public string CalendarId { get; set; }
 
-        public TodoWrapper(ITodo baseTodo, Guid userId, TimeZoneInfo timeZone)
-        {
-            _timeZone = timeZone;
-            _baseTodo = baseTodo;
-            this.UserId = userId;            
-        }
+        [DataMember(Name = "title", Order = 20)]
+        public string Name { get; set; }
+
+        [DataMember(Name = "description", Order = 30)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "start", Order = 40)]
+        public ApiDateTime Start { get; set; }
+
+        [DataMember(Name = "completed", Order = 110)]
+        public ApiDateTime Completed { get; set; }
+
+        [DataMember(Name = "owner", Order = 120)]
+        public UserParams Owner { get; set; }
 
         public List<TodoWrapper> GetList()
         {
             var list = new List<TodoWrapper>();
 
-            list.Add(new TodoWrapper(_baseTodo, this.UserId, _timeZone));
+            list.Add(this);
 
             return list;
         }
-        
-        [DataMember(Name = "objectId", Order = 0)]
-        public string Id { get { return _baseTodo.Id; } }
-
-        [DataMember(Name = "uniqueId", Order = 140)]
-        public string Uid { get { return _baseTodo.Uid; } }
-
-        public int TenantId { get; set; }
-
-        [DataMember(Name = "sourceId", Order = 10)]
-        public string CalendarId { get { return _baseTodo.CalendarId; } }
-
-        [DataMember(Name = "title", Order = 20)]
-        public string Name { get { return _baseTodo.Name; } }
-
-        [DataMember(Name = "description", Order = 30)]
-        public string Description { get { return _baseTodo.Description; } }
-
-        [DataMember(Name = "start", Order = 40)]
-        public ApiDateTime Start
+        public static TodoWrapper GetSample()
         {
-            get
+            return new TodoWrapper
             {
-                var startD = _utcStartDate != DateTime.MinValue ? _utcStartDate : _baseTodo.UtcStartDate;
-                startD =new DateTime(startD.Ticks, DateTimeKind.Utc);
-
-                return new ApiDateTime(startD, _timeZone.GetOffset());
-            }
-        }
-
-        [DataMember(Name = "completed", Order = 110)]
-        public ApiDateTime Completed
-        {
-            get
-            {
-                var completedD = _utcCompletedDate != DateTime.MinValue ? _utcCompletedDate : _baseTodo.Completed;
-                completedD = new DateTime(completedD.Ticks, DateTimeKind.Utc);
-                return new ApiDateTime(completedD, _timeZone.GetOffset());
-            }
-        }
-
-        [DataMember(Name = "owner", Order = 120)]
-        public UserParams Owner
-        {
-            get
-            {
-                var owner = new UserParams() { Id = _baseTodo.OwnerId, Name = "" };
-                if (_baseTodo.OwnerId != Guid.Empty)
-                    owner.Name = UserManager.GetUsers(_baseTodo.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
-
-                return owner;
-            }
-        }
-
-      
-        public static object GetSample()
-        {
-            return new
-            {
-                owner = UserParams.GetSample(),
-                start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc.GetOffset()),
-                description = "Todo Description",
-                title = "Todo Name",
-                objectId = "1",
-                sourceId = "calendarID",
-                completed = new ApiDateTime(DateTime.MinValue, TimeZoneInfo.Utc.GetOffset())
+                Owner = UserParams.GetSample(),
+                Start = new ApiDateTime(DateTime.Now.AddDays(1), TimeZoneInfo.Utc.GetOffset()),
+                Description = "Todo Description",
+                Name = "Todo Name",
+                Id = "1",
+                CalendarId = "calendarID",
+                Completed = new ApiDateTime(DateTime.MinValue, TimeZoneInfo.Utc.GetOffset())
             };
         }
     }
-    */
+
+    public class TodoWrapperHelper
+    {
+
+        private DateTime _utcStartDate = DateTime.MinValue;
+        private DateTime _utcCompletedDate = DateTime.MinValue;
+        private TimeZoneInfo _timeZone;
+
+        protected ITodo _baseTodo;
+
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public TodoWrapperHelper(
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
+        {
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+        }
+        public TodoWrapper Get(ITodo baseTodo, Guid userId, TimeZoneInfo timeZone)
+        {
+            var result = new TodoWrapper();
+
+            _timeZone = timeZone;
+            _baseTodo = baseTodo;
+
+            result.Id = _baseTodo.Id;
+            result.Uid = _baseTodo.Uid;
+            result.CalendarId = _baseTodo.CalendarId;
+            result.Name = _baseTodo.Name;
+            result.Description = _baseTodo.Description;
+
+            var startD = _utcStartDate != DateTime.MinValue ? _utcStartDate : _baseTodo.UtcStartDate;
+            startD = new DateTime(startD.Ticks, DateTimeKind.Utc);
+
+            result.Start = new ApiDateTime(startD, _timeZone.GetOffset());
+
+            var completedD = _utcCompletedDate != DateTime.MinValue ? _utcCompletedDate : _baseTodo.Completed;
+            completedD = new DateTime(completedD.Ticks, DateTimeKind.Utc);
+
+            result.Completed = new ApiDateTime(completedD, _timeZone.GetOffset());
+
+            var owner = new UserParams() { Id = _baseTodo.OwnerId, Name = "" };
+            if (_baseTodo.OwnerId != Guid.Empty)
+                owner.Name = UserManager.GetUsers(_baseTodo.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
+
+            result.Owner = owner;
+            
+            result.UserId = userId;
+
+            return result;
+        }
+        public TodoWrapper Get(ITodo baseTodo, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate)
+        {
+            _utcStartDate = utcStartDate;
+            return this.Get(baseTodo, userId, timeZone);
+        }
+    }
+
+    public static class TodoWrapperExtension
+    {
+        public static IServiceCollection AddEmployeeWraper(this IServiceCollection services)
+        {
+            services.TryAddScoped<TodoWrapperHelper>();
+
+            return services
+                .AddApiContextService();
+        }
+    }
 }

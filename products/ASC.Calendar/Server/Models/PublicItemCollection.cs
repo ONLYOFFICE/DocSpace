@@ -32,9 +32,98 @@ using System.Runtime.Serialization;
 using ASC.Core;
 using ASC.Calendar.BusinessObjects;
 using ASC.Web.Core.Calendars;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Api.Core;
 
 namespace ASC.Calendar.Models
 {
+    [DataContract(Name = "sharing", Namespace = "")]
+    public class PublicItemCollection
+    {
+        [DataMember(Name = "actions", Order = 10)]
+        public List<AccessOption> AvailableOptions { get; set; }
+
+        [DataMember(Name = "items", Order = 20)]
+        public List<PublicItemWrapper> Items { get; set; }
+
+        public PublicItemCollection()
+        {
+            this.Items = new List<PublicItemWrapper>();
+        }
+
+        public static PublicItemCollection GetSample()
+        {
+            return new PublicItemCollection { AvailableOptions = new List<AccessOption>() { AccessOption.GetSample() }, Items = new List<PublicItemWrapper>() { PublicItemWrapper.GetSample() } };
+        }
+
+    }
+    public class PublicItemCollectionHelper
+    {
+        public AuthContext AuthContext { get; }
+        public PublicItemCollectionHelper(AuthContext authContext)
+        {
+            AuthContext = authContext;
+        }
+
+        public PublicItemCollection GetDefault()
+        {
+            var sharingOptions = new PublicItemCollection();
+            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(
+                new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
+                {
+                    Id = AuthContext.CurrentAccount.ID,
+                    IsGroup = false
+                },
+            "0", AuthContext.CurrentAccount.ID));
+            return sharingOptions;
+        }
+
+        public  PublicItemCollection GetForCalendar(ICalendar calendar)
+        {
+            var sharingOptions = new PublicItemCollection();
+            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
+            {
+                Id = calendar.OwnerId,
+                IsGroup = false
+            },
+                  calendar.Id.ToString(), calendar.OwnerId));
+            foreach (var item in calendar.SharingOptions.PublicItems)
+                sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(item, calendar.Id.ToString(), calendar.OwnerId));
+
+            return sharingOptions;
+        }
+        public  PublicItemCollection GetForEvent(IEvent calendarEvent)
+        {
+            var sharingOptions = new PublicItemCollection();
+            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
+            {
+                Id = calendarEvent.OwnerId,
+                IsGroup = false
+            },
+
+            calendarEvent.CalendarId, calendarEvent.Id, calendarEvent.OwnerId));
+
+            foreach (var item in calendarEvent.SharingOptions.PublicItems)
+                sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(item, calendarEvent.CalendarId, calendarEvent.Id, calendarEvent.OwnerId));
+
+            return sharingOptions;
+        }
+    }
+    public static class PublicItemCollectionExtension
+    {
+        public static IServiceCollection AddPublicItemCollection(this IServiceCollection services)
+        {
+            services.TryAddScoped<PublicItemCollectionHelper>();
+
+            return services
+                .AddApiContextService();
+        }
+    }
+   
+    
+    
+    
     /*
     [DataContract(Name = "sharing", Namespace = "")]
     public class PublicItemCollection
@@ -83,7 +172,7 @@ namespace ASC.Calendar.Models
                   calendar.Id.ToString(), calendar.OwnerId));
             foreach (var item in calendar.SharingOptions.PublicItems)            
                 sharingOptions.Items.Add(new PublicItemWrapper(item, calendar.Id.ToString(), calendar.OwnerId));
-            
+
             return sharingOptions;
         }
 

@@ -35,7 +35,7 @@ using ASC.Core.Tenants;
 
 namespace ASC.Calendar.BusinessObjects
 {    
-    /*
+    
     [AllDayLongUTCAttribute]
     public class Event : BaseEvent, ISecurityObject
     {
@@ -93,5 +93,5 @@ namespace ASC.Calendar.BusinessObjects
         #endregion
        
     }
-    */
+    
 }

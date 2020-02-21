@@ -42,7 +42,7 @@ using ASC.Common.Utils;
 
 namespace ASC.Calendar.BusinessObjects
 {
-    /*
+    
     public static class CalendarExtention
     {
         public static bool IsiCalStream(this BaseCalendar calendar)
@@ -91,7 +91,7 @@ namespace ASC.Calendar.BusinessObjects
                 var events = calendar.LoadEvents(userId, startDate.UtcTime, endDate.UtcTime);
                 foreach (var e in events)
                 {
-                    var wrapper = new EventWrapper(e, userId, calendar.TimeZone);
+                    var wrapper = new EventWrapperHelper().Get(e, userId, calendar.TimeZone);
                     var listWrapper = wrapper.GetList(startDate.UtcTime, endDate.UtcTime);
                     result.AddRange(listWrapper);
                 }
@@ -125,7 +125,7 @@ namespace ASC.Calendar.BusinessObjects
             return null;
         }
     }
-
+    
 
     [DataContract(Name = "calendar", Namespace = "")]
     public class Calendar : BaseCalendar,  ISecurityObject
@@ -200,7 +200,7 @@ namespace ASC.Calendar.BusinessObjects
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            if (!String.IsNullOrEmpty(iCalUrl))
+            /*if (!String.IsNullOrEmpty(iCalUrl))
             {
                 try
                 {
@@ -218,8 +218,9 @@ namespace ASC.Calendar.BusinessObjects
                 return provider.LoadEvents(Convert.ToInt32(this.Id), userId, TenantId, utcStartDate, utcEndDate)
                         .Cast<IEvent>()
                         .ToList();
-            }
+            }*/
+            return null;
         }
     }    
-    */
+    
 }

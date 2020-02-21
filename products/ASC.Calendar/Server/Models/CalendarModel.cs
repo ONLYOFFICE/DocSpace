@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ASC.Web.Core.Calendars;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -8,12 +9,8 @@ namespace ASC.Calendar.Models
 {
     public class CalendarModel
     {
-
         [DataMember(Name = "id", Order = 0)]
-        public int Id { get; set; }
-
-        [DataMember(Name = "owner_id", Order = 1)]
-        public string ICalUrl { get; set; }
+        public string Id { get; set; }
 
         [DataMember(Name = "name", Order = 2)]
         public string Name { get; set; }
@@ -24,17 +21,32 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "tenant", Order = 200)]
         public int Tenant { get; set; }
 
+        [DataMember(Name = "owner_id", Order = 1)]
+        public Guid OwnerId { get; set; }
+
+        [DataMember(Name = "alert_type", Order = 1)]
+        public EventAlertType AlertType { get; set; }
+
+        [DataMember(Name = "time_zone", Order = 60)]
+        public TimeZoneWrapper TimeZone { get; set; }
+
         [DataMember(Name = "text_color", Order = 60)]
         public string TextColor { get; set; }
 
         [DataMember(Name = "background_color", Order = 60)]
         public string BackgroundColor { get; set; }
 
-        [DataMember(Name = "alert_type", Order = 90)]
-        public int AlertType { get; set; }
+        [DataMember(Name = "ical_url", Order = 60)]
+        public string iCalUrl { get; set; }
 
-        [DataMember(Name = "time_zone", Order = 60)]
-        public string TimeZone { get; set; }
+        [DataMember(Name = "caldav_guid", Order = 60)]
+        public string calDavGuid { get; set; }
+
+        [DataMember(Name = "is_todo", Order = 60)]
+        public int IsTodo { get; set; }
+
+
+
 
         /*public static object GetSample()
         {

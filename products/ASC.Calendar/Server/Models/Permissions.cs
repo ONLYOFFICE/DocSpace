@@ -32,7 +32,7 @@ using System.Runtime.Serialization;
 
 namespace ASC.Calendar.Models
 {
-    /*
+    
     [DataContract(Name = "permissions", Namespace = "")]
     public class Permissions
     {
@@ -44,9 +44,24 @@ namespace ASC.Calendar.Models
             this.UserParams = new List<UserParams>();
         }
 
-        public static object GetSample()
+        public static Permissions GetSample()
         {
-            return new { users = new List<object>(){ ASC.Calendar.Models.UserParams.GetSample() } };
+            return new Permissions { UserParams = new List<UserParams>(){ ASC.Calendar.Models.UserParams.GetSample() } };
+        }
+    }
+
+    [DataContract(Name = "userparams", Namespace = "")]
+    public class UserParams
+    {
+        [DataMember(Name = "objectId")]
+        public Guid Id { get; set; }
+
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        public static UserParams GetSample()
+        {
+            return new UserParams { Id = Guid.Parse("2fdfe577-3c26-4736-9df9-b5a683bb8520"), Name = "Valery Zykov" };
         }
     }
 
@@ -56,25 +71,9 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "data")]
         public PublicItemCollection Data { get; set; }
 
-        public new static object GetSample()
+        public new static CalendarPermissions GetSample()
         {
-            return new { data = PublicItemCollection.GetSample() };
+            return new CalendarPermissions { Data = PublicItemCollection.GetSample() };
         }
     }
-
-    [DataContract(Name = "userparams", Namespace = "")]
-    public class UserParams
-    {
-        [DataMember(Name="objectId")]
-        public Guid Id{get; set;}
-
-        [DataMember(Name="name")]
-        public string Name{get; set;}
-
-        public static object GetSample()
-        {
-            return new { objectId = "2fdfe577-3c26-4736-9df9-b5a683bb8520", name = "Valery Zykov" };
-        }
-    }
-    */
 }

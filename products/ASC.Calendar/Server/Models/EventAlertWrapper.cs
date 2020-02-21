@@ -45,9 +45,9 @@ namespace ASC.Calendar.Models
             return new EventAlertWrapper() { Type = (int)type };
         }
 
-        public static object GetSample()
+        public static EventAlertWrapper GetSample()
         {
-            return new { type = -1 };
+            return new EventAlertWrapper { Type = -1 };
         }
     }
 }

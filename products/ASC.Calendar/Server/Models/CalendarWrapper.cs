@@ -34,33 +34,126 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Calendar.Models
 {
-    /*
     [DataContract(Name = "calendar", Namespace = "")]
     public class CalendarWrapper
-    {        
-        public BaseCalendar UserCalendar{get; private set;}
+    {
+        [DataMember(Name = "isSubscription", Order = 80)]
+        public bool IsSubscription { get; set; }
+
+        [DataMember(Name = "iCalUrl", Order = 230)]
+        public string iCalUrl { get; set; }
+
+        [DataMember(Name = "isiCalStream", Order = 220)]
+        public bool IsiCalStream { get; set; }
+
+        [DataMember(Name = "isHidden", Order = 50)]
+        public bool IsHidden { get; set; }
+
+        [DataMember(Name = "canAlertModify", Order = 200)]
+        public bool CanAlertModify { get; set; }
+
+        [DataMember(Name = "isShared", Order = 60)]
+        public bool IsShared { get; set; }
+
+        [DataMember(Name = "permissions", Order = 70)]
+        public CalendarPermissions Permissions { get; set; }
+
+        [DataMember(Name = "isEditable", Order = 90)]
+        public bool IsEditable { get; set; }
+
+        [DataMember(Name = "textColor", Order = 30)]
+        public string TextColor { get; set; }
+
+        [DataMember(Name = "backgroundColor", Order = 40)]
+        public string BackgroundColor { get; set; }
+
+        [DataMember(Name = "description", Order = 20)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "title", Order = 30)]
+        public string Title { get; set; }
+
+        [DataMember(Name = "objectId", Order = 0)]
+        public string Id { get; set; }
+
+        [DataMember(Name = "isTodo", Order = 0)]
+        public int IsTodo { get; set; }
+
+        [DataMember(Name = "owner", Order = 120)]
+        public UserParams Owner { get; set; }
+
+        public bool IsAcceptedSubscription { get; set; }
+
+        [DataMember(Name = "events", Order = 150)]
+        public List<EventWrapper> Events { get; set; }
+
+        [DataMember(Name = "todos", Order = 160)]
+        public List<TodoWrapper> Todos { get; set; }
+
+        [DataMember(Name = "defaultAlert", Order = 160)]
+        public EventAlertWrapper DefaultAlertType { get; set; }
+
+        [DataMember(Name = "timeZone", Order = 160)]
+        public TimeZoneWrapper TimeZoneInfo { get; set; }
+
+        [DataMember(Name = "canEditTimeZone", Order = 160)]
+        public bool CanEditTimeZone { get; set; }
+
+        public static CalendarWrapper GetSample()
+        {
+            return new CalendarWrapper
+            {
+                CanEditTimeZone = false,
+                TimeZoneInfo = TimeZoneWrapper.GetSample(),
+                DefaultAlertType = EventAlertWrapper.GetSample(),
+                Events = new List<EventWrapper>() { EventWrapper.GetSample() },
+                Owner = UserParams.GetSample(),
+                Id = "1",
+                Title = "Calendar Name",
+                Description = "Calendar Description",
+                BackgroundColor = "#000000",
+                TextColor = "#ffffff",
+                IsEditable = true,
+                Permissions = CalendarPermissions.GetSample(),
+                IsShared = true,
+                CanAlertModify = true,
+                IsHidden = false,
+                IsiCalStream = false,
+                IsSubscription = false
+            };
+        }
+    }
+
+
+    public class CalendarWrapperHelper
+    {
+        public BaseCalendar UserCalendar { get; private set; }
         protected UserViewSettings _userViewSettings;
         protected Guid _userId;
 
         public AuthContext AuthContext { get; }
-        private PermissionContext PermissionContext { get; }
-        private AuthManager Authentication { get; }
-        public UserManager UserManager { get; }
-
-        public TenantManager TenantManager { get; }
-
-        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        public CalendarWrapper(BaseCalendar calendar) : this(calendar, null){}
-        public CalendarWrapper(BaseCalendar calendar, UserViewSettings userViewSettings)
+        public CalendarWrapperHelper(AuthContext authContext)
         {
+            AuthContext = authContext;
+        }
+        public CalendarWrapper Get(BaseCalendar calendar)
+        {
+            return this.Get(calendar, null);
+        }
+        public CalendarWrapper Get(BaseCalendar calendar, UserViewSettings userViewSettings)
+        {
+            var calendarWraper = new CalendarWrapper();
+
             _userViewSettings = userViewSettings;
-            if (_userViewSettings == null && calendar is ASC.Calendar.BusinessObjects.Calendar)
-            { 
-                _userViewSettings = (calendar as ASC.Calendar.BusinessObjects.Calendar)
-                                    .ViewSettings.Find(s=> s.UserId == AuthContext.CurrentAccount.ID);
+            if (_userViewSettings == null && calendar is BusinessObjects.Calendar)
+            {
+                _userViewSettings = (calendar as BusinessObjects.Calendar)
+                                    .ViewSettings.Find(s => s.UserId == AuthContext.CurrentAccount.ID);
             }
 
             if (_userViewSettings == null)
@@ -73,249 +166,295 @@ namespace ASC.Calendar.Models
                 UserCalendar = calendar.GetUserCalendar(_userViewSettings);
                 _userId = _userViewSettings.UserId;
             }
+
+            return calendarWraper;
         }
-
-        [DataMember(Name = "isSubscription", Order = 80)]
-        public virtual bool IsSubscription
-        {
-            get
-            {
-                if (UserCalendar.IsiCalStream())
-                    return true;
-
-                if (UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
-                    return true;
-
-                if (UserCalendar.OwnerId.Equals(_userId))
-                    return false;
-
-                return true;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "iCalUrl", Order = 230)]
-        public virtual string iCalUrl
-        {
-            get
-            {
-                if (UserCalendar.IsiCalStream())
-                    return (UserCalendar as BusinessObjects.Calendar).iCalUrl;
-
-                return "";
-            }
-            set { }
-        }
-
-        [DataMember(Name = "isiCalStream", Order = 220)]
-        public virtual bool IsiCalStream
-        {
-            get
-            {
-                if (UserCalendar.IsiCalStream())
-                    return true;
-
-                return false;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "isHidden", Order = 50)]
-        public virtual bool IsHidden
-        {
-            get
-            {
-                return _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "canAlertModify", Order = 200)]
-        public virtual bool CanAlertModify
-        {
-            get
-            {
-                return UserCalendar.Context.CanChangeAlertType;
-            }
-            set { }
-        }
-
-
-        [DataMember(Name = "isShared", Order = 60)]
-        public virtual bool IsShared
-        {
-            get
-            {
-                return UserCalendar.SharingOptions.SharedForAll || UserCalendar.SharingOptions.PublicItems.Count > 0;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "permissions", Order = 70)]
-        public virtual CalendarPermissions Permissions
-        {
-            get
-            {
-                var p = new CalendarPermissions() { Data = PublicItemCollection.GetForCalendar(UserCalendar) };
-                foreach (var item in UserCalendar.SharingOptions.PublicItems)
-                {
-                    if (item.IsGroup)
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
-                    else
-                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
-                }
-                return p;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "isEditable", Order = 90)]
-        public virtual bool IsEditable
-        {
-            get
-            {
-                if (UserCalendar.IsiCalStream())
-                    return false;
-
-                if (UserCalendar is ISecurityObject)
-                    return PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
-
-                return false;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "textColor", Order = 30)]
-        public string TextColor
-        {
-            get
-            {
-                return String.IsNullOrEmpty(UserCalendar.Context.HtmlTextColor)? BusinessObjects.Calendar.DefaultTextColor:
-                    UserCalendar.Context.HtmlTextColor;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "backgroundColor", Order = 40)]
-        public string BackgroundColor
-        {
-            get
-            {
-                return String.IsNullOrEmpty(UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
-                    UserCalendar.Context.HtmlBackgroundColor;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "description", Order = 20)]
-        public string Description { get { return UserCalendar.Description; } set { } }
-
-        [DataMember(Name = "title", Order = 30)]
-        public string Title
-        {
-            get{return UserCalendar.Name;}
-            set{}
-        } 
-
-        [DataMember(Name = "objectId", Order = 0)]
-        public string Id
-        {
-            get{return UserCalendar.Id;}
-            set{}
-        }
-
-        [DataMember(Name = "isTodo", Order = 0)]
-        public int IsTodo
-        {
-
-            get
-            {
-                if (UserCalendar.IsExistTodo())
-                    return (UserCalendar as BusinessObjects.Calendar).IsTodo;
-
-                return 0;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "owner", Order = 120)]
-        public UserParams Owner
-        {
-            get
-            {
-                var owner = new UserParams() { Id = UserCalendar.OwnerId , Name = ""};
-                if (UserCalendar.OwnerId != Guid.Empty)
-                    owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
-
-                return owner;
-            }
-            set { }
-        }
-
-        public bool IsAcceptedSubscription
-        {
-            get
-            {
-                return  _userViewSettings == null || _userViewSettings.IsAccepted;
-            }
-            set { }
-        }
-
-        [DataMember(Name = "events", Order = 150)]
-        public List<EventWrapper> Events { get; set; }
-
-        [DataMember(Name = "todos", Order = 160)]
-        public List<TodoWrapper> Todos { get; set; }
-
-        [DataMember(Name = "defaultAlert", Order = 160)]
-        public EventAlertWrapper DefaultAlertType
-        {
-            get{
-                return EventAlertWrapper.ConvertToTypeSurrogated(UserCalendar.EventAlertType);            
-            }
-            set { }
-        }
-        
-        [DataMember(Name = "timeZone", Order = 160)]
-        public TimeZoneWrapper TimeZoneInfo
-        {
-            get {
-                return new TimeZoneWrapper(UserCalendar.TimeZone);
-            }
-            set{}
-        }
-
-        [DataMember(Name = "canEditTimeZone", Order = 160)]
-        public bool CanEditTimeZone
-        {
-            get { return UserCalendar.Context.CanChangeTimeZone;}
-            set { }
-        }
-
-        public static object GetSample()
-        {
-            return new
-            {
-                canEditTimeZone = false,
-                timeZone = TimeZoneWrapper.GetSample(),
-                defaultAlert = EventAlertWrapper.GetSample(),
-                events = new List<object>() { EventWrapper.GetSample() },
-                owner = UserParams.GetSample(),
-                objectId = "1",
-                title = "Calendar Name",
-                description = "Calendar Description",
-                backgroundColor = "#000000",
-                textColor = "#ffffff",
-                isEditable = true,
-                permissions = CalendarPermissions.GetSample(),
-                isShared = true,
-                canAlertModify = true,
-                isHidden = false,
-                isiCalStream = false,
-                isSubscription = false
-            };
-        }
-
     }
-    */
+
+    public static class CalendarWrapperExtension
+    {
+        public static IServiceCollection AddCalendarWrapper(this IServiceCollection services)
+        {
+            services.TryAddScoped<CalendarWrapperHelper>();
+
+            return services;
+        }
+    }
+
+
+
+
+    /*
+           [DataContract(Name = "calendar", Namespace = "")]
+           public class CalendarWrapper
+           {        
+               public BaseCalendar UserCalendar{get; private set;}
+               protected UserViewSettings _userViewSettings;
+               protected Guid _userId;
+
+               public CalendarWrapper(BaseCalendar calendar) : this(calendar, null){}
+               public CalendarWrapper(BaseCalendar calendar, UserViewSettings userViewSettings)
+               {
+                   _userViewSettings = userViewSettings;
+                   if (_userViewSettings == null && calendar is ASC.Calendar.BusinessObjects.Calendar)
+                   { 
+                       _userViewSettings = (calendar as ASC.Calendar.BusinessObjects.Calendar)
+                                           .ViewSettings.Find(s=> s.UserId == AuthContext.CurrentAccount.ID);
+                   }
+
+                   if (_userViewSettings == null)
+                   {
+                       UserCalendar = calendar;
+                       _userId = AuthContext.CurrentAccount.ID;
+                   }
+                   else
+                   {
+                       UserCalendar = calendar.GetUserCalendar(_userViewSettings);
+                       _userId = _userViewSettings.UserId;
+                   }
+               }
+
+               [DataMember(Name = "isSubscription", Order = 80)]
+               public virtual bool IsSubscription
+               {
+                   get
+                   {
+                       if (UserCalendar.IsiCalStream())
+                           return true;
+
+                       if (UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
+                           return true;
+
+                       if (UserCalendar.OwnerId.Equals(_userId))
+                           return false;
+
+                       return true;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "iCalUrl", Order = 230)]
+               public virtual string iCalUrl
+               {
+                   get
+                   {
+                       if (UserCalendar.IsiCalStream())
+                           return (UserCalendar as BusinessObjects.Calendar).iCalUrl;
+
+                       return "";
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "isiCalStream", Order = 220)]
+               public virtual bool IsiCalStream
+               {
+                   get
+                   {
+                       if (UserCalendar.IsiCalStream())
+                           return true;
+
+                       return false;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "isHidden", Order = 50)]
+               public virtual bool IsHidden
+               {
+                   get
+                   {
+                       return _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "canAlertModify", Order = 200)]
+               public virtual bool CanAlertModify
+               {
+                   get
+                   {
+                       return UserCalendar.Context.CanChangeAlertType;
+                   }
+                   set { }
+               }
+
+
+               [DataMember(Name = "isShared", Order = 60)]
+               public virtual bool IsShared
+               {
+                   get
+                   {
+                       return UserCalendar.SharingOptions.SharedForAll || UserCalendar.SharingOptions.PublicItems.Count > 0;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "permissions", Order = 70)]
+               public virtual CalendarPermissions Permissions
+               {
+                   get
+                   {
+                       var p = new CalendarPermissions() { Data = PublicItemCollection.GetForCalendar(UserCalendar) };
+                       foreach (var item in UserCalendar.SharingOptions.PublicItems)
+                       {
+                           if (item.IsGroup)
+                               p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
+                           else
+                               p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
+                       }
+                       return p;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "isEditable", Order = 90)]
+               public virtual bool IsEditable
+               {
+                   get
+                   {
+                       if (UserCalendar.IsiCalStream())
+                           return false;
+
+                       if (UserCalendar is ISecurityObject)
+                           return PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
+
+                       return false;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "textColor", Order = 30)]
+               public string TextColor
+               {
+                   get
+                   {
+                       return String.IsNullOrEmpty(UserCalendar.Context.HtmlTextColor)? BusinessObjects.Calendar.DefaultTextColor:
+                           UserCalendar.Context.HtmlTextColor;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "backgroundColor", Order = 40)]
+               public string BackgroundColor
+               {
+                   get
+                   {
+                       return String.IsNullOrEmpty(UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
+                           UserCalendar.Context.HtmlBackgroundColor;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "description", Order = 20)]
+               public string Description { get { return UserCalendar.Description; } set { } }
+
+               [DataMember(Name = "title", Order = 30)]
+               public string Title
+               {
+                   get{return UserCalendar.Name;}
+                   set{}
+               } 
+
+               [DataMember(Name = "objectId", Order = 0)]
+               public string Id
+               {
+                   get{return UserCalendar.Id;}
+                   set{}
+               }
+
+               [DataMember(Name = "isTodo", Order = 0)]
+               public int IsTodo
+               {
+
+                   get
+                   {
+                       if (UserCalendar.IsExistTodo())
+                           return (UserCalendar as BusinessObjects.Calendar).IsTodo;
+
+                       return 0;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "owner", Order = 120)]
+               public UserParams Owner
+               {
+                   get
+                   {
+                       var owner = new UserParams() { Id = UserCalendar.OwnerId , Name = ""};
+                       if (UserCalendar.OwnerId != Guid.Empty)
+                           owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
+
+                       return owner;
+                   }
+                   set { }
+               }
+
+               public bool IsAcceptedSubscription
+               {
+                   get
+                   {
+                       return  _userViewSettings == null || _userViewSettings.IsAccepted;
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "events", Order = 150)]
+               public List<EventWrapper> Events { get; set; }
+
+               [DataMember(Name = "todos", Order = 160)]
+               public List<TodoWrapper> Todos { get; set; }
+
+               [DataMember(Name = "defaultAlert", Order = 160)]
+               public EventAlertWrapper DefaultAlertType
+               {
+                   get{
+                       return EventAlertWrapper.ConvertToTypeSurrogated(UserCalendar.EventAlertType);            
+                   }
+                   set { }
+               }
+
+               [DataMember(Name = "timeZone", Order = 160)]
+               public TimeZoneWrapper TimeZoneInfo
+               {
+                   get {
+                       return new TimeZoneWrapper(UserCalendar.TimeZone);
+                   }
+                   set{}
+               }
+
+               [DataMember(Name = "canEditTimeZone", Order = 160)]
+               public bool CanEditTimeZone
+               {
+                   get { return UserCalendar.Context.CanChangeTimeZone;}
+                   set { }
+               }
+
+               public static object GetSample()
+               {
+                   return new
+                   {
+                       canEditTimeZone = false,
+                       timeZone = TimeZoneWrapper.GetSample(),
+                       defaultAlert = EventAlertWrapper.GetSample(),
+                       events = new List<object>() { EventWrapper.GetSample() },
+                       owner = UserParams.GetSample(),
+                       objectId = "1",
+                       title = "Calendar Name",
+                       description = "Calendar Description",
+                       backgroundColor = "#000000",
+                       textColor = "#ffffff",
+                       isEditable = true,
+                       permissions = CalendarPermissions.GetSample(),
+                       isShared = true,
+                       canAlertModify = true,
+                       isHidden = false,
+                       isiCalStream = false,
+                       isSubscription = false
+                   };
+               }
+
+           }
+           */
 }

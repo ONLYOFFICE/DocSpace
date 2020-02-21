@@ -29,17 +29,75 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.Serialization;
+using ASC.Common.Utils;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Calendar.Models
 {
+    [DataContract(Name = "timeZone", Namespace = "")]
+    public class TimeZoneWrapper {
+        [DataMember(Name = "name", Order = 0)]
+        public string Name { get; set; }
+
+        [DataMember(Name = "id", Order = 0)]
+        public string Id { get; set; }
+
+        [DataMember(Name = "offset", Order = 0)]
+        public int Offset { get; set; }
+
+        public static TimeZoneWrapper GetSample()
+        {
+            return new TimeZoneWrapper { Offset = 0, Id = "UTC", Name = "UTC" };
+        }
+    }
+
+    public class TimeZoneWrapperHelper
+    {
+        private TimeZoneInfo _timeZone;
+        private TimeZoneConverter TimeZoneConverter;
+        public TimeZoneWrapperHelper(TimeZoneConverter timeZoneConverter)
+        {
+            TimeZoneConverter = timeZoneConverter;
+        }
+        public TimeZoneWrapper Get(TimeZoneInfo timeZone, TimeZoneConverter timeZoneConverter)
+        {
+            _timeZone = timeZone;
+            TimeZoneConverter = timeZoneConverter;
+
+            var result = new TimeZoneWrapper();
+
+            result.Name = TimeZoneConverter.GetTimeZoneName(_timeZone);
+            result.Id = _timeZone.Id;
+            result.Offset = (int)_timeZone.GetOffset().TotalMinutes;
+
+            return result;
+        }
+    }
+    public static class TimeZoneWrapperExtension
+    {
+        public static IServiceCollection AddTimeZoneWrapper(this IServiceCollection services)
+        {
+            services.TryAddScoped<TimeZoneWrapperHelper>();
+
+            return services;
+        }
+    }
+  
+    
+    
+    
+    
     /*
     [DataContract(Name = "timeZone", Namespace = "")]
     public class TimeZoneWrapper
     {
         private TimeZoneInfo _timeZone;
-        public TimeZoneWrapper(TimeZoneInfo timeZone)
+        private TimeZoneConverter TimeZoneConverter;
+        public TimeZoneWrapper(TimeZoneInfo timeZone, TimeZoneConverter timeZoneConverter)
         {
             _timeZone = timeZone;
+            TimeZoneConverter = timeZoneConverter;
         }
 
         [DataMember(Name = "name", Order = 0)]
@@ -47,7 +105,7 @@ namespace ASC.Calendar.Models
         {
             get
             {
-                return Common.Utils.TimeZoneConverter.GetTimeZoneName(_timeZone);
+                return TimeZoneConverter.GetTimeZoneName(_timeZone);
             }
             set { }
         }
@@ -72,12 +130,12 @@ namespace ASC.Calendar.Models
             set { }
         }
 
-        public static object GetSample()
+        public static TimeZoneWrapper GetSample()
         {
-            return new { offset = 0, id = "UTC", name = "UTC" };
+            return new TimeZoneWrapper { Offset = 0, Id = "UTC", Name = "UTC" };
         }
 
 
     }
-*/
+    */
 }

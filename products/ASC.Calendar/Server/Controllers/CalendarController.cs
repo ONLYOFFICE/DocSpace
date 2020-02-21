@@ -29,6 +29,7 @@ using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 using ASC.Calendar.Core;
 using ASC.Calendar.Core.Dao;
+using ASC.Calendar.BusinessObjects;
 
 namespace ASC.Calendar.Controllers
 {
@@ -36,27 +37,34 @@ namespace ASC.Calendar.Controllers
     [ApiController]
     public class CalendarController : ControllerBase
     {
+
         public Tenant Tenant { get { return ApiContext.Tenant; } }
         public ApiContext ApiContext { get; }
-
         public UserManager UserManager { get; }
-        public CalendarEngine CalendarEngine { get; }
+        public DataProvider DataProvider { get; }
         public ILog Log { get; }
-
+        public TimeZoneConverter TimeZoneConverter { get; }
+        public CalendarWrapperHelper CalendarWrapperHelper { get; }
         public CalendarController(
            
             ApiContext apiContext,
              
             UserManager userManager,
 
+            TimeZoneConverter timeZoneConverter,
+
             IOptionsMonitor<ILog> option,
 
-            CalendarEngine calendarEngine)
+            DataProvider dataProvider,
+
+            CalendarWrapperHelper calendarWrapperHelper)
         {
             Log = option.Get("ASC.Api");
+            TimeZoneConverter = timeZoneConverter;
             ApiContext = apiContext;
             UserManager = userManager;
-            CalendarEngine = calendarEngine;
+            DataProvider = dataProvider;
+            CalendarWrapperHelper = calendarWrapperHelper
         }
 
         [Read("info")]
@@ -68,15 +76,15 @@ namespace ASC.Calendar.Controllers
         }
 
         [Read("{calendarId}")]
-        public CalendarModel GetCalendarById(int calendarId)
+        public CalendarWrapper GetCalendarById(int calendarId)
         {
-            var cal = CalendarEngine.GetCalendarById(calendarId);
+            var calendars = DataProvider.GetCalendarById(calendarId);
 
-            return cal;
+            return (calendars != null ? CalendarWrapperHelper.Get(calendars) : null);
         }
     }
 
-    public static class PeopleControllerExtention
+    public static class CalendarControllerExtention
     {
         public static IServiceCollection AddCalendarController(this IServiceCollection services)
         {
@@ -84,7 +92,8 @@ namespace ASC.Calendar.Controllers
                 .AddApiContextService()
                 .AddSecurityContextService()
                 .AddCalendarDbContextService()
-                .AddCalendarEngineService();
+                .AddCalendarDataProviderService()
+                .AddCalendarWrapper();
         }
     }
 }
