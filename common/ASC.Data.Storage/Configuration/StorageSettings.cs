@@ -214,8 +214,7 @@ namespace ASC.Data.Storage.Configuration
             return services
                 .AddStorageFactoryConfigService()
                 .AddPathUtilsService()
-                .AddEmailValidationKeyProviderService()
-                .AddHttpContextAccessor();
+                .AddEmailValidationKeyProviderService();
         }
 
         public static IServiceCollection AddCdnStorageSettingsService(this IServiceCollection services)

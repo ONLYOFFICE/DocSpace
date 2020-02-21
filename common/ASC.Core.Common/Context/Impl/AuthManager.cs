@@ -35,7 +35,6 @@ using ASC.Core.Users;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
@@ -46,9 +45,9 @@ namespace ASC.Core
         public UserManager UserManager { get; }
         public UserFormatter UserFormatter { get; }
 
-        public AuthManager(IOptionsSnapshot<CachedUserService> service, UserManager userManager, UserFormatter userFormatter)
+        public AuthManager(IUserService service, UserManager userManager, UserFormatter userFormatter)
         {
-            userService = service.Value;
+            userService = service;
             UserManager = userManager;
             UserFormatter = userFormatter;
         }

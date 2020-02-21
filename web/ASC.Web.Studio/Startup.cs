@@ -29,15 +29,9 @@ namespace ASC.Web.Studio
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddCors();
-
-            services.AddMvc();
-            services.AddMemoryCache();
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
-            /*services.AddMvc(options => options.EnableEndpointRouting = false)
-                .AddNewtonsoftJson();*/
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
@@ -76,8 +70,6 @@ namespace ASC.Web.Studio
                     .AllowAnyHeader()
                     .AllowAnyMethod());
 
-            app.UseStaticFiles();
-            app.UseSession();
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>

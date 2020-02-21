@@ -32,6 +32,7 @@ using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
@@ -43,6 +44,7 @@ using ASC.Core.Security.Authorizing;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -357,14 +359,12 @@ namespace ASC.Core
                 .AddUserFormatter()
                 .AddAuthContextService()
                 .AddUserManagerService()
-                .AddTenantManagerService()
-                .AddHttpContextAccessor();
+                .AddTenantManagerService();
         }
         public static IServiceCollection AddAuthContextService(this IServiceCollection services)
         {
             services.TryAddScoped<AuthContext>();
-            return services
-                .AddHttpContextAccessor();
+            return services;
         }
 
         public static IServiceCollection AddPermissionContextService(this IServiceCollection services)

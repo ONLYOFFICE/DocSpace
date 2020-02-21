@@ -97,6 +97,7 @@ namespace ASC.Core
         internal ITenantService TenantService { get; set; }
         internal IQuotaService QuotaService { get; set; }
         internal ITariffService TariffService { get; set; }
+
         private static List<string> thisCompAddresses = new List<string>();
 
         internal HttpContext HttpContext { get; set; }
@@ -124,16 +125,16 @@ namespace ASC.Core
         }
 
         public TenantManager(
-            IOptionsSnapshot<CachedTenantService> tenantService,
-            IOptionsSnapshot<CachedQuotaService> quotaService,
-            IOptionsSnapshot<TariffService> tariffService,
+            ITenantService tenantService,
+            IQuotaService quotaService,
+            ITariffService tariffService,
             IHttpContextAccessor httpContextAccessor,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
-            TenantService = tenantService.Value;
-            QuotaService = quotaService.Value;
-            TariffService = tariffService.Value;
+            TenantService = tenantService;
+            QuotaService = quotaService;
+            TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             HttpContext = httpContextAccessor?.HttpContext;
@@ -345,7 +346,6 @@ namespace ASC.Core
             services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddTenantService()
                 .AddQuotaService()
                 .AddTariffService()

@@ -126,7 +126,6 @@ namespace ASC.Web.Core.Utility.Skins
 
             return services
                 .AddWebPathService()
-                .AddHttpContextAccessor()
                 .AddWebItemManager();
         }
     }
