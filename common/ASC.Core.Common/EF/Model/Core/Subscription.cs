@@ -14,7 +14,7 @@ namespace ASC.Core.Common.EF
         public string Object { get; set; }
         public bool Unsubscribed { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Tenant, Source, Action, Recipient, Object };
         }

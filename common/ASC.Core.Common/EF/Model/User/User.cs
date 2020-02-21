@@ -71,7 +71,7 @@ namespace ASC.Core.Common.EF
 
         public List<UserGroup> Groups { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Id };
         }

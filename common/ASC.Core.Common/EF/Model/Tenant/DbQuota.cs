@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF
 
         public bool Visible { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Tenant };
         }
