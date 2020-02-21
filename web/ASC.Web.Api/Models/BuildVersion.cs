@@ -24,25 +24,24 @@
 */
 
 
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Api.Settings
 {
-    [DataContract(Name = "buildversion", Namespace = "")]
     public class BuildVersion
     {
-        [DataMember]
         public string CommunityServer { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string DocumentServer { get; set; }
 
-        [DataMember(EmitDefaultValue = false)]
         public string MailServer { get; set; }
-        public IConfiguration Configuration { get; }
+
+        [JsonIgnore]
+        private IConfiguration Configuration { get; }
 
         public BuildVersion(IConfiguration configuration)
         {

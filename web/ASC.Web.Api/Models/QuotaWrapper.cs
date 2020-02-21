@@ -27,7 +27,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -37,57 +38,50 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Web.Studio.Core.Quota
 {
-    [DataContract(Name = "quota", Namespace = "")]
     public class QuotaWrapper
     {
-        [DataMember(Name = "storageSize")]
         public ulong StorageSize { get; set; }
 
-        [DataMember(Name = "maxFileSize")]
         public ulong MaxFileSize { get; set; }
 
-        [DataMember(Name = "usedSize")]
         public ulong UsedSize { get; set; }
 
-        [DataMember(Name = "maxUsersCount")]
         public int MaxUsersCount { get; set; }
 
-        [DataMember(Name = "usersCount")]
         public int UsersCount { get; set; }
 
-        [DataMember(Name = "availableSize")]
         public ulong AvailableSize
         {
             get { return Math.Max(0, StorageSize > UsedSize ? StorageSize - UsedSize : 0); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "availableUsersCount")]
         public int AvailableUsersCount
         {
             get { return Math.Max(0, MaxUsersCount - UsersCount); }
             set { throw new NotImplementedException(); }
         }
 
-        [DataMember(Name = "storageUsage")]
         public IList<QuotaUsage> StorageUsage { get; set; }
 
-        [DataMember(Name = "userStorageSize")]
         public long UserStorageSize { get; set; }
 
-        [DataMember(Name = "userUsedSize")]
         public long UserUsedSize { get; set; }
 
-        [DataMember(Name = "userAvailableSize")]
         public long UserAvailableSize
         {
             get { return Math.Max(0, UserStorageSize - UserUsedSize); }
             set { throw new NotImplementedException(); }
         }
 
-        public TenantExtra TenantExtra { get; }
-        public TenantStatisticsProvider TenantStatisticsProvider { get; }
-        public WebItemManager WebItemManager { get; }
+        [JsonIgnore]
+        private TenantExtra TenantExtra { get; }
+
+        [JsonIgnore]
+        private TenantStatisticsProvider TenantStatisticsProvider { get; }
+
+        [JsonIgnore]
+        private WebItemManager WebItemManager { get; }
 
         public QuotaWrapper()
         {
@@ -140,14 +134,10 @@ namespace ASC.Web.Studio.Core.Quota
             };
         }
 
-
-        [DataContract(Name = "quota_usage", Namespace = "")]
         public class QuotaUsage
         {
-            [DataMember(Name = "path")]
             public string Path { get; set; }
 
-            [DataMember(Name = "size")]
             public long Size { get; set; }
         }
     }

@@ -23,20 +23,14 @@
  *
 */
 
-
-using System.Runtime.Serialization;
-
 namespace ASC.Api.Collections
 {
 
-    [DataContract]
     public class ItemKeyValuePair<TKey, TValue>
     {
-        [DataMember]
         public TKey Key { get; set; }
 
 
-        [DataMember]
         public TValue Value { get; set; }
 
     }

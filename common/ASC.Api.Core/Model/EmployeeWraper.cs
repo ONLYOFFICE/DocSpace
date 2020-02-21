@@ -25,32 +25,27 @@
 
 
 using System;
-using System.Runtime.Serialization;
+
 using ASC.Api.Core;
 using ASC.Core.Users;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Api.Models
 {
-    [DataContract(Name = "person", Namespace = "")]
     public class EmployeeWraper
     {
-        [DataMember(Order = 1)]
         public Guid Id { get; set; }
 
-        [DataMember(Order = 10)]
         public string DisplayName { get; set; }
 
-        [DataMember(Order = 11, EmitDefaultValue = false)]
         public string Title { get; set; }
 
-        [DataMember(Order = 20)]
         public string AvatarSmall { get; set; }
 
-        [DataMember(Order = 30)]
         public string ProfileUrl { get; set; }
 
         public static EmployeeWraper GetSample()
