@@ -118,7 +118,7 @@ const SectionHeaderContent = props => {
     activeStatus,
     disabledUser,
     inviteLinkUsers,
-    sendMessage,
+    sendMessageUsers,
     removeUsers,
     setSelected
   } = props;
@@ -198,7 +198,7 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("LblSendEmail"),
-      disabled: sendMessage,
+      disabled: sendMessageUsers,
       onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
