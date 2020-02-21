@@ -23,8 +23,6 @@
   "Administrator": "Administrator",
   "LblOther": "Other",
   "DeleteButton": "Delete",
-  "SuccessChangeUserStatus": "The user status was successfully changed",
-  "SuccessChangeUserType": "The user type was successfully changed",
   "LblSelect": "Select",
   "More": "More",
   "CloseButton": "Close",
@@ -35,7 +33,6 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "Search": "Search",
   "SendInviteAgain": "Send invitation once again",
-  "SuccessSendInvitation": "The invitation was successfully sent",
 
   "CountPerPage": "{{count}} per page",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
