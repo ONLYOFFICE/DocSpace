@@ -85,7 +85,7 @@ class GroupButtonsMenu extends React.PureComponent {
   groupButtonClick = (item) => {
     if (item.disabled) return;
     item.onClick();
-    this.closeMenu();
+    //this.closeMenu();
   };
 
   componentDidMount() {
