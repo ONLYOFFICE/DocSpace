@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Configuration;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
@@ -63,7 +62,7 @@ namespace ASC.ApiSystem.Classes
         {
             allowskipCfgName = !string.IsNullOrEmpty(allowskipCfgName) ? allowskipCfgName : "auth.allowskip";
 
-            if (Convert.ToBoolean(ConfigurationManager.AppSettings[allowskipCfgName] ?? "false"))
+            if (Convert.ToBoolean(Configuration[allowskipCfgName] ?? "false"))
             {
                 Log.DebugFormat("Auth for {0} skipped", allowskipCfgName);
                 return; // skip auth
@@ -129,7 +128,7 @@ namespace ASC.ApiSystem.Classes
                         }
                     }
 
-                    var skey = ConfigurationManager.AppSettings["core.machinekey"];
+                    var skey = Configuration["core.machinekey"];
                     using var hasher = new HMACSHA1(Encoding.UTF8.GetBytes(skey));
                     var data = string.Join("\n", date, pkey);
                     var hash = hasher.ComputeHash(Encoding.UTF8.GetBytes(data));
