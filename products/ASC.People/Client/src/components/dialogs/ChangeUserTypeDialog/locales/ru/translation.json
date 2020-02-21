@@ -6,6 +6,7 @@
 
   "ChangeUserTypeHeader": "Изменение типа пользователя",
   "ChangeUserTypeButton": "Изменить тип",
-  "ChangeUserTypeMessage": "Пользователи с типом '{{ firstType }}' будут переведены в тип '{{ secondType }}' Вы не можете изменить тип для администраторов портала и для самого себя",
+  "ChangeUserTypeMessage": "Пользователи с типом '{{ firstType }}' будут переведены в тип '{{ secondType }}'.",
+  "ChangeUserTypeMessageWarning": "Вы не можете изменить тип для администраторов портала и для самого себя",
   "ShowUsersList": "Показать список пользователей"
 }

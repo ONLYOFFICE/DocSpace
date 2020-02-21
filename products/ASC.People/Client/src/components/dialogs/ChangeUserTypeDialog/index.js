@@ -63,6 +63,7 @@ const ChangeUserTypeDialogComponent = props => {
                 secondType: secondType
               })}
             </Text>
+            <Text>{t("ChangeUserTypeMessageWarning")}</Text>
 
             <ToggleContent
               className="toggle-content-dialog"

@@ -47,6 +47,7 @@ const SendInviteDialogComponent = props => {
         bodyContent={
           <>
             <Text>{t("SendInviteAgainDialog")}</Text>
+            <Text>{t("SendInviteAgainDialogMessage")}</Text>
             <ToggleContent
               className="toggle-content-dialog"
               label={t("ShowUsersList")}
