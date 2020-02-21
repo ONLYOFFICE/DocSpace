@@ -24,38 +24,37 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class DisplayImagesAddressDao : BaseDao, IDisplayImagesAddressDao
+    public class DisplayImagesAddressDao : BaseDao, IDisplayImagesAddressDao
     {
-        protected static ITable table = new MailTableFactory().Create<DisplayImagesTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public DisplayImagesAddressDao(IDbManager dbManager, int tenant, string user)
-            : base(table, dbManager, tenant)
+        public DisplayImagesAddressDao(
+            DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public List<string> GetDisplayImagesAddresses()
         {
-            var query = new SqlQuery(DisplayImagesTable.TABLE_NAME)
-                .Select(DisplayImagesTable.Columns.Address)
-                .Where(DisplayImagesTable.Columns.User, CurrentUserId)
-                .Where(DisplayImagesTable.Columns.Tenant, Tenant);
+            var query = MailDb.MailDisplayImages
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Select(r => r.Address);
 
-            var addresses = Db.ExecuteList(query)
-                .ConvertAll(fields => fields[0].ToString());
+            List<string> addresses = query.ToList();
 
             return addresses;
         }
@@ -65,12 +64,20 @@ namespace ASC.Mail.Core.Dao
             if (string.IsNullOrEmpty(address))
                 throw new ArgumentException(@"Invalid address. Address can't be empty.", "address");
 
-            var query = new SqlInsert(DisplayImagesTable.TABLE_NAME, true)
-                .InColumnValue(DisplayImagesTable.Columns.Tenant, Tenant)
-                .InColumnValue(DisplayImagesTable.Columns.User, CurrentUserId)
-                .InColumnValue(DisplayImagesTable.Columns.Address, address);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            Db.ExecuteNonQuery(query);
+            var dbAddress = new MailDisplayImages
+            {
+                Tenant = Tenant,
+                IdUser = UserId,
+                Address = address
+            };
+
+            MailDb.MailDisplayImages.Add(dbAddress);
+
+            MailDb.SaveChanges();
+
+            tr.Commit();
         }
 
         public void RemovevDisplayImagesAddress(string address)
@@ -78,12 +85,26 @@ namespace ASC.Mail.Core.Dao
             if (string.IsNullOrEmpty(address))
                 throw new ArgumentException(@"Invalid address. Address can't be empty.", "address");
 
-            var query = new SqlDelete(DisplayImagesTable.TABLE_NAME)
-                .Where(DisplayImagesTable.Columns.User, CurrentUserId)
-                .Where(DisplayImagesTable.Columns.Tenant, Tenant)
-                .Where(DisplayImagesTable.Columns.Address, address);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            Db.ExecuteNonQuery(query);
+            var range = MailDb.MailDisplayImages
+                .Where(r => r.IdUser == UserId && r.Tenant == Tenant && r.Address == address);
+
+            MailDb.MailDisplayImages.RemoveRange(range);
+
+            var count = MailDb.SaveChanges();
+
+            tr.Commit();
         }
-    }*/
+    }
+
+    public static class DisplayImagesAddressDaoExtension
+    {
+        public static IServiceCollection AddDisplayImagesAddressDaoService(this IServiceCollection services)
+        {
+            services.TryAddScoped<DisplayImagesAddressDao>();
+
+            return services;
+        }
+    }
 }

@@ -24,59 +24,62 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Enums;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Mail.Enums;
+using ASC.Mail.Core.Dao.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class AlertDao : BaseDao, IAlertDao
+    public class AlertDao : BaseDao, IAlertDao
     {
-        protected static ITable table = new MailTableFactory().Create<AlertsTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public AlertDao(IDbManager dbManager, int tenant, string user = null) 
-            : base(table, dbManager, tenant)
+        public AlertDao(
+            DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public Alert GetAlert(long id)
         {
-            var query = Query()
-                .Where(AlertsTable.Columns.Tenant, Tenant)
-                .Where(AlertsTable.Columns.User, CurrentUserId)
-                .Where(AlertsTable.Columns.Id, id);
+            var alert = MailDb.MailAlerts
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Where(r => r.Id == id)
+                .Select(r => new Alert
+                {
+                    Id = r.Id,
+                    MailboxId = r.IdMailbox,
+                    Type = r.Type,
+                    Data = r.Data
+                }).SingleOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToAlert)
-                .SingleOrDefault();
+            return alert;
         }
 
         public List<Alert> GetAlerts(int mailboxId = -1, MailAlertTypes type = MailAlertTypes.Empty)
         {
-            var query = Query()
-                .Where(AlertsTable.Columns.Tenant, Tenant)
-                .Where(AlertsTable.Columns.User, CurrentUserId);
+            var alerts = MailDb.MailAlerts
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Select(r => new Alert
+                {
+                    Id = r.Id,
+                    MailboxId = r.IdMailbox,
+                    Type = r.Type,
+                    Data = r.Data
+                }).ToList();
 
-            if (mailboxId > 0)
-                query.Where(AlertsTable.Columns.MailboxId, mailboxId);
-
-            if (type != MailAlertTypes.Empty)
-                query.Where(AlertsTable.Columns.Type, (int)type);
-
-            return Db.ExecuteList(query)
-                .ConvertAll(ToAlert);
+            return alerts;
         }
 
         public int SaveAlert(Alert alert, bool unique = false)
@@ -89,65 +92,89 @@ namespace ASC.Mail.Core.Dao
                 {
                     var result = DeleteAlerts(alerts.Select(a => a.Id).ToList());
 
-                    if(result <= 0)
+                    if (result <= 0)
                         throw new Exception("Delete old alerts failed");
                 }
             }
 
-            var query = new SqlInsert(AlertsTable.TABLE_NAME, true)
-                .InColumnValue(AlertsTable.Columns.Id, alert.Id)
-                .InColumnValue(AlertsTable.Columns.Tenant, alert.Tenant)
-                .InColumnValue(AlertsTable.Columns.User, alert.User)
-                .InColumnValue(AlertsTable.Columns.MailboxId, alert.MailboxId)
-                .InColumnValue(AlertsTable.Columns.Type, (int)alert.Type)
-                .InColumnValue(AlertsTable.Columns.Data, alert.Data);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            return Db.ExecuteNonQuery(query);
+            var dbAlert = new MailAlerts()
+            {
+                Id = alert.Id,
+                Tenant = Tenant,
+                IdUser = UserId,
+                IdMailbox = alert.MailboxId,
+                Type = alert.Type,
+                Data = alert.Data
+            };
+
+            var saveResult = MailDb.MailAlerts.Add(dbAlert).Entity;
+
+            MailDb.SaveChanges();
+
+            tr.Commit();
+
+            return saveResult.Id;
         }
 
         public int DeleteAlert(long id)
         {
-            var query = new SqlDelete(AlertsTable.TABLE_NAME)
-                .Where(AlertsTable.Columns.Tenant, Tenant)
-                .Where(AlertsTable.Columns.User, CurrentUserId)
-                .Where(AlertsTable.Columns.Id, id);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            return Db.ExecuteNonQuery(query);
+            var range = MailDb.MailAlerts.Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id);
+
+            MailDb.MailAlerts.RemoveRange(range);
+
+            var count = MailDb.SaveChanges();
+
+            tr.Commit();
+
+            return count;
         }
 
         public int DeleteAlerts(int mailboxId)
         {
-            var query = new SqlDelete(AlertsTable.TABLE_NAME)
-               .Where(AlertsTable.Columns.Tenant, Tenant)
-               .Where(AlertsTable.Columns.User, CurrentUserId)
-               .Where(AlertsTable.Columns.MailboxId, mailboxId);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            return Db.ExecuteNonQuery(query);
+            var range = MailDb.MailAlerts
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdMailbox == mailboxId);
+
+            MailDb.MailAlerts.RemoveRange(range);
+
+            var count = MailDb.SaveChanges();
+
+            tr.Commit();
+
+            return count;
         }
 
         public int DeleteAlerts(List<int> ids)
         {
-            var query = new SqlDelete(AlertsTable.TABLE_NAME)
-                .Where(AlertsTable.Columns.Tenant, Tenant)
-                .Where(AlertsTable.Columns.User, CurrentUserId)
-                .Where(Exp.In(AlertsTable.Columns.Id, ids));
+            using var tr = MailDb.Database.BeginTransaction();
 
-            return Db.ExecuteNonQuery(query);
+            var range = MailDb.MailAlerts
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
+                .Where(r => ids.Contains(r.Id));
+
+            MailDb.MailAlerts.RemoveRange(range);
+
+            var count = MailDb.SaveChanges();
+
+            tr.Commit();
+
+            return count;
         }
 
-        protected Alert ToAlert(object[] r)
+    }
+
+    public static class AlertDaoExtension
+    {
+        public static IServiceCollection AddAlertDaoService(this IServiceCollection services)
         {
-            var f = new Alert
-            {
-                Id = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                User = Convert.ToString(r[2]),
-                MailboxId = Convert.ToInt32(r[3]),
-                Type = (MailAlertTypes)Convert.ToInt32(r[4]),
-                Data = Convert.ToString(r[5])
-            };
+            services.TryAddScoped<AlertDao>();
 
-            return f;
+            return services;
         }
-    }*/
+    }
 }

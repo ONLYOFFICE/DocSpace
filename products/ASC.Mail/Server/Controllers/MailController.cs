@@ -76,6 +76,41 @@ namespace ASC.Mail.Controllers
             return accounts.ToAccountData();
         }
 
+
+        /// <summary>
+        ///    Returns the list of alerts for the authenticated user
+        /// </summary>
+        /// <returns>Alerts list</returns>
+        /// <short>Get alerts list</short> 
+        /// <category>Alerts</category>
+        [Read("alert")]
+        public IList<MailAlertData> GetAlerts()
+        {
+            var alerts = MailEngineFactory.AlertEngine.GetAlerts();
+            return alerts;
+        }
+
+        /// <summary>
+        ///    Deletes the alert with the ID specified in the request
+        /// </summary>
+        /// <param name="id">Alert ID</param>
+        /// <returns>Deleted alert id. Same as request parameter.</returns>
+        /// <short>Delete alert by ID</short> 
+        /// <category>Alerts</category>
+        [Delete("alert/{id}")]
+        public long DeleteAlert(long id)
+        {
+            if (id < 0)
+                throw new ArgumentException(@"Invalid alert id. Id must be positive integer.", "id");
+
+            var success = MailEngineFactory.AlertEngine.DeleteAlert(id);
+
+            if (!success)
+                throw new Exception("Delete failed");
+
+            return id;
+        }
+
         /// <summary>
         ///    Creates account using full information about mail servers.
         /// </summary>
@@ -150,6 +185,50 @@ namespace ASC.Mail.Controllers
                 throw new LoginException("Some error has happend", loginResult);
 
             return accountInfo.ToAccountData().FirstOrDefault();
+        }
+
+        /// <summary>
+        ///    Returns list of all trusted addresses for image displaying.
+        /// </summary>
+        /// <returns>Addresses list. Email adresses represented as string name@domain.</returns>
+        /// <short>Get trusted addresses</short> 
+        /// <category>Images</category>
+        [Read("display_images/addresses")]
+        public IEnumerable<string> GetDisplayImagesAddresses()
+        {
+            return MailEngineFactory.DisplayImagesAddressEngine.Get();
+        }
+
+        /// <summary>
+        ///    Add the address to trusted addresses.
+        /// </summary>
+        /// <param name="address">Address for adding. </param>
+        /// <returns>Added address</returns>
+        /// <short>Add trusted address</short> 
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <category>Images</category>
+        [Create("display_images/address")]
+        public string AddDisplayImagesAddress(string address)
+        {
+            MailEngineFactory.DisplayImagesAddressEngine.Add(address);
+
+            return address;
+        }
+
+        /// <summary>
+        ///    Remove the address from trusted addresses.
+        /// </summary>
+        /// <param name="address">Address for removing</param>
+        /// <returns>Removed address</returns>
+        /// <short>Remove from trusted addresses</short> 
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <category>Images</category>
+        [Delete("display_images/address")]
+        public string RemovevDisplayImagesAddress(string address)
+        {
+            MailEngineFactory.DisplayImagesAddressEngine.Remove(address);
+
+            return address;
         }
     }
 
