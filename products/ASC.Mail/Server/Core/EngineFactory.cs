@@ -44,15 +44,19 @@ namespace ASC.Mail.Core
 
         public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
 
+        public SignatureEngine SignatureEngine { get; }
+
         public EngineFactory(
             AccountEngine accountEngine,
             AlertEngine alertEngine,
-            DisplayImagesAddressEngine displayImagesAddressEngine
+            DisplayImagesAddressEngine displayImagesAddressEngine,
+            SignatureEngine signatureEngine
             )
         {
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
             DisplayImagesAddressEngine = displayImagesAddressEngine;
+            SignatureEngine = signatureEngine;
         }
 
         //private AccountEngine _accountEngine;
@@ -246,7 +250,8 @@ namespace ASC.Mail.Core
                 .AddMailboxEngineService()
                 .AddAccountEngineService()
                 .AddAlertEngineService()
-                .AddDisplayImagesAddressEngineService();
+                .AddDisplayImagesAddressEngineService()
+                .AddSignatureEngineService();
         }
     }
 }

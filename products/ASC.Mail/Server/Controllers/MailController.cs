@@ -62,6 +62,7 @@ namespace ASC.Mail.Controllers
             return new Module(product, false);
         }
 
+        #region Api.Accounts
         /// <summary>
         ///    Returns lists of all mailboxes, aliases and groups for user.
         /// </summary>
@@ -76,7 +77,26 @@ namespace ASC.Mail.Controllers
             return accounts.ToAccountData();
         }
 
+        /// <summary>
+        ///    Creates account using full information about mail servers.
+        /// </summary>
+        /// <param name="model">instance of AccountModel</param>
+        /// <returns>Created account</returns>
+        /// <exception cref="Exception">Exception contains text description of happened error.</exception>
+        /// <short>Create account with custom mail servers.</short> 
+        /// <category>Accounts</category>
+        [Create("accounts")]
+        public MailAccountData CreateAccount(AccountModel model)
+        {
+            var accountInfo = MailEngineFactory.AccountEngine.TryCreateAccount(model, out LoginResult loginResult);
 
+            if (accountInfo == null)
+                throw new LoginException(loginResult);
+
+            return accountInfo.ToAccountData().FirstOrDefault();
+        }
+        #endregion
+        #region Api.Alerts
         /// <summary>
         ///    Returns the list of alerts for the authenticated user
         /// </summary>
@@ -110,26 +130,8 @@ namespace ASC.Mail.Controllers
 
             return id;
         }
-
-        /// <summary>
-        ///    Creates account using full information about mail servers.
-        /// </summary>
-        /// <param name="model">instance of AccountModel</param>
-        /// <returns>Created account</returns>
-        /// <exception cref="Exception">Exception contains text description of happened error.</exception>
-        /// <short>Create account with custom mail servers.</short> 
-        /// <category>Accounts</category>
-        [Create("accounts")]
-        public MailAccountData CreateAccount(AccountModel model)
-        {
-            var accountInfo = MailEngineFactory.AccountEngine.TryCreateAccount(model, out LoginResult loginResult);
-
-            if (accountInfo == null)
-                throw new LoginException(loginResult);
-
-            return accountInfo.ToAccountData().FirstOrDefault();
-        }
-
+        #endregion
+        #region Api.Images
         /// <summary>
         ///    Returns list of all trusted addresses for image displaying.
         /// </summary>
@@ -173,6 +175,46 @@ namespace ASC.Mail.Controllers
 
             return address;
         }
+        #endregion
+        #region Api.Signature
+        /// <summary>
+        /// This method needed for getting mailbox signature.
+        /// </summary>
+        /// <param name="mailbox_id"></param>
+        /// <returns>Signature object</returns>
+        [Read("signature/{mailbox_id}")]
+        public MailSignatureData GetSignature(int mailbox_id)
+        {
+            var accounts = GetAccounts();
+
+            var account = accounts.FirstOrDefault(a => a.MailboxId == mailbox_id);
+
+            if (account == null)
+                throw new ArgumentException("Mailbox not found");
+
+            return account.Signature;
+        }
+
+        /// <summary>
+        /// This method needed for update or create signature.
+        /// </summary>
+        /// <param name="mailbox_id">Id of updated mailbox.</param>
+        /// <param name="html">New signature value.</param>
+        /// <param name="is_active">New signature status.</param>
+        [Create("signature/update/{mailbox_id}")]
+        public MailSignatureData UpdateSignature(int mailbox_id, string html, bool is_active)
+        {
+            var accounts = GetAccounts();
+
+            var account = accounts.FirstOrDefault(a => a.MailboxId == mailbox_id);
+
+            if (account == null)
+                throw new ArgumentException("Mailbox not found");
+
+            return MailEngineFactory.SignatureEngine.SaveSignature(mailbox_id, html, is_active);
+        }
+
+        #endregion
     }
 
     public static class MailControllerExtention

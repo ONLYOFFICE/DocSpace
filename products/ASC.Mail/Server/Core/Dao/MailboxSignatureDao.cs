@@ -24,111 +24,121 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Extensions;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxSignatureDao : BaseDao, IMailboxSignatureDao
+    public class MailboxSignatureDao : BaseDao, IMailboxSignatureDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxSignatureTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        private const string SIG_ALIAS = "s";
-        private const string MB_ALIAS = "mb";
-
-        public MailboxSignatureDao(IDbManager dbManager, int tenant, string user)
-            : base(table, dbManager, tenant)
+        public MailboxSignatureDao(
+            DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public MailboxSignature GetSignature(int mailboxId)
         {
-            var query = Query(SIG_ALIAS)
-                .InnerJoin(MailboxTable.TABLE_NAME.Alias(MB_ALIAS),
-                    Exp.EqColumns(MailboxTable.Columns.Id.Prefix(MB_ALIAS),
-                        MailboxSignatureTable.Columns.MailboxId.Prefix(SIG_ALIAS)))
-                .Where(MailboxSignatureTable.Columns.Tenant.Prefix(SIG_ALIAS), Tenant)
-                .Where(MailboxSignatureTable.Columns.MailboxId.Prefix(SIG_ALIAS), mailboxId);
+            var query = MailDb.MailMailboxSignature
+                .Join(MailDb.MailMailbox,
+                    s => s.IdMailbox,
+                    mb => mb.Id,
+                    (s, mb) => new MailboxSignature
+                    {
+                        MailboxId = mb.Id,
+                        Tenant = mb.Tenant,
+                        Html = s.Html,
+                        IsActive = s.IsActive
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToSignature)
-                .DefaultIfEmpty(new MailboxSignature
+                    })
+                .Where(r => r.MailboxId == mailboxId).FirstOrDefault();
+
+            if (query == null)
+            {
+                return new MailboxSignature
                 {
                     MailboxId = mailboxId,
                     Tenant = Tenant,
                     Html = "",
                     IsActive = false
-                })
-                .Single();
+                };
+            }
+            return query;
         }
 
         public List<MailboxSignature> GetSignatures(List<int> mailboxIds)
         {
-            var query = Query(SIG_ALIAS)
-                .InnerJoin(MailboxTable.TABLE_NAME.Alias(MB_ALIAS),
-                    Exp.EqColumns(MailboxTable.Columns.Id.Prefix(MB_ALIAS),
-                        MailboxSignatureTable.Columns.MailboxId.Prefix(SIG_ALIAS)))
-                .Where(MailboxSignatureTable.Columns.Tenant.Prefix(SIG_ALIAS), Tenant)
-                .Where(Exp.In(MailboxSignatureTable.Columns.MailboxId.Prefix(SIG_ALIAS), mailboxIds));
+            var query = MailDb.MailMailboxSignature
+                .Join(MailDb.MailMailbox,
+                    s => s.IdMailbox,
+                    mb => mb.Id,
+                    (s, mb) => new MailboxSignature
+                    {
+                        MailboxId = mb.Id,
+                        Tenant = mb.Tenant,
+                        Html = s.Html,
+                        IsActive = s.IsActive
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToSignature);
+                    })
+                .Where(r => mailboxIds.Contains(r.MailboxId));
 
             return (from mailboxId in mailboxIds
-                let sig = list.FirstOrDefault(s => s.MailboxId == mailboxId)
-                select sig ?? new MailboxSignature
-                {
-                    MailboxId = mailboxId,
-                    Tenant = Tenant,
-                    Html = "",
-                    IsActive = false
-                })
-                .ToList();
+                    let sig = query.FirstOrDefault(s => s.MailboxId == mailboxId)
+                    select sig ?? new MailboxSignature
+                    {
+                        MailboxId = mailboxId,
+                        Tenant = Tenant,
+                        Html = "",
+                        IsActive = false
+                    })
+                    .ToList();
         }
 
         public int SaveSignature(MailboxSignature signature)
         {
-            var query = new SqlInsert(MailboxSignatureTable.TABLE_NAME, true)
-                .InColumnValue(MailboxSignatureTable.Columns.Html, signature.Html)
-                .InColumnValue(MailboxSignatureTable.Columns.IsActive, signature.IsActive)
-                .InColumnValue(MailboxSignatureTable.Columns.Tenant, signature.Tenant)
-                .InColumnValue(MailboxSignatureTable.Columns.MailboxId, signature.MailboxId);
+            var dbSignature = new MailMailboxSignature()
+            {
+                Html = signature.Html,
+                IsActive = signature.IsActive,
+                Tenant = signature.Tenant,
+                IdMailbox = signature.MailboxId
+            };
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailMailboxSignature.Add(dbSignature);
+
+            return MailDb.SaveChanges();
         }
 
         public int DeleteSignature(int mailboxId)
         {
-            var query = new SqlDelete(MailboxSignatureTable.TABLE_NAME)
-                .Where(MailboxSignatureTable.Columns.MailboxId, mailboxId)
-                .Where(MailboxSignatureTable.Columns.Tenant, Tenant);
-            return Db.ExecuteNonQuery(query);
-        }
+            var query = MailDb.MailMailboxSignature
+                .Where(r => r.Tenant == Tenant && r.IdMailbox == mailboxId);
 
-        protected MailboxSignature ToSignature(object[] r)
+            MailDb.MailMailboxSignature.RemoveRange(query);
+
+            return MailDb.SaveChanges();
+        }
+    }
+
+    public static class MailboxSignatureDaoExtension
+    {
+        public static IServiceCollection AddMailboxSignatureDaoService(this IServiceCollection services)
         {
-            var obj = new MailboxSignature
-            {
-                MailboxId = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                Html = Convert.ToString(r[2]),
-                IsActive = Convert.ToBoolean(r[3])
-            };
+            services.TryAddScoped<MailboxSignatureDao>();
 
-            return obj;
+            return services;
         }
-    }*/
+    }
 }
