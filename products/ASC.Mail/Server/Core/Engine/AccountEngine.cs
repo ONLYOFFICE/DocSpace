@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Threading;
 using ASC.Api.Core;
 //using System.Net.Mail;
@@ -42,6 +43,7 @@ using ASC.Mail.Clients;
 //using ASC.Mail.Core.Dao.Expressions.Mailbox;
 //using ASC.Mail.Core.Entities;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -176,10 +178,35 @@ namespace ASC.Mail.Core.Engine
             return accountInfoList;
         }
 
-        public AccountInfo TryCreateAccount(MailBoxData mbox, out LoginResult loginResult)
+        public AccountInfo TryCreateAccount(AccountModel accountModel, out LoginResult loginResult)
         {
-            if (mbox == null)
-                throw new NullReferenceException("mbox");
+            if (accountModel == null)
+                throw new NullReferenceException("accountModel");
+
+            var mbox = new MailBoxData
+            {
+                Name = accountModel.Name,
+                EMail = new MailAddress(accountModel.Email),
+                Account = accountModel.Login,
+                Password = accountModel.Password,
+                Port = accountModel.Port,
+                Server = accountModel.Server,
+                SmtpAccount = accountModel.SmtpLogin,
+                SmtpPassword = accountModel.SmtpPassword,
+                SmtpPort = accountModel.SmtpPort,
+                SmtpServer = accountModel.SmtpServer,
+                Imap = accountModel.Imap,
+                TenantId = Tenant,
+                UserId = UserId,
+                BeginDate = accountModel.Restrict
+                    ? DateTime.Now.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta))
+                    : new DateTime(MailBoxData.DefaultMailBeginTimestamp),
+                Encryption = accountModel.IncomingEncryptionType,
+                SmtpEncryption = accountModel.OutcomingEncryptionType,
+                Authentication = accountModel.IncomingAuthenticationType,
+                SmtpAuthentication = accountModel.SmtpAuth ? accountModel.OutcomingAuthenticationType : SaslMechanism.None,
+                Enabled = true
+            };
 
             using (var client = new MailClient(mbox, CancellationToken.None,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))

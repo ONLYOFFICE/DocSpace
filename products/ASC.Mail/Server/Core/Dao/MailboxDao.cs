@@ -32,6 +32,7 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -55,6 +56,7 @@ namespace ASC.Mail.Core.Dao
         public Mailbox GetMailBox(IMailboxExp exp)
         {
             var mailbox = MailDb.MailMailbox
+                .AsNoTracking()
                 .Where(exp.GetExpression())
                 .Select(ToMailbox)
                 .SingleOrDefault();
@@ -104,8 +106,8 @@ namespace ASC.Mail.Core.Dao
                  .GroupBy(mb => mb.Id)
                  .Select(mb => new
                  {
-                     Min = mb.Min(o => o.Id),
-                     Max = mb.Max(o => o.Id)
+                     Min = (int)mb.Min(o => o.Id),
+                     Max = (int)mb.Max(o => o.Id)
                  })
                  .SingleOrDefault();
 
@@ -125,7 +127,7 @@ namespace ASC.Mail.Core.Dao
         public int SaveMailBox(Mailbox mailbox)
         {
             var mailMailbox = new MailMailbox { 
-                Id = mailbox.Id,
+                Id = (uint)mailbox.Id,
                 Tenant = mailbox.Tenant,
                 IdUser = mailbox.User,
                 Address = mailbox.Address,
@@ -161,18 +163,21 @@ namespace ASC.Mail.Core.Dao
                 DateCreated = mailbox.DateCreated
             };
 
-            var result = MailDb.MailMailbox.Add(mailMailbox).Entity;
+            var result = MailDb.Entry(mailMailbox);
+            result.State = mailMailbox.Id == 0
+                ? EntityState.Added
+                : EntityState.Modified;
 
             MailDb.SaveChanges();
 
-            return result.Id;
+            return (int)result.Entity.Id;
         }
 
         public bool SetMailboxRemoved(Mailbox mailbox)
         {
             var mailMailbox = new MailMailbox
             {
-                Id = mailbox.Id,
+                Id = (uint)mailbox.Id,
                 IsRemoved = true
             };
 
@@ -188,7 +193,7 @@ namespace ASC.Mail.Core.Dao
         {
             var mailMailbox = new MailMailbox
             {
-                Id = mailbox.Id
+                Id = (uint)mailbox.Id
             };
 
             MailDb.MailMailbox.Remove(mailMailbox);
@@ -416,7 +421,7 @@ namespace ASC.Mail.Core.Dao
         {
             var mb = new Mailbox
             {
-                Id = r.Id,
+                Id = (int)r.Id,
                 User = r.IdUser,
                 Tenant = r.Tenant,
                 Address = r.Address,

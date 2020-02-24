@@ -33,10 +33,23 @@ namespace ASC.Mail.Exceptions
     {
         public LoginResult LoginResult { get; }
 
-        public LoginException(string message, LoginResult loginResult)
-            : base(message)
+        public LoginException(LoginResult loginResult)
+            : base(ToMessage(loginResult))
         {
             LoginResult = loginResult;
+        }
+
+        public static string ToMessage(LoginResult loginResult)
+        {
+            return string.Format("Login errors: " +
+                $"Imap: {0}" +
+                $"Smtp: {1}",
+                loginResult.IngoingSuccess
+                    ? "Success"
+                    : loginResult.IngoingException?.Message,
+                loginResult.OutgoingSuccess
+                    ? "Success"
+                    : loginResult.OutgoingException?.Message);
         }
 
         public override string ToString()

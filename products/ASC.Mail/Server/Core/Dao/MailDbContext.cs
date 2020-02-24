@@ -378,6 +378,10 @@ namespace ASC.Mail.Core.Dao
 
             modelBuilder.Entity<MailMailbox>(entity =>
             {
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+                    //.HasConversion(v => (uint)v, v => (int)v);
+
                 entity.HasIndex(e => e.Address)
                     .HasName("address_index");
 

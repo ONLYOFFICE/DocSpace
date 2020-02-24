@@ -50,11 +50,11 @@ namespace ASC.Mail.Core.Dao
         public List<Account> GetAccounts()
         {
             var accounts = (from mb in MailDb.MailMailbox
-                            join signature in MailDb.MailMailboxSignature on mb.Id equals signature.IdMailbox into Signature
+                            join signature in MailDb.MailMailboxSignature on mb.Id equals (uint)signature.IdMailbox into Signature
                             from sig in Signature.DefaultIfEmpty()
-                            join autoreply in MailDb.MailMailboxAutoreply on mb.Id equals autoreply.IdMailbox into Autoreply
+                            join autoreply in MailDb.MailMailboxAutoreply on mb.Id equals (uint)autoreply.IdMailbox into Autoreply
                             from reply in Autoreply.DefaultIfEmpty()
-                            join address in MailDb.MailServerAddress on mb.Id equals address.IdMailbox into Address
+                            join address in MailDb.MailServerAddress on mb.Id equals (uint)address.IdMailbox into Address
                             from sa in Address.DefaultIfEmpty()
                             join domain in MailDb.MailServerDomain on sa.IdDomain equals domain.Id into Domain
                             from sd in Domain.DefaultIfEmpty()
@@ -66,7 +66,7 @@ namespace ASC.Mail.Core.Dao
                             orderby sa.IsAlias
                             select new Account
                             {
-                                MailboxId = mb.Id,
+                                MailboxId = (int)mb.Id,
                                 MailboxAddress = mb.Address,
                                 MailboxEnabled = mb.Enabled,
                                 MailboxAddressName = mb.Name,
@@ -84,12 +84,12 @@ namespace ASC.Mail.Core.Dao
                                 ServerMailGroupId = sg.Id,
                                 ServerMailGroupAddress = sg.Address,
                                 MailboxSignature = sig != null
-                                 ? new MailSignatureData(mb.Id, mb.Tenant, sig.Html, sig.IsActive)
-                                 : new MailSignatureData(mb.Id, mb.Tenant, string.Empty, false),
+                                 ? new MailSignatureData((int)mb.Id, mb.Tenant, sig.Html, sig.IsActive)
+                                 : new MailSignatureData((int)mb.Id, mb.Tenant, string.Empty, false),
                                 MailboxAutoreply = reply != null
-                                 ? new MailAutoreplyData(mb.Id, mb.Tenant, reply.TurnOn, reply.OnlyContacts,
+                                 ? new MailAutoreplyData((int)mb.Id, mb.Tenant, reply.TurnOn, reply.OnlyContacts,
                                      reply.TurnOnToDate, reply.FromDate, reply.ToDate, reply.Subject, reply.Html)
-                                 : new MailAutoreplyData(mb.Id, mb.Tenant, false, false,
+                                 : new MailAutoreplyData((int)mb.Id, mb.Tenant, false, false,
                                      false, DateTime.MinValue, DateTime.MinValue, string.Empty, string.Empty)
                             })
                            .ToList();
