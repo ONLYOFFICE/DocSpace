@@ -54,10 +54,10 @@ namespace ASC.Mail.Core.Dao
             var query = MailDb.MailMailboxSignature
                 .Join(MailDb.MailMailbox,
                     s => s.IdMailbox,
-                    mb => mb.Id,
+                    mb => (int)mb.Id,
                     (s, mb) => new MailboxSignature
                     {
-                        MailboxId = mb.Id,
+                        MailboxId = (int)mb.Id,
                         Tenant = mb.Tenant,
                         Html = s.Html,
                         IsActive = s.IsActive
@@ -83,10 +83,10 @@ namespace ASC.Mail.Core.Dao
             var query = MailDb.MailMailboxSignature
                 .Join(MailDb.MailMailbox,
                     s => s.IdMailbox,
-                    mb => mb.Id,
+                    mb => (int)mb.Id,
                     (s, mb) => new MailboxSignature
                     {
-                        MailboxId = mb.Id,
+                        MailboxId = (int)mb.Id,
                         Tenant = mb.Tenant,
                         Html = s.Html,
                         IsActive = s.IsActive
