@@ -1,0 +1,253 @@
+{
+  "Article": {
+    "Resource":[
+      "People",
+      "Actions",
+      "InviteLinkTitle"
+    ],
+    "PeopleResource": [
+      "ImportPeople"
+    ]
+  },
+  "dialogs": {
+    "InviteDialog": {
+      "Resource": [
+        "HelpAnswerLinkInviteSettings",
+        "CopyToClipboard",
+        "CloseButton",
+        "GetShortenLink",
+        "LoadingProcessing",
+        "InviteUsersAsCollaborators",
+        "InviteLinkTitle"
+      ],
+    "ResourceJS": [
+      "LinkCopySuccess"
+    ]
+  },
+  "ChangeEmailDialog":{
+    "Resource": [
+      "EmailChangeTitle",
+      "EnterEmail",
+      "EmailActivationDescription",
+      "SendButton"
+    ]
+  },
+  "DeleteSelfProfileDialog":{
+    "Resource": [
+      "DeleteProfileTitle",
+      "DeleteProfileInfo",
+      "CloseButton",
+      "SendButton"
+    ]
+  },
+  "ChangePhoneDialog":{
+    "Resource": [
+      "SendButton",
+      "MobilePhoneChangeTitle",
+      "MobilePhoneEraseDescription"
+    ]
+  },
+  "DeleteProfileEverDialog":{
+    "Resource": [
+      "Confirmation",
+      "DeleteUserConfirmation",
+      "Warning",
+      "DeleteUserDataConfirmation"      
+    ],
+    "PeopleResource": [
+      "SuccessfullyDeleteUserInfoMessage"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
+    ]
+  },
+  "ChangePasswordDialog":{
+    "Resource": [
+      "PasswordChangeTitle",
+      "MessageSendPasswordChangeInstructionsOnEmail",
+      "SendButton"
+    ]
+  }
+},
+  "pages": {
+    "Profile": {
+      "Resource": [
+        "UserType",
+        "Email",
+        "Sex",
+        "Birthdate",
+        "Location",
+        "Language",
+        "EditUserDialogTitle",
+        "Subscriptions",
+        "Comments",
+        "ContactInformation",
+        "SocialProfiles",
+        "PendingTitle",
+        "EmailChangeButton",
+        "SendInviteAgain",
+        "EditPhoto",
+        "PasswordChangeButton",
+        "DisableUserButton",
+        "EnableUserButton",
+        "ReassignData",
+        "RemoveData",
+        "DeleteSelfProfile",
+        "EditButton",
+        "ChangeEmailSuccess",
+        "Actions",
+        "NotFoundLanguage",
+        "LearnMore",
+        "ErrorUnknownFileImageType",
+        "SaveButton",
+        "MessageEmailActivationInstuctionsSentOnEmail",
+        "Error"
+      ],
+      "ResourceJS": [
+        "ChangesApplied"
+      ],
+      "PeopleJSResource": [
+        "SuccessChangeUserStatus"
+      ]
+    },
+    "ProfileAction": {
+      "Resource": [
+        "EditPhoto",
+        "FirstName",
+        "LastName",
+        "Email",
+        "Password",
+        "Birthdate",
+        "Sex",
+        "Location",
+        "Comments",
+        "SaveButton",
+        "CopyEmailAndPassword",
+        "UserType",
+        "CancelButton",
+        "EmailPopupHelper",
+        "ProfileTypePopupHelper",
+        "ProductsAndInstruments_Products",
+        "GuestCaption",
+        "TermsOfUsePopupHelperLink",
+        "Mail",
+        "People",
+        "MaleSexStatus",
+        "FemaleSexStatus",
+        "EditUserDialogTitle",
+        "ErrorUnknownFileImageType",
+        "AccessRightsFullAccess",
+        "ErrorPasswordMessage",
+        "ErrorPasswordNoDigits",
+        "ErrorPasswordNoUpperCase",
+        "ErrorPasswordLength",
+        "ErrorPasswordNoSpecialSymbols",
+        "Error"
+      ],
+      "FeedResource": [
+        "DocumentsProduct",
+        "ProjectsProduct",
+        "CommunityProduct",
+        "Message",
+        "WriteComment"
+      ],
+      "CustomModeResource": [
+        "ReviewingCustomMode"
+        
+      ]
+    },
+    "Home": {
+      "Resource": [
+        "LoadingProcessing",
+        "LoadingDescription",
+        "PasswordChangeButton",
+        "EditButton",
+        "DisableUserButton",
+        "ReassignData",
+        "RemoveData",
+        "DeleteSelfProfile",
+        "EditButton",
+        "UserStatus",
+        "Email",
+        "UserType",
+        "Administrator",
+        "DeleteButton",
+        "More",
+        "CloseButton",
+        "Actions",
+        "People",
+        "MessageEmailActivationInstuctionsSentOnEmail",
+        "EnableUserButton",
+        "Search",
+        "SendInviteAgain"
+      ],
+      "PeopleResource": [
+        "LblSendEmail",
+        "LblSendMessage",
+        "NotFoundDescription",
+        "NotFoundTitle",
+        "ClearButton",
+        "LblActive",
+        "LblTerminated",
+        "LblPending",
+        "LblOther",
+        "LblChangeEmail"
+      ],
+      "PeopleJSResource": [
+        "SuccessChangeUserStatus",
+        "SuccessChangeUserType",
+        "SuccessSendInvitation"
+      ],
+      "UserControlsCommonResource": [
+        "NextPage",
+        "PreviousPage",
+        "LblSelect"
+
+      ]
+    }
+  },
+  "Layout": {
+    "Resource": [
+      "Profile",
+      "AboutCompanyTitle",
+      "LogoutButton"
+    ]
+  },
+  "GroupAction": {
+    "Resource": [
+      "SaveButton",
+      "CancelButton",
+      "Name"
+    ],
+    "PeopleResource": [
+      "Members",
+      "AddMembers",
+      "AddButton"
+    ],
+    "UserControlsCommonResource": [
+      "Members",
+      "AddMembers",
+      "LblSelect"
+    ]
+  },
+  "Reassign":{
+    "PeopleResource":[
+      "ReassignmentData",
+      "ReassignsTransferedListHdr",
+      "ReassignsTransferedListItem1",
+      "ReassignsTransferedListItem2",
+      "ReassignsTransferedListItem3",
+      "ReassignsReadMore",
+      "DeleteProfileAfterReassignment",
+      "CancelButton",
+      "ReassignButton",
+      "ReassignsToUser"
+    ],
+    "UserControlsCommonResource":[
+      "NotBeUndone"
+    ],
+    "PeopleJSResource":[
+      "ChooseUser"
+    ]
+  }
+}

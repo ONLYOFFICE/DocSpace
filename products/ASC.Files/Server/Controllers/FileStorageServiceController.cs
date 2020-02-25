@@ -36,7 +36,7 @@ using System.Net.Http.Headers;
 using System.Security;
 using System.Web;
 using System.Web.Http;
-
+using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -45,6 +45,7 @@ using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.ElasticSearch;
 using ASC.FederatedLogin.LoginProviders;
+using ASC.Files;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
@@ -197,6 +198,14 @@ namespace ASC.Web.Files.Services.WCFService
             ServiceProvider = serviceProvider;
             FileSharingAceHelper = fileSharingAceHelper;
             Logger = optionMonitor.Get("ASC.Files");
+        }
+
+        [Read("info")]
+        public Module GetModule()
+        {
+            var product = new FilesProduct();
+            product.Init();
+            return new Module(product, true);
         }
 
         [Read("folders-folder")]

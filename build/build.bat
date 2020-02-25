@@ -18,6 +18,9 @@ call build\scripts\client.sh
 echo "ASC.Web.People.Client"
 call build\scripts\people.sh
 
+echo "ASC.Web.Files.Client"
+call build\scripts\files.sh
+
 xcopy build\cra\*.* products\ASC.People\Client\node_modules\ /E /R /Y
 
 echo "ASC.Web.sln"
