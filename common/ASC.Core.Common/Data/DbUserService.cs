@@ -685,5 +685,13 @@ namespace ASC.Core.Data
             result.Add(id);
             return result.Distinct().ToList();
         }
+
+        public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            return GetUserQuery(UserDbContext, tenant, default)
+                    .Where(r => r.Id == id)
+                    .Select(exp ?? FromUserToUserInfo)
+                    .FirstOrDefault();
+        }
     }
 }

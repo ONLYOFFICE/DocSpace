@@ -27,10 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.Api.Core;
 using ASC.Common.Utils;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Users;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
@@ -155,6 +157,26 @@ namespace ASC.Web.Api.Models
             WebItemSecurity = webItemSecurity;
             TenantManager = tenantManager;
             TimeZoneConverter = timeZoneConverter;
+        }
+
+        public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
+        {
+            if (apiContext?.Fields == null) return null;
+            var newExpr = Expression.New(typeof(UserInfo));
+
+            //i => new UserInfo { ID = i.id } 
+            var parameter = Expression.Parameter(typeof(User), "i");
+            var bindExprs = new List<MemberAssignment>();
+
+            if (apiContext.Check("Id"))
+            {
+                bindExprs.Add(Expression.Bind(typeof(UserInfo).GetProperty("ID"), Expression.Property(parameter, typeof(User).GetProperty("Id"))));
+            }
+
+            var body = Expression.MemberInit(newExpr, bindExprs);
+            var lambda = Expression.Lambda<Func<User, UserInfo>>(body, parameter);
+
+            return lambda;
         }
 
         public EmployeeWraperFull GetFull(UserInfo userInfo)

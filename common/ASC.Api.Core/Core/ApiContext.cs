@@ -27,8 +27,10 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+
 using ASC.Core;
 using ASC.Core.Tenants;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -264,7 +266,7 @@ namespace ASC.Api.Core
     {
         public static bool Check(this ApiContext context, string field)
         {
-            return context == null || context.Fields == null || (context.Fields != null && context.Fields.Contains(field));
+            return context == null || context.Fields == null || (context.Fields != null && (context.Fields.Contains(field) || context.Fields.Contains(field.ToLower())));
         }
     }
 

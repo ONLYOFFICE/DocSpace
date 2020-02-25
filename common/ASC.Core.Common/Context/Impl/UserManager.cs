@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 
 using ASC.Collections;
 using ASC.Core.Caching;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 
@@ -181,6 +183,12 @@ namespace ASC.Core
         {
             if (IsSystemUser(id)) return SystemUsers[id];
             var u = UserService.GetUser(Tenant.TenantId, id);
+            return u != null && !u.Removed ? u : Constants.LostUser;
+        }
+        public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
+        {
+            if (IsSystemUser(id)) return SystemUsers[id];
+            var u = UserService.GetUser(Tenant.TenantId, id, exp);
             return u != null && !u.Removed ? u : Constants.LostUser;
         }
 
