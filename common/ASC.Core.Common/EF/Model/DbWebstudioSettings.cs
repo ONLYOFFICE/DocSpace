@@ -13,7 +13,7 @@ namespace ASC.Core.Common.EF.Model
         public Guid UserId { get; set; }
         public string Data { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { TenantId, Id, UserId };
         }

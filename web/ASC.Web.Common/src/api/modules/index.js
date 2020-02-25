@@ -14,10 +14,14 @@ export function getModulesList() {
             method: "get",
             url: `${window.location.origin}/${m}`
           })
+            .catch(err => {
+              return Promise.resolve(err);
+            })
         )
       )
         .then((modules) => {
-          const newModules = modules.map(m => {
+          const workingModules = modules.filter(module => typeof module === 'object');
+          const newModules = workingModules.map(m => {
             return {
               ...m,
               isPrimary: true,

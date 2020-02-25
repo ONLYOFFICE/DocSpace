@@ -77,9 +77,9 @@ namespace ASC.Common.Logging
         {
             switch (eventId.Id)
             {
-                case 20000:
-                    CustomLogger.Debug(formatter(state, exception));
-                    break;
+                //case 20000:
+                //    CustomLogger.Debug(formatter(state, exception));
+                //    break;
                 case 20101:
                     var keyValuePairs = state as IEnumerable<KeyValuePair<string, object>>;
                     string commandText = null;
