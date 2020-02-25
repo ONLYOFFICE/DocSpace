@@ -26,50 +26,37 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
-using ASC.Common.Logging;
-using ASC.Common.Utils;
-using ASC.Core;
 using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Users;
-using ASC.Web.Core.Helpers;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Web;
-using ASC.Core.Common.Settings;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ASC.ApiSystem.Controllers
 {
     [ApiController]
-    public class CalDavController : CommonController
+    [Route("[controller]")]
+    public class CalDavController : ControllerBase
     {
-        public CalDavController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
-            : base(httpContextAccessor, configuration, option, coreSettings, commonLinkUtility, emailValidationKeyProvider, timeZoneConverter, apiSystemHelper, tenantManager, userFormatter, tenantDomainValidator, userManagerWrapper, commonConstants, timeZonesProvider, settingsManager, securityContext, memoryCache, hostedSolutionOptions)
+        public CommonMethods CommonMethods { get; }
+
+        public CalDavController(CommonMethods commonMethods)
         {
+            CommonMethods = commonMethods;
         }
 
         #region For TEST api
 
-        [HttpGet]
-        [ActionName("test")]
-        public HttpResponseMessage Check()
+        [HttpGet("test")]
+        public IActionResult Check()
         {
-            var request = new HttpRequestMessage();
-
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 value = "CalDav api works"
             });
@@ -79,82 +66,73 @@ namespace ASC.ApiSystem.Controllers
 
         #region API methods
 
-        [HttpGet]
-        [ActionName("change_to_storage")]
+        [HttpGet("change_to_storage")]
         [AuthSignature]
-        public HttpResponseMessage СhangeOfCalendarStorage(string change)
+        public IActionResult СhangeOfCalendarStorage(string change)
         {
-            var request = new HttpRequestMessage();
-
             if (!GetTenant(change, out Tenant tenant, out object error))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return BadRequest(error);
             }
 
             try
             {
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, change + ConfirmType.Auth);
+                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, change + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/change_to_storage", new Dictionary<string, string> { { "change", change }, { "key", validationKey } });
             }
             catch (Exception ex)
             {
-                Log.Error("Error change_to_storage", ex);
+                CommonMethods.Log.Error("Error change_to_storage", ex);
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "apiError",
                     message = ex.Message
                 });
             }
 
-            return request.CreateResponse(HttpStatusCode.OK);
+            return Ok();
         }
 
-        [HttpGet]
-        [ActionName("caldav_delete_event")]
+        [HttpGet("caldav_delete_event")]
         [AuthSignature]
-        public HttpResponseMessage CaldavDeleteEvent(string eventInfo)
+        public IActionResult CaldavDeleteEvent(string eventInfo)
         {
-            var request = new HttpRequestMessage();
-
             if (!GetTenant(eventInfo, out Tenant tenant, out object error))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return BadRequest(error);
             }
 
             try
             {
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, eventInfo + ConfirmType.Auth);
+                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, eventInfo + ConfirmType.Auth);
 
                 SendToApi(Request.Scheme, tenant, "calendar/caldav_delete_event", new Dictionary<string, string> { { "eventInfo", eventInfo }, { "key", validationKey } });
             }
             catch (Exception ex)
             {
-                Log.Error("Error caldav_delete_event", ex);
+                CommonMethods.Log.Error("Error caldav_delete_event", ex);
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "apiError",
                     message = ex.Message
                 });
             }
 
-            return request.CreateResponse(HttpStatusCode.OK);
+            return Ok();
         }
 
-        [HttpPost]
-        [ActionName("is_caldav_authenticated")]
+        [HttpPost("is_caldav_authenticated")]
         [AuthSignature]
-        public HttpResponseMessage IsCaldavAuthenticated(JObject data)
+        public IActionResult IsCaldavAuthenticated(JObject data)
         {
-            var request = new HttpRequestMessage();
-
             if (data == null)
             {
-                Log.Error("CalDav authenticated data is null");
+                CommonMethods.Log.Error("CalDav authenticated data is null");
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     value = "false",
                     error = "portalNameEmpty",
@@ -167,22 +145,22 @@ namespace ASC.ApiSystem.Controllers
 
             if (!GetUserData(username, out string email, out Tenant tenant, out object error))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return BadRequest(error);
             }
 
             try
             {
-                Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
+                CommonMethods.Log.Info(string.Format("Caldav auth user: {0}, tenant: {1}", email, tenant.TenantId));
 
                 if (email == "admin@ascsystem" && Core.Configuration.Constants.CoreSystem.ID.ToString() == password)
                 {
-                    return request.CreateResponse(HttpStatusCode.OK, new
+                    return Ok(new
                     {
                         value = "true"
                     });
                 }
 
-                var validationKey = EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + password + ConfirmType.Auth);
+                var validationKey = CommonMethods.EmailValidationKeyProvider.GetEmailKey(tenant.TenantId, email + password + ConfirmType.Auth);
 
                 var authData = string.Format("userName={0}&password={1}&key={2}",
                                              HttpUtility.UrlEncode(email),
@@ -191,16 +169,16 @@ namespace ASC.ApiSystem.Controllers
 
                 SendToApi(Request.Scheme, tenant, "authentication/login", null, WebRequestMethods.Http.Post, authData);
 
-                return request.CreateResponse(HttpStatusCode.OK, new
+                return Ok(new
                 {
                     value = "true"
                 });
             }
             catch (Exception ex)
             {
-                Log.Error("Caldav authenticated", ex);
+                CommonMethods.Log.Error("Caldav authenticated", ex);
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     value = "false",
                     message = ex.Message
@@ -218,7 +196,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (string.IsNullOrEmpty(calendarParam))
             {
-                Log.Error("calendarParam is empty");
+                CommonMethods.Log.Error("calendarParam is empty");
 
                 error = new
                 {
@@ -230,7 +208,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
+            CommonMethods.Log.Info(string.Format("CalDav calendarParam: {0}", calendarParam));
 
             var userParam = calendarParam.Split('/')[0];
 
@@ -245,7 +223,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (string.IsNullOrEmpty(userParam))
             {
-                Log.Error("userParam is empty");
+                CommonMethods.Log.Error("userParam is empty");
 
                 error = new
                 {
@@ -261,7 +239,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (userData.Length < 3)
             {
-                Log.Error(string.Format("Error Caldav username: {0}", userParam));
+                CommonMethods.Log.Error(string.Format("Error Caldav username: {0}", userParam));
 
                 error = new
                 {
@@ -277,20 +255,20 @@ namespace ASC.ApiSystem.Controllers
 
             var tenantName = userData[2];
 
-            var baseUrl = CoreSettings.BaseDomain;
+            var baseUrl = CommonMethods.CoreSettings.BaseDomain;
 
             if (!string.IsNullOrEmpty(baseUrl) && tenantName.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
             {
                 tenantName = tenantName.Replace("." + baseUrl, "");
             }
 
-            Log.Info(string.Format("CalDav: user:{0} tenantName:{1}", userParam, tenantName));
+            CommonMethods.Log.Info(string.Format("CalDav: user:{0} tenantName:{1}", userParam, tenantName));
 
             var tenantModel = new TenantModel { PortalName = tenantName };
 
-            if (!GetTenant(tenantModel, out tenant))
+            if (!CommonMethods.GetTenant(tenantModel, out tenant))
             {
-                Log.Error("Model without tenant");
+                CommonMethods.Log.Error("Model without tenant");
 
                 error = new
                 {
@@ -304,7 +282,7 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                Log.Error("Tenant not found " + tenantName);
+                CommonMethods.Log.Error("Tenant not found " + tenantName);
 
                 error = new
                 {
@@ -333,12 +311,12 @@ namespace ASC.ApiSystem.Controllers
             var url = string.Format("{0}{1}{2}{3}{4}{5}",
                                     requestUriScheme,
                                     Uri.SchemeDelimiter,
-                                    tenant.GetTenantDomain(CoreSettings),
-                                    CommonConstants.WebApiBaseUrl,
+                                    tenant.GetTenantDomain(CommonMethods.CoreSettings),
+                                    CommonMethods.CommonConstants.WebApiBaseUrl,
                                     path,
                                     string.IsNullOrEmpty(query) ? "" : "?" + query);
 
-            Log.Info(string.Format("CalDav: SendToApi: {0}", url));
+            CommonMethods.Log.Info(string.Format("CalDav: SendToApi: {0}", url));
 
             var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = httpMethod;
@@ -361,13 +339,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class CalDavControllerExtention
-    {
-        public static IServiceCollection AddCalDavController(this IServiceCollection services)
-        {
-            return services.AddCoreSettingsService();
-        }
     }
 }

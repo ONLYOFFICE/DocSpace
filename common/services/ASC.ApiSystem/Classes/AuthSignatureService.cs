@@ -37,6 +37,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.ApiSystem.Classes
 {
@@ -183,7 +184,7 @@ namespace ASC.ApiSystem.Classes
         {
             services
                 .AddApiSystemHelper()
-                .AddScoped<AuthSignatureService>();
+                .TryAddScoped<AuthSignatureService>();
 
             return services;
         }

@@ -26,44 +26,28 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
-using ASC.Core;
 using ASC.Core.Tenants;
-using ASC.Common.Logging;
-using ASC.Web.Core.Users;
-using System.Net;
-using System.Net.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
-using ASC.Web.Studio.Utility;
-using ASC.Security.Cryptography;
-using Microsoft.AspNetCore.Http;
-using ASC.Common.Utils;
-using ASC.Web.Core.Helpers;
-using ASC.Core.Users;
-using ASC.Core.Common.Settings;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ASC.ApiSystem.Controllers
 {
     [ApiController]
-    public class SettingsController : CommonController
+    [Route("[controller]")]
+    public class SettingsController : ControllerBase
     {
-        public SettingsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
-            : base(httpContextAccessor, configuration, option, coreSettings, commonLinkUtility, emailValidationKeyProvider, timeZoneConverter, apiSystemHelper, tenantManager, userFormatter, tenantDomainValidator, userManagerWrapper, commonConstants, timeZonesProvider, settingsManager, securityContext, memoryCache, hostedSolutionOptions)
+        public CommonMethods CommonMethods { get; }
+
+        public SettingsController(CommonMethods commonMethods)
         {
+            CommonMethods = commonMethods;
         }
 
         #region For TEST api
 
-        [HttpGet]
-        [ActionName("test")]
-        public HttpResponseMessage Check()
+        [HttpGet("test")]
+        public IActionResult Check()
         {
-            var request = new HttpRequestMessage();
-
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 value = "Settings api works"
             });
@@ -73,50 +57,44 @@ namespace ASC.ApiSystem.Controllers
 
         #region API methods
 
-        [HttpGet]
-        [ActionName("get")]
+        [HttpGet("get")]
         [AuthSignature]
-        public HttpResponseMessage GetSettings([FromQuery] SettingsModel model)
+        public IActionResult GetSettings([FromQuery] SettingsModel model)
         {
-            var request = new HttpRequestMessage();
-
             if (!GetTenant(model, out int tenantId, out object error))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return BadRequest(error);
             }
 
             if (string.IsNullOrEmpty(model.Key))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     error = "params",
                     message = "Key is required"
                 });
             }
 
-            var settings = CoreSettings.GetSetting(model.Key, tenantId);
+            var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenantId);
 
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 settings
             });
         }
 
-        [HttpPost]
-        [ActionName("save")]
+        [HttpPost("save")]
         [AuthSignature]
-        public HttpResponseMessage SaveSettings([FromBody] SettingsModel model)
+        public IActionResult SaveSettings([FromBody] SettingsModel model)
         {
-            var request = new HttpRequestMessage();
-
             if (!GetTenant(model, out int tenantId, out object error))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, error);
+                return BadRequest(error);
             }
 
             if (string.IsNullOrEmpty(model.Key))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     error = "params",
                     message = "Key is required"
@@ -125,20 +103,20 @@ namespace ASC.ApiSystem.Controllers
 
             if (string.IsNullOrEmpty(model.Value))
             {
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     error = "params",
                     message = "Value is empty"
                 });
             }
 
-            Log.DebugFormat("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
+            CommonMethods.Log.DebugFormat("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
 
-            CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
+            CommonMethods.CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
 
-            var settings = CoreSettings.GetSetting(model.Key, tenantId);
+            var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenantId);
 
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 settings
             });
@@ -155,12 +133,13 @@ namespace ASC.ApiSystem.Controllers
 
             if (model == null)
             {
-                error = new {
+                error = new
+                {
                     error = "portalNameEmpty",
                     message = "PortalName is required"
                 };
 
-                Log.Error("Model is null");
+                CommonMethods.Log.Error("Model is null");
 
                 return false;
             }
@@ -171,26 +150,28 @@ namespace ASC.ApiSystem.Controllers
                 return true;
             }
 
-            if (!GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                error = new {
+                error = new
+                {
                     error = "portalNameEmpty",
                     message = "PortalName is required"
                 };
 
-                Log.Error("Model without tenant");
+                CommonMethods.Log.Error("Model without tenant");
 
                 return false;
             }
 
             if (tenant == null)
             {
-                error = new {
+                error = new
+                {
                     error = "portalNameNotFound",
                     message = "Portal not found"
                 };
 
-                Log.Error("Tenant not found");
+                CommonMethods.Log.Error("Tenant not found");
 
                 return false;
             }
@@ -200,13 +181,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class SettingsControllerExtention
-    {
-        public static IServiceCollection AddSettingsController(this IServiceCollection services)
-        {
-            return services.AddCommonController();
-        }
     }
 }

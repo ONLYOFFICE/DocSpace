@@ -26,46 +26,31 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
-using ASC.Core;
-using ASC.Common.Logging;
-using ASC.Web.Core.Users;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using System.Net;
-using System.Net.Http;
-using Microsoft.Extensions.Configuration;
-using ASC.Web.Studio.Utility;
-using ASC.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
-using ASC.Common.Utils;
-using ASC.Web.Core.Helpers;
-using ASC.Core.Users;
-using ASC.Core.Tenants;
-using ASC.Core.Common.Settings;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace ASC.ApiSystem.Controllers
 {
+
     [Obsolete("CoreSettingsController is deprecated, please use SettingsController instead.")]
     [ApiController]
-    public class CoreSettingsController : CommonController
+    [Route("[controller]")]
+    public class CoreSettingsController : ControllerBase
     {
-        public CoreSettingsController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
-            : base(httpContextAccessor, configuration, option, coreSettings, commonLinkUtility, emailValidationKeyProvider, timeZoneConverter, apiSystemHelper, tenantManager, userFormatter, tenantDomainValidator, userManagerWrapper, commonConstants, timeZonesProvider, settingsManager, securityContext, memoryCache, hostedSolutionOptions)
+        public CommonMethods CommonMethods { get; }
+
+        public CoreSettingsController(CommonMethods commonMethods)
         {
+            CommonMethods = commonMethods;
         }
 
         #region For TEST api
 
-        [HttpGet]
-        [ActionName("test")]
-        public HttpResponseMessage Check()
+        [HttpGet("test")]
+        public IActionResult Check()
         {
-            var request = new HttpRequestMessage();
-
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 value = "CoreSettings api works"
             });
@@ -75,18 +60,15 @@ namespace ASC.ApiSystem.Controllers
 
         #region API methods
 
-        [HttpGet]
-        [ActionName("get")]
+        [HttpGet("get")]
         [AuthSignature]
-        public HttpResponseMessage GetSettings(int tenant, string key)
+        public IActionResult GetSettings(int tenant, string key)
         {
-            var request = new HttpRequestMessage();
-
             try
             {
                 if (tenant < -1)
                 {
-                    return request.CreateResponse(HttpStatusCode.BadRequest, new
+                    return BadRequest(new
                     {
                         error = "portalNameIncorrect",
                         message = "Tenant is incorrect"
@@ -95,25 +77,25 @@ namespace ASC.ApiSystem.Controllers
 
                 if (string.IsNullOrEmpty(key))
                 {
-                    return request.CreateResponse(HttpStatusCode.BadRequest, new
+                    return BadRequest(new
                     {
                         error = "params",
                         message = "Key is empty"
                     });
                 }
 
-                var settings = CoreSettings.GetSetting(key, tenant);
+                var settings = CommonMethods.CoreSettings.GetSetting(key, tenant);
 
-                return request.CreateResponse(HttpStatusCode.OK, new
+                return Ok(new
                 {
                     settings
                 });
             }
             catch (ArgumentException ae)
             {
-                Log.Error(ae);
+                CommonMethods.Log.Error(ae);
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "error",
                     message = ae.Message
@@ -121,9 +103,9 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                CommonMethods.Log.Error(e);
 
-                return request.CreateResponse(HttpStatusCode.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "error",
                     message = e.Message
@@ -131,18 +113,15 @@ namespace ASC.ApiSystem.Controllers
             }
         }
 
-        [HttpPost]
-        [ActionName("save")]
+        [HttpPost("save")]
         [AuthSignature]
-        public HttpResponseMessage SaveSettings([FromBody] CoreSettingsModel model)
+        public IActionResult SaveSettings([FromBody] CoreSettingsModel model)
         {
-            var request = new HttpRequestMessage();
-
             try
             {
                 if (model == null || string.IsNullOrEmpty(model.Key))
                 {
-                    return request.CreateResponse(HttpStatusCode.BadRequest, new
+                    return BadRequest(new
                     {
                         error = "params",
                         message = "Key is empty"
@@ -151,7 +130,7 @@ namespace ASC.ApiSystem.Controllers
 
                 if (string.IsNullOrEmpty(model.Value))
                 {
-                    return request.CreateResponse(HttpStatusCode.BadRequest, new
+                    return BadRequest(new
                     {
                         error = "params",
                         message = "Value is empty"
@@ -165,20 +144,20 @@ namespace ASC.ApiSystem.Controllers
                     tenant = -1;
                 }
 
-                CoreSettings.SaveSetting(model.Key, model.Value, tenant);
+                CommonMethods.CoreSettings.SaveSetting(model.Key, model.Value, tenant);
 
-                var settings = CoreSettings.GetSetting(model.Key, tenant);
+                var settings = CommonMethods.CoreSettings.GetSetting(model.Key, tenant);
 
-                return request.CreateResponse(HttpStatusCode.OK, new
+                return Ok(new
                 {
                     settings
                 });
             }
             catch (ArgumentException ae)
             {
-                Log.Error(ae);
+                CommonMethods.Log.Error(ae);
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "params",
                     message = ae.Message
@@ -186,9 +165,9 @@ namespace ASC.ApiSystem.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(e);
+                CommonMethods.Log.Error(e);
 
-                return request.CreateResponse(HttpStatusCode.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     error = "error",
                     message = e.Message
@@ -197,13 +176,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class CoreSettingsControllerExtention
-    {
-        public static IServiceCollection AddCoreSettingsController(this IServiceCollection services)
-        {
-            return services.AddCommonController();
-        }
     }
 }

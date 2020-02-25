@@ -38,10 +38,10 @@ using ASC.Web.Core.Helpers;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
@@ -55,7 +55,7 @@ using System.Text.RegularExpressions;
 
 namespace ASC.ApiSystem.Controllers
 {
-    public class CommonController : ControllerBase
+    public class CommonMethods
     {
         public IHttpContextAccessor HttpContextAccessor { get; }
 
@@ -95,7 +95,7 @@ namespace ASC.ApiSystem.Controllers
 
         public IOptionsSnapshot<HostedSolution> HostedSolutionOptions { get; }
 
-        public CommonController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
+        public CommonMethods(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
         {
             HttpContextAccessor = httpContextAccessor;
 
@@ -190,7 +190,7 @@ namespace ASC.ApiSystem.Controllers
                 return false;
             }
 
-            var webRequest = (HttpWebRequest) WebRequest.Create(url);
+            var webRequest = (HttpWebRequest)WebRequest.Create(url);
             webRequest.Method = WebRequestMethods.Http.Post;
             webRequest.Accept = "application/x-www-form-urlencoded";
             webRequest.ContentLength = 0;
@@ -316,7 +316,7 @@ namespace ASC.ApiSystem.Controllers
                 var data = string.Format("secret={0}&remoteip={1}&response={2}", Configuration["recaptcha.private-key"], ip, response);
                 var url = Configuration["recaptcha.verify-url"] ?? "https://www.google.com/recaptcha/api/siteverify";
 
-                var webRequest = (HttpWebRequest) WebRequest.Create(url);
+                var webRequest = (HttpWebRequest)WebRequest.Create(url);
                 webRequest.Method = WebRequestMethods.Http.Post;
                 webRequest.ContentType = "application/x-www-form-urlencoded";
                 webRequest.ContentLength = data.Length;
@@ -352,10 +352,12 @@ namespace ASC.ApiSystem.Controllers
         }
     }
 
-    public static class CommonControllerExtention
+    public static class CommonMethodsExtention
     {
-        public static IServiceCollection AddCommonController(this IServiceCollection services)
+        public static IServiceCollection AddCommonMethods(this IServiceCollection services)
         {
+            services.TryAddScoped<CommonMethods>();
+
             return services
                 .AddCoreSettingsService()
                 .AddCommonLinkUtilityService()

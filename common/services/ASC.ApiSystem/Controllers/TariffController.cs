@@ -26,47 +26,31 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
-using ASC.Common.Logging;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
-using ASC.Web.Core.Users;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using ASC.Core;
-using Microsoft.Extensions.Configuration;
-using ASC.Web.Studio.Utility;
-using ASC.Security.Cryptography;
-using Microsoft.AspNetCore.Http;
-using ASC.Common.Utils;
-using ASC.Web.Core.Helpers;
-using ASC.Core.Users;
-using ASC.Core.Common.Settings;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace ASC.ApiSystem.Controllers
 {
     [ApiController]
-    public class TariffController : CommonController
+    [Route("[controller]")]
+    public class TariffController : ControllerBase
     {
-        public TariffController(IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IOptionsMonitor<ILog> option, CoreSettings coreSettings, CommonLinkUtility commonLinkUtility, EmailValidationKeyProvider emailValidationKeyProvider, TimeZoneConverter timeZoneConverter, ApiSystemHelper apiSystemHelper, TenantManager tenantManager, UserFormatter userFormatter, TenantDomainValidator tenantDomainValidator, UserManagerWrapper userManagerWrapper, CommonConstants commonConstants, TimeZonesProvider timeZonesProvider, SettingsManager settingsManager, SecurityContext securityContext, IMemoryCache memoryCache, IOptionsSnapshot<HostedSolution> hostedSolutionOptions)
-            : base(httpContextAccessor, configuration, option, coreSettings, commonLinkUtility, emailValidationKeyProvider, timeZoneConverter, apiSystemHelper, tenantManager, userFormatter, tenantDomainValidator, userManagerWrapper, commonConstants, timeZonesProvider, settingsManager, securityContext, memoryCache, hostedSolutionOptions)
+        public CommonMethods CommonMethods { get; }
+
+        public TariffController(CommonMethods commonMethods)
         {
+            CommonMethods = commonMethods;
         }
 
         #region For TEST api
 
-        [HttpGet]
-        [ActionName("test")]
-        public HttpResponseMessage Check()
+        [HttpGet("test")]
+        public IActionResult Check()
         {
-            var request = new HttpRequestMessage();
-
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 value = "Tariff api works"
             });
@@ -76,18 +60,16 @@ namespace ASC.ApiSystem.Controllers
 
         #region API methods
 
-        [HttpPut]
-        [ActionName("set")]
+        [HttpPut("set")]
         [AllowCrossSiteJson]
         [AuthSignature]
-        public HttpResponseMessage SetTariff(TariffModel model)
+        public IActionResult SetTariff(TariffModel model)
         {
-            var request = new HttpRequestMessage();
-
-            if (!GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                Log.Error("Model without tenant");
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                CommonMethods.Log.Error("Model without tenant");
+
+                return BadRequest(new
                 {
                     error = "portalNameEmpty",
                     message = "PortalName is required"
@@ -96,8 +78,9 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                Log.Error("Tenant not found");
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                CommonMethods.Log.Error("Tenant not found");
+
+                return BadRequest(new
                 {
                     error = "portalNameNotFound",
                     message = "Portal not found"
@@ -128,7 +111,7 @@ namespace ASC.ApiSystem.Controllers
                 quota.MaxFileSize = model.MaxFileSize;
             }
 
-            HostedSolution.SaveTenantQuota(quota);
+            CommonMethods.HostedSolution.SaveTenantQuota(quota);
 
             var tariff = new Tariff
             {
@@ -136,24 +119,21 @@ namespace ASC.ApiSystem.Controllers
                 DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue,
             };
 
-            HostedSolution.SetTariff(tenant.TenantId, tariff);
+            CommonMethods.HostedSolution.SetTariff(tenant.TenantId, tariff);
 
             return GetTariff(tenant);
         }
 
-        [HttpGet]
-        [ActionName("get")]
+        [HttpGet("get")]
         [AllowCrossSiteJson]
         [AuthSignature]
-        public HttpResponseMessage GetTariff([FromQuery] TariffModel model)
+        public IActionResult GetTariff([FromQuery] TariffModel model)
         {
-            var request = new HttpRequestMessage();
-
-            if (!GetTenant(model, out Tenant tenant))
+            if (!CommonMethods.GetTenant(model, out Tenant tenant))
             {
-                Log.Error("Model without tenant");
+                CommonMethods.Log.Error("Model without tenant");
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     error = "portalNameEmpty",
                     message = "PortalName is required"
@@ -162,9 +142,9 @@ namespace ASC.ApiSystem.Controllers
 
             if (tenant == null)
             {
-                Log.Error("Tenant not found");
+                CommonMethods.Log.Error("Tenant not found");
 
-                return request.CreateResponse(HttpStatusCode.BadRequest, new
+                return BadRequest(new
                 {
                     error = "portalNameNotFound",
                     message = "Portal not found"
@@ -174,20 +154,17 @@ namespace ASC.ApiSystem.Controllers
             return GetTariff(tenant);
         }
 
-        [HttpGet]
-        [ActionName("all")]
+        [HttpGet("all")]
         [AllowCrossSiteJson]
-        public HttpResponseMessage GetTariffs()
+        public IActionResult GetTariffs()
         {
-            var request = new HttpRequestMessage();
-
-            var tariffs = HostedSolution.GetTenantQuotas()
+            var tariffs = CommonMethods.HostedSolution.GetTenantQuotas()
                 .Where(q => !q.Trial && !q.Free && !q.Open)
                 .OrderBy(q => q.ActiveUsers)
                 .ThenByDescending(q => q.Id)
                 .Select(q => ToTariffWrapper(null, q));
 
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
                 tariffs
             });
@@ -197,17 +174,15 @@ namespace ASC.ApiSystem.Controllers
 
         #region private methods
 
-        private HttpResponseMessage GetTariff(Tenant tenant)
+        private IActionResult GetTariff(Tenant tenant)
         {
-            var request = new HttpRequestMessage();
+            var tariff = CommonMethods.HostedSolution.GetTariff(tenant.TenantId, false);
 
-            var tariff = HostedSolution.GetTariff(tenant.TenantId, false);
+            var quota = CommonMethods.HostedSolution.GetTenantQuota(tenant.TenantId);
 
-            var quota = HostedSolution.GetTenantQuota(tenant.TenantId);
-
-            return request.CreateResponse(HttpStatusCode.OK, new
+            return Ok(new
             {
-                tenant = ToTenantWrapper(tenant),
+                tenant = CommonMethods.ToTenantWrapper(tenant),
                 tariff = ToTariffWrapper(tariff, quota),
             });
         }
@@ -226,13 +201,5 @@ namespace ASC.ApiSystem.Controllers
         }
 
         #endregion
-    }
-
-    public static class TariffControllerExtention
-    {
-        public static IServiceCollection AddTariffController(this IServiceCollection services)
-        {
-            return services.AddCommonController();
-        }
     }
 }

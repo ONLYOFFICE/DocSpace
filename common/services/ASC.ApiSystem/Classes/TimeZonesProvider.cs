@@ -77,7 +77,7 @@ namespace ASC.ApiSystem.Classes
         private static readonly Dictionary<string, CultureInfo> CultureUiMap = new Dictionary<string, CultureInfo>
         {
             { "", CultureInfo.GetCultureInfo("en-US") },
-            { "fr", CultureInfo.GetCultureInfo("fr-FR") }, 
+            { "fr", CultureInfo.GetCultureInfo("fr-FR") },
             { "es", CultureInfo.GetCultureInfo("es-ES") },
             { "de", CultureInfo.GetCultureInfo("de-DE") },
             { "ru", CultureInfo.GetCultureInfo("ru-RU") },

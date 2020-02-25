@@ -24,6 +24,7 @@
 */
 
 
+using Microsoft.Extensions.DependencyInjection;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 
@@ -35,18 +36,21 @@ namespace ASC.ApiSystem.Classes
 
         private readonly AuthSignatureService AuthSignatureService;
 
-        public AuthSignatureAttribute(): this("auth.allowskip")
+        public AuthSignatureAttribute() : this("auth.allowskip")
         {
         }
 
-        public AuthSignatureAttribute(string allowskipCfgName) : this(null, allowskipCfgName) //TODO!!!! replace null with DI
-        {
-        }
-
-        public AuthSignatureAttribute(AuthSignatureService authSignatureService, string allowskipCfgName)
+        public AuthSignatureAttribute(string allowskipCfgName)
         {
             AllowskipCfgName = allowskipCfgName;
-            AuthSignatureService = authSignatureService;
+
+            var services = new ServiceCollection();
+
+            var serviceProvider = services.BuildServiceProvider();
+
+            var service = serviceProvider.GetService(typeof(AuthSignatureService));
+
+            AuthSignatureService = (AuthSignatureService)service; //TODO: AuthSignatureService is null :-(
         }
 
         public override void OnAuthorization(HttpActionContext context)
