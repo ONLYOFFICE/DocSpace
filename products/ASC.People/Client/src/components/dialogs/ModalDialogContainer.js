@@ -46,11 +46,15 @@ const ModalDialogContainer = styled.div`
     }
   }
 
-  .send_invite_dialog-content {
+  .modal-dialog-content {
     max-height: 290px;
     overflow-y: scroll;
     border: 1px solid lightgray;
     padding: 8px 0px 0px 8px;
+
+    .modal-dialog-checkbox {
+      padding-bottom: 4px;
+    }
   }
 `;
 

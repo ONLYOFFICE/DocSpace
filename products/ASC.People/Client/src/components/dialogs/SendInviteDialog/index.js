@@ -93,18 +93,16 @@ class SendInviteDialogComponent extends React.Component {
                 className="toggle-content-dialog"
                 label={t("ShowUsersList")}
               >
-                <div className="send_invite_dialog-content">
+                <div className="modal-dialog-content">
                   {listUsers.map((item, index) => (
-                    <div style={{ display: "flex" }} key={`1${index}`}>
-                      <Checkbox
-                        style={{ paddingBottom: 4 }}
-                        onChange={this.onChange.bind(this, item.id)}
-                        key={`checkbox_${index}`}
-                        isChecked={item.checked}
-                        label={item.displayName}
-                        isDisabled={item.disabled}
-                      />
-                    </div>
+                    <Checkbox
+                      className="modal-dialog-checkbox"
+                      onChange={this.onChange.bind(this, item.id)}
+                      key={`checkbox_${index}`}
+                      isChecked={item.checked}
+                      label={item.displayName}
+                      isDisabled={item.disabled}
+                    />
                   ))}
                 </div>
               </ToggleContent>
