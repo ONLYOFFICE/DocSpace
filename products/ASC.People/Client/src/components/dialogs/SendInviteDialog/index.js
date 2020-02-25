@@ -58,8 +58,8 @@ class SendInviteDialogComponent extends React.Component {
     });
   };
 
-  onChange = id => {
-    const userIndex = this.state.listUsers.findIndex(x => x.id === id);
+  onChange = e => {
+    const userIndex = this.state.listUsers.findIndex(x => x.id === e.target.value);
     const newUsersList = this.state.listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -97,7 +97,8 @@ class SendInviteDialogComponent extends React.Component {
                   {listUsers.map((item, index) => (
                     <Checkbox
                       className="modal-dialog-checkbox"
-                      onChange={this.onChange.bind(this, item.id)}
+                      value={item.id}
+                      onChange={this.onChange}
                       key={`checkbox_${index}`}
                       isChecked={item.checked}
                       label={item.displayName}

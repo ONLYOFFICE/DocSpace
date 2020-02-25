@@ -60,9 +60,9 @@ class ChangeUserStatusDialogComponent extends React.Component {
     });
   };
 
-  onChange = id => {
+  onChange = e => {
     const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex(x => x.id === id);
+    const userIndex = listUsers.findIndex(x => x.id === e.target.value);
     const newUsersList = listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -111,7 +111,8 @@ class ChangeUserStatusDialogComponent extends React.Component {
                   {listUsers.map((item, index) => (
                     <Checkbox
                       className="modal-dialog-checkbox"
-                      onChange={this.onChange.bind(this, item.id)}
+                      value={item.id}
+                      onChange={this.onChange}
                       key={`checkbox_${index}`}
                       isChecked={item.checked}
                       label={item.displayName}
