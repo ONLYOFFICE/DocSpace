@@ -45,6 +45,13 @@ const ModalDialogContainer = styled.div`
       font-size: 16px;
     }
   }
+
+  .send_invite_dialog-content {
+    max-height: 290px;
+    overflow-y: scroll;
+    border: 1px solid lightgray;
+    padding: 8px 0px 0px 8px;
+  }
 `;
 
 export default ModalDialogContainer;
