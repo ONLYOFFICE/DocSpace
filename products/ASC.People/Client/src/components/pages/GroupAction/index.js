@@ -5,15 +5,17 @@ import { PageLayout, utils } from "asc-web-common";
 import { ArticleHeaderContent, ArticleMainButtonContent, ArticleBodyContent } from '../../Article';
 import { SectionHeaderContent, SectionBodyContent } from './Section';
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 import { fetchGroup, resetGroup } from "../../../store/group/actions";
 const { changeLanguage } = utils;
 
 class GroupAction extends React.Component {
 
   componentDidMount() {
-    const { match, fetchGroup } = this.props;
+    const { match, fetchGroup, t } = this.props;
     const { groupId } = match.params;
+
+    document.title = `${t("GroupAction")} – ${t("People")}`;
 
     if (groupId) {
       fetchGroup(groupId);
@@ -60,6 +62,17 @@ class GroupAction extends React.Component {
   }
 }
 
+const GroupActionWrapper = withTranslation()(GroupAction);
+
+const GroupActionContainer = props => {
+  changeLanguage(i18n);
+  return (
+    <I18nextProvider i18n={i18n}>
+      <GroupActionWrapper {...props} />
+    </I18nextProvider>
+  );
+};
+
 function mapStateToProps(state) {
   return {
     settings: state.auth.settings,
@@ -67,4 +80,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { fetchGroup, resetGroup })(GroupAction);
+export default connect(mapStateToProps, { fetchGroup, resetGroup })(GroupActionContainer);

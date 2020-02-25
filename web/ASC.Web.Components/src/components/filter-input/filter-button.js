@@ -15,7 +15,7 @@ class FilterButton extends React.PureComponent {
         size={this.props.iconSize}
         isDisabled={this.props.isDisabled}
         getData={this.props.getData}
-
+        directionY='bottom'
         className='filter-button'
       ></ContextMenuButton>
     )

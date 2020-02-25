@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
+using ASC.Core.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
@@ -75,57 +76,94 @@ namespace ASC.Core.Billing
         }
     }
 
+    class ConfigureTariffService : IConfigureNamedOptions<TariffService>
+    {
+        public ConfigureTariffService(
+            IOptionsSnapshot<CachedQuotaService> quotaService,
+            IOptionsSnapshot<CachedTenantService> tenantService,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            DbContextManager<CoreDbContext> coreDbContextManager,
+            TariffServiceStorage tariffServiceStorage,
+            IOptionsMonitor<ILog> iLog)
+        {
+            QuotaService = quotaService;
+            TenantService = tenantService;
+            CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            CoreDbContextManager = coreDbContextManager;
+            TariffServiceStorage = tariffServiceStorage;
+            ILog = iLog;
+        }
+
+        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
+        public DbContextManager<CoreDbContext> CoreDbContextManager { get; }
+        public TariffServiceStorage TariffServiceStorage { get; }
+        public IOptionsMonitor<ILog> ILog { get; }
+
+        public void Configure(string name, TariffService options)
+        {
+            Configure(options);
+            options.QuotaService = QuotaService.Get(name);
+            options.TenantService = TenantService.Get(name);
+            options.CoreDbContext = CoreDbContextManager.Get(name);
+        }
+
+        public void Configure(TariffService options)
+        {
+            options.Log = ILog.CurrentValue;
+            options.CoreSettings = CoreSettings;
+            options.Configuration = Configuration;
+            options.TariffServiceStorage = TariffServiceStorage;
+            options.Options = ILog;
+            options.CoreBaseSettings = CoreBaseSettings;
+            options.Test = Configuration["core:payment:test"] == "true";
+            int.TryParse(Configuration["core:payment:delay"], out var paymentDelay);
+            options.PaymentDelay = paymentDelay;
+            options.Cache = TariffServiceStorage.Cache;
+            options.Notify = TariffServiceStorage.Notify;
+
+            options.QuotaService = QuotaService.Value;
+            options.TenantService = TenantService.Value;
+            options.CoreDbContext = CoreDbContextManager.Value;
+        }
+    }
+
     public class TariffService : ITariffService
     {
-        private readonly ICache cache;
-        private readonly ICacheNotify<TariffCacheItem> notify;
-
         private const int DEFAULT_TRIAL_PERIOD = 30;
         private static readonly TimeSpan DEFAULT_CACHE_EXPIRATION = TimeSpan.FromMinutes(5);
         private static readonly TimeSpan STANDALONE_CACHE_EXPIRATION = TimeSpan.FromMinutes(15);
 
         private readonly static bool billingConfigured = false;
 
-        private readonly ILog log;
-        private readonly IQuotaService quotaService;
-        private readonly ITenantService tenantService;
-        private readonly bool test;
-        private readonly int paymentDelay;
-
+        internal ICache Cache { get; set; }
+        internal ICacheNotify<TariffCacheItem> Notify { get; set; }
+        internal ILog Log { get; set; }
+        internal IQuotaService QuotaService { get; set; }
+        internal ITenantService TenantService { get; set; }
+        internal bool Test { get; set; }
+        internal int PaymentDelay { get; set; }
 
         public TimeSpan CacheExpiration { get; set; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public CoreSettings CoreSettings { get; }
-        public IConfiguration Configuration { get; }
+        public CoreBaseSettings CoreBaseSettings { get; set; }
+        public CoreSettings CoreSettings { get; set; }
+        public IConfiguration Configuration { get; set; }
         public CoreDbContext CoreDbContext { get; set; }
-        public TariffServiceStorage TariffServiceStorage { get; }
-        public IOptionsMonitor<ILog> Options { get; }
+        public TariffServiceStorage TariffServiceStorage { get; set; }
+        public IOptionsMonitor<ILog> Options { get; set; }
 
-        private TariffService(
-            IQuotaService quotaService,
-            ITenantService tenantService,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options)
-
+        public TariffService()
         {
-            log = options.CurrentValue;
-            this.quotaService = quotaService;
-            this.tenantService = tenantService;
-            CoreSettings = coreSettings;
-            Configuration = configuration;
-            TariffServiceStorage = tariffServiceStorage;
-            Options = options;
-            CoreBaseSettings = coreBaseSettings;
             CacheExpiration = DEFAULT_CACHE_EXPIRATION;
-            test = configuration["core:payment:test"] == "true";
-            int.TryParse(configuration["core:payment:delay"], out paymentDelay);
-
-            cache = TariffServiceStorage.Cache;
-            notify = TariffServiceStorage.Notify;
         }
+
         public TariffService(
             IQuotaService quotaService,
             ITenantService tenantService,
@@ -135,26 +173,26 @@ namespace ASC.Core.Billing
             DbContextManager<CoreDbContext> coreDbContextManager,
             TariffServiceStorage tariffServiceStorage,
             IOptionsMonitor<ILog> options)
-            : this(quotaService, tenantService, coreBaseSettings, coreSettings, configuration, tariffServiceStorage, options)
+            : this()
 
         {
+            Log = options.CurrentValue;
+            QuotaService = quotaService;
+            TenantService = tenantService;
+            CoreSettings = coreSettings;
+            Configuration = configuration;
+            TariffServiceStorage = tariffServiceStorage;
+            Options = options;
+            CoreBaseSettings = coreBaseSettings;
+            Test = configuration["core:payment:test"] == "true";
+            int.TryParse(configuration["core:payment:delay"], out var paymentDelay);
+
+            PaymentDelay = paymentDelay;
+
+            Cache = TariffServiceStorage.Cache;
+            Notify = TariffServiceStorage.Notify;
             CoreDbContext = coreDbContextManager.Value;
         }
-        public TariffService(
-            IQuotaService quotaService,
-            ITenantService tenantService,
-            CoreBaseSettings coreBaseSettings,
-            CoreSettings coreSettings,
-            IConfiguration configuration,
-            CoreDbContext coreDbContext,
-            TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options)
-            : this(quotaService, tenantService, coreBaseSettings, coreSettings, configuration, tariffServiceStorage, options)
-
-        {
-            CoreDbContext = coreDbContext;
-        }
-
 
         public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
         {
@@ -163,7 +201,7 @@ namespace ASC.Core.Billing
                 tenantId = -1;
 
             var key = GetTariffCacheKey(tenantId);
-            var tariff = cache.Get<Tariff>(key);
+            var tariff = Cache.Get<Tariff>(key);
             if (tariff == null)
             {
                 tariff = Tariff.CreateDefault();
@@ -176,7 +214,7 @@ namespace ASC.Core.Billing
                 }
 
                 tariff = CalculateTariff(tenantId, tariff);
-                cache.Insert(key, tariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                Cache.Insert(key, tariff, DateTime.UtcNow.Add(GetCacheExpiration()));
 
                 if (billingConfigured && withRequestToPaymentSystem)
                 {
@@ -186,7 +224,7 @@ namespace ASC.Core.Billing
                         {
                             using var client = GetBillingClient();
                             var p = client.GetLastPayment(GetPortalId(tenantId));
-                            var quota = quotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
+                            var quota = QuotaService.GetTenantQuotas().SingleOrDefault(q => q.AvangateId == p.ProductId);
                             if (quota == null)
                             {
                                 throw new InvalidOperationException(string.Format("Quota with id {0} not found for portal {1}.", p.ProductId, GetPortalId(tenantId)));
@@ -200,7 +238,7 @@ namespace ASC.Core.Billing
                             {
                                 asynctariff = CalculateTariff(tenantId, asynctariff);
                                 ClearCache(tenantId);
-                                cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
+                                Cache.Insert(key, asynctariff, DateTime.UtcNow.Add(GetCacheExpiration()));
                             }
                         }
                         catch (Exception error)
@@ -221,17 +259,17 @@ namespace ASC.Core.Billing
                 throw new ArgumentNullException("tariff");
             }
 
-            var q = quotaService.GetTenantQuota(tariff.QuotaId);
+            var q = QuotaService.GetTenantQuota(tariff.QuotaId);
             if (q == null) return;
             SaveBillingInfo(tenantId, Tuple.Create(tariff.QuotaId, tariff.DueDate));
             if (q.Trial)
             {
                 // reset trial date
-                var tenant = tenantService.GetTenant(tenantId);
+                var tenant = TenantService.GetTenant(tenantId);
                 if (tenant != null)
                 {
                     tenant.VersionChanged = DateTime.UtcNow;
-                    tenantService.SaveTenant(CoreSettings, tenant);
+                    TenantService.SaveTenant(CoreSettings, tenant);
                 }
             }
 
@@ -256,7 +294,7 @@ namespace ASC.Core.Billing
 
         public void ClearCache(int tenantId)
         {
-            notify.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
+            Notify.Publish(new TariffCacheItem { TenantId = tenantId }, CacheNotifyAction.Remove);
         }
 
         public IEnumerable<PaymentInfo> GetPayments(int tenantId, DateTime from, DateTime to)
@@ -264,7 +302,7 @@ namespace ASC.Core.Billing
             from = from.Date;
             to = to.Date.AddTicks(TimeSpan.TicksPerDay - 1);
             var key = GetBillingPaymentCacheKey(tenantId, from, to);
-            var payments = cache.Get<List<PaymentInfo>>(key);
+            var payments = Cache.Get<List<PaymentInfo>>(key);
             if (payments == null)
             {
                 payments = new List<PaymentInfo>();
@@ -272,7 +310,7 @@ namespace ASC.Core.Billing
                 {
                     try
                     {
-                        var quotas = quotaService.GetTenantQuotas();
+                        var quotas = QuotaService.GetTenantQuotas();
                         using var client = GetBillingClient();
                         foreach (var pi in client.GetPayments(GetPortalId(tenantId), from, to))
                         {
@@ -290,7 +328,7 @@ namespace ASC.Core.Billing
                     }
                 }
 
-                cache.Insert(key, payments, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
+                Cache.Insert(key, payments, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
             }
 
             return payments;
@@ -298,21 +336,21 @@ namespace ASC.Core.Billing
 
         public Uri GetShoppingUri(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null)
         {
-            var quota = quotaService.GetTenantQuota(quotaId);
+            var quota = QuotaService.GetTenantQuota(quotaId);
             if (quota == null) return null;
 
             var key = tenant.HasValue
                           ? GetBillingUrlCacheKey(tenant.Value)
                           : string.Format("notenant{0}", !string.IsNullOrEmpty(affiliateId) ? "_" + affiliateId : "");
             key += quota.Visible ? "" : "0";
-            if (!(cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
+            if (!(Cache.Get<Dictionary<string, Tuple<Uri, Uri>>>(key) is IDictionary<string, Tuple<Uri, Uri>> urls))
             {
                 urls = new Dictionary<string, Tuple<Uri, Uri>>();
                 if (billingConfigured)
                 {
                     try
                     {
-                        var products = quotaService.GetTenantQuotas()
+                        var products = QuotaService.GetTenantQuotas()
                                                    .Where(q => !string.IsNullOrEmpty(q.AvangateId) && q.Visible == quota.Visible)
                                                    .Select(q => q.AvangateId)
                                                    .ToArray();
@@ -324,10 +362,10 @@ namespace ASC.Core.Billing
                     }
                     catch (Exception error)
                     {
-                        log.Error(error);
+                        Log.Error(error);
                     }
                 }
-                cache.Insert(key, urls, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
+                Cache.Insert(key, urls, DateTime.UtcNow.Add(TimeSpan.FromMinutes(10)));
             }
 
             ResetCacheExpiration();
@@ -360,14 +398,14 @@ namespace ASC.Core.Billing
             try
             {
                 var key = "biling-prices" + string.Join(",", productIds);
-                var result = cache.Get<IDictionary<string, IEnumerable<Tuple<string, decimal>>>>(key);
+                var result = Cache.Get<IDictionary<string, IEnumerable<Tuple<string, decimal>>>>(key);
                 if (result == null)
                 {
                     using (var client = GetBillingClient())
                     {
                         result = client.GetProductPriceInfo(productIds);
                     }
-                    cache.Insert(key, result, DateTime.Now.AddHours(1));
+                    Cache.Insert(key, result, DateTime.Now.AddHours(1));
                 }
                 return result;
             }
@@ -455,7 +493,7 @@ namespace ASC.Core.Billing
                     CoreDbContext.Tariffs.Add(efTariff);
                     CoreDbContext.SaveChanges();
 
-                    cache.Remove(GetTariffCacheKey(tenant));
+                    Cache.Remove(GetTariffCacheKey(tenant));
                     inserted = true;
                 }
                 tx.Commit();
@@ -463,11 +501,11 @@ namespace ASC.Core.Billing
 
             if (inserted)
             {
-                var t = tenantService.GetTenant(tenant);
+                var t = TenantService.GetTenant(tenant);
                 if (t != null)
                 {
                     // update tenant.LastModified to flush cache in documents
-                    tenantService.SaveTenant(CoreSettings, t);
+                    TenantService.SaveTenant(CoreSettings, t);
                 }
             }
             return inserted;
@@ -493,12 +531,12 @@ namespace ASC.Core.Billing
         private Tariff CalculateTariff(int tenantId, Tariff tariff)
         {
             tariff.State = TariffState.Paid;
-            var q = quotaService.GetTenantQuota(tariff.QuotaId);
+            var q = QuotaService.GetTenantQuota(tariff.QuotaId);
 
             if (q == null || q.GetFeature("old"))
             {
                 tariff.QuotaId = Tenant.DEFAULT_TENANT;
-                q = quotaService.GetTenantQuota(tariff.QuotaId);
+                q = QuotaService.GetTenantQuota(tariff.QuotaId);
             }
 
             var delay = 0;
@@ -507,7 +545,7 @@ namespace ASC.Core.Billing
                 tariff.State = TariffState.Trial;
                 if (tariff.DueDate == DateTime.MinValue || tariff.DueDate == DateTime.MaxValue)
                 {
-                    var tenant = tenantService.GetTenant(tenantId);
+                    var tenant = TenantService.GetTenant(tenantId);
                     if (tenant != null)
                     {
                         var fromDate = tenant.CreatedDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreatedDateTime;
@@ -523,7 +561,7 @@ namespace ASC.Core.Billing
             }
             else
             {
-                delay = paymentDelay;
+                delay = PaymentDelay;
             }
 
             if (tariff.DueDate != DateTime.MinValue && tariff.DueDate.Date < DateTime.Today && delay > 0)
@@ -542,11 +580,11 @@ namespace ASC.Core.Billing
                 {
                     if (q != null)
                     {
-                        var defaultQuota = quotaService.GetTenantQuota(Tenant.DEFAULT_TENANT);
+                        var defaultQuota = QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT);
                         if (defaultQuota.CountPortals != q.CountPortals)
                         {
                             defaultQuota.CountPortals = q.CountPortals;
-                            quotaService.SaveTenantQuota(defaultQuota);
+                            QuotaService.SaveTenantQuota(defaultQuota);
                         }
                     }
 
@@ -566,7 +604,7 @@ namespace ASC.Core.Billing
 
         private int GetPeriod(string key, int defaultValue)
         {
-            var settings = tenantService.GetTenantSettings(Tenant.DEFAULT_TENANT, key);
+            var settings = TenantService.GetTenantSettings(Tenant.DEFAULT_TENANT, key);
             return settings != null ? Convert.ToInt32(Encoding.UTF8.GetString(settings)) : defaultValue;
         }
 
@@ -574,7 +612,7 @@ namespace ASC.Core.Billing
         {
             try
             {
-                return new BillingClient(test, Configuration, Options);
+                return new BillingClient(Test, Configuration, Options);
             }
             catch (InvalidOperationException ioe)
             {
@@ -582,7 +620,7 @@ namespace ASC.Core.Billing
             }
             catch (ReflectionTypeLoadException rtle)
             {
-                log.ErrorFormat("{0}{1}LoaderExceptions: {2}",
+                Log.ErrorFormat("{0}{1}LoaderExceptions: {2}",
                     rtle,
                     Environment.NewLine,
                     string.Join(Environment.NewLine, rtle.LoaderExceptions.Select(e => e.ToString())));
@@ -626,21 +664,21 @@ namespace ASC.Core.Billing
         {
             if (error is BillingNotFoundException)
             {
-                log.DebugFormat("Payment not found: {0}", error.Message);
+                Log.DebugFormat("Payment not found: {0}", error.Message);
             }
             else if (error is BillingNotConfiguredException)
             {
-                log.DebugFormat("Billing not configured: {0}", error.Message);
+                Log.DebugFormat("Billing not configured: {0}", error.Message);
             }
             else
             {
-                if (log.IsDebugEnabled)
+                if (Log.IsDebugEnabled)
                 {
-                    log.Error(error);
+                    Log.Error(error);
                 }
                 else
                 {
-                    log.Error(error.Message);
+                    Log.Error(error.Message);
                 }
             }
         }
@@ -653,7 +691,10 @@ namespace ASC.Core.Billing
             services.AddCoreDbContextService();
 
             services.TryAddSingleton<TariffServiceStorage>();
+
             services.TryAddScoped<ITariffService, TariffService>();
+            services.TryAddScoped<IConfigureOptions<TariffService>, ConfigureTariffService>();
+
             return services;
         }
     }

@@ -51,6 +51,12 @@ class ProfileActions extends React.PureComponent {
     this.setOpened(!this.state.opened);
   }
 
+  onClickItemLink = e => {
+    this.setOpened(!this.state.opened);
+
+    e.preventDefault();
+  }
+
   render() {
     //console.log("Layout sub-component ProfileActions render");
     const { user, opened } = this.state;
@@ -62,7 +68,7 @@ class ProfileActions extends React.PureComponent {
           onClick={this.onClick}
           role={userRole}
           size="small"
-          source={user.avatarSmall}
+          source={user.avatar}
           userName={user.displayName}
         />
         <ProfileMenu
@@ -79,7 +85,7 @@ class ProfileActions extends React.PureComponent {
               noHover={true}
               key={action.key}
               href={action.url}
-              //onClick={this.onClick.bind(this, action)}
+              onClick={this.onClickItemLink}
             >
               <DropDownItem {...action} />
             </Link>

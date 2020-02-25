@@ -41,7 +41,7 @@ class HelpButton extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isOpen: false, displayType: this.getTypeByWidth() };
+    this.state = { isOpen: false, displayType: this.getTypeByWidth(), hideTooltip: false };
     this.ref = React.createRef();
     this.refTooltip = React.createRef();
     this.id = this.props.id || uniqueId();
@@ -55,11 +55,15 @@ class HelpButton extends React.Component {
     this.setState({ isOpen: true }, () => {
       handleAnyClick(true, this.handleClick);
     });
+
+    if(this.state.hideTooltip) {
+      this.refTooltip.current.hideTooltip();
+    }
   };
 
   afterHide = () => {
     //console.log(`afterHide ${this.props.tooltipId} isOpen=${this.state.isOpen}`, this.ref, e);
-    if (this.state.isOpen) {
+    if (this.state.isOpen && !this.state.hideTooltip) {
       this.setState({ isOpen: false }, () => {
         handleAnyClick(false, this.handleClick);
       });
@@ -116,7 +120,11 @@ class HelpButton extends React.Component {
   };
 
   onClick = () => {
-    this.setState({ isOpen: !this.state.isOpen });
+    let state = false;
+    if(this.state.displayType === "aside") {
+      state = true;
+    }
+    this.setState({ isOpen: !this.state.isOpen, hideTooltip: state });
   };
 
   render() {
@@ -151,36 +159,35 @@ class HelpButton extends React.Component {
           dataTip={dataTip}
           onClick={this.onClick}
         />
-        {displayType === "dropdown" ? (
-          getContent ? (
-            <Tooltip
-              id={this.id}
-              reference={this.refTooltip}
-              effect="solid"
-              place={place}
-              offsetTop={offsetTop}
-              offsetBottom={offsetBottom}
-              offsetRight={offsetRight}
-              offsetLeft={offsetLeft}
-              afterShow={this.afterShow}
-              afterHide={this.afterHide}
-              getContent={getContent}
-            />
-          ) : (
-            <Tooltip
-              id={this.id}
-              reference={this.refTooltip}
-              effect="solid"
-              place={place}
-              offsetRight={offsetRight}
-              offsetLeft={offsetLeft}
-              afterShow={this.afterShow}
-              afterHide={this.afterHide}
-            >
-              {tooltipContent}
-            </Tooltip>
-          )
+        {getContent ? (
+          <Tooltip
+            id={this.id}
+            reference={this.refTooltip}
+            effect="solid"
+            place={place}
+            offsetTop={offsetTop}
+            offsetBottom={offsetBottom}
+            offsetRight={offsetRight}
+            offsetLeft={offsetLeft}
+            afterShow={this.afterShow}
+            afterHide={this.afterHide}
+            getContent={getContent}
+          />
         ) : (
+          <Tooltip
+            id={this.id}
+            reference={this.refTooltip}
+            effect="solid"
+            place={place}
+            offsetRight={offsetRight}
+            offsetLeft={offsetLeft}
+            afterShow={this.afterShow}
+            afterHide={this.afterHide}
+          >
+            {tooltipContent}
+          </Tooltip>
+        )}
+        {displayType === "aside" && (
           <>
             <Backdrop onClick={this.onClose} visible={isOpen} zIndex={zIndex} />
             <Aside visible={isOpen} scale={false} zIndex={zIndex}>

@@ -19,11 +19,17 @@ import {
   SectionPagingContent
 } from "./Section";
 import { setSelected } from "../../../store/people/actions";
+import { getSelectedGroup } from "../../../store/people/selectors";
 const { changeLanguage } = utils;
 
 class PureHome extends React.Component {
   constructor(props) {
     super(props);
+
+    const currentGroup = getSelectedGroup(props.groups, props.selectedGroup);
+    document.title = currentGroup 
+      ? `${currentGroup.name} – ${props.t("People")}` 
+      : `${props.t("People")} – ${props.t("OrganizationName")}`;
 
     this.state = {
       isHeaderVisible: false,
@@ -148,7 +154,7 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = (props) => { 
+const Home = props => { 
   changeLanguage(i18n);
   return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
 }
@@ -164,7 +170,9 @@ function mapStateToProps(state) {
     users: state.people.users,
     selection: state.people.selection,
     selected: state.people.selected,
-    isLoaded: state.auth.isLoaded
+    isLoaded: state.auth.isLoaded,
+    selectedGroup: state.people.selectedGroup,
+    groups: state.people.groups
   };
 }
 

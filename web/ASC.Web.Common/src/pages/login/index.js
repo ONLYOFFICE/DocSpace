@@ -189,8 +189,10 @@ class Form extends Component {
   };
 
   componentDidMount() {
-    const { match } = this.props;
+    const { match, t } = this.props;
     const { error, confirmedEmail } = match.params;
+
+    document.title = `${t("Authorization")} – ${t("OrganizationName")}`;
 
     error && this.setState({ errorText: error });
     confirmedEmail && this.setState({ identifier: confirmedEmail });

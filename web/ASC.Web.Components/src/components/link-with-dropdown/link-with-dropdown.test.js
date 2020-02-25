@@ -164,12 +164,4 @@ describe('<LinkWithDropdown />', () => {
     expect(wrapper.prop('isSemitransparent')).toEqual(true);
   });
 
-  it('componentWillUnmount() lifecycle  test', () => {
-    const wrapper = mount(<LinkWithDropdown color="#333333" isBold={true} data={[]}>Link with dropdown</LinkWithDropdown>);
-    const componentWillUnmount = jest.spyOn(wrapper.instance(), 'componentWillUnmount');
-
-    wrapper.unmount();
-    expect(componentWillUnmount).toHaveBeenCalled();
-  });
-
 });

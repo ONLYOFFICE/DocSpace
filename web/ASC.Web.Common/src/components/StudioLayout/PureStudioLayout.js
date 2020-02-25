@@ -35,15 +35,16 @@ class PureStudioLayout extends React.Component {
   };
 
   render() {
-    const { hasChanges, children, t } = this.props;
+    const { hasChanges, children, t, currentUser } = this.props;
+    const isUserDefined = Object.entries(currentUser).length > 0 && currentUser.constructor === Object;
+    const userActionProfileView = {
+      key: "ProfileBtn",
+      label: t("Profile"),
+      onClick: this.onProfileClick,
+      url: '/products/people/view/@self'
+    };
 
     const currentUserActions = [
-      {
-        key: "ProfileBtn",
-        label: t("Profile"),
-        onClick: this.onProfileClick,
-        url: '/products/people/view/@self'
-      },
       {
         key: "AboutBtn",
         label: t("AboutCompanyTitle"),
@@ -56,6 +57,8 @@ class PureStudioLayout extends React.Component {
         onClick: this.onLogoutClick
       }
     ];
+
+    isUserDefined && currentUserActions.unshift(userActionProfileView);
 
     const newProps = hasChanges
       ? {
@@ -80,6 +83,7 @@ class PureStudioLayout extends React.Component {
 
 PureStudioLayout.propTypes = {
   availableModules: PropTypes.array,
+  currentUser: PropTypes.object,
   logout: PropTypes.func.isRequired,
   language: PropTypes.string,
   hasChanges: PropTypes.bool,

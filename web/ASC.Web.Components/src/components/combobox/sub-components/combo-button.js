@@ -162,7 +162,7 @@ class ComboButton extends React.Component {
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
-          color={selectedOption.default ? arrowIconColor +' !important' : boxIconColor}
+          //color={selectedOption.default ? arrowIconColor +' !important' : boxIconColor}
         >
           {selectedOption.label}
         </Text>
