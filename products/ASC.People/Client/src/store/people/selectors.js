@@ -193,3 +193,7 @@ export function filterGroupSelectorOptions(options, template) {
   export function getDeleteUsers(users) {
     return users.filter(x => x.status === 2);
   }
+
+  export function getUsersIds(selections) {
+    return selections.map((user) => { return user.id });
+  }
