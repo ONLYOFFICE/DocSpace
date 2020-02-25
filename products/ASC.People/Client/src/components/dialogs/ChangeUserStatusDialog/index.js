@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
@@ -7,7 +7,8 @@ import {
   ModalDialog,
   Button,
   Text,
-  ToggleContent
+  ToggleContent,
+  Checkbox
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -17,89 +18,133 @@ import { updateUserStatus } from "../../../store/people/actions";
 
 const { changeLanguage } = utils;
 
-const ChangeUserStatusDialogComponent = props => {
-  const {
-    t,
-    onClose,
-    visible,
-    users,
-    userStatus,
-    updateUserStatus,
-    setSelected
-  } = props;
-  const usersId = [];
-  users.map(item => usersId.push(item.id));
+class ChangeUserStatusDialogComponent extends React.Component {
+  constructor(props) {
+    super(props);
 
-  const [isRequestRunning, setIsRequestRunning] = useState(false);
+    const { userIds, selectedUsers } = props;
 
-  changeLanguage(i18n);
+    changeLanguage(i18n);
 
-  const onChangeUserStatus = useCallback(() => {
-    setIsRequestRunning(true);
-    updateUserStatus(userStatus, usersId, true)
-      .then(() => toastr.success(t("SuccessChangeUserStatus")))
-      .catch(error => toastr.error(error))
-      .finally(() => {
-        setIsRequestRunning(false);
-        setSelected("close");
-        onClose();
+    const listUsers = selectedUsers.map((item, index) => {
+      const disabled = userIds.find(x => x === item.id);
+      return (selectedUsers[index] = {
+        ...selectedUsers[index],
+        checked: disabled ? true : false,
+        disabled: disabled ? false : true
       });
-  }, [t, usersId, userStatus, updateUserStatus, setSelected, onClose]);
+    });
 
-  const statusTranslation =
-    userStatus === 1
-      ? t("ChangeUsersActiveStatus")
-      : t("ChangeUsersDisableStatus");
-  const userStatusTranslation =
-    userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
+    this.state = { isRequestRunning: false, listUsers, userIds };
+  }
 
-  return (
-    <ModalDialogContainer>
-      <ModalDialog
-        visible={visible}
-        onClose={onClose}
-        headerContent={t("ChangeUserStatusDialogHeader")}
-        bodyContent={
-          <>
-            <Text>
-              {t("ChangeUserStatusDialog", {
-                status: statusTranslation,
-                userStatus: userStatusTranslation
-              })}
-            </Text>
-            <Text>{t("ChangeUserStatusDialogMessage")}</Text>
-            <ToggleContent
-              className="toggle-content-dialog"
-              label={t("ShowUsersList")}
-            >
-              {users.map((item, index) => (
-                <Text key={index}>{item.displayName}</Text>
-              ))}
-            </ToggleContent>
-          </>
-        }
-        footerContent={
-          <>
-            <Button
-              label={t("ChangeUsersStatusButton")}
-              size="medium"
-              primary
-              onClick={onChangeUserStatus}
-              isLoading={isRequestRunning}
-            />
-            <Button
-              className="button-dialog"
-              label={t("CancelButton")}
-              size="medium"
-              onClick={onClose}
-              isDisabled={isRequestRunning}
-            />
-          </>
-        }
-      />
-    </ModalDialogContainer>
-  );
-};
+  onChangeUserStatus = () => {
+    const {
+      updateUserStatus,
+      userStatus,
+      t,
+      setSelected,
+      onClose
+    } = this.props;
+    const { userIds } = this.state;
+    this.setState({ isRequestRunning: true }, () => {
+      updateUserStatus(userStatus, userIds, true)
+        .then(() => toastr.success(t("SuccessChangeUserStatus")))
+        .catch(error => toastr.error(error))
+        .finally(() => {
+          this.setState({ isRequestRunning: false }, () => {
+            setSelected("close");
+            onClose();
+          });
+        });
+    });
+  };
+
+  onChange = id => {
+    const { listUsers } = this.state;
+    const userIndex = listUsers.findIndex(x => x.id === id);
+    const newUsersList = listUsers;
+    newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
+
+    const newUserIds = [];
+
+    for (let item of newUsersList) {
+      if (item.checked === true) {
+        newUserIds.push(item.id);
+      }
+    }
+
+    this.setState({ listUsers: newUsersList, userIds: newUserIds });
+  };
+
+  render() {
+    const { t, onClose, visible, userStatus } = this.props;
+    const { listUsers, isRequestRunning } = this.state;
+
+    const statusTranslation =
+      userStatus === 1
+        ? t("ChangeUsersActiveStatus")
+        : t("ChangeUsersDisableStatus");
+    const userStatusTranslation =
+      userStatus === 1 ? t("DisabledEmployeeTitle") : t("ActiveEmployeeTitle");
+
+    return (
+      <ModalDialogContainer>
+        <ModalDialog
+          visible={visible}
+          onClose={onClose}
+          headerContent={t("ChangeUserStatusDialogHeader")}
+          bodyContent={
+            <>
+              <Text>
+                {t("ChangeUserStatusDialog", {
+                  status: statusTranslation,
+                  userStatus: userStatusTranslation
+                })}
+              </Text>
+              <Text>{t("ChangeUserStatusDialogMessage")}</Text>
+              <ToggleContent
+                className="toggle-content-dialog"
+                label={t("ShowUsersList")}
+              >
+                <div className="modal-dialog-content">
+                  {listUsers.map((item, index) => (
+                    <Checkbox
+                      className="modal-dialog-checkbox"
+                      onChange={this.onChange.bind(this, item.id)}
+                      key={`checkbox_${index}`}
+                      isChecked={item.checked}
+                      label={item.displayName}
+                      isDisabled={item.disabled}
+                    />
+                  ))}
+                </div>
+              </ToggleContent>
+            </>
+          }
+          footerContent={
+            <>
+              <Button
+                label={t("ChangeUsersStatusButton")}
+                size="medium"
+                primary
+                onClick={this.onChangeUserStatus}
+                isLoading={isRequestRunning}
+              />
+              <Button
+                className="button-dialog"
+                label={t("CancelButton")}
+                size="medium"
+                onClick={onClose}
+                isDisabled={isRequestRunning}
+              />
+            </>
+          }
+        />
+      </ModalDialogContainer>
+    );
+  }
+}
 
 const ChangeUserStatusDialogTranslated = withTranslation()(
   ChangeUserStatusDialogComponent
@@ -113,7 +158,8 @@ ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
-  users: PropTypes.arrayOf(PropTypes.object).isRequired
+  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default connect(null, { updateUserStatus })(
