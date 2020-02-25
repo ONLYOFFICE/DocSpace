@@ -14,7 +14,8 @@ import {
   getUserType,
   getUsersStatus,
   getInactiveUsers,
-  getDeleteUsers
+  getDeleteUsers,
+  getUsersIds
 } from "../../../../../store/people/selectors";
 import { withTranslation } from "react-i18next";
 import {
@@ -120,7 +121,8 @@ const SectionHeaderContent = props => {
     inviteLinkUsers,
     sendMessageUsers,
     removeUsers,
-    setSelected
+    setSelected,
+    selection
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -300,7 +302,8 @@ const SectionHeaderContent = props => {
       {showEmployeeDialog && (
         <ChangeUserTypeDialog
           visible={showEmployeeDialog}
-          users={employeeTypeUsers}
+          userIds={getUsersIds(employeeTypeUsers)}
+          selectedUsers={selection}
           onClose={onSetEmployee}
           userType={EmployeeType.User}
           setSelected={setSelected}
@@ -310,7 +313,8 @@ const SectionHeaderContent = props => {
       {showGuestDialog && (
         <ChangeUserTypeDialog
           visible={showGuestDialog}
-          users={guestTypeUsers}
+          userIds={getUsersIds(guestTypeUsers)}
+          selectedUsers={selection}
           onClose={onSetGuest}
           userType={EmployeeType.Guest}
           setSelected={setSelected}
@@ -319,7 +323,8 @@ const SectionHeaderContent = props => {
       {showActiveDialog && (
         <ChangeUserStatusDialog
           visible={showActiveDialog}
-          users={activeStatus}
+          userIds={getUsersIds(activeStatus)}
+          selectedUsers={selection}
           onClose={onSetActive}
           userStatus={EmployeeStatus.Active}
           setSelected={setSelected}
@@ -328,7 +333,8 @@ const SectionHeaderContent = props => {
       {showDisableDialog && (
         <ChangeUserStatusDialog
           visible={showDisableDialog}
-          users={disabledUser}
+          userIds={getUsersIds(disabledUser)}
+          selectedUsers={selection}
           onClose={onSetDisabled}
           userStatus={EmployeeStatus.Disabled}
           setSelected={setSelected}
@@ -339,7 +345,8 @@ const SectionHeaderContent = props => {
         <SendInviteDialog
           visible={showSendInviteDialog}
           onClose={onSendInviteAgain}
-          users={inviteLinkUsers}
+          userIds={getUsersIds(inviteLinkUsers)}
+          selectedUsers={selection}
           setSelected={setSelected}
         />
       )}
@@ -348,7 +355,8 @@ const SectionHeaderContent = props => {
         <DeleteGroupUsersDialog
           visible={showDeleteDialog}
           onClose={onDelete}
-          users={removeUsers}
+          userIds={getUsersIds(removeUsers)}
+          selectedUsers={selection}
           filter={filter}
           setSelected={setSelected}
         />
