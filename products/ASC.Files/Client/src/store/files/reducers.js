@@ -1,10 +1,14 @@
 import { SET_FILES, SET_FOLDERS, SET_SELECTION, SET_SELECTED, SET_SELECTED_FOLDER } from "./actions";
+import { api } from "asc-web-common";
+const { Filter } = api;
+
 const initialState = {
   files: [],
   folders: [],
   selection: [],
   selected: "none",
-  selectedFolder: null
+  selectedFolder: null,
+  filter: Filter.getDefault() //TODO: Replace to new FileFilter
 };
 
 const filesReducer = (state = initialState, action) => {

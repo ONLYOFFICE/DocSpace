@@ -93,7 +93,7 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { user, groups, t, settings } = this.props;
+    const { user, folders, t, settings } = this.props;
     const { guestCaption, userCaption, groupCaption } = settings.customNames;
 
     const options = !isAdmin(user)
@@ -117,7 +117,7 @@ class SectionFilterContent extends React.Component {
         }
       ];
 
-    const groupOptions = groups.map(group => {
+    const groupOptions = folders.map(group => {
       return {
         key: group.id,
         inSubgroup: true,
@@ -263,7 +263,7 @@ function mapStateToProps(state) {
   return {
     user: state.auth.user,
     folders: state.files.folders,
-    filter: state.people.filter,
+    filter: state.files.filter,
     settings: state.auth.settings
   };
 }

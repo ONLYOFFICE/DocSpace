@@ -85,7 +85,7 @@ namespace ASC.Web.Files.Configuration
                 {
                     DisabledIconFileName = "product_disabled_logo.png",
                     IconFileName = "product_logo.png",
-                    LargeIconFileName = "product_logolarge.svg",
+                    LargeIconFileName = "images/files.svg",
                     DefaultSortOrder = 10,
                     SubscriptionManager = SubscriptionManager,
                     SpaceUsageStatManager = FilesSpaceUsageStatManager,
@@ -158,7 +158,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string ApiURL
         {
-            get => "api/2.0/people/info.json";
+            get => "api/2.0/fileStorageService/info.json";
         }
     }
 }

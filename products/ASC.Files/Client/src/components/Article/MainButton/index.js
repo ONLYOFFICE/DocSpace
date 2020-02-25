@@ -37,7 +37,6 @@ class PureArticleMainButtonContent extends React.Component {
               label={"Folder"}
               onClick={() => toastr.info("Create folder click")}
             />
-            }
           </MainButton>
         </>
         :
