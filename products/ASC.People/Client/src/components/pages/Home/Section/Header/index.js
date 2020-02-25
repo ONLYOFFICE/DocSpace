@@ -28,7 +28,7 @@ import { deleteGroup } from "../../../../../store/group/actions";
 import { store, constants } from "asc-web-common";
 import {
   InviteDialog,
-  DeleteGroupUsersDialog,
+  DeleteUsersDialog,
   SendInviteDialog,
   ChangeUserStatusDialog,
   ChangeUserTypeDialog
@@ -119,7 +119,6 @@ const SectionHeaderContent = props => {
     usersWithActiveStatus,
     usersWithDisableStatus,
     usersToInvite,
-    usersToSendMessage,
     usersToRemove,
     setSelected,
     selection
@@ -154,6 +153,10 @@ const SectionHeaderContent = props => {
   const onDelete = useCallback(() => setDeleteDialog(!showDeleteDialog), [
     showDeleteDialog
   ]);
+
+  const onSendEmail = useCallback(()=> {
+    toastr.success.bind(this, t("SendEmailAction"));
+  }, [t])
 
   const menuItems = [
     {
@@ -200,8 +203,8 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("LblSendEmail"),
-      disabled: usersToSendMessage,
-      onClick: toastr.success.bind(this, t("SendEmailAction"))
+      disabled: !selection.length,
+      onClick: onSendEmail
     },
     {
       label: t("DeleteButton"),
@@ -352,7 +355,7 @@ const SectionHeaderContent = props => {
       )}
 
       {showDeleteDialog && (
-        <DeleteGroupUsersDialog
+        <DeleteUsersDialog
           visible={showDeleteDialog}
           onClose={onDelete}
           userIds={getUsersIds(usersToRemove)}
@@ -470,7 +473,6 @@ const mapStateToProps = state => {
       currentUserId
     ),
     usersToInvite: getInactiveUsers(selection),
-    usersToSendMessage: !selection.length,
     usersToRemove: getDeleteUsers(selection)
   };
 };

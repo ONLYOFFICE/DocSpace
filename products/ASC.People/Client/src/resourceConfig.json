@@ -68,7 +68,7 @@
       "SendButton"
     ]
   },
-  "DeleteGroupUsersDialog":{
+  "DeleteUsersDialog":{
     "Resource": [
       "OKButton",
       "CancelButton",

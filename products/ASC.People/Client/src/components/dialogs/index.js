@@ -3,7 +3,7 @@ import ChangePasswordDialog from "./ChangePasswordDialog";
 import ChangePhoneDialog from "./ChangePhoneDialog";
 import DeleteProfileEverDialog from "./DeleteProfileEverDialog";
 import DeleteSelfProfileDialog from "./DeleteSelfProfileDialog";
-import DeleteGroupUsersDialog from "./DeleteGroupUsersDialog";
+import DeleteUsersDialog from "./DeleteUsersDialog";
 import InviteDialog from "./InviteDialog";
 import SendInviteDialog from "./SendInviteDialog";
 import ChangeUserStatusDialog from "./ChangeUserStatusDialog";
@@ -15,7 +15,7 @@ export {
   ChangePhoneDialog,
   DeleteProfileEverDialog,
   DeleteSelfProfileDialog,
-  DeleteGroupUsersDialog,
+  DeleteUsersDialog,
   InviteDialog,
   SendInviteDialog,
   ChangeUserStatusDialog,

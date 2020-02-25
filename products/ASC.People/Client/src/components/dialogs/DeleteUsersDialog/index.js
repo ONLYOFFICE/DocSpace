@@ -143,11 +143,11 @@ const DeleteGroupUsersDialogTranslated = withTranslation()(
   DeleteGroupUsersDialogComponent
 );
 
-const DeleteGroupUsersDialog = props => (
+const DeleteUsersDialog = props => (
   <DeleteGroupUsersDialogTranslated i18n={i18n} {...props} />
 );
 
-DeleteGroupUsersDialog.propTypes = {
+DeleteUsersDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
@@ -158,5 +158,5 @@ DeleteGroupUsersDialog.propTypes = {
 };
 
 export default connect(null, { removeUser })(
-  withRouter(DeleteGroupUsersDialog)
+  withRouter(DeleteUsersDialog)
 );
