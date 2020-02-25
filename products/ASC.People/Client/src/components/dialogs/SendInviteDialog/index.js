@@ -142,6 +142,7 @@ SendInviteDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
   setSelected: PropTypes.func.isRequired
 };
 
