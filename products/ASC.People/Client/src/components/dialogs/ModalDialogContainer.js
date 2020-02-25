@@ -48,11 +48,11 @@ const ModalDialogContainer = styled.div`
 
   .modal-dialog-content {
     max-height: 290px;
-    overflow-y: scroll;
+    overflow-y: auto;
     border: 1px solid lightgray;
-    padding: 8px 0px 0px 8px;
+    padding: 8px 16px;
 
-    .modal-dialog-checkbox {
+    .modal-dialog-checkbox:not(:last-child) {
       padding-bottom: 4px;
     }
   }
