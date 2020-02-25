@@ -28,11 +28,10 @@ using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Controllers;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,16 +60,13 @@ namespace ASC.ApiSystem
 
             services.AddMemoryCache();
 
-            //var builder = services.AddMvc(config =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-            //    config.Filters.Add(new AuthorizeFilter(policy));
-            //});
+            services.AddAuthentication()
+                .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
+                .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
 
             services.AddNLogManager("ASC.Apisystem");
 
             services
-                .AddAuthSignatureService()
                 .AddCommonConstants()
                 .AddTimeZonesProvider()
                 .AddCommonMethods();
@@ -86,10 +82,10 @@ namespace ASC.ApiSystem
                 app.UseDeveloperExceptionPage();
             }
 
-            //app.UseForwardedHeaders(new ForwardedHeadersOptions
-            //{
-            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            //});
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseCors(builder =>
                 builder
@@ -99,9 +95,9 @@ namespace ASC.ApiSystem
 
             app.UseRouting();
 
-            //app.UseAuthentication();
+            app.UseAuthentication();
 
-            //app.UseAuthorization();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

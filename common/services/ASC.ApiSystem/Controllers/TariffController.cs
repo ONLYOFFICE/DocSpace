@@ -28,6 +28,7 @@ using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -62,7 +63,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPut("set")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult SetTariff(TariffModel model)
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
@@ -126,7 +127,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpGet("get")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetTariff([FromQuery] TariffModel model)
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))

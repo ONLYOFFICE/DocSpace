@@ -29,6 +29,7 @@ using ASC.ApiSystem.Models;
 using ASC.Core.Tenants;
 using ASC.Web.Core.Utility;
 using ASC.Web.Core.Utility.Settings;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -68,7 +69,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPost("register")]
         [AllowCrossSiteJson]
-        [AuthSignature("auth.allowskip.registerportal")]
+        [Authorize(AuthenticationSchemes = "auth.allowskip.registerportal")]
         public IActionResult Register(TenantModel model)
         {
             if (model == null)
@@ -274,7 +275,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpDelete("remove")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult Remove([FromQuery] TenantModel model)
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
@@ -309,7 +310,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPut("status")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult ChangeStatus(TenantModel model)
         {
             if (!CommonMethods.GetTenant(model, out Tenant tenant))
@@ -377,7 +378,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpGet("get")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetPortals([FromQuery] TenantModel model)
         {
             try

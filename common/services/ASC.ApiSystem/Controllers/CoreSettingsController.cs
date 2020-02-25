@@ -26,6 +26,7 @@
 
 using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -61,7 +62,7 @@ namespace ASC.ApiSystem.Controllers
         #region API methods
 
         [HttpGet("get")]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetSettings(int tenant, string key)
         {
             try
@@ -114,7 +115,7 @@ namespace ASC.ApiSystem.Controllers
         }
 
         [HttpPost("save")]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult SaveSettings([FromBody] CoreSettingsModel model)
         {
             try

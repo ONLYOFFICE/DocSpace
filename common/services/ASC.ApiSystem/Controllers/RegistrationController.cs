@@ -36,6 +36,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ASC.ApiSystem.Controllers
 {
@@ -68,7 +69,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPost("registerportal")]
         [AllowCrossSiteJson]
-        [AuthSignature("auth.allowskip.registerportal")]
+        [Authorize(AuthenticationSchemes = "auth.allowskip.registerportal")]
         public IActionResult Register(TenantModel model)
         {
             if (model == null)
@@ -305,7 +306,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpDelete("removeportal")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult Remove(string portalName)
         {
             if (string.IsNullOrEmpty(portalName))
@@ -337,7 +338,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPut("tariff")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult SetTariff(TariffModel model)
         {
             if (model == null)
@@ -421,7 +422,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpGet("tariff")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetTariff(string portalName)
         {
             if (string.IsNullOrEmpty(portalName))
@@ -456,7 +457,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpPut("statusportal")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult ChangeStatus(TenantModel model, bool active)
         {
             if (model == null)
@@ -513,7 +514,7 @@ namespace ASC.ApiSystem.Controllers
 
         [HttpGet("getportals")]
         [AllowCrossSiteJson]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult GetPortalsByEmail(string email)
         {
             try

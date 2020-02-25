@@ -28,6 +28,7 @@ using ASC.ApiSystem.Classes;
 using ASC.ApiSystem.Models;
 using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
@@ -67,7 +68,6 @@ namespace ASC.ApiSystem.Controllers
         #region API methods
 
         [HttpGet("change_to_storage")]
-        [AuthSignature]
         public IActionResult СhangeOfCalendarStorage(string change)
         {
             if (!GetTenant(change, out Tenant tenant, out object error))
@@ -96,7 +96,7 @@ namespace ASC.ApiSystem.Controllers
         }
 
         [HttpGet("caldav_delete_event")]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult CaldavDeleteEvent(string eventInfo)
         {
             if (!GetTenant(eventInfo, out Tenant tenant, out object error))
@@ -125,7 +125,7 @@ namespace ASC.ApiSystem.Controllers
         }
 
         [HttpPost("is_caldav_authenticated")]
-        [AuthSignature]
+        [Authorize(AuthenticationSchemes = "auth.allowskip")]
         public IActionResult IsCaldavAuthenticated(JObject data)
         {
             if (data == null)
