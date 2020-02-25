@@ -154,9 +154,13 @@ const SectionHeaderContent = props => {
     showDeleteDialog
   ]);
 
-  const onSendEmail = useCallback(()=> {
-    toastr.success.bind(this, t("SendEmailAction"));
-  }, [t])
+  const onSendEmail = useCallback(() => {
+    let str = "";
+    for (let item of selection) {
+      str += `${item.email},`;
+    }
+    window.open(`mailto: ${str}`, "_self");
+  }, [selection]);
 
   const menuItems = [
     {
