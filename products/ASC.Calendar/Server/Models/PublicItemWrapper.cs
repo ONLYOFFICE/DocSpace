@@ -30,6 +30,10 @@ using ASC.Core;
 using ASC.Core.Users;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common.Utils;
+using ASC.Web.Core.Users;
 
 namespace ASC.Calendar.Models
 {
@@ -71,8 +75,29 @@ namespace ASC.Calendar.Models
         private string _eventId;
         private bool _isCalendar;
 
-        public PublicItemWrapperHelper()
-        {   
+        public UserManager UserManager { get; }
+        private AuthManager Authentication { get; }
+        public AuthContext AuthContext { get; }
+        private TenantManager TenantManager { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        private PermissionContext PermissionContext { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public PublicItemWrapperHelper(
+            UserManager userManager,
+            AuthManager authentication,
+            AuthContext authContext,
+            TenantManager tenantManager,
+            TimeZoneConverter timeZoneConverter,
+            PermissionContext permissionContext,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
+        {
+            UserManager = userManager;
+            Authentication = authentication;
+            TenantManager = tenantManager;
+            AuthContext = authContext;
+            TimeZoneConverter = timeZoneConverter;
+            PermissionContext = permissionContext;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
         }
 
         public PublicItemWrapper Get(ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendartId, Guid owner)
@@ -110,115 +135,168 @@ namespace ASC.Calendar.Models
         protected void Init(ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, ref PublicItemWrapper result)
         {
             result.ItemId = publicItem.Id.ToString();
-        }
-    }
-        /*
-        [DataContract(Name ="publicItem")]
-        public class PublicItemWrapper : ASC.Web.Core.Calendars.SharingOptions.PublicItem
-        {
-            private Guid _owner;
-            private string _calendarId;
-            private string _eventId;
-            private bool _isCalendar;
 
+            //---ItemName
+            if (result.IsGroup)
+                result.ItemName = UserManager.GetGroupInfo(publicItem.Id).Name;
+            else
+                result.ItemName = UserManager.GetUsers(publicItem.Id).DisplayUserName(DisplayUserSettingsHelper);
 
-            public PublicItemWrapper( ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendartId, Guid owner)
+            //---CanEdit
+            result.CanEdit = !publicItem.Id.Equals(_owner);
+
+            //---SharingOption
+            if (publicItem.Id.Equals(_owner))
             {
-                base.Id = publicItem.Id;
-                base.IsGroup = publicItem.IsGroup;
-
-                _owner = owner;
-                _calendarId = calendartId;
-                _isCalendar = true;
+                result.SharingOption = AccessOption.OwnerOption;
             }
-
-            public PublicItemWrapper(ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendarId, string eventId, Guid owner)
+            else
             {
-                base.Id = publicItem.Id;
-                base.IsGroup = publicItem.IsGroup;
-
-                _owner = owner;
-                _calendarId = calendarId;
-                _eventId = eventId;
-                _isCalendar = false;
-            }
-
-            [DataMember(Name = "id", Order = 10)]
-            public string ItemId
-            {
-                get
+                var subject = publicItem.IsGroup ? (ISubject)UserManager.GetGroupInfo(publicItem.Id) : (ISubject)Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, publicItem.Id);
+                int calId;
+                if (_isCalendar && int.TryParse(_calendarId, out calId))
                 {
-                    return base.Id.ToString();
-                }
-                set{}
-            }
-
-            [DataMember(Name = "name", Order = 20)]
-            public string ItemName
-            {
-                get
-                {
-                    if(this.IsGroup)                
-                        return CoreContext.UserManager.GetGroupInfo(base.Id).Name;                
+                    var obj = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter) { Id = _calendarId };
+                    if (PermissionContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
+                        result.SharingOption = AccessOption.FullAccessOption;
                     else
-                        return CoreContext.UserManager.GetUsers(base.Id).DisplayUserName();                
+                        result.SharingOption = AccessOption.ReadOption;
                 }
-                set{}
-            }
-
-            [DataMember(Name = "isGroup", Order = 30)]
-            public new bool IsGroup
-            {
-                get
+                else if (!_isCalendar)
                 {
-                    return base.IsGroup;
+                    var obj = new BusinessObjects.Event(AuthContext, TimeZoneConverter) { Id = _eventId, CalendarId = _calendarId };
+                    if (PermissionContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
+                        result.SharingOption = AccessOption.FullAccessOption;
+                    else
+                        result.SharingOption = AccessOption.ReadOption;
                 }
-                set { }
-            }
-
-            [DataMember(Name = "canEdit", Order = 40)]
-            public bool CanEdit
-            {
-                get
+                else
                 {
-                    return !base.Id.Equals(_owner); 
+                    result.SharingOption = AccessOption.ReadOption;
                 }
-                set { }
+               
             }
-
-            [DataMember(Name = "selectedAction", Order = 50)]
-            public AccessOption SharingOption
-            {
-                get {
-                    if (base.Id.Equals(_owner))
-                    {
-                        return AccessOption.OwnerOption;
-                    }
-                    var subject = IsGroup ? (ISubject)CoreContext.UserManager.GetGroupInfo(base.Id) : (ISubject)CoreContext.Authentication.GetAccountByID(base.Id);
-                    int calId;
-                    if (_isCalendar && int.TryParse(_calendarId,out calId))
-                    {
-                        var obj = new ASC.Calendar.BusinessObjects.Calendar() { Id = _calendarId };
-                        if (SecurityContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
-                            return AccessOption.FullAccessOption;
-                    }
-                    else if(!_isCalendar)
-                    {
-                        var obj = new ASC.Calendar.BusinessObjects.Event() { Id = _eventId, CalendarId = _calendarId};
-                        if (SecurityContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
-                            return AccessOption.FullAccessOption;
-                    }
-
-                    return AccessOption.ReadOption;
-                }
-                set { }
-            }
-
-            public static object GetSample()
-            {
-                return new { selectedAction = AccessOption.GetSample(), canEdit = true, isGroup = true, 
-                             name = "Everyone", id = "2fdfe577-3c26-4736-9df9-b5a683bb8520" };
-            }
+            
         }
-        */
     }
+
+    public static class PublicItemWrapperExtension
+    {
+        public static IServiceCollection AddPublicItemWrapper(this IServiceCollection services)
+        {
+            services.TryAddScoped<PublicItemWrapperHelper>();
+
+            return services;
+        }
+    }
+
+    /*
+            [DataContract(Name ="publicItem")]
+            public class PublicItemWrapper : ASC.Web.Core.Calendars.SharingOptions.PublicItem
+            {
+                private Guid _owner;
+                private string _calendarId;
+                private string _eventId;
+                private bool _isCalendar;
+
+
+                public PublicItemWrapper( ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendartId, Guid owner)
+                {
+                    base.Id = publicItem.Id;
+                    base.IsGroup = publicItem.IsGroup;
+
+                    _owner = owner;
+                    _calendarId = calendartId;
+                    _isCalendar = true;
+                }
+
+                public PublicItemWrapper(ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendarId, string eventId, Guid owner)
+                {
+                    base.Id = publicItem.Id;
+                    base.IsGroup = publicItem.IsGroup;
+
+                    _owner = owner;
+                    _calendarId = calendarId;
+                    _eventId = eventId;
+                    _isCalendar = false;
+                }
+
+                [DataMember(Name = "id", Order = 10)]
+                public string ItemId
+                {
+                    get
+                    {
+                        return base.Id.ToString();
+                    }
+                    set{}
+                }
+
+                [DataMember(Name = "name", Order = 20)]
+                public string ItemName
+                {
+                    get
+                    {
+                        if(this.IsGroup)                
+                            return CoreContext.UserManager.GetGroupInfo(base.Id).Name;                
+                        else
+                            return CoreContext.UserManager.GetUsers(base.Id).DisplayUserName();                
+                    }
+                    set{}
+                }
+
+                [DataMember(Name = "isGroup", Order = 30)]
+                public new bool IsGroup
+                {
+                    get
+                    {
+                        return base.IsGroup;
+                    }
+                    set { }
+                }
+
+                [DataMember(Name = "canEdit", Order = 40)]
+                public bool CanEdit
+                {
+                    get
+                    {
+                        return !base.Id.Equals(_owner); 
+                    }
+                    set { }
+                }
+
+                [DataMember(Name = "selectedAction", Order = 50)]
+                public AccessOption SharingOption
+                {
+                    get {
+                        if (base.Id.Equals(_owner))
+                        {
+                            return AccessOption.OwnerOption;
+                        }
+                        var subject = IsGroup ? (ISubject)CoreContext.UserManager.GetGroupInfo(base.Id) : (ISubject)CoreContext.Authentication.GetAccountByID(base.Id);
+                        int calId;
+                        if (_isCalendar && int.TryParse(_calendarId,out calId))
+                        {
+                            var obj = new ASC.Calendar.BusinessObjects.Calendar() { Id = _calendarId };
+                            if (SecurityContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
+                                return AccessOption.FullAccessOption;
+                        }
+                        else if(!_isCalendar)
+                        {
+                            var obj = new ASC.Calendar.BusinessObjects.Event() { Id = _eventId, CalendarId = _calendarId};
+                            if (SecurityContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
+                                return AccessOption.FullAccessOption;
+                        }
+
+                        return AccessOption.ReadOption;
+                    }
+                    set { }
+                }
+
+                public static object GetSample()
+                {
+                    return new { selectedAction = AccessOption.GetSample(), canEdit = true, isGroup = true, 
+                                 name = "Everyone", id = "2fdfe577-3c26-4736-9df9-b5a683bb8520" };
+                }
+            }
+            */
+}

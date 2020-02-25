@@ -86,7 +86,7 @@ namespace ASC.Calendar.BusinessObjects
         public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate)
         {   
             var result = new List<EventWrapper>();
-            if (calendar != null)
+            /*if (calendar != null)
             {
                 var events = calendar.LoadEvents(userId, startDate.UtcTime, endDate.UtcTime);
                 foreach (var e in events)
@@ -95,13 +95,13 @@ namespace ASC.Calendar.BusinessObjects
                     var listWrapper = wrapper.GetList(startDate.UtcTime, endDate.UtcTime);
                     result.AddRange(listWrapper);
                 }
-            }
+            }*/
 
             return result;
         }
         public static List<TodoWrapper> GetTodoWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate)
         {
-            var result = new List<TodoWrapper>();
+            /*var result = new List<TodoWrapper>();
             if (calendar != null)
             {
                 using (var provider = new DataProvider())
@@ -121,7 +121,7 @@ namespace ASC.Calendar.BusinessObjects
                         return result;
                     }
                 }
-            }
+            }*/
             return null;
         }
     }

@@ -60,10 +60,9 @@ namespace ASC.Calendar.Models
         {
             TimeZoneConverter = timeZoneConverter;
         }
-        public TimeZoneWrapper Get(TimeZoneInfo timeZone, TimeZoneConverter timeZoneConverter)
+        public TimeZoneWrapper Get(TimeZoneInfo timeZone)
         {
             _timeZone = timeZone;
-            TimeZoneConverter = timeZoneConverter;
 
             var result = new TimeZoneWrapper();
 

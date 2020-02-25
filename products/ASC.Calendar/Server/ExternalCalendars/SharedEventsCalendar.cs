@@ -34,7 +34,7 @@ using ASC.Web.Core.Calendars;
 
 namespace ASC.Calendar.ExternalCalendars
 {
-    /*
+
     public sealed class SharedEventsCalendar : BaseCalendar
     {
         public static string CalendarId { get { return "shared_events"; } }
@@ -57,13 +57,14 @@ namespace ASC.Calendar.ExternalCalendars
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            using (var provider = new DataProvider())
-            {
-                var events = provider.LoadSharedEvents(userId, TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
-                events.ForEach(e => e.CalendarId = Id);
-                var ievents = new List<IEvent>(events.Select(e => (IEvent)e));
-                return ievents;
-            }
+            /* using (var provider = new DataProvider())
+             {
+                 var events = provider.LoadSharedEvents(userId, TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
+                 events.ForEach(e => e.CalendarId = Id);
+                 var ievents = new List<IEvent>(events.Select(e => (IEvent)e));
+                 return ievents;
+             }*/
+            return null;
         }
 
         private string _name;
@@ -99,5 +100,5 @@ namespace ASC.Calendar.ExternalCalendars
             set { _timeZone = value; }
         }
     }
-    */
+
 }

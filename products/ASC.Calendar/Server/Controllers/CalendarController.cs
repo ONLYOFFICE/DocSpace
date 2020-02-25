@@ -64,7 +64,7 @@ namespace ASC.Calendar.Controllers
             ApiContext = apiContext;
             UserManager = userManager;
             DataProvider = dataProvider;
-            CalendarWrapperHelper = calendarWrapperHelper
+            CalendarWrapperHelper = calendarWrapperHelper;
         }
 
         [Read("info")]

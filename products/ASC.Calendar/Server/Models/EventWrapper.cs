@@ -37,6 +37,7 @@ using ASC.Api.Core;
 using ASC.Web.Core.Calendars;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common.Utils;
 
 namespace ASC.Calendar.Models
 {
@@ -130,9 +131,33 @@ namespace ASC.Calendar.Models
         private DateTime _utcEndDate = DateTime.MinValue;
         private DateTime _utcUpdateDate = DateTime.MinValue;
 
-        public EventWrapperHelper()
-        {
 
+        private AuthManager Authentication { get; }
+        private TenantManager TenantManager { get; }
+        public UserManager UserManager { get; }
+        private PermissionContext PermissionContext { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public PublicItemCollectionHelper PublicItemCollectionHelper { get; }
+        private AuthContext AuthContext { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        public EventWrapperHelper(
+            UserManager userManager,
+            AuthManager authentication,
+            TenantManager tenantManager,
+            PermissionContext permissionContext,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            PublicItemCollectionHelper publicItemCollectionHelper,
+            AuthContext context,
+            TimeZoneConverter timeZoneConverter)
+        {
+            Authentication = authentication;
+            TenantManager = tenantManager;
+            UserManager = userManager;
+            PublicItemCollectionHelper = publicItemCollectionHelper;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+            PermissionContext = permissionContext;
+            AuthContext = context;
+            TimeZoneConverter = timeZoneConverter;
         }
         public EventWrapper Get(IEvent baseEvent, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate, DateTime utcEndDate, DateTime utcUpdateDate)
         {
@@ -166,7 +191,7 @@ namespace ASC.Calendar.Models
             {
                 eventWraper.Start = new ApiDateTime(startD, TimeZoneInfo.Utc.GetOffset());
             }
-            else if(_baseEvent.GetType().Namespace == new BusinessObjects.Event().GetType().Namespace)
+            else if(_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter).GetType().Namespace)
             {
                 eventWraper.Start = new ApiDateTime(startD, _timeZone.GetOffset(false, updateD));
             }
@@ -185,7 +210,7 @@ namespace ASC.Calendar.Models
             {
                 eventWraper.End = new ApiDateTime(endD, TimeZoneInfo.Utc.GetOffset());
             }
-            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event().GetType().Namespace)
+            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter).GetType().Namespace)
             {
                 eventWraper.End = new ApiDateTime(endD, _timeZone.GetOffset(false, updateD));
             }
@@ -202,26 +227,26 @@ namespace ASC.Calendar.Models
 
             if (_baseEvent is ISecurityObject)
             {
-                eventWraper.IsEditable = SecurityContext.PermissionResolver.Check(CoreContext.Authentication.GetAccountByID(this.UserId), (ISecurityObject)_baseEvent, null, CalendarAccessRights.FullAccessAction);
+                eventWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId), (ISecurityObject)_baseEvent, null, CalendarAccessRights.FullAccessAction);
             }
             else
             {
                 eventWraper.IsEditable = false;
             }
             
-            var p = new CalendarPermissions() { Data = PublicItemCollection.GetForEvent(_baseEvent) };
+            var p = new CalendarPermissions() { Data = PublicItemCollectionHelper.GetForEvent(_baseEvent) };
             foreach (var item in _baseEvent.SharingOptions.PublicItems)
             {
                 if (item.IsGroup)
-                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetGroupInfo(item.Id).Name });
+                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
                 else
-                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = CoreContext.UserManager.GetUsers(item.Id).DisplayUserName() });
+                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
             }
             eventWraper.Permissions = p;
 
             var owner = new UserParams() { Id = _baseEvent.OwnerId, Name = "" };
             if (_baseEvent.OwnerId != Guid.Empty)
-                owner.Name = CoreContext.UserManager.GetUsers(_baseEvent.OwnerId).DisplayUserName();
+                owner.Name = UserManager.GetUsers(_baseEvent.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
 
             eventWraper.Owner = owner;
             eventWraper.Status = _baseEvent.Status;
@@ -240,7 +265,8 @@ namespace ASC.Calendar.Models
         {
             services.TryAddScoped<EventWrapperHelper>();
 
-            return services;
+            return services.
+                AddPublicItemCollection();
         }
     }
 

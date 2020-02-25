@@ -47,10 +47,6 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "items", Order = 20)]
         public List<PublicItemWrapper> Items { get; set; }
 
-        public PublicItemCollection()
-        {
-            this.Items = new List<PublicItemWrapper>();
-        }
 
         public static PublicItemCollection GetSample()
         {
@@ -61,15 +57,20 @@ namespace ASC.Calendar.Models
     public class PublicItemCollectionHelper
     {
         public AuthContext AuthContext { get; }
-        public PublicItemCollectionHelper(AuthContext authContext)
+        public PublicItemWrapperHelper PublicItemWrapperHelper { get; }
+
+        public PublicItemCollectionHelper(
+            AuthContext authContext,
+            PublicItemWrapperHelper publicItemWrapperHelper)
         {
             AuthContext = authContext;
+            PublicItemWrapperHelper = publicItemWrapperHelper;
         }
 
         public PublicItemCollection GetDefault()
         {
-            var sharingOptions = new PublicItemCollection();
-            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(
+            var sharingOptions = GetPublicItemCollection();
+            sharingOptions.Items.Add(PublicItemWrapperHelper.Get(
                 new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
                 {
                     Id = AuthContext.CurrentAccount.ID,
@@ -81,22 +82,23 @@ namespace ASC.Calendar.Models
 
         public  PublicItemCollection GetForCalendar(ICalendar calendar)
         {
-            var sharingOptions = new PublicItemCollection();
-            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
+            var sharingOptions = GetPublicItemCollection();
+            sharingOptions.Items.Add(PublicItemWrapperHelper.Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
             {
                 Id = calendar.OwnerId,
                 IsGroup = false
             },
                   calendar.Id.ToString(), calendar.OwnerId));
+
             foreach (var item in calendar.SharingOptions.PublicItems)
-                sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(item, calendar.Id.ToString(), calendar.OwnerId));
+                sharingOptions.Items.Add(PublicItemWrapperHelper.Get(item, calendar.Id.ToString(), calendar.OwnerId));
 
             return sharingOptions;
         }
-        public  PublicItemCollection GetForEvent(IEvent calendarEvent)
+        public PublicItemCollection GetForEvent(IEvent calendarEvent)
         {
-            var sharingOptions = new PublicItemCollection();
-            sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
+            var sharingOptions = GetPublicItemCollection();
+            sharingOptions.Items.Add(PublicItemWrapperHelper.Get(new ASC.Web.Core.Calendars.SharingOptions.PublicItem()
             {
                 Id = calendarEvent.OwnerId,
                 IsGroup = false
@@ -105,9 +107,20 @@ namespace ASC.Calendar.Models
             calendarEvent.CalendarId, calendarEvent.Id, calendarEvent.OwnerId));
 
             foreach (var item in calendarEvent.SharingOptions.PublicItems)
-                sharingOptions.Items.Add(new PublicItemWrapperHelper().Get(item, calendarEvent.CalendarId, calendarEvent.Id, calendarEvent.OwnerId));
+                sharingOptions.Items.Add(PublicItemWrapperHelper.Get(item, calendarEvent.CalendarId, calendarEvent.Id, calendarEvent.OwnerId));
 
             return sharingOptions;
+        }
+
+        public PublicItemCollection GetPublicItemCollection()
+        {
+            var publicItemCollection = new PublicItemCollection();
+
+            publicItemCollection.Items = new List<PublicItemWrapper>();
+
+            publicItemCollection.AvailableOptions = AccessOption.CalendarStandartOptions;
+
+            return publicItemCollection;
         }
     }
     public static class PublicItemCollectionExtension
@@ -117,7 +130,8 @@ namespace ASC.Calendar.Models
             services.TryAddScoped<PublicItemCollectionHelper>();
 
             return services
-                .AddApiContextService();
+                .AddApiContextService()
+                .AddPublicItemWrapper();
         }
     }
    
