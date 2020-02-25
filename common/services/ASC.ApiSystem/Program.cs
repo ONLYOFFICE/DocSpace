@@ -62,7 +62,9 @@ namespace ASC.ApiSystem
                     })
                     .AddJsonFile("appsettings.json")
                     .AddJsonFile($"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
+                    .AddJsonFile($"appsettings.services.json", true)
                     .AddJsonFile("storage.json")
+                    .AddJsonFile("notify.json")
                     .AddJsonFile("kafka.json")
                     .AddJsonFile($"kafka.{hostingContext.HostingEnvironment.EnvironmentName}.json", true)
                     .AddEnvironmentVariables();
