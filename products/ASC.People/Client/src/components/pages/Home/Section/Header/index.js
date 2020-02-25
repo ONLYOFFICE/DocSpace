@@ -114,13 +114,13 @@ const SectionHeaderContent = props => {
     history,
     settings,
     deleteGroup,
-    employeeTypeUsers,
-    guestTypeUsers,
-    activeStatus,
-    disabledUser,
-    inviteLinkUsers,
-    sendMessageUsers,
-    removeUsers,
+    usersWithEmployeeType,
+    usersWithGuestType,
+    usersWithActiveStatus,
+    usersWithDisableStatus,
+    usersToInvite,
+    usersToSendMessage,
+    usersToRemove,
     setSelected,
     selection
   } = props;
@@ -173,39 +173,39 @@ const SectionHeaderContent = props => {
       label: t("ChangeToUser", {
         userCaption: settings.customNames.userCaption
       }),
-      disabled: !employeeTypeUsers.length,
+      disabled: !usersWithEmployeeType.length,
       onClick: onSetEmployee
     },
     {
       label: t("ChangeToGuest", {
         guestCaption: settings.customNames.guestCaption
       }),
-      disabled: !guestTypeUsers.length,
+      disabled: !usersWithGuestType.length,
       onClick: onSetGuest
     },
     {
       label: t("LblSetActive"),
-      disabled: !activeStatus.length,
+      disabled: !usersWithActiveStatus.length,
       onClick: onSetActive
     },
     {
       label: t("LblSetDisabled"),
-      disabled: !disabledUser.length,
+      disabled: !usersWithDisableStatus.length,
       onClick: onSetDisabled
     },
     {
       label: t("LblInviteAgain"),
-      disabled: !inviteLinkUsers.length,
+      disabled: !usersToInvite.length,
       onClick: onSendInviteAgain
     },
     {
       label: t("LblSendEmail"),
-      disabled: sendMessageUsers,
+      disabled: usersToSendMessage,
       onClick: toastr.success.bind(this, t("SendEmailAction"))
     },
     {
       label: t("DeleteButton"),
-      disabled: !removeUsers.length,
+      disabled: !usersToRemove.length,
       onClick: onDelete
     }
   ];
@@ -302,7 +302,7 @@ const SectionHeaderContent = props => {
       {showEmployeeDialog && (
         <ChangeUserTypeDialog
           visible={showEmployeeDialog}
-          userIds={getUsersIds(employeeTypeUsers)}
+          userIds={getUsersIds(usersWithEmployeeType)}
           selectedUsers={selection}
           onClose={onSetEmployee}
           userType={EmployeeType.User}
@@ -313,7 +313,7 @@ const SectionHeaderContent = props => {
       {showGuestDialog && (
         <ChangeUserTypeDialog
           visible={showGuestDialog}
-          userIds={getUsersIds(guestTypeUsers)}
+          userIds={getUsersIds(usersWithGuestType)}
           selectedUsers={selection}
           onClose={onSetGuest}
           userType={EmployeeType.Guest}
@@ -323,7 +323,7 @@ const SectionHeaderContent = props => {
       {showActiveDialog && (
         <ChangeUserStatusDialog
           visible={showActiveDialog}
-          userIds={getUsersIds(activeStatus)}
+          userIds={getUsersIds(usersWithActiveStatus)}
           selectedUsers={selection}
           onClose={onSetActive}
           userStatus={EmployeeStatus.Active}
@@ -333,7 +333,7 @@ const SectionHeaderContent = props => {
       {showDisableDialog && (
         <ChangeUserStatusDialog
           visible={showDisableDialog}
-          userIds={getUsersIds(disabledUser)}
+          userIds={getUsersIds(usersWithDisableStatus)}
           selectedUsers={selection}
           onClose={onSetDisabled}
           userStatus={EmployeeStatus.Disabled}
@@ -345,7 +345,7 @@ const SectionHeaderContent = props => {
         <SendInviteDialog
           visible={showSendInviteDialog}
           onClose={onSendInviteAgain}
-          userIds={getUsersIds(inviteLinkUsers)}
+          userIds={getUsersIds(usersToInvite)}
           selectedUsers={selection}
           setSelected={setSelected}
         />
@@ -355,7 +355,7 @@ const SectionHeaderContent = props => {
         <DeleteGroupUsersDialog
           visible={showDeleteDialog}
           onClose={onDelete}
-          userIds={getUsersIds(removeUsers)}
+          userIds={getUsersIds(usersToRemove)}
           selectedUsers={selection}
           filter={filter}
           setSelected={setSelected}
@@ -453,13 +453,25 @@ const mapStateToProps = state => {
     filter: state.people.filter,
     settings: state.auth.settings,
 
-    employeeTypeUsers: getUserType(selection, employeeStatus, currentUserId),
-    guestTypeUsers: getUserType(selection, guestStatus, currentUserId),
-    activeStatus: getUsersStatus(selection, activeUsers, currentUserId),
-    disabledUser: getUsersStatus(selection, disabledUsers, currentUserId),
-    inviteLinkUsers: getInactiveUsers(selection),
-    sendMessageUsers: !selection.length,
-    removeUsers: getDeleteUsers(selection)
+    usersWithEmployeeType: getUserType(
+      selection,
+      employeeStatus,
+      currentUserId
+    ),
+    usersWithGuestType: getUserType(selection, guestStatus, currentUserId),
+    usersWithActiveStatus: getUsersStatus(
+      selection,
+      activeUsers,
+      currentUserId
+    ),
+    usersWithDisableStatus: getUsersStatus(
+      selection,
+      disabledUsers,
+      currentUserId
+    ),
+    usersToInvite: getInactiveUsers(selection),
+    usersToSendMessage: !selection.length,
+    usersToRemove: getDeleteUsers(selection)
   };
 };
 
