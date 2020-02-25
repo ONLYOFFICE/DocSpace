@@ -89,8 +89,8 @@ class SearchInput extends React.Component {
           iconName={!!this.state.inputValue || this.props.showClearButton ? "CrossIcon" : "SearchIcon"}
           isIconFill={true}
           iconSize={clearButtonSize}
-          iconColor={"#D0D5DA"}
-          hoverColor={!!this.state.inputValue || this.props.showClearButton ? "#555F65" : "#D0D5DA"}
+          iconColor="#A3A9AE"
+          hoverColor="#A3A9AE"
           onIconClick={!!this.state.inputValue || this.props.showClearButton ? this.clearSearch : undefined}
           size={this.props.size}
           scale={true}

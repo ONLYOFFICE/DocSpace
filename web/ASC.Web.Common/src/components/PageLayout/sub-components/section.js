@@ -9,8 +9,25 @@ const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
 
+  .section-header_filter {
+      display: block;
+    }
+
+    .section-body_filter {
+      display: none;
+    }
+
   @media ${tablet} {
     padding: 0 0 0 16px;
+
+    .section-header_filter {
+      display: none;
+    }
+
+    .section-body_filter {
+      display: block;
+      margin: 0 0 16px;
+    }
   }
 `;
 

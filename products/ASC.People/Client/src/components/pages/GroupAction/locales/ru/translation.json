@@ -12,5 +12,6 @@
   "CustomNewDepartment": "{{groupCaption}} (создание)",
   "SearchAddedMembers": "Поиск добавленных участников",
   "MeLabel": "Я",
-  "EmptyFieldError": "Пустое поле"
+  "EmptyFieldError": "Пустое поле",
+  "GroupAction": "Работа с группой"
 }

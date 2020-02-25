@@ -20,6 +20,7 @@ const toModuleWrapper = (item, iconName) => {
     id: item.id,
     title: item.title,
     iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
+    iconUrl: item.iconUrl, 
     notifications: 0,
     url: item.link,
     onClick: (e) => {
@@ -58,7 +59,7 @@ const getAvailableModules = (modules, currentUser) => {
   const isUserAdmin = currentUser.isAdmin;
   const customModules = getCustomModules(isUserAdmin);
   const separator = getSeparator("nav-products-separator");
-  const products = modules.map(toModuleWrapper);
+  const products = modules.map(m => toModuleWrapper(m));
 
   return [separator, ...products, ...customModules];
 };

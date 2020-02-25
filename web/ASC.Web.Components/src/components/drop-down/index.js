@@ -12,12 +12,11 @@ const StyledDropdown = styled.div`
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
-
     ${props => props.maxHeight && `
       max-height: ${props.maxHeight}px;
       overflow-y: auto;
     `}
-
+    height: fit-content;
     position: absolute;
     ${props => props.manualWidth && `width: ${props.manualWidth};`}
     ${props => (props.directionY === 'top' && css`bottom: ${props => props.manualY ? props.manualY : '100%'};`)}
@@ -33,7 +32,6 @@ const StyledDropdown = styled.div`
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
-
     padding: ${props => !props.maxHeight && props.children && props.children.length > 1 && `6px 0px`};
 `;
 
@@ -100,10 +98,14 @@ class DropDown extends React.PureComponent {
     const container = { width: window.innerWidth, height: window.innerHeight };
     const left = rects.left < 0 && rects.width < container.width;
     const right = rects.left < 250 && rects.left > rects.width && rects.width < container.width;
-    const x = left ? 'left' : right ? 'right' : this.props.directionX;
+    const top = rects.bottom > container.height && rects.top > rects.height;
+    const bottom = rects.top < 0;
+    const x = left ? 'left' : right ? 'right' : this.state.directionX;
+    const y = bottom ? 'bottom' : top ? 'top' : this.state.directionY;
 
     this.setState({
       directionX: x,
+      directionY: y,
       width: rects.width
     });
   }
@@ -116,7 +118,7 @@ class DropDown extends React.PureComponent {
     const fullHeight = children && children.length * itemHeight;
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
-    //console.log("DropDown render");
+    //console.log("DropDown render", this.props);
     return (
       <StyledDropdown
         ref={this.dropDownRef}

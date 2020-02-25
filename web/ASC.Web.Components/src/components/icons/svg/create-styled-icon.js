@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import ReactDOMServer from 'react-dom/server';
-import {Parser} from 'html-to-react'
+import { Parser } from 'html-to-react'
 
 const iconSizes = {
   small: 12,
@@ -38,35 +38,39 @@ const getSizeStyle = size => {
   }
 };
 
-export default function createStyledIcon(Component, displayName, fillPath="*", strokePath="*") {
+export default function createStyledIcon(Component, displayName, fillPath = "*", strokePath = "*") {
 
   class Icon extends React.Component {
 
-    render_xml(id, xml_string){
+    render_xml(id, xml_string) {
       var doc = new DOMParser().parseFromString(xml_string, 'application/xml');
       var el = document.getElementById(id)
       el.appendChild(
         el.ownerDocument.importNode(doc.documentElement, true)
       )
     }
-    render() {
-      const { isfill, isStroke, color, stroke, fillPath, strokePath, ...props } = this.props;
-      
-      var svg = ReactDOMServer.renderToString(<Component {...props}></Component>);
-      const matchResult = svg.match(/\s*mask id="(\w*)"\s/);
 
-      if(matchResult != null){
-        if(matchResult.length > 1){
-          svg = svg.replace(new RegExp(matchResult[1],'g'), Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5))
-          var htmlToReactParser = new Parser();
-          var reactComponent = htmlToReactParser.parse(svg);
+    render() {
+      // eslint-disable-next-line react/prop-types, no-unused-vars
+      const { isfill, isStroke, color, stroke, fillPath, strokePath, ...props } = this.props;
+
+      let svg = ReactDOMServer.renderToString(<Component {...props}></Component>);
+      const matchResult = svg.match(/\s*mask id="(\w*)"\s/);
+      const newId = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5);
+
+      if (matchResult != null) {
+        if (matchResult.length > 1) {
+          svg = svg.replace(new RegExp(matchResult[1], 'g'), newId);
+
+          const htmlToReactParser = new Parser();
+          const reactComponent = htmlToReactParser.parse(svg);
           return reactComponent;
         }
       }
       return (<Component {...props}></Component>);
     }
   }
-  
+
   const StyledIcon = styled(Icon)(
     props => `
     ${props.fillPath} {
@@ -82,6 +86,7 @@ export default function createStyledIcon(Component, displayName, fillPath="*", s
   );
 
   StyledIcon.displayName = displayName;
+
   StyledIcon.propTypes = {
     color: PropTypes.string,
     stroke: PropTypes.string,

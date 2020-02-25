@@ -25,7 +25,7 @@ const StyledComboBox = styled(ComboBox)`
     }
 
     .combo-button-label {
-        color: #A3A9AE;
+        color: #333;
     }
 
 `;

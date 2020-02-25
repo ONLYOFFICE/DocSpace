@@ -20,7 +20,8 @@ import {
   setSelection,
   updateUserStatus,
   resetFilter,
-  fetchPeople
+  fetchPeople,
+  selectGroup
 } from "../../../../../store/people/actions";
 import {
   isUserSelected,
@@ -208,7 +209,7 @@ class SectionBodyContent extends React.PureComponent {
           },
           isSelf
             ? viewer.isOwner
-              ? {}
+              ? null
               : {
                 key: "delete-profile",
                 label: t("DeleteSelfProfile"),
@@ -279,7 +280,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onContentRowSelect = (checked, user) => {
-    console.log("ContentRow onSelect", checked, user);
+    //console.log("ContentRow onSelect", checked, user);
     if (checked) {
       this.props.selectUser(user);
     } else {
@@ -310,7 +311,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    console.log("Home SectionBodyContent render()");
+    //console.log("Home SectionBodyContent render()");
     const { users, viewer, selection, history, settings, t, filter } = this.props;
     const { dialogsVisible, user } = this.state;
 
@@ -320,7 +321,7 @@ class SectionBodyContent extends React.PureComponent {
         <>
           <RowContainer useReactWindow={false}>
             {users.map(user => {
-              const contextOptions = this.getUserContextOptions(user, viewer);
+              const contextOptions = this.getUserContextOptions(user, viewer).filter(o => o);
               const contextOptionsProps = !contextOptions.length
                 ? {}
                 : { contextOptions };
@@ -350,6 +351,7 @@ class SectionBodyContent extends React.PureComponent {
                     user={user}
                     history={history}
                     settings={settings}
+                    selectGroup={this.props.selectGroup}
                   />
                 </Row>
               );
@@ -426,5 +428,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople }
+  { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople, selectGroup }
 )(withRouter(withTranslation()(SectionBodyContent)));

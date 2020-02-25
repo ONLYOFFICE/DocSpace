@@ -53,5 +53,6 @@
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "SuccessfullyRemovedUsers": "Пользователи были успешно удалены",
   "SendEmailAction": "Действие отправки e-mail",
-  "SuccessfullyRemovedGroup": "Группа была успешно удалена"
+  "SuccessfullyRemovedGroup": "Группа была успешно удалена",
+  "OrganizationName": "ONLYOFFICE"
 }

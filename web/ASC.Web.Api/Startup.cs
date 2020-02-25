@@ -35,24 +35,19 @@ namespace ASC.Web.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
             services.AddControllers()
                     .AddNewtonsoftJson()
                     .AddXmlSerializerFormatters();
 
             services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
-            services.AddMemoryCache();
-
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
-            services.AddHttpContextAccessor();
-
             services.AddAuthentication("cookie")
                     .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
                     .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
-            var builder = services.AddMvc(config =>
+            var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -110,8 +105,6 @@ namespace ASC.Web.Api
                     .AllowAnyMethod());
 
             app.UseRouting();
-
-            app.UseSession();
 
             app.UseAuthentication();
 

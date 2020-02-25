@@ -53,5 +53,6 @@
   "MakeInvitationLink": "Make invitation link",
   "SuccessfullyRemovedUsers": "Users have been removed successfully",
   "SendEmailAction": "Send e-mail action",
-  "SuccessfullyRemovedGroup": "Group has been removed successfully"
+  "SuccessfullyRemovedGroup": "Group has been removed successfully",
+  "OrganizationName": "ONLYOFFICE"
 }

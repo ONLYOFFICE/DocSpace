@@ -99,7 +99,7 @@ namespace ASC.Web.Studio.Core.TFA
 
         public SetupCode GenerateSetupCode(UserInfo user, int size)
         {
-            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, GenerateAccessToken(user), size, size, true);
+            return Tfa.GenerateSetupCode(SetupInfo.TfaAppSender, user.Email, Encoding.UTF8.GetBytes(GenerateAccessToken(user)), size, true);
         }
 
         public bool ValidateAuthCode(UserInfo user, int tenantId, string code, bool checkBackup = true)

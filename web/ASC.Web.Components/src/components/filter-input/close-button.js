@@ -13,8 +13,8 @@ const CloseButton = props => {
     <StyledCloseButton className={props.className}>
       <IconButton
         color={"#A3A9AE"}
-        hoverColor={"#555F65"}
-        clickColor={"#555F65"}
+        hoverColor={"#A3A9AE"}
+        clickColor={"#A3A9AE"}
         size={10}
         iconName={'CrossIcon'}
         isFill={true}

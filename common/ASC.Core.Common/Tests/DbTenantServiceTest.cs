@@ -30,7 +30,6 @@ namespace ASC.Core.Common.Tests
     using System;
     using System.Linq;
 
-    using ASC.Core.Common.EF;
     using ASC.Core.Data;
     using ASC.Core.Tenants;
     using ASC.Core.Users;
@@ -46,7 +45,7 @@ namespace ASC.Core.Common.Tests
 
         public DbTenantServiceTest()
         {
-            userService = new EFUserService((UserDbContext)null);
+            userService = new EFUserService();
         }
 
 

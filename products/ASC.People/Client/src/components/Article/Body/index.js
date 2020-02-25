@@ -1,12 +1,20 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
 import { connect } from 'react-redux';
 import {
+  utils,
   TreeMenu,
   TreeNode,
-  Icons
+  Icons,
+  Link
 } from "asc-web-components";
+import { history } from "asc-web-common";
 import { selectGroup } from '../../../store/people/actions';
+import { getSelectedGroup } from "../../../store/people/selectors";
+import { withTranslation, I18nextProvider } from 'react-i18next';
+import i18n from '../i18n';
+import { utils as commonUtils } from 'asc-web-common';
+
+const { changeLanguage } = commonUtils;
 
 const getItems = data => {
   return data.map(item => {
@@ -32,21 +40,7 @@ const getItems = data => {
       );
     }
     return (
-      <TreeNode
-        key={item.key}
-        title={item.title}
-        icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill={true}
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
-        }
-      />
+      <TreeNode key={item.key} title={item.title} />
     );
   });
 };
@@ -66,7 +60,13 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    this.props.selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+    const { selectGroup, groups, t } = this.props;
+
+    const currentGroup = getSelectedGroup(groups, data[0]);
+    document.title = currentGroup
+      ? `${currentGroup.name} – ${t("People")}`
+      : `${t("People")} – ${t("OrganizationName")}`;
+    selectGroup(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   switcherIcon = obj => {
@@ -88,7 +88,6 @@ class ArticleBodyContent extends React.Component {
     const { data, selectedKeys } = this.props;
 
     //console.log("PeopleTreeMenu", this.props);
-
     return (
       <TreeMenu
         className="people-tree-menu"
@@ -109,14 +108,34 @@ class ArticleBodyContent extends React.Component {
 };
 
 const getTreeGroups = (groups, departments) => {
+  const linkProps = { fontSize: "14px", fontWeight: 600, noHover: true };
+  const link = history.location.search.slice(1);
+  let newLink = link.split("&");
+  const index = newLink.findIndex(x => x.includes("group"));
+  index && newLink.splice(1, 1);
+  newLink = newLink.join('&');
+
+  const onTitleClick = () => {
+    history.push("/products/people/");
+  }
+
   const treeData = [
       {
           key: "root",
-          title: departments,
+          title: <Link {...linkProps} onClick={onTitleClick} href={`${history.location.pathname}`}>{departments}</Link>,
           root: true,
           children: groups.map(g => {
               return {
-                  key: g.id, title: g.name, root: false
+                key: g.id,
+                title: (
+                  <Link
+                    {...linkProps}
+                    href={`${history.location.pathname}?group=${g.id}&${newLink}`}
+                  >
+                    {g.name}
+                  </Link>
+                ),
+                root: false
               };
           }) || []
       }
@@ -125,11 +144,21 @@ const getTreeGroups = (groups, departments) => {
   return treeData;
 };
 
+const ArticleBodyContentWrapper = withTranslation()(ArticleBodyContent);
+
+const BodyContent = (props) => {
+  changeLanguage(i18n);
+  return (<I18nextProvider i18n={i18n}><ArticleBodyContentWrapper {...props} /></I18nextProvider>);
+};
+
 function mapStateToProps(state) {
+  const groups = state.people.groups;
+
   return {
-    data: getTreeGroups(state.people.groups, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"]
+    data: getTreeGroups(groups, state.auth.settings.customNames.groupsCaption),
+    selectedKeys: state.people.selectedGroup ? [state.people.selectedGroup] : ["root"],
+    groups
   };
 }
 
-export default connect(mapStateToProps, { selectGroup })(ArticleBodyContent);
+export default connect(mapStateToProps, { selectGroup })(BodyContent);

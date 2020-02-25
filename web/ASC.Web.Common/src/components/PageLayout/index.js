@@ -26,6 +26,8 @@ class PageLayoutComponent extends React.PureComponent {
 
   componentDidMount() {
     window.addEventListener("orientationchange", this.orientationChangeHandler);
+    const articleElement = document.getElementsByTagName('article') && document.getElementsByTagName('article')[0];
+    articleElement && this.orientationChangeHandler();
   }
 
   componentWillUnmount() {
@@ -189,12 +191,14 @@ class PageLayoutComponent extends React.PureComponent {
             {this.state.isSectionHeaderAvailable && (
               <SectionHeader isArticlePinned={this.state.isArticlePinned}>{this.state.sectionHeaderContent}</SectionHeader>
             )}
-
+            {this.state.isSectionFilterAvailable && (
+              <SectionFilter className="section-header_filter">{this.state.sectionFilterContent}</SectionFilter>
+            )}
             {this.state.isSectionBodyAvailable && (
               <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
                 {this.state.isSectionFilterAvailable && (
-                  <SectionFilter>{this.state.sectionFilterContent}</SectionFilter>
-                )}
+              <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
+            )}
                 {this.state.sectionBodyContent}
                 {this.state.isSectionPagingAvailable && (
                   <SectionPaging>{this.state.sectionPagingContent}</SectionPaging>

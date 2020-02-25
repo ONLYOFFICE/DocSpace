@@ -15,13 +15,15 @@ import {
 } from "./Section";
 import { fetchProfile } from "../../../store/profile/actions";
 import i18n from "./i18n";
-import { I18nextProvider } from "react-i18next";
+import { I18nextProvider, withTranslation } from "react-i18next";
 const { changeLanguage } = utils;
 
 class ProfileAction extends React.Component {
   componentDidMount() {
-    const { match, fetchProfile } = this.props;
+    const { match, fetchProfile, t } = this.props;
     const { userId } = match.params;
+
+    document.title = `${t("ProfileAction")} – ${t("People")}`;
 
     if (userId) {
       fetchProfile(userId);
@@ -86,6 +88,18 @@ ProfileAction.propTypes = {
   fetchProfile: PropTypes.func.isRequired
 };
 
+const ProfileActionTranslate = withTranslation()(ProfileAction);
+
+const ProfileActionContainer = props => {
+  changeLanguage(i18n);
+
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ProfileActionTranslate {...props} />
+    </I18nextProvider>
+  );
+};
+
 function mapStateToProps(state) {
   return {
     profile: state.profile.targetUser,
@@ -93,9 +107,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  {
-    fetchProfile
-  }
-)(ProfileAction);
+export default connect(mapStateToProps, { fetchProfile })(ProfileActionContainer);
