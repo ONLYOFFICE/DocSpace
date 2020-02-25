@@ -95,9 +95,11 @@ namespace ASC.ApiSystem.Classes
                     return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(HttpStatusCode.Unauthorized.ToString())));
                 }
 
-                if (!header.StartsWith("ASC", StringComparison.InvariantCultureIgnoreCase))
+                var substring = "ASC";
+
+                if (!header.StartsWith(substring, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    var splitted = header.Replace("ASC", string.Empty).Trim().Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    var splitted = header.Substring(substring.Length).Trim().Split(':', StringSplitOptions.RemoveEmptyEntries);
 
                     if (splitted.Length < 3)
                     {
