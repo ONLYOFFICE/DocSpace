@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -154,6 +155,20 @@ namespace ASC.Web.Files.Helpers
                 throw;
             }
 
+        }
+    }
+
+    public static class EasyBibHelperExtension
+    {
+        public static DIHelper AddEasyBibHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<EasyBibHelper>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

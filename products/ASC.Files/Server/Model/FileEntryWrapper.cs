@@ -27,6 +27,7 @@
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
@@ -151,7 +152,7 @@ namespace ASC.Api.Documents
             EmployeeWraperHelper = employeeWraperHelper;
         }
 
-        public T Get<T>(FileEntry entry) where T : FileEntryWrapper, new()
+        protected internal T Get<T>(FileEntry entry) where T : FileEntryWrapper, new()
         {
             return new T
             {
@@ -168,6 +169,17 @@ namespace ASC.Api.Documents
                 ProviderKey = entry.ProviderKey,
                 ProviderId = entry.ProviderId
             };
+        }
+    }
+
+    public static class FileEntryWrapperHelperExtention
+    {
+        public static DIHelper AddFileEntryWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<FileEntryWrapperHelper>();
+            return services
+                .AddApiDateTimeHelper()
+                .AddEmployeeWraper();
         }
     }
 }

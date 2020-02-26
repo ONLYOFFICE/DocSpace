@@ -27,6 +27,7 @@
 using System;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core.Security;
 using ASC.Web.Files.Services.WCFService;
@@ -70,6 +71,15 @@ namespace ASC.Api.Documents
                 SubjectGroup = !UserManager.UserExists(fileShareParams.ShareTo)
             };
         }
+    }
 
+    public static class FileShareParamsExtention
+    {
+        public static DIHelper AddFileShareParamsService(this DIHelper services)
+        {
+            services.TryAddScoped<FileShareParams>();
+            return services
+                .AddUserManagerService();
+        }
     }
 }

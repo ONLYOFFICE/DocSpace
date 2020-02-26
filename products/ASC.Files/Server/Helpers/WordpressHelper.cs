@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.LoginProviders;
@@ -107,6 +108,22 @@ namespace ASC.Web.Files.Helpers
                 Log.Error("Create Wordpress post ", ex);
                 return false;
             }
+        }
+    }
+
+    public static class WordpressHelperExtention
+    {
+        public static DIHelper AddWordpressHelperService(this DIHelper services)
+        {
+            services.TryAddSingleton<WordpressHelper>();
+            return services;
+        }
+
+        public static DIHelper AddWordpressTokenService(this DIHelper services)
+        {
+            services.TryAddScoped<WordpressToken>();
+            return services
+                .AddTokenHelperService();
         }
     }
 }

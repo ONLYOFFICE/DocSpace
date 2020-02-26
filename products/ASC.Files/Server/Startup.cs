@@ -2,10 +2,10 @@
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Web.Files.Services.WCFService;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -78,7 +78,9 @@ namespace ASC.Files
 
             diHelper.AddNLogManager("ASC.Files");
 
-            diHelper.AddFileStorageServiceController();
+            diHelper
+                .AddDocumentsControllerService()
+                .AddEncryptionControllerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }

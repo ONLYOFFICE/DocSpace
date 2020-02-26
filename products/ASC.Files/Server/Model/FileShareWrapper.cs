@@ -26,6 +26,7 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
@@ -136,5 +137,14 @@ namespace ASC.Api.Documents
             return result;
         }
     }
-
+    public static class FileShareWrapperExtention
+    {
+        public static DIHelper AddFileShareWrapperService(this DIHelper services)
+        {
+            services.TryAddScoped<FileShareWrapper>();
+            return services
+                .AddUserManagerService()
+                .AddEmployeeWraperFull();
+        }
+    }
 }

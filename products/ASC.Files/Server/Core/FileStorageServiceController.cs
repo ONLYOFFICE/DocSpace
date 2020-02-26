@@ -35,7 +35,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security;
 using System.Web;
-using System.Web.Http;
+using ASC.Api.Core;
 using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
@@ -65,7 +65,6 @@ using ASC.Web.Files.ThirdPartyApp;
 using ASC.Web.Files.Utils;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -75,10 +74,7 @@ using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    [DefaultRoute]
-    [ApiController]
-    [TypeFilter(typeof(FileExceptionFilterAttribute))]
-    public class FileStorageServiceController : ControllerBase, IFileStorageService
+    public class FileStorageService : IFileStorageService
     {
         private static readonly FileEntrySerializer serializer = new FileEntrySerializer();
         public Global Global { get; }
@@ -118,9 +114,10 @@ namespace ASC.Web.Files.Services.WCFService
         public UrlShortener UrlShortener { get; }
         public IServiceProvider ServiceProvider { get; }
         public FileSharingAceHelper FileSharingAceHelper { get; }
+        public ApiContext ApiContext { get; }
         public ILog Logger { get; set; }
 
-        public FileStorageServiceController(
+        public FileStorageService(
             Global global,
             GlobalStore globalStore,
             GlobalFolderHelper globalFolderHelper,
@@ -158,7 +155,8 @@ namespace ASC.Web.Files.Services.WCFService
             FileOperationsManagerHelper fileOperationsManagerHelper,
             UrlShortener urlShortener,
             IServiceProvider serviceProvider,
-            FileSharingAceHelper fileSharingAceHelper)
+            FileSharingAceHelper fileSharingAceHelper,
+            ApiContext apiContext)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -197,6 +195,7 @@ namespace ASC.Web.Files.Services.WCFService
             UrlShortener = urlShortener;
             ServiceProvider = serviceProvider;
             FileSharingAceHelper = fileSharingAceHelper;
+            ApiContext = apiContext;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -532,7 +531,7 @@ namespace ASC.Web.Files.Services.WCFService
         }
 
         [Create("folders-files-createfile")]
-        public File CreateNewFile(FileWrapper fileWrapper)
+        public File CreateNewFile(FileModel fileWrapper)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || string.IsNullOrEmpty(fileWrapper.ParentId)) throw new ArgumentException();
 
@@ -2072,11 +2071,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         private Dictionary<string, string> GetHttpHeaders()
         {
-            if (Request != null && Request.Headers != null)
-            {
-                return Request.Headers.ToDictionary(h => h.Key, h => string.Join(", ", h.Value.ToArray()));
-            }
-            else if (HttpContextAccessor?.HttpContext != null && HttpContextAccessor?.HttpContext.Request != null && HttpContextAccessor?.HttpContext.Request.Headers != null)
+            if (HttpContextAccessor?.HttpContext != null && HttpContextAccessor?.HttpContext.Request != null && HttpContextAccessor?.HttpContext.Request.Headers != null)
             {
                 var headers = new Dictionary<string, string>();
                 foreach (var k in HttpContextAccessor?.HttpContext.Request.Headers)
@@ -2089,10 +2084,12 @@ namespace ASC.Web.Files.Services.WCFService
         }
     }
 
-    public static class FileStorageServiceControllerExtention
+    public static class FileStorageServiceExtention
     {
-        public static DIHelper AddFileStorageServiceController(this DIHelper services)
+        public static DIHelper AddFileStorageService(this DIHelper services)
         {
+            services.TryAddScoped<FileStorageService>();
+            services.TryAddScoped<IFileStorageService, FileStorageService>();
             return services
                 .AddGlobalService()
                 .AddGlobalStoreService()
@@ -2133,7 +2130,7 @@ namespace ASC.Web.Files.Services.WCFService
         }
     }
 
-    public class FileWrapper
+    public class FileModel
     {
         public string ParentId { get; set; }
         public string Title { get; set; }

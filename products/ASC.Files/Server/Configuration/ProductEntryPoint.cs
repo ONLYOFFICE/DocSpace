@@ -158,7 +158,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string ApiURL
         {
-            get => "api/2.0/fileStorageService/info.json";
+            get => "api/2.0/documents/info.json";
         }
     }
 }

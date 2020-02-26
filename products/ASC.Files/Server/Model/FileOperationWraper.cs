@@ -29,7 +29,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 using ASC.Web.Studio.Utility;
 
@@ -113,10 +115,10 @@ namespace ASC.Api.Documents
 
     public class FileOperationWraperHelper
     {
-        public FolderWrapperHelper FolderWrapperHelper { get; }
-        public FileWrapperHelper FilesWrapperHelper { get; }
-        public IDaoFactory DaoFactory { get; }
-        public CommonLinkUtility CommonLinkUtility { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
+        private FileWrapperHelper FilesWrapperHelper { get; }
+        private IDaoFactory DaoFactory { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
 
         public FileOperationWraperHelper(
             FolderWrapperHelper folderWrapperHelper,
@@ -149,13 +151,13 @@ namespace ASC.Api.Documents
                 if (folders.Any())
                 {
                     var folderDao = DaoFactory.FolderDao;
-                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(FolderWrapperHelper.Get<FolderWrapper>).ToList();
+                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(FolderWrapperHelper.Get).ToList();
                 }
                 var files = arr.Where(s => s.StartsWith("file_")).Select(s => s.Substring(5));
                 if (files.Any())
                 {
                     var fileDao = DaoFactory.FileDao;
-                    result.Files = fileDao.GetFiles(files.ToArray()).Select(FolderWrapperHelper.Get<FileWrapper>).ToList();
+                    result.Files = fileDao.GetFiles(files.ToArray()).Select(FilesWrapperHelper.Get).ToList();
                 }
 
                 if (result.OperationType == FileOperationType.Download)
@@ -165,6 +167,18 @@ namespace ASC.Api.Documents
             }
 
             return result;
+        }
+    }
+    public static class FileOperationWraperHelperExtention
+    {
+        public static DIHelper AddFileOperationWraperHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<FileOperationWraperHelper>();
+            return services
+                .AddFolderWrapperHelperService()
+                .AddFileWrapperHelperService()
+                .AddDaoFactoryService()
+                .AddCommonLinkUtilityService();
         }
     }
 }

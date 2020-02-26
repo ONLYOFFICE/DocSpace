@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
@@ -119,6 +120,25 @@ namespace ASC.Files.Core.Data
                     .Select(r => r.Data)
                     .SingleOrDefault();
             }
+        }
+    }
+    public static class EncryptedDataDaoExtention
+    {
+        public static DIHelper AddEncryptedDataDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<EncryptedDataDao>();
+            return services
+                .AddFilesDbContextService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddSetupInfo()
+                .AddTenantExtraService()
+                .AddTenantStatisticsProviderService()
+                .AddCoreBaseSettingsService()
+                .AddCoreConfigurationService()
+                .AddSettingsManagerService()
+                .AddAuthContextService();
         }
     }
 }

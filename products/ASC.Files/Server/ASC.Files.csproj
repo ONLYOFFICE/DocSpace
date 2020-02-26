@@ -65,7 +65,4 @@
       <LastGenOutput>FilesUCResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
 </Project>

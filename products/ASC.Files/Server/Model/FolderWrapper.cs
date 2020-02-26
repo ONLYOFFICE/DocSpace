@@ -28,8 +28,10 @@ using System;
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Files.Classes;
@@ -134,6 +136,21 @@ namespace ASC.Api.Documents
             result.IsShareable = folder.Shareable;
 
             return result;
+        }
+    }
+
+    public static class FolderWrapperHelperExtention
+    {
+        public static DIHelper AddFolderWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<FolderWrapperHelper>();
+
+            return services
+                .AddFileEntryWrapperHelperService()
+                .AddAuthContextService()
+                .AddDaoFactoryService()
+                .AddFileSecurityService()
+                .AddGlobalFolderHelperService();
         }
     }
 }

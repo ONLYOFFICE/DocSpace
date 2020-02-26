@@ -29,8 +29,10 @@ using System.Globalization;
 using System.Runtime.Serialization;
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Web.Api.Models;
 using ASC.Web.Core.Files;
@@ -212,6 +214,23 @@ namespace ASC.Api.Documents
             }
 
             return result;
+        }
+    }
+
+    public static class FileWrapperHelperExtention
+    {
+        public static DIHelper AddFileWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<FileWrapperHelper>();
+
+            return services
+                .AddFileEntryWrapperHelperService()
+                .AddAuthContextService()
+                .AddDaoFactoryService()
+                .AddFileSecurityService()
+                .AddGlobalFolderHelperService()
+                .AddFilesLinkUtilityService()
+                .AddFileUtilityService();
         }
     }
 }

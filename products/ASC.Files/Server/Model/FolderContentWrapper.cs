@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 
+using ASC.Common;
 using ASC.Files.Core;
 using ASC.Web.Files.Services.WCFService;
 
@@ -107,8 +108,8 @@ namespace ASC.Api.Documents
 
     public class FolderContentWrapperHelper
     {
-        public FileWrapperHelper FileWrapperHelper { get; }
-        public FolderWrapperHelper FolderWrapperHelper { get; }
+        private FileWrapperHelper FileWrapperHelper { get; }
+        private FolderWrapperHelper FolderWrapperHelper { get; }
 
         public FolderContentWrapperHelper(
             FileWrapperHelper fileWrapperHelper,
@@ -122,8 +123,8 @@ namespace ASC.Api.Documents
         {
             var result = new FolderContentWrapper
             {
-                Files = folderItems.Entries.OfType<File>().Select(FileWrapperHelper.Get<FileWrapper>).ToList(),
-                Folders = folderItems.Entries.OfType<Folder>().Select(FileWrapperHelper.Get<FolderWrapper>).ToList(),
+                Files = folderItems.Entries.OfType<File>().Select(FileWrapperHelper.Get).ToList(),
+                Folders = folderItems.Entries.OfType<Folder>().Select(FolderWrapperHelper.Get).ToList(),
                 Current = FileWrapperHelper.Get<FolderWrapper>(folderItems.FolderInfo),
                 PathParts = folderItems.FolderPathParts,
 
@@ -133,6 +134,16 @@ namespace ASC.Api.Documents
             result.Total = folderItems.Total;
 
             return result;
+        }
+    }
+    public static class FolderContentWrapperHelperExtention
+    {
+        public static DIHelper AddFolderContentWrapperHelperService(this DIHelper services)
+        {
+            services.TryAddScoped<FolderContentWrapperHelper>();
+            return services
+                .AddFileWrapperHelperService()
+                .AddFolderWrapperHelperService();
         }
     }
 }

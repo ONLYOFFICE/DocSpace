@@ -25,15 +25,14 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
@@ -67,6 +66,7 @@ namespace ASC.Web.Files.HttpHandlers
         public EntryManager EntryManager { get; }
         public InstanceCrypto InstanceCrypto { get; }
         public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ILog Logger { get; }
 
         public ChunkedUploaderHandler(
@@ -80,7 +80,8 @@ namespace ASC.Web.Files.HttpHandlers
             SetupInfo setupInfo,
             EntryManager entryManager,
             InstanceCrypto instanceCrypto,
-            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder,
+            ChunkedUploadSessionHelper chunkedUploadSessionHelper)
         {
             Next = next;
             TenantManager = tenantManager;
@@ -92,6 +93,7 @@ namespace ASC.Web.Files.HttpHandlers
             EntryManager = entryManager;
             InstanceCrypto = instanceCrypto;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
+            ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             Logger = optionsMonitor.CurrentValue;
         }
 
@@ -122,7 +124,7 @@ namespace ASC.Web.Files.HttpHandlers
 
                     case ChunkedRequestType.Initiate:
                         var createdSession = FileUploader.InitiateUpload(request.FolderId, request.FileId, request.FileName, request.FileSize, request.Encrypted);
-                        WriteSuccess(context, ToResponseObject(createdSession, true));
+                        WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(createdSession, true));
                         return;
 
                     case ChunkedRequestType.Upload:
@@ -135,7 +137,7 @@ namespace ASC.Web.Files.HttpHandlers
                         }
                         else
                         {
-                            WriteSuccess(context, ToResponseObject(resumedSession));
+                            WriteSuccess(context, ChunkedUploadSessionHelper.ToResponseObject(resumedSession));
                         }
                         return;
 
@@ -202,33 +204,6 @@ namespace ASC.Web.Files.HttpHandlers
             context.Response.StatusCode = statusCode;
             context.Response.WriteAsync(JsonConvert.SerializeObject(new { success, data, message })).Wait();
             context.Response.ContentType = "application/json";
-        }
-
-        public object ToResponseObject(ChunkedUploadSession session, bool appendBreadCrumbs = false)
-        {
-            var pathFolder = appendBreadCrumbs
-                                 ? EntryManager.GetBreadCrumbs(session.FolderId).Select(f =>
-                                     {
-                                         //todo: check how?
-                                         if (f == null)
-                                         {
-                                             Logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
-                                             return string.Empty;
-                                         }
-                                         return f.ID;
-                                     })
-                                 : new List<object> { session.FolderId };
-
-            return new
-            {
-                id = session.Id,
-                path = pathFolder,
-                created = session.Created,
-                expired = session.Expired,
-                location = session.Location,
-                bytes_uploaded = session.BytesUploaded,
-                bytes_total = session.BytesTotal
-            };
         }
 
         private static object ToResponseObject(File file)
@@ -388,6 +363,25 @@ namespace ASC.Web.Files.HttpHandlers
             {
                 return !string.IsNullOrEmpty(FileName) && !string.IsNullOrEmpty(FolderId);
             }
+        }
+    }
+
+    public static class ChunkedUploaderHandlerExtention
+    {
+        public static DIHelper AddChunkedUploaderHandlerService(this DIHelper services)
+        {
+            services.TryAddScoped<ChunkedUploaderHandler>();
+            return services
+                .AddTenantManagerService()
+                .AddFileUploaderService()
+                .AddFilesMessageService()
+                .AddAuthManager()
+                .AddSecurityContextService()
+                .AddSetupInfo()
+                .AddEntryManagerService()
+                .AddInstanceCryptoService()
+                .AddChunkedUploadSessionHolderService()
+                .AddChunkedUploadSessionHelperService();
         }
     }
 }

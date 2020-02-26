@@ -31,9 +31,11 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.Files.Core;
+using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
 using ASC.MessagingSystem;
@@ -334,5 +336,33 @@ namespace ASC.Web.Files.Utils
         }
 
         #endregion
+    }
+
+    public static class FileUploaderExtention
+    {
+        public static DIHelper AddFileUploaderService(this DIHelper services)
+        {
+            services.TryAddScoped<FileUploader>();
+
+            return services
+                .AddChunkedUploadSessionHolderService()
+                .AddEntryManagerService()
+                .AddFileSecurityService()
+                .AddFilesLinkUtilityService()
+                .AddFilesMessageService()
+                .AddGlobalService()
+                .AddDaoFactoryService()
+                .AddFileConverterService()
+                .AddFileMarkerService()
+                .AddTenantStatisticsProviderService()
+                .AddTenantExtraService()
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddAuthContextService()
+                .AddSetupInfo()
+                .AddFileUtilityService()
+                .AddFilesSettingsHelperService()
+                ;
+        }
     }
 }
