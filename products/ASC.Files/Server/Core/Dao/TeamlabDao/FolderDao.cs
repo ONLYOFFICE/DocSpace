@@ -107,7 +107,7 @@ namespace ASC.Files.Core.Data
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
-            var query = GetFolderQuery(r => r.Title == title && r.ParentId == (int)parentId)
+            var query = GetFolderQuery(r => r.Title == title && r.ParentId.ToString() == parentId.ToString())
                 .OrderBy(r => r.CreateOn);
 
             return FromQuery(query).FirstOrDefault();
@@ -158,7 +158,7 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var q = GetFolderQuery(r => r.ParentId == (int)parentId);
+            var q = GetFolderQuery(r => r.ParentId.ToString() == parentId.ToString());
 
             if (withSubfolders)
             {

@@ -530,9 +530,10 @@ namespace ASC.Files.Core.Data
                 result.AddRange(tempTags);
             }
 
+            var monitorFolderIdsInt = monitorFolderIds.Select(r => Convert.ToInt32(r)).ToList();
             var subFoldersSqlQuery =
                 FilesDbContext.Tree
-                .Where(r => monitorFolderIds.Any(a => r.ParentId == (int)a));
+                .Where(r => monitorFolderIdsInt.Any(a => r.ParentId == a));
 
             if (!deepSearch)
             {

@@ -50,7 +50,6 @@ using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
 using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Users;
 using ASC.Web.Core.Utility;
@@ -198,7 +197,6 @@ namespace ASC.Web.Files.Services.WCFService
             Logger = optionMonitor.Get("ASC.Files");
         }
 
-        [Read("folders-folder")]
         public Folder GetFolder(string folderId)
         {
             var folderDao = GetFolderDao();
@@ -210,7 +208,6 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        [Read("folders-subfolders")]
         public ItemList<Folder> GetFolders(string parentId)
         {
             var folderDao = GetFolderDao();
@@ -226,7 +223,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("folders-path")]
         public ItemList<object> GetPath(string folderId)
         {
             var folderDao = GetFolderDao();
@@ -314,7 +310,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Create("folders")]
         public object GetFolderItemsXml(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
         {
             var folderItems = GetFolderItems(parentId, from, count, filter, subjectGroup, subjectID, search, searchInContent, withSubfolders, orderBy);
@@ -326,7 +321,6 @@ namespace ASC.Web.Files.Services.WCFService
             return response;
         }
 
-        [Create("folders-entries")]
         public ItemList<FileEntry> GetItems(ItemList<string> items, FilterType filter, bool subjectGroup, string subjectID, string search)
         {
             ParseArrayItems(items, out var foldersId, out var filesId);
@@ -360,7 +354,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<FileEntry>(entries);
         }
 
-        [Read("folders-create")]
         public Folder CreateNewFolder(string parentId, string title)
         {
             if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(parentId)) throw new ArgumentException();
@@ -388,7 +381,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("folders-rename")]
         public Folder FolderRename(string folderId, string title)
         {
             var tagDao = GetTagDao();
@@ -429,7 +421,6 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        [Read("folders-files-getversion")]
         public File GetFile(string fileId, int version)
         {
             var fileDao = GetFileDao();
@@ -454,7 +445,6 @@ namespace ASC.Web.Files.Services.WCFService
             return file;
         }
 
-        [Create("folders-files-siblings")]
         public ItemList<File> GetSiblingsFile(string fileId, string parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
         {
             var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);
@@ -521,7 +511,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<File>(result);
         }
 
-        [Create("folders-files-createfile")]
         public File CreateNewFile(FileModel fileWrapper)
         {
             if (string.IsNullOrEmpty(fileWrapper.Title) || string.IsNullOrEmpty(fileWrapper.ParentId)) throw new ArgumentException();
@@ -577,8 +566,6 @@ namespace ASC.Web.Files.Services.WCFService
             return file;
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        [Read("trackeditfile")]
         public KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc = null, bool isFinish = false)
         {
             try
@@ -611,7 +598,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Create("checkediting")]
         public ItemDictionary<string, string> CheckEditing(ItemList<string> filesId)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -678,8 +664,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        [Read("startedit")]
         public string StartEdit(string fileId, bool editingAlone = false, string doc = null)
         {
             try
@@ -734,7 +718,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("folders-files-rename")]
         public File FileRename(string fileId, string title)
         {
             try
@@ -766,7 +749,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("folders-files-history")]
         public ItemList<File> GetFileHistory(string fileId)
         {
             var fileDao = GetFileDao();
@@ -776,7 +758,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<File>(fileDao.GetFileHistory(fileId));
         }
 
-        [Read("folders-files-updateToVersion")]
         public KeyValuePair<File, ItemList<File>> UpdateToVersion(string fileId, int version)
         {
             var file = EntryManager.UpdateToVersionFile(fileId, version);
@@ -795,7 +776,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new KeyValuePair<File, ItemList<File>>(file, GetFileHistory(fileId));
         }
 
-        [Read("folders-files-updateComment")]
         public string UpdateComment(string fileId, int version, string comment)
         {
             var fileDao = GetFileDao();
@@ -812,7 +792,6 @@ namespace ASC.Web.Files.Services.WCFService
             return comment;
         }
 
-        [Read("folders-files-completeVersion")]
         public KeyValuePair<File, ItemList<File>> CompleteVersion(string fileId, int version, bool continueVersion)
         {
             var file = EntryManager.CompleteVersionFile(fileId, version, continueVersion);
@@ -832,7 +811,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new KeyValuePair<File, ItemList<File>>(file, GetFileHistory(fileId));
         }
 
-        [Read("folders-files-lock")]
         public File LockFile(string fileId, bool lockfile)
         {
             var tagDao = GetTagDao();
@@ -898,8 +876,6 @@ namespace ASC.Web.Files.Services.WCFService
             return file;
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        [Read("edit-history")]
         public ItemList<EditHistory> GetEditHistory(string fileId, string doc = null)
         {
             var fileDao = GetFileDao();
@@ -914,8 +890,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        [Read("edit-diff-url")]
         public EditHistoryData GetEditDiffUrl(string fileId, int version = 0, string doc = null)
         {
             var fileDao = GetFileDao();
@@ -992,8 +966,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Microsoft.AspNetCore.Authorization.AllowAnonymous]
-        [Read("restore-version")]
         public ItemList<EditHistory> RestoreVersion(string fileId, int version, string url = null, string doc = null)
         {
             IFileDao fileDao;
@@ -1017,7 +989,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<EditHistory>(fileDao.GetEditHistory(DocumentServiceHelper, file.ID));
         }
 
-        [Read("presigned")]
         public Web.Core.Files.DocumentService.FileLink GetPresignedUri(string fileId)
         {
             var file = GetFile(fileId, -1);
@@ -1032,7 +1003,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Read("getnews")]
         public object GetNewItems(string folderId)
         {
             try
@@ -1063,7 +1033,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Create("markasread")]
         public ItemList<FileOperationResult> MarkAsRead(ItemList<string> items)
         {
             if (items.Count == 0) return GetTasksStatuses();
@@ -1093,7 +1062,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<ThirdPartyParams>(resultList.ToList());
         }
 
-        [Read("thirdparty-list")]
         public ItemList<Folder> GetThirdPartyFolder(int folderType = 0)
         {
             var providerDao = GetProviderDao();
@@ -1111,7 +1079,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<Folder>(folders);
         }
 
-        [Create("thirdparty-save")]
         public Folder SaveThirdParty(ThirdPartyParams thirdPartyParams)
         {
             var folderDao = GetFolderDao();
@@ -1190,7 +1157,6 @@ namespace ASC.Web.Files.Services.WCFService
             return folder;
         }
 
-        [Read("thirdparty-delete")]
         public object DeleteThirdParty(string providerId)
         {
             var providerDao = GetProviderDao();
@@ -1213,7 +1179,6 @@ namespace ASC.Web.Files.Services.WCFService
             return folder.ID;
         }
 
-        [Read("thirdparty")]
         public bool ChangeAccessToThirdparty(bool enable)
         {
             ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1224,7 +1189,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.EnableThirdParty;
         }
 
-        [Create("docusign-save")]
         public bool SaveDocuSign(string code)
         {
             ErrorIf(!AuthContext.IsAuthenticated
@@ -1238,14 +1202,12 @@ namespace ASC.Web.Files.Services.WCFService
             return true;
         }
 
-        [Read("docusign-delete")]
         public object DeleteDocuSign()
         {
             DocuSignToken.DeleteToken();
             return null;
         }
 
-        [Create("docusign")]
         public string SendDocuSign(string fileId, DocuSignData docuSignData)
         {
             try
@@ -1261,7 +1223,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("tasks-statuses")]
         public ItemList<FileOperationResult> GetTasksStatuses()
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1269,7 +1230,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.GetOperationResults();
         }
 
-        [Read("tasks")]
         public ItemList<FileOperationResult> TerminateTasks()
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1277,7 +1237,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.CancelOperations();
         }
 
-        [Create("bulkdownload")]
         public ItemList<FileOperationResult> BulkDownload(Dictionary<string, string> items)
         {
             ParseArrayItems(items, out var folders, out var files);
@@ -1286,7 +1245,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.Download(folders, files, GetHttpHeaders());
         }
 
-        [Create("folders-files-moveOrCopyFilesCheck")]
         public ItemDictionary<string, string> MoveOrCopyFilesCheck(ItemList<string> items, string destFolderId)
         {
             if (items.Count == 0) return new ItemDictionary<string, string>();
@@ -1350,7 +1308,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Create("moveorcopy")]
         public ItemList<FileOperationResult> MoveOrCopyItems(ItemList<string> items, string destFolderId, FileConflictResolveType resolve, bool ic, bool deleteAfter = false)
         {
             ItemList<FileOperationResult> result;
@@ -1367,7 +1324,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Create("folders-files")]
         public ItemList<FileOperationResult> DeleteItems(string action, ItemList<string> items, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
             ParseArrayItems(items, out var foldersId, out var filesId);
@@ -1375,7 +1331,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.Delete(foldersId, filesId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
-        [Read("emptytrash")]
         public ItemList<FileOperationResult> EmptyTrash()
         {
             var folderDao = GetFolderDao();
@@ -1387,7 +1342,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.Delete(foldersId, filesId, false, true, false, GetHttpHeaders());
         }
 
-        [Create("checkconversion")]
         public ItemList<FileOperationResult> CheckConversion(ItemList<ItemList<string>> filesInfoJSON)
         {
             if (filesInfoJSON == null || filesInfoJSON.Count == 0) return new ItemList<FileOperationResult>();
@@ -1563,19 +1517,16 @@ namespace ASC.Web.Files.Services.WCFService
             EntryManager.ReassignItems(GlobalFolderHelper.FolderCommon, userId, AuthContext.CurrentAccount.ID, folderDao, fileDao);
         }
 
-        [Create("sharedinfo")]
         public ItemList<AceWrapper> GetSharedInfo(ItemList<string> objectIds)
         {
             return FileSharing.GetSharedInfo(objectIds);
         }
 
-        [Read("sharedinfoshort")]
         public ItemList<AceShortWrapper> GetSharedInfoShort(string objectId)
         {
             return FileSharing.GetSharedInfoShort(objectId);
         }
 
-        [Create("setaceobject")]
         public ItemList<string> SetAceObject(AceCollection aceCollection, bool notify)
         {
             var fileDao = GetFileDao();
@@ -1614,7 +1565,6 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        [Create("removeace")]
         public void RemoveAce(ItemList<string> items)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1630,7 +1580,6 @@ namespace ASC.Web.Files.Services.WCFService
             FileSharingAceHelper.RemoveAce(entries);
         }
 
-        [Read("shorten")]
         public string GetShortenLink(string fileId)
         {
             File file;
@@ -1649,7 +1598,6 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        [Read("setacelink")]
         public bool SetAceLink(string fileId, FileShare share)
         {
             FileEntry file;
@@ -1683,7 +1631,6 @@ namespace ASC.Web.Files.Services.WCFService
             return securityDao.IsShared(file.ID, FileEntryType.File);
         }
 
-        [Read("sharedusers")]
         public ItemList<MentionWrapper> SharedUsers(string fileId)
         {
             if (!AuthContext.IsAuthenticated || CoreBaseSettings.Personal)
@@ -1722,7 +1669,6 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<MentionWrapper>(users);
         }
 
-        [Create("sendeditornotify")]
         public ItemList<AceShortWrapper> SendEditorNotify(string fileId, MentionMessageWrapper mentionMessage)
         {
             ErrorIf(!AuthContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1814,7 +1760,6 @@ namespace ASC.Web.Files.Services.WCFService
             return changed ? GetSharedInfoShort("file_" + fileId) : null;
         }
 
-        [Read("mailaccounts")]
         public ItemList<string> GetMailAccounts()
         {
             return null;
@@ -1844,7 +1789,6 @@ namespace ASC.Web.Files.Services.WCFService
             //return new ItemList<string>(accounts);
         }
 
-        [Create("changeowner")]
         public ItemList<FileEntry> ChangeOwner(ItemList<string> items, Guid userId)
         {
             var userInfo = UserManager.GetUsers(userId);
@@ -1946,7 +1890,6 @@ namespace ASC.Web.Files.Services.WCFService
             return true;
         }
 
-        [Read("updateifexist")]
         public bool UpdateIfExist(bool set)
         {
             FilesSettingsHelper.UpdateIfExist = set;
@@ -1955,7 +1898,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.UpdateIfExist;
         }
 
-        [Read("forcesave")]
         public bool Forcesave(bool set)
         {
             FilesSettingsHelper.Forcesave = set;
@@ -1964,7 +1906,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.Forcesave;
         }
 
-        [Read("storeforcesave")]
         public bool StoreForcesave(bool set)
         {
             ErrorIf(!Global.IsAdministrator, FilesCommonResource.ErrorMassage_SecurityException);
@@ -1975,7 +1916,6 @@ namespace ASC.Web.Files.Services.WCFService
             return FilesSettingsHelper.StoreForcesave;
         }
 
-        [Read("changedeleteconfrim")]
         public bool ChangeDeleteConfrim(bool set)
         {
             FilesSettingsHelper.ConfirmDelete = set;
