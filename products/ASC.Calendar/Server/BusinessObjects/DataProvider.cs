@@ -104,52 +104,37 @@ namespace ASC.Calendar.BusinessObjects
 
         }
 
-        /* public List<UserViewSettings> GetUserViewSettings(Guid userId, List<string> calendarIds)
+         public List<UserViewSettings> GetUserViewSettings(Guid userId, List<string> calendarIds)
          {
-             var cc = new ColumnCollection();
-
-             var extCalId = cc.RegistryColumn("ext_calendar_id");
-             var usrId = cc.RegistryColumn("user_id");
-             var hideEvents = cc.RegistryColumn("hide_events");
-             var isAccepted = cc.RegistryColumn("is_accepted");
-             var textColor = cc.RegistryColumn("text_color");
-             var background = cc.RegistryColumn("background_color");
-             var alertType = cc.RegistryColumn("alert_type");
-             var calId = cc.RegistryColumn("convert(calendar_id using utf8)");
-             var calName = cc.RegistryColumn("name");
-             var timeZone = cc.RegistryColumn("time_zone");
-
-             var query = new SqlQuery("calendar_calendar_user")
-                 .Select(cc.SelectQuery)
-                 .Where((Exp.In(extCalId.Name, calendarIds) |
-                         Exp.In(calId.Name, calendarIds)) &
-                        Exp.Eq(usrId.Name, userId));
-
-             var data = db.ExecuteList(query);
-
-             var options = new List<UserViewSettings>();
-             foreach (var r in data)
-             {
+            var data = CalendarDb.CalendarCalendarUser
+                .Where(ccu => 
+                        (calendarIds.Contains(ccu.CalendarId.ToString()) || calendarIds.Contains(ccu.ExtCalendarId)) &&
+                        ccu.UserId == userId.ToString())
+                .ToList();
+           
+            var options = new List<UserViewSettings>();
+            foreach (var r in data)
+            {
                  options.Add(new UserViewSettings()
                      {
                          CalendarId =
-                             Convert.ToInt32(r[calId.Ind]) == 0
-                                 ? Convert.ToString(r[extCalId.Ind])
-                                 : Convert.ToString(r[calId.Ind]),
-                         UserId = usrId.Parse<Guid>(r),
-                         IsHideEvents = hideEvents.Parse<bool>(r),
-                         IsAccepted = isAccepted.Parse<bool>(r),
-                         TextColor = textColor.Parse<string>(r),
-                         BackgroundColor = background.Parse<string>(r),
-                         EventAlertType = (EventAlertType) alertType.Parse<int>(r),
-                         Name = calName.Parse<string>(r),
-                         TimeZone = timeZone.Parse<TimeZoneInfo>(r)
+                             Convert.ToInt32(r.CalendarId) == 0
+                                 ? Convert.ToString(r.ExtCalendarId)
+                                 : Convert.ToString(r.CalendarId),
+                         UserId = Guid.Parse(r.UserId),
+                         IsHideEvents = Convert.ToBoolean(r.HideEvents),
+                         IsAccepted = Convert.ToBoolean(r.IsAccepted),
+                         TextColor = r.TextColor,
+                         BackgroundColor = r.BackgroundColor,
+                         EventAlertType = (EventAlertType)r.AlertType,
+                         Name = r.Name,
+                         TimeZone = TimeZoneConverter.GetTimeZone(r.TimeZone)
                      });
-             }
+            }
 
              return options;
          }
-
+        /*
          public List<Calendar> LoadTodoCalendarsForUser(Guid userId)
          {
              var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
