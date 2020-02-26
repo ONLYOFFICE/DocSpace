@@ -46,17 +46,21 @@ namespace ASC.Mail.Core
 
         public SignatureEngine SignatureEngine { get; }
 
+        public TagEngine TagEngine { get; }
+
         public EngineFactory(
             AccountEngine accountEngine,
             AlertEngine alertEngine,
             DisplayImagesAddressEngine displayImagesAddressEngine,
-            SignatureEngine signatureEngine
+            SignatureEngine signatureEngine,
+            TagEngine tagEngine
             )
         {
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
             DisplayImagesAddressEngine = displayImagesAddressEngine;
             SignatureEngine = signatureEngine;
+            TagEngine = tagEngine;
         }
 
         //private AccountEngine _accountEngine;
@@ -251,7 +255,8 @@ namespace ASC.Mail.Core
                 .AddAccountEngineService()
                 .AddAlertEngineService()
                 .AddDisplayImagesAddressEngineService()
-                .AddSignatureEngineService();
+                .AddSignatureEngineService()
+                .AddTagEngineService();
         }
     }
 }

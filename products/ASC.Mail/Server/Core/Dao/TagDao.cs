@@ -24,32 +24,29 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.CRM.Core;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Extensions;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class TagDao : BaseDao, ITagDao
+    public class TagDao : BaseDao, ITagDao
     {
-        protected static ITable table = new MailTableFactory().Create<TagTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public TagDao(IDbManager dbManager, int tenant, string user) 
-            : base(table, dbManager, tenant)
+        public TagDao(DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public Tag GetTag(int id)
@@ -57,150 +54,206 @@ namespace ASC.Mail.Core.Dao
             if (id < 0)
                 return GetCrmTag(id);
 
-            var query = Query()
-                .Where(TagTable.Columns.Tenant, Tenant)
-                .Where(TagTable.Columns.User, CurrentUserId)
-                .Where(TagTable.Columns.Id, id);
+            var tag = MailDb.MailTag
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Where(r => r.Id == id)
+                .Select(r => new Tag
+                {
+                    Id = r.Id,
+                    Tenant = r.Tenant,
+                    User = r.IdUser,
+                    TagName = r.Name,
+                    Style = r.Style,
+                    Addresses = r.Addresses,
+                    Count = r.Count,
+                    CrmId = r.CrmId
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToTag)
-                .SingleOrDefault();
+                }).SingleOrDefault();
+
+            return tag;
         }
 
         public Tag GetCrmTag(int id)
         {
             var crmTagId = id < 0 ? -id : id;
 
-            var query = new SqlQuery(CrmTagTable.TABLE_NAME)
-                   .Select(CrmTagTable.Columns.Id, CrmTagTable.Columns.Title)
-                   .Where(CrmTagTable.Columns.Tenant, Tenant)
-                   .Where(CrmTagTable.Columns.EntityType, (int)EntityType.Contact)
-                   .Where(CrmTagTable.Columns.Id, crmTagId);
+            var crmTag = MailDb.CrmTag
+                .Where(r => r.IdTenant == Tenant)
+                .Where(r => r.EntityType == (int)EntityType.Contact)
+                .Where(r => r.Id == crmTagId)
+                .Select(r => new Tag
+                {
+                    Id = -r.Id,
+                    TagName = r.Title,
+                    Tenant = Tenant,
+                    User = UserId,
+                    Style = "",
+                    Addresses = "",
+                    Count = 0,
+                    CrmId = 0
+                }).SingleOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToCrmTag)
-                .SingleOrDefault();
+            return crmTag;
         }
 
         public Tag GetTag(string name)
         {
-            var query = Query()
-                .Where(TagTable.Columns.Tenant, Tenant)
-                .Where(TagTable.Columns.User, CurrentUserId)
-                .Where(TagTable.Columns.TagName, name);
+            var tag = MailDb.MailTag
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Where(r => r.Name == name)
+                .Select(r => new Tag
+                {
+                    Id = r.Id,
+                    Tenant = r.Tenant,
+                    User = r.IdUser,
+                    TagName = r.Name,
+                    Style = r.Style,
+                    Addresses = r.Addresses,
+                    Count = r.Count,
+                    CrmId = r.CrmId
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToTag)
-                .SingleOrDefault();
+                }).SingleOrDefault();
+
+            return tag;
         }
 
         public List<Tag> GetTags()
         {
-            var query = Query()
-                .Where(TagTable.Columns.Tenant, Tenant)
-                .Where(TagTable.Columns.User, CurrentUserId);
+            var tags = MailDb.MailTag
+                .Where(r => r.Tenant == Tenant)
+                .Where(r => r.IdUser == UserId)
+                .Select(r => new Tag
+                {
+                    Id = r.Id,
+                    TagName = r.Name,
+                    Tenant = r.Tenant,
+                    User = r.IdUser,
+                    Style = r.Style,
+                    Addresses = r.Addresses,
+                    Count = r.Count,
+                    CrmId = r.CrmId
+                }).ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToTag);
+            return tags;
+        }
+
+        public enum EntityType //TODO: Get from CRM.Core
+        {
+            Any = -1,
+            Contact = 0,
+            Opportunity = 1,
+            RelationshipEvent = 2,
+            Task = 3,
+            Company = 4,
+            Person = 5,
+            File = 6,
+            Case = 7,
+            Invoice = 8
         }
 
         public List<Tag> GetCrmTags()
         {
-            var query = new SqlQuery(CrmTagTable.TABLE_NAME)
-                   .Select(CrmTagTable.Columns.Id, CrmTagTable.Columns.Title)
-                   .Where(CrmTagTable.Columns.Tenant, Tenant)
-                   .Where(CrmTagTable.Columns.EntityType, (int)EntityType.Contact);
+            var crmTags = MailDb.CrmTag
+                .Where(r => r.IdTenant == Tenant)
+                .Where(r => r.EntityType == (int)EntityType.Contact)
+                .Select(r => new Tag
+                {
+                    Id = -r.Id,
+                    TagName = r.Title,
+                    Tenant = Tenant,
+                    User = UserId,
+                    Style = "",
+                    Addresses = "",
+                    Count = 0,
+                    CrmId = 0
+                }).ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToCrmTag);
+            return crmTags;
         }
 
         public List<Tag> GetCrmTags(List<int> contactIds)
         {
-            const string cet = "cet";
-            const string ct = "ct";
+            var query = MailDb.CrmEntityTag
+                .Join(MailDb.CrmTag,
+                    cet => cet.TagId,
+                    ct => (int)ct.Id,
+                    (cet, ct) => new Tag
+                    {
+                        Id = ct.Id,
+                        TagName = ct.Title,
+                        CrmId = cet.EntityId
+                    })
+                .Where(r => r.CrmId == (int)EntityType.Contact)
+                .Where(r => contactIds.Contains(r.CrmId))
+                .ToList();
 
-            var query = new SqlQuery(CrmEntityTagTable.TABLE_NAME.Alias(cet))
-                .InnerJoin(CrmTagTable.TABLE_NAME.Alias(ct),
-                    Exp.EqColumns(CrmEntityTagTable.Columns.TagId.Prefix(cet), CrmTagTable.Columns.Id.Prefix(ct)))
-                .Distinct()
-                .Select(CrmTagTable.Columns.Id.Prefix(ct), CrmTagTable.Columns.Title.Prefix(ct))
-                .Where(CrmTagTable.Columns.Tenant.Prefix(ct), Tenant)
-                .Where(CrmEntityTagTable.Columns.EntityType.Prefix(cet), (int) EntityType.Contact)
-                .Where(Exp.In(CrmEntityTagTable.Columns.EntityId.Prefix(cet), contactIds));
+            return query;
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToCrmTag);
+            //var query = new SqlQuery(CrmEntityTagTable.TABLE_NAME.Alias(cet))
+            //    .InnerJoin(CrmTagTable.TABLE_NAME.Alias(ct),
+            //        Exp.EqColumns(CrmEntityTagTable.Columns.TagId.Prefix(cet), CrmTagTable.Columns.Id.Prefix(ct)))
+            //    .Distinct()
+            //    .Select(CrmTagTable.Columns.Id.Prefix(ct), CrmTagTable.Columns.Title.Prefix(ct))
+            //    .Where(CrmTagTable.Columns.Tenant.Prefix(ct), Tenant)
+            //    .Where(CrmEntityTagTable.Columns.EntityType.Prefix(cet), (int) EntityType.Contact)
+            //    .Where(Exp.In(CrmEntityTagTable.Columns.EntityId.Prefix(cet), contactIds));
+
+            //return Db.ExecuteList(query)
+            //    .ConvertAll(ToCrmTag);
         }
 
         public int SaveTag(Tag tag)
         {
-            var query = new SqlInsert(TagTable.TABLE_NAME, true)
-                .InColumnValue(TagTable.Columns.Id, tag.Id)
-                .InColumnValue(TagTable.Columns.Tenant, tag.Tenant)
-                .InColumnValue(TagTable.Columns.User, tag.User)
-                .InColumnValue(TagTable.Columns.TagName, tag.TagName)
-                .InColumnValue(TagTable.Columns.Style, tag.Style)
-                .InColumnValue(TagTable.Columns.Addresses, tag.Addresses)
-                .InColumnValue(TagTable.Columns.Count, tag.Count)
-                .InColumnValue(TagTable.Columns.CrmId, tag.CrmId)
-                .Identity(0, 0, true);
+            var dbTag = new MailTag()
+            {
+                Id = tag.Id,
+                Tenant = Tenant,
+                IdUser = UserId,
+                Name = tag.TagName,
+                Style = tag.Style,
+                Addresses = tag.Addresses,
+                Count = tag.Count,
+                CrmId = tag.CrmId
+            };
 
-            return Db.ExecuteScalar<int>(query);
+            var saveResult = MailDb.MailTag.Add(dbTag).Entity;
+
+            MailDb.SaveChanges();
+
+            return saveResult.Id;
         }
 
         public int DeleteTag(int id)
         {
-            var query = new SqlDelete(TagTable.TABLE_NAME)
-                .Where(TagTable.Columns.Tenant, Tenant)
-                .Where(TagTable.Columns.User, CurrentUserId)
-                .Where(TagTable.Columns.Id, id);
+            var range = MailDb.MailTag
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.Id == id);
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailTag.RemoveRange(range);
+
+            return MailDb.SaveChanges();
         }
 
         public int DeleteTags(List<int> tagIds)
         {
-            var query = new SqlDelete(TagTable.TABLE_NAME)
-                .Where(TagTable.Columns.Tenant, Tenant)
-                .Where(TagTable.Columns.User, CurrentUserId)
-                .Where(Exp.In(TagTable.Columns.Id, tagIds));
+            var range = MailDb.MailTag
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
+                .Where(r => tagIds.Contains(r.Id)); ;
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailTag.RemoveRange(range);
+
+            return MailDb.SaveChanges();
         }
+    }
 
-        protected Tag ToTag(object[] r)
+    public static class TagDaoExtension
+    {
+        public static IServiceCollection AddTagDaoService(this IServiceCollection services)
         {
-            var f = new Tag
-            {
-                Id = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                User = Convert.ToString(r[2]),
-                TagName = Convert.ToString(r[3]),
-                Style = Convert.ToString(r[4]),
-                Addresses = Convert.ToString(r[5]),
-                Count = Convert.ToInt32(r[6]),
-                CrmId = Convert.ToInt32(r[7])
-            };
+            services.TryAddScoped<TagDao>();
 
-            return f;
+            return services;
         }
-
-        protected Tag ToCrmTag(object[] r)
-        {
-            var f = new Tag
-            {
-                Id = -Convert.ToInt32(r[0]),
-                TagName = Convert.ToString(r[1]),
-                Tenant = Tenant,
-                User = CurrentUserId,
-                Style = "",
-                Addresses = "",
-                Count = 0,
-                CrmId = 0
-            };
-
-            return f;
-        }
-    }*/
+    }
 }
