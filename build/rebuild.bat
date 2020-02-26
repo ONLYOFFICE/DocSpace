@@ -34,9 +34,6 @@ call yarn link "asc-web-components" --cwd products/ASC.Files/Client
 call yarn link "asc-web-common" --cwd products/ASC.Files/Client
 call yarn install --cwd products/ASC.Files/Client > build\ASC.Web.Files.Client.log
 
-xcopy build\cra\*.* products\ASC.People\Client\node_modules\ /E /R /Y
-REM xcopy build\cra\*.* products\ASC.Files\Client\node_modules\ /E /R /Y
-
 echo "ASC.Web.sln"
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 
