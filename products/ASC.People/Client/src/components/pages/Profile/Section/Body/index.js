@@ -42,6 +42,7 @@ const EditButtonWrapper = styled.div`
 
 const ToggleWrapper = styled.div`
   width: 100%;
+  min-width: 100%;
   ${props => props.isSelf && `margin-bottom: 24px;`}
   ${props => props.isContacts && `margin-top: 24px;`}
   max-width: 1024px;

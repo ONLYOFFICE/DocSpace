@@ -243,8 +243,7 @@ namespace ASC.Data.Storage
                 .AddStaticUploaderService()
                 .AddCdnStorageSettingsService()
                 .AddWebPathSettingsService()
-                .AddCoreBaseSettingsService()
-                .AddHttpContextAccessor();
+                .AddCoreBaseSettingsService();
         }
         public static IServiceCollection AddWebPathSettingsService(this IServiceCollection services)
         {

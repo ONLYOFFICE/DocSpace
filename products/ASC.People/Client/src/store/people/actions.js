@@ -170,6 +170,13 @@ export function fetchPeople(filter, dispatchFunc = null) {
     };
 }
 
+export function removeUser(userId, filter) {
+  return dispatch => {
+    return api.people.deleteUsers(userId)
+      .then(() => fetchPeople(filter, dispatch))
+  }
+}
+
 function fetchPeopleByFilter(dispatch, filter) {
   let filterData = filter && filter.clone();
 

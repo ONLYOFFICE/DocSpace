@@ -75,6 +75,7 @@ class ContextMenu extends React.PureComponent {
   }
 
   render() {
+    //console.log('ContextMenu render', this.props);
     const { visible } = this.state;
     const { options, id, className, style } = this.props;
 
@@ -83,7 +84,7 @@ class ContextMenu extends React.PureComponent {
         id={id}
         className={className}
         style={style}
-        open={true}
+        open={visible}
         clickOutsideAction={this.handleClick}
       >
         {options.map((item) => {

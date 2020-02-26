@@ -35,11 +35,11 @@ const Scrollbar = React.forwardRef((props, ref) => {
   const view = stype ? stype.view : {};
 
   const renderNavThumbVertical = ({ style, ...props }) => (
-    <div {...props} style={{ ...style, ...thumbV }} />
+        <div {...props} className="nav-thumb-vertical" style={{ ...style, ...thumbV }} />
   );
 
   const renderNavThumbHorizontal = ({ style, ...props }) => (
-    <div {...props} style={{ ...style, ...thumbH }} />
+    <div className="nav-thumb-horizontal" {...props} style={{ ...style, ...thumbH }} />
   );
 
   const renderView = ({ style, ...props }) => (

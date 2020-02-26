@@ -36,7 +36,7 @@ const MainContainerWrapper = styled.div`
   align-self: center;
   margin-right: auto;
   min-width: 140px;
-  width: 48%;
+  width: 28%;
 
   ${props => !props.disableSideInfo && `
     @media ${tablet} {
@@ -80,6 +80,7 @@ const SideContainerWrapper = styled.div`
   }
 
   width: ${props => props.containerWidth ? props.containerWidth : '100px'};
+  min-width: 100px;
   color: ${props => props.color && props.color};
 
   ${props => !props.disableSideInfo && `

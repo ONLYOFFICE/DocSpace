@@ -20,6 +20,7 @@ const toModuleWrapper = (item, iconName) => {
     id: item.id,
     title: item.title,
     iconName: item.iconName || iconName || "PeopleIcon", //TODO: Change to URL
+    iconUrl: item.iconUrl, 
     notifications: 0,
     url: item.link,
     onClick: (e) => {

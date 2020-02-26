@@ -29,6 +29,7 @@ using System.Linq;
 
 using ASC.Common.Logging;
 using ASC.MessagingSystem.DbSender;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -295,7 +296,6 @@ namespace ASC.MessagingSystem
 
             return services
                 .AddMessagePolicyService()
-                .AddHttpContextAccessor()
                 .AddDbMessageSenderService()
                 .AddMessageFactoryService();
         }

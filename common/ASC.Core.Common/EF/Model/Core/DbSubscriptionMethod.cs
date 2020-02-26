@@ -13,7 +13,7 @@ namespace ASC.Core.Common.EF
         public string Recipient { get; set; }
         public string Sender { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { Tenant, Source, Action, Recipient };
         }

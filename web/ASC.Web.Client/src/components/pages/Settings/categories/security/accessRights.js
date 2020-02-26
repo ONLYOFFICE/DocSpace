@@ -4,7 +4,7 @@ import i18n from "../../i18n";
 import { I18nextProvider, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TabContainer } from "asc-web-components";
-import { utils } from 'asc-web-common';
+import { utils } from "asc-web-common";
 
 import OwnerSettings from "./sub-components/owner";
 import AdminsSettings from "./sub-components/admins";
@@ -26,7 +26,9 @@ class PureAccessRights extends Component {
   constructor(props) {
     super(props);
 
-    //console.log("props", props);
+    document.title = `${props.t(
+      "ManagementCategorySecurity"
+    )} – ${props.t("OrganizationName")}`;
 
     const url = props.history.location.pathname;
     const newUrl = url.split("/");
@@ -90,14 +92,14 @@ class PureAccessRights extends Component {
           {[
             {
               key: "0",
-              title: t('OwnerSettings'),
+              title: t("OwnerSettings"),
               content: <OwnerSettings />
             },
             {
               key: "1",
-              title: t('AdminsSettings'),
+              title: t("AdminsSettings"),
               content: <AdminsSettings />
-            },
+            }
             // {
             //   key: "2",
             //   title: "Portals settings",
@@ -113,7 +115,6 @@ class PureAccessRights extends Component {
 const AccessRightsContainer = withTranslation()(PureAccessRights);
 
 const AccessRights = props => {
-
   changeLanguage(i18n);
 
   return (

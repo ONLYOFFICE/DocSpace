@@ -42,22 +42,17 @@ namespace ASC.People
         {
             services.AddHttpContextAccessor();
 
-            services.AddControllers().AddControllersAsServices()
-                .AddNewtonsoftJson()
-                .AddXmlSerializerFormatters();
+            services.AddControllers()
+                    .AddNewtonsoftJson()
+                    .AddXmlSerializerFormatters();
 
             services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
-            services.AddMemoryCache();
-
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
             services.AddAuthentication("cookie")
-                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
-                .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+                    .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
+                    .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
-            var builder = services.AddMvc(config =>
+            var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -72,6 +67,7 @@ namespace ASC.People
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
+
 
             services
                 .AddConfirmAuthHandler()
@@ -137,8 +133,6 @@ namespace ASC.People
 
             app.UseRouting();
 
-            app.UseSession();
-
             app.UseAuthentication();
 
             app.UseAuthorization();
@@ -152,8 +146,6 @@ namespace ASC.People
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
-
-            app.UseStaticFiles();
         }
     }
 }

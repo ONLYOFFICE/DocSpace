@@ -28,9 +28,11 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Web;
+
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -150,7 +152,6 @@ namespace ASC.IPSecurity
             return services
                 .AddIPRestrictionsService()
                 .AddSettingsManagerService()
-                .AddHttpContextAccessor()
                 .AddAuthContextService()
                 .AddTenantManagerService();
         }

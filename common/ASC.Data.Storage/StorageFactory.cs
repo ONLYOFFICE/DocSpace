@@ -328,7 +328,6 @@ namespace ASC.Data.Storage
                 .AddCoreBaseSettingsService()
                 .AddPathUtilsService()
                 .AddEmailValidationKeyProviderService()
-                .AddHttpContextAccessor()
                 .AddStorageSettingsService()
                 .AddStorageFactoryConfigService();
         }

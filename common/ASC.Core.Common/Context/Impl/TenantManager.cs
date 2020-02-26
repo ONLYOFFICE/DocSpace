@@ -36,23 +36,73 @@ using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    class ConfigureTenantManager : IConfigureNamedOptions<TenantManager>
+    {
+        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        public IOptionsSnapshot<TariffService> TariffService { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public CoreSettings CoreSettings { get; }
+
+        public ConfigureTenantManager(
+            IOptionsSnapshot<CachedTenantService> tenantService,
+            IOptionsSnapshot<CachedQuotaService> quotaService,
+            IOptionsSnapshot<TariffService> tariffService,
+            IHttpContextAccessor httpContextAccessor,
+            CoreBaseSettings coreBaseSettings,
+            CoreSettings coreSettings
+            )
+        {
+            TenantService = tenantService;
+            QuotaService = quotaService;
+            TariffService = tariffService;
+            HttpContextAccessor = httpContextAccessor;
+            CoreBaseSettings = coreBaseSettings;
+            CoreSettings = coreSettings;
+        }
+
+        public void Configure(string name, TenantManager options)
+        {
+            Configure(options);
+
+            options.TenantService = TenantService.Get(name);
+            options.QuotaService = QuotaService.Get(name);
+            options.TariffService = TariffService.Get(name);
+        }
+
+        public void Configure(TenantManager options)
+        {
+            options.HttpContext = HttpContextAccessor?.HttpContext;
+            options.CoreBaseSettings = CoreBaseSettings;
+            options.CoreSettings = CoreSettings;
+
+            options.TenantService = TenantService.Value;
+            options.QuotaService = QuotaService.Value;
+            options.TariffService = TariffService.Value;
+        }
+    }
+
     public class TenantManager
     {
         public const string CURRENT_TENANT = "CURRENT_TENANT";
-        private readonly ITenantService tenantService;
-        private readonly IQuotaService quotaService;
-        private readonly ITariffService tariffService;
+        internal ITenantService TenantService { get; set; }
+        internal IQuotaService QuotaService { get; set; }
+        internal ITariffService TariffService { get; set; }
+
         private static List<string> thisCompAddresses = new List<string>();
 
-        private HttpContext HttpContext { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private CoreSettings CoreSettings { get; }
+        internal HttpContext HttpContext { get; set; }
+        internal CoreBaseSettings CoreBaseSettings { get; set; }
+        internal CoreSettings CoreSettings { get; set; }
 
         static TenantManager()
         {
@@ -69,6 +119,11 @@ namespace ASC.Core
             }
         }
 
+        public TenantManager()
+        {
+
+        }
+
         public TenantManager(
             ITenantService tenantService,
             IQuotaService quotaService,
@@ -77,9 +132,9 @@ namespace ASC.Core
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings)
         {
-            this.tenantService = tenantService;
-            this.quotaService = quotaService;
-            this.tariffService = tariffService;
+            TenantService = tenantService;
+            QuotaService = quotaService;
+            TariffService = tariffService;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
             HttpContext = httpContextAccessor?.HttpContext;
@@ -88,12 +143,12 @@ namespace ASC.Core
 
         public List<Tenant> GetTenants(bool active = true)
         {
-            return tenantService.GetTenants(default, active).ToList();
+            return TenantService.GetTenants(default, active).ToList();
         }
 
         public Tenant GetTenant(int tenantId)
         {
-            return tenantService.GetTenant(tenantId);
+            return TenantService.GetTenant(tenantId);
         }
 
         public Tenant GetTenant(string domain)
@@ -103,7 +158,7 @@ namespace ASC.Core
             Tenant t = null;
             if (thisCompAddresses.Contains(domain, StringComparer.InvariantCultureIgnoreCase))
             {
-                t = tenantService.GetTenant("localhost");
+                t = TenantService.GetTenant("localhost");
             }
             var isAlias = false;
             if (t == null)
@@ -112,16 +167,16 @@ namespace ASC.Core
                 if (!string.IsNullOrEmpty(baseUrl) && domain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
                     isAlias = true;
-                    t = tenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));
+                    t = TenantService.GetTenant(domain.Substring(0, domain.Length - baseUrl.Length - 1));
                 }
             }
             if (t == null)
             {
-                t = tenantService.GetTenant(domain);
+                t = TenantService.GetTenant(domain);
             }
             if (t == null && CoreBaseSettings.Standalone && !isAlias)
             {
-                t = tenantService.GetTenantForStandaloneWithoutAlias(domain);
+                t = TenantService.GetTenantForStandaloneWithoutAlias(domain);
             }
             return t;
         }
@@ -143,7 +198,7 @@ namespace ASC.Core
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            var newTenant = tenantService.SaveTenant(CoreSettings, tenant);
+            var newTenant = TenantService.SaveTenant(CoreSettings, tenant);
             if (CallContext.GetData(CURRENT_TENANT) is Tenant) SetCurrentTenant(newTenant);
 
             return newTenant;
@@ -151,7 +206,7 @@ namespace ASC.Core
 
         public void RemoveTenant(int tenantId, bool auto = false)
         {
-            tenantService.RemoveTenant(tenantId, auto);
+            TenantService.RemoveTenant(tenantId, auto);
         }
 
         public Tenant GetCurrentTenant(HttpContext context)
@@ -222,12 +277,12 @@ namespace ASC.Core
 
         public void CheckTenantAddress(string address)
         {
-            tenantService.ValidateDomain(address);
+            TenantService.ValidateDomain(address);
         }
 
         public IEnumerable<TenantVersion> GetTenantVersions()
         {
-            return tenantService.GetTenantVersions();
+            return TenantService.GetTenantVersions();
         }
 
 
@@ -238,16 +293,16 @@ namespace ASC.Core
 
         public IEnumerable<TenantQuota> GetTenantQuotas(bool all)
         {
-            return quotaService.GetTenantQuotas().Where(q => q.Id < 0 && (all || q.Visible)).OrderByDescending(q => q.Id).ToList();
+            return QuotaService.GetTenantQuotas().Where(q => q.Id < 0 && (all || q.Visible)).OrderByDescending(q => q.Id).ToList();
         }
 
         public TenantQuota GetTenantQuota(int tenant)
         {
             // если в tenants_quota есть строка, с данным идентификатором портала, то в качестве квоты берется именно она
-            var q = quotaService.GetTenantQuota(tenant) ?? quotaService.GetTenantQuota(Tenant.DEFAULT_TENANT) ?? TenantQuota.Default;
-            if (q.Id != tenant && tariffService != null)
+            var q = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DEFAULT_TENANT) ?? TenantQuota.Default;
+            if (q.Id != tenant && TariffService != null)
             {
-                var tariffQuota = quotaService.GetTenantQuota(tariffService.GetTariff(tenant).QuotaId);
+                var tariffQuota = QuotaService.GetTenantQuota(TariffService.GetTariff(tenant).QuotaId);
                 if (tariffQuota != null)
                 {
                     return tariffQuota;
@@ -263,23 +318,23 @@ namespace ASC.Core
                 .Where(id => !string.IsNullOrEmpty(id))
                 .Distinct()
                 .ToArray();
-            return tariffService.GetProductPriceInfo(productIds);
+            return TariffService.GetProductPriceInfo(productIds);
         }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            quota = quotaService.SaveTenantQuota(quota);
+            quota = QuotaService.SaveTenantQuota(quota);
             return quota;
         }
 
         public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
         {
-            quotaService.SetTenantQuotaRow(row, exchange);
+            QuotaService.SetTenantQuotaRow(row, exchange);
         }
 
         public List<TenantQuotaRow> FindTenantQuotaRows(TenantQuotaRowQuery query)
         {
-            return quotaService.FindTenantQuotaRows(query).ToList();
+            return QuotaService.FindTenantQuotaRows(query).ToList();
         }
     }
 
@@ -288,9 +343,9 @@ namespace ASC.Core
         public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
         {
             services.TryAddScoped<TenantManager>();
+            services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddTenantService()
                 .AddQuotaService()
                 .AddTariffService()

@@ -95,5 +95,6 @@
     "PeopleAdmin": "People module admin",
     "DirectionAscLabel":"A-Z",
     "DirectionDescLabel":"Z-A",
-    "MeLabel": "Me"
+    "MeLabel": "Me",
+    "OrganizationName": "ONLYOFFICE"
 }

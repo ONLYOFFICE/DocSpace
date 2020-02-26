@@ -3,12 +3,11 @@ import { withRouter } from "react-router";
 import { RowContent, Link, LinkWithDropdown, Icons, Text } from "asc-web-components";
 import { connect } from "react-redux";
 import { getUserStatus } from "../../../../../store/people/selectors";
-import { history } from "asc-web-common";
 
-const getFormatedGroups = (user, status) => {
+const getFormatedGroups = (user, status, selectGroup) => {
   let temp = [];
   const groups = user.groups;
-  const linkColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
+  const linkColor = "#333";
 
   if (!groups) temp.push({ key: 0, label: '' });
 
@@ -17,7 +16,7 @@ const getFormatedGroups = (user, status) => {
       {
         key: group.id,
         label: group.name,
-        onClick: () => history.push(`/products/people/filter?group=${group.id}`)
+        onClick: () => selectGroup(group.id)
       }
     )
   );
@@ -26,11 +25,11 @@ const getFormatedGroups = (user, status) => {
     return (
       <Link
         isTextOverflow={true}
-        containerWidth='160px'
+        containerWidth='25%'
         type='action'
         title={temp[0].label}
         fontSize='12px'
-        fontWeight={600}
+        fontWeight={400}
         color={linkColor}
         onClick={temp[0].onClick}
       >
@@ -40,10 +39,10 @@ const getFormatedGroups = (user, status) => {
     return (
       <LinkWithDropdown
         isTextOverflow={true}
-        containerWidth='160px'
+        containerWidth='25%'
         title={temp[0].label}
         fontSize='12px'
-        fontWeight={600}
+        fontWeight={400}
         color={linkColor}
         data={temp}
       >
@@ -52,13 +51,16 @@ const getFormatedGroups = (user, status) => {
   }
 };
 
-const UserContent = ({ user, history, settings }) => {
+const UserContent = ({ user, history, settings, selectGroup }) => {
   const { userName, displayName, title, mobilePhone, email } = user;
   const status = getUserStatus(user);
-  const groups = getFormatedGroups(user, status);
+  const groups = getFormatedGroups(user, status, selectGroup);
 
   const onUserNameClick = useCallback(
-    () => history.push(`${settings.homepage}/view/${userName}`),
+    (e) => {
+      e.preventDefault();
+      history.push(`${settings.homepage}/view/${userName}`)
+    },
     [history, settings.homepage, userName]
   );
 
@@ -72,40 +74,75 @@ const UserContent = ({ user, history, settings }) => {
     [email]
   );
 
-  const nameColor = status === 'disabled' ? '#A3A9AE' : '#333333';
-  const sideInfoColor = status === 'disabled' ? '#D0D5DA' : '#A3A9AE';
+  const nameColor = "#333";
+  const sideInfoColor = "#333";
 
   const headDepartmentStyle = {
-    width: '110px'
+    maxWidth: '1fr'
   }
 
   return (
     <RowContent
       sideColor={sideInfoColor}
     >
-      <Link type='page' title={displayName} fontWeight={600} fontSize='15px' color={nameColor} onClick={onUserNameClick} isTextOverflow={true} >{displayName}</Link>
+      <Link
+        containerWidth='28%'
+        type='page'
+        href={`/products/people/view/${userName}`}
+        title={displayName}
+        fontWeight="bold"
+        onClick={onUserNameClick}
+        fontSize='15px'
+        color={nameColor}
+        isTextOverflow={true}
+      >
+        {displayName}
+      </Link>
       <>
         {status === 'pending' && <Icons.SendClockIcon size='small' isfill={true} color='#3B72A7' />}
         {status === 'disabled' && <Icons.CatalogSpamIcon size='small' isfill={true} color='#3B72A7' />}
       </>
       {title
         ?
-          <Text
-            style={headDepartmentStyle}
-            as="div"
-            color={sideInfoColor}
-            fontSize='12px'
-            fontWeight={600}
-            title={title}
-            truncate={true}
-          >
-            {title}
-          </Text>
-        : <div style={headDepartmentStyle}></div>
+        <Text
+          containerWidth='30%'
+          style={headDepartmentStyle}
+          as="div"
+          color={sideInfoColor}
+          fontSize='12px'
+          fontWeight={600}
+          title={title}
+          truncate={true}
+        >
+          {title}
+        </Text>
+        : <div containerWidth='30%' style={headDepartmentStyle}></div>
       }
       {groups}
-      <Link type='page' title={mobilePhone} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onPhoneClick} isTextOverflow={true}>{mobilePhone}</Link>
-      <Link containerWidth='220px' type='page' title={email} fontSize='12px' fontWeight={600} color={sideInfoColor} onClick={onEmailClick} isTextOverflow={true}>{email}</Link>
+      <Link
+        containerWidth='5%'
+        type='page'
+        title={mobilePhone}
+        fontSize='12px'
+        fontWeight={400}
+        color={sideInfoColor}
+        onClick={onPhoneClick}
+        isTextOverflow={true}
+      >
+        {mobilePhone}
+      </Link>
+      <Link
+        containerWidth='15%'
+        type='page'
+        title={email}
+        fontSize='12px'
+        fontWeight={400}
+        color={sideInfoColor}
+        onClick={onEmailClick}
+        isTextOverflow={true}
+      >
+        {email}
+      </Link>
     </RowContent>
   );
 };

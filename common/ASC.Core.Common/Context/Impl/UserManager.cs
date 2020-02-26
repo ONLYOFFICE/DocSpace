@@ -641,7 +641,6 @@ namespace ASC.Core
 
             return services
                 .AddUserService()
-                .AddHttpContextAccessor()
                 .AddTenantManagerService()
                 .AddConstantsService()
                 .AddPermissionContextService();

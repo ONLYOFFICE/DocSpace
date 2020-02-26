@@ -1,6 +1,6 @@
 {
   "name": "asc-web-common",
-  "version": "1.0.73",
+  "version": "1.0.91",
   "description": "Ascensio System SIA common components and solutions library",
   "license": "AGPL-3.0",
   "files": [
@@ -32,6 +32,7 @@
     "lodash-es": "4.17.15",
     "moment": "^2.24.0",
     "react-onclickoutside": "^6.9.0",
+    "react-svg": "^11.0.9",
     "react-window-infinite-loader": "^1.0.5"
   },
   "devDependencies": {

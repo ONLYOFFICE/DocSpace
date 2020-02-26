@@ -49,6 +49,7 @@ const StyledElement = styled.div`
 
 const StyledOptionButton = styled.div`
   display: flex;
+  width: 32px;
 
   .expandButton > div:first-child {
     padding-top: 8px;
@@ -106,9 +107,9 @@ class Row extends React.Component {
         {renderElement && <StyledElement>{element}</StyledElement>}
         <StyledContent>{children}</StyledContent>
         <StyledOptionButton>
-          {renderContext && (
-            <ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />
-          )}
+          {renderContext 
+          ? (<ContextMenuButton className="expandButton" directionX="right" getData={getOptions} />)
+          : (<div className="expandButton">{' '}</div>)}
         </StyledOptionButton>
       </StyledRow>
     );

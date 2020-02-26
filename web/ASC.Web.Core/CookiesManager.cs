@@ -28,12 +28,15 @@ using System;
 using System.Linq;
 using System.Security;
 using System.Web;
+
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Core
@@ -240,7 +243,6 @@ namespace ASC.Web.Core
             services.TryAddScoped<CookiesManager>();
 
             return services
-                .AddHttpContextAccessor()
                 .AddUserManagerService()
                 .AddSecurityContextService()
                 .AddTenantCookieSettingsService()
