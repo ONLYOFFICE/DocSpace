@@ -8,15 +8,6 @@
         }
       ],
 	  "instanceScope": "singleinstance"
-    },
-    {
-      "type": "ASC.Files.FilesProduct, ASC.Files",
-      "services": [
-        {
-          "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
-        }
-      ],
-	  "instanceScope": "singleinstance"
     }
   ]
 }
