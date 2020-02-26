@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
@@ -8,9 +8,12 @@ import {
   Button,
   Text,
   ToggleContent,
-  Checkbox
+  Checkbox,
+  CustomScrollbarsVirtualList
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
+import { FixedSizeList as List, areEqual } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import i18n from "./i18n";
 import { utils } from "asc-web-common";
 import ModalDialogContainer from "../ModalDialogContainer";
@@ -72,7 +75,38 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
   render() {
     const { visible, onClose, t, userType } = this.props;
-    const { isRequestRunning, listUsers } = this.state;
+    const { isRequestRunning, listUsers, userIds } = this.state;
+    const itemSize = 25;
+    const containerStyles = { height: 220 };
+
+    const renderItems = memo(({ data, index, style }) => {
+      return (
+        <Checkbox
+          style={style}
+          className="modal-dialog-checkbox"
+          value={data[index].id}
+          onChange={this.onChange}
+          key={`checkbox_${index}`}
+          isChecked={data[index].checked}
+          label={data[index].displayName}
+          isDisabled={data[index].disabled}
+        />
+      );
+    }, areEqual);
+
+    const renderList = ({ height, width }) => (
+      <List
+        className="List"
+        height={height}
+        width={width}
+        itemSize={itemSize}
+        itemCount={listUsers.length}
+        itemData={listUsers}
+        outerElementType={CustomScrollbarsVirtualList}
+      >
+        {renderItems}
+      </List>
+    );
 
     const firstType = userType === 1 ? t("GuestCaption") : t("UserCol");
     const secondType = userType === 1 ? t("UserCol") : t("GuestCaption");
@@ -96,18 +130,8 @@ class ChangeUserTypeDialogComponent extends React.Component {
                 className="toggle-content-dialog"
                 label={t("ShowUsersList")}
               >
-                <div className="modal-dialog-content">
-                  {listUsers.map((item, index) => (
-                    <Checkbox
-                      className="modal-dialog-checkbox"
-                      value={item.id}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.displayName}
-                      isDisabled={item.disabled}
-                    />
-                  ))}
+                <div style={containerStyles} className="modal-dialog-content">
+                  <AutoSizer>{renderList}</AutoSizer>
                 </div>
               </ToggleContent>
             </>
@@ -120,6 +144,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
                 primary
                 onClick={this.onChangeUserType}
                 isLoading={isRequestRunning}
+                isDisabled={!userIds.length}
               />
               <Button
                 className="button-dialog"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
@@ -8,8 +8,11 @@ import {
   Button,
   Text,
   ToggleContent,
-  Checkbox
+  Checkbox,
+  CustomScrollbarsVirtualList
 } from "asc-web-components";
+import { FixedSizeList as List, areEqual } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
@@ -59,7 +62,9 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   onChange = e => {
-    const userIndex = this.state.listUsers.findIndex(x => x.id === e.target.value);
+    const userIndex = this.state.listUsers.findIndex(
+      x => x.id === e.target.value
+    );
     const newUsersList = this.state.listUsers;
     newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
 
@@ -75,8 +80,39 @@ class DeleteGroupUsersDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, onClose, visible, selectedUsers } = this.props;
-    const { isRequestRunning } = this.state;
+    const { t, onClose, visible } = this.props;
+    const { isRequestRunning, userIds, listUsers } = this.state;
+    const itemSize = 25;
+    const containerStyles = { height: 220 };
+
+    const renderItems = memo(({ data, index, style }) => {
+      return (
+        <Checkbox
+          style={style}
+          className="modal-dialog-checkbox"
+          value={data[index].id}
+          onChange={this.onChange}
+          key={`checkbox_${index}`}
+          isChecked={data[index].checked}
+          label={data[index].displayName}
+          isDisabled={data[index].disabled}
+        />
+      );
+    }, areEqual);
+
+    const renderList = ({ height, width }) => (
+      <List
+        className="List"
+        height={height}
+        width={width}
+        itemSize={itemSize}
+        itemCount={listUsers.length}
+        itemData={listUsers}
+        outerElementType={CustomScrollbarsVirtualList}
+      >
+        {renderItems}
+      </List>
+    );
 
     //console.log("DeleteGroupUsersDialog render");
     return (
@@ -99,18 +135,8 @@ class DeleteGroupUsersDialogComponent extends React.Component {
                 className="toggle-content-dialog"
                 label={t("ShowUsersList")}
               >
-                <div className="modal-dialog-content">
-                  {selectedUsers.map((item, index) => (
-                    <Checkbox
-                      className="modal-dialog-checkbox"
-                      value={item.id}
-                      onChange={this.onChange}
-                      key={`checkbox_${index}`}
-                      isChecked={item.checked}
-                      label={item.displayName}
-                      isDisabled={item.disabled}
-                    />
-                  ))}
+                <div style={containerStyles} className="modal-dialog-content">
+                  <AutoSizer>{renderList}</AutoSizer>
                 </div>
               </ToggleContent>
             </>
@@ -123,6 +149,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
                 primary
                 onClick={this.onDeleteGroupUsers}
                 isLoading={isRequestRunning}
+                isDisabled={!userIds.length}
               />
               <Button
                 className="button-dialog"
@@ -157,6 +184,4 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired
 };
 
-export default connect(null, { removeUser })(
-  withRouter(DeleteUsersDialog)
-);
+export default connect(null, { removeUser })(withRouter(DeleteUsersDialog));
