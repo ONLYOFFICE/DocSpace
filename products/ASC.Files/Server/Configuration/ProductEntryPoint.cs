@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Resources;
 using ASC.Web.Core;
@@ -159,6 +160,21 @@ namespace ASC.Web.Files.Configuration
         public override string ApiURL
         {
             get => "api/2.0/documents/info.json";
+        }
+    }
+    public static class ProductEntryPointExtention
+    {
+        public static DIHelper AddProductEntryPointService(this DIHelper services)
+        {
+            services.TryAddScoped<ProductEntryPoint>();
+
+            return services
+                .AddFilesSpaceUsageStatManagerService()
+                .AddCoreBaseSettingsService()
+                .AddAuthContextService()
+                .AddUserManagerService()
+                .AddGlobalService()
+                .AddFilesSubscriptionManagerService();
         }
     }
 }

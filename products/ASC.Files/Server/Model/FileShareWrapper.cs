@@ -141,7 +141,7 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileShareWrapperService(this DIHelper services)
         {
-            services.TryAddScoped<FileShareWrapper>();
+            services.TryAddScoped<FileShareWrapperHelper>();
             return services
                 .AddUserManagerService()
                 .AddEmployeeWraperFull();

@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Resources;
 using ASC.Notify.Model;
@@ -134,6 +135,18 @@ namespace ASC.Web.Files.Classes
         public List<SubscriptionGroup> GetSubscriptionGroups()
         {
             return new List<SubscriptionGroup>();
+        }
+    }
+
+    public static class FilesSubscriptionManagerExtention
+    {
+        public static DIHelper AddFilesSubscriptionManagerService(this DIHelper services)
+        {
+            services.TryAddScoped<SubscriptionManager>();
+
+            return services
+                .AddFilesNotifySourceService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

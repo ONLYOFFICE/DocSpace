@@ -1838,6 +1838,8 @@ namespace ASC.Api.Documents
                 .AddDropboxLoginProviderService()
                 .AddOneDriveLoginProviderService()
                 .AddGoogleLoginProviderService()
+                .AddChunkedUploadSessionHelperService()
+                .AddProductEntryPointService()
                 ;
         }
     }

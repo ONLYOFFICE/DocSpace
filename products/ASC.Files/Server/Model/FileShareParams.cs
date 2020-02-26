@@ -77,7 +77,7 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddFileShareParamsService(this DIHelper services)
         {
-            services.TryAddScoped<FileShareParams>();
+            services.TryAddScoped<FileShareParamsHelper>();
             return services
                 .AddUserManagerService();
         }
