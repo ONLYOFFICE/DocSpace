@@ -83,7 +83,7 @@ class SendInviteDialogComponent extends React.Component {
     const { t, onClose, visible } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
     const itemSize = 25;
-    const containerStyles = { height: 220 };
+    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
 
     const renderItems = memo(({ data, index, style }) => {
       return (
@@ -128,7 +128,6 @@ class SendInviteDialogComponent extends React.Component {
               <ToggleContent
                 className="toggle-content-dialog"
                 label={t("ShowUsersList")}
-                isOpen
               >
                 <div style={containerStyles} className="modal-dialog-content">
                   <AutoSizer>{renderList}</AutoSizer>

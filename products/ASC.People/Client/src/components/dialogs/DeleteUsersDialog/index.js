@@ -83,7 +83,7 @@ class DeleteGroupUsersDialogComponent extends React.Component {
     const { t, onClose, visible } = this.props;
     const { isRequestRunning, userIds, listUsers } = this.state;
     const itemSize = 25;
-    const containerStyles = { height: 220 };
+    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
 
     const renderItems = memo(({ data, index, style }) => {
       return (

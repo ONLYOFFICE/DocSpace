@@ -77,7 +77,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const { visible, onClose, t, userType } = this.props;
     const { isRequestRunning, listUsers, userIds } = this.state;
     const itemSize = 25;
-    const containerStyles = { height: 220 };
+    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
 
     const renderItems = memo(({ data, index, style }) => {
       return (

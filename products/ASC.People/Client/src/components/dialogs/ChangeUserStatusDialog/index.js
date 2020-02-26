@@ -83,7 +83,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
   render() {
     const { t, onClose, visible, userStatus } = this.props;
     const { listUsers, isRequestRunning, userIds } = this.state;
-    const containerStyles = { height: 220 };
+    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
     const itemSize = 25;
 
     const renderItems = memo(({ data, index, style }) => {
