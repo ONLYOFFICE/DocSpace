@@ -44,16 +44,12 @@ const ModalDialogContainer = styled.div`
       font-size: 16px;
     }
 
-    .modal-dialog-scrollbar {
-      height: 250px !important;
+    .modal-dialog-content {
+      padding: 8px 16px;
       border: 1px solid lightgray;
 
-      .modal-dialog-content {
-        padding: 8px 16px;
-
-        .modal-dialog-checkbox:not(:last-child) {
-          padding-bottom: 4px;
-        }
+      .modal-dialog-checkbox:not(:last-child) {
+        padding-bottom: 4px;
       }
     }
   }

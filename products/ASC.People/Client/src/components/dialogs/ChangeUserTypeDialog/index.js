@@ -82,6 +82,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const renderItems = memo(({ data, index, style }) => {
       return (
         <Checkbox
+          truncate
           style={style}
           className="modal-dialog-checkbox"
           value={data[index].id}
