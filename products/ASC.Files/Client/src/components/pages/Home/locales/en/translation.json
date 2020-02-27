@@ -3,5 +3,12 @@
   "NewSpreadsheet": "New spreadsheet",
   "NewPresentation": "New presentation",
   "NewFolder": "New folder",
-  "UploadToFolder": "Upload to folder"
+  "UploadToFolder": "Upload to folder",
+  "SharingSettings": "Sharing settings",
+  "LinkForPortalUsers": "Link for portal users",
+  "MoveTo": "Move to",
+  "Copy": "Copy",
+  "Download": "Download",
+  "Rename": "Rename",
+  "Delete": "Delete"
 }

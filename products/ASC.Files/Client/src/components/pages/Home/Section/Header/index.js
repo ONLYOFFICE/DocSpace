@@ -39,7 +39,7 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
 
-  const { t } = props;
+  const { t, folder } = props;
 
   const createDocument = useCallback(
     () => toastr.info("New Document click"),
@@ -104,10 +104,96 @@ const SectionHeaderContent = props => {
     uploadToFolder
   ]);
 
+  const openSharingSettings = useCallback(
+    () => toastr.info("openSharingSettings click"),
+    []
+  );
+
+  const createLinkForPortalUsers = useCallback(
+    () => toastr.info("createLinkForPortalUsers click"),
+    []
+  );
+
+  const moveAction = useCallback(
+    () => toastr.info("moveAction click"),
+    []
+  );
+
+  const copyAction = useCallback(
+    () => toastr.info("copyAction click"),
+    []
+  );
+
+  const downloadAction = useCallback(
+    () => toastr.info("downloadAction click"),
+    []
+  );
+
+  const renameAction = useCallback(
+    () => toastr.info("renameAction click"),
+    []
+  );
+
+  const deleteAction = useCallback(
+    () => toastr.info("deleteAction click"),
+    []
+  );
+
+
+  const getContextOptionsFolder = useCallback(() => {
+    return [
+      {
+        key: "sharing-settings",
+        label: t('SharingSettings'),
+        onClick: openSharingSettings
+      },
+      {
+        key: "link-portal-users",
+        label: t('LinkForPortalUsers'),
+        onClick: createLinkForPortalUsers
+      },
+      { key: "separator-2", isSeparator: true },
+      {
+        key: "move-to",
+        label: t('MoveTo'),
+        onClick: moveAction
+      },
+      {
+        key: "copy",
+        label: t('Copy'),
+        onClick: copyAction
+      },
+      {
+        key: "download",
+        label: t('Download'),
+        onClick: downloadAction
+      },
+      {
+        key: "rename",
+        label: t('Rename'),
+        onClick: renameAction
+      },
+      {
+        key: "delete",
+        label: t('Delete'),
+        onClick: deleteAction
+      }
+    ];
+  }, [
+    t,
+    openSharingSettings,
+    createLinkForPortalUsers,
+    moveAction,
+    copyAction,
+    downloadAction,
+    renameAction,
+    deleteAction
+  ]);
+
   return (
     <StyledContainer isHeaderVisible={true}>
       <Headline className='headline-header' type="content" truncate={true}>Files sample header</Headline>
-      {isAdmin && (
+      {folder ? (
         <>
           <ContextMenuButton
             className="action-button"
@@ -118,8 +204,30 @@ const SectionHeaderContent = props => {
             getData={getContextOptionsPlus}
             isDisabled={false}
           />
+
+          <ContextMenuButton
+            className="action-button"
+            directionX="right"
+            iconName="VerticalDotsIcon"
+            size={16}
+            color="#A3A9AE"
+            getData={getContextOptionsFolder}
+            isDisabled={false}
+          />
         </>
-      )}
+      ) : (
+          <>
+            <ContextMenuButton
+              className="action-button"
+              directionX="right"
+              iconName="PlusIcon"
+              size={16}
+              color="#657077"
+              getData={getContextOptionsPlus}
+              isDisabled={false}
+            />
+          </>
+        )}
     </StyledContainer>
   );
 };
