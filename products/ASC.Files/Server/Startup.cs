@@ -45,13 +45,10 @@ namespace ASC.Files
 
             services.AddMemoryCache();
 
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
             services.AddAuthentication("cookie")
                 .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            var builder = services.AddMvc(config =>
+            var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -104,8 +101,6 @@ namespace ASC.Files
                     .AllowAnyMethod());
 
             app.UseRouting();
-
-            app.UseSession();
 
             app.UseAuthentication();
 

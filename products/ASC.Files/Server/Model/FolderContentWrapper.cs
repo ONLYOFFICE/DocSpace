@@ -125,11 +125,11 @@ namespace ASC.Api.Documents
             {
                 Files = folderItems.Entries.OfType<File>().Select(FileWrapperHelper.Get).ToList(),
                 Folders = folderItems.Entries.OfType<Folder>().Select(FolderWrapperHelper.Get).ToList(),
-                Current = FileWrapperHelper.Get<FolderWrapper>(folderItems.FolderInfo),
                 PathParts = folderItems.FolderPathParts,
-
                 StartIndex = startIndex
             };
+
+            result.Current = FolderWrapperHelper.Get(folderItems.FolderInfo);
             result.Count = result.Files.Count + result.Folders.Count;
             result.Total = folderItems.Total;
 

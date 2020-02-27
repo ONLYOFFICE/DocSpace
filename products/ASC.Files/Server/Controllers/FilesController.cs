@@ -75,17 +75,10 @@ namespace ASC.Api.Documents
     /// </summary>
     [DefaultRoute]
     [ApiController]
-    public class DocumentsController : ControllerBase
+    public class FilesController : ControllerBase
     {
         private readonly ApiContext ApiContext;
         private readonly FileStorageService FileStorageService;
-
-        /// <summary>
-        /// </summary>
-        public string Name
-        {
-            get { return "files"; }
-        }
 
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
@@ -123,7 +116,7 @@ namespace ASC.Api.Documents
         /// </summary>
         /// <param name="context"></param>
         /// <param name="fileStorageService"></param>
-        public DocumentsController(
+        public FilesController(
             ApiContext context,
             FileStorageService fileStorageService,
             GlobalFolderHelper globalFolderHelper,

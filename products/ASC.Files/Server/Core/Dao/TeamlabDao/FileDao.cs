@@ -216,7 +216,7 @@ namespace ASC.Files.Core.Data
         {
             var query = GetFileQuery(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion).Select(r => r.Id);
 
-            return Query(r => r.Files)
+            return Query(FilesDbContext.Files)
                 .Where(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion)
                 .Select(r => r.Id)
                 .ToList()
@@ -582,7 +582,7 @@ namespace ASC.Files.Core.Data
                 || file.ID == null
                 || file.Version <= 1) return;
 
-            var toDelete = Query(r => r.Files)
+            var toDelete = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)file.ID)
                 .Where(r => r.Version == file.Version)
                 .FirstOrDefault();
@@ -593,7 +593,7 @@ namespace ASC.Files.Core.Data
             }
             FilesDbContext.SaveChanges();
 
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)file.ID)
                 .Where(r => r.Version == file.Version - 1)
                 .FirstOrDefault();
@@ -622,20 +622,20 @@ namespace ASC.Files.Core.Data
             if (fileId == null) return;
             using var tx = FilesDbContext.Database.BeginTransaction();
 
-            var fromFolders = Query(r => r.Files).Where(r => r.Id == (int)fileId).GroupBy(r => r.Id).SelectMany(r => r.Select(a => a.FolderId)).Distinct().ToList();
+            var fromFolders = Query(FilesDbContext.Files).Where(r => r.Id == (int)fileId).GroupBy(r => r.Id).SelectMany(r => r.Select(a => a.FolderId)).Distinct().ToList();
 
-            var toDeleteFiles = Query(r => r.Files).Where(r => r.Id == (int)fileId);
+            var toDeleteFiles = Query(FilesDbContext.Files).Where(r => r.Id == (int)fileId);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
-            var toDeleteLinks = Query(r => r.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
+            var toDeleteLinks = Query(FilesDbContext.TagLink).Where(r => r.EntryId == fileId.ToString()).Where(r => r.EntryType == FileEntryType.File);
             FilesDbContext.RemoveRange(toDeleteFiles);
 
-            var tagsToRemove = Query(r => r.Tag)
-                .Where(r => !Query(a => a.TagLink).Where(a => a.TagId == r.Id).Any());
+            var tagsToRemove = Query(FilesDbContext.Tag)
+                .Where(r => !Query(FilesDbContext.TagLink).Where(a => a.TagId == r.Id).Any());
 
             FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
-            var securityToDelete = Query(r => r.Security)
+            var securityToDelete = Query(FilesDbContext.Security)
                 .Where(r => r.EntryId == fileId.ToString())
                 .Where(r => r.EntryType == FileEntryType.File);
 
@@ -656,7 +656,7 @@ namespace ASC.Files.Core.Data
 
         public bool IsExist(string title, object folderId)
         {
-            return Query(r => r.Files)
+            return Query(FilesDbContext.Files)
                 .Where(r => r.Title == title)
                 .Where(r => r.FolderId == (int)folderId)
                 .Where(r => r.CurrentVersion)
@@ -669,14 +669,14 @@ namespace ASC.Files.Core.Data
 
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
-                var fromFolders = Query(r => r.Files)
+                var fromFolders = Query(FilesDbContext.Files)
                     .Where(r => r.Id == (int)fileId)
                     .GroupBy(r => r.Id)
                     .SelectMany(r => r.Select(a => a.FolderId))
                     .Distinct()
                     .ToList();
 
-                var toUpdate = Query(r => r.Files)
+                var toUpdate = Query(FilesDbContext.Files)
                     .Where(r => r.Id == (int)fileId);
 
                 foreach (var f in toUpdate)
@@ -742,7 +742,7 @@ namespace ASC.Files.Core.Data
         public object FileRename(File file, string newTitle)
         {
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)file.ID)
                 .Where(r => r.CurrentVersion)
                 .FirstOrDefault();
@@ -761,7 +761,7 @@ namespace ASC.Files.Core.Data
             comment ??= string.Empty;
             comment = comment.Substring(0, Math.Min(comment.Length, 255));
 
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Version == fileVersion)
                 .FirstOrDefault();
@@ -775,7 +775,7 @@ namespace ASC.Files.Core.Data
 
         public void CompleteVersion(object fileId, int fileVersion)
         {
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Version >= fileVersion);
 
@@ -791,13 +791,13 @@ namespace ASC.Files.Core.Data
         {
             using var tx = FilesDbContext.Database.BeginTransaction();
 
-            var versionGroup = Query(r => r.Files)
+            var versionGroup = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Version == fileVersion)
                 .Select(r => r.VersionGroup)
                 .FirstOrDefault();
 
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Version >= fileVersion)
                 .Where(r => r.VersionGroup >= versionGroup);
@@ -924,7 +924,7 @@ namespace ASC.Files.Core.Data
 
         public void ReassignFiles(object[] fileIds, Guid newOwnerId)
         {
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.CurrentVersion)
                 .Where(r => fileIds.Any(a => a.ToString() == r.Id.ToString()));
 
@@ -1038,7 +1038,7 @@ namespace ASC.Files.Core.Data
 
             changes = changes.Trim();
 
-            var toUpdate = Query(r => r.Files)
+            var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)file.ID)
                 .Where(r => r.Version == file.Version);
 
@@ -1054,7 +1054,7 @@ namespace ASC.Files.Core.Data
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, object fileId, int fileVersion = 0)
         {
-            var query = Query(r => r.Files)
+            var query = Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Forcesave == ForcesaveType.None);
 
@@ -1093,7 +1093,7 @@ namespace ASC.Files.Core.Data
 
         public bool ContainChanges(object fileId, int fileVersion)
         {
-            return Query(r => r.Files)
+            return Query(FilesDbContext.Files)
                 .Where(r => r.Id == (int)fileId)
                 .Where(r => r.Version == fileVersion)
                 .Where(r => r.Changes != null)

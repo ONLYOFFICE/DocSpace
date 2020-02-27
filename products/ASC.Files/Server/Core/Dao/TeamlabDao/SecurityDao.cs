@@ -91,7 +91,7 @@ namespace ASC.Files.Core.Data
 
         public bool IsShared(object entryId, FileEntryType type)
         {
-            return Query(r => r.Security)
+            return Query(FilesDbContext.Security)
                 .Where(r => r.EntryId == MappingID(entryId).ToString())
                 .Where(r => r.EntryType == type)
                 .Any();
@@ -119,7 +119,7 @@ namespace ASC.Files.Core.Data
                                 .ToList();
 
                             folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                            files.AddRange(Query(r => r.Files).Where(r => foldersInt.Any(a => a == r.FolderId)).Select(r => r.Id.ToString()));
+                            files.AddRange(Query(FilesDbContext.Files).Where(r => foldersInt.Any(a => a == r.FolderId)).Select(r => r.Id.ToString()));
                         }
                         else
                         {
@@ -280,7 +280,7 @@ namespace ASC.Files.Core.Data
 
         private IEnumerable<FileShareRecord> SaveFilesAndFoldersForShare(List<string> files, List<int> folders)
         {
-            var q = Query(r => r.Security)
+            var q = Query(FilesDbContext.Security)
                 .Join(FilesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
                 .Where(r => folders.Any(f => f == r.DbFolderTree.FolderId))
                 .Where(r => r.DbFilesSecurity.EntryType == FileEntryType.Folder)
@@ -318,7 +318,7 @@ namespace ASC.Files.Core.Data
 
         private IQueryable<DbFilesSecurity> GetQuery(Expression<Func<DbFilesSecurity, bool>> where = null)
         {
-            var q = Query(r => r.Security);
+            var q = Query(FilesDbContext.Security);
             if (q != null)
             {
                 q = q.Where(where);

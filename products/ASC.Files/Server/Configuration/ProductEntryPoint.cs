@@ -36,33 +36,34 @@ using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Files.Classes;
 
-using SubscriptionManager = ASC.Web.Files.Classes.SubscriptionManager;
-
 namespace ASC.Web.Files.Configuration
 {
     public class ProductEntryPoint : Product
     {
-        public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
+        //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public UserManager UserManager { get; }
-        public Global Global { get; }
-        public SubscriptionManager SubscriptionManager { get; }
+        //public SubscriptionManager SubscriptionManager { get; }
+
+        public ProductEntryPoint()
+        {
+
+        }
 
         public ProductEntryPoint(
-            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+            //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            UserManager userManager,
-            Global global,
-            SubscriptionManager subscriptionManager)
+            UserManager userManager
+            //            SubscriptionManager subscriptionManager
+            )
         {
-            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
+            //            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             UserManager = userManager;
-            Global = global;
-            SubscriptionManager = subscriptionManager;
+            //SubscriptionManager = subscriptionManager;
         }
 
         public static readonly Guid ID = WebItemManager.DocumentsProductID;
@@ -88,8 +89,8 @@ namespace ASC.Web.Files.Configuration
                     IconFileName = "product_logo.png",
                     LargeIconFileName = "images/files.svg",
                     DefaultSortOrder = 10,
-                    SubscriptionManager = SubscriptionManager,
-                    SpaceUsageStatManager = FilesSpaceUsageStatManager,
+                    //SubscriptionManager = SubscriptionManager,
+                    //SpaceUsageStatManager = FilesSpaceUsageStatManager,
                     AdminOpportunities = adminOpportunities,
                     UserOpportunities = userOpportunities,
                     CanNotBeDisabled = true,
@@ -159,7 +160,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string ApiURL
         {
-            get => "api/2.0/documents/info.json";
+            get => "api/2.0/files/info.json";
         }
     }
     public static class ProductEntryPointExtention

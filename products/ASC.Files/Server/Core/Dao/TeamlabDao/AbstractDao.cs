@@ -95,15 +95,14 @@ namespace ASC.Files.Core.Data
         }
 
 
-        protected IQueryable<T> Query<T>(Expression<Func<FilesDbContext, DbSet<T>>> func) where T : class, IDbFile
+        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
-            var compile = func.Compile();
-            return compile(FilesDbContext).Where(r => r.TenantId == TenantID);
+            return set.Where(r => r.TenantId == TenantID);
         }
 
         protected IQueryable<DbFile> GetFileQuery(Expression<Func<DbFile, bool>> where)
         {
-            return Query(r => r.Files)
+            return Query(FilesDbContext.Files)
                 .Where(where);
         }
 
@@ -150,7 +149,7 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                result = Query(r => r.ThirdpartyIdMapping)
+                result = Query(FilesDbContext.ThirdpartyIdMapping)
                     .Where(r => r.HashId == id.ToString())
                     .Select(r => r.Id)
                     .FirstOrDefault();
