@@ -162,7 +162,8 @@ namespace ASC.Files.Core.Data
         {
             if (fileIds == null || fileIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a.ToString() == r.Id.ToString()) && r.CurrentVersion);
+            var fileIdsStrings = fileIds.Select(r => r.ToString()).ToList();
+            var query = GetFileQuery(r => fileIdsStrings.Any(a => a == r.Id.ToString()) && r.CurrentVersion);
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -214,10 +215,11 @@ namespace ASC.Files.Core.Data
 
         public List<object> GetFiles(object parentId)
         {
-            var query = GetFileQuery(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion).Select(r => r.Id);
+            var parentIdString = parentId.ToString();
+            var query = GetFileQuery(r => r.FolderId.ToString() == parentIdString && r.CurrentVersion).Select(r => r.Id);
 
             return Query(FilesDbContext.Files)
-                .Where(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion)
+                .Where(r => r.FolderId.ToString() == parentIdString && r.CurrentVersion)
                 .Select(r => r.Id)
                 .ToList()
                 .ConvertAll(r => (object)r);
@@ -229,20 +231,20 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var q = GetFileQuery(r => r.FolderId.ToString() == parentId.ToString() && r.CurrentVersion);
+            var parentIdString = parentId.ToString();
+            var q = GetFileQuery(r => r.FolderId.ToString() == parentIdString && r.CurrentVersion);
 
 
             if (withSubfolders)
             {
                 q = GetFileQuery(r => r.CurrentVersion)
                     .Join(FilesDbContext.Tree, r => r.FolderId, a => a.FolderId, (file, tree) => new { file, tree })
-                    .Where(r => r.tree.ParentId.ToString() == parentId.ToString())
+                    .Where(r => r.tree.ParentId.ToString() == parentIdString)
                     .Select(r => r.file);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
-
                 var func = GetFuncForSearch(parentId, orderBy, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders);
 
                 Expression<Func<Selector<FilesWrapper>, Selector<FilesWrapper>>> expression = s => func(s);
