@@ -19,9 +19,9 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("user_id", TypeName = "char(38)")]
         public string UserId { get; set; }
         [Column("hide_events", TypeName = "smallint(2)")]
-        public short HideEvents { get; set; }
+        public int HideEvents { get; set; }
         [Column("is_accepted", TypeName = "smallint(2)")]
-        public short IsAccepted { get; set; }
+        public int IsAccepted { get; set; }
         [Required]
         [Column("text_color", TypeName = "varchar(50)")]
         public string TextColor { get; set; }
@@ -29,9 +29,9 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("background_color", TypeName = "varchar(50)")]
         public string BackgroundColor { get; set; }
         [Column("is_new", TypeName = "smallint(2)")]
-        public short IsNew { get; set; }
+        public int IsNew { get; set; }
         [Column("alert_type", TypeName = "smallint(6)")]
-        public short AlertType { get; set; }
+        public int AlertType { get; set; }
         [Column("name", TypeName = "varchar(255)")]
         public string Name { get; set; }
         [Column("time_zone", TypeName = "varchar(255)")]

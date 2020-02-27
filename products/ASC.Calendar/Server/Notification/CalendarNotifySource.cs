@@ -40,8 +40,7 @@ using ASC.Web.Core.Calendars;
 using ASC.Web.Studio.Utility;
 
 namespace ASC.Calendar.Notification
-{
-    /*
+{/*
     public class CalendarNotifyClient
     {
         private static INotifyClient _notifyClient;
@@ -70,7 +69,6 @@ namespace ASC.Calendar.Notification
                 }
             }
         }
-
         private static void NotifyAbouFutureEvent(DateTime scheduleDate)
         {
             try
@@ -132,12 +130,10 @@ namespace ASC.Calendar.Notification
                 LogManager.GetLogger("ASC.Notify.Calendar").Error(error);
             }
         }
-
         public static void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)
         {
             NotifyAboutSharingCalendar(calendar, null);
         }
-
         public static void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar, ASC.Calendar.BusinessObjects.Calendar oldCalendar)
         {
             var initatorInterceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), SecurityContext.CurrentAccount.Name));
@@ -168,7 +164,6 @@ namespace ASC.Calendar.Notification
                 _notifyClient.RemoveInterceptor(initatorInterceptor.Name);
             }
         }
-
         public static void NotifyAboutSharingEvent(ASC.Calendar.BusinessObjects.Event calendarEvent)
         {
             NotifyAboutSharingEvent(calendarEvent, null);
@@ -209,7 +204,6 @@ namespace ASC.Calendar.Notification
             return CommonLinkUtility.GetFullAbsolutePath(url);
         }
     }
-    */
 
     /*public class CalendarNotifySource : NotifySource
     {
@@ -245,4 +239,5 @@ namespace ASC.Calendar.Notification
             return new XmlPatternProvider2(CalendarPatterns.calendar_patterns);
         }
     }*/
+
 }

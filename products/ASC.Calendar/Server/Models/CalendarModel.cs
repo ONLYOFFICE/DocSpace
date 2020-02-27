@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using static ASC.Calendar.Controllers.CalendarController;
 
 namespace ASC.Calendar.Models
 {
@@ -28,7 +29,7 @@ namespace ASC.Calendar.Models
         public EventAlertType AlertType { get; set; }
 
         [DataMember(Name = "time_zone", Order = 60)]
-        public TimeZoneWrapper TimeZone { get; set; }
+        public string TimeZone { get; set; }
 
         [DataMember(Name = "text_color", Order = 60)]
         public string TextColor { get; set; }
@@ -45,8 +46,8 @@ namespace ASC.Calendar.Models
         [DataMember(Name = "is_todo", Order = 60)]
         public int IsTodo { get; set; }
 
-
-
+        [DataMember(Name = "sharing_options", Order = 60)]
+        public List<SharingParam> sharingOptions { get; set; }
 
         /*public static object GetSample()
         {

@@ -17,6 +17,6 @@ namespace ASC.Calendar.Core.Dao.Models
         public string ItemId { get; set; }
         [Key]
         [Column("is_group", TypeName = "smallint(2)")]
-        public short IsGroup { get; set; }
+        public int IsGroup { get; set; }
     }
 }

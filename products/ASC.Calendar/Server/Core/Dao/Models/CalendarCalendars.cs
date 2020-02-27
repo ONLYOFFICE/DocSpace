@@ -29,7 +29,7 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("background_color", TypeName = "varchar(50)")]
         public string BackgroundColor { get; set; }
         [Column("alert_type", TypeName = "smallint(6)")]
-        public short AlertType { get; set; }
+        public int AlertType { get; set; }
         [Required]
         [Column("time_zone", TypeName = "varchar(255)")]
         public string TimeZone { get; set; }

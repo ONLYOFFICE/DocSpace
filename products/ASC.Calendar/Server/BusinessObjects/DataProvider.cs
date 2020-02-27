@@ -37,6 +37,7 @@ using System.Threading.Tasks;
 using System.Web;
 using ASC.Api.Core;
 using ASC.Calendar.Core.Dao;
+using ASC.Calendar.Core.Dao.Models;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Calendar.iCalParser;
 using ASC.Common.Logging;
@@ -84,7 +85,7 @@ namespace ASC.Calendar.BusinessObjects
         public SecurityContext SecurityContext { get; }
         public AuthContext AuthContext { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
-
+        private TenantManager TenantManager { get; }
         public ILog Log { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
@@ -92,6 +93,7 @@ namespace ASC.Calendar.BusinessObjects
             SecurityContext securityContext,
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
+            TenantManager tenantManager,
             IOptionsMonitor<ILog> option)
         {
             CalendarDb = calendarDbContext.Get("calendar");
@@ -99,6 +101,7 @@ namespace ASC.Calendar.BusinessObjects
             SecurityContext = securityContext;
             AuthContext = authContext;
             TimeZoneConverter = timeZoneConverter;
+            TenantManager = tenantManager;
 
             Log = option.Get("ASC.CalendarDataProvider");
 
@@ -352,20 +355,23 @@ namespace ASC.Calendar.BusinessObjects
                         }
                     }
                 }
-                var uvs = new UserViewSettings
+                if (r.usrId != null)
                 {
-                    CalendarId = calendar.Id,
-                    UserId = Guid.Parse(r.usrId),
-                    IsHideEvents = Convert.ToBoolean(r.usrHideEvents),
-                    IsAccepted = Convert.ToBoolean(r.usrIsAccepted),
-                    TextColor = r.usrTextColor.ToString(),
-                    BackgroundColor = r.usrBackground.ToString(),
-                    EventAlertType = (EventAlertType)r.usrAlertType,
-                    Name = r.usrCalName.ToString(),
-                    TimeZone = TimeZoneConverter.GetTimeZone(r.usrTimeZone)
-                };
+                    var uvs = new UserViewSettings
+                    {
+                        CalendarId = calendar.Id,
+                        UserId = Guid.Parse(r.usrId),
+                        IsHideEvents = Convert.ToBoolean(r.usrHideEvents),
+                        IsAccepted = Convert.ToBoolean(r.usrIsAccepted),
+                        TextColor = r.usrTextColor.ToString(),
+                        BackgroundColor = r.usrBackground.ToString(),
+                        EventAlertType = (EventAlertType)r.usrAlertType,
+                        Name = r.usrCalName.ToString(),
+                        TimeZone = TimeZoneConverter.GetTimeZone(r.usrTimeZone)
+                    };
 
-                calendar.ViewSettings.Add(uvs);
+                    calendar.ViewSettings.Add(uvs);
+                }
             }
             return calendars;
         }
@@ -379,65 +385,66 @@ namespace ASC.Calendar.BusinessObjects
             return null;
         }
 
-        /*public Calendar CreateCalendar(Guid ownerId, string name, string description, string textColor, string backgroundColor, TimeZoneInfo timeZone, EventAlertType eventAlertType, string iCalUrl, List<SharingOptions.PublicItem> publicItems, List<UserViewSettings> viewSettings, Guid calDavGuid, int isTodo = 0)
+        public Calendar CreateCalendar(Guid ownerId, string name, string description, string textColor, string backgroundColor, TimeZoneInfo timeZone, EventAlertType eventAlertType, string iCalUrl, List<SharingOptions.PublicItem> publicItems, List<UserViewSettings> viewSettings, Guid calDavGuid, int isTodo = 0)
         {
-            int calendarId;
-            using (var tr = db.BeginTransaction())
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var calendar = new CalendarCalendars
             {
+                OwnerId = ownerId.ToString(),
+                Name = name,
+                Description = description,
+                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                TextColor = textColor,
+                BackgroundColor = backgroundColor,
+                AlertType = (int)eventAlertType,
+                TimeZone = timeZone.Id,
+                IcalUrl = iCalUrl,
+                CaldavGuid = calDavGuid.ToString(),
+                IsTodo = isTodo
+            };
 
-                calendarId = db.ExecuteScalar<int>(new SqlInsert("calendar_calendars")
-                                                                .InColumnValue("id", 0)
-                                                                .InColumnValue("tenant",
-                                                                                TenantManager
-                                                                                        .GetCurrentTenant().TenantId)
-                                                                .InColumnValue("owner_id", ownerId)
-                                                                .InColumnValue("name", name)
-                                                                .InColumnValue("description", description)
-                                                                .InColumnValue("text_color", textColor)
-                                                                .InColumnValue("background_color", backgroundColor)
-                                                                .InColumnValue("alert_type", (int) eventAlertType)
-                                                                .InColumnValue("time_zone", timeZone.Id)
-                                                                .InColumnValue("ical_url", iCalUrl)
-                                                                .InColumnValue("caldav_guid", calDavGuid)
-                                                                .InColumnValue("is_todo", isTodo)
-                                                                .Identity(0, 0, true));
+            calendar = CalendarDb.CalendarCalendars.Add(calendar).Entity;
 
-                if (publicItems != null)
+            if (publicItems != null)
+            {
+                foreach (var item in publicItems)
                 {
-                    foreach (var item in publicItems)
+                    var calendarItem = new CalendarCalendarItem
                     {
-                        db.ExecuteNonQuery(new SqlInsert("calendar_calendar_item")
-                                                        .InColumnValue("calendar_id", calendarId)
-                                                        .InColumnValue("item_id", item.Id)
-                                                        .InColumnValue("is_group", item.IsGroup));
-                    }
+                        CalendarId = calendar.Id,
+                        ItemId = item.Id.ToString(),
+                        IsGroup = Convert.ToInt32(item.IsGroup)
+                    };
+                    CalendarDb.CalendarCalendarItem.Add(calendarItem);
                 }
-
-                if (viewSettings != null)
-                {
-                    foreach (var view in viewSettings)
-                    {
-                        db.ExecuteNonQuery(new SqlInsert("calendar_calendar_user")
-                                                        .InColumnValue("calendar_id", calendarId)
-                                                        .InColumnValue("user_id", view.UserId)
-                                                        .InColumnValue("hide_events", view.IsHideEvents)
-                                                        .InColumnValue("is_accepted", view.IsAccepted)
-                                                        .InColumnValue("text_color", view.TextColor)
-                                                        .InColumnValue("background_color", view.BackgroundColor)
-                                                        .InColumnValue("alert_type", (int) view.EventAlertType)
-                                                        .InColumnValue("name", view.Name ?? "")
-                                                        .InColumnValue("time_zone",
-                                                                        view.TimeZone != null ? view.TimeZone.Id : null)
-                            );
-
-                    }
-                }
-                tr.Commit();
             }
+            if (viewSettings != null)
+            {
+                foreach (var view in viewSettings)
+                {
+                    var calendarUser = new CalendarCalendarUser
+                    {
+                        CalendarId = calendar.Id,
+                        UserId = view.UserId.ToString(),
+                        HideEvents = Convert.ToInt32(view.IsHideEvents),
+                        IsAccepted = Convert.ToInt32(view.IsAccepted),
+                        TextColor = view.TextColor,
+                        BackgroundColor = view.BackgroundColor,
+                        AlertType = (int)view.EventAlertType,
+                        Name = view.Name ?? "",
+                        TimeZone = view.TimeZone != null ? view.TimeZone.Id : null
+                    };
+                    CalendarDb.CalendarCalendarUser.Add(calendarUser);
+                }
+            }
+            CalendarDb.SaveChanges();
 
-            return GetCalendarById(calendarId);
+            tx.Commit();
+
+            return GetCalendarById(calendar.Id);
         }
-
+        /*
         public Calendar UpdateCalendarGuid(int calendarId, Guid calDavGuid)
         {
             using (var tr = db.BeginTransaction())

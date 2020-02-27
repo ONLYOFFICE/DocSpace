@@ -33,6 +33,11 @@ using ASC.Calendar.BusinessObjects;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.ExternalCalendars;
 using System.Linq;
+using System;
+using Microsoft.AspNetCore.Http;
+using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+using System.Web;
+using ASC.Calendar.Notification;
 
 namespace ASC.Calendar.Controllers
 {
@@ -51,10 +56,15 @@ namespace ASC.Calendar.Controllers
         public TimeZoneConverter TimeZoneConverter { get; }
         public CalendarWrapperHelper CalendarWrapperHelper { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        private AuthorizationManager AuthorizationManager { get; }
+        private AuthManager Authentication { get; }
+        public HttpContext HttpContext { get; set; }
+
         public CalendarController(
            
             ApiContext apiContext,
             AuthContext authContext,
+            AuthorizationManager authorizationManager,
             UserManager userManager,
             TenantManager tenantManager,
             TimeZoneConverter timeZoneConverter,
@@ -62,10 +72,13 @@ namespace ASC.Calendar.Controllers
             IOptionsMonitor<ILog> option,
 
             DataProvider dataProvider,
-
-            CalendarWrapperHelper calendarWrapperHelper)
+            IHttpContextAccessor httpContextAccessor,
+            CalendarWrapperHelper calendarWrapperHelper,
+            AuthManager authentication)
         {
             AuthContext = authContext;
+            Authentication = authentication;
+            AuthorizationManager = authorizationManager;
             TenantManager = tenantManager;
             Log = option.Get("ASC.Api");
             TimeZoneConverter = timeZoneConverter;
@@ -84,6 +97,21 @@ namespace ASC.Calendar.Controllers
             else
             {
                 CalendarManager.Instance.RegistryCalendar(birthdayReminderCalendar);
+            }
+            HttpContext = httpContextAccessor?.HttpContext;
+        }
+        public class SharingParam : SharingOptions.PublicItem
+        {
+            public string actionId { get; set; }
+            public Guid itemId
+            {
+                get { return Id; }
+                set { Id = value; }
+            }
+            public bool isGroup
+            {
+                get { return IsGroup; }
+                set { IsGroup = value; }
             }
         }
 
@@ -114,6 +142,90 @@ namespace ASC.Calendar.Controllers
             }
             return null;
         }
+
+        [Create]
+        public CalendarWrapper CreateCalendar(CalendarModel calendar)
+        {
+            //string name, string description, string textColor, string backgroundColor, string timeZone, EventAlertType alertType, List<SharingParam> sharingOptions, string iCalUrl, int isTodo = 0
+
+            var sharingOptionsList = calendar.sharingOptions ?? new List<SharingParam>();
+            var timeZoneInfo = TimeZoneConverter.GetTimeZone(calendar.TimeZone);
+    
+            calendar.Name = (calendar.Name ?? "").Trim();
+            if (String.IsNullOrEmpty(calendar.Name))
+                throw new Exception(Resources.CalendarApiResource.ErrorEmptyName);
+
+            calendar.Description = (calendar.Description ?? "").Trim();
+            calendar.TextColor = (calendar.TextColor ?? "").Trim();
+            calendar.BackgroundColor = (calendar.BackgroundColor ?? "").Trim();
+
+            Guid calDavGuid = Guid.NewGuid();
+
+            var myUri = HttpContext.Request.GetUrlRewriter();
+
+            var _email = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email;
+            var currentUserName = _email.ToLower() + "@" + myUri.Host;
+
+            string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
+
+            //TODO caldav
+
+            /*var caldavTask = new Task(() => CreateCalDavCalendar(name, description, backgroundColor, calDavGuid.ToString(), myUri, currentUserName, _email, currentAccountPaswd));
+            caldavTask.Start();*/
+
+            var cal = DataProvider.CreateCalendar(
+                        AuthContext.CurrentAccount.ID,
+                        calendar.Name,
+                        calendar.Description,
+                        calendar.TextColor,
+                        calendar.BackgroundColor, 
+                        timeZoneInfo,
+                        calendar.AlertType,
+                        null,
+                        sharingOptionsList.Select(o => o as SharingOptions.PublicItem).ToList(),
+                        new List<UserViewSettings>(), 
+                        calDavGuid,
+                        calendar.IsTodo);
+
+            if (cal == null) throw new Exception("calendar is null");
+
+           foreach (var opt in sharingOptionsList)
+                if (String.Equals(opt.actionId, AccessOption.FullAccessOption.Id, StringComparison.InvariantCultureIgnoreCase))
+                    AuthorizationManager.AddAce(new AzRecord(opt.Id, CalendarAccessRights.FullAccessAction.ID, Common.Security.Authorizing.AceType.Allow, cal));
+
+            //notify
+            //CalendarNotifyClient.NotifyAboutSharingCalendar(cal);
+
+            /*//iCalUrl
+            if (!string.IsNullOrEmpty(iCalUrl))
+            {
+                try
+                {
+                    var req = (HttpWebRequest)WebRequest.Create(iCalUrl);
+                    using (var resp = req.GetResponse())
+                    using (var stream = resp.GetResponseStream())
+                    {
+                        var ms = new MemoryStream();
+                        stream.StreamCopyTo(ms);
+                        ms.Seek(0, SeekOrigin.Begin);
+
+                        using (var tempReader = new StreamReader(ms))
+                        {
+
+                            var cals = DDayICalParser.DeserializeCalendar(tempReader);
+                            ImportEvents(Convert.ToInt32(cal.Id), cals);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Info(String.Format("Error import events to new calendar by ical url: {0}", ex.Message));
+                }
+
+            }*/
+
+            return CalendarWrapperHelper.Get(cal);
+        }
     }
 
     public static class CalendarControllerExtention
@@ -123,9 +235,12 @@ namespace ASC.Calendar.Controllers
             return services
                 .AddApiContextService()
                 .AddSecurityContextService()
+                .AddPermissionContextService()
+                .AddCommonLinkUtilityService()
+                .AddDisplayUserSettingsService()
                 .AddCalendarDbContextService()
                 .AddCalendarDataProviderService()
-                .AddCalendarWrapper();
+                .AddCalendarWrapper();                
         }
     }
 }
