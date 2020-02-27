@@ -3,11 +3,23 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import Tree from 'rc-tree';
+import Badge from "../badge";
+
+const StyledTreeContainer = styled.div`
+    display: flex;
+
+    .tree_bage {
+        display: inline-table;
+        z-index: 1;
+        overflow: unset;
+        padding: 3px;
+    }
+`;
 
 const StyledTreeMenu = styled(Tree)`
-
     margin: 0;
     padding: 0;
+    width: 100%;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     
     &:not(.rc-tree-show-line) .rc-tree-switcher-noop {
@@ -69,6 +81,9 @@ const StyledTreeMenu = styled(Tree)`
         `
         : ''
     }
+    .rc-tree-title {
+        width: ${props => props.badgeLabel && 'calc(100% - 60px) !important'};
+    }
   
 `;
 
@@ -76,53 +91,70 @@ const TreeMenu = props => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style } = props;
+        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBageClick } = props;
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
         onSelect(result, e);
     }
     return (
-        <StyledTreeMenu
-            className={className}
-            id={id}
-            style={style}
-            checkable={!!checkable}
-            draggable={!!draggable}
-            disabled={!!disabled}
-            multiple={!!multiple}
-            showLine={!!showLine}
-            showIcon={!!showIcon}
-            defaultExpandAll={!!defaultExpandAll}
-            defaultExpandParent={!!defaultExpandParent}
-            icon={icon}
+        <StyledTreeContainer>
+            <StyledTreeMenu
+                className={className}
+                id={id}
+                style={style}
+                checkable={!!checkable}
+                draggable={!!draggable}
+                disabled={!!disabled}
+                multiple={!!multiple}
+                showLine={!!showLine}
+                showIcon={!!showIcon}
+                defaultExpandAll={!!defaultExpandAll}
+                defaultExpandParent={!!defaultExpandParent}
+                icon={icon}
 
-            selectedKeys={selectedKeys}
-            defaultSelectedKeys={defaultSelectedKeys}
-            defaultExpandedKeys={defaultExpandedKeys}
-            defaultCheckedKeys={defaultCheckedKeys}
+                selectedKeys={selectedKeys}
+                defaultSelectedKeys={defaultSelectedKeys}
+                defaultExpandedKeys={defaultExpandedKeys}
+                defaultCheckedKeys={defaultCheckedKeys}
 
-            onDragStart={onDragStart}
-            onDrop={onDrop}
-            onDragEnd={onDragEnd}
-            onDragLeave={onDragLeave}
-            onDragOver={onDragOver}
+                onDragStart={onDragStart}
+                onDrop={onDrop}
+                onDragEnd={onDragEnd}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
 
-            switcherIcon={switcherIcon}
-            onSelect={onTreeNodeSelect}
-            onDragEnter={onDragEnter}
+                switcherIcon={switcherIcon}
+                onSelect={onTreeNodeSelect}
+                onDragEnter={onDragEnter}
 
-            onCheck={onCheck}
-            onExpand={onExpand}
+                onCheck={onCheck}
+                onExpand={onExpand}
 
-            onLoad={onLoad}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-            onRightClick={onRightClick}
-        >
-            {children}
-        </StyledTreeMenu>
+                onLoad={onLoad}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                onRightClick={onRightClick}
 
+                badgeLabel={badgeLabel}
+            >
+                {children}
+            </StyledTreeMenu>
+                {badgeLabel && (                
+                    <Badge
+                        className="tree_bage"
+                        label={badgeLabel}
+                        backgroundColor="#ED7309"
+                        color="#FFFFFF"
+                        fontSize="11px"
+                        fontWeight={800}
+                        borderRadius="11px"
+                        padding="0 5px"
+                        maxWidth="50px"
+                        onClick={onBageClick}
+                    />
+                )}
+        </StyledTreeContainer>
     );
 }
 
