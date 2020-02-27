@@ -3,7 +3,11 @@ import ChangePasswordDialog from "./ChangePasswordDialog";
 import ChangePhoneDialog from "./ChangePhoneDialog";
 import DeleteProfileEverDialog from "./DeleteProfileEverDialog";
 import DeleteSelfProfileDialog from "./DeleteSelfProfileDialog";
-import InviteDialog from './InviteDialog';
+import DeleteUsersDialog from "./DeleteUsersDialog";
+import InviteDialog from "./InviteDialog";
+import SendInviteDialog from "./SendInviteDialog";
+import ChangeUserStatusDialog from "./ChangeUserStatusDialog";
+import ChangeUserTypeDialog from "./ChangeUserTypeDialog";
 
 export {
   ChangeEmailDialog,
@@ -11,5 +15,9 @@ export {
   ChangePhoneDialog,
   DeleteProfileEverDialog,
   DeleteSelfProfileDialog,
+  DeleteUsersDialog,
   InviteDialog,
+  SendInviteDialog,
+  ChangeUserStatusDialog,
+  ChangeUserTypeDialog
 };
