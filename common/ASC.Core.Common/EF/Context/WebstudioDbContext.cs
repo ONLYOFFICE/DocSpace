@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -9,6 +9,7 @@ namespace ASC.Core.Common.EF.Context
     {
         public DbSet<DbWebstudioSettings> WebstudioSettings { get; set; }
         public DbSet<DbWebstudioUserVisit> WebstudioUserVisit { get; set; }
+        public DbSet<DbWebstudioIndex> WebstudioIndex { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,7 +21,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class WebstudioDbExtension
     {
-        public static IServiceCollection AddWebstudioDbContextService(this IServiceCollection services)
+        public static DIHelper AddWebstudioDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<WebstudioDbContext>();
         }

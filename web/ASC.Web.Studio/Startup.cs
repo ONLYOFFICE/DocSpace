@@ -1,4 +1,5 @@
 using ASC.Api.Core.Auth;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
@@ -35,9 +36,11 @@ namespace ASC.Web.Studio
 
             services.AddAuthentication("cookie").AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { });
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            var diHelper = new DIHelper(services);
 
-            services
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
+
+            diHelper
                 .AddCookieAuthHandler()
                 .AddStorage()
                 .AddPathUtilsService()

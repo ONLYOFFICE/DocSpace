@@ -31,6 +31,7 @@ using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
@@ -39,8 +40,6 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
@@ -349,7 +348,7 @@ namespace ASC.Core.Data
 
     public static class DbSettingsManagerExtension
     {
-        public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
+        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
         {
             services.TryAddSingleton<DbSettingsManagerCache>();
             services.TryAddScoped<DbSettingsManager>();

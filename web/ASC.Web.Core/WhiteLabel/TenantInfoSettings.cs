@@ -29,13 +29,14 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage;
 using ASC.Web.Core.Utility.Skins;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -170,7 +171,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public static class TenantInfoSettingsExtension
     {
-        public static IServiceCollection AddTenantInfoSettingsService(this IServiceCollection services)
+        public static DIHelper AddTenantInfoSettingsService(this DIHelper services)
         {
             services.TryAddScoped<TenantInfoSettingsHelper>();
 

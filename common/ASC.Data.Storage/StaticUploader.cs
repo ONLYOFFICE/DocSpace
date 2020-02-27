@@ -31,6 +31,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
@@ -39,8 +41,8 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Data.Storage.Configuration;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Data.Storage
@@ -290,7 +292,7 @@ namespace ASC.Data.Storage
 
     public static class StaticUploaderExtension
     {
-        public static IServiceCollection AddStaticUploaderService(this IServiceCollection services)
+        public static DIHelper AddStaticUploaderService(this DIHelper services)
         {
             services.TryAddScoped<StaticUploader>();
 

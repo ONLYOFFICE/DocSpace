@@ -73,7 +73,7 @@
         "visible": false,
         "data": "00000000-0000-0000-0000-000000000000",
         "type": "disc",
-        "path": "Products\\Files\\DocStore",
+        "path": "DocStore",
         "virtualpath": "~/products/files/docstore",
         "appendTenantId": false,
         "public": true,

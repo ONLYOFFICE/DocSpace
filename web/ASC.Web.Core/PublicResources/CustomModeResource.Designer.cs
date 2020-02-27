@@ -201,6 +201,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do the same as a user|Link Dropbox, Box and other accounts in the &apos;Common Documents&apos; section|Set up access rights to the documents and folders in the &apos;Common Documents&apos; section.
+        /// </summary>
+        public static string ProductAdminOpportunitiesCustomMode {
+            get {
+                return ResourceManager.GetString("ProductAdminOpportunitiesCustomMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create and edit own documents as well as the shared documents with the proper access rights|Give reading/editing access to other users to the documents and folders|Link Dropbox, Box and other accounts in the &apos;My documents&apos; section.
+        /// </summary>
+        public static string ProductUserOpportunitiesCustomMode {
+            get {
+                return ResourceManager.GetString("ProductUserOpportunitiesCustomMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Welcome to ONLYOFFICE Personal.
         /// </summary>
         public static string subject_personal_custom_mode_after_registration1 {

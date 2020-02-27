@@ -194,6 +194,12 @@ $GreenButton
 
 ^Вы получили это сообщение, так как зарегистрированы на портале "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
   </data>
+  <data name="ProductAdminOpportunitiesCustomMode" xml:space="preserve">
+    <value>Делать то же самое, что и пользователь|Настраивать права доступа к документам и папкам в разделе 'Общие документы'</value>
+  </data>
+  <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
+    <value>Создавать и редактировать свои документы, а также те, к которым предоставлен доступ с соответствующими правами|Предоставлять другим пользователям доступ к документам и папкам с правами на чтение/редактирование</value>
+  </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Добро пожаловать в ONLYOFFICE Personal</value>
   </data>

@@ -107,7 +107,9 @@ namespace ASC.Common.DependencyInjection
                     AssemblyLoadContext.Default.Resolving += (c, n) =>
                     {
                         var path = GetFullPath(n.Name);
-                        return c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll"));
+                        return path != null ?
+                                c.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(path), $"{n.Name}.dll")) :
+                                null;
                     };
                 }
             }

@@ -33,6 +33,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
@@ -46,8 +47,6 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -265,7 +264,7 @@ namespace ASC.Core
 
         public void Logout()
         {
-            AuthContext.Principal = null;
+            AuthContext.Logout();
         }
 
         public void SetUserPassword(Guid userID, string password)
@@ -320,6 +319,11 @@ namespace ASC.Core
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
 
+        public AuthContext()
+        {
+
+        }
+
         public AuthContext(IHttpContextAccessor httpContextAccessor)
         {
             HttpContextAccessor = httpContextAccessor;
@@ -335,6 +339,11 @@ namespace ASC.Core
             get { return CurrentAccount.IsAuthenticated; }
         }
 
+        public void Logout()
+        {
+            Principal = null;
+        }
+
         internal ClaimsPrincipal Principal
         {
             get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
@@ -348,7 +357,7 @@ namespace ASC.Core
 
     public static class AuthContextConfigExtension
     {
-        public static IServiceCollection AddSecurityContextService(this IServiceCollection services)
+        public static DIHelper AddSecurityContextService(this DIHelper services)
         {
             services.TryAddScoped<SecurityContext>();
 
@@ -361,13 +370,13 @@ namespace ASC.Core
                 .AddUserManagerService()
                 .AddTenantManagerService();
         }
-        public static IServiceCollection AddAuthContextService(this IServiceCollection services)
+        public static DIHelper AddAuthContextService(this DIHelper services)
         {
             services.TryAddScoped<AuthContext>();
             return services;
         }
 
-        public static IServiceCollection AddPermissionContextService(this IServiceCollection services)
+        public static DIHelper AddPermissionContextService(this DIHelper services)
         {
             services.TryAddScoped<PermissionContext>();
 

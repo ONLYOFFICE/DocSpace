@@ -32,6 +32,7 @@ using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -42,9 +43,6 @@ using ASC.Web.Core;
 using ASC.Web.Core.PublicResources;
 
 using Google.Authenticator;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.TFA
 {
@@ -195,7 +193,7 @@ namespace ASC.Web.Studio.Core.TFA
 
     public static class TfaManagerExtension
     {
-        public static IServiceCollection AddTfaManagerService(this IServiceCollection services)
+        public static DIHelper AddTfaManagerService(this DIHelper services)
         {
             services.TryAddScoped<TfaManager>();
 

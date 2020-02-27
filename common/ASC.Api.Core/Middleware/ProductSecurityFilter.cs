@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Reflection;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Notify.Engine;
 using ASC.Core;
 using ASC.Web.Core;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
@@ -123,7 +125,7 @@ namespace ASC.Api.Core.Middleware
 
     public static class ProductSecurityFilterExtension
     {
-        public static IServiceCollection AddProductSecurityFilter(this IServiceCollection services)
+        public static DIHelper AddProductSecurityFilter(this DIHelper services)
         {
             return services
                 .AddUserManagerService()
