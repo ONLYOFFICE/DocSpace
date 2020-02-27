@@ -19,7 +19,7 @@ const getItems = data => {
             item.root ? (
               <Icons.CatalogFolderIcon
                 size="scale"
-                isfill={true}
+                isfill
                 color="#657077"
               />
             ) : (
@@ -39,7 +39,7 @@ const getItems = data => {
           !item.root ? (
             <Icons.CatalogFolderIcon
               size="scale"
-              isfill={true}
+              isfill
               color="#657077"
             />
           ) : (
@@ -66,7 +66,8 @@ class ArticleBodyContent extends React.Component {
   }
 
   onSelect = data => {
-    this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
+    console.log("onSelect folder", data);
+    //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   switcherIcon = obj => {
@@ -75,35 +76,39 @@ class ArticleBodyContent extends React.Component {
     }
     if (obj.expanded) {
       return (
-        <Icons.ExpanderDownIcon size="scale" isfill={true} color="dimgray" />
+        <Icons.ExpanderDownIcon size="scale" isfill color="dimgray" />
       );
     } else {
       return (
-        <Icons.ExpanderRightIcon size="scale" isfill={true} color="dimgray" />
+        <Icons.ExpanderRightIcon size="scale" isfill color="dimgray" />
       );
     }
   };
 
   render() {
-    const { data, selectedKeys } = this.props;
+    const { data, selectedKeys, fakeNewDocuments } = this.props;
 
     //console.log("FilesTreeMenu", this.props);
 
     return (
-      <TreeMenu
-        className="files-tree-menu"
-        checkable={false}
-        draggable={false}
-        disabled={false}
-        multiple={false}
-        showIcon={true}
-        defaultExpandAll={true}
-        switcherIcon={this.switcherIcon}
-        onSelect={this.onSelect}
-        selectedKeys={selectedKeys}
-      >
-        {getItems(data)}
-      </TreeMenu>
+      data.map((item, index) =>
+        <TreeMenu
+          key={`TreeMenu_${index}`}
+          className="files-tree-menu"
+          checkable={false}
+          draggable={false}
+          disabled={false}
+          multiple={false}
+          showIcon
+          defaultExpandAll
+          switcherIcon={this.switcherIcon}
+          onSelect={this.onSelect}
+          selectedKeys={selectedKeys}
+          badgeLabel={fakeNewDocuments}
+        >
+          {getItems(item)}
+        </TreeMenu>
+      )
     );
   };
 };
@@ -126,9 +131,30 @@ const getTreeGroups = (groups, departments) => {
 };
 
 function mapStateToProps(state) {
+
+  const defaultFolders = ["Мои документы", "Доступно для меня", "Общие документы", "Документы проектов", "Корзина"];
+  const fakeFolders = [
+    { id: "00000000-0000-0000-0000-000000000001", name: "fakeFolder1", manager: null},
+    { id: "00000000-0000-0000-0000-000000000002", name: "fakeFolder2", manager: null},
+    { id: "00000000-0000-0000-0000-000000000003", name: "fakeFolder3", manager: null},
+    { id: "00000000-0000-0000-0000-000000000004", name: "fakeFolder4", manager: null},
+    { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null}
+  ];
+
+  const myDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[0]);
+  const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1]);
+  const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2]);
+  const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);
+  const recycleBinFolder = getTreeGroups(fakeFolders, defaultFolders[4]);
+
+  const fakeNewDocuments = 10;
+
+  const data = [myDocumentsFolder, sharedWithMeFolder, commonDocumentsFolder, projectDocumentsFolder, recycleBinFolder];
+
   return {
-    data: getTreeGroups(state.files.folders, state.auth.settings.customNames.groupsCaption),
-    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"]
+    data,
+    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"],
+    fakeNewDocuments
   };
 }
 
