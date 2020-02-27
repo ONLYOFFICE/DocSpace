@@ -40,6 +40,8 @@ namespace ASC.Web.Files.Configuration
 {
     public class ProductEntryPoint : Product
     {
+        internal const string ProductPath = "/products/files/";
+
         //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
@@ -140,7 +142,7 @@ namespace ASC.Web.Files.Configuration
 
         public override string StartURL
         {
-            get { return PathProvider.StartURL; }
+            get { return ProductPath; }
         }
 
         public override string HelpURL
