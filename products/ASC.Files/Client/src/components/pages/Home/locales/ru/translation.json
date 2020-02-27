@@ -3,5 +3,12 @@
   "NewSpreadsheet": "Новая таблица",
   "NewPresentation": "Новая презентация",
   "NewFolder": "Новая папка",
-  "UploadToFolder": "Загрузить в папку"
+  "UploadToFolder": "Загрузить в папку",
+  "SharingSettings": "Настройки доступа",
+  "LinkForPortalUsers": "Ссылка для пользователей портала",
+  "MoveTo": "Переместить",
+  "Copy": "Копировать",
+  "Download": "Скачать",
+  "Rename": "Переименовать",
+  "Delete": "Удалить"
 }
