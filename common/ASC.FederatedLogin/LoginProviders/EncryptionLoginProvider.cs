@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using System.Security;
 
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Users;
@@ -41,10 +42,16 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Studio.Core
 {
-    public static class BlockchainLoginProvider
+    public class EncryptionLoginProvider
     {
-        public static void UpdateData(
-            string account,
+        public UserManager UserManager { get; }
+        public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public Signature Signature { get; }
+        public InstanceCrypto InstanceCrypto { get; }
+        public IOptionsSnapshot<AccountLinker> Snapshot { get; }
+
+        public EncryptionLoginProvider(
             UserManager userManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -52,16 +59,26 @@ namespace ASC.Web.Studio.Core
             InstanceCrypto instanceCrypto,
             IOptionsSnapshot<AccountLinker> snapshot)
         {
-            var tenant = tenantManager.GetCurrentTenant();
-            var user = userManager.GetUsers(securityContext.CurrentAccount.ID);
-            if (!securityContext.IsAuthenticated || user.IsVisitor(userManager)) throw new SecurityException();
+            UserManager = userManager;
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            Signature = signature;
+            InstanceCrypto = instanceCrypto;
+            Snapshot = snapshot;
+        }
 
-            var loginProfile = new LoginProfile(signature, instanceCrypto)
+        public void UpdateAddress(string account)
+        {
+            var tenant = TenantManager.GetCurrentTenant();
+            var user = UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+            if (!SecurityContext.IsAuthenticated || user.IsVisitor(UserManager)) throw new SecurityException();
+
+            var loginProfile = new LoginProfile(Signature, InstanceCrypto)
             {
                 Provider = ProviderConstants.Encryption,
             };
 
-            var linker = snapshot.Get("webstudio");
+            var linker = Snapshot.Get("webstudio");
             if (string.IsNullOrEmpty(account))
             {
                 linker.RemoveLink(user.ID.ToString(), loginProfile);
@@ -74,19 +91,34 @@ namespace ASC.Web.Studio.Core
         }
 
 
-        public static string GetAddress(SecurityContext securityContext, IOptionsSnapshot<AccountLinker> snapshot)
+        public string GetAddress()
         {
-            return GetAddress(securityContext.CurrentAccount.ID, snapshot);
+            return GetAddress(SecurityContext.CurrentAccount.ID);
         }
 
-        public static string GetAddress(Guid userId, IOptionsSnapshot<AccountLinker> snapshot)
+        public string GetAddress(Guid userId)
         {
-            var linker = snapshot.Get("webstudio");
+            var linker = Snapshot.Get("webstudio");
             var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
             if (profile == null) return null;
 
             var account = Crypto.GetV(profile.Name, 1, false);
             return account;
+        }
+    }
+    public static class EncryptionLoginProviderExtension
+    {
+        public static DIHelper AddEncryptionLoginProviderService(this DIHelper services)
+        {
+            services.TryAddScoped<EncryptionLoginProvider>();
+
+            return services
+                .AddUserManagerService()
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddSignatureService()
+                .AddInstanceCryptoService()
+                .AddAccountLinker();
         }
     }
 }

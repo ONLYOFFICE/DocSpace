@@ -27,13 +27,13 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -306,7 +306,7 @@ namespace ASC.Core.Caching
 
     public static class TenantConfigExtension
     {
-        public static IServiceCollection AddTenantService(this IServiceCollection services)
+        public static DIHelper AddTenantService(this DIHelper services)
         {
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
             services.TryAddSingleton<TenantDomainValidator>();

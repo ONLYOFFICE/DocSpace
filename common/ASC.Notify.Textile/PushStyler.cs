@@ -26,15 +26,16 @@
 
 using System;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
 using ASC.Common.Notify.Patterns;
 using ASC.Core;
 using ASC.Notify.Messages;
 using ASC.Notify.Patterns;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Notify.Textile
 {
@@ -75,7 +76,7 @@ namespace ASC.Notify.Textile
     }
     public static class PushStylerExtension
     {
-        public static IServiceCollection AddPushStylerService(this IServiceCollection services)
+        public static DIHelper AddPushStylerService(this DIHelper services)
         {
             services.TryAddScoped<PushStyler>();
             return services.AddStylerService();

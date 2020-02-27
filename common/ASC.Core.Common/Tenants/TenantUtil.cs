@@ -26,10 +26,8 @@
 
 using System;
 
+using ASC.Common;
 using ASC.Common.Utils;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Tenants
@@ -143,7 +141,7 @@ namespace ASC.Core.Tenants
 
     public static class TenantUtilExtention
     {
-        public static IServiceCollection AddTenantUtilService(this IServiceCollection services)
+        public static DIHelper AddTenantUtilService(this DIHelper services)
         {
             services.TryAddScoped<TenantUtil>();
             services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();

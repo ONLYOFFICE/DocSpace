@@ -26,14 +26,16 @@
 
 using System;
 using System.Reflection;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Notify.Messages;
 using ASC.Web.Core.WhiteLabel;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -112,7 +114,7 @@ namespace ASC.Notify
 
     public static class NotifyServiceExtension
     {
-        public static IServiceCollection AddNotifyService(this IServiceCollection services)
+        public static DIHelper AddNotifyService(this DIHelper services)
         {
             services.TryAddSingleton<NotifyService>();
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));

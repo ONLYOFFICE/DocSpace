@@ -32,12 +32,14 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Web.Core.Helpers
@@ -170,7 +172,7 @@ namespace ASC.Web.Core.Helpers
 
     public static class ApiSystemHelperExtension
     {
-        public static IServiceCollection AddApiSystemHelper(this IServiceCollection services)
+        public static DIHelper AddApiSystemHelper(this DIHelper services)
         {
             services.TryAddScoped<ApiSystemHelper>();
             return services;

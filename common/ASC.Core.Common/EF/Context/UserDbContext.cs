@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using ASC.Common;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Core.Common.EF
 {
@@ -32,7 +33,7 @@ namespace ASC.Core.Common.EF
 
     public static class UserDbExtension
     {
-        public static IServiceCollection AddUserDbContextService(this IServiceCollection services)
+        public static DIHelper AddUserDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<UserDbContext>();
         }

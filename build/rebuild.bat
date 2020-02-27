@@ -29,6 +29,11 @@ call yarn link "asc-web-components" --cwd products/ASC.People/Client
 call yarn link "asc-web-common" --cwd products/ASC.People/Client
 call yarn install --cwd products/ASC.People/Client > build\ASC.Web.People.Client.log
 
+echo "ASC.Web.Files.Client"
+call yarn link "asc-web-components" --cwd products/ASC.Files/Client
+call yarn link "asc-web-common" --cwd products/ASC.Files/Client
+call yarn install --cwd products/ASC.Files/Client > build\ASC.Web.Files.Client.log
+
 echo "ASC.Web.sln"
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal
 

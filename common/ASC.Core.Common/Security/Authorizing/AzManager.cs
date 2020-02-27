@@ -150,7 +150,7 @@ namespace ASC.Common.Security.Authorizing
 
     public static class AzManagerConfigExtension
     {
-        public static IServiceCollection AddAzManagerService(this IServiceCollection services)
+        public static DIHelper AddAzManagerService(this DIHelper services)
         {
             services.TryAddScoped<AzManager>();
 

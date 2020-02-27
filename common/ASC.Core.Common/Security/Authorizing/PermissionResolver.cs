@@ -27,11 +27,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
-using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Constants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Core.Security.Authorizing
@@ -125,7 +128,7 @@ namespace ASC.Core.Security.Authorizing
 
     public static class PermissionResolverConfigExtention
     {
-        public static IServiceCollection AddPermissionResolverService(this IServiceCollection services)
+        public static DIHelper AddPermissionResolverService(this DIHelper services)
         {
             services.TryAddScoped(typeof(IPermissionResolver), typeof(PermissionResolver));
             return services.AddAzManagerService();
