@@ -275,7 +275,7 @@ namespace ASC.Api.Documents
         /// <param name="userIdOrGroupId" optional="true">User or group ID</param>
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
-        [Read("{folderId}")]
+        [Read("{folderId}", order: int.MaxValue)]
         public FolderContentWrapper GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
