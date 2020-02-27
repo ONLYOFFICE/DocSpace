@@ -105,6 +105,7 @@ class ArticleBodyContent extends React.Component {
           onSelect={this.onSelect}
           selectedKeys={selectedKeys}
           badgeLabel={fakeNewDocuments}
+          onBageClick={() => console.log("onBageClick")}
         >
           {getItems(item)}
         </TreeMenu>
@@ -147,7 +148,7 @@ function mapStateToProps(state) {
   const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);
   const recycleBinFolder = getTreeGroups(fakeFolders, defaultFolders[4]);
 
-  const fakeNewDocuments = 10;
+  const fakeNewDocuments = 8;
 
   const data = [myDocumentsFolder, sharedWithMeFolder, commonDocumentsFolder, projectDocumentsFolder, recycleBinFolder];
 
