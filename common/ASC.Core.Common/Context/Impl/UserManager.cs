@@ -67,6 +67,11 @@ namespace ASC.Core
         private Tenant tenant;
         private Tenant Tenant { get { return tenant ?? (tenant = TenantManager.GetCurrentTenant()); } }
 
+        public UserManager()
+        {
+
+        }
+
         public UserManager(
             IUserService service,
             IHttpContextAccessor httpContextAccessor,

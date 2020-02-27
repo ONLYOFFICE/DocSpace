@@ -319,6 +319,11 @@ namespace ASC.Core
     {
         private IHttpContextAccessor HttpContextAccessor { get; }
 
+        public AuthContext()
+        {
+
+        }
+
         public AuthContext(IHttpContextAccessor httpContextAccessor)
         {
             HttpContextAccessor = httpContextAccessor;
