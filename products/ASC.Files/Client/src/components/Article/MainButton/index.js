@@ -28,14 +28,30 @@ class PureArticleMainButtonContent extends React.Component {
             text={t('Actions')}
           >
             <DropDownItem
-              icon="AddEmployeeIcon"
-              label={"Document"}
-              onClick={() => toastr.info("Create document click")}
+              icon="ActionsDocumentsIcon"
+              label={t('NewDocument')}
+              onClick={() => toastr.info("New Document click")}
             />
             <DropDownItem
-              icon="AddDepartmentIcon"
-              label={"Folder"}
-              onClick={() => toastr.info("Create folder click")}
+              icon="SpreadsheetIcon"
+              label={t('NewSpreadsheet')}
+              onClick={() => toastr.info("New SpreadSheet click")}
+            />
+            <DropDownItem
+              icon="ActionsPresentationIcon"
+              label={t('NewPresentation')}
+              onClick={() => toastr.info("New Presentation click")}
+            />
+            <DropDownItem
+              icon="CatalogFolderIcon"
+              label={t('NewFolder')}
+              onClick={() => toastr.info("New Folder click")}
+            />
+            <DropDownItem isSeparator />
+            <DropDownItem
+              icon="ActionsUploadIcon"
+              label={t('Upload')}
+              onClick={() => toastr.info("Upload click")}
             />
           </MainButton>
         </>

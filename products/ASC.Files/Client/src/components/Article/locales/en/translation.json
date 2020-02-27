@@ -1,6 +1,8 @@
 {
-  "InviteLinkTitle": "Invitation link",
-  "ImportPeople": "Import people",
   "Actions": "Actions",
-  "LblInviteAgain": "Invite again"
+  "NewDocument": "New Document",
+  "NewSpreadSheet": "New Spreadsheet",
+  "NewPresentation": "New Presentation",
+  "NewFolder": "New Folder",
+  "Upload": "Upload"
 }
