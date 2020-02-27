@@ -35,6 +35,7 @@ using ASC.Web.Core.Calendars;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Api.Core;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
@@ -125,7 +126,7 @@ namespace ASC.Calendar.Models
     }
     public static class PublicItemCollectionExtension
     {
-        public static IServiceCollection AddPublicItemCollection(this IServiceCollection services)
+        public static DIHelper AddPublicItemCollection(this DIHelper services)
         {
             services.TryAddScoped<PublicItemCollectionHelper>();
 

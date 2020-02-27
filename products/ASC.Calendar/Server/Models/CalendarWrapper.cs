@@ -36,6 +36,7 @@ using ASC.Calendar.ExternalCalendars;
 using ASC.Common.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
@@ -286,7 +287,7 @@ namespace ASC.Calendar.Models
 
     public static class CalendarWrapperExtension
     {
-        public static IServiceCollection AddCalendarWrapper(this IServiceCollection services)
+        public static DIHelper AddCalendarWrapper(this DIHelper services)
         {
             services.TryAddScoped<CalendarWrapperHelper>();
 

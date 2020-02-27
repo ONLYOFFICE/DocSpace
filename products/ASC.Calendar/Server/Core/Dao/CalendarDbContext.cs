@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using ASC.Calendar.Core.Dao.Models;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Core.Common.EF;
+using ASC.Common;
 
 namespace ASC.Calendar.Core.Dao
 {
@@ -243,7 +244,7 @@ namespace ASC.Calendar.Core.Dao
 
     public static class CalendarDbExtension
     {
-        public static IServiceCollection AddCalendarDbContextService(this IServiceCollection services)
+        public static DIHelper AddCalendarDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<CalendarDbContext>();
         }

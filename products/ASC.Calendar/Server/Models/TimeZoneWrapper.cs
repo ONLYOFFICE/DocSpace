@@ -32,6 +32,7 @@ using System.Runtime.Serialization;
 using ASC.Common.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
@@ -75,7 +76,7 @@ namespace ASC.Calendar.Models
     }
     public static class TimeZoneWrapperExtension
     {
-        public static IServiceCollection AddTimeZoneWrapper(this IServiceCollection services)
+        public static DIHelper AddTimeZoneWrapper(this DIHelper services)
         {
             services.TryAddScoped<TimeZoneWrapperHelper>();
 

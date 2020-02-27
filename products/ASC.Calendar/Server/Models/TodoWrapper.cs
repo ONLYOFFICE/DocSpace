@@ -34,6 +34,7 @@ using ASC.Web.Core.Users;
 using ASC.Web.Core.Calendars;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
@@ -151,7 +152,7 @@ namespace ASC.Calendar.Models
 
     public static class TodoWrapperExtension
     {
-        public static IServiceCollection AddEmployeeWraper(this IServiceCollection services)
+        public static DIHelper AddEmployeeWraper(this DIHelper services)
         {
             services.TryAddScoped<TodoWrapperHelper>();
 

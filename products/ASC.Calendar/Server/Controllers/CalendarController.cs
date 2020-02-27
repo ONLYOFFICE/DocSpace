@@ -38,6 +38,7 @@ using Microsoft.AspNetCore.Http;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using System.Web;
 using ASC.Calendar.Notification;
+using ASC.Common;
 
 namespace ASC.Calendar.Controllers
 {
@@ -230,7 +231,7 @@ namespace ASC.Calendar.Controllers
 
     public static class CalendarControllerExtention
     {
-        public static IServiceCollection AddCalendarController(this IServiceCollection services)
+        public static DIHelper AddCalendarController(this DIHelper services)
         {
             return services
                 .AddApiContextService()

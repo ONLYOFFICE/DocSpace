@@ -38,6 +38,7 @@ using ASC.Web.Core.Calendars;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common.Utils;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
@@ -261,7 +262,7 @@ namespace ASC.Calendar.Models
     }
     public static class EventWrapperExtension
     {
-        public static IServiceCollection AddEventWrapper(this IServiceCollection services)
+        public static DIHelper AddEventWrapper(this DIHelper services)
         {
             services.TryAddScoped<EventWrapperHelper>();
 

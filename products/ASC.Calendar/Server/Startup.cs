@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using ASC.Common;
 
 namespace ASC.Calendar
 {
@@ -72,8 +73,8 @@ namespace ASC.Calendar
                 config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
-
-            services
+            var diHelper = new DIHelper(services);
+            diHelper
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()
@@ -107,9 +108,9 @@ namespace ASC.Calendar
                 r.errorCount = 0;
             });*/
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddCalendarController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);

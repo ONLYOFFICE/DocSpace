@@ -40,6 +40,7 @@ using ASC.Calendar.Core.Dao;
 using ASC.Calendar.Core.Dao.Models;
 using ASC.Calendar.ExternalCalendars;
 using ASC.Calendar.iCalParser;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -1748,10 +1749,10 @@ namespace ASC.Calendar.BusinessObjects
     }
     public static class CalendarDataProviderExtention
     {
-        public static IServiceCollection AddCalendarDataProviderService(this IServiceCollection services)
+        public static DIHelper AddCalendarDataProviderService(this DIHelper services)
         {
 
-            services.AddScoped<DataProvider>();
+            services.TryAddScoped<DataProvider>();
 
             return services;
         }
