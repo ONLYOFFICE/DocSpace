@@ -1,5 +1,7 @@
 import { api } from "asc-web-common";
 
+const { files } = api;
+
 export const SET_FOLDERS = "SET_FOLDERS";
 export const SET_FILES = "SET_FILES";
 export const SET_SELECTION = "SET_SELECTION";
@@ -62,7 +64,7 @@ export function selectFolder() {
 }
 
 export function fetchMyFolder(dispatch) {
-  return api.files.getMyFolderList().then(data => {
+  return files.getMyFolderList().then(data => {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     return dispatch(setSelectedFolder(data.current));
@@ -70,7 +72,23 @@ export function fetchMyFolder(dispatch) {
 }
 
 export function fetchTrashFolder(dispatch) {
-  return api.files.getTrashFolderList().then(data => {
+  return files.getTrashFolderList().then(data => {
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  });
+}
+
+export function fetchCommonFolder(dispatch) {
+  return files.getCommonFolderList().then(data => {
+    dispatch(setFolders(data.folders));
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  });
+}
+
+export function fetchProjectsFolder(dispatch) {
+  return files.getProjectsFolderList().then(data => {
+    dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     return dispatch(setSelectedFolder(data.current));
   });
@@ -79,14 +97,23 @@ export function fetchTrashFolder(dispatch) {
 export function fetchRootFolders(dispatch) {
 
   //TODO: Make some more Useful
-  
-  let root = {my: null, trash: null};
 
-  api.files.getMyFolderList().then(data => root.my = data.current);
-  api.files.getTrashFolderList().then(data => root.trash = data.current);
+  let root = {
+    my: null,
+    share: null,
+    common: null,
+    project: null,
+    trash: null
+  };
 
-  return dispatch(setRootFolders(root));
-
-
+  return files.getMyFolderList()
+    .then(data => root.my = data.current)
+    .then(() => files.getCommonFolderList()
+      .then(data => root.common = data.current))
+    .then(() => files.getProjectsFolderList()
+      .then(data => root.project = data.current))
+    .then(() => files.getTrashFolderList()
+      .then(data => root.trash = data.current))
+    .then(() => dispatch(setRootFolders(root)));
 }
 

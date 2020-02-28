@@ -134,18 +134,19 @@ const getTreeGroups = (groups, departments) => {
 function mapStateToProps(state) {
 
   const defaultFolders = ["Мои документы", "Доступно для меня", "Общие документы", "Документы проектов", "Корзина"];
-  const fakeFolders = [
-    { id: "00000000-0000-0000-0000-000000000001", name: "fakeFolder1", manager: null },
-    { id: "00000000-0000-0000-0000-000000000002", name: "fakeFolder2", manager: null },
-    { id: "00000000-0000-0000-0000-000000000003", name: "fakeFolder3", manager: null },
-    { id: "00000000-0000-0000-0000-000000000004", name: "fakeFolder4", manager: null },
-    { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null }
-  ];
+
+  const getFakeFolders = count => Array.from(Array(count), (x, index) => {
+    return {
+      id: `00000000-0000-0000-0000-00000000000${index}`,
+      name: `fakeFolder${index}`,
+      manager: null
+    }
+  });
 
   const myDocumentsFolder = getTreeGroups(state.files.folders, state.files.selectedFolder.title);
-  const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1]);
-  const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2]);
-  const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);
+  const sharedWithMeFolder = getTreeGroups(getFakeFolders(4), defaultFolders[1]);
+  const commonDocumentsFolder = getTreeGroups(getFakeFolders(state.files.rootFolders.common.foldersCount), state.files.rootFolders.common.title || defaultFolders[2]);
+  const projectDocumentsFolder = getTreeGroups(getFakeFolders(state.files.rootFolders.project.foldersCount), state.files.rootFolders.project.title || defaultFolders[3]);
   const recycleBinFolder = getTreeGroups([], state.files.rootFolders.trash.title || defaultFolders[3]);
 
   const fakeNewDocuments = 8;
