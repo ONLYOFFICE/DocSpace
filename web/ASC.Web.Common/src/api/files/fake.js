@@ -16,7 +16,7 @@ const generateFiles = (count) => {
       fileExst: `.${system.commonFileExt()}`,
       comment: lorem.word(),
       id: random.number(500),
-      title: lorem.sentence(random.number({min: 2, max: 10})).split('.').slice(0, -1).join('.'),
+      title: lorem.sentence(random.number({ min: 2, max: 10 })).split('.').slice(0, -1).join('.'),
       access: 0,
       shared: false,
       rootFolderType: 5,
@@ -49,7 +49,7 @@ const generateFolders = (count) => {
       filesCount: random.number(50),
       foldersCount: random.number(10),
       id: random.number(100000),
-      title: lorem.sentence(random.number({min: 2, max: 10})),
+      title: lorem.sentence(random.number({ min: 2, max: 10 })),
       access: 0,
       shared: false,
       rootFolderType: 5,
@@ -75,45 +75,47 @@ const generateFolders = (count) => {
   });
 };
 
-const current = {
-  parentId: 0,
-  filesCount: 4,
-  foldersCount: 2,
-  isShareable: true,
-  id: 17,
-  title: "My Documents",
-  access: 0,
-  shared: false,
-  rootFolderType: 5,
-  updatedBy: {
+const current = (rootTitle) => {
+  return {
+    parentId: 0,
+    filesCount: 4,
+    foldersCount: 2,
+    isShareable: true,
     id: random.uuid(),
-    displayName: name.findName(),
-    title: name.title(),
-    avatarSmall: internet.avatar(),
-    profileUrl: ""
-  },
-  created: date.past().toLocaleString("en-US"),
-  createdBy: {
-    id: random.uuid(),
-    displayName: name.findName(),
-    title: name.title(),
-    avatarSmall: internet.avatar(),
-    profileUrl: ""
-  },
-  updated: date.past().toLocaleString("en-US")
+    title: rootTitle,
+    access: 0,
+    shared: false,
+    rootFolderType: 5,
+    updatedBy: {
+      id: random.uuid(),
+      displayName: name.findName(),
+      title: name.title(),
+      avatarSmall: internet.avatar(),
+      profileUrl: ""
+    },
+    created: date.past().toLocaleString("en-US"),
+    createdBy: {
+      id: random.uuid(),
+      displayName: name.findName(),
+      title: name.title(),
+      avatarSmall: internet.avatar(),
+      profileUrl: ""
+    },
+    updated: date.past().toLocaleString("en-US")
+  }
 };
 
 
-export function getMyFolder() {
-  const files = random.number({min: 1, max: 30});
-  const folders = random.number({min: 1, max: 15});
+export function getFakeElements(filter, rootTitle = "My Documents") {
+  const files = random.number({ min: 1, max: 30 });
+  const folders = random.number({ min: 1, max: 15 });
   const total = files + folders;
   const fakeFiles = generateFiles(files)
   const fakeFolders = generateFolders(folders);
   return Promise.resolve({
     files: fakeFiles,
     folders: fakeFolders,
-    current: current,
+    current: current(rootTitle),
     pathParts: [17],
     startIndex: 0,
     count: total,

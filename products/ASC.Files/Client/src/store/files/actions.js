@@ -5,6 +5,7 @@ export const SET_FILES = "SET_FILES";
 export const SET_SELECTION = "SET_SELECTION";
 export const SET_SELECTED = "SET_SELECTED";
 export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
+export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
 
 export function setFiles(files) {
   return {
@@ -41,6 +42,13 @@ export function setSelectedFolder(selectedFolder) {
   };
 }
 
+export function setRootFolders(rootFolders) {
+  return {
+    type: SET_ROOT_FOLDERS,
+    rootFolders
+  };
+}
+
 export function fetchFiles() {
   return Promise.resolve([]);
 }
@@ -55,14 +63,30 @@ export function selectFolder() {
 
 export function fetchMyFolder(dispatch) {
   return api.files.getMyFolderList().then(data => {
-    
     dispatch(setFolders(data.folders));
-    
-    dispatch(setSelectedFolder(data.current));
-
     dispatch(setFiles(data.files));
-    
-    return Promise.resolve([]); 
+    return dispatch(setSelectedFolder(data.current));
   });
+}
+
+export function fetchTrashFolder(dispatch) {
+  return api.files.getTrashFolderList().then(data => {
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  });
+}
+
+export function fetchRootFolders(dispatch) {
+
+  //TODO: Make some more Useful
+  
+  let root = {my: null, trash: null};
+
+  api.files.getMyFolderList().then(data => root.my = data.current);
+  api.files.getTrashFolderList().then(data => root.trash = data.current);
+
+  return dispatch(setRootFolders(root));
+
+
 }
 

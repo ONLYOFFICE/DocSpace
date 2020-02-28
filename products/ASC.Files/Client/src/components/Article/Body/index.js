@@ -1,7 +1,7 @@
 import React from 'react';
-import { utils } from 'asc-web-components';
 import { connect } from 'react-redux';
 import {
+  utils,
   TreeMenu,
   TreeNode,
   Icons
@@ -54,11 +54,11 @@ const getItems = data => {
 class ArticleBodyContent extends React.Component {
 
   shouldComponentUpdate(nextProps) {
-    if(!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
+    if (!utils.array.isArrayEqual(nextProps.selectedKeys, this.props.selectedKeys)) {
       return true;
     }
 
-    if(!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
+    if (!utils.array.isArrayEqual(nextProps.data, this.props.data)) {
       return true;
     }
 
@@ -116,16 +116,16 @@ class ArticleBodyContent extends React.Component {
 
 const getTreeGroups = (groups, departments) => {
   const treeData = [
-      {
-          key: "root",
-          title: departments,
-          root: true,
-          children: groups.map(g => {
-              return {
-                  key: g.id, title: g.title || g.name, root: false
-              };
-          }) || []
-      }
+    {
+      key: "root",
+      title: departments,
+      root: true,
+      children: groups.map(g => {
+        return {
+          key: g.id, title: g.title || g.name, root: false
+        };
+      }) || []
+    }
   ];
 
   return treeData;
@@ -135,18 +135,18 @@ function mapStateToProps(state) {
 
   const defaultFolders = ["Мои документы", "Доступно для меня", "Общие документы", "Документы проектов", "Корзина"];
   const fakeFolders = [
-    { id: "00000000-0000-0000-0000-000000000001", name: "fakeFolder1", manager: null},
-    { id: "00000000-0000-0000-0000-000000000002", name: "fakeFolder2", manager: null},
-    { id: "00000000-0000-0000-0000-000000000003", name: "fakeFolder3", manager: null},
-    { id: "00000000-0000-0000-0000-000000000004", name: "fakeFolder4", manager: null},
-    { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null}
+    { id: "00000000-0000-0000-0000-000000000001", name: "fakeFolder1", manager: null },
+    { id: "00000000-0000-0000-0000-000000000002", name: "fakeFolder2", manager: null },
+    { id: "00000000-0000-0000-0000-000000000003", name: "fakeFolder3", manager: null },
+    { id: "00000000-0000-0000-0000-000000000004", name: "fakeFolder4", manager: null },
+    { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null }
   ];
 
   const myDocumentsFolder = getTreeGroups(state.files.folders, state.files.selectedFolder.title);
   const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1]);
   const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2]);
   const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);
-  const recycleBinFolder = getTreeGroups(fakeFolders, defaultFolders[4]);
+  const recycleBinFolder = getTreeGroups([], state.files.rootFolders.trash.title || defaultFolders[3]);
 
   const fakeNewDocuments = 8;
 
