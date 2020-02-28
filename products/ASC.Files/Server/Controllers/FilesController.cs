@@ -279,7 +279,12 @@ namespace ASC.Api.Documents
         public FolderContentWrapper GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
+        }
 
+        [Read("{folderId:int}", order: int.MaxValue)]
+        public FolderContentWrapper GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType)
+        {
+            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
         }
 
         /// <summary>
@@ -817,6 +822,19 @@ namespace ASC.Api.Documents
         /// <returns>File info</returns>
         [Read("file/{fileId}")]
         public FileWrapper GetFileInfo(string fileId, int version = -1)
+        {
+            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            return FileWrapperHelper.Get(file);
+        }
+
+        /// <summary>
+        /// Returns a detailed information about the file with the ID specified in the request
+        /// </summary>
+        /// <short>File information</short>
+        /// <category>Files</category>
+        /// <returns>File info</returns>
+        [Read("file/{fileId:int}")]
+        public FileWrapper GetFileInfo(int fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);

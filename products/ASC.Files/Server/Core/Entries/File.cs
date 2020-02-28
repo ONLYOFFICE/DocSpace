@@ -54,6 +54,16 @@ namespace ASC.Files.Core
         [EnumMember] IsEditingAlone = 0x10
     }
 
+    public class File<T> : File
+    {
+        [DataMember(Name = "id")]
+        public new T ID { get; set; }
+
+        public File(Global global, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter) : base(global, filesLinkUtility, fileUtility, fileConverter)
+        {
+        }
+    }
+
     [Serializable]
     [DataContract(Name = "file", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]

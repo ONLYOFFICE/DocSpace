@@ -32,6 +32,268 @@ using ASC.Web.Files.Services.DocumentService;
 
 namespace ASC.Files.Core
 {
+    public interface IFileDao<T>
+    {
+        /// <summary>
+        ///     Clear the application cache for the specific file
+        /// </summary>
+        void InvalidateCache(T fileId);
+
+        /// <summary>
+        ///     Receive file
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <returns></returns>
+        File<T> GetFile(T fileId);
+
+        /// <summary>
+        ///     Receive file
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="fileVersion">file version</param>
+        /// <returns></returns>
+        File<T> GetFile(T fileId, int fileVersion);
+
+        /// <summary>
+        ///     Receive file
+        /// </summary>
+        /// <param name="parentId">folder id</param>
+        /// <param name="title">file name</param>
+        /// <returns>
+        ///   file
+        /// </returns>
+        File<T> GetFile(T parentId, string title);
+
+        /// <summary>
+        ///     Receive last file without forcesave
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="fileVersion"></param>
+        /// <returns></returns>
+        File<T> GetFileStable(T fileId, int fileVersion = -1);
+
+        /// <summary>
+        ///  Returns all versions of the file
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        List<File<T>> GetFileHistory(T fileId);
+
+        /// <summary>
+        ///     Gets the file (s) by ID (s)
+        /// </summary>
+        /// <param name="fileIds">id file</param>
+        /// <returns></returns>
+        List<File<T>> GetFiles(T[] fileIds);
+
+        /// <summary>
+        ///     Gets the file (s) by ID (s) for share
+        /// </summary>
+        /// <param name="fileIds">id file</param>
+        /// <param name="filterType"></param>
+        /// <param name="subjectGroup"></param>
+        /// <param name="subjectID"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchInContent"></param>
+        /// <returns></returns>
+        List<File<T>> GetFilesForShare(T[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
+        List<object> GetFiles(T parentId);
+
+        /// <summary>
+        ///     Get files in folder
+        /// </summary>
+        /// <param name="parentId">folder id</param>
+        /// <param name="orderBy"></param>
+        /// <param name="filterType">filterType type</param>
+        /// <param name="subjectGroup"></param>
+        /// <param name="subjectID"></param>
+        /// <param name="searchText"> </param>
+        /// <param name="searchInContent"></param>
+        /// <param name="withSubfolders"> </param>
+        /// <returns>list of files</returns>
+        /// <remarks>
+        ///    Return only the latest versions of files of a folder
+        /// </remarks>
+        List<File<T>> GetFiles(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+
+        /// <summary>
+        /// Get stream of file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>Stream</returns>
+        Stream GetFileStream(File<T> file);
+
+        /// <summary>
+        /// Get stream of file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="offset"></param>
+        /// <returns>Stream</returns>
+        Stream GetFileStream(File<T> file, long offset);
+
+        /// <summary>
+        /// Get presigned uri
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="expires"></param>
+        /// <returns>Stream uri</returns>
+        Uri GetPreSignedUri(File<T> file, TimeSpan expires);
+
+        /// <summary>
+        ///  Check is supported PreSignedUri
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>Stream uri</returns>
+        bool IsSupportedPreSignedUri(File<T> file);
+
+        /// <summary>
+        ///  Saves / updates the version of the file
+        ///  and save stream of file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fileStream"> </param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Updates the file if:
+        /// - The file comes with the given id
+        /// - The file with that name in the folder / container exists
+        ///
+        /// Save in all other cases
+        /// </remarks>
+        File<T> SaveFile(File<T> file, Stream fileStream);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fileStream"></param>
+        /// <returns></returns>
+        File<T> ReplaceFileVersion(File<T> file, Stream fileStream);
+
+        /// <summary>
+        ///   Deletes a file including all previous versions
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        void DeleteFile(T fileId);
+
+        /// <summary>
+        ///     Checks whether or not file
+        /// </summary>
+        /// <param name="title">file name</param>
+        /// <param name="folderId">folder id</param>
+        /// <returns>Returns true if the file exists, otherwise false</returns>
+        bool IsExist(string title, T folderId);
+
+        /// <summary>
+        ///   Moves a file or set of files in a folder
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="toFolderId">The ID of the destination folder</param>
+        object MoveFile(T fileId, T toFolderId);
+
+        /// <summary>
+        ///  Copy the files in a folder
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="toFolderId">The ID of the destination folder</param>
+        File<T> CopyFile(T fileId, T toFolderId);
+
+        /// <summary>
+        ///   Rename file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="newTitle">new name</param>
+        object FileRename(File<T> file, string newTitle);
+
+        /// <summary>
+        ///   Update comment file
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="fileVersion">file version</param>
+        /// <param name="comment">new comment</param>
+        string UpdateComment(T fileId, int fileVersion, string comment);
+
+        /// <summary>
+        ///   Complete file version
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="fileVersion">file version</param>
+        void CompleteVersion(T fileId, int fileVersion);
+
+        /// <summary>
+        ///   Continue file version
+        /// </summary>
+        /// <param name="fileId">file id</param>
+        /// <param name="fileVersion">file version</param>
+        void ContinueVersion(T fileId, int fileVersion);
+
+        /// <summary>
+        /// Check the need to use the trash before removing
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        bool UseTrashForRemove(File<T> file);
+
+        #region chunking
+
+        ChunkedUploadSession CreateUploadSession(File<T> file, long contentLength);
+
+        #endregion
+
+        #region Only in TMFileDao
+
+        /// <summary>
+        /// Set created by
+        /// </summary>
+        /// <param name="fileIds"></param>
+        /// <param name="newOwnerId"></param>
+        void ReassignFiles(T[] fileIds, Guid newOwnerId);
+
+        /// <summary>
+        /// Search files in SharedWithMe & Projects
+        /// </summary>
+        /// <param name="parentIds"></param>
+        /// <param name="filterType"></param>
+        /// <param name="subjectGroup"></param>
+        /// <param name="subjectID"></param>
+        /// <param name="searchText"></param>
+        /// <param name="searchInContent"></param>
+        /// <returns></returns>
+        List<File<T>> GetFiles(T[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent);
+
+        /// <summary>
+        /// Search the list of files containing text
+        /// Only in TMFileDao
+        /// </summary>
+        /// <param name="text">search text</param>
+        /// <param name="bunch"></param>
+        /// <returns>list of files</returns>
+        IEnumerable<File<T>> Search(string text, bool bunch = false);
+
+        /// <summary>
+        ///   Checks whether file exists on storage
+        /// </summary>
+        /// <param name="file">file</param>
+        /// <returns></returns>
+        bool IsExistOnStorage(File<T> file);
+
+        void SaveEditHistory(File<T> file, string changes, Stream differenceStream);
+
+        List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, T fileId, int fileVersion = 0);
+
+        Stream GetDifferenceStream(File<T> file);
+
+        bool ContainChanges(T fileId, int fileVersion);
+
+        #endregion
+    }
+
     /// <summary>
     ///    Interface encapsulates access toFolderId files
     /// </summary>

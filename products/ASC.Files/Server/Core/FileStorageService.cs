@@ -445,6 +445,30 @@ namespace ASC.Web.Files.Services.WCFService
             return file;
         }
 
+        public File<int> GetFile(int fileId, int version)
+        {
+            var fileDao = GetFileDao() as IFileDao<int>;
+            fileDao.InvalidateCache(fileId);
+
+            var file = version > 0
+                           ? fileDao.GetFile(fileId, version)
+                           : fileDao.GetFile(fileId);
+            ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+            ErrorIf(!FileSecurity.CanRead(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+
+            EntryManager.SetFileStatus(file);
+
+            if (file.RootFolderType == FolderType.USER
+                && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
+            {
+                var folderDao = GetFolderDao();
+                if (!FileSecurity.CanRead(folderDao.GetFolder(file.FolderID)))
+                    file.FolderIdDisplay = GlobalFolderHelper.FolderShare;
+            }
+
+            return file;
+        }
+
         public ItemList<File> GetSiblingsFile(string fileId, string parentId, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
         {
             var subjectId = string.IsNullOrEmpty(subjectID) ? Guid.Empty : new Guid(subjectID);

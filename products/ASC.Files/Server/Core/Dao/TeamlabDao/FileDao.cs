@@ -51,7 +51,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
-    public class FileDao : AbstractDao, IFileDao
+    public class FileDao : AbstractDao, IFileDao, IFileDao<int>
     {
         private static readonly object syncRoot = new object();
         public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
@@ -106,10 +106,20 @@ namespace ASC.Files.Core.Data
         {
         }
 
+        public void InvalidateCache(int fileId)
+        {
+        }
+
         public File GetFile(object fileId)
         {
             var query = GetFileQuery(r => r.Id.ToString() == fileId.ToString() && r.CurrentVersion);
             return FromQueryWithShared(query).SingleOrDefault();
+        }
+
+        public File<int> GetFile(int fileId)
+        {
+            var query = GetFileQuery(r => r.Id == fileId && r.CurrentVersion);
+            return FromQueryWithSharedInt(query).SingleOrDefault();
         }
 
         public File GetFile(object fileId, int fileVersion)
@@ -1200,6 +1210,31 @@ namespace ASC.Files.Core.Data
                 .ToList();
         }
 
+        protected List<File<int>> FromQueryWithSharedInt(IQueryable<DbFile> dbFiles)
+        {
+            return dbFiles
+                .Select(r => new DbFileQuery
+                {
+                    file = r,
+                    root =
+                    FilesDbContext.Folders
+                        .Join(FilesDbContext.Tree, a => a.Id, b => b.ParentId, (folder, tree) => new { folder, tree })
+                        .Where(x => x.folder.TenantId == r.TenantId)
+                        .Where(x => x.tree.FolderId == r.FolderId)
+                        .OrderByDescending(r => r.tree.Level)
+                        .Select(r => r.folder)
+                        .FirstOrDefault(),
+                    shared =
+                     FilesDbContext.Security
+                        .Where(x => x.EntryType == FileEntryType.File)
+                        .Where(x => x.EntryId == r.Id.ToString())
+                        .Any()
+                })
+                .ToList()
+                .Select(ToFileInt)
+                .ToList();
+        }
+
         protected List<File> FromQuery(IQueryable<DbFile> dbFiles)
         {
             return dbFiles
@@ -1243,6 +1278,193 @@ namespace ASC.Files.Core.Data
             file.Forcesave = r.file.Forcesave;
             return file;
         }
+
+        public File<int> ToFileInt(DbFileQuery r)
+        {
+            var file = ServiceProvider.GetService<File<int>>();
+            file.ID = r.file.Id;
+            file.Title = r.file.Title;
+            file.FolderID = r.file.FolderId;
+            file.CreateOn = TenantUtil.DateTimeFromUtc(r.file.CreateOn);
+            file.CreateBy = r.file.CreateBy;
+            file.Version = r.file.Version;
+            file.VersionGroup = r.file.VersionGroup;
+            file.ContentLength = r.file.ContentLength;
+            file.ModifiedOn = TenantUtil.DateTimeFromUtc(r.file.ModifiedOn);
+            file.ModifiedBy = r.file.ModifiedBy;
+            file.RootFolderType = r.root?.FolderType ?? default;
+            file.RootFolderCreator = r.root?.CreateBy ?? default;
+            file.RootFolderId = r.root?.Id ?? default;
+            file.Shared = r.shared;
+            file.ConvertedType = r.file.ConvertedType;
+            file.Comment = r.file.Comment;
+            file.Encrypted = r.file.Encrypted;
+            file.Forcesave = r.file.Forcesave;
+            return file;
+        }
+
+
+        ///test:test
+
+        public File<int> GetFile(int fileId, int fileVersion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public File<int> GetFile(int parentId, string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public File<int> GetFileStable(int fileId, int fileVersion = -1)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<File<int>> GetFileHistory(int fileId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<File<int>> GetFiles(int[] fileIds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<File<int>> GetFilesForShare(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<object> GetFiles(int parentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<File<int>> GetFiles(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Stream GetFileStream(File<int> file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Stream GetFileStream(File<int> file, long offset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Uri GetPreSignedUri(File<int> file, TimeSpan expires)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsSupportedPreSignedUri(File<int> file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public File<int> SaveFile(File<int> file, Stream fileStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteFile(int fileId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsExist(string title, int folderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object MoveFile(int fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public File<int> CopyFile(int fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object FileRename(File<int> file, string newTitle)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UpdateComment(int fileId, int fileVersion, string comment)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CompleteVersion(int fileId, int fileVersion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ContinueVersion(int fileId, int fileVersion)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UseTrashForRemove(File<int> file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ChunkedUploadSession CreateUploadSession(File<int> file, long contentLength)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReassignFiles(int[] fileIds, Guid newOwnerId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<File<int>> GetFiles(int[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<File<int>> IFileDao<int>.Search(string text, bool bunch)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsExistOnStorage(File<int> file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Stream GetDifferenceStream(File<int> file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ContainChanges(int fileId, int fileVersion)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class DbFileQuery
@@ -1257,7 +1479,9 @@ namespace ASC.Files.Core.Data
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFileDao, FileDao>();
+            services.TryAddScoped<IFileDao<int>, FileDao>();
             services.TryAddTransient<File>();
+            services.TryAddTransient<File<int>>();
 
             return services
                 .AddFilesDbContextService()
