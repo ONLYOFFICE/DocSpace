@@ -36,15 +36,11 @@ const getItems = data => {
         key={item.key}
         title={item.title}
         icon={
-          !item.root ? (
-            <Icons.CatalogFolderIcon
-              size="scale"
-              isfill
-              color="#657077"
-            />
-          ) : (
-              ""
-            )
+          <Icons.CatalogFolderIcon
+            size="scale"
+            isfill
+            color="#657077"
+          />
         }
       />
     );
@@ -67,6 +63,7 @@ class ArticleBodyContent extends React.Component {
 
   onSelect = data => {
     console.log("onSelect folder", data);
+
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
@@ -89,6 +86,7 @@ class ArticleBodyContent extends React.Component {
     const { data, selectedKeys, fakeNewDocuments } = this.props;
 
     //console.log("FilesTreeMenu", this.props);
+    console.log("data", data);
 
     return (
       data.map((item, index) =>
@@ -114,18 +112,18 @@ class ArticleBodyContent extends React.Component {
   };
 };
 
-const getTreeGroups = (groups, departments) => {
+const getTreeGroups = (groups, departments, key) => {
   const treeData = [
-    {
-      key: "root",
-      title: departments,
-      root: true,
-      children: groups.map(g => {
-        return {
-          key: g.id, title: g.title || g.name, root: false
-        };
-      }) || []
-    }
+      {
+          key: key,
+          title: departments,
+          root: true,
+          children: groups.map(g => {
+              return {
+                  key: g.id, title: g.title || g.name, root: false
+              };
+          }) || []
+      }
   ];
 
   return treeData;
@@ -141,12 +139,12 @@ function mapStateToProps(state) {
     { id: "00000000-0000-0000-0000-000000000004", name: "fakeFolder4", manager: null },
     { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null }
   ];
-
-  const myDocumentsFolder = getTreeGroups(state.files.folders, state.files.selectedFolder.title);
-  const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1]);
-  const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2]);
-  const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);
-  const recycleBinFolder = getTreeGroups([], state.files.rootFolders.trash.title || defaultFolders[3]);
+  //TODO: Get default folder ids
+  const myDocumentsFolder = getTreeGroups(state.files.folders, state.files.selectedFolder.title, "1");
+  const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1], "2");
+  const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2], "3");
+  const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3], "4");
+  const recycleBinFolder = getTreeGroups([], state.files.rootFolders.trash.title || defaultFolders[3], "4");
 
   const fakeNewDocuments = 8;
 
@@ -154,7 +152,7 @@ function mapStateToProps(state) {
 
   return {
     data,
-    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder] : ["root"],
+    selectedKeys: state.files.selectedFolder ? [state.files.selectedFolder.id.toString()] : [""],
     fakeNewDocuments
   };
 }
