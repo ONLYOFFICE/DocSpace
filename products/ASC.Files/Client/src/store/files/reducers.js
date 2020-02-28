@@ -15,11 +15,11 @@ const filesReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_FOLDERS:
       return Object.assign({}, state, {
-        groups: action.folders
+        folders: action.folders
       });
     case SET_FILES:
       return Object.assign({}, state, {
-        users: action.files
+        files: action.files
       });
     case SET_SELECTION:
       return Object.assign({}, state, {

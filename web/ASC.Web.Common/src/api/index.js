@@ -5,5 +5,6 @@ import * as settings from './settings';
 import * as modules from './modules';
 import * as portal from './portal';
 import * as groups from './groups';
+import * as files from './files';
 
-export default { Filter, people, user, settings, modules, portal, groups };
+export default { Filter, people, user, settings, modules, portal, groups, files };

@@ -122,7 +122,7 @@ const getTreeGroups = (groups, departments) => {
           root: true,
           children: groups.map(g => {
               return {
-                  key: g.id, title: g.name, root: false
+                  key: g.id, title: g.title || g.name, root: false
               };
           }) || []
       }
@@ -142,7 +142,7 @@ function mapStateToProps(state) {
     { id: "00000000-0000-0000-0000-000000000005", name: "fakeFolder5", manager: null}
   ];
 
-  const myDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[0]);
+  const myDocumentsFolder = getTreeGroups(state.files.folders, state.files.selectedFolder.title);
   const sharedWithMeFolder = getTreeGroups(fakeFolders, defaultFolders[1]);
   const commonDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[2]);
   const projectDocumentsFolder = getTreeGroups(fakeFolders, defaultFolders[3]);

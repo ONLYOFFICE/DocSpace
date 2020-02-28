@@ -1,3 +1,5 @@
+import { api } from "asc-web-common";
+
 export const SET_FOLDERS = "SET_FOLDERS";
 export const SET_FILES = "SET_FILES";
 export const SET_SELECTION = "SET_SELECTION";
@@ -50,3 +52,17 @@ export function fetchFolders() {
 export function selectFolder() {
   return Promise.resolve([]);
 }
+
+export function fetchMyFolder(dispatch) {
+  return api.files.getMyFolderList().then(data => {
+    
+    dispatch(setFolders(data.folders));
+    
+    dispatch(setSelectedFolder(data.current));
+
+    dispatch(setFiles(data.files));
+    
+    return Promise.resolve([]); 
+  });
+}
+
