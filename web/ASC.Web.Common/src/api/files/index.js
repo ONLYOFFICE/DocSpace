@@ -39,7 +39,7 @@ export function getProjectsFolderList(filter = Filter.getDefault(), fake = false
   });
 }
 
-export function getTrashFolderList(filter = Filter.getDefault(), fake = true) {
+export function getTrashFolderList(filter = Filter.getDefault(), fake = false) {
 
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Recycle Bin");
