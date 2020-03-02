@@ -81,7 +81,7 @@ const current = (rootTitle) => {
     filesCount: 4,
     foldersCount: 2,
     isShareable: true,
-    id: random.uuid(),
+    id: random.number(),
     title: rootTitle,
     access: 0,
     shared: false,

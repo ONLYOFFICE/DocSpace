@@ -51,6 +51,18 @@ export function getTrashFolderList(filter = Filter.getDefault(), fake = false) {
   });
 }
 
+export function getSharedFolderList(filter = Filter.getDefault(), fake = true) {
+
+  if (fake) {
+    return fakeFiles.getFakeElements(filter, "Shared with Me");
+  }
+
+  return request({
+    method: "get",
+    url: `/files/@share.json`
+  });
+}
+
 export function createTextFileInMy(title) {
   const options = {
     method: "post",
