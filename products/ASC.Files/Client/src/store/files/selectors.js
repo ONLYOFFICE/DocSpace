@@ -28,22 +28,15 @@ const getFakeFolders = count =>
   });
 
 export const getRootFolders = files => {
-  const defaultFolders = [
-    "Мои документы",
-    "Доступно для меня",
-    "Общие документы",
-    "Документы проектов",
-    "Корзина"
-  ];
   const { folders, rootFolders } = files;
   const { my, share, common, project, trash } = rootFolders;
 
   const myDocumentsFolder = getTreeGroups(folders, my.title, my.id);
   const sharedWithMeFolder = getTreeGroups(
-    getFakeFolders(4),
-    defaultFolders[1],
-    "2"
-  ); //getTreeGroups(getFakeFolders(share.foldersCount), share.title, share.id);
+    getFakeFolders(share.foldersCount),
+    share.title,
+    share.id
+  );
   const commonDocumentsFolder = getTreeGroups(
     getFakeFolders(common.foldersCount),
     common.title,

@@ -1,16 +1,10 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  utils,
-  TreeMenu,
-  TreeNode,
-  Icons,
-  toastr
-} from "asc-web-components";
+import React from "react";
+import { connect } from "react-redux";
+import { utils, TreeMenu, TreeNode, Icons, toastr } from "asc-web-components";
 import {
   selectFolder,
   fetchMyFolder,
-  //fetchShareFolder,
+  fetchSharedFolder,
   fetchCommonFolder,
   fetchProjectsFolder,
   fetchTrashFolder
@@ -27,14 +21,10 @@ const getItems = data => {
           key={item.key}
           icon={
             item.root ? (
-              <Icons.CatalogFolderIcon
-                size="scale"
-                isfill
-                color="#657077"
-              />
+              <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />
             ) : (
-                ""
-              )
+              ""
+            )
           }
         >
           {getItems(item.children)}
@@ -45,13 +35,7 @@ const getItems = data => {
       <TreeNode
         key={item.key}
         title={item.title}
-        icon={
-          <Icons.CatalogFolderIcon
-            size="scale"
-            isfill
-            color="#657077"
-          />
-        }
+        icon={<Icons.CatalogFolderIcon size="scale" isfill color="#657077" />}
       />
     );
   });
@@ -60,9 +44,7 @@ const getItems = data => {
 class ArticleBodyContent extends React.Component {
   shouldComponentUpdate(nextProps) {
     const { selectedKeys, data } = this.props;
-    if (
-      !utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)
-    ) {
+    if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
       return true;
     }
 
@@ -81,37 +63,32 @@ class ArticleBodyContent extends React.Component {
     if (currentModule !== currentModuleId) {
       const { my, share, common, project, trash } = rootFolders;
 
-
       switch (currentModuleId) {
         case my.id:
-          fetchMyFolder(store.dispatch)
-            .then(() => console.log("fetchMyFolder then"))
-            .catch(() => toastr.error("Error fetchMyFolder") )
-            .finally(() => console.log("fetchMyFolder finally"));
+          fetchMyFolder(store.dispatch).catch(() =>
+            toastr.error("Error fetchMyFolder")
+          );
           break;
-        /*case share.id:
-          fetchSharedFolder(store.dispatch)
-            .then(() => console.log("then"))
-            .catch(() => toastr.error("Error fetchSharedFolder"))
-            .finally(() => console.log("finally"));
-          break;*/
+        case share.id:
+          fetchSharedFolder(store.dispatch).catch(() =>
+            toastr.error("Error fetchSharedFolder")
+          );
+          break;
         case common.id:
-          fetchCommonFolder(store.dispatch)
-            .then(() => console.log("fetchCommonFolder then"))
-            .catch(() => toastr.error("Error fetchCommonFolder"))
-            .finally(() => console.log("fetchCommonFolder finally"));
+          fetchCommonFolder(store.dispatch).catch(() =>
+            toastr.error("Error fetchCommonFolder")
+          );
           break;
         case project.id:
-          fetchProjectsFolder(store.dispatch)
-            .then(() => console.log("fetchProjectsFolder then"))
-            .catch(() => toastr.error("Error fetchProjectsFolder"))
-            .finally(() => console.log("fetchProjectsFolder finally"));
+          fetchProjectsFolder(store.dispatch).catch(() =>
+            toastr.error("Error fetchProjectsFolder")
+          );
+
           break;
         case trash.id:
-          fetchTrashFolder(store.dispatch)
-            .then(() => console.log("fetchTrashFolder then"))
-            .catch(() => toastr.error("Error fetchTrashFolder"))
-            .finally(() => console.log("fetchTrashFolder finally"));
+          fetchTrashFolder(store.dispatch).catch(() =>
+            toastr.error("Error fetchTrashFolder")
+          );
           break;
         default:
           break;
@@ -156,9 +133,7 @@ class ArticleBodyContent extends React.Component {
       </TreeMenu>
     ));
   }
-};
-
-
+}
 
 function mapStateToProps(state) {
   const { rootFolders, selectedFolder } = state.files;
@@ -177,7 +152,7 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, {
   selectFolder,
   fetchMyFolder,
-  //fetchShareFolder,
+  fetchSharedFolder,
   fetchCommonFolder,
   fetchProjectsFolder,
   fetchTrashFolder

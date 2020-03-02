@@ -94,6 +94,14 @@ export function fetchProjectsFolder(dispatch) {
   });
 }
 
+export function fetchSharedFolder(dispatch) {
+  return files.getSharedFolderList().then(data => {
+    dispatch(setFolders(data.folders));
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  });
+}
+
 export function fetchRootFolders(dispatch) {
 
   //TODO: Make some more Useful
@@ -114,6 +122,8 @@ export function fetchRootFolders(dispatch) {
       .then(data => root.project = data.current))
     .then(() => files.getTrashFolderList()
       .then(data => root.trash = data.current))
+    .then(() => files.getSharedFolderList()
+      .then(data => root.share = data.current))
     .then(() => dispatch(setRootFolders(root)));
 }
 
