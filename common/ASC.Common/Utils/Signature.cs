@@ -101,7 +101,7 @@ namespace ASC.Common.Utils
 
     public static class SignatureExtension
     {
-        public static IServiceCollection AddSignatureService(this IServiceCollection services)
+        public static DIHelper AddSignatureService(this DIHelper services)
         {
             services.TryAddSingleton<Signature>();
             return services.AddMachinePseudoKeysService();

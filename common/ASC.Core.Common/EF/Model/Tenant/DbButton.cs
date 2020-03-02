@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF
         [Column("partner_id")]
         public string PartnerId { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { TariffId, PartnerId };
         }

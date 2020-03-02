@@ -16,7 +16,7 @@ namespace ASC.Core.Common.EF
 
         public string PwdHashSha512 { get; set; }
 
-        internal override object[] GetKeys()
+        public override object[] GetKeys()
         {
             return new object[] { UserId };
         }

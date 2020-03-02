@@ -4,6 +4,7 @@ using System;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
@@ -42,22 +43,17 @@ namespace ASC.People
         {
             services.AddHttpContextAccessor();
 
-            services.AddControllers().AddControllersAsServices()
+            services.AddControllers()
                 .AddNewtonsoftJson()
                 .AddXmlSerializerFormatters();
 
             services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
-            services.AddMemoryCache();
-
-            services.AddDistributedMemoryCache();
-            services.AddSession();
-
             services.AddAuthentication("cookie")
-                .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
-                .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
+                    .AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>("cookie", a => { })
+                    .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { });
 
-            var builder = services.AddMvc(config =>
+            var builder = services.AddMvcCore(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
@@ -73,7 +69,9 @@ namespace ASC.People
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+
+            diHelper
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
@@ -82,7 +80,7 @@ namespace ASC.People
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
+            diHelper.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
             {
                 r.workerCount = 2;
                 r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
@@ -90,7 +88,7 @@ namespace ASC.People
                 r.stopAfterFinsih = true;
             });
 
-            services.Configure<ProgressQueue<ReassignProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<ReassignProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -99,7 +97,7 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.Configure<ProgressQueue<RemoveProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<RemoveProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -108,9 +106,9 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddPeopleController()
                 .AddGroupController();
 
@@ -137,8 +135,6 @@ namespace ASC.People
 
             app.UseRouting();
 
-            app.UseSession();
-
             app.UseAuthentication();
 
             app.UseAuthorization();
@@ -152,8 +148,6 @@ namespace ASC.People
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
-
-            app.UseStaticFiles();
         }
     }
 }

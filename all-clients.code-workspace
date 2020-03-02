@@ -15,6 +15,10 @@
 		{
 			"name": "ASC.People.Client"
 			"path": "./products/ASC.People/Client"
+		},
+		{
+			"name": "ASC.Files.Client"
+			"path": "./products/ASC.Files/Client"
 		}
 	],
 	"settings": {}

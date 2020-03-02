@@ -122,10 +122,6 @@ export function getSelectedGroup(groups, selectedGroupId) {
     return find(groups, (group) => group.id === selectedGroupId);
 }
 
-export function getSelectionIds(selections) {
-    return selections.map((user) => { return user.id });
-}
-
 export function toEmployeeWrapper(profile) {
     const emptyData = {
         id: "",
@@ -172,3 +168,32 @@ export function filterGroupSelectorOptions(options, template) {
         return template ? option.label.indexOf(template) > -1 : true;
     })
 }
+
+  export function getUserType(users, status, currentUserId) {
+    return users.filter(
+      x =>
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor === status &&
+        x.status !== 2 &&
+        x.id !== currentUserId
+    );
+  }
+
+  export function getUsersStatus(users, status, currentUserId) {
+    return users.filter(
+      x => !x.isOwner && x.status !== status && x.id !== currentUserId
+    );
+  }
+
+  export function getInactiveUsers(users) {
+    return users.filter(x => x.activationStatus === 2 && x.status === 1);
+  }
+
+  export function getDeleteUsers(users) {
+    return users.filter(x => x.status === 2);
+  }
+
+  export function getUsersIds(selections) {
+    return selections.map((user) => { return user.id });
+  }

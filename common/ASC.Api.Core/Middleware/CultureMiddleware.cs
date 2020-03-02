@@ -1,10 +1,12 @@
 ﻿using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
+
+using ASC.Common;
 using ASC.Core;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Api.Core.Middleware
 {
@@ -50,7 +52,7 @@ namespace ASC.Api.Core.Middleware
             return builder.UseMiddleware<CultureMiddleware>();
         }
 
-        public static IServiceCollection AddCultureMiddleware(this IServiceCollection services)
+        public static DIHelper AddCultureMiddleware(this DIHelper services)
         {
             return services
                 .AddUserManagerService()

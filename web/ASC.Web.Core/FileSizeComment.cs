@@ -25,11 +25,11 @@
 
 
 using System;
+
+using ASC.Common;
 using ASC.Core.Tenants;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Studio.Utility;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -162,7 +162,7 @@ namespace ASC.Web.Studio.Core
 
     public static class FileSizeCommentExtension
     {
-        public static IServiceCollection AddFileSizeCommentService(this IServiceCollection services)
+        public static DIHelper AddFileSizeCommentService(this DIHelper services)
         {
             services.TryAddScoped<FileSizeComment>();
 

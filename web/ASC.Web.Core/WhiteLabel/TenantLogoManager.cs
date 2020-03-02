@@ -28,14 +28,13 @@ using System;
 using System.IO;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.WhiteLabel
 {
@@ -209,7 +208,7 @@ namespace ASC.Web.Core.WhiteLabel
 
     public static class TenantLogoManagerExtension
     {
-        public static IServiceCollection AddTenantLogoManagerService(this IServiceCollection services)
+        public static DIHelper AddTenantLogoManagerService(this DIHelper services)
         {
             services.TryAddScoped<TenantLogoManager>();
 

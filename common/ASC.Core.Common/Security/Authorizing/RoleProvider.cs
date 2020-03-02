@@ -27,10 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Security.Authorizing;
 using ASC.Core.Users;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -86,7 +89,7 @@ namespace ASC.Core.Security.Authorizing
 
     public static class RoleProviderConfigExtention
     {
-        public static IServiceCollection AddRoleProviderService(this IServiceCollection services)
+        public static DIHelper AddRoleProviderService(this DIHelper services)
         {
             services.TryAddScoped(typeof(IRoleProvider), typeof(RoleProvider));
             return services;

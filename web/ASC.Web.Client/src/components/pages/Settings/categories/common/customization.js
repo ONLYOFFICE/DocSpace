@@ -57,6 +57,8 @@ class Customization extends React.Component {
       const languages = mapCulturesToArray(rawCultures, t);
       const timezones = mapTimezonesToArray(rawTimezones);
 
+      document.title = `${t("Customization")} – ${t("OrganizationName")}`;
+
       this.state = {
          isLoadedData: false,
          isLoading: false,

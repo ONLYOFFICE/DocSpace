@@ -30,13 +30,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
+
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -339,7 +339,7 @@ namespace ASC.Core.Billing
 
     public static class LicenseReaderExtension
     {
-        public static IServiceCollection AddLicenseReaderService(this IServiceCollection services)
+        public static DIHelper AddLicenseReaderService(this DIHelper services)
         {
             services.TryAddScoped<LicenseReader>();
 

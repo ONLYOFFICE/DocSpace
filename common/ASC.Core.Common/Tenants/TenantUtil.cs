@@ -25,16 +25,48 @@
 
 
 using System;
+
+using ASC.Common;
 using ASC.Common.Utils;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Tenants
 {
+    class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
+    {
+        public IOptionsSnapshot<TenantManager> TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+
+        public ConfigureTenantUtil(
+            IOptionsSnapshot<TenantManager> tenantManager,
+            TimeZoneConverter timeZoneConverter
+            )
+        {
+            TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
+        }
+
+        public void Configure(string name, TenantUtil options)
+        {
+            Configure(options);
+            options.TenantManager = TenantManager.Get(name);
+        }
+
+        public void Configure(TenantUtil options)
+        {
+            options.TimeZoneConverter = TimeZoneConverter;
+            options.TenantManager = TenantManager.Value;
+        }
+    }
+
     public class TenantUtil
     {
-        public TenantManager TenantManager { get; }
-        public TimeZoneConverter TimeZoneConverter { get; }
+        internal TenantManager TenantManager { get; set; }
+        internal TimeZoneConverter TimeZoneConverter { get; set; }
+
+        public TenantUtil()
+        {
+        }
 
         public TenantUtil(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
         {
@@ -109,9 +141,10 @@ namespace ASC.Core.Tenants
 
     public static class TenantUtilExtention
     {
-        public static IServiceCollection AddTenantUtilService(this IServiceCollection services)
+        public static DIHelper AddTenantUtilService(this DIHelper services)
         {
             services.TryAddScoped<TenantUtil>();
+            services.TryAddScoped<IConfigureOptions<TenantUtil>, ConfigureTenantUtil>();
 
             return services.AddTenantManagerService();
         }

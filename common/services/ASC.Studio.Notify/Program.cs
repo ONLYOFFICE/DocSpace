@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Notify;
@@ -44,9 +45,10 @@ namespace ASC.Studio.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    var diHelper = new DIHelper(services);
+                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
                     services.AddHostedService<ServiceLauncher>();
-                    services.AddServiceLauncher();
+                    diHelper.AddServiceLauncher();
 
                     services.AddAutofac(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
                 })

@@ -27,11 +27,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Notify.Jabber;
 using ASC.Notify.Messages;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Notify.Senders
@@ -77,7 +79,7 @@ namespace ASC.Core.Notify.Senders
 
     public static class JabberSenderExtension
     {
-        public static IServiceCollection AddJabberSenderService(this IServiceCollection services)
+        public static DIHelper AddJabberSenderService(this DIHelper services)
         {
             services.TryAddSingleton<JabberSender>();
             return services.AddJabberServiceClient();

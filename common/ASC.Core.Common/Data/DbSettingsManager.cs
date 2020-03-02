@@ -26,12 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
@@ -40,8 +40,6 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
@@ -64,20 +62,69 @@ namespace ASC.Core.Data
         }
     }
 
-    public class DbSettingsManager
+    class ConfigureDbSettingsManager : IConfigureNamedOptions<DbSettingsManager>
     {
-        private readonly ILog log;
-
-        private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
-        private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
-        private readonly string dbId;
-
-        private ICache Cache { get; }
         private IServiceProvider ServiceProvider { get; }
         private DbSettingsManagerCache DbSettingsManagerCache { get; }
-        public AuthContext AuthContext { get; }
-        public TenantManager TenantManager { get; }
-        private WebstudioDbContext WebstudioDbContext { get; }
+        private IOptionsMonitor<ILog> ILog { get; }
+        private AuthContext AuthContext { get; }
+        private IOptionsSnapshot<TenantManager> TenantManager { get; }
+        private DbContextManager<WebstudioDbContext> DbContextManager { get; }
+
+        public ConfigureDbSettingsManager(
+            IServiceProvider serviceProvider,
+            DbSettingsManagerCache dbSettingsManagerCache,
+            IOptionsMonitor<ILog> iLog,
+            AuthContext authContext,
+            IOptionsSnapshot<TenantManager> tenantManager,
+            DbContextManager<WebstudioDbContext> dbContextManager
+            )
+        {
+            ServiceProvider = serviceProvider;
+            DbSettingsManagerCache = dbSettingsManagerCache;
+            ILog = iLog;
+            AuthContext = authContext;
+            TenantManager = tenantManager;
+            DbContextManager = dbContextManager;
+        }
+
+        public void Configure(string name, DbSettingsManager options)
+        {
+            Configure(options);
+
+            options.TenantManager = TenantManager.Get(name);
+            options.WebstudioDbContext = DbContextManager.Get(name);
+        }
+
+        public void Configure(DbSettingsManager options)
+        {
+            options.ServiceProvider = ServiceProvider;
+            options.DbSettingsManagerCache = DbSettingsManagerCache;
+            options.AuthContext = AuthContext;
+            options.Log = ILog.CurrentValue;
+
+            options.TenantManager = TenantManager.Value;
+            options.WebstudioDbContext = DbContextManager.Value;
+        }
+    }
+
+    public class DbSettingsManager
+    {
+        private readonly TimeSpan expirationTimeout = TimeSpan.FromMinutes(5);
+        private readonly IDictionary<Type, DataContractJsonSerializer> jsonSerializers = new Dictionary<Type, DataContractJsonSerializer>();
+
+        internal ILog Log { get; set; }
+        internal ICache Cache { get; set; }
+        internal IServiceProvider ServiceProvider { get; set; }
+        internal DbSettingsManagerCache DbSettingsManagerCache { get; set; }
+        internal AuthContext AuthContext { get; set; }
+        internal TenantManager TenantManager { get; set; }
+        internal WebstudioDbContext WebstudioDbContext { get; set; }
+
+        public DbSettingsManager()
+        {
+
+        }
 
         public DbSettingsManager(
             IServiceProvider serviceProvider,
@@ -85,21 +132,15 @@ namespace ASC.Core.Data
             IOptionsMonitor<ILog> option,
             AuthContext authContext,
             TenantManager tenantManager,
-            DbContextManager<WebstudioDbContext> dbContextManager) : this(null)
+            DbContextManager<WebstudioDbContext> dbContextManager)
         {
             ServiceProvider = serviceProvider;
             DbSettingsManagerCache = dbSettingsManagerCache;
             AuthContext = authContext;
             TenantManager = tenantManager;
             Cache = dbSettingsManagerCache.Cache;
-            log = option.CurrentValue;
+            Log = option.CurrentValue;
             WebstudioDbContext = dbContextManager.Value;
-        }
-
-        //TODO: remove
-        public DbSettingsManager(ConnectionStringSettings connectionString)
-        {
-            dbId = connectionString != null ? connectionString.Name : "default";
         }
 
         private int TenantID
@@ -181,7 +222,7 @@ namespace ASC.Core.Data
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
                 return false;
             }
         }
@@ -218,7 +259,7 @@ namespace ASC.Core.Data
             }
             catch (Exception ex)
             {
-                log.Error(ex);
+                Log.Error(ex);
             }
             return def;
         }
@@ -307,10 +348,11 @@ namespace ASC.Core.Data
 
     public static class DbSettingsManagerExtension
     {
-        public static IServiceCollection AddDbSettingsManagerService(this IServiceCollection services)
+        public static DIHelper AddDbSettingsManagerService(this DIHelper services)
         {
             services.TryAddSingleton<DbSettingsManagerCache>();
             services.TryAddScoped<DbSettingsManager>();
+            services.TryAddScoped<IConfigureOptions<DbSettingsManager>, ConfigureDbSettingsManager>();
 
             return services.AddWebstudioDbContextService();
         }

@@ -32,15 +32,38 @@ using System.Linq.Expressions;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Core.Data
 {
+    class ConfigureDbQuotaService : IConfigureNamedOptions<DbQuotaService>
+    {
+        public DbContextManager<CoreDbContext> DbContextManager { get; }
+        public string DbId { get; set; }
+
+        public ConfigureDbQuotaService(DbContextManager<CoreDbContext> dbContextManager)
+        {
+            DbContextManager = dbContextManager;
+        }
+
+        public void Configure(string name, DbQuotaService options)
+        {
+            options.CoreDbContext = DbContextManager.Get(name);
+        }
+
+        public void Configure(DbQuotaService options)
+        {
+            options.CoreDbContext = DbContextManager.Value;
+        }
+    }
+
     class DbQuotaService : IQuotaService
     {
         private Expression<Func<DbQuota, TenantQuota>> FromDbQuotaToTenantQuota { get; set; }
         private Expression<Func<DbQuotaRow, TenantQuotaRow>> FromDbQuotaRowToTenantQuotaRow { get; set; }
-        private CoreDbContext CoreDbContext { get; set; }
+        internal CoreDbContext CoreDbContext { get; set; }
 
-        private DbQuotaService()
+        public DbQuotaService()
         {
             FromDbQuotaToTenantQuota = r => new TenantQuota()
             {
@@ -69,12 +92,6 @@ namespace ASC.Core.Data
         {
             CoreDbContext = dbContextManager.Value;
         }
-
-        public DbQuotaService(CoreDbContext dbContext) : this()
-        {
-            CoreDbContext = dbContext;
-        }
-
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {

@@ -33,6 +33,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Security.Cryptography;
@@ -172,7 +173,7 @@ namespace ASC.Data.Storage.DiscStorage
 
             return builder;
         }
-        public static IServiceCollection AddStorageHandlerService(this IServiceCollection services)
+        public static DIHelper AddStorageHandlerService(this DIHelper services)
         {
             return services
                 .AddTenantManagerService()
