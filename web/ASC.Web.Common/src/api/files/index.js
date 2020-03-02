@@ -50,3 +50,23 @@ export function getTrashFolderList(filter = Filter.getDefault(), fake = true) {
     url: `/files/@trash.json`
   });
 }
+
+export function createTextFileInMy(title) {
+  const options = {
+    method: "post",
+    url: "/files/@my/file",
+    title: title
+  };
+
+  return request(options);
+}
+
+export function createTextFile(folderId, title) {
+  const options = {
+    method: "post",
+    url: `/files/${folderId}/file`,
+    title: title
+  };
+
+  return request(options);
+}
