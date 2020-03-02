@@ -38,14 +38,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    class FileMarkAsReadOperationData : FileOperationData
+    class FileMarkAsReadOperationData<T> : FileOperationData<T>
     {
-        public FileMarkAsReadOperationData(List<object> folders, List<object> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+        public FileMarkAsReadOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
         {
         }
     }
 
-    class FileMarkAsReadOperation : FileOperation<FileMarkAsReadOperationData>
+    class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>, T>
     {
         public override FileOperationType OperationType
         {
@@ -53,7 +53,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData fileOperationData)
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
             : base(serviceProvider, fileOperationData)
         {
         }
@@ -84,11 +84,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 if (x.FileEntryType == FileEntryType.File)
                 {
-                    ProcessedFile(x.ID.ToString());
+                    ProcessedFile(((File<T>)x).ID);
                 }
                 else
                 {
-                    ProcessedFolder(x.ID.ToString());
+                    ProcessedFolder(((Folder<T>)x).ID);
                 }
                 ProgressStep();
             });

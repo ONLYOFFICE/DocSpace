@@ -318,7 +318,7 @@ namespace ASC.Web.Files.Utils
             return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
         }
 
-        public IEnumerable<FileOperationResult> GetStatus(IEnumerable<KeyValuePair<File, bool>> filesPair)
+        public IEnumerable<FileOperationResult> GetStatus<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
         {
             var fileSecurity = FileSecurity;
             var result = new List<FileOperationResult>();

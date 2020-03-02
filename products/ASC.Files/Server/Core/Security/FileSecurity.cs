@@ -290,9 +290,19 @@ namespace ASC.Files.Core.Security
             return Filter(entries.Cast<FileEntry>(), FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<File>();
         }
 
+        public IEnumerable<File<T>> FilterRead<T>(IEnumerable<File<T>> entries)
+        {
+            return Filter(entries.Cast<FileEntry>(), FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<File<T>>();
+        }
+
         public IEnumerable<Folder> FilterRead(IEnumerable<Folder> entries)
         {
             return Filter(entries.Cast<FileEntry>(), FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<Folder>();
+        }
+
+        public IEnumerable<Folder<T>> FilterRead<T>(IEnumerable<Folder<T>> entries)
+        {
+            return Filter(entries.Cast<FileEntry>(), FilesSecurityActions.Read, AuthContext.CurrentAccount.ID).Cast<Folder<T>>();
         }
 
         public IEnumerable<File> FilterEdit(IEnumerable<File> entries)

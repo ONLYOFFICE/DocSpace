@@ -767,7 +767,7 @@ namespace ASC.Api.Documents
         [Create("{folderId}/file")]
         public FileWrapper CreateFile(string folderId, string title)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile<string>(new FileModel<string> { ParentId = folderId, Title = title });
             return FileWrapperHelper.Get(file);
         }
 
@@ -907,7 +907,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult> CheckConversion(string fileId, bool start)
         {
-            return FileStorageService.CheckConversion(new ItemList<ItemList<string>>
+            return FileStorageService.CheckConversion<string>(new ItemList<ItemList<string>>
             {
                 new ItemList<string> { fileId, "0", start.ToString() }
             })
@@ -971,7 +971,7 @@ namespace ASC.Api.Documents
 
             var ids = FileStorageService.MoveOrCopyFilesCheck(itemList, batchModel.DestFolderId).Keys.Select(id => "file_" + id);
 
-            var entries = FileStorageService.GetItems(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
+            var entries = FileStorageService.GetItems<string>(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
             return entries.Select(x => FileWrapperHelper.Get((Files.Core.File)x));
         }
 
@@ -994,7 +994,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((batchModel.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((batchModel.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.MoveOrCopyItems<string>(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1016,7 +1016,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((batchModel.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((batchModel.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.MoveOrCopyItems<string>(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1033,7 +1033,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.MarkAsRead<string>(itemList).Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1111,7 +1111,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((batch.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((batch.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.DeleteItems("delete", itemList, false, batch.DeleteAfter, batch.Immediately).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.DeleteItems<string>("delete", itemList, false, batch.DeleteAfter, batch.Immediately).Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1123,7 +1123,7 @@ namespace ASC.Api.Documents
         [Update("fileops/emptytrash")]
         public IEnumerable<FileOperationWraper> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get);
+            return FileStorageService.EmptyTrash<int>().Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1208,7 +1208,7 @@ namespace ASC.Api.Documents
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject(aceCollection, notify);
+                FileStorageService.SetAceObject<string>(aceCollection, notify);
             }
             return GetFileSecurityInfo(fileId);
         }
@@ -1238,7 +1238,7 @@ namespace ASC.Api.Documents
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject(aceCollection, notify);
+                FileStorageService.SetAceObject<string>(aceCollection, notify);
             }
 
             return GetFolderSecurityInfo(folderId);
@@ -1260,7 +1260,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            FileStorageService.RemoveAce(itemList);
+            FileStorageService.RemoveAce<string>(itemList);
 
             return true;
         }
@@ -1298,7 +1298,7 @@ namespace ASC.Api.Documents
                     Entries = new ItemList<string> { objectId },
                     Aces = list
                 };
-                FileStorageService.SetAceObject(aceCollection, false);
+                FileStorageService.SetAceObject<string>(aceCollection, false);
                 sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
@@ -1548,11 +1548,13 @@ namespace ASC.Api.Documents
 
         private FolderContentWrapper ToFolderContentWrapper(object folderId, Guid userIdOrGroupId, FilterType filterType)
         {
-            SortedByType sortBy;
-            if (!Enum.TryParse(ApiContext.SortBy, true, out sortBy))
+            if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
+            {
                 sortBy = SortedByType.AZ;
+            }
+
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId.ToString(),
+            return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems<string>(folderId.ToString(),
                                                                                startIndex,
                                                                                Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
                                                                                filterType,

@@ -73,7 +73,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         File GetFile(string fileId, int version);
 
-        File CreateNewFile(FileModel fileWrapper);
+        File<T> CreateNewFile<T>(FileModel<T> fileWrapper);
 
         File FileRename(string fileId, string title);
 

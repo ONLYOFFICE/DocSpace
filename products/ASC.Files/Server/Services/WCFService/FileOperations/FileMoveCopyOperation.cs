@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,14 +41,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    internal class FileMoveCopyOperationData : FileOperationData
+    internal class FileMoveCopyOperationData<T> : FileOperationData<T>
     {
-        public string ToFolderId { get; }
+        public T ToFolderId { get; }
         public bool Copy { get; }
         public FileConflictResolveType ResolveType { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileMoveCopyOperationData(List<object> folders, List<object> files, Tenant tenant, string toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
+        public FileMoveCopyOperationData(List<T> folders, List<T> files, Tenant tenant, T toFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult = true, Dictionary<string, string> headers = null)
             : base(folders, files, tenant, holdResult)
         {
             ToFolderId = toFolderId;
@@ -59,9 +58,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    class FileMoveCopyOperation : FileOperation<FileMoveCopyOperationData>
+    class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     {
-        private readonly string _toFolderId;
+        private readonly T _toFolderId;
         private readonly bool _copy;
         private readonly FileConflictResolveType _resolveType;
         private readonly List<FileEntry> _needToMark = new List<FileEntry>();
@@ -73,7 +72,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             get { return _copy ? FileOperationType.Copy : FileOperationType.Move; }
         }
 
-        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData data)
+        public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data)
             : base(serviceProvider, data)
         {
             _toFolderId = data.ToFolderId;
@@ -94,7 +93,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             if (toFolder == null) return;
             if (!FilesSecurity.CanCreate(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            if (FolderDao.GetParentFolders(toFolder.ID).Any(parent => Folders.Contains(parent.ID.ToString())))
+            if (FolderDao.GetParentFolders(toFolder.ID).Any(parent => Folders.Contains(parent.ID)))
             {
                 Error = FilesCommonResource.ErrorMassage_FolderCopyError;
                 return;
@@ -115,7 +114,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             _needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
         }
 
-        private void MoveOrCopyFolders(IServiceScope scope, ICollection folderIds, Folder toFolder, bool copy)
+        private void MoveOrCopyFolders(IServiceScope scope, List<T> folderIds, Folder<T> toFolder, bool copy)
         {
             if (folderIds.Count == 0) return;
 
@@ -137,13 +136,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
-                else if (!Equals((folder.ParentFolderID ?? string.Empty).ToString(), toFolderId.ToString()) || _resolveType == FileConflictResolveType.Duplicate)
+                else if (!Equals((folder.ParentFolderID ?? default).ToString(), toFolderId.ToString()) || _resolveType == FileConflictResolveType.Duplicate)
                 {
                     try
                     {
                         //if destination folder contains folder with same name then merge folders
                         var conflictFolder = FolderDao.GetFolder(folder.Title, toFolderId);
-                        Folder newFolder;
+                        Folder<T> newFolder;
 
                         if (copy || conflictFolder != null)
                         {
@@ -193,7 +192,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                             {
                                 if (conflictFolder != null)
                                 {
-                                    object newFolderId;
+                                    T newFolderId;
                                     if (copy)
                                     {
                                         newFolder = FolderDao.CopyFolder(folder.ID, toFolderId, CancellationToken);
@@ -270,11 +269,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         Logger.Error(Error, ex);
                     }
                 }
-                ProgressStep(FolderDao.CanCalculateSubitems(folderId) ? null : folderId);
+                ProgressStep(FolderDao.CanCalculateSubitems(folderId) ? default : folderId);
             }
         }
 
-        private void MoveOrCopyFiles(IServiceScope scope, ICollection fileIds, Folder toFolder, bool copy)
+        private void MoveOrCopyFiles(IServiceScope scope, List<T> fileIds, Folder<T> toFolder, bool copy)
         {
             if (fileIds.Count == 0) return;
 
@@ -313,7 +312,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                            : FileDao.GetFile(toFolderId, file.Title);
                         if (conflict == null)
                         {
-                            File newFile = null;
+                            File<T> newFile = null;
                             if (copy)
                             {
                                 try
@@ -451,7 +450,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         Logger.Error(Error, ex);
                     }
                 }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? null : fileId);
+                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
         }
 

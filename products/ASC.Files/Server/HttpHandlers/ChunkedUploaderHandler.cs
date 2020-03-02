@@ -118,7 +118,7 @@ namespace ASC.Web.Files.HttpHandlers
                 switch (request.Type(InstanceCrypto))
                 {
                     case ChunkedRequestType.Abort:
-                        FileUploader.AbortUpload(request.UploadId);
+                        FileUploader.AbortUpload<string>(request.UploadId);
                         WriteSuccess(context, null);
                         return;
 
@@ -128,7 +128,7 @@ namespace ASC.Web.Files.HttpHandlers
                         return;
 
                     case ChunkedRequestType.Upload:
-                        var resumedSession = FileUploader.UploadChunk(request.UploadId, request.ChunkStream, request.ChunkSize);
+                        var resumedSession = FileUploader.UploadChunk<string>(request.UploadId, request.ChunkStream, request.ChunkSize);
 
                         if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                         {
@@ -174,7 +174,7 @@ namespace ASC.Web.Files.HttpHandlers
 
             if (!string.IsNullOrEmpty(request.UploadId))
             {
-                var uploadSession = ChunkedUploadSessionHolder.GetSession(request.UploadId);
+                var uploadSession = ChunkedUploadSessionHolder.GetSession<string>(request.UploadId);
                 if (uploadSession != null)
                 {
                     TenantManager.SetCurrentTenant(uploadSession.TenantId);

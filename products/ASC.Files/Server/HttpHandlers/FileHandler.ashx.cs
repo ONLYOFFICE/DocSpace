@@ -38,7 +38,6 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Files.Core;
-using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
 using ASC.Files.Resources;
 using ASC.MessagingSystem;
@@ -267,13 +266,26 @@ namespace ASC.Web.Files
 
         private void DownloadFile(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                DownloadFile(context, id);
+            }
+            else
+            {
+                DownloadFile(context, q);
+            }
+        }
+
+        private void DownloadFile<T>(HttpContext context, T id)
+        {
             var flushed = false;
             try
             {
-                var id = context.Request.Query[FilesLinkUtility.FileId];
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 var readLink = FileShareLink.Check(doc, true, fileDao, out var file);
                 if (!readLink && file == null)
                 {
@@ -352,7 +364,7 @@ namespace ASC.Web.Files
                                 && FFmpegService.IsConvertable(ext))
                             {
                                 const string mp4Name = "content.mp4";
-                                var mp4Path = FileDao.GetUniqFilePath(file, mp4Name);
+                                var mp4Path = fileDao.GetUniqFilePath(file, mp4Name);
                                 var store = GlobalStore.GetStore();
                                 if (!store.IsFile(mp4Path))
                                 {

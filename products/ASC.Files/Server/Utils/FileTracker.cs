@@ -164,6 +164,31 @@ namespace ASC.Web.Files.Utils
             return false;
         }
 
+        public static bool IsEditing<T>(T fileId)
+        {
+            var tracker = GetTracker(fileId);
+            if (tracker != null)
+            {
+                var listForRemove = tracker._editingBy
+                                           .Where(e => !e.Value.NewScheme && (DateTime.UtcNow - e.Value.TrackTime).Duration() > TrackTimeout)
+                                           .ToList();
+                foreach (var editTab in listForRemove)
+                {
+                    tracker._editingBy.Remove(editTab.Key);
+                }
+
+                if (tracker._editingBy.Count == 0)
+                {
+                    SetTracker(fileId, null);
+                    return false;
+                }
+
+                SetTracker(fileId, tracker);
+                return true;
+            }
+            SetTracker(fileId, null);
+            return false;
+        }
         public static bool IsEditingAlone(object fileId)
         {
             var tracker = GetTracker(fileId);

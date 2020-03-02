@@ -32,7 +32,11 @@ namespace ASC.Files.Core
     {
         IFolderDao FolderDao { get; }
 
+        IFolderDao<T> GetFolderDao<T>();
+
         IFileDao FileDao { get; }
+
+        IFileDao<T> GetFileDao<T>();
 
         ITagDao TagDao { get; }
 

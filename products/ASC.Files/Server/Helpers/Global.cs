@@ -299,6 +299,23 @@ namespace ASC.Web.Files.Classes
             return result;
         }
 
+        public T GetFolderProjects<T>(IDaoFactory daoFactory)
+        {
+            if (CoreBaseSettings.Personal) return default;
+
+            if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return default;
+
+            var folderDao = daoFactory.GetFolderDao<T>();
+            if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var result))
+            {
+                result = folderDao.GetFolderIDProjects(true);
+
+                ProjectsRootFolderCache[TenantManager.GetCurrentTenant().TenantId] = result;
+            }
+
+            return (T)result;
+        }
+
         internal static readonly IDictionary<string, object> UserRootFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
@@ -339,6 +356,18 @@ namespace ASC.Web.Files.Classes
             }
             return commonFolderId;
         }
+        public T GetFolderCommon<T>(FileMarker fileMarker, IDaoFactory daoFactory)
+        {
+            if (CoreBaseSettings.Personal) return default;
+
+            if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
+            {
+                commonFolderId = GetFolderIdAndProccessFirstVisit<T>(fileMarker, daoFactory, false);
+                if (!Equals(commonFolderId, 0))
+                    CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
+            }
+            return (T)commonFolderId;
+        }
 
         internal static readonly IDictionary<int, object> ShareFolderCache =
             new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
@@ -357,6 +386,22 @@ namespace ASC.Web.Files.Classes
             }
 
             return sharedFolderId;
+        }
+
+        public T GetFolderShare<T>(IFolderDao<T> folderDao)
+        {
+            if (CoreBaseSettings.Personal) return default;
+            if (IsOutsider) return default;
+
+            if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var sharedFolderId))
+            {
+                sharedFolderId = folderDao.GetFolderIDShare(true);
+
+                if (!sharedFolderId.Equals(default))
+                    ShareFolderCache[TenantManager.GetCurrentTenant().TenantId] = sharedFolderId;
+            }
+
+            return (T)sharedFolderId;
         }
 
         internal static readonly IDictionary<string, object> TrashFolderCache =
@@ -382,6 +427,42 @@ namespace ASC.Web.Files.Classes
             TrashFolderCache.Remove(cacheKey);
         }
 
+        private T GetFolderIdAndProccessFirstVisit<T>(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
+        {
+            var folderDao = daoFactory.GetFolderDao<T>();
+            var fileDao = daoFactory.GetFileDao<T>();
+
+            var id = my ? folderDao.GetFolderIDUser(false) : folderDao.GetFolderIDCommon(false);
+
+            if (Equals(id, 0)) //TODO: think about 'null'
+            {
+                id = my ? folderDao.GetFolderIDUser(true) : folderDao.GetFolderIDCommon(true);
+
+                //Copy start document
+                if (AdditionalWhiteLabelSettings.Instance(SettingsManager).StartDocsEnabled)
+                {
+                    try
+                    {
+                        var storeTemplate = GlobalStore.GetStoreTemplate();
+
+                        var culture = my ? UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture() : TenantManager.GetCurrentTenant().GetCulture();
+                        var path = FileConstant.StartDocPath + culture + "/";
+
+                        if (!storeTemplate.IsDirectory(path))
+                            path = FileConstant.StartDocPath + "default/";
+                        path += my ? "my/" : "corporate/";
+
+                        SaveStartDocument(fileMarker, folderDao, fileDao, id, path, storeTemplate);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(ex);
+                    }
+                }
+            }
+
+            return id;
+        }
         private object GetFolderIdAndProccessFirstVisit(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
         {
             var folderDao = daoFactory.FolderDao;
@@ -438,6 +519,25 @@ namespace ASC.Web.Files.Classes
             }
         }
 
+        private void SaveStartDocument<T>(FileMarker fileMarker, IFolderDao<T> folderDao, IFileDao<T> fileDao, T folderId, string path, IDataStore storeTemplate)
+        {
+            foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
+            {
+                SaveFile(fileMarker, fileDao, folderId, path + file, storeTemplate);
+            }
+
+            foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
+            {
+                var folder = ServiceProvider.GetService<Folder<T>>();
+                folder.Title = folderName;
+                folder.ParentFolderID = folderId;
+
+                var subFolderId = folderDao.SaveFolder(folder);
+
+                SaveStartDocument(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+            }
+        }
+
         private void SaveFile(FileMarker fileMarker, IFileDao fileDao, object folder, string filePath, IDataStore storeTemp)
         {
             using var stream = storeTemp.GetReadStream("", filePath);
@@ -461,6 +561,31 @@ namespace ASC.Web.Files.Classes
                 Logger.Error(ex);
             }
         }
+
+        private void SaveFile<T>(FileMarker fileMarker, IFileDao<T> fileDao, T folder, string filePath, IDataStore storeTemp)
+        {
+            using var stream = storeTemp.GetReadStream("", filePath);
+            var fileName = Path.GetFileName(filePath);
+            var file = ServiceProvider.GetService<File<T>>();
+
+            file.Title = fileName;
+            file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
+            file.FolderID = folder;
+            file.Comment = FilesCommonResource.CommentCreate;
+
+            stream.Position = 0;
+            try
+            {
+                file = fileDao.SaveFile(file, stream);
+
+                fileMarker.MarkAsNew(file);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
+        }
+
         public bool IsOutsider
         {
             get { return UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsOutsider(UserManager); }
@@ -487,12 +612,22 @@ namespace ASC.Web.Files.Classes
                 return GlobalFolder.GetFolderProjects(DaoFactory);
             }
         }
+        public T GetFolderProjects<T>()
+        {
+            return GlobalFolder.GetFolderProjects<T>(DaoFactory);
+        }
+
         public object FolderCommon
         {
             get
             {
                 return GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
             }
+        }
+
+        public T GetFolderCommon<T>()
+        {
+            return GlobalFolder.GetFolderCommon<T>(FileMarker, DaoFactory);
         }
 
         public object FolderMy
@@ -513,6 +648,11 @@ namespace ASC.Web.Files.Classes
             {
                 return GlobalFolder.GetFolderShare(DaoFactory.FolderDao);
             }
+        }
+
+        public T GetFolderShare<T>()
+        {
+            return GlobalFolder.GetFolderShare(DaoFactory.GetFolderDao<T>());
         }
 
         public object FolderTrash

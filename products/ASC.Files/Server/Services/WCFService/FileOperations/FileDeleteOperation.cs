@@ -39,13 +39,13 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    internal class FileDeleteOperationData : FileOperationData
+    internal class FileDeleteOperationData<T> : FileOperationData<T>
     {
         public bool IgnoreException { get; }
         public bool Immediately { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileDeleteOperationData(List<object> folders, List<object> files, Tenant tenant,
+        public FileDeleteOperationData(List<T> folders, List<T> files, Tenant tenant,
             bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
             : base(folders, files, tenant, holdResult)
         {
@@ -55,9 +55,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    class FileDeleteOperation : FileOperation<FileDeleteOperationData>
+    class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     {
-        private object _trashId;
+        private T _trashId;
         private readonly bool _ignoreException;
         private readonly bool _immediately;
         private readonly Dictionary<string, string> _headers;
@@ -68,7 +68,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData fileOperationData)
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
             : base(serviceProvider, fileOperationData)
         {
             _ignoreException = fileOperationData.IgnoreException;
@@ -99,7 +99,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             DeleteFolders(Folders, scope);
         }
 
-        private void DeleteFolders(IEnumerable<object> folderIds, IServiceScope scope)
+        private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
@@ -109,7 +109,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = FolderDao.GetFolder(folderId);
-                object canCalculate = null;
+                T canCalculate = default;
                 if (folder == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -120,13 +120,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
                 {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? null : folderId;
+                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                     Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
                 }
                 else
                 {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? null : folderId;
+                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                     fileMarker.RemoveMarkAsNewForAll(folder);
                     if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
@@ -142,7 +142,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     else
                     {
                         var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, null))
+                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default))
                         {
                             DeleteFiles(FileDao.GetFiles(folder.ID), scope);
                             DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);
@@ -184,7 +184,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private void DeleteFiles(IEnumerable<object> fileIds, IServiceScope scope)
+        private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
@@ -225,7 +225,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     }
                     ProcessedFile(fileId);
                 }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? null : fileId);
+                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
         }
 

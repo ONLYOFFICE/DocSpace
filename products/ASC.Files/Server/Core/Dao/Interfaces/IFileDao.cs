@@ -103,7 +103,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        List<object> GetFiles(T parentId);
+        List<T> GetFiles(T parentId);
 
         /// <summary>
         ///     Get files in folder
@@ -188,14 +188,14 @@ namespace ASC.Files.Core
         /// <param name="title">file name</param>
         /// <param name="folderId">folder id</param>
         /// <returns>Returns true if the file exists, otherwise false</returns>
-        bool IsExist(string title, T folderId);
+        bool IsExist(string title, object folderId);
 
         /// <summary>
         ///   Moves a file or set of files in a folder
         /// </summary>
         /// <param name="fileId">file id</param>
         /// <param name="toFolderId">The ID of the destination folder</param>
-        object MoveFile(T fileId, T toFolderId);
+        T MoveFile(T fileId, T toFolderId);
 
         /// <summary>
         ///  Copy the files in a folder
@@ -209,7 +209,7 @@ namespace ASC.Files.Core
         /// </summary>
         /// <param name="file"></param>
         /// <param name="newTitle">new name</param>
-        object FileRename(File<T> file, string newTitle);
+        T FileRename(File<T> file, string newTitle);
 
         /// <summary>
         ///   Update comment file
@@ -240,9 +240,15 @@ namespace ASC.Files.Core
         /// <returns></returns>
         bool UseTrashForRemove(File<T> file);
 
+        string GetUniqFilePath(File<T> file, string fileTitle);
+
         #region chunking
 
-        ChunkedUploadSession CreateUploadSession(File<T> file, long contentLength);
+        ChunkedUploadSession<T> CreateUploadSession(File<T> file, long contentLength);
+
+        void UploadChunk(ChunkedUploadSession<T> uploadSession, Stream chunkStream, long chunkLength);
+
+        void AbortUploadSession(ChunkedUploadSession<T> uploadSession);
 
         #endregion
 
@@ -507,11 +513,11 @@ namespace ASC.Files.Core
 
         #region chunking
 
-        ChunkedUploadSession CreateUploadSession(File file, long contentLength);
+        ChunkedUploadSession<object> CreateUploadSession(File file, long contentLength);
 
-        void UploadChunk(ChunkedUploadSession uploadSession, Stream chunkStream, long chunkLength);
+        void UploadChunk(ChunkedUploadSession<object> uploadSession, Stream chunkStream, long chunkLength);
 
-        void AbortUploadSession(ChunkedUploadSession uploadSession);
+        void AbortUploadSession(ChunkedUploadSession<object> uploadSession);
 
         #endregion
 

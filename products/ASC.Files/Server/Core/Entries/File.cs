@@ -59,6 +59,22 @@ namespace ASC.Files.Core
         [DataMember(Name = "id")]
         public new T ID { get; set; }
 
+        public new T FolderID { get; set; }
+
+        private T _folderIdDisplay;
+
+        [DataMember(Name = "folder_id")]
+        public new T FolderIdDisplay
+        {
+            get
+            {
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return FolderID;
+            }
+            set { _folderIdDisplay = value; }
+        }
+
         public File(Global global, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter) : base(global, filesLinkUtility, fileUtility, fileConverter)
         {
         }
@@ -228,6 +244,20 @@ namespace ASC.Files.Core
         public FilesLinkUtility FilesLinkUtility { get; }
         public FileUtility FileUtility { get; }
         public FileConverter FileConverter { get; }
+
+        private object _folderIdDisplay;
+
+        [DataMember(Name = "folder_id")]
+        public override object FolderIdDisplay
+        {
+            get
+            {
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return FolderID;
+            }
+            set { _folderIdDisplay = value; }
+        }
 
         public static string Serialize(File file)
         {

@@ -48,20 +48,20 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    abstract class FileOperationData
+    abstract class FileOperationData<T>
     {
-        public List<object> Folders { get; private set; }
+        public List<T> Folders { get; private set; }
 
-        public List<object> Files { get; private set; }
+        public List<T> Files { get; private set; }
 
         public Tenant Tenant { get; }
 
         public bool HoldResult { get; private set; }
 
-        protected FileOperationData(List<object> folders, List<object> files, Tenant tenant, bool holdResult = true)
+        protected FileOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true)
         {
-            Folders = folders ?? new List<object>();
-            Files = files ?? new List<object>();
+            Folders = folders ?? new List<T>();
+            Files = files ?? new List<T>();
             Tenant = tenant;
             HoldResult = holdResult;
         }
@@ -81,7 +81,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public const string HOLD = "Hold";
     }
 
-    abstract class FileOperation<T> where T : FileOperationData
+    abstract class FileOperation<T, TId> where T : FileOperationData<TId>
     {
         private readonly IPrincipal principal;
         private readonly string culture;
@@ -100,9 +100,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected FileSecurity FilesSecurity { get; private set; }
 
-        protected IFolderDao FolderDao { get; private set; }
+        protected IFolderDao<TId> FolderDao { get; private set; }
 
-        protected IFileDao FileDao { get; private set; }
+        protected IFileDao<TId> FileDao { get; private set; }
 
         protected ITagDao TagDao { get; private set; }
 
@@ -112,9 +112,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected CancellationToken CancellationToken { get; private set; }
 
-        protected List<object> Folders { get; private set; }
+        protected List<TId> Folders { get; private set; }
 
-        protected List<object> Files { get; private set; }
+        protected List<TId> Files { get; private set; }
 
         protected bool HoldResult { get; private set; }
 
@@ -152,8 +152,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(culture);
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
 
-                FolderDao = daoFactory.FolderDao;
-                FileDao = daoFactory.FileDao;
+                FolderDao = daoFactory.GetFolderDao<TId>();
+                FileDao = daoFactory.GetFileDao<TId>();
                 TagDao = daoFactory.TagDao;
                 ProviderDao = daoFactory.ProviderDao;
                 FilesSecurity = fileSecurity;
@@ -219,7 +219,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return count;
         }
 
-        protected void ProgressStep(object folderId = null, object fileId = null)
+        protected void ProgressStep(TId folderId = default, TId fileId = default)
         {
             if (folderId == null && fileId == null
                 || folderId != null && Folders.Contains(folderId)
@@ -230,7 +230,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        protected bool ProcessedFolder(object folderId)
+        protected bool ProcessedFolder(TId folderId)
         {
             successProcessed++;
             if (Folders.Contains(folderId))
@@ -241,7 +241,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return false;
         }
 
-        protected bool ProcessedFile(object fileId)
+        protected bool ProcessedFile(TId fileId)
         {
             successProcessed++;
             if (Files.Contains(fileId))

@@ -99,21 +99,10 @@ namespace ASC.Files.Core
         public string ProviderKey { get; set; }
 
         [DataMember(Name = "folder_id")]
-        public object FolderIdDisplay
+        public abstract object FolderIdDisplay
         {
-            get
-            {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
-
-                var folder = this as Folder;
-                if (folder != null) return folder.ParentFolderID;
-
-                var file = this as File;
-                if (file != null) return file.FolderID;
-
-                return null;
-            }
-            set { _folderIdDisplay = value; }
+            get;
+            set;
         }
 
         public bool ProviderEntry
@@ -144,7 +133,6 @@ namespace ASC.Files.Core
 
         private string _modifiedByString;
         private string _createByString;
-        private object _folderIdDisplay;
 
         public override bool Equals(object obj)
         {

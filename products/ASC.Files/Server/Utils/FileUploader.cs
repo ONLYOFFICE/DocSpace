@@ -248,21 +248,15 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public ChunkedUploadSession InitiateUpload(string folderId, string fileId, string fileName, long contentLength, bool encrypted)
+        public ChunkedUploadSession<T> InitiateUpload<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
         {
-            if (string.IsNullOrEmpty(folderId))
-                folderId = null;
-
-            if (string.IsNullOrEmpty(fileId))
-                fileId = null;
-
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.ID = fileId;
             file.FolderID = folderId;
             file.Title = fileName;
             file.ContentLength = contentLength;
 
-            var dao = DaoFactory.FileDao;
+            var dao = DaoFactory.GetFileDao<T>();
             var uploadSession = dao.CreateUploadSession(file, contentLength);
 
             uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
@@ -278,9 +272,9 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public ChunkedUploadSession UploadChunk(string uploadId, Stream stream, long chunkLength)
+        public ChunkedUploadSession<T> UploadChunk<T>(string uploadId, Stream stream, long chunkLength)
         {
-            var uploadSession = ChunkedUploadSessionHolder.GetSession(uploadId);
+            var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(uploadId);
             uploadSession.Expired = DateTime.UtcNow + ChunkedUploadSessionHolder.SlidingExpiration;
 
             if (chunkLength <= 0)
@@ -301,7 +295,7 @@ namespace ASC.Web.Files.Utils
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
             }
 
-            var dao = DaoFactory.FileDao;
+            var dao = DaoFactory.GetFileDao<T>();
             dao.UploadChunk(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
@@ -317,14 +311,14 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public void AbortUpload(string uploadId)
+        public void AbortUpload<T>(string uploadId)
         {
-            AbortUpload(ChunkedUploadSessionHolder.GetSession(uploadId));
+            AbortUpload(ChunkedUploadSessionHolder.GetSession<T>(uploadId));
         }
 
-        private void AbortUpload(ChunkedUploadSession uploadSession)
+        private void AbortUpload<T>(ChunkedUploadSession<T> uploadSession)
         {
-            DaoFactory.FileDao.AbortUploadSession(uploadSession);
+            DaoFactory.GetFileDao<T>().AbortUploadSession(uploadSession);
 
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }

@@ -47,16 +47,14 @@ using Ionic.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    internal class FileDownloadOperationData : FileOperationData
+    internal class FileDownloadOperationData<T> : FileOperationData<T>
     {
-        public Dictionary<object, string> FilesDownload { get; }
+        public Dictionary<T, string> FilesDownload { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileDownloadOperationData(Dictionary<object, string> folders, Dictionary<object, string> files, Tenant tenant, Dictionary<string, string> headers, bool holdResult = true)
+        public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, Dictionary<string, string> headers, bool holdResult = true)
             : base(folders.Select(f => f.Key).ToList(), files.Select(f => f.Key).ToList(), tenant, holdResult)
         {
             FilesDownload = files;
@@ -64,9 +62,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    class FileDownloadOperation : FileOperation<FileDownloadOperationData>
+    class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     {
-        private readonly Dictionary<object, string> files;
+        private readonly Dictionary<T, string> files;
         private readonly Dictionary<string, string> headers;
 
         public override FileOperationType OperationType
@@ -75,7 +73,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData fileDownloadOperationData)
+        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
             : base(serviceProvider, fileDownloadOperationData)
         {
             files = fileDownloadOperationData.FilesDownload;
@@ -114,16 +112,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private ItemNameValueCollection ExecPathFromFile(IServiceScope scope, File file, string path)
+        private ItemNameValueCollection<T> ExecPathFromFile(IServiceScope scope, File<T> file, string path)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             fileMarker.RemoveMarkAsNew(file);
 
             var title = file.Title;
 
-            if (files.ContainsKey(file.ID.ToString()))
+            if (files.ContainsKey(file.ID))
             {
-                var convertToExt = files[file.ID.ToString()];
+                var convertToExt = files[file.ID];
 
                 if (!string.IsNullOrEmpty(convertToExt))
                 {
@@ -131,16 +129,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
 
-            var entriesPathId = new ItemNameValueCollection();
-            entriesPathId.Add(path + title, file.ID.ToString());
+            var entriesPathId = new ItemNameValueCollection<T>();
+            entriesPathId.Add(path + title, file.ID);
 
             return entriesPathId;
         }
 
-        private ItemNameValueCollection GetEntriesPathId(IServiceScope scope)
+        private ItemNameValueCollection<T> GetEntriesPathId(IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var entriesPathId = new ItemNameValueCollection();
+            var entriesPathId = new ItemNameValueCollection<T>();
             if (0 < Files.Count)
             {
                 var files = FileDao.GetFiles(Files.ToArray());
@@ -158,13 +156,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        private ItemNameValueCollection GetFilesInFolders(IServiceScope scope, IEnumerable<object> folderIds, string path)
+        private ItemNameValueCollection<T> GetFilesInFolders(IServiceScope scope, IEnumerable<T> folderIds, string path)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
 
             CancellationToken.ThrowIfCancellationRequested();
 
-            var entriesPathId = new ItemNameValueCollection();
+            var entriesPathId = new ItemNameValueCollection<T>();
             foreach (var folderId in folderIds)
             {
                 CancellationToken.ThrowIfCancellationRequested();
@@ -183,7 +181,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 nestedFolders = FilesSecurity.FilterRead(nestedFolders).ToList();
                 if (files.Count == 0 && nestedFolders.Count == 0)
                 {
-                    entriesPathId.Add(folderPath, string.Empty);
+                    entriesPathId.Add(folderPath, default(T));
                 }
 
                 var filesInFolder = GetFilesInFolders(scope, nestedFolders.ConvertAll(f => f.ID), folderPath);
@@ -192,7 +190,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        private Stream CompressToZip(IServiceScope scope, ItemNameValueCollection entriesPathId)
+        private Stream CompressToZip(IServiceScope scope, ItemNameValueCollection<T> entriesPathId)
         {
             var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
             var fileConverter = scope.ServiceProvider.GetService<FileConverter>();
@@ -219,10 +217,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                         var newtitle = path;
 
-                        File file = null;
+                        File<T> file = null;
                         var convertToExt = string.Empty;
 
-                        if (!string.IsNullOrEmpty(entryId))
+                        if (!entryId.Equals(default(T)))
                         {
                             FileDao.InvalidateCache(entryId);
                             file = FileDao.GetFile(entryId);
@@ -239,9 +237,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                 continue;
                             }
 
-                            if (files.ContainsKey(file.ID.ToString()))
+                            if (files.ContainsKey(file.ID))
                             {
-                                convertToExt = files[file.ID.ToString()];
+                                convertToExt = files[file.ID];
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
                                     newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);
@@ -253,7 +251,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             var suffix = " (" + counter + ")";
 
-                            if (!string.IsNullOrEmpty(entryId))
+                            if (!entryId.Equals(default(T)))
                             {
                                 newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
                             }
@@ -265,7 +263,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                         zip.PutNextEntry(newtitle);
 
-                        if (!string.IsNullOrEmpty(entryId) && file != null)
+                        if (!entryId.Equals(default(T)) && file != null)
                         {
                             try
                             {
@@ -307,7 +305,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return stream;
         }
 
-        private void ReplaceLongPath(ItemNameValueCollection entriesPathId)
+        private void ReplaceLongPath(ItemNameValueCollection<T> entriesPathId)
         {
             foreach (var path in new List<string>(entriesPathId.AllKeys))
             {
@@ -324,9 +322,9 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        class ItemNameValueCollection
+        class ItemNameValueCollection<T>
         {
-            private readonly Dictionary<string, List<string>> dic = new Dictionary<string, List<string>>();
+            private readonly Dictionary<string, List<T>> dic = new Dictionary<string, List<T>>();
 
 
             public IEnumerable<string> AllKeys
@@ -334,7 +332,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 get { return dic.Keys; }
             }
 
-            public IEnumerable<string> this[string name]
+            public IEnumerable<T> this[string name]
             {
                 get { return dic[name].ToArray(); }
             }
@@ -344,16 +342,16 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 get { return dic.Count; }
             }
 
-            public void Add(string name, string value)
+            public void Add(string name, T value)
             {
                 if (!dic.ContainsKey(name))
                 {
-                    dic.Add(name, new List<string>());
+                    dic.Add(name, new List<T>());
                 }
                 dic[name].Add(value);
             }
 
-            public void Add(ItemNameValueCollection collection)
+            public void Add(ItemNameValueCollection<T> collection)
             {
                 foreach (var key in collection.AllKeys)
                 {
@@ -364,11 +362,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
             }
 
-            public void Add(string name, IEnumerable<string> values)
+            public void Add(string name, IEnumerable<T> values)
             {
                 if (!dic.ContainsKey(name))
                 {
-                    dic.Add(name, new List<string>());
+                    dic.Add(name, new List<T>());
                 }
                 dic[name].AddRange(values);
             }

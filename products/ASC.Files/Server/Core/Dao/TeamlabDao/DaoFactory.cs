@@ -24,25 +24,41 @@
 */
 
 
+using System;
+
 using ASC.Common;
 using ASC.Files.Core.Security;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
     public class DaoFactory : IDaoFactory
     {
+        public IServiceProvider ServiceProvider { get; }
         public IFileDao FileDao { get; }
         public IFolderDao FolderDao { get; }
         public ITagDao TagDao { get; }
         public ISecurityDao SecurityDao { get; }
         public IProviderDao ProviderDao { get; }
 
-        public DaoFactory(IFileDao fileDao, IFolderDao folderDao, ITagDao tagDao, ISecurityDao securityDao)
+        public DaoFactory(IServiceProvider serviceProvider, IFileDao fileDao, IFolderDao folderDao, ITagDao tagDao, ISecurityDao securityDao)
         {
+            ServiceProvider = serviceProvider;
             FileDao = fileDao;
             FolderDao = folderDao;
             TagDao = tagDao;
             SecurityDao = securityDao;
+        }
+
+        public IFileDao<T> GetFileDao<T>()
+        {
+            return ServiceProvider.GetService<IFileDao<T>>();
+        }
+
+        public IFolderDao<T> GetFolderDao<T>()
+        {
+            return ServiceProvider.GetService<IFolderDao<T>>();
         }
     }
 
