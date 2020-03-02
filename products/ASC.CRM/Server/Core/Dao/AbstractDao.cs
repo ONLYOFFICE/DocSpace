@@ -1,0 +1,316 @@
+/*
+ *
+ * (c) Copyright Ascensio System Limited 2010-2018
+ *
+ * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+ * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+ * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+ * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+ *
+ * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+ * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+ *
+ * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+ *
+ * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+ * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+ *
+ * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+ * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+ * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+ * in every copy of the program you distribute. 
+ * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+ *
+*/
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using ASC.Common.Caching;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Enums;
+using Microsoft.EntityFrameworkCore;
+
+namespace ASC.CRM.Core.Dao
+{
+    public class AbstractDao
+    {
+        protected readonly List<EntityType> _supportedEntityType = new List<EntityType>();
+        protected readonly ILog _log = LogManager.GetLogger("ASC.CRM");
+
+        public CRMDbContext CRMDbContext { get; }
+        public SecurityContext SecurityContext { get; }
+
+        protected readonly ICache _cache;
+
+        public AbstractDao(
+            DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext
+            )
+        {
+            _cache = AscCache.Memory;
+            CRMDbContext = dbContextManager.Get(CRMConstants.DatabaseId);
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            SecurityContext = securityContext;           
+        }
+
+        /*
+        protected readonly String _invoiceItemCacheKey;
+        protected readonly String _invoiceTaxCacheKey;
+        protected readonly String _invoiceLineCacheKey;
+        */
+        protected AbstractDao(int tenantID)
+        {
+            TenantID = tenantID;
+
+            _supportedEntityType.Add(EntityType.Company);
+            _supportedEntityType.Add(EntityType.Person);
+            _supportedEntityType.Add(EntityType.Contact);
+            _supportedEntityType.Add(EntityType.Opportunity);
+            _supportedEntityType.Add(EntityType.Case);
+
+            /*
+            _invoiceItemCacheKey = String.Concat(TenantID, "/invoiceitem");
+            _invoiceTaxCacheKey = String.Concat(TenantID, "/invoicetax");
+            _invoiceLineCacheKey = String.Concat(TenantID, "/invoiceline");
+            
+            if (_cache.Get(_invoiceItemCacheKey) == null)
+            {
+                _cache.Insert(_invoiceItemCacheKey, String.Empty);
+            }
+            if (_cache.Get(_invoiceTaxCacheKey) == null)
+            {
+                _cache.Insert(_invoiceTaxCacheKey, String.Empty);
+            }
+            if (_cache.Get(_invoiceLineCacheKey) == null)
+            {
+                _cache.Insert(_invoiceLineCacheKey, String.Empty);
+            }
+             */
+        }
+
+        protected int TenantID { get; private set; }
+
+        protected List<int> SearchByTags(EntityType entityType, int[] exceptIDs, IEnumerable<String> tags)
+        {
+            if (tags == null || !tags.Any())
+                throw new ArgumentException();
+
+            var tagIDs = new List<int>();
+
+            foreach (var tag in tags) {
+                tagIDs.Add(CRMDbContext
+                    .CrmTag
+                    .Where(x => x.EntityType == (int)entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
+                    .Select(x => x.Id).Single());
+            }
+
+            Expression<Func<CrmEntityTag, bool>> exp = null;
+
+            if (exceptIDs != null && exceptIDs.Length > 0)
+                exp = x => exceptIDs.Contains(x.EntityId) && x.EntityType == (int)entityType;
+            else
+                exp = x => x.EntityType == (int)entityType;
+            
+            
+            throw new NotImplementedException();
+
+            //            exp.Update() Exp.In("tag_id", tagIDs)
+            // return CRMDbContext.CrmEntityTag.Where(exp).GroupBy(x => x.EntityId).Select(x=>)
+            // .Where(x => true).Select(x=>x); 
+
+            //var sqlQuery = new SqlQuery("crm_entity_tag")
+            //    .Select("entity_id")
+            //    .Select("count(*) as count")
+            //    .GroupBy("entity_id")
+            //    .Having(Exp.Eq("count", tags.Count()));
+
+            //if (exceptIDs != null && exceptIDs.Length > 0)
+            //    sqlQuery.Where(Exp.In("entity_id", exceptIDs) & Exp.Eq("entity_type", (int)entityType));
+            //else
+            //    sqlQuery.Where(Exp.Eq("entity_type", (int)entityType));
+
+            //sqlQuery.Where(Exp.In("tag_id", tagIDs));
+
+            //return Db.ExecuteList(sqlQuery).ConvertAll(row => Convert.ToInt32(row[0]));
+        }
+
+        protected Dictionary<int, int[]> GetRelativeToEntity(int[] contactID, EntityType entityType, int[] entityID)
+        {
+            Expression<Func<CrmEntityContact, bool>> exp = null;
+
+            if (contactID != null && contactID.Length > 0 && (entityID == null || entityID.Length == 0))
+                exp = x => x.EntityType == (int)entityType && contactID.Contains(x.ContactId);
+            else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
+                exp = x => x.EntityType == (int)entityType && entityID.Contains(x.EntityId);
+            
+            return CRMDbContext.CrmEntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
+                    x => x.Key,
+                    x => x.Select(x => Convert.ToInt32(x.ContactId)).ToArray());         
+        }
+
+        protected int[] GetRelativeToEntity(int? contactID, EntityType entityType, int? entityID)
+        {
+            return GetRelativeToEntityInDb(contactID, entityType, entityID);
+        }
+
+        protected int[] GetRelativeToEntityInDb(int? contactID, EntityType entityType, int? entityID)
+        {
+            if (contactID.HasValue && !entityID.HasValue)
+                return CRMDbContext.CrmEntityContact
+                       .Where(x => x.EntityType == (int)entityType && x.ContactId == contactID.Value)
+                       .Select(x => x.EntityId)
+                       .ToArray();
+
+            if (!contactID.HasValue && entityID.HasValue)
+                return CRMDbContext.CrmEntityContact
+                       .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID.Value)
+                       .Select(x => x.ContactId)
+                       .ToArray();
+
+            throw new ArgumentException();
+        }
+
+        protected void SetRelative(int[] contactID, EntityType entityType, int entityID)
+        {
+            if (entityID == 0)
+                throw new ArgumentException();
+
+            using var tx = CRMDbContext.Database.BeginTransaction();
+
+            var exists = CRMDbContext.CrmEntityContact
+                                    .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID)
+                                    .Select(x => x.ContactId)
+                                    .ToArray();
+
+            foreach (var existContact in exists)
+            {
+                var items = CRMDbContext.CrmEntityContact
+                                        .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID && x.ContactId == existContact);
+
+                CRMDbContext.CrmEntityContact.RemoveRange(items);
+            }
+
+            if (!(contactID == null || contactID.Length == 0))
+                foreach (var id in contactID)
+                    SetRelative(id, entityType, entityID);
+
+            tx.Commit();
+        }
+
+        protected void SetRelative(int contactID, EntityType entityType, int entityID)
+        {
+            CRMDbContext.CrmEntityContact.Add(new CrmEntityContact
+            {
+                ContactId = contactID,
+                EntityType = (int)entityType,
+                EntityId = entityID
+            });
+
+            CRMDbContext.SaveChanges();
+        }
+
+        protected void RemoveRelativeInDb(int[] contactID, EntityType entityType, int[] entityID)
+        {
+            if ((contactID == null || contactID.Length == 0) && (entityID == null || entityID.Length == 0))
+                throw new ArgumentException();
+
+            Expression<Func<CrmEntityContact, bool>> expr = null;
+
+            if (contactID != null && contactID.Length > 0)
+                expr = x => contactID.Contains(x.ContactId);
+
+            if (entityID != null && entityID.Length > 0)
+                expr = x => entityID.Contains(x.EntityId) && x.EntityType == (int)entityType;
+
+            var dbCrmEntity = CRMDbContext.CrmEntityContact;
+
+            dbCrmEntity.RemoveRange(dbCrmEntity.Where(expr));
+
+            CRMDbContext.SaveChanges();
+        }
+
+        protected void RemoveRelative(int contactID, EntityType entityType, int entityID)
+        {
+            int[] contactIDs = null;
+            int[] entityIDs = null;
+
+
+            if (contactID > 0)
+                contactIDs = new[] { contactID };
+
+            if (entityID > 0)
+                entityIDs = new[] { entityID };
+
+
+            RemoveRelativeInDb(contactIDs, entityType, entityIDs);
+        }
+
+
+        public int SaveOrganisationLogo(byte[] bytes)
+        {            
+            var entity = new CrmOrganisationLogo
+            {
+                Content = Convert.ToBase64String(bytes),
+                CreateOn = DateTime.UtcNow,
+                CreateBy = SecurityContext.CurrentAccount.ID.ToString()
+            };
+
+            CRMDbContext.CrmOrganisationLogo.Add(entity);
+
+            CRMDbContext.SaveChanges();
+
+            return entity.Id;
+        }
+
+        public string GetOrganisationLogoBase64(int logo_id)
+        {
+           
+            if (logo_id <= 0) throw new ArgumentException();
+
+
+            return CRMDbContext.CrmOrganisationLogo
+                                .Where(x => x.Id == logo_id)
+                                .Select(x => x.Content)
+                                .FirstOrDefault();
+        }
+
+
+        #region HasCRMActivity
+
+        public bool HasActivity()
+        {
+            return Db.ExecuteScalar<bool>(@"select exists(select 1 from crm_case where tenant_id = @tid) or " +
+                "exists(select 1 from crm_deal where tenant_id = @tid) or exists(select 1 from crm_task where tenant_id = @tid) or " +
+                "exists(select 1 from crm_contact where tenant_id = @tid)", new { tid = TenantID });
+        }
+
+        #endregion
+
+        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbCrm
+        {
+            return set.Where(r => r.TenantId == TenantID);
+        }
+
+        protected string GetTenantColumnName(string table)
+        {
+            var tenant = "tenant_id";
+            if (!table.Contains(" ")) return tenant;
+            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
+        }
+
+
+        protected static Guid ToGuid(object guid)
+        {
+            var str = guid as string;
+            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
+        }
+
+    }
+}
