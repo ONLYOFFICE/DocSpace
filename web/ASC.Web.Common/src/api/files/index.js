@@ -3,6 +3,18 @@ import { request } from "../client";
 import Filter from "./filter";
 import * as fakeFiles from "./fake";
 
+export function getFolder(folderId, filter = Filter.getDefault(), fake = false) {
+
+  if (fake) {
+    return fakeFiles.getFakeElements(filter, "Fake folder");
+  }
+
+  return request({
+    method: "get",
+    url: `/files/${folderId}.json`
+  });
+}
+
 export function getMyFolderList(filter = Filter.getDefault(), fake = false) {
 
   if (fake) {

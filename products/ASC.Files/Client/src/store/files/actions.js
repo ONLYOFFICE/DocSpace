@@ -63,6 +63,14 @@ export function selectFolder() {
   return Promise.resolve([]);
 }
 
+export function fetchFolder(folderId, dispatch) {
+  return files.getFolder(folderId).then(data => {
+    dispatch(setFolders(data.folders));
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder(data.current));
+  })
+}
+
 export function fetchMyFolder(dispatch) {
   return files.getMyFolderList().then(data => {
     dispatch(setFolders(data.folders));
