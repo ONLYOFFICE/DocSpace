@@ -91,7 +91,7 @@ const TreeMenu = props => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBageClick } = props;
+        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick } = props;
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
@@ -151,7 +151,7 @@ const TreeMenu = props => {
                         borderRadius="11px"
                         padding="0 5px"
                         maxWidth="50px"
-                        onClick={onBageClick}
+                        onClick={onBadgeClick}
                     />
                 )}
         </StyledTreeContainer>
@@ -171,6 +171,7 @@ TreeMenu.propTypes = {
     icon: PropTypes.func,
     onDragStart: PropTypes.func,
     onDrop: PropTypes.func,
+    onBadgeClick: PropTypes.func,
 
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
@@ -178,7 +179,8 @@ TreeMenu.propTypes = {
     ]),
     className: PropTypes.string,
     id: PropTypes.string,
-    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+    style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+    badgeLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
 
 export default TreeMenu
