@@ -1,12 +1,12 @@
 
 import React from "react";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge } from "asc-web-components";
 
 class FilesRowContent extends React.PureComponent {
 
   render() {
-    const { title, fileExst, created, createdBy, contentLength, filesCount, foldersCount } = this.props.item;
+    const { title, fileExst, created, createdBy, contentLength, filesCount, foldersCount, version, fileStatus } = this.props.item;
 
     const SimpleFilesRowContent = styled(RowContent)`
     .badge-ext {
@@ -16,7 +16,11 @@ class FilesRowContent extends React.PureComponent {
 
     .badge {
       margin-right: 8px;
-      margin-top: ${props => props.isFile ? `-4px` : `0px`}
+    }
+
+    .badges {
+      display: flex;
+      align-items: center;
     }
   `
     const titleWithoutExt = fileExst
@@ -25,6 +29,8 @@ class FilesRowContent extends React.PureComponent {
 
     const fileOwner = (this.props.viewer.id === createdBy.id && "Me") || createdBy.displayName;
     const createdDate = new Date(created).toLocaleString("EN-US");
+    const notConverted = ['.pdf', '.zip'];
+    const canEdit = fileExst && notConverted.includes(fileExst) ? false : true;
 
     return (
       <SimpleFilesRowContent
@@ -44,7 +50,7 @@ class FilesRowContent extends React.PureComponent {
         </Link>
         <div>
           {fileExst &&
-            <>
+            <div className='badges'>
               <Text
                 className='badge-ext'
                 as="span"
@@ -56,10 +62,67 @@ class FilesRowContent extends React.PureComponent {
               >
                 {fileExst}
               </Text>
-              <Icons.FileActionsConvertIcon className='badge' size='small' isfill={true} color='#A3A9AE' />
-              <Icons.FileActionsConvertEditDocIcon className='badge' size='small' isfill={true} color='#3B72A7' />
-              <Icons.FileActionsLockedIcon className='badge' size='small' isfill={true} color='#3B72A7' />
-            </>
+              {fileStatus === 4 &&
+                <Icons.FileActionsConvertIcon
+                  className='badge'
+                  size='small'
+                  isfill={true}
+                  color='#A3A9AE'
+                />
+              }
+              {canEdit &&
+                <Icons.AccessEditIcon
+                  className='badge'
+                  size='small'
+                  isfill={true}
+                  color='#A3A9AE'
+                />
+              }
+              {fileStatus === 1 &&
+                <Icons.FileActionsConvertEditDocIcon
+                  className='badge'
+                  size='small'
+                  isfill={true}
+                  color='#3B72A7'
+                />
+              }
+              {false &&
+                <Icons.FileActionsLockedIcon
+                  className='badge'
+                  size='small'
+                  isfill={true}
+                  color='#3B72A7'
+                />
+              }
+              {version > 1 &&
+                <Badge
+                  className='badge-version'
+                  backgroundColor="#A3A9AE"
+                  borderRadius="11px"
+                  color="#FFFFFF"
+                  fontSize="10px"
+                  fontWeight={800}
+                  label={`Ver.${version}`}
+                  maxWidth="50px"
+                  onClick={() => { }}
+                  padding="0 5px"
+                />
+              }
+              {fileStatus === 2 &&
+                <Badge
+                  className='badge-version'
+                  backgroundColor="#ED7309"
+                  borderRadius="11px"
+                  color="#FFFFFF"
+                  fontSize="10px"
+                  fontWeight={800}
+                  label={`New`}
+                  maxWidth="50px"
+                  onClick={() => { }}
+                  padding="0 5px"
+                />
+              }
+            </div>
           }
         </div>
         <Text
