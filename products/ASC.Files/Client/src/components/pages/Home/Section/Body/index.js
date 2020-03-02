@@ -4,47 +4,68 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   Row,
-  Avatar,
-  toastr,
+  //toastr,
   Icons,
-  Link,
-  RowContainer,
-  Text,
-  Badge,
-  utils
+  RowContainer
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 
-import i18n from '../../i18n';
+//import i18n from '../../i18n';
 
 class SectionBodyContent extends React.PureComponent {
-
-  componentDidMount() {
-
-  }
-
-  badgeStyle = (isFile) => {
-    return {
-      marginRight: '8px',
-      marginTop: isFile ? '-4px' : '0px'
-    }
-  };
 
   render() {
     const { files, folders, viewer, user } = this.props;
 
     const items = [...folders, ...files];
 
+    const fakeContext = [
+      {
+        key: "sharing-settings",
+        label: "Sharing settings",
+        onClick: () => { },
+        disabled: true
+      },
+      {
+        key: "link-for-portal-users",
+        label: "Link for portal users",
+        onClick: () => { },
+        disabled: true
+      },
+      {
+        key: "sep",
+        isSeparator: true
+      },
+      {
+        key: "download",
+        label: "Download",
+        onClick: () => { },
+        disabled: true
+      },
+      {
+        key: "rename",
+        label: "Rename",
+        onClick: () => { },
+        disabled: true
+      },
+      {
+        key: "delete",
+        label: "Delete",
+        onClick: () => { },
+        disabled: true
+      },
+    ];
+
     return items.length > 0 ? (
       <RowContainer useReactWindow={false}>
         {items.map(item => {
-          const contextOptions = [] || this.getUserContextOptions(user, viewer).filter(o => o);
+          const contextOptions = fakeContext || this.getUserContextOptions(user, viewer).filter(o => o);
           const contextOptionsProps = !contextOptions.length
             ? {}
             : { contextOptions };
-          //const checked = isUserSelected(selection, user.id);
-          const checkedProps = {};
+          const checked = false; //isUserSelected(selection, user.id);
+          const checkedProps = /* isAdmin(viewer) */ true ? { checked } : {};;
           const element = item.fileExst
             ? (<Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />)
             : (<Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />);
