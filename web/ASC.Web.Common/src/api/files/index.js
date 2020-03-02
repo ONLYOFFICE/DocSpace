@@ -15,6 +15,22 @@ export function getFolder(folderId, filter = Filter.getDefault(), fake = false) 
   });
 }
 
+export function getFolderInfo(folderId) {
+
+  return request({
+    method: "get",
+    url: `/files/folder/${folderId}`
+  });
+}
+
+export function getFolderPath(folderId) {
+
+  return request({
+    method: "get",
+    url: `/files/folder/${folderId}/path`
+  });
+}
+
 export function getMyFolderList(filter = Filter.getDefault(), fake = false) {
 
   if (fake) {
@@ -85,6 +101,16 @@ export function createTextFileInMy(title) {
   return request(options);
 }
 
+export function createTextFileInCommon(title) {
+  const options = {
+    method: "post",
+    url: "/files/@common/file",
+    title: title
+  };
+
+  return request(options);
+}
+
 export function createTextFile(folderId, title) {
   const options = {
     method: "post",
@@ -94,3 +120,67 @@ export function createTextFile(folderId, title) {
 
   return request(options);
 }
+
+export function getFileInfo(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}`
+  };
+
+  return request(options);
+}
+
+export function updateFile(fileId, title /*, lastVersion */) {
+  const options = {
+    method: "put",
+    url: `/files/file/${fileId}`,
+    title: title,
+    /* lastVersion: lastVersion */ //TODO: not found file with last version
+  };
+
+  return request(options);
+}
+
+export function createFolder(folderId, title) {
+  const options = {
+    method: "post",
+    url: `/files/folder/${folderId}`,
+    title: title
+  };
+
+  return request(options);
+}
+
+export function renameFolder(folderId, title) {
+  const options = {
+    method: "put",
+    url: `/files/folder/${folderId}`,
+    title: title
+  };
+
+  return request(options);
+}
+
+//TODO: must work after add operations
+
+/* export function deleteFolder(folderId, deleteAfter, immediately) {
+  const options = {
+    method: "delete",
+    url: `/files/folder/${folderId}`,
+    deleteAfter: deleteAfter,
+    immediately: immediately
+  };
+
+  return request(options);
+}
+
+export function deleteFile(folderId, deleteAfter, immediately) {
+  const options = {
+    method: "delete",
+    url: `/files/file/${folderId}`,
+    deleteAfter: deleteAfter,
+    immediately: immediately
+  };
+
+  return request(options);
+} */
