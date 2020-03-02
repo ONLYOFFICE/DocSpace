@@ -35,10 +35,10 @@ export const getRootFolders = files => {
     "Документы проектов",
     "Корзина"
   ];
-  const { folders, selectedFolder, rootFolders } = files;
+  const { folders, rootFolders } = files;
   const { my, share, common, project, trash } = rootFolders;
 
-  const myDocumentsFolder = getTreeGroups(folders, selectedFolder.title, my.id);
+  const myDocumentsFolder = getTreeGroups(folders, my.title, my.id);
   const sharedWithMeFolder = getTreeGroups(
     getFakeFolders(4),
     defaultFolders[1],
