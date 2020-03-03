@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -495,7 +496,7 @@ namespace ASC.Mail.Core.Dao
 
     public static class MailboxDaoExtension
     {
-        public static IServiceCollection AddMailboxDaoService(this IServiceCollection services)
+        public static DIHelper AddMailboxDaoService(this DIHelper services)
         {
             services.TryAddScoped<MailboxDao>();
 

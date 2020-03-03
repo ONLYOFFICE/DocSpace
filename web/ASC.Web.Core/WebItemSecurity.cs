@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
@@ -35,8 +37,7 @@ using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Web.Core.Utility.Settings;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using SecurityAction = ASC.Common.Security.Authorizing.Action;
 
 namespace ASC.Web.Core
@@ -434,7 +435,7 @@ namespace ASC.Web.Core
 
     public static class WebItemSecurityExtension
     {
-        public static IServiceCollection AddWebItemSecurity(this IServiceCollection services)
+        public static DIHelper AddWebItemSecurity(this DIHelper services)
         {
             services.TryAddScoped<WebItemSecurity>();
 
@@ -450,7 +451,7 @@ namespace ASC.Web.Core
                 .AddAuthManager()
                 .AddSettingsManagerService();
         }
-        public static IServiceCollection AddWebItemSecurityCache(this IServiceCollection services)
+        public static DIHelper AddWebItemSecurityCache(this DIHelper services)
         {
             services.TryAddSingleton<WebItemSecurityCache>();
             return services;

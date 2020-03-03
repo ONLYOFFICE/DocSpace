@@ -36,23 +36,49 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Data
 {
+    public class ConfigureDbTenantService : IConfigureNamedOptions<DbTenantService>
+    {
+        public TenantDomainValidator TenantDomainValidator { get; }
+        public DbContextManager<TenantDbContext> DbContextManager { get; }
+
+        public ConfigureDbTenantService(
+            TenantDomainValidator tenantDomainValidator,
+            DbContextManager<TenantDbContext> dbContextManager)
+        {
+            TenantDomainValidator = tenantDomainValidator;
+            DbContextManager = dbContextManager;
+        }
+
+        public void Configure(string name, DbTenantService options)
+        {
+            Configure(options);
+            options.TenantDbContext = DbContextManager.Get(name);
+        }
+
+        public void Configure(DbTenantService options)
+        {
+            options.TenantDomainValidator = TenantDomainValidator;
+            options.TenantDbContext = DbContextManager.Value;
+        }
+    }
+
     public class DbTenantService : ITenantService
     {
         private List<string> forbiddenDomains;
 
-        private TenantDomainValidator TenantDomainValidator { get; }
+        internal TenantDomainValidator TenantDomainValidator { get; set; }
 
-        private TenantDbContext TenantDbContext { get; }
+        internal TenantDbContext TenantDbContext { get; set; }
 
         public Expression<Func<DbTenant, Tenant>> FromDbTenantToTenant { get; set; }
         public Expression<Func<TenantUserSecurity, Tenant>> FromTenantUserToTenant { get; set; }
 
-        public DbTenantService(TenantDomainValidator tenantDomainValidator)
+        public DbTenantService()
         {
-            TenantDomainValidator = tenantDomainValidator;
             FromDbTenantToTenant = r => new Tenant
             {
                 Calls = r.Calls,
@@ -83,16 +109,11 @@ namespace ASC.Core.Data
             FromTenantUserToTenant = r => fromDbTenantToTenant(r.DbTenant);
         }
 
-        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator) : this(tenantDomainValidator)
+        public DbTenantService(DbContextManager<TenantDbContext> dbContextManager, TenantDomainValidator tenantDomainValidator) : this()
         {
             TenantDbContext = dbContextManager.Value;
+            TenantDomainValidator = tenantDomainValidator;
         }
-
-        public DbTenantService(TenantDbContext dbContextManager, TenantDomainValidator tenantDomainValidator) : this(tenantDomainValidator)
-        {
-            TenantDbContext = dbContextManager;
-        }
-
 
         public void ValidateDomain(string domain)
         {

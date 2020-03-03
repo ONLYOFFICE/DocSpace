@@ -26,88 +26,107 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Security;
 
-using ASC.Common.Logging;
+using ASC.Common;
 using ASC.Core.Billing;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
+using ASC.Core.Caching;
 using ASC.Core.Data;
 using ASC.Core.Security.Authentication;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
 {
+    class ConfigureHostedSolution : IConfigureNamedOptions<HostedSolution>
+    {
+        public UserFormatter UserFormatter { get; }
+        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        public IOptionsSnapshot<CachedUserService> UserService { get; }
+        public IOptionsSnapshot<CachedQuotaService> QuotaService { get; }
+        public IOptionsSnapshot<TariffService> TariffService { get; }
+        public IOptionsSnapshot<TenantManager> TenantManager { get; }
+        public IOptionsSnapshot<TenantUtil> TenantUtil { get; }
+        public IOptionsSnapshot<DbSettingsManager> DbSettingsManager { get; }
+        public IOptionsSnapshot<CoreSettings> CoreSettings { get; }
+
+        public ConfigureHostedSolution(
+            UserFormatter userFormatter,
+            IOptionsSnapshot<CachedTenantService> tenantService,
+            IOptionsSnapshot<CachedUserService> userService,
+            IOptionsSnapshot<CachedQuotaService> quotaService,
+            IOptionsSnapshot<TariffService> tariffService,
+            IOptionsSnapshot<TenantManager> tenantManager,
+            IOptionsSnapshot<TenantUtil> tenantUtil,
+            IOptionsSnapshot<DbSettingsManager> dbSettingsManager,
+            IOptionsSnapshot<CoreSettings> coreSettings
+            )
+        {
+            UserFormatter = userFormatter;
+            TenantService = tenantService;
+            UserService = userService;
+            QuotaService = quotaService;
+            TariffService = tariffService;
+            TenantManager = tenantManager;
+            TenantUtil = tenantUtil;
+            DbSettingsManager = dbSettingsManager;
+            CoreSettings = coreSettings;
+        }
+
+        public void Configure(HostedSolution hostedSolution)
+        {
+            hostedSolution.UserFormatter = UserFormatter;
+            hostedSolution.TenantService = TenantService.Value;
+            hostedSolution.UserService = UserService.Value;
+            hostedSolution.QuotaService = QuotaService.Value;
+            hostedSolution.TariffService = TariffService.Value;
+            hostedSolution.ClientTenantManager = TenantManager.Value;
+            hostedSolution.TenantUtil = TenantUtil.Value;
+            hostedSolution.SettingsManager = DbSettingsManager.Value;
+            hostedSolution.CoreSettings = CoreSettings.Value;
+        }
+
+        public void Configure(string name, HostedSolution hostedSolution)
+        {
+            Configure(hostedSolution);
+            hostedSolution.Region = name;
+            hostedSolution.TenantService = TenantService.Get(name);
+            hostedSolution.UserService = UserService.Get(name);
+            hostedSolution.QuotaService = QuotaService.Get(name);
+            hostedSolution.TariffService = TariffService.Get(name);
+            hostedSolution.ClientTenantManager = TenantManager.Get(name);
+            hostedSolution.TenantUtil = TenantUtil.Get(name);
+            hostedSolution.SettingsManager = DbSettingsManager.Get(name);
+            hostedSolution.CoreSettings = CoreSettings.Get(name);
+        }
+    }
+
     public class HostedSolution
     {
-        private readonly ITenantService tenantService;
-        private readonly IUserService userService;
-        private readonly IQuotaService quotaService;
-        private readonly ITariffService tariffService;
-        private readonly TenantManager clientTenantManager;
-        private readonly DbSettingsManager settingsManager;
-        private readonly CoreSettings coreSettings;
+        internal ITenantService TenantService { get; set; }
+        internal IUserService UserService { get; set; }
+        internal IQuotaService QuotaService { get; set; }
+        internal ITariffService TariffService { get; set; }
+        internal UserFormatter UserFormatter { get; set; }
+        internal TenantManager ClientTenantManager { get; set; }
+        internal TenantUtil TenantUtil { get; set; }
+        internal DbSettingsManager SettingsManager { get; set; }
+        internal CoreSettings CoreSettings { get; set; }
 
-        public TenantUtil TenantUtil { get; }
-        public UserFormatter UserFormatter { get; }
-        public string Region
+        public string Region { get; set; }
+
+        public HostedSolution()
         {
-            get;
-            private set;
-        }
 
-        public HostedSolution(
-            IConfiguration configuration,
-            ConnectionStringSettings connectionString,
-            TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options,
-            TenantUtil tenantUtil,
-            TenantDomainValidator tenantDomainValidator,
-            TenantDbContext tenantDbContext,
-            UserDbContext userDbContext,
-            CoreDbContext coreDbContext,
-            UserFormatter userFormatter)
-            : this(configuration, connectionString, tariffServiceStorage, options, tenantUtil, tenantDomainValidator, tenantDbContext, userDbContext, coreDbContext, userFormatter, null)
-        {
-        }
-
-        public HostedSolution(
-            IConfiguration configuration,
-            ConnectionStringSettings connectionString,
-            TariffServiceStorage tariffServiceStorage,
-            IOptionsMonitor<ILog> options,
-            TenantUtil tenantUtil,
-            TenantDomainValidator tenantDomainValidator,
-            TenantDbContext tenantDbContext,
-            UserDbContext userDbContext,
-            CoreDbContext coreDbContext,
-            UserFormatter userFormatter,
-            string region)
-        {
-            tenantService = new DbTenantService(tenantDbContext, tenantDomainValidator);
-            var baseSettings = new CoreBaseSettings(configuration);
-            coreSettings = new CoreSettings(tenantService, baseSettings, configuration);
-
-            userService = new EFUserService(userDbContext);
-            quotaService = new DbQuotaService(coreDbContext);
-            tariffService = new TariffService(quotaService, tenantService, baseSettings, coreSettings, configuration, coreDbContext, tariffServiceStorage, options);
-            clientTenantManager = new TenantManager(tenantService, quotaService, tariffService, null, baseSettings, coreSettings);
-            settingsManager = new DbSettingsManager(connectionString);
-            TenantUtil = tenantUtil;
-            UserFormatter = userFormatter;
-            Region = region ?? string.Empty;
         }
 
         public List<Tenant> GetTenants(DateTime from)
         {
-            return tenantService.GetTenants(from).Select(AddRegion).ToList();
+            return TenantService.GetTenants(from).Select(AddRegion).ToList();
         }
 
         public List<Tenant> FindTenants(string login)
@@ -118,26 +137,26 @@ namespace ASC.Core
         public List<Tenant> FindTenants(string login, string password)
         {
             var hash = !string.IsNullOrEmpty(password) ? Hasher.Base64Hash(password, HashAlg.SHA256) : null;
-            if (hash != null && userService.GetUser(Tenant.DEFAULT_TENANT, login, hash) == null)
+            if (hash != null && UserService.GetUser(Tenant.DEFAULT_TENANT, login, hash) == null)
             {
                 throw new SecurityException("Invalid login or password.");
             }
-            return tenantService.GetTenants(login, hash).Select(AddRegion).ToList();
+            return TenantService.GetTenants(login, hash).Select(AddRegion).ToList();
         }
 
         public Tenant GetTenant(string domain)
         {
-            return AddRegion(tenantService.GetTenant(domain));
+            return AddRegion(TenantService.GetTenant(domain));
         }
 
         public Tenant GetTenant(int id)
         {
-            return AddRegion(tenantService.GetTenant(id));
+            return AddRegion(TenantService.GetTenant(id));
         }
 
         public void CheckTenantAddress(string address)
         {
-            tenantService.ValidateDomain(address);
+            TenantService.ValidateDomain(address);
         }
 
         public void RegisterTenant(TenantRegistrationInfo ri, out Tenant tenant)
@@ -167,7 +186,7 @@ namespace ASC.Core
                 Calls = ri.Calls
             };
 
-            tenant = tenantService.SaveTenant(coreSettings, tenant);
+            tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
             // create user
             var user = new UserInfo
@@ -180,87 +199,87 @@ namespace ASC.Core
                 WorkFromDate = TenantUtil.DateTimeNow(tenant.TimeZone),
                 ActivationStatus = ri.ActivationStatus
             };
-            user = userService.SaveUser(tenant.TenantId, user);
-            userService.SetUserPassword(tenant.TenantId, user.ID, ri.Password);
-            userService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+            user = UserService.SaveUser(tenant.TenantId, user);
+            UserService.SetUserPassword(tenant.TenantId, user.ID, ri.Password);
+            UserService.SaveUserGroupRef(tenant.TenantId, new UserGroupRef(user.ID, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
             // save tenant owner
             tenant.OwnerId = user.ID;
-            tenant = tenantService.SaveTenant(coreSettings, tenant);
+            tenant = TenantService.SaveTenant(CoreSettings, tenant);
 
-            settingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
+            SettingsManager.SaveSettings(new TenantAnalyticsSettings() { Analytics = ri.Analytics }, tenant.TenantId);
         }
 
         public Tenant SaveTenant(Tenant tenant)
         {
-            return tenantService.SaveTenant(coreSettings, tenant);
+            return TenantService.SaveTenant(CoreSettings, tenant);
         }
 
         public void RemoveTenant(Tenant tenant)
         {
-            tenantService.RemoveTenant(tenant.TenantId);
+            TenantService.RemoveTenant(tenant.TenantId);
         }
 
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, string login, string password)
         {
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
-            var u = userService.GetUser(tenantId, login, passwordhash);
+            var u = UserService.GetUser(tenantId, login, passwordhash);
             return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, u.ID, login, passwordhash) : null;
         }
 
         public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
         {
-            var u = userService.GetUser(tenantId, userId);
-            var password = userService.GetUserPassword(tenantId, userId);
+            var u = UserService.GetUser(tenantId, userId);
+            var password = UserService.GetUserPassword(tenantId, userId);
             var passwordhash = Hasher.Base64Hash(password, HashAlg.SHA256);
             return u != null ? CreateAuthenticationCookie(cookieStorage, tenantId, userId, u.Email, passwordhash) : null;
         }
 
         private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId, string login, string passwordhash)
         {
-            var tenantSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
+            var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
             var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-            var userSettings = settingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId);
+            var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, userId);
             return cookieStorage.EncryptCookie(tenantId, userId, login, passwordhash, tenantSettings.Index, expires, userSettings.Index);
         }
 
         public Tariff GetTariff(int tenant, bool withRequestToPaymentSystem = true)
         {
-            return tariffService.GetTariff(tenant, withRequestToPaymentSystem);
+            return TariffService.GetTariff(tenant, withRequestToPaymentSystem);
         }
 
         public TenantQuota GetTenantQuota(int tenant)
         {
-            return clientTenantManager.GetTenantQuota(tenant);
+            return ClientTenantManager.GetTenantQuota(tenant);
         }
 
         public IEnumerable<TenantQuota> GetTenantQuotas()
         {
-            return clientTenantManager.GetTenantQuotas();
+            return ClientTenantManager.GetTenantQuotas();
         }
 
         public TenantQuota SaveTenantQuota(TenantQuota quota)
         {
-            return clientTenantManager.SaveTenantQuota(quota);
+            return ClientTenantManager.SaveTenantQuota(quota);
         }
 
         public void SetTariff(int tenant, bool paid)
         {
-            var quota = quotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
+            var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
             if (quota != null)
             {
-                tariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Id, DueDate = DateTime.MaxValue, });
+                TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Id, DueDate = DateTime.MaxValue, });
             }
         }
 
         public void SetTariff(int tenant, Tariff tariff)
         {
-            tariffService.SetTariff(tenant, tariff);
+            TariffService.SetTariff(tenant, tariff);
         }
 
         public void SaveButton(int tariffId, string partnerId, string buttonUrl)
         {
-            tariffService.SaveButton(tariffId, partnerId, buttonUrl);
+            TariffService.SaveButton(tariffId, partnerId, buttonUrl);
         }
 
 
@@ -271,6 +290,25 @@ namespace ASC.Core
                 tenant.HostedRegion = Region;
             }
             return tenant;
+        }
+    }
+
+    public static class HostedSolutionExtension
+    {
+        public static DIHelper AddHostedSolutionService(this DIHelper services)
+        {
+            services.TryAddScoped<IConfigureOptions<HostedSolution>, ConfigureHostedSolution>();
+
+            return services
+                .AddUserFormatter()
+                .AddTenantService()
+                .AddUserService()
+                .AddQuotaService()
+                .AddTariffService()
+                .AddTenantManagerService()
+                .AddTenantUtilService()
+                .AddDbSettingsManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

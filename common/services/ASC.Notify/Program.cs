@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Core.Common;
@@ -10,7 +11,6 @@ using ASC.Notify.Config;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -48,18 +48,20 @@ namespace ASC.Notify
                 })
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
+                    var diHelper = new DIHelper(services);
+
+                    diHelper.AddNLogManager("ASC.Notify", "ASC.Notify.Messages");
 
                     services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-                    services.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
+                    diHelper.AddSingleton<IConfigureOptions<NotifyServiceCfg>, ConfigureNotifyServiceCfg>();
 
-                    services.TryAddSingleton<CommonLinkUtilitySettings>();
-                    services.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
+                    diHelper.TryAddSingleton<CommonLinkUtilitySettings>();
+                    diHelper.AddSingleton<IConfigureOptions<CommonLinkUtilitySettings>, ConfigureCommonLinkUtilitySettings>();
 
-                    services.AddNotifyServiceLauncher();
+                    diHelper.AddNotifyServiceLauncher();
                     services.AddHostedService<NotifyServiceLauncher>();
 
-                    services
+                    diHelper
                     .AddJabberSenderService()
                     .AddSmtpSenderService()
                     .AddAWSSenderService();

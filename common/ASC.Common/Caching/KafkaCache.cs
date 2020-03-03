@@ -3,12 +3,17 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using ASC.Common.Logging;
 using ASC.Common.Utils;
+
 using Confluent.Kafka;
 
 using Google.Protobuf;
+
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Common.Caching
@@ -233,6 +238,16 @@ namespace ASC.Common.Caching
         private string GetKey(CacheNotifyAction cacheNotifyAction)
         {
             return $"{typeof(T).Name}{cacheNotifyAction}";
+        }
+    }
+
+    public static class KafkaExtention
+    {
+        public static DIHelper AddKafkaService(this DIHelper services)
+        {
+            services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
+
+            return services;
         }
     }
 }

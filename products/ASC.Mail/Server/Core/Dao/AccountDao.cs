@@ -35,6 +35,7 @@ using ASC.Mail.Core.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Models;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -100,7 +101,7 @@ namespace ASC.Mail.Core.Dao
 
     public static class AccountDaoExtension
     {
-        public static IServiceCollection AddAccountDaoService(this IServiceCollection services)
+        public static DIHelper AddAccountDaoService(this DIHelper services)
         {
             services.TryAddScoped<AccountDao>();
 

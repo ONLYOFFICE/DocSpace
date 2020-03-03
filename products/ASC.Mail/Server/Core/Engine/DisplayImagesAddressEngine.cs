@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -100,7 +101,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class DisplayImagesAddressEngineExtension
     {
-        public static IServiceCollection AddDisplayImagesAddressEngineService(this IServiceCollection services)
+        public static DIHelper AddDisplayImagesAddressEngineService(this DIHelper services)
         {
             services.TryAddScoped<DisplayImagesAddressEngine>();
 

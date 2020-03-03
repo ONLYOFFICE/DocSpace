@@ -4,6 +4,7 @@ using System;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
@@ -71,7 +72,9 @@ namespace ASC.Mail
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
-            services
+            var diHelper = new DIHelper(services);
+
+            diHelper
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
                 .AddIpSecurityFilter()
@@ -79,9 +82,9 @@ namespace ASC.Mail
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddMailController();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);

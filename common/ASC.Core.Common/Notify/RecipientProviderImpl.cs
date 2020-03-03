@@ -27,9 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Core.Users;
 using ASC.Notify.Recipients;
-using Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Notify
@@ -160,7 +162,7 @@ namespace ASC.Core.Notify
 
     public static class RecipientProviderImplExtension
     {
-        public static IServiceCollection AddRecipientProviderImplService(this IServiceCollection services)
+        public static DIHelper AddRecipientProviderImplService(this DIHelper services)
         {
             services.TryAddScoped(typeof(IRecipientProvider), typeof(RecipientProviderImpl));
 

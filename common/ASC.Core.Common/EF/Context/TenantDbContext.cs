@@ -1,7 +1,7 @@
-﻿using ASC.Core.Common.EF.Model;
+﻿using ASC.Common;
+using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Core.Common.EF.Context
 {
@@ -38,7 +38,7 @@ namespace ASC.Core.Common.EF.Context
 
     public static class TenantDbExtension
     {
-        public static IServiceCollection AddTenantDbContextService(this IServiceCollection services)
+        public static DIHelper AddTenantDbContextService(this DIHelper services)
         {
             return services.AddDbContextManagerService<TenantDbContext>();
         }

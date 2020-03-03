@@ -30,6 +30,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using ASC.Api.Core;
+using ASC.Common;
 //using System.Net.Mail;
 //using System.Threading;
 using ASC.Common.Logging;
@@ -591,7 +592,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class AccountEngineExtension
     {
-        public static IServiceCollection AddAccountEngineService(this IServiceCollection services)
+        public static DIHelper AddAccountEngineService(this DIHelper services)
         {
             services.TryAddScoped<AccountEngine>();
 

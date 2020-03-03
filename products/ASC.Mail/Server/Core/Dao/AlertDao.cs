@@ -36,6 +36,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Enums;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -170,7 +171,7 @@ namespace ASC.Mail.Core.Dao
 
     public static class AlertDaoExtension
     {
-        public static IServiceCollection AddAlertDaoService(this IServiceCollection services)
+        public static DIHelper AddAlertDaoService(this DIHelper services)
         {
             services.TryAddScoped<AlertDao>();
 

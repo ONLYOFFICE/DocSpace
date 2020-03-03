@@ -30,24 +30,25 @@ namespace ASC.Core.Common.EF
 
     public static class BaseDbContextExtension
     {
-        public static void AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
+        public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : BaseDbContext
         {
             var dbSet = expressionDbSet.Compile().Invoke(b);
             var existingBlog = dbSet.Find(entity.GetKeys());
             if (existingBlog == null)
             {
-                dbSet.Add(entity);
+                return dbSet.Add(entity).Entity;
             }
             else
             {
                 b.Entry(existingBlog).CurrentValues.SetValues(entity);
+                return entity;
             }
         }
     }
 
     public abstract class BaseEntity
     {
-        internal abstract object[] GetKeys();
+        public abstract object[] GetKeys();
     }
 
     public class MultiRegionalDbContext<T> : IDisposable, IAsyncDisposable where T : BaseDbContext, new()

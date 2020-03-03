@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -128,7 +129,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class SignatureEngineExtension
     {
-        public static IServiceCollection AddSignatureEngineService(this IServiceCollection services)
+        public static DIHelper AddSignatureEngineService(this DIHelper services)
         {
             services.TryAddScoped<SignatureEngine>();
 

@@ -28,8 +28,11 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Serialization;
+
+using ASC.Common;
 using ASC.Common.Utils;
 using ASC.Core;
+
 using Newtonsoft.Json;
 
 namespace ASC.Api.Core
@@ -358,6 +361,31 @@ namespace ASC.Api.Core
         public override bool CanConvert(Type objectType)
         {
             return typeof(ApiDateTime).IsAssignableFrom(objectType);
+        }
+    }
+
+    public class ApiDateTimeHelper
+    {
+        public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+
+        public ApiDateTimeHelper(TenantManager tenantManager, TimeZoneConverter timeZoneConverter)
+        {
+            TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
+        }
+
+        public ApiDateTime Get(DateTime? from) => ApiDateTime.FromDate(TenantManager, TimeZoneConverter, from);
+    }
+
+    public static class ApiDateTimeHelperExtension
+    {
+        public static DIHelper AddApiDateTimeHelper(this DIHelper services)
+        {
+            services.TryAddScoped<ApiDateTimeHelper>();
+
+            return services
+                .AddTenantManagerService();
         }
     }
 }

@@ -18,7 +18,8 @@ call build\scripts\client.sh
 echo "ASC.Web.People.Client"
 call build\scripts\people.sh
 
-xcopy build\cra\*.* products\ASC.People\Client\node_modules\ /E /R /Y
+echo "ASC.Web.Files.Client"
+call build\scripts\files.sh
 
 echo "ASC.Web.sln"
 call dotnet build ASC.Web.sln  /fl1 /flp1:LogFile=build/ASC.Web.log;Verbosity=Normal

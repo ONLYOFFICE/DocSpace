@@ -28,12 +28,14 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
+
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 
 namespace ASC.Core.Common
@@ -235,9 +237,9 @@ namespace ASC.Core.Common
 
     public static class BaseCommonLinkUtilityExtension
     {
-        public static IServiceCollection AddBaseCommonLinkUtilityService(this IServiceCollection services)
+        public static DIHelper AddBaseCommonLinkUtilityService(this DIHelper services)
         {
-            services.TryAddScoped<BaseCommonLinkUtility>(); ;
+            services.TryAddScoped<BaseCommonLinkUtility>();
 
             return services
                 .AddCoreBaseSettingsService()

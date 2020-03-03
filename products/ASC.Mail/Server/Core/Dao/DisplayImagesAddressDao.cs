@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -100,7 +101,7 @@ namespace ASC.Mail.Core.Dao
 
     public static class DisplayImagesAddressDaoExtension
     {
-        public static IServiceCollection AddDisplayImagesAddressDaoService(this IServiceCollection services)
+        public static DIHelper AddDisplayImagesAddressDaoService(this DIHelper services)
         {
             services.TryAddScoped<DisplayImagesAddressDao>();
 

@@ -32,6 +32,7 @@ using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Dao;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using ASC.Common;
 //using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core
@@ -239,7 +240,7 @@ namespace ASC.Mail.Core
 
     public static class EngineFactoryExtension
     {
-        public static IServiceCollection AddEngineFactoryService(this IServiceCollection services)
+        public static DIHelper AddEngineFactoryService(this DIHelper services)
         {
             //services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<EngineFactory>();

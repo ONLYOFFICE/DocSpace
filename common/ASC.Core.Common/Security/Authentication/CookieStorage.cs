@@ -28,13 +28,12 @@ using System;
 using System.Globalization;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Tenants;
 using ASC.Security.Cryptography;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Security.Authentication
@@ -141,7 +140,7 @@ namespace ASC.Core.Security.Authentication
 
     public static class CookieStorageExtension
     {
-        public static IServiceCollection AddCookieStorageService(this IServiceCollection services)
+        public static DIHelper AddCookieStorageService(this DIHelper services)
         {
             services.TryAddScoped<CookieStorage>();
 

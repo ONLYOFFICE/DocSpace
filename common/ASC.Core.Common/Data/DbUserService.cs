@@ -34,8 +34,35 @@ using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.Security.Cryptography;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Core.Data
 {
+    public class ConfigureEFUserService : IConfigureNamedOptions<EFUserService>
+    {
+        public DbContextManager<UserDbContext> DbContextManager { get; }
+        public string DbId { get; set; }
+
+        public ConfigureEFUserService(DbContextManager<UserDbContext> dbContextManager)
+        {
+            DbContextManager = dbContextManager;
+        }
+
+        public void Configure(string name, EFUserService options)
+        {
+            DbId = name;
+            options.UserDbContext = DbContextManager.Get(name);
+            options.UserDbContextManager = DbContextManager;
+        }
+
+        public void Configure(EFUserService options)
+        {
+            options.UserDbContext = DbContextManager.Value;
+            options.UserDbContextManager = DbContextManager;
+        }
+    }
+
+
     public class EFUserService : IUserService
     {
         public Expression<Func<User, UserInfo>> FromUserToUserInfo { get; set; }
@@ -45,10 +72,12 @@ namespace ASC.Core.Data
         public Expression<Func<UserGroup, UserGroupRef>> FromUserGroupToUserGroupRef { get; set; }
         public Func<UserGroupRef, UserGroup> FromUserGroupRefToUserGroup { get; set; }
 
-        public UserDbContext UserDbContext { get; set; }
-        public DbContextManager<UserDbContext> UserDbContextManager { get; }
+        internal UserDbContext UserDbContext { get; set; }
+        internal DbContextManager<UserDbContext> UserDbContextManager { get; set; }
 
-        private EFUserService()
+        internal string DbId { get; set; }
+
+        public EFUserService()
         {
             FromUserToUserInfo = user => new UserInfo
             {
@@ -159,11 +188,6 @@ namespace ASC.Core.Data
             UserDbContext = UserDbContextManager.Value;
         }
 
-        public EFUserService(UserDbContext userDbContext) : this()
-        {
-            UserDbContext = userDbContext;
-        }
-
         public Group GetGroup(int tenant, Guid id)
         {
             return GetGroupQuery(UserDbContext, tenant, default)
@@ -258,7 +282,7 @@ namespace ASC.Core.Data
 
         public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
         {
-            var userDbContext = UserDbContextManager.GetNew();
+            var userDbContext = UserDbContextManager.GetNew(DbId);
             var totalQuery = userDbContext.Users.Where(r => r.Tenant == tenant);
             totalQuery = GetUserQueryForFilter(totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
             total = totalQuery.Count();
@@ -289,7 +313,7 @@ namespace ASC.Core.Data
 
         public IQueryable<UserInfo> GetUsers(int tenant, out int total)
         {
-            var userDbContext = UserDbContextManager.GetNew();
+            var userDbContext = UserDbContextManager.GetNew(DbId);
             total = userDbContext.Users.Where(r => r.Tenant == tenant).Count();
             return userDbContext.Users.Where(r => r.Tenant == tenant).Select(FromUserToUserInfo);
         }

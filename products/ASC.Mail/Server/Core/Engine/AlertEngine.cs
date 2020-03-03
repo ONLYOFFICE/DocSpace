@@ -46,6 +46,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Core.Entities;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -357,7 +358,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class AlertEngineExtension
     {
-        public static IServiceCollection AddAlertEngineService(this IServiceCollection services)
+        public static DIHelper AddAlertEngineService(this DIHelper services)
         {
             services.TryAddScoped<AlertEngine>();
 

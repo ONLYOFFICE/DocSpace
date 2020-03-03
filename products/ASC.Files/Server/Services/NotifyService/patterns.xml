@@ -1,0 +1,81 @@
+<patterns>
+  <formatter type="ASC.Notify.Patterns.NVelocityPatternFormatter, ASC.Common" />
+
+  <pattern id="DocuSignComplete" sender="email.sender">
+    <subject resource="|subject_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="DocuSignComplete" sender="messanger.sender">
+    <subject resource="|subject_DocuSignComplete|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$DocumentURL</body>
+  </pattern>
+
+  <pattern id="DocuSignStatus" sender="email.sender">
+    <subject resource="|subject_DocuSignStatus|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_DocuSignStatus|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="DocuSignStatus" sender="messanger.sender">
+    <subject resource="|subject_DocuSignStatus|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$Message: $DocumentTitle</body>
+  </pattern>
+
+  <pattern id="MailMergeEnd" sender="email.sender">
+    <subject resource="|subject_MailMergeEnd|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_MailMergeEnd|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="MailMergeEnd" sender="messanger.sender">
+    <subject resource="|subject_MailMergeEnd|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
+
+$Message
+    </body>
+  </pattern>
+
+  <pattern id="ShareDocument" sender="email.sender">
+    <subject resource="|subject_ShareDocument|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareDocument|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="ShareDocument" sender="messanger.sender">
+    <subject resource="|subject_ShareDocument|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
+
+$AccessRights
+
+$Message
+
+$DocumentURL
+    </body>
+  </pattern>
+
+  <pattern id="ShareFolder" sender="email.sender">
+    <subject resource="|subject_ShareFolder|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_ShareFolder|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="ShareFolder" sender="messanger.sender">
+    <subject resource="|subject_ShareFolder|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
+
+$AccessRights
+
+$Message
+
+$__VirtualRootPath/products/files/#$FolderID
+    </body>
+  </pattern>
+
+  <pattern id="EditorMentions" sender="email.sender">
+    <subject resource="|subject_EditorMentions|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_EditorMentions|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+  </pattern>
+  <pattern id="EditorMentions" sender="messanger.sender">
+    <subject resource="|subject_EditorMentions|ASC.Web.Files.Services.NotifyService.FilesPatternResource,ASC.Web.Files" />
+    <body styler="ASC.Notify.Textile.JabberStyler, ASC.Notify.Textile">$__AuthorName
+
+$DocumentTitle
+
+$Message
+
+$DocumentURL
+    </body>
+  </pattern>
+</patterns>

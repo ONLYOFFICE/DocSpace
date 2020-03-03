@@ -27,7 +27,9 @@ class PureHome extends React.Component {
     super(props);
 
     const currentGroup = getSelectedGroup(props.groups, props.selectedGroup);
-    document.title = currentGroup ? `${currentGroup.name} – People` : "Groups – People";
+    document.title = currentGroup 
+      ? `${currentGroup.name} – ${props.t("People")}` 
+      : `${props.t("People")} – ${props.t("OrganizationName")}`;
 
     this.state = {
       isHeaderVisible: false,
@@ -83,14 +85,9 @@ class PureHome extends React.Component {
   };
 
   onClose = () => {
-    const { selection, setSelected } = this.props;
-
-    if (!selection.length) {
-      setSelected("none");
-      this.setState({ isHeaderVisible: false });
-    } else {
-      setSelected("close");
-    }
+    const { setSelected } = this.props;
+    setSelected("none");
+    this.setState({ isHeaderVisible: false });
   };
 
   onLoading = status => {

@@ -27,14 +27,14 @@
 using System;
 using System.Text;
 
+using ASC.Common;
 using ASC.Core.Caching;
 using ASC.Core.Common.Settings;
 using ASC.Core.Configuration;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
@@ -73,6 +73,37 @@ namespace ASC.Core
         }
     }
 
+    class ConfigureCoreSettings : IConfigureNamedOptions<CoreSettings>
+    {
+        public IOptionsSnapshot<CachedTenantService> TenantService { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public IConfiguration Configuration { get; }
+
+        public ConfigureCoreSettings(
+            IOptionsSnapshot<CachedTenantService> tenantService,
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration
+            )
+        {
+            TenantService = tenantService;
+            CoreBaseSettings = coreBaseSettings;
+            Configuration = configuration;
+        }
+
+        public void Configure(string name, CoreSettings options)
+        {
+            Configure(options);
+            options.TenantService = TenantService.Get(name);
+        }
+
+        public void Configure(CoreSettings options)
+        {
+            options.Configuration = Configuration;
+            options.CoreBaseSettings = CoreBaseSettings;
+            options.TenantService = TenantService.Value;
+        }
+    }
+
     public class CoreSettings
     {
         private string basedomain;
@@ -106,11 +137,19 @@ namespace ASC.Core
             }
         }
 
-        public ITenantService TenantService { get; }
-        public CoreBaseSettings CoreBaseSettings { get; }
-        public IConfiguration Configuration { get; }
+        internal ITenantService TenantService { get; set; }
+        internal CoreBaseSettings CoreBaseSettings { get; set; }
+        internal IConfiguration Configuration { get; set; }
 
-        public CoreSettings(ITenantService tenantService, CoreBaseSettings coreBaseSettings, IConfiguration configuration)
+        public CoreSettings()
+        {
+
+        }
+
+        public CoreSettings(
+            ITenantService tenantService,
+            CoreBaseSettings coreBaseSettings,
+            IConfiguration configuration)
         {
             TenantService = tenantService;
             CoreBaseSettings = coreBaseSettings;
@@ -331,21 +370,23 @@ namespace ASC.Core
 
     public static class CoreSettingsConfigExtension
     {
-        public static IServiceCollection AddCoreBaseSettingsService(this IServiceCollection services)
+        public static DIHelper AddCoreBaseSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<CoreBaseSettings>();
             return services;
         }
 
-        public static IServiceCollection AddCoreSettingsService(this IServiceCollection services)
+        public static DIHelper AddCoreSettingsService(this DIHelper services)
         {
             services.TryAddScoped<CoreSettings>();
             services.TryAddScoped<CoreConfiguration>();
+            services.TryAddScoped<IConfigureOptions<CoreSettings>, ConfigureCoreSettings>();
+
             return services
                 .AddCoreBaseSettingsService()
                 .AddTenantService();
         }
-        public static IServiceCollection AddCoreConfigurationService(this IServiceCollection services)
+        public static DIHelper AddCoreConfigurationService(this DIHelper services)
         {
             services.TryAddScoped<CoreConfiguration>();
             return services

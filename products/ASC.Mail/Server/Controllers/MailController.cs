@@ -15,6 +15,7 @@ using System.Net.Mail;
 using System;
 using System.Linq;
 using ASC.Mail.Exceptions;
+using ASC.Common;
 
 namespace ASC.Mail.Controllers
 {
@@ -219,7 +220,7 @@ namespace ASC.Mail.Controllers
 
     public static class MailControllerExtention
     {
-        public static IServiceCollection AddMailController(this IServiceCollection services)
+        public static DIHelper AddMailController(this DIHelper services)
         {
             return services
                 .AddApiContextService()

@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Mail.Core.Dao;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -238,7 +239,7 @@ namespace ASC.Mail.Core
 
     public static class DaoFactoryExtension
     {
-        public static IServiceCollection AddDaoFactoryService(this IServiceCollection services)
+        public static DIHelper AddDaoFactoryService(this DIHelper services)
         {
             //services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<DaoFactory>();

@@ -34,13 +34,12 @@ using System.Text;
 using System.Threading;
 using System.Web;
 
+using ASC.Common;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 using Newtonsoft.Json;
 
@@ -181,7 +180,7 @@ namespace ASC.Core
 
     public static class PaymentManagerExtension
     {
-        public static IServiceCollection AddPaymentManagerService(this IServiceCollection services)
+        public static DIHelper AddPaymentManagerService(this DIHelper services)
         {
             services.TryAddScoped<PaymentManager>();
 

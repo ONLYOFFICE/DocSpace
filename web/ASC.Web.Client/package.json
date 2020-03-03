@@ -1,5 +1,5 @@
 {
-  "name": "ASC.Web.Studio",
+  "name": "asc-web-client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -31,7 +31,7 @@
     "copy-webpack-plugin": "^5.1.1",
     "cross-env": "^6.0.3",
     "react-app-rewired": "^2.1.5",
-    "react-scripts": "3.3.0",
+    "react-scripts": "3.4.0",
     "redux-devtools-extension": "^2.13.8",
     "rimraf": "3.0.0"
   },

@@ -29,13 +29,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Statistic
 {
@@ -166,7 +165,7 @@ namespace ASC.Web.Studio.Core.Statistic
 
     public static class StatisticManagerExtension
     {
-        public static IServiceCollection AddStatisticManagerService(this IServiceCollection services)
+        public static DIHelper AddStatisticManagerService(this DIHelper services)
         {
             services.TryAddScoped<StatisticManager>();
 

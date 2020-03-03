@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -134,7 +135,7 @@ namespace ASC.Mail.Core.Dao
 
     public static class MailboxSignatureDaoExtension
     {
-        public static IServiceCollection AddMailboxSignatureDaoService(this IServiceCollection services)
+        public static DIHelper AddMailboxSignatureDaoService(this DIHelper services)
         {
             services.TryAddScoped<MailboxSignatureDao>();
 

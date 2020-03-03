@@ -1,11 +1,13 @@
 ﻿using System.Net;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.IPSecurity;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Api.Core.Middleware
@@ -45,7 +47,7 @@ namespace ASC.Api.Core.Middleware
 
     public static class IpSecurityFilterExtension
     {
-        public static IServiceCollection AddIpSecurityFilter(this IServiceCollection services)
+        public static DIHelper AddIpSecurityFilter(this DIHelper services)
         {
             return services
                 .AddSettingsManagerService()

@@ -29,9 +29,9 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 
+using ASC.Common;
+
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Users
 {
@@ -149,7 +149,7 @@ namespace ASC.Core.Users
     }
     public static class UserFormatterExtension
     {
-        public static IServiceCollection AddUserFormatter(this IServiceCollection services)
+        public static DIHelper AddUserFormatter(this DIHelper services)
         {
             services.TryAddSingleton<UserFormatter>();
             return services;

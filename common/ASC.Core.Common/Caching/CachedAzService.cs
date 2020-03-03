@@ -26,11 +26,11 @@
 
 using System;
 using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Core.Caching
 {
@@ -121,7 +121,7 @@ namespace ASC.Core.Caching
 
     public static class AzConfigExtension
     {
-        public static IServiceCollection AddAzService(this IServiceCollection services)
+        public static DIHelper AddAzService(this DIHelper services)
         {
             services.AddCoreDbContextService();
 
