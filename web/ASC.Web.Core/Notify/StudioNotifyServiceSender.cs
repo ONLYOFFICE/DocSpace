@@ -28,6 +28,8 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Configuration;
@@ -36,9 +38,9 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core.Notify
 {
@@ -177,7 +179,7 @@ namespace ASC.Web.Studio.Core.Notify
 
     public static class ServiceLauncherExtension
     {
-        public static IServiceCollection AddStudioNotifyServiceSender(this IServiceCollection services)
+        public static DIHelper AddStudioNotifyServiceSender(this DIHelper services)
         {
             services.TryAddSingleton<StudioNotifyServiceSender>();
 

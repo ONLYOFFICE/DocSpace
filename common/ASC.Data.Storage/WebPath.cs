@@ -31,14 +31,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Data.Storage.Configuration;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -235,7 +234,7 @@ namespace ASC.Data.Storage
 
     public static class WebPathExtension
     {
-        public static IServiceCollection AddWebPathService(this IServiceCollection services)
+        public static DIHelper AddWebPathService(this DIHelper services)
         {
             services.TryAddScoped<WebPath>();
 
@@ -245,7 +244,7 @@ namespace ASC.Data.Storage
                 .AddWebPathSettingsService()
                 .AddCoreBaseSettingsService();
         }
-        public static IServiceCollection AddWebPathSettingsService(this IServiceCollection services)
+        public static DIHelper AddWebPathSettingsService(this DIHelper services)
         {
             services.TryAddSingleton<WebPathSettings>();
 

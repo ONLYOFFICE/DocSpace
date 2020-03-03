@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
@@ -40,8 +41,6 @@ using ASC.Web.Core;
 using ASC.Web.Core.WhiteLabel;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.Utility
@@ -551,7 +550,7 @@ namespace ASC.Web.Studio.Utility
 
     public static class CommonLinkUtilityExtension
     {
-        public static IServiceCollection AddCommonLinkUtilityService(this IServiceCollection services)
+        public static DIHelper AddCommonLinkUtilityService(this DIHelper services)
         {
             services.TryAddScoped<CommonLinkUtility>();
 

@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Core.Common.EF.Model;
@@ -39,7 +40,6 @@ using Google.Protobuf.Collections;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -222,7 +222,7 @@ namespace ASC.Notify
 
     public static class DbWorkerExtension
     {
-        public static IServiceCollection AddDbWorker(this IServiceCollection services)
+        public static DIHelper AddDbWorker(this DIHelper services)
         {
             services.TryAddSingleton<DbWorker>();
 

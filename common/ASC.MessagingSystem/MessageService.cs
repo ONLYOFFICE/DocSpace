@@ -27,13 +27,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.MessagingSystem.DbSender;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.MessagingSystem
@@ -290,7 +289,7 @@ namespace ASC.MessagingSystem
 
     public static class MessageServiceExtension
     {
-        public static IServiceCollection AddMessageServiceService(this IServiceCollection services)
+        public static DIHelper AddMessageServiceService(this DIHelper services)
         {
             services.TryAddScoped<MessageService>();
 

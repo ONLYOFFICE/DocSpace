@@ -28,12 +28,12 @@ using System;
 using System.Globalization;
 using System.IO;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Web.Core.Users;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+
 using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Studio.UserControls.CustomNavigation
@@ -188,7 +188,7 @@ namespace ASC.Web.Studio.UserControls.CustomNavigation
 
     public static class StorageHelperExtension
     {
-        public static IServiceCollection AddStorageHelperService(this IServiceCollection services)
+        public static DIHelper AddStorageHelperService(this DIHelper services)
         {
             services.TryAddScoped<StorageHelper>();
             return services

@@ -28,13 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Data;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
@@ -241,7 +241,7 @@ namespace ASC.Core.Caching
 
     public static class QuotaConfigExtension
     {
-        public static IServiceCollection AddQuotaService(this IServiceCollection services)
+        public static DIHelper AddQuotaService(this DIHelper services)
         {
             services.AddCoreDbContextService();
 

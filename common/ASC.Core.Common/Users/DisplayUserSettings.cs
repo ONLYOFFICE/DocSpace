@@ -27,11 +27,11 @@
 using System;
 using System.Runtime.Serialization;
 using System.Web;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -98,7 +98,7 @@ namespace ASC.Web.Core.Users
 
     public static class DisplayUserSettingsExtention
     {
-        public static IServiceCollection AddDisplayUserSettingsService(this IServiceCollection services)
+        public static DIHelper AddDisplayUserSettingsService(this DIHelper services)
         {
             services.TryAddScoped<DisplayUserSettingsHelper>();
 

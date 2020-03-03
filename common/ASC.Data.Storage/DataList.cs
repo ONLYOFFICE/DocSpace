@@ -25,6 +25,7 @@
 
 
 using System.Collections.Generic;
+
 using ASC.Data.Storage.Configuration;
 
 namespace ASC.Data.Storage
@@ -34,9 +35,16 @@ namespace ASC.Data.Storage
         public DataList(Module config)
         {
             Add(string.Empty, config.Data);
-            foreach (var domain in config.Domain)
+            if (config.Domain != null)
             {
-                Add(domain.Name, domain.Data);
+                foreach (var domain in config.Domain)
+                {
+                    Add(domain.Name, domain.Data);
+                }
+            }
+            else
+            {
+                config.Domain = new List<Module>();
             }
         }
 

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Web.Api.Routing;
 using ASC.Web.Core;
 using ASC.Web.Core.WebZones;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Api.Controllers
 {
@@ -42,7 +44,7 @@ namespace ASC.Web.Api.Controllers
 
     public static class ModulesControllerExtension
     {
-        public static IServiceCollection AddModulesController(this IServiceCollection services)
+        public static DIHelper AddModulesController(this DIHelper services)
         {
             return services
                 .AddUserManagerService()

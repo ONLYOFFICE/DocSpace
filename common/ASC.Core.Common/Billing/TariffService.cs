@@ -31,6 +31,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core.Caching;
@@ -38,8 +39,6 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core.Billing
@@ -687,7 +686,7 @@ namespace ASC.Core.Billing
 
     public static class TariffConfigExtension
     {
-        public static IServiceCollection AddTariffService(this IServiceCollection services)
+        public static DIHelper AddTariffService(this DIHelper services)
         {
             services.AddCoreDbContextService();
 

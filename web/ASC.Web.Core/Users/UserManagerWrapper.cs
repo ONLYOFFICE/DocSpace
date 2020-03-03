@@ -30,6 +30,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
@@ -39,9 +40,6 @@ using ASC.MessagingSystem;
 using ASC.Web.Core.PublicResources;
 using ASC.Web.Core.Utility;
 using ASC.Web.Studio.Core.Notify;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Core.Users
 {
@@ -367,7 +365,7 @@ namespace ASC.Web.Core.Users
     }
     public static class UserManagerWrapperExtension
     {
-        public static IServiceCollection AddUserManagerWrapperService(this IServiceCollection services)
+        public static DIHelper AddUserManagerWrapperService(this DIHelper services)
         {
             services.TryAddScoped<UserManagerWrapper>();
 

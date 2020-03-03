@@ -31,15 +31,13 @@ using System.Net;
 using System.Threading;
 using System.Web;
 
-
+using ASC.Common;
 using ASC.Common.Notify.Engine;
 using ASC.Core.Billing;
 using ASC.Core.Caching;
 using ASC.Core.Tenants;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Core
@@ -340,7 +338,7 @@ namespace ASC.Core
 
     public static class TenantManagerConfigExtension
     {
-        public static IServiceCollection AddTenantManagerService(this IServiceCollection services)
+        public static DIHelper AddTenantManagerService(this DIHelper services)
         {
             services.TryAddScoped<TenantManager>();
             services.TryAddScoped<IConfigureOptions<TenantManager>, ConfigureTenantManager>();

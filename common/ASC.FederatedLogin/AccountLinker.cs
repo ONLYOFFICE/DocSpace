@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Utils;
 using ASC.Core.Common.EF;
@@ -37,8 +38,6 @@ using ASC.FederatedLogin.Profile;
 using ASC.Security.Cryptography;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.FederatedLogin
@@ -218,7 +217,7 @@ namespace ASC.FederatedLogin
 
     public static class AccountLinkerStorageExtension
     {
-        public static IServiceCollection AddAccountLinkerStorageService(this IServiceCollection services)
+        public static DIHelper AddAccountLinkerStorageService(this DIHelper services)
         {
             services.TryAddSingleton<AccountLinkerStorage>();
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));
@@ -229,7 +228,7 @@ namespace ASC.FederatedLogin
 
     public static class AccountLinkerExtension
     {
-        public static IServiceCollection AddAccountLinker(this IServiceCollection services)
+        public static DIHelper AddAccountLinker(this DIHelper services)
         {
             services.TryAddScoped<AccountLinker>();
             services.TryAddScoped<IConfigureOptions<AccountLinker>, ConfigureAccountLinker>();

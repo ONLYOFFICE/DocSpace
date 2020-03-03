@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -73,6 +74,20 @@ namespace ASC.FederatedLogin.LoginProviders
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
             : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
         {
+        }
+    }
+
+    public static class OneDriveLoginProviderExtension
+    {
+        public static DIHelper AddOneDriveLoginProviderService(this DIHelper services)
+        {
+            services.TryAddScoped<OneDriveLoginProvider>();
+            return services
+                .AddConsumerFactoryService()
+                .AddKafkaService()
+                .AddTenantManagerService()
+                .AddCoreBaseSettingsService()
+                .AddCoreSettingsService();
         }
     }
 }

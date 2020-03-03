@@ -31,64 +31,99 @@ using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.Text;
+
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Notify.Jabber;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+
 using Newtonsoft.Json;
 
 namespace ASC.Core.Notify.Signalr
 {
-    public class SignalrServiceClient
+    public class ConfigureSignalrServiceClient : IConfigureNamedOptions<SignalrServiceClient>
     {
-        private static readonly TimeSpan Timeout;
-        private readonly ILog Log;
-        private static DateTime lastErrorTime;
-        public readonly bool EnableSignalr;
-        private readonly string CoreMachineKey;
-        private readonly string Url;
-        private readonly bool JabberReplaceDomain;
-        private readonly string JabberReplaceFromDomain;
-        private readonly string JabberReplaceToDomain;
-
-        private readonly string hub;
-
         public TenantManager TenantManager { get; }
         public CoreSettings CoreSettings { get; }
+        public IConfiguration Configuration { get; }
+        public IOptionsMonitor<ILog> Options { get; }
 
-        static SignalrServiceClient()
+        public ConfigureSignalrServiceClient(
+            TenantManager tenantManager,
+            CoreSettings coreSettings,
+            IConfiguration configuration,
+            IOptionsMonitor<ILog> options)
         {
-            Timeout = TimeSpan.FromSeconds(1);
-        }
-
-        public SignalrServiceClient(string hub, TenantManager tenantManager, CoreSettings coreSettings, IConfiguration configuration, IOptionsMonitor<ILog> options)
-        {
-            Log = options.CurrentValue;
-            this.hub = hub.Trim('/');
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
-            CoreMachineKey = configuration["core:machinekey"];
-            Url = configuration["web:hub:internal"];
-            EnableSignalr = !string.IsNullOrEmpty(Url);
+            Configuration = configuration;
+            Options = options;
+        }
+
+        public void Configure(string name, SignalrServiceClient options)
+        {
+            options.Log = Options.CurrentValue;
+            options.hub = name.Trim('/');
+            options.TenantManager = TenantManager;
+            options.CoreSettings = CoreSettings;
+            options.CoreMachineKey = Configuration["core:machinekey"];
+            options.Url = Configuration["web:hub:internal"];
+            options.EnableSignalr = !string.IsNullOrEmpty(options.Url);
 
             try
             {
-                var replaceSetting = configuration["jabber:replace-domain"];
+                var replaceSetting = Configuration["jabber:replace-domain"];
                 if (!string.IsNullOrEmpty(replaceSetting))
                 {
-                    JabberReplaceDomain = true;
+                    options.JabberReplaceDomain = true;
                     var q =
                         replaceSetting.Split(new[] { "->" }, StringSplitOptions.RemoveEmptyEntries)
                             .Select(s => s.Trim().ToLowerInvariant())
                             .ToList();
-                    JabberReplaceFromDomain = q.ElementAt(0);
-                    JabberReplaceToDomain = q.ElementAt(1);
+                    options.JabberReplaceFromDomain = q.ElementAt(0);
+                    options.JabberReplaceToDomain = q.ElementAt(1);
                 }
             }
             catch (Exception)
             {
             }
         }
+
+        public void Configure(SignalrServiceClient options)
+        {
+            Configure("default", options);
+        }
+    }
+
+    public class SignalrServiceClient
+    {
+        private static readonly TimeSpan Timeout;
+        internal ILog Log;
+        private static DateTime lastErrorTime;
+        public bool EnableSignalr;
+        internal string CoreMachineKey;
+        internal string Url;
+        internal bool JabberReplaceDomain;
+        internal string JabberReplaceFromDomain;
+        internal string JabberReplaceToDomain;
+
+        internal string hub;
+
+        public TenantManager TenantManager { get; internal set; }
+        public CoreSettings CoreSettings { get; internal set; }
+
+        static SignalrServiceClient()
+        {
+            Timeout = TimeSpan.FromSeconds(1);
+        }
+
+        public SignalrServiceClient()
+        {
+
+        }
+
 
         public void SendMessage(string callerUserName, string calleeUserName, string messageText, int tenantId,
             string domain)
@@ -353,6 +388,19 @@ namespace ASC.Core.Notify.Signalr
             var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
             var hash = Convert.ToBase64String(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
             return string.Format("ASC {0}:{1}:{2}", pkey, now, hash);
+        }
+    }
+
+    public static class SignalrServiceClientExtension
+    {
+        public static DIHelper AddSignalrServiceClient(this DIHelper services)
+        {
+            services.TryAddScoped<SignalrServiceClient>();
+            services.TryAddScoped<IConfigureOptions<SignalrServiceClient>, ConfigureSignalrServiceClient>();
+
+            return services
+                .AddTenantManagerService()
+                .AddCoreSettingsService();
         }
     }
 }

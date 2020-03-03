@@ -32,6 +32,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -44,8 +45,6 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.VoipService.Dao;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 using Twilio.Clients;
@@ -119,7 +118,7 @@ namespace ASC.Web.Core.Sms
     }
     public static class SmsProviderManagerExtension
     {
-        public static IServiceCollection AddSmsProviderManagerService(this IServiceCollection services)
+        public static DIHelper AddSmsProviderManagerService(this DIHelper services)
         {
             services.TryAddScoped<SmsProviderManager>();
             return services.AddConsumerFactoryService();

@@ -31,11 +31,12 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Common.Web;
+using ASC.Web.Studio.UserControls.Statistics;
+using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.Core
 {
@@ -54,7 +55,21 @@ namespace ASC.Web.Studio.Core
         public List<CultureInfo> EnabledCulturesPersonal { get; private set; }
         public decimal ExchangeRateRuble { get; private set; }
         public long MaxImageUploadSize { get; private set; }
-        public static long AvailableFileSize { get; private set; }
+
+        /// <summary>
+        /// Max possible file size for not chunked upload. Less or equal than 100 mb.
+        /// </summary>
+        public long MaxUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+        {
+            return Math.Min(AvailableFileSize, MaxChunkedUploadSize(tenantExtra, tenantStatisticsProvider));
+        }
+
+        public long AvailableFileSize
+        {
+            get;
+            private set;
+        }
+
         public string TeamlabSiteRedirect { get; private set; }
         public long ChunkUploadSize { get; private set; }
         public bool ThirdPartyAuthEnabled { get; private set; }
@@ -132,7 +147,8 @@ namespace ASC.Web.Studio.Core
                 .ToList();
 
             ExchangeRateRuble = GetAppSettings("exchange-rate.ruble", 65);
-            MaxImageUploadSize = GetAppSettings<long>("web.max-upload-size", 1024 * 1024);
+            MaxImageUploadSize = GetAppSettings<long>("web:max-upload-size", 1024 * 1024);
+            AvailableFileSize = GetAppSettings("web:available-file-size", 100L * 1024L * 1024L);
             AvailableFileSize = GetAppSettings("web.available-file-size", 100L * 1024L * 1024L);
 
             TeamlabSiteRedirect = GetAppSettings("web.teamlab-site", string.Empty);
@@ -195,6 +211,17 @@ namespace ASC.Web.Studio.Core
             return hideSettings == null || !hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
         }
 
+        public long MaxChunkedUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+        {
+            var diskQuota = tenantExtra.GetTenantQuota();
+            if (diskQuota != null)
+            {
+                var usedSize = tenantStatisticsProvider.GetUsedSize();
+                var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
+                return Math.Min(freeSize, diskQuota.MaxFileSize);
+            }
+            return ChunkUploadSize;
+        }
 
         private string GetAppSettings(string key, string defaultValue)
         {
@@ -225,7 +252,7 @@ namespace ASC.Web.Studio.Core
 
     public static class SetupInfoExtension
     {
-        public static IServiceCollection AddSetupInfo(this IServiceCollection services)
+        public static DIHelper AddSetupInfo(this DIHelper services)
         {
             services.TryAddSingleton<SetupInfo>();
 

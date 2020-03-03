@@ -4,6 +4,7 @@ using System;
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
+using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
 using ASC.Common.Threading.Progress;
@@ -43,8 +44,8 @@ namespace ASC.People
             services.AddHttpContextAccessor();
 
             services.AddControllers()
-                    .AddNewtonsoftJson()
-                    .AddXmlSerializerFormatters();
+                .AddNewtonsoftJson()
+                .AddXmlSerializerFormatters();
 
             services.AddTransient<IConfigureOptions<MvcNewtonsoftJsonOptions>, CustomJsonOptionsWrapper>();
 
@@ -68,8 +69,9 @@ namespace ASC.People
                 config.OutputFormatters.Add(new XmlOutputFormatter());
             });
 
+            var diHelper = new DIHelper(services);
 
-            services
+            diHelper
                 .AddConfirmAuthHandler()
                 .AddCookieAuthHandler()
                 .AddCultureMiddleware()
@@ -78,7 +80,7 @@ namespace ASC.People
                 .AddProductSecurityFilter()
                 .AddTenantStatusFilter();
 
-            services.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
+            diHelper.Configure<WorkerQueue<ResizeWorkerItem>>(r =>
             {
                 r.workerCount = 2;
                 r.waitInterval = (int)TimeSpan.FromSeconds(30).TotalMilliseconds;
@@ -86,7 +88,7 @@ namespace ASC.People
                 r.stopAfterFinsih = true;
             });
 
-            services.Configure<ProgressQueue<ReassignProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<ReassignProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -95,7 +97,7 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.Configure<ProgressQueue<RemoveProgressItem>>(r =>
+            diHelper.Configure<ProgressQueue<RemoveProgressItem>>(r =>
             {
                 r.workerCount = 1;
                 r.waitInterval = (int)TimeSpan.FromMinutes(5).TotalMilliseconds;
@@ -104,9 +106,9 @@ namespace ASC.People
                 r.errorCount = 0;
             });
 
-            services.AddNLogManager("ASC.Api", "ASC.Web");
+            diHelper.AddNLogManager("ASC.Api", "ASC.Web");
 
-            services
+            diHelper
                 .AddPeopleController()
                 .AddGroupController();
 

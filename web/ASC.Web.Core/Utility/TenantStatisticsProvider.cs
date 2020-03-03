@@ -27,11 +27,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ASC.Web.Studio.UserControls.Statistics
 {
@@ -75,7 +75,7 @@ namespace ASC.Web.Studio.UserControls.Statistics
 
     public static class TenantStatisticsProviderExtension
     {
-        public static IServiceCollection AddTenantStatisticsProviderService(this IServiceCollection services)
+        public static DIHelper AddTenantStatisticsProviderService(this DIHelper services)
         {
             services.TryAddScoped<TenantStatisticsProvider>();
 

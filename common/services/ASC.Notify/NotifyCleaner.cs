@@ -29,13 +29,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 using ASC.Notify.Config;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Notify
@@ -110,7 +110,7 @@ namespace ASC.Notify
 
     public static class NotifyCleanerExtension
     {
-        public static IServiceCollection AddNotifyCleaner(this IServiceCollection services)
+        public static DIHelper AddNotifyCleaner(this DIHelper services)
         {
             services.TryAddSingleton<NotifyCleaner>();
 

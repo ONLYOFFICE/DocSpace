@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
 
@@ -40,7 +41,10 @@ namespace ASC.Web.Core.Files
     public class FileUtility
     {
         public DbContextManager<FilesDbContext> FilesDbContext { get; set; }
-        public FileUtility(IConfiguration configuration, FilesLinkUtility filesLinkUtility, DbContextManager<FilesDbContext> dbContextManager)
+        public FileUtility(
+            IConfiguration configuration,
+            FilesLinkUtility filesLinkUtility,
+            DbContextManager<FilesDbContext> dbContextManager)
         {
             Configuration = configuration;
             FilesLinkUtility = filesLinkUtility;
@@ -373,5 +377,16 @@ namespace ASC.Web.Core.Files
         }
 
         #endregion
+    }
+
+    public static class FileUtilityExtention
+    {
+        public static DIHelper AddFileUtilityService(this DIHelper services)
+        {
+            services.TryAddScoped<FileUtility>();
+            return services
+                .AddFilesLinkUtilityService()
+                .AddFilesDbContextService();
+        }
     }
 }

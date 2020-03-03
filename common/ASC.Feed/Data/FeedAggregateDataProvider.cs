@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Context;
@@ -36,7 +37,6 @@ using ASC.Core.Common.EF.Model;
 using ASC.Core.Tenants;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
 
@@ -380,7 +380,7 @@ namespace ASC.Feed.Data
 
     public static class FeedAggregateDataProviderExtension
     {
-        public static IServiceCollection AddFeedAggregateDataProvider(this IServiceCollection services)
+        public static DIHelper AddFeedAggregateDataProvider(this DIHelper services)
         {
             return services
                 .AddAuthContextService()
