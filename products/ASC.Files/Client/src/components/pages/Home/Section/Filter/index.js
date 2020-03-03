@@ -181,8 +181,12 @@ class SectionFilterContent extends React.Component {
     const { t } = this.props;
 
     return [
-      { key: "firstname", label: t("ByFirstNameSorting"), default: true },
-      { key: "lastname", label: t("ByLastNameSorting"), default: true }
+      { key: "lastModifiedDate", label: t("ByLastModifiedDate"), default: true },
+      { key: "creationDate", label: t("ByCreationDate"), default: true },
+      { key: "title", label: t("ByTitle"), default: true },
+      { key: "type", label: t("ByType"), default: true },
+      { key: "size", label: t("BySize"), default: true },
+      { key: "author", label: t("ByAuthor"), default: true },
     ];
   };
 
@@ -196,7 +200,7 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.filterType) {
+    if (filter.filterType >= 0) {
       selectedFilterData.filterValues.push({
         key: `${filter.filterType}`,
         group: "filter-filterType"

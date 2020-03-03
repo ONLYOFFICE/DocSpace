@@ -24,5 +24,13 @@
   "AllFiles": "Все файлы",
   "NoSubfolders": "Без подпапок",
   "LoadingProcessing": "Загрузка...",
-  "LoadingDescription": "Пожалуйста, подождите..."
+  "LoadingDescription": "Пожалуйста, подождите...",
+  "ByLastModifiedDate": "Дата последнего изменения",
+  "ByCreationDate": "Дата создания",
+  "ByTitle": "Название",
+  "ByType": "Тип",
+  "BySize": "Размер",
+  "ByAuthor": "Автор",
+  "DirectionAscLabel":"А-Я",
+  "DirectionDescLabel":"Я-А"
 }

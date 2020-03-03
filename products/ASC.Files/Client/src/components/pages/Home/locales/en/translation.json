@@ -24,5 +24,13 @@
   "AllFiles": "All files",
   "NoSubfolders": "No subfolders",
   "LoadingProcessing": "Loading...",
-  "LoadingDescription": "Please wait..."
+  "LoadingDescription": "Please wait...",
+  "ByLastModifiedDate": "Last modified date",
+  "ByCreationDate": "Creation date",
+  "ByTitle": "Title",
+  "ByType": "Type",
+  "BySize": "Size",
+  "ByAuthor": "Author",
+  "DirectionAscLabel":"A-Z",
+  "DirectionDescLabel":"Z-A"
 }
