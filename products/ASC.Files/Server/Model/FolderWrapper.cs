@@ -116,7 +116,7 @@ namespace ASC.Api.Documents
             GlobalFolderHelper = globalFolderHelper;
         }
 
-        public FolderWrapper Get(Folder folder)
+        public FolderWrapper Get<T>(Folder<T> folder)
         {
             var result = Get<FolderWrapper>(folder);
             result.ParentId = folder.ParentFolderID;
@@ -125,9 +125,9 @@ namespace ASC.Api.Documents
             {
                 result.RootFolderType = FolderType.SHARE;
 
-                var folderDao = DaoFactory.FolderDao;
+                var folderDao = DaoFactory.GetFolderDao<T>();
                 var parentFolder = folderDao.GetFolder(folder.ParentFolderID);
-                if (!FileSecurity.CanRead(parentFolder))
+                if (!FileSecurity.CanRead<T>(parentFolder))
                     result.ParentId = GlobalFolderHelper.FolderShare;
             }
 

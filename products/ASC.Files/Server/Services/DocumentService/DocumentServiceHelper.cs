@@ -93,12 +93,12 @@ namespace ASC.Web.Files.Services.DocumentService
             ServiceProvider = serviceProvider;
         }
 
-        public File GetParams(object fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        public File<T> GetParams<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
         {
             var lastVersion = true;
             FileShare linkRight;
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
 
             linkRight = FileShareLink.Check(doc, fileDao, out var file);
 
@@ -120,7 +120,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return GetParams(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth, out configuration);
         }
 
-        public File GetParams(File file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        public File<T> GetParams<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
         {
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
@@ -145,17 +145,17 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite
-                              || fileSecurity.CanEdit(file));
+                              || fileSecurity.CanEdit<T>(file));
             if (editPossible && !rightToEdit)
             {
                 editPossible = false;
             }
 
-            rightToRename = rightToRename && rightToEdit && fileSecurity.CanEdit(file);
+            rightToRename = rightToRename && rightToEdit && fileSecurity.CanEdit<T>(file);
 
             rightToReview = rightToReview
                             && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                || fileSecurity.CanReview(file));
+                                || fileSecurity.CanReview<T>(file));
             if (reviewPossible && !rightToReview)
             {
                 reviewPossible = false;
@@ -163,7 +163,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToFillForms = rightToFillForms
                                && (linkRight == FileShare.FillForms || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                   || fileSecurity.CanFillForms(file));
+                                   || fileSecurity.CanFillForms<T>(file));
             if (fillFormsPossible && !rightToFillForms)
             {
                 fillFormsPossible = false;
@@ -171,7 +171,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToComment = rightToComment
                              && (linkRight == FileShare.Comment || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                 || fileSecurity.CanComment(file));
+                                 || fileSecurity.CanComment<T>(file));
             if (commentPossible && !rightToComment)
             {
                 commentPossible = false;
@@ -179,7 +179,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (linkRight == FileShare.Restrict
                 && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && !fileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                && !fileSecurity.CanRead<T>(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -252,14 +252,14 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
             var docKey = GetDocKey(fileStable);
             var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
-            configuration = new Configuration(file, ServiceProvider)
+            configuration = new Configuration<T>(file, ServiceProvider)
             {
                 Document =
                         {
@@ -321,14 +321,14 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public void CheckUsersForDrop(File file)
+        public void CheckUsersForDrop<T>(File<T> file)
         {
             var fileSecurity = FileSecurity;
             var sharedLink =
-                fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanFillForms(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanComment(file, FileConstant.ShareLinkId);
+                fileSecurity.CanEdit<T>(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanReview<T>(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanFillForms<T>(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanComment<T>(file, FileConstant.ShareLinkId);
 
             var usersDrop = FileTracker.GetEditingBy(file.ID)
                                        .Where(uid =>
@@ -337,7 +337,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                                {
                                                    return !sharedLink;
                                                }
-                                               return !fileSecurity.CanEdit(file, uid) && !fileSecurity.CanReview(file, uid) && !fileSecurity.CanFillForms(file, uid) && !fileSecurity.CanComment(file, uid);
+                                               return !fileSecurity.CanEdit<T>(file, uid) && !fileSecurity.CanReview<T>(file, uid) && !fileSecurity.CanFillForms<T>(file, uid) && !fileSecurity.CanComment<T>(file, uid);
                                            })
                                        .Select(u => u.ToString()).ToArray();
 
@@ -346,7 +346,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
@@ -359,7 +359,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
         }
 
-        public bool RenameFile(File file, IFileDao fileDao)
+        public bool RenameFile<T>(File<T> file, IFileDao<T> fileDao)
         {
             if (!FileUtility.CanWebView(file.Title)
                 && !FileUtility.CanWebEdit(file.Title)

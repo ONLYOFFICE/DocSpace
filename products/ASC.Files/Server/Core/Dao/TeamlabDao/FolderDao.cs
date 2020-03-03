@@ -796,7 +796,7 @@ namespace ASC.Files.Core.Data
             throw new NotImplementedException();
         }
 
-        public virtual IEnumerable<int> GetFolderIDs(string module, string bunch, IEnumerable<int> data, bool createIfNotExists)
+        IEnumerable<int> IFolderDao<int>.GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
@@ -868,7 +868,7 @@ namespace ASC.Files.Core.Data
             throw new NotImplementedException();
         }
 
-        public virtual int GetFolderID(string module, string bunch, Guid data, bool createIfNotExists)
+        int IFolderDao<int>.GetFolderID(string module, string bunch, string data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
@@ -879,8 +879,13 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.LeftNode)
                 .FirstOrDefault();
 
-            int newFolderId = 0;
-            if (createIfNotExists && folderId == null)
+            if (folderId != null)
+            {
+                return Convert.ToInt32(folderId);
+            }
+
+            var newFolderId = 0;
+            if (createIfNotExists)
             {
                 var folder = ServiceProvider.GetService<Folder<int>>();
                 folder.ParentFolderID = 0;
@@ -889,7 +894,7 @@ namespace ASC.Files.Core.Data
                     case my:
                         folder.FolderType = FolderType.USER;
                         folder.Title = my;
-                        folder.CreateBy = data;
+                        folder.CreateBy = new Guid(data.ToString());
                         break;
                     case common:
                         folder.FolderType = FolderType.COMMON;
@@ -898,7 +903,7 @@ namespace ASC.Files.Core.Data
                     case trash:
                         folder.FolderType = FolderType.TRASH;
                         folder.Title = trash;
-                        folder.CreateBy = data;
+                        folder.CreateBy = new Guid(data.ToString());
                         break;
                     case share:
                         folder.FolderType = FolderType.SHARE;
@@ -937,7 +942,7 @@ namespace ASC.Files.Core.Data
 
         int IFolderDao<int>.GetFolderIDProjects(bool createIfNotExists)
         {
-            return GetFolderID(FileConstant.ModuleId, projects, Guid.Empty, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, projects, null, createIfNotExists);
         }
 
         public object GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
@@ -947,7 +952,7 @@ namespace ASC.Files.Core.Data
 
         int IFolderDao<int>.GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
         {
-            return GetFolderID(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
         public object GetFolderIDCommon(bool createIfNotExists)
@@ -957,7 +962,7 @@ namespace ASC.Files.Core.Data
 
         int IFolderDao<int>.GetFolderIDCommon(bool createIfNotExists)
         {
-            return GetFolderID(FileConstant.ModuleId, common, Guid.Empty, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, common, null, createIfNotExists);
         }
 
         public object GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
@@ -967,7 +972,7 @@ namespace ASC.Files.Core.Data
 
         int IFolderDao<int>.GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
         {
-            return GetFolderID(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID), createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
         public object GetFolderIDShare(bool createIfNotExists)
@@ -977,7 +982,7 @@ namespace ASC.Files.Core.Data
 
         int IFolderDao<int>.GetFolderIDShare(bool createIfNotExists)
         {
-            return GetFolderID(FileConstant.ModuleId, share, Guid.Empty, createIfNotExists);
+            return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, share, null, createIfNotExists);
         }
 
         #endregion
@@ -1181,7 +1186,10 @@ namespace ASC.Files.Core.Data
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFolderDao, FolderDao>();
+            services.TryAddScoped<IFolderDao<int>, FolderDao>();
             services.TryAddTransient<Folder>();
+            services.TryAddTransient<Folder<int>>();
+
             return services
                 .AddFactoryIndexerService<FoldersWrapper>()
                 .AddTenantManagerService()

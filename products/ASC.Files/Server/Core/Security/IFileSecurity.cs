@@ -31,20 +31,20 @@ namespace ASC.Files.Core.Security
 {
     public interface IFileSecurity
     {
-        bool CanRead(FileEntry entry, Guid userId);
+        bool CanRead<T>(FileEntry entry, Guid userId);
 
-        bool CanComment(FileEntry entry, Guid userId);
+        bool CanComment<T>(FileEntry entry, Guid userId);
 
-        bool CanReview(FileEntry entry, Guid userId);
+        bool CanReview<T>(FileEntry entry, Guid userId);
 
-        bool CanFillForms(FileEntry entry, Guid userId);
+        bool CanFillForms<T>(FileEntry entry, Guid userId);
 
-        bool CanCreate(FileEntry entry, Guid userId);
+        bool CanCreate<T>(FileEntry entry, Guid userId);
 
-        bool CanEdit(FileEntry entry, Guid userId);
+        bool CanEdit<T>(FileEntry entry, Guid userId);
 
-        bool CanDelete(FileEntry entry, Guid userId);
+        bool CanDelete<T>(FileEntry entry, Guid userId);
 
-        IEnumerable<Guid> WhoCanRead(FileEntry entry);
+        IEnumerable<Guid> WhoCanRead<T>(FileEntry entry);
     }
 }

@@ -71,6 +71,11 @@ namespace ASC.Files.Core
             set { _folderIdDisplay = value; }
         }
 
+        public new string UniqID
+        {
+            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
+        }
+
         public Folder(Global global) : base(global)
         {
         }

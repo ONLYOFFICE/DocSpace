@@ -303,7 +303,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!readLink && !FileSecurity.CanRead(file))
+                if (!readLink && !FileSecurity.CanRead<T>(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -556,10 +556,23 @@ namespace ASC.Web.Files
 
         private void StreamFile(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                StreamFile(context, id);
+            }
+            else
+            {
+                StreamFile(context, q);
+            }
+        }
+
+        private void StreamFile<T>(HttpContext context, T id)
+        {
             try
             {
-                var fileDao = DaoFactory.FileDao;
-                var id = context.Request.Query[FilesLinkUtility.FileId];
+                var fileDao = DaoFactory.GetFileDao<T>();
                 if (!int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version))
                 {
                     version = 0;
@@ -572,7 +585,7 @@ namespace ASC.Web.Files
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey];
-                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id + version, auth.FirstOrDefault() ?? "", Global.StreamUrlExpire);
+                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth.FirstOrDefault() ?? "", Global.StreamUrlExpire);
                     if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                     {
                         var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -643,7 +656,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead<T>(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -836,10 +849,23 @@ namespace ASC.Web.Files
 
         private void DifferenceFile(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+
+            if (int.TryParse(q, out var id))
+            {
+                DifferenceFile(context, id);
+            }
+            else
+            {
+                DifferenceFile(context, q);
+            }
+        }
+
+        private void DifferenceFile<T>(HttpContext context, T id)
+        {
             try
             {
-                var fileDao = DaoFactory.FileDao;
-                var id = context.Request.Query[FilesLinkUtility.FileId];
+                var fileDao = DaoFactory.GetFileDao<T>();
                 int.TryParse(context.Request.Query[FilesLinkUtility.Version].FirstOrDefault() ?? "", out var version);
                 var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
 
@@ -847,7 +873,7 @@ namespace ASC.Web.Files
                 if (linkRight == FileShare.Restrict && !SecurityContext.IsAuthenticated)
                 {
                     var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
-                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id + version, auth ?? "", Global.StreamUrlExpire);
+                    var validateResult = EmailValidationKeyProvider.ValidateEmailKey(id.ToString() + version, auth ?? "", Global.StreamUrlExpire);
                     if (validateResult != EmailValidationKeyProvider.ValidationResult.Ok)
                     {
                         var exc = new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
@@ -876,7 +902,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead<T>(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -925,17 +951,27 @@ namespace ASC.Web.Files
 
         private void CreateFile(HttpContext context)
         {
-            var responseMessage = context.Request.Query["response"] == "message";
             var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
             if (string.IsNullOrEmpty(folderId))
-                folderId = GlobalFolderHelper.FolderMy.ToString();
-            Folder folder;
+            {
+                CreateFile(context, GlobalFolderHelper.FolderMy);
+            }
+            else
+            {
+                CreateFile(context, folderId);
+            }
+        }
 
-            var folderDao = DaoFactory.FolderDao;
+        private void CreateFile<T>(HttpContext context, T folderId)
+        {
+            var responseMessage = context.Request.Query["response"] == "message";
+            Folder<T> folder;
+
+            var folderDao = DaoFactory.GetFolderDao<T>();
             folder = folderDao.GetFolder(folderId);
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!FileSecurity.CanCreate<T>(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             File file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];
@@ -964,7 +1000,7 @@ namespace ASC.Web.Files
                 return;
             }
 
-            FileMarker.MarkAsNew(file);
+            FileMarker.MarkAsNew<T>(file);
 
             if (responseMessage)
             {
@@ -978,7 +1014,7 @@ namespace ASC.Web.Files
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
-        private File CreateFileFromTemplate(Folder folder, string fileTitle, string docType)
+        private File CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
         {
             var storeTemplate = GlobalStore.GetStoreTemplate();
 
@@ -987,7 +1023,7 @@ namespace ASC.Web.Files
             var fileExt = FileUtility.InternalExtension[FileType.Document];
             if (!string.IsNullOrEmpty(docType))
             {
-                var tmpFileType = Services.DocumentService.Configuration.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
+                var tmpFileType = Configuration<T>.DocType.FirstOrDefault(r => r.Value.Equals(docType, StringComparison.OrdinalIgnoreCase));
                 FileUtility.InternalExtension.TryGetValue(tmpFileType.Key, out var tmpFileExt);
                 if (!string.IsNullOrEmpty(tmpFileExt))
                     fileExt = tmpFileExt;
@@ -1009,23 +1045,23 @@ namespace ASC.Web.Files
                 fileTitle += fileExt;
             }
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             var stream = storeTemplate.GetReadStream("", templatePath);
             file.ContentLength = stream.CanSeek ? stream.Length : storeTemplate.GetFileSize(templatePath);
             return fileDao.SaveFile(file, stream);
         }
 
-        private File CreateFileFromUri(Folder folder, string fileUri, string fileTitle)
+        private File CreateFileFromUri<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.Title = fileTitle;
             file.FolderID = folder.ID;
             file.Comment = FilesCommonResource.CommentCreate;
@@ -1038,7 +1074,7 @@ namespace ASC.Web.Files
                 ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
             }
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             var fileStream = new ResponseStream(req.GetResponse());
             file.ContentLength = fileStream.Length;
 
@@ -1047,14 +1083,28 @@ namespace ASC.Web.Files
 
         private void Redirect(HttpContext context)
         {
+            var q = context.Request.Query[FilesLinkUtility.FileId];
+            var q1 = context.Request.Query[FilesLinkUtility.FolderId];
+
+            if (int.TryParse(q, out var fileId) && int.TryParse(q1, out var folderId))
+            {
+                Redirect(context, fileId, folderId);
+            }
+            else
+            {
+                Redirect(context, q, q1);
+            }
+        }
+
+        private void Redirect<T>(HttpContext context, T folderId, T fileId)
+        {
             if (!SecurityContext.AuthenticateMe(CookiesManager.GetCookies(CookiesType.AuthKey)))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return;
             }
             var urlRedirect = string.Empty;
-            var folderId = context.Request.Query[FilesLinkUtility.FolderId];
-            if (!string.IsNullOrEmpty(folderId))
+            if (folderId != null)
             {
                 try
                 {
@@ -1066,10 +1116,9 @@ namespace ASC.Web.Files
                 }
             }
 
-            var fileId = context.Request.Query[FilesLinkUtility.FileId];
-            if (!string.IsNullOrEmpty(fileId))
+            if (fileId != null)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 var file = fileDao.GetFile(fileId);
                 if (file == null)
                 {

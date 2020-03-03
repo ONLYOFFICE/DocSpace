@@ -68,7 +68,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -215,7 +214,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return AccessTokenUrl;
         }
 
-        public File GetFile(string fileId, out bool editable)
+        public File<string> GetFile(string fileId, out bool editable)
         {
             Logger.Debug("GoogleDriveApp: get file " + fileId);
             fileId = ThirdPartySelector.GetFileId(fileId);
@@ -228,7 +227,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
             var jsonFile = JObject.Parse(driveFile);
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<string>>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(GetCorrectTitle(jsonFile));
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("createdTime"));
@@ -247,7 +246,7 @@ namespace ASC.Web.Files.ThirdPartyApp
             return file;
         }
 
-        public string GetFileStreamUrl(File file)
+        public string GetFileStreamUrl(File<string> file)
         {
             if (file == null) return string.Empty;
 

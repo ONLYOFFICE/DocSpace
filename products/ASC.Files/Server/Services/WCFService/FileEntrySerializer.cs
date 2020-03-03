@@ -45,7 +45,7 @@ namespace ASC.Web.Files.Services.WCFService
         {
             serializers[typeof(File)] = new DataContractSerializer(typeof(File));
             serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>));
-            serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper));
+            serializers[typeof(DataWrapper<>)] = new DataContractSerializer(typeof(DataWrapper<>));
 
             //if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
             //{

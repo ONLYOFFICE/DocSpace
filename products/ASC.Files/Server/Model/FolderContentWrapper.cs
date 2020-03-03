@@ -119,12 +119,12 @@ namespace ASC.Api.Documents
             FolderWrapperHelper = folderWrapperHelper;
         }
 
-        public FolderContentWrapper Get(DataWrapper folderItems, int startIndex)
+        public FolderContentWrapper Get<T>(DataWrapper<T> folderItems, int startIndex)
         {
             var result = new FolderContentWrapper
             {
-                Files = folderItems.Entries.OfType<File>().Select(FileWrapperHelper.Get).ToList(),
-                Folders = folderItems.Entries.OfType<Folder>().Select(FolderWrapperHelper.Get).ToList(),
+                Files = folderItems.Entries.OfType<File<T>>().Select(FileWrapperHelper.Get).ToList(),
+                Folders = folderItems.Entries.OfType<Folder<T>>().Select(FolderWrapperHelper.Get).ToList(),
                 PathParts = folderItems.FolderPathParts,
                 StartIndex = startIndex
             };

@@ -26,12 +26,13 @@
 
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+
 using ASC.Files.Core;
 
 namespace ASC.Web.Files.Services.WCFService
 {
     [DataContract(Name = "composite_data", Namespace = "")]
-    public class DataWrapper
+    public class DataWrapper<T>
     {
         [DataMember(IsRequired = false, Name = "entries", EmitDefaultValue = false)]
         public ItemList<FileEntry> Entries { get; set; }
@@ -40,10 +41,10 @@ namespace ASC.Web.Files.Services.WCFService
         public int Total { get; set; }
 
         [DataMember(IsRequired = false, Name = "path_parts")]
-        public ItemList<object> FolderPathParts { get; set; }
+        public ItemList<T> FolderPathParts { get; set; }
 
         [DataMember(IsRequired = false, Name = "folder_info")]
-        public Folder FolderInfo { get; set; }
+        public Folder<T> FolderInfo { get; set; }
 
         [DataMember(IsRequired = false, Name = "root_folders_id_marked_as_new")]
         public Dictionary<object, int> RootFoldersIdMarkedAsNew { get; set; }

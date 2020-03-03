@@ -39,7 +39,6 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Utility;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Api.Documents
@@ -176,7 +175,7 @@ namespace ASC.Api.Documents
             FileUtility = fileUtility;
         }
 
-        public FileWrapper Get(File file)
+        public FileWrapper Get<T>(File<T> file)
         {
             var result = Get<FileWrapper>(file);
             result.FolderId = file.FolderID;
@@ -184,9 +183,9 @@ namespace ASC.Api.Documents
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
             {
                 result.RootFolderType = FolderType.SHARE;
-                var folderDao = DaoFactory.FolderDao;
+                var folderDao = DaoFactory.GetFolderDao<T>();
                 var parentFolder = folderDao.GetFolder(file.FolderID);
-                if (!FileSecurity.CanRead(parentFolder))
+                if (!FileSecurity.CanRead<T>(parentFolder))
                 {
                     result.FolderId = GlobalFolderHelper.FolderShare;
                 }

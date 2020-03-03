@@ -118,7 +118,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
                 }
-                else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
+                else if (!_ignoreException && !FilesSecurity.CanDelete<T>(folder))
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
@@ -236,7 +236,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete(file))
+                if (!FilesSecurity.CanDelete<T>(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
                     return true;

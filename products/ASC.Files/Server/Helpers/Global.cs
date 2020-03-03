@@ -51,7 +51,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using Constants = ASC.Core.Configuration.Constants;
-using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Classes
 {
@@ -279,16 +278,16 @@ namespace ASC.Web.Files.Classes
             Logger = options.Get("ASC.Files");
         }
 
-        internal static readonly IDictionary<int, object> ProjectsRootFolderCache =
-            new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        internal static readonly IDictionary<int, int> ProjectsRootFolderCache =
+            new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderProjects(IDaoFactory daoFactory)
+        public int GetFolderProjects(IDaoFactory daoFactory)
         {
-            if (CoreBaseSettings.Personal) return null;
+            if (CoreBaseSettings.Personal) return default;
 
-            if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return null;
+            if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return default;
 
-            var folderDao = daoFactory.FolderDao;
+            var folderDao = daoFactory.GetFolderDao<int>();
             if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var result))
             {
                 result = folderDao.GetFolderIDProjects(true);
@@ -301,34 +300,22 @@ namespace ASC.Web.Files.Classes
 
         public T GetFolderProjects<T>(IDaoFactory daoFactory)
         {
-            if (CoreBaseSettings.Personal) return default;
-
-            if (WebItemManager[WebItemManager.ProjectsProductID].IsDisabled(WebItemSecurity, AuthContext)) return default;
-
-            var folderDao = daoFactory.GetFolderDao<T>();
-            if (!ProjectsRootFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var result))
-            {
-                result = folderDao.GetFolderIDProjects(true);
-
-                ProjectsRootFolderCache[TenantManager.GetCurrentTenant().TenantId] = result;
-            }
-
-            return (T)result;
+            return (T)Convert.ChangeType(GetFolderProjects(daoFactory), typeof(T));
         }
 
-        internal static readonly IDictionary<string, object> UserRootFolderCache =
-            new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        internal static readonly IDictionary<string, int> UserRootFolderCache =
+            new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
+        public int GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
         {
-            if (!AuthContext.IsAuthenticated) return 0;
-            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return 0;
+            if (!AuthContext.IsAuthenticated) return default;
+            if (UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) return default;
 
             var cacheKey = string.Format("my/{0}/{1}", TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
             if (!UserRootFolderCache.TryGetValue(cacheKey, out var myFolderId))
             {
-                myFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, true);
+                myFolderId = GetFolderIdAndProccessFirstVisit<int>(fileMarker, daoFactory, true);
                 if (!Equals(myFolderId, 0))
                     UserRootFolderCache[cacheKey] = myFolderId;
             }
@@ -341,67 +328,49 @@ namespace ASC.Web.Files.Classes
             UserRootFolderCache.Remove(cacheKey);
         }
 
-        internal static readonly IDictionary<int, object> CommonFolderCache =
-                new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        internal static readonly IDictionary<int, int> CommonFolderCache =
+                new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderCommon(FileMarker fileMarker, IDaoFactory daoFactory)
-        {
-            if (CoreBaseSettings.Personal) return null;
-
-            if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
-            {
-                commonFolderId = GetFolderIdAndProccessFirstVisit(fileMarker, daoFactory, false);
-                if (!Equals(commonFolderId, 0))
-                    CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
-            }
-            return commonFolderId;
-        }
         public T GetFolderCommon<T>(FileMarker fileMarker, IDaoFactory daoFactory)
+        {
+            return (T)Convert.ChangeType(GetFolderCommon(fileMarker, daoFactory), typeof(T));
+        }
+
+        public int GetFolderCommon(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return default;
 
             if (!CommonFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var commonFolderId))
             {
-                commonFolderId = GetFolderIdAndProccessFirstVisit<T>(fileMarker, daoFactory, false);
+                commonFolderId = GetFolderIdAndProccessFirstVisit<int>(fileMarker, daoFactory, false);
                 if (!Equals(commonFolderId, 0))
                     CommonFolderCache[TenantManager.GetCurrentTenant().TenantId] = commonFolderId;
             }
-            return (T)commonFolderId;
+            return commonFolderId;
         }
 
-        internal static readonly IDictionary<int, object> ShareFolderCache =
-            new ConcurrentDictionary<int, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
+        internal static readonly IDictionary<int, int> ShareFolderCache =
+            new ConcurrentDictionary<int, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderShare(IFolderDao folderDao)
-        {
-            if (CoreBaseSettings.Personal) return null;
-            if (IsOutsider) return null;
-
-            if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var sharedFolderId))
-            {
-                sharedFolderId = folderDao.GetFolderIDShare(true);
-
-                if (!sharedFolderId.Equals(0))
-                    ShareFolderCache[TenantManager.GetCurrentTenant().TenantId] = sharedFolderId;
-            }
-
-            return sharedFolderId;
-        }
-
-        public T GetFolderShare<T>(IFolderDao<T> folderDao)
+        public int GetFolderShare(IDaoFactory daoFactory)
         {
             if (CoreBaseSettings.Personal) return default;
             if (IsOutsider) return default;
 
             if (!ShareFolderCache.TryGetValue(TenantManager.GetCurrentTenant().TenantId, out var sharedFolderId))
             {
-                sharedFolderId = folderDao.GetFolderIDShare(true);
+                sharedFolderId = daoFactory.GetFolderDao<int>().GetFolderIDShare(true);
 
                 if (!sharedFolderId.Equals(default))
                     ShareFolderCache[TenantManager.GetCurrentTenant().TenantId] = sharedFolderId;
             }
 
-            return (T)sharedFolderId;
+            return sharedFolderId;
+        }
+
+        public T GetFolderShare<T>(IDaoFactory daoFactory)
+        {
+            return (T)Convert.ChangeType(GetFolderShare(daoFactory), typeof(T));
         }
 
         internal static readonly IDictionary<string, object> TrashFolderCache =
@@ -463,61 +432,6 @@ namespace ASC.Web.Files.Classes
 
             return id;
         }
-        private object GetFolderIdAndProccessFirstVisit(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
-        {
-            var folderDao = daoFactory.FolderDao;
-            var fileDao = daoFactory.FileDao;
-
-            var id = my ? folderDao.GetFolderIDUser(false) : folderDao.GetFolderIDCommon(false);
-
-            if (Equals(id, 0)) //TODO: think about 'null'
-            {
-                id = my ? folderDao.GetFolderIDUser(true) : folderDao.GetFolderIDCommon(true);
-
-                //Copy start document
-                if (AdditionalWhiteLabelSettings.Instance(SettingsManager).StartDocsEnabled)
-                {
-                    try
-                    {
-                        var storeTemplate = GlobalStore.GetStoreTemplate();
-
-                        var culture = my ? UserManager.GetUsers(AuthContext.CurrentAccount.ID).GetCulture() : TenantManager.GetCurrentTenant().GetCulture();
-                        var path = FileConstant.StartDocPath + culture + "/";
-
-                        if (!storeTemplate.IsDirectory(path))
-                            path = FileConstant.StartDocPath + "default/";
-                        path += my ? "my/" : "corporate/";
-
-                        SaveStartDocument(fileMarker, folderDao, fileDao, id, path, storeTemplate);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex);
-                    }
-                }
-            }
-
-            return id;
-        }
-
-        private void SaveStartDocument(FileMarker fileMarker, IFolderDao folderDao, IFileDao fileDao, object folderId, string path, IDataStore storeTemplate)
-        {
-            foreach (var file in storeTemplate.ListFilesRelative("", path, "*", false))
-            {
-                SaveFile(fileMarker, fileDao, folderId, path + file, storeTemplate);
-            }
-
-            foreach (var folderName in storeTemplate.ListDirectoriesRelative(path, false))
-            {
-                var folder = ServiceProvider.GetService<Folder>();
-                folder.Title = folderName;
-                folder.ParentFolderID = folderId;
-
-                var subFolderId = folderDao.SaveFolder(folder);
-
-                SaveStartDocument(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
-            }
-        }
 
         private void SaveStartDocument<T>(FileMarker fileMarker, IFolderDao<T> folderDao, IFileDao<T> fileDao, T folderId, string path, IDataStore storeTemplate)
         {
@@ -538,30 +452,6 @@ namespace ASC.Web.Files.Classes
             }
         }
 
-        private void SaveFile(FileMarker fileMarker, IFileDao fileDao, object folder, string filePath, IDataStore storeTemp)
-        {
-            using var stream = storeTemp.GetReadStream("", filePath);
-            var fileName = Path.GetFileName(filePath);
-            var file = ServiceProvider.GetService<File>();
-
-            file.Title = fileName;
-            file.ContentLength = stream.CanSeek ? stream.Length : storeTemp.GetFileSize("", filePath);
-            file.FolderID = folder;
-            file.Comment = FilesCommonResource.CommentCreate;
-
-            stream.Position = 0;
-            try
-            {
-                file = fileDao.SaveFile(file, stream);
-
-                fileMarker.MarkAsNew(file);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-        }
-
         private void SaveFile<T>(FileMarker fileMarker, IFileDao<T> fileDao, T folder, string filePath, IDataStore storeTemp)
         {
             using var stream = storeTemp.GetReadStream("", filePath);
@@ -578,7 +468,7 @@ namespace ASC.Web.Files.Classes
             {
                 file = fileDao.SaveFile(file, stream);
 
-                fileMarker.MarkAsNew(file);
+                fileMarker.MarkAsNew<T>(file);
             }
             catch (Exception ex)
             {
@@ -605,55 +495,25 @@ namespace ASC.Web.Files.Classes
             GlobalFolder = globalFolder;
         }
 
-        public object FolderProjects
-        {
-            get
-            {
-                return GlobalFolder.GetFolderProjects(DaoFactory);
-            }
-        }
-        public T GetFolderProjects<T>()
-        {
-            return GlobalFolder.GetFolderProjects<T>(DaoFactory);
-        }
+        public int FolderProjects => GlobalFolder.GetFolderProjects(DaoFactory);
+        public int FolderCommon => GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
+        public int FolderMy => GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
 
-        public object FolderCommon
-        {
-            get
-            {
-                return GlobalFolder.GetFolderCommon(FileMarker, DaoFactory);
-            }
-        }
+        public T GetFolderMy<T>() => (T)Convert.ChangeType(FolderMy, typeof(T));
+        public T GetFolderCommon<T>() => (T)Convert.ChangeType(FolderCommon, typeof(T));
+        public T GetFolderProjects<T>() => (T)Convert.ChangeType(FolderProjects, typeof(T));
 
-        public T GetFolderCommon<T>()
+        public void SetFolderMy<T>(T val)
         {
-            return GlobalFolder.GetFolderCommon<T>(FileMarker, DaoFactory);
-        }
-
-        public object FolderMy
-        {
-            get
-            {
-                return GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            }
-            set
-            {
-                GlobalFolder.SetFolderMy(value);
-            }
-        }
-
-        public object FolderShare
-        {
-            get
-            {
-                return GlobalFolder.GetFolderShare(DaoFactory.FolderDao);
-            }
+            GlobalFolder.SetFolderMy(val);
         }
 
         public T GetFolderShare<T>()
         {
-            return GlobalFolder.GetFolderShare(DaoFactory.GetFolderDao<T>());
+            return (T)Convert.ChangeType(FolderShare, typeof(T));
         }
+
+        public int FolderShare => GlobalFolder.GetFolderShare(DaoFactory);
 
         public object FolderTrash
         {

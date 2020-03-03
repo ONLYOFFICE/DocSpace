@@ -279,9 +279,9 @@ namespace ASC.Web.Files.Services.DocumentService
             return null;
         }
 
-        private void ProcessEdit(string fileId, TrackerData fileData)
+        private void ProcessEdit<T>(T fileId, TrackerData fileData)
         {
-            if (ThirdPartySelector.GetAppByFileId(fileId) != null)
+            if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
             {
                 return;
             }
@@ -290,11 +290,11 @@ namespace ASC.Web.Files.Services.DocumentService
             var usersDrop = new List<string>();
 
             string docKey;
-            var app = ThirdPartySelector.GetAppByFileId(fileId);
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
                 File fileStable;
-                fileStable = DaoFactory.FileDao.GetFileStable(fileId);
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
@@ -347,7 +347,7 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId);
         }
 
-        private TrackResponse ProcessSave(string fileId, TrackerData fileData)
+        private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)
         {
             var comments = new List<string>();
             if (fileData.Status == TrackerStatus.Corrupted
@@ -361,11 +361,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 userId = FileTracker.GetEditingBy(fileId).FirstOrDefault();
             }
 
-            var app = ThirdPartySelector.GetAppByFileId(fileId);
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
                 File fileStable;
-                fileStable = DaoFactory.FileDao.GetFileStable(fileId);
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
                 var docKey = DocumentServiceHelper.GetDocKey(fileStable);
                 if (!fileData.Key.Equals(docKey))
@@ -602,7 +602,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        private void StoringFileAfterError(string fileId, string userId, string downloadUri)
+        private void StoringFileAfterError<T>(T fileId, string userId, string downloadUri)
         {
             try
             {

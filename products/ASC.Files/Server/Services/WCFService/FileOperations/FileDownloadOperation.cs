@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = FolderDao.GetFolder(folderId);
-                if (folder == null || !FilesSecurity.CanRead(folder)) continue;
+                if (folder == null || !FilesSecurity.CanRead<T>(folder)) continue;
                 var folderPath = path + folder.Title + "/";
 
                 var files = FileDao.GetFiles(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true);

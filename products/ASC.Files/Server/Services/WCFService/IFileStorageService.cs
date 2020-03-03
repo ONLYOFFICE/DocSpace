@@ -51,7 +51,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         Folder FolderRename(string folderId, string title);
 
-        DataWrapper GetFolderItems(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        DataWrapper<T> GetFolderItems<T>(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
         object GetFolderItemsXml(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 

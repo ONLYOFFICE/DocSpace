@@ -132,7 +132,7 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
         }
 
-        public FileOperationWraper Get(FileOperationResult o)
+        public FileOperationWraper Get<T>(FileOperationResult o)
         {
             var result = new FileOperationWraper
             {
@@ -147,17 +147,25 @@ namespace ASC.Api.Documents
             if (!string.IsNullOrEmpty(o.Result) && result.OperationType != FileOperationType.Delete)
             {
                 var arr = o.Result.Split(':');
-                var folders = arr.Where(s => s.StartsWith("folder_")).Select(s => s.Substring(7));
+                var folders = arr
+                    .Where(s => s.StartsWith("folder_"))
+                    .Select(s => s.Substring(7))
+                    .Select(r => (T)Convert.ChangeType(r, typeof(T)));
+
                 if (folders.Any())
                 {
-                    var folderDao = DaoFactory.FolderDao;
-                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(FolderWrapperHelper.Get).ToList();
+                    var folderDao = DaoFactory.GetFolderDao<T>();
+                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(r => FolderWrapperHelper.Get(r)).ToList();
                 }
-                var files = arr.Where(s => s.StartsWith("file_")).Select(s => s.Substring(5));
+                var files = arr
+                    .Where(s => s.StartsWith("file_"))
+                    .Select(s => s.Substring(5))
+                    .Select(r => (T)Convert.ChangeType(r, typeof(T)));
+
                 if (files.Any())
                 {
-                    var fileDao = DaoFactory.FileDao;
-                    result.Files = fileDao.GetFiles(files.ToArray()).Select(FilesWrapperHelper.Get).ToList();
+                    var fileDao = DaoFactory.GetFileDao<T>();
+                    result.Files = fileDao.GetFiles(files.ToArray()).Select(r => FilesWrapperHelper.Get(r)).ToList();
                 }
 
                 if (result.OperationType == FileOperationType.Download)

@@ -218,9 +218,9 @@ namespace ASC.Files.Core
         /// <param name="data"></param>
         /// <param name="createIfNotExists"></param>
         /// <returns></returns>
-        T GetFolderID(string module, string bunch, Guid data, bool createIfNotExists);
+        T GetFolderID(string module, string bunch, string data, bool createIfNotExists);
 
-        IEnumerable<T> GetFolderIDs(string module, string bunch, IEnumerable<T> data, bool createIfNotExists);
+        IEnumerable<T> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists);
 
         /// <summary>
         ///  Returns id folder "Shared Documents"

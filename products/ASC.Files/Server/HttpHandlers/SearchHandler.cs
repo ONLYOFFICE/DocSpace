@@ -98,19 +98,19 @@ namespace ASC.Web.Files.Configuration
             ThirdpartyConfiguration = thirdpartyConfiguration;
         }
 
-        public IEnumerable<File> SearchFiles(string text)
+        public IEnumerable<File<int>> SearchFiles(string text)
         {
             var security = FileSecurity;
-            var fileDao = DaoFactory.FileDao;
-            return fileDao.Search(text).Where(security.CanRead);
+            var fileDao = DaoFactory.GetFileDao<int>();
+            return fileDao.Search(text).Where(security.CanRead<int>);
         }
 
-        public IEnumerable<Folder> SearchFolders(string text)
+        public IEnumerable<Folder<int>> SearchFolders(string text)
         {
             var security = FileSecurity;
-            IEnumerable<Folder> result;
-            var folderDao = DaoFactory.FolderDao;
-            result = folderDao.Search(text).Where(security.CanRead);
+            IEnumerable<Folder<int>> result;
+            var folderDao = DaoFactory.GetFolderDao<int>();
+            result = folderDao.Search(text).Where(security.CanRead<int>);
 
             if (ThirdpartyConfiguration.SupportInclusion
                 && (Global.IsAdministrator || FilesSettingsHelper.EnableThirdParty))
@@ -119,12 +119,12 @@ namespace ASC.Web.Files.Configuration
                 if (!Equals(id, 0))
                 {
                     var folderMy = folderDao.GetFolder(id);
-                    result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
+                    //result = result.Concat(EntryManager.GetThirpartyFolders(folderMy, text));
                 }
 
                 id = GlobalFolderHelper.FolderCommon;
                 var folderCommon = folderDao.GetFolder(id);
-                result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
+                //result = result.Concat(EntryManager.GetThirpartyFolders(folderCommon, text));
             }
 
             return result;
@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Configuration
 
         public SearchResultItem[] Search(string text)
         {
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<int>();
             var result = SearchFiles(text)
                             .Select(r => new SearchResultItem
                             {

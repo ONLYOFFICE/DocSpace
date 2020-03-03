@@ -46,6 +46,7 @@ using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
+using ASC.Files.Core;
 using ASC.Files.Resources;
 using ASC.MessagingSystem;
 using ASC.Security.Cryptography;
@@ -66,7 +67,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.ThirdPartyApp
@@ -193,21 +193,21 @@ namespace ASC.Web.Files.ThirdPartyApp
             return AccessTokenUrl;
         }
 
-        public File GetFile(string fileId, out bool editable)
+        public File<string> GetFile(string fileId, out bool editable)
         {
             Logger.Debug("BoxApp: get file " + fileId);
-            fileId = ThirdPartySelector.GetFileId(fileId);
+            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId, token);
+            var boxFile = GetBoxFile(fileId.ToString(), token);
             editable = true;
 
             if (boxFile == null) return null;
 
             var jsonFile = JObject.Parse(boxFile);
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<string>>();
             file.ID = ThirdPartySelector.BuildAppFileId(AppAttr, jsonFile.Value<string>("id"));
             file.Title = Global.ReplaceInvalidCharsAndTruncate(jsonFile.Value<string>("name"));
             file.CreateOn = TenantUtil.DateTimeFromUtc(jsonFile.Value<DateTime>("created_at"));
@@ -244,11 +244,11 @@ namespace ASC.Web.Files.ThirdPartyApp
             return file;
         }
 
-        public string GetFileStreamUrl(File file)
+        public string GetFileStreamUrl(File<string> file)
         {
             if (file == null) return string.Empty;
 
-            var fileId = ThirdPartySelector.GetFileId(file.ID.ToString());
+            var fileId = ThirdPartySelector.GetFileId(file.ID);
 
             Logger.Debug("BoxApp: get file stream url " + fileId);
 
@@ -273,11 +273,11 @@ namespace ASC.Web.Files.ThirdPartyApp
                                 (stream == null
                                      ? " from - " + downloadUrl
                                      : " from stream"));
-            fileId = ThirdPartySelector.GetFileId(fileId);
+            fileId = ThirdPartySelector.GetFileId(fileId.ToString());
 
             var token = TokenHelper.GetToken(AppAttr);
 
-            var boxFile = GetBoxFile(fileId, token);
+            var boxFile = GetBoxFile(fileId.ToString(), token);
             if (boxFile == null)
             {
                 Logger.Error("BoxApp: file is null");

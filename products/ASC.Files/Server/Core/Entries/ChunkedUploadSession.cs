@@ -82,11 +82,11 @@ namespace ASC.Files.Core
                                      if (f == null)
                                      {
                                          Logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
-                                         return string.Empty;
+                                         return default;
                                      }
                                      return f.ID;
                                  })
-                                 : new List<object> { session.FolderId };
+                                 : new List<T> { session.FolderId };
 
             return new
             {
