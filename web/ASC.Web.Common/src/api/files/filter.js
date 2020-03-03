@@ -1,19 +1,23 @@
 import { toUrlParams } from "../../utils";
+import { FilterType } from '../../constants';
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
-const DEFAULT_SORT_BY = "firstname";
+const DEFAULT_SORT_BY = "lastModifiedDate";
 const DEFAULT_SORT_ORDER = "ascending";
-const DEFAULT_EMPLOYEE_STATUS = null;
-const DEFAULT_ACTIVATION_STATUS = null;
-const DEFAULT_ROLE = null;
+const DEFAULT_FILTER_TYPE = FilterType.None;
+const DEFAULT_SEARCH_TYPE = false; //withSubfolders
 const DEFAULT_SEARCH = null;
-const DEFAULT_GROUP = null;
 
-class Filter {
+// TODO: add next params
+// subjectGroup bool
+// subjectID
+// searchInContent bool
+
+class FilesFilter {
   static getDefault(total = DEFAULT_TOTAL) {
-    return new Filter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
+    return new FilesFilter(DEFAULT_PAGE, DEFAULT_PAGE_COUNT, total);
   }
 
   constructor(
@@ -22,22 +26,18 @@ class Filter {
     total = DEFAULT_TOTAL,
     sortBy = DEFAULT_SORT_BY,
     sortOrder = DEFAULT_SORT_ORDER,
-    employeeStatus = DEFAULT_EMPLOYEE_STATUS,
-    activationStatus = DEFAULT_ACTIVATION_STATUS,
-    role = DEFAULT_ROLE,
+    filterType = DEFAULT_FILTER_TYPE,
+    withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
-    group = DEFAULT_GROUP
   ) {
     this.page = page;
     this.pageCount = pageCount;
     this.sortBy = sortBy;
     this.sortOrder = sortOrder;
-    this.employeeStatus = employeeStatus;
-    this.activationStatus = activationStatus;
-    this.role = role;
+    this.filterType = filterType;
+    this.withSubfolders = withSubfolders;
     this.search = search;
     this.total = total;
-    this.group = group;
   }
 
   getStartIndex = () => {
@@ -57,39 +57,22 @@ class Filter {
       pageCount,
       sortBy,
       sortOrder,
-      employeeStatus,
-      activationStatus,
-      role,
-      search,
-      group
+      filterType,
+      withSubfolders,
+      search
     } = this;
 
     let dtoFilter = {
-      StartIndex: this.getStartIndex(),
-      Count: pageCount,
+      from: this.getStartIndex(),
+      count: pageCount,
       sortby: sortBy,
-      sortorder: sortOrder,
-      employeestatus: employeeStatus,
-      activationstatus: activationStatus,
-      filtervalue: (search ?? "").trim(),
-      groupId: group
-      //fields: "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,displayName,avatarSmall,
-      //listAdminModules,birthday,title,location,isLDAP,isSSO"
+      orderBy: sortOrder,
+      filter: filterType,
+      search: (search ?? "").trim(),
+      withSubfolders
     };
 
-    switch (role) {
-      case "admin":
-        dtoFilter.isadministrator = true;
-        break;
-      case "user":
-        dtoFilter.employeeType = 1;
-        break;
-      case "guest":
-        dtoFilter.employeeType = 2;
-        break;
-      default:
-        break;
-    }
+
 
     return dtoFilter;
   };
@@ -100,35 +83,24 @@ class Filter {
     return str;
   };
 
-  clone(onlySorting) {
-    return onlySorting
-      ? new Filter(
-          DEFAULT_PAGE,
-          DEFAULT_PAGE_COUNT,
-          DEFAULT_TOTAL,
-          this.sortBy,
-          this.sortOrder
-        )
-      : new Filter(
+  clone() {
+    return new FilesFilter(
           this.page,
           this.pageCount,
           this.total,
           this.sortBy,
           this.sortOrder,
-          this.employeeStatus,
-          this.activationStatus,
-          this.role,
-          this.search,
-          this.group
+          this.filterType,
+          this.withSubfolders,
+          this.search
         );
   }
 
   equals(filter) {
     const equals =
-      this.employeeStatus === filter.employeeStatus &&
-      this.activationStatus === filter.activationStatus &&
-      this.role === filter.role &&
-      this.group === filter.group &&
+      this.filterType === filter.filterType &&
+      this.authorType === filter.authorType &&
+      this.withSubfolders === filter.withSubfolders &&
       this.search === filter.search &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
@@ -139,4 +111,4 @@ class Filter {
   }
 }
 
-export default Filter;
+export default FilesFilter;

@@ -1,5 +1,5 @@
-import { api } from "asc-web-common";
-
+import { api, constants } from "asc-web-common";
+const { FilterType, FileType } = constants;
 const { files } = api;
 
 export const SET_FOLDERS = "SET_FOLDERS";
@@ -8,6 +8,7 @@ export const SET_SELECTION = "SET_SELECTION";
 export const SET_SELECTED = "SET_SELECTED";
 export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
 export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
+export const SET_FILES_FILTER = "SET_FILES_FILTER";
 
 export function setFiles(files) {
   return {
@@ -51,8 +52,56 @@ export function setRootFolders(rootFolders) {
   };
 }
 
-export function fetchFiles() {
-  return Promise.resolve([]);
+// export function setFilesFilter(filter) {
+//   return {
+//     type: SET_FILES_FILTER,
+//     filter
+//   };
+// }
+
+export function fetchFiles(filter) {
+  //TODO: add real API request, change algorithm
+  return (dispatch, getState) => {
+    let filterData = filter && filter.clone();
+    // dispatch(setFilesFilter(filterData));
+    const { files: filesStore } = getState();
+    const currentFilterType = filter.filterType;
+    const fileType = getFileTypeByFilterType(currentFilterType);
+    const selectedFolderId = filesStore.selectedFolder.id;
+
+    if (currentFilterType === FilterType.None) {
+      return fetchFolder(selectedFolderId, dispatch)
+    }
+    else {
+      return files.getFolder(selectedFolderId)
+        .then(data => {
+          const sortedFiles = data.files
+            .filter(file => file.fileType === fileType);
+          dispatch(setFiles(sortedFiles));
+        });
+    }
+  }
+}
+
+// only for fake sorting
+function getFileTypeByFilterType(filterType) {
+  switch (filterType) {
+    case FilterType.ImagesOnly:
+      return FileType.Image;
+    case FilterType.DocumentsOnly:
+      return FileType.Document;
+    case FilterType.PresentationsOnly:
+      return FileType.Presentation;
+    case FilterType.SpreadsheetsOnly:
+      return FileType.Spreadsheet;
+    case FilterType.ArchiveOnly:
+      return FileType.Archive;
+    case FilterType.MediaOnly:
+      // without FileType.Video for simplifying
+      return FileType.Audio;
+    default:
+      return FileType.Unknown;
+  }
 }
 
 export function fetchFolders() {

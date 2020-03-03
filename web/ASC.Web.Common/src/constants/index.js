@@ -30,3 +30,37 @@ export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2
 });
+
+/**
+ * Enum for filter type.
+ * @readonly
+ */
+export const FilterType = Object.freeze({
+  None: 0,
+  FilesOnly: 1,
+  FoldersOnly: 2,
+  DocumentsOnly: 3,
+  PresentationsOnly: 4,
+  SpreadsheetsOnly: 5,
+  ImagesOnly: 7,
+  ByUser: 8,
+  ByDepartment: 9,
+  ArchiveOnly: 10,
+  ByExtension: 11,
+  MediaOnly: 12,
+});
+
+/**
+ * Enum for file type.
+ * @readonly
+ */
+export const FileType = Object.freeze({
+  Unknown: 0,
+  Archive: 1,
+  Video: 2,
+  Audio: 3,
+  Image: 4,
+  Spreadsheet: 5,
+  Presentation: 6,
+  Document: 7
+});

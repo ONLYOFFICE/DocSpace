@@ -10,5 +10,17 @@
   "Copy": "Copy",
   "Download": "Download",
   "Rename": "Rename",
-  "Delete": "Delete"
+  "Delete": "Delete",
+  "Type": "Type",
+  "Author": "Author",
+  "Search": "Search",
+  "Folders": "Folders",
+  "Documents": "Documents",
+  "Presentations": "Presentations",
+  "Spreadsheets": "Spreadsheets",
+  "Images": "Images",
+  "Media": "Media",
+  "Archives": "Archives",
+  "AllFiles": "All files",
+  "NoSubfolders": "No subfolders"
 }

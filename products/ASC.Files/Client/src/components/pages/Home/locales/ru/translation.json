@@ -10,5 +10,17 @@
   "Copy": "Копировать",
   "Download": "Скачать",
   "Rename": "Переименовать",
-  "Delete": "Удалить"
+  "Delete": "Удалить",
+  "Type": "Тип",
+  "Author": "Автор",
+  "Search": "Поиск",
+  "Folders": "Папки",
+  "Documents": "Документы",
+  "Presentations": "Презентации",
+  "Spreadsheets": "Таблицы",
+  "Images": "Изображения",
+  "Media": "Медиа",
+  "Archives": "Архивы",
+  "AllFiles": "Все файлы",
+  "NoSubfolders": "Без подпапок"
 }

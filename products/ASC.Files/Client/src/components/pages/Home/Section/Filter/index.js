@@ -7,52 +7,53 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store } from 'asc-web-common';
-const { isAdmin } = store.auth.selectors;
+import { constants } from 'asc-web-common';
 
-const getEmployeeStatus = filterValues => {
-  const employeeStatus = result(
+const { FilterType } = constants;
+
+const getFilterType = filterValues => {
+  const filterType = result(
     find(filterValues, value => {
-      return value.group === "filter-status";
+      return value.group === "filter-filterType";
     }),
     "key"
   );
 
-  return employeeStatus ? +employeeStatus : null;
+  return filterType ? +filterType : null;
 };
 
-const getActivationStatus = filterValues => {
-  const activationStatus = result(
-    find(filterValues, value => {
-      return value.group === "filter-email";
-    }),
-    "key"
-  );
+// const getActivationStatus = filterValues => {
+//   const activationStatus = result(
+//     find(filterValues, value => {
+//       return value.group === "filter-author";
+//     }),
+//     "key"
+//   );
 
-  return activationStatus ? +activationStatus : null;
-};
+//   return activationStatus ? +activationStatus : null;
+// };
 
-const getRole = filterValues => {
-  const employeeStatus = result(
-    find(filterValues, value => {
-      return value.group === "filter-type";
-    }),
-    "key"
-  );
+// const getRole = filterValues => {
+//   const employeeStatus = result(
+//     find(filterValues, value => {
+//       return value.group === "filter-type";
+//     }),
+//     "key"
+//   );
 
-  return employeeStatus || null;
-};
+//   return employeeStatus || null;
+// };
 
-const getGroup = filterValues => {
-  const groupId = result(
-    find(filterValues, value => {
-      return value.group === "filter-group";
-    }),
-    "key"
-  );
+// const getGroup = filterValues => {
+//   const groupId = result(
+//     find(filterValues, value => {
+//       return value.group === "filter-group";
+//     }),
+//     "key"
+//   );
 
-  return groupId || null;
-};
+//   return groupId || null;
+// };
 
 class SectionFilterContent extends React.Component {
   componentDidMount() {
@@ -69,10 +70,7 @@ class SectionFilterContent extends React.Component {
   onFilter = data => {
     const { onLoading, fetchFiles, filter } = this.props;
 
-    const employeeStatus = getEmployeeStatus(data.filterValues);
-    const activationStatus = getActivationStatus(data.filterValues);
-    const role = getRole(data.filterValues);
-    const group = getGroup(data.filterValues);
+    const filterType = getFilterType(data.filterValues) || FilterType.None;
     const search = data.inputValue || null;
     const sortBy = data.sortId;
     const sortOrder =
@@ -82,99 +80,96 @@ class SectionFilterContent extends React.Component {
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
     newFilter.sortOrder = sortOrder;
-    newFilter.employeeStatus = employeeStatus;
-    newFilter.activationStatus = activationStatus;
-    newFilter.role = role;
+    newFilter.filterType = filterType;
     newFilter.search = search;
-    newFilter.group = group;
 
     onLoading(true);
-    fetchFiles(newFilter).finally(() => onLoading(false));
+    fetchFiles(newFilter)
+    .finally(() => onLoading(false));
   };
 
   getData = () => {
-    const { user, folders, t, settings } = this.props;
-    const { guestCaption, userCaption, groupCaption } = settings.customNames;
+    const { t, settings } = this.props;
+    const { usersCaption, groupsCaption } = settings.customNames;
 
-    const options = !isAdmin(user)
-      ? []
-      : [
+    const options = [
         {
-          key: "filter-status",
-          group: "filter-status",
-          label: t("UserStatus"),
+          key: "filter-filterType",
+          group: "filter-filterType",
+          label: t("Type"),
           isHeader: true
         },
         {
-          key: "1",
-          group: "filter-status",
-          label: t("LblActive")
+          key: FilterType.FoldersOnly,
+          group: "filter-filterType",
+          label: t("Folders")
         },
         {
-          key: "2",
-          group: "filter-status",
-          label: t("LblTerminated")
+          key: FilterType.DocumentsOnly,
+          group: "filter-filterType",
+          label: t("Documents")
+        },
+        {
+          key: FilterType.PresentationsOnly,
+          group: "filter-filterType",
+          label: t("Presentations")
+        },
+        {
+          key: FilterType.SpreadsheetsOnly,
+          group: "filter-filterType",
+          label: t("Spreadsheets")
+        },
+        {
+          key: FilterType.ImagesOnly,
+          group: "filter-filterType",
+          label: t("Images")
+        },
+        {
+          key: FilterType.MediaOnly,
+          group: "filter-filterType",
+          label: t("Media")
+        },
+        {
+          key: FilterType.ArchiveOnly,
+          group: "filter-filterType",
+          label: t("Archives")
+        },
+        {
+          key: FilterType.FilesOnly,
+          group: "filter-filterType",
+          label: t("AllFiles")
         }
       ];
-
-    const groupOptions = folders.map(group => {
-      return {
-        key: group.id,
-        inSubgroup: true,
-        group: "filter-group",
-        label: group.name
-      };
-    });
 
     const filterOptions = [
       ...options,
       {
-        key: "filter-email",
-        group: "filter-email",
-        label: t("Email"),
+        key: "filter-author",
+        group: "filter-author",
+        label: t("Author"),
         isHeader: true
       },
       {
         key: "1",
-        group: "filter-email",
-        label: t("LblActive")
+        group: "filter-author",
+        label: usersCaption
       },
       {
         key: "2",
-        group: "filter-email",
-        label: t("LblPending")
+        group: "filter-author",
+        label: groupsCaption
       },
       {
-        key: "filter-type",
-        group: "filter-type",
-        label: t("UserType"),
-        isHeader: true
-      },
-      { key: "admin", group: "filter-type", label: t("Administrator") },
-      {
-        key: "user",
-        group: "filter-type",
-        label: userCaption
-      },
-      {
-        key: "guest",
-        group: "filter-type",
-        label: guestCaption
-      },
-      {
-        key: "filter-other",
-        group: "filter-other",
-        label: t("LblOther"),
+        key: "filter-folders",
+        group: "filter-folders",
+        label: t("Folders"),
         isHeader: true
       },
       {
-        key: "filter-type-group",
-        group: "filter-other",
-        subgroup: "filter-group",
-        label: groupCaption,
-        defaultSelectLabel: t("LblSelect")
+        key: "1",
+        group: "filter-folders",
+        label: t('NoSubfolders')
       },
-      ...groupOptions
     ];
 
     //console.log("getData (filterOptions)", filterOptions);
@@ -201,33 +196,33 @@ class SectionFilterContent extends React.Component {
 
     selectedFilterData.inputValue = filter.search;
 
-    if (filter.employeeStatus) {
+    if (filter.filterType) {
       selectedFilterData.filterValues.push({
-        key: `${filter.employeeStatus}`,
-        group: "filter-status"
+        key: `${filter.filterType}`,
+        group: "filter-filterType"
       });
     }
 
-    if (filter.activationStatus) {
-      selectedFilterData.filterValues.push({
-        key: `${filter.activationStatus}`,
-        group: "filter-email"
-      });
-    }
+    // if (filter.activationStatus) {
+    //   selectedFilterData.filterValues.push({
+    //     key: `${filter.activationStatus}`,
+    //     group: "filter-author"
+    //   });
+    // }
 
-    if (filter.role) {
-      selectedFilterData.filterValues.push({
-        key: filter.role,
-        group: "filter-type"
-      });
-    }
+    // if (filter.role) {
+    //   selectedFilterData.filterValues.push({
+    //     key: filter.role,
+    //     group: "filter-type"
+    //   });
+    // }
 
-    if (filter.group) {
-      selectedFilterData.filterValues.push({
-        key: filter.group,
-        group: "filter-group"
-      });
-    }
+    // if (filter.group) {
+    //   selectedFilterData.filterValues.push({
+    //     key: filter.group,
+    //     group: "filter-group"
+    //   });
+    // }
 
     return selectedFilterData;
   };

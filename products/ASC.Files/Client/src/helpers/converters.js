@@ -1,8 +1,7 @@
 import {
-  EMPLOYEE_STATUS,
-  ACTIVATION_STATUS,
-  ROLE,
-  GROUP,
+  SEARCH_TYPE,
+  AUTHOR_TYPE,
+  FILE_TYPE,
   SEARCH,
   SORT_BY,
   SORT_ORDER,
@@ -10,7 +9,7 @@ import {
   PAGE_COUNT
 } from "./constants";
 import { api, utils } from "asc-web-common";
-const { Filter } = api;
+const { FilesFilter } = api;
 const { getObjectByLocation } = utils;
 
 export function getFilterByLocation(location) {
@@ -18,16 +17,16 @@ export function getFilterByLocation(location) {
 
   if(!urlFilter) return null;
 
-  const defaultFilter = Filter.getDefault();
+  const defaultFilter = FilesFilter.getDefault();
 
-  const employeeStatus =
-    (urlFilter[EMPLOYEE_STATUS] && +urlFilter[EMPLOYEE_STATUS]) ||
-    defaultFilter.employeeStatus;
-  const activationStatus =
-    (urlFilter[ACTIVATION_STATUS] && +urlFilter[ACTIVATION_STATUS]) ||
-    defaultFilter.activationStatus;
-  const role = urlFilter[ROLE] || defaultFilter.role;
-  const group = urlFilter[GROUP] || defaultFilter.group;
+  const fileType =
+    (urlFilter[FILE_TYPE] && +urlFilter[FILE_TYPE]) ||
+    defaultFilter.fileType;
+  const authorType =
+    (urlFilter[AUTHOR_TYPE] && +urlFilter[AUTHOR_TYPE]) ||
+    defaultFilter.authorType;
+  const searchType = (urlFilter[SEARCH_TYPE] && +urlFilter[SEARCH_TYPE]) ||
+  defaultFilter.searchType;
   const search = urlFilter[SEARCH] || defaultFilter.search;
   const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
   const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
@@ -36,17 +35,16 @@ export function getFilterByLocation(location) {
     (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
     defaultFilter.pageCount;
 
-  const newFilter = new Filter(
+  const newFilter = new FilesFilter(
     page,
     pageCount,
     defaultFilter.total,
     sortBy,
     sortOrder,
-    employeeStatus,
-    activationStatus,
-    role,
-    search,
-    group
+    fileType,
+    authorType,
+    searchType,
+    search
   );
 
   return newFilter;

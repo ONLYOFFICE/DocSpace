@@ -1,6 +1,6 @@
-import { SET_FILES, SET_FOLDERS, SET_SELECTION, SET_SELECTED, SET_SELECTED_FOLDER, SET_ROOT_FOLDERS } from "./actions";
+import { SET_FILES, SET_FOLDERS, SET_SELECTION, SET_SELECTED, SET_SELECTED_FOLDER, SET_ROOT_FOLDERS, SET_FILES_FILTER } from "./actions";
 import { api } from "asc-web-common";
-const { Filter } = api;
+const { FilesFilter } = api;
 
 const initialState = {
   files: [],
@@ -9,7 +9,7 @@ const initialState = {
   selected: "none",
   selectedFolder: null,
   rootFolders: [],
-  filter: Filter.getDefault() //TODO: Replace to new FileFilter
+  filter: FilesFilter.getDefault()
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -38,6 +38,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         rootFolders: action.rootFolders
       });
+    // case SET_FILES_FILTER:
+    //   return Object.assign({}, state, {
+    //     filter: action.filter
+    //   });
     default:
       return state;
   }
