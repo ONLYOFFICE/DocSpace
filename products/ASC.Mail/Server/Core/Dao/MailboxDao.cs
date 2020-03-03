@@ -204,61 +204,82 @@ namespace ASC.Mail.Core.Dao
             return result > 0;
         }
 
-        /*public bool Enable(IMailboxExp exp, bool enabled)
+        public bool Enable(IMailboxExp exp, bool enabled)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.Enabled, enabled)
-                .Where(exp.GetExpression());
+            var mailbox = MailDb.MailMailbox
+                .Where(exp.GetExpression())
+                .FirstOrDefault();
 
-            if (enabled)
-                query.Set(MailboxTable.Columns.DateAuthError, null);
+            if (mailbox == null)
+                return false;
 
-            var result = Db.ExecuteNonQuery(query);
+            mailbox.Enabled = enabled;
+
+            if (enabled) {
+                mailbox.DateAuthError = null;
+            }
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetNextLoginDelay(IMailboxExp exp, TimeSpan delay)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.IsProcessed, false)
-                .Set(string.Format(SET_LOGIN_DELAY_EXPIRES, (int)delay.TotalSeconds))
-                .Where(exp.GetExpression());
+            var mailbox = MailDb.MailMailbox
+                .Where(exp.GetExpression())
+                .FirstOrDefault();
 
-            var result = Db.ExecuteNonQuery(query);
+            if (mailbox == null)
+                return false;
+
+            mailbox.IsProcessed = false;
+            mailbox.DateLoginDelayExpires = DateTime.UtcNow.Add(delay);
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetMailboxEmailIn(Mailbox mailbox, string emailInFolder)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.EmailInFolder, "" != emailInFolder ? emailInFolder : null)
-                .Where(MailboxTable.Columns.Id, mailbox.Id)
-                .Where(MailboxTable.Columns.Tenant, mailbox.Tenant)
-                .Where(MailboxTable.Columns.User, mailbox.User)
-                .Where(MailboxTable.Columns.IsRemoved, false);
+            var mailMailbox = MailDb.MailMailbox
+                .Where(mb => mb.Id == mailbox.Id 
+                    && mb.Tenant == mailbox.Tenant 
+                    && mb.IdUser == mailbox.User 
+                    && mb.IsRemoved == false)
+                .FirstOrDefault();
 
-            var result = Db.ExecuteNonQuery(query);
+            if (mailMailbox == null)
+                return false;
+
+            mailMailbox.EmailInFolder = "" != emailInFolder ? emailInFolder : null;
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
         public bool SetMailboxesActivity(int tenant, string user, bool userOnline = true)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Where(MailboxTable.Columns.Tenant, tenant)
-                .Where(MailboxTable.Columns.User, user)
-                .Where(MailboxTable.Columns.IsRemoved, false)
-                .Set(SET_DATE_USER_CHECKED)
-                .Set(MailboxTable.Columns.UserOnline, userOnline);
+            var mailMailbox = MailDb.MailMailbox
+                .Where(mb => mb.Tenant == tenant
+                    && mb.IdUser == user
+                    && mb.IsRemoved == false)
+                .FirstOrDefault();
 
-            var result = Db.ExecuteNonQuery(query);
+            if (mailMailbox == null)
+                return false;
+
+            mailMailbox.DateUserChecked = DateTime.UtcNow;
+            mailMailbox.UserOnline = userOnline;
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
-        private const string SET_DATE_CHECKED = MailboxTable.Columns.DateChecked + " = UTC_TIMESTAMP()";
+        /*private const string SET_DATE_CHECKED = MailboxTable.Columns.DateChecked + " = UTC_TIMESTAMP()";
         private const string SET_DATE_USER_CHECKED = MailboxTable.Columns.DateUserChecked + " = UTC_TIMESTAMP()";
 
         private const string SET_LOGIN_DELAY_EXPIRES =
@@ -266,18 +287,23 @@ namespace ASC.Mail.Core.Dao
 
         private static readonly string SetDefaultLoginDelayExpires =
             MailboxTable.Columns.DateLoginDelayExpires + " = DATE_ADD(UTC_TIMESTAMP(), INTERVAL " +
-            Defines.DefaultServerLoginDelayStr + " SECOND)";
+            Defines.DefaultServerLoginDelayStr + " SECOND)";*/
 
         public bool SetMailboxInProcess(int id)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.IsProcessed, true)
-                .Set(SET_DATE_CHECKED)
-                .Where(MailboxTable.Columns.Id, id)
-                .Where(MailboxTable.Columns.IsProcessed, false)
-                .Where(MailboxTable.Columns.IsRemoved, false);
+            var mailMailbox = MailDb.MailMailbox
+                .Where(mb => mb.Id == id
+                    && mb.IsProcessed == false
+                    && mb.IsRemoved == false)
+                .FirstOrDefault();
 
-            var result = Db.ExecuteNonQuery(query);
+            if (mailMailbox == null)
+                return false;
+
+            mailMailbox.IsProcessed = true;
+            mailMailbox.DateChecked = DateTime.UtcNow;
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
@@ -289,134 +315,139 @@ namespace ASC.Mail.Core.Dao
             if (nextLoginDelay < Defines.DefaultServerLoginDelay)
                 nextLoginDelay = Defines.DefaultServerLoginDelay;
 
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.IsProcessed, false)
-                .Set(SET_DATE_CHECKED)
-                .Set(nextLoginDelay > Defines.DefaultServerLoginDelay
-                    ? string.Format(SET_LOGIN_DELAY_EXPIRES, nextLoginDelay)
-                    : SetDefaultLoginDelayExpires)
-                .Where(MailboxTable.Columns.Id, mailbox.Id);
+            var mailMailbox = MailDb.MailMailbox
+                .Where(mb => mb.Id == mailbox.Id)
+                .FirstOrDefault();
+
+            if (mailMailbox == null)
+                return false;
+
+            mailMailbox.IsProcessed = false;
+            mailMailbox.DateChecked = DateTime.UtcNow;
+            mailbox.DateLoginDelayExpires =
+                nextLoginDelay > Defines.DefaultServerLoginDelay
+                ? DateTime.UtcNow.AddSeconds(nextLoginDelay)
+                : DateTime.UtcNow.AddSeconds(Defines.DefaultServerLoginDelay);
 
             if (enabled.HasValue)
             {
-                query.Set(MailboxTable.Columns.Enabled, enabled.Value);
+                mailMailbox.Enabled = enabled.Value;
             }
 
             if (messageCount.HasValue)
             {
-                query.Set(MailboxTable.Columns.MsgCountLast, messageCount.Value);
+                mailMailbox.MsgCountLast = messageCount.Value;
             }
 
             if (size.HasValue)
             {
-                query.Set(MailboxTable.Columns.SizeLast, size.Value);
+                mailMailbox.SizeLast = size.Value;
             }
 
             if (quotaError.HasValue)
             {
-                query.Set(MailboxTable.Columns.QuotaError, quotaError.Value);
+                mailMailbox.QuotaError = quotaError.Value;
             }
 
             if (!string.IsNullOrEmpty(oAuthToken))
             {
-                query.Set(MailboxTable.Columns.OAuthToken, MailUtil.EncryptPassword(oAuthToken));
+                //TODO: Fix
+                //mailMailbox.Token = MailUtil.EncryptPassword(oAuthToken);
             }
 
             if (resetImapIntervals.HasValue)
             {
-                query.Set(MailboxTable.Columns.ImapIntervals, null);
+                mailMailbox.ImapIntervals = null;
             }
             else
             {
                 if (!string.IsNullOrEmpty(imapIntervalsJson))
                 {
-                    query.Set(MailboxTable.Columns.ImapIntervals, imapIntervalsJson);
+                    mailMailbox.ImapIntervals = imapIntervalsJson;
                 }
             }
 
-            var result = Db.ExecuteNonQuery(query);
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
-        public bool SetMailboxAuthError(int id, DateTime? authErroDate)
+        public bool SetMailboxAuthError(int id, DateTime? authErrorDate)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.DateAuthError, authErroDate)
-                .Where(MailboxTable.Columns.Id, id);
+            var query = MailDb.MailMailbox
+                .Where(mb => mb.Id == id);
 
-            if (authErroDate.HasValue)
-                query.Where(MailboxTable.Columns.DateAuthError, null);
+            if (authErrorDate.HasValue)
+            {
+                query.Where(mb => mb.DateAuthError == null);
+            }
 
-            var result = Db.ExecuteNonQuery(query);
+            var mailMailbox = query.FirstOrDefault();
+
+            if (mailMailbox == null)
+                return false;
+
+            mailMailbox.DateAuthError = authErrorDate;
+            mailMailbox.DateChecked = DateTime.UtcNow;
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
-        private const string SET_PROCESS_EXPIRES =
-            "TIMESTAMPDIFF(MINUTE, " + MailboxTable.Columns.DateChecked + ", UTC_TIMESTAMP()) > {0}";
+        /*private const string SET_PROCESS_EXPIRES =
+            "TIMESTAMPDIFF(MINUTE, " + MailboxTable.Columns.DateChecked + ", UTC_TIMESTAMP()) > {0}";*/
 
         public List<int> SetMailboxesProcessed(int timeoutInMinutes)
         {
-            var query = new SqlQuery(MailboxTable.TABLE_NAME)
-                .Select(MailboxTable.Columns.Id)
-                .Where(MailboxTable.Columns.IsProcessed, true)
-                .Where(!Exp.Eq(MailboxTable.Columns.DateChecked, null))
-                .Where(string.Format(SET_PROCESS_EXPIRES, timeoutInMinutes));
+            var mailboxes = MailDb.MailMailbox
+                .Where(mb => mb.IsProcessed == true 
+                    && mb.DateChecked != null 
+                    && (DateTime.UtcNow - mb.DateChecked).GetValueOrDefault().TotalMinutes > timeoutInMinutes);
 
-            var ids = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt32(r[0]));
+            if (!mailboxes.Any())
+                return new List<int>();
 
-            if (!ids.Any())
-                return ids;
+            foreach (var mbox in mailboxes) {
+                mbox.IsProcessed = false;
+            }
 
-            var update = new SqlUpdate(MailboxTable.TABLE_NAME)
-                        .Set(MailboxTable.Columns.IsProcessed, false)
-                        .Where(Exp.In(MailboxTable.Columns.Id, ids.ToArray()));
+            var result = MailDb.SaveChanges();
 
-            Db.ExecuteNonQuery(update);
-
-            return ids;
+            return mailboxes.Select(mb => (int)mb.Id).ToList();
         }
 
         public bool CanAccessTo(IMailboxExp exp)
         {
-            var query = new SqlQuery(MailboxTable.TABLE_NAME)
-                .Select(MailboxTable.Columns.Id)
-                .Where(exp.GetExpression());
-
-            var foundIds = Db.ExecuteList(query)
-                .ConvertAll(res => Convert.ToInt32(res[0]));
+            var foundIds = MailDb.MailMailbox
+               .Where(exp.GetExpression())
+               .Select(mb => mb.Id);
 
             return foundIds.Any();
         }
 
         public MailboxStatus GetMailBoxStatus(IMailboxExp exp)
         {
-            var query = new SqlQuery(MailboxTable.TABLE_NAME)
-                .Select(MailboxTable.Columns.Id,
-                    MailboxTable.Columns.IsRemoved,
-                    MailboxTable.Columns.Enabled,
-                    MailboxTable.Columns.BeginDate)
-                .Where(exp.GetExpression());
+            var status = MailDb.MailMailbox
+               .Where(exp.GetExpression())
+               .Select(ToMailboxStatus)
+               .SingleOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToMMailboxStatus)
-                .SingleOrDefault();
+            return status;
         }
 
-        protected MailboxStatus ToMMailboxStatus(object[] r)
+        protected MailboxStatus ToMailboxStatus(MailMailbox r)
         {
             var status = new MailboxStatus
             {
-                Id = Convert.ToInt32(r[0]),
-                IsRemoved = Convert.ToBoolean(r[1]),
-                Enabled = Convert.ToBoolean(r[2]),
-                BeginDate = Convert.ToDateTime(r[3])
+                Id = (int)r.Id,
+                IsRemoved = r.IsRemoved,
+                Enabled = r.Enabled,
+                BeginDate = r.BeginDate
             };
 
             return status;
-        }*/
+        }
 
         protected Mailbox ToMailbox(MailMailbox r)
         {

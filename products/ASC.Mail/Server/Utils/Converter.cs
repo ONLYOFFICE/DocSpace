@@ -93,20 +93,20 @@ namespace ASC.Mail.Utils
         //    return tempList;
         //}
 
-        //public static EncryptionType ToEncryptionType(this string type)
-        //{
-        //    switch (type.ToLower().Trim())
-        //    {
-        //        case Defines.SSL:
-        //            return EncryptionType.SSL;
-        //        case Defines.START_TLS:
-        //            return EncryptionType.StartTLS;
-        //        case Defines.PLAIN:
-        //            return EncryptionType.None;
-        //        default:
-        //            throw new ArgumentException("Unknown mail server socket type: " + type);
-        //    }
-        //}
+        public static EncryptionType ToEncryptionType(this string type)
+        {
+            switch (type.ToLower().Trim())
+            {
+                case Defines.SSL:
+                    return EncryptionType.SSL;
+                case Defines.START_TLS:
+                    return EncryptionType.StartTLS;
+                case Defines.PLAIN:
+                    return EncryptionType.None;
+                default:
+                    throw new ArgumentException("Unknown mail server socket type: " + type);
+            }
+        }
 
         public static string ToNameString(this EncryptionType encryptionType)
         {
@@ -123,22 +123,22 @@ namespace ASC.Mail.Utils
             }
         }
 
-        //public static SaslMechanism ToSaslMechanism(this string type)
-        //{
-        //    switch (type.ToLower().Trim())
-        //    {
-        //        case "":
-        //        case Defines.OAUTH2:
-        //        case Defines.PASSWORD_CLEARTEXT:
-        //            return SaslMechanism.Login;
-        //        case Defines.NONE:
-        //            return SaslMechanism.None;
-        //        case Defines.PASSWORD_ENCRYPTED:
-        //            return SaslMechanism.CramMd5;
-        //        default:
-        //            throw new ArgumentException("Unknown mail server authentication type: " + type);
-        //    }
-        //}
+        public static SaslMechanism ToSaslMechanism(this string type)
+        {
+            switch (type.ToLower().Trim())
+            {
+                case "":
+                case Defines.OAUTH2:
+                case Defines.PASSWORD_CLEARTEXT:
+                    return SaslMechanism.Login;
+                case Defines.NONE:
+                    return SaslMechanism.None;
+                case Defines.PASSWORD_ENCRYPTED:
+                    return SaslMechanism.CramMd5;
+                default:
+                    throw new ArgumentException("Unknown mail server authentication type: " + type);
+            }
+        }
 
         public static string ToNameString(this SaslMechanism saslType)
         {

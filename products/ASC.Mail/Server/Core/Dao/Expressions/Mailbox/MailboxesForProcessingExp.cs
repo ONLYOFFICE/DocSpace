@@ -29,9 +29,15 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Data.Contracts;
 
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Models;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 {
-    /*public class MailboxesForProcessingExp : IMailboxesExp
+    public class MailboxesForProcessingExp : IMailboxesExp
     {
         public string OrderBy { get; private set; }
         public bool? OrderAsc { get; private set; }
@@ -48,11 +54,11 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
 
             OnlyActive = active;
 
-            OrderBy = MailboxTable.Columns.DateChecked;
+            OrderBy = ""; //TODO: fix MailboxTable.Columns.DateChecked;
             OrderAsc = true;
         }
 
-        private const string WHERE_LOGIN_DELAY_EXPIRED =
+        /*private const string WHERE_LOGIN_DELAY_EXPIRED =
             MailboxTable.Columns.DateLoginDelayExpires + " < UTC_TIMESTAMP()";
 
         private const string DATE_USER_CHECKED_TIMESTAMP =
@@ -89,6 +95,11 @@ namespace ASC.Mail.Core.Dao.Expressions.Mailbox
             }
 
             return exp;
+        }*/
+
+        Expression<Func<MailMailbox, bool>> IMailboxesExp.GetExpression()
+        {
+            throw new NotImplementedException();
         }
-    }*/
+    }
 }

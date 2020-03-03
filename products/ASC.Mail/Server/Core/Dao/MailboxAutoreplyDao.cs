@@ -24,13 +24,19 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
 //using ASC.Common.Data;
 //using ASC.Common.Data.Sql;
 //using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 //using ASC.Mail.Core.DbSchema;
 //using ASC.Mail.Core.DbSchema.Interfaces;
 //using ASC.Mail.Core.DbSchema.Tables;
@@ -39,32 +45,20 @@
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxAutoreplyDao : BaseDao, IMailboxAutoreplyDao
+    public class MailboxAutoreplyDao : BaseDao, IMailboxAutoreplyDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxAutoreplyTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        private const string AUTOREPLY_ALIAS = "r";
-        private const string MB_ALIAS = "mb";
-
-        public MailboxAutoreplyDao(IDbManager dbManager, int tenant, string user)
-            : base(table, dbManager, tenant)
+        public MailboxAutoreplyDao(DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public MailboxAutoreply GetAutoreply(int mailboxId)
         {
-            var query = Query(AUTOREPLY_ALIAS)
-                .InnerJoin(MailboxTable.TABLE_NAME.Alias(MB_ALIAS),
-                    Exp.EqColumns(MailboxTable.Columns.Id.Prefix(MB_ALIAS),
-                        MailboxAutoreplyTable.Columns.MailboxId.Prefix(AUTOREPLY_ALIAS)))
-                .Where(MailboxAutoreplyTable.Columns.Tenant.Prefix(AUTOREPLY_ALIAS), Tenant)
-                .Where(MailboxAutoreplyTable.Columns.MailboxId.Prefix(AUTOREPLY_ALIAS), mailboxId);
-
-            return Db.ExecuteList(query)
-                .ConvertAll(ToAutoreply)
+            var autoreply = MailDb.MailMailboxAutoreply
+                .Where(a => a.Tenant == Tenant && a.IdMailbox == mailboxId)
+                .Select(ToAutoreply)
                 .DefaultIfEmpty(new MailboxAutoreply
                 {
                     MailboxId = mailboxId,
@@ -78,25 +72,24 @@ namespace ASC.Mail.Core.Dao
                     Html = string.Empty
                 })
                 .Single();
+
+            return autoreply;
         }
 
         public List<MailboxAutoreply> GetAutoreplies(List<int> mailboxIds)
         {
-            var query = Query(AUTOREPLY_ALIAS)
-                .InnerJoin(MailboxTable.TABLE_NAME.Alias(MB_ALIAS),
-                    Exp.EqColumns(MailboxTable.Columns.Id.Prefix(MB_ALIAS),
-                        MailboxAutoreplyTable.Columns.MailboxId.Prefix(AUTOREPLY_ALIAS)))
-                .Where(MailboxAutoreplyTable.Columns.Tenant.Prefix(AUTOREPLY_ALIAS), Tenant)
-                .Where(Exp.In(MailboxAutoreplyTable.Columns.MailboxId.Prefix(AUTOREPLY_ALIAS), mailboxIds));
+            var autoreplies = MailDb.MailMailboxAutoreply
+                .Where(a => a.Tenant == Tenant && mailboxIds.Contains(a.IdMailbox))
+                .Select(ToAutoreply)
+                .ToList();
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToAutoreply);
+            var notFoundIds = mailboxIds.Where(id => autoreplies.FirstOrDefault(a => a.MailboxId == id) == null).ToList();
 
-            return (from mailboxId in mailboxIds
-                let autoreply = list.FirstOrDefault(s => s.MailboxId == mailboxId)
-                select autoreply ?? new MailboxAutoreply
+            foreach (var id in notFoundIds)
+            {
+                autoreplies.Add(new MailboxAutoreply
                 {
-                    MailboxId = mailboxId,
+                    MailboxId = id,
                     Tenant = Tenant,
                     TurnOn = false,
                     OnlyContacts = false,
@@ -105,51 +98,74 @@ namespace ASC.Mail.Core.Dao
                     ToDate = DateTime.MinValue,
                     Subject = string.Empty,
                     Html = string.Empty
-                })
-                .ToList();
+                });
+            }
+
+            return autoreplies;
         }
 
         public int SaveAutoreply(MailboxAutoreply autoreply)
         {
-            var query = new SqlInsert(MailboxAutoreplyTable.TABLE_NAME, true)
-                .InColumnValue(MailboxAutoreplyTable.Columns.MailboxId, autoreply.MailboxId)
-                .InColumnValue(MailboxAutoreplyTable.Columns.Tenant, autoreply.Tenant)
-                .InColumnValue(MailboxAutoreplyTable.Columns.TurnOn, autoreply.TurnOn)
-                .InColumnValue(MailboxAutoreplyTable.Columns.OnlyContacts, autoreply.OnlyContacts)
-                .InColumnValue(MailboxAutoreplyTable.Columns.TurnOnToDate, autoreply.TurnOnToDate)
-                .InColumnValue(MailboxAutoreplyTable.Columns.FromDate, autoreply.FromDate)
-                .InColumnValue(MailboxAutoreplyTable.Columns.ToDate, autoreply.ToDate)
-                .InColumnValue(MailboxAutoreplyTable.Columns.Subject, autoreply.Subject)
-                .InColumnValue(MailboxAutoreplyTable.Columns.Html, autoreply.Html);
+            MailDb.MailMailboxAutoreply.Add(new MailMailboxAutoreply
+            {
+                IdMailbox = autoreply.MailboxId,
+                Tenant = autoreply.Tenant,
+                TurnOn = autoreply.TurnOn,
+                TurnOnToDate = autoreply.TurnOnToDate,
+                OnlyContacts = autoreply.OnlyContacts,
+                FromDate = autoreply.FromDate,
+                ToDate = autoreply.ToDate,
+                Subject = autoreply.Subject,
+                Html = autoreply.Html
+            });
 
-            return Db.ExecuteNonQuery(query);
+            var count = MailDb.SaveChanges();
+
+            return count;
         }
 
         public int DeleteAutoreply(int mailboxId)
         {
-            var query = new SqlDelete(MailboxAutoreplyTable.TABLE_NAME)
-                .Where(MailboxAutoreplyTable.Columns.MailboxId, mailboxId)
-                .Where(MailboxAutoreplyTable.Columns.Tenant, Tenant);
+            using var tr = MailDb.Database.BeginTransaction();
 
-            return Db.ExecuteNonQuery(query);
+            var range = MailDb.MailMailboxAutoreply
+                .Where(r => r.Tenant == Tenant && r.IdMailbox == mailboxId);
+
+            MailDb.MailMailboxAutoreply.RemoveRange(range);
+
+            var count = MailDb.SaveChanges();
+
+            tr.Commit();
+
+            return count;
         }
 
-        protected MailboxAutoreply ToAutoreply(object[] r)
+        protected MailboxAutoreply ToAutoreply(MailMailboxAutoreply r)
         {
             var obj = new MailboxAutoreply
             {
-                MailboxId = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                TurnOn = Convert.ToBoolean(r[2]),
-                OnlyContacts = Convert.ToBoolean(r[3]),
-                TurnOnToDate = Convert.ToBoolean(r[4]),
-                FromDate = Convert.ToDateTime(r[5]),
-                ToDate = Convert.ToDateTime(r[6]),
-                Subject = Convert.ToString(r[7]),
-                Html = Convert.ToString(r[8])
+                MailboxId = r.IdMailbox,
+                Tenant = r.Tenant,
+                TurnOn = r.TurnOn,
+                OnlyContacts = r.OnlyContacts,
+                TurnOnToDate = r.TurnOnToDate,
+                FromDate = r.FromDate,
+                ToDate = r.ToDate,
+                Subject = r.Subject,
+                Html = r.Html
             };
 
             return obj;
         }
-    }*/
+    }
+
+    public static class MailboxAutoreplyDaoExtension
+    {
+        public static DIHelper AddMailboxAutoreplyDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<MailboxAutoreply>();
+
+            return services;
+        }
+    }
 }
