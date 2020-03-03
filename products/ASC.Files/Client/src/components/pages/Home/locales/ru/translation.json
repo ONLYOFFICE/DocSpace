@@ -22,5 +22,7 @@
   "Media": "Медиа",
   "Archives": "Архивы",
   "AllFiles": "Все файлы",
-  "NoSubfolders": "Без подпапок"
+  "NoSubfolders": "Без подпапок",
+  "LoadingProcessing": "Загрузка...",
+  "LoadingDescription": "Пожалуйста, подождите..."
 }
