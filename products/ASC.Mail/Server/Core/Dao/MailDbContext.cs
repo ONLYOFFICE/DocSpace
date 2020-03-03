@@ -48,6 +48,8 @@ namespace ASC.Mail.Core.Dao
         public virtual DbSet<MailServerServerType> MailServerServerType { get; set; }
         public virtual DbSet<MailServerServerXTenant> MailServerServerXTenant { get; set; }
         public virtual DbSet<MailTag> MailTag { get; set; }
+        public virtual DbSet<CrmTag> CrmTag { get; set; }
+        public virtual DbSet<CrmEntityTag> CrmEntityTag { get; set; }
         public virtual DbSet<MailTagAddresses> MailTagAddresses { get; set; }
         public virtual DbSet<MailTagMail> MailTagMail { get; set; }
         public virtual DbSet<MailUserFolder> MailUserFolder { get; set; }
@@ -696,6 +698,38 @@ namespace ASC.Mail.Core.Dao
                     .HasCollation("utf8_general_ci");
 
                 entity.Property(e => e.Style)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            modelBuilder.Entity<CrmTag>(entity =>
+            {
+                entity.HasIndex(e => new { e.IdTenant })
+                    .HasName("username");
+
+                entity.Property(e => e.Title)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.EntityType)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            modelBuilder.Entity<CrmEntityTag>(entity =>
+            {
+                entity.HasIndex(e => new { e.TagId, e.EntityId, e.EntityType })
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.TagId)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.EntityId)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.EntityType)
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
             });

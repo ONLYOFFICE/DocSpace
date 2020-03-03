@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Mail.Core.Entities;
 //using ASC.Mail.Core.Engine;
 //using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
@@ -244,31 +245,31 @@ namespace ASC.Mail.Extensions
         //        };
         //}
 
-        //public static MailTagData ToTagData(this Tag tag)
-        //{
-        //    return new MailTagData
-        //        {
-        //            Id = tag.Id,
-        //            Name = tag.TagName,
-        //            Style = tag.Style,
-        //            Addresses = new MailTagData.AddressesList<string>(tag.Addresses.Split(';')),
-        //            LettersCount = tag.Count
-        //        };
-        //}
+        public static MailTagData ToTagData(this Tag tag)
+        {
+            return new MailTagData
+                {
+                    Id = tag.Id,
+                    Name = tag.TagName,
+                    Style = tag.Style,
+                    Addresses = new MailTagData.AddressesList<string>(tag.Addresses.Split(';')),
+                    LettersCount = tag.Count
+                };
+        }
 
-        //public static List<MailTagData> ToTagData(this List<Tag> tags)
-        //{
-        //    return tags
-        //        .Select(t => new MailTagData
-        //        {
-        //            Id = t.Id,
-        //            Name = t.TagName,
-        //            Style = t.Style,
-        //            Addresses = new MailTagData.AddressesList<string>(t.Addresses.Split(';')),
-        //            LettersCount = t.Count
-        //        })
-        //        .ToList();
-        //}
+        public static List<MailTagData> ToTagData(this List<Tag> tags)
+        {
+            return tags
+                .Select(t => new MailTagData
+                {
+                      Id = t.Id,
+                    Name = t.TagName,
+                    Style = t.Style,
+                    Addresses = new MailTagData.AddressesList<string>(t.Addresses.Split(';')),
+                    LettersCount = t.Count
+                })
+                .ToList();
+        }
 
         //public static Attachment ToAttachmnet(this MailAttachmentData a, int mailId, bool isRemoved = false)
         //{

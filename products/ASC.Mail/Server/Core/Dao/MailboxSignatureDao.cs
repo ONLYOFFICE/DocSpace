@@ -32,6 +32,7 @@ using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
@@ -118,6 +119,12 @@ namespace ASC.Mail.Core.Dao
             };
 
             MailDb.MailMailboxSignature.Add(dbSignature);
+
+            var result = MailDb.Entry(dbSignature);
+
+            result.State = dbSignature.IdMailbox == 0
+                ? EntityState.Added
+                : EntityState.Modified;
 
             return MailDb.SaveChanges();
         }
