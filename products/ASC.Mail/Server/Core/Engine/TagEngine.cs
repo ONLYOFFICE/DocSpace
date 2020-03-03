@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -627,7 +628,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class TagEngineeExtension
     {
-        public static IServiceCollection AddTagEngineService(this IServiceCollection services)
+        public static DIHelper AddTagEngineService(this DIHelper services)
         {
             services.TryAddScoped<TagEngine>();
 
