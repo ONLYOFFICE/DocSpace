@@ -25,7 +25,9 @@
 
 
 using System;
+using ASC.Api.Core;
 using ASC.Calendar.BusinessObjects;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Billing;
@@ -37,20 +39,44 @@ using ASC.Notify.Model;
 using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.Core.Calendars;
+using ASC.Web.Core.Users;
 using ASC.Web.Studio.Utility;
+using Microsoft.Extensions.DependencyInjection;
+using NotifyContext = ASC.Notify.Context;
 
 namespace ASC.Calendar.Notification
-{/*
+{
     public class CalendarNotifyClient
     {
         private static INotifyClient _notifyClient;
 
         private static string _syncName = "calendarNotifySyncName";
 
+        public AuthContext AuthContext { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public UserManager UserManager { get; }
+        private CommonLinkUtility CommonLinkUtility { get; }
+        private CalendarNotifySource CalendarNotifySource { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
-        static CalendarNotifyClient()
+        public static NotifyContext NotifyContext { get; private set; }
+        public CalendarNotifyClient(
+            AuthContext authContext,
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            CalendarNotifySource calendarNotifySource,
+            CommonLinkUtility commonLinkUtility,
+            DisplayUserSettingsHelper displayUserSettingsHelper)
         {
-            _notifyClient = ASC.Core.WorkContext.NotifyContext.NotifyService.RegisterClient(CalendarNotifySource.Instance);
+            AuthContext = authContext;
+            ServiceProvider = serviceProvider;
+            CalendarNotifySource = calendarNotifySource;
+            UserManager = userManager;
+            CommonLinkUtility = commonLinkUtility;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+
+            NotifyContext = new NotifyContext(serviceProvider);
+            _notifyClient = NotifyContext.NotifyService.RegisterClient(CalendarNotifySource, ServiceProvider.CreateScope());
         }
 
         private static bool _isRegistered = false;
@@ -62,14 +88,14 @@ namespace ASC.Calendar.Notification
                 {
                     if (!_isRegistered)
                     {
-                        _notifyClient.RegisterSendMethod(NotifyAbouFutureEvent, "0 * * ? * *");
+                       // _notifyClient.RegisterSendMethod(NotifyAbouFutureEvent, "0 * * ? * *");
 
                         _isRegistered = true;
                     }
                 }
             }
         }
-        private static void NotifyAbouFutureEvent(DateTime scheduleDate)
+        /*private void NotifyAbouFutureEvent(DateTime scheduleDate)
         {
             try
             {
@@ -129,17 +155,17 @@ namespace ASC.Calendar.Notification
             {
                 LogManager.GetLogger("ASC.Notify.Calendar").Error(error);
             }
-        }
-        public static void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)
+        } */
+        public void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar)
         {
             NotifyAboutSharingCalendar(calendar, null);
         }
-        public static void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar, ASC.Calendar.BusinessObjects.Calendar oldCalendar)
+        public void NotifyAboutSharingCalendar(ASC.Calendar.BusinessObjects.Calendar calendar, ASC.Calendar.BusinessObjects.Calendar oldCalendar)
         {
-            var initatorInterceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), SecurityContext.CurrentAccount.Name));
+            var initatorInterceptor = new InitiatorInterceptor(new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), AuthContext.CurrentAccount.Name));
             try
             {
-                var usr = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                var usr = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
                 var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.ID.ToString(), false));
 
                 foreach (var item in calendar.SharingOptions.PublicItems)
@@ -147,12 +173,12 @@ namespace ASC.Calendar.Notification
                     if (oldCalendar != null && oldCalendar.SharingOptions.PublicItems.Exists(i => i.Id.Equals(item.Id)))
                         continue;
 
-                    var r = CalendarNotifySource.Instance.GetRecipientsProvider().GetRecipient(item.Id.ToString());
+                    var r = CalendarNotifySource.GetRecipientsProvider().GetRecipient(item.Id.ToString());
                     if (r != null)
                     {
                         _notifyClient.SendNoticeAsync(CalendarNotifySource.CalendarSharing, null, r, true,
                             new TagValue("SharingType", "calendar"),
-                            new TagValue("UserName", usr.DisplayUserName()),
+                            new TagValue("UserName", usr.DisplayUserName(DisplayUserSettingsHelper)),
                             new TagValue("UserLink", userLink),
                             new TagValue("CalendarName", calendar.Name));
                     }
@@ -164,16 +190,16 @@ namespace ASC.Calendar.Notification
                 _notifyClient.RemoveInterceptor(initatorInterceptor.Name);
             }
         }
-        public static void NotifyAboutSharingEvent(ASC.Calendar.BusinessObjects.Event calendarEvent)
+        public void NotifyAboutSharingEvent(ASC.Calendar.BusinessObjects.Event calendarEvent)
         {
             NotifyAboutSharingEvent(calendarEvent, null);
         }
-        public static void NotifyAboutSharingEvent(ASC.Calendar.BusinessObjects.Event calendarEvent, ASC.Calendar.BusinessObjects.Event oldCalendarEvent)
+        public void NotifyAboutSharingEvent(ASC.Calendar.BusinessObjects.Event calendarEvent, ASC.Calendar.BusinessObjects.Event oldCalendarEvent)
         {
-            var initatorInterceptor = new InitiatorInterceptor(new DirectRecipient(SecurityContext.CurrentAccount.ID.ToString(), SecurityContext.CurrentAccount.Name));
+            var initatorInterceptor = new InitiatorInterceptor(new DirectRecipient(AuthContext.CurrentAccount.ID.ToString(), AuthContext.CurrentAccount.Name));
             try
             {
-                var usr = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID);
+                var usr = UserManager.GetUsers(AuthContext.CurrentAccount.ID);
                 var userLink = PerformUrl(CommonLinkUtility.GetUserProfile(usr.ID.ToString(), false));
 
                 foreach (var item in calendarEvent.SharingOptions.PublicItems)
@@ -181,12 +207,12 @@ namespace ASC.Calendar.Notification
                     if (oldCalendarEvent != null && oldCalendarEvent.SharingOptions.PublicItems.Exists(i => i.Id.Equals(item.Id)))
                         continue;
 
-                    var r = CalendarNotifySource.Instance.GetRecipientsProvider().GetRecipient(item.Id.ToString());
+                    var r = CalendarNotifySource.GetRecipientsProvider().GetRecipient(item.Id.ToString());
                     if (r != null)
                     {
                         _notifyClient.SendNoticeAsync(CalendarNotifySource.CalendarSharing, null, r, true,
                             new TagValue("SharingType", "event"),
-                            new TagValue("UserName", usr.DisplayUserName()),
+                            new TagValue("UserName", usr.DisplayUserName(DisplayUserSettingsHelper)),
                             new TagValue("UserLink", userLink),
                             new TagValue("EventName", calendarEvent.Name));
                     }
@@ -199,18 +225,31 @@ namespace ASC.Calendar.Notification
             }
         }
 
-        private static string PerformUrl(string url)
+        private string PerformUrl(string url)
         {
             return CommonLinkUtility.GetFullAbsolutePath(url);
         }
     }
 
-    /*public class CalendarNotifySource : NotifySource
+    public static class CalendarNotifyClientExtension
+    {
+        public static DIHelper AddCalendarNotifyClient(this DIHelper services)
+        {
+            services.TryAddScoped<CalendarNotifyClient>();
+
+            return services
+                .AddSubscriptionManagerService()
+                .AddRecipientProviderImplService()
+                .AddCalendarNotifySource();
+        }
+    }
+
+    public class CalendarNotifySource : NotifySource
     {
         public static INotifyAction CalendarSharing = new NotifyAction("CalendarSharingPattern");
         public static INotifyAction EventAlert = new NotifyAction("EventAlertPattern");
 
-        public static CalendarNotifySource Instance
+        /*public CalendarNotifySource Instance
         {
             get;
             private set;
@@ -219,10 +258,10 @@ namespace ASC.Calendar.Notification
         static CalendarNotifySource()
         {
             Instance = new CalendarNotifySource();
-        }
+        }*/
 
-        private CalendarNotifySource()
-            : base(new Guid("{40650DA3-F7C1-424c-8C89-B9C115472E08}"))
+        public CalendarNotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : base(new Guid("{40650DA3-F7C1-424c-8C89-B9C115472E08}"), userManager, recipientsProvider, subscriptionManager)
         {
         }
 
@@ -238,6 +277,16 @@ namespace ASC.Calendar.Notification
         {
             return new XmlPatternProvider2(CalendarPatterns.calendar_patterns);
         }
-    }*/
+    }
+
+    public static class CalendarNotifySourceExtension
+    {
+        public static DIHelper AddCalendarNotifySource(this DIHelper services)
+        {
+            services.TryAddScoped<CalendarNotifySource>();
+
+            return services;
+        }
+    }
 
 }

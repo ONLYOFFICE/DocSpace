@@ -86,7 +86,10 @@ namespace ASC.Calendar.BusinessObjects
         public SecurityContext SecurityContext { get; }
         public AuthContext AuthContext { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
+        public EventHistoryHelper EventHistoryHelper { get; }
         private TenantManager TenantManager { get; }
+
+
         public ILog Log { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
@@ -95,6 +98,7 @@ namespace ASC.Calendar.BusinessObjects
             AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
             TenantManager tenantManager,
+            EventHistoryHelper eventHistoryHelper,
             IOptionsMonitor<ILog> option)
         {
             CalendarDb = calendarDbContext.Get("calendar");
@@ -103,6 +107,7 @@ namespace ASC.Calendar.BusinessObjects
             AuthContext = authContext;
             TimeZoneConverter = timeZoneConverter;
             TenantManager = tenantManager;
+            EventHistoryHelper = eventHistoryHelper;
 
             Log = option.Get("ASC.CalendarDataProvider");
 
@@ -1090,24 +1095,176 @@ namespace ASC.Calendar.BusinessObjects
                 }
             }
             return events;
-        }
+        }*/
 
         public Event GetEventByUid(string eventUid)
         {
-            var sql = new SqlQuery("calendar_events e")
-                .Select("e.id")
-                .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "e.calendar_id"))
-                .Where("e.tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where("e.uid", eventUid)
-                .Where("e.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.ical_url", null);
+            var data = from events in CalendarDb.CalendarEvents
+                       join calendars in CalendarDb.CalendarCalendars on events.CalendarId equals calendars.Id
+                       where
+                        events.Uid == eventUid &&
+                        events.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
+                        calendars.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
+                        calendars.IcalUrl == null
+                       select events.Id;
 
-            var eventId = db.ExecuteScalar<int>(sql);
-
+            var eventId = data.FirstOrDefault();
             return eventId == 0 ? null : GetEventById(eventId);
         }
-        public Event GetEventOnlyByUid(string eventUid)
+        public Event GetEventById(int eventId)
+        {
+            var events = GetEventsByIds(new int[] { eventId }, SecurityContext.CurrentAccount.ID);
+            if (events.Count > 0)
+                return events[0];
+
+            return null;
+        }
+
+        //TODO
+        public List<Event> GetEventsByIds(int[] evtIds, Guid userId, int tenantId = -1)
+        {
+            var sharingData = CalendarDb.CalendarEventItem.Where(p => evtIds.Contains(p.EventId)).ToList();
+
+            var events = new List<Event>();
+
+            if (evtIds.Length > 0)
+            {
+                if (tenantId != -1)
+                {
+                    var data = from calEvt in CalendarDb.CalendarEvents
+                           join evtUsr in CalendarDb.CalendarEventUser
+                           on calEvt.Id equals evtUsr.EventId
+                           into UserEvent
+                           from ue in UserEvent.DefaultIfEmpty()
+                           where
+                                evtIds.Contains(calEvt.Id) &&
+                                calEvt.Tenant == tenantId
+                           select new
+                           {
+                               Id = calEvt.Id.ToString(),
+                               Name = calEvt.Name,
+                               Description = calEvt.Description,
+                               TenantId = calEvt.Tenant,
+                               CalendarId = calEvt.CalendarId.ToString(),
+                               UtcStartDate = calEvt.StartDate,
+                               UtcEndDate = calEvt.EndDate,
+                               UtcUpdateDate = (DateTime)calEvt.UpdateDate,
+                               AllDayLong = Convert.ToBoolean(calEvt.AllDayLong),
+                               OwnerId = Guid.Parse(calEvt.OwnerId),
+                               AlertType = (EventAlertType)ue.AlertType,
+                               RecurrenceRule = RecurrenceRule.Parse(calEvt.Rrule),
+                               Uid = calEvt.Uid,
+                               Status = (EventStatus)calEvt.Status
+                           };
+                    foreach (var r in data)
+                    {
+                        var ev =
+                            events.Find(
+                                e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (ev == null)
+                        {
+                            ev = new Event(AuthContext, TimeZoneConverter)
+                            {
+                                Id = r.Id,
+                                Name = r.Name,
+                                Description = r.Description,
+                                TenantId = r.TenantId,
+                                CalendarId = r.CalendarId,
+                                UtcStartDate = r.UtcStartDate,
+                                UtcEndDate = r.UtcEndDate,
+                                UtcUpdateDate = r.UtcUpdateDate,
+                                AllDayLong = r.AllDayLong,
+                                OwnerId = r.OwnerId,
+                                AlertType = r.AlertType,
+                                RecurrenceRule = r.RecurrenceRule,
+                                Uid = r.Uid,
+                                Status = r.Status
+                            };
+                            events.Add(ev);
+                        }
+                        foreach (var row in sharingData)
+                        {
+                            if (String.Equals(r.Id, ev.Id, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                ev.SharingOptions.PublicItems.Add(new SharingOptions.PublicItem
+                                {
+                                    Id = Guid.Parse(row.ItemId),
+                                    IsGroup = Convert.ToBoolean(row.IsGroup)
+                                });
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                   var data = from calEvt in CalendarDb.CalendarEvents
+                           join evtUsr in CalendarDb.CalendarEventUser
+                           on calEvt.Id equals evtUsr.EventId
+                           into UserEvent
+                           from ue in UserEvent.DefaultIfEmpty()
+                           where
+                                evtIds.Contains(calEvt.Id)
+                           select new
+                           {
+                               Id = calEvt.Id.ToString(),
+                               Name = calEvt.Name,
+                               Description = calEvt.Description,
+                               TenantId = calEvt.Tenant,
+                               CalendarId = calEvt.CalendarId.ToString(),
+                               UtcStartDate = calEvt.StartDate,
+                               UtcEndDate = calEvt.EndDate,
+                               UtcUpdateDate = (DateTime)calEvt.UpdateDate,
+                               AllDayLong = Convert.ToBoolean(calEvt.AllDayLong),
+                               OwnerId = Guid.Parse(calEvt.OwnerId),
+                               AlertType = (EventAlertType)ue.AlertType,
+                               RecurrenceRule = RecurrenceRule.Parse(calEvt.Rrule),
+                               Uid = calEvt.Uid,
+                               Status = (EventStatus)calEvt.Status
+                           };
+                    foreach (var r in data)
+                    {
+                        var ev =
+                            events.Find(
+                                e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
+                        if (ev == null)
+                        {
+                            ev = new Event(AuthContext, TimeZoneConverter)
+                            {
+                                Id = r.Id,
+                                Name = r.Name,
+                                Description = r.Description,
+                                TenantId = r.TenantId,
+                                CalendarId = r.CalendarId,
+                                UtcStartDate = r.UtcStartDate,
+                                UtcEndDate = r.UtcEndDate,
+                                UtcUpdateDate = r.UtcUpdateDate,
+                                AllDayLong = r.AllDayLong,
+                                OwnerId = r.OwnerId,
+                                AlertType = r.AlertType,
+                                RecurrenceRule = r.RecurrenceRule,
+                                Uid = r.Uid,
+                                Status = r.Status
+                            };
+                            events.Add(ev);
+                        }
+                        foreach (var row in sharingData)
+                        {
+                            if (String.Equals(r.Id, ev.Id, StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                ev.SharingOptions.PublicItems.Add(new SharingOptions.PublicItem
+                                {
+                                    Id = Guid.Parse(row.ItemId),
+                                    IsGroup = Convert.ToBoolean(row.IsGroup)
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+           
+            return events;
+        }
+        /*public Event GetEventOnlyByUid(string eventUid)
         {
             var sql = new SqlQuery("calendar_events e")
                 .Select("e.id")
@@ -1304,39 +1461,57 @@ namespace ASC.Calendar.BusinessObjects
             return GetEventById(eventId);
         }
 
-
+        */
 
         public EventHistory GetEventHistory(string eventUid)
-        {           
-            var sql = new SqlQuery("calendar_event_history h")
-                .Select("h.calendar_id")
-                .Select("h.event_uid")
-                .Select("h.event_id")
-                .Select("h.ics")
-                .InnerJoin("calendar_events e", Exp.EqColumns("e.uid", "h.event_uid"))
-                .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "h.calendar_id"))
-                .Where("h.tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where("h.event_uid", eventUid)
-                .Where("e.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.ical_url", null);
+        {
+            var data = from history in CalendarDb.CalendarEventHistory
+                       join events in CalendarDb.CalendarEvents on history.EventUid equals events.Uid
+                       join calendars in CalendarDb.CalendarCalendars on history.CalendarId equals calendars.Id
+                       where 
+                        history.EventUid == eventUid &&
+                        events.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
+                        calendars.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
+                        calendars.IcalUrl == null
+                       select new EventHistory
+                       {
+                           CalendarId = history.CalendarId,
+                           EventUid = history.EventUid,
+                           EventId = history.EventId,
+                           Ics = history.Ics
+                       };
 
-            var items = db.ExecuteList(sql).ConvertAll(ToEventHistory);
-
-            return items.Count > 0 ? items[0] : null;
+            return data.Count() > 0 ? data.FirstOrDefault() : null;
         }
 
+        private EventHistory ToEventHistory(object[] row)
+        {
+            return EventHistoryHelper.Get(Convert.ToInt32(row[0]),
+                                    Convert.ToString(row[1]),
+                                    Convert.ToInt32(row[2]),
+                                    Convert.ToString(row[3]));
+        }
+       
         public List<EventHistory> GetEventsHistory(int[] eventIds)
         {
-            var sql = new SqlQuery("calendar_event_history")
-                .Select("calendar_id")
-                .Select("event_uid")
-                .Select("event_id")
-                .Select("ics")
-                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where(Exp.In("event_id", eventIds));
+            var data = from eventHistory in CalendarDb.CalendarEventHistory
+                       where
+                        eventHistory.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        eventIds.Contains(eventHistory.EventId)
+                       select new EventHistory
+                       {
+                           CalendarId = eventHistory.CalendarId,
+                           EventUid = eventHistory.EventUid,
+                           EventId = eventHistory.EventId,
+                           Ics = eventHistory.Ics
+                       };
 
-            return db.ExecuteList(sql).ConvertAll(ToEventHistory);
+            var items = new List<EventHistory>();
+            foreach (var r in data)
+            {
+                items.Add(r);
+            }
+            return items;
         }
         
         public EventHistory GetEventHistory(int eventId)
@@ -1344,7 +1519,7 @@ namespace ASC.Calendar.BusinessObjects
             var items = GetEventsHistory(new [] { eventId });
             return items.Count > 0 ? items[0] : null;
         }
-
+ /*
         public EventHistory AddEventHistory(int calendarId, string eventUid, int eventId, string ics)
         {
             var icsCalendars = DDayICalParser.DeserializeCalendar(ics);
@@ -1754,7 +1929,8 @@ namespace ASC.Calendar.BusinessObjects
 
             services.TryAddScoped<DataProvider>();
 
-            return services;
+            return services
+                .AddEventHistoryHelper();
         }
     }
 }

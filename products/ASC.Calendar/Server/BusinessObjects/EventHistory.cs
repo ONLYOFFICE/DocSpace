@@ -28,42 +28,54 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Calendar.iCalParser;
-
+using ASC.Common;
 
 namespace ASC.Calendar.BusinessObjects
 {
-    /*
     public class EventHistory
     {
-        public EventHistory(int calendarId, string eventUid, int eventId, string ics)
-        {
-            CalendarId = calendarId;
-            EventUid = eventUid;
-            EventId = eventId;
-            Ics = ics;
-        }
-        
+       
         public int CalendarId { get; set; }
         public string EventUid { get; set; }
         public int EventId { get; set; }
         public string Ics { get; set; }
 
-        public List<Ical.Net.Calendar> History
+        public List<Ical.Net.Calendar> History { get; set; }
+    }
+
+    public class EventHistoryHelper
+    {
+        public DDayICalParser DDayICalParser { get; }
+        public EventHistoryHelper(
+            DDayICalParser dDayICalParser)
         {
-            get {
-                var history = DDayICalParser.DeserializeCalendar(Ics);
-                return history == null ? new List<Ical.Net.Calendar>() : history.ToList();
-            }
+            DDayICalParser = dDayICalParser;
         }
 
-        public bool Contains(Ical.Net.Calendar calendar)
+        public EventHistory Get(int calendarId, string eventUid, int eventId, string ics)
         {
-            if (!History.Any() || calendar == null || calendar.Events == null || calendar.Events.FirstOrDefault() == null)
+            var eventHistory = new EventHistory();
+
+            eventHistory.CalendarId = calendarId;
+            eventHistory.EventUid = eventUid;
+            eventHistory.EventId = eventId;
+            eventHistory.Ics = ics;
+
+            var history = DDayICalParser.DeserializeCalendar(ics);
+
+            eventHistory.History = history == null ? new List<Ical.Net.Calendar>() : history.ToList();
+
+            return eventHistory;
+        }
+
+        public bool Contains(Ical.Net.Calendar calendar, EventHistory eventHistory)
+        {
+            if (!eventHistory.History.Any() || calendar == null || calendar.Events == null || calendar.Events.FirstOrDefault() == null)
                 return false;
-            
+
             var eventObj = calendar.Events.First();
 
-            var isExist = History
+            var isExist = eventHistory.History
                 .Where(x => x.Method == calendar.Method)
                 .Select(x => x.Events.First())
                 .Any(x => x.Sequence == eventObj.Sequence && DDayICalParser.ToUtc(x.DtStamp) == DDayICalParser.ToUtc(eventObj.DtStamp));
@@ -71,15 +83,15 @@ namespace ASC.Calendar.BusinessObjects
             return isExist;
         }
 
-        public Ical.Net.Calendar GetMerged()
+        public Ical.Net.Calendar GetMerged(EventHistory eventHistory)
         {
-            if (!History.Any()) return null;
+            if (!eventHistory.History.Any()) return null;
 
-            var allCalendars = History
+            var allCalendars = eventHistory.History
                 .Where(x => x != null && x.Events != null && x.Events.FirstOrDefault() != null)
                 .ToList();
 
-            if(!allCalendars.Any()) return null;
+            if (!allCalendars.Any()) return null;
 
             var recurrenceIdCalendars = new List<Ical.Net.Calendar>();
             var calendars = new List<Ical.Net.Calendar>();
@@ -196,5 +208,15 @@ namespace ASC.Calendar.BusinessObjects
             return targetCalendar;
         }
     }
-    */
+
+    public static class EventHistoryExtension
+    {
+        public static DIHelper AddEventHistoryHelper(this DIHelper services)
+        {
+            services.TryAddScoped<EventHistoryHelper>();
+
+            return services
+                .AddDDayICalParser();
+        }
+    }
 }

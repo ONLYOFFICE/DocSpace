@@ -28,18 +28,37 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Core.Calendars;
-
+using Microsoft.Extensions.Options;
 
 namespace ASC.Calendar.iCalParser
 {
-    /*
-    class DDayICalParser
+    public class DDayICalParser
     {
-        public static Ical.Net.CalendarCollection DeserializeCalendar(string iCalCalendarString)
+        public IServiceProvider ServiceProvider { get; }
+
+        private readonly ILog Log;
+        public TenantManager TenantManager { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+        public AuthContext AuthContext { get; }
+        public DDayICalParser(
+             IServiceProvider serviceProvider,
+             TenantManager tenantManager,
+             TimeZoneConverter timeZoneConverter,
+             AuthContext authContext,
+             IOptionsMonitor<ILog> options)
+        {
+            ServiceProvider = serviceProvider;
+            TenantManager = tenantManager;
+            TimeZoneConverter = timeZoneConverter;
+            AuthContext = authContext;
+            Log = options.Get("ASC.Calendar");
+        }
+        public Ical.Net.CalendarCollection DeserializeCalendar(string iCalCalendarString)
         {
             if (string.IsNullOrEmpty(iCalCalendarString)) return null;
 
@@ -52,12 +71,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static Ical.Net.CalendarCollection DeserializeCalendar(TextReader reader)
+        public Ical.Net.CalendarCollection DeserializeCalendar(TextReader reader)
         {
             try
             {
@@ -65,12 +84,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static string SerializeCalendar(Ical.Net.Calendar calendar)
+        public string SerializeCalendar(Ical.Net.Calendar calendar)
         {
             try
             {
@@ -79,14 +98,14 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
 
 
-        public static Ical.Net.CalendarComponents.CalendarEvent DeserializeEvent(string iCalEventString)
+        public Ical.Net.CalendarComponents.CalendarEvent DeserializeEvent(string iCalEventString)
         {
             if (string.IsNullOrEmpty(iCalEventString)) return null;
 
@@ -100,12 +119,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static Ical.Net.CalendarComponents.CalendarEvent DeserializeEvent(TextReader stringReader)
+        public Ical.Net.CalendarComponents.CalendarEvent DeserializeEvent(TextReader stringReader)
         {
             try
             {
@@ -114,12 +133,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static string SerializeEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
+        public string SerializeEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
         {
             try
             {
@@ -128,14 +147,14 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
 
 
-        public static Ical.Net.DataTypes.RecurrencePattern DeserializeRecurrencePattern(string iCalRecurrencePatternString)
+        public Ical.Net.DataTypes.RecurrencePattern DeserializeRecurrencePattern(string iCalRecurrencePatternString)
         {
             if (string.IsNullOrEmpty(iCalRecurrencePatternString)) return null;
 
@@ -149,12 +168,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static Ical.Net.DataTypes.RecurrencePattern DeserializeRecurrencePattern(TextReader stringReader)
+        public Ical.Net.DataTypes.RecurrencePattern DeserializeRecurrencePattern(TextReader stringReader)
         {
             try
             {
@@ -163,12 +182,12 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
-        public static string SerializeRecurrencePattern(Ical.Net.DataTypes.RecurrencePattern recurrencePattern)
+        public string SerializeRecurrencePattern(Ical.Net.DataTypes.RecurrencePattern recurrencePattern)
         {
             try
             {
@@ -177,18 +196,17 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
                 return null;
             }
         }
 
 
-
-        public static BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
+        public BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
         {
             if (calandarObj == null) return null;
             
-            var result = new BusinessObjects.Calendar();
+            var result = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter);
 
             result.Name = string.IsNullOrEmpty(calandarObj.Name)
                            ? calandarObj.Properties.ContainsKey("X-WR-CALNAME")
@@ -207,12 +225,12 @@ namespace ASC.Calendar.iCalParser
                                   : (calandarObj.Properties.ContainsKey("X-WR-TIMEZONE")
                                          ? TimeZoneConverter.GetTimeZone(
                                              calandarObj.Properties["X-WR-TIMEZONE"].Value.ToString())
-                                         : CoreContext.TenantManager.GetCurrentTenant().TimeZone);
+                                         : TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
 
             return result;
         }
 
-        public static Ical.Net.Calendar ConvertCalendar(BaseCalendar calandarObj)
+        public Ical.Net.Calendar ConvertCalendar(BaseCalendar calandarObj)
         {
             if (calandarObj == null) return null;
 
@@ -234,7 +252,7 @@ namespace ASC.Calendar.iCalParser
             }
 
             if (calandarObj.TimeZone == null)
-                calandarObj.TimeZone = CoreContext.TenantManager.GetCurrentTenant().TimeZone;
+                calandarObj.TimeZone = TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
 
             var olsonTzId = TimeZoneConverter.WindowsTzId2OlsonTzId(calandarObj.TimeZone.Id);
             var olsonTz = olsonTzId == calandarObj.TimeZone.Id
@@ -252,11 +270,11 @@ namespace ASC.Calendar.iCalParser
 
 
 
-        public static BaseEvent ConvertEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
+        public BaseEvent ConvertEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
         {
             if (eventObj == null) return null;
             
-            var result = new BusinessObjects.Event();
+            var result = new BusinessObjects.Event(AuthContext, TimeZoneConverter);
 
             result.Name = eventObj.Summary;
 
@@ -306,7 +324,7 @@ namespace ASC.Calendar.iCalParser
             return result;
         }
 
-        public static Ical.Net.CalendarComponents.CalendarEvent ConvertEvent(BaseEvent eventObj)
+        public Ical.Net.CalendarComponents.CalendarEvent ConvertEvent(BaseEvent eventObj)
         {
             if (eventObj == null) return null;
 
@@ -344,7 +362,7 @@ namespace ASC.Calendar.iCalParser
 
 
 
-        public static EventStatus ConvertEventStatus(string status)
+        public EventStatus ConvertEventStatus(string status)
         {
             switch (status)
             {
@@ -359,7 +377,7 @@ namespace ASC.Calendar.iCalParser
             return EventStatus.Tentative;
         }
 
-        public static string ConvertEventStatus(EventStatus status)
+        public string ConvertEventStatus(EventStatus status)
         {
             switch (status)
             {
@@ -376,7 +394,7 @@ namespace ASC.Calendar.iCalParser
 
 
 
-        public static Ical.Net.CalendarComponents.CalendarEvent CreateEvent(string name, string description, DateTime startUtcDate, DateTime endUtcDate, string repeatType, bool isAllDayLong, EventStatus status)
+        public Ical.Net.CalendarComponents.CalendarEvent CreateEvent(string name, string description, DateTime startUtcDate, DateTime endUtcDate, string repeatType, bool isAllDayLong, EventStatus status)
         {
             var evt = new Ical.Net.CalendarComponents.CalendarEvent
                 {
@@ -402,7 +420,7 @@ namespace ASC.Calendar.iCalParser
         }
 
 
-        public static DateTime ToUtc(Ical.Net.DataTypes.IDateTime dateTime)
+        public DateTime ToUtc(Ical.Net.DataTypes.IDateTime dateTime)
         {
             if (dateTime.IsUtc || string.IsNullOrEmpty(dateTime.TzId) || dateTime.TzId.Equals("UTC", StringComparison.InvariantCultureIgnoreCase))
                 return dateTime.Value;
@@ -415,5 +433,15 @@ namespace ASC.Calendar.iCalParser
 
             return dateTime.Value - utcOffse;
         }
-    }*/
+    }
+
+    public static class DDayICalParserExtention
+    {
+        public static DIHelper AddDDayICalParser(this DIHelper services)
+        {
+
+            services.TryAddScoped<DDayICalParser>(); 
+            return services;
+        }
+    }
 }

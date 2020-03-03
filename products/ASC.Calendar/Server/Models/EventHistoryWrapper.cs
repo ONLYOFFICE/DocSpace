@@ -29,39 +29,14 @@ using System.Linq;
 using System.Runtime.Serialization;
 using ASC.Calendar.BusinessObjects;
 using ASC.Calendar.iCalParser;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
-    /*
     [DataContract(Name = "eventHistory", Namespace = "")]
     public class EventHistoryWrapper
     {
-        public EventHistoryWrapper(EventHistory eventHistory, bool canEdit, bool canNotify, BusinessObjects.Calendar cal, bool fullHistory = true)
-        {
-            CalendarId = eventHistory.CalendarId;
-            EventUid = eventHistory.EventUid;
-            EventId = eventHistory.EventId;
-
-            if (fullHistory)
-            {
-                Ics = eventHistory.Ics;
-            }
-            else
-            {
-                var mergedCalendar = eventHistory.GetMerged();
-                MergedIcs = mergedCalendar == null ? string.Empty : DDayICalParser.SerializeCalendar(mergedCalendar);
-            }
-
-            CanEdit = canEdit;
-            CanNotify = canNotify;
-
-            CalendarName = cal.Name;
-
-            TimeZoneInfo = new TimeZoneWrapper(cal.ViewSettings.Any() && cal.ViewSettings.First().TimeZone != null
-                                                   ? cal.ViewSettings.First().TimeZone
-                                                   : cal.TimeZone);
-        }
-
+       
         [DataMember(Name = "calendarId", Order = 0)]
         public int CalendarId { get; set; }
 
@@ -102,5 +77,67 @@ namespace ASC.Calendar.Models
             };
         }
     }
-    */
+
+    public class EventHistoryWrapperHelper
+    {
+
+        public EventHistoryHelper EventHistoryHelper { get; }
+        public DDayICalParser DDayICalParser { get; }
+        public TimeZoneWrapperHelper TimeZoneWrapperHelper { get; }
+
+        
+
+        public EventHistoryWrapperHelper(
+            EventHistoryHelper eventHistoryHelper,
+            DDayICalParser dDayICalParser,
+            TimeZoneWrapperHelper timeZoneWrapperHelper)
+        {
+            EventHistoryHelper = eventHistoryHelper;
+            DDayICalParser = dDayICalParser;
+            TimeZoneWrapperHelper = timeZoneWrapperHelper;
+        }
+
+        public EventHistoryWrapper Get(EventHistory eventHistory, bool canEdit, bool canNotify, BusinessObjects.Calendar cal, bool fullHistory = true)
+        {
+            var eventHistoryWrapper = new EventHistoryWrapper();
+
+            eventHistoryWrapper.CalendarId = eventHistory.CalendarId;
+            eventHistoryWrapper.EventUid = eventHistory.EventUid;
+            eventHistoryWrapper.EventId = eventHistory.EventId;
+
+            if (fullHistory)
+            {
+                eventHistoryWrapper.Ics = eventHistory.Ics;
+            }
+            else
+            {
+                var mergedCalendar = EventHistoryHelper.GetMerged(EventHistoryHelper.Get(eventHistory.CalendarId, eventHistory.EventId.ToString(), eventHistory.EventId, eventHistory.Ics));
+                eventHistoryWrapper.MergedIcs = mergedCalendar == null ? string.Empty : DDayICalParser.SerializeCalendar(mergedCalendar);
+            }
+
+            eventHistoryWrapper.CanEdit = canEdit;
+            eventHistoryWrapper.CanNotify = canNotify;
+
+            eventHistoryWrapper.CalendarName = cal.Name;
+
+            eventHistoryWrapper.TimeZoneInfo = TimeZoneWrapperHelper.Get(cal.ViewSettings.Any() && cal.ViewSettings.First().TimeZone != null
+                                                   ? cal.ViewSettings.First().TimeZone
+                                                   : cal.TimeZone);
+
+            return eventHistoryWrapper;
+        }
+    }
+
+    public static class EventHistoryWrapperExtension
+    {
+        public static DIHelper AddEventHistoryWrapper(this DIHelper services)
+        {
+            services.TryAddScoped<EventHistoryWrapperHelper>();
+
+            return services
+                .AddEventHistoryHelper()
+                .AddDDayICalParser()
+                .AddTimeZoneWrapper();
+        }
+    }
 }
