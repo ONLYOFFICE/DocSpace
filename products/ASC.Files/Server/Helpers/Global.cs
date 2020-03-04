@@ -306,6 +306,11 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<string, int> UserRootFolderCache =
             new ConcurrentDictionary<string, int>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
+        public T GetFolderMy<T>(FileMarker fileMarker, IDaoFactory daoFactory)
+        {
+            return (T)Convert.ChangeType(GetFolderMy(fileMarker, daoFactory), typeof(T));
+        }
+
         public int GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
         {
             if (!AuthContext.IsAuthenticated) return default;

@@ -29,6 +29,13 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core
 {
+    public interface ITagDao<T> : ITagDao
+    {
+        IEnumerable<Tag> GetNewTags(Guid subject, Folder<T> parentFolder, bool deepSearch);
+
+        IEnumerable<Tag> GetTags(T entryID, FileEntryType entryType, TagType tagType);
+    }
+
     public interface ITagDao
     {
         IEnumerable<Tag> GetTags(TagType tagType, IEnumerable<FileEntry> fileEntries);

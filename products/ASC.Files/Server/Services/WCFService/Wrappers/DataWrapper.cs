@@ -47,6 +47,6 @@ namespace ASC.Web.Files.Services.WCFService
         public Folder<T> FolderInfo { get; set; }
 
         [DataMember(IsRequired = false, Name = "root_folders_id_marked_as_new")]
-        public Dictionary<object, int> RootFoldersIdMarkedAsNew { get; set; }
+        public Dictionary<T, int> RootFoldersIdMarkedAsNew { get; set; }
     }
 }

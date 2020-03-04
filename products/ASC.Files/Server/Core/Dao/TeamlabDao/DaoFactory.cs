@@ -60,6 +60,10 @@ namespace ASC.Files.Core.Data
         {
             return ServiceProvider.GetService<IFolderDao<T>>();
         }
+        public ITagDao<T> GetTagDao<T>()
+        {
+            return ServiceProvider.GetService<ITagDao<T>>();
+        }
     }
 
     public static class DaoFactoryExtention

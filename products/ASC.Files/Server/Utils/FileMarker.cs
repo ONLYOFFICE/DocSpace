@@ -450,18 +450,18 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public Dictionary<object, int> GetRootFoldersIdMarkedAsNew()
+        public Dictionary<T, int> GetRootFoldersIdMarkedAsNew<T>()
         {
-            var rootIds = new List<object>
+            var rootIds = new List<T>
                 {
-                    GlobalFolder.GetFolderMy(this, DaoFactory),
-                    GlobalFolder.GetFolderCommon(this, DaoFactory),
-                    GlobalFolder.GetFolderShare(DaoFactory),
-                    GlobalFolder.GetFolderProjects(DaoFactory)
+                    GlobalFolder.GetFolderMy<T>(this, DaoFactory),
+                    GlobalFolder.GetFolderCommon<T>(this, DaoFactory),
+                    GlobalFolder.GetFolderShare<T>(DaoFactory),
+                    GlobalFolder.GetFolderProjects<T>(DaoFactory)
                 };
 
-            var requestIds = new List<object>();
-            var news = new Dictionary<object, int>();
+            var requestIds = new List<T>();
+            var news = new Dictionary<T, int>();
 
             rootIds.ForEach(rootId =>
                                 {
@@ -479,8 +479,8 @@ namespace ASC.Web.Files.Utils
             if (requestIds.Any())
             {
                 IEnumerable<Tag> requestTags;
-                var tagDao = DaoFactory.TagDao;
-                var folderDao = DaoFactory.FolderDao;
+                var tagDao = DaoFactory.GetTagDao<T>();
+                var folderDao = DaoFactory.GetFolderDao<T>();
                 requestTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folderDao.GetFolders(requestIds.ToArray()));
 
                 requestIds.ForEach(requestId =>
@@ -489,7 +489,7 @@ namespace ASC.Web.Files.Utils
                                            InsertToCahce(requestId, requestTag == null ? 0 : requestTag.Count);
                                        });
 
-                news = news.Concat(requestTags.ToDictionary(x => x.EntryId, x => x.Count)).ToDictionary(x => x.Key, x => x.Value);
+                news = news.Concat(requestTags.ToDictionary(x => (T)Convert.ChangeType(x.EntryId, typeof(T)), x => x.Count)).ToDictionary(x => x.Key, x => x.Value);
             }
 
             return news;
@@ -577,7 +577,7 @@ namespace ASC.Web.Files.Utils
 
         public IEnumerable<FileEntry> SetTagsNew<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
         {
-            var tagDao = DaoFactory.TagDao;
+            var tagDao = DaoFactory.GetTagDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
             var totalTags = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, parent, false).ToList();
 

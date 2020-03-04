@@ -324,7 +324,7 @@ namespace ASC.Files.Core.Security
             var result = new List<FileEntry>(entries.Count());
 
             // save entries order
-            var order = entries.Select((f, i) => new { Id = f.UniqID, Pos = i }).ToDictionary(e => e.Id, e => e.Pos);
+            var order = entries.Select((f, i) => new { Id = GetUniqID(f), Pos = i }).ToDictionary(e => e.Id, e => e.Pos);
 
             // common or my files
             Func<FileEntry, bool> filter =
@@ -539,8 +539,14 @@ namespace ASC.Files.Core.Security
             }
 
             // restore entries order
-            result.Sort((x, y) => order[x.UniqID].CompareTo(order[y.UniqID]));
+            result.Sort((x, y) => order[GetUniqID(x)].CompareTo(order[GetUniqID(y)]));
             return result;
+
+            //TODO
+            string GetUniqID(FileEntry f)
+            {
+                return (f as File<T>)?.UniqID ?? (f as Folder<T>)?.UniqID;
+            };
         }
 
         public void Share(object entryId, FileEntryType entryType, Guid @for, FileShare share)

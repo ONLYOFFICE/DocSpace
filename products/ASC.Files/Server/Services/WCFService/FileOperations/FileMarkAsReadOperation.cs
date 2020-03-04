@@ -94,7 +94,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             });
 
             var newrootfolder = fileMarker
-                .GetRootFoldersIdMarkedAsNew()
+                .GetRootFoldersIdMarkedAsNew<T>()
                 .Select(item => string.Format("new_{{\"key\"? \"{0}\", \"value\"? \"{1}\"}}", item.Key, item.Value));
 
             Status += string.Join(FileOperation.SPLIT_CHAR, newrootfolder.ToArray());

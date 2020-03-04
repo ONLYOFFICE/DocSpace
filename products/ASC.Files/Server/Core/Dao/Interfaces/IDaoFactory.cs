@@ -39,6 +39,7 @@ namespace ASC.Files.Core
         IFileDao<T> GetFileDao<T>();
 
         ITagDao TagDao { get; }
+        ITagDao<T> GetTagDao<T>();
 
         ISecurityDao SecurityDao { get; }
 
