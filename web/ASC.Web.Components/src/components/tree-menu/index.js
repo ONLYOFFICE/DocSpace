@@ -91,7 +91,7 @@ const TreeMenu = props => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick } = props;
+        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick, loadData } = props;
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
@@ -104,6 +104,7 @@ const TreeMenu = props => {
             style={style}
         >
             <StyledTreeMenu
+                loadData={loadData}
                 checkable={!!checkable}
                 draggable={!!draggable}
                 disabled={!!disabled}
@@ -173,6 +174,7 @@ TreeMenu.propTypes = {
     onDragStart: PropTypes.func,
     onDrop: PropTypes.func,
     onBadgeClick: PropTypes.func,
+    loadData: PropTypes.func,
 
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),

@@ -42,6 +42,7 @@ import { TreeMenu } from "asc-web-components";
 | `style`               |   `obj`, `array`   |    -     |   -    |    -    | Accepts css style                                                                                       |
 | `badgeLabel`          | `string`, `number` |    -     |   -    |    -    | badge text                                                                                              |
 | `onBadgeClick`        |       `func`       |    -     |   -    |    -    | call when mouse click on badge                                                                          |
+| `loadData`            |       `func`       |    -     |   -    |    -    | load data asynchronously and the return value should be a promise                                       |
 
 ### Properties TreeNode
 
