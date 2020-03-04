@@ -669,17 +669,18 @@ namespace ASC.Files.Core.Data
         {
             if (fileId == null) return null;
 
+            var fileIdString = fileId.ToString();
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
-                    .Where(r => r.Id == (int)fileId)
-                    .GroupBy(r => r.Id)
-                    .SelectMany(r => r.Select(a => a.FolderId))
+                    .Where(r => r.Id.ToString() == fileIdString)
+                    .Select(r => r.FolderId)
                     .Distinct()
                     .ToList();
 
                 var toUpdate = Query(FilesDbContext.Files)
-                    .Where(r => r.Id == (int)fileId);
+                    .Where(r => r.Id.ToString() == fileIdString)
+                    .ToList();
 
                 foreach (var f in toUpdate)
                 {
@@ -699,9 +700,10 @@ namespace ASC.Files.Core.Data
                 RecalculateFilesCount(toFolderId);
             }
 
+            var toFolderIdString = toFolderId.ToString();
             var parentFoldersIds =
                 FilesDbContext.Tree
-                .Where(r => r.FolderId == (int)toFolderId)
+                .Where(r => r.FolderId.ToString() == toFolderIdString)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
                 .ToList();

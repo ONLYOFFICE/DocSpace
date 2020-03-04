@@ -128,8 +128,9 @@ namespace ASC.Files.Core.Data
 
         public Folder GetRootFolderByFile(object fileId)
         {
+            var fileIdString = fileId.ToString();
             var subq = Query(FilesDbContext.Files)
-                .Where(r => r.Id == (int)fileId && r.CurrentVersion)
+                .Where(r => r.Id.ToString() == fileIdString && r.CurrentVersion)
                 .Select(r => r.FolderId)
                 .Distinct();
 
