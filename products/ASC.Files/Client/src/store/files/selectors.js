@@ -8,36 +8,51 @@ export const getRootFolders = files => {
 
   const data = [
     {
-      title: my.title,
       id: my.id,
       key: "0-0",
+      title: my.title,
       isLeaf: !myIsLeaf
     },
     {
-      title: share.title,
+      id: share.id,
       key: "0-1",
-      isLeaf: !shareIsLeaf,
-      id: share.id
+      title: share.title,
+      isLeaf: !shareIsLeaf
     },
     {
-      title: common.title,
+      id: common.id,
       key: "0-2",
-      isLeaf: !commonIsLeaf,
-      id: common.id
+      title: common.title,
+      isLeaf: !commonIsLeaf
     },
     {
-      title: project.title,
+      id: project.id,
       key: "0-3",
-      isLeaf: !projectIsLeaf,
-      id: project.id
+      title: project.title,
+      isLeaf: !projectIsLeaf
     },
     {
-      title: trash.title,
       id: trash.id,
       key: "0-4",
+      title: trash.title,
       isLeaf: true
     }
   ];
 
   return data;
+};
+
+export const setTreeFilter = (filter, rootFolders) => {
+  let newFilter = filter.clone();
+
+  if (newFilter.treeFolders.length === 0) {
+    newFilter.treeFolders = [
+      { id: rootFolders.my.id, key: "0-0" },
+      { id: rootFolders.share.id, key: "0-1" },
+      { id: rootFolders.common.id, key: "0-2" },
+      { id: rootFolders.project.id, key: "0-3" },
+      { id: rootFolders.trash.id, key: "0-4" }
+    ];
+  }
+  return newFilter;
 };

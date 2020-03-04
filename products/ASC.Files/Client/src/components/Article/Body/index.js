@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { utils } from "asc-web-components";
-import { getRootFolders } from "../../../store/files/selectors";
+import { getRootFolders, setTreeFilter } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
+import { setFilter } from "../../../store/files/actions";
 
 class ArticleBodyContent extends React.Component {
   /*shouldComponentUpdate(nextProps) {
@@ -25,7 +26,8 @@ class ArticleBodyContent extends React.Component {
       fakeNewDocuments,
       rootFolders,
       currentModule,
-      filter
+      filter,
+      setFilter
     } = this.props;
 
     //console.log("FilesTreeMenu", this.props);
@@ -35,9 +37,9 @@ class ArticleBodyContent extends React.Component {
         fakeNewDocuments={fakeNewDocuments}
         rootFolders={rootFolders}
         currentModule={currentModule}
-        state={this.props.state}
         data={data}
         filter={filter}
+        setFilter={setFilter}
       />
     );
   }
@@ -54,9 +56,8 @@ function mapStateToProps(state) {
     fakeNewDocuments,
     currentModule: currentFolderId,
     rootFolders,
-    state,
-    filter
+    filter: setTreeFilter(filter, rootFolders)
   };
 }
 
-export default connect(mapStateToProps, {})(ArticleBodyContent);
+export default connect(mapStateToProps, { setFilter })(ArticleBodyContent);

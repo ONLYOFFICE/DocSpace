@@ -240,39 +240,3 @@ export function fetchRootFolders(dispatch) {
       .then(data => root.share = { folders: data.folders, ...data.current}))
     .then(() => dispatch(setRootFolders(root)));
 }
-
-export function testUpdateMyFolder(folders) {
-  return (dispatch, getState) => {
-    const { files } = getState();
-    const { rootFolders } = files;
-
-    console.log("folders", folders);
-
-    const newRoot = rootFolders;
-    newRoot.my.folders = folders;
-    console.log("newRoot.my.folders", newRoot.my.folders);
-    console.log("folders", folders);
-    console.log("newRoot", newRoot);
-    //dispatch(setRootFolders(null));
-    dispatch(setRootFolders(newRoot));
-    
-  }
-  //setRootFolders
-}
-
-/*export function deleteGroup(id) {
-  return (dispatch, getState) => {
-    const { people } = getState();
-    const { groups, filter } = people;
-
-    return api.groups
-      .deleteGroup(id)
-      .then(res => {
-        return dispatch(setGroups(groups.filter(g => g.id !== id)));
-      })
-      .then(() => {
-        const newFilter = filter.clone(true);
-        return fetchPeople(newFilter, dispatch);
-      });
-  };
-}*/

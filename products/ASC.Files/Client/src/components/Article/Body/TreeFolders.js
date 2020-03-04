@@ -1,13 +1,6 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr } from "asc-web-components";
-import {
-  fetchMyFolder,
-  fetchSharedFolder,
-  fetchCommonFolder,
-  fetchProjectsFolder,
-  fetchTrashFolder,
-  setFilter
-} from "../../../store/files/actions";
+import { fetchFolder } from "../../../store/files/actions";
 import store from "../../../store/store";
 
 import { api } from "asc-web-common";
@@ -31,7 +24,6 @@ class TreeFolders extends React.Component {
             id={item.id}
             key={`${newKey}-${index}`}
             title={item.title}
-            //isLeaf={item.isLeaf}
             icon={
               <Icons.CatalogFolderIcon size="scale" isfill color="#657077" />
             }
@@ -67,47 +59,14 @@ class TreeFolders extends React.Component {
   onSelect = data => {
     console.log("onSelect document", data);
 
-    const currentModuleId = Number(data[0]);
-    const { currentModule, rootFolders } = this.props;
+    const cloneFilter = this.props.filter.clone();
+    const item = cloneFilter.treeFolders.find(x => x.key === data[0]);
+    fetchFolder(item.id, store.dispatch);
 
-    if (currentModule !== data[0]) {
-      const { my, share, common, project, trash } = rootFolders;
-
-      switch (currentModuleId) {
-        case my.id:
-          fetchMyFolder(store.dispatch).catch(() =>
-            toastr.error("Error fetchMyFolder")
-          );
-          break;
-        case share.id:
-          fetchSharedFolder(store.dispatch).catch(() =>
-            toastr.error("Error fetchSharedFolder")
-          );
-          break;
-        case common.id:
-          fetchCommonFolder(store.dispatch).catch(() =>
-            toastr.error("Error fetchCommonFolder")
-          );
-          break;
-        case project.id:
-          fetchProjectsFolder(store.dispatch).catch(() =>
-            toastr.error("Error fetchProjectsFolder")
-          );
-
-          break;
-        case trash.id:
-          fetchTrashFolder(store.dispatch).catch(() =>
-            toastr.error("Error fetchTrashFolder")
-          );
-          break;
-        default:
-          break;
-      }
-    }
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
-  onExpand = data => {
+  /*onExpand = data => {
     console.log("onExpand", data);
 
     const { state, filter } = this.props;
@@ -129,25 +88,25 @@ class TreeFolders extends React.Component {
     switch (currentModuleId) {
       case myId:
         newFilter.myPath.push(lastItem); //remove dublicate // sort
-        console.log("myId", filter.myPath);
+        //console.log("myId", filter.myPath);
         break;
       case shareId:
-        console.log("shareId", filter.sharedPath);
+        //console.log("shareId", filter.sharedPath);
         break;
       case commonId:
-        console.log("commonId", filter.commonPath);
+        //console.log("commonId", filter.commonPath);
         break;
       case projectId:
-        console.log("projectId", filter.projectPath);
+        //console.log("projectId", filter.projectPath);
         break;
       case trashId:
-        console.log("trashId", filter.recycleBinPath);
+        //console.log("trashId", filter.recycleBinPath);
         break;
       default:
-        console.log("default");
+        //console.log("default");
         break;
     }
-  };
+  };*/
 
   getNewTreeData(treeData, curKey, child, level) {
     console.log("child", child);
@@ -195,12 +154,15 @@ class TreeFolders extends React.Component {
     let arrayFolders;
 
     return files.getFolder(folderId).then(data => {
+      const newFilter = this.props.filter.clone();
       arrayFolders = data.folders;
       let i = 0;
       for (let item of arrayFolders) {
         item["key"] = `${folderIndex}-${i}`;
         i++;
+        newFilter.treeFolders.push({ id: item.id, key: item.key });
       }
+      this.props.setFilter(newFilter);
       return arrayFolders;
     });
   };
