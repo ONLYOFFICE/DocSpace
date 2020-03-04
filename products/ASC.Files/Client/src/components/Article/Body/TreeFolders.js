@@ -2,13 +2,11 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr } from "asc-web-components";
 import {
   fetchMyFolder,
-  //selectFolder,
   fetchSharedFolder,
   fetchCommonFolder,
   fetchProjectsFolder,
   fetchTrashFolder,
   setFilter
-  //setRootFolders,
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 
@@ -21,14 +19,7 @@ class TreeFolders extends React.Component {
 
     const treeData = props.data;
 
-    this.state = {
-      treeData
-      //my: [],
-      //shared: [],
-      //common: [],
-      //project: [],
-      //recycleBin: []
-    };
+    this.state = { treeData };
   }
 
   getItems = (data, key) => {
@@ -220,24 +211,13 @@ class TreeFolders extends React.Component {
 
   onLoadData = treeNode => {
     console.log("load data...", treeNode);
+
+    const treeNodes = this.generateTreeNodes(treeNode);
+    console.log("treeNodes", treeNodes);
     return new Promise(resolve => {
       setTimeout(() => {
-        //const folders = this.props.state.files.rootFolders.my.folders;
-        //for (let item in folders) {
-        //  const folderId = folders[item].id;
-        //  files.getFolder(folderId).then(data => {
-        //    folders[item]["folders"] = data.folders;
-        //  });
-        //}
-        //this.props.testUpdateMyFolder(folders);
-
         const treeData = [...this.state.treeData];
-        this.getNewTreeData(
-          treeData,
-          treeNode.props.eventKey,
-          this.generateTreeNodes(treeNode),
-          10
-        );
+        this.getNewTreeData(treeData, treeNode.props.eventKey, treeNodes, 10);
         this.setState({ treeData });
         resolve();
       }, 500);
@@ -272,115 +252,3 @@ class TreeFolders extends React.Component {
 }
 
 export default TreeFolders;
-
-/*
-import "rc-tree/assets/index.css";
-import Tree, { TreeNode } from "rc-tree";
-import React from "react";
-
-class Demo extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      treeData: [
-        { title: "pNode 01", key: "0-0" },
-        { title: "pNode 02", key: "0-1" },
-        { title: "pNode 03", key: "0-2", isLeaf: true }
-      ]
-    };
-  }
-
-  generateTreeNodes(treeNode) {
-    const arr = [];
-    const key = treeNode.props.eventKey;
-    for (let i = 0; i < 3; i++) {
-      arr.push({ title: `leaf ${key}-${i}`, key: `${key}-${i}` });
-    }
-    return arr;
-  }
-
-  setLeaf(treeData, curKey, level) {
-    const loopLeaf = (data, lev) => {
-      const l = lev - 1;
-      data.forEach(item => {
-        if (
-          item.key.length > curKey.length
-            ? item.key.indexOf(curKey) !== 0
-            : curKey.indexOf(item.key) !== 0
-        ) {
-          return;
-        }
-        if (item.children) {
-          loopLeaf(item.children, l);
-        } else if (l < 1) {
-          item.isLeaf = true;
-        }
-      });
-    };
-    loopLeaf(treeData, level + 1);
-  }
-
-  getNewTreeData(treeData, curKey, child, level) {
-    const loop = data => {
-      if (level < 1 || curKey.length - 3 > level * 2) return;
-      data.forEach(item => {
-        if (curKey.indexOf(item.key) === 0) {
-          if (item.children) {
-            loop(item.children);
-          } else {
-            item.children = child;
-          }
-        }
-      });
-    };
-    loop(treeData);
-    this.setLeaf(treeData, curKey, level);
-  }
-
-  onLoadData = treeNode => {
-    console.log("load data...");
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const treeData = [...this.state.treeData];
-        this.getNewTreeData(
-          treeData,
-          treeNode.props.eventKey,
-          this.generateTreeNodes(treeNode),
-          10
-        );
-        this.setState({ treeData });
-        resolve();
-      }, 500);
-    });
-  };
-
-  loop = data => {
-    return data.map(item => {
-      if (item.children) {
-        return (
-          <TreeNode title={item.title} key={item.key}>
-            {this.loop(item.children)}
-          </TreeNode>
-        );
-      }
-      return (
-        <TreeNode title={item.title} key={item.key} isLeaf={item.isLeaf} />
-      );
-    });
-  };
-
-  render() {
-    return (
-      <Tree
-        onSelect={info => console.log("selected", info)}
-        loadData={this.onLoadData}
-      >
-        {this.loop(this.state.treeData)}
-      </Tree>
-    );
-  }
-}
-
-export default Demo;
-*/

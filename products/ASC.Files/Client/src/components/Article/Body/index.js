@@ -1,16 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { utils } from "asc-web-components";
-import {
-  selectFolder,
-  fetchSharedFolder,
-  fetchCommonFolder,
-  fetchProjectsFolder,
-  fetchTrashFolder,
-  fetchFolder,
-  setRootFolders,
-  testUpdateMyFolder
-} from "../../../store/files/actions";
 import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
 
@@ -46,7 +36,6 @@ class ArticleBodyContent extends React.Component {
         rootFolders={rootFolders}
         currentModule={currentModule}
         state={this.props.state}
-        testUpdateMyFolder={this.props.testUpdateMyFolder}
         data={data}
         filter={filter}
       />
@@ -70,13 +59,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  selectFolder,
-  fetchSharedFolder,
-  fetchCommonFolder,
-  fetchProjectsFolder,
-  fetchTrashFolder,
-  fetchFolder,
-  setRootFolders,
-  testUpdateMyFolder
-})(ArticleBodyContent);
+export default connect(mapStateToProps, {})(ArticleBodyContent);

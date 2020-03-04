@@ -79,13 +79,6 @@ export function setFilter(filter) {
   };
 }
 
-// export function setFilesFilter(filter) {
-//   return {
-//     type: SET_FILES_FILTER,
-//     filter
-//   };
-// }
-
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
@@ -183,6 +176,12 @@ export function fetchMyFolder(dispatch) {
     return dispatch(setSelectedFolder(data.current));
   });
 }
+
+export function getFolder(folderId) {
+  return dispatch => {
+    return files.getFolder(folderId);
+  };
+};
 
 export function fetchTrashFolder(dispatch) {
   return files.getTrashFolderList().then(data => {
