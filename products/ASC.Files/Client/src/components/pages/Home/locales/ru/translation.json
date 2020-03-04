@@ -32,5 +32,9 @@
   "BySize": "Размер",
   "ByAuthor": "Автор",
   "DirectionAscLabel":"А-Я",
-  "DirectionDescLabel":"Я-А"
+  "DirectionDescLabel":"Я-А",
+  "CountPerPage": "{{count}} на странице",
+  "PageOfTotalPage": "{{page}} из {{totalPage}}",
+  "PreviousPage": "Предыдущая",
+  "NextPage": "Следующая"
 }
