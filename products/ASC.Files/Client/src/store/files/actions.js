@@ -20,6 +20,7 @@ export const SET_SELECTED = "SET_SELECTED";
 export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
 export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
 export const SET_FILES_FILTER = "SET_FILES_FILTER";
+export const SET_FILTER = "SET_FILTER";
 
 export function setFiles(files) {
   return {
@@ -70,6 +71,20 @@ export function setFilesFilter(filter) {
     filter
   };
 }
+export function setFilter(filter) {
+  //setFilterUrl(filter);
+  return {
+    type: SET_FILTER,
+    filter
+  };
+}
+
+// export function setFilesFilter(filter) {
+//   return {
+//     type: SET_FILES_FILTER,
+//     filter
+//   };
+// }
 
 export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
@@ -157,7 +172,7 @@ export function fetchFolder(folderId, dispatch) {
   return files.getFolder(folderId).then(data => {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder(data.current));
+    return dispatch(setSelectedFolder({folders: data.folders, ...data.current}));
   })
 }
 
@@ -213,15 +228,50 @@ export function fetchRootFolders(dispatch) {
   };
 
   return files.getMyFolderList()
-    .then(data => root.my = data.current)
+    .then(data => root.my = { folders: data.folders, ...data.current})
     .then(() => files.getCommonFolderList()
-      .then(data => root.common = data.current))
+      .then(data => root.common = { folders: data.folders, ...data.current}))
     .then(() => files.getProjectsFolderList()
-      .then(data => root.project = data.current))
+      .then(data => root.project = { folders: data.folders, ...data.current}))
     .then(() => files.getTrashFolderList()
-      .then(data => root.trash = data.current))
+      .then(data => root.trash = { folders: data.folders, ...data.current}))
     .then(() => files.getSharedFolderList()
-      .then(data => root.share = data.current))
+      .then(data => root.share = { folders: data.folders, ...data.current}))
     .then(() => dispatch(setRootFolders(root)));
 }
 
+export function testUpdateMyFolder(folders) {
+  return (dispatch, getState) => {
+    const { files } = getState();
+    const { rootFolders } = files;
+
+    console.log("folders", folders);
+
+    const newRoot = rootFolders;
+    newRoot.my.folders = folders;
+    console.log("newRoot.my.folders", newRoot.my.folders);
+    console.log("folders", folders);
+    console.log("newRoot", newRoot);
+    //dispatch(setRootFolders(null));
+    dispatch(setRootFolders(newRoot));
+    
+  }
+  //setRootFolders
+}
+
+/*export function deleteGroup(id) {
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { groups, filter } = people;
+
+    return api.groups
+      .deleteGroup(id)
+      .then(res => {
+        return dispatch(setGroups(groups.filter(g => g.id !== id)));
+      })
+      .then(() => {
+        const newFilter = filter.clone(true);
+        return fetchPeople(newFilter, dispatch);
+      });
+  };
+}*/

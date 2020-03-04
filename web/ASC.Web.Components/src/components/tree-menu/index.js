@@ -98,11 +98,12 @@ const TreeMenu = props => {
         onSelect(result, e);
     }
     return (
-        <StyledTreeContainer>
+        <StyledTreeContainer
+            className={className}
+            id={id}
+            style={style}
+        >
             <StyledTreeMenu
-                className={className}
-                id={id}
-                style={style}
                 checkable={!!checkable}
                 draggable={!!draggable}
                 disabled={!!disabled}
