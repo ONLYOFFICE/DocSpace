@@ -42,10 +42,11 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         filter: action.filter
       });
-	case SET_FILES_FILTER:
+    case SET_FILES_FILTER:
       return Object.assign({}, state, {
         filter: action.filter
-      });    default:
+      });    
+    default:
       return state;
   }
 };
