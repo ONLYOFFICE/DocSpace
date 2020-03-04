@@ -37,7 +37,7 @@ class TreeFolders extends React.Component {
           id={item.id}
           key={`${newKey}-${index}`}
           title={item.title}
-          isLeaf={item.isLeaf}
+          isLeaf={item.foldersCount ? false : true}
           icon={<Icons.CatalogFolderIcon size="scale" isfill color="#657077" />}
         />
       );
@@ -66,50 +66,7 @@ class TreeFolders extends React.Component {
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
-  /*onExpand = data => {
-    console.log("onExpand", data);
-
-    const { state, filter } = this.props;
-
-    const newFilter = filter.clone();
-    //array[array.length - 1]
-    //data[0] && newFilter.folderPath.push(data[0]);
-    //setFilter(newFilter);
-
-    const lastItem = data[data.length - 1];
-
-    const currentModuleId = Number(lastItem);
-    const myId = state.files.rootFolders["my"].id;
-    const shareId = state.files.rootFolders["share"].id;
-    const commonId = state.files.rootFolders["common"].id;
-    const projectId = state.files.rootFolders["project"].id;
-    const trashId = state.files.rootFolders["trash"].id;
-
-    switch (currentModuleId) {
-      case myId:
-        newFilter.myPath.push(lastItem); //remove dublicate // sort
-        //console.log("myId", filter.myPath);
-        break;
-      case shareId:
-        //console.log("shareId", filter.sharedPath);
-        break;
-      case commonId:
-        //console.log("commonId", filter.commonPath);
-        break;
-      case projectId:
-        //console.log("projectId", filter.projectPath);
-        break;
-      case trashId:
-        //console.log("trashId", filter.recycleBinPath);
-        break;
-      default:
-        //console.log("default");
-        break;
-    }
-  };*/
-
   getNewTreeData(treeData, curKey, child, level) {
-    console.log("child", child);
     const loop = data => {
       if (level < 1 || curKey.length - 3 > level * 2) return;
       data.forEach(item => {
@@ -128,7 +85,6 @@ class TreeFolders extends React.Component {
 
   setLeaf(treeData, curKey, level) {
     const loopLeaf = (data, lev) => {
-      console.log("treeDatatreeDatatreeData", data);
       const l = lev - 1;
       data.forEach(item => {
         if (

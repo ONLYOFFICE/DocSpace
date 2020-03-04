@@ -1,41 +1,36 @@
 export const getRootFolders = files => {
   const { my, share, common, project, trash } = files;
 
-  const myIsLeaf = my.folders.length > 0;
-  const shareIsLeaf = share.folders.length > 0;
-  const commonIsLeaf = common.folders.length > 0;
-  const projectIsLeaf = project.folders.length > 0;
-
   const data = [
     {
       id: my.id,
       key: "0-0",
       title: my.title,
-      isLeaf: !myIsLeaf
+      foldersCount: my.folders.length
     },
     {
       id: share.id,
       key: "0-1",
       title: share.title,
-      isLeaf: !shareIsLeaf
+      foldersCount: share.folders.length
     },
     {
       id: common.id,
       key: "0-2",
       title: common.title,
-      isLeaf: !commonIsLeaf
+      foldersCount: common.folders.length
     },
     {
       id: project.id,
       key: "0-3",
       title: project.title,
-      isLeaf: !projectIsLeaf
+      foldersCount: project.folders.length
     },
     {
       id: trash.id,
       key: "0-4",
       title: trash.title,
-      isLeaf: true
+      foldersCount: null
     }
   ];
 
