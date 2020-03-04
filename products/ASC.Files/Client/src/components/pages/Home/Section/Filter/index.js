@@ -101,42 +101,42 @@ class SectionFilterContent extends React.Component {
           isHeader: true
         },
         {
-          key: FilterType.FoldersOnly,
+          key: FilterType.FoldersOnly.toString(),
           group: "filter-filterType",
           label: t("Folders")
         },
         {
-          key: FilterType.DocumentsOnly,
+          key: FilterType.DocumentsOnly.toString(),
           group: "filter-filterType",
           label: t("Documents")
         },
         {
-          key: FilterType.PresentationsOnly,
+          key: FilterType.PresentationsOnly.toString(),
           group: "filter-filterType",
           label: t("Presentations")
         },
         {
-          key: FilterType.SpreadsheetsOnly,
+          key: FilterType.SpreadsheetsOnly.toString(),
           group: "filter-filterType",
           label: t("Spreadsheets")
         },
         {
-          key: FilterType.ImagesOnly,
+          key: FilterType.ImagesOnly.toString(),
           group: "filter-filterType",
           label: t("Images")
         },
         {
-          key: FilterType.MediaOnly,
+          key: FilterType.MediaOnly.toString(),
           group: "filter-filterType",
           label: t("Media")
         },
         {
-          key: FilterType.ArchiveOnly,
+          key: FilterType.ArchiveOnly.toString(),
           group: "filter-filterType",
           label: t("Archives")
         },
         {
-          key: FilterType.FilesOnly,
+          key: FilterType.FilesOnly.toString(),
           group: "filter-filterType",
           label: t("AllFiles")
         }
@@ -233,15 +233,16 @@ class SectionFilterContent extends React.Component {
   };
 
   needForUpdate = (currentProps, nextProps) => {
-    if (currentProps.language !== nextProps.language) {
+    // if (currentProps.language !== nextProps.language) {
       return true;
-    }
-    return false;
+    // }
+    // return false;
   };
 
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
+    console.log('selectedFilterData', selectedFilterData);
     const { t, i18n } = this.props;
     return (
       <FilterInput
