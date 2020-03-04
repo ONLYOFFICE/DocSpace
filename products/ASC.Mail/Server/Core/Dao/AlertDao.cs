@@ -32,8 +32,6 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Enums;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Common;

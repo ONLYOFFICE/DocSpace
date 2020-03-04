@@ -24,29 +24,29 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Attachment
 {
-    /*public class ConcreteUserAttachmentExp : UserAttachmentExp
+    public class ConcreteUserAttachmentExp : UserAttachmentExp
     {
-        private readonly int _id;
-
         public ConcreteUserAttachmentExp(int id, int tenant, string user, bool? isRemoved = false) 
             : base(tenant, user, isRemoved)
         {
-            _id = id;
+            Id = id;
         }
 
-        public override Exp GetExpression()
+        public int Id { get; }
+
+        public override Expression<Func<MailAttachment, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(AttachmentTable.Columns.Id.Prefix(AttachmentTable.TABLE_NAME), _id);
+            exp = exp.And(a => a.Id == Id);
 
             return exp;
         }
-    }*/
+    }
 }

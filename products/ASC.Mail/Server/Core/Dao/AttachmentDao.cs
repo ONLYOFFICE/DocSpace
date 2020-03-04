@@ -24,166 +24,147 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Expressions.Attachment;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Extensions;
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Expressions.Attachment;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class AttachmentDao : BaseDao, IAttachmentDao
+    public class AttachmentDao : BaseDao, IAttachmentDao
     {
-        protected static ITable table = new MailTableFactory().Create<AttachmentTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public AttachmentDao(IDbManager dbManager, int tenant, string user = null) 
-            : base(table, dbManager, tenant)
-        {
-            CurrentUserId = user;
+        public AttachmentDao(DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext) { 
         }
 
         public Attachment GetAttachment(IAttachmentExp exp)
         {
-            var query = Query(AttachmentTable.TABLE_NAME)
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .Select(MailTable.Columns.Stream.Prefix(MailTable.TABLE_NAME),
-                    MailTable.Columns.User.Prefix(MailTable.TABLE_NAME))
-                .Where(exp.GetExpression());
+            var attachemnt = MailDb.MailAttachment
+                    .Include(a => a.Mail)
+                    .Where(exp.GetExpression())
+                    .Select(ToAttachment)
+                    .FirstOrDefault();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToAttachment)
-                .FirstOrDefault();
+            return attachemnt;
         }
 
         public List<Attachment> GetAttachments(IAttachmentsExp exp)
         {
-            var query = Query(AttachmentTable.TABLE_NAME)
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .Select(MailTable.Columns.Stream.Prefix(MailTable.TABLE_NAME),
-                    MailTable.Columns.User.Prefix(MailTable.TABLE_NAME))
-                .Where(exp.GetExpression());
+            var attachemnts = MailDb.MailAttachment
+                    .Include(a => a.Mail)
+                    .Where(exp.GetExpression())
+                    .Select(ToAttachment)
+                    .ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToAttachment);
+            return attachemnts;
         }
 
         public long GetAttachmentsSize(IAttachmentsExp exp)
         {
-            var query = new SqlQuery(AttachmentTable.TABLE_NAME.Alias(AttachmentTable.TABLE_NAME))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .SelectSum(AttachmentTable.Columns.Size.Prefix(AttachmentTable.TABLE_NAME))
-                .Where(exp.GetExpression());
-
-            var size = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt64(r[0]))
-                .FirstOrDefault();
+            var size = MailDb.MailAttachment
+                   .Where(exp.GetExpression())
+                   .Sum(a => a.Size);
 
             return size;
         }
 
         public int GetAttachmentsMaxFileNumber(IAttachmentsExp exp)
         {
-            var query = new SqlQuery(AttachmentTable.TABLE_NAME.Alias(AttachmentTable.TABLE_NAME))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .SelectMax(AttachmentTable.Columns.FileNumber.Prefix(AttachmentTable.TABLE_NAME))
-                .Where(exp.GetExpression());
-
-            var max = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt32(r[0]))
-                .SingleOrDefault();
+            var max = MailDb.MailAttachment
+                   .Where(exp.GetExpression())
+                   .Max(a => a.FileNumber);
 
             return max;
         }
 
         public int GetAttachmentsCount(IAttachmentsExp exp)
         {
-            var query = new SqlQuery(AttachmentTable.TABLE_NAME.Alias(AttachmentTable.TABLE_NAME))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .SelectCount(AttachmentTable.Columns.Id.Prefix(AttachmentTable.TABLE_NAME))
-                .Where(exp.GetExpression());
-
-            var count = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt32(r[0]))
-                .SingleOrDefault();
+            var count = MailDb.MailAttachment
+                   .Where(exp.GetExpression())
+                   .Count();
 
             return count;
         }
 
         public bool SetAttachmnetsRemoved(IAttachmentsExp exp)
         {
-            var query = new SqlUpdate(AttachmentTable.TABLE_NAME.Alias(AttachmentTable.TABLE_NAME))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MailTable.TABLE_NAME),
-                    Exp.EqColumns(MailTable.Columns.Id.Prefix(MailTable.TABLE_NAME),
-                        AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME)))
-                .Set(AttachmentTable.Columns.IsRemoved, true)
-                .Where(exp.GetExpression());
+            var attachments = MailDb.MailAttachment.Where(exp.GetExpression());
 
-            var result = Db.ExecuteNonQuery(query);
+            foreach (var att in attachments)
+            {
+                att.NeedRemove = true;
+            }
+
+            MailDb.UpdateRange(attachments);
+
+            var result = MailDb.SaveChanges();
 
             return result > 0;
         }
 
         public int SaveAttachment(Attachment attachment)
         {
-            var query = new SqlInsert(AttachmentTable.TABLE_NAME, true)
-                .InColumnValue(AttachmentTable.Columns.Id, attachment.Id)
-                .InColumnValue(AttachmentTable.Columns.MailId, attachment.MailId)
-                .InColumnValue(AttachmentTable.Columns.Name, attachment.Name)
-                .InColumnValue(AttachmentTable.Columns.StoredName, attachment.StoredName)
-                .InColumnValue(AttachmentTable.Columns.Type, attachment.Type)
-                .InColumnValue(AttachmentTable.Columns.Size, attachment.Size)
-                .InColumnValue(AttachmentTable.Columns.FileNumber, attachment.FileNumber)
-                .InColumnValue(AttachmentTable.Columns.IsRemoved, attachment.IsRemoved)
-                .InColumnValue(AttachmentTable.Columns.ContentId, attachment.ContentId)
-                .InColumnValue(AttachmentTable.Columns.Tenant, attachment.Tenant)
-                .InColumnValue(AttachmentTable.Columns.MailboxId, attachment.MailboxId)
-                .Identity(0, 0, true);
+            var mailAttachment = new MailAttachment
+            {
+                Id = attachment.Id,
+                Tenant = attachment.Tenant,
+                IdMail = attachment.MailId,
+                IdMailbox = attachment.MailboxId,
+                Name = attachment.Name,
+                StoredName = attachment.StoredName,
+                Type = attachment.Type,
+                Size = attachment.Size,
+                FileNumber = attachment.FileNumber,
+                NeedRemove = attachment.IsRemoved,
+                ContentId = attachment.ContentId
+            };
 
-            var id = Db.ExecuteScalar<int>(query);
+            var entry = MailDb.MailAttachment.Add(mailAttachment);
 
-            return id;
+            MailDb.SaveChanges();
+
+            return entry.Entity.Id;
         }
 
-        protected Attachment ToAttachment(object[] r)
+        protected Attachment ToAttachment(MailAttachment r)
         {
             var a = new Attachment
             {
-                Id = Convert.ToInt32(r[0]),
-                MailId = Convert.ToInt32(r[1]),
-                Name = Convert.ToString(r[2]),
-                StoredName = Convert.ToString(r[3]),
-                Type = Convert.ToString(r[4]),
-                Size = Convert.ToInt32(r[5]),
-                IsRemoved = Convert.ToBoolean(r[6]),
-                FileNumber = Convert.ToInt32(r[7]),
-                ContentId = Convert.ToString(r[8]),
-                Tenant = Convert.ToInt32(r[9]),
-                MailboxId = Convert.ToInt32(r[10]),
-                Stream = Convert.ToString(r[11]),
-                User = Convert.ToString(r[12])
+                Id = r.Id,
+                MailId = r.IdMail,
+                Name = r.Name,
+                StoredName = r.StoredName,
+                Type = r.Type,
+                Size = r.Size,
+                IsRemoved = r.NeedRemove,
+                FileNumber = r.FileNumber,
+                ContentId = r.ContentId,
+                Tenant = r.Tenant,
+                MailboxId = r.IdMailbox,
+                Stream = r.Mail.Stream,
+                User = r.Mail.IdUser
             };
 
             return a;
         }
-    }*/
+    }
+
+    public static class AttachmentDaoExtension
+    {
+        public static DIHelper AddAttachmentDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<AttachmentDao>();
+
+            return services;
+        }
+    }
 }

@@ -107,6 +107,12 @@ namespace ASC.Mail.Core.Dao
                 entity.Property(e => e.Type)
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
+
+                entity.HasOne(a => a.Mail)
+                    .WithMany(m => m.Attachments)
+                    .HasForeignKey(a => a.IdMail);
+                    //.HasPrincipalKey(o => o.Id);
+
             });
 
             modelBuilder.Entity<MailChain>(entity =>
@@ -377,6 +383,10 @@ namespace ASC.Mail.Core.Dao
                 entity.Property(e => e.Uidl)
                     .HasCharSet("utf8")
                     .HasCollation("utf8_general_ci");
+
+                entity.HasMany(m => m.Attachments)
+                    .WithOne(a => a.Mail)
+                    .HasForeignKey(a => a.IdMail);
             });
 
             modelBuilder.Entity<MailMailbox>(entity =>

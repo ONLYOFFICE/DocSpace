@@ -24,48 +24,45 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Attachment
 {
-    /*public class ConcreteMailboxAttachmentsExp : UserAttachmentsExp
+    public class ConcreteMailboxAttachmentsExp : UserAttachmentsExp
     {
-        private readonly int _mailboxId;
-        private readonly bool? _onlyEmbedded;
-
         public ConcreteMailboxAttachmentsExp(int mailboxId, int tenant, string user,
             bool? isRemoved = false, bool? onlyEmbedded = false)
             : base(tenant, user, isRemoved)
         {
-            _mailboxId = mailboxId;
-            _onlyEmbedded = onlyEmbedded;
+            MailboxId = mailboxId;
+            OnlyEmbedded = onlyEmbedded;
         }
 
-        public override Exp GetExpression()
+        public int MailboxId { get; }
+
+        public bool? OnlyEmbedded { get; }
+
+        public override Expression<Func<MailAttachment, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(AttachmentTable.Columns.MailboxId.Prefix(AttachmentTable.TABLE_NAME), _mailboxId);
+            exp = exp.And(a => a.IdMailbox == MailboxId);
 
-            if (!_onlyEmbedded.HasValue)
+            if (!OnlyEmbedded.HasValue)
                 return exp;
 
-            if (_onlyEmbedded.Value)
+            if (OnlyEmbedded.Value)
             {
-                exp = exp &
-                      !Exp.Eq(AttachmentTable.Columns.ContentId.Prefix(AttachmentTable.TABLE_NAME),
-                          null);
+                exp = exp.And(a => a.ContentId != null);
             }
             else
             {
-                exp = exp &
-                      Exp.Eq(AttachmentTable.Columns.ContentId.Prefix(AttachmentTable.TABLE_NAME),
-                          null);
+                exp = exp.And(a => a.ContentId == null);
             }
 
             return exp;
         }
-    }*/
+    }
 }

@@ -88,5 +88,7 @@ namespace ASC.Mail.Core.Dao.Entities
         public string ChainId { get; set; }
         [Column("chain_date", TypeName = "datetime")]
         public DateTime ChainDate { get; set; }
+
+        public ICollection<MailAttachment> Attachments { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("size", TypeName = "bigint(20)")]
         public long Size { get; set; }
         [Column("need_remove", TypeName = "int(11)")]
-        public int NeedRemove { get; set; }
+        public bool NeedRemove { get; set; }
         [Column("file_number", TypeName = "int(11)")]
         public int FileNumber { get; set; }
         [Column("content_id", TypeName = "varchar(255)")]
@@ -31,5 +31,7 @@ namespace ASC.Mail.Core.Dao.Entities
         public int Tenant { get; set; }
         [Column("id_mailbox", TypeName = "int(11)")]
         public int IdMailbox { get; set; }
+
+        public MailMail Mail { get; set; }
     }
 }

@@ -24,57 +24,55 @@
 */
 
 
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Attachment
 {
-    /*public class ConcreteMessageAttachmentsExp : UserAttachmentsExp
+    public class ConcreteMessageAttachmentsExp : UserAttachmentsExp
     {
-        private readonly int _mailId;
-        private readonly List<int> _attachIds;
-        private readonly bool? _onlyEmbedded;
-
         public ConcreteMessageAttachmentsExp(int mailId, int tenant, string user, List<int> attachIds = null,
             bool? isRemoved = false, bool? onlyEmbedded = false)
             : base(tenant, user, isRemoved)
         {
-            _mailId = mailId;
-            _attachIds = attachIds;
-            _onlyEmbedded = onlyEmbedded;
+            MailId = mailId;
+            AttachIds = attachIds;
+            OnlyEmbedded = onlyEmbedded;
         }
 
-        public override Exp GetExpression()
+        public int MailId { get; }
+
+        public List<int> AttachIds { get; }
+
+        public bool? OnlyEmbedded { get; }
+
+        public override Expression<Func<MailAttachment, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Eq(AttachmentTable.Columns.MailId.Prefix(AttachmentTable.TABLE_NAME), _mailId);
+            exp = exp.And(a => a.IdMail == MailId);
 
-            if (_attachIds != null && _attachIds.Any())
+            if (AttachIds != null && AttachIds.Any())
             {
-                exp = exp & Exp.In(AttachmentTable.Columns.Id.Prefix(AttachmentTable.TABLE_NAME), _attachIds);
+                exp = exp.And(a => AttachIds.Contains(a.Id));
             }
 
-            if (!_onlyEmbedded.HasValue)
+            if (!OnlyEmbedded.HasValue)
                 return exp;
 
-            if (_onlyEmbedded.Value)
+            if (OnlyEmbedded.Value)
             {
-                exp = exp &
-                      !Exp.Eq(AttachmentTable.Columns.ContentId.Prefix(AttachmentTable.TABLE_NAME),
-                          null);
+                exp = exp.And(a => a.ContentId != null);
             }
             else
             {
-                exp = exp &
-                      Exp.Eq(AttachmentTable.Columns.ContentId.Prefix(AttachmentTable.TABLE_NAME),
-                          null);
+                exp = exp.And(a => a.ContentId == null);
             }
 
             return exp;
         }
-    }*/
+    }
 }

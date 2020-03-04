@@ -24,12 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Attachment
 {
-    //public interface IAttachmentsExp
-    //{
-    //    Exp GetExpression();
-    //}
+    public interface IAttachmentsExp
+    {
+        Expression<Func<Entities.MailAttachment, bool>> GetExpression();
+    }
 }

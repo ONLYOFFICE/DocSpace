@@ -30,7 +30,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface IAttachmentDao
+    public interface IAttachmentDao
     {
         Attachment GetAttachment(IAttachmentExp exp);
 
@@ -45,5 +45,5 @@ namespace ASC.Mail.Core.Dao.Interfaces
         bool SetAttachmnetsRemoved(IAttachmentsExp exp);
 
         int SaveAttachment(Attachment attachment);
-    }*/
+    }
 }
