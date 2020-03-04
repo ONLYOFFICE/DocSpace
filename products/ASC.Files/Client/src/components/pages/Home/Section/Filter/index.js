@@ -22,16 +22,16 @@ const getFilterType = filterValues => {
   return filterType ? +filterType : null;
 };
 
-// const getActivationStatus = filterValues => {
-//   const activationStatus = result(
-//     find(filterValues, value => {
-//       return value.group === "filter-author";
-//     }),
-//     "key"
-//   );
+const getAuthorType = filterValues => {
+  const authorType = result(
+    find(filterValues, value => {
+      return value.group === "filter-author";
+    }),
+    "key"
+  );
 
-//   return activationStatus ? +activationStatus : null;
-// };
+  return authorType ? authorType : null;
+};
 
 // const getRole = filterValues => {
 //   const employeeStatus = result(
@@ -76,6 +76,7 @@ class SectionFilterContent extends React.Component {
     const sortBy = data.sortId;
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
+    const authorType = getAuthorType(data.filterValues);
 
     const newFilter = filter.clone();
     newFilter.page = 0;
@@ -83,6 +84,7 @@ class SectionFilterContent extends React.Component {
     newFilter.sortOrder = sortOrder;
     newFilter.filterType = filterType;
     newFilter.search = search;
+    newFilter.authorType = authorType;
 
     onLoading(true);
     fetchFiles(newFilter)
@@ -151,12 +153,12 @@ class SectionFilterContent extends React.Component {
         isHeader: true
       },
       {
-        key: "1",
+        key: "user",
         group: "filter-author",
         label: usersCaption
       },
       {
-        key: "2",
+        key: "group",
         group: "filter-author",
         label: groupsCaption
       },
@@ -208,12 +210,12 @@ class SectionFilterContent extends React.Component {
       });
     }
 
-    // if (filter.activationStatus) {
-    //   selectedFilterData.filterValues.push({
-    //     key: `${filter.activationStatus}`,
-    //     group: "filter-author"
-    //   });
-    // }
+    if (filter.authorType) {
+      selectedFilterData.filterValues.push({
+        key: `${filter.authorType}`,
+        group: "filter-author"
+      });
+    }
 
     // if (filter.role) {
     //   selectedFilterData.filterValues.push({
