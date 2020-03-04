@@ -10,6 +10,7 @@ const DEFAULT_FILTER_TYPE = FilterType.None;
 const DEFAULT_SEARCH_TYPE = false; //withSubfolders
 const DEFAULT_SEARCH = null;
 const DEFAULT_FOLDER_PATH = [];
+const DEFAULT_AUTHOR_TYPE = null;
 
 // TODO: add next params
 // subjectGroup bool
@@ -30,6 +31,7 @@ class FilesFilter {
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
+    authorType = DEFAULT_AUTHOR_TYPE,
 
     myPath = DEFAULT_FOLDER_PATH,
     sharedPath = DEFAULT_FOLDER_PATH,
@@ -50,6 +52,8 @@ class FilesFilter {
     this.commonPath = commonPath;
     this.projectPath = projectPath;
     this.recycleBinPath = recycleBinPath;
+
+    this.authorType = authorType;
   }
 
   getStartIndex = () => {
@@ -71,7 +75,8 @@ class FilesFilter {
       sortOrder,
       filterType,
       withSubfolders,
-      search
+      search,
+      authorType
     } = this;
 
     let dtoFilter = {
@@ -81,7 +86,8 @@ class FilesFilter {
       orderBy: sortOrder,
       filter: filterType,
       search: (search ?? "").trim(),
-      withSubfolders
+      withSubfolders,
+      authorType
     };
 
 
@@ -105,6 +111,7 @@ class FilesFilter {
           this.filterType,
           this.withSubfolders,
           this.search,
+          this.authorType,
 
           this.myPath,
           this.sharedPath,
@@ -123,6 +130,7 @@ class FilesFilter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
+      this.authorType === filter.authorType &&
       this.pageCount === filter.pageCount;
 
     return equals;

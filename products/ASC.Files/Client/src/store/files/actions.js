@@ -6,7 +6,8 @@ import {
   SORT_BY,
   SORT_ORDER,
   PAGE,
-  PAGE_COUNT
+  PAGE_COUNT,
+  AUTHOR_TYPE
 } from "../../helpers/constants";
 import config from "../../../package.json";
 
@@ -93,6 +94,9 @@ export function setFilterUrl(filter) {
 
   if (filter.search) {
     params.push(`${SEARCH}=${filter.search.trim()}`);
+  }
+  if (filter.authorType) {
+    params.push(`${AUTHOR_TYPE}=${filter.authorType}`);
   }
 
   if (filter.pageCount !== defaultFilter.pageCount) {
