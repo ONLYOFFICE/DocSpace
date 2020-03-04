@@ -50,7 +50,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
 {
-    public class FolderDao : AbstractDao, IFolderDao, IFolderDao<int>
+    public class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
         private const string common = "common";
@@ -97,20 +97,10 @@ namespace ASC.Files.Core.Data
             Logger = options.Get("ASC.Files");
         }
 
-        public Folder GetFolder(object folderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public Folder<int> GetFolder(int folderId)
         {
             var query = GetFolderQuery(r => r.Id == folderId);
             return FromQueryWithShared(query).SingleOrDefault();
-        }
-
-        public Folder GetFolder(string title, object parentId)
-        {
-            throw new NotImplementedException();
         }
 
         public Folder<int> GetFolder(string title, int parentId)
@@ -123,10 +113,6 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).FirstOrDefault();
         }
 
-        public Folder GetRootFolder(object folderId)
-        {
-            throw new NotImplementedException();
-        }
         public Folder<int> GetRootFolder(int folderId)
         {
             var id = FilesDbContext.Tree
@@ -140,10 +126,6 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
-        public Folder GetRootFolderByFile(object fileId)
-        {
-            throw new NotImplementedException();
-        }
         public Folder<int> GetRootFolderByFile(int fileId)
         {
             var subq = Query(FilesDbContext.Files)
@@ -161,18 +143,9 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
-        public List<Folder> GetFolders(object parentId)
-        {
-            throw new NotImplementedException();
-        }
         public List<Folder<int>> GetFolders(int parentId)
         {
             return GetFolders(parentId, default, default, false, default, string.Empty);
-        }
-
-        public List<Folder> GetFolders(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
-        {
-            throw new NotImplementedException();
         }
 
         public List<Folder<int>> GetFolders(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
@@ -242,11 +215,6 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q);
         }
 
-        public List<Folder> GetFolders(object[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Folder<int>> GetFolders(int[] folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
         {
             if (filterType == FilterType.FilesOnly || filterType == FilterType.ByExtension
@@ -298,11 +266,6 @@ namespace ASC.Files.Core.Data
             return checkShare ? FromQueryWithShared(q) : FromQuery(q);
         }
 
-        public List<Folder> GetParentFolders(object folderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Folder<int>> GetParentFolders(int folderId)
         {
             var q = GetFolderQuery()
@@ -312,11 +275,6 @@ namespace ASC.Files.Core.Data
                 .Select(r => r.folder);
 
             return FromQueryWithShared(q);
-        }
-
-        public object SaveFolder(Folder folder)
-        {
-            throw new NotImplementedException();
         }
 
         public int SaveFolder(Folder<int> folder)
@@ -414,10 +372,6 @@ namespace ASC.Files.Core.Data
                 .Any();
         }
 
-        public void DeleteFolder(object folderId)
-        {
-            throw new NotImplementedException();
-        }
         public void DeleteFolder(int id)
         {
             if (id == default) throw new ArgumentNullException("folderId");
@@ -474,10 +428,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = (int)id });
         }
 
-        public object MoveFolder(object folderId, object toFolderId, CancellationToken? cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
         public int MoveFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             using (var tx = FilesDbContext.Database.BeginTransaction())
@@ -542,10 +492,6 @@ namespace ASC.Files.Core.Data
             return folderId;
         }
 
-        public Folder CopyFolder(object folderId, object toFolderId, CancellationToken? cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
         public Folder<int> CopyFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var folder = GetFolder(folderId);
@@ -569,10 +515,6 @@ namespace ASC.Files.Core.Data
             return copy;
         }
 
-        public IDictionary<object, string> CanMoveOrCopy(object[] folderIds, object to)
-        {
-            throw new NotImplementedException();
-        }
         public IDictionary<int, string> CanMoveOrCopy(int[] folderIds, int to)
         {
             var result = new Dictionary<int, string>();
@@ -624,11 +566,6 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-        public object RenameFolder(Folder folder, string newTitle)
-        {
-            throw new NotImplementedException();
-        }
-
         public int RenameFolder(Folder<int> folder, string newTitle)
         {
             var toUpdate = Query(FilesDbContext.Folders)
@@ -644,10 +581,6 @@ namespace ASC.Files.Core.Data
             return folder.ID;
         }
 
-        public int GetItemsCount(object folderId)
-        {
-            throw new NotImplementedException();
-        }
 
         public int GetItemsCount(int folderId)
         {
@@ -675,19 +608,9 @@ namespace ASC.Files.Core.Data
             return count;
         }
 
-        public bool IsEmpty(object folderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool IsEmpty(int folderId)
         {
             return GetItemsCount(folderId) == 0;
-        }
-
-        public bool UseTrashForRemove(Folder folder)
-        {
-            throw new NotImplementedException();
         }
 
         public bool UseTrashForRemove(Folder<int> folder)
@@ -695,29 +618,14 @@ namespace ASC.Files.Core.Data
             return folder.RootFolderType != FolderType.TRASH && folder.FolderType != FolderType.BUNCH;
         }
 
-        public bool UseRecursiveOperation(object folderId, object toRootFolderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool UseRecursiveOperation(int folderId, int toRootFolderId)
         {
             return true;
         }
 
-        public bool CanCalculateSubitems(object entryId)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool CanCalculateSubitems(int entryId)
         {
             return true;
-        }
-
-        public long GetMaxUploadSize(object folderId, bool chunkedUpload)
-        {
-            throw new NotImplementedException();
         }
 
         public long GetMaxUploadSize(int folderId, bool chunkedUpload)
@@ -747,11 +655,6 @@ namespace ASC.Files.Core.Data
 
         #region Only for TMFolderDao
 
-        public void ReassignFolders(object[] folderIds, Guid newOwnerId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ReassignFolders(int[] folderIds, Guid newOwnerId)
         {
             var toUpdate = Query(FilesDbContext.Folders)
@@ -765,12 +668,8 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
         }
 
-        public IEnumerable<Folder> Search(string text, bool bunch)
-        {
-            throw new NotImplementedException();
-        }
 
-        IEnumerable<Folder<int>> IFolderDao<int>.Search(string text, bool bunch)
+        public IEnumerable<Folder<int>> Search(string text, bool bunch)
         {
             return Search(text).Where(f => bunch
                                                ? f.RootFolderType == FolderType.BUNCH
@@ -791,12 +690,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q);
         }
 
-        public virtual IEnumerable<object> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerable<int> IFolderDao<int>.GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+        public IEnumerable<int> GetFolderIDs(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
@@ -863,12 +757,7 @@ namespace ASC.Files.Core.Data
             return folderIds;
         }
 
-        public virtual object GetFolderID(string module, string bunch, string data, bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IFolderDao<int>.GetFolderID(string module, string bunch, string data, bool createIfNotExists)
+        public int GetFolderID(string module, string bunch, string data, bool createIfNotExists)
         {
             if (string.IsNullOrEmpty(module)) throw new ArgumentNullException("module");
             if (string.IsNullOrEmpty(bunch)) throw new ArgumentNullException("bunch");
@@ -934,53 +823,27 @@ namespace ASC.Files.Core.Data
             return newFolderId;
         }
 
-
-        public object GetFolderIDProjects(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
         int IFolderDao<int>.GetFolderIDProjects(bool createIfNotExists)
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, projects, null, createIfNotExists);
         }
 
-        public object GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IFolderDao<int>.GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
+        public int GetFolderIDTrash(bool createIfNotExists, Guid? userId = null)
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, trash, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public object GetFolderIDCommon(bool createIfNotExists)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IFolderDao<int>.GetFolderIDCommon(bool createIfNotExists)
+        public int GetFolderIDCommon(bool createIfNotExists)
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, common, null, createIfNotExists);
         }
 
-        public object GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IFolderDao<int>.GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
+        public int GetFolderIDUser(bool createIfNotExists, Guid? userId = null)
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, my, (userId ?? AuthContext.CurrentAccount.ID).ToString(), createIfNotExists);
         }
 
-        public object GetFolderIDShare(bool createIfNotExists)
-        {
-            return GetFolderID(FileConstant.ModuleId, share, null, createIfNotExists);
-        }
-
-        int IFolderDao<int>.GetFolderIDShare(bool createIfNotExists)
+        public int GetFolderIDShare(bool createIfNotExists)
         {
             return (this as IFolderDao<int>).GetFolderID(FileConstant.ModuleId, share, null, createIfNotExists);
         }
@@ -1096,21 +959,12 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
-        public string GetBunchObjectID(object folderID)
-        {
-            throw new NotImplementedException();
-        }
         public string GetBunchObjectID(int folderID)
         {
             return Query(FilesDbContext.BunchObjects)
                 .Where(r => r.LeftNode == (folderID).ToString())
                 .Select(r => r.RightNode)
                 .FirstOrDefault();
-        }
-
-        public Dictionary<string, string> GetBunchObjectIDs(List<object> folderIDs)
-        {
-            throw new NotImplementedException();
         }
 
         public Dictionary<string, string> GetBunchObjectIDs(List<int> folderIDs)
@@ -1185,9 +1039,7 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFolderDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFolderDao, FolderDao>();
             services.TryAddScoped<IFolderDao<int>, FolderDao>();
-            services.TryAddTransient<Folder>();
             services.TryAddTransient<Folder<int>>();
 
             return services

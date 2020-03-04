@@ -51,14 +51,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
-    public class FileDao : AbstractDao, IFileDao, IFileDao<int>
+    public class FileDao : AbstractDao, IFileDao<int>
     {
         private static readonly object syncRoot = new object();
         public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
         public GlobalStore GlobalStore { get; }
         public GlobalSpace GlobalSpace { get; }
         public GlobalFolder GlobalFolder { get; }
-        public IFolderDao FolderDao { get; }
+        public IFolderDao<int> FolderDao { get; }
         public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
 
         public FileDao(
@@ -78,7 +78,7 @@ namespace ASC.Files.Core.Data
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
-            IFolderDao folderDao,
+            IFolderDao<int> folderDao,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder)
             : base(
                   dbContextManager,
@@ -102,18 +102,8 @@ namespace ASC.Files.Core.Data
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
         }
 
-        public void InvalidateCache(object fileId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void InvalidateCache(int fileId)
         {
-        }
-
-        public File GetFile(object fileId)
-        {
-            throw new NotImplementedException();
         }
 
         public File<int> GetFile(int fileId)
@@ -122,20 +112,10 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
-        public File GetFile(object fileId, int fileVersion)
-        {
-            throw new NotImplementedException();
-        }
-
         public File<int> GetFile(int fileId, int fileVersion)
         {
             var query = GetFileQuery(r => r.Id == fileId && r.Version == fileVersion);
             return FromQueryWithShared(query).SingleOrDefault();
-        }
-
-        public File GetFile(object parentId, string title)
-        {
-            throw new NotImplementedException();
         }
 
         public File<int> GetFile(int parentId, string title)
@@ -146,11 +126,6 @@ namespace ASC.Files.Core.Data
                 .OrderBy(r => r.CreateOn);
 
             return FromQueryWithShared(query).FirstOrDefault();
-        }
-
-        public File GetFileStable(object fileId, int fileVersion = -1)
-        {
-            throw new NotImplementedException();
         }
 
         public File<int> GetFileStable(int fileId, int fileVersion = -1)
@@ -167,21 +142,11 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
-        public List<File> GetFileHistory(object fileId)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<File<int>> GetFileHistory(int fileId)
         {
             var query = GetFileQuery(r => r.Id == fileId).OrderByDescending(r => r.Version);
 
             return FromQueryWithShared(query);
-        }
-
-        public List<File> GetFiles(object[] fileIds)
-        {
-            throw new NotImplementedException();
         }
 
         public List<File<int>> GetFiles(int[] fileIds)
@@ -191,11 +156,6 @@ namespace ASC.Files.Core.Data
             var query = GetFileQuery(r => fileIds.Any(a => a == r.Id) && r.CurrentVersion);
 
             return FromQueryWithShared(query);
-        }
-
-        public List<File> GetFilesForShare(object[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            throw new NotImplementedException();
         }
 
         public List<File<int>> GetFilesForShare(int[] fileIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -253,11 +213,6 @@ namespace ASC.Files.Core.Data
         }
 
 
-        public List<object> GetFiles(object parentId)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<int> GetFiles(int parentId)
         {
             var query = GetFileQuery(r => r.FolderId == parentId && r.CurrentVersion).Select(r => r.Id);
@@ -266,11 +221,6 @@ namespace ASC.Files.Core.Data
                 .Where(r => r.FolderId == parentId && r.CurrentVersion)
                 .Select(r => r.Id)
                 .ToList();
-        }
-
-        public List<File> GetFiles(object parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
-        {
-            throw new NotImplementedException();
         }
 
         public List<File<int>> GetFiles(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
@@ -362,19 +312,9 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q);
         }
 
-        public Stream GetFileStream(File file, long offset)
-        {
-            throw new NotImplementedException();
-        }
-
         public Stream GetFileStream(File<int> file, long offset)
         {
             return GlobalStore.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file), (int)offset);
-        }
-
-        public Uri GetPreSignedUri(File file, TimeSpan expires)
-        {
-            throw new NotImplementedException();
         }
 
         public Uri GetPreSignedUri(File<int> file, TimeSpan expires)
@@ -386,29 +326,14 @@ namespace ASC.Files.Core.Data
                                                          });
         }
 
-        public bool IsSupportedPreSignedUri(File file)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool IsSupportedPreSignedUri(File<int> file)
         {
             return GlobalStore.GetStore().IsSupportedPreSignedUri;
         }
 
-        public Stream GetFileStream(File file)
-        {
-            throw new NotImplementedException();
-        }
-
         public Stream GetFileStream(File<int> file)
         {
             return GetFileStream(file, 0);
-        }
-
-        public File SaveFile(File file, Stream fileStream)
-        {
-            throw new NotImplementedException();
         }
 
         public File<int> SaveFile(File<int> file, Stream fileStream)
@@ -545,11 +470,6 @@ namespace ASC.Files.Core.Data
             FactoryIndexer.IndexAsync(FilesWrapper.GetFilesWrapper(ServiceProvider, file, parentFoldersIds));
 
             return GetFile(file.ID);
-        }
-
-        public File ReplaceFileVersion(File file, Stream fileStream)
-        {
-            throw new NotImplementedException();
         }
 
         public File<int> ReplaceFileVersion(File<int> file, Stream fileStream)
@@ -691,11 +611,6 @@ namespace ASC.Files.Core.Data
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file), stream, file.Title);
         }
 
-        public void DeleteFile(object fileId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteFile(int fileId)
         {
             DeleteFile(fileId, true);
@@ -752,11 +667,6 @@ namespace ASC.Files.Core.Data
                 .Any();
         }
 
-        public object MoveFile(object fileId, object toFolderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public int MoveFile(int fileId, int toFolderId)
         {
             if (fileId == default) return default;
@@ -777,7 +687,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
-                    if (GlobalFolder.GetFolderTrash(FolderDao).Equals(toFolderId))
+                    if (GlobalFolder.GetFolderTrash<int>(FolderDao).Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;
@@ -809,11 +719,6 @@ namespace ASC.Files.Core.Data
             return fileId;
         }
 
-        public File CopyFile(object fileId, object toFolderId)
-        {
-            throw new NotImplementedException();
-        }
-
         public File<int> CopyFile(int fileId, int toFolderId)
         {
             var file = GetFile(fileId);
@@ -838,11 +743,6 @@ namespace ASC.Files.Core.Data
             return null;
         }
 
-        public object FileRename(File file, string newTitle)
-        {
-            throw new NotImplementedException();
-        }
-
         public int FileRename(File<int> file, string newTitle)
         {
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
@@ -858,11 +758,6 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             return file.ID;
-        }
-
-        public string UpdateComment(object fileId, int fileVersion, string comment)
-        {
-            throw new NotImplementedException();
         }
 
         public string UpdateComment(int fileId, int fileVersion, string comment)
@@ -882,11 +777,6 @@ namespace ASC.Files.Core.Data
             return comment;
         }
 
-        public void CompleteVersion(object fileId, int fileVersion)
-        {
-
-        }
-
         public void CompleteVersion(int fileId, int fileVersion)
         {
             var toUpdate = Query(FilesDbContext.Files)
@@ -899,11 +789,6 @@ namespace ASC.Files.Core.Data
             }
 
             FilesDbContext.SaveChanges();
-        }
-
-        public void ContinueVersion(object fileId, int fileVersion)
-        {
-            throw new NotImplementedException();
         }
 
         public void ContinueVersion(int fileId, int fileVersion)
@@ -929,11 +814,6 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             tx.Commit();
-        }
-
-        public bool UseTrashForRemove(File file)
-        {
-            throw new NotImplementedException();
         }
 
         public bool UseTrashForRemove(File<int> file)
@@ -963,7 +843,7 @@ namespace ASC.Files.Core.Data
 
         public string GetUniqFileVersionPath(int fileId, int version)
         {
-            return fileId != null
+            return fileId != 0
                        ? string.Format("{0}/v{1}", GetUniqFileDirectory(fileId), version)
                        : null;
         }
@@ -975,19 +855,9 @@ namespace ASC.Files.Core.Data
 
         #region chunking
 
-        public ChunkedUploadSession<object> CreateUploadSession(File file, long contentLength)
-        {
-            throw new NotImplementedException();
-        }
-
         public ChunkedUploadSession<int> CreateUploadSession(File<int> file, long contentLength)
         {
             return ChunkedUploadSessionHolder.CreateUploadSession(file, contentLength);
-        }
-
-        public void UploadChunk(ChunkedUploadSession<object> uploadSession, Stream stream, long chunkLength)
-        {
-            throw new NotImplementedException();
         }
 
         public void UploadChunk(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
@@ -1024,11 +894,6 @@ namespace ASC.Files.Core.Data
             return file;
         }
 
-        public void AbortUploadSession(ChunkedUploadSession<object> uploadSession)
-        {
-            throw new NotImplementedException();
-        }
-
         public void AbortUploadSession(ChunkedUploadSession<int> uploadSession)
         {
             ChunkedUploadSessionHolder.AbortUploadSession(uploadSession);
@@ -1060,11 +925,6 @@ namespace ASC.Files.Core.Data
 
         #region Only in TMFileDao
 
-        public void ReassignFiles(object[] fileIds, Guid newOwnerId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void ReassignFiles(int[] fileIds, Guid newOwnerId)
         {
             var toUpdate = Query(FilesDbContext.Files)
@@ -1077,11 +937,6 @@ namespace ASC.Files.Core.Data
             }
 
             FilesDbContext.SaveChanges();
-        }
-
-        public List<File> GetFiles(object[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            throw new NotImplementedException();
         }
 
         public List<File<int>> GetFiles(int[] parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
@@ -1141,12 +996,7 @@ namespace ASC.Files.Core.Data
             return FromQueryWithShared(q);
         }
 
-        public IEnumerable<File> Search(string searchText, bool bunch)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerable<File<int>> IFileDao<int>.Search(string searchText, bool bunch)
+        public IEnumerable<File<int>> Search(string searchText, bool bunch)
         {
             if (FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out var ids))
             {
@@ -1176,22 +1026,12 @@ namespace ASC.Files.Core.Data
             GlobalStore.GetStore().DeleteDirectory(GetUniqFileDirectory(fileId));
         }
 
-        public bool IsExistOnStorage(File file)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool IsExistOnStorage(File<int> file)
         {
             return GlobalStore.GetStore().IsFile(GetUniqFilePath(file));
         }
 
         private const string DiffTitle = "diff.zip";
-
-        public void SaveEditHistory(File file, string changes, Stream differenceStream)
-        {
-            throw new NotImplementedException();
-        }
 
         public void SaveEditHistory(File<int> file, string changes, Stream differenceStream)
         {
@@ -1213,11 +1053,6 @@ namespace ASC.Files.Core.Data
             FilesDbContext.SaveChanges();
 
             GlobalStore.GetStore().Save(string.Empty, GetUniqFilePath(file, DiffTitle), differenceStream, DiffTitle);
-        }
-
-        public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, object fileId, int fileVersion = 0)
-        {
-            throw new NotImplementedException();
         }
 
         public List<EditHistory> GetEditHistory(DocumentServiceHelper documentServiceHelper, int fileId, int fileVersion = 0)
@@ -1254,19 +1089,9 @@ namespace ASC.Files.Core.Data
                     .ToList();
         }
 
-        public Stream GetDifferenceStream(File file)
-        {
-            throw new NotImplementedException();
-        }
-
         public Stream GetDifferenceStream(File<int> file)
         {
             return GlobalStore.GetStore().GetReadStream(string.Empty, GetUniqFilePath(file, DiffTitle));
-        }
-
-        public bool ContainChanges(object fileId, int fileVersion)
-        {
-            throw new NotImplementedException();
         }
 
         public bool ContainChanges(int fileId, int fileVersion)
@@ -1432,9 +1257,7 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddFileDaoService(this DIHelper services)
         {
-            services.TryAddScoped<IFileDao, FileDao>();
             services.TryAddScoped<IFileDao<int>, FileDao>();
-            services.TryAddTransient<File>();
             services.TryAddTransient<File<int>>();
 
             return services

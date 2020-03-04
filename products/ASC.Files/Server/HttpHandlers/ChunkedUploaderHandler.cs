@@ -50,8 +50,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.HttpHandlers
 {
     public class ChunkedUploaderHandler //: AbstractHttpAsyncHandler
@@ -206,7 +204,7 @@ namespace ASC.Web.Files.HttpHandlers
             context.Response.ContentType = "application/json";
         }
 
-        private static object ToResponseObject(File file)
+        private static object ToResponseObject<T>(File<T> file)
         {
             return new
             {

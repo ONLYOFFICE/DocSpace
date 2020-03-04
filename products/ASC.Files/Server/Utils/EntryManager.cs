@@ -55,7 +55,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
@@ -71,7 +70,7 @@ namespace ASC.Web.Files.Utils
             DaoFactory = daoFactory;
         }
 
-        public bool FileLockedForMe(object fileId, Guid userId = default)
+        public bool FileLockedForMe<T>(T fileId, Guid userId = default)
         {
             var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app != null)
@@ -80,12 +79,12 @@ namespace ASC.Web.Files.Utils
             }
 
             userId = userId == default ? AuthContext.CurrentAccount.ID : userId;
-            var tagDao = DaoFactory.TagDao;
+            var tagDao = DaoFactory.GetTagDao<T>();
             var lockedBy = FileLockedBy(fileId, tagDao);
             return lockedBy != Guid.Empty && lockedBy != userId;
         }
 
-        public Guid FileLockedBy(object fileId, ITagDao tagDao)
+        public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
         {
             var tagLock = tagDao.GetTags(fileId, FileEntryType.File, TagType.Locked).FirstOrDefault();
             return tagLock != null ? tagLock.Owner : Guid.Empty;
@@ -243,14 +242,14 @@ namespace ASC.Web.Files.Utils
             cache = AscCache.Memory;
         }
 
-        public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
+        public IEnumerable<FileEntry<T>> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
         {
             total = 0;
 
             if (parent == null) throw new ArgumentNullException("parent", FilesCommonResource.ErrorMassage_FolderNotFound);
 
             var fileSecurity = FileSecurity;
-            var entries = Enumerable.Empty<FileEntry>();
+            var entries = Enumerable.Empty<FileEntry<T>>();
 
             searchInContent = searchInContent && filter != FilterType.ByExtension && !Equals(parent.ID, GlobalFolderHelper.FolderTrash);
 
@@ -343,29 +342,29 @@ namespace ASC.Web.Files.Utils
                             folders = fileSecurity.FilterRead(folders).ToList();
                         }
 
-                        entries = entries.Concat(folders);
+                        entries = entries.Concat(folders.Cast<FileEntry<T>>());
                     }
 
                     if (filter != FilterType.FoldersOnly && withSubfolders)
                     {
                         var files = DaoFactory.GetFileDao<int>().GetFiles(rootKeys, filter, subjectGroup, subjectId, searchText, searchInContent).ToList();
                         files = fileSecurity.FilterRead(files).ToList();
-                        entries = entries.Concat(files);
+                        entries = entries.Concat(files.Cast<FileEntry<T>>());
                     }
                 }
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
             }
             else if (parent.FolderType == FolderType.SHARE)
             {
                 //share
-                var shared = (IEnumerable<FileEntry>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
+                var shared = (IEnumerable<FileEntry<T>>)fileSecurity.GetSharesForMe<T>(filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders);
 
                 entries = entries.Concat(shared);
 
-                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder)f).TotalFiles : 1));
-                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder)f).TotalSubFolders + 1 : 0));
+                parent.TotalFiles = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalFiles : 1));
+                parent.TotalSubFolders = entries.Aggregate(0, (a, f) => a + (f.FileEntryType == FileEntryType.Folder ? ((Folder<T>)f).TotalSubFolders + 1 : 0));
             }
             else
             {
@@ -410,7 +409,7 @@ namespace ASC.Web.Files.Utils
                 if (0 < count) entries = entries.Take(count);
             }
 
-            SetFileStatus(entries.Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).Select(r => r as File).ToList());
+            SetFileStatus(entries.Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).Select(r => r as File<T>).ToList());
 
             return entries;
         }
@@ -433,12 +432,12 @@ namespace ASC.Web.Files.Utils
                 var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
                 folderList = providers
                     .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID))
-                    .Where(r => fileSecurity.CanRead<T>(r)).ToList();
+                    .Where(r => fileSecurity.CanRead(r)).ToList();
 
                 if (folderList.Any())
                 {
-                    var securityDao = DaoFactory.SecurityDao;
-                    securityDao.GetPureShareRecords(folderList.Cast<FileEntry>().ToArray())
+                    var securityDao = DaoFactory.GetSecurityDao<T>();
+                    securityDao.GetPureShareRecords(folderList.Cast<FileEntry<T>>().ToArray())
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                     .Select(x => x.EntryId).Distinct().ToList()
                     .ForEach(id =>
@@ -451,7 +450,7 @@ namespace ASC.Web.Files.Utils
             return folderList;
         }
 
-        public IEnumerable<FileEntry> FilterEntries(IEnumerable<FileEntry> entries, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
+        public IEnumerable<FileEntry<T>> FilterEntries<T>(IEnumerable<FileEntry<T>> entries, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent)
         {
             if (entries == null || !entries.Any()) return entries;
 
@@ -465,7 +464,7 @@ namespace ASC.Web.Files.Utils
                                  .ToList();
             }
 
-            Func<FileEntry, bool> where = null;
+            Func<FileEntry<T>, bool> where = null;
 
             switch (filter)
             {
@@ -476,7 +475,7 @@ namespace ASC.Web.Files.Utils
                 case FilterType.ArchiveOnly:
                 case FilterType.FilesOnly:
                 case FilterType.MediaOnly:
-                    where = f => f.FileEntryType == FileEntryType.File && (((File)f).FilterType == filter || filter == FilterType.FilesOnly);
+                    where = f => f.FileEntryType == FileEntryType.File && (((File<T>)f).FilterType == filter || filter == FilterType.FilesOnly);
                     break;
                 case FilterType.FoldersOnly:
                     where = f => f.FileEntryType == FileEntryType.Folder;
@@ -499,11 +498,11 @@ namespace ASC.Web.Files.Utils
             return entries;
         }
 
-        public IEnumerable<FileEntry> SortEntries(IEnumerable<FileEntry> entries, OrderBy orderBy)
+        public IEnumerable<FileEntry<T>> SortEntries<T>(IEnumerable<FileEntry<T>> entries, OrderBy orderBy)
         {
             if (entries == null || !entries.Any()) return entries;
 
-            Comparison<FileEntry> sorter;
+            Comparison<FileEntry<T>> sorter;
 
             if (orderBy == null)
             {
@@ -534,7 +533,7 @@ namespace ASC.Web.Files.Utils
                              {
                                  var cmp = 0;
                                  if (x.FileEntryType == FileEntryType.File && y.FileEntryType == FileEntryType.File)
-                                     cmp = c * ((File)x).ContentLength.CompareTo(((File)y).ContentLength);
+                                     cmp = c * ((File<T>)x).ContentLength.CompareTo(((File<T>)y).ContentLength);
                                  return cmp == 0 ? x.Title.EnumerableComparer(y.Title) : cmp;
                              };
                     break;
@@ -623,16 +622,16 @@ namespace ASC.Web.Files.Utils
         }
 
 
-        public void SetFileStatus(File file)
+        public void SetFileStatus<T>(File<T> file)
         {
             if (file == null || file.ID == null) return;
 
-            SetFileStatus(new List<File>(1) { file });
+            SetFileStatus(new List<File<T>>(1) { file });
         }
 
-        public void SetFileStatus(IEnumerable<File> files)
+        public void SetFileStatus<T>(IEnumerable<File<T>> files)
         {
-            var tagDao = DaoFactory.TagDao;
+            var tagDao = DaoFactory.GetTagDao<T>();
             var tagsNew = tagDao.GetNewTags(AuthContext.CurrentAccount.ID, files);
 
             var tagsLocked = tagDao.GetTags(TagType.Locked, files.ToArray());
@@ -654,12 +653,12 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public bool FileLockedForMe(object fileId, Guid userId = default)
+        public bool FileLockedForMe<T>(T fileId, Guid userId = default)
         {
             return LockerManager.FileLockedForMe(fileId, userId);
         }
 
-        public Guid FileLockedBy(object fileId, ITagDao tagDao)
+        public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
         {
             return LockerManager.FileLockedBy(fileId, tagDao);
         }
@@ -687,7 +686,7 @@ namespace ASC.Web.Files.Utils
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
-            if (checkRight && !editLink && (!(fileSecurity.CanEdit<T>(file) || fileSecurity.CanReview<T>(file)) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (checkRight && !editLink && (!(fileSecurity.CanEdit(file) || fileSecurity.CanReview(file)) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (checkRight && FileLockedForMe(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (checkRight && FileTracker.IsEditing(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
@@ -800,7 +799,7 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            FileMarker.MarkAsNew<T>(file);
+            FileMarker.MarkAsNew(file);
             FileMarker.RemoveMarkAsNew(file);
             return file;
         }
@@ -822,7 +821,7 @@ namespace ASC.Web.Files.Utils
 
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             var fileSecurity = FileSecurity;
-            if (!editLink && (!fileSecurity.CanEdit<T>(file, userId) && !fileSecurity.CanReview<T>(file, userId) && !fileSecurity.CanFillForms<T>(file, userId) && !fileSecurity.CanComment<T>(file, userId) || UserManager.GetUsers(userId).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (!editLink && (!fileSecurity.CanEdit(file, userId) && !fileSecurity.CanReview(file, userId) && !fileSecurity.CanFillForms(file, userId) && !fileSecurity.CanComment(file, userId) || UserManager.GetUsers(userId).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (FileLockedForMe(file.ID, userId)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -849,7 +848,7 @@ namespace ASC.Web.Files.Utils
                 fromFile = fileDao.GetFile(fromFile.ID, Math.Min(fromFile.Version, version));
 
             if (fromFile == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (checkRight && !editLink && (!FileSecurity.CanEdit<T>(fromFile) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (checkRight && !editLink && (!FileSecurity.CanEdit(fromFile) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (FileLockedForMe(fromFile.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (checkRight && FileTracker.IsEditing(fromFile.ID)) throw new Exception(FilesCommonResource.ErrorMassage_SecurityException_UpdateEditingFile);
             if (fromFile.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
@@ -890,7 +889,7 @@ namespace ASC.Web.Files.Utils
                     newFile = fileDao.SaveFile(newFile, stream);
                 }
 
-                FileMarker.MarkAsNew<T>(newFile);
+                FileMarker.MarkAsNew(newFile);
 
                 SetFileStatus(newFile);
 
@@ -914,7 +913,7 @@ namespace ASC.Web.Files.Utils
 ? fileDao.GetFile(fileId, version)
 : fileDao.GetFile(fileId);
             if (fileVersion == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (checkRight && (!FileSecurity.CanEdit<T>(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
+            if (checkRight && (!FileSecurity.CanEdit(fileVersion) || UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager))) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
             if (FileLockedForMe(fileVersion.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (fileVersion.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
             if (fileVersion.ProviderEntry) throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
@@ -953,8 +952,8 @@ namespace ASC.Web.Files.Utils
             var fileDao = DaoFactory.GetFileDao<T>();
             file = fileDao.GetFile(fileId);
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanEdit<T>(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
-            if (!FileSecurity.CanDelete<T>(file) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
+            if (!FileSecurity.CanEdit(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
+            if (!FileSecurity.CanDelete(file) && UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
             if (FileLockedForMe(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_LockedFile);
             if (file.ProviderEntry && FileTracker.IsEditing(file.ID)) throw new Exception(FilesCommonResource.ErrorMassage_UpdateEditingFile);
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);

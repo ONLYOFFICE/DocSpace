@@ -50,44 +50,13 @@ namespace ASC.Files.Core
         [EnumMember] Projects = 8
     }
 
-    public class Folder<T> : Folder
-    {
-        [DataMember(Name = "id")]
-        public new T ID { get; set; }
-
-        public new T ParentFolderID { get; set; }
-
-        private T _folderIdDisplay;
-
-        [DataMember(Name = "folder_id")]
-        public new T FolderIdDisplay
-        {
-            get
-            {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
-
-                return ParentFolderID;
-            }
-            set { _folderIdDisplay = value; }
-        }
-
-        public new string UniqID
-        {
-            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
-        }
-
-        public Folder(Global global) : base(global)
-        {
-        }
-    }
-
     [DataContract(Name = "folder", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID})")]
-    public class Folder : FileEntry
+    public class Folder<T> : FileEntry<T>
     {
         public FolderType FolderType { get; set; }
 
-        public object ParentFolderID { get; set; }
+        public T ParentFolderID { get; set; }
 
         [DataMember(Name = "total_files")]
         public int TotalFiles { get; set; }
@@ -110,10 +79,10 @@ namespace ASC.Files.Core
             set { NewForMe = Convert.ToInt32(value); }
         }
 
-        private object _folderIdDisplay;
+        private T _folderIdDisplay;
 
         [DataMember(Name = "folder_id")]
-        public override object FolderIdDisplay
+        public override T FolderIdDisplay
         {
             get
             {

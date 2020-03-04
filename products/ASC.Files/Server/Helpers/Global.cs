@@ -381,7 +381,11 @@ namespace ASC.Web.Files.Classes
         internal static readonly IDictionary<string, object> TrashFolderCache =
             new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-        public object GetFolderTrash(IFolderDao folderDao)
+        public T GetFolderTrash<T>(IDaoFactory daoFactory)
+        {
+            return (T)Convert.ChangeType(GetFolderTrash(daoFactory), typeof(T));
+        }
+        public object GetFolderTrash(IDaoFactory daoFactory)
         {
             if (IsOutsider) return null;
 
@@ -389,7 +393,7 @@ namespace ASC.Web.Files.Classes
 
             if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
             {
-                trashFolderId = AuthContext.IsAuthenticated ? folderDao.GetFolderIDTrash(true) : 0;
+                trashFolderId = AuthContext.IsAuthenticated ? daoFactory.GetFolderDao<int>().GetFolderIDTrash(true) : 0;
                 TrashFolderCache[cacheKey] = trashFolderId;
             }
             return trashFolderId;
@@ -473,7 +477,7 @@ namespace ASC.Web.Files.Classes
             {
                 file = fileDao.SaveFile(file, stream);
 
-                fileMarker.MarkAsNew<T>(file);
+                fileMarker.MarkAsNew(file);
             }
             catch (Exception ex)
             {
@@ -524,7 +528,7 @@ namespace ASC.Web.Files.Classes
         {
             get
             {
-                return GlobalFolder.GetFolderTrash(DaoFactory.FolderDao);
+                return GlobalFolder.GetFolderTrash(DaoFactory);
             }
             set
             {

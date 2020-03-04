@@ -48,8 +48,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Utils
 {
     public class FileUploader
@@ -128,7 +126,7 @@ namespace ASC.Web.Files.Utils
             var dao = DaoFactory.GetFileDao<T>();
             file = dao.SaveFile(file, data);
 
-            FileMarker.MarkAsNew<T>(file);
+            FileMarker.MarkAsNew(file);
 
             if (FileConverter.EnableAsUploaded && FileConverter.MustConvert(file))
                 FileConverter.ExecAsync(file, deleteConvertStatus);
@@ -184,7 +182,7 @@ namespace ASC.Web.Files.Utils
         private bool CanEdit<T>(File<T> file)
         {
             return file != null
-                   && FileSecurity.CanEdit<T>(file)
+                   && FileSecurity.CanEdit(file)
                    && !UserManager.GetUsers(AuthContext.CurrentAccount.ID).IsVisitor(UserManager)
                    && !EntryManager.FileLockedForMe(file.ID)
                    && !FileTracker.IsEditing(file.ID)
@@ -200,7 +198,7 @@ namespace ASC.Web.Files.Utils
             if (folder == null)
                 throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
 
-            if (!FileSecurity.CanCreate<T>(folder))
+            if (!FileSecurity.CanCreate(folder))
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             if (relativePath != null && relativePath.Any())
@@ -235,7 +233,7 @@ namespace ASC.Web.Files.Utils
 
         #region chunked upload
 
-        public File VerifyChunkedUpload(string folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {
             var maxUploadSize = GetMaxFileSize(folderId, true);
 
@@ -300,7 +298,7 @@ namespace ASC.Web.Files.Utils
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
             {
-                FileMarker.MarkAsNew<T>(uploadSession.File);
+                FileMarker.MarkAsNew(uploadSession.File);
                 ChunkedUploadSessionHolder.RemoveSession(uploadSession);
             }
             else
@@ -323,9 +321,9 @@ namespace ASC.Web.Files.Utils
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }
 
-        private long GetMaxFileSize(object folderId, bool chunkedUpload = false)
+        private long GetMaxFileSize<T>(T folderId, bool chunkedUpload = false)
         {
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<T>();
             return folderDao.GetMaxUploadSize(folderId, chunkedUpload);
         }
 

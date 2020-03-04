@@ -54,41 +54,10 @@ namespace ASC.Files.Core
         [EnumMember] IsEditingAlone = 0x10
     }
 
-    public class File<T> : File
-    {
-        [DataMember(Name = "id")]
-        public new T ID { get; set; }
-
-        public new T FolderID { get; set; }
-
-        private T _folderIdDisplay;
-
-        [DataMember(Name = "folder_id")]
-        public new T FolderIdDisplay
-        {
-            get
-            {
-                if (_folderIdDisplay != null) return _folderIdDisplay;
-
-                return FolderID;
-            }
-            set { _folderIdDisplay = value; }
-        }
-
-        public new string UniqID
-        {
-            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
-        }
-
-        public File(Global global, FilesLinkUtility filesLinkUtility, FileUtility fileUtility, FileConverter fileConverter) : base(global, filesLinkUtility, fileUtility, fileConverter)
-        {
-        }
-    }
-
     [Serializable]
     [DataContract(Name = "file", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
-    public class File : FileEntry
+    public class File<T> : FileEntry<T>
     {
         private FileStatus _status;
 
@@ -106,7 +75,7 @@ namespace ASC.Files.Core
             FileConverter = fileConverter;
         }
 
-        public object FolderID { get; set; }
+        public T FolderID { get; set; }
 
         [DataMember(Name = "version")]
         public int Version { get; set; }
@@ -250,10 +219,10 @@ namespace ASC.Files.Core
         public FileUtility FileUtility { get; }
         public FileConverter FileConverter { get; }
 
-        private object _folderIdDisplay;
+        private T _folderIdDisplay;
 
         [DataMember(Name = "folder_id")]
-        public override object FolderIdDisplay
+        public override T FolderIdDisplay
         {
             get
             {
@@ -264,7 +233,7 @@ namespace ASC.Files.Core
             set { _folderIdDisplay = value; }
         }
 
-        public static string Serialize(File file)
+        public static string Serialize(File<T> file)
         {
             using (var ms = new FileEntrySerializer().ToXml(file))
             {

@@ -67,7 +67,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         protected override void Do(IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
-            var entries = new List<FileEntry>();
+            var entries = new List<FileEntry<T>>();
             if (Folders.Any())
             {
                 entries.AddRange(FolderDao.GetFolders(Folders.ToArray()));

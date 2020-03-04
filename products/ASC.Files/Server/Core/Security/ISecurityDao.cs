@@ -29,21 +29,21 @@ using System.Collections.Generic;
 
 namespace ASC.Files.Core.Security
 {
-    public interface ISecurityDao
+    public interface ISecurityDao<T>
     {
         void SetShare(FileShareRecord r);
 
         IEnumerable<FileShareRecord> GetShares(IEnumerable<Guid> subjects);
 
-        IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry> entry);
+        IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<T>> entry);
 
-        IEnumerable<FileShareRecord> GetShares(FileEntry entry);
+        IEnumerable<FileShareRecord> GetShares(FileEntry<T> entry);
 
         void RemoveSubject(Guid subject);
 
-        IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry> entries);
+        IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<T>> entries);
 
-        IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry entry);
+        IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<T> entry);
 
         void DeleteShareRecords(IEnumerable<FileShareRecord> records);
 

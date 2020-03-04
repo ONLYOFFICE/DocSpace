@@ -81,7 +81,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             _trashId = FolderDao.GetFolderIDTrash(true);
 
-            Folder root = null;
+            Folder<T> root = null;
             if (0 < Folders.Count)
             {
                 root = FolderDao.GetRootFolder(Folders[0]);
@@ -118,7 +118,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
                 }
-                else if (!_ignoreException && !FilesSecurity.CanDelete<T>(folder))
+                else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
                 {
                     canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
@@ -229,14 +229,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File> files, bool folder, out string error)
+        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, bool folder, out string error)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
 
             error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete<T>(file))
+                if (!FilesSecurity.CanDelete(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFile;
                     return true;

@@ -78,12 +78,12 @@ namespace ASC.Files.Core
         }
 
 
-        public static Tag New(Guid owner, FileEntry entry)
+        public static Tag New<T>(Guid owner, FileEntry<T> entry)
         {
             return New(owner, entry, 1);
         }
 
-        public static Tag New(Guid owner, FileEntry entry, int count)
+        public static Tag New<T>(Guid owner, FileEntry<T> entry, int count)
         {
             return new Tag("new", TagType.New, owner, entry, count);
         }

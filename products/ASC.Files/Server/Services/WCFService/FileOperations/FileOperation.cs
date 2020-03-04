@@ -104,7 +104,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected IFileDao<TId> FileDao { get; private set; }
 
-        protected ITagDao TagDao { get; private set; }
+        protected ITagDao<TId> TagDao { get; private set; }
 
         protected IProviderDao ProviderDao { get; private set; }
 
@@ -154,7 +154,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                 FolderDao = daoFactory.GetFolderDao<TId>();
                 FileDao = daoFactory.GetFileDao<TId>();
-                TagDao = daoFactory.TagDao;
+                TagDao = daoFactory.GetTagDao<TId>();
                 ProviderDao = daoFactory.ProviderDao;
                 FilesSecurity = fileSecurity;
 

@@ -62,7 +62,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
-using File = ASC.Files.Core.File;
+
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 using SecurityContext = ASC.Core.SecurityContext;
@@ -303,7 +303,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (!readLink && !FileSecurity.CanRead<T>(file))
+                if (!readLink && !FileSecurity.CanRead(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -656,7 +656,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead<T>(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -902,7 +902,7 @@ namespace ASC.Web.Files
                     return;
                 }
 
-                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead<T>(file))
+                if (linkRight == FileShare.Restrict && SecurityContext.IsAuthenticated && !FileSecurity.CanRead(file))
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                     return;
@@ -944,7 +944,7 @@ namespace ASC.Web.Files
             }
         }
 
-        private static string GetEtag(File file)
+        private static string GetEtag<T>(File<T> file)
         {
             return file.ID + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
         }
@@ -971,9 +971,9 @@ namespace ASC.Web.Files
             folder = folderDao.GetFolder(folderId);
 
             if (folder == null) throw new HttpException((int)HttpStatusCode.NotFound, FilesCommonResource.ErrorMassage_FolderNotFound);
-            if (!FileSecurity.CanCreate<T>(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!FileSecurity.CanCreate(folder)) throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            File file;
+            File<T> file;
             var fileUri = context.Request.Query[FilesLinkUtility.FileUri];
             var fileTitle = context.Request.Query[FilesLinkUtility.FileTitle];
             try
@@ -1014,7 +1014,7 @@ namespace ASC.Web.Files
                     : (FilesLinkUtility.GetFileWebEditorUrl(file.ID) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
         }
 
-        private File CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
+        private File<T> CreateFileFromTemplate<T>(Folder<T> folder, string fileTitle, string docType)
         {
             var storeTemplate = GlobalStore.GetStoreTemplate();
 
@@ -1056,7 +1056,7 @@ namespace ASC.Web.Files
             return fileDao.SaveFile(file, stream);
         }
 
-        private File CreateFileFromUri<T>(Folder<T> folder, string fileUri, string fileTitle)
+        private File<T> CreateFileFromUri<T>(Folder<T> folder, string fileUri, string fileTitle)
         {
             if (string.IsNullOrEmpty(fileTitle))
                 fileTitle = Path.GetFileName(HttpUtility.UrlDecode(fileUri));

@@ -32,30 +32,29 @@ using ASC.Files.Core;
 using ASC.Web.Files.Helpers;
 using ASC.Web.Files.Services.WCFService.FileOperations;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.WCFService
 {
-    public interface IFileStorageService
+    public interface IFileStorageService<T>
     {
         #region Folder Manager
 
-        Folder GetFolder(string folderId);
+        Folder<T> GetFolder(T folderId);
 
-        ItemList<Folder> GetFolders(string parentId);
+        ItemList<Folder<T>> GetFolders(T parentId);
 
-        ItemList<object> GetPath(string folderId);
+        ItemList<object> GetPath(T folderId);
 
-        Folder CreateNewFolder(string parentId, string title);
+        Folder<T> CreateNewFolder(T parentId, string title);
 
-        Folder FolderRename(string folderId, string title);
+        Folder<T> FolderRename(T folderId, string title);
 
-        DataWrapper<T> GetFolderItems<T>(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        DataWrapper<T> GetFolderItems(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        object GetFolderItemsXml(string parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        object GetFolderItemsXml(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        ItemList<FileEntry> GetItems(ItemList<string> items, FilterType filter, bool subjectGroup, string subjectID, string searchText);
+        ItemList<FileEntry<T>> GetItems(ItemList<string> items, FilterType filter, bool subjectGroup, string subjectID, string searchText);
 
         ItemDictionary<string, string> MoveOrCopyFilesCheck(ItemList<string> items, string destFolderId);
 
@@ -73,21 +72,21 @@ namespace ASC.Web.Files.Services.WCFService
 
         File GetFile(string fileId, int version);
 
-        File<T> CreateNewFile<T>(FileModel<T> fileWrapper);
+        File<T> CreateNewFile(FileModel<T> fileWrapper);
 
         File FileRename(string fileId, string title);
 
-        KeyValuePair<File, ItemList<File>> UpdateToVersion(string fileId, int version);
+        KeyValuePair<File<T>, ItemList<File<T>>> UpdateToVersion(T fileId, int version);
 
-        KeyValuePair<File, ItemList<File>> CompleteVersion(string fileId, int version, bool continueVersion);
+        KeyValuePair<File<T>, ItemList<File<T>>> CompleteVersion(T fileId, int version, bool continueVersion);
 
-        string UpdateComment(string fileId, int version, string comment);
+        string UpdateComment(T fileId, int version, string comment);
 
-        ItemList<File> GetFileHistory(string fileId);
+        ItemList<File<T>> GetFileHistory(T fileId);
 
-        ItemList<File> GetSiblingsFile(string fileId, string folderId, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
+        ItemList<File<T>> GetSiblingsFile(T fileId, T folderId, FilterType filter, bool subjectGroup, string subjectID, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy);
 
-        KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish);
+        KeyValuePair<bool, string> TrackEditFile(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish);
 
         ItemDictionary<string, string> CheckEditing(ItemList<string> filesId);
 
@@ -113,7 +112,7 @@ namespace ASC.Web.Files.Services.WCFService
 
         #region Utils
 
-        ItemList<FileEntry> ChangeOwner(ItemList<string> items, Guid userId);
+        ItemList<FileEntry<T>> ChangeOwner(ItemList<string> items, Guid userId);
 
         ItemList<FileOperationResult> BulkDownload(Dictionary<string, string> items);
 
@@ -167,9 +166,9 @@ namespace ASC.Web.Files.Services.WCFService
 
         ItemList<ThirdPartyParams> GetThirdParty();
 
-        ItemList<Folder> GetThirdPartyFolder(int folderType);
+        ItemList<Folder<T>> GetThirdPartyFolder(int folderType);
 
-        Folder SaveThirdParty(ThirdPartyParams thirdPartyParams);
+        Folder<T> SaveThirdParty(ThirdPartyParams thirdPartyParams);
 
         object DeleteThirdParty(string providerId);
 

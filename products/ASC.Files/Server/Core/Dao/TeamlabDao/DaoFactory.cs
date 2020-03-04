@@ -36,19 +36,11 @@ namespace ASC.Files.Core.Data
     public class DaoFactory : IDaoFactory
     {
         public IServiceProvider ServiceProvider { get; }
-        public IFileDao FileDao { get; }
-        public IFolderDao FolderDao { get; }
-        public ITagDao TagDao { get; }
-        public ISecurityDao SecurityDao { get; }
         public IProviderDao ProviderDao { get; }
 
-        public DaoFactory(IServiceProvider serviceProvider, IFileDao fileDao, IFolderDao folderDao, ITagDao tagDao, ISecurityDao securityDao)
+        public DaoFactory(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
-            FileDao = fileDao;
-            FolderDao = folderDao;
-            TagDao = tagDao;
-            SecurityDao = securityDao;
         }
 
         public IFileDao<T> GetFileDao<T>()
@@ -63,6 +55,11 @@ namespace ASC.Files.Core.Data
         public ITagDao<T> GetTagDao<T>()
         {
             return ServiceProvider.GetService<ITagDao<T>>();
+        }
+
+        public ISecurityDao<T> GetSecurityDao<T>()
+        {
+            return ServiceProvider.GetService<ISecurityDao<T>>();
         }
     }
 

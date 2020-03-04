@@ -57,7 +57,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-using File = ASC.Files.Core.File;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
@@ -65,7 +64,7 @@ namespace ASC.Web.Files.Utils
     public class FileConverter
     {
         private static readonly object locker = new object();
-        private static readonly IDictionary<File, ConvertFileOperationResult> conversionQueue = new Dictionary<File, ConvertFileOperationResult>(new FileComparer());
+        private static readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer());
         private readonly ICache cache;
 
         private static Timer timer;
@@ -165,7 +164,7 @@ namespace ASC.Web.Files.Utils
             get { return FileUtility.ExtsMustConvert.Any() && !string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl); }
         }
 
-        public bool MustConvert(File file)
+        public bool MustConvert<T>(File<T> file)
         {
             if (file == null) return false;
 
@@ -173,7 +172,7 @@ namespace ASC.Web.Files.Utils
             return FileUtility.ExtsMustConvert.Contains(ext);
         }
 
-        public bool EnableConvert(File file, string toExtension)
+        public bool EnableConvert<T>(File<T> file, string toExtension)
         {
             if (file == null || string.IsNullOrEmpty(toExtension))
             {
@@ -200,16 +199,16 @@ namespace ASC.Web.Files.Utils
             return FileUtility.ExtsConvertible.Keys.Contains(fileExtension) && FileUtility.ExtsConvertible[fileExtension].Contains(toExtension);
         }
 
-        public Stream Exec(File file)
+        public Stream Exec<T>(File<T> file)
         {
             return Exec(file, FileUtility.GetInternalExtension(file.Title));
         }
 
-        public Stream Exec(File file, string toExtension)
+        public Stream Exec<T>(File<T> file, string toExtension)
         {
             if (!EnableConvert(file, toExtension))
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 return fileDao.GetFileStream(file);
             }
 
@@ -234,7 +233,7 @@ namespace ASC.Web.Files.Utils
         {
             var fileDao = DaoFactory.GetFileDao<T>();
             var fileSecurity = FileSecurity;
-            if (!fileSecurity.CanRead<T>(file))
+            if (!fileSecurity.CanRead(file))
             {
                 var readLink = FileShareLink.Check(doc, true, fileDao, out file);
                 if (file == null)
@@ -299,7 +298,7 @@ namespace ASC.Web.Files.Utils
 
                 if (timer == null)
                 {
-                    timer = new Timer(CheckConvertFilesStatus<T>, null, 0, Timeout.Infinite);
+                    timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
                 }
                 else
                 {
@@ -308,7 +307,7 @@ namespace ASC.Web.Files.Utils
             }
         }
 
-        public bool IsConverting(File file)
+        public bool IsConverting<T>(File<T> file)
         {
             if (!MustConvert(file) || !string.IsNullOrEmpty(file.ConvertedType))
             {
@@ -327,7 +326,7 @@ namespace ASC.Web.Files.Utils
                 var file = pair.Key;
                 var key = GetKey(file);
                 var operation = cache.Get<ConvertFileOperationResult>(key);
-                if (operation != null && (pair.Value || fileSecurity.CanRead<T>(file)))
+                if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
                 {
                     result.Add(operation);
                     lock (locker)
@@ -343,7 +342,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        private string FileJsonSerializer(File file, string folderTitle)
+        private string FileJsonSerializer<T>(File<T> file, string folderTitle)
         {
             if (file == null) return string.Empty;
 
@@ -360,7 +359,7 @@ namespace ASC.Web.Files.Utils
                               file.Version,
                               file.FolderID,
                               folderTitle ?? "",
-                              File.Serialize(file).Replace('"', '\''));
+                              File<T>.Serialize(file).Replace('"', '\''));
         }
 
         private void CheckConvertFilesStatus<T>(object _)
@@ -376,7 +375,7 @@ namespace ASC.Web.Files.Utils
 
                 try
                 {
-                    List<File<T>> filesIsConverting = new List<File<T>>();
+                    var filesIsConverting = new List<File<T>>();
                     lock (locker)
                     {
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -398,11 +397,10 @@ namespace ASC.Web.Files.Utils
                             return;
                         }
 
-                        //TODO:
-                        //filesIsConverting = conversionQueue
-                        //    .Where(x => string.IsNullOrEmpty(x.Value.Processed))
-                        //    .Select(x => x.Key)
-                        //    .ToList();
+                        filesIsConverting = conversionQueue
+                            .Where(x => string.IsNullOrEmpty(x.Value.Processed))
+                            .Select(x => x.Key)
+                            .ToList();
                     }
 
                     var fileSecurity = FileSecurity;
@@ -448,7 +446,7 @@ namespace ASC.Web.Files.Utils
                             Thread.CurrentThread.CurrentCulture = culture;
                             Thread.CurrentThread.CurrentUICulture = culture;
 
-                            if (!fileSecurity.CanRead<T>(file) && file.RootFolderType != FolderType.BUNCH)
+                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
                             {
                                 //No rights in CRM after upload before attach
                                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -525,7 +523,7 @@ namespace ASC.Web.Files.Utils
                             continue;
                         }
 
-                        File newFile = null;
+                        File<T> newFile = null;
                         var operationResultError = string.Empty;
 
                         try
@@ -555,9 +553,9 @@ namespace ASC.Web.Files.Utils
                                     {
                                         if (newFile != null)
                                         {
-                                            var folderDao = daoFactory.FolderDao;
+                                            var folderDao = daoFactory.GetFolderDao<T>();
                                             var folder = folderDao.GetFolder(newFile.FolderID);
-                                            var folderTitle = fileSecurity.CanRead<T>(folder) ? folder.Title : null;
+                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
                                             operationResult.Result = FileJsonSerializer(newFile, folderTitle);
                                         }
 
@@ -605,7 +603,7 @@ namespace ASC.Web.Files.Utils
             File<T> newFile = null;
             var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetInternalExtension(file.Title));
 
-            if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit<T>(file))
+            if (!FilesSettingsHelper.StoreOriginalFiles && fileSecurity.CanEdit(file))
             {
                 newFile = (File<T>)file.Clone();
                 newFile.Version++;
@@ -616,7 +614,7 @@ namespace ASC.Web.Files.Utils
 
                 var parent = folderDao.GetFolder(file.FolderID);
                 if (parent != null
-                    && fileSecurity.CanCreate<T>(parent))
+                    && fileSecurity.CanCreate(parent))
                 {
                     folderId = parent.ID;
                 }
@@ -626,7 +624,7 @@ namespace ASC.Web.Files.Utils
                 if (FilesSettingsHelper.UpdateIfExist && (parent != null && !folderId.Equals(parent.ID) || !file.ProviderEntry))
                 {
                     newFile = fileDao.GetFile(folderId, newFileTitle);
-                    if (newFile != null && fileSecurity.CanEdit<T>(newFile) && !EntryManager.FileLockedForMe(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
+                    if (newFile != null && fileSecurity.CanEdit(newFile) && !EntryManager.FileLockedForMe(newFile.ID) && !FileTracker.IsEditing(newFile.ID))
                     {
                         newFile.Version++;
                     }
@@ -685,7 +683,7 @@ namespace ASC.Web.Files.Utils
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
             FileMarker.MarkAsNew<T>(newFile);
 
-            var tagDao = DaoFactory.TagDao;
+            var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
             if (tags.Any())
             {
@@ -696,20 +694,20 @@ namespace ASC.Web.Files.Utils
             return newFile;
         }
 
-        private static string GetKey(File f)
+        private static string GetKey<T>(File<T> f)
         {
             return string.Format("fileConvertation-{0}", f.ID);
         }
 
 
-        private class FileComparer : IEqualityComparer<File>
+        private class FileComparer<T> : IEqualityComparer<File<T>>
         {
-            public bool Equals(File x, File y)
+            public bool Equals(File<T> x, File<T> y)
             {
                 return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
             }
 
-            public int GetHashCode(File obj)
+            public int GetHashCode(File<T> obj)
             {
                 return obj.ID.GetHashCode() + obj.Version.GetHashCode();
             }

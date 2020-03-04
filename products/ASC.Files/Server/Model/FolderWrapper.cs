@@ -127,7 +127,7 @@ namespace ASC.Api.Documents
 
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var parentFolder = folderDao.GetFolder(folder.ParentFolderID);
-                if (!FileSecurity.CanRead<T>(parentFolder))
+                if (!FileSecurity.CanRead(parentFolder))
                     result.ParentId = GlobalFolderHelper.FolderShare;
             }
 

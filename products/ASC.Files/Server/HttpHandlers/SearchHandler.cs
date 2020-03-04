@@ -102,7 +102,7 @@ namespace ASC.Web.Files.Configuration
         {
             var security = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<int>();
-            return fileDao.Search(text).Where(security.CanRead<int>);
+            return fileDao.Search(text).Where(security.CanRead);
         }
 
         public IEnumerable<Folder<int>> SearchFolders(string text)
@@ -110,7 +110,7 @@ namespace ASC.Web.Files.Configuration
             var security = FileSecurity;
             IEnumerable<Folder<int>> result;
             var folderDao = DaoFactory.GetFolderDao<int>();
-            result = folderDao.Search(text).Where(security.CanRead<int>);
+            result = folderDao.Search(text).Where(security.CanRead);
 
             if (ThirdpartyConfiguration.SupportInclusion
                 && (Global.IsAdministrator || FilesSettingsHelper.EnableThirdParty))
@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Configuration
             return result.Concat(resultFolder).ToArray();
         }
 
-        private static string FolderPathBuilder(IEnumerable<Folder> folders)
+        private static string FolderPathBuilder<T>(IEnumerable<Folder<T>> folders)
         {
             var titles = folders.Select(f => f.Title).ToList();
             const string separator = " \\ ";

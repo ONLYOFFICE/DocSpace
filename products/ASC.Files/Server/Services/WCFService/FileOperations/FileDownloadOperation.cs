@@ -147,7 +147,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (0 < Folders.Count)
             {
-                FilesSecurity.FilterRead(FolderDao.GetFolders(Files.ToArray())).ToList().Cast<FileEntry>().ToList()
+                FilesSecurity.FilterRead(FolderDao.GetFolders(Files.ToArray())).ToList().Cast<FileEntry<T>>().ToList()
                              .ForEach(folder => fileMarker.RemoveMarkAsNew(folder));
 
                 var filesInFolder = GetFilesInFolders(scope, Folders, string.Empty);
@@ -168,7 +168,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = FolderDao.GetFolder(folderId);
-                if (folder == null || !FilesSecurity.CanRead<T>(folder)) continue;
+                if (folder == null || !FilesSecurity.CanRead(folder)) continue;
                 var folderPath = path + folder.Title + "/";
 
                 var files = FileDao.GetFiles(folder.ID, null, FilterType.None, false, Guid.Empty, string.Empty, true);

@@ -78,8 +78,9 @@ namespace ASC.Api.Documents
     public class FilesController : ControllerBase
     {
         private readonly ApiContext ApiContext;
-        private readonly FileStorageService FileStorageService;
+        private readonly FileStorageService<string> FileStorageService;
 
+        public FileStorageService<int> FileStorageServiceInt { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
         public FilesSettingsHelper FilesSettingsHelper { get; }
@@ -118,7 +119,8 @@ namespace ASC.Api.Documents
         /// <param name="fileStorageService"></param>
         public FilesController(
             ApiContext context,
-            FileStorageService fileStorageService,
+            FileStorageService<string> fileStorageService,
+            FileStorageService<int> fileStorageServiceInt,
             GlobalFolderHelper globalFolderHelper,
             FileWrapperHelper fileWrapperHelper,
             FilesSettingsHelper filesSettingsHelper,
@@ -153,6 +155,7 @@ namespace ASC.Api.Documents
         {
             ApiContext = context;
             FileStorageService = fileStorageService;
+            FileStorageServiceInt = fileStorageServiceInt;
             GlobalFolderHelper = globalFolderHelper;
             FileWrapperHelper = fileWrapperHelper;
             FilesSettingsHelper = filesSettingsHelper;
@@ -669,7 +672,7 @@ namespace ASC.Api.Documents
         {
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
             {
-                var file = FileUploader.Exec(folderId,
+                var file = FileUploader.Exec(folderId.ToString(),
                                   title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
                                   memStream.Length, memStream);
                 return FileWrapperHelper.Get(file);
@@ -834,7 +837,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId:int}")]
         public FileWrapper GetFileInfo(int fileId, int version = -1)
         {
-            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
+            var file = FileStorageServiceInt.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
         }
 
@@ -905,7 +908,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/checkconversion")]
         public IEnumerable<ConversationResult> CheckConversion(string fileId, bool start)
         {
-            return FileStorageService.CheckConversion<string>(new ItemList<ItemList<string>>
+            return FileStorageService.CheckConversion(new ItemList<ItemList<string>>
             {
                 new ItemList<string> { fileId, "0", start.ToString() }
             })
@@ -969,7 +972,7 @@ namespace ASC.Api.Documents
 
             var ids = FileStorageService.MoveOrCopyFilesCheck(itemList, batchModel.DestFolderId).Keys.Select(id => "file_" + id);
 
-            var entries = FileStorageService.GetItems<string>(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
+            var entries = FileStorageService.GetItems(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
             return entries.Select(x => FileWrapperHelper.Get((File<string>)x));
         }
 
@@ -1031,7 +1034,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.MarkAsRead<string>(itemList).Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get<string>);
         }
 
         /// <summary>
@@ -1109,7 +1112,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((batch.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((batch.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            return FileStorageService.DeleteItems<string>("delete", itemList, false, batch.DeleteAfter, batch.Immediately).Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.DeleteItems("delete", itemList, false, batch.DeleteAfter, batch.Immediately).Select(FileOperationWraperHelper.Get<string>);
         }
 
         /// <summary>
@@ -1121,7 +1124,7 @@ namespace ASC.Api.Documents
         [Update("fileops/emptytrash")]
         public IEnumerable<FileOperationWraper> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash<int>().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<string>);
         }
 
         /// <summary>
@@ -1163,7 +1166,7 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/share")]
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(string fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo<string>(new ItemList<string> { string.Format("file_{0}", fileId) });
+            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) });
             return fileShares.Select(FileShareWrapperHelper.Get);
         }
 
@@ -1177,7 +1180,7 @@ namespace ASC.Api.Documents
         [Read("folder/{folderId}/share")]
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(string folderId)
         {
-            var fileShares = FileStorageService.GetSharedInfo<string>(new ItemList<string> { string.Format("folder_{0}", folderId) });
+            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("folder_{0}", folderId) });
             return fileShares.Select(FileShareWrapperHelper.Get);
         }
 
@@ -1206,7 +1209,7 @@ namespace ASC.Api.Documents
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject<string>(aceCollection, notify);
+                FileStorageService.SetAceObject(aceCollection, notify);
             }
             return GetFileSecurityInfo(fileId);
         }
@@ -1236,7 +1239,7 @@ namespace ASC.Api.Documents
                     Aces = list,
                     Message = sharingMessage
                 };
-                FileStorageService.SetAceObject<string>(aceCollection, notify);
+                FileStorageService.SetAceObject(aceCollection, notify);
             }
 
             return GetFolderSecurityInfo(folderId);
@@ -1258,7 +1261,7 @@ namespace ASC.Api.Documents
             itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
             itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
 
-            FileStorageService.RemoveAce<string>(itemList);
+            FileStorageService.RemoveAce(itemList);
 
             return true;
         }
@@ -1279,7 +1282,7 @@ namespace ASC.Api.Documents
             var file = GetFileInfo(fileId);
 
             var objectId = "file_" + file.Id;
-            var sharedInfo = FileStorageService.GetSharedInfo<string>(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            var sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             if (sharedInfo == null || sharedInfo.Share != share)
             {
                 var list = new ItemList<AceWrapper>
@@ -1296,8 +1299,8 @@ namespace ASC.Api.Documents
                     Entries = new ItemList<string> { objectId },
                     Aces = list
                 };
-                FileStorageService.SetAceObject<string>(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo<string>(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
+                FileStorageService.SetAceObject(aceCollection, false);
+                sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
             }
 
             return sharedInfo.Link;
@@ -1394,7 +1397,7 @@ namespace ASC.Api.Documents
                 ProviderKey = providerKey,
             };
 
-            var folder = FileStorageService.SaveThirdParty<string>(thirdPartyParams);
+            var folder = FileStorageService.SaveThirdParty(thirdPartyParams);
 
             return FolderWrapperHelper.Get(folder);
         }
@@ -1418,7 +1421,7 @@ namespace ASC.Api.Documents
         /// <short>Get third party folder</short>
         /// <returns>Connected providers folder</returns>
         [Read("thirdparty/common")]
-        public IEnumerable<Folder> GetCommonThirdPartyFolders()
+        public IEnumerable<Folder<string>> GetCommonThirdPartyFolders()
         {
             var parent = FileStorageService.GetFolder(GlobalFolderHelper.FolderCommon.ToString());
             return EntryManager.GetThirpartyFolders(parent);
@@ -1437,7 +1440,7 @@ namespace ASC.Api.Documents
         [Delete("thirdparty/{providerId:int}")]
         public object DeleteThirdParty(int providerId)
         {
-            return FileStorageService.DeleteThirdParty<string>(providerId.ToString(CultureInfo.InvariantCulture));
+            return FileStorageService.DeleteThirdParty(providerId.ToString(CultureInfo.InvariantCulture));
 
         }
 
@@ -1573,7 +1576,7 @@ namespace ASC.Api.Documents
             }
 
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
-            var items = FileStorageService.GetFolderItems(
+            var items = FileStorageServiceInt.GetFolderItems(
                 folderId,
                 startIndex,
                 Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1

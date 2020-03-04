@@ -106,11 +106,11 @@ namespace ASC.Web.Files.Utils
             if (file == null) return FileShare.Restrict;
 
             var filesSecurity = FileSecurity;
-            if (filesSecurity.CanEdit<T>(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
-            if (filesSecurity.CanReview<T>(file, FileConstant.ShareLinkId)) return FileShare.Review;
-            if (filesSecurity.CanFillForms<T>(file, FileConstant.ShareLinkId)) return FileShare.FillForms;
-            if (filesSecurity.CanComment<T>(file, FileConstant.ShareLinkId)) return FileShare.Comment;
-            if (filesSecurity.CanRead<T>(file, FileConstant.ShareLinkId)) return FileShare.Read;
+            if (filesSecurity.CanEdit(file, FileConstant.ShareLinkId)) return FileShare.ReadWrite;
+            if (filesSecurity.CanReview(file, FileConstant.ShareLinkId)) return FileShare.Review;
+            if (filesSecurity.CanFillForms(file, FileConstant.ShareLinkId)) return FileShare.FillForms;
+            if (filesSecurity.CanComment(file, FileConstant.ShareLinkId)) return FileShare.Comment;
+            if (filesSecurity.CanRead(file, FileConstant.ShareLinkId)) return FileShare.Read;
             return FileShare.Restrict;
         }
     }

@@ -254,7 +254,7 @@ namespace ASC.Web.Files.Helpers
             var fileDao = DaoFactory.GetFileDao<T>();
             file = fileDao.GetFile(fileId);
             if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
-            if (!FileSecurity.CanRead<T>(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+            if (!FileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
             if (!SupportedFormats.Contains(FileUtility.GetFileExtension(file.Title))) throw new ArgumentException(FilesCommonResource.ErrorMassage_NotSupportedFormat);
             if (file.ContentLength > MaxFileSize) throw new Exception(FileSizeComment.GetFileSizeExceptionString(MaxFileSize));
 
@@ -393,7 +393,7 @@ namespace ASC.Web.Files.Helpers
             if (folderId == null
                 || (folder = folderDao.GetFolder(folderId)) == null
                 || folder.RootFolderType == FolderType.TRASH
-                || !FileSecurity.CanCreate<T>(folder))
+                || !FileSecurity.CanCreate(folder))
             {
                 if (GlobalFolderHelper.FolderMy != 0)
                 {
@@ -420,7 +420,7 @@ namespace ASC.Web.Files.Helpers
 
             FilesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
 
-            FileMarker.MarkAsNew<T>(file);
+            FileMarker.MarkAsNew(file);
 
             return file;
         }

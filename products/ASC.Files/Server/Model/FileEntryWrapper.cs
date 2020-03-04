@@ -113,7 +113,7 @@ namespace ASC.Api.Documents
         /// 
         /// </summary>
         /// <param name="entry"></param>
-        protected FileEntryWrapper(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+        protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         {
             Id = entry.ID;
             Title = entry.Title;
@@ -152,7 +152,7 @@ namespace ASC.Api.Documents
             EmployeeWraperHelper = employeeWraperHelper;
         }
 
-        protected internal T Get<T>(FileEntry entry) where T : FileEntryWrapper, new()
+        protected internal T Get<T>(FileEntry<T> entry) where T : FileEntryWrapper, new()
         {
             return new T
             {

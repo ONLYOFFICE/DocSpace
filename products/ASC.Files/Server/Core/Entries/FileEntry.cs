@@ -33,10 +33,8 @@ using ASC.Web.Files.Classes;
 namespace ASC.Files.Core
 {
     [DataContract(Name = "entry", Namespace = "")]
-    [KnownType(typeof(Folder))]
-    [KnownType(typeof(File))]
     [Serializable]
-    public abstract class FileEntry : ICloneable
+    public abstract class FileEntry<T> : ICloneable
     {
         public FileEntry(Global global)
         {
@@ -44,7 +42,7 @@ namespace ASC.Files.Core
         }
 
         [DataMember(Name = "id")]
-        public object ID { get; set; }
+        public T ID { get; set; }
 
         [DataMember(Name = "title", IsRequired = true)]
         public virtual string Title { get; set; }
@@ -99,7 +97,7 @@ namespace ASC.Files.Core
         public string ProviderKey { get; set; }
 
         [DataMember(Name = "folder_id")]
-        public abstract object FolderIdDisplay
+        public abstract T FolderIdDisplay
         {
             get;
             set;
@@ -118,7 +116,7 @@ namespace ASC.Files.Core
 
         public Guid RootFolderCreator { get; set; }
 
-        public object RootFolderId { get; set; }
+        public T RootFolderId { get; set; }
 
         public abstract bool IsNew { get; set; }
 
@@ -136,8 +134,12 @@ namespace ASC.Files.Core
 
         public override bool Equals(object obj)
         {
-            var f = obj as FileEntry;
-            return f != null && Equals(f.ID, ID);
+            return obj is FileEntry<T> f && Equals(f.ID, ID);
+        }
+
+        public bool Equals(FileEntry<T> obj)
+        {
+            return Equals(obj.ID, ID);
         }
 
         public override int GetHashCode()

@@ -45,7 +45,6 @@ using ASC.Web.Studio.Core;
 
 using JWT;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
@@ -145,17 +144,17 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileSecurity = FileSecurity;
             rightToEdit = rightToEdit
                           && (linkRight == FileShare.ReadWrite
-                              || fileSecurity.CanEdit<T>(file));
+                              || fileSecurity.CanEdit(file));
             if (editPossible && !rightToEdit)
             {
                 editPossible = false;
             }
 
-            rightToRename = rightToRename && rightToEdit && fileSecurity.CanEdit<T>(file);
+            rightToRename = rightToRename && rightToEdit && fileSecurity.CanEdit(file);
 
             rightToReview = rightToReview
                             && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                || fileSecurity.CanReview<T>(file));
+                                || fileSecurity.CanReview(file));
             if (reviewPossible && !rightToReview)
             {
                 reviewPossible = false;
@@ -163,7 +162,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToFillForms = rightToFillForms
                                && (linkRight == FileShare.FillForms || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                   || fileSecurity.CanFillForms<T>(file));
+                                   || fileSecurity.CanFillForms(file));
             if (fillFormsPossible && !rightToFillForms)
             {
                 fillFormsPossible = false;
@@ -171,7 +170,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             rightToComment = rightToComment
                              && (linkRight == FileShare.Comment || linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
-                                 || fileSecurity.CanComment<T>(file));
+                                 || fileSecurity.CanComment(file));
             if (commentPossible && !rightToComment)
             {
                 commentPossible = false;
@@ -179,7 +178,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             if (linkRight == FileShare.Restrict
                 && !(editPossible || reviewPossible || fillFormsPossible || commentPossible)
-                && !fileSecurity.CanRead<T>(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                && !fileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
             if (file.RootFolderType == FolderType.TRASH) throw new Exception(FilesCommonResource.ErrorMassage_ViewTrashItem);
 
@@ -299,12 +298,12 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public string GetDocKey(File file)
+        public string GetDocKey<T>(File<T> file)
         {
             return GetDocKey(file.ID, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
         }
 
-        public string GetDocKey(object fileId, int fileVersion, DateTime modified)
+        public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
         {
             var str = string.Format("teamlab_{0}_{1}_{2}_{3}",
                                     fileId,
@@ -325,10 +324,10 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             var fileSecurity = FileSecurity;
             var sharedLink =
-                fileSecurity.CanEdit<T>(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanReview<T>(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanFillForms<T>(file, FileConstant.ShareLinkId)
-                || fileSecurity.CanComment<T>(file, FileConstant.ShareLinkId);
+                fileSecurity.CanEdit(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanReview(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanFillForms(file, FileConstant.ShareLinkId)
+                || fileSecurity.CanComment(file, FileConstant.ShareLinkId);
 
             var usersDrop = FileTracker.GetEditingBy(file.ID)
                                        .Where(uid =>
@@ -337,7 +336,7 @@ namespace ASC.Web.Files.Services.DocumentService
                                                {
                                                    return !sharedLink;
                                                }
-                                               return !fileSecurity.CanEdit<T>(file, uid) && !fileSecurity.CanReview<T>(file, uid) && !fileSecurity.CanFillForms<T>(file, uid) && !fileSecurity.CanComment<T>(file, uid);
+                                               return !fileSecurity.CanEdit(file, uid) && !fileSecurity.CanReview(file, uid) && !fileSecurity.CanFillForms(file, uid) && !fileSecurity.CanComment(file, uid);
                                            })
                                        .Select(u => u.ToString()).ToArray();
 

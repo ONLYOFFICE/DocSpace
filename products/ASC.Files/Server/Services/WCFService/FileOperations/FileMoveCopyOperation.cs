@@ -63,7 +63,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         private readonly T _toFolderId;
         private readonly bool _copy;
         private readonly FileConflictResolveType _resolveType;
-        private readonly List<FileEntry> _needToMark = new List<FileEntry>();
+        private readonly List<FileEntry<T>> _needToMark = new List<FileEntry<T>>();
 
         private readonly Dictionary<string, string> _headers;
 
@@ -91,7 +91,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             //TODO: check on each iteration?
             var toFolder = FolderDao.GetFolder(_toFolderId);
             if (toFolder == null) return;
-            if (!FilesSecurity.CanCreate<T>(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
+            if (!FilesSecurity.CanCreate(toFolder)) throw new System.Security.SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
 
             if (FolderDao.GetParentFolders(toFolder.ID).Any(parent => Folders.Contains(parent.ID)))
             {
@@ -101,7 +101,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             if (_copy)
             {
-                Folder rootFrom = null;
+                Folder<T> rootFrom = null;
                 if (0 < Folders.Count) rootFrom = FolderDao.GetRootFolder(Folders[0]);
                 if (0 < Files.Count) rootFrom = FolderDao.GetRootFolderByFile(Files[0]);
                 if (rootFrom != null && rootFrom.FolderType == FolderType.TRASH) throw new InvalidOperationException("Can not copy from Trash.");
@@ -132,7 +132,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
                 }
-                else if (!FilesSecurity.CanRead<T>(folder))
+                else if (!FilesSecurity.CanRead(folder))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
                 }
@@ -174,7 +174,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
                                 if (!copy)
                                 {
-                                    if (!FilesSecurity.CanDelete<T>(folder))
+                                    if (!FilesSecurity.CanDelete(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
@@ -207,7 +207,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                                             Status += string.Format("folder_{0}{1}", newFolderId, FileOperation.SPLIT_CHAR);
                                         }
                                     }
-                                    else if (!FilesSecurity.CanDelete<T>(folder))
+                                    else if (!FilesSecurity.CanDelete(folder))
                                     {
                                         Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                                     }
@@ -236,7 +236,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         }
                         else
                         {
-                            if (!FilesSecurity.CanDelete<T>(folder))
+                            if (!FilesSecurity.CanDelete(folder))
                             {
                                 Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                             }
@@ -293,7 +293,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 {
                     Error = FilesCommonResource.ErrorMassage_FileNotFound;
                 }
-                else if (!FilesSecurity.CanRead<T>(file))
+                else if (!FilesSecurity.CanRead(file))
                 {
                     Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFile;
                 }
@@ -369,7 +369,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                         {
                             if (_resolveType == FileConflictResolveType.Overwrite)
                             {
-                                if (!FilesSecurity.CanEdit<T>(conflict))
+                                if (!FilesSecurity.CanEdit(conflict))
                                 {
                                     Error = FilesCommonResource.ErrorMassage_SecurityException;
                                 }
@@ -454,13 +454,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File> files, out string error)
+        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, out string error)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
             error = null;
             foreach (var file in files)
             {
-                if (!FilesSecurity.CanDelete<T>(file))
+                if (!FilesSecurity.CanDelete(file))
                 {
                     error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
                     return true;

@@ -289,7 +289,7 @@ namespace ASC.Web.Files.Services.DocumentService
             {
                 if (Type == EditorType.Embedded
                     || Type == EditorType.External
-                    || !FileSharing.CanSetAccess<T>(File)) return null;
+                    || !FileSharing.CanSetAccess(File)) return null;
 
                 try
                 {
@@ -717,9 +717,9 @@ namespace ASC.Web.Files.Services.DocumentService
                     var fileSecurity = FileSecurity;
                     if (_configuration.Document.Info.File.RootFolderType == FolderType.USER
                         && !Equals(_configuration.Document.Info.File.RootFolderId, GlobalFolderHelper.FolderMy)
-                        && !fileSecurity.CanRead<T>(parent))
+                        && !fileSecurity.CanRead(parent))
                     {
-                        if (fileSecurity.CanRead<T>(_configuration.Document.Info.File))
+                        if (fileSecurity.CanRead(_configuration.Document.Info.File))
                         {
                             return new GobackConfig
                             {

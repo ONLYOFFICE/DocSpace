@@ -185,7 +185,7 @@ namespace ASC.Api.Documents
                 result.RootFolderType = FolderType.SHARE;
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var parentFolder = folderDao.GetFolder(file.FolderID);
-                if (!FileSecurity.CanRead<T>(parentFolder))
+                if (!FileSecurity.CanRead(parentFolder))
                 {
                     result.FolderId = GlobalFolderHelper.FolderShare;
                 }
