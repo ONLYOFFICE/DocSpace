@@ -31,9 +31,8 @@ class FilesFilter {
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
-    treeFolders = DEFAULT_FOLDER_PATH,
     authorType = DEFAULT_AUTHOR_TYPE,
-
+    treeFolders = DEFAULT_FOLDER_PATH
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -43,8 +42,8 @@ class FilesFilter {
     this.withSubfolders = withSubfolders;
     this.search = search;
     this.total = total;
-    this.treeFolders = treeFolders;
     this.authorType = authorType;
+    this.treeFolders = treeFolders;
   }
 
   getStartIndex = () => {
@@ -103,7 +102,6 @@ class FilesFilter {
           this.withSubfolders,
           this.search,
           this.authorType,
-
           this.treeFolders
         );
   }
@@ -117,7 +115,6 @@ class FilesFilter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
-      this.authorType === filter.authorType &&
       this.pageCount === filter.pageCount;
 
     return equals;
