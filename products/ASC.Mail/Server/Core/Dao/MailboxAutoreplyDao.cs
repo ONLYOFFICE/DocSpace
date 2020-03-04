@@ -163,7 +163,7 @@ namespace ASC.Mail.Core.Dao
     {
         public static DIHelper AddMailboxAutoreplyDaoService(this DIHelper services)
         {
-            services.TryAddScoped<MailboxAutoreply>();
+            services.TryAddScoped<MailboxAutoreplyDao>();
 
             return services;
         }

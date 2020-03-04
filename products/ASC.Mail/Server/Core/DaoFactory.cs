@@ -33,6 +33,7 @@ namespace ASC.Mail.Core
     {
         public AccountDao AccountDao { get; }
         public MailboxAutoreplyDao MailboxAutoreplyDao { get; }
+        public MailboxAutoreplyHistoryDao MailboxAutoreplyHistoryDao { get; }
         public MailboxDao MailboxDao { get; }
         public MailboxServerDao MailboxServerDao { get; }
         public MailboxDomainDao MailboxDomainDao { get; }
@@ -46,6 +47,7 @@ namespace ASC.Mail.Core
         public DaoFactory(
             AccountDao accountDao,
             MailboxAutoreplyDao mailboxAutoreplyDao,
+            MailboxAutoreplyHistoryDao mailboxAutoreplyHistoryDao,
             MailboxDao mailboxDao,
             MailboxServerDao mailboxServerDao,
             MailboxDomainDao mailboxDomainDao,
@@ -58,6 +60,7 @@ namespace ASC.Mail.Core
         {
             AccountDao = accountDao;
             MailboxAutoreplyDao = mailboxAutoreplyDao;
+            MailboxAutoreplyHistoryDao = mailboxAutoreplyHistoryDao;
             MailboxDao = mailboxDao;
             MailboxServerDao = mailboxServerDao;
             MailboxDomainDao = mailboxDomainDao;
@@ -82,6 +85,7 @@ namespace ASC.Mail.Core
                 .AddMailboxDomainDaoService()
                 .AddMailboxServerDaoService()
                 .AddMailboxAutoreplyDaoService()
+                .AddMailboxAutoreplyHistoryDaoService()
                 .AddMailboxDaoService()
                 .AddAccountDaoService()
                 .AddAlertDaoService()

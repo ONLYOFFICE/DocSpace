@@ -24,77 +24,93 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
+using ASC.Api.Core;
+using ASC.Common;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailboxAutoreplyHistoryDao : BaseDao, IMailboxAutoreplyHistoryDao
+    public class MailboxAutoreplyHistoryDao : BaseDao, IMailboxAutoreplyHistoryDao
     {
-        protected static ITable table = new MailTableFactory().Create<MailboxAutoreplyHistoryTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public MailboxAutoreplyHistoryDao(IDbManager dbManager, int tenant, string user)
-            : base(table, dbManager, tenant)
+        public MailboxAutoreplyHistoryDao(DbContextManager<MailDbContext> dbContext,
+            ApiContext apiContext,
+            SecurityContext securityContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
-
-        private const string WHERE_SENDING_DATE_LESS =
-            "TO_DAYS(UTC_TIMESTAMP) - TO_DAYS(" + MailboxAutoreplyHistoryTable.Columns.SendingDate + ")";
 
         public List<string> GetAutoreplyHistorySentEmails(int mailboxId, string email, int autoreplyDaysInterval)
         {
-            var query = new SqlQuery(MailboxAutoreplyHistoryTable.TABLE_NAME)
-                .Select(MailboxAutoreplyHistoryTable.Columns.SendingEmail)
-                .Where(MailboxAutoreplyHistoryTable.Columns.MailboxId, mailboxId)
-                .Where(MailboxAutoreplyHistoryTable.Columns.SendingEmail, email)
-                .Where(Exp.Lt(WHERE_SENDING_DATE_LESS, autoreplyDaysInterval));
+            var emails = MailDb.MailMailboxAutoreplyHistory
+                .Where(h => h.IdMailbox == mailboxId
+                    && h.SendingEmail == email
+                    && (DateTime.UtcNow - h.SendingDate).TotalDays <= autoreplyDaysInterval)
+                .Select(h => h.SendingEmail)
+                .ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToString(r[0]));
+            return emails;
         }
 
         public int SaveAutoreplyHistory(MailboxAutoreplyHistory autoreplyHistory)
         {
-            var query = new SqlInsert(MailboxAutoreplyHistoryTable.TABLE_NAME, true)
-                .InColumnValue(MailboxAutoreplyHistoryTable.Columns.MailboxId, autoreplyHistory.MailboxId)
-                .InColumnValue(MailboxAutoreplyHistoryTable.Columns.Tenant, autoreplyHistory.Tenant)
-                .InColumnValue(MailboxAutoreplyHistoryTable.Columns.SendingEmail, autoreplyHistory.SendingEmail)
-                .InColumnValue(MailboxAutoreplyHistoryTable.Columns.SendingDate, autoreplyHistory.SendingDate);
+            var model = new MailMailboxAutoreplyHistory
+            {
+                IdMailbox = autoreplyHistory.MailboxId,
+                Tenant = autoreplyHistory.Tenant,
+                SendingEmail = autoreplyHistory.SendingEmail,
+                SendingDate = autoreplyHistory.SendingDate
+            };
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailMailboxAutoreplyHistory.Add(model);
+
+            var count = MailDb.SaveChanges();
+
+            return count;
         }
 
         public int DeleteAutoreplyHistory(int mailboxId)
         {
-            var query = new SqlDelete(MailboxAutoreplyHistoryTable.TABLE_NAME)
-                .Where(MailboxAutoreplyHistoryTable.Columns.MailboxId, mailboxId)
-                .Where(MailboxAutoreplyHistoryTable.Columns.Tenant, Tenant);
+            var model = new MailMailboxAutoreplyHistory
+            {
+                IdMailbox = mailboxId,
+                Tenant = Tenant
+            };
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailMailboxAutoreplyHistory.Remove(model);
+
+            var count = MailDb.SaveChanges();
+
+            return count;
         }
 
-        protected MailboxAutoreplyHistory ToAutoreplyHistory(object[] r)
+        protected MailboxAutoreplyHistory ToAutoreplyHistory(MailMailboxAutoreplyHistory r)
         {
             var obj = new MailboxAutoreplyHistory
             {
-                MailboxId = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                SendingDate = Convert.ToDateTime(r[2]),
-                SendingEmail = Convert.ToString(r[3])
+                MailboxId = r.IdMailbox,
+                Tenant = r.Tenant,
+                SendingDate = r.SendingDate,
+                SendingEmail = r.SendingEmail
             };
 
             return obj;
         }
-    }*/
+    }
+
+    public static class MailboxAutoreplyHistoryDaoExtension
+    {
+        public static DIHelper AddMailboxAutoreplyHistoryDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<MailboxAutoreplyHistoryDao>();
+
+            return services;
+        }
+    }
 }
