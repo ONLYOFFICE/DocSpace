@@ -39,7 +39,7 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
 
-  const { t, folder } = props;
+  const { t, folder, title } = props;
 
   const createDocument = useCallback(
     () => toastr.info("New Document click"),
@@ -192,7 +192,7 @@ const SectionHeaderContent = props => {
 
   return (
     <StyledContainer isHeaderVisible={true}>
-      <Headline className='headline-header' type="content" truncate={true}>Files sample header</Headline>
+      <Headline className='headline-header' type="content" truncate={true}>{title}</Headline>
       {folder ? (
         <>
           <ContextMenuButton
@@ -235,6 +235,7 @@ const SectionHeaderContent = props => {
 const mapStateToProps = state => {
   return {
     isAdmin: isAdmin(state.auth.user),
+    title: state.files.selectedFolder.title
   };
 };
 
