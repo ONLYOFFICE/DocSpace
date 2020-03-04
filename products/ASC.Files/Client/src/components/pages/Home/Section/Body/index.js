@@ -4,16 +4,44 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   Row,
-  //toastr,
+  toastr,
   Icons,
   RowContainer
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
+import { api } from 'asc-web-common';
+import { fetchFiles } from '../../../../../store/files/actions';
+import { getFilterByLocation } from "../../../../../helpers/converters";
+import config from "../../../../../../package.json";
+
+const { FilesFilter } = api;
 
 //import i18n from '../../i18n';
 
 class SectionBodyContent extends React.PureComponent {
+
+  componentDidMount() {
+    const { fetchFiles } = this.props;
+
+    //TODO: use right algorithm, fix fetching in src/index.html
+
+    var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+    const match = window.location.pathname.match(re);
+
+    if (match && match.length > 0) {
+      const newFilter = getFilterByLocation(window.location);
+      if (newFilter) {
+        return fetchFiles(newFilter)
+          .catch(error => toastr.error(error));
+      } else {
+        const filter = FilesFilter.getDefault();
+
+        fetchFiles(filter)
+          .catch(error => toastr.error(error));
+      }
+    }
+  }
 
   render() {
     const { files, folders, viewer, user } = this.props;
@@ -103,11 +131,11 @@ const mapStateToProps = state => {
     folders: state.files.folders,
     viewer: state.auth.user,
     settings: state.auth.settings,
-    //filter: state.people.filter
+    filter: state.files.filter
   };
 };
 
 export default connect(
   mapStateToProps,
-  // { selectUser, deselectUser, setSelection, updateUserStatus, resetFilter, fetchPeople }
+  { fetchFiles }
 )(withRouter(withTranslation()(SectionBodyContent)));

@@ -64,13 +64,14 @@ class SectionFilterContent extends React.Component {
     if (!newFilter || newFilter.equals(filter)) return;
 
     onLoading(true);
-    fetchFiles(newFilter).finally(() => onLoading(false));
+    fetchFiles(newFilter)
+      .finally(() => onLoading(false));
   }
 
   onFilter = data => {
     const { onLoading, fetchFiles, filter } = this.props;
 
-    const filterType = getFilterType(data.filterValues) || FilterType.None;
+    const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
     const sortBy = data.sortId;
     const sortOrder =

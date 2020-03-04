@@ -1,6 +1,17 @@
-import { api, constants } from "asc-web-common";
+import { api, constants, history } from "asc-web-common";
+import {
+  FILTER_TYPE,
+  SEARCH_TYPE,
+  SEARCH,
+  SORT_BY,
+  SORT_ORDER,
+  PAGE,
+  PAGE_COUNT
+} from "../../helpers/constants";
+import config from "../../../package.json";
+
 const { FilterType, FileType } = constants;
-const { files } = api;
+const { files, FilesFilter } = api;
 
 export const SET_FOLDERS = "SET_FOLDERS";
 export const SET_FILES = "SET_FILES";
@@ -52,18 +63,46 @@ export function setRootFolders(rootFolders) {
   };
 }
 
-// export function setFilesFilter(filter) {
-//   return {
-//     type: SET_FILES_FILTER,
-//     filter
-//   };
-// }
+export function setFilesFilter(filter) {
+  setFilterUrl(filter);
+  return {
+    type: SET_FILES_FILTER,
+    filter
+  };
+}
+
+export function setFilterUrl(filter) {
+  const defaultFilter = FilesFilter.getDefault();
+  const params = [];
+
+  if (filter.filterType) {
+    params.push(`${FILTER_TYPE}=${filter.filterType}`);
+  }
+
+  if (filter.withSubfolders) {
+    params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
+  }
+
+  if (filter.search) {
+    params.push(`${SEARCH}=${filter.search.trim()}`);
+  }
+
+  if (filter.pageCount !== defaultFilter.pageCount) {
+    params.push(`${PAGE_COUNT}=${filter.pageCount}`);
+  }
+
+  params.push(`${PAGE}=${filter.page + 1}`);
+  params.push(`${SORT_BY}=${filter.sortBy}`);
+  params.push(`${SORT_ORDER}=${filter.sortOrder}`);
+
+  history.push(`${config.homepage}/filter?${params.join("&")}`);
+}
 
 export function fetchFiles(filter) {
   //TODO: add real API request, change algorithm
   return (dispatch, getState) => {
     let filterData = filter && filter.clone();
-    // dispatch(setFilesFilter(filterData));
+    dispatch(setFilesFilter(filterData));
     const { files: filesStore } = getState();
     const currentFilterType = filter.filterType;
     const fileType = getFileTypeByFilterType(currentFilterType);
@@ -75,8 +114,10 @@ export function fetchFiles(filter) {
     else {
       return files.getFolder(selectedFolderId)
         .then(data => {
-          const sortedFiles = data.files
-            .filter(file => file.fileType === fileType);
+          const sortedFiles = fileType 
+            ? data.files
+              .filter(file => file.fileType === fileType)
+            : data.files;
           dispatch(setFiles(sortedFiles));
         });
     }

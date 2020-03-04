@@ -1,7 +1,6 @@
 import {
   SEARCH_TYPE,
-  AUTHOR_TYPE,
-  FILE_TYPE,
+  FILTER_TYPE,
   SEARCH,
   SORT_BY,
   SORT_ORDER,
@@ -19,14 +18,11 @@ export function getFilterByLocation(location) {
 
   const defaultFilter = FilesFilter.getDefault();
 
-  const fileType =
-    (urlFilter[FILE_TYPE] && +urlFilter[FILE_TYPE]) ||
-    defaultFilter.fileType;
-  const authorType =
-    (urlFilter[AUTHOR_TYPE] && +urlFilter[AUTHOR_TYPE]) ||
-    defaultFilter.authorType;
-  const searchType = (urlFilter[SEARCH_TYPE] && +urlFilter[SEARCH_TYPE]) ||
-  defaultFilter.searchType;
+  const filterType =
+    (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
+    defaultFilter.filterType;
+  const withSubfolders = (urlFilter[SEARCH_TYPE] && +urlFilter[SEARCH_TYPE]) ||
+  defaultFilter.withSubfolders;
   const search = urlFilter[SEARCH] || defaultFilter.search;
   const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;
   const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
@@ -41,9 +37,8 @@ export function getFilterByLocation(location) {
     defaultFilter.total,
     sortBy,
     sortOrder,
-    fileType,
-    authorType,
-    searchType,
+    filterType,
+    withSubfolders,
     search
   );
 

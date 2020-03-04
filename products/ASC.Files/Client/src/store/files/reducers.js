@@ -3,8 +3,8 @@ import { api } from "asc-web-common";
 const { FilesFilter } = api;
 
 const initialState = {
-  files: [],
-  folders: [],
+  files: null,
+  folders: null,
   selection: [],
   selected: "none",
   selectedFolder: null,
