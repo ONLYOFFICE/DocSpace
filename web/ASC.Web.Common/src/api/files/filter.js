@@ -30,12 +30,7 @@ class FilesFilter {
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
-
-    myPath = DEFAULT_FOLDER_PATH,
-    sharedPath = DEFAULT_FOLDER_PATH,
-    commonPath = DEFAULT_FOLDER_PATH,
-    projectPath = DEFAULT_FOLDER_PATH,
-    recycleBinPath = DEFAULT_FOLDER_PATH,
+    treeFolders = DEFAULT_FOLDER_PATH,
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -45,11 +40,7 @@ class FilesFilter {
     this.withSubfolders = withSubfolders;
     this.search = search;
     this.total = total;
-    this.myPath = myPath;
-    this.sharedPath = sharedPath;
-    this.commonPath = commonPath;
-    this.projectPath = projectPath;
-    this.recycleBinPath = recycleBinPath;
+    this.treeFolders = treeFolders;
   }
 
   getStartIndex = () => {
@@ -106,11 +97,7 @@ class FilesFilter {
           this.withSubfolders,
           this.search,
 
-          this.myPath,
-          this.sharedPath,
-          this.commonPath,
-          this.projectPath,
-          this.recycleBinPath
+          this.treeFolders
         );
   }
 
