@@ -189,38 +189,29 @@ class TreeFolders extends React.Component {
     loopLeaf(treeData, level + 1);
   }
 
-  generateTreeNodes(treeNode) {
-    //const folderId = treeNode.props.id;
-    //const folderIndex = treeNode.props.pos;
-    //let arrayFolders;
-    //return new Promise(resolve => {
-    //  files
-    //    .getFolder(folderId)
-    //    .then(data => {
-    //      arrayFolders = data.folders;
-    //      let i = 0;
-    //      for (let item of arrayFolders) {
-    //        item["key"] = `${folderIndex}-${i}`;
-    //        i++;
-    //      }
-    //    })
-    //    .catch(err => console.log("generateTreeNodes err", err))
-    //    .finally(resolve(arrayFolders));
-    //});
-  }
+  generateTreeNodes = treeNode => {
+    const folderId = treeNode.props.id;
+    const folderIndex = treeNode.props.pos;
+    let arrayFolders;
+
+    return files.getFolder(folderId).then(data => {
+      arrayFolders = data.folders;
+      let i = 0;
+      for (let item of arrayFolders) {
+        item["key"] = `${folderIndex}-${i}`;
+        i++;
+      }
+      return arrayFolders;
+    });
+  };
 
   onLoadData = treeNode => {
     console.log("load data...", treeNode);
 
-    const treeNodes = this.generateTreeNodes(treeNode);
-    console.log("treeNodes", treeNodes);
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const treeData = [...this.state.treeData];
-        this.getNewTreeData(treeData, treeNode.props.eventKey, treeNodes, 10);
-        this.setState({ treeData });
-        resolve();
-      }, 500);
+    return this.generateTreeNodes(treeNode).then(folders => {
+      const treeData = [...this.state.treeData];
+      this.getNewTreeData(treeData, treeNode.props.eventKey, folders, 10);
+      this.setState({ treeData });
     });
   };
 
