@@ -76,12 +76,14 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public DaoFactory DaoFactory { get; }
+        public MailBoxSettingEngine MailBoxSettingEngine { get; }
 
         public MailboxEngine(DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
-            DaoFactory daoFactory)
+            DaoFactory daoFactory,
+            MailBoxSettingEngine mailBoxSettingEngine)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -90,6 +92,7 @@ namespace ASC.Mail.Core.Engine
             MailDb = dbContext.Get("mail");
 
             DaoFactory = daoFactory;
+            MailBoxSettingEngine = mailBoxSettingEngine;
         }
 
         public MailBoxData GetMailboxData(IMailboxExp exp)
@@ -169,110 +172,110 @@ namespace ASC.Mail.Core.Engine
             return false;
         }
 
-        //public MailBoxData GetDefaultMailboxData(string email, string password,
-        //    AuthorizationServiceType type, bool? imap, bool isNullNeeded)
-        //{
-        //    var address = new MailAddress(email);
+        public MailBoxData GetDefaultMailboxData(string email, string password,
+            AuthorizationServiceType type, bool? imap, bool isNullNeeded)
+        {
+            var address = new MailAddress(email);
 
-        //    var host = address.Host.ToLowerInvariant();
+            var host = address.Host.ToLowerInvariant();
 
-        //    if (type == AuthorizationServiceType.Google) host = Defines.GOOGLE_HOST;
+            if (type == AuthorizationServiceType.Google) host = Defines.GOOGLE_HOST;
 
-        //    MailBoxData initialMailbox = null;
+            MailBoxData initialMailbox = null;
 
-        //    if (imap.HasValue)
-        //    {
-        //        try
-        //        {
-        //            var settings = Factory.MailBoxSettingEngine.GetMailBoxSettings(host);
+            if (imap.HasValue)
+            {
+                try
+                {
+                    var settings = MailBoxSettingEngine.GetMailBoxSettings(host);
 
-        //            if (settings != null)
-        //            {
-        //                var outgoingServerLogin = "";
+                    if (settings != null)
+                    {
+                        var outgoingServerLogin = "";
 
-        //                var incommingType = imap.Value ? "imap" : "pop3";
+                        var incommingType = imap.Value ? "imap" : "pop3";
 
-        //                var incomingServer =
-        //                    settings.EmailProvider.IncomingServer
-        //                    .FirstOrDefault(serv =>
-        //                        serv.Type
-        //                        .ToLowerInvariant()
-        //                        .Equals(incommingType));
+                        var incomingServer =
+                            settings.EmailProvider.IncomingServer
+                            .FirstOrDefault(serv =>
+                                serv.Type
+                                .ToLowerInvariant()
+                                .Equals(incommingType));
 
-        //                var outgoingServer = settings.EmailProvider.OutgoingServer.FirstOrDefault() ?? new ClientConfigEmailProviderOutgoingServer();
+                        var outgoingServer = settings.EmailProvider.OutgoingServer.FirstOrDefault() ?? new ClientConfigEmailProviderOutgoingServer();
 
-        //                if (incomingServer != null && !string.IsNullOrEmpty(incomingServer.Username))
-        //                {
-        //                    var incomingServerLogin = address.ToLogin(incomingServer.Username);
+                        if (incomingServer != null && !string.IsNullOrEmpty(incomingServer.Username))
+                        {
+                            var incomingServerLogin = address.ToLogin(incomingServer.Username);
 
-        //                    if (!string.IsNullOrEmpty(outgoingServer.Username))
-        //                    {
-        //                        outgoingServerLogin = address.ToLogin(outgoingServer.Username);
-        //                    }
+                            if (!string.IsNullOrEmpty(outgoingServer.Username))
+                            {
+                                outgoingServerLogin = address.ToLogin(outgoingServer.Username);
+                            }
 
-        //                    initialMailbox = new MailBoxData
-        //                    {
-        //                        EMail = address,
-        //                        Name = "",
+                            initialMailbox = new MailBoxData
+                            {
+                                EMail = address,
+                                Name = "",
 
-        //                        Account = incomingServerLogin,
-        //                        Password = password,
-        //                        Server = host.ToHost(incomingServer.Hostname),
-        //                        Port = incomingServer.Port,
-        //                        Encryption = incomingServer.SocketType.ToEncryptionType(),
-        //                        SmtpEncryption = outgoingServer.SocketType.ToEncryptionType(),
-        //                        Authentication = incomingServer.Authentication.ToSaslMechanism(),
-        //                        SmtpAuthentication = outgoingServer.Authentication.ToSaslMechanism(),
-        //                        Imap = imap.Value,
+                                Account = incomingServerLogin,
+                                Password = password,
+                                Server = host.ToHost(incomingServer.Hostname),
+                                Port = incomingServer.Port,
+                                Encryption = incomingServer.SocketType.ToEncryptionType(),
+                                SmtpEncryption = outgoingServer.SocketType.ToEncryptionType(),
+                                Authentication = incomingServer.Authentication.ToSaslMechanism(),
+                                SmtpAuthentication = outgoingServer.Authentication.ToSaslMechanism(),
+                                Imap = imap.Value,
 
-        //                        SmtpAccount = outgoingServerLogin,
-        //                        SmtpPassword = password,
-        //                        SmtpServer = host.ToHost(outgoingServer.Hostname),
-        //                        SmtpPort = outgoingServer.Port,
-        //                        Enabled = true,
-        //                        TenantId = Tenant,
-        //                        UserId = UserId,
-        //                        BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
-        //                        OAuthType = (byte)type
-        //                    };
-        //                }
-        //            }
-        //        }
-        //        catch (Exception)
-        //        {
-        //            initialMailbox = null;
-        //        }
-        //    }
+                                SmtpAccount = outgoingServerLogin,
+                                SmtpPassword = password,
+                                SmtpServer = host.ToHost(outgoingServer.Hostname),
+                                SmtpPort = outgoingServer.Port,
+                                Enabled = true,
+                                TenantId = Tenant,
+                                UserId = UserId,
+                                BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
+                                OAuthType = (byte)type
+                            };
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    initialMailbox = null;
+                }
+            }
 
-        //    if (initialMailbox != null || isNullNeeded)
-        //    {
-        //        return initialMailbox;
-        //    }
+            if (initialMailbox != null || isNullNeeded)
+            {
+                return initialMailbox;
+            }
 
-        //    var isImap = imap.GetValueOrDefault(true);
-        //    return new MailBoxData
-        //    {
-        //        EMail = address,
-        //        Name = "",
-        //        Account = email,
-        //        Password = password,
-        //        Server = string.Format((isImap ? "imap.{0}" : "pop.{0}"), host),
-        //        Port = (isImap ? 993 : 110),
-        //        Encryption = isImap ? EncryptionType.SSL : EncryptionType.None,
-        //        SmtpEncryption = EncryptionType.None,
-        //        Imap = isImap,
-        //        SmtpAccount = email,
-        //        SmtpPassword = password,
-        //        SmtpServer = string.Format("smtp.{0}", host),
-        //        SmtpPort = 25,
-        //        Enabled = true,
-        //        TenantId = Tenant,
-        //        UserId = UserId,
-        //        BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
-        //        Authentication = SaslMechanism.Login,
-        //        SmtpAuthentication = SaslMechanism.Login
-        //    };
-        //}
+            var isImap = imap.GetValueOrDefault(true);
+            return new MailBoxData
+            {
+                EMail = address,
+                Name = "",
+                Account = email,
+                Password = password,
+                Server = string.Format((isImap ? "imap.{0}" : "pop.{0}"), host),
+                Port = (isImap ? 993 : 110),
+                Encryption = isImap ? EncryptionType.SSL : EncryptionType.None,
+                SmtpEncryption = EncryptionType.None,
+                Imap = isImap,
+                SmtpAccount = email,
+                SmtpPassword = password,
+                SmtpServer = string.Format("smtp.{0}", host),
+                SmtpPort = 25,
+                Enabled = true,
+                TenantId = Tenant,
+                UserId = UserId,
+                BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
+                Authentication = SaslMechanism.Login,
+                SmtpAuthentication = SaslMechanism.Login
+            };
+        }
 
         public MailboxStatus GetMailboxStatus(IMailboxExp exp)
         {
