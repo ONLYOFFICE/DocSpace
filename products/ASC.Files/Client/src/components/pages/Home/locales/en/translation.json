@@ -32,5 +32,9 @@
   "BySize": "Size",
   "ByAuthor": "Author",
   "DirectionAscLabel":"A-Z",
-  "DirectionDescLabel":"Z-A"
+  "DirectionDescLabel":"Z-A",
+  "CountPerPage": "{{count}} per page",
+  "PageOfTotalPage": "{{page}} of {{totalPage}}",
+  "PreviousPage": "Previous",
+  "NextPage": "Next"
 }

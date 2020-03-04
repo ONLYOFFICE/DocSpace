@@ -110,8 +110,10 @@ export function fetchFiles(filter) {
   //TODO: add real API request, change algorithm
   return (dispatch, getState) => {
     let filterData = filter && filter.clone();
-    dispatch(setFilesFilter(filterData));
     const { files: filesStore } = getState();
+    const totalFiles = filesStore.files.length;
+    filterData.total = totalFiles;
+    dispatch(setFilesFilter(filterData));
     const currentFilterType = filter.filterType;
     const fileType = getFileTypeByFilterType(currentFilterType);
     const selectedFolderId = filesStore.selectedFolder.id;
