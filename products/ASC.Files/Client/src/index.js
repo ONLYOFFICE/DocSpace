@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "./store/store";
-import { fetchMyFolder, fetchRootFolders } from "./store/files/actions";
+import { fetchMyFolder, fetchRootFolders, fetchFiles } from "./store/files/actions";
 import config from "../package.json";
 import "./custom.scss";
 import App from "./App";
@@ -28,7 +28,7 @@ if (token) {
 
       // if (match && match.length > 0) {
       //   const newFilter = getFilterByLocation(window.location);
-      //   return fetchPeople(newFilter, store.dispatch);
+      //   return fetchFiles(newFilter, store.dispatch);
       // }
 
       return Promise.resolve();
