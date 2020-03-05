@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { utils } from "asc-web-components";
-import { getRootFolders, setTreeFilter } from "../../../store/files/selectors";
+import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
 import { setFilter } from "../../../store/files/actions";
 
@@ -56,7 +56,7 @@ function mapStateToProps(state) {
     fakeNewDocuments,
     currentModule: currentFolderId,
     rootFolders,
-    filter: setTreeFilter(filter, rootFolders)
+    filter
   };
 }
 
