@@ -36,6 +36,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 using MimeKit;
+using ASC.Core;
 
 namespace ASC.Mail.Extensions
 {
@@ -165,6 +166,7 @@ namespace ASC.Mail.Extensions
         }
 
         public static MailMessageData CreateMailMessage(this MimeMessage message,
+            TenantManager tenantManager, CoreSettings coreSettings,
             int mailboxId = -1,
             FolderType folder = FolderType.Inbox,
             bool unread = false,
@@ -187,7 +189,7 @@ namespace ASC.Mail.Extensions
             mail.Date = MailUtil.IsDateCorrect(message.Date.UtcDateTime) ? message.Date.UtcDateTime : now;
 
             mail.MimeMessageId = (string.IsNullOrEmpty(message.MessageId)
-                ? MailUtil.CreateMessageId()
+                ? MailUtil.CreateMessageId(tenantManager, coreSettings)
                 : message.MessageId)
                 .Trim('<', '>');
 
@@ -251,7 +253,8 @@ namespace ASC.Mail.Extensions
             return mail;
         }
 
-        public static MailMessageData CreateCorruptedMesage(this MimeMessage message, 
+        public static MailMessageData CreateCorruptedMesage(this MimeMessage message,
+            TenantManager tenantManager, CoreSettings coreSettings,
             FolderType folder = FolderType.Inbox,
             bool unread = false, 
             string chainId = "", 
@@ -266,8 +269,10 @@ namespace ASC.Mail.Extensions
                 ? message.Date.UtcDateTime
                 : DateTime.UtcNow);
 
-            MailUtil.SkipErrors(() => mailMessage.MimeMessageId = (string.IsNullOrEmpty(message.MessageId) ? MailUtil.CreateMessageId() : message.MessageId)
-                .Trim('<', '>'));
+            MailUtil.SkipErrors(() => mailMessage.MimeMessageId = (string.IsNullOrEmpty(message.MessageId) 
+                ? MailUtil.CreateMessageId(tenantManager, coreSettings) 
+                : message.MessageId)
+                    .Trim('<', '>'));
 
             MailUtil.SkipErrors(() => mailMessage.ChainId = string.IsNullOrEmpty(chainId) ? mailMessage.MimeMessageId : chainId);
 

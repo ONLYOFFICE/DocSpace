@@ -37,10 +37,10 @@ using System.Web;
 using System.Xml;
 using ASC.Common.Logging;
 using ASC.Core;
-// using ASC.Mail.Data.Contracts;
 using ASC.Mail.Data.Imap;
+using ASC.Mail.Models;
 using ASC.Security.Cryptography;
-// using HtmlAgilityPack;
+using HtmlAgilityPack;
 using MimeKit;
 using Newtonsoft.Json;
 using File = System.IO.File;
@@ -367,19 +367,19 @@ namespace ASC.Mail.Utils
         /// <param name="text">[out] Text without html tags</param>
         /// <param name="maxLength" optional="true">max length of text</param>
         /// <returns>true if success</returns>
-        //public static bool TryExtractTextFromHtml(string html, out string text, int maxLength = 0)
-        //{
-        //    text = "";
-        //    try
-        //    {
-        //        text = ExtractTextFromHtml(html, maxLength);
-        //        return true;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
+        public static bool TryExtractTextFromHtml(string html, out string text, int maxLength = 0)
+        {
+            text = "";
+            try
+            {
+                text = ExtractTextFromHtml(html, maxLength);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         //if limit_length < 1 then text will be unlimited
         /// <summary>
@@ -389,149 +389,149 @@ namespace ASC.Mail.Utils
         /// <param name="maxLength" optional="true">max length of text</param>
         /// <returns>Text without html tags</returns>
         /// <exception cref="RecursionDepthException">Exception happens when in html contains too many recursion of unclosed tags.</exception>
-        //public static string ExtractTextFromHtml(string html, int maxLength = 0)
-        //{
-        //    if (string.IsNullOrEmpty(html))
-        //        return "";
+        public static string ExtractTextFromHtml(string html, int maxLength = 0)
+        {
+            if (string.IsNullOrEmpty(html))
+                return "";
 
-        //    var limit = maxLength < 1 ? html.Length : maxLength;
+            var limit = maxLength < 1 ? html.Length : maxLength;
 
-        //    var doc = new HtmlDocument();
-        //    doc.LoadHtml(html);
-        //    var outText = new StringBuilder(limit);
-        //    ConvertTo(doc.DocumentNode, outText, limit);
-        //    return outText.ToString().Trim();
-        //}
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+            var outText = new StringBuilder(limit);
+            ConvertTo(doc.DocumentNode, outText, limit);
+            return outText.ToString().Trim();
+        }
 
-        //private static void ConvertTo(HtmlNode node, StringBuilder outText, int limitLength)
-        //{
-        //    if (outText.Length >= limitLength) return;
+        private static void ConvertTo(HtmlNode node, StringBuilder outText, int limitLength)
+        {
+            if (outText.Length >= limitLength) return;
 
-        //    switch (node.NodeType)
-        //    {
-        //        case HtmlNodeType.Comment:
-        //            // Comments will not ouput.
-        //            break;
+            switch (node.NodeType)
+            {
+                case HtmlNodeType.Comment:
+                    // Comments will not ouput.
+                    break;
 
-        //        case HtmlNodeType.Document:
-        //            ConvertContentTo(node, outText, limitLength);
-        //            break;
+                case HtmlNodeType.Document:
+                    ConvertContentTo(node, outText, limitLength);
+                    break;
 
-        //        case HtmlNodeType.Text:
-        //            // Scripts and styles will not ouput.
-        //            var parentName = node.ParentNode.Name.ToLowerInvariant();
-        //            if ((parentName == "script") || (parentName == "style"))
-        //                break;
+                case HtmlNodeType.Text:
+                    // Scripts and styles will not ouput.
+                    var parentName = node.ParentNode.Name.ToLowerInvariant();
+                    if ((parentName == "script") || (parentName == "style"))
+                        break;
 
-        //            var html = ((HtmlTextNode) node).Text;
+                    var html = ((HtmlTextNode)node).Text;
 
-        //            if (HtmlNode.IsOverlappedClosingElement(html))
-        //                break;
+                    if (HtmlNode.IsOverlappedClosingElement(html))
+                        break;
 
-        //            html = html.Replace("&nbsp;", "");
+                    html = html.Replace("&nbsp;", "");
 
-        //            if (html.Trim().Length > 0)
-        //            {
-        //                html = RegexSurrogateCodePoint.Replace(html, "");
-        //                var text = HtmlEntity.DeEntitize(html);
+                    if (html.Trim().Length > 0)
+                    {
+                        html = RegexSurrogateCodePoint.Replace(html, "");
+                        var text = HtmlEntity.DeEntitize(html);
 
-        //                if (parentName == "a" &&
-        //                    node.ParentNode.HasAttributes &&
-        //                    node.ParentNode.Attributes["href"] != null &&
-        //                    !text.Equals(node.ParentNode.Attributes["href"].Value,
-        //                        StringComparison.InvariantCultureIgnoreCase))
-        //                {
-        //                    text = string.Format("{0} ({1})", text, node.ParentNode.Attributes["href"].Value);
-        //                }
+                        if (parentName == "a" &&
+                            node.ParentNode.HasAttributes &&
+                            node.ParentNode.Attributes["href"] != null &&
+                            !text.Equals(node.ParentNode.Attributes["href"].Value,
+                                StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            text = string.Format("{0} ({1})", text, node.ParentNode.Attributes["href"].Value);
+                        }
 
-        //                if (parentName == "p")
-        //                    text += "\r\n";
+                        if (parentName == "p")
+                            text += "\r\n";
 
-        //                var newLength = outText.Length + text.Length + 2;
-        //                if (limitLength > 0 && newLength >= limitLength)
-        //                {
-        //                    text += "\r\n";
-        //                    if (newLength != limitLength)
-        //                        text = text.Substring(0, text.Length - (newLength - limitLength));
-        //                    outText.Append(text);
-        //                    return;
-        //                }
+                        var newLength = outText.Length + text.Length + 2;
+                        if (limitLength > 0 && newLength >= limitLength)
+                        {
+                            text += "\r\n";
+                            if (newLength != limitLength)
+                                text = text.Substring(0, text.Length - (newLength - limitLength));
+                            outText.Append(text);
+                            return;
+                        }
 
-        //                outText.AppendLine(text);
-        //            }
-        //            break;
-        //        case HtmlNodeType.Element:
-        //            switch (node.Name)
-        //            {
-        //                case "br":
-        //                case "p":
-        //                    outText.Append("\r\n");
-        //                    break;
-        //            }
+                        outText.AppendLine(text);
+                    }
+                    break;
+                case HtmlNodeType.Element:
+                    switch (node.Name)
+                    {
+                        case "br":
+                        case "p":
+                            outText.Append("\r\n");
+                            break;
+                    }
 
-        //            if (node.HasChildNodes)
-        //            {
-        //                ConvertContentTo(node, outText, limitLength);
-        //            }
-        //            break;
-        //    }
-        //}
+                    if (node.HasChildNodes)
+                    {
+                        ConvertContentTo(node, outText, limitLength);
+                    }
+                    break;
+            }
+        }
 
-        //private static void ConvertContentTo(HtmlNode node, StringBuilder outText, int limitLength)
-        //{
-        //    foreach (var subnode in node.ChildNodes)
-        //    {
-        //        ConvertTo(subnode, outText, limitLength);
-        //    }
-        //}
+        private static void ConvertContentTo(HtmlNode node, StringBuilder outText, int limitLength)
+        {
+            foreach (var subnode in node.ChildNodes)
+            {
+                ConvertTo(subnode, outText, limitLength);
+            }
+        }
 
-        //public static bool HasUnsubscribeLink(string html)
-        //{
-        //    if (string.IsNullOrEmpty(html))
-        //        return false;
+        public static bool HasUnsubscribeLink(string html)
+        {
+            if (string.IsNullOrEmpty(html))
+                return false;
 
-        //    try
-        //    {
-        //        var doc = new HtmlDocument();
-        //        doc.LoadHtml(html);
+            try
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(html);
 
-        //        var hasUnsubscribe = doc.DocumentNode.SelectNodes("//a[@href]")
-        //            .Any(
-        //                link =>
-        //                    link.Attributes["href"].Value
-        //                        .IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1);
+                var hasUnsubscribe = doc.DocumentNode.SelectNodes("//a[@href]")
+                    .Any(
+                        link =>
+                            link.Attributes["href"].Value
+                                .IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1);
 
-        //        return hasUnsubscribe || html.IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+                return hasUnsubscribe || html.IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        //public static bool HasUnsubscribeLink(Stream htmlStream)
-        //{
-        //    try
-        //    {
-        //        if (htmlStream == null || htmlStream.Length == 0)
-        //            return false;
+        public static bool HasUnsubscribeLink(Stream htmlStream)
+        {
+            try
+            {
+                if (htmlStream == null || htmlStream.Length == 0)
+                    return false;
 
-        //        var doc = new HtmlDocument();
-        //        doc.Load(htmlStream);
+                var doc = new HtmlDocument();
+                doc.Load(htmlStream);
 
-        //        var hasUnsubscribe = doc.DocumentNode.SelectNodes("//a[@href]")
-        //            .Any(
-        //                link =>
-        //                    link.Attributes["href"].Value
-        //                        .IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1);
+                var hasUnsubscribe = doc.DocumentNode.SelectNodes("//a[@href]")
+                    .Any(
+                        link =>
+                            link.Attributes["href"].Value
+                                .IndexOf("unsubscribe", StringComparison.OrdinalIgnoreCase) != -1);
 
-        //        return hasUnsubscribe;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+                return hasUnsubscribe;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// Return encoding based on encoding name
@@ -584,26 +584,26 @@ namespace ASC.Mail.Utils
         /// <summary>
         /// Creates Rfc 2822 3.6.4 message-id.Syntax: id-left '@' id-right
         /// </summary>
-        public static string CreateMessageId(ILog log = null)
+        public static string CreateMessageId(TenantManager tenantManager, CoreSettings coreSettings, ILog log = null)
         {
             if (log == null)
                 log = new NullLog();
 
             var domain = "";
 
-            //try
-            //{
-            //    var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            try
+            {
+                var tenant = tenantManager.GetCurrentTenant();
 
-            //    if (tenant != null)
-            //        domain = tenant.GetTenantDomain();
-            //}
-            //catch (Exception ex)
-            //{
-            //    log.ErrorFormat("CreateMessageId: GetTenantDomain failed: Exception\r\n{0}\r\n", ex.ToString());
-            //}
+                if (tenant != null)
+                    domain = tenant.GetTenantDomain(coreSettings);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("CreateMessageId: GetTenantDomain failed: Exception\r\n{0}\r\n", ex.ToString());
+            }
 
-            //if (string.IsNullOrEmpty(domain))
+            if (string.IsNullOrEmpty(domain))
                 domain = System.Net.Dns.GetHostName();
 
             try
@@ -760,30 +760,31 @@ namespace ASC.Mail.Utils
             }
         }
 
-        //public static string GetIntroduction(string htmlBody)
-        //{
-        //    var introduction = string.Empty;
+        public static string GetIntroduction(string htmlBody)
+        {
+            var introduction = string.Empty;
 
-        //    if (string.IsNullOrEmpty(htmlBody))
-        //        return introduction;
+            if (string.IsNullOrEmpty(htmlBody))
+                return introduction;
 
-        //    try
-        //    {
-        //        introduction = ExtractTextFromHtml(htmlBody, 200);
-        //    }
-        //    catch (RecursionDepthException)
-        //    {
-        //        throw;
-        //    }
-        //    catch
-        //    {
-        //        introduction = (htmlBody.Length > 200 ? htmlBody.Substring(0, 200) : htmlBody);
-        //    }
+            try
+            {
+                introduction = ExtractTextFromHtml(htmlBody, 200);
+            }
+            //TODO: Check test for this exception on last version of library
+            //catch (RecursionDepthException)
+            //{
+            //    throw;
+            //}
+            catch
+            {
+                introduction = (htmlBody.Length > 200 ? htmlBody.Substring(0, 200) : htmlBody);
+            }
 
-        //    introduction = introduction.Replace("\n", " ").Replace("\r", " ").Trim();
+            introduction = introduction.Replace("\n", " ").Replace("\r", " ").Trim();
 
-        //    return introduction;
-        //}
+            return introduction;
+        }
 
         private static readonly DateTime DefaultMysqlMinimalDate = new DateTime(1975, 01, 01, 0, 0, 0); // Common decision of TLMail developers 
 
@@ -868,34 +869,34 @@ namespace ASC.Mail.Utils
             "postman"
         };
 
-        //public static bool IsMessageAutoGenerated(MailMessageData message)
-        //{
-        //    var isMassSending = false;
+        public static bool IsMessageAutoGenerated(MailMessageData message)
+        {
+            var isMassSending = false;
 
-        //    if (message.HeaderFieldNames != null &&
-        //        ListHeaderNames.Any(
-        //            h =>
-        //                message.HeaderFieldNames.AllKeys.FirstOrDefault(
-        //                    k => k.Equals(h, StringComparison.OrdinalIgnoreCase)) != null))
-        //    {
-        //        isMassSending = true;
-        //    }
-        //    else if (!string.IsNullOrEmpty(message.From) &&
-        //             ListFromTextToSkip.Any(f =>
-        //                 message.From.IndexOf(f, StringComparison.OrdinalIgnoreCase) != -1))
-        //    {
-        //        isMassSending = true;
-        //    }
-        //    else if (message.HtmlBodyStream != null && message.HtmlBodyStream.Length > 0)
-        //    {
-        //        isMassSending = HasUnsubscribeLink(message.HtmlBodyStream);
-        //    }
-        //    else if (!string.IsNullOrEmpty(message.HtmlBody))
-        //    {
-        //        isMassSending = HasUnsubscribeLink(message.HtmlBody);
-        //    }
+            if (message.HeaderFieldNames != null &&
+                ListHeaderNames.Any(
+                    h =>
+                        message.HeaderFieldNames.AllKeys.FirstOrDefault(
+                            k => k.Equals(h, StringComparison.OrdinalIgnoreCase)) != null))
+            {
+                isMassSending = true;
+            }
+            else if (!string.IsNullOrEmpty(message.From) &&
+                     ListFromTextToSkip.Any(f =>
+                         message.From.IndexOf(f, StringComparison.OrdinalIgnoreCase) != -1))
+            {
+                isMassSending = true;
+            }
+            else if (message.HtmlBodyStream != null && message.HtmlBodyStream.Length > 0)
+            {
+                isMassSending = HasUnsubscribeLink(message.HtmlBodyStream);
+            }
+            else if (!string.IsNullOrEmpty(message.HtmlBody))
+            {
+                isMassSending = HasUnsubscribeLink(message.HtmlBody);
+            }
 
-        //    return isMassSending;
-        //}
+            return isMassSending;
+        }
     }
 }
