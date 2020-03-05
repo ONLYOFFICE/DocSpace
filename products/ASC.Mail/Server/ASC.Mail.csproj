@@ -38,6 +38,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
     <PackageReference Include="MimeKit" Version="2.5.1" />
+    <PackageReference Include="RestSharp" Version="106.10.1" />
     <PackageReference Include="Ude.NetStandard" Version="1.2.0" />
   </ItemGroup>
   

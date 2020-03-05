@@ -28,43 +28,43 @@ using System;
 using System.Net;
 using ASC.Mail.Exceptions;
 using Newtonsoft.Json.Linq;
-//using RestSharp;
+using RestSharp;
 
 namespace ASC.Mail.Extensions
 {
     static class RestClientExtensions
     {
-        //public static IRestResponse ExecuteSafe(this RestClient client, RestRequest request)
-        //{
-        //    IRestResponse response;
-        //    try
-        //    {
-        //        response = client.Execute(request);
+        public static IRestResponse ExecuteSafe(this RestClient client, RestRequest request)
+        {
+            IRestResponse response;
+            try
+            {
+                response = client.Execute(request);
 
-        //        if (response.StatusCode == HttpStatusCode.InternalServerError &&
-        //            response.ErrorException == null &&
-        //            !string.IsNullOrEmpty(response.Content))
-        //        {
-        //            try
-        //            {
-        //                var json = JObject.Parse(response.Content);
-        //                if (json == null || json["error"] == null || json["error"]["message"] == null)
-        //                    return response;
+                if (response.StatusCode == HttpStatusCode.InternalServerError &&
+                    response.ErrorException == null &&
+                    !string.IsNullOrEmpty(response.Content))
+                {
+                    try
+                    {
+                        var json = JObject.Parse(response.Content);
+                        if (json == null || json["error"] == null || json["error"]["message"] == null)
+                            return response;
 
-        //                response.ErrorException = new ApiHelperException(json["error"]["message"].ToString(), response.StatusCode, response.Content);
-        //            }
-        //            catch
-        //            {
-        //                // ignored
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        response = new RestResponse {ErrorException = ex};
-        //    }
+                        response.ErrorException = new ApiHelperException(json["error"]["message"].ToString(), response.StatusCode, response.Content);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response = new RestResponse { ErrorException = ex };
+            }
 
-        //    return response;
-        //}
+            return response;
+        }
     }
 }

@@ -251,61 +251,61 @@ namespace ASC.Mail.Core.Engine
         //    }
         //}
 
-        //public void SaveAutoreplyHistory(MailBoxData account, MailMessage messageItem)
-        //{
-        //    var autoReplyHistory = new MailboxAutoreplyHistory
-        //    {
-        //        MailboxId = account.MailBoxId,
-        //        SendingDate = DateTime.UtcNow,
-        //        SendingEmail = new MailAddress(messageItem.To).Address,
-        //        Tenant = account.TenantId
-        //    };
+        public void SaveAutoreplyHistory(MailBoxData account, MailMessageData messageItem)
+        {
+            var autoReplyHistory = new MailboxAutoreplyHistory
+            {
+                MailboxId = account.MailBoxId,
+                SendingDate = DateTime.UtcNow,
+                SendingEmail = new MailAddress(messageItem.To).Address,
+                Tenant = account.TenantId
+            };
 
-        //    DaoFactory.MailboxAutoreplyHistoryDao.SaveAutoreplyHistory(autoReplyHistory);
-        //}
+            DaoFactory.MailboxAutoreplyHistoryDao.SaveAutoreplyHistory(autoReplyHistory);
+        }
 
         #region .Private
 
-        //private MailMessage CreateAutoreply(MailBoxData account, MailMessage messageItem, string autoreplyEmail)
-        //{
-        //    var mailMessage = new MailMessage();
-        //    var stringBuilder = new StringBuilder(account.MailAutoreply.Subject);
+        private MailMessageData CreateAutoreply(MailBoxData account, MailMessageData messageItem, string autoreplyEmail)
+        {
+            var mailMessage = new MailMessageData();
+            var stringBuilder = new StringBuilder(account.MailAutoreply.Subject);
 
-        //    if (!string.IsNullOrEmpty(account.MailAutoreply.Subject))
-        //        stringBuilder.Append(" ");
+            if (!string.IsNullOrEmpty(account.MailAutoreply.Subject))
+                stringBuilder.Append(" ");
 
-        //    mailMessage.Subject = stringBuilder.AppendFormat("Re: {0}", messageItem.Subject).ToString();
-        //    mailMessage.HtmlBody = account.MailAutoreply.Html;
-        //    mailMessage.MimeReplyToId = messageItem.MimeMessageId;
-        //    mailMessage.To = messageItem.From;
-        //    mailMessage.From = autoreplyEmail ?? account.EMail.ToString();
+            mailMessage.Subject = stringBuilder.AppendFormat("Re: {0}", messageItem.Subject).ToString();
+            mailMessage.HtmlBody = account.MailAutoreply.Html;
+            mailMessage.MimeReplyToId = messageItem.MimeMessageId;
+            mailMessage.To = messageItem.From;
+            mailMessage.From = autoreplyEmail ?? account.EMail.ToString();
 
-        //    if (account.MailSignature == null)
-        //    {
-        //        var signature = DaoFactory.MailboxSignatureDao.GetSignature(account.MailBoxId);
+            if (account.MailSignature == null)
+            {
+                var signature = DaoFactory.MailboxSignatureDao.GetSignature(account.MailBoxId);
 
-        //        if (signature != null)
-        //        {
-        //            account.MailSignature = new MailSignatureData(signature.MailboxId, signature.Tenant, signature.Html,
-        //                signature.IsActive);
-        //        }
-        //        else
-        //        {
-        //            account.MailSignature = new MailSignatureData(account.MailBoxId, account.TenantId, "", false);
-        //        }
-        //    }
+                if (signature != null)
+                {
+                    account.MailSignature = new MailSignatureData(signature.MailboxId, signature.Tenant, signature.Html,
+                        signature.IsActive);
+                }
+                else
+                {
+                    account.MailSignature = new MailSignatureData(account.MailBoxId, account.TenantId, "", false);
+                }
+            }
 
-        //    if (account.MailSignature != null && account.MailSignature.IsActive)
-        //    {
-        //        mailMessage.HtmlBody = new StringBuilder(mailMessage.HtmlBody).AppendFormat(
-        //            @"<div class='tlmail_signature' mailbox_id='{0}'
-        //                 style='font-family:open sans,sans-serif; font-size:12px; margin:0px;'>
-        //                 <div>{1}</div>
-        //              </div>",
-        //            account.MailBoxId, account.MailSignature.Html).ToString();
-        //    }
-        //    return mailMessage;
-        //}
+            if (account.MailSignature != null && account.MailSignature.IsActive)
+            {
+                mailMessage.HtmlBody = new StringBuilder(mailMessage.HtmlBody).AppendFormat(
+                    @"<div class='tlmail_signature' mailbox_id='{0}'
+                         style='font-family:open sans,sans-serif; font-size:12px; margin:0px;'>
+                         <div>{1}</div>
+                      </div>",
+                    account.MailBoxId, account.MailSignature.Html).ToString();
+            }
+            return mailMessage;
+        }
 
         private bool HasMailboxAutoreplyHistory(MailBoxData account, string email)
         {

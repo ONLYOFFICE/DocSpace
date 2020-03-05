@@ -30,7 +30,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Data.Storage;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 
@@ -38,91 +37,94 @@ namespace ASC.Mail.Extensions
 {
     public static class MailBoxExtensions
     {
-        //public static bool IsUserTerminated(this MailBoxData mailbox)
-        //{
-        //    try
-        //    {
-        //        CoreContext.TenantManager.SetCurrentTenant(mailbox.TenantId);
+        public static bool IsUserTerminated(this MailBoxData mailbox,
+            TenantManager tenantManager, UserManager userManager)
+        {
+            try
+            {
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
-        //        var user = CoreContext.UserManager.GetUsers(new Guid(mailbox.UserId));
+                var user = userManager.GetUsers(new Guid(mailbox.UserId));
 
-        //        return user.Status == EmployeeStatus.Terminated;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+                return user.Status == EmployeeStatus.Terminated;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        //public static bool IsUserRemoved(this MailBoxData mailbox)
-        //{
-        //    try
-        //    {
-        //        CoreContext.TenantManager.SetCurrentTenant(mailbox.TenantId);
-        //        Guid user;
-        //        if (!Guid.TryParse(mailbox.UserId, out user))
-        //            return true;
+        public static bool IsUserRemoved(this MailBoxData mailbox,
+            TenantManager tenantManager, UserManager userManager)
+        {
+            try
+            {
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
-        //        return !CoreContext.UserManager.UserExists(user) || CoreContext.UserManager.IsSystemUser(user);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return false;
-        //    }
-        //}
+                if (!Guid.TryParse(mailbox.UserId, out Guid user))
+                    return true;
 
-        //public static UserInfo GetUserInfo(this MailBoxData mailbox)
-        //{
-        //    try
-        //    {
-        //        CoreContext.TenantManager.SetCurrentTenant(mailbox.TenantId);
-        //        var userInfo = CoreContext.UserManager.GetUsers(new Guid(mailbox.UserId));
+                return !userManager.UserExists(user) || userManager.IsSystemUser(user);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
-        //        return userInfo;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
+        public static UserInfo GetUserInfo(this MailBoxData mailbox,
+            TenantManager tenantManager, UserManager userManager)
+        {
+            try
+            {
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
+                var userInfo = userManager.GetUsers(new Guid(mailbox.UserId));
 
-        //public static Defines.TariffType GetTenantStatus(this MailBoxData mailbox, int tenantOverdueDays,
-        //    string httpContextScheme, ILog log = null)
-        //{
-        //    log = log ?? new NullLog();
+                return userInfo;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
-        //    Defines.TariffType type;
+        public static Defines.TariffType GetTenantStatus(this MailBoxData mailbox,
+            TenantManager tenantManager, SecurityContext securityContext, ApiHelper apiHelper,
+            int tenantOverdueDays, ILog log = null)
+        {
+            log = log ?? new NullLog();
 
-        //    try
-        //    {
-        //        CoreContext.TenantManager.SetCurrentTenant(mailbox.TenantId);
+            Defines.TariffType type;
 
-        //        var tenantInfo = CoreContext.TenantManager.GetCurrentTenant();
+            try
+            {
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
-        //        if (tenantInfo.Status == TenantStatus.RemovePending)
-        //            return Defines.TariffType.LongDead;
+                var tenantInfo = tenantManager.GetCurrentTenant();
 
-        //        try
-        //        {
-        //            SecurityContext.AuthenticateMe(tenantInfo.OwnerId);
-        //        }
-        //        catch (InvalidCredentialException)
-        //        {
-        //            SecurityContext.AuthenticateMe(new Guid(mailbox.UserId));
-        //        }
+                if (tenantInfo.Status == TenantStatus.RemovePending)
+                    return Defines.TariffType.LongDead;
 
-        //        var apiHelper = new ApiHelper(httpContextScheme);
-        //        type = apiHelper.GetTenantTariff(tenantOverdueDays);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
-        //            mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-        //        type = Defines.TariffType.Active;
-        //    }
+                try
+                {
+                    securityContext.AuthenticateMe(tenantInfo.OwnerId);
+                }
+                catch (InvalidCredentialException)
+                {
+                    securityContext.AuthenticateMe(new Guid(mailbox.UserId));
+                }
 
-        //    return type;
-        //}
+                type = apiHelper.GetTenantTariff(tenantOverdueDays);
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
+                    mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                type = Defines.TariffType.Active;
+            }
+
+            return type;
+        }
 
         //public static bool IsTenantQuotaEnded(this MailBoxData mailbox, long minBalance, ILog log = null)
         //{
@@ -149,32 +151,32 @@ namespace ASC.Mail.Extensions
         //    return quotaEnded;
         //}
 
-        //public static bool IsCrmAvailable(this MailBoxData mailbox,
-        //    string httpContextScheme, ILog log = null)
-        //{
-        //    log = log ?? new NullLog();
+        public static bool IsCrmAvailable(this MailBoxData mailbox,
+            TenantManager tenantManager, SecurityContext securityContext, ApiHelper apiHelper,
+            ILog log = null)
+        {
+            log = log ?? new NullLog();
 
-        //    try
-        //    {
-        //        CoreContext.TenantManager.SetCurrentTenant(mailbox.TenantId);
+            try
+            {
+                tenantManager.SetCurrentTenant(mailbox.TenantId);
 
-        //        var tenantInfo = CoreContext.TenantManager.GetCurrentTenant();
+                var tenantInfo = tenantManager.GetCurrentTenant();
 
-        //        if (tenantInfo.Status == TenantStatus.RemovePending)
-        //            return false;
+                if (tenantInfo.Status == TenantStatus.RemovePending)
+                    return false;
 
-        //        SecurityContext.AuthenticateMe(new Guid(mailbox.UserId));
+                securityContext.AuthenticateMe(new Guid(mailbox.UserId));
 
-        //        var apiHelper = new ApiHelper(httpContextScheme);
-        //        return apiHelper.IsCrmModuleAvailable();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
-        //            mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
-        //    }
+                return apiHelper.IsCrmModuleAvailable();
+            }
+            catch (Exception ex)
+            {
+                log.ErrorFormat("GetTenantStatus(Tenant={0}, User='{1}') Exception: {2}",
+                    mailbox.TenantId, mailbox.UserId, ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+            }
 
-        //    return true;
-        //}
+            return true;
+        }
     }
 }
