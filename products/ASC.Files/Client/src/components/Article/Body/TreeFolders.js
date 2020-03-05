@@ -2,7 +2,7 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr } from "asc-web-components";
 import { fetchFolder } from "../../../store/files/actions";
 import store from "../../../store/store";
-import { api } from "asc-web-common";
+import { api, history } from "asc-web-common";
 const { files } = api;
 
 class TreeFolders extends React.Component {
@@ -10,6 +10,7 @@ class TreeFolders extends React.Component {
     super(props);
 
     const treeData = props.data;
+    console.log("history", history);
 
     this.state = { treeData };
   }
@@ -56,6 +57,8 @@ class TreeFolders extends React.Component {
 
   onSelect = data => {
     //console.log("onSelect", data);
+    //history.push(`/products/files/filter?folder=${data[0]}`);
+    //history.push(`/##${data[0]}`);
     fetchFolder(data[0], store.dispatch);
 
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);

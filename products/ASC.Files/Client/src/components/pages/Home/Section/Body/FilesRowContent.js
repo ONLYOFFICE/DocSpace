@@ -3,8 +3,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
 import { renameFolder, updateFile } from '../../../../../store/files/actions';
+import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 
 class FilesRowContent extends React.PureComponent {
 
@@ -21,27 +22,25 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  onClickUpdateFile = () => {
-    const { editingId, updateFile, renameFolder, item } = this.props;
+  updateFile = () => {
+    const { editingId, updateFile, renameFolder, item, onEditComplete } = this.props;
     const { itemTitle } = this.state;
 
+    const originalTitle = item.fileExst
+      ? item.title.split('.').slice(0, -1).join('.')
+      : item.title;
+
     this.setState({ editingId: -1 }, () => {
+      if (originalTitle === itemTitle)
+        return onEditComplete();
+
       item.fileExst
         ? updateFile(editingId, itemTitle)
-        : renameFolder(editingId, itemTitle);
+          .then(() => onEditComplete())
+        : renameFolder(editingId, itemTitle)
+          .then(() => onEditComplete());
     });
   };
-
-  /* onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      this.onClickUpdateFile();
-    }
-  }; */
-
-  componentDidMount() {
-    /* window.addEventListener('keydown', this.onKeyPress);
-    window.addEventListener('keyup', this.onKeyPress); */
-  }
 
   componentDidUpdate(prevProps) {
     const { editingId } = this.props;
@@ -51,17 +50,21 @@ class FilesRowContent extends React.PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    /* window.removeEventListener('keydown', this.onKeyPress);
-    window.removeEventListener('keyup', this.onKeyPress); */
-  }
-
   renameTitle = e => {
     this.setState({ itemTitle: e.target.value });
   }
 
-  onClickCancelUpdateFile = () => {
-    this.setState({ editingId: -1 });
+  cancelUpdateFile = () => {
+    this.setState({ editingId: -1 }, () =>
+      this.props.onEditComplete());
+  }
+
+  onKeyUpUpdateFile = e => {
+    if (e.keyCode === 13)
+      return this.updateFile()
+
+    if (e.keyCode === 27)
+      return this.cancelUpdateFile()
   }
 
   render() {
@@ -123,8 +126,8 @@ class FilesRowContent extends React.PureComponent {
 
     const fileOwner = (this.props.viewer.id === createdBy.id && "Me") || createdBy.displayName;
     const createdDate = new Date(created).toLocaleString("EN-US");
-    const notConverted = ['.pdf', '.zip', '.mp3', '.mp4'];
-    const canEdit = fileExst && notConverted.includes(fileExst) ? false : true;
+    const canEditFile = fileExst && canWebEdit(fileExst);
+    const canConvertFile = fileExst && canConvert(fileExst);
 
     const okIcon = <Icons.CheckIcon
       className='edit-ok-icon'
@@ -151,19 +154,20 @@ class FilesRowContent extends React.PureComponent {
           tabIndex={1}
           isAutoFocussed={true}
           onChange={this.renameTitle}
+          onKeyUp={this.onKeyUpUpdateFile}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.onClickUpdateFile}
+          onClick={this.updateFile}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.onClickCancelUpdateFile}
+          onClick={this.cancelUpdateFile}
           icon={cancelIcon}
         />
       </EditingWrapper>)
@@ -197,7 +201,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {fileStatus === 4 &&
+                {canConvertFile &&
                   <Icons.FileActionsConvertIcon
                     className='badge'
                     size='small'
@@ -205,7 +209,7 @@ class FilesRowContent extends React.PureComponent {
                     color='#A3A9AE'
                   />
                 }
-                {canEdit &&
+                {canEditFile &&
                   <Icons.AccessEditIcon
                     className='badge'
                     size='small'
