@@ -51,6 +51,7 @@ namespace ASC.Mail.Core
         public AttachmentEngine AttachmentEngine { get; }
         public CacheEngine CacheEngine { get; }
         public AutoreplyEngine AutoreplyEngine { get; }
+        public CalendarEngine CalendarEngine { get; }
 
         public EngineFactory(
             AccountEngine accountEngine,
@@ -60,7 +61,8 @@ namespace ASC.Mail.Core
             TagEngine tagEngine,
             AttachmentEngine attachmentEngine,
             CacheEngine cacheEngine,
-            AutoreplyEngine autoreplyEngine
+            AutoreplyEngine autoreplyEngine,
+            CalendarEngine calendarEngine
             )
         {
             AccountEngine = accountEngine;
@@ -71,6 +73,7 @@ namespace ASC.Mail.Core
             AttachmentEngine = attachmentEngine;
             CacheEngine = cacheEngine;
             AutoreplyEngine = autoreplyEngine;
+            CalendarEngine = calendarEngine;
         }
     }
 
@@ -78,7 +81,6 @@ namespace ASC.Mail.Core
     {
         public static DIHelper AddEngineFactoryService(this DIHelper services)
         {
-            //services.TryAddSingleton<UserManagerConstants>();
             services.TryAddScoped<EngineFactory>();
 
             return services
@@ -91,7 +93,8 @@ namespace ASC.Mail.Core
                 .AddDisplayImagesAddressEngineService()
                 .AddSignatureEngineService()
                 .AddTagEngineService()
-                .AddAttachmentEngineService();
+                .AddAttachmentEngineService()
+                .AddCalendarEngineService();
         }
     }
 }
