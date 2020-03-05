@@ -3,7 +3,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
 import { renameFolder, updateFile } from '../../../../../store/files/actions';
 
 class FilesRowContent extends React.PureComponent {
@@ -22,13 +22,22 @@ class FilesRowContent extends React.PureComponent {
   }
 
   updateFile = () => {
-    const { editingId, updateFile, renameFolder, item } = this.props;
+    const { editingId, updateFile, renameFolder, item, onEditComplete } = this.props;
     const { itemTitle } = this.state;
 
+    const originalTitle = item.fileExst
+      ? item.title.split('.').slice(0, -1).join('.')
+      : item.title;
+
     this.setState({ editingId: -1 }, () => {
+      if (originalTitle === itemTitle)
+        return onEditComplete();
+
       item.fileExst
         ? updateFile(editingId, itemTitle)
-        : renameFolder(editingId, itemTitle);
+          .then(() => onEditComplete())
+        : renameFolder(editingId, itemTitle)
+          .then(() => onEditComplete());
     });
   };
 
@@ -45,13 +54,14 @@ class FilesRowContent extends React.PureComponent {
   }
 
   cancelUpdateFile = () => {
-    this.setState({ editingId: -1 });
+    this.setState({ editingId: -1 }, () =>
+      this.props.onEditComplete());
   }
 
   onKeyUpUpdateFile = e => {
-    if (e.keyCode === 13) 
+    if (e.keyCode === 13)
       return this.updateFile()
-      
+
     if (e.keyCode === 27)
       return this.cancelUpdateFile()
   }
