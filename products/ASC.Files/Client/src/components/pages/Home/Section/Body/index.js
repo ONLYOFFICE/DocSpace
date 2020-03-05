@@ -111,7 +111,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, user } = this.props;
+    const { files, folders, viewer, user, parentId } = this.props;
     const items = [...folders, ...files];
 
     return items.length > 0 ? (
@@ -143,9 +143,9 @@ class SectionBodyContent extends React.PureComponent {
           );
         })}
       </RowContainer>
-    ) : (
-        <EmptyFolderContainer />
-      );
+    ) : parentId !== 0 ? (
+        <EmptyFolderContainer parentId={parentId} />
+      ) : <a>RootFolderContainer</a>;
   }
 }
 
@@ -161,7 +161,8 @@ const mapStateToProps = state => {
     folders: state.files.folders,
     viewer: state.auth.user,
     settings: state.auth.settings,
-    filter: state.files.filter
+    filter: state.files.filter,
+    parentId: state.files.selectedFolder.parentId
   };
 };
 
