@@ -26,7 +26,7 @@ namespace ASC.Common.DependencyInjection
 
     public static class AutofacExtension
     {
-        public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, string currentDir)
+        public static IContainer AddAutofac(this IServiceCollection services, IConfiguration configuration, string currentDir, IEnumerable<string> modules = null)
         {
             var folder = configuration["core:products:folder"];
             var subfolder = configuration["core:products:subfolder"];
@@ -42,7 +42,7 @@ namespace ASC.Common.DependencyInjection
             }
 
             var builder = new ContainerBuilder();
-            var modules = new string[] { "autofac.json", "autofac.products.json", "autofac.consumers.json" };
+            modules = modules ?? new string[] { "autofac.json", "autofac.products.json", "autofac.consumers.json" };
 
             foreach (var p in modules)
             {
