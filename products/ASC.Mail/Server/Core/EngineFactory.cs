@@ -52,6 +52,7 @@ namespace ASC.Mail.Core
         public CacheEngine CacheEngine { get; }
         public AutoreplyEngine AutoreplyEngine { get; }
         public CalendarEngine CalendarEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
 
         public EngineFactory(
             AccountEngine accountEngine,
@@ -62,7 +63,8 @@ namespace ASC.Mail.Core
             AttachmentEngine attachmentEngine,
             CacheEngine cacheEngine,
             AutoreplyEngine autoreplyEngine,
-            CalendarEngine calendarEngine
+            CalendarEngine calendarEngine,
+            QuotaEngine quotaEngine
             )
         {
             AccountEngine = accountEngine;
@@ -74,6 +76,7 @@ namespace ASC.Mail.Core
             CacheEngine = cacheEngine;
             AutoreplyEngine = autoreplyEngine;
             CalendarEngine = calendarEngine;
+            QuotaEngine = quotaEngine;
         }
     }
 
@@ -94,7 +97,8 @@ namespace ASC.Mail.Core
                 .AddSignatureEngineService()
                 .AddTagEngineService()
                 .AddAttachmentEngineService()
-                .AddCalendarEngineService();
+                .AddCalendarEngineService()
+                .AddQuotaEngineService();
         }
     }
 }
