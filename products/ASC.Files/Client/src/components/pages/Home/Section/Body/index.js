@@ -2,6 +2,7 @@ import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
+import isEqual from "lodash/isEqual";
 import {
   Row,
   toastr,
@@ -11,7 +12,7 @@ import {
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import { api } from 'asc-web-common';
-import { fetchFiles } from '../../../../../store/files/actions';
+import { fetchFiles, updateFile } from '../../../../../store/files/actions';
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import config from "../../../../../../package.json";
 
@@ -20,6 +21,14 @@ const { FilesFilter } = api;
 //import i18n from '../../i18n';
 
 class SectionBodyContent extends React.PureComponent {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      renamingId: -1
+    };
+  }
 
   componentDidMount() {
     const { fetchFiles } = this.props;
@@ -43,12 +52,14 @@ class SectionBodyContent extends React.PureComponent {
     }
   }
 
-  render() {
-    const { files, folders, viewer, user } = this.props;
+  onClickRename = (itemId) => {
+    this.setState({
+      renamingId: itemId
+    });
+  };
 
-    const items = [...folders, ...files];
-
-    const fakeContext = [
+  getFilesContextOptions = (item, viewer) => {
+    return [
       {
         key: "sharing-settings",
         label: "Sharing settings",
@@ -74,8 +85,8 @@ class SectionBodyContent extends React.PureComponent {
       {
         key: "rename",
         label: "Rename",
-        onClick: () => { },
-        disabled: true
+        onClick: this.onClickRename.bind(this, item.id),
+        disabled: false
       },
       {
         key: "delete",
@@ -83,12 +94,30 @@ class SectionBodyContent extends React.PureComponent {
         onClick: () => { },
         disabled: true
       },
-    ];
+    ]
+  };
+
+  needForUpdate = (currentProps, nextProps) => {
+    if (currentProps.checked !== nextProps.checked) {
+      return true;
+    }
+    if (currentProps.editing !== nextProps.editing) {
+      return true;
+    }
+    if (!isEqual(currentProps.data, nextProps.data)) {
+      return true;
+    }
+    return false;
+  };
+
+  render() {
+    const { files, folders, viewer, user } = this.props;
+    const items = [...folders, ...files];
 
     return items.length > 0 ? (
       <RowContainer useReactWindow={false}>
         {items.map(item => {
-          const contextOptions = fakeContext || this.getUserContextOptions(user, viewer).filter(o => o);
+          const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
           const contextOptionsProps = !contextOptions.length
             ? {}
             : { contextOptions };
@@ -104,11 +133,12 @@ class SectionBodyContent extends React.PureComponent {
               data={item}
               element={element}
               onSelect={() => { }}
+              editing={this.state.renamingId}
               {...checkedProps}
               {...contextOptionsProps}
-              needForUpdate={() => { }}
+              needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} />
+              <FilesRowContent item={item} viewer={viewer} editingId={this.state.renamingId} />
             </Row>
           );
         })}
@@ -137,5 +167,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchFiles }
+  { fetchFiles, updateFile }
 )(withRouter(withTranslation()(SectionBodyContent)));
