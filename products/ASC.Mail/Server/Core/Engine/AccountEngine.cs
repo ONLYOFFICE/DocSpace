@@ -44,8 +44,10 @@ using ASC.Mail.Clients;
 //using ASC.Mail.Core.Dao.Expressions.Mailbox;
 //using ASC.Mail.Core.Entities;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
+using ASC.Mail.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 //using ASC.Mail.Utils;
@@ -79,6 +81,8 @@ namespace ASC.Mail.Core.Engine
 
         public MailboxEngine MailboxEngine { get; }
         public DaoFactory DaoFactory { get; }
+        public CacheEngine CacheEngine { get; }
+        public MailBoxSettingEngine MailBoxSettingEngine { get; }
         public MailDbContext MailDb { get; }
 
 
@@ -87,7 +91,9 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             MailboxEngine mailboxEngine,
             IOptionsMonitor<ILog> option,
-            DaoFactory daoFactory)
+            DaoFactory daoFactory,
+            CacheEngine cacheEngine,
+            MailBoxSettingEngine mailBoxSettingEngine)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -95,18 +101,17 @@ namespace ASC.Mail.Core.Engine
 
             MailboxEngine = mailboxEngine;
             DaoFactory = daoFactory;
+            CacheEngine = cacheEngine;
+            MailBoxSettingEngine = mailBoxSettingEngine;
         }
 
         public List<AccountInfo> GetAccountInfoList()
         {
-            //TODO: Find better solution for cache
-            //var accountInfoList = CacheEngine.Get(User);
-            //if (accountInfoList != null)
-            //    return accountInfoList;
+            var accountInfoList = CacheEngine.Get(UserId);
+            if (accountInfoList != null)
+                return accountInfoList;
 
             var accounts = DaoFactory.AccountDao.GetAccounts();
-
-            var accountInfoList = new List<AccountInfo>();
 
             foreach (var account in accounts)
             {
@@ -174,7 +179,7 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            //CacheEngine.Set(User, accountInfoList);
+            CacheEngine.Set(UserId, accountInfoList);
 
             return accountInfoList;
         }
@@ -221,7 +226,7 @@ namespace ASC.Mail.Core.Engine
             if (!MailboxEngine.SaveMailBox(mbox))
                 throw new Exception(string.Format("SaveMailBox {0} failed", mbox.EMail));
 
-            //CacheEngine.Clear(User);
+            CacheEngine.Clear(UserId);
 
             var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
                 MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
@@ -231,59 +236,84 @@ namespace ASC.Mail.Core.Engine
             return account;
         }
 
-        //public AccountInfo CreateAccountSimple(string email, string password, out List<LoginResult> loginResults)
-        //{
-        //    MailBoxData mbox = null;
+        public AccountInfo TryCreateAccount(MailBoxData mbox, out LoginResult loginResult)
+        {
+            if (mbox == null)
+                throw new NullReferenceException("mbox");
 
-        //    var domain = email.Substring(email.IndexOf('@') + 1);
+            using (var client = new MailClient(mbox, CancellationToken.None,
+                    certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+            {
+                loginResult = client.TestLogin();
+            }
 
-        //    var engine = new EngineFactory(Tenant, User);
+            if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
+                return null;
 
-        //    var mailboxSettings = engine.MailBoxSettingEngine.GetMailBoxSettings(domain);
+            if (!MailboxEngine.SaveMailBox(mbox))
+                throw new Exception(string.Format("SaveMailBox {0} failed", mbox.EMail));
 
-        //    if (mailboxSettings == null)
-        //    {
-        //        throw new Exception("Unknown mail provider settings.");
-        //    }
+            CacheEngine.Clear(UserId);
 
-        //    var testMailboxes = mailboxSettings.ToMailboxList(email, password, Tenant, User);
+            var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
+                new MailAutoreplyData(mbox.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
+                    DateTime.MinValue, string.Empty, string.Empty), false, mbox.EMailInFolder, false, false);
 
-        //    loginResults = new List<LoginResult>();
+            return account;
+        }
 
-        //    foreach (var mb in testMailboxes)
-        //    {
-        //        LoginResult loginResult;
+        public AccountInfo CreateAccountSimple(string email, string password, out List<LoginResult> loginResults)
+        {
+            MailBoxData mbox = null;
 
-        //        using (var client = new MailClient(mb, CancellationToken.None, Defines.TcpTimeout,
-        //                Defines.SslCertificatesErrorPermit, log: Log))
-        //        {
-        //            loginResult = client.TestLogin();
-        //        }
+            var domain = email.Substring(email.IndexOf('@') + 1);
 
-        //        loginResults.Add(loginResult);
+            var mailboxSettings = MailBoxSettingEngine.GetMailBoxSettings(domain);
 
-        //        if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
-        //            continue;
+            if (mailboxSettings == null)
+            {
+                throw new Exception("Unknown mail provider settings.");
+            }
 
-        //        mbox = mb;
-        //        break;
-        //    }
+            var testMailboxes = mailboxSettings.ToMailboxList(email, password, Tenant, UserId);
 
-        //    if (mbox == null)
-        //        return null;
+            loginResults = new List<LoginResult>();
 
-        //    if (!MailboxEngine.SaveMailBox(mbox))
-        //        throw new Exception(string.Format("SaveMailBox {0} failed", email));
+            foreach (var mb in testMailboxes)
+            {
+                LoginResult loginResult;
 
-        //    CacheEngine.Clear(User);
+                using (var client = new MailClient(mb, CancellationToken.None, Defines.TcpTimeout,
+                        Defines.SslCertificatesErrorPermit, log: Log))
+                {
+                    loginResult = client.TestLogin();
+                }
 
-        //    var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
-        //        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
-        //        new MailAutoreplyData(mbox.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
-        //            DateTime.MinValue, string.Empty, string.Empty), false, mbox.EMailInFolder, false, false);
+                loginResults.Add(loginResult);
 
-        //    return account;
-        //}
+                if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
+                    continue;
+
+                mbox = mb;
+                break;
+            }
+
+            if (mbox == null)
+                return null;
+
+            if (!MailboxEngine.SaveMailBox(mbox))
+                throw new Exception(string.Format("SaveMailBox {0} failed", email));
+
+            CacheEngine.Clear(UserId);
+
+            var account = new AccountInfo(mbox.MailBoxId, mbox.EMailView, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.MailBoxId, Tenant, "", false),
+                new MailAutoreplyData(mbox.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
+                    DateTime.MinValue, string.Empty, string.Empty), false, mbox.EMailInFolder, false, false);
+
+            return account;
+        }
 
         //public AccountInfo CreateAccountOAuth(string code, byte type)
         //{
@@ -326,81 +356,74 @@ namespace ASC.Mail.Core.Engine
         //    return account;
         //}
 
-        //public AccountInfo UpdateAccount(MailBoxData newMailBoxData, out LoginResult loginResult)
-        //{
-        //    if (newMailBoxData == null)
-        //        throw new NullReferenceException("mbox");
+        public AccountInfo UpdateAccount(MailBoxData newMailBoxData, out LoginResult loginResult)
+        {
+            if (newMailBoxData == null)
+                throw new NullReferenceException("mbox");
 
-        //    Mailbox mbox;
+                var mbox =
+                    DaoFactory.MailboxDao.GetMailBox(
+                        new СoncreteUserMailboxExp(
+                            newMailBoxData.EMail,
+                            Tenant, UserId));
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+                if (null == mbox)
+                    throw new ArgumentException("Mailbox with specified email doesn't exist.");
 
-        //        mbox =
-        //            daoMailbox.GetMailBox(
-        //                new СoncreteUserMailboxExp(
-        //                    newMailBoxData.EMail,
-        //                    Tenant, User));
+                if (mbox.IsTeamlabMailbox)
+                    throw new ArgumentException("Mailbox with specified email can't be updated");
 
-        //        if (null == mbox)
-        //            throw new ArgumentException("Mailbox with specified email doesn't exist.");
+                if (!string.IsNullOrEmpty(mbox.OAuthToken))
+                {
+                    var needSave = false;
 
-        //        if (mbox.IsTeamlabMailbox)
-        //            throw new ArgumentException("Mailbox with specified email can't be updated");
+                    if (!mbox.Name.Equals(newMailBoxData.Name))
+                    {
+                        mbox.Name = newMailBoxData.Name;
+                        needSave = true;
+                    }
 
-        //        if (!string.IsNullOrEmpty(mbox.OAuthToken))
-        //        {
-        //            var needSave = false;
+                    if (!mbox.BeginDate.Equals(newMailBoxData.BeginDate))
+                    {
+                        mbox.BeginDate = newMailBoxData.BeginDate;
+                        mbox.ImapIntervals = null;
+                        needSave = true;
+                    }
 
-        //            if (!mbox.Name.Equals(newMailBoxData.Name))
-        //            {
-        //                mbox.Name = newMailBoxData.Name;
-        //                needSave = true;
-        //            }
+                    if (needSave)
+                    {
+                    DaoFactory.MailboxDao.SaveMailBox(mbox);
 
-        //            if (!mbox.BeginDate.Equals(newMailBoxData.BeginDate))
-        //            {
-        //                mbox.BeginDate = newMailBoxData.BeginDate;
-        //                mbox.ImapIntervals = null;
-        //                needSave = true;
-        //            }
+                        CacheEngine.Clear(UserId);
+                    }
 
-        //            if (needSave)
-        //            {
-        //                daoMailbox.SaveMailBox(mbox);
+                    var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
+                        new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
+                            DateTime.MinValue, string.Empty, string.Empty), false, mbox.EmailInFolder, false, false);
 
-        //                CacheEngine.Clear(User);
-        //            }
+                    loginResult = new LoginResult
+                    {
+                        Imap = mbox.Imap,
+                        IngoingSuccess = true,
+                        OutgoingSuccess = true
+                    };
 
-        //            var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
-        //                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
-        //                new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
-        //                    DateTime.MinValue, string.Empty, string.Empty), false, mbox.EmailInFolder, false, false);
+                    return accountInfo;
+                }
 
-        //            loginResult = new LoginResult
-        //            {
-        //                Imap = mbox.Imap,
-        //                IngoingSuccess = true,
-        //                OutgoingSuccess = true
-        //            };
+            newMailBoxData.Password = string.IsNullOrEmpty(newMailBoxData.Password)
+                ? mbox.Password
+                : newMailBoxData.Password;
 
-        //            return accountInfo;
-        //        }
-        //    }
+            newMailBoxData.SmtpPassword = string.IsNullOrEmpty(newMailBoxData.SmtpPassword)
+                ? mbox.SmtpPassword
+                : newMailBoxData.SmtpPassword;
 
-        //    newMailBoxData.Password = string.IsNullOrEmpty(newMailBoxData.Password)
-        //        ? mbox.Password
-        //        : newMailBoxData.Password;
+            newMailBoxData.Imap = mbox.Imap;
 
-        //    newMailBoxData.SmtpPassword = string.IsNullOrEmpty(newMailBoxData.SmtpPassword)
-        //        ? mbox.SmtpPassword
-        //        : newMailBoxData.SmtpPassword;
-
-        //    newMailBoxData.Imap = mbox.Imap;
-
-        //    return CreateAccount(newMailBoxData, out loginResult);
-        //}
+            return TryCreateAccount(newMailBoxData, out loginResult);
+        }
 
         //public AccountInfo UpdateAccountOAuth(int mailboxId, string code, byte type)
         //{
@@ -470,124 +493,107 @@ namespace ASC.Mail.Core.Engine
         //    return accountInfo;
         //}
 
-        //public int SetAccountEnable(MailAddress address, bool enabled, out LoginResult loginResult)
-        //{
-        //    if (address == null)
-        //        throw new ArgumentNullException("address");
+        public int SetAccountEnable(MailAddress address, bool enabled, out LoginResult loginResult)
+        {
+            if (address == null)
+                throw new ArgumentNullException("address");
 
-        //    var engine = new EngineFactory(Tenant);
 
-        //    var tuple = engine.MailboxEngine.GetMailboxFullInfo(new СoncreteUserMailboxExp(address, Tenant, User));
+            var tuple = MailboxEngine.GetMailboxFullInfo(new СoncreteUserMailboxExp(address, Tenant, UserId));
 
-        //    if (tuple == null)
-        //        throw new NullReferenceException(string.Format("Account wasn't found by email: {0}", address.Address));
+            if (tuple == null)
+                throw new NullReferenceException(string.Format("Account wasn't found by email: {0}", address.Address));
 
-        //    if (enabled)
-        //    {
-        //        // Check account connection setting on activation
-        //        using (var client = new MailClient(tuple.Item1, CancellationToken.None,
-        //                certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
-        //        {
-        //            loginResult = client.TestLogin();
-        //        }
+            if (enabled)
+            {
+                // Check account connection setting on activation
+                using (var client = new MailClient(tuple.Item1, CancellationToken.None,
+                        certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
+                {
+                    loginResult = client.TestLogin();
+                }
 
-        //        if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
-        //        {
-        //            return -1;
-        //        }
-        //    }
+                if (!loginResult.IngoingSuccess || !loginResult.OutgoingSuccess)
+                {
+                    return -1;
+                }
+            }
 
-        //    int mailboxId;
+            loginResult = null;
+            var mailboxId =
+                DaoFactory.MailboxDao.Enable(
+                    new СoncreteUserMailboxExp(tuple.Item2.Id, tuple.Item2.Tenant, tuple.Item2.User),
+                    enabled)
+                    ? tuple.Item2.Id
+                    : -1;
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+            if (mailboxId == -1)
+                return mailboxId;
 
-        //        loginResult = null;
-        //        mailboxId =
-        //            daoMailbox.Enable(new СoncreteUserMailboxExp(tuple.Item2.Id, tuple.Item2.Tenant, tuple.Item2.User),
-        //                enabled)
-        //                ? tuple.Item2.Id
-        //                : -1;
-        //    }
+            CacheEngine.Clear(UserId);
 
-        //    if (mailboxId == -1)
-        //        return mailboxId;
+            return mailboxId;
+        }
 
-        //    CacheEngine.Clear(User);
+        public bool SetAccountEmailInFolder(int mailboxId, string emailInFolder)
+        {
+            if (mailboxId < 0)
+                throw new ArgumentNullException("mailboxId");
 
-        //    return mailboxId;
-        //}
+            bool saved;
 
-        //public bool SetAccountEmailInFolder(int mailboxId, string emailInFolder)
-        //{
-        //    if (mailboxId < 0)
-        //        throw new ArgumentNullException("mailboxId");
+            var mailbox = DaoFactory.MailboxDao.GetMailBox(
+                new СoncreteUserMailboxExp(
+                    mailboxId,
+                    Tenant, UserId)
+                );
 
-        //    bool saved;
+            if (mailbox == null)
+                return false;
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+            saved = DaoFactory.MailboxDao.SetMailboxEmailIn(mailbox, emailInFolder);
 
-        //        var mailbox = daoMailbox.GetMailBox(
-        //            new СoncreteUserMailboxExp(
-        //                mailboxId,
-        //                Tenant, User)
-        //            );
+            if (!saved)
+                return saved;
 
-        //        if (mailbox == null)
-        //            return false;
+            CacheEngine.Clear(UserId);
 
-        //        saved = daoMailbox.SetMailboxEmailIn(mailbox, emailInFolder);
-        //    }
+            return saved;
+        }
 
-        //    if (!saved)
-        //        return saved;
+        public bool SetAccountsActivity(bool userOnline = true)
+        {
+            return DaoFactory.MailboxDao.SetMailboxesActivity(Tenant, UserId, userOnline);
+        }
 
-        //    CacheEngine.Clear(User);
+        public List<string> SearchAccountEmails(string searchText)
+        {
+            var accounts = GetAccountInfoList();
+            var emails = new List<string>();
 
-        //    return saved;
-        //}
+            foreach (var account in accounts)
+            {
+                var email = string.IsNullOrEmpty(account.Name)
+                                ? account.Email
+                                : MailUtil.CreateFullEmail(account.Name, account.Email);
+                emails.Add(email);
 
-        //public bool SetAccountsActivity(bool userOnline = true)
-        //{
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+                foreach (var alias in account.Aliases)
+                {
+                    email = string.IsNullOrEmpty(account.Name)
+                                ? account.Email
+                                : MailUtil.CreateFullEmail(account.Name, alias.Email);
+                    emails.Add(email);
+                }
 
-        //        return daoMailbox.SetMailboxesActivity(Tenant, User, userOnline);
-        //    }
-        //}
+                foreach (var group in account.Groups.Where(group => emails.IndexOf(group.Email) == -1))
+                {
+                    emails.Add(group.Email);
+                }
+            }
 
-        //public List<string> SearchAccountEmails(string searchText)
-        //{
-        //    var accounts = GetAccountInfoList();
-        //    var emails = new List<string>();
-
-        //    foreach (var account in accounts)
-        //    {
-        //        var email = string.IsNullOrEmpty(account.Name)
-        //                        ? account.Email
-        //                        : MailUtil.CreateFullEmail(account.Name, account.Email);
-        //        emails.Add(email);
-
-        //        foreach (var alias in account.Aliases)
-        //        {
-        //            email = string.IsNullOrEmpty(account.Name)
-        //                        ? account.Email
-        //                        : MailUtil.CreateFullEmail(account.Name, alias.Email);
-        //            emails.Add(email);
-        //        }
-
-        //        foreach (var group in account.Groups.Where(group => emails.IndexOf(group.Email) == -1))
-        //        {
-        //            emails.Add(group.Email);
-        //        }
-        //    }
-
-        //    return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
-        //}
+            return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
+        }
     }
 
     public static class AccountEngineExtension

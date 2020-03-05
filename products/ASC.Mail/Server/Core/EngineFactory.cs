@@ -49,6 +49,7 @@ namespace ASC.Mail.Core
 
         public TagEngine TagEngine { get; }
         public AttachmentEngine AttachmentEngine { get; }
+        public CacheEngine CacheEngine { get; }
 
         public EngineFactory(
             AccountEngine accountEngine,
@@ -56,7 +57,8 @@ namespace ASC.Mail.Core
             DisplayImagesAddressEngine displayImagesAddressEngine,
             SignatureEngine signatureEngine,
             TagEngine tagEngine,
-            AttachmentEngine attachmentEngine
+            AttachmentEngine attachmentEngine,
+            CacheEngine cacheEngine
             )
         {
             AccountEngine = accountEngine;
@@ -65,6 +67,7 @@ namespace ASC.Mail.Core
             SignatureEngine = signatureEngine;
             TagEngine = tagEngine;
             AttachmentEngine = attachmentEngine;
+            CacheEngine = cacheEngine;
         }
     }
 
@@ -78,6 +81,7 @@ namespace ASC.Mail.Core
             return services
                 .AddMailDbContextService()
                 .AddDaoFactoryService()
+                .AddCacheEngine()
                 .AddMailboxEngineService()
                 .AddAccountEngineService()
                 .AddAlertEngineService()

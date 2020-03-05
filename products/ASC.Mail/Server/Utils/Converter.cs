@@ -34,6 +34,7 @@ using ASC.Common.Logging;
 //using ASC.Mail.Data.Contracts;
 //using ASC.Mail.Data.Search;
 using ASC.Mail.Enums;
+using ASC.Mail.Models;
 //using ASC.Mail.Extensions;
 using MimeKit;
 //using ContactInfo = ASC.Mail.Core.Entities.ContactInfo;
@@ -42,56 +43,56 @@ namespace ASC.Mail.Utils
 {
     public static class Converter
     {
-        //public static List<MailBoxData> ToMailboxList(this ClientConfig config, string email, string password, int tenant,
-        //    string user)
-        //{
-        //    var tempList = new List<MailBoxData>();
+        public static List<MailBoxData> ToMailboxList(this ClientConfig config, string email, string password, int tenant,
+            string user)
+        {
+            var tempList = new List<MailBoxData>();
 
-        //    if (!config.EmailProvider.OutgoingServer.Any() || !config.EmailProvider.IncomingServer.Any())
-        //        return tempList;
+            if (!config.EmailProvider.OutgoingServer.Any() || !config.EmailProvider.IncomingServer.Any())
+                return tempList;
 
-        //    var address = new MailAddress(email);
-        //    var host = address.Host.ToLowerInvariant();
+            var address = new MailAddress(email);
+            var host = address.Host.ToLowerInvariant();
 
-        //    tempList.AddRange(from outServer in config.EmailProvider.OutgoingServer
-        //        from inServer in config.EmailProvider.IncomingServer
-        //        let smtpAuthenticationType = outServer.Authentication.ToSaslMechanism()
-        //        select new MailBoxData
-        //        {
-        //            EMail = address,
-        //            Name = "",
-        //            UserId = user,
-        //            TenantId = tenant,
-        //            Enabled = true,
-        //            BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
-        //            Imap = inServer.Type == "imap",
-        //            Account =
-        //                inServer.Username.Replace("%EMAILADDRESS%", address.Address)
-        //                    .Replace("%EMAILLOCALPART%", address.User)
-        //                    .Replace("%EMAILDOMAIN%", host)
-        //                    .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(host)),
-        //            Password = password,
-        //            Server = inServer.Hostname.Replace("%EMAILDOMAIN%", host),
-        //            Port = inServer.Port,
-        //            Authentication = inServer.Authentication.ToSaslMechanism(),
-        //            Encryption = inServer.SocketType.ToEncryptionType(),
-        //            SmtpAccount =
-        //                outServer.Username.Replace("%EMAILADDRESS%", address.Address)
-        //                    .Replace("%EMAILLOCALPART%", address.User)
-        //                    .Replace("%EMAILDOMAIN%", host)
-        //                    .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(host)),
-        //            SmtpPassword = password,
-        //            SmtpServer = outServer.Hostname.Replace("%EMAILDOMAIN%", host),
-        //            SmtpPort = outServer.Port,
+            tempList.AddRange(from outServer in config.EmailProvider.OutgoingServer
+                              from inServer in config.EmailProvider.IncomingServer
+                              let smtpAuthenticationType = outServer.Authentication.ToSaslMechanism()
+                              select new MailBoxData
+                              {
+                                  EMail = address,
+                                  Name = "",
+                                  UserId = user,
+                                  TenantId = tenant,
+                                  Enabled = true,
+                                  BeginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta)),
+                                  Imap = inServer.Type == "imap",
+                                  Account =
+                                      inServer.Username.Replace("%EMAILADDRESS%", address.Address)
+                                          .Replace("%EMAILLOCALPART%", address.User)
+                                          .Replace("%EMAILDOMAIN%", host)
+                                          .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(host)),
+                                  Password = password,
+                                  Server = inServer.Hostname.Replace("%EMAILDOMAIN%", host),
+                                  Port = inServer.Port,
+                                  Authentication = inServer.Authentication.ToSaslMechanism(),
+                                  Encryption = inServer.SocketType.ToEncryptionType(),
+                                  SmtpAccount =
+                                      outServer.Username.Replace("%EMAILADDRESS%", address.Address)
+                                          .Replace("%EMAILLOCALPART%", address.User)
+                                          .Replace("%EMAILDOMAIN%", host)
+                                          .Replace("%EMAILHOSTNAME%", Path.GetFileNameWithoutExtension(host)),
+                                  SmtpPassword = password,
+                                  SmtpServer = outServer.Hostname.Replace("%EMAILDOMAIN%", host),
+                                  SmtpPort = outServer.Port,
 
-        //            SmtpAuthentication = smtpAuthenticationType,
-        //            SmtpEncryption = outServer.SocketType.ToEncryptionType()
-        //        });
+                                  SmtpAuthentication = smtpAuthenticationType,
+                                  SmtpEncryption = outServer.SocketType.ToEncryptionType()
+                              });
 
-        //    tempList = tempList.OrderByDescending(t => t.Imap).ToList();
+            tempList = tempList.OrderByDescending(t => t.Imap).ToList();
 
-        //    return tempList;
-        //}
+            return tempList;
+        }
 
         public static EncryptionType ToEncryptionType(this string type)
         {

@@ -72,7 +72,7 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
 
         public DaoFactory DaoFactory { get; }
-
+        public CacheEngine CacheEngine { get; }
         public MailDbContext MailDb { get; }
 
         public SignatureEngine(
@@ -80,7 +80,8 @@ namespace ASC.Mail.Core.Engine
             ApiContext apiContext,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
-            DaoFactory daoFactory)
+            DaoFactory daoFactory,
+            CacheEngine cacheEngine)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -88,6 +89,7 @@ namespace ASC.Mail.Core.Engine
 
             MailDb = dbContext.Get("mail");
             DaoFactory = daoFactory;
+            CacheEngine = cacheEngine;
         }
 
         public MailSignatureData GetSignature(int mailboxId)
@@ -99,11 +101,12 @@ namespace ASC.Mail.Core.Engine
         {
             if (!string.IsNullOrEmpty(html))
             {
+                //TODO: Fix after StorageManager implementation
                 /*var imagesReplacer = new StorageManager(Tenant, User, Log);
                 html = imagesReplacer.ChangeEditorImagesLinks(html, mailboxId);*/
             }
 
-            //CacheEngine.Clear(User);
+            CacheEngine.Clear(UserId);
 
             var signature = new MailboxSignature
             {
