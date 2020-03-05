@@ -247,8 +247,7 @@ namespace ASC.Mail.Extensions
 
             mail.StreamId = string.IsNullOrEmpty(streamId) ? MailUtil.CreateStreamId() : streamId;
 
-            //TODO: Fix
-            //mail.LoadCalendarInfo(message, log);
+            mail.LoadCalendarInfo(message, log);
 
             return mail;
         }
