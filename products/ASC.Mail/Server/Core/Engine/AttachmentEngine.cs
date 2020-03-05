@@ -27,13 +27,16 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
+using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
@@ -46,14 +49,18 @@ namespace ASC.Mail.Core.Engine
     public class AttachmentEngine
     {
         public DaoFactory DaoFactory { get; }
-
+        public StorageFactory StorageFactory { get; }
+        public StorageManager StorageManager { get; }
         public ILog Log { get; }
 
         public AttachmentEngine(DaoFactory daoFactory,
+            StorageFactory storageFactory,
+            StorageManager storageManager,
             IOptionsMonitor<ILog> option)
         {
             DaoFactory = daoFactory;
-
+            StorageFactory = storageFactory;
+            StorageManager = storageManager;
             Log = option.Get("ASC.Mail.AttachmentEngine");
         }
 
@@ -307,56 +314,56 @@ namespace ASC.Mail.Core.Engine
         //    return AttachFile(tenant, user, message, name, inputStream, contentLength, contentType, needSaveToTemp);
         //}
 
-        //public void StoreAttachmentCopy(int tenant, string user, MailAttachmentData attachment, string streamId)
-        //{
-        //    try
-        //    {
-        //        if (attachment.streamId.Equals(streamId) && !attachment.isTemp) return;
+        public void StoreAttachmentCopy(int tenant, string user, MailAttachmentData attachment, string streamId)
+        {
+            try
+            {
+                if (attachment.streamId.Equals(streamId) && !attachment.isTemp) return;
 
-        //        string s3Key;
+                string s3Key;
 
-        //        var dataClient = MailDataStore.GetDataStore(tenant);
+                var dataClient = StorageFactory.GetStorage(tenant.ToString(CultureInfo.InvariantCulture), Defines.MODULE_NAME);
 
-        //        if (attachment.needSaveToTemp || attachment.isTemp)
-        //        {
-        //            s3Key = MailStoragePathCombiner.GetTempStoredFilePath(attachment);
-        //        }
-        //        else
-        //        {
-        //            s3Key = MailStoragePathCombiner.GerStoredFilePath(attachment);
-        //        }
+                if (attachment.needSaveToTemp || attachment.isTemp)
+                {
+                    s3Key = MailStoragePathCombiner.GetTempStoredFilePath(attachment);
+                }
+                else
+                {
+                    s3Key = MailStoragePathCombiner.GerStoredFilePath(attachment);
+                }
 
-        //        if (!dataClient.IsFile(s3Key)) return;
+                if (!dataClient.IsFile(s3Key)) return;
 
-        //        attachment.fileNumber =
-        //            !string.IsNullOrEmpty(attachment.contentId) //Upload hack: embedded attachment have to be saved in 0 folder
-        //                ? 0
-        //                : attachment.fileNumber;
+                attachment.fileNumber =
+                    !string.IsNullOrEmpty(attachment.contentId) //Upload hack: embedded attachment have to be saved in 0 folder
+                        ? 0
+                        : attachment.fileNumber;
 
-        //        var newS3Key = MailStoragePathCombiner.GetFileKey(user, streamId, attachment.fileNumber,
-        //                                                            attachment.storedName);
+                var newS3Key = MailStoragePathCombiner.GetFileKey(user, streamId, attachment.fileNumber,
+                                                                    attachment.storedName);
 
-        //        var copyS3Url = dataClient.Copy(s3Key, string.Empty, newS3Key);
+                var copyS3Url = dataClient.Copy(s3Key, string.Empty, newS3Key);
 
-        //        attachment.storedFileUrl = MailStoragePathCombiner.GetStoredUrl(copyS3Url);
+                attachment.storedFileUrl = MailStoragePathCombiner.GetStoredUrl(copyS3Url);
 
-        //        attachment.streamId = streamId;
+                attachment.streamId = streamId;
 
-        //        attachment.tempStoredUrl = null;
+                attachment.tempStoredUrl = null;
 
-        //        Log.DebugFormat("StoreAttachmentCopy() tenant='{0}', user_id='{1}', stream_id='{2}', new_s3_key='{3}', copy_s3_url='{4}', storedFileUrl='{5}',  filename='{6}'",
-        //            tenant, user, streamId, newS3Key, copyS3Url, attachment.storedFileUrl, attachment.fileName);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.ErrorFormat("CopyAttachment(). filename='{0}', ctype='{1}' Exception:\r\n{2}\r\n",
-        //                   attachment.fileName,
-        //                   attachment.contentType,
-        //            ex.ToString());
+                Log.DebugFormat("StoreAttachmentCopy() tenant='{0}', user_id='{1}', stream_id='{2}', new_s3_key='{3}', copy_s3_url='{4}', storedFileUrl='{5}',  filename='{6}'",
+                    tenant, user, streamId, newS3Key, copyS3Url, attachment.storedFileUrl, attachment.fileName);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("CopyAttachment(). filename='{0}', ctype='{1}' Exception:\r\n{2}\r\n",
+                           attachment.fileName,
+                           attachment.contentType,
+                    ex.ToString());
 
-        //        throw;
-        //    }
-        //}
+                throw;
+            }
+        }
 
         //public void DeleteMessageAttachments(int tenant, string user, int messageId, List<int> attachmentIds)
         //{
@@ -396,72 +403,76 @@ namespace ASC.Mail.Core.Engine
         //        }
         //    }
 
-        //    if (attachCount == 0)
-        //    {
-        //        var data = new MailWrapper
-        //        {
-        //            HasAttachments = false
-        //        };
+        //    //TODO: Fix IndexEngine
+        //    //if (attachCount == 0)
+        //    //{
+        //    //    var data = new MailWrapper
+        //    //    {
+        //    //        HasAttachments = false
+        //    //    };
 
-        //        engine.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
-        //    }
+        //    //    engine.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+        //    //}
 
         //    if (usedQuota <= 0)
         //        return;
 
-        //    engine.QuotaEngine.QuotaUsedDelete(usedQuota);
+        //    //TODO: Fix QuotaEngine
+        //    //engine.QuotaEngine.QuotaUsedDelete(usedQuota);
         //}
 
-        //public void StoreAttachments(MailBoxData mailBoxData, List<MailAttachmentData> attachments, string streamId)
-        //{
-        //    if (!attachments.Any() || string.IsNullOrEmpty(streamId)) return;
+        public void StoreAttachments(MailBoxData mailBoxData, List<MailAttachmentData> attachments, string streamId)
+        {
+            if (!attachments.Any() || string.IsNullOrEmpty(streamId)) return;
 
-        //    try
-        //    {
-        //        var quotaAddSize = attachments.Sum(a => a.data != null ? a.data.LongLength : a.dataStream.Length);
+            try
+            {
+                var quotaAddSize = attachments.Sum(a => a.data != null ? a.data.LongLength : a.dataStream.Length);
 
-        //        var storageManager = new StorageManager(mailBoxData.TenantId, mailBoxData.UserId);
+                //TODO: Check TenantId and UserId in StorageManager
+                //var storageManager = new StorageManager(mailBoxData.TenantId, mailBoxData.UserId);
 
-        //        foreach (var attachment in attachments)
-        //        {
-        //            var isAttachmentNameHasBadName = string.IsNullOrEmpty(attachment.fileName)
-        //                                                 || attachment.fileName.IndexOfAny(Path.GetInvalidPathChars()) != -1
-        //                                                 || attachment.fileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
-        //            if (isAttachmentNameHasBadName)
-        //            {
-        //                attachment.fileName = string.Format("attacment{0}{1}", attachment.fileNumber,
-        //                                                                       MimeMapping.GetExtention(attachment.contentType));
-        //            }
+                foreach (var attachment in attachments)
+                {
+                    var isAttachmentNameHasBadName = string.IsNullOrEmpty(attachment.fileName)
+                                                         || attachment.fileName.IndexOfAny(Path.GetInvalidPathChars()) != -1
+                                                         || attachment.fileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
+                    if (isAttachmentNameHasBadName)
+                    {
+                        attachment.fileName = string.Format("attacment{0}{1}", attachment.fileNumber,
+                                                                               MimeMapping.GetExtention(attachment.contentType));
+                    }
 
-        //            attachment.streamId = streamId;
-        //            attachment.tenant = mailBoxData.TenantId;
-        //            attachment.user = mailBoxData.UserId;
+                    attachment.streamId = streamId;
+                    attachment.tenant = mailBoxData.TenantId;
+                    attachment.user = mailBoxData.UserId;
 
-        //            storageManager.StoreAttachmentWithoutQuota(attachment);
-        //        }
+                    StorageManager.StoreAttachmentWithoutQuota(attachment);
+                }
 
-        //        var engine = new EngineFactory(mailBoxData.TenantId);
-        //        engine.QuotaEngine.QuotaUsedAdd(quotaAddSize);
-        //    }
-        //    catch
-        //    {
-        //        var storedAttachmentsKeys = attachments
-        //                                    .Where(a => !string.IsNullOrEmpty(a.storedFileUrl))
-        //                                    .Select(MailStoragePathCombiner.GerStoredFilePath)
-        //                                    .ToList();
+                //TODO: Fix QuotaEngine
+                //var engine = new EngineFactory(mailBoxData.TenantId);
+                //engine.QuotaEngine.QuotaUsedAdd(quotaAddSize);
+            }
+            catch
+            {
+                var storedAttachmentsKeys = attachments
+                                            .Where(a => !string.IsNullOrEmpty(a.storedFileUrl))
+                                            .Select(MailStoragePathCombiner.GerStoredFilePath)
+                                            .ToList();
 
-        //        if (storedAttachmentsKeys.Any())
-        //        {
-        //            var storage = MailDataStore.GetDataStore(mailBoxData.TenantId);
+                if (storedAttachmentsKeys.Any())
+                {
+                    var storage = StorageFactory.GetStorage(mailBoxData.TenantId.ToString(CultureInfo.InvariantCulture), Defines.MODULE_NAME);
 
-        //            storedAttachmentsKeys.ForEach(key => storage.Delete(string.Empty, key));
-        //        }
+                    storedAttachmentsKeys.ForEach(key => storage.Delete(string.Empty, key));
+                }
 
-        //        Log.InfoFormat("[Failed] StoreAttachments(mailboxId={0}). All message attachments were deleted.", mailBoxData.MailBoxId);
+                Log.InfoFormat("[Failed] StoreAttachments(mailboxId={0}). All message attachments were deleted.", mailBoxData.MailBoxId);
 
-        //        throw;
-        //    }
-        //}
+                throw;
+            }
+        }
 
         public static MailAttachmentData ToAttachmentData(Attachment attachment)
         {
@@ -491,6 +502,10 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddAttachmentEngineService(this DIHelper services)
         {
             services.TryAddScoped<AttachmentEngine>();
+
+            services
+                .AddStorageFactoryService()
+                .AddStorageManagerService();
 
             return services;
         }

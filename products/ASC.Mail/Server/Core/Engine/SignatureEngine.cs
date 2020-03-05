@@ -30,18 +30,11 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Enums;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
-using ASC.Mail.Utils;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -73,6 +66,7 @@ namespace ASC.Mail.Core.Engine
 
         public DaoFactory DaoFactory { get; }
         public CacheEngine CacheEngine { get; }
+        public StorageManager StorageManager { get; }
         public MailDbContext MailDb { get; }
 
         public SignatureEngine(
@@ -81,7 +75,8 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
             DaoFactory daoFactory,
-            CacheEngine cacheEngine)
+            CacheEngine cacheEngine,
+            StorageManager storageManager)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -90,6 +85,7 @@ namespace ASC.Mail.Core.Engine
             MailDb = dbContext.Get("mail");
             DaoFactory = daoFactory;
             CacheEngine = cacheEngine;
+            StorageManager = storageManager;
         }
 
         public MailSignatureData GetSignature(int mailboxId)
@@ -101,9 +97,7 @@ namespace ASC.Mail.Core.Engine
         {
             if (!string.IsNullOrEmpty(html))
             {
-                //TODO: Fix after StorageManager implementation
-                /*var imagesReplacer = new StorageManager(Tenant, User, Log);
-                html = imagesReplacer.ChangeEditorImagesLinks(html, mailboxId);*/
+                html = StorageManager.ChangeEditorImagesLinks(html, mailboxId);
             }
 
             CacheEngine.Clear(UserId);
@@ -135,6 +129,8 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddSignatureEngineService(this DIHelper services)
         {
             services.TryAddScoped<SignatureEngine>();
+
+            services.AddStorageManagerService();
 
             return services;
         }

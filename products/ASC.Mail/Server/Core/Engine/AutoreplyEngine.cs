@@ -30,9 +30,12 @@ using System.Configuration;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using ASC.Common;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
@@ -42,74 +45,92 @@ namespace ASC.Mail.Core.Engine
 {
     public class AutoreplyEngine
     {
-        public DaoFactory DaoFactory { get; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
 
+        public string UserId
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
+
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public DaoFactory DaoFactory { get; }
+        public StorageManager StorageManager { get; }
         public ILog Log { get; }
 
         public int AutoreplyDaysInterval { get; set; }
 
-        public AutoreplyEngine(DaoFactory daoFactory,
+        public AutoreplyEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            DaoFactory daoFactory,
+            StorageManager storageManager,
             IOptionsMonitor<ILog> option)
         {
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
             DaoFactory = daoFactory;
-
+            StorageManager = storageManager;
             Log = option.Get("ASC.Mail.AutoreplyEngine");
 
             AutoreplyDaysInterval = Convert.ToInt32(ConfigurationManager.AppSettings["mail.autoreply-days-interval"] ?? "1");
         }
 
-        //public MailAutoreplyData SaveAutoreply(int mailboxId, bool turnOn, bool onlyContacts,
-        //    bool turnOnToDate, DateTime fromDate, DateTime toDate, string subject, string html)
-        //{
-        //    if (fromDate == DateTime.MinValue)
-        //        throw new ArgumentException(@"Invalid parameter", "fromDate");
+        public MailAutoreplyData SaveAutoreply(int mailboxId, bool turnOn, bool onlyContacts,
+            bool turnOnToDate, DateTime fromDate, DateTime toDate, string subject, string html)
+        {
+            if (fromDate == DateTime.MinValue)
+                throw new ArgumentException(@"Invalid parameter", "fromDate");
 
-        //    if (turnOnToDate && toDate == DateTime.MinValue)
-        //        throw new ArgumentException(@"Invalid parameter", "toDate");
+            if (turnOnToDate && toDate == DateTime.MinValue)
+                throw new ArgumentException(@"Invalid parameter", "toDate");
 
-        //    if (turnOnToDate && toDate < fromDate)
-        //        throw new ArgumentException(@"Wrong date interval, toDate < fromDate", "fromDate");
+            if (turnOnToDate && toDate < fromDate)
+                throw new ArgumentException(@"Wrong date interval, toDate < fromDate", "fromDate");
 
-        //    if (string.IsNullOrEmpty(html))
-        //        throw new ArgumentException(@"Invalid parameter", "html");
+            if (string.IsNullOrEmpty(html))
+                throw new ArgumentException(@"Invalid parameter", "html");
 
-        //    var imagesReplacer = new StorageManager(TenantId, UserId);
-        //    html = imagesReplacer.ChangeEditorImagesLinks(html, mailboxId);
+            html = StorageManager.ChangeEditorImagesLinks(html, mailboxId);
 
-        //    var autoreply = new MailboxAutoreply
-        //    {
-        //        MailboxId = mailboxId,
-        //        Tenant = TenantId,
-        //        FromDate = fromDate,
-        //        ToDate = toDate,
-        //        Html = html,
-        //        OnlyContacts = onlyContacts,
-        //        TurnOnToDate = turnOnToDate,
-        //        Subject = subject,
-        //        TurnOn = turnOn
-        //    };
+            var autoreply = new MailboxAutoreply
+            {
+                MailboxId = mailboxId,
+                Tenant = Tenant,
+                FromDate = fromDate,
+                ToDate = toDate,
+                Html = html,
+                OnlyContacts = onlyContacts,
+                TurnOnToDate = turnOnToDate,
+                Subject = subject,
+                TurnOn = turnOn
+            };
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+            if (!DaoFactory.MailboxDao.CanAccessTo(
+                new СoncreteUserMailboxExp(mailboxId, Tenant, UserId)))
+            {
+                throw new AccessViolationException("Mailbox is not owned by user.");
+            }
 
-        //        if (!daoMailbox.CanAccessTo(
-        //            new СoncreteUserMailboxExp(mailboxId, TenantId, UserId)))
-        //        {
-        //            throw new AccessViolationException("Mailbox is not owned by user.");
-        //        }
+            var result = DaoFactory.MailboxAutoreplyDao.SaveAutoreply(autoreply);
 
-        //        var result = daoFactory.CreateMailboxAutoreplyDao(TenantId, UserId).SaveAutoreply(autoreply);
+            if (result <= 0)
+                throw new InvalidOperationException();
 
-        //        if (result <= 0)
-        //            throw new InvalidOperationException();
-        //    }
+            var resp = new MailAutoreplyData(autoreply.MailboxId, autoreply.Tenant, autoreply.TurnOn, autoreply.OnlyContacts,
+                autoreply.TurnOnToDate, autoreply.FromDate, autoreply.ToDate, autoreply.Subject, autoreply.Html);
 
-        //    var resp = new MailAutoreplyData(autoreply.MailboxId, autoreply.Tenant, autoreply.TurnOn, autoreply.OnlyContacts,
-        //        autoreply.TurnOnToDate, autoreply.FromDate, autoreply.ToDate, autoreply.Subject, autoreply.Html);
-
-        //    return resp;
-        //}
+            return resp;
+        }
 
         public void EnableAutoreply(MailBoxData account, bool enabled)
         {
@@ -391,5 +412,21 @@ namespace ASC.Mail.Core.Engine
 
         #endregion
 
+    }
+
+    public static class AutoreplyEngineExtension
+    {
+        public static DIHelper AddAutoreplyEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<AutoreplyEngine>();
+
+            services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddStorageManagerService();
+
+            return services;
+        }
     }
 }

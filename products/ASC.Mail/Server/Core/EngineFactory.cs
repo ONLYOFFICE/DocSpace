@@ -50,6 +50,7 @@ namespace ASC.Mail.Core
         public TagEngine TagEngine { get; }
         public AttachmentEngine AttachmentEngine { get; }
         public CacheEngine CacheEngine { get; }
+        public AutoreplyEngine AutoreplyEngine { get; }
 
         public EngineFactory(
             AccountEngine accountEngine,
@@ -58,7 +59,8 @@ namespace ASC.Mail.Core
             SignatureEngine signatureEngine,
             TagEngine tagEngine,
             AttachmentEngine attachmentEngine,
-            CacheEngine cacheEngine
+            CacheEngine cacheEngine,
+            AutoreplyEngine autoreplyEngine
             )
         {
             AccountEngine = accountEngine;
@@ -68,6 +70,7 @@ namespace ASC.Mail.Core
             TagEngine = tagEngine;
             AttachmentEngine = attachmentEngine;
             CacheEngine = cacheEngine;
+            AutoreplyEngine = autoreplyEngine;
         }
     }
 
