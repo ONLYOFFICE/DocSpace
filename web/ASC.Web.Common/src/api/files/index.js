@@ -95,7 +95,7 @@ export function createTextFileInMy(title) {
   const options = {
     method: "post",
     url: "/files/@my/file",
-    title: title
+    data: { title }
   };
 
   return request(options);
@@ -105,7 +105,7 @@ export function createTextFileInCommon(title) {
   const options = {
     method: "post",
     url: "/files/@common/file",
-    title: title
+    data: { title }
   };
 
   return request(options);
@@ -115,7 +115,7 @@ export function createTextFile(folderId, title) {
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
-    title: title
+    data: { title }
   };
 
   return request(options);
@@ -130,12 +130,11 @@ export function getFileInfo(fileId) {
   return request(options);
 }
 
-export function updateFile(fileId, title /*, lastVersion */) {
+export function updateFile(fileId, title, lastVersion) {
+
   const options = {
     method: "put",
-    url: `/files/file/${fileId}`,
-    title: title,
-    /* lastVersion: lastVersion */ //TODO: not found file with last version
+    url: `/files/file/${fileId}?title=${title}${lastVersion ? `lastVersion=${lastVersion}` : ``}`
   };
 
   return request(options);
@@ -145,7 +144,7 @@ export function createFolder(folderId, title) {
   const options = {
     method: "post",
     url: `/files/folder/${folderId}`,
-    title: title
+    data: { title }
   };
 
   return request(options);
@@ -154,8 +153,7 @@ export function createFolder(folderId, title) {
 export function renameFolder(folderId, title) {
   const options = {
     method: "put",
-    url: `/files/folder/${folderId}`,
-    title: title
+    url: `/files/folder/${folderId}?title=${title}`
   };
 
   return request(options);
