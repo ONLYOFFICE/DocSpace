@@ -21,7 +21,7 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  onClickUpdateFile = () => {
+  updateFile = () => {
     const { editingId, updateFile, renameFolder, item } = this.props;
     const { itemTitle } = this.state;
 
@@ -32,17 +32,6 @@ class FilesRowContent extends React.PureComponent {
     });
   };
 
-  /* onKeyPress = (event) => {
-    if (event.key === "Enter") {
-      this.onClickUpdateFile();
-    }
-  }; */
-
-  componentDidMount() {
-    /* window.addEventListener('keydown', this.onKeyPress);
-    window.addEventListener('keyup', this.onKeyPress); */
-  }
-
   componentDidUpdate(prevProps) {
     const { editingId } = this.props;
 
@@ -51,17 +40,20 @@ class FilesRowContent extends React.PureComponent {
     }
   }
 
-  componentWillUnmount() {
-    /* window.removeEventListener('keydown', this.onKeyPress);
-    window.removeEventListener('keyup', this.onKeyPress); */
-  }
-
   renameTitle = e => {
     this.setState({ itemTitle: e.target.value });
   }
 
-  onClickCancelUpdateFile = () => {
+  cancelUpdateFile = () => {
     this.setState({ editingId: -1 });
+  }
+
+  onKeyUpUpdateFile = e => {
+    if (e.keyCode === 13) 
+      return this.updateFile()
+      
+    if (e.keyCode === 27)
+      return this.cancelUpdateFile()
   }
 
   render() {
@@ -151,19 +143,20 @@ class FilesRowContent extends React.PureComponent {
           tabIndex={1}
           isAutoFocussed={true}
           onChange={this.renameTitle}
+          onKeyUp={this.onKeyUpUpdateFile}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.onClickUpdateFile}
+          onClick={this.updateFile}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.onClickCancelUpdateFile}
+          onClick={this.cancelUpdateFile}
           icon={cancelIcon}
         />
       </EditingWrapper>)
