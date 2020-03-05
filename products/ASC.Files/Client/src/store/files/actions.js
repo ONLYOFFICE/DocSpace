@@ -14,7 +14,9 @@ import config from "../../../package.json";
 const { FilterType, FileType } = constants;
 const { files, FilesFilter } = api;
 
+export const SET_FOLDER = "SET_FOLDER";
 export const SET_FOLDERS = "SET_FOLDERS";
+export const SET_FILE = "SET_FILE";
 export const SET_FILES = "SET_FILES";
 export const SET_SELECTION = "SET_SELECTION";
 export const SET_SELECTED = "SET_SELECTED";
@@ -23,10 +25,24 @@ export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
 export const SET_FILES_FILTER = "SET_FILES_FILTER";
 export const SET_FILTER = "SET_FILTER";
 
+export function setFile(file) {
+  return {
+    type: SET_FILE,
+    file
+  };
+}
+
 export function setFiles(files) {
   return {
     type: SET_FILES,
     files
+  };
+}
+
+export function setFolder(folder) {
+  return {
+    type: SET_FOLDER,
+    folder
   };
 }
 
@@ -128,7 +144,7 @@ export function fetchFiles(filter) {
     else {
       return files.getFolder(selectedFolderId)
         .then(data => {
-          const sortedFiles = fileType 
+          const sortedFiles = fileType
             ? data.files
               .filter(file => file.fileType === fileType)
             : data.files;
@@ -171,7 +187,7 @@ export function fetchFolder(folderId, dispatch) {
   return files.getFolder(folderId).then(data => {
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder({folders: data.folders, ...data.current}));
+    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current }));
   })
 }
 
@@ -233,14 +249,68 @@ export function fetchRootFolders(dispatch) {
   };
 
   return files.getMyFolderList()
-    .then(data => root.my = { folders: data.folders, ...data.current})
+    .then(data => root.my = { folders: data.folders, ...data.current })
     .then(() => files.getCommonFolderList()
-      .then(data => root.common = { folders: data.folders, ...data.current}))
+      .then(data => root.common = { folders: data.folders, ...data.current }))
     .then(() => files.getProjectsFolderList()
-      .then(data => root.project = { folders: data.folders, ...data.current}))
+      .then(data => root.project = { folders: data.folders, ...data.current }))
     .then(() => files.getTrashFolderList()
-      .then(data => root.trash = { folders: data.folders, ...data.current}))
+      .then(data => root.trash = { folders: data.folders, ...data.current }))
     .then(() => files.getSharedFolderList()
-      .then(data => root.share = { folders: data.folders, ...data.current}))
+      .then(data => root.share = { folders: data.folders, ...data.current }))
     .then(() => dispatch(setRootFolders(root)));
 }
+
+export function testUpdateMyFolder(folders) {
+  return (dispatch, getState) => {
+    const { files } = getState();
+    const { rootFolders } = files;
+
+    console.log("folders", folders);
+
+    const newRoot = rootFolders;
+    newRoot.my.folders = folders;
+    console.log("newRoot.my.folders", newRoot.my.folders);
+    console.log("folders", folders);
+    console.log("newRoot", newRoot);
+    //dispatch(setRootFolders(null));
+    dispatch(setRootFolders(newRoot));
+
+  }
+  //setRootFolders
+}
+
+export function updateFile(fileId, title) {
+  return dispatch => {
+    return files.updateFile(fileId, title)
+      .then(file => {
+        dispatch(setFile(file));
+      });
+  };
+}
+
+export function renameFolder(folderId, title) {
+  return dispatch => {
+    return files.renameFolder(folderId, title)
+      .then(folder => {
+        dispatch(setFolder(folder));
+      });
+  };
+}
+
+/*export function deleteGroup(id) {
+  return (dispatch, getState) => {
+    const { people } = getState();
+    const { groups, filter } = people;
+
+    return api.groups
+      .deleteGroup(id)
+      .then(res => {
+        return dispatch(setGroups(groups.filter(g => g.id !== id)));
+      })
+      .then(() => {
+        const newFilter = filter.clone(true);
+        return fetchPeople(newFilter, dispatch);
+      });
+  };
+}*/
