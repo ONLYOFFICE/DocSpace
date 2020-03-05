@@ -511,6 +511,7 @@ namespace ASC.Web.Files.Classes
         public T GetFolderMy<T>() => (T)Convert.ChangeType(FolderMy, typeof(T));
         public T GetFolderCommon<T>() => (T)Convert.ChangeType(FolderCommon, typeof(T));
         public T GetFolderProjects<T>() => (T)Convert.ChangeType(FolderProjects, typeof(T));
+        public T GetFolderTrash<T>() => (T)Convert.ChangeType(FolderTrash, typeof(T));
 
         public void SetFolderMy<T>(T val)
         {

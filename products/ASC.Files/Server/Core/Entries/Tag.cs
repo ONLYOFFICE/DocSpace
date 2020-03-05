@@ -60,23 +60,28 @@ namespace ASC.Files.Core
         }
 
         public Tag(string name, TagType type, Guid owner)
-            : this(name, type, owner, null, 0)
+            : this(name, type, owner, 0)
         {
         }
 
-        public Tag(string name, TagType type, Guid owner, FileEntry entry, int count)
+        public Tag(string name, TagType type, Guid owner, int count)
         {
             TagName = name;
             TagType = type;
             Owner = owner;
             Count = count;
+        }
+
+        public Tag AddEntry<T>(FileEntry<T> entry)
+        {
             if (entry != null)
             {
                 EntryId = entry.ID;
                 EntryType = entry.FileEntryType;
             }
-        }
 
+            return this;
+        }
 
         public static Tag New<T>(Guid owner, FileEntry<T> entry)
         {
@@ -85,13 +90,17 @@ namespace ASC.Files.Core
 
         public static Tag New<T>(Guid owner, FileEntry<T> entry, int count)
         {
-            return new Tag("new", TagType.New, owner, entry, count);
+            return new Tag("new", TagType.New, owner, count).AddEntry(entry);
         }
 
         public override bool Equals(object obj)
         {
             var f = obj as Tag;
-            return f != null && f.Id == Id && f.EntryType == EntryType && Equals(f.EntryId, EntryId);
+            return f != null && Equals(f);
+        }
+        public bool Equals(Tag f)
+        {
+            return f.Id == Id && f.EntryType == EntryType && Equals(f.EntryId, EntryId);
         }
 
         public override int GetHashCode()

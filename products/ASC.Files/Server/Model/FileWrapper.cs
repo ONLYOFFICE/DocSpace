@@ -46,12 +46,12 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Name = "file", Namespace = "")]
-    public class FileWrapper : FileEntryWrapper
+    public class FileWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
         [DataMember(EmitDefaultValue = false, IsRequired = false)]
-        public object FolderId { get; set; }
+        public T FolderId { get; set; }
 
         /// <summary>
         /// </summary>
@@ -120,9 +120,9 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static FileWrapper GetSample()
+        public static FileWrapper<int> GetSample()
         {
-            return new FileWrapper
+            return new FileWrapper<int>
             {
                 Access = FileShare.ReadWrite,
                 //Updated = ApiDateTime.GetSample(),
@@ -175,9 +175,9 @@ namespace ASC.Api.Documents
             FileUtility = fileUtility;
         }
 
-        public FileWrapper Get<T>(File<T> file)
+        public FileWrapper<T> Get<T>(File<T> file)
         {
-            var result = Get<FileWrapper>(file);
+            var result = Get<FileWrapper<T>, T>(file);
             result.FolderId = file.FolderID;
             if (file.RootFolderType == FolderType.USER
                 && !Equals(file.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -187,7 +187,7 @@ namespace ASC.Api.Documents
                 var parentFolder = folderDao.GetFolder(file.FolderID);
                 if (!FileSecurity.CanRead(parentFolder))
                 {
-                    result.FolderId = GlobalFolderHelper.FolderShare;
+                    result.FolderId = GlobalFolderHelper.GetFolderShare<T>();
                 }
             }
 

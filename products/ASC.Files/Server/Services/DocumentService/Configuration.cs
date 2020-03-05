@@ -58,8 +58,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Services.DocumentService
 {
     public enum EditorType

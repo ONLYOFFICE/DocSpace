@@ -41,12 +41,12 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Name = "folder", Namespace = "")]
-    public class FolderWrapper : FileEntryWrapper
+    public class FolderWrapper<T> : FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
         [DataMember(IsRequired = true, EmitDefaultValue = true)]
-        public object ParentId { get; set; }
+        public T ParentId { get; set; }
 
         /// <summary>
         /// </summary>
@@ -73,9 +73,9 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static FolderWrapper GetSample()
+        public static FolderWrapper<int> GetSample()
         {
-            return new FolderWrapper
+            return new FolderWrapper<int>
             {
                 Access = FileShare.ReadWrite,
                 //Updated = ApiDateTime.GetSample(),
@@ -116,9 +116,9 @@ namespace ASC.Api.Documents
             GlobalFolderHelper = globalFolderHelper;
         }
 
-        public FolderWrapper Get<T>(Folder<T> folder)
+        public FolderWrapper<T> Get<T>(Folder<T> folder)
         {
-            var result = Get<FolderWrapper>(folder);
+            var result = Get<FolderWrapper<T>, T>(folder);
             result.ParentId = folder.ParentFolderID;
             if (folder.RootFolderType == FolderType.USER
                 && !Equals(folder.RootFolderCreator, AuthContext.CurrentAccount.ID))
@@ -128,7 +128,7 @@ namespace ASC.Api.Documents
                 var folderDao = DaoFactory.GetFolderDao<T>();
                 var parentFolder = folderDao.GetFolder(folder.ParentFolderID);
                 if (!FileSecurity.CanRead(parentFolder))
-                    result.ParentId = GlobalFolderHelper.FolderShare;
+                    result.ParentId = GlobalFolderHelper.GetFolderShare<T>();
             }
 
             result.FilesCount = folder.TotalFiles;

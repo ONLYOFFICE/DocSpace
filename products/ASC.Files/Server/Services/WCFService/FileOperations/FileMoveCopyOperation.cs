@@ -111,7 +111,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             MoveOrCopyFolders(scope, Folders, toFolder, _copy);
             MoveOrCopyFiles(scope, Files, toFolder, _copy);
 
-            _needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew<T>(x));
+            _needToMark.Distinct().ToList().ForEach(x => fileMarker.MarkAsNew(x));
         }
 
         private void MoveOrCopyFolders(IServiceScope scope, List<T> folderIds, Folder<T> toFolder, bool copy)

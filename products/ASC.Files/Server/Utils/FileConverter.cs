@@ -61,16 +61,353 @@ using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Web.Files.Utils
 {
-    public class FileConverter
+    internal class FileConverterQueue<T>
     {
-        private static readonly object locker = new object();
-        private static readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer());
+        private readonly object singleThread = new object();
+        private readonly IDictionary<File<T>, ConvertFileOperationResult> conversionQueue;
+        private readonly Timer timer;
+        private readonly object locker;
         private readonly ICache cache;
-
-        private static Timer timer;
-        private static readonly object singleThread = new object();
         private const int TIMER_PERIOD = 500;
 
+        public IServiceProvider ServiceProvider { get; }
+
+        public FileConverterQueue(IServiceProvider ServiceProvider)
+        {
+            conversionQueue = new Dictionary<File<T>, ConvertFileOperationResult>(new FileComparer<T>());
+            timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
+            locker = new object();
+            this.ServiceProvider = ServiceProvider;
+            cache = AscCache.Memory;
+        }
+
+        public void Add(File<T> file, string password, int tenantId, IAccount account, bool deleteAfter, string url)
+        {
+            lock (locker)
+            {
+                if (conversionQueue.ContainsKey(file))
+                {
+                    return;
+                }
+
+                var queueResult = new ConvertFileOperationResult
+                {
+                    Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
+                    OperationType = FileOperationType.Convert,
+                    Error = string.Empty,
+                    Progress = 0,
+                    Result = string.Empty,
+                    Processed = "",
+                    Id = string.Empty,
+                    TenantId = tenantId,
+                    Account = account,
+                    Delete = deleteAfter,
+                    StartDateTime = DateTime.Now,
+                    Url = url,
+                    Password = password
+                };
+                conversionQueue.Add(file, queueResult);
+                cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
+
+                timer.Change(0, Timeout.Infinite);
+            }
+        }
+
+        public ConvertFileOperationResult GetStatus(KeyValuePair<File<T>, bool> pair, FileSecurity fileSecurity)
+        {
+            var file = pair.Key;
+            var key = GetKey(file);
+            var operation = cache.Get<ConvertFileOperationResult>(key);
+            if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
+            {
+                lock (locker)
+                {
+                    if (operation.Progress == 100)
+                    {
+                        conversionQueue.Remove(file);
+                        cache.Remove(key);
+                    }
+                    return operation;
+                }
+            }
+            return null;
+        }
+
+        public bool IsConverting(File<T> file)
+        {
+            var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
+            return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
+        }
+
+        private void CheckConvertFilesStatus(object _)
+        {
+            if (Monitor.TryEnter(singleThread))
+            {
+                using var scope = ServiceProvider.CreateScope();
+                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+                var userManager = scope.ServiceProvider.GetService<UserManager>();
+                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+                var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+                var FileSecurity = scope.ServiceProvider.GetService<FileSecurity>();
+                var PathProvider = scope.ServiceProvider.GetService<PathProvider>();
+                var SetupInfo = scope.ServiceProvider.GetService<SetupInfo>();
+                var FileUtility = scope.ServiceProvider.GetService<FileUtility>();
+                var DocumentServiceHelper = scope.ServiceProvider.GetService<DocumentServiceHelper>();
+                var DocumentServiceConnector = scope.ServiceProvider.GetService<DocumentServiceConnector>();
+                var EntryManager = scope.ServiceProvider.GetService<EntryManager>();
+                var FileConverter = scope.ServiceProvider.GetService<FileConverter>();
+
+                try
+                {
+                    var filesIsConverting = new List<File<T>>();
+                    lock (locker)
+                    {
+                        timer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                        conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
+                                                   && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
+                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
+                                       .ToList()
+                                       .ForEach(x =>
+                                       {
+                                           conversionQueue.Remove(x);
+                                           cache.Remove(GetKey(x.Key));
+                                       });
+
+                        logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
+
+                        if (conversionQueue.Count == 0)
+                        {
+                            return;
+                        }
+
+                        filesIsConverting = conversionQueue
+                            .Where(x => string.IsNullOrEmpty(x.Value.Processed))
+                            .Select(x => x.Key)
+                            .ToList();
+                    }
+
+                    var fileSecurity = FileSecurity;
+                    foreach (var file in filesIsConverting)
+                    {
+                        var fileUri = file.ID.ToString();
+                        string convertedFileUrl;
+                        int operationResultProgress;
+
+                        try
+                        {
+                            int tenantId;
+                            IAccount account;
+                            string password;
+
+                            lock (locker)
+                            {
+                                if (!conversionQueue.Keys.Contains(file)) continue;
+
+                                var operationResult = conversionQueue[file];
+                                if (!string.IsNullOrEmpty(operationResult.Processed)) continue;
+
+                                operationResult.Processed = "1";
+                                tenantId = operationResult.TenantId;
+                                account = operationResult.Account;
+                                password = operationResult.Password;
+
+                                //if (HttpContext.Current == null && !WorkContext.IsMono)
+                                //{
+                                //    HttpContext.Current = new HttpContext(
+                                //        new HttpRequest("hack", operationResult.Url, string.Empty),
+                                //        new HttpResponse(new StringWriter()));
+                                //}
+
+                                cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                            }
+
+                            tenantManager.SetCurrentTenant(tenantId);
+                            securityContext.AuthenticateMe(account);
+
+                            var user = userManager.GetUsers(account.ID);
+                            var culture = string.IsNullOrEmpty(user.CultureName) ? tenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
+                            Thread.CurrentThread.CurrentCulture = culture;
+                            Thread.CurrentThread.CurrentUICulture = culture;
+
+                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
+                            {
+                                //No rights in CRM after upload before attach
+                                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+                            }
+                            if (file.ContentLength > SetupInfo.AvailableFileSize)
+                            {
+                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
+                            }
+
+                            fileUri = PathProvider.GetFileStreamUrl(file);
+
+                            var toExtension = FileUtility.GetInternalExtension(file.Title);
+                            var fileExtension = file.ConvertedExtension;
+                            var docKey = DocumentServiceHelper.GetDocKey(file);
+
+                            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
+                            operationResultProgress = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
+                        }
+                        catch (Exception exception)
+                        {
+                            var password = exception.InnerException != null
+                                           && (exception.InnerException is DocumentService.DocumentServiceException documentServiceException)
+                                           && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
+
+                            logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
+                            lock (locker)
+                            {
+                                if (conversionQueue.Keys.Contains(file))
+                                {
+                                    var operationResult = conversionQueue[file];
+                                    if (operationResult.Delete)
+                                    {
+                                        conversionQueue.Remove(file);
+                                        cache.Remove(GetKey(file));
+                                    }
+                                    else
+                                    {
+                                        operationResult.Progress = 100;
+                                        operationResult.StopDateTime = DateTime.UtcNow;
+                                        operationResult.Error = exception.Message;
+                                        if (password) operationResult.Result = "password";
+                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                    }
+                                }
+                            }
+                            continue;
+                        }
+
+                        operationResultProgress = Math.Min(operationResultProgress, 100);
+                        if (operationResultProgress < 100)
+                        {
+                            lock (locker)
+                            {
+                                if (conversionQueue.Keys.Contains(file))
+                                {
+                                    var operationResult = conversionQueue[file];
+
+                                    if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
+                                    {
+                                        operationResult.StopDateTime = DateTime.UtcNow;
+                                        operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
+                                        logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.ID, file.ContentLengthString);
+                                    }
+                                    else
+                                    {
+                                        operationResult.Processed = "";
+                                    }
+                                    operationResult.Progress = operationResultProgress;
+                                    cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                }
+                            }
+
+                            logger.Debug("CheckConvertFilesStatus iteration continue");
+                            continue;
+                        }
+
+                        File<T> newFile = null;
+                        var operationResultError = string.Empty;
+
+                        try
+                        {
+                            newFile = FileConverter.SaveConvertedFile(file, convertedFileUrl);
+                        }
+                        catch (Exception e)
+                        {
+                            operationResultError = e.Message;
+
+                            logger.ErrorFormat("{0} ConvertUrl: {1} fromUrl: {2}: {3}", operationResultError, convertedFileUrl, fileUri, e);
+                            continue;
+                        }
+                        finally
+                        {
+                            lock (locker)
+                            {
+                                if (conversionQueue.Keys.Contains(file))
+                                {
+                                    var operationResult = conversionQueue[file];
+                                    if (operationResult.Delete)
+                                    {
+                                        conversionQueue.Remove(file);
+                                        cache.Remove(GetKey(file));
+                                    }
+                                    else
+                                    {
+                                        if (newFile != null)
+                                        {
+                                            var folderDao = daoFactory.GetFolderDao<T>();
+                                            var folder = folderDao.GetFolder(newFile.FolderID);
+                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
+                                            operationResult.Result = FileJsonSerializer(EntryManager, newFile, folderTitle);
+                                        }
+
+                                        operationResult.Progress = 100;
+                                        operationResult.StopDateTime = DateTime.UtcNow;
+                                        operationResult.Processed = "1";
+                                        if (!string.IsNullOrEmpty(operationResultError))
+                                        {
+                                            operationResult.Error = operationResultError;
+                                        }
+                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
+                                    }
+                                }
+                            }
+                        }
+
+                        logger.Debug("CheckConvertFilesStatus iteration end");
+                    }
+
+                    lock (locker)
+                    {
+                        timer.Change(TIMER_PERIOD, TIMER_PERIOD);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    logger.Error(exception.Message, exception);
+                    lock (locker)
+                    {
+                        timer.Change(Timeout.Infinite, Timeout.Infinite);
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(singleThread);
+                }
+            }
+        }
+
+        private string GetKey(File<T> f)
+        {
+            return string.Format("fileConvertation-{0}", f.ID);
+        }
+
+        private string FileJsonSerializer(EntryManager EntryManager, File<T> file, string folderTitle)
+        {
+            if (file == null) return string.Empty;
+
+            EntryManager.SetFileStatus(file);
+            return
+                string.Format("{{ \"id\": \"{0}\"," +
+                              " \"title\": \"{1}\"," +
+                              " \"version\": \"{2}\"," +
+                              " \"folderId\": \"{3}\"," +
+                              " \"folderTitle\": \"{4}\"," +
+                              " \"fileXml\": \"{5}\" }}",
+                              file.ID,
+                              file.Title,
+                              file.Version,
+                              file.FolderID,
+                              folderTitle ?? "",
+                              File<T>.Serialize(file).Replace('"', '\''));
+        }
+    }
+
+    public class FileConverter
+    {
         public FileUtility FileUtility { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public IDaoFactory DaoFactory { get; }
@@ -89,7 +426,6 @@ namespace ASC.Web.Files.Utils
         public DocumentServiceConnector DocumentServiceConnector { get; }
         public IServiceProvider ServiceProvider { get; }
         public IHttpContextAccessor HttpContextAccesor { get; }
-        public ILog Logger { get; }
 
         public FileConverter(
             FileUtility fileUtility,
@@ -128,8 +464,6 @@ namespace ASC.Web.Files.Utils
             DocumentServiceHelper = documentServiceHelper;
             DocumentServiceConnector = documentServiceConnector;
             ServiceProvider = serviceProvider;
-            Logger = options.CurrentValue;
-            cache = AscCache.Memory;
         }
         public FileConverter(
             FileUtility fileUtility,
@@ -269,42 +603,7 @@ namespace ASC.Web.Files.Utils
             }
 
             FileMarker.RemoveMarkAsNew(file);
-
-            lock (locker)
-            {
-                if (conversionQueue.ContainsKey(file))
-                {
-                    return;
-                }
-
-                var queueResult = new ConvertFileOperationResult
-                {
-                    Source = string.Format("{{\"id\":\"{0}\", \"version\":\"{1}\"}}", file.ID, file.Version),
-                    OperationType = FileOperationType.Convert,
-                    Error = string.Empty,
-                    Progress = 0,
-                    Result = string.Empty,
-                    Processed = "",
-                    Id = string.Empty,
-                    TenantId = TenantManager.GetCurrentTenant().TenantId,
-                    Account = AuthContext.CurrentAccount,
-                    Delete = deleteAfter,
-                    StartDateTime = DateTime.Now,
-                    Url = HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null,
-                    Password = password
-                };
-                conversionQueue.Add(file, queueResult);
-                cache.Insert(GetKey(file), queueResult, TimeSpan.FromMinutes(10));
-
-                if (timer == null)
-                {
-                    timer = new Timer(CheckConvertFilesStatus, null, 0, Timeout.Infinite);
-                }
-                else
-                {
-                    timer.Change(0, Timeout.Infinite);
-                }
-            }
+            GetFileConverter<T>().Add(file, password, TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount, deleteAfter, HttpContextAccesor?.HttpContext != null ? HttpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null);
         }
 
         public bool IsConverting<T>(File<T> file)
@@ -313,289 +612,26 @@ namespace ASC.Web.Files.Utils
             {
                 return false;
             }
-            var result = cache.Get<ConvertFileOperationResult>(GetKey(file));
-            return result != null && result.Progress != 100 && string.IsNullOrEmpty(result.Error);
+
+            return GetFileConverter<T>().IsConverting(file);
         }
 
         public IEnumerable<FileOperationResult> GetStatus<T>(IEnumerable<KeyValuePair<File<T>, bool>> filesPair)
         {
-            var fileSecurity = FileSecurity;
             var result = new List<FileOperationResult>();
             foreach (var pair in filesPair)
             {
-                var file = pair.Key;
-                var key = GetKey(file);
-                var operation = cache.Get<ConvertFileOperationResult>(key);
-                if (operation != null && (pair.Value || fileSecurity.CanRead(file)))
+                var r = GetFileConverter<T>().GetStatus(pair, FileSecurity);
+
+                if (r != null)
                 {
-                    result.Add(operation);
-                    lock (locker)
-                    {
-                        if (operation.Progress == 100)
-                        {
-                            conversionQueue.Remove(file);
-                            cache.Remove(key);
-                        }
-                    }
+                    result.Add(r);
                 }
             }
             return result;
         }
 
-        private string FileJsonSerializer<T>(File<T> file, string folderTitle)
-        {
-            if (file == null) return string.Empty;
-
-            EntryManager.SetFileStatus(file);
-            return
-                string.Format("{{ \"id\": \"{0}\"," +
-                              " \"title\": \"{1}\"," +
-                              " \"version\": \"{2}\"," +
-                              " \"folderId\": \"{3}\"," +
-                              " \"folderTitle\": \"{4}\"," +
-                              " \"fileXml\": \"{5}\" }}",
-                              file.ID,
-                              file.Title,
-                              file.Version,
-                              file.FolderID,
-                              folderTitle ?? "",
-                              File<T>.Serialize(file).Replace('"', '\''));
-        }
-
-        private void CheckConvertFilesStatus<T>(object _)
-        {
-            if (Monitor.TryEnter(singleThread))
-            {
-                using var scope = ServiceProvider.CreateScope();
-                var logger = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-                var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-                var userManager = scope.ServiceProvider.GetService<UserManager>();
-                var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
-                var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
-
-                try
-                {
-                    var filesIsConverting = new List<File<T>>();
-                    lock (locker)
-                    {
-                        timer.Change(Timeout.Infinite, Timeout.Infinite);
-
-                        conversionQueue.Where(x => !string.IsNullOrEmpty(x.Value.Processed)
-                                                   && (x.Value.Progress == 100 && DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(1) ||
-                                                       DateTime.UtcNow - x.Value.StopDateTime > TimeSpan.FromMinutes(10)))
-                                       .ToList()
-                                       .ForEach(x =>
-                                           {
-                                               conversionQueue.Remove(x);
-                                               cache.Remove(GetKey(x.Key));
-                                           });
-
-                        logger.DebugFormat("Run CheckConvertFilesStatus: count {0}", conversionQueue.Count);
-
-                        if (conversionQueue.Count == 0)
-                        {
-                            return;
-                        }
-
-                        filesIsConverting = conversionQueue
-                            .Where(x => string.IsNullOrEmpty(x.Value.Processed))
-                            .Select(x => x.Key)
-                            .ToList();
-                    }
-
-                    var fileSecurity = FileSecurity;
-                    foreach (var file in filesIsConverting)
-                    {
-                        var fileUri = file.ID.ToString();
-                        string convertedFileUrl;
-                        int operationResultProgress;
-
-                        try
-                        {
-                            int tenantId;
-                            IAccount account;
-                            string password;
-
-                            lock (locker)
-                            {
-                                if (!conversionQueue.Keys.Contains(file)) continue;
-
-                                var operationResult = conversionQueue[file];
-                                if (!string.IsNullOrEmpty(operationResult.Processed)) continue;
-
-                                operationResult.Processed = "1";
-                                tenantId = operationResult.TenantId;
-                                account = operationResult.Account;
-                                password = operationResult.Password;
-
-                                //if (HttpContext.Current == null && !WorkContext.IsMono)
-                                //{
-                                //    HttpContext.Current = new HttpContext(
-                                //        new HttpRequest("hack", operationResult.Url, string.Empty),
-                                //        new HttpResponse(new StringWriter()));
-                                //}
-
-                                cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
-                            }
-
-                            tenantManager.SetCurrentTenant(tenantId);
-                            securityContext.AuthenticateMe(account);
-
-                            var user = userManager.GetUsers(account.ID);
-                            var culture = string.IsNullOrEmpty(user.CultureName) ? TenantManager.GetCurrentTenant().GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
-                            Thread.CurrentThread.CurrentCulture = culture;
-                            Thread.CurrentThread.CurrentUICulture = culture;
-
-                            if (!fileSecurity.CanRead(file) && file.RootFolderType != FolderType.BUNCH)
-                            {
-                                //No rights in CRM after upload before attach
-                                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
-                            }
-                            if (file.ContentLength > SetupInfo.AvailableFileSize)
-                            {
-                                throw new Exception(string.Format(FilesCommonResource.ErrorMassage_FileSizeConvert, FileSizeComment.FilesSizeToString(SetupInfo.AvailableFileSize)));
-                            }
-
-                            fileUri = PathProvider.GetFileStreamUrl(file);
-
-                            var toExtension = FileUtility.GetInternalExtension(file.Title);
-                            var fileExtension = file.ConvertedExtension;
-                            var docKey = DocumentServiceHelper.GetDocKey(file);
-
-                            fileUri = DocumentServiceConnector.ReplaceCommunityAdress(fileUri);
-                            operationResultProgress = DocumentServiceConnector.GetConvertedUri(fileUri, fileExtension, toExtension, docKey, password, true, out convertedFileUrl);
-                        }
-                        catch (Exception exception)
-                        {
-                            var password = exception.InnerException != null
-                                           && (exception.InnerException is DocumentService.DocumentServiceException documentServiceException)
-                                           && documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword;
-
-                            logger.Error(string.Format("Error convert {0} with url {1}", file.ID, fileUri), exception);
-                            lock (locker)
-                            {
-                                if (conversionQueue.Keys.Contains(file))
-                                {
-                                    var operationResult = conversionQueue[file];
-                                    if (operationResult.Delete)
-                                    {
-                                        conversionQueue.Remove(file);
-                                        cache.Remove(GetKey(file));
-                                    }
-                                    else
-                                    {
-                                        operationResult.Progress = 100;
-                                        operationResult.StopDateTime = DateTime.UtcNow;
-                                        operationResult.Error = exception.Message;
-                                        if (password) operationResult.Result = "password";
-                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
-                                    }
-                                }
-                            }
-                            continue;
-                        }
-
-                        operationResultProgress = Math.Min(operationResultProgress, 100);
-                        if (operationResultProgress < 100)
-                        {
-                            lock (locker)
-                            {
-                                if (conversionQueue.Keys.Contains(file))
-                                {
-                                    var operationResult = conversionQueue[file];
-
-                                    if (DateTime.Now - operationResult.StartDateTime > TimeSpan.FromMinutes(10))
-                                    {
-                                        operationResult.StopDateTime = DateTime.UtcNow;
-                                        operationResult.Error = FilesCommonResource.ErrorMassage_ConvertTimeout;
-                                        logger.ErrorFormat("CheckConvertFilesStatus timeout: {0} ({1})", file.ID, file.ContentLengthString);
-                                    }
-                                    else
-                                    {
-                                        operationResult.Processed = "";
-                                    }
-                                    operationResult.Progress = operationResultProgress;
-                                    cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
-                                }
-                            }
-
-                            logger.Debug("CheckConvertFilesStatus iteration continue");
-                            continue;
-                        }
-
-                        File<T> newFile = null;
-                        var operationResultError = string.Empty;
-
-                        try
-                        {
-                            newFile = SaveConvertedFile(file, convertedFileUrl);
-                        }
-                        catch (Exception e)
-                        {
-                            operationResultError = e.Message;
-
-                            logger.ErrorFormat("{0} ConvertUrl: {1} fromUrl: {2}: {3}", operationResultError, convertedFileUrl, fileUri, e);
-                            continue;
-                        }
-                        finally
-                        {
-                            lock (locker)
-                            {
-                                if (conversionQueue.Keys.Contains(file))
-                                {
-                                    var operationResult = conversionQueue[file];
-                                    if (operationResult.Delete)
-                                    {
-                                        conversionQueue.Remove(file);
-                                        cache.Remove(GetKey(file));
-                                    }
-                                    else
-                                    {
-                                        if (newFile != null)
-                                        {
-                                            var folderDao = daoFactory.GetFolderDao<T>();
-                                            var folder = folderDao.GetFolder(newFile.FolderID);
-                                            var folderTitle = fileSecurity.CanRead(folder) ? folder.Title : null;
-                                            operationResult.Result = FileJsonSerializer(newFile, folderTitle);
-                                        }
-
-                                        operationResult.Progress = 100;
-                                        operationResult.StopDateTime = DateTime.UtcNow;
-                                        operationResult.Processed = "1";
-                                        if (!string.IsNullOrEmpty(operationResultError))
-                                        {
-                                            operationResult.Error = operationResultError;
-                                        }
-                                        cache.Insert(GetKey(file), operationResult, TimeSpan.FromMinutes(10));
-                                    }
-                                }
-                            }
-                        }
-
-                        logger.Debug("CheckConvertFilesStatus iteration end");
-                    }
-
-                    lock (locker)
-                    {
-                        timer.Change(TIMER_PERIOD, TIMER_PERIOD);
-                    }
-                }
-                catch (Exception exception)
-                {
-                    logger.Error(exception.Message, exception);
-                    lock (locker)
-                    {
-                        timer.Change(Timeout.Infinite, Timeout.Infinite);
-                    }
-                }
-                finally
-                {
-                    Monitor.Exit(singleThread);
-                }
-            }
-        }
-
-        private File<T> SaveConvertedFile<T>(File<T> file, string convertedFileUrl)
+        public File<T> SaveConvertedFile<T>(File<T> file, string convertedFileUrl)
         {
             var fileSecurity = FileSecurity;
             var fileDao = DaoFactory.GetFileDao<T>();
@@ -681,7 +717,7 @@ namespace ASC.Web.Files.Utils
             }
 
             FilesMessageService.Send(newFile, MessageInitiator.DocsService, MessageAction.FileConverted, newFile.Title);
-            FileMarker.MarkAsNew<T>(newFile);
+            FileMarker.MarkAsNew(newFile);
 
             var tagDao = DaoFactory.GetTagDao<T>();
             var tags = tagDao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList();
@@ -694,36 +730,32 @@ namespace ASC.Web.Files.Utils
             return newFile;
         }
 
-        private static string GetKey<T>(File<T> f)
+        private FileConverterQueue<T> GetFileConverter<T>() => ServiceProvider.GetService<FileConverterQueue<T>>();
+    }
+
+    internal class FileComparer<T> : IEqualityComparer<File<T>>
+    {
+        public bool Equals(File<T> x, File<T> y)
         {
-            return string.Format("fileConvertation-{0}", f.ID);
+            return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
         }
 
-
-        private class FileComparer<T> : IEqualityComparer<File<T>>
+        public int GetHashCode(File<T> obj)
         {
-            public bool Equals(File<T> x, File<T> y)
-            {
-                return x != null && y != null && Equals(x.ID, y.ID) && x.Version == y.Version;
-            }
-
-            public int GetHashCode(File<T> obj)
-            {
-                return obj.ID.GetHashCode() + obj.Version.GetHashCode();
-            }
+            return obj.ID.GetHashCode() + obj.Version.GetHashCode();
         }
+    }
 
-        [DataContract(Name = "operation_result", Namespace = "")]
-        private class ConvertFileOperationResult : FileOperationResult
-        {
-            public DateTime StartDateTime { get; set; }
-            public DateTime StopDateTime { get; set; }
-            public int TenantId { get; set; }
-            public IAccount Account { get; set; }
-            public bool Delete { get; set; }
-            public string Url { get; set; }
-            public string Password { get; set; }
-        }
+    [DataContract(Name = "operation_result", Namespace = "")]
+    internal class ConvertFileOperationResult : FileOperationResult
+    {
+        public DateTime StartDateTime { get; set; }
+        public DateTime StopDateTime { get; set; }
+        public int TenantId { get; set; }
+        public IAccount Account { get; set; }
+        public bool Delete { get; set; }
+        public string Url { get; set; }
+        public string Password { get; set; }
     }
 
     public static class FileConverterExtension
@@ -731,6 +763,8 @@ namespace ASC.Web.Files.Utils
         public static DIHelper AddFileConverterService(this DIHelper services)
         {
             services.TryAddScoped<FileConverter>();
+            services.TryAddSingleton<FileConverterQueue<string>>();
+            services.TryAddSingleton<FileConverterQueue<int>>();
             return services
                 .AddFilesLinkUtilityService()
                 .AddFileUtilityService()

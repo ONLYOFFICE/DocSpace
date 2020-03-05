@@ -205,9 +205,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>My folder contents</returns>
         [Read("@my")]
-        public FolderContentWrapper GetMyFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<string> GetMyFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderMy<string>(), userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -219,9 +219,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Projects folder contents</returns>
         [Read("@projects")]
-        public FolderContentWrapper GetProjectsFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<string> GetProjectsFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderProjects, userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderProjects<string>(), userIdOrGroupId, filterType);
         }
 
 
@@ -234,9 +234,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Common folder contents</returns>
         [Read("@common")]
-        public FolderContentWrapper GetCommonFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetCommonFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderCommon<int>(), userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -248,9 +248,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public FolderContentWrapper GetShareFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<string> GetShareFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderShare<string>(), userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -262,9 +262,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Trash folder contents</returns>
         [Read("@trash")]
-        public FolderContentWrapper GetTrashFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<string> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.FolderTrash, userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderTrash<string>(), userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -279,13 +279,13 @@ namespace ASC.Api.Documents
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
         [Read("{folderId}", order: int.MaxValue)]
-        public FolderContentWrapper GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<string> GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
         }
 
         [Read("{folderId:int}", order: int.MaxValue)]
-        public FolderContentWrapper GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
         }
@@ -405,7 +405,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper InsertFileToMy(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<string> InsertFileToMy(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
             return InsertFile(GlobalFolderHelper.FolderMy.ToString(), file, title, createNewIfExist, keepConvertStatus);
         }
@@ -420,7 +420,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper InsertFileToCommon(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<string> InsertFileToCommon(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
             return InsertFile(GlobalFolderHelper.FolderCommon.ToString(), file, title, createNewIfExist, keepConvertStatus);
         }
@@ -436,7 +436,7 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("{folderId}/insert")]
-        public FileWrapper InsertFile(string folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<string> InsertFile(string folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
             try
             {
@@ -462,7 +462,7 @@ namespace ASC.Api.Documents
         /// <returns></returns>
         /// <visible>false</visible>
         [Update("{fileId}/update")]
-        public FileWrapper UpdateFileStream(Stream file, string fileId, bool encrypted = false)
+        public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
         {
             try
             {
@@ -488,7 +488,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/saveediting")]
-        public FileWrapper SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
+        public FileWrapper<string> SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
         {
             return FileWrapperHelper.Get(FileStorageService.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave));
         }
@@ -624,7 +624,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/text")]
-        public FileWrapper CreateTextFileInMy(string title, string content)
+        public FileWrapper<string> CreateTextFileInMy(string title, string content)
         {
             return CreateTextFile(GlobalFolderHelper.FolderMy.ToString(), title, content);
         }
@@ -638,7 +638,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@common/text")]
-        public FileWrapper CreateTextFileInCommon(string title, string content)
+        public FileWrapper<string> CreateTextFileInCommon(string title, string content)
         {
             return CreateTextFile(GlobalFolderHelper.FolderCommon.ToString(), title, content);
         }
@@ -653,7 +653,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/text")]
-        public FileWrapper CreateTextFile(string folderId, string title, string content)
+        public FileWrapper<string> CreateTextFile(string folderId, string title, string content)
         {
             if (title == null) throw new ArgumentNullException("title");
             //Try detect content
@@ -668,11 +668,11 @@ namespace ASC.Api.Documents
             return CreateFile(folderId, title, content, extension);
         }
 
-        private FileWrapper CreateFile<T>(T folderId, string title, string content, string extension)
+        private FileWrapper<T> CreateFile<T>(T folderId, string title, string content, string extension)
         {
             using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
             {
-                var file = FileUploader.Exec(folderId.ToString(),
+                var file = FileUploader.Exec(folderId,
                                   title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
                                   memStream.Length, memStream);
                 return FileWrapperHelper.Get(file);
@@ -689,7 +689,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("{folderId}/html")]
-        public FileWrapper CreateHtmlFile(string folderId, string title, string content)
+        public FileWrapper<string> CreateHtmlFile(string folderId, string title, string content)
         {
             if (title == null) throw new ArgumentNullException("title");
             return CreateFile(folderId, title, content, ".html");
@@ -704,7 +704,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/html")]
-        public FileWrapper CreateHtmlFileInMy(string title, string content)
+        public FileWrapper<string> CreateHtmlFileInMy(string title, string content)
         {
             return CreateHtmlFile(GlobalFolderHelper.FolderMy.ToString(), title, content);
         }
@@ -719,7 +719,7 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>        
         [Create("@common/html")]
-        public FileWrapper CreateHtmlFileInCommon(string title, string content)
+        public FileWrapper<string> CreateHtmlFileInCommon(string title, string content)
         {
             return CreateHtmlFile(GlobalFolderHelper.FolderCommon.ToString(), title, content);
         }
@@ -736,7 +736,7 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}")]
-        public FolderWrapper CreateFolder(string folderId, string title)
+        public FolderWrapper<string> CreateFolder(string folderId, string title)
         {
             var folder = FileStorageService.CreateNewFolder(folderId, title);
             return FolderWrapperHelper.Get(folder);
@@ -751,7 +751,7 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper CreateFile(string title)
+        public FileWrapper<string> CreateFile(string title)
         {
             return CreateFile(GlobalFolderHelper.FolderMy.ToString(), title);
         }
@@ -766,7 +766,7 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file")]
-        public FileWrapper CreateFile(string folderId, string title)
+        public FileWrapper<string> CreateFile(string folderId, string title)
         {
             var file = FileStorageService.CreateNewFile(new FileModel<string> { ParentId = folderId, Title = title });
             return FileWrapperHelper.Get(file);
@@ -783,7 +783,7 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}")]
-        public FolderWrapper RenameFolder(string folderId, string title)
+        public FolderWrapper<string> RenameFolder(string folderId, string title)
         {
             var folder = FileStorageService.FolderRename(folderId, title);
             return FolderWrapperHelper.Get(folder);
@@ -796,7 +796,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Folder info</returns>
         [Read("folder/{folderId}")]
-        public FolderWrapper GetFolderInfo(string folderId)
+        public FolderWrapper<string> GetFolderInfo(string folderId)
         {
             var folder = FileStorageService.GetFolder(folderId).NotFoundIfNull("Folder not found");
 
@@ -810,7 +810,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Parent folders</returns>
         [Read("folder/{folderId}/path")]
-        public IEnumerable<FolderWrapper> GetFolderPath(string folderId)
+        public IEnumerable<FolderWrapper<string>> GetFolderPath(string folderId)
         {
             return EntryManager.GetBreadCrumbs(folderId).Select(FolderWrapperHelper.Get);
         }
@@ -822,7 +822,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>File info</returns>
         [Read("file/{fileId}")]
-        public FileWrapper GetFileInfo(string fileId, int version = -1)
+        public FileWrapper<string> GetFileInfo(string fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
@@ -835,7 +835,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns>File info</returns>
         [Read("file/{fileId:int}")]
-        public FileWrapper GetFileInfo(int fileId, int version = -1)
+        public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
             var file = FileStorageServiceInt.GetFile(fileId, version).NotFoundIfNull("File not found");
             return FileWrapperHelper.Get(file);
@@ -851,7 +851,7 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}")]
-        public FileWrapper UpdateFile(string fileId, string title, int lastVersion)
+        public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
         {
             if (!string.IsNullOrEmpty(title))
                 FileStorageService.FileRename(fileId.ToString(CultureInfo.InvariantCulture), title);
@@ -872,7 +872,7 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}")]
-        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper<string>> DeleteFile(string fileId, bool deleteAfter, bool immediately)
         {
             var model = new DeleteBatchModel
             {
@@ -942,7 +942,7 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("folder/{folderId}")]
-        public IEnumerable<FileOperationWraper> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper<string>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             var model = new DeleteBatchModel
             {
@@ -963,7 +963,7 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public IEnumerable<FileWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
+        public IEnumerable<FileWrapper<string>> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
             var itemList = new ItemList<string>();
 
@@ -988,7 +988,7 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/move")]
-        public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
+        public IEnumerable<FileOperationWraper<string>> MoveBatchItems(BatchModel batchModel)
         {
             var itemList = new ItemList<string>();
 
@@ -1010,7 +1010,7 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/copy")]
-        public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
+        public IEnumerable<FileOperationWraper<string>> CopyBatchItems(BatchModel batchModel)
         {
             var itemList = new ItemList<string>();
 
@@ -1027,7 +1027,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel model)
+        public IEnumerable<FileOperationWraper<string>> MarkAsRead(BaseBatchModel model)
         {
             var itemList = new ItemList<string>();
 
@@ -1044,7 +1044,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/terminate")]
-        public IEnumerable<FileOperationWraper> TerminateTasks()
+        public IEnumerable<FileOperationWraper<string>> TerminateTasks()
         {
             return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get<string>);
         }
@@ -1057,7 +1057,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Read("fileops")]
-        public IEnumerable<FileOperationWraper> GetOperationStatuses()
+        public IEnumerable<FileOperationWraper<string>> GetOperationStatuses()
         {
             return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get<string>);
         }
@@ -1072,7 +1072,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
+        public IEnumerable<FileOperationWraper<string>> BulkDownload(DownloadModel model)
         {
             var itemList = new Dictionary<string, string>();
 
@@ -1105,7 +1105,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper> DeleteBatchItems(DeleteBatchModel batch)
+        public IEnumerable<FileOperationWraper<string>> DeleteBatchItems(DeleteBatchModel batch)
         {
             var itemList = new ItemList<string>();
 
@@ -1122,7 +1122,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/emptytrash")]
-        public IEnumerable<FileOperationWraper> EmptyTrash()
+        public IEnumerable<FileOperationWraper<string>> EmptyTrash()
         {
             return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<string>);
         }
@@ -1135,7 +1135,7 @@ namespace ASC.Api.Documents
         /// <param name="fileId">File ID</param>
         /// <returns>File information</returns>
         [Read("file/{fileId}/history")]
-        public IEnumerable<FileWrapper> GetFileVersionInfo(string fileId)
+        public IEnumerable<FileWrapper<string>> GetFileVersionInfo(string fileId)
         {
             var files = FileStorageService.GetFileHistory(fileId);
             return files.Select(FileWrapperHelper.Get);
@@ -1150,7 +1150,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <returns></returns>
         [Update("file/{fileId}/history")]
-        public IEnumerable<FileWrapper> ChangeHistory(string fileId, int version, bool continueVersion)
+        public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
         {
             var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
             return history.Select(FileWrapperHelper.Get);
@@ -1378,7 +1378,7 @@ namespace ASC.Api.Documents
         /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
         /// <exception cref="ArgumentException"></exception>
         [Create("thirdparty")]
-        public FolderWrapper SaveThirdParty(
+        public FolderWrapper<string> SaveThirdParty(
             string url,
             string login,
             string password,
@@ -1547,7 +1547,7 @@ namespace ASC.Api.Documents
         }
 
 
-        private FolderContentWrapper ToFolderContentWrapper(object folderId, Guid userIdOrGroupId, FilterType filterType)
+        private FolderContentWrapper<string> ToFolderContentWrapper(string folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {
@@ -1568,7 +1568,7 @@ namespace ASC.Api.Documents
                                             startIndex);
         }
 
-        private FolderContentWrapper ToFolderContentWrapper(int folderId, Guid userIdOrGroupId, FilterType filterType)
+        private FolderContentWrapper<int> ToFolderContentWrapper(int folderId, Guid userIdOrGroupId, FilterType filterType)
         {
             if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {
@@ -1823,7 +1823,7 @@ namespace ASC.Api.Documents
             /// Result file of operation.
             /// </summary>
             [DataMember(Name = "result")]
-            public FileWrapper File { get; set; }
+            public FileWrapper<string> File { get; set; }
 
             /// <summary>
             /// Error during conversation.

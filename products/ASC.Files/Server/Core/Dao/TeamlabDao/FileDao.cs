@@ -58,7 +58,7 @@ namespace ASC.Files.Core.Data
         public GlobalStore GlobalStore { get; }
         public GlobalSpace GlobalSpace { get; }
         public GlobalFolder GlobalFolder { get; }
-        public IFolderDao<int> FolderDao { get; }
+        public IDaoFactory DaoFactory { get; }
         public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
 
         public FileDao(
@@ -78,7 +78,7 @@ namespace ASC.Files.Core.Data
             GlobalStore globalStore,
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
-            IFolderDao<int> folderDao,
+            IDaoFactory daoFactory,
             ChunkedUploadSessionHolder chunkedUploadSessionHolder)
             : base(
                   dbContextManager,
@@ -98,7 +98,7 @@ namespace ASC.Files.Core.Data
             GlobalStore = globalStore;
             GlobalSpace = globalSpace;
             GlobalFolder = globalFolder;
-            FolderDao = folderDao;
+            DaoFactory = daoFactory;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
         }
 
@@ -687,7 +687,7 @@ namespace ASC.Files.Core.Data
                 {
                     f.FolderId = toFolderId;
 
-                    if (GlobalFolder.GetFolderTrash<int>(FolderDao).Equals(toFolderId))
+                    if (GlobalFolder.GetFolderTrash<int>(DaoFactory).Equals(toFolderId))
                     {
                         f.ModifiedBy = AuthContext.CurrentAccount.ID;
                         f.ModifiedOn = DateTime.UtcNow;

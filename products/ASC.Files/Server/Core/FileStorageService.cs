@@ -315,7 +315,7 @@ namespace ASC.Web.Files.Services.WCFService
             var folderItems = GetFolderItems(parentId, from, count, filter, subjectGroup, subjectID, search, searchInContent, withSubfolders, orderBy);
             var response = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StreamContent(serializer.ToXml<T>(folderItems))
+                Content = new StreamContent(serializer.ToXml(folderItems))
             };
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
             return response;
@@ -854,7 +854,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 if (tagLocked == null)
                 {
-                    tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, file, 0);
+                    tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, 0).AddEntry<T>(file);
 
                     tagDao.SaveTags(tagLocked);
                 }
@@ -1046,7 +1046,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StreamContent(serializer.ToXml<T>(new ItemList<FileEntry<T>>(result)))
+                    Content = new StreamContent(serializer.ToXml(new ItemList<FileEntry<T>>(result)))
                 };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
                 return response;
@@ -1157,7 +1157,7 @@ namespace ASC.Web.Files.Services.WCFService
                 lostFolderType = lostProvider.RootFolderType;
                 if (lostProvider.RootFolderType == FolderType.COMMON && !thirdPartyParams.Corporate)
                 {
-                    var lostFolder = folderDao.GetFolder((int)lostProvider.RootFolderId);
+                    var lostFolder = folderDao.GetFolder((T)Convert.ChangeType(lostProvider.RootFolderId, typeof(T)));
                     FileMarker.RemoveMarkAsNewForAll(lostFolder);
                 }
 

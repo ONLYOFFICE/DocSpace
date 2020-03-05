@@ -1000,7 +1000,7 @@ namespace ASC.Web.Files
                 return;
             }
 
-            FileMarker.MarkAsNew<T>(file);
+            FileMarker.MarkAsNew(file);
 
             if (responseMessage)
             {

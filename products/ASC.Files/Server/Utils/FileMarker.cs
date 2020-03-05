@@ -46,18 +46,41 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Utils
 {
-    public class FileMarkerHelper
+
+    public class FileMarkerHelper<T>
     {
         private IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
-        public FileMarkerHelper(IServiceProvider serviceProvider, IOptionsMonitor<ILog> optionsMonitor)
+        public object Locker { get; set; }
+        public WorkerQueue<AsyncTaskData<T>> Tasks { get; set; }
+
+        public FileMarkerHelper(
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<ILog> optionsMonitor,
+            WorkerQueueOptionsManager<AsyncTaskData<T>> workerQueueOptionsManager)
         {
             ServiceProvider = serviceProvider;
             Log = optionsMonitor.CurrentValue;
+            Locker = new object();
+            Tasks = workerQueueOptionsManager.Value;
         }
 
-        internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)
+        internal void Add(AsyncTaskData<T> taskData)
+        {
+
+            lock (Locker)
+            {
+                Tasks.Add(taskData);
+
+                if (!Tasks.IsStarted)
+                {
+                    Tasks.Start(ExecMarkFileAsNew);
+                }
+            }
+        }
+
+        private void ExecMarkFileAsNew(AsyncTaskData<T> obj)
         {
             try
             {
@@ -70,13 +93,10 @@ namespace ASC.Web.Files.Utils
                 Log.Error(e);
             }
         }
-
     }
 
     public class FileMarker
     {
-        private static readonly object locker = new object();
-        private readonly WorkerQueue<AsyncTaskData<T>> tasks;
         private readonly ICache cache;
 
         private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
@@ -89,7 +109,6 @@ namespace ASC.Web.Files.Utils
         public CoreBaseSettings CoreBaseSettings { get; }
         public AuthContext AuthContext { get; }
         public IServiceProvider ServiceProvider { get; }
-        public FileMarkerHelper FileMarkerHelper { get; }
 
         public FileMarker(
             TenantManager tenantManager,
@@ -99,9 +118,7 @@ namespace ASC.Web.Files.Utils
             FileSecurity fileSecurity,
             CoreBaseSettings coreBaseSettings,
             AuthContext authContext,
-            IServiceProvider serviceProvider,
-            WorkerQueueOptionsManager<AsyncTaskData<T>> workerQueueOptionsManager,
-            FileMarkerHelper fileMarkerHelper)
+            IServiceProvider serviceProvider)
         {
             TenantManager = tenantManager;
             UserManager = userManager;
@@ -111,9 +128,7 @@ namespace ASC.Web.Files.Utils
             CoreBaseSettings = coreBaseSettings;
             AuthContext = authContext;
             ServiceProvider = serviceProvider;
-            FileMarkerHelper = fileMarkerHelper;
             cache = AscCache.Memory;
-            tasks = workerQueueOptionsManager.Value;
         }
 
         internal void ExecMarkFileAsNew<T>(AsyncTaskData<T> obj)
@@ -224,7 +239,7 @@ namespace ASC.Web.Files.Utils
 
                     if (obj.FileEntry.ProviderEntry)
                     {
-                        var commonFolder = folderDao.GetFolder(GlobalFolder.GetFolderCommon(this, DaoFactory));
+                        var commonFolder = folderDao.GetFolder(GlobalFolder.GetFolderCommon<T>(this, DaoFactory));
                         userIDs.ForEach(userID =>
                                             {
                                                 if (userEntriesData.ContainsKey(userID))
@@ -304,13 +319,7 @@ namespace ASC.Web.Files.Utils
                 taskData.UserIDs = projectTeam;
             }
 
-            lock (locker)
-            {
-                tasks.Add(taskData);
-
-                if (!tasks.IsStarted)
-                    tasks.Start(FileMarkerHelper.ExecMarkFileAsNew);
-            }
+            ServiceProvider.GetService<FileMarkerHelper<T>>().Add(taskData);
         }
 
         public void RemoveMarkAsNew<T>(FileEntry<T> fileEntry, Guid userID = default)
@@ -349,7 +358,7 @@ namespace ASC.Web.Files.Utils
                 {
                     var folderTags = listTags.Where(tag => tag.EntryType == FileEntryType.Folder);
 
-                    var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder<T>>(tag, folderDao.GetFolder(tag.EntryId)))
+                    var providerFolderTags = folderTags.Select(tag => new KeyValuePair<Tag, Folder<T>>(tag, folderDao.GetFolder((T)tag.EntryId)))
                                                        .Where(pair => pair.Value != null && pair.Value.ProviderEntry).ToList();
 
                     foreach (var providerFolderTag in providerFolderTags)
@@ -378,9 +387,9 @@ namespace ASC.Web.Files.Utils
             else if (rootFolder.RootFolderType == FolderType.COMMON)
             {
                 if (rootFolder.ProviderEntry)
-                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderCommon(this, DaoFactory);
+                    cacheFolderId = rootFolderId = GlobalFolder.GetFolderCommon<T>(this, DaoFactory);
                 else
-                    cacheFolderId = GlobalFolder.GetFolderCommon(this, DaoFactory);
+                    cacheFolderId = GlobalFolder.GetFolderCommon<T>(this, DaoFactory);
             }
             else if (rootFolder.RootFolderType == FolderType.USER)
             {
@@ -450,8 +459,8 @@ namespace ASC.Web.Files.Utils
         {
             var rootIds = new List<T>
                 {
-                    GlobalFolder.GetFolderMy(this, DaoFactory),
-                    GlobalFolder.GetFolderCommon(this, DaoFactory),
+                    GlobalFolder.GetFolderMy<T>(this, DaoFactory),
+                    GlobalFolder.GetFolderCommon<T>(this, DaoFactory),
                     GlobalFolder.GetFolderShare<T>(DaoFactory),
                     GlobalFolder.GetFolderProjects<T>(DaoFactory)
                 };
@@ -727,7 +736,6 @@ namespace ASC.Web.Files.Utils
     {
         public static DIHelper AddFileMarkerService(this DIHelper services)
         {
-
             return services
                 .AddFileMarkerService<string>()
                 .AddFileMarkerService<int>()
@@ -739,7 +747,7 @@ namespace ASC.Web.Files.Utils
             _ = services
                 .TryAddTransient<AsyncTaskData<T>>()
                 .TryAddScoped<FileMarker>()
-                .TryAddSingleton<FileMarkerHelper>()
+                .TryAddSingleton<FileMarkerHelper<T>>()
                 .TryAddSingleton<WorkerQueueOptionsManager<AsyncTaskData<T>>>()
                 .TryAddSingleton<WorkerQueue<AsyncTaskData<T>>>()
                 .AddSingleton<IConfigureOptions<WorkerQueue<AsyncTaskData<T>>>, ConfigureWorkerQueue<AsyncTaskData<T>>>();

@@ -60,7 +60,7 @@ namespace ASC.Web.Files.Services.WCFService
             //}
         }
 
-        public System.IO.MemoryStream ToXml<T>(object o)
+        public System.IO.MemoryStream ToXml(object o)
         {
             var result = new System.IO.MemoryStream();
             if (o == null)
@@ -85,7 +85,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //remove incorrect ns
                 foreach (XmlNode entry in xml.SelectNodes("//entry"))
                 {
-                    var nsattr = entry.Attributes.Cast<XmlAttribute>().FirstOrDefault(a => a.Value == typeof(FileEntry<T>).Name);
+                    var nsattr = entry.Attributes.Cast<XmlAttribute>().FirstOrDefault(a => a.Value == typeof(FileEntry<>).Name);
                     if (nsattr != null)
                     {
                         foreach (XmlAttribute a in entry.Attributes)

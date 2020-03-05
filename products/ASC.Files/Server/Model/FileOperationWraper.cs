@@ -40,7 +40,7 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Name = "operation_result", Namespace = "")]
-    public class FileOperationWraper
+    public class FileOperationWraper<T>
     {
         /// <summary>
         /// </summary>
@@ -80,12 +80,12 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(Name = "files", IsRequired = true, EmitDefaultValue = true)]
-        public List<FileWrapper> Files { get; set; }
+        public List<FileWrapper<T>> Files { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember(Name = "folders", IsRequired = true, EmitDefaultValue = true)]
-        public List<FolderWrapper> Folders { get; set; }
+        public List<FolderWrapper<T>> Folders { get; set; }
 
         /// <summary>
         /// </summary>
@@ -96,9 +96,9 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static FileOperationWraper GetSample()
+        public static FileOperationWraper<int> GetSample()
         {
-            return new FileOperationWraper
+            return new FileOperationWraper<int>
             {
                 Id = Guid.NewGuid().ToString(),
                 OperationType = FileOperationType.Move,
@@ -107,8 +107,8 @@ namespace ASC.Api.Documents
                 //Result = "folder_1,file_1",
                 Error = "",
                 Processed = "1",
-                Files = new List<FileWrapper> { FileWrapper.GetSample() },
-                Folders = new List<FolderWrapper> { FolderWrapper.GetSample() }
+                Files = new List<FileWrapper<int>> { FileWrapper<int>.GetSample() },
+                Folders = new List<FolderWrapper<int>> { FolderWrapper<int>.GetSample() }
             };
         }
     }
@@ -132,9 +132,9 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
         }
 
-        public FileOperationWraper Get<T>(FileOperationResult o)
+        public FileOperationWraper<T> Get<T>(FileOperationResult o)
         {
-            var result = new FileOperationWraper
+            var result = new FileOperationWraper<T>
             {
                 Id = o.Id,
                 OperationType = o.OperationType,

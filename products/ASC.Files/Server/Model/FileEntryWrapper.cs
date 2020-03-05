@@ -37,12 +37,12 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Namespace = "")]
-    public abstract class FileEntryWrapper
+    public abstract class FileEntryWrapper<T>
     {
         /// <summary>
         /// </summary>
         [DataMember]
-        public object Id { get; set; }
+        public T Id { get; set; }
 
         /// <summary>
         /// </summary>
@@ -152,7 +152,7 @@ namespace ASC.Api.Documents
             EmployeeWraperHelper = employeeWraperHelper;
         }
 
-        protected internal T Get<T>(FileEntry<T> entry) where T : FileEntryWrapper, new()
+        protected internal T Get<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
         {
             return new T
             {

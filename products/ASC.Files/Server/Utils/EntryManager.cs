@@ -600,7 +600,7 @@ namespace ASC.Web.Files.Utils
             folder.ProviderId = providerInfo.ID;
             folder.ProviderKey = providerInfo.ProviderKey;
             folder.RootFolderCreator = providerInfo.Owner;
-            folder.RootFolderId = providerInfo.RootFolderId;
+            folder.RootFolderId = (T)Convert.ChangeType(providerInfo.RootFolderId, typeof(T));
             folder.RootFolderType = providerInfo.RootFolderType;
             folder.Shareable = false;
             folder.Title = providerInfo.CustomerTitle;
