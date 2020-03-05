@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
 import { renameFolder, updateFile } from '../../../../../store/files/actions';
+import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 
 class FilesRowContent extends React.PureComponent {
 
@@ -125,8 +126,8 @@ class FilesRowContent extends React.PureComponent {
 
     const fileOwner = (this.props.viewer.id === createdBy.id && "Me") || createdBy.displayName;
     const createdDate = new Date(created).toLocaleString("EN-US");
-    const notConverted = ['.pdf', '.zip', '.mp3', '.mp4'];
-    const canEdit = fileExst && notConverted.includes(fileExst) ? false : true;
+    const canEditFile = fileExst && canWebEdit(fileExst);
+    const canConvertFile = fileExst && canConvert(fileExst);
 
     const okIcon = <Icons.CheckIcon
       className='edit-ok-icon'
@@ -200,7 +201,7 @@ class FilesRowContent extends React.PureComponent {
                 >
                   {fileExst}
                 </Text>
-                {fileStatus === 4 &&
+                {canConvertFile &&
                   <Icons.FileActionsConvertIcon
                     className='badge'
                     size='small'
@@ -208,7 +209,7 @@ class FilesRowContent extends React.PureComponent {
                     color='#A3A9AE'
                   />
                 }
-                {canEdit &&
+                {canEditFile &&
                   <Icons.AccessEditIcon
                     className='badge'
                     size='small'
