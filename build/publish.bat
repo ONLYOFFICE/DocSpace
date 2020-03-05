@@ -27,5 +27,10 @@ xcopy ..\products\ASC.People\Client\*.* publish\ASC.People.Client\ /E /R /Y
 echo "Publish ASC.Web.Client project"
 xcopy ..\web\ASC.Web.Client\*.* publish\ASC.Web.Client\ /E /R /Y
 
+echo "Publish ASC.UrlShortener.Svc.csproj project"
+dotnet publish ..\common\services\ASC.UrlShortener.Svc\ASC.UrlShortener.Svc.csproj -c Release -o publish/ASC.UrlShortener.Svc/
+xcopy ..\common\ASC.UrlShortener\*.* publish\ASC.UrlShortener\ /E /R /Y
+if not %errorlevel% == 0 goto end
+
 :end
 pause
