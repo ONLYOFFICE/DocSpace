@@ -504,12 +504,12 @@ namespace ASC.Files.Core.Data
                     .Where(r => r.account.UserId != subject)
                     .Where(r => r.account.FolderType == FolderType.USER)
                     .Where(r =>
-                    r.mapping.Id.StartsWith($"'sbox-'{r.account.Id}") ||
-                    r.mapping.Id.StartsWith($"'box-'{r.account.Id}") ||
-                    r.mapping.Id.StartsWith($"'dropbox-'{r.account.Id}") ||
-                    r.mapping.Id.StartsWith($"'spoint-'{r.account.Id}") ||
-                    r.mapping.Id.StartsWith($"'drive-'{r.account.Id}") ||
-                    r.mapping.Id.StartsWith($"'onedrive-'{r.account.Id}")
+                    r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
+                    r.mapping.Id.StartsWith("box-" + r.account.Id) ||
+                    r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
+                    r.mapping.Id.StartsWith("spoint-" + r.account.Id) ||
+                    r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
+                    r.mapping.Id.StartsWith("onedrive-" + r.account.Id)
                     )
                     .Select(r => r.tagLink);
 

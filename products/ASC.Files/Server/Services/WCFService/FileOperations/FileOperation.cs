@@ -123,7 +123,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected FileOperation(IServiceProvider serviceProvider, T fileOperationData)
         {
-            principal = Thread.CurrentPrincipal;
+            principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
             culture = Thread.CurrentThread.CurrentCulture.Name;
 
             TaskInfo = new DistributedTask();
@@ -204,7 +204,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
             TaskInfo.SetProperty(FileOperation.SOURCE, string.Join(FileOperation.SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray()));
             TaskInfo.SetProperty(FileOperation.OPERATION_TYPE, OperationType);
-            TaskInfo.SetProperty(FileOperation.OWNER, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
+            TaskInfo.SetProperty(FileOperation.OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
             TaskInfo.SetProperty(FileOperation.PROGRESS, progress < 100 ? progress : 100);
             TaskInfo.SetProperty(FileOperation.RESULT, Status);
             TaskInfo.SetProperty(FileOperation.ERROR, Error);

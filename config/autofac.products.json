@@ -18,14 +18,6 @@
       ],
 	  "instanceScope": "singleinstance"
     },
-    {
-      "type": "ASC.Web.Files.Configuration.ProductEntryPoint, ASC.Files",
-      "services": [
-        {
-          "type": "ASC.Web.Core.IWebItem, ASC.Web.Core"
-        }
-      ],
-	  "instanceScope": "singleinstance"
-    }
+    
   ]
 }
