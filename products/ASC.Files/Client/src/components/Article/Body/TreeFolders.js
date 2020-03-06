@@ -10,9 +10,10 @@ class TreeFolders extends React.Component {
     super(props);
 
     const treeData = props.data;
-    console.log("history", history);
 
-    this.state = { treeData };
+    this.state = { treeData, defaultExpandedKeys: [] };
+
+    this.ref = React.createRef();
   }
 
   getItems = data => {
@@ -56,16 +57,21 @@ class TreeFolders extends React.Component {
   };
 
   onSelect = data => {
-    //console.log("onSelect", data);
-    //history.push(`/products/files/filter?folder=${data[0]}`);
-    //history.push(`/##${data[0]}`);
-    fetchFolder(data[0], store.dispatch);
-
+    const url = `${history.location.pathname}${history.location.search}`;
+    const symbol =
+      history.location.hash ||
+      history.location.search[history.location.search.length - 1] === "/"
+        ? ""
+        : "/";
+    history.push(`${url}${symbol}#${data[0]}`);
+    fetchFolder(data[0], store.dispatch).catch(() =>
+      toastr.error("Something went wrong")
+    );
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
   loop = (data, curId, child, level) => {
-    if (level < 1 || curId.length - 3 > level * 2) return;
+    //if (level < 1 || curId.length - 3 > level * 2) return;
     data.forEach(item => {
       if (curId.indexOf(item.id) >= 0) {
         const { filter, setFilter } = this.props;
@@ -115,15 +121,18 @@ class TreeFolders extends React.Component {
     const folderIndex = treeNode.props.pos;
     let arrayFolders;
 
-    return files.getFolder(folderId).then(data => {
-      arrayFolders = data.folders;
-      let i = 0;
-      for (let item of arrayFolders) {
-        item["key"] = `${folderIndex}-${i}`;
-        i++;
-      }
-      return arrayFolders;
-    });
+    return files
+      .getFolder(folderId)
+      .then(data => {
+        arrayFolders = data.folders;
+        let i = 0;
+        for (let item of arrayFolders) {
+          item["key"] = `${folderIndex}-${i}`;
+          i++;
+        }
+        return arrayFolders;
+      })
+      .catch(() => toastr.error("Something went wrong"));
   };
 
   onLoadData = treeNode => {
@@ -144,20 +153,63 @@ class TreeFolders extends React.Component {
     });
   };
 
+  componentDidMount() {
+    if (history.location.hash) {
+      const folderId = history.location.hash.slice(1);
+
+      const url = `${history.location.pathname}${history.location.search}`;
+      const symbol =
+        history.location.hash ||
+        history.location.search[history.location.search.length - 1] === "/"
+          ? ""
+          : "/";
+
+      let defaultExpandedKeys = [];
+      files
+        .getFolder(folderId)
+        .then(data => {
+          let newExpandedKeys = [];
+          for (let item of data.pathParts) {
+            newExpandedKeys.push(item.toString());
+          }
+          const newFilter = this.props.filter.clone();
+          newFilter.TreeFolders = newExpandedKeys;
+          this.props.setFilter(newFilter);
+          defaultExpandedKeys = newExpandedKeys;
+          fetchFolder(folderId, store.dispatch)
+            .then(() => {
+              history.push(`${url}${symbol}#${folderId}`);
+            })
+            .catch(() => toastr.error("Something went wrong"));
+        })
+        .catch(() => toastr.error("Something went wrong"))
+        .finally(() => this.setState({ defaultExpandedKeys }));
+    }
+  }
+
+  componentDidUpdate(prevState) {
+    if (this.state.defaultExpandedKeys !== prevState.defaultExpandedKeys) {
+      this.ref.current.setState({
+        expandedKeys: this.state.defaultExpandedKeys
+      });
+    }
+  }
+
   render() {
     const { selectedKeys, fakeNewDocuments } = this.props;
-    const { treeData } = this.state;
+    const { treeData, defaultExpandedKeys } = this.state;
 
-    //console.log("Tree files render", this.props);
+    //console.log("TreeFolders render", this.props);
     return (
       <TreeMenu
+        ref={this.ref}
         className="files-tree-menu"
         checkable={false}
         draggable={false}
         disabled={false}
         multiple={false}
         showIcon
-        //defaultExpandedKeys={["1", "14", "19"]}
+        defaultExpandedKeys={defaultExpandedKeys}
         switcherIcon={this.switcherIcon}
         onSelect={this.onSelect}
         selectedKeys={selectedKeys}

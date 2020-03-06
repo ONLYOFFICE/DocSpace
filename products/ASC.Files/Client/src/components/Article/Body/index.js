@@ -6,8 +6,8 @@ import TreeFolders from "./TreeFolders";
 import { setFilter } from "../../../store/files/actions";
 
 class ArticleBodyContent extends React.Component {
-  /*shouldComponentUpdate(nextProps) {
-    const { selectedKeys, data } = this.props;
+  shouldComponentUpdate(nextProps) {
+    const { selectedKeys, data, fakeNewDocuments, currentModule } = this.props;
     if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
       return true;
     }
@@ -16,15 +16,26 @@ class ArticleBodyContent extends React.Component {
       return true;
     }
 
+    if (!utils.array.isArrayEqual(nextProps.data, data)) {
+      return true;
+    }
+
+    if (fakeNewDocuments !== nextProps.fakeNewDocuments) {
+      return true;
+    }
+
+    if (currentModule !== nextProps.currentModule) {
+      return true;
+    }
+
     return false;
-  }*/
+  }
 
   render() {
     const {
       data,
       selectedKeys,
       fakeNewDocuments,
-      rootFolders,
       currentModule,
       filter,
       setFilter
@@ -35,7 +46,6 @@ class ArticleBodyContent extends React.Component {
       <TreeFolders
         selectedKeys={selectedKeys}
         fakeNewDocuments={fakeNewDocuments}
-        rootFolders={rootFolders}
         currentModule={currentModule}
         data={data}
         filter={filter}
@@ -55,7 +65,6 @@ function mapStateToProps(state) {
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
     currentModule: currentFolderId,
-    rootFolders,
     filter
   };
 }
