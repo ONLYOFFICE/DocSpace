@@ -123,7 +123,7 @@ namespace ASC.Calendar.BusinessObjects
             var data = CalendarDb.CalendarCalendarUser
                 .Where(ccu =>
                         (calendarIds.Contains(ccu.CalendarId.ToString()) || calendarIds.Contains(ccu.ExtCalendarId)) &&
-                        ccu.UserId == userId.ToString())
+                        ccu.UserId == userId)
                 .ToList();
 
             var options = new List<UserViewSettings>();
@@ -135,7 +135,7 @@ namespace ASC.Calendar.BusinessObjects
                             Convert.ToInt32(r.CalendarId) == 0
                                 ? Convert.ToString(r.ExtCalendarId)
                                 : Convert.ToString(r.CalendarId),
-                    UserId = Guid.Parse(r.UserId),
+                    UserId = r.UserId,
                     IsHideEvents = Convert.ToBoolean(r.HideEvents),
                     IsAccepted = Convert.ToBoolean(r.IsAccepted),
                     TextColor = r.TextColor,
@@ -240,21 +240,16 @@ namespace ASC.Calendar.BusinessObjects
 
              var calendars = GetCalendarsByIds(calIds.ToArray());
              return calendars;
-         }
+         }*/
 
          public TimeZoneInfo GetTimeZoneForSharedEventsCalendar(Guid userId)
          {
-             var q = new SqlQuery(_calendarUserTable)
-                 .Select("time_zone")
-                 .Where("ext_calendar_id", SharedEventsCalendar.CalendarId)
-                 .Where("user_id", userId);
-
-             var data = db.ExecuteList(q);
-             if (data.Count > 0)
-                 return data.Select(r => TimeZoneConverter.GetTimeZone(Convert.ToString(r[0]))).First();
-
-             return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
-         }*/
+            var data = CalendarDb.CalendarCalendarUser.Where(p => p.ExtCalendarId == SharedEventsCalendar.CalendarId && p.UserId == userId).Select(s => s.TimeZone).ToList();
+            if (data.Count > 0)
+                return data.Select(r => TimeZoneConverter.GetTimeZone(Convert.ToString(r[0]))).First();
+            
+            return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
+         }
 
         public TimeZoneInfo GetTimeZoneForCalendar(Guid userId, int caledarId)
         {
@@ -386,13 +381,13 @@ namespace ASC.Calendar.BusinessObjects
                     var uvs = new UserViewSettings
                     {
                         CalendarId = calendar.Id,
-                        UserId = Guid.Parse(r.usrId),
+                        UserId = r.usrId,
                         IsHideEvents = Convert.ToBoolean(r.usrHideEvents),
                         IsAccepted = Convert.ToBoolean(r.usrIsAccepted),
-                        TextColor = r.usrTextColor.ToString(),
-                        BackgroundColor = r.usrBackground.ToString(),
+                        TextColor = r.usrTextColor,
+                        BackgroundColor = r.usrBackground,
                         EventAlertType = (EventAlertType)r.usrAlertType,
-                        Name = r.usrCalName.ToString(),
+                        Name = r.usrCalName,
                         TimeZone = TimeZoneConverter.GetTimeZone(r.usrTimeZone)
                     };
 
@@ -450,7 +445,7 @@ namespace ASC.Calendar.BusinessObjects
                     var calendarUser = new CalendarCalendarUser
                     {
                         CalendarId = calendar.Id,
-                        UserId = view.UserId.ToString(),
+                        UserId = view.UserId,
                         HideEvents = Convert.ToInt32(view.IsHideEvents),
                         IsAccepted = Convert.ToInt32(view.IsAccepted),
                         TextColor = view.TextColor,
@@ -1397,7 +1392,7 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetEventById(newEvent.Id);
         }
-        /*
+        
         public Event UpdateEvent(int eventId,
             int calendarId,
             Guid ownerId,
@@ -1413,7 +1408,75 @@ namespace ASC.Calendar.BusinessObjects
             DateTime createDate
             )
         {
-            using (var tr = db.BeginTransaction())
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var newEvent = new CalendarEvents
+            {
+                Name = name,
+                Description = description,
+                CalendarId = calendarId,
+                OwnerId = ownerId,
+                StartDate = utcStartDate,
+                EndDate = utcEndDate,
+                UpdateDate = createDate,
+                AllDayLong = Convert.ToInt32(isAllDayLong),
+                Rrule = rrule.ToString(),
+                Status = (int)status
+            };
+            if (ownerId.Equals(AuthContext.CurrentAccount.ID))
+            {
+                newEvent.AlertType = (int)alertType;
+            }
+            else
+            {
+                var newCalEvtUser = new CalendarEventUser
+                {
+                    EventId = eventId,
+                    UserId = AuthContext.CurrentAccount.ID,
+                    AlertType = (int)alertType
+                };
+                CalendarDb.CalendarEventUser.Add(newCalEvtUser);
+            }
+
+            CalendarDb.AddOrUpdate(r => r.CalendarEvents, newEvent);
+
+            var userIds = CalendarDb.CalendarEventUser.Where(p => p.EventId == eventId).Select(t => t.UserId).ToList();
+
+            foreach (var usrId in userIds)
+            {
+                if (!publicItems.Exists(i => (i.IsGroup && UserManager.IsUserInGroup(usrId, i.Id))
+                                                || (!i.IsGroup && i.Id.Equals(usrId))))
+                {
+                    var eu = CalendarDb.CalendarEventUser
+                        .Where(r => r.EventId == eventId && r.UserId == usrId)
+                        .SingleOrDefault();
+                    if (eu != null)
+                        CalendarDb.CalendarEventUser.Remove(eu);
+                }
+            }
+            var cei = CalendarDb.CalendarEventItem
+                .Where(r => r.EventId == eventId)
+                .SingleOrDefault();
+            if (cei != null)
+                CalendarDb.CalendarEventItem.Remove(cei);
+
+            foreach (var item in publicItems)
+            {
+                var calEvtItem = new CalendarEventItem
+                {
+                    EventId = eventId,
+                    ItemId = item.Id,
+                    IsGroup = Convert.ToInt32(item.IsGroup)
+                };
+
+                CalendarDb.CalendarEventItem.Add(calEvtItem);
+            }
+
+
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
+            /*using (var tr = db.BeginTransaction())
             {
                 var query = new SqlUpdate("calendar_events")
                     .Set("name", name)
@@ -1473,12 +1536,10 @@ namespace ASC.Calendar.BusinessObjects
 
 
                 tr.Commit();
-            }
+            }*/
 
             return GetEventById(eventId);
         }
-
-        */
 
         public EventHistory GetEventHistory(string eventUid)
         {
@@ -1761,7 +1822,7 @@ namespace ASC.Calendar.BusinessObjects
             //remove and exec sharing calendar options
             if (eventUsers.Count > 0)
             {
-                var userIds = eventUsers.Select(u => u.UserId.ToString()).ToArray();
+                var userIds = eventUsers.Select(u => u.UserId).ToArray();
                 var extCalendarAlertTypes =
                      from calUser in CalendarDb.CalendarCalendarUser
                      where
@@ -1779,15 +1840,15 @@ namespace ASC.Calendar.BusinessObjects
                     if (!Convert.ToBoolean(r.isAccepted))
                     {
                         //remove unsubscribed from shared events calendar
-                        eventUsers.RemoveAll(u => u.UserId.Equals(new Guid(r.userId)));
+                        eventUsers.RemoveAll(u => u.UserId.Equals(r.userId));
                         continue;
                     }
                     eventUsers.ForEach(u =>
                     {
-                        if (u.UserId.Equals(new Guid(r.userId)))
+                        if (u.UserId.Equals(r.userId))
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(Convert.ToString(r.isAccepted));
 
-                        if (u.AlertType == EventAlertType.Default && u.UserId.Equals(new Guid(r.userId)))
+                        if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
                             u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
                     });
                 }
@@ -1847,7 +1908,7 @@ namespace ASC.Calendar.BusinessObjects
                    });
 
                 }
-                var userIds = calendarUsers.Select(u => u.UserId.ToString()).ToArray();
+                var userIds = calendarUsers.Select(u => u.UserId).ToArray();
                 var calendarAlertTypes =
                      from calUser in CalendarDb.CalendarCalendarUser
                      where
@@ -1866,15 +1927,15 @@ namespace ASC.Calendar.BusinessObjects
                     if (!Convert.ToBoolean(r.isAccepted))
                     {
                         //remove unsubscribed
-                        calendarUsers.RemoveAll(u => u.UserId.Equals(new Guid(r.userId)));
+                        calendarUsers.RemoveAll(u => u.UserId.Equals(r.userId));
                         continue;
                     }
                     calendarUsers.ForEach(u =>
                     {
-                        if (u.UserId.Equals(new Guid(r.userId)))
+                        if (u.UserId.Equals(r.userId))
                             u.TimeZone = r.timeZone == null ? calendarTimeZone : TimeZoneConverter.GetTimeZone(r.timeZone);
 
-                        if (u.AlertType == EventAlertType.Default && u.UserId.Equals(new Guid(r.userId)))
+                        if (u.AlertType == EventAlertType.Default && u.UserId.Equals(r.userId))
                             u.AlertType = (EventAlertType)Convert.ToInt32(r.alertType);
                     });
                 }
@@ -1918,9 +1979,9 @@ namespace ASC.Calendar.BusinessObjects
                     };
                     CalendarDb.CalendarNotifications.Add(calNotification);
                 }
-                CalendarDb.SaveChanges();
-                tx.Commit();
             }
+            CalendarDb.SaveChanges();
+            tx.Commit();
             /*
             public List<EventNotificationData> ExtractAndRecountNotifications(DateTime utcDate)
             {

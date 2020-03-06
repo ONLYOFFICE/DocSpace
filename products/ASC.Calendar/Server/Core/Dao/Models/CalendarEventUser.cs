@@ -14,7 +14,7 @@ namespace ASC.Calendar.Core.Dao.Models
         public int EventId { get; set; }
         [Key]
         [Column("user_id", TypeName = "char(38)")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         [Column("alert_type", TypeName = "smallint(6)")]
         public int AlertType { get; set; }
         [Column("is_unsubscribe", TypeName = "smallint(2)")]

@@ -17,7 +17,7 @@ namespace ASC.Calendar.Core.Dao.Models
         public string ExtCalendarId { get; set; }
         [Key]
         [Column("user_id", TypeName = "char(38)")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         [Column("hide_events", TypeName = "smallint(2)")]
         public int HideEvents { get; set; }
         [Column("is_accepted", TypeName = "smallint(2)")]
