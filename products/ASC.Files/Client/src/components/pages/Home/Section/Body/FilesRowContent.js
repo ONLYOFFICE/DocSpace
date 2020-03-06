@@ -102,19 +102,27 @@ class FilesRowContent extends React.PureComponent {
     const EditingWrapper = styled.div`
       width: 100%;
       display: inline-flex;
+      align-items: center;
 
+      @media (max-width: 1024px) {
+      height: 56px;
+    }
+      .edit-text {
+        height: 30px;
+      }
       .edit-button {
         margin-left: 8px;
+        height: 30px;
       }
 
       .edit-ok-icon {
-        margin-top: -4px;
+        margin-top: -6px;
         width: 16px;
         height: 16px;
       }
 
       .edit-cancel-icon {
-        margin-top: -4px;
+        margin-top: -6px;
         width: 14px;
         height: 14px;
       }
@@ -148,6 +156,7 @@ class FilesRowContent extends React.PureComponent {
     return isEdit
       ? (<EditingWrapper>
         <TextInput
+          className='edit-text'
           name='title'
           scale={true}
           value={itemTitle}
