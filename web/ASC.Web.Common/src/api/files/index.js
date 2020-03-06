@@ -159,26 +159,22 @@ export function renameFolder(folderId, title) {
   return request(options);
 }
 
-//TODO: must work after add operations
+export function deleteFolder(folderId, deleteAfter, immediately) {
+  const data = { deleteAfter, immediately };
 
-/* export function deleteFolder(folderId, deleteAfter, immediately) {
-  const options = {
+  return request({
     method: "delete",
     url: `/files/folder/${folderId}`,
-    deleteAfter: deleteAfter,
-    immediately: immediately
-  };
-
-  return request(options);
+    data
+  });
 }
 
-export function deleteFile(folderId, deleteAfter, immediately) {
-  const options = {
-    method: "delete",
-    url: `/files/file/${folderId}`,
-    deleteAfter: deleteAfter,
-    immediately: immediately
-  };
+export function deleteFile(fileId, deleteAfter, immediately) {
+  const data = { deleteAfter, immediately };
 
-  return request(options);
-} */
+  return request({
+    method: "delete",
+    url: `/files/file/${fileId}`, 
+    data
+  });
+}
