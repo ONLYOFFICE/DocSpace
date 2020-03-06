@@ -39,13 +39,12 @@ const StyledTreeMenu = styled(Tree)`
     }
     .rc-tree-child-tree-open {
         display: block;
-
+        margin-left: 8px;
         li:first-child{
             margin-top: 6px;
+            margin-left: 0;
         }
-        span.rc-tree-iconEle{
-            margin: 3px 7px 3px 20px;
-        }
+        
     }
     .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
     .rc-tree-treenode-disabled > a,
