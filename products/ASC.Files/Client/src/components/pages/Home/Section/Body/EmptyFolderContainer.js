@@ -1,32 +1,34 @@
 import React from "react";
 import styled from "styled-components";
 import { EmptyScreenContainer, Link } from "asc-web-components";
+import { fetchFolder } from "../../../../../store/files/actions";
+import store from "../../../../../store/store";
 
-const EmptyFolderContainer = () => {
-  const EmptyFolderWrapper = styled.div`
-    .empty-folder_container {
-      max-width: 550px;
-    }
+const EmptyFolderWrapper = styled.div`
+  .empty-folder_container {
+    max-width: 550px;
+  }
 
-    .empty-folder_link {
-      margin-right: 8px;
-    }
+  .empty-folder_link {
+    margin-right: 8px;
+  }
 
-    .empty-folder_container-links {
-      display: flex;
-      margin: 12px 0;
-    }
+  .empty-folder_container-links {
+    display: flex;
+    margin: 12px 0;
+  }
 
-    .empty-folder_container_up-image {
-      margin-right: 8px;
-      cursor: pointer;
-    }
+  .empty-folder_container_up-image {
+    margin-right: 8px;
+    cursor: pointer;
+  }
 
-    .empty-folder_container_plus-image {
-      margin: -8px 8px 0 0;
-    }
-  `;
+  .empty-folder_container_plus-image {
+    margin: -8px 8px 0 0;
+  }
+`;
 
+const EmptyFolderContainer = props => {
   const linkStyles = {
     isHovered: true,
     type: "action",
@@ -37,10 +39,12 @@ const EmptyFolderContainer = () => {
 
   const onCreateDocumentClick = () => console.log("Create document click");
   const onCreateTableClick = () => console.log("Create table click");
-  const onCreatePresentationClick = () => console.log("Create presentation click");
+  const onCreatePresentationClick = () =>
+    console.log("Create presentation click");
   const onCreateFolderClick = () => console.log("Create folder click");
-  const onBackToParentFolder = () => console.log("Back to parent folder");
-  
+  const onBackToParentFolder = () =>
+    fetchFolder(props.parentId, store.dispatch);
+    
   return (
     <EmptyFolderWrapper>
       <EmptyScreenContainer
@@ -61,9 +65,15 @@ const EmptyFolderContainer = () => {
               >
                 +
               </Link>
-              <Link onClick={onCreateDocumentClick} {...linkStyles}>Документ,</Link>
-              <Link onClick={onCreateTableClick} {...linkStyles}>Таблица,</Link>
-              <Link onClick={onCreatePresentationClick} {...linkStyles}>Презентация</Link>
+              <Link onClick={onCreateDocumentClick} {...linkStyles}>
+                Документ,
+              </Link>
+              <Link onClick={onCreateTableClick} {...linkStyles}>
+                Таблица,
+              </Link>
+              <Link onClick={onCreatePresentationClick} {...linkStyles}>
+                Презентация
+              </Link>
             </div>
             <div className="empty-folder_container-links">
               <Link
@@ -76,7 +86,9 @@ const EmptyFolderContainer = () => {
               >
                 +
               </Link>
-              <Link {...linkStyles} onClick={onCreateFolderClick}>Папка</Link>
+              <Link {...linkStyles} onClick={onCreateFolderClick}>
+                Папка
+              </Link>
             </div>
             <div className="empty-folder_container-links">
               <img
@@ -84,10 +96,7 @@ const EmptyFolderContainer = () => {
                 src="images/up.svg"
                 onClick={onBackToParentFolder}
               />
-              <Link
-                onClick={onBackToParentFolder}
-                {...linkStyles}
-              >
+              <Link onClick={onBackToParentFolder} {...linkStyles}>
                 Вернутся в папку на уровень выше
               </Link>
             </div>

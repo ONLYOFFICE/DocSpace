@@ -7,7 +7,8 @@ import {
   Row,
   toastr,
   Icons,
-  RowContainer
+  RowContainer,
+  Loader
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
@@ -26,7 +27,8 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      renamingId: -1
+      renamingId: -1,
+      isEdit: false
     };
   }
 
@@ -54,9 +56,17 @@ class SectionBodyContent extends React.PureComponent {
 
   onClickRename = (itemId) => {
     this.setState({
-      renamingId: itemId
+      renamingId: itemId,
+      isEdit: true
     });
   };
+
+  onEditComplete = () => {
+    this.setState({
+      renamingId: -1,
+      isEdit: false
+    });
+  }
 
   getFilesContextOptions = (item, viewer) => {
     return [
@@ -111,7 +121,9 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, user } = this.props;
+    const { files, folders, viewer, parentId } = this.props;
+    const { renamingId, isEdit } = this.state;
+
     const items = [...folders, ...files];
 
     return items.length > 0 ? (
@@ -123,9 +135,11 @@ class SectionBodyContent extends React.PureComponent {
             : { contextOptions };
           const checked = false; //isUserSelected(selection, user.id);
           const checkedProps = /* isAdmin(viewer) */ true ? { checked } : {};;
-          const element = item.fileExst
-            ? (<Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />)
-            : (<Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />);
+          const element = isEdit && item.id === renamingId
+            ? <Loader type='oval' color="black" size='24px' label="Editing..." />
+            : item.fileExst
+              ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
+              : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
 
           return (
             <Row
@@ -133,19 +147,19 @@ class SectionBodyContent extends React.PureComponent {
               data={item}
               element={element}
               onSelect={() => { }}
-              editing={this.state.renamingId}
+              editing={renamingId}
               {...checkedProps}
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} editingId={this.state.renamingId} />
+              <FilesRowContent item={item} viewer={viewer} editingId={renamingId} onEditComplete={this.onEditComplete} />
             </Row>
           );
         })}
       </RowContainer>
-    ) : (
-        <EmptyFolderContainer />
-      );
+    ) : parentId !== 0 ? (
+        <EmptyFolderContainer parentId={parentId} />
+      ) : <a>RootFolderContainer</a>;
   }
 }
 
@@ -161,7 +175,8 @@ const mapStateToProps = state => {
     folders: state.files.folders,
     viewer: state.auth.user,
     settings: state.auth.settings,
-    filter: state.files.filter
+    filter: state.files.filter,
+    parentId: state.files.selectedFolder.parentId
   };
 };
 

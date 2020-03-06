@@ -244,7 +244,7 @@ class SectionFilterContent extends React.Component {
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    console.log('selectedFilterData', selectedFilterData);
+    //console.log('selectedFilterData', selectedFilterData);
     const { t, i18n } = this.props;
     return (
       <FilterInput

@@ -51,3 +51,15 @@ export const setTreeFilter = (filter, rootFolders) => {
   }
   return newFilter;
 };
+
+export const canWebEdit = fileExst => {
+  const editedDocs = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv', '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
+  const result = editedDocs.findIndex(item => item === fileExst);
+  return result === -1 ? false : true;
+}
+
+export const canConvert = fileExst => {
+  const convertedDocs = ['.pptm','.ppt','.ppsm','.pps','.potx','.potm','.pot','.odp','.fodp','.otp','.xlsm','.xls','.xltx','.xltm','.xlt','.ods','.fods','.ots','.docm','.doc','.dotx','.dotm','.dot','.odt','.fodt','.ott','.rtf'];
+  const result = convertedDocs.findIndex(item => item === fileExst);
+  return result === -1 ? false : true;
+}
