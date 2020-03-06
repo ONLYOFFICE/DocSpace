@@ -14,7 +14,7 @@ namespace ASC.Calendar.Core.Dao.Models
         public int CalendarId { get; set; }
         [Key]
         [Column("item_id", TypeName = "char(38)")]
-        public string ItemId { get; set; }
+        public Guid ItemId { get; set; }
         [Key]
         [Column("is_group", TypeName = "smallint(2)")]
         public int IsGroup { get; set; }

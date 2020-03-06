@@ -11,7 +11,7 @@ namespace ASC.Calendar.Core.Dao.Models
     {
         [Key]
         [Column("user_id", TypeName = "char(38)")]
-        public string UserId { get; set; }
+        public Guid UserId { get; set; }
         [Key]
         [Column("event_id", TypeName = "int(10)")]
         public int EventId { get; set; }
@@ -20,7 +20,7 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("tenant", TypeName = "int(10)")]
         public int Tenant { get; set; }
         [Column("alert_type", TypeName = "smallint(2)")]
-        public short AlertType { get; set; }
+        public int AlertType { get; set; }
         [Column("repeat_type", TypeName = "smallint(2)")]
         public short RepeatType { get; set; }
         [Required]
