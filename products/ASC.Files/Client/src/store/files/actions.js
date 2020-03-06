@@ -298,6 +298,18 @@ export function renameFolder(folderId, title) {
   };
 }
 
+export function deleteFile(fileId, deleteAfter, immediately) {
+  return dispatch => {
+    return files.deleteFile(fileId, deleteAfter, immediately)
+  }
+}
+
+export function deleteFolder(fileId, deleteAfter, immediately) {
+  return dispatch => {
+    return files.deleteFolder(fileId, deleteAfter, immediately)
+  }
+}
+
 /*export function deleteGroup(id) {
   return (dispatch, getState) => {
     const { people } = getState();
