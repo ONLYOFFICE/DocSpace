@@ -11,7 +11,7 @@ class TreeFolders extends React.Component {
 
     const treeData = props.data;
 
-    this.state = { treeData, defaultExpandedKeys: [] };
+    this.state = { treeData };
 
     this.ref = React.createRef();
   }
@@ -153,53 +153,19 @@ class TreeFolders extends React.Component {
     });
   };
 
-  componentDidMount() {
-    if (history.location.hash) {
-      const folderId = history.location.hash.slice(1);
-
-      const url = `${history.location.pathname}${history.location.search}`;
-      const symbol =
-        history.location.hash ||
-        history.location.search[history.location.search.length - 1] === "/"
-          ? ""
-          : "/";
-
-      let defaultExpandedKeys = [];
-      files
-        .getFolder(folderId)
-        .then(data => {
-          let newExpandedKeys = [];
-          for (let item of data.pathParts) {
-            newExpandedKeys.push(item.toString());
-          }
-          const newFilter = this.props.filter.clone();
-          newFilter.TreeFolders = newExpandedKeys;
-          this.props.setFilter(newFilter);
-          defaultExpandedKeys = newExpandedKeys;
-          fetchFolder(folderId, store.dispatch)
-            .then(() => {
-              history.push(`${url}${symbol}#${folderId}`);
-            })
-            .catch(() => toastr.error("Something went wrong"));
-        })
-        .catch(() => toastr.error("Something went wrong"))
-        .finally(() => this.setState({ defaultExpandedKeys }));
-    }
-  }
-
-  componentDidUpdate(prevState) {
-    if (this.state.defaultExpandedKeys !== prevState.defaultExpandedKeys) {
+  componentDidUpdate(prevProps) {
+    if (this.props.defaultExpandedKeys !== prevProps.defaultExpandedKeys) {
       this.ref.current.setState({
-        expandedKeys: this.state.defaultExpandedKeys
+        expandedKeys: this.props.defaultExpandedKeys
       });
     }
   }
 
   render() {
-    const { selectedKeys, fakeNewDocuments } = this.props;
-    const { treeData, defaultExpandedKeys } = this.state;
+    const { selectedKeys, fakeNewDocuments, defaultExpandedKeys } = this.props;
+    const { treeData } = this.state;
 
-    //console.log("TreeFolders render", this.props);
+    console.log("TreeFolders render", this.props);
     return (
       <TreeMenu
         ref={this.ref}

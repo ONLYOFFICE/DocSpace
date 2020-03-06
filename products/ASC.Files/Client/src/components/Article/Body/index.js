@@ -1,11 +1,49 @@
 import React from "react";
 import { connect } from "react-redux";
-import { utils } from "asc-web-components";
+import { utils, toastr } from "asc-web-components";
 import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
-import { setFilter } from "../../../store/files/actions";
+import { setFilter, fetchFolder } from "../../../store/files/actions";
+import store from "../../../store/store";
+import { api, history } from "asc-web-common";
+const { files } = api;
 
 class ArticleBodyContent extends React.Component {
+  state = { defaultExpandedKeys: [] };
+  componentDidMount() {
+    if (history.location.hash) {
+      const folderId = history.location.hash.slice(1);
+
+      const url = `${history.location.pathname}${history.location.search}`;
+      const symbol =
+        history.location.hash ||
+        history.location.search[history.location.search.length - 1] === "/"
+          ? ""
+          : "/";
+
+      let defaultExpandedKeys = [];
+      files
+        .getFolder(folderId)
+        .then(data => {
+          let newExpandedKeys = [];
+          for (let item of data.pathParts) {
+            newExpandedKeys.push(item.toString());
+          }
+          newExpandedKeys.pop();
+          const newFilter = this.props.filter.clone();
+          newFilter.TreeFolders = newExpandedKeys;
+          this.props.setFilter(newFilter);
+          defaultExpandedKeys = newExpandedKeys;
+          fetchFolder(folderId, store.dispatch)
+            .then(() => {
+              history.push(`${url}${symbol}#${folderId}`);
+            })
+            .catch(() => toastr.error("Something went wrong"));
+        })
+        .catch(() => toastr.error("Something went wrong"))
+        .finally(() => this.setState({ defaultExpandedKeys }));
+    }
+  }
   shouldComponentUpdate(nextProps) {
     const { selectedKeys, data, fakeNewDocuments, currentModule } = this.props;
     if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
@@ -50,6 +88,7 @@ class ArticleBodyContent extends React.Component {
         data={data}
         filter={filter}
         setFilter={setFilter}
+        defaultExpandedKeys={this.state.defaultExpandedKeys}
       />
     );
   }
