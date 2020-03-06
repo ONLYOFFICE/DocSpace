@@ -1,6 +1,6 @@
-/*
+﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,38 +24,42 @@
 */
 
 
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Mail.Models;
 using System;
-using System.Linq.Expressions;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace ASC.Mail.Core.Dao.Expressions.Message
+namespace ASC.Mail.Models
 {
-    public class FilterNextMessageExp : FilterMessagesExp
+    [Serializable]
+    [DataContract(Namespace = "", Name = "Filter")]
+    public class MailSieveFilterData
     {
-        public DateTime DateSent { get; private set; }
+        [DataMember(Name = "id")]
+        public int Id { get; set; }
 
-        public FilterNextMessageExp(DateTime dateSent, int tenant, string user, MailSearchFilterData filter)
-            : base(null, tenant, user, filter)
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "position")]
+        public int Position { get; set; }
+
+        [DataMember(Name = "enabled")]
+        public bool Enabled { get; set; }
+
+        [DataMember(Name = "conditions")]
+        public List<MailSieveFilterConditionData> Conditions { get; set; }
+
+        [DataMember(Name = "actions")]
+        public List<MailSieveFilterActionData> Actions { get; set; }
+
+        [DataMember(Name = "options")]
+        public MailSieveFilterOptionsData Options { get; set; }
+
+        public MailSieveFilterData()
         {
-            DateSent = dateSent;
-        }
-
-        private const string MM_ALIAS = "mm";
-
-        public override Expression<Func<MailMail, bool>> GetExpression()
-        {
-            var exp = base.GetExpression();
-
-            if (OrderAsc != null && OrderAsc.Value)
-            {
-                exp = exp.And(m => m.DateSent >= DateSent);
-            }
-            else {
-                exp = exp.And(m => m.DateSent <= DateSent);
-            }
-
-            return exp;
+            Actions = new List<MailSieveFilterActionData>();
+            Conditions = new List<MailSieveFilterConditionData>();
+            Options = new MailSieveFilterOptionsData();
         }
     }
 }

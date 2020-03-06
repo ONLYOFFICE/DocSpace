@@ -24,12 +24,14 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    //public interface IMessageExp
-    //{
-    //    Exp GetExpression();
-    //}
+    public interface IMessageExp
+    {
+        Expression<Func<MailMail, bool>> GetExpression();
+    }
 }

@@ -1,18 +1,14 @@
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Linq.Expressions;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.ElasticSearch;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Data.Contracts;
-//using ASC.Mail.Data.Search;
-//using ASC.Mail.Enums.Filter;
-//using ASC.Mail.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class FilterSieveMessagesExp : IMessagesExp
+    public class FilterSieveMessagesExp : IMessagesExp
     {
         public List<int> Ids { get; private set; }
         public MailSieveFilterData Filter { get; private set; }
@@ -65,9 +61,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         private const string MM_ALIAS = "mm";
 
-        public virtual Exp GetExpression()
+        public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
-            var filterExp = Exp.Empty;
+            return m => true;
+
+            //TODO: Fix
+            /*var filterExp = Exp.Empty;
 
             if (!FactoryIndexer<MailWrapper>.Support)
             {
@@ -88,7 +87,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                     }
                 };
 
-                Func<MailSieveFilterConditionData, Exp> getConditionExp = c =>
+                Func<MailSieveFilterConditionData, Expression<Func<MailMail, bool>>> getConditionExp = c =>
                 {
                     var e = Exp.Empty;
 
@@ -181,10 +180,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             exp &= filterExp;
 
-            return exp;
+            return exp;*/
         }
 
-        public static bool TryGetFullTextSearchIds(MailSieveFilterData filter, string user, out List<int> ids, out long total)
+        /*public static bool TryGetFullTextSearchIds(MailSieveFilterData filter, string user, out List<int> ids, out long total)
         {
             ids = new List<int>();
 
@@ -288,6 +287,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             ids = mailIds;
 
             return true;
-        }
-    }*/
+        }*/
+    }
 }

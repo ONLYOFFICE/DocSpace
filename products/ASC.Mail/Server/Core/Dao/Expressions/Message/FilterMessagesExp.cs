@@ -24,20 +24,19 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.ElasticSearch;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Data.Contracts;
-//using ASC.Mail.Data.Search;
-//using ASC.Mail.Enums;
-//using ASC.Mail.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Enums;
+using ASC.Mail.Extensions;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class FilterMessagesExp : IMessagesExp
+    public class FilterMessagesExp : IMessagesExp
     {
         public List<int> Ids { get; private set; }
         public MailSearchFilterData Filter { get; private set; }
@@ -95,17 +94,17 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         private const string MM_ALIAS = "mm";
 
-        public virtual Exp GetExpression()
+        public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
-            var filterExp = Exp.Eq(MailTable.Columns.Folder.Prefix(MM_ALIAS), (int)Filter.PrimaryFolder);
+            Expression<Func<MailMail, bool>> filterExp = m => m.Folder == (int)Filter.PrimaryFolder;
 
             if (Filter.Unread.HasValue)
             {
-                filterExp &= Exp.Eq(MailTable.Columns.Unread.Prefix(MM_ALIAS), Filter.Unread);
+                filterExp = filterExp.And(m => m.Unread == Filter.Unread);
             }
 
             if (Filter.Attachments.HasValue)
-                filterExp &= Exp.Gt(MailTable.Columns.AttachCount.Prefix(MM_ALIAS), 0);
+                filterExp = filterExp.And(m => m.AttachmentsCount == 0);
 
             if (Filter.PeriodFrom.HasValue && Filter.PeriodTo.HasValue)
             {
@@ -115,81 +114,63 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 var toTs = TimeSpan.FromMilliseconds(Filter.PeriodTo.Value);
                 var to = Defines.BaseJsDateTime.Add(toTs);
 
-                filterExp &= Exp.Between(MailTable.Columns.DateSent.Prefix(MM_ALIAS), from, to);
+                filterExp = filterExp.And(m => m.DateSent > from && m.DateSent < to);
             }
 
             if (Filter.Important.HasValue)
             {
-                filterExp &= Exp.Eq(MailTable.Columns.Importance.Prefix(MM_ALIAS), true);
+                filterExp = filterExp.And(m => m.Importance == true);
             }
 
             if (Filter.WithCalendar.HasValue)
             {
-                filterExp &= !Exp.Eq(MailTable.Columns.CalendarUid.Prefix(MM_ALIAS), null);
+                filterExp = filterExp.And(m => m.CalendarUid != null);
             }
 
-            if (!string.IsNullOrEmpty(Filter.FromAddress) && !FactoryIndexer<MailWrapper>.Support)
+            if (!string.IsNullOrEmpty(Filter.FromAddress)) //TODO: fix && !FactoryIndexer<MailWrapper>.Support)
             {
                 if (Filter.PrimaryFolder == FolderType.Sent || Filter.PrimaryFolder == FolderType.Draft)
-                    filterExp &= Exp.Like(MailTable.Columns.To.Prefix(MM_ALIAS), Filter.FromAddress, SqlLike.AnyWhere);
+                    filterExp = filterExp.And(m => m.ToText.Contains(Filter.FromAddress, StringComparison.InvariantCultureIgnoreCase));
                 else
-                    filterExp &= Exp.Like(MailTable.Columns.From.Prefix(MM_ALIAS), Filter.FromAddress,
-                        SqlLike.AnyWhere);
+                    filterExp = filterExp.And(m => m.FromText.Contains(Filter.FromAddress, StringComparison.InvariantCultureIgnoreCase));
             }
 
-            if (!string.IsNullOrEmpty(Filter.ToAddress) && !FactoryIndexer<MailWrapper>.Support)
+            if (!string.IsNullOrEmpty(Filter.ToAddress)) //TODO: fix  && !FactoryIndexer<MailWrapper>.Support)
             {
                 if (Filter.PrimaryFolder == FolderType.Sent || Filter.PrimaryFolder == FolderType.Draft)
-                    filterExp &= Exp.Like(MailTable.Columns.From.Prefix(MM_ALIAS), Filter.ToAddress, SqlLike.AnyWhere);
+                    filterExp = filterExp.And(m => m.FromText.Contains(Filter.ToAddress, StringComparison.InvariantCultureIgnoreCase));
                 else
-                    filterExp &= Exp.Like(MailTable.Columns.To.Prefix(MM_ALIAS), Filter.ToAddress,
-                        SqlLike.AnyWhere);
+                    filterExp = filterExp.And(m => m.ToText.Contains(Filter.ToAddress, StringComparison.InvariantCultureIgnoreCase));
             }
 
             if (Filter.MailboxId.HasValue)
             {
-                filterExp &= Exp.Eq(MailTable.Columns.MailboxId.Prefix(MM_ALIAS), Filter.MailboxId.Value);
+                filterExp = filterExp.And(m => m.IdMailbox == Filter.MailboxId.Value);
             }
 
-            if (!string.IsNullOrEmpty(Filter.SearchText) && !FactoryIndexer<MailWrapper>.Support)
+            if (!string.IsNullOrEmpty(Filter.SearchText)) //TODO: fix  && !FactoryIndexer<MailWrapper>.Support)
             {
-                filterExp &=
-                    Exp.Or(Exp.Like(MailTable.Columns.From.Prefix(MM_ALIAS), Filter.SearchText, SqlLike.AnyWhere),
-                        Exp.Or(
-                            Exp.Like(MailTable.Columns.To.Prefix(MM_ALIAS), Filter.SearchText, SqlLike.AnyWhere),
-                            Exp.Or(
-                                Exp.Like(MailTable.Columns.Cc.Prefix(MM_ALIAS), Filter.SearchText,
-                                    SqlLike.AnyWhere),
-                                Exp.Or(
-                                    Exp.Like(MailTable.Columns.Bcc.Prefix(MM_ALIAS), Filter.SearchText,
-                                        SqlLike.AnyWhere),
-                                    Exp.Or(
-                                        Exp.Like(MailTable.Columns.Subject.Prefix(MM_ALIAS), Filter.SearchText,
-                                            SqlLike.AnyWhere),
-                                        Exp.Like(MailTable.Columns.Introduction.Prefix(MM_ALIAS), Filter.SearchText,
-                                            SqlLike.AnyWhere)
-                                        )
-                                    )
-                                )
-                            )
-                        );
+                filterExp = filterExp.And(m => 
+                        m.FromText.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase)
+                     || m.ToText.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase)
+                     || m.Cc.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase)
+                     || m.Bcc.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase)
+                     || m.Subject.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase)
+                     || m.Introduction.Contains(Filter.SearchText, StringComparison.InvariantCultureIgnoreCase));
             }
 
             if (Ids != null && Ids.Any())
             {
-                filterExp &= Exp.In(MailTable.Columns.Id.Prefix(MM_ALIAS), Ids);
+                filterExp = filterExp.And(m => Ids.Contains(m.Id));
             }
 
-            var exp = Exp.Eq(MailTable.Columns.Tenant.Prefix(MM_ALIAS), Tenant) &
-                      Exp.Eq(MailTable.Columns.User.Prefix(MM_ALIAS), User) &
-                      Exp.Eq(MailTable.Columns.IsRemoved.Prefix(MM_ALIAS), false);
+            filterExp = filterExp.And(m => m.Tenant == Tenant && m.IdUser == User && m.IsRemoved == false);
 
-            exp &= filterExp;
-
-            return exp;
+            return filterExp;
         }
 
-        public static bool TryGetFullTextSearchIds(MailSearchFilterData filter, string user, out List<int> ids, out long total, DateTime? dateSend = null)
+        //TODO: Fix
+        /*public static bool TryGetFullTextSearchIds(MailSearchFilterData filter, string user, out List<int> ids, out long total, DateTime? dateSend = null)
         {
             ids = new List<int>();
 
@@ -330,6 +311,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 .Sort(r => r.DateSent, filter.SortOrder == Defines.ASCENDING);
 
             return FactoryIndexer<MailWrapper>.TrySelectIds(s => selector, out ids, out total);
-        }
-    }*/
+        }*/
+    }
 }

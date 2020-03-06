@@ -24,12 +24,14 @@
 */
 
 
-//using System.Collections.Generic;
-//using ASC.Common.Data.Sql.Expressions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class MessagesExpBuilder
+    public class MessagesExpBuilder
     {
         private readonly SimpleMessagesExp _exp;
 
@@ -133,7 +135,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             return this;
         }
 
-        public MessagesExpBuilder SetExp(Exp exp)
+        public MessagesExpBuilder SetExp(Expression<Func<MailMail, bool>> exp)
         {
             _exp.Exp = exp;
             return this;
@@ -154,5 +156,5 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         {
             return builder._exp;
         }
-    }*/
+    }
 }

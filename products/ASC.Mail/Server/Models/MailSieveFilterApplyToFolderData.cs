@@ -1,6 +1,6 @@
-/*
+﻿/*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,38 +24,20 @@
 */
 
 
-using ASC.Mail.Core.Dao.Entities;
-using ASC.Mail.Models;
 using System;
-using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using ASC.Mail.Enums;
 
-namespace ASC.Mail.Core.Dao.Expressions.Message
+namespace ASC.Mail.Models
 {
-    public class FilterNextMessageExp : FilterMessagesExp
+    [Serializable]
+    [DataContract(Namespace = "", Name = "FilterApplyToFolder")]
+    public class MailSieveFilterApplyToFolderData
     {
-        public DateTime DateSent { get; private set; }
+        [DataMember(IsRequired = true, Name = "type")]
+        public FolderType Type { get; set; }
 
-        public FilterNextMessageExp(DateTime dateSent, int tenant, string user, MailSearchFilterData filter)
-            : base(null, tenant, user, filter)
-        {
-            DateSent = dateSent;
-        }
-
-        private const string MM_ALIAS = "mm";
-
-        public override Expression<Func<MailMail, bool>> GetExpression()
-        {
-            var exp = base.GetExpression();
-
-            if (OrderAsc != null && OrderAsc.Value)
-            {
-                exp = exp.And(m => m.DateSent >= DateSent);
-            }
-            else {
-                exp = exp.And(m => m.DateSent <= DateSent);
-            }
-
-            return exp;
-        }
+        [DataMember(IsRequired = false, Name = "userFolderId")]
+        public int? UserFolderId { get; set; }
     }
 }

@@ -24,20 +24,17 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 //using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
+using System.Linq.Expressions;
 //using ASC.ElasticSearch;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Data.Contracts;
-//using ASC.Mail.Data.Search;
-//using ASC.Mail.Enums;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class FilterChainMessagesExp : FilterMessagesExp
+    public class FilterChainMessagesExp : FilterMessagesExp
     {
         public FilterChainMessagesExp(MailSearchFilterData filter, int tenant, string user, List<int> ids = null)
             : base(ids ?? new List<int>() , tenant, user, filter)
@@ -46,21 +43,27 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         private const string MM_ALIAS = "mm";
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailMail, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
             if (Filter.FromDate.HasValue)
             {
-                exp &= Filter.PrevFlag.GetValueOrDefault(false)
-                    ? Exp.Ge(MailTable.Columns.ChainDate.Prefix(MM_ALIAS), Filter.FromDate.Value)
-                    : Exp.Le(MailTable.Columns.ChainDate.Prefix(MM_ALIAS), Filter.FromDate.Value);
+                if (Filter.PrevFlag.GetValueOrDefault(false))
+                {
+                    exp = exp.And(m => m.ChainDate >= Filter.FromDate.Value);
+                }
+                else
+                {
+                    exp = exp.And(m => m.ChainDate <= Filter.FromDate.Value);
+                }
             }
 
             return exp;
         }
 
-        public static bool TryGetFullTextSearchChains(MailSearchFilterData filter, string user,
+        //TODO: Fix
+        /*public static bool TryGetFullTextSearchChains(MailSearchFilterData filter, string user,
             out List<MailWrapper> mailWrappers)
         {
             mailWrappers = new List<MailWrapper>();
@@ -201,6 +204,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             mailWrappers = result.ToList();
 
             return true;
-        }
-    }*/
+        }*/
+    }
 }

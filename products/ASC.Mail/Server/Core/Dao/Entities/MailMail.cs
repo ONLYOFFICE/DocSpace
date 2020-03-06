@@ -52,17 +52,17 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("attachments_count", TypeName = "int(11)")]
         public int AttachmentsCount { get; set; }
         [Column("unread", TypeName = "int(11)")]
-        public int Unread { get; set; }
+        public bool Unread { get; set; }
         [Column("is_answered", TypeName = "int(11)")]
-        public int IsAnswered { get; set; }
+        public bool IsAnswered { get; set; }
         [Column("is_forwarded", TypeName = "int(11)")]
-        public int IsForwarded { get; set; }
+        public bool IsForwarded { get; set; }
         [Column("is_from_crm", TypeName = "int(11)")]
-        public int IsFromCrm { get; set; }
+        public bool IsFromCrm { get; set; }
         [Column("is_from_tl", TypeName = "int(11)")]
-        public int IsFromTl { get; set; }
+        public bool IsFromTl { get; set; }
         [Column("is_text_body_only", TypeName = "int(11)")]
-        public int IsTextBodyOnly { get; set; }
+        public bool IsTextBodyOnly { get; set; }
         [Column("has_parse_error")]
         public bool HasParseError { get; set; }
         [Column("calendar_uid", TypeName = "varchar(255)")]
@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("folder_restore", TypeName = "int(11)")]
         public int FolderRestore { get; set; }
         [Column("spam", TypeName = "int(11)")]
-        public int Spam { get; set; }
+        public bool Spam { get; set; }
         [Column("time_modified", TypeName = "timestamp")]
         public DateTime TimeModified { get; set; }
         [Column("is_removed")]

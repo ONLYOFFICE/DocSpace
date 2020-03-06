@@ -27,24 +27,27 @@
 //using ASC.Common.Data.Sql.Expressions;
 //using ASC.Mail.Core.DbSchema.Tables;
 
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class SimpleMessageExp : IMessageExp
+    public class SimpleMessageExp : IMessageExp
     {
-        private readonly bool? _isRemoved;
-
         public SimpleMessageExp(bool? isRemoved = false)
         {
-            _isRemoved = isRemoved;
+            IsRemoved = isRemoved;
         }
 
-        public virtual Exp GetExpression()
+        public bool? IsRemoved { get; }
+
+        public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
-            if (!_isRemoved.HasValue) 
-                return Exp.Empty;
+            if (!IsRemoved.HasValue)
+                return m => true;
 
-            var exp = Exp.Eq(MailTable.Columns.IsRemoved, _isRemoved);
-            return exp;
+            return m => m.IsRemoved == IsRemoved;
         }
-    }*/
+    }
 }

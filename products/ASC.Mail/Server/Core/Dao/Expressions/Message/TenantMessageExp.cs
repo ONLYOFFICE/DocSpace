@@ -24,28 +24,29 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    //public class TenantMessageExp : SimpleMessageExp
-    //{
-    //    private readonly int _tenant;
+    public class TenantMessageExp : SimpleMessageExp
+    {
+        public TenantMessageExp(int tenant, bool? isRemoved = false)
+            : base(isRemoved)
+        {
+            Tenant = tenant;
+        }
 
-    //    public TenantMessageExp(int tenant, bool? isRemoved = false)
-    //        : base(isRemoved)
-    //    {
-    //        _tenant = tenant;
-    //    }
+        public int Tenant { get; }
 
-    //    public override Exp GetExpression()
-    //    {
-    //        var exp = base.GetExpression();
+        public override Expression<Func<MailMail, bool>> GetExpression()
+        {
+            var exp = base.GetExpression();
 
-    //        exp = exp & Exp.Eq(MailTable.Columns.Tenant, _tenant);
+            exp = exp.And(m => m.Tenant == Tenant);
 
-    //        return exp;
-    //    }
-    //}
+            return exp;
+        }
+    }
 }

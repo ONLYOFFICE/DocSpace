@@ -29,16 +29,16 @@ using ASC.Mail.Core.Dao.Expressions.Message;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    //public interface IMailDao
-    //{
-    //    int Save(Entities.Mail mail);
+    public interface IMailDao
+    {
+        int Save(Core.Entities.Mail mail);
 
-    //    Entities.Mail GetMail(IMessageExp exp);
+        Core.Entities.Mail GetMail(IMessageExp exp);
 
-    //    Entities.Mail GetNextMail(IMessageExp exp);
+        Core.Entities.Mail GetNextMail(IMessageExp exp);
 
-    //    List<string> GetExistingUidls(int mailboxId, List<string> uidlList);
+        List<string> GetExistingUidls(int mailboxId, List<string> uidlList);
 
-    //    int SetMessagesChanged(List<int> ids);
-    //}
+        int SetMessagesChanged(List<int> ids);
+    }
 }

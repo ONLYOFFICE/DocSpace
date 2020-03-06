@@ -24,11 +24,11 @@
 */
 
 
-//using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public interface IMessagesExp : IMessageExp
+    public interface IMessagesExp : IMessageExp
     {
         string OrderBy { get; }
 
@@ -41,5 +41,5 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         List<int> TagIds { get; }
 
         int? UserFolderId { get; }
-    }*/
+    }
 }

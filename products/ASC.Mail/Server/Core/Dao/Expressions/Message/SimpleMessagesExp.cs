@@ -24,15 +24,15 @@
 */
 
 
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class SimpleMessagesExp : IMessagesExp
+    public class SimpleMessagesExp : IMessagesExp
     {
         public int Tenant { get; private set; }
 
@@ -57,7 +57,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public int? StartIndex { get; set; }
         public int? Limit { get; set; }
 
-        public Exp Exp { get; set; }
+        public Expression<Func<MailMail, bool>> Exp { get; set; }
 
         public SimpleMessagesExp(int tenant)
         {
@@ -83,76 +83,76 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
         private const string MM_ALIAS = "mm";
 
-        public Exp GetExpression()
+        public Expression<Func<MailMail, bool>> GetExpression()
         {
-            var exp = Exp.Eq(MailTable.Columns.Tenant.Prefix(MM_ALIAS), Tenant);
+            Expression<Func<MailMail, bool>> exp = m => m.Tenant == Tenant;
 
             if (!string.IsNullOrEmpty(User))
             {
-                exp &= Exp.Eq(MailTable.Columns.User.Prefix(MM_ALIAS), User);
+                exp = exp.And(m => m.IdUser == User);
             }
 
             if (MessageId.HasValue)
             {
-                exp &= Exp.Eq(MailTable.Columns.Id.Prefix(MM_ALIAS), MessageId.Value);
+                exp = exp.And(m => m.Id == MessageId.Value);
             }
 
             if (MessageIds != null)
             {
-                exp &= Exp.In(MailTable.Columns.Id.Prefix(MM_ALIAS), MessageIds);
+                exp = exp.And(m => MessageIds.Contains(m.Id));
             }
 
             if (ChainIds != null)
             {
-                exp &= Exp.In(MailTable.Columns.ChainId.Prefix(MM_ALIAS), ChainIds);
+                exp = exp.And(m => ChainIds.Contains(m.ChainId));
             }
 
             if (Folder.HasValue)
             {
-                exp &= Exp.Eq(MailTable.Columns.Folder.Prefix(MM_ALIAS), Folder.Value);
+                exp = exp.And(m => m.Folder == Folder.Value);
             }
 
             if (IsRemoved.HasValue)
             {
-                exp &= Exp.Eq(MailTable.Columns.IsRemoved.Prefix(MM_ALIAS), IsRemoved.Value);
+                exp = exp.And(m => m.IsRemoved == IsRemoved.Value);
             }
 
             if (MailboxId.HasValue)
             {
-                exp &= Exp.Eq(MailTable.Columns.MailboxId.Prefix(MM_ALIAS), MailboxId.Value);
+                exp = exp.And(m => m.IdMailbox == MailboxId.Value);
             }
 
             if (!string.IsNullOrEmpty(Md5))
             {
-                exp &= Exp.Eq(MailTable.Columns.Md5.Prefix(MM_ALIAS), Md5);
+                exp = exp.And(m => m.Md5 == Md5);
             }
 
             if (!string.IsNullOrEmpty(MimeMessageId))
             {
-                exp &= Exp.Eq(MailTable.Columns.MimeMessageId.Prefix(MM_ALIAS), MimeMessageId);
+                exp = exp.And(m => m.MimeMessageId == MimeMessageId);
             }
 
             if (!string.IsNullOrEmpty(ChainId))
             {
-                exp &= Exp.Eq(MailTable.Columns.ChainId.Prefix(MM_ALIAS), ChainId);
+                exp = exp.And(m => m.ChainId == ChainId);
             }
 
             if (FoldersIds != null && FoldersIds.Any())
             {
-                exp &= Exp.In(MailTable.Columns.Folder.Prefix(MM_ALIAS), FoldersIds.ToArray());
+                exp = exp.And(m => FoldersIds.Contains(m.Folder));
             }
 
             if (Unread.HasValue)
             {
-                exp &= Exp.Eq(MailTable.Columns.Unread.Prefix(MM_ALIAS), Unread.Value);
+                exp = exp.And(m => m.Unread == Unread.Value);
             }
 
             if (Exp != null)
             {
-                exp &= Exp;
+                exp = exp.And(Exp);
             }
 
             return exp;
         }
-    }*/
+    }
 }

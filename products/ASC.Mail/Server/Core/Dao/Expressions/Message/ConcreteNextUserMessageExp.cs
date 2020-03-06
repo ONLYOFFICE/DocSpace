@@ -27,25 +27,29 @@
 //using ASC.Common.Data.Sql.Expressions;
 //using ASC.Mail.Core.DbSchema.Tables;
 
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
-    /*public class ConcreteNextUserMessageExp : UserMessageExp
+    public class ConcreteNextUserMessageExp : UserMessageExp
     {
-        private readonly int? _id;
-
         public ConcreteNextUserMessageExp(int id, int tenant, string user, bool? isRemoved = null)
             : base(tenant, user, isRemoved)
         {
-            _id = id;
+            Id = id;
         }
 
-        public override Exp GetExpression()
+        public int? Id { get; }
+
+        public override Expression<Func<MailMail, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
-            exp = exp & Exp.Gt(MailTable.Columns.Id, _id);
+            exp = exp.And(m => m.Id > Id);
 
             return exp;
         }
-    }*/
+    }
 }
