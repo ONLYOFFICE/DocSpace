@@ -41,6 +41,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.Configuration;
 using ASC.Core.Users;
 using ASC.Data.Storage;
 using ASC.ElasticSearch;
@@ -112,6 +113,7 @@ namespace ASC.Web.Files.Services.WCFService
         public IServiceProvider ServiceProvider { get; }
         public FileSharingAceHelper<T> FileSharingAceHelper { get; }
         public ApiContext ApiContext { get; }
+        public ConsumerFactory ConsumerFactory { get; }
         public ILog Logger { get; set; }
 
         public FileStorageService(
@@ -131,7 +133,6 @@ namespace ASC.Web.Files.Services.WCFService
             DisplayUserSettingsHelper displayUserSettingsHelper,
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> optionMonitor,
-            DocuSignLoginProvider docuSignLoginProvider,
             PathProvider pathProvider,
             FileSecurity fileSecurity,
             SocketManager socketManager,
@@ -153,7 +154,8 @@ namespace ASC.Web.Files.Services.WCFService
             UrlShortener urlShortener,
             IServiceProvider serviceProvider,
             FileSharingAceHelper<T> fileSharingAceHelper,
-            ApiContext apiContext)
+            ApiContext apiContext,
+            ConsumerFactory consumerFactory)
         {
             Global = global;
             GlobalStore = globalStore;
@@ -170,7 +172,6 @@ namespace ASC.Web.Files.Services.WCFService
             CustomNamingPeople = customNamingPeople;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             HttpContextAccessor = httpContextAccessor;
-            DocuSignLoginProvider = docuSignLoginProvider;
             PathProvider = pathProvider;
             FileSecurity = fileSecurity;
             SocketManager = socketManager;
@@ -193,6 +194,7 @@ namespace ASC.Web.Files.Services.WCFService
             ServiceProvider = serviceProvider;
             FileSharingAceHelper = fileSharingAceHelper;
             ApiContext = apiContext;
+            ConsumerFactory = consumerFactory;
             Logger = optionMonitor.Get("ASC.Files");
         }
 
@@ -854,7 +856,7 @@ namespace ASC.Web.Files.Services.WCFService
             {
                 if (tagLocked == null)
                 {
-                    tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, 0).AddEntry<T>(file);
+                    tagLocked = new Tag("locked", TagType.Locked, AuthContext.CurrentAccount.ID, 0).AddEntry(file);
 
                     tagDao.SaveTags(tagLocked);
                 }
@@ -1221,7 +1223,7 @@ namespace ASC.Web.Files.Services.WCFService
                     || !Global.IsAdministrator && !FilesSettingsHelper.EnableThirdParty
                     || !ThirdpartyConfiguration.SupportDocuSignInclusion, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
-            var token = DocuSignLoginProvider.Instance.GetAccessToken(code);
+            var token = ConsumerFactory.Get<DocuSignLoginProvider>().GetAccessToken(code);
             DocuSignHelper.ValidateToken(token);
             DocuSignToken.SaveToken(token);
             return true;

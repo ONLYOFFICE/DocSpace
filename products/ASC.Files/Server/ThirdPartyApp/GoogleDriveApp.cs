@@ -152,11 +152,10 @@ namespace ASC.Web.Files.ThirdPartyApp
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
         {
             Logger = option.CurrentValue;
             PathProvider = pathProvider;

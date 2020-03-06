@@ -19,8 +19,17 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="proto\DropboxCacheItem.proto" />
+    <None Remove="proto\ProviderAccountCacheItem.proto" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
     <PackageReference Include="DotNetZip" Version="1.13.5" />
+    <PackageReference Include="Dropbox.Api" Version="4.9.4" />
+    <PackageReference Include="Grpc.Tools" Version="2.27.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
   </ItemGroup>
@@ -33,6 +42,10 @@
     <ProjectReference Include="..\..\..\common\ASC.MessagingSystem\ASC.MessagingSystem.csproj" />
     <ProjectReference Include="..\..\..\common\services\ASC.ElasticSearch\ASC.ElasticSearch.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
+    <Protobuf Include="proto\DropboxCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\FilesCommonResource.Designer.cs">

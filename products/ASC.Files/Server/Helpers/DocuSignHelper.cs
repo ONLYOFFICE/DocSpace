@@ -35,6 +35,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.Configuration;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
@@ -72,17 +73,18 @@ namespace ASC.Web.Files.Helpers
 
         public TokenHelper TokenHelper { get; }
         public AuthContext AuthContext { get; }
+        public ConsumerFactory ConsumerFactory { get; }
         public DocuSignLoginProvider DocuSignLoginProvider { get; }
 
         public DocuSignToken(
             TokenHelper tokenHelper,
             IOptionsMonitor<ILog> options,
             AuthContext authContext,
-            DocuSignLoginProvider docuSignLoginProvider)
+            ConsumerFactory consumerFactory)
         {
             TokenHelper = tokenHelper;
             AuthContext = authContext;
-            DocuSignLoginProvider = docuSignLoginProvider;
+            ConsumerFactory = consumerFactory;
             Log = options.CurrentValue;
         }
 
@@ -111,7 +113,7 @@ namespace ASC.Web.Files.Helpers
                 {
                     Log.Info("DocuSign refresh token for user " + AuthContext.CurrentAccount.ID);
 
-                    var refreshed = DocuSignLoginProvider.Instance.RefreshToken(token.RefreshToken);
+                    var refreshed = ConsumerFactory.Get<DocuSignLoginProvider>().RefreshToken(token.RefreshToken);
 
                     if (refreshed != null)
                     {
@@ -164,6 +166,7 @@ namespace ASC.Web.Files.Helpers
         public FilesMessageService FilesMessageService { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
@@ -179,7 +182,8 @@ namespace ASC.Web.Files.Helpers
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FilesLinkUtility filesLinkUtility,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ConsumerFactory consumerFactory)
         {
             DocuSignToken = docuSignToken;
             DocuSignLoginProvider = docuSignLoginProvider;
@@ -194,6 +198,7 @@ namespace ASC.Web.Files.Helpers
             FilesMessageService = filesMessageService;
             FilesLinkUtility = filesLinkUtility;
             ServiceProvider = serviceProvider;
+            ConsumerFactory = consumerFactory;
             Log = options.CurrentValue;
         }
 
@@ -223,7 +228,7 @@ namespace ASC.Web.Files.Helpers
         {
             if (token == null) throw new ArgumentNullException("token");
 
-            var userInfoString = RequestHelper.PerformRequest(DocuSignLoginProvider.Instance.DocuSignHost + "/oauth/userinfo",
+            var userInfoString = RequestHelper.PerformRequest(ConsumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + DocuSignToken.GetRefreshedToken(token) } });
 
             Log.Debug("DocuSing userInfo: " + userInfoString);

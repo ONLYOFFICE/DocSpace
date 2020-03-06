@@ -138,10 +138,6 @@ namespace ASC.Api.Documents
             WebItemSecurity webItemSecurity,
             CoreBaseSettings coreBaseSettings,
             ThirdpartyConfiguration thirdpartyConfiguration,
-            BoxLoginProvider boxLoginProvider,
-            DropboxLoginProvider dropboxLoginProvider,
-            GoogleLoginProvider googleLoginProvider,
-            OneDriveLoginProvider oneDriveLoginProvider,
             MessageService messageService,
             CommonLinkUtility commonLinkUtility,
             DocumentServiceConnector documentServiceConnector,
@@ -173,17 +169,17 @@ namespace ASC.Api.Documents
             WebItemSecurity = webItemSecurity;
             CoreBaseSettings = coreBaseSettings;
             ThirdpartyConfiguration = thirdpartyConfiguration;
-            BoxLoginProvider = boxLoginProvider;
-            DropboxLoginProvider = dropboxLoginProvider;
-            GoogleLoginProvider = googleLoginProvider;
-            OneDriveLoginProvider = oneDriveLoginProvider;
+            ConsumerFactory = consumerFactory;
+            BoxLoginProvider = ConsumerFactory.Get<BoxLoginProvider>();
+            DropboxLoginProvider = ConsumerFactory.Get<DropboxLoginProvider>();
+            GoogleLoginProvider = ConsumerFactory.Get<GoogleLoginProvider>();
+            OneDriveLoginProvider = ConsumerFactory.Get<OneDriveLoginProvider>();
             MessageService = messageService;
             CommonLinkUtility = commonLinkUtility;
             DocumentServiceConnector = documentServiceConnector;
             FolderContentWrapperHelper = folderContentWrapperHelper;
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
-            ConsumerFactory = consumerFactory;
             EasyBibHelper = easyBibHelper;
             ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             ProductEntryPoint = productEntryPoint;
@@ -205,9 +201,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>My folder contents</returns>
         [Read("@my")]
-        public FolderContentWrapper<string> GetMyFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetMyFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderMy<string>(), userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -1329,19 +1325,19 @@ namespace ASC.Api.Documents
 
             if (ThirdpartyConfiguration.SupportBoxInclusion)
             {
-                result.Add(new List<string> { "Box", BoxLoginProvider.Instance.ClientID, BoxLoginProvider.Instance.RedirectUri });
+                result.Add(new List<string> { "Box", BoxLoginProvider.ClientID, BoxLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportDropboxInclusion)
             {
-                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.Instance.ClientID, DropboxLoginProvider.Instance.RedirectUri });
+                result.Add(new List<string> { "DropboxV2", DropboxLoginProvider.ClientID, DropboxLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportGoogleDriveInclusion)
             {
-                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.Instance.ClientID, GoogleLoginProvider.Instance.RedirectUri });
+                result.Add(new List<string> { "GoogleDrive", GoogleLoginProvider.ClientID, GoogleLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportOneDriveInclusion)
             {
-                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.Instance.ClientID, OneDriveLoginProvider.Instance.RedirectUri });
+                result.Add(new List<string> { "OneDrive", OneDriveLoginProvider.ClientID, OneDriveLoginProvider.RedirectUri });
             }
             if (ThirdpartyConfiguration.SupportSharePointInclusion)
             {

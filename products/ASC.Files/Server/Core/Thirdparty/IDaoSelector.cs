@@ -24,59 +24,19 @@
 */
 
 
-using System;
-
-using ASC.Common;
+using ASC.Files.Core;
 using ASC.Files.Core.Security;
-using ASC.Files.Thirdparty;
 
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Files.Core.Data
+namespace ASC.Files.Thirdparty
 {
-    public class DaoFactory : IDaoFactory
+    internal interface IDaoSelector
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IProviderDao ProviderDao { get; }
-
-        public DaoFactory(IServiceProvider serviceProvider, IProviderDao providerDao)
-        {
-            ServiceProvider = serviceProvider;
-            ProviderDao = providerDao;
-        }
-
-        public IFileDao<T> GetFileDao<T>()
-        {
-            return ServiceProvider.GetService<IFileDao<T>>();
-        }
-
-        public IFolderDao<T> GetFolderDao<T>()
-        {
-            return ServiceProvider.GetService<IFolderDao<T>>();
-        }
-        public ITagDao<T> GetTagDao<T>()
-        {
-            return ServiceProvider.GetService<ITagDao<T>>();
-        }
-
-        public ISecurityDao<T> GetSecurityDao<T>()
-        {
-            return ServiceProvider.GetService<ISecurityDao<T>>();
-        }
-    }
-
-    public static class DaoFactoryExtention
-    {
-        public static DIHelper AddDaoFactoryService(this DIHelper services)
-        {
-            services.TryAddScoped<IDaoFactory, DaoFactory>();
-            return services
-                .AddFileDaoService()
-                .AddFolderDaoService()
-                .AddTagDaoService()
-                .AddSecurityDaoService()
-                .AddCachedProviderAccountDaoService()
-                ;
-        }
+        bool IsMatch(string id);
+        IFileDao<string> GetFileDao(string id);
+        IFolderDao<string> GetFolderDao(string id);
+        ISecurityDao<string> GetSecurityDao(string id);
+        ITagDao<string> GetTagDao(string id);
+        string ConvertId(string id);
+        string GetIdCode(string id);
     }
 }
