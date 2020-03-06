@@ -13,7 +13,8 @@ import {
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import { api } from 'asc-web-common';
-import { fetchFiles, updateFile } from '../../../../../store/files/actions';
+import { fetchFiles, deleteFile, deleteFolder, fetchFolder } from '../../../../../store/files/actions';
+import store from "../../../../../store/store";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import config from "../../../../../../package.json";
 
@@ -68,6 +69,34 @@ class SectionBodyContent extends React.PureComponent {
     });
   }
 
+  onDeleteFile = (fileId, currentFolderId) => {
+    const { deleteFile } = this.props;
+
+    deleteFile(fileId)
+      .catch(err => toastr.error(err))
+      .then(() => fetchFolder(currentFolderId, store.dispatch));
+  }
+
+  onDeleteFolder = (folderId, currentFolderId) => {
+    toastr.warning('development');
+    /* const { deleteFolder } = this.props;
+
+    deleteFolder(folderId)
+      .catch(err => toastr.error(err))
+      .then(() => fetchFolder(currentFolderId, store.dispatch)); */
+  }
+
+  onClickDelete = (item) => {
+
+    item.fileExst
+      ? this.onDeleteFile(item.id, item.folderId)
+      : this.onDeleteFolder(item.id, item.parentId);
+  }
+
+  onClickLinkForPortal = (folderId) => {
+    return fetchFolder(folderId, store.dispatch);
+  }
+
   getFilesContextOptions = (item, viewer) => {
     return [
       {
@@ -79,7 +108,7 @@ class SectionBodyContent extends React.PureComponent {
       {
         key: "link-for-portal-users",
         label: "Link for portal users",
-        onClick: () => { },
+        onClick: this.onClickLinkForPortal.bind(this, item.folderId),
         disabled: true
       },
       {
@@ -101,8 +130,8 @@ class SectionBodyContent extends React.PureComponent {
       {
         key: "delete",
         label: "Delete",
-        onClick: () => { },
-        disabled: true
+        onClick: this.onClickDelete.bind(this, item),
+        disabled: false
       },
     ]
   };
@@ -158,8 +187,8 @@ class SectionBodyContent extends React.PureComponent {
         })}
       </RowContainer>
     ) : parentId !== 0 ? (
-        <EmptyFolderContainer parentId={parentId} />
-      ) : <a>RootFolderContainer</a>;
+      <EmptyFolderContainer parentId={parentId} />
+    ) : <a>RootFolderContainer</a>;
   }
 }
 
@@ -182,5 +211,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchFiles, updateFile }
+  { fetchFiles, deleteFile, deleteFolder }
 )(withRouter(withTranslation()(SectionBodyContent)));
