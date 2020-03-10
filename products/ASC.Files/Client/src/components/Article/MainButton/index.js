@@ -15,6 +15,10 @@ const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
 
+  onCreateFolder = (e) => {
+    this.props.onCreate(true);
+  }
+
   render() {
     console.log("Files ArticleMainButtonContent render");
     const { isAdmin, t } = this.props;
@@ -45,7 +49,10 @@ class PureArticleMainButtonContent extends React.Component {
             <DropDownItem
               icon="CatalogFolderIcon"
               label={t('NewFolder')}
-              onClick={() => toastr.info("New Folder click")}
+              onClick={() => {
+                this.onCreateFolder();
+                toastr.info("New Folder click")
+              }}
             />
             <DropDownItem isSeparator />
             <DropDownItem
