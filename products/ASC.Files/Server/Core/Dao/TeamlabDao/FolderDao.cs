@@ -1041,6 +1041,7 @@ namespace ASC.Files.Core.Data
         {
             services.TryAddScoped<IFolderDao<int>, FolderDao>();
             services.TryAddTransient<Folder<int>>();
+            services.TryAddTransient<Folder<string>>();
 
             return services
                 .AddFactoryIndexerService<FoldersWrapper>()

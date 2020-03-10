@@ -242,14 +242,14 @@ namespace ASC.Web.Files.Utils
             cache = AscCache.Memory;
         }
 
-        public IEnumerable<FileEntry<T>> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
+        public IEnumerable<FileEntry> GetEntries<T>(Folder<T> parent, int from, int count, FilterType filter, bool subjectGroup, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, out int total)
         {
             total = 0;
 
             if (parent == null) throw new ArgumentNullException("parent", FilesCommonResource.ErrorMassage_FolderNotFound);
 
             var fileSecurity = FileSecurity;
-            var entries = Enumerable.Empty<FileEntry<T>>();
+            var entries = Enumerable.Empty<FileEntry>();
 
             searchInContent = searchInContent && filter != FilterType.ByExtension && !Equals(parent.ID, GlobalFolderHelper.FolderTrash);
 
@@ -390,33 +390,33 @@ namespace ASC.Web.Files.Utils
 
             if (orderBy.SortedBy != SortedByType.New)
             {
-                entries = SortEntries(entries, orderBy);
+                entries = SortEntries<T>(entries, orderBy);
 
                 total = entries.Count();
                 if (0 < from) entries = entries.Skip(from);
                 if (0 < count) entries = entries.Take(count);
             }
 
-            entries = FileMarker.SetTagsNew(parent, entries);
+            entries = FileMarker.SetTagsNew<T>(parent, entries);
 
             //sorting after marking
             if (orderBy.SortedBy == SortedByType.New)
             {
-                entries = SortEntries(entries, orderBy);
+                entries = SortEntries<T>(entries, orderBy);
 
                 total = entries.Count();
                 if (0 < from) entries = entries.Skip(from);
                 if (0 < count) entries = entries.Take(count);
             }
 
-            SetFileStatus(entries.Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).Select(r => r as File<T>).ToList());
+            SetFileStatus(entries.OfType<File<T>>().Where(r => r != null && r.ID != null && r.FileEntryType == FileEntryType.File).Select(r => r as File<T>).ToList());
 
             return entries;
         }
 
-        public IEnumerable<Folder<T>> GetThirpartyFolders<T>(Folder<T> parent, string searchText = null)
+        public IEnumerable<Folder<string>> GetThirpartyFolders<T>(Folder<T> parent, string searchText = null)
         {
-            var folderList = new List<Folder<T>>();
+            var folderList = new List<Folder<string>>();
 
             if ((parent.ID.Equals(GlobalFolderHelper.FolderMy) || parent.ID.Equals(GlobalFolderHelper.FolderCommon))
                 && ThirdpartyConfiguration.SupportInclusion
@@ -431,13 +431,13 @@ namespace ASC.Web.Files.Utils
 
                 var providers = providerDao.GetProvidersInfo(parent.RootFolderType, searchText);
                 folderList = providers
-                    .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID))
+                    .Select(providerInfo => GetFakeThirdpartyFolder<T>(providerInfo, parent.ID.ToString()))
                     .Where(r => fileSecurity.CanRead(r)).ToList();
 
                 if (folderList.Any())
                 {
-                    var securityDao = DaoFactory.GetSecurityDao<T>();
-                    securityDao.GetPureShareRecords(folderList.Cast<FileEntry<T>>().ToArray())
+                    var securityDao = DaoFactory.GetSecurityDao<string>();
+                    securityDao.GetPureShareRecords(folderList)
                     //.Where(x => x.Owner == SecurityContext.CurrentAccount.ID)
                     .Select(x => x.EntryId).Distinct().ToList()
                     .ForEach(id =>
@@ -498,11 +498,11 @@ namespace ASC.Web.Files.Utils
             return entries;
         }
 
-        public IEnumerable<FileEntry<T>> SortEntries<T>(IEnumerable<FileEntry<T>> entries, OrderBy orderBy)
+        public IEnumerable<FileEntry> SortEntries<T>(IEnumerable<FileEntry> entries, OrderBy orderBy)
         {
             if (entries == null || !entries.Any()) return entries;
 
-            Comparison<FileEntry<T>> sorter;
+            Comparison<FileEntry> sorter;
 
             if (orderBy == null)
             {
@@ -584,14 +584,14 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public Folder<T> GetFakeThirdpartyFolder<T>(IProviderInfo providerInfo, object parentFolderId = null)
+        public Folder<string> GetFakeThirdpartyFolder<T>(IProviderInfo providerInfo, string parentFolderId = null)
         {
             //Fake folder. Don't send request to third party
-            var folder = ServiceProvider.GetService<Folder<T>>();
+            var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ParentFolderID = (T)parentFolderId;
+            folder.ParentFolderID = parentFolderId;
 
-            folder.ID = (T)providerInfo.RootFolderId;
+            folder.ID = providerInfo.RootFolderId;
             folder.CreateBy = providerInfo.Owner;
             folder.CreateOn = providerInfo.CreateOn;
             folder.FolderType = FolderType.DEFAULT;
@@ -600,7 +600,7 @@ namespace ASC.Web.Files.Utils
             folder.ProviderId = providerInfo.ID;
             folder.ProviderKey = providerInfo.ProviderKey;
             folder.RootFolderCreator = providerInfo.Owner;
-            folder.RootFolderId = (T)Convert.ChangeType(providerInfo.RootFolderId, typeof(T));
+            folder.RootFolderId = providerInfo.RootFolderId;
             folder.RootFolderType = providerInfo.RootFolderType;
             folder.Shareable = false;
             folder.Title = providerInfo.CustomerTitle;

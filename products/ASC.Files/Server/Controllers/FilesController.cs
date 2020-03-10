@@ -244,9 +244,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public FolderContentWrapper<string> GetShareFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderShare<string>(), userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType);
         }
 
         /// <summary>

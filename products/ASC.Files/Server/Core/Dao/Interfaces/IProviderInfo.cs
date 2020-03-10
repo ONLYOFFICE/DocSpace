@@ -37,7 +37,7 @@ namespace ASC.Files.Core
         DateTime CreateOn { get; }
         string CustomerTitle { get; }
 
-        object RootFolderId { get; }
+        string RootFolderId { get; }
 
         bool CheckAccess();
         void InvalidateStorage();

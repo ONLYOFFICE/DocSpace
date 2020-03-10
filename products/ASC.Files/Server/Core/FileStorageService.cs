@@ -274,7 +274,7 @@ namespace ASC.Web.Files.Services.WCFService
                 orderBy.SortedBy = SortedByType.New;
 
             int total;
-            IEnumerable<FileEntry<T>> entries;
+            IEnumerable<FileEntry> entries;
             try
             {
                 entries = EntryManager.GetEntries(parent, from, count, filter, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, out total);
@@ -303,7 +303,7 @@ namespace ASC.Web.Files.Services.WCFService
             var result = new DataWrapper<T>
             {
                 Total = total,
-                Entries = new ItemList<FileEntry<T>>(entries.ToList()),
+                Entries = new ItemList<FileEntry>(entries.ToList()),
                 FolderPathParts = new ItemList<T>(breadCrumbs.Select(f => f.ID)),
                 FolderInfo = parent,
                 RootFoldersIdMarkedAsNew = FileMarker.GetRootFoldersIdMarkedAsNew<T>()
@@ -498,7 +498,7 @@ namespace ASC.Web.Files.Services.WCFService
                 orderBy.SortedBy = SortedByType.New;
             }
 
-            var entries = Enumerable.Empty<FileEntry<T>>();
+            var entries = Enumerable.Empty<FileEntry>();
 
             if (!FileSecurity.CanRead(parent))
             {
@@ -1039,7 +1039,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 var result = FileMarker.MarkedItems(folder);
 
-                result = new List<FileEntry<T>>(EntryManager.SortEntries(result, new OrderBy(SortedByType.DateAndTime, false)));
+                result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
                 if (!result.ToList().Any())
                 {
@@ -1048,7 +1048,7 @@ namespace ASC.Web.Files.Services.WCFService
 
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StreamContent(serializer.ToXml(new ItemList<FileEntry<T>>(result)))
+                    Content = new StreamContent(serializer.ToXml(new ItemList<FileEntry>(result)))
                 };
                 response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
                 return response;
@@ -1088,10 +1088,10 @@ namespace ASC.Web.Files.Services.WCFService
             return new ItemList<ThirdPartyParams>(resultList.ToList());
         }
 
-        public ItemList<Folder<T>> GetThirdPartyFolder(int folderType = 0)
+        public ItemList<FileEntry> GetThirdPartyFolder(int folderType = 0)
         {
             var providerDao = GetProviderDao();
-            if (providerDao == null) return new ItemList<Folder<T>>();
+            if (providerDao == null) return new ItemList<FileEntry>();
 
             var providersInfo = providerDao.GetProvidersInfo((FolderType)folderType);
 
@@ -1102,7 +1102,7 @@ namespace ASC.Web.Files.Services.WCFService
                     return folder;
                 });
 
-            return new ItemList<Folder<T>>(folders);
+            return new ItemList<FileEntry>(folders);
         }
 
         public Folder<T> SaveThirdParty(ThirdPartyParams thirdPartyParams)

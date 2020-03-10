@@ -35,7 +35,7 @@ namespace ASC.Web.Files.Services.WCFService
     public class DataWrapper<T>
     {
         [DataMember(IsRequired = false, Name = "entries", EmitDefaultValue = false)]
-        public ItemList<FileEntry<T>> Entries { get; set; }
+        public ItemList<FileEntry> Entries { get; set; }
 
         [DataMember(IsRequired = false, Name = "total")]
         public int Total { get; set; }

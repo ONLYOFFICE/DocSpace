@@ -500,7 +500,7 @@ namespace ASC.Web.Files.Utils
             return news;
         }
 
-        public List<FileEntry<T>> MarkedItems<T>(Folder<T> folder)
+        public List<FileEntry> MarkedItems<T>(Folder<T> folder)
         {
             if (folder == null) throw new ArgumentNullException("folder", FilesCommonResource.ErrorMassage_FolderNotFound);
             if (!FileSecurity.CanRead(folder)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
@@ -513,7 +513,7 @@ namespace ASC.Web.Files.Utils
             var folderDao = DaoFactory.GetFolderDao<T>();
             var tags = (tagDao.GetNewTags(AuthContext.CurrentAccount.ID, folder, true) ?? new List<Tag>()).ToList();
 
-            if (!tags.Any()) return new List<FileEntry<T>>();
+            if (!tags.Any()) return new List<FileEntry>();
 
             if (Equals(folder.ID, GlobalFolder.GetFolderMy(this, DaoFactory)) || Equals(folder.ID, GlobalFolder.GetFolderCommon(this, DaoFactory)) || Equals(folder.ID, GlobalFolder.GetFolderShare(DaoFactory)))
             {
@@ -562,7 +562,7 @@ namespace ASC.Web.Files.Utils
                     entryTags[parentEntry].Count -= entryTag.Value.Count;
             }
 
-            var result = new List<FileEntry<T>>();
+            var result = new List<FileEntry>();
 
             foreach (var entryTag in entryTags)
             {
@@ -580,7 +580,7 @@ namespace ASC.Web.Files.Utils
             return result;
         }
 
-        public IEnumerable<FileEntry<T>> SetTagsNew<T>(Folder<T> parent, IEnumerable<FileEntry<T>> entries)
+        public IEnumerable<FileEntry> SetTagsNew<T>(Folder<T> parent, IEnumerable<FileEntry> entries)
         {
             var tagDao = DaoFactory.GetTagDao<T>();
             var folderDao = DaoFactory.GetFolderDao<T>();
@@ -670,7 +670,9 @@ namespace ASC.Web.Files.Utils
                     }
                 }
 
-                entries.ToList().ForEach(
+                entries.OfType<FileEntry<T>>()
+                    .ToList()
+                    .ForEach(
                     entry =>
                     {
                         var curTag = totalTags.FirstOrDefault(tag => tag.EntryType == entry.FileEntryType && tag.EntryId.Equals(entry.ID));

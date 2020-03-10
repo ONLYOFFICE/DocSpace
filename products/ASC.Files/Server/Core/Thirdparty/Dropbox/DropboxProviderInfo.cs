@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Common.Caching;
 using ASC.FederatedLogin;
 using ASC.Files.Core;
@@ -72,7 +73,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public DateTime CreateOn { get; set; }
 
-        public object RootFolderId
+        public string RootFolderId
         {
             get { return "dropbox-" + ID; }
         }
@@ -277,6 +278,18 @@ namespace ASC.Files.Thirdparty.Dropbox
 
                 CacheNotify.Publish(new DropboxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
             }
+        }
+    }
+
+    public static class DropboxProviderInfoExtension
+    {
+        public static DIHelper AddDropboxProviderInfoService(this DIHelper services)
+        {
+            services.TryAddScoped<DropboxProviderInfo>();
+            services.TryAddScoped<StorageDisposableWrapper>();
+            services.TryAddSingleton<DropboxProviderInfoHelper>();
+
+            return services;
         }
     }
 }

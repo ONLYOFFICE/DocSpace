@@ -32,17 +32,12 @@ using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
-    [DataContract(Name = "entry", Namespace = "")]
-    [Serializable]
-    public abstract class FileEntry<T> : ICloneable
+    public abstract class FileEntry : ICloneable
     {
         public FileEntry(Global global)
         {
             Global = global;
         }
-
-        [DataMember(Name = "id")]
-        public T ID { get; set; }
 
         [DataMember(Name = "title", IsRequired = true)]
         public virtual string Title { get; set; }
@@ -95,14 +90,6 @@ namespace ASC.Files.Core
 
         [DataMember(Name = "provider_key", EmitDefaultValue = false)]
         public string ProviderKey { get; set; }
-
-        [DataMember(Name = "folder_id")]
-        public abstract T FolderIdDisplay
-        {
-            get;
-            set;
-        }
-
         public bool ProviderEntry
         {
             get { return !string.IsNullOrEmpty(ProviderKey); }
@@ -116,21 +103,51 @@ namespace ASC.Files.Core
 
         public Guid RootFolderCreator { get; set; }
 
-        public T RootFolderId { get; set; }
-
         public abstract bool IsNew { get; set; }
 
         public FileEntryType FileEntryType;
-
-        public string UniqID
-        {
-            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
-        }
 
         public Global Global { get; }
 
         private string _modifiedByString;
         private string _createByString;
+
+
+        public override string ToString()
+        {
+            return Title;
+        }
+
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+    }
+
+    [DataContract(Name = "entry", Namespace = "")]
+    [Serializable]
+    public abstract class FileEntry<T> : FileEntry, ICloneable
+    {
+        public FileEntry(Global global) : base(global)
+        {
+        }
+
+        [DataMember(Name = "id")]
+        public T ID { get; set; }
+
+
+        [DataMember(Name = "folder_id")]
+        public abstract T FolderIdDisplay
+        {
+            get;
+            set;
+        }
+
+        public T RootFolderId { get; set; }
+        public string UniqID
+        {
+            get { return string.Format("{0}_{1}", GetType().Name.ToLower(), ID); }
+        }
 
         public override bool Equals(object obj)
         {
@@ -150,11 +167,6 @@ namespace ASC.Files.Core
         public override string ToString()
         {
             return Title;
-        }
-
-        public object Clone()
-        {
-            return MemberwiseClone();
         }
     }
 }

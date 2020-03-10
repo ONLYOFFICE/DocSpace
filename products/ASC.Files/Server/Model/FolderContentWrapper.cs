@@ -47,7 +47,7 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        public List<FolderWrapper<T>> Folders { get; set; }
+        public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
@@ -92,7 +92,7 @@ namespace ASC.Api.Documents
             {
                 Current = FolderWrapper<int>.GetSample(),
                 Files = new List<FileWrapper<int>>(new[] { FileWrapper<int>.GetSample(), FileWrapper<int>.GetSample() }),
-                Folders = new List<FolderWrapper<int>>(new[] { FolderWrapper<int>.GetSample(), FolderWrapper<int>.GetSample() }),
+                Folders = new List<FileEntryWrapper>(new[] { FolderWrapper<int>.GetSample(), FolderWrapper<int>.GetSample() }),
                 PathParts = new
                 {
                     key = "Key",
@@ -124,7 +124,23 @@ namespace ASC.Api.Documents
             var result = new FolderContentWrapper<T>
             {
                 Files = folderItems.Entries.OfType<File<T>>().Select(FileWrapperHelper.Get).ToList(),
-                Folders = folderItems.Entries.OfType<Folder<T>>().Select(FolderWrapperHelper.Get).ToList(),
+                Folders = folderItems.Entries
+                .Where(r => r.FileEntryType == FileEntryType.Folder)
+                .Select(r =>
+                {
+                    FileEntryWrapper wrapper = null;
+                    if (r is Folder<int> fol1)
+                    {
+                        wrapper = FolderWrapperHelper.Get(fol1);
+                    }
+                    if (r is Folder<string> fol2)
+                    {
+                        wrapper = FolderWrapperHelper.Get(fol2);
+                    }
+
+                    return wrapper;
+                }
+                ).ToList(),
                 PathParts = folderItems.FolderPathParts,
                 StartIndex = startIndex
             };

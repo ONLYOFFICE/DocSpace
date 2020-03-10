@@ -568,6 +568,7 @@ namespace ASC.Files.Thirdparty
             //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
 
             return services
+                .AddDropboxProviderInfoService()
                 .AddTenantUtilService()
                 .AddTenantManagerService()
                 .AddInstanceCryptoService()

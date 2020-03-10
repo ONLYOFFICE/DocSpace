@@ -42,7 +42,7 @@ using ASC.Web.Studio.Utility;
 
 namespace ASC.Files.Core.Data
 {
-    internal class SecurityDao : AbstractDao, ISecurityDao<int>
+    internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     {
         public SecurityDao(UserManager userManager,
             DbContextManager<FilesDbContext> dbContextManager,
@@ -180,7 +180,7 @@ namespace ASC.Files.Core.Data
             return FromQuery(q);
         }
 
-        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<int>> entries)
+        public IEnumerable<FileShareRecord> GetPureShareRecords(IEnumerable<FileEntry<T>> entries)
         {
             if (entries == null) return new List<FileShareRecord>();
 
@@ -195,7 +195,7 @@ namespace ASC.Files.Core.Data
             return GetPureShareRecordsDb(files, folders);
         }
 
-        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<int> entry)
+        public IEnumerable<FileShareRecord> GetPureShareRecords(FileEntry<T> entry)
         {
             if (entry == null) return new List<FileShareRecord>();
 
@@ -228,7 +228,7 @@ namespace ASC.Files.Core.Data
         /// </summary>
         /// <param name="entries"></param>
         /// <returns></returns>
-        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<int>> entries)
+        public IEnumerable<FileShareRecord> GetShares(IEnumerable<FileEntry<T>> entries)
         {
             if (entries == null) return new List<FileShareRecord>();
 
@@ -248,7 +248,7 @@ namespace ASC.Files.Core.Data
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public IEnumerable<FileShareRecord> GetShares(FileEntry<int> entry)
+        public IEnumerable<FileShareRecord> GetShares(FileEntry<T> entry)
         {
             if (entry == null) return new List<FileShareRecord>();
 
@@ -259,13 +259,13 @@ namespace ASC.Files.Core.Data
             return SaveFilesAndFoldersForShare(files, foldersInt);
         }
 
-        private void SelectFilesAndFoldersForShare(FileEntry<int> entry, ICollection<string> files, ICollection<string> folders, ICollection<int> foldersInt)
+        private void SelectFilesAndFoldersForShare(FileEntry<T> entry, ICollection<string> files, ICollection<string> folders, ICollection<int> foldersInt)
         {
-            object folderId;
+            T folderId;
             if (entry.FileEntryType == FileEntryType.File)
             {
                 var fileId = MappingID(entry.ID);
-                folderId = ((File<int>)entry).FolderID;
+                folderId = ((File<T>)entry).FolderID;
                 if (!files.Contains(fileId.ToString())) files.Add(fileId.ToString());
             }
             else
@@ -369,7 +369,9 @@ namespace ASC.Files.Core.Data
     {
         public static DIHelper AddSecurityDaoService(this DIHelper services)
         {
-            services.TryAddScoped<ISecurityDao<int>, SecurityDao>();
+            services.TryAddScoped<ISecurityDao<int>, SecurityDao<int>>();
+            services.TryAddScoped<SecurityDao<int>>();
+            services.TryAddScoped<SecurityDao<string>>();
 
             return services
                 .AddUserManagerService()
