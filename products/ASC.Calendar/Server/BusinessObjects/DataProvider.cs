@@ -242,14 +242,14 @@ namespace ASC.Calendar.BusinessObjects
              return calendars;
          }*/
 
-         public TimeZoneInfo GetTimeZoneForSharedEventsCalendar(Guid userId)
-         {
+        public TimeZoneInfo GetTimeZoneForSharedEventsCalendar(Guid userId)
+        {
             var data = CalendarDb.CalendarCalendarUser.Where(p => p.ExtCalendarId == SharedEventsCalendar.CalendarId && p.UserId == userId).Select(s => s.TimeZone).ToList();
             if (data.Count > 0)
                 return data.Select(r => TimeZoneConverter.GetTimeZone(Convert.ToString(r[0]))).First();
-            
+
             return TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
-         }
+        }
 
         public TimeZoneInfo GetTimeZoneForCalendar(Guid userId, int caledarId)
         {
@@ -422,7 +422,7 @@ namespace ASC.Calendar.BusinessObjects
                 CaldavGuid = calDavGuid.ToString(),
                 IsTodo = isTodo
             };
-            
+
             calendar = CalendarDb.CalendarCalendars.Add(calendar).Entity;
 
             if (publicItems != null)
@@ -1285,20 +1285,23 @@ namespace ASC.Calendar.BusinessObjects
             var eventId = db.ExecuteScalar<int>(sql);
 
             return eventId == 0 ? null : GetEventById(eventId);
-        }
+        }*/
 
         public void SetEventUid(int eventId, string uid)
         {
-            using (var tr = db.BeginTransaction())
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var newEvent = new CalendarEvents
             {
-                db.ExecuteNonQuery(new SqlUpdate("calendar_events")
-                                                .Set("uid", uid)
-                                                .Where(Exp.Eq("id", eventId)));
+                Id = eventId,
+                Uid = uid
+            };
+            CalendarDb.AddOrUpdate(r => r.CalendarEvents, newEvent);
 
-                tr.Commit();
-            }
+            CalendarDb.SaveChanges();
+            tx.Commit();
         }
-
+        /*
         public void UnsubscribeFromEvent(int eventID, Guid userId)
         {
             using (var tr = db.BeginTransaction())
@@ -1392,7 +1395,7 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetEventById(newEvent.Id);
         }
-        
+
         public Event UpdateEvent(int eventId,
             string eventUid,
             int calendarId,
@@ -1440,7 +1443,7 @@ namespace ASC.Calendar.BusinessObjects
                 };
                 CalendarDb.CalendarEventUser.Add(newCalEvtUser);
             }
-           
+
             CalendarDb.AddOrUpdate(r => r.CalendarEvents, newEvent);
 
             var userIds = CalendarDb.CalendarEventUser.Where(p => p.EventId == eventId).Select(t => t.UserId).ToList();
@@ -1654,26 +1657,46 @@ namespace ASC.Calendar.BusinessObjects
 
             return history;
         }
-        /*
+
         public void RemoveEventHistory(int calendarId, string eventUid)
         {
-            var sql = new SqlDelete("calendar_event_history")
-                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where("calendar_id", calendarId)
-                .Where("event_uid", eventUid);
+            using var tx = CalendarDb.Database.BeginTransaction();
+            var eh = CalendarDb.CalendarEventHistory
+                .Where(r =>
+                        r.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        r.CalendarId == calendarId &&
+                        r.EventUid == eventUid
+                      )
+                .SingleOrDefault();
 
-            db.ExecuteNonQuery(sql);
+            if (eh != null)
+            {
+                CalendarDb.CalendarEventHistory.Remove(eh);
+            }
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
         }
 
         public void RemoveEventHistory(int eventId)
         {
-            var sql = new SqlDelete("calendar_event_history")
-                .Where("tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where("event_id", eventId);
+            using var tx = CalendarDb.Database.BeginTransaction();
+            var eh = CalendarDb.CalendarEventHistory
+                .Where(r =>
+                        r.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                        r.EventId == eventId
+                      )
+                .SingleOrDefault();
 
-            db.ExecuteNonQuery(sql);
+            if (eh != null)
+            {
+                CalendarDb.CalendarEventHistory.Remove(eh);
+            }
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
         }
-
+        /*
         private static EventHistory ToEventHistory(object[] row)
         {
             return new EventHistory(Convert.ToInt32(row[0]),

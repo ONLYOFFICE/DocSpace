@@ -12,8 +12,11 @@ namespace ASC.Calendar.Models
     {
         //int calendarId, string ics, EventAlertType alertType, List<SharingParam> sharingOptions, string eventUid = null 
 
+        [DataMember(Name = "event_id", Order = 1)]
+        public int EventId { get; set; }
+
         [DataMember(Name = "calendar_id", Order = 0)]
-        public int CalendarId { get; set; }
+        public string CalendarId { get; set; }
 
         [DataMember(Name = "ics", Order = 2)]
         public string Ics { get; set; }
@@ -25,7 +28,13 @@ namespace ASC.Calendar.Models
         public List<SharingParam> SharingOptions { get; set; }
 
         [DataMember(Name = "event_uid", Order = 1)]
-        public string eventUid { get; set; }
+        public string EventUid { get; set; }
+
+        [DataMember(Name = "from_caldav_server", Order = 1)]
+        public bool FromCalDavServer { get; set; }
+
+        [DataMember(Name = "owner_id", Order = 1)]
+        public string OwnerId { get; set; }
 
 
         /*public static object GetSample()
