@@ -140,11 +140,10 @@ export function updateFile(fileId, title, lastVersion) {
   return request(options);
 }
 
-export function createFolder(folderId, title) {
+export function createFolder(parentFolderId, title) {
   const options = {
     method: "post",
-    url: `/files/folder/${folderId}`,
-    data: { title }
+    url: `/files/folder/${parentFolderId}?title=${title}`,
   };
 
   return request(options);
