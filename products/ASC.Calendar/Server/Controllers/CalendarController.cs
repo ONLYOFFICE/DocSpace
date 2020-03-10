@@ -143,6 +143,12 @@ namespace ASC.Calendar.Controllers
             }
         }
 
+        public enum EventRemoveType
+        {
+            Single = 0,
+            AllFollowing = 1,
+            AllSeries = 2
+        }
         [Read("info")]
         public Module GetModule()
         {
@@ -264,6 +270,36 @@ namespace ASC.Calendar.Controllers
             var evt = DataProvider.GetEventByUid(eventUid);
 
             return GetEventHistoryWrapper(evt);
+        }
+
+
+        [Create("event")]
+        public List<EventWrapper> CreateEvent(EventModel eventModel)
+        {
+            var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
+            int calendarId;
+
+            if (int.TryParse(calendar.Id, out calendarId))
+            {
+                return AddEvent(calendarId, eventModel);
+            }
+
+            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+        }
+        [Create("{calendarId}/event")]
+        public List<EventWrapper> AddEvent(int calendarId, EventModel eventModel)
+        {
+            eventModel.CalendarId = calendarId.ToString();
+            return AddEvent(eventModel);
+        }
+
+        [Update("{calendarId}/{eventId}")]
+        public List<EventWrapper> Update(string calendarId, int eventId, EventModel eventModel)
+        {
+            eventModel.CalendarId = calendarId;
+            eventModel.EventId = eventId;
+
+            return UpdateEvent(eventModel);
         }
 
         [Create("icsevent")]
@@ -705,12 +741,6 @@ namespace ASC.Calendar.Controllers
                                DDayICalParser.ConvertEventStatus(mergedEvent.Status), createDate,
                                fromCalDavServer, ownerId);
         }
-        public enum EventRemoveType
-        {
-            Single = 0,
-            AllFollowing = 1,
-            AllSeries = 2
-        }
 
         [Delete("events/{eventId}")]
         public void RemoveEvent(int eventId)
@@ -982,6 +1012,21 @@ namespace ASC.Calendar.Controllers
 
             return events;
         }
+        [Read("{calendarId}/sharing")]
+        public PublicItemCollection GetCalendarSharingOptions(int calendarId)
+        {
+            var cal = DataProvider.GetCalendarById(calendarId);
+            if (cal == null)
+                throw new Exception(Resources.CalendarApiResource.ErrorItemNotFound);
+
+            return PublicItemCollectionHelper.GetForCalendar(cal);
+        }
+        [Read("sharing")]
+        public PublicItemCollection GetDefaultSharingOptions()
+        {
+            return PublicItemCollectionHelper.GetDefault();
+        }
+
         private List<CalendarWrapper> LoadInternalCalendars()
         {
             var result = new List<CalendarWrapper>();

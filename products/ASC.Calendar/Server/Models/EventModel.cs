@@ -1,4 +1,5 @@
-﻿using ASC.Web.Core.Calendars;
+﻿using ASC.Api.Core;
+using ASC.Web.Core.Calendars;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,23 @@ namespace ASC.Calendar.Models
 
         [DataMember(Name = "ics", Order = 2)]
         public string Ics { get; set; }
+        [DataMember(Name = "title", Order = 20)]
+        public string Name { get; set; }
+
+        [DataMember(Name = "description", Order = 30)]
+        public string Description { get; set; }
+
+        [DataMember(Name = "start", Order = 40)]
+        public ApiDateTime Start { get; set; }
+
+        [DataMember(Name = "end", Order = 50)]
+        public ApiDateTime End { get; set; }
+
+        [DataMember(Name = "repeatRule", Order = 70)]
+        public string RepeatRule { get; set; }
+
+        [DataMember(Name = "allDay", Order = 60)]
+        public bool AllDayLong { get; set; }
 
         [DataMember(Name = "alert_type", Order = 50)]
         public EventAlertType AlertType { get; set; }
