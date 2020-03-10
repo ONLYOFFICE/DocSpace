@@ -280,6 +280,15 @@ export function testUpdateMyFolder(folders) {
   //setRootFolders
 }
 
+export function createFolder(parentFolderId, title) {
+  return dispatch => {
+    return files.createFolder(parentFolderId, title)
+      .then(folder => {
+        fetchFolder(parentFolderId, dispatch);
+      });
+  };
+}
+
 export function updateFile(fileId, title) {
   return dispatch => {
     return files.updateFile(fileId, title)
