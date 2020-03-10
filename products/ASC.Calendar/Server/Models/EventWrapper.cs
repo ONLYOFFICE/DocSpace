@@ -126,8 +126,6 @@ namespace ASC.Calendar.Models
     {
         private TimeZoneInfo _timeZone;
 
-        protected IEvent _baseEvent;
-
         private DateTime _utcStartDate = DateTime.MinValue;
         private DateTime _utcEndDate = DateTime.MinValue;
         private DateTime _utcUpdateDate = DateTime.MinValue;
@@ -172,7 +170,7 @@ namespace ASC.Calendar.Models
         {
             var eventWraper = new EventWrapper();
             _timeZone = timeZone;
-            _baseEvent = baseEvent;
+            var _baseEvent = baseEvent;
 
             eventWraper.UserId = userId;
             eventWraper.Id = _baseEvent.Id;
@@ -258,9 +256,10 @@ namespace ASC.Calendar.Models
 
         }
 
-        public List<EventWrapper> GetList(DateTime utcStartDate, DateTime utcEndDate, Guid userId)
+        public List<EventWrapper> GetList(DateTime utcStartDate, DateTime utcEndDate, Guid userId, BaseEvent baseEvent)
         {
             var list = new List<EventWrapper>();
+            var _baseEvent = baseEvent;
 
             if (_baseEvent.UtcStartDate == DateTime.MinValue)
                 return list;

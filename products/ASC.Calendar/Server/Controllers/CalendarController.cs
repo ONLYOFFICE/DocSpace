@@ -915,7 +915,7 @@ namespace ASC.Calendar.Controllers
 
                 var eventWrapper = EventWrapperHelper.Get(evt, AuthContext.CurrentAccount.ID,
                                        DataProvider.GetTimeZoneForCalendar(AuthContext.CurrentAccount.ID, calendarId));
-                return EventWrapperHelper.GetList(utcStartDate, utcStartDate.AddMonths(_monthCount), eventWrapper.UserId);
+                return EventWrapperHelper.GetList(utcStartDate, utcStartDate.AddMonths(_monthCount), eventWrapper.UserId, evt);
             }
             return null;
         }
@@ -956,7 +956,7 @@ namespace ASC.Calendar.Controllers
                 timeZone = fromCalDavServer ? DataProvider.GetTimeZoneForCalendar(ownerGuid, calId) : DataProvider.GetTimeZoneForCalendar(AuthContext.CurrentAccount.ID, calId);
 
             var rrule = RecurrenceRule.Parse(repeatType);
-            var evt = DataProvider.UpdateEvent(eventId, calId,
+            var evt = DataProvider.UpdateEvent(eventId, oldEvent.Uid, calId,
                                                 oldEvent.OwnerId, name, description, startDate.UtcTime, endDate.UtcTime, rrule, alertType, isAllDayLong,
                                                 sharingOptionsList.Select(o => o as SharingOptions.PublicItem).ToList(), status, createDate);
 
@@ -973,7 +973,12 @@ namespace ASC.Calendar.Controllers
                 CalendarNotifyClient.NotifyAboutSharingEvent(evt, oldEvent);
 
                 evt.CalendarId = calendarId;
-                return fromCalDavServer ? EventWrapperHelper.Get(evt, ownerGuid, timeZone).GetList(startDate.UtcTime, startDate.UtcTime.AddMonths(_monthCount)) : EventWrapperHelper.Get(evt, AuthContext.CurrentAccount.ID, timeZone).GetList(startDate.UtcTime, startDate.UtcTime.AddMonths(_monthCount));
+
+                var eventWrapper = fromCalDavServer ? 
+                    EventWrapperHelper.Get(evt, ownerGuid, timeZone) : 
+                    EventWrapperHelper.Get(evt, AuthContext.CurrentAccount.ID, timeZone);
+                return EventWrapperHelper.GetList(startDate.UtcTime, startDate.UtcTime.AddMonths(_monthCount), eventWrapper.UserId,evt);
+
             }
             return null;
         }

@@ -422,7 +422,7 @@ namespace ASC.Calendar.BusinessObjects
                 CaldavGuid = calDavGuid.ToString(),
                 IsTodo = isTodo
             };
-
+            
             calendar = CalendarDb.CalendarCalendars.Add(calendar).Entity;
 
             if (publicItems != null)
@@ -1394,6 +1394,7 @@ namespace ASC.Calendar.BusinessObjects
         }
         
         public Event UpdateEvent(int eventId,
+            string eventUid,
             int calendarId,
             Guid ownerId,
             string name,
@@ -1412,6 +1413,8 @@ namespace ASC.Calendar.BusinessObjects
 
             var newEvent = new CalendarEvents
             {
+                Id = eventId,
+                Uid = eventUid,
                 Name = name,
                 Description = description,
                 CalendarId = calendarId,
@@ -1437,7 +1440,7 @@ namespace ASC.Calendar.BusinessObjects
                 };
                 CalendarDb.CalendarEventUser.Add(newCalEvtUser);
             }
-
+           
             CalendarDb.AddOrUpdate(r => r.CalendarEvents, newEvent);
 
             var userIds = CalendarDb.CalendarEventUser.Where(p => p.EventId == eventId).Select(t => t.UserId).ToList();
@@ -1574,18 +1577,20 @@ namespace ASC.Calendar.BusinessObjects
                        where
                         eventHistory.Tenant == TenantManager.GetCurrentTenant().TenantId &&
                         eventIds.Contains(eventHistory.EventId)
-                       select new EventHistory
+                       select new
                        {
-                           CalendarId = eventHistory.CalendarId,
-                           EventUid = eventHistory.EventUid,
-                           EventId = eventHistory.EventId,
-                           Ics = eventHistory.Ics
+                           eventHistory.CalendarId,
+                           eventHistory.EventUid,
+                           eventHistory.EventId,
+                           eventHistory.Ics
                        };
+
 
             var items = new List<EventHistory>();
             foreach (var r in data)
             {
-                items.Add(r);
+                var eventHistory = EventHistoryHelper.Get(r.CalendarId, r.EventUid, r.EventId, r.Ics);
+                items.Add(eventHistory);
             }
             return items;
         }
@@ -1638,6 +1643,7 @@ namespace ASC.Calendar.BusinessObjects
                     Tenant = TenantManager.GetCurrentTenant().TenantId,
                     CalendarId = calendarId,
                     EventUid = eventUid,
+                    EventId = eventId,
                     Ics = history.Ics
                 };
                 CalendarDb.AddOrUpdate(r => r.CalendarEventHistory, newHistory);
@@ -1903,7 +1909,7 @@ namespace ASC.Calendar.BusinessObjects
 
                     eventUsers.ForEach(u =>
                    {
-                       if (u.UserId.Equals(new Guid(r.userIdCol)))
+                       if (u.UserId.Equals(r.userIdCol))
                            u.AlertType = (EventAlertType)(Convert.ToInt32(r.alertTypeCol));
                    });
 

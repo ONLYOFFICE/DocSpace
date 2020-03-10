@@ -11,9 +11,9 @@ namespace ASC.Calendar.Core.Dao.Models
     [Table("calendar_events")]
     public partial class CalendarEvents : BaseEntity
     {
-        [Key]
         [Column("id", TypeName = "int(10)")]
         public int Id { get; set; }
+
         [Column("tenant", TypeName = "int(11)")]
         public int Tenant { get; set; }
         [Required]
@@ -46,9 +46,6 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("status", TypeName = "smallint(6)")]
         public int Status { get; set; }
 
-        public override object[] GetKeys()
-        {
-            return new object[] { Id };
-        }
+        public override object[] GetKeys() => new object[] { Id };
     }
 }
