@@ -28,8 +28,9 @@ class SectionBodyContent extends React.PureComponent {
     super(props);
 
     this.state = {
-      renamingId: -1,
-      isEdit: false
+      editingId: -1,
+      isEdit: false,
+      isCreating: false
     };
   }
 
@@ -55,17 +56,41 @@ class SectionBodyContent extends React.PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.isCreating !== prevProps.isCreating) {
+      let tempId = this.state.editingId;
+
+      if (this.props.isCreating) {
+        tempId = -2;
+      }
+
+      this.setState({
+        editingId: tempId,
+        isCreating: this.props.isCreating
+      });
+    }
+  }
+
   onClickRename = (itemId) => {
     this.setState({
-      renamingId: itemId,
+      editingId: itemId,
       isEdit: true
     });
   };
 
   onEditComplete = () => {
+    const { folderId, onCreate } = this.props;
+
+    onCreate(false);
+
+    if (this.state.isCreating) {
+      fetchFolder(folderId, store.dispatch)
+    }
+
     this.setState({
-      renamingId: -1,
-      isEdit: false
+      editingId: -1,
+      isEdit: false,
+      isCreating: false
     });
   }
 
@@ -150,21 +175,29 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId } = this.props;
-    const { renamingId, isEdit } = this.state;
+    const { files, folders, viewer, parentId, folderId } = this.props;
+    const { editingId, isEdit, isCreating } = this.state;
 
-    const items = [...folders, ...files];
+    let items = [...folders, ...files];
+
+    if (isCreating) {
+      items.unshift({
+        id: -2,
+        title: '',
+        parentId: folderId
+      })
+    }
 
     return items.length > 0 ? (
       <RowContainer useReactWindow={false}>
         {items.map(item => {
           const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
-          const contextOptionsProps = !contextOptions.length
+          const contextOptionsProps = !contextOptions.length || item.id === -2
             ? {}
             : { contextOptions };
           const checked = false; //isUserSelected(selection, user.id);
-          const checkedProps = /* isAdmin(viewer) */ true ? { checked } : {};;
-          const element = isEdit && item.id === renamingId
+          const checkedProps = /* isAdmin(viewer) */ item.id !== -2 && true ? { checked } : {};
+          const element = (isEdit || isCreating) && (item.id === editingId || item.id === -2)
             ? <Loader type='oval' color="black" size='24px' label="Editing..." />
             : item.fileExst
               ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
@@ -176,12 +209,12 @@ class SectionBodyContent extends React.PureComponent {
               data={item}
               element={element}
               onSelect={() => { }}
-              editing={renamingId}
+              editing={editingId}
               {...checkedProps}
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} editingId={renamingId} onEditComplete={this.onEditComplete} />
+              <FilesRowContent item={item} viewer={viewer} editingId={editingId} onEditComplete={this.onEditComplete} />
             </Row>
           );
         })}
@@ -205,7 +238,8 @@ const mapStateToProps = state => {
     viewer: state.auth.user,
     settings: state.auth.settings,
     filter: state.files.filter,
-    parentId: state.files.selectedFolder.parentId
+    parentId: state.files.selectedFolder.parentId,
+    folderId: state.files.selectedFolder.id
   };
 };
 
