@@ -10,8 +10,6 @@ namespace ASC.Calendar.Models
 {
     public class EventModel
     {
-        //int calendarId, string ics, EventAlertType alertType, List<SharingParam> sharingOptions, string eventUid = null 
-
         [DataMember(Name = "event_id", Order = 1)]
         public int EventId { get; set; }
 

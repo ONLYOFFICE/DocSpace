@@ -1301,41 +1301,62 @@ namespace ASC.Calendar.BusinessObjects
             CalendarDb.SaveChanges();
             tx.Commit();
         }
-        /*
+
         public void UnsubscribeFromEvent(int eventID, Guid userId)
         {
-            using (var tr = db.BeginTransaction())
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var cei = CalendarDb.CalendarEventItem.Where(r => r.EventId == eventID && r.ItemId == userId && r.IsGroup == 0).SingleOrDefault();
+
+            if (cei != null)
             {
-                if (db.ExecuteNonQuery(new SqlDelete("calendar_event_item").Where(Exp.Eq("event_id", eventID)
-                                                                                & Exp.Eq("item_id", userId)
-                                                                                & Exp.Eq("is_group", false))) == 0)
-                {
-                    db.ExecuteNonQuery(new SqlInsert("calendar_event_user", true).InColumnValue("event_id", eventID)
-                                                                                        .InColumnValue("user_id", userId)
-                                                                                        .InColumnValue("is_unsubscribe", true));
-                }
-
-                db.ExecuteNonQuery(new SqlDelete("calendar_notifications").Where(Exp.Eq("event_id", eventID) & Exp.Eq("user_id", userId)));
-
-                tr.Commit();
+                CalendarDb.CalendarEventItem.Remove(cei);
             }
+            else
+            {
+                var newEventUser = new CalendarEventUser
+                {
+                    EventId = eventID,
+                    UserId = userId,
+                    IsUnsubscribe = 1
+                };
+                CalendarDb.CalendarEventUser.Add(newEventUser);
+
+            }
+
+            var cn = CalendarDb.CalendarNotifications.Where(r => r.EventId == eventID && r.UserId == userId).SingleOrDefault();
+
+            if (cn != null) CalendarDb.CalendarNotifications.Remove(cn);
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
+
         }
 
         public void RemoveEvent(int eventId)
         {
-            using (var tr = db.BeginTransaction())
-            {
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
+            using var tx = CalendarDb.Database.BeginTransaction();
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
 
-                db.ExecuteNonQuery(new SqlDelete("calendar_events").Where("id", eventId).Where("tenant", tenant));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_item").Where("event_id", eventId));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_user").Where("event_id", eventId));
-                db.ExecuteNonQuery(new SqlDelete("calendar_notifications").Where("event_id", eventId));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_history").Where("tenant", tenant).Where("event_id", eventId));
+            var ce = CalendarDb.CalendarEvents.Where(r => r.Id == eventId && r.Tenant == tenant).SingleOrDefault();
+            if (ce != null) CalendarDb.CalendarEvents.Remove(ce);
 
-                tr.Commit();
-            }
-        }*/
+            var cei = CalendarDb.CalendarEventItem.Where(r => r.EventId == eventId).SingleOrDefault();
+            if (cei != null) CalendarDb.CalendarEventItem.Remove(cei);
+
+            var ceu = CalendarDb.CalendarEventUser.Where(r => r.EventId == eventId).SingleOrDefault();
+            if (ceu != null) CalendarDb.CalendarEventUser.Remove(ceu);
+
+            var cn = CalendarDb.CalendarNotifications.Where(r => r.EventId == eventId).SingleOrDefault();
+            if (cn != null) CalendarDb.CalendarNotifications.Remove(cn);
+
+            var ceh = CalendarDb.CalendarEventHistory.Where(r => r.EventId == eventId && r.Tenant == tenant).SingleOrDefault();
+            if (ceh != null) CalendarDb.CalendarEventHistory.Remove(ceh);
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
+
+        }
 
         public Event CreateEvent(int calendarId,
                                  Guid ownerId,
