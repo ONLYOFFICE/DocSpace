@@ -29,7 +29,8 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false
+      isLoading: false,
+      isCreating: false
     };
   }
 
@@ -93,8 +94,13 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
+  onCreate = status => {
+    this.setState({ isCreating: status });
+  }
+
   render() {
     const {
+      isCreating,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -116,7 +122,11 @@ class PureHome extends React.Component {
           withBodyScroll={true}
           withBodyAutoFocus={true}
           articleHeaderContent={<ArticleHeaderContent />}
-          articleMainButtonContent={<ArticleMainButtonContent />}
+          articleMainButtonContent={
+            <ArticleMainButtonContent
+              onCreate={this.onCreate}
+            />
+          }
           articleBodyContent={<ArticleBodyContent />}
           sectionHeaderContent={
             <SectionHeaderContent
@@ -132,6 +142,8 @@ class PureHome extends React.Component {
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
           sectionBodyContent={
             <SectionBodyContent
+              onCreate={this.onCreate}
+              isCreating={isCreating}
               selected={selected}
               onLoading={this.onLoading}
               onChange={this.onRowChange}
@@ -148,9 +160,9 @@ class PureHome extends React.Component {
 
 const HomeContainer = withTranslation()(PureHome);
 
-const Home = (props) => { 
+const Home = (props) => {
   changeLanguage(i18n);
-  return (<I18nextProvider i18n={i18n}><HomeContainer {...props}/></I18nextProvider>); 
+  return (<I18nextProvider i18n={i18n}><HomeContainer {...props} /></I18nextProvider>);
 }
 
 Home.propTypes = {
