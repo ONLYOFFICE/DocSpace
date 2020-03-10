@@ -79,7 +79,7 @@ export function getTrashFolderList(filter = Filter.getDefault(), fake = false) {
   });
 }
 
-export function getSharedFolderList(filter = Filter.getDefault(), fake = true) {
+export function getSharedFolderList(filter = Filter.getDefault(), fake = false) {
 
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Shared with Me");
