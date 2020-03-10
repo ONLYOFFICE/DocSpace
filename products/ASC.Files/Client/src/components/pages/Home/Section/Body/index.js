@@ -94,28 +94,28 @@ class SectionBodyContent extends React.PureComponent {
     });
   }
 
+  onClickDelete = (item) => {
+    item.fileExst
+      ? this.onDeleteFile(item.id, item.folderId)
+      : this.onDeleteFolder(item.id, item.parentId);
+  }
+
   onDeleteFile = (fileId, currentFolderId) => {
     const { deleteFile } = this.props;
 
     deleteFile(fileId)
       .catch(err => toastr.error(err))
-      .then(() => fetchFolder(currentFolderId, store.dispatch));
+      .then(() => fetchFolder(currentFolderId, store.dispatch))
+      .then(() => toastr.success(`File moved to recycle bin`));
   }
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    toastr.warning('development');
-    /* const { deleteFolder } = this.props;
+    const { deleteFolder } = this.props;
 
     deleteFolder(folderId)
       .catch(err => toastr.error(err))
-      .then(() => fetchFolder(currentFolderId, store.dispatch)); */
-  }
-
-  onClickDelete = (item) => {
-
-    item.fileExst
-      ? this.onDeleteFile(item.id, item.folderId)
-      : this.onDeleteFolder(item.id, item.parentId);
+      .then(() => fetchFolder(currentFolderId, store.dispatch))
+      .then(() => toastr.success(`Folder moved to recycle bin`));
   }
 
   onClickLinkForPortal = (folderId) => {
