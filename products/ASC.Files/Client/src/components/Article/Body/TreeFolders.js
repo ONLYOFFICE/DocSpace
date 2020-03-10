@@ -57,16 +57,19 @@ class TreeFolders extends React.Component {
   };
 
   onSelect = data => {
-    const url = `${history.location.pathname}${history.location.search}`;
-    const symbol =
-      history.location.hash ||
-      history.location.search[history.location.search.length - 1] === "/"
-        ? ""
-        : "/";
-    history.push(`${url}${symbol}#${data[0]}`);
-    fetchFolder(data[0], store.dispatch).catch(() =>
-      toastr.error("Something went wrong")
-    );
+    if (this.props.selectedKeys[0] !== data[0]) {
+      const url = `${history.location.pathname}${history.location.search}`;
+      const symbol =
+        history.location.hash ||
+        history.location.search[history.location.search.length - 1] === "/"
+          ? ""
+          : "/";
+      history.push(`${url}${symbol}#${data[0]}`);
+      fetchFolder(data[0], store.dispatch).catch(() =>
+        toastr.error("Something went wrong")
+      );
+    }
+
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
   };
 
@@ -165,7 +168,7 @@ class TreeFolders extends React.Component {
     const { selectedKeys, fakeNewDocuments, defaultExpandedKeys } = this.props;
     const { treeData } = this.state;
 
-    console.log("TreeFolders render", this.props);
+    //console.log("TreeFolders render", this.props);
     return (
       <TreeMenu
         ref={this.ref}
