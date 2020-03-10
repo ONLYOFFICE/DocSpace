@@ -115,8 +115,9 @@ namespace ASC.Files.Core.Data
 
         public Folder GetRootFolder(object folderId)
         {
+            var folderIdString = folderId.ToString();
             var id = FilesDbContext.Tree
-                .Where(r => r.FolderId == (int)folderId)
+                .Where(r => r.FolderId.ToString() == folderIdString)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
                 .FirstOrDefault();
@@ -596,8 +597,9 @@ namespace ASC.Files.Core.Data
 
         private int GetFoldersCount(object parentId)
         {
+            var parentIdString = parentId.ToString();
             var count = FilesDbContext.Tree
-                .Where(r => r.ParentId == (int)parentId)
+                .Where(r => r.ParentId.ToString() == parentIdString)
                 .Where(r => r.Level >= 0)
                 .Count();
 
@@ -606,9 +608,10 @@ namespace ASC.Files.Core.Data
 
         private int GetFilesCount(object folderId)
         {
+            var folderIdString = folderId.ToString();
             var count = Query(FilesDbContext.Files)
                 .Distinct()
-                .Where(r => FilesDbContext.Tree.Where(r => r.ParentId == (int)folderId).Select(r => r.FolderId).Any(b => b == r.FolderId))
+                .Where(r => FilesDbContext.Tree.Where(r => r.ParentId.ToString() == folderIdString).Select(r => r.FolderId).Any(b => b == r.FolderId))
                 .Count();
 
             return count;

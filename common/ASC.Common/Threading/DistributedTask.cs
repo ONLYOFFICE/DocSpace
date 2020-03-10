@@ -112,13 +112,15 @@ namespace ASC.Common.Threading
                 Value = JsonConvert.SerializeObject(value)
             };
 
+            var current = DistributedTaskCache.Props.SingleOrDefault(r => r.Key == name);
+            if (current != null)
+            {
+                DistributedTaskCache.Props.Remove(current);
+            }
+
             if (value != null)
             {
                 DistributedTaskCache.Props.Add(prop);
-            }
-            else
-            {
-                DistributedTaskCache.Props.Remove(prop);
             }
         }
 
