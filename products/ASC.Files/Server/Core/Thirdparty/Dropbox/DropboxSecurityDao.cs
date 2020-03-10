@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -39,18 +40,14 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxSecurityDao : DropboxDaoBase, ISecurityDao<string>
     {
-        public DropboxSecurityDao(IServiceProvider serviceProvider,
+        public DropboxSecurityDao(
+            IServiceProvider serviceProvider,
             UserManager userManager,
             TenantManager tenantManager,
             TenantUtil tenantUtil,
             DbContextManager<FilesDbContext> dbContextManager,
             SetupInfo setupInfo)
     : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
-        {
-        }
-
-        public DropboxSecurityDao(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
-            : base(dropboxInfo, dropboxDaoSelector)
         {
         }
 
@@ -94,6 +91,16 @@ namespace ASC.Files.Thirdparty.Dropbox
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public static class DropboxSecurityDaoExtention
+    {
+        public static DIHelper AddDropboxSecurityDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<DropboxSecurityDao>();
+
+            return services;
         }
     }
 }

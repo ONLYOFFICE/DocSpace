@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -47,11 +48,6 @@ namespace ASC.Files.Thirdparty.Dropbox
             DbContextManager<FilesDbContext> dbContextManager,
             SetupInfo setupInfo)
             : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
-        {
-        }
-
-        public DropboxFolderDao(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
-            : base(dropboxInfo, dropboxDaoSelector)
         {
         }
 
@@ -411,5 +407,15 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
 
         #endregion
+    }
+
+    public static class DropboxFolderDaoExtention
+    {
+        public static DIHelper AddDropboxFolderDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<DropboxFolderDao>();
+
+            return services;
+        }
     }
 }

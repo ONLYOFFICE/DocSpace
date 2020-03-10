@@ -49,7 +49,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 {
     internal abstract class DropboxDaoBase
     {
-        protected readonly DropboxDaoSelector DropboxDaoSelector;
+        protected DropboxDaoSelector DropboxDaoSelector { get; set; }
 
         public int TenantID { get; private set; }
         public DropboxProviderInfo DropboxProviderInfo { get; private set; }
@@ -76,7 +76,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
         }
 
-        protected DropboxDaoBase(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
+        public void Init(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
         {
             DropboxProviderInfo = dropboxInfo.DropboxProviderInfo;
             PathPrefix = dropboxInfo.PathPrefix;
@@ -122,13 +122,6 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
         {
             return set.Where(r => r.TenantId == TenantID);
-        }
-
-        private static string GetTenantColumnName(string table)
-        {
-            const string tenant = "tenant_id";
-            if (!table.Contains(" ")) return tenant;
-            return table.Substring(table.IndexOf(" ", StringComparison.InvariantCulture)).Trim() + "." + tenant;
         }
 
 

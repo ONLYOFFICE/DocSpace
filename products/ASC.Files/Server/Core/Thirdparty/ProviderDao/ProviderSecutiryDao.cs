@@ -32,6 +32,8 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
+using ASC.Web.Files.Utils;
+using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,11 +41,13 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
     {
-        public SecurityDao<string> SecurityDao { get; }
-
-        public ProviderSecurityDao(IServiceProvider serviceProvider, SecurityDao<string> securityDao) : base(serviceProvider)
+        public ProviderSecurityDao(IServiceProvider serviceProvider,
+            SecurityDao<string> securityDao,
+            TagDao<string> tagDao,
+            SetupInfo setupInfo,
+            FileConverter fileConverter)
+            : base(serviceProvider, securityDao, tagDao, setupInfo, fileConverter)
         {
-            SecurityDao = securityDao;
         }
 
         public void SetShare(FileShareRecord r)
@@ -198,7 +202,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             services.TryAddScoped<ISecurityDao<string>, ProviderSecurityDao>();
 
-            return services;
+            return services
+                .AddProviderDaoBaseService();
         }
     }
 }

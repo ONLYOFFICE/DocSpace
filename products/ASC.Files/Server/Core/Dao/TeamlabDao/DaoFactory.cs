@@ -78,6 +78,8 @@ namespace ASC.Files.Core.Data
                 .AddSecurityDaoService()
                 .AddCachedProviderAccountDaoService()
                 .AddProviderSecurityDaoService()
+                .AddProviderFileDaoService()
+                .AddProviderFolderDaoService()
                 ;
         }
     }

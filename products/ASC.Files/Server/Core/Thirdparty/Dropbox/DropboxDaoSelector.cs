@@ -28,14 +28,18 @@ using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxDaoSelector : RegexDaoSelectorBase<string>
     {
+        public IServiceProvider ServiceProvider { get; }
         public TenantManager TenantManager { get; }
         public IDaoFactory DaoFactory { get; }
 
@@ -47,31 +51,48 @@ namespace ASC.Files.Thirdparty.Dropbox
             public string PathPrefix { get; set; }
         }
 
-        public DropboxDaoSelector(TenantManager tenantManager, IDaoFactory daoFactory)
+        public DropboxDaoSelector(IServiceProvider serviceProvider, TenantManager tenantManager, IDaoFactory daoFactory)
             : base(new Regex(@"^dropbox-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
         {
+            ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
         }
 
         public override IFileDao<string> GetFileDao(string id)
         {
-            return new DropboxFileDao(GetInfo(id), this);
+            var res = ServiceProvider.GetService<DropboxFileDao>();
+
+            res.Init(GetInfo(id), this);
+
+            return res;
         }
 
         public override IFolderDao<string> GetFolderDao(string id)
         {
-            return new DropboxFolderDao(GetInfo(id), this);
+            var res = ServiceProvider.GetService<DropboxFolderDao>();
+
+            res.Init(GetInfo(id), this);
+
+            return res;
         }
 
         public override ITagDao<string> GetTagDao(string id)
         {
-            return new DropboxTagDao(GetInfo(id), this);
+            var res = ServiceProvider.GetService<DropboxTagDao>();
+
+            res.Init(GetInfo(id), this);
+
+            return res;
         }
 
         public override ISecurityDao<string> GetSecurityDao(string id)
         {
-            return new DropboxSecurityDao(GetInfo(id), this);
+            var res = ServiceProvider.GetService<DropboxSecurityDao>();
+
+            res.Init(GetInfo(id), this);
+
+            return res;
         }
 
         public override string ConvertId(string id)
@@ -144,6 +165,20 @@ namespace ASC.Files.Thirdparty.Dropbox
             //    dbDao.UpdateProviderInfo(dropboxProviderInfo.ID, newTitle, null, dropboxProviderInfo.RootFolderType);
             //    dropboxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
             //}
+        }
+    }
+
+    public static class DropboxDaoSelectorExtention
+    {
+        public static DIHelper AddDropboxDaoSelectorService(this DIHelper services)
+        {
+            services.TryAddScoped<DropboxDaoSelector>();
+
+            return services
+                .AddDropboxSecurityDaoService()
+                .AddDropboxTagDaoService()
+                .AddDropboxFolderDaoService()
+                .AddDropboxFileDaoService();
         }
     }
 }

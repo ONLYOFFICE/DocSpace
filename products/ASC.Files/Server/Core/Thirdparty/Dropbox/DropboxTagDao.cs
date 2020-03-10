@@ -29,15 +29,20 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using ASC.Common;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Web.Studio.Core;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
     {
-        public DropboxTagDao(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
-            : base(dropboxInfo, dropboxDaoSelector)
+        public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
         {
         }
 
@@ -177,6 +182,16 @@ namespace ASC.Files.Thirdparty.Dropbox
             {
                 return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
             }
+        }
+    }
+
+    public static class DropboxTagDaoExtention
+    {
+        public static DIHelper AddDropboxTagDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<DropboxTagDao>();
+
+            return services;
         }
     }
 }

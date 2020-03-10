@@ -232,7 +232,7 @@ namespace ASC.Api.Documents
         [Read("@common")]
         public FolderContentWrapper<int> GetCommonFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderCommon<int>(), userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(GlobalFolderHelper.FolderCommon, userIdOrGroupId, filterType);
         }
 
         /// <summary>

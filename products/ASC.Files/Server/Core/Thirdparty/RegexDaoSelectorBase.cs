@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 using ASC.Files.Core;
@@ -100,7 +99,7 @@ namespace ASC.Files.Thirdparty
 
         public virtual bool IsMatch(string id)
         {
-            return id != null && Selector.IsMatch(Convert.ToString(id, CultureInfo.InvariantCulture));
+            return id != null && Selector.IsMatch(id);
         }
 
 
