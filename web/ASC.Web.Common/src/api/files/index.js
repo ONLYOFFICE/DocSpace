@@ -3,19 +3,6 @@ import { request } from "../client";
 import Filter from "./filter";
 import * as fakeFiles from "./fake";
 
-export function getFolder(folderId, filter = Filter.getDefault(), fake = false) {
-  if (fake) {
-    return fakeFiles.getFakeElements(filter, "Fake folder");
-  }
-
-  const options = {
-    method: "get",
-    url: `/files/${folderId}`
-  };
-
-  return request(options);
-}
-
 export function getFolderInfo(folderId) {
   const options = {
     method: "get",
@@ -29,6 +16,19 @@ export function getFolderPath(folderId) {
   const options = {
     method: "get",
     url: `/files/folder/${folderId}/path`
+  };
+
+  return request(options);
+}
+
+export function getFolder(folderId, filter = Filter.getDefault(), fake = false) {
+  if (fake) {
+    return fakeFiles.getFakeElements(filter, "Fake folder");
+  }
+
+  const options = {
+    method: "get",
+    url: `/files/${folderId}`
   };
 
   return request(options);
@@ -99,59 +99,6 @@ export function getSharedFolderList(filter = Filter.getDefault(), fake = false) 
   return request(options);
 }
 
-export function createTextFileInMy(title) {
-  const data = { title };
-  const options = {
-    method: "post",
-    url: "/files/@my/file",
-    data
-  };
-
-  return request(options);
-}
-
-export function createTextFileInCommon(title) {
-  const data = { title };
-  const options = {
-    method: "post",
-    url: "/files/@common/file",
-    data
-  };
-
-  return request(options);
-}
-
-export function createTextFile(folderId, title) {
-  const data = { title };
-  const options = {
-    method: "post",
-    url: `/files/${folderId}/file`,
-    data
-  };
-
-  return request(options);
-}
-
-export function getFileInfo(fileId) {
-  const options = {
-    method: "get",
-    url: `/files/file/${fileId}`
-  };
-
-  return request(options);
-}
-
-export function updateFile(fileId, title, lastVersion) {
-  const data = { title, lastVersion };
-  const options = {
-    method: "put",
-    url: `/files/file/${fileId}`,
-    data
-  };
-
-  return request(options);
-}
-
 export function createFolder(parentFolderId, title) {
   const data = { title };
   const options = {
@@ -179,6 +126,103 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   const options = {
     method: "delete",
     url: `/files/folder/${folderId}`,
+    data
+  };
+
+  return request(options);
+}
+
+export function createFile(folderId, title) {
+  const data = { title };
+  const options = {
+    method: "post",
+    url: `/files/${folderId}/file`,
+    data
+  };
+
+  return request(options);
+}
+
+export function createTextFile(folderId, title, content) {
+  const data = { title, content };
+  const options = {
+    method: "post",
+    url: `/files/${folderId}/text`,
+    data
+  };
+
+  return request(options);
+}
+
+export function createTextFileInMy(title) {
+  const data = { title };
+  const options = {
+    method: "post",
+    url: "/files/@my/file",
+    data
+  };
+
+  return request(options);
+}
+
+export function createTextFileInCommon(title) {
+  const data = { title };
+  const options = {
+    method: "post",
+    url: "/files/@common/file",
+    data
+  };
+
+  return request(options);
+}
+
+export function createHtmlFile(folderId, title, content) {
+  const data = { title, content };
+  const options = {
+    method: "post",
+    url: `/files/${folderId}/html`,
+    data
+  };
+
+  return request(options);
+}
+
+export function createHtmlFileInMy(title, content) {
+  const data = { title, content };
+  const options = {
+    method: "post",
+    url: "/files/@my/html",
+    data
+  };
+
+  return request(options);
+}
+
+export function createHtmlFileInCommon(title, content) {
+  const data = { title, content };
+  const options = {
+    method: "post",
+    url: "/files/@common/html",
+    data
+  };
+
+  return request(options);
+}
+
+export function getFileInfo(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}`
+  };
+
+  return request(options);
+}
+
+export function updateFile(fileId, title, lastVersion) {
+  const data = { title, lastVersion };
+  const options = {
+    method: "put",
+    url: `/files/file/${fileId}`,
     data
   };
 
