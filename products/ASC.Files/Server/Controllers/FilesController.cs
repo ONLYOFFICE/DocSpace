@@ -745,9 +745,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper CreateFile(string title)
+        public FileWrapper CreateFile([FromBody]FileModelFull model)
         {
-            return CreateFile(GlobalFolderHelper.FolderMy.ToString(), title);
+            return CreateFile(GlobalFolderHelper.FolderMy.ToString(), model);
         }
 
         /// <summary>
@@ -760,9 +760,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("{folderId}/file")]
-        public FileWrapper CreateFile(string folderId, string title)
+        public FileWrapper CreateFile(string folderId, [FromBody]FileModelFull model)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel { ParentId = folderId, Title = title });
+            var file = FileStorageService.CreateNewFile(new FileModel { ParentId = folderId, Title = model.Title });
             return FileWrapperHelper.Get(file);
         }
 

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
-import { createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 
 class FilesRowContent extends React.PureComponent {
@@ -43,15 +43,18 @@ class FilesRowContent extends React.PureComponent {
   };
 
   createItem = () => {
-    const { createFolder, item, onEditComplete } = this.props;
+    const { createFile, createFolder, item, onEditComplete } = this.props;
     const { itemTitle } = this.state;
 
     this.setState({ editingId: -1 }, () => {
       if (itemTitle.trim() === '')
         return onEditComplete();
 
-      createFolder(item.parentId, itemTitle)
-        .then(() => onEditComplete());
+      item.fileExst === 'folder'
+        ? createFolder(item.parentId, itemTitle)
+          .then(() => onEditComplete())
+        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+          .then(() => onEditComplete())
     });
   }
 
@@ -74,8 +77,8 @@ class FilesRowContent extends React.PureComponent {
 
   onClickUpdateItem = () => {
     (this.state.editingId === -2)
-        ? this.createItem()
-        : this.updateItem();
+      ? this.createItem()
+      : this.updateItem();
   }
 
   onKeyUpUpdateItem = e => {
@@ -316,7 +319,7 @@ class FilesRowContent extends React.PureComponent {
             onClick={() => { }}
             isTextOverflow={true}
           >
-            {`Created: ${createdDate}`}
+            {createdDate && `Created: ${createdDate}`}
           </Link>
           <Text
             containerWidth='10%'
@@ -336,6 +339,6 @@ class FilesRowContent extends React.PureComponent {
   }
 };
 
-export default connect(null, { createFolder, updateFile, renameFolder })(
+export default connect(null, { createFile, createFolder, updateFile, renameFolder })(
   withRouter(FilesRowContent)
 );

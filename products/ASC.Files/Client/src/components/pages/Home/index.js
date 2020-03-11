@@ -30,7 +30,7 @@ class PureHome extends React.Component {
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
       isLoading: false,
-      isCreating: false
+      isCreating: ''
     };
   }
 
