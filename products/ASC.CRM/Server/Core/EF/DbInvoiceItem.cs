@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_invoice_item")]
-    public partial class CrmInvoiceItem
+    public partial class DbInvoiceItem : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(11)")]
@@ -26,7 +26,7 @@ namespace ASC.CRM.Core.EF
         [Column("stock_quantity", TypeName = "decimal(10,2)")]
         public decimal StockQuantity { get; set; }
         [Column("track_inventory", TypeName = "tinyint(4)")]
-        public sbyte TrackInventory { get; set; }
+        public bool TrackInventory { get; set; }
         [Column("invoice_tax1_id", TypeName = "int(11)")]
         public int InvoiceTax1Id { get; set; }
         [Column("invoice_tax2_id", TypeName = "int(11)")]
@@ -34,15 +34,19 @@ namespace ASC.CRM.Core.EF
         [Required]
         [Column("currency", TypeName = "varchar(255)")]
         public string Currency { get; set; }
+        
         [Column("create_on", TypeName = "datetime")]
         public DateTime CreateOn { get; set; }
+
         [Required]
         [Column("create_by", TypeName = "char(38)")]
-        public string CreateBy { get; set; }
+        public Guid CreateBy { get; set; }
+        
         [Column("last_modifed_on", TypeName = "datetime")]
         public DateTime? LastModifedOn { get; set; }
+
         [Column("last_modifed_by", TypeName = "char(38)")]
-        public string LastModifedBy { get; set; }
+        public Guid LastModifedBy { get; set; }
         [Column("tenant_id", TypeName = "int(11)")]
         public int TenantId { get; set; }
     }

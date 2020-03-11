@@ -24,19 +24,18 @@
 */
 
 
+using ASC.Collections;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.Web.CRM.Classes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.Caching;
-using ASC.Collections;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.Core;
-using ASC.Core.Tenants;
-using ASC.CRM.Core.Entities;
-using ASC.Web.CRM.Classes;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -44,8 +43,17 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceItem> _invoiceItemCache = new HttpRequestDictionary<InvoiceItem>("crm_invoice_item");
 
-        public CachedInvoiceItemDao(int tenantID)
-            : base(tenantID)
+        public CachedInvoiceItemDao(DbContextManager<CRMDbContext> dbContextManager,
+                TenantManager tenantManager,
+                SecurityContext securityContext,
+                TenantUtil tenantUtil,
+                CRMSecurity cRMSecurity
+            ) : base(dbContextManager,
+                 tenantManager,
+                 securityContext, 
+                 tenantUtil,
+                 cRMSecurity)
+
         {
         }
 
@@ -82,11 +90,23 @@ namespace ASC.CRM.Core.Dao
 
     public class InvoiceItemDao : AbstractDao
     {
-        public InvoiceItemDao(int tenantID)
-            : base(tenantID)
+        public InvoiceItemDao(
+                DbContextManager<CRMDbContext> dbContextManager,
+                TenantManager tenantManager,
+                SecurityContext securityContext,
+                TenantUtil tenantUtil,
+                CRMSecurity cRMSecurity
+            ) : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+            TenantUtil = tenantUtil;
+            CRMSecurity = cRMSecurity;
         }
 
+        public CRMSecurity CRMSecurity { get; }
+
+        public TenantUtil TenantUtil { get; }
 
         public Boolean IsExist(int invoiceItemID)
         {
@@ -95,17 +115,13 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExistInDb(int invoiceItemID)
         {
-             return Db.ExecuteScalar<bool>(@"select exists(select 1 from crm_invoice_item where tenant_id = @tid and id = @id)",
-                            new { tid = TenantID, id = invoiceItemID });
+            return Query(CRMDbContext.InvoiceItem).Any(x => x.Id == invoiceItemID);
         }
 
         public Boolean CanDelete(int invoiceItemID)
         {
-            return Db.ExecuteScalar<int>(@"select count(*) from crm_invoice_line where tenant_id = @tid and invoice_item_id = @id",
-                            new { tid = TenantID, id = invoiceItemID }) == 0;
+            return Query(CRMDbContext.InvoiceLine).Any(x => x.InvoiceItemId == invoiceItemID);
         }
-
-        #region Get
 
         public virtual List<InvoiceItem> GetAll()
         {
@@ -249,11 +265,6 @@ namespace ASC.CRM.Core.Dao
             return result;
         }
 
-        #endregion
-
-
-        #region SaveOrUpdate
-
         public virtual InvoiceItem SaveOrUpdateInvoiceItem(InvoiceItem invoiceItem)
         {
             /*_cache.Remove(_invoiceItemCacheKey);
@@ -336,11 +347,6 @@ namespace ASC.CRM.Core.Dao
             return invoiceItem;
         }
 
-        #endregion
-
-
-        #region Delete
-
         public virtual InvoiceItem DeleteInvoiceItem(int invoiceItemID)
         {
             var invoiceItem = GetByID(invoiceItemID);
@@ -348,7 +354,10 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandDelete(invoiceItem);
 
-            Db.ExecuteNonQuery(Delete("crm_invoice_item").Where("id", invoiceItemID));
+
+            
+
+//            Db.ExecuteNonQuery(Delete("crm_invoice_item").Where("id", invoiceItemID));
 
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
@@ -372,11 +381,6 @@ namespace ASC.CRM.Core.Dao
             return items;
         }
 
-        #endregion
-
-
-        #region Private Methods
-
         private void DeleteBatchItemsExecute(List<InvoiceItem> items)
         {
             var ids = items.Select(x => x.ID).ToArray();
@@ -388,25 +392,45 @@ namespace ASC.CRM.Core.Dao
             //}
         }
 
-        private static InvoiceItem ToInvoiceItem(object[] row)
+        private InvoiceItem ToInvoiceItem(DbInvoiceItem dbInvoiceItem)
         {
             return new InvoiceItem
-                {
-                    ID = Convert.ToInt32(row[0]),
-                    Title = Convert.ToString(row[1]),
-                    Description = Convert.ToString(row[2]),
-                    StockKeepingUnit = Convert.ToString(row[3]),
-                    Price = Convert.ToDecimal(row[4]),
-                    StockQuantity = Convert.ToDecimal(row[5]),
-                    TrackInventory = Convert.ToBoolean(row[6]),
-                    InvoiceTax1ID = Convert.ToInt32(row[7]),
-                    InvoiceTax2ID = Convert.ToInt32(row[8]),
-                    Currency = Convert.ToString(row[9]),
-                    CreateOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[10].ToString())),
-                    CreateBy = ToGuid(row[11]),
-                    LastModifedOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[12].ToString())),
-                    LastModifedBy = ToGuid(row[13])
-                };
+            {
+                ID = dbInvoiceItem.Id,
+                Title = dbInvoiceItem.Title,
+                Description = dbInvoiceItem.Description,
+                StockKeepingUnit = dbInvoiceItem.StockKeepingUnit,
+                Price = dbInvoiceItem.Price,
+                StockQuantity = dbInvoiceItem.StockQuantity,
+                TrackInventory = dbInvoiceItem.TrackInventory,
+                InvoiceTax1ID = dbInvoiceItem.InvoiceTax1Id,
+                InvoiceTax2ID = dbInvoiceItem.InvoiceTax2Id,
+                Currency = dbInvoiceItem.Currency,
+                CreateOn = TenantUtil.DateTimeFromUtc(dbInvoiceItem.CreateOn),
+                CreateBy = dbInvoiceItem.CreateBy,
+                LastModifedOn = TenantUtil.DateTimeFromUtc(dbInvoiceItem.LastModifedOn),
+                LastModifedBy = dbInvoiceItem.LastModifedBy
+            };
+
+
+
+            //return new InvoiceItem
+            //    {
+            //        ID = Convert.ToInt32(row[0]),
+            //        Title = Convert.ToString(row[1]),
+            //        Description = Convert.ToString(row[2]),
+            //        StockKeepingUnit = Convert.ToString(row[3]),
+            //        Price = Convert.ToDecimal(row[4]),
+            //        StockQuantity = Convert.ToDecimal(row[5]),
+            //        TrackInventory = Convert.ToBoolean(row[6]),
+            //        InvoiceTax1ID = Convert.ToInt32(row[7]),
+            //        InvoiceTax2ID = Convert.ToInt32(row[8]),
+            //        Currency = Convert.ToString(row[9]),
+            //        CreateOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[10].ToString())),
+            //        CreateBy = ToGuid(row[11]),
+            //        LastModifedOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[12].ToString())),
+            //        LastModifedBy = ToGuid(row[13])
+            //    };
         }
 
         private SqlQuery GetInvoiceItemSqlQuery(Exp where)
@@ -485,6 +509,5 @@ namespace ASC.CRM.Core.Dao
             return conditions.Count == 1 ? conditions[0] : conditions.Aggregate((i, j) => i & j);
         }
 
-        #endregion
     }
 }

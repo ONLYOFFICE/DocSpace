@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_field_description")]
-    public partial class CrmFieldDescription
+    public partial class DbFieldDescription
     {
         [Key]
         [Column("id", TypeName = "int(11)")]

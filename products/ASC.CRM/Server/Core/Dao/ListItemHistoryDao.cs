@@ -36,6 +36,7 @@ using ASC.Web.CRM.Classes;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 
 
 #endregion

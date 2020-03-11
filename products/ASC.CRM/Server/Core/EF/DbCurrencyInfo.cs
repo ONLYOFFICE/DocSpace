@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_currency_info")]
-    public partial class CrmCurrencyInfo
+    public partial class DbCurrencyInfo
     {
         [Required]
         [Column("resource_key", TypeName = "varchar(255)")]

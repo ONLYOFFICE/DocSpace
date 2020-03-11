@@ -7,41 +7,55 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_task_template")]
-    public partial class CrmTaskTemplate
+    public partial class DbTaskTemplate : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(10)")]
         public int Id { get; set; }
+
         [Column("create_on", TypeName = "datetime")]
         public DateTime CreateOn { get; set; }
+        
         [Required]
         [Column("create_by", TypeName = "char(38)")]
-        public string CreateBy { get; set; }
+        public Guid CreateBy { get; set; }
+        
         [Column("last_modifed_on", TypeName = "datetime")]
         public DateTime LastModifedOn { get; set; }
+        
         [Required]
         [Column("last_modifed_by", TypeName = "char(38)")]
-        public string LastModifedBy { get; set; }
+        public Guid LastModifedBy { get; set; }
+
         [Required]
         [Column("title", TypeName = "varchar(255)")]
         public string Title { get; set; }
+        
         [Column("category_id", TypeName = "int(10)")]
         public int CategoryId { get; set; }
+        
         [Column("description", TypeName = "tinytext")]
         public string Description { get; set; }
+        
         [Required]
         [Column("responsible_id", TypeName = "char(38)")]
-        public string ResponsibleId { get; set; }
+        public Guid ResponsibleId { get; set; }
+        
         [Column("is_notify", TypeName = "tinyint(4)")]
-        public sbyte IsNotify { get; set; }
+        public bool IsNotify { get; set; }
+        
         [Column("offset", TypeName = "bigint(20)")]
         public long Offset { get; set; }
+        
         [Column("sort_order", TypeName = "int(11)")]
         public int SortOrder { get; set; }
+        
         [Column("deadLine_is_fixed", TypeName = "tinyint(4)")]
-        public sbyte DeadLineIsFixed { get; set; }
+        public bool DeadLineIsFixed { get; set; }
+                
         [Column("tenant_id", TypeName = "int(10)")]
         public int TenantId { get; set; }
+        
         [Column("container_id", TypeName = "int(10)")]
         public int ContainerId { get; set; }
     }

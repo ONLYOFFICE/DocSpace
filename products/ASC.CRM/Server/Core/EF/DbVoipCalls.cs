@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_voip_calls")]
-    public partial class CrmVoipCalls
+    public partial class DbVoipCalls
     {
         [Key]
         [Column("id", TypeName = "varchar(50)")]

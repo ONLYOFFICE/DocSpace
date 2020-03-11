@@ -45,29 +45,17 @@ using ASC.Web.CRM.Core.Search;
 namespace ASC.CRM.Core.Dao
 {
     public class SearchDao : AbstractDao
-    {
-        #region Members
-
+    {     
         private Dictionary<EntityType, IEnumerable<int>> _findedIDs;
         private bool _fullTextSearchEnable;
         private DaoFactory DaoFactory { get; set; }
-
-        #endregion
-
-        #region Constructor
-
+                   
         public SearchDao(int tenantID, DaoFactory daoFactory)
             : base(tenantID)
         {
             DaoFactory = daoFactory;
         }
 
-        #endregion
-
-        #region Methods
-
-        #region Public
-        
         public SearchResultItem[] Search(String searchText)
         {
             var keywords = searchText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
@@ -131,11 +119,7 @@ namespace ASC.CRM.Core.Dao
 
             return ToSearchResultItem(Db.ExecuteList(searchQuery));
         }
-
-        #endregion
-
-        #region Private
-
+            
         private Dictionary<EntityType, IEnumerable<int>> SearchByRelationshipEvent(String[] keywords)
         {
             var historyQuery = Query("crm_relationship_event")
@@ -434,9 +418,5 @@ namespace ASC.CRM.Core.Dao
                     throw new ArgumentException();
             }
         }
-
-        #endregion
-
-        #endregion
     }
 }

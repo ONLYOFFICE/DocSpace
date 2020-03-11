@@ -24,17 +24,16 @@
 */
 
 
+using ASC.Collections;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Entities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using ASC.Collections;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.CRM.Core.Entities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 
 namespace ASC.CRM.Core.Dao
@@ -43,8 +42,12 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceLine> _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>("crm_invoice_line");
 
-        public CachedInvoiceLineDao(int tenantID)
-            : base(tenantID)
+        public CachedInvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext)
+              : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
         }
 
@@ -81,9 +84,14 @@ namespace ASC.CRM.Core.Dao
     
     public class InvoiceLineDao : AbstractDao
     {
-        public InvoiceLineDao(int tenantID)
-            : base(tenantID)
+        public InvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext)
+              : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+
         }
 
 
@@ -108,24 +116,23 @@ namespace ASC.CRM.Core.Dao
                         description = invoiceTax.Description
                     });
         }
-
-        #region Get
-
+            
         public virtual List<InvoiceLine> GetAll()
         {
-            return Db.ExecuteList(GetInvoiceLineSqlQuery(null)).ConvertAll(ToInvoiceLine);
+            return Query(CRMDbContext.InvoiceLine)
+                    .ToList()
+                    .ConvertAll(ToInvoiceLine);
         }
 
         public virtual List<InvoiceLine> GetByID(int[] ids)
         {
-            return Db.ExecuteList(GetInvoiceLineSqlQuery(Exp.In("id", ids))).ConvertAll(ToInvoiceLine);
+            return Query(CRMDbContext.InvoiceLine).Where(x => ids.Contains(x.Id)).ToList()
+                    .ConvertAll(ToInvoiceLine);
         }
 
         public virtual InvoiceLine GetByID(int id)
         {
-            var invoiceLines = Db.ExecuteList(GetInvoiceLineSqlQuery(Exp.Eq("id", id))).ConvertAll(ToInvoiceLine);
-
-            return invoiceLines.Count > 0 ? invoiceLines[0] : null;
+            return ToInvoiceLine(Query(CRMDbContext.InvoiceLine).FirstOrDefault(x => x.Id == id));
         }
         
         public List<InvoiceLine> GetInvoiceLines(int invoiceID)
@@ -135,14 +142,13 @@ namespace ASC.CRM.Core.Dao
 
         public List<InvoiceLine> GetInvoiceLinesInDb(int invoiceID)
         {
-            return Db.ExecuteList(GetInvoiceLineSqlQuery(Exp.Eq("invoice_id", invoiceID)).OrderBy("sort_order", true)).ConvertAll(ToInvoiceLine);
+            return Query(CRMDbContext.InvoiceLine)
+                .Where(x => x.InvoiceId == invoiceID)
+                .OrderBy(x => x.SortOrder)
+                .ToList()
+                .ConvertAll(ToInvoiceLine);
         }
-
-        #endregion
-
-
-        #region SaveOrUpdate
-
+                
         public virtual int SaveOrUpdateInvoiceLine(InvoiceLine invoiceLine)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -159,6 +165,7 @@ namespace ASC.CRM.Core.Dao
             {
                 invoiceLine.Description = String.Empty;
             }
+                        
 
             if (Db.ExecuteScalar<int>(Query("crm_invoice_line").SelectCount().Where(Exp.Eq("id", invoiceLine.ID))) == 0)
             {
@@ -194,28 +201,30 @@ namespace ASC.CRM.Core.Dao
             }
             return invoiceLine.ID;
         }
-
-        #endregion
-
-
-        #region Delete
-
+                
         public virtual void DeleteInvoiceLine(int invoiceLineID)
         {
             var invoiceLine = GetByID(invoiceLineID);
 
             if (invoiceLine == null) return;
 
-            Db.ExecuteNonQuery(Delete("crm_invoice_line").Where("id", invoiceLineID));
+            var itemToDelete = new DbInvoiceLine { Id = invoiceLineID };
 
+            CRMDbContext.Attach(itemToDelete);
+            CRMDbContext.Remove(itemToDelete);
+            CRMDbContext.SaveChanges();
+                       
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceLineCacheKey, String.Empty);*/
         }
 
         public void DeleteInvoiceLines(int invoiceID)
         {
-            Db.ExecuteNonQuery(Delete("crm_invoice_line").Where(Exp.Eq("invoice_id", invoiceID)));
+            var itemToDelete = Query(CRMDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceID);
 
+            CRMDbContext.RemoveRange(itemToDelete);
+            CRMDbContext.SaveChanges();
+            
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceLineCacheKey, String.Empty);*/
         }
@@ -227,63 +236,32 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean CanDeleteInDb(int invoiceLineID)
         {
+            var invoiceID = Query(CRMDbContext.InvoiceLine)
+                .Where(x => x.Id == invoiceLineID)
+                .Select(x => x.InvoiceId);
 
-                var invoiceID = Db.ExecuteScalar<int>(Query("crm_invoice_line").Select("invoice_id")
-                                     .Where(Exp.Eq("id", invoiceLineID)));
+            if (!invoiceID.Any()) return false;
 
-                if (invoiceID == 0) return false;
-
-                var count = Db.ExecuteScalar<int>(Query("crm_invoice_line").SelectCount()
-                                        .Where(Exp.Eq("invoice_id", invoiceID)));
-
-                return count > 1;
+            return Query(CRMDbContext.InvoiceLine).Where(x => x.InvoiceId == invoiceLineID).Any();            
         }
 
-        #endregion
-
-
-        #region Private Methods
-
-        private static InvoiceLine ToInvoiceLine(object[] row)
+        private InvoiceLine ToInvoiceLine(DbInvoiceLine dbInvoiceLine)
         {
+            if (dbInvoiceLine == null) return null;
+
             return new InvoiceLine
-                {
-                    ID = Convert.ToInt32(row[0]),
-                    InvoiceID = Convert.ToInt32(row[1]),
-                    InvoiceItemID = Convert.ToInt32(row[2]),
-                    InvoiceTax1ID = Convert.ToInt32(row[3]),
-                    InvoiceTax2ID = Convert.ToInt32(row[4]),
-                    SortOrder = Convert.ToInt32(row[5]),
-                    Description = Convert.ToString(row[6]),
-                    Quantity = Convert.ToDecimal(row[7]),
-                    Price = Convert.ToDecimal(row[8]),
-                    Discount = Convert.ToDecimal(row[9])
-                };
-        }
-
-        private SqlQuery GetInvoiceLineSqlQuery(Exp where)
-        {
-            var sqlQuery = Query("crm_invoice_line")
-                .Select(
-                    "id",
-                    "invoice_id",
-                    "invoice_item_id",
-                    "invoice_tax1_id",
-                    "invoice_tax2_id",
-                    "sort_order",
-                    "description",
-                    "quantity",
-                    "price",
-                    "discount");
-
-            if (where != null)
             {
-                sqlQuery.Where(where);
-            }
-
-            return sqlQuery;
+                ID = dbInvoiceLine.Id,
+                InvoiceID = dbInvoiceLine.InvoiceId,
+                InvoiceItemID = dbInvoiceLine.InvoiceItemId,
+                InvoiceTax1ID = dbInvoiceLine.InvoiceTax1Id,
+                InvoiceTax2ID = dbInvoiceLine.InvoiceTax2Id,
+                SortOrder = dbInvoiceLine.SortOrder,
+                Description = dbInvoiceLine.Description,
+                Quantity = dbInvoiceLine.Quantity,
+                Price = dbInvoiceLine.Price,
+                Discount = dbInvoiceLine.Discount
+            };
         }
-
-        #endregion
     }
 }

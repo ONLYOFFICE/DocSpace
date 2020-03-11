@@ -28,6 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
 using ASC.Files.Core;
 using ASC.Web.Files.Api;
 
@@ -35,28 +37,33 @@ namespace ASC.CRM.Core.Dao
 {
     public class FileDao : AbstractDao
     {
-        public FileDao(int tenantID)
-            : base(tenantID)
+        public FileDao(FilesIntegration filesIntegration,
+                       DbContextManager<CRMDbContext> dbContextManager,
+                       TenantManager tenantManager,
+                       SecurityContext securityContext):
+            base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+            FilesIntegration = filesIntegration;
         }
 
-        #region Public Methods
+        public FilesIntegration FilesIntegration { get; }
 
         public File GetFile(int id, int version)
         {
-            using (var dao = FilesIntegration.GetFileDao())
-            {
-                var file = 0 < version ? dao.GetFile(id, version) : dao.GetFile(id);
-                return file;
-            }
+            var dao = FilesIntegration.GetFileDao();
+
+            var file = 0 < version ? dao.GetFile(id, version) : dao.GetFile(id);
+
+            return file;
         }
 
         public void DeleteFile(int id)
         {
-            using (var dao = FilesIntegration.GetFileDao())
-            {
-                dao.DeleteFile(id);
-            }
+            var dao = FilesIntegration.GetFileDao();
+
+            dao.DeleteFile(id);
         }
 
         public object GetRoot()
@@ -71,21 +78,18 @@ namespace ASC.CRM.Core.Dao
 
         public File SaveFile(File file, System.IO.Stream stream)
         {
-            using (var dao = FilesIntegration.GetFileDao())
-            {
-                return dao.SaveFile(file, stream);
-            }
+            var dao = FilesIntegration.GetFileDao();
+
+            return dao.SaveFile(file, stream);
         }
 
         public List<int> GetEventsByFile(int id)
         {
-            using (var tagdao = FilesIntegration.GetTagDao())
-            {
-                var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
-                return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
-            }
+            var tagdao = FilesIntegration.GetTagDao();
+            var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
+            
+            return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
         }
 
-        #endregion
     }
 }

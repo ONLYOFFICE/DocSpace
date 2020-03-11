@@ -157,7 +157,7 @@ namespace ASC.CRM.Core.Dao
                                               .Set("contact_id", contactInfo.ContactID)
                                               .Set("type", (int)contactInfo.InfoType)
                                               .Set("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                                              .Set("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                                              .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
                                                );
             return contactInfo.ID;
         }
@@ -197,7 +197,7 @@ namespace ASC.CRM.Core.Dao
                                                                .InColumnValue("contact_id", contactInfo.ContactID)
                                                                .InColumnValue("type", (int)contactInfo.InfoType)
                                                                .InColumnValue("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                                                               .InColumnValue("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                                                               .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
                                                                .Identity(1, 0, true));
         }
 

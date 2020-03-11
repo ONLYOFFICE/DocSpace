@@ -7,42 +7,33 @@ namespace ASC.CRM.Core.EF
 {
     public partial class CRMDbContext : BaseDbContext
     {
-        //public CRMDbContext()
-        //{
-        //}
-
-        //public CRMDbContext(DbContextOptions<CRMDbContext> options)
-        //    : base(options)
-        //{
-        //}
-
-        public virtual DbSet<CrmCase> CrmCase { get; set; }
-        public virtual DbSet<CrmContact> CrmContact { get; set; }
-        public virtual DbSet<CrmContactInfo> CrmContactInfo { get; set; }
-        public virtual DbSet<CrmCurrencyInfo> CrmCurrencyInfo { get; set; }
-        public virtual DbSet<CrmCurrencyRate> CrmCurrencyRate { get; set; }
-        public virtual DbSet<CrmDeal> CrmDeal { get; set; }
-        public virtual DbSet<CrmDealMilestone> CrmDealMilestone { get; set; }
-        public virtual DbSet<CrmEntityContact> CrmEntityContact { get; set; }
-        public virtual DbSet<CrmEntityTag> CrmEntityTag { get; set; }
-        public virtual DbSet<CrmFieldDescription> CrmFieldDescription { get; set; }
-        public virtual DbSet<CrmFieldValue> CrmFieldValue { get; set; }
-        public virtual DbSet<CrmInvoice> CrmInvoice { get; set; }
-        public virtual DbSet<CrmInvoiceItem> CrmInvoiceItem { get; set; }
-        public virtual DbSet<CrmInvoiceLine> CrmInvoiceLine { get; set; }
-        public virtual DbSet<CrmInvoiceTax> CrmInvoiceTax { get; set; }
-        public virtual DbSet<CrmListItem> CrmListItem { get; set; }
-        public virtual DbSet<CrmOrganisationLogo> CrmOrganisationLogo { get; set; }
-        public virtual DbSet<CrmProjects> CrmProjects { get; set; }
-        public virtual DbSet<CrmRelationshipEvent> CrmRelationshipEvent { get; set; }
-        public virtual DbSet<CrmReportFile> CrmReportFile { get; set; }
-        public virtual DbSet<CrmTag> CrmTag { get; set; }
-        public virtual DbSet<CrmTask> CrmTask { get; set; }
-        public virtual DbSet<CrmTaskTemplate> CrmTaskTemplate { get; set; }
-        public virtual DbSet<CrmTaskTemplateContainer> CrmTaskTemplateContainer { get; set; }
-        public virtual DbSet<CrmTaskTemplateTask> CrmTaskTemplateTask { get; set; }
-        public virtual DbSet<CrmVoipCalls> CrmVoipCalls { get; set; }
-        public virtual DbSet<CrmVoipNumber> CrmVoipNumber { get; set; }
+        public virtual DbSet<DbCase> Cases { get; set; }
+        public virtual DbSet<DbContact> Contacts { get; set; }
+        public virtual DbSet<DbContactInfo> ContactsInfo { get; set; }
+        public virtual DbSet<DbCurrencyInfo> CurrencyInfo { get; set; }
+        public virtual DbSet<DbCurrencyRate> CurrencyRate { get; set; }
+        public virtual DbSet<DbDeal> Deals { get; set; }
+        public virtual DbSet<DbDealMilestone> DealMilestones { get; set; }
+        public virtual DbSet<DbEntityContact> EntityContact { get; set; }
+        public virtual DbSet<DbEntityTag> EntityTags { get; set; }
+        public virtual DbSet<DbFieldDescription> FieldDescription { get; set; }
+        public virtual DbSet<DbFieldValue> FieldValue { get; set; }
+        public virtual DbSet<DbInvoice> Invoices { get; set; }
+        public virtual DbSet<DbInvoiceItem> InvoiceItem { get; set; }
+        public virtual DbSet<DbInvoiceLine> InvoiceLine { get; set; }
+        public virtual DbSet<DbInvoiceTax> InvoiceTax { get; set; }
+        public virtual DbSet<DbListItem> ListItem { get; set; }
+        public virtual DbSet<DbOrganisationLogo> OrganisationLogo { get; set; }
+        public virtual DbSet<DbProjects> Projects { get; set; }
+        public virtual DbSet<DbRelationshipEvent> RelationshipEvent { get; set; }
+        public virtual DbSet<DbReportFile> ReportFile { get; set; }
+        public virtual DbSet<DbTag> Tags { get; set; }
+        public virtual DbSet<DbTask> Tasks { get; set; }
+        public virtual DbSet<DbTaskTemplate> TaskTemplates { get; set; }
+        public virtual DbSet<DbTaskTemplateContainer> TaskTemplateContainer { get; set; }
+        public virtual DbSet<DbTaskTemplateTask> TaskTemplateTask { get; set; }
+        public virtual DbSet<DbVoipCalls> VoipCalls { get; set; }
+        public virtual DbSet<DbVoipNumber> VoipNumber { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -53,7 +44,7 @@ namespace ASC.CRM.Core.EF
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CrmCase>(entity =>
+            modelBuilder.Entity<DbCase>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
                     .HasName("create_on");
@@ -77,7 +68,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmContact>(entity =>
+            modelBuilder.Entity<DbContact>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
                     .HasName("create_on");
@@ -132,7 +123,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmContactInfo>(entity =>
+            modelBuilder.Entity<DbContactInfo>(entity =>
             {
                 entity.HasIndex(e => e.LastModifedOn)
                     .HasName("last_modifed_on");
@@ -149,7 +140,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmCurrencyInfo>(entity =>
+            modelBuilder.Entity<DbCurrencyInfo>(entity =>
             {
                 entity.HasKey(e => e.Abbreviation)
                     .HasName("PRIMARY");
@@ -171,7 +162,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmCurrencyRate>(entity =>
+            modelBuilder.Entity<DbCurrencyRate>(entity =>
             {
                 entity.HasIndex(e => e.FromCurrency)
                     .HasName("from_currency");
@@ -196,7 +187,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmDeal>(entity =>
+            modelBuilder.Entity<DbDeal>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
                     .HasName("create_on");
@@ -235,7 +226,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmDealMilestone>(entity =>
+            modelBuilder.Entity<DbDealMilestone>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -254,7 +245,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmEntityContact>(entity =>
+            modelBuilder.Entity<DbEntityContact>(entity =>
             {
                 entity.HasKey(e => new { e.EntityId, e.EntityType, e.ContactId })
                     .HasName("PRIMARY");
@@ -263,7 +254,7 @@ namespace ASC.CRM.Core.EF
                     .HasName("IX_Contact");
             });
 
-            modelBuilder.Entity<CrmEntityTag>(entity =>
+            modelBuilder.Entity<DbEntityTag>(entity =>
             {
                 entity.HasKey(e => new { e.EntityId, e.EntityType, e.TagId })
                     .HasName("PRIMARY");
@@ -272,7 +263,7 @@ namespace ASC.CRM.Core.EF
                     .HasName("tag_id");
             });
 
-            modelBuilder.Entity<CrmFieldDescription>(entity =>
+            modelBuilder.Entity<DbFieldDescription>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.EntityType, e.SortOrder })
                     .HasName("entity_type");
@@ -286,7 +277,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmFieldValue>(entity =>
+            modelBuilder.Entity<DbFieldValue>(entity =>
             {
                 entity.HasIndex(e => e.FieldId)
                     .HasName("field_id");
@@ -306,7 +297,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmInvoice>(entity =>
+            modelBuilder.Entity<DbInvoice>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -358,7 +349,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmInvoiceItem>(entity =>
+            modelBuilder.Entity<DbInvoiceItem>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -388,7 +379,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmInvoiceLine>(entity =>
+            modelBuilder.Entity<DbInvoiceLine>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -398,7 +389,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmInvoiceTax>(entity =>
+            modelBuilder.Entity<DbInvoiceTax>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -420,7 +411,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmListItem>(entity =>
+            modelBuilder.Entity<DbListItem>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.ListType })
                     .HasName("list_type");
@@ -442,7 +433,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmOrganisationLogo>(entity =>
+            modelBuilder.Entity<DbOrganisationLogo>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -456,7 +447,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmProjects>(entity =>
+            modelBuilder.Entity<DbProjects>(entity =>
             {
                 entity.HasKey(e => new { e.TenantId, e.ContactId, e.ProjectId })
                     .HasName("PRIMARY");
@@ -468,7 +459,7 @@ namespace ASC.CRM.Core.EF
                     .HasName("project_id");
             });
 
-            modelBuilder.Entity<CrmRelationshipEvent>(entity =>
+            modelBuilder.Entity<DbRelationshipEvent>(entity =>
             {
                 entity.HasIndex(e => e.ContactId)
                     .HasName("IX_Contact");
@@ -495,7 +486,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmReportFile>(entity =>
+            modelBuilder.Entity<DbReportFile>(entity =>
             {
                 entity.HasKey(e => e.FileId)
                     .HasName("PRIMARY");
@@ -514,7 +505,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmTag>(entity =>
+            modelBuilder.Entity<DbTag>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -524,7 +515,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_bin");
             });
 
-            modelBuilder.Entity<CrmTask>(entity =>
+            modelBuilder.Entity<DbTask>(entity =>
             {
                 entity.HasIndex(e => e.CreateOn)
                     .HasName("create_on");
@@ -568,7 +559,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmTaskTemplate>(entity =>
+            modelBuilder.Entity<DbTaskTemplate>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.ContainerId })
                     .HasName("template_id");
@@ -597,7 +588,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmTaskTemplateContainer>(entity =>
+            modelBuilder.Entity<DbTaskTemplateContainer>(entity =>
             {
                 entity.HasIndex(e => new { e.TenantId, e.EntityType })
                     .HasName("entity_type");
@@ -617,13 +608,13 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmTaskTemplateTask>(entity =>
+            modelBuilder.Entity<DbTaskTemplateTask>(entity =>
             {
                 entity.HasKey(e => new { e.TenantId, e.TaskId, e.TaskTemplateId })
                     .HasName("PRIMARY");
             });
 
-            modelBuilder.Entity<CrmVoipCalls>(entity =>
+            modelBuilder.Entity<DbVoipCalls>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");
@@ -661,7 +652,7 @@ namespace ASC.CRM.Core.EF
                     .HasCollation("utf8_general_ci");
             });
 
-            modelBuilder.Entity<CrmVoipNumber>(entity =>
+            modelBuilder.Entity<DbVoipNumber>(entity =>
             {
                 entity.HasIndex(e => e.TenantId)
                     .HasName("tenant_id");

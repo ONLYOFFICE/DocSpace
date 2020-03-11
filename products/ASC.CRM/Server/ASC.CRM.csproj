@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\common\ASC.Core.Common\ASC.Core.Common.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
     <ProjectReference Include="..\..\..\web\ASC.Web.Studio\ASC.Web.Studio.csproj" />
+    <ProjectReference Include="..\..\ASC.Files\Server\ASC.Files.csproj" />
   </ItemGroup>
 
   <ItemGroup>

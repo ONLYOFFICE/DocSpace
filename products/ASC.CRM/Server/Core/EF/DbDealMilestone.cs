@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_deal_milestone")]
-    public partial class CrmDealMilestone
+    public partial class DbDealMilestone : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(10)")]

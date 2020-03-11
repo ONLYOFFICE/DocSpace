@@ -24,33 +24,30 @@
 */
 
 
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using Microsoft.EntityFrameworkCore.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.CRM.Core.Entities;
-using Newtonsoft.Json;
-using ASC.Web.CRM.Resources;
-using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Dao
 {
     public class TagDao : AbstractDao
     {
-        #region Constructor
-
-        public TagDao(int tenantID)
-            : base(tenantID)
+        public TagDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext) :
+                                            base(dbContextManager,
+                                                 tenantManager,
+                                                 securityContext)
         {
-          
 
         }
-
-        #endregion
-
-        #region Methods
 
         public bool IsExist(EntityType entityType, String tagName)
         {
@@ -62,46 +59,32 @@ namespace ASC.CRM.Core.Dao
 
         private bool IsExistInDb(EntityType entityType, String tagName)
         {
-            var q = new SqlQuery("crm_tag")
-               .Select("1")
-               .Where("tenant_id", TenantID)
-               .Where("entity_type", (int)entityType)
-               .Where("trim(lower(title))", tagName.Trim().ToLower())
-               .SetMaxResults(1);
-
-            return Db.ExecuteScalar<bool>(q);
+            return Query(CRMDbContext.Tags)
+                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0).Any();
         }
 
         private int GetTagId(EntityType entityType, String tagName)
         {
-            var q = new SqlQuery("crm_tag")
-               .Select("id")
-               .Where("tenant_id", TenantID)
-               .Where("entity_type", (int)entityType)
-               .Where("trim(lower(title))", tagName.Trim().ToLower())
-               .SetMaxResults(1);
-
-            return Db.ExecuteScalar<int>(q);
+            return Query(CRMDbContext.Tags)
+                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Select(x => x.Id)
+                    .SingleOrDefault();
         }
 
         public String[] GetAllTags(EntityType entityType)
         {
-            return Db.ExecuteList(
-                Query("crm_tag")
-                .Select("title")
-                .Where(Exp.Eq("entity_type", (int)entityType))
-                .OrderBy("title", true)).ConvertAll(row => row[0].ToString()).ToArray();
+            return CRMDbContext.Tags
+                .Where(x => x.EntityType == entityType)
+                .OrderBy(x => x.Title)
+                .Select(x => x.Title)
+                .ToArray();
         }
 
         public List<KeyValuePair<EntityType, string>> GetAllTags()
         {
-            return Db.ExecuteList(
-                Query("crm_tag")
-                .Select("title", "entity_type")
-                .OrderBy("title", true))
-                .ConvertAll(row => new KeyValuePair<EntityType, string>(
-                    (EntityType)Enum.Parse(typeof(EntityType), row[1].ToString(), true), 
-                    row[0].ToString()));
+            return Query(CRMDbContext.Tags)
+                .OrderBy(x => x.Title)
+                .Select(x => new KeyValuePair<EntityType, string> (x.EntityType, x.Title)).ToList();            
         }
 
         public String GetTagsLinkCountJSON(EntityType entityType)
@@ -112,21 +95,42 @@ namespace ASC.CRM.Core.Dao
 
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)
         {
-            var sqlQuery = new SqlQuery("crm_tag tbl_tag")
-                .SelectCount("tag_id")
-                .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("id", "tag_id"))
-                .Where(Exp.Eq("tbl_tag.entity_type", (int)entityType) & Exp.Eq("tbl_tag.tenant_id", TenantID))
-                .OrderBy("title", true)
-                .GroupBy("tbl_tag.id");
 
-            var queryResult = Db.ExecuteList(sqlQuery);
-            return queryResult.ConvertAll(row => Convert.ToInt32(row[0]));
+            //var temp =  Query(CRMDbContext.Tags)
+            //   .Join(CRMDbContext.CrmEntityTag,
+            //           x => x.Id,
+            //           y => y.TagId,
+            //           (x, y) => new
+            //           {
+            //               x,
+            //               y
+
+            //           })
+            //   .Where(x => x.y.EntityType == entityType)
+            //   .GroupBy(x=> x.x.Id)
+            //   .OrderBy(x => x.x.Title)
+               
+            //   .Count();
+                  
+                       
+
+            //var sqlQuery = new SqlQuery("crm_tag tbl_tag")
+            //    .SelectCount("tag_id")
+            //    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("id", "tag_id"))
+            //    .Where(Exp.Eq("tbl_tag.entity_type", (int)entityType) & Exp.Eq("tbl_tag.tenant_id", TenantID))
+            //    .OrderBy("title", true)
+            //    .GroupBy("tbl_tag.id");
+
+            //var queryResult = Db.ExecuteList(sqlQuery);
+
+            //            return queryResult.ConvertAll(row => Convert.ToInt32(row[0]));
+
+            throw new NotImplementedException();
         }
 
 
         public Dictionary<int, List<String>> GetEntitiesTags(EntityType entityType)
         {
-
             var result = new Dictionary<int, List<String>>();
 
             var sqlQuery =
@@ -154,31 +158,47 @@ namespace ASC.CRM.Core.Dao
 
         public String[] GetEntityTags(EntityType entityType, int entityID)
         {
+            //SqlQuery sqlQuery = Query("crm_tag")
+            //    .Select("title")
+            //    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("id", "tag_id"))
+            //    .Where(Exp.Eq("entity_id", entityID) & Exp.Eq("crm_tag.entity_type", (int)entityType));
 
-            SqlQuery sqlQuery = Query("crm_tag")
-                .Select("title")
-                .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("id", "tag_id"))
-                .Where(Exp.Eq("entity_id", entityID) & Exp.Eq("crm_tag.entity_type", (int)entityType));
+            //return Db.ExecuteList(sqlQuery).ConvertAll(row => Convert.ToString(row[0])).ToArray();
 
-            return Db.ExecuteList(sqlQuery).ConvertAll(row => Convert.ToString(row[0])).ToArray();
+            return Query(CRMDbContext.Tags)
+                    .Join(CRMDbContext.EntityTags,
+                            x => x.Id,
+                            y => y.TagId,
+                            (x, y) => new
+                            {
+                                x, y
+
+                            })
+                    .Where(x => x.y.EntityId == entityID && x.y.EntityType == entityType)
+                    .Select(x => x.x.Title).ToArray();
         }
-
-
-
-        public String[] GetUnusedTags(EntityType entityType)
+                
+        public string[] GetUnusedTags(EntityType entityType)
         {
-            return Db.ExecuteList(Query("crm_tag")
-                                    .Select("title")
-                                    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("tag_id", "id"))
-                                    .Where(Exp.Eq("tag_id", Exp.Empty) & Exp.Eq("crm_tag.entity_type", (int)entityType))).ConvertAll(row => Convert.ToString(row[0])).ToArray();
+            return Query(CRMDbContext.Tags)
+                    .GroupJoin(CRMDbContext.EntityTags.DefaultIfEmpty(),
+                               x => x.Id,
+                               y => y.TagId,
+                               (x, y) => new { x, y })
+                    .Where(x => x.y == null && x.x.EntityType == entityType)
+                    .Select(x => x.x.Title).ToArray();
+
+            //return Db.ExecuteList(Query("crm_tag")
+            //                      .Select("title")
+            //                      .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("tag_id", "id"))
+            //                      .Where(Exp.Eq("tag_id", Exp.Empty) & Exp.Eq("crm_tag.entity_type", (int)entityType))).ConvertAll(row => Convert.ToString(row[0])).ToArray();
         }
 
         public bool CanDeleteTag(EntityType entityType, String tagName)
         {
-            var tagID = Db.ExecuteScalar<int>(Query("crm_tag").Select("id")
-                                    .Where(Exp.Eq("trim(lower(title))", tagName.Trim().ToLower()) & Exp.Eq("entity_type", (int)entityType)));
-
-            return tagID != 0;
+            return Query(CRMDbContext.Tags)
+                 .Where(x => string.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
+                 .Select(x => x.Id).SingleOrDefault() != 0;
         }
 
         public void DeleteTag(EntityType entityType, String tagName)
@@ -190,57 +210,70 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteTagFromEntity(EntityType entityType, int entityID, String tagName)
         {
-            var tagID = Db.ExecuteScalar<int>(Query("crm_tag").Select("id")
-                                    .Where(Exp.Eq("trim(lower(title))", tagName.Trim().ToLower()) & Exp.Eq("entity_type", (int)entityType)));
-
+            var tagID = Query(CRMDbContext.Tags)
+                        .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
+                        .Select(x => x.Id).SingleOrDefault();
+            
             if (tagID == 0) return;
 
-            var sqlQuery = new SqlDelete("crm_entity_tag")
-                .Where(Exp.Eq("entity_type", (int)entityType) & Exp.Eq("tag_id", tagID));
+            var itemsToRemove = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && x.TagId == tagID);
 
             if (entityID > 0)
-                sqlQuery.Where(Exp.Eq("entity_id", entityID));
+                itemsToRemove = itemsToRemove.Where(x => x.EntityId == entityID);
 
-            Db.ExecuteNonQuery(sqlQuery);
+            CRMDbContext.RemoveRange(itemsToRemove);
 
             if (entityID == 0)
-                Db.ExecuteNonQuery(Delete("crm_tag")
-                    .Where(Exp.Eq("id", tagID) & Exp.Eq("entity_type", (int)entityType)));
+                CRMDbContext.Tags.RemoveRange(Query(CRMDbContext.Tags).Where(x => x.Id == tagID && x.EntityType == entityType));
+
+            CRMDbContext.SaveChanges();
         }
 
         public void DeleteAllTagsFromEntity(EntityType entityType, int entityID)
         {
             if (entityID <= 0) return;
 
-            var sqlQuery = new SqlDelete("crm_entity_tag")
-                .Where(Exp.Eq("entity_type", (int)entityType) & Exp.Eq("entity_id", entityID));
+            var itemsToRemove = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && x.EntityId == entityID);
+            
+            CRMDbContext.EntityTags.RemoveRange(itemsToRemove);
 
-            Db.ExecuteNonQuery(sqlQuery);
+            CRMDbContext.SaveChanges();
         }
 
         public void DeleteUnusedTags(EntityType entityType)
         {
-
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            using (var tx = Db.BeginTransaction())
-            {
-
-                var sqlSubQuery = Query("crm_tag")
-                    .Select("id")
-                    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("tag_id", "id"))
-                    .Where(Exp.Eq("crm_tag.entity_type", (int)entityType) & Exp.Eq("tag_id", Exp.Empty));
-
-                var tagIDs = Db.ExecuteList(sqlSubQuery).ConvertAll(row => Convert.ToInt32(row[0]));
-
-                if (tagIDs.Count > 0)
-                    Db.ExecuteNonQuery(Delete("crm_tag").Where(Exp.In("id", tagIDs) & Exp.Eq("entity_type", (int)entityType)));
+            using var tx = CRMDbContext.Database.BeginTransaction();
 
 
-                tx.Commit();
-            }
+            //var temp = from e in CRMDbContext.Tags
+            //           select new { };
 
+//            Query(CRMDbContext.Tags).Join()
+//              .Select(x => x.Id);
+
+                //var sqlSubQuery = Query("crm_tag")
+                //    .Select("id")
+                //    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("tag_id", "id"))
+                //    .Where(Exp.Eq("crm_tag.entity_type", (int)entityType) & Exp.Eq("tag_id", Exp.Empty));
+
+                //List<int> tagIDs = Db.ExecuteList(sqlSubQuery).ConvertAll(row => Convert.ToInt32(row[0]));
+
+                //  Query(CRMDbContext.Tags).Join()
+
+
+            //if (tagIDs.Count > 0)
+            //{
+            //    var itemToDelete = Query(CRMDbContext.Tags).Where(x => x.EntityType == entityType && tagIDs.Contains(x.Id));
+
+            //    CRMDbContext.RemoveRange(itemToDelete);
+            //}
+            
+            CRMDbContext.SaveChanges();
+
+            tx.Commit();
         }
 
         public int AddTag(EntityType entityType, String tagName, bool returnExisted = false)
@@ -264,42 +297,43 @@ namespace ASC.CRM.Core.Dao
 
         private int AddTagInDb(EntityType entityType, String tagName)
         {
-            return Db.ExecuteScalar<int>(
-                                Insert("crm_tag")
-                                .InColumnValue("id", 0)
-                                .InColumnValue("title", tagName)
-                                .InColumnValue("entity_type", (int)entityType)
-                                .Identity(1, 0, true));
+            var dbTag = new DbTag
+            {
+                Title = tagName,
+                EntityType = entityType
+            };
+
+            CRMDbContext.Tags.Add(dbTag);
+
+            CRMDbContext.SaveChanges();
+
+            return dbTag.Id;
         }
 
 
         public Dictionary<string, int> GetAndAddTags(EntityType entityType, String[] tags)
         {
             tags = tags.Select(CorrectTag).Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+                      
+            using var tx = CRMDbContext.Database.BeginTransaction();
 
-            var tagNamesAndIds = new Dictionary<string, int>();
+            var tagNamesAndIds =  Query(CRMDbContext.Tags)
+                .Where(x => tags.Contains(x.Title) && x.EntityType == entityType)
+                .Select(x => new { x.Id, x.Title })
+                .ToDictionary(x => x.Title, x => x.Id);
+          
+            var tagsForCreate = tags.Where(t => !tagNamesAndIds.ContainsKey(t));
 
-            using (var tx = Db.BeginTransaction())
+            foreach (var tagName in tagsForCreate)
             {
-
-                Db.ExecuteList(Query("crm_tag").Select("id", "title")
-                        .Where(Exp.In("trim(lower(title))", tags.ToList().ConvertAll(t => t.ToLower())) & Exp.Eq("entity_type", (int)entityType)))
-                        .ForEach(row =>
-                        { tagNamesAndIds[row[1].ToString()] = (int)row[0]; });
-
-                var tagsForCreate = tags.Where(t => !tagNamesAndIds.ContainsKey(t));
-
-                foreach (var tagName in tagsForCreate)
-                {
-                    tagNamesAndIds.Add(tagName, AddTagInDb(entityType, tagName));
-                }
-
-                tx.Commit();
-                return tagNamesAndIds;
+                tagNamesAndIds.Add(tagName, AddTagInDb(entityType, tagName));
             }
+
+            tx.Commit();
+
+            return tagNamesAndIds;
         }
-
-
+        
         private int AddTagToEntityInDb(EntityType entityType, int entityID, String tagName)
         {
             tagName = CorrectTag(tagName);
@@ -307,16 +341,21 @@ namespace ASC.CRM.Core.Dao
             if (String.IsNullOrEmpty(tagName) || entityID == 0)
                 throw new ArgumentException();
 
-            var tagID = Db.ExecuteScalar<int>(Query("crm_tag").Select("id")
-                                    .Where(Exp.Eq("trim(lower(title))", tagName.ToLower()) & Exp.Eq("entity_type", (int)entityType)));
+            var tagID = Query(CRMDbContext.Tags)
+            .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == entityType)
+            .Select(x => x.Id).SingleOrDefault();
 
             if (tagID == 0)
                 tagID = AddTagInDb(entityType, tagName);
 
-            Db.ExecuteNonQuery(new SqlInsert("crm_entity_tag", true)
-                                        .InColumnValue("entity_id", entityID)
-                                        .InColumnValue("entity_type", (int)entityType)
-                                        .InColumnValue("tag_id", tagID));
+            CRMDbContext.EntityTags.Add(new DbEntityTag
+            {
+                EntityId = entityID,
+                EntityType = entityType,
+                TagId = tagID
+            });
+
+            CRMDbContext.SaveChanges();
 
             return tagID;
         }
@@ -333,24 +372,30 @@ namespace ASC.CRM.Core.Dao
             if (String.IsNullOrEmpty(tagName) || contactID == null || contactID.Length == 0)
                 throw new ArgumentException();
 
-            using (var tx = Db.BeginTransaction())
+            using var tx = CRMDbContext.Database.BeginTransaction();
+
+            var tagID = Query(CRMDbContext.Tags)
+                        .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == EntityType.Contact)
+                        .Select(x => x.Id).SingleOrDefault();
+
+            if (tagID == 0)
+                tagID = AddTagInDb(EntityType.Contact, tagName);
+
+            foreach (var id in contactID)
             {
-                var tagID = Db.ExecuteScalar<int>(Query("crm_tag").Select("id")
-                                        .Where(Exp.Eq("trim(lower(title))", tagName.ToLower()) & Exp.Eq("entity_type", (int)EntityType.Contact)));
-
-                if (tagID == 0)
-                    tagID = AddTagInDb(EntityType.Contact, tagName);
-
-                foreach (var id in contactID)
+                CRMDbContext.EntityTags.Add(new DbEntityTag
                 {
-                    Db.ExecuteNonQuery(new SqlInsert("crm_entity_tag", true)
-                                            .InColumnValue("entity_id", id)
-                                            .InColumnValue("entity_type", (int)EntityType.Contact)
-                                            .InColumnValue("tag_id", tagID));
-                }
-                tx.Commit();
-                return tagID;
+                    EntityId = id,
+                    EntityType = EntityType.Contact,
+                    TagId = tagID
+                });
             }
+
+            CRMDbContext.SaveChanges();
+
+            tx.Commit();
+
+            return tagID;
         }
 
         public int DeleteTagFromContacts(int[] contactID, String tagName)
@@ -358,61 +403,73 @@ namespace ASC.CRM.Core.Dao
             if (String.IsNullOrEmpty(tagName) || contactID == null || contactID.Length == 0)
                 throw new ArgumentException();
 
-            using (var tx = Db.BeginTransaction())
-            {
-                var tagID = Db.ExecuteScalar<int>(Query("crm_tag").Select("id")
-                                           .Where(Exp.Eq("trim(lower(title))", tagName.Trim().ToLower()) & Exp.Eq("entity_type", (int)EntityType.Contact)));
+            using var tx = CRMDbContext.Database.BeginTransaction();
 
-                if (tagID == 0)
-                    throw new ArgumentException();
+            var tagID = Query(CRMDbContext.Tags)
+                        .Where(x => String.Compare(x.Title, tagName, true) == 0 && x.EntityType == EntityType.Contact)
+                        .Select(x => x.Id)
+                        .SingleOrDefault();
 
+            if (tagID == 0)
+                throw new ArgumentException();
 
-                foreach (var id in contactID)
-                {
-                    Db.ExecuteNonQuery(new SqlDelete("crm_entity_tag")
-                                            .Where(Exp.Eq("entity_id", id) &
-                                                   Exp.Eq("entity_type", (int)EntityType.Contact) &
-                                                   Exp.Eq("tag_id", tagID)));
+            var itemsToRemove = CRMDbContext
+                                        .EntityTags
+                                        .Where(x => x.EntityType == EntityType.Contact && 
+                                                    x.TagId == tagID && 
+                                                    contactID.Contains(x.EntityId));
+            
+            CRMDbContext.EntityTags.RemoveRange(itemsToRemove);
+            
+            CRMDbContext.SaveChanges();
 
-                }
-                tx.Commit();
-                return tagID;
-            }
+            tx.Commit();
+
+            return tagID;
         }
 
         public void SetTagToEntity(EntityType entityType, int entityID, String[] tags)
         {
-            using (var tx = Db.BeginTransaction())
-            {
-                Db.ExecuteNonQuery(new SqlDelete("crm_entity_tag")
-                                                      .Where(Exp.Eq("entity_id", entityID) & Exp.Eq("entity_type", (int)entityType)));
+            using var tx = CRMDbContext.Database.BeginTransaction();
+            
+            var itemsToDelete = CRMDbContext.EntityTags.Where(x => x.EntityId == entityID && x.EntityType == entityType);
 
-                foreach (var tagName in tags.Where(t => !string.IsNullOrWhiteSpace(t)))
-                {
-                    AddTagToEntityInDb(entityType, entityID, tagName);
-                }
-                tx.Commit();
+            CRMDbContext.EntityTags.RemoveRange(itemsToDelete);
+
+            foreach (var tagName in tags.Where(t => !string.IsNullOrWhiteSpace(t)))
+            {
+                AddTagToEntityInDb(entityType, entityID, tagName);
             }
+
+            CRMDbContext.SaveChanges();
+
+            tx.Commit();
         }
 
         private void AddTagToEntityInDb(EntityType entityType, int entityID, int tagID)
         {
-            Db.ExecuteNonQuery(new SqlInsert("crm_entity_tag", true)
-                                        .InColumnValue("entity_id", entityID)
-                                        .InColumnValue("entity_type", (int)entityType)
-                                        .InColumnValue("tag_id", tagID));
+            CRMDbContext.EntityTags.Add(new DbEntityTag
+            {
+                EntityId = entityID,
+                EntityType = entityType,
+                TagId = tagID
+            });
+
+            CRMDbContext.SaveChanges();
         }
 
         public void AddTagToEntity(EntityType entityType, int entityID, int[] tagIDs)
         {
-            using (var tx = Db.BeginTransaction())
+            using var tx = CRMDbContext.Database.BeginTransaction();
+
+            foreach (var tagID in tagIDs)
             {
-                foreach (var tagID in tagIDs)
-                {
-                    AddTagToEntityInDb(entityType, entityID, tagID);
-                }
-                tx.Commit();
+                AddTagToEntityInDb(entityType, entityID, tagID);
             }
+
+            CRMDbContext.SaveChanges();
+
+            tx.Commit();
         }
 
         private static string CorrectTag(string tag)
@@ -425,6 +482,5 @@ namespace ASC.CRM.Core.Dao
                             .Replace("\r", string.Empty);
         }
 
-        #endregion
     }
 }

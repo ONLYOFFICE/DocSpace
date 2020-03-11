@@ -32,8 +32,12 @@ using System.Text.RegularExpressions;
 using ASC.Collections;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
@@ -93,10 +97,17 @@ namespace ASC.CRM.Core.Dao
             new KeyValuePair<InvoiceStatus, InvoiceStatus>(InvoiceStatus.Paid, InvoiceStatus.Sent)//Bug 23450
         };
 
-        public InvoiceDao(int tenantID)
-            : base(tenantID)
+        public InvoiceDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext)
+              : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+
         }
+
+        public CRMSecurity CRMSecurity { get; }
 
         public Boolean IsExist(int invoiceID)
         {
@@ -106,6 +117,7 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExistFromDb(int invoiceID)
         {
+
             return Db.ExecuteScalar<bool>(@"select exists(select 1 from crm_invoice where tenant_id = @tid and id = @id)",
                 new { tid = TenantID, id = invoiceID });
         }
@@ -123,9 +135,7 @@ namespace ASC.CRM.Core.Dao
                 .Where("number", number);
             return Db.ExecuteScalar<int>(q) > 0;
         }
-
-        #region Get
-
+              
         public virtual List<Invoice> GetAll()
         {
             return Db.ExecuteList(GetInvoiceSqlQuery(null, null)).ConvertAll(ToInvoice);
@@ -453,11 +463,7 @@ namespace ASC.CRM.Core.Dao
         {
             return Global.TenantSettings.InvoiceSetting ?? InvoiceSetting.DefaultSettings;
         }
-
-        #endregion
-
-        #region SaveOrUpdate
-
+                
         public virtual int SaveOrUpdateInvoice(Invoice invoice)
         {
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
@@ -663,12 +669,7 @@ namespace ASC.CRM.Core.Dao
 
             return tenantSettings.InvoiceSetting;
         }
-
-        #endregion
-
-        #region Delete
-
-
+        
         public virtual Invoice DeleteInvoice(int invoiceID)
         {
             if (invoiceID <= 0) return null;
@@ -713,10 +714,6 @@ namespace ASC.CRM.Core.Dao
             }
             invoices.ForEach(invoice =>  FactoryIndexer<InvoicesWrapper>.DeleteAsync(invoice));
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static Invoice ToInvoice(object[] row)
         {

@@ -26,9 +26,13 @@
 
 using ASC.Collections;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+using ASC.Web.CRM.Core.Search;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -91,23 +95,27 @@ namespace ASC.CRM.Core.Dao
             _contactCache.Reset(contactID.ToString());
         }
     }
-
-
-
-
+         
     public class ContactDao : AbstractDao
     {
         #region Constructor
 
-        public ContactDao(int tenantID)
-            : base(tenantID)
+        public ContactDao(
+            DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            CRMSecurity cRMSecurity) :
+                 base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+            CRMSecurity = cRMSecurity;
         }
 
         #endregion
 
         #region Members
-
+        public CRMSecurity CRMSecurity { get; }
         private readonly String _displayNameSeparator = "!=!";
         
         #endregion
@@ -1139,7 +1147,7 @@ namespace ASC.CRM.Core.Dao
                    .Set("status_id", contact.StatusID)
                    .Set("company_id", companyID)
                    .Set("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                   .Set("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                   .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
                    .Set("display_name", displayName)
                    .Set("is_shared", (int)contact.ShareType)
                    .Set("contact_type_id", contact.ContactTypeID)
@@ -1327,10 +1335,10 @@ namespace ASC.CRM.Core.Dao
                    .InColumnValue("industry", contact.Industry)
                    .InColumnValue("status_id", contact.StatusID)
                    .InColumnValue("company_id", companyID)
-                   .InColumnValue("create_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                   .InColumnValue("create_by", SecurityContext.CurrentAccount.ID)
                    .InColumnValue("create_on", TenantUtil.DateTimeToUtc(contact.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : contact.CreateOn))
                    .InColumnValue("last_modifed_on", TenantUtil.DateTimeToUtc(contact.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : contact.CreateOn))
-                   .InColumnValue("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                   .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
                    .InColumnValue("display_name", displayName)
                    .InColumnValue("is_shared", (int)contact.ShareType)
                    .InColumnValue("contact_type_id", contact.ContactTypeID)

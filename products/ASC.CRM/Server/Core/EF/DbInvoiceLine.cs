@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_invoice_line")]
-    public partial class CrmInvoiceLine
+    public partial class DbInvoiceLine : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(11)")]

@@ -321,8 +321,8 @@ namespace ASC.CRM.Core.Dao
 
             if (item.CreateOn == DateTime.MinValue)
                 item.CreateOn = TenantUtil.DateTimeNow();
-            item.CreateBy = ASC.Core.SecurityContext.CurrentAccount.ID;
-            item.LastModifedBy = ASC.Core.SecurityContext.CurrentAccount.ID;
+            item.CreateBy = SecurityContext.CurrentAccount.ID;
+            item.LastModifedBy = SecurityContext.CurrentAccount.ID;
 
             if (item.CategoryID == (int)HistoryCategorySystem.MailMessage)
             {

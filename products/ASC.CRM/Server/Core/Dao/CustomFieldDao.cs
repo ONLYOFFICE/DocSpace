@@ -100,7 +100,7 @@ namespace ASC.CRM.Core.Dao
                         .InColumnValue("field_id", fieldID)
                         .InColumnValue("entity_type", (int)entityType)
                         .InColumnValue("last_modifed_on", lastModifiedOn)
-                        .InColumnValue("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                        .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
                         .Identity(1, 0, true)
                         );
 

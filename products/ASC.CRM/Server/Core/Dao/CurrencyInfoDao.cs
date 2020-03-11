@@ -30,6 +30,9 @@ using System;
 using System.Collections.Generic;
 using ASC.Common.Data.Sql;
 using ASC.Common.Data.Sql.Expressions;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
 
 #endregion
 
@@ -37,9 +40,17 @@ namespace ASC.CRM.Core.Dao
 {
     public class CurrencyInfoDao : AbstractDao
     {
-        public CurrencyInfoDao(int tenantID)
-            : base(tenantID)
+
+
+        public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext):
+                                                base(dbContextManager,
+                                                    tenantManager,
+                                                    securityContext)
         {
+            
+                        
         }
 
         public virtual List<CurrencyInfo> GetAll()

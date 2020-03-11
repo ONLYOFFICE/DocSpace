@@ -27,7 +27,12 @@
 #region Import
 
 using ASC.Collections;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,31 +104,48 @@ namespace ASC.CRM.Core.Dao
 
         #region Constructor
 
-        public DealMilestoneDao(int tenantID)
-            : base(tenantID)
+        public DealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
+                                TenantManager tenantManager,
+                                SecurityContext securityContext) :
+                                                                    base(dbContextManager,
+                                                                         tenantManager,
+                                                                         securityContext)
         {
 
 
+
+
         }
+
 
         #endregion
 
         public virtual void Reorder(int[] ids)
         {
-            using (var tx = Db.BeginTransaction())
-            {
-                for (int index = 0; index < ids.Length; index++)
-                    Db.ExecuteNonQuery(Update("crm_deal_milestone")
-                                             .Set("sort_order", index)
-                                             .Where(Exp.Eq("id", ids[index])));
+            using var tx = CRMDbContext.Database.BeginTransaction();
 
-                tx.Commit();
+            for (int index = 0; index < ids.Length; index++)
+            {
+                Query(CRMDbContext.DealMilestones)
             }
+
+
+            tx.Commit();
+
+
+            throw new NotImplementedException();
+                                
+            //    .Where(x => ids.Contains(x.Id));
+         
+                Db.ExecuteNonQuery(Update("crm_deal_milestone")
+                                         .Set("sort_order", index)
+                                         .Where(Exp.Eq("id", ids[index])));
+
         }
 
         public int GetCount()
         {
-            return Db.ExecuteScalar<int>(Query("crm_deal_milestone").SelectCount());
+            return Query(CRMDbContext.DealMilestones).Count();
         }
 
 
@@ -144,12 +166,8 @@ namespace ASC.CRM.Core.Dao
 
         public int GetRelativeItemsCount(int id)
         {
-
-            var sqlQuery = Query("crm_deal")
-                             .Select("count(*)")
-                             .Where(Exp.Eq("deal_milestone_id", id));
-
-            return Db.ExecuteScalar<int>(sqlQuery);
+            return Query(CRMDbContext.Deals)
+                  .Count(x => x.DealMilestoneId == id);
         }
 
         public virtual int Create(DealMilestone item)
@@ -186,34 +204,37 @@ namespace ASC.CRM.Core.Dao
 
         public virtual void ChangeColor(int id, String newColor)
         {
-            Db.ExecuteNonQuery(Update("crm_deal_milestone")
-                                        .Set("color", newColor)
-                                        .Where(Exp.Eq("id", id)));
+            var item = CRMDbContext.DealMilestones.First(x => x.Id == id);
+
+            item.Color = newColor;
+
+            CRMDbContext.SaveChanges();
         }
 
         public virtual void Edit(DealMilestone item)
         {
-
             if (HaveContactLink(item.ID))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.DealMilestoneHasRelatedDeals));
 
-            Db.ExecuteNonQuery(Update("crm_deal_milestone")
-                                    .Set("title", item.Title)
-                                    .Set("description", item.Description)
-                                    .Set("color", item.Color)
-                                    .Set("probability", item.Probability)
-                                    .Set("status", (int)item.Status)
-                                    .Where(Exp.Eq("id", item.ID)));
+            Query(CRMDbContext.DealMilestones)
+                .First(x => x.Id == item.ID);
+
+
+            //CRMDbContext.DealMilestones.Update();
+
+            //Db.ExecuteNonQuery(Update("crm_deal_milestone")
+            //                        .Set("title", item.Title)
+            //                        .Set("description", item.Description)
+            //                        .Set("color", item.Color)
+            //                        .Set("probability", item.Probability)
+            //                        .Set("status", (int)item.Status)
+            //                        .Where(Exp.Eq("id", item.ID)));
         }
 
         public bool HaveContactLink(int dealMilestoneID)
         {
-            SqlQuery sqlQuery = Query("crm_deal")
-                                .Where(Exp.Eq("deal_milestone_id", dealMilestoneID))
-                                .SelectCount()
-                                .SetMaxResults(1);
-
-            return Db.ExecuteScalar<int>(sqlQuery) >= 1;
+            return Query(CRMDbContext.Deals)
+                .Any(x => x.DealMilestoneId == dealMilestoneID);
         }
 
         public virtual void Delete(int id)
@@ -221,69 +242,78 @@ namespace ASC.CRM.Core.Dao
             if (HaveContactLink(id))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.DealMilestoneHasRelatedDeals));
 
-            Db.ExecuteNonQuery(Delete("crm_deal_milestone").Where(Exp.Eq("id", id)));
+            var item = CRMDbContext.DealMilestones.First(x => x.Id == id);
+            
+            CRMDbContext.DealMilestones.Remove(item);
+
+            CRMDbContext.SaveChanges();
+
         }
 
         public virtual DealMilestone GetByID(int id)
         {
-            var dealMilestones = Db.ExecuteList(GetDealMilestoneQuery(Exp.Eq("id", id))).ConvertAll(row => ToDealMilestone(row));
+            
+            //var dealMilestones = Db.ExecuteList(GetDealMilestoneQuery(Exp.Eq("id", id))).ConvertAll(row => ToDealMilestone(row));
 
-            if (dealMilestones.Count == 0)
-                return null;
+            //if (dealMilestones.Count == 0)
+            //    return null;
 
-            return dealMilestones[0];
+            //return dealMilestones[0];
         }
 
         public Boolean IsExist(int id)
         {
-            return Db.ExecuteScalar<bool>("select exists(select 1 from crm_deal_milestone where tenant_id = @tid and id = @id)",
-                new { tid = TenantID, id = id });
+            return Query(CRMDbContext.DealMilestones).Any(x => x.Id == id);
         }
 
         public List<DealMilestone> GetAll(int[] id)
         {
-            return Db.ExecuteList(GetDealMilestoneQuery(Exp.In("id", id))).ConvertAll(row => ToDealMilestone(row));
+
+
+
+
+
+ //         return Db.ExecuteList(GetDealMilestoneQuery(Exp.In("id", id))).ConvertAll(row => ToDealMilestone(row));
         }
 
         public List<DealMilestone> GetAll()
         {
-            return Db.ExecuteList(GetDealMilestoneQuery(null)).ConvertAll(row => ToDealMilestone(row));
+
+
+//          return Db.ExecuteList(GetDealMilestoneQuery(null)).ConvertAll(row => ToDealMilestone(row));
         }
 
-        private SqlQuery GetDealMilestoneQuery(Exp where)
-        {
-            SqlQuery sqlQuery = Query("crm_deal_milestone")
-                .Select("id",
-                        "title",
-                        "description",
-                        "color",
-                        "probability",
-                        "status",
-                        "sort_order")
-                        .OrderBy("sort_order", true);
+        //private SqlQuery GetDealMilestoneQuery(Exp where)
+        //{
+        //    SqlQuery sqlQuery = Query("crm_deal_milestone")
+        //        .Select("id",
+        //                "title",
+        //                "description",
+        //                "color",
+        //                "probability",
+        //                "status",
+        //                "sort_order")
+        //                .OrderBy("sort_order", true);
 
-            if (where != null)
-                sqlQuery.Where(where);
+        //    if (where != null)
+        //        sqlQuery.Where(where);
 
-            return sqlQuery;
+        //    return sqlQuery;
 
-        }
+        //}
 
-        private static DealMilestone ToDealMilestone(object[] row)
+        private static DealMilestone ToDealMilestone(DbDealMilestone dbDealMilestone)
         {
             return new DealMilestone
             {
-                ID = Convert.ToInt32(row[0]),
-                Title = Convert.ToString(row[1]),
-                Description = Convert.ToString(row[2]),
-                Color = Convert.ToString(row[3]),
-                Probability = Convert.ToInt32(row[4]),
-                Status = (DealMilestoneStatus)Convert.ToInt32(row[5]),
-                SortOrder = Convert.ToInt32(row[6])
+                 ID = dbDealMilestone.Id,
+                 Title = dbDealMilestone.Title,
+                 Color = dbDealMilestone.Color,
+                 Status = dbDealMilestone.Status,
+                 Description = dbDealMilestone.Description,
+                 Probability = dbDealMilestone.Probability,
+                 SortOrder = dbDealMilestone.SortOrder
             };
         }
-
-
-
     }
 }

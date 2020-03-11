@@ -72,8 +72,7 @@ namespace ASC.CRM.Services.NotifyService {
         ///          ----------------------------------------
         ///
         ///          #each
-        ///
-        ///          &quot; [rest of string was truncated]&quot;;.
+        ///        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_AddRelationshipEvent {
             get {
@@ -194,7 +193,7 @@ namespace ASC.CRM.Services.NotifyService {
         ///#end
         ///#if($AdditionalData.get_item(&quot;CaseRelativeUrl&quot;))
         ///
-        ///Link with case: &quot;$Addit [rest of string was truncated]&quot;;.
+        ///Link with  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_ResponsibleForTask {
             get {
@@ -225,7 +224,7 @@ namespace ASC.CRM.Services.NotifyService {
         ///#end
         ///#if($AdditionalData.get_item(&quot;CaseRelativeUrl&quot;))
         ///
-        ///Link with case: &quot;$AdditionalData.get_item(&quot;CaseTitle&quot;)&quot;:&quot;${__VirtualRootPath}/$AdditionalData.get_item(&quot;CaseRelativeUrl&quot;) [rest of string was truncated]&quot;;.
+        ///Link with case: &quot;$AdditionalData.get_item(&quot;CaseTitle&quot;)&quot;:&quot;${__VirtualRootPath}/$AdditionalData.get_item(&quot;CaseRe [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_TaskReminder {
             get {

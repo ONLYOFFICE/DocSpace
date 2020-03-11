@@ -48,19 +48,12 @@ namespace ASC.CRM.Core.Dao
 
     public class ManagerDao : AbstractDao
     {
-
-        #region Constructor
-
         public ManagerDao(int tenantID, String storageKey)
             : base(tenantID, storageKey)
         {
 
 
         }
-
-        #endregion
-
-        #region Methods
 
         public void Add(Guid managerID)
         {
@@ -70,7 +63,7 @@ namespace ASC.CRM.Core.Dao
 
         public void Remove(Guid managerID)
         {
-
+         
             DbManager.ExecuteNonQuery(Delete("crm_manager").Where(Exp.Eq("id", managerID)));
 
         }
@@ -85,8 +78,6 @@ namespace ASC.CRM.Core.Dao
 
             return managers;
         }
-
-        #endregion
 
     }
 

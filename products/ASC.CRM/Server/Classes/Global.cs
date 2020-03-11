@@ -85,7 +85,7 @@ namespace ASC.Web.CRM.Classes
             {
                 var apiUrl = String.Format("{0}project/securityinfo.json", SetupInfo.WebApiBaseUrl);
 
-                var cacheKey = String.Format("{0}-{1}", ASC.Core.SecurityContext.CurrentAccount.ID, apiUrl);
+                var cacheKey = String.Format("{0}-{1}", SecurityContext.CurrentAccount.ID, apiUrl);
 
                 bool canCreateProject;
 

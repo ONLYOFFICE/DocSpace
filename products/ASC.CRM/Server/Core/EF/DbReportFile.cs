@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_report_file")]
-    public partial class CrmReportFile
+    public partial class DbReportFile
     {
         [Key]
         [Column("file_id", TypeName = "int(11)")]

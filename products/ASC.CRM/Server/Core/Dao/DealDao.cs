@@ -24,24 +24,23 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Globalization;
-
 using ASC.Collections;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
-using ASC.Web.Files.Api;
 using ASC.Web.CRM.Core.Search;
+using ASC.Web.Files.Api;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text.RegularExpressions;
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
-using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -93,10 +92,20 @@ namespace ASC.CRM.Core.Dao
     {
         #region Constructor
 
-        public DealDao(int tenantID)
-            : base(tenantID)
+        public DealDao(DbContextManager<CRMDbContext> dbContextManager,
+                       TenantManager tenantManager,
+                       SecurityContext securityContext,
+                       CRMSecurity cRMSecurity) :
+            base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
+
         }
+
+
+        public TenantUtil TenantUtil { get; }
+        public CRMSecurity CRMSecurity { get; }
 
         #endregion
 
@@ -180,9 +189,9 @@ namespace ASC.CRM.Core.Dao
                 .InColumnValue("actual_close_date", TenantUtil.DateTimeToUtc(deal.ActualCloseDate))
                 .InColumnValue("per_period_value", deal.PerPeriodValue)
                 .InColumnValue("create_on", TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn))
-                .InColumnValue("create_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                .InColumnValue("create_by", SecurityContext.CurrentAccount.ID)
                 .InColumnValue("last_modifed_on", TenantUtil.DateTimeToUtc(deal.CreateOn == DateTime.MinValue ? TenantUtil.DateTimeNow() : deal.CreateOn))
-                .InColumnValue("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
                 .Identity(1, 0, true));
 
             //    if (deal.ContactID > 0)
@@ -231,7 +240,7 @@ namespace ASC.CRM.Core.Dao
                 .Set("per_period_value", deal.PerPeriodValue)
                 .Set("actual_close_date", TenantUtil.DateTimeToUtc(deal.ActualCloseDate))
                 .Set("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                .Set("last_modifed_by", ASC.Core.SecurityContext.CurrentAccount.ID)
+                .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
                 .Where(Exp.Eq("id", deal.ID))
                 );
 
@@ -885,12 +894,16 @@ namespace ASC.CRM.Core.Dao
         /// <param name="lastModifedDate"></param>
         public void SetDealLastModifedDate(int opportunityid, DateTime lastModifedDate)
         {
+            
+
             Db.ExecuteNonQuery(
                 Update("crm_deal")
                     .Set("last_modifed_on", TenantUtil.DateTimeToUtc(lastModifedDate))
                     .Where(Exp.Eq("id", opportunityid)));
+            
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
+
         }
     }
 }

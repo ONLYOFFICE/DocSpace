@@ -26,10 +26,13 @@
 
 using ASC.Collections;
 using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Core.Search;
+using ASC.Web.Files.Api;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -81,22 +84,30 @@ namespace ASC.CRM.Core.Dao
 
     public class CasesDao : AbstractDao
     {
-        public CasesDao(int tenantID)
-            : base(tenantID)
-        {
-            
-        }
-
-        #region Property
-
-        public CRMSecurity CRMSecurity { get; }
-
-        #endregion
-
-        public CasesDao(CRMSecurity cRMSecurity)
+        public CasesDao(
+            DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            CRMSecurity cRMSecurity,
+            TenantUtil tenantUtil,
+            FilesIntegration filesIntegration
+            ) :
+                 base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
             CRMSecurity = cRMSecurity;
+            TenantUtil = tenantUtil;
+            FilesIntegration = filesIntegration;
         }
+
+        public CoreContext CoreContext { get; }
+
+        public FilesIntegration FilesIntegration { get; }
+
+        public TenantUtil TenantUtil { get; }
+
+        public CRMSecurity CRMSecurity { get; }
 
         public void AddMember(int caseID, int memberID)
         {
@@ -125,16 +136,17 @@ namespace ASC.CRM.Core.Dao
 
         public virtual int[] SaveCasesList(List<Cases> items)
         {
-            using (var tx = Db.BeginTransaction())
-            {
-                var result = items.Select(item => CreateCasesInDb(item.Title)).ToArray();
-                tx.Commit();
-                // Delete relative keys
-                _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "cases.*"));
-                return result;
-            }
-        }
+            using var tx = CRMDbContext.Database.BeginTransaction();
 
+            var result = items.Select(item => CreateCasesInDb(item.Title)).ToArray();
+
+            tx.Commit();
+
+            // Delete relative keys
+            _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "cases.*"));
+
+            return result;
+        }
 
         public Cases CloseCases(int caseID)
         {
@@ -146,12 +158,22 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandAccessTo(cases);
 
-            Db.ExecuteNonQuery(
-                Update("crm_case")
-                    .Set("is_closed", true)
-                    .Where("id", caseID)
-                );
+            CRMDbContext.Cases.Update(new DbCase
+            {
+                Id = cases.ID,
+                CreateBy = cases.CreateBy,
+                CreateOn = cases.CreateOn,
+                IsClosed = true,
+                LastModifedBy = cases.LastModifedBy,
+                LastModifedOn = cases.LastModifedOn,
+                TenantId = TenantID,
+                Title = cases.Title
+            });
+
+            CRMDbContext.SaveChanges();
+
             cases.IsClosed = true;
+
             return cases;
         }
 
@@ -165,12 +187,22 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandAccessTo(cases);
 
-            Db.ExecuteNonQuery(
-                Update("crm_case")
-                .Set("is_closed", false)
-                .Where("id", caseID)
-            );
+            CRMDbContext.Cases.Update(new DbCase
+            {
+                Id = cases.ID,
+                CreateBy = cases.CreateBy,
+                CreateOn = cases.CreateOn,
+                IsClosed = false,
+                LastModifedBy = cases.LastModifedBy,
+                LastModifedOn = cases.LastModifedOn,
+                TenantId = TenantID,
+                Title = cases.Title
+            });
+
+            CRMDbContext.SaveChanges();
+
             cases.IsClosed = false;
+
             return cases;
         }
 
@@ -185,16 +217,23 @@ namespace ASC.CRM.Core.Dao
 
         private int CreateCasesInDb(String title)
         {
-            return Db.ExecuteScalar<int>(
-                  Insert("crm_case")
-                 .InColumnValue("id", 0)
-                 .InColumnValue("title", title)
-                 .InColumnValue("is_closed", false)
-                 .InColumnValue("create_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                 .InColumnValue("create_by", SecurityContext.CurrentAccount.ID)
-                 .InColumnValue("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                 .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                 .Identity(1, 0, true));
+            var dbCase = new DbCase
+            {
+                Title = title,
+                IsClosed = false,
+                CreateOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                CreateBy = SecurityContext.CurrentAccount.ID,
+                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                TenantId = TenantID
+            };
+
+            CRMDbContext.Cases.Add(dbCase);
+
+            CRMDbContext.SaveChanges();
+
+            return dbCase.Id;
+
         }
 
         public virtual void UpdateCases(Cases cases)
@@ -204,14 +243,19 @@ namespace ASC.CRM.Core.Dao
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
 
-            Db.ExecuteNonQuery(
-                    Update("crm_case")
-                .Set("title", cases.Title)
-                .Set("is_closed", cases.IsClosed)
-                .Set("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                .Where("id", cases.ID)
-            );
+            CRMDbContext.Cases.Update(new DbCase
+            {
+                Id = cases.ID,
+                Title = cases.Title,
+                IsClosed = cases.IsClosed,
+                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                TenantId = TenantID,
+                CreateBy = cases.CreateBy,
+                CreateOn = cases.CreateOn
+            });
+
+            CRMDbContext.SaveChanges();
         }
 
         public virtual Cases DeleteCases(int casesID)
@@ -262,37 +306,36 @@ namespace ASC.CRM.Core.Dao
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
-            using (var tagdao = FilesIntegration.GetTagDao())
+            var tagdao = FilesIntegration.GetTagDao();
+
+            var tagNames = Db.ExecuteList(Query("crm_relationship_event").Select("id")
+                .Where(Exp.Eq("have_files", true) & Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)))
+                .Select(row => String.Format("RelationshipEvent_{0}", row[0])).ToArray();
+
+            var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
+
+            using var tx = CRMDbContext.Database.BeginTransaction();
+
+            Db.ExecuteNonQuery(Delete("crm_field_value").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
+            Db.ExecuteNonQuery(Delete("crm_relationship_event").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
+            Db.ExecuteNonQuery(Delete("crm_task").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
+            Db.ExecuteNonQuery(new SqlDelete("crm_entity_tag").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
+            Db.ExecuteNonQuery(Delete("crm_case").Where(Exp.In("id", casesID)));
+
+            tx.Commit();
+
+            caseses.ForEach(item => CoreContext.AuthorizationManager.RemoveAllAces(item));
+
+            if (0 < tagNames.Length)
             {
-                var tagNames = Db.ExecuteList(Query("crm_relationship_event").Select("id")
-                    .Where(Exp.Eq("have_files", true) & Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)))
-                    .Select(row => String.Format("RelationshipEvent_{0}", row[0])).ToArray();
-                var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
+                var filedao = FilesIntegration.GetFileDao();
 
-                using (var tx = Db.BeginTransaction(true))
+                foreach (var filesID in filesIDs)
                 {
-                    Db.ExecuteNonQuery(Delete("crm_field_value").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-                    Db.ExecuteNonQuery(Delete("crm_relationship_event").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-                    Db.ExecuteNonQuery(Delete("crm_task").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-                    Db.ExecuteNonQuery(new SqlDelete("crm_entity_tag").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-                    Db.ExecuteNonQuery(Delete("crm_case").Where(Exp.In("id", casesID)));
-
-                    tx.Commit();
-                }
-
-                caseses.ForEach(item => CoreContext.AuthorizationManager.RemoveAllAces(item));
-
-                if (0 < tagNames.Length)
-                {
-                    using (var filedao = FilesIntegration.GetFileDao())
-                    {
-                        foreach (var filesID in filesIDs)
-                        {
-                            filedao.DeleteFile(filesID);
-                        }
-                    }
+                    filedao.DeleteFile(filesID);
                 }
             }
+
             //todo: remove indexes
         }
 
@@ -394,9 +437,9 @@ namespace ASC.CRM.Core.Dao
                 {
                     if (!BundleSearch.TrySelectCase(searchText, out ids))
                     {
-                        conditions.Add(BuildLike(new[] {"title"}, keywords));
+                        conditions.Add(BuildLike(new[] { "title" }, keywords));
                     }
-                    else if(!ids.Any())
+                    else if (!ids.Any())
                     {
                         return null;
 
@@ -413,7 +456,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (ids.Count > 0)
                     sqlQuery.Where(Exp.In("entity_id", ids));
-                
+
                 ids = Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList();
                 if (ids.Count == 0) return null;
             }
@@ -540,7 +583,10 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<Cases> GetByID(int[] ids)
         {
-            return Db.ExecuteList(GetCasesSqlQuery(Exp.In("id", ids))).ConvertAll(ToCases);
+            return CRMDbContext.Cases
+                               .Where(x => ids.Contains(x.Id))
+                               .ToList()
+                               .ConvertAll(ToCases);
         }
 
         public virtual Cases GetByID(int id)
@@ -552,22 +598,23 @@ namespace ASC.CRM.Core.Dao
             return cases.Count == 0 ? null : cases[0];
         }
 
-        #region Private Methods
-
-        private static Cases ToCases(object[] row)
+        private Cases ToCases(DbCase dbCase)
         {
             return new Cases
-                       {
-                           ID = Convert.ToInt32(row[0]),
-                           Title = Convert.ToString(row[1]),
-                           CreateBy = ToGuid(row[2]),
-                           CreateOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[3].ToString())),
-                           IsClosed = Convert.ToBoolean(row[4])
-                       };
+            {
+                ID = dbCase.Id,
+                Title = dbCase.Title,
+                CreateBy = dbCase.CreateBy,
+                CreateOn = dbCase.CreateOn,
+                IsClosed = dbCase.IsClosed,
+                LastModifedBy = dbCase.LastModifedBy,
+                LastModifedOn = dbCase.LastModifedOn
+            };
         }
 
         private SqlQuery GetCasesSqlQuery(Exp where)
         {
+
             var sqlQuery = Query("crm_case")
                 .Select("id", "title", "create_by", "create_on", "is_closed");
 
@@ -578,9 +625,6 @@ namespace ASC.CRM.Core.Dao
 
             return sqlQuery;
         }
-
-        #endregion
-
 
         public void ReassignCasesResponsible(Guid fromUserId, Guid toUserId)
         {

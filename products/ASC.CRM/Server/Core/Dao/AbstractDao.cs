@@ -57,17 +57,7 @@ namespace ASC.CRM.Core.Dao
             _cache = AscCache.Memory;
             CRMDbContext = dbContextManager.Get(CRMConstants.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;
-            SecurityContext = securityContext;           
-        }
-
-        /*
-        protected readonly String _invoiceItemCacheKey;
-        protected readonly String _invoiceTaxCacheKey;
-        protected readonly String _invoiceLineCacheKey;
-        */
-        protected AbstractDao(int tenantID)
-        {
-            TenantID = tenantID;
+            SecurityContext = securityContext;
 
             _supportedEntityType.Add(EntityType.Company);
             _supportedEntityType.Add(EntityType.Person);
@@ -93,7 +83,15 @@ namespace ASC.CRM.Core.Dao
                 _cache.Insert(_invoiceLineCacheKey, String.Empty);
             }
              */
+
+
         }
+
+        /*
+        protected readonly String _invoiceItemCacheKey;
+        protected readonly String _invoiceTaxCacheKey;
+        protected readonly String _invoiceLineCacheKey;
+        */
 
         protected int TenantID { get; private set; }
 
@@ -106,22 +104,22 @@ namespace ASC.CRM.Core.Dao
 
             foreach (var tag in tags) {
                 tagIDs.Add(CRMDbContext
-                    .CrmTag
-                    .Where(x => x.EntityType == (int)entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
+                    .Tags
+                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
                     .Select(x => x.Id).Single());
             }
 
-            Expression<Func<CrmEntityTag, bool>> exp = null;
+            Expression<Func<DbEntityTag, bool>> exp = null;
 
             if (exceptIDs != null && exceptIDs.Length > 0)
-                exp = x => exceptIDs.Contains(x.EntityId) && x.EntityType == (int)entityType;
+                exp = x => exceptIDs.Contains(x.EntityId) && x.EntityType == entityType;
             else
-                exp = x => x.EntityType == (int)entityType;
+                exp = x => x.EntityType == entityType;
             
-            
+                                                         
             throw new NotImplementedException();
 
-            //            exp.Update() Exp.In("tag_id", tagIDs)
+            // exp.Update() Exp.In("tag_id", tagIDs)
             // return CRMDbContext.CrmEntityTag.Where(exp).GroupBy(x => x.EntityId).Select(x=>)
             // .Where(x => true).Select(x=>x); 
 
@@ -143,14 +141,14 @@ namespace ASC.CRM.Core.Dao
 
         protected Dictionary<int, int[]> GetRelativeToEntity(int[] contactID, EntityType entityType, int[] entityID)
         {
-            Expression<Func<CrmEntityContact, bool>> exp = null;
+            Expression<Func<DbEntityContact, bool>> exp = null;
 
             if (contactID != null && contactID.Length > 0 && (entityID == null || entityID.Length == 0))
                 exp = x => x.EntityType == (int)entityType && contactID.Contains(x.ContactId);
             else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
                 exp = x => x.EntityType == (int)entityType && entityID.Contains(x.EntityId);
             
-            return CRMDbContext.CrmEntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
+            return CRMDbContext.EntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
                     x => x.Key,
                     x => x.Select(x => Convert.ToInt32(x.ContactId)).ToArray());         
         }
@@ -163,13 +161,13 @@ namespace ASC.CRM.Core.Dao
         protected int[] GetRelativeToEntityInDb(int? contactID, EntityType entityType, int? entityID)
         {
             if (contactID.HasValue && !entityID.HasValue)
-                return CRMDbContext.CrmEntityContact
+                return CRMDbContext.EntityContact
                        .Where(x => x.EntityType == (int)entityType && x.ContactId == contactID.Value)
                        .Select(x => x.EntityId)
                        .ToArray();
 
             if (!contactID.HasValue && entityID.HasValue)
-                return CRMDbContext.CrmEntityContact
+                return CRMDbContext.EntityContact
                        .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID.Value)
                        .Select(x => x.ContactId)
                        .ToArray();
@@ -184,17 +182,17 @@ namespace ASC.CRM.Core.Dao
 
             using var tx = CRMDbContext.Database.BeginTransaction();
 
-            var exists = CRMDbContext.CrmEntityContact
+            var exists = CRMDbContext.EntityContact
                                     .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID)
                                     .Select(x => x.ContactId)
                                     .ToArray();
 
             foreach (var existContact in exists)
             {
-                var items = CRMDbContext.CrmEntityContact
+                var items = CRMDbContext.EntityContact
                                         .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID && x.ContactId == existContact);
 
-                CRMDbContext.CrmEntityContact.RemoveRange(items);
+                CRMDbContext.EntityContact.RemoveRange(items);
             }
 
             if (!(contactID == null || contactID.Length == 0))
@@ -206,7 +204,7 @@ namespace ASC.CRM.Core.Dao
 
         protected void SetRelative(int contactID, EntityType entityType, int entityID)
         {
-            CRMDbContext.CrmEntityContact.Add(new CrmEntityContact
+            CRMDbContext.EntityContact.Add(new DbEntityContact
             {
                 ContactId = contactID,
                 EntityType = (int)entityType,
@@ -221,7 +219,7 @@ namespace ASC.CRM.Core.Dao
             if ((contactID == null || contactID.Length == 0) && (entityID == null || entityID.Length == 0))
                 throw new ArgumentException();
 
-            Expression<Func<CrmEntityContact, bool>> expr = null;
+            Expression<Func<DbEntityContact, bool>> expr = null;
 
             if (contactID != null && contactID.Length > 0)
                 expr = x => contactID.Contains(x.ContactId);
@@ -229,7 +227,7 @@ namespace ASC.CRM.Core.Dao
             if (entityID != null && entityID.Length > 0)
                 expr = x => entityID.Contains(x.EntityId) && x.EntityType == (int)entityType;
 
-            var dbCrmEntity = CRMDbContext.CrmEntityContact;
+            var dbCrmEntity = CRMDbContext.EntityContact;
 
             dbCrmEntity.RemoveRange(dbCrmEntity.Where(expr));
 
@@ -255,14 +253,14 @@ namespace ASC.CRM.Core.Dao
 
         public int SaveOrganisationLogo(byte[] bytes)
         {            
-            var entity = new CrmOrganisationLogo
+            var entity = new DbOrganisationLogo
             {
                 Content = Convert.ToBase64String(bytes),
                 CreateOn = DateTime.UtcNow,
                 CreateBy = SecurityContext.CurrentAccount.ID.ToString()
             };
 
-            CRMDbContext.CrmOrganisationLogo.Add(entity);
+            CRMDbContext.OrganisationLogo.Add(entity);
 
             CRMDbContext.SaveChanges();
 
@@ -275,7 +273,7 @@ namespace ASC.CRM.Core.Dao
             if (logo_id <= 0) throw new ArgumentException();
 
 
-            return CRMDbContext.CrmOrganisationLogo
+            return CRMDbContext.OrganisationLogo
                                 .Where(x => x.Id == logo_id)
                                 .Select(x => x.Content)
                                 .FirstOrDefault();
@@ -297,19 +295,24 @@ namespace ASC.CRM.Core.Dao
         {
             return set.Where(r => r.TenantId == TenantID);
         }
-
+        
         protected string GetTenantColumnName(string table)
         {
             var tenant = "tenant_id";
+            
             if (!table.Contains(" ")) return tenant;
+        
             return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
+        
         }
 
 
         protected static Guid ToGuid(object guid)
         {
             var str = guid as string;
+            
             return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
+        
         }
 
     }
