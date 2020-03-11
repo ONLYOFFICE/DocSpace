@@ -119,8 +119,15 @@ class PureHome extends React.Component {
           fontColor={"#999"}
         />
         <PageLayout
-          withBodyScroll={true}
-          withBodyAutoFocus={true}
+          withBodyScroll
+          withBodyAutoFocus
+
+          //showProgressBar
+          //progressBarMaxValue
+          //progressBarValue
+          //progressBarDropDownContent
+          //progressBarLabel={`Uploading files: ${progressBarValue} of ${progressBarMaxValue}`}
+
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={
             <ArticleMainButtonContent
