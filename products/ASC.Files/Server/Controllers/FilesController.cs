@@ -730,9 +730,9 @@ namespace ASC.Api.Documents
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
         [Create("folder/{folderId}")]
-        public FolderWrapper CreateFolder(string folderId, string title)
+        public FolderWrapper CreateFolder(string folderId, FolderModel folderModel)
         {
-            var folder = FileStorageService.CreateNewFolder(folderId, title);
+            var folder = FileStorageService.CreateNewFolder(folderId, folderModel.Title);
             return FolderWrapperHelper.Get(folder);
         }
 
@@ -777,9 +777,9 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
         [Update("folder/{folderId}")]
-        public FolderWrapper RenameFolder(string folderId, string title)
+        public FolderWrapper RenameFolder(string folderId, FolderModel folderModel)
         {
-            var folder = FileStorageService.FolderRename(folderId, title);
+            var folder = FileStorageService.FolderRename(folderId, folderModel.Title);
             return FolderWrapperHelper.Get(folder);
         }
 
@@ -832,13 +832,13 @@ namespace ASC.Api.Documents
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
         [Update("file/{fileId}")]
-        public FileWrapper UpdateFile(string fileId, string title, int lastVersion)
+        public FileWrapper UpdateFile(string fileId, [FromBody]FileModelFull model)
         {
-            if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId.ToString(CultureInfo.InvariantCulture), title);
+            if (!string.IsNullOrEmpty(model.Title))
+                FileStorageService.FileRename(fileId.ToString(CultureInfo.InvariantCulture), model.Title);
 
-            if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId.ToString(CultureInfo.InvariantCulture), lastVersion);
+            if (model.Version > 0)
+                FileStorageService.UpdateToVersion(fileId.ToString(CultureInfo.InvariantCulture), model.Version);
 
             return GetFileInfo(fileId);
         }

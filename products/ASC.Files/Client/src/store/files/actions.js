@@ -313,9 +313,15 @@ export function deleteFile(fileId, deleteAfter, immediately) {
   }
 }
 
-export function deleteFolder(fileId, deleteAfter, immediately) {
-  return dispatch => {
-    return files.deleteFolder(fileId, deleteAfter, immediately)
+export function deleteFolder(folderId, deleteAfter, immediately) {
+  return (dispatch, getState) => {
+    const { files } = getState();
+    const { folders } = files;
+
+    return api.files.deleteFolder(folderId, deleteAfter, immediately)
+    .then(res => {
+      return dispatch(setFolder(folders.filter(f => f.id !== folderId)));
+    })
   }
 }
 
