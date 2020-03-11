@@ -47,7 +47,9 @@ namespace ASC.Calendar.Models
         public int IsTodo { get; set; }
 
         [DataMember(Name = "sharing_options", Order = 60)]
-        public List<SharingParam> sharingOptions { get; set; }
+        public List<SharingParam> SharingOptions { get; set; }
+        [DataMember(Name = "hide_events", Order = 60)]
+        public bool HideEvents { get; set; }
 
         /*public static object GetSample()
         {

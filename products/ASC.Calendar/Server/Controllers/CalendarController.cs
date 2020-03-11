@@ -45,6 +45,8 @@ using ASC.Calendar.iCalParser;
 using ASC.Common.Security;
 using System.Globalization;
 using Ical.Net.DataTypes;
+using System.Threading;
+using System.Text;
 
 namespace ASC.Calendar.Controllers
 {
@@ -180,7 +182,7 @@ namespace ASC.Calendar.Controllers
         [Create]
         public CalendarWrapper CreateCalendar(CalendarModel calendar)
         {
-            var sharingOptionsList = calendar.sharingOptions ?? new List<SharingParam>();
+            var sharingOptionsList = calendar.SharingOptions ?? new List<SharingParam>();
             var timeZoneInfo = TimeZoneConverter.GetTimeZone(calendar.TimeZone);
 
             calendar.Name = (calendar.Name ?? "").Trim();
@@ -257,6 +259,233 @@ namespace ASC.Calendar.Controllers
             }
 
             return CalendarWrapperHelper.Get(cal);
+        }
+
+        [Update("{calendarId}")]
+        public CalendarWrapper UpdateCalendar(string calendarId, CalendarModel calendar)
+        {
+            var name = calendar.Name;
+            var description = calendar.Description;
+            var textColor = calendar.TextColor;
+            var backgroundColor = calendar.BackgroundColor;
+            var timeZone = calendar.TimeZone;
+            var alertType = calendar.AlertType;
+            var hideEvents = calendar.HideEvents;
+            var sharingOptions = calendar.SharingOptions;
+            var iCalUrl = calendar.iCalUrl ?? "";
+
+            TimeZoneInfo timeZoneInfo = TimeZoneConverter.GetTimeZone(timeZone);
+            int calId;
+            if (!string.IsNullOrEmpty(iCalUrl))
+            {
+                try
+                {
+                    var req = (HttpWebRequest)WebRequest.Create(iCalUrl);
+                    using (var resp = req.GetResponse())
+                    using (var stream = resp.GetResponseStream())
+                    {
+                        var ms = new MemoryStream();
+                        stream.StreamCopyTo(ms);
+                        ms.Seek(0, SeekOrigin.Begin);
+
+                        using (var tempReader = new StreamReader(ms))
+                        {
+
+                            var cals = DDayICalParser.DeserializeCalendar(tempReader);
+                            ImportEvents(Convert.ToInt32(calendarId), cals);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Info(String.Format("Error import events to calendar by ical url: {0}", ex.Message));
+                }
+
+            }
+
+
+            if (int.TryParse(calendarId, out calId))
+            {
+                var oldCal = DataProvider.GetCalendarById(calId);
+                if (CheckPermissions(oldCal, CalendarAccessRights.FullAccessAction, true))
+                {
+                    //update calendar and share options
+                    var sharingOptionsList = sharingOptions ?? new List<SharingParam>();
+
+                    name = (name ?? "").Trim();
+                    if (String.IsNullOrEmpty(name))
+                        throw new Exception(Resources.CalendarApiResource.ErrorEmptyName);
+
+                    description = (description ?? "").Trim();
+                    textColor = (textColor ?? "").Trim();
+                    backgroundColor = (backgroundColor ?? "").Trim();
+
+
+                    //view
+                    var userOptions = oldCal.ViewSettings;
+                    var usrOpt = userOptions.Find(o => o.UserId.Equals(AuthContext.CurrentAccount.ID));
+                    if (usrOpt == null)
+                    {
+                        userOptions.Add(new UserViewSettings
+                        {
+                            Name = name,
+                            TextColor = textColor,
+                            BackgroundColor = backgroundColor,
+                            EventAlertType = alertType,
+                            IsAccepted = true,
+                            UserId = AuthContext.CurrentAccount.ID,
+                            TimeZone = timeZoneInfo
+                        });
+                    }
+                    else
+                    {
+                        usrOpt.Name = name;
+                        usrOpt.TextColor = textColor;
+                        usrOpt.BackgroundColor = backgroundColor;
+                        usrOpt.EventAlertType = alertType;
+                        usrOpt.TimeZone = timeZoneInfo;
+                    }
+
+                    userOptions.RemoveAll(o => !o.UserId.Equals(oldCal.OwnerId) && !sharingOptionsList.Exists(opt => (!opt.IsGroup && o.UserId.Equals(opt.Id))
+                                                                               || opt.IsGroup && UserManager.IsUserInGroup(o.UserId, opt.Id)));
+
+                    //check owner
+                    if (!oldCal.OwnerId.Equals(AuthContext.CurrentAccount.ID))
+                    {
+                        name = oldCal.Name;
+                        description = oldCal.Description;
+                    }
+
+                    var myUri = HttpContext.Request.GetUrlRewriter();
+                    var _email = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email;
+                    string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
+
+                    var cal = DataProvider.UpdateCalendar(calId, name, description,
+                                        sharingOptionsList.Select(o => o as SharingOptions.PublicItem).ToList(),
+                                        userOptions);
+
+                    var oldSharingList = new List<SharingParam>();
+                    var owner = UserManager.GetUsers(cal.OwnerId);
+                    var ownerAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, cal.OwnerId);
+
+                    //TODO Caldav
+                    /*
+                    if (AuthContext.CurrentAccount.ID != cal.OwnerId)
+                    {
+                        UpdateCalDavCalendar(name, description, backgroundColor, oldCal.calDavGuid, myUri, owner.Email, ownerAccountPaswd);
+                    }
+                    else
+                    {
+                        UpdateCalDavCalendar(name, description, backgroundColor, oldCal.calDavGuid, myUri, _email, currentAccountPaswd);
+                    }*/
+                    var pic = PublicItemCollectionHelper.GetForCalendar(oldCal);
+                    if (pic.Items.Count > 1)
+                    {
+                        oldSharingList.AddRange(from publicItem in pic.Items
+                                                where publicItem.ItemId != owner.ID.ToString()
+                                                select new SharingParam
+                                                {
+                                                    Id = Guid.Parse(publicItem.ItemId),
+                                                    isGroup = publicItem.IsGroup,
+                                                    actionId = publicItem.SharingOption.Id
+                                                });
+                    }
+                    if (sharingOptionsList.Count > 0)
+                    {
+                        var tenant = TenantManager.GetCurrentTenant();
+                        var events = cal.LoadEvents(AuthContext.CurrentAccount.ID, DateTime.MinValue, DateTime.MaxValue);
+                        var calendarObjViewSettings = cal != null && cal.ViewSettings != null ? cal.ViewSettings.FirstOrDefault() : null;
+                        var targetCalendar = DDayICalParser.ConvertCalendar(cal != null ? cal.GetUserCalendar(calendarObjViewSettings) : null);
+
+                        //TODO Caldav
+                        /* var caldavTask = new Task(() => UpdateSharedCalDavCalendar(name, description, backgroundColor, oldCal.calDavGuid, myUri, sharingOptionsList, events, calendarId, cal.calDavGuid, tenant.TenantId, DateTime.Now, targetCalendar.TimeZones[0], cal.TimeZone));
+                         caldavTask.Start();*/
+                    }
+
+                    oldSharingList.RemoveAll(c => sharingOptionsList.Contains(sharingOptionsList.Find((x) => x.Id == c.Id)));
+
+                    if (oldSharingList.Count > 0)
+                    {
+                        var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                        var caldavHost = myUri.Host;
+
+                        //TODO Caldav
+                        /*var replaceSharingEventThread = new Thread(() =>
+                        {
+                            TenantManager.SetCurrentTenant(currentTenantId);
+                            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID));
+
+                            foreach (var sharingOption in oldSharingList)
+                            {
+                                if (!sharingOption.IsGroup)
+                                {
+                                    var user = UserManager.GetUsers(sharingOption.itemId);
+                                    var currentUserName = user.Email.ToLower() + "@" + caldavHost;
+                                    var userEmail = user.Email;
+                                    string userPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(userEmail).ID);
+                                    DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, userPaswd, encoded, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                                }
+                                else
+                                {
+                                    var users = CoreContext.UserManager.GetUsersByGroup(sharingOption.itemId);
+                                    foreach (var user in users)
+                                    {
+                                        var currentUserName = user.Email.ToLower() + "@" + caldavHost;
+                                        var userEmail = user.Email;
+                                        string userPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(userEmail).ID);
+                                        DataProvider.RemoveCaldavCalendar(currentUserName, userEmail, userPaswd, encoded, cal.calDavGuid, myUri, user.ID != cal.OwnerId);
+                                    }
+                                }
+                            }
+                        });
+                        replaceSharingEventThread.Start();*/
+                    }
+
+                    if (cal != null)
+                    {
+                        //clear old rights
+                        AuthorizationManager.RemoveAllAces(cal);
+
+                        foreach (var opt in sharingOptionsList)
+                            if (String.Equals(opt.actionId, AccessOption.FullAccessOption.Id, StringComparison.InvariantCultureIgnoreCase))
+                                AuthorizationManager.AddAce(new AzRecord(opt.Id, CalendarAccessRights.FullAccessAction.ID, Common.Security.Authorizing.AceType.Allow, cal));
+
+                        //notify
+                        CalendarNotifyClient.NotifyAboutSharingCalendar(cal, oldCal);
+                        return CalendarWrapperHelper.Get(cal);
+                    }
+                    return null;
+                }
+            }
+
+            //update view
+            return UpdateCalendarView(calendarId, name, textColor, backgroundColor, timeZone, alertType, hideEvents);
+
+        }
+
+        [Update("{calendarId}/view")]
+        public CalendarWrapper UpdateCalendarView(string calendarId, string name, string textColor, string backgroundColor, string timeZone, EventAlertType alertType, bool hideEvents)
+        {
+            TimeZoneInfo timeZoneInfo = TimeZoneConverter.GetTimeZone(timeZone);
+            name = (name ?? "").Trim();
+            if (String.IsNullOrEmpty(name))
+                throw new Exception(Resources.CalendarApiResource.ErrorEmptyName);
+
+            var settings = new UserViewSettings
+            {
+                BackgroundColor = backgroundColor,
+                CalendarId = calendarId,
+                IsHideEvents = hideEvents,
+                TextColor = textColor,
+                EventAlertType = alertType,
+                IsAccepted = true,
+                UserId = AuthContext.CurrentAccount.ID,
+                Name = name,
+                TimeZone = timeZoneInfo
+            };
+
+            DataProvider.UpdateCalendarUserView(settings);
+            return GetCalendarById(calendarId);
         }
 
         [Read("events/{eventUid}/historybyuid")]
