@@ -30,7 +30,7 @@ class SectionBodyContent extends React.PureComponent {
     this.state = {
       editingId: -1,
       isEdit: false,
-      isCreating: false
+      isCreating: ''
     };
   }
 
@@ -60,7 +60,7 @@ class SectionBodyContent extends React.PureComponent {
     if (this.props.isCreating !== prevProps.isCreating) {
       let tempId = this.state.editingId;
 
-      if (this.props.isCreating) {
+      if (this.props.isCreating !== '') {
         tempId = -2;
       }
 
@@ -83,14 +83,14 @@ class SectionBodyContent extends React.PureComponent {
 
     onCreate(false);
 
-    if (this.state.isCreating) {
+    if (this.state.isCreating !== '') {
       fetchFolder(folderId, store.dispatch)
     }
 
     this.setState({
       editingId: -1,
       isEdit: false,
-      isCreating: false
+      isCreating: ''
     });
   }
 
@@ -180,11 +180,12 @@ class SectionBodyContent extends React.PureComponent {
 
     let items = [...folders, ...files];
 
-    if (isCreating) {
+    if (isCreating !== '') {
       items.unshift({
         id: -2,
         title: '',
-        parentId: folderId
+        parentId: folderId,
+        fileExst: isCreating
       })
     }
 
