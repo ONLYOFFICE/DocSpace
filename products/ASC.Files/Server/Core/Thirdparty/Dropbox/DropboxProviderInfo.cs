@@ -57,13 +57,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         internal bool StorageOpened
         {
-            get
-            {
-                return Wrapper.Storage != null && Wrapper.Storage.IsOpened;
-            }
+            get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
         }
 
-        public StorageDisposableWrapper Wrapper { get; }
+        public DropboxStorageDisposableWrapper Wrapper { get; }
         public DropboxProviderInfoHelper DropboxProviderInfoHelper { get; }
         public int ID { get; set; }
 
@@ -84,7 +81,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
 
         public DropboxProviderInfo(
-            StorageDisposableWrapper wrapper,
+            DropboxStorageDisposableWrapper wrapper,
             DropboxProviderInfoHelper dropboxProviderInfoHelper
             )
         {
@@ -152,12 +149,12 @@ namespace ASC.Files.Thirdparty.Dropbox
         }
     }
 
-    internal class StorageDisposableWrapper : IDisposable
+    internal class DropboxStorageDisposableWrapper : IDisposable
     {
         public DropboxStorage Storage { get; private set; }
 
 
-        public StorageDisposableWrapper()
+        public DropboxStorageDisposableWrapper()
         {
         }
 
@@ -286,7 +283,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         public static DIHelper AddDropboxProviderInfoService(this DIHelper services)
         {
             services.TryAddScoped<DropboxProviderInfo>();
-            services.TryAddScoped<StorageDisposableWrapper>();
+            services.TryAddScoped<DropboxStorageDisposableWrapper>();
             services.TryAddSingleton<DropboxProviderInfoHelper>();
 
             return services;

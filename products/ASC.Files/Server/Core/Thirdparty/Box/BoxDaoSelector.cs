@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 using ASC.Common;
@@ -34,23 +33,23 @@ using ASC.Files.Core.Security;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ASC.Files.Thirdparty.Dropbox
+namespace ASC.Files.Thirdparty.Box
 {
-    internal class DropboxDaoSelector : RegexDaoSelectorBase<string>
+    internal class BoxDaoSelector : RegexDaoSelectorBase<string>
     {
         public IServiceProvider ServiceProvider { get; }
         public IDaoFactory DaoFactory { get; }
 
-        internal class DropboxInfo
+        internal class BoxInfo
         {
-            public DropboxProviderInfo DropboxProviderInfo { get; set; }
+            public BoxProviderInfo BoxProviderInfo { get; set; }
 
             public string Path { get; set; }
             public string PathPrefix { get; set; }
         }
 
-        public DropboxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-            : base(new Regex(@"^dropbox-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
+        public BoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
+            : base(new Regex(@"^box-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
         {
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
@@ -58,7 +57,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override IFileDao<string> GetFileDao(string id)
         {
-            var res = ServiceProvider.GetService<DropboxFileDao>();
+            var res = ServiceProvider.GetService<BoxFileDao>();
 
             res.Init(GetInfo(id), this);
 
@@ -67,7 +66,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override IFolderDao<string> GetFolderDao(string id)
         {
-            var res = ServiceProvider.GetService<DropboxFolderDao>();
+            var res = ServiceProvider.GetService<BoxFolderDao>();
 
             res.Init(GetInfo(id), this);
 
@@ -76,7 +75,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override ITagDao<string> GetTagDao(string id)
         {
-            var res = ServiceProvider.GetService<DropboxTagDao>();
+            var res = ServiceProvider.GetService<BoxTagDao>();
 
             res.Init(GetInfo(id), this);
 
@@ -85,7 +84,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public override ISecurityDao<string> GetSecurityDao(string id)
         {
-            var res = ServiceProvider.GetService<DropboxSecurityDao>();
+            var res = ServiceProvider.GetService<BoxSecurityDao>();
 
             res.Init(GetInfo(id), this);
 
@@ -96,40 +95,40 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (id != null)
             {
-                var match = Selector.Match(Convert.ToString(id, CultureInfo.InvariantCulture));
+                var match = Selector.Match(id);
                 if (match.Success)
                 {
                     return match.Groups["path"].Value.Replace('|', '/');
                 }
-                throw new ArgumentException("Id is not a Dropbox id");
+                throw new ArgumentException("Id is not a Box id");
             }
             return base.ConvertId(null);
         }
 
-        private DropboxInfo GetInfo(string objectId)
+        private BoxInfo GetInfo(string objectId)
         {
             if (objectId == null) throw new ArgumentNullException("objectId");
-            var id = Convert.ToString(objectId, CultureInfo.InvariantCulture);
+            var id = objectId;
             var match = Selector.Match(id);
             if (match.Success)
             {
                 var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
 
-                return new DropboxInfo
+                return new BoxInfo
                 {
                     Path = match.Groups["path"].Value,
-                    DropboxProviderInfo = providerInfo,
-                    PathPrefix = "dropbox-" + match.Groups["id"].Value
+                    BoxProviderInfo = providerInfo,
+                    PathPrefix = "box-" + match.Groups["id"].Value
                 };
             }
-            throw new ArgumentException("Id is not a Dropbox id");
+            throw new ArgumentException("Id is not a Box id");
         }
 
         public override string GetIdCode(string id)
         {
             if (id != null)
             {
-                var match = Selector.Match(Convert.ToString(id, CultureInfo.InvariantCulture));
+                var match = Selector.Match(id);
                 if (match.Success)
                 {
                     return match.Groups["id"].Value;
@@ -138,14 +137,14 @@ namespace ASC.Files.Thirdparty.Dropbox
             return base.GetIdCode(id);
         }
 
-        private DropboxProviderInfo GetProviderInfo(int linkId)
+        private BoxProviderInfo GetProviderInfo(int linkId)
         {
-            DropboxProviderInfo info;
+            BoxProviderInfo info;
 
             var dbDao = DaoFactory.ProviderDao;
             try
             {
-                info = (DropboxProviderInfo)dbDao.GetProviderInfo(linkId);
+                info = (BoxProviderInfo)dbDao.GetProviderInfo(linkId);
             }
             catch (InvalidOperationException)
             {
@@ -154,25 +153,24 @@ namespace ASC.Files.Thirdparty.Dropbox
             return info;
         }
 
-        public void RenameProvider(DropboxProviderInfo dropboxProviderInfo, string newTitle)
+        public void RenameProvider(BoxProviderInfo boxProviderInfo, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(dropboxProviderInfo.ID, newTitle, null, dropboxProviderInfo.RootFolderType);
-            dropboxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
+            dbDao.UpdateProviderInfo(boxProviderInfo.ID, newTitle, null, boxProviderInfo.RootFolderType);
+            boxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
-
-    public static class DropboxDaoSelectorExtention
+    public static class BoxDaoSelectorExtention
     {
-        public static DIHelper AddDropboxDaoSelectorService(this DIHelper services)
+        public static DIHelper AddBoxDaoSelectorService(this DIHelper services)
         {
-            services.TryAddScoped<DropboxDaoSelector>();
+            services.TryAddScoped<BoxDaoSelector>();
 
             return services
-                .AddDropboxSecurityDaoService()
-                .AddDropboxTagDaoService()
-                .AddDropboxFolderDaoService()
-                .AddDropboxFileDaoService();
+                .AddBoxSecurityDaoService()
+                .AddBoxTagDaoService()
+                .AddBoxFolderDaoService()
+                .AddBoxFileDaoService();
         }
     }
 }

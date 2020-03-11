@@ -40,6 +40,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Resources;
+using ASC.Files.Thirdparty.Box;
 using ASC.Files.Thirdparty.Dropbox;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
@@ -373,17 +374,18 @@ namespace ASC.Files.Thirdparty
             var folderType = input.FolderType;
             var createOn = TenantUtil.DateTimeFromUtc(input.CreateOn);
 
-            //if (key == ProviderTypes.Box)
-            //{
-            //    return new BoxProviderInfo(
-            //        id,
-            //        key.ToString(),
-            //        providerTitle,
-            //        token,
-            //        owner,
-            //        folderType,
-            //        createOn);
-            //}
+            if (key == ProviderTypes.Box)
+            {
+                var box = ServiceProvider.GetService<BoxProviderInfo>();
+                box.ID = id;
+                box.CustomerTitle = providerTitle;
+                box.Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
+                box.ProviderKey = input.Provider;
+                box.RootFolderType = folderType;
+                box.CreateOn = createOn;
+                box.Token = OAuth20Token.FromJson(token);
+                return box;
+            }
 
             if (key == ProviderTypes.DropboxV2)
             {
@@ -568,6 +570,7 @@ namespace ASC.Files.Thirdparty
             //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
 
             return services
+                .AddBoxProviderInfoService()
                 .AddDropboxProviderInfoService()
                 .AddTenantUtilService()
                 .AddTenantManagerService()

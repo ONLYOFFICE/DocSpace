@@ -19,10 +19,12 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="proto\BoxCacheItem.proto" />
     <None Remove="proto\DropboxCacheItem.proto" />
     <None Remove="proto\ProviderAccountCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Box.V2.Core" Version="3.22.0" />
     <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
     <PackageReference Include="DotNetZip" Version="1.13.5" />
     <PackageReference Include="Dropbox.Api" Version="4.9.4" />
@@ -44,6 +46,7 @@
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Protobuf Include="proto\BoxCacheItem.proto" />
     <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
     <Protobuf Include="proto\DropboxCacheItem.proto" />
   </ItemGroup>

@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using ASC.Common;
@@ -35,14 +34,14 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Thirdparty.Dropbox;
 using ASC.Web.Studio.Core;
 
-namespace ASC.Files.Thirdparty.Dropbox
+namespace ASC.Files.Thirdparty.Box
 {
-    internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
+    internal class BoxTagDao : BoxDaoBase, ITagDao<string>
     {
-        public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public BoxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
         {
         }
 
@@ -70,7 +69,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
-            var folderId = DropboxDaoSelector.ConvertId(parentFolder.ID);
+            var folderId = BoxDaoSelector.ConvertId(parentFolder.ID);
             var fakeFolderId = parentFolder.ID.ToString();
 
             var entryIDs = FilesDbContext.ThirdpartyIdMapping
@@ -158,37 +157,18 @@ namespace ASC.Files.Thirdparty.Dropbox
             return null;
         }
 
-        public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
+        public void MarkAsNew(Guid subject, FileEntry fileEntry)
         {
         }
 
         #endregion
     }
 
-    public class TagLink
+    public static class BoxTagDaoExtention
     {
-        public int TenantId { get; set; }
-        public int Id { get; set; }
-    }
-
-    public class TagLinkComparer : IEqualityComparer<TagLink>
-    {
-        public bool Equals([AllowNull] TagLink x, [AllowNull] TagLink y)
+        public static DIHelper AddBoxTagDaoService(this DIHelper services)
         {
-            return x.Id == y.Id && x.TenantId == y.TenantId;
-        }
-
-        public int GetHashCode([DisallowNull] TagLink obj)
-        {
-            return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
-        }
-    }
-
-    public static class DropboxTagDaoExtention
-    {
-        public static DIHelper AddDropboxTagDaoService(this DIHelper services)
-        {
-            services.TryAddScoped<DropboxTagDao>();
+            services.TryAddScoped<BoxTagDao>();
 
             return services;
         }
