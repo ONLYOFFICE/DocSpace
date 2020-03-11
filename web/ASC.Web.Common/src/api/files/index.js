@@ -4,118 +4,129 @@ import Filter from "./filter";
 import * as fakeFiles from "./fake";
 
 export function getFolder(folderId, filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Fake folder");
   }
 
-  return request({
+  const options = {
     method: "get",
-    url: `/files/${folderId}.json`
-  });
+    url: `/files/${folderId}`
+  };
+
+  return request(options);
 }
 
 export function getFolderInfo(folderId) {
-
-  return request({
+  const options = {
     method: "get",
     url: `/files/folder/${folderId}`
-  });
+  };
+
+  return request(options);
 }
 
 export function getFolderPath(folderId) {
-
-  return request({
+  const options = {
     method: "get",
     url: `/files/folder/${folderId}/path`
-  });
+  };
+
+  return request(options);
 }
 
 export function getMyFolderList(filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "My Documents");
   }
 
-  return request({
+  const options = {
     method: "get",
-    url: `/files/@my.json`
-  });
+    url: `/files/@my`
+  };
+  
+  return request(options);
 }
 
 export function getCommonFolderList(filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Common Documents");
   }
 
-  return request({
+  const options = {
     method: "get",
-    url: `/files/@common.json`
-  });
+    url: `/files/@common`
+  };
+  
+  return request(options);
 }
 
 export function getProjectsFolderList(filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Project Documents");
   }
-
-  return request({
+  
+  const options = {
     method: "get",
-    url: `/files/@projects.json`
-  });
+    url: `/files/@projects`
+  };
+  
+  return request(options);
 }
 
 export function getTrashFolderList(filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Recycle Bin");
   }
 
-  return request({
+  const options = {
     method: "get",
-    url: `/files/@trash.json`
-  });
+    url: `/files/@trash`
+  };
+  
+  return request(options);
 }
 
 export function getSharedFolderList(filter = Filter.getDefault(), fake = false) {
-
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Shared with Me");
   }
 
-  return request({
+  const options = {
     method: "get",
-    url: `/files/@share.json`
-  });
+    url: `/files/@share`
+  };
+  
+  return request(options);
 }
 
 export function createTextFileInMy(title) {
+  const data = { title };
   const options = {
     method: "post",
     url: "/files/@my/file",
-    data: { title }
+    data
   };
 
   return request(options);
 }
 
 export function createTextFileInCommon(title) {
+  const data = { title };
   const options = {
     method: "post",
     url: "/files/@common/file",
-    data: { title }
+    data
   };
 
   return request(options);
 }
 
 export function createTextFile(folderId, title) {
+  const data = { title };
   const options = {
     method: "post",
     url: `/files/${folderId}/file`,
-    data: { title }
+    data
   };
 
   return request(options);
@@ -131,28 +142,33 @@ export function getFileInfo(fileId) {
 }
 
 export function updateFile(fileId, title, lastVersion) {
-
+  const data = { title, lastVersion };
   const options = {
     method: "put",
-    url: `/files/file/${fileId}?title=${title}${lastVersion ? `lastVersion=${lastVersion}` : ``}`
+    url: `/files/file/${fileId}`,
+    data
   };
 
   return request(options);
 }
 
 export function createFolder(parentFolderId, title) {
+  const data = { title };
   const options = {
     method: "post",
-    url: `/files/folder/${parentFolderId}?title=${title}`,
+    url: `/files/folder/${parentFolderId}`,
+    data
   };
 
   return request(options);
 }
 
 export function renameFolder(folderId, title) {
+  const data = { title };
   const options = {
     method: "put",
-    url: `/files/folder/${folderId}?title=${title}`
+    url: `/files/folder/${folderId}`,
+    data
   };
 
   return request(options);
@@ -160,20 +176,22 @@ export function renameFolder(folderId, title) {
 
 export function deleteFolder(folderId, deleteAfter, immediately) {
   const data = { deleteAfter, immediately };
-
-  return request({
+  const options = {
     method: "delete",
     url: `/files/folder/${folderId}`,
     data
-  });
+  };
+
+  return request(options);
 }
 
 export function deleteFile(fileId, deleteAfter, immediately) {
   const data = { deleteAfter, immediately };
-
-  return request({
+  const options = {
     method: "delete",
-    url: `/files/file/${fileId}`, 
+    url: `/files/file/${fileId}`,
     data
-  });
+  };
+
+  return request(options);
 }
