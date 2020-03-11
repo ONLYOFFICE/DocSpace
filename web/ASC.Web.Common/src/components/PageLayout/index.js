@@ -148,6 +148,7 @@ class PageLayoutComponent extends React.PureComponent {
   };
 
   render() {
+    const { showProgressBar, progressBarMaxValue, progressBarValue, progressBarDropDownContent, withBodyScroll, withBodyAutoFocus, progressBarLabel } = this.props;
     return (
       <>
         {this.state.isBackdropAvailable && (
@@ -195,7 +196,16 @@ class PageLayoutComponent extends React.PureComponent {
               <SectionFilter className="section-header_filter">{this.state.sectionFilterContent}</SectionFilter>
             )}
             {this.state.isSectionBodyAvailable && (
-              <SectionBody withScroll={this.props.withBodyScroll} autoFocus={this.props.withBodyAutoFocus} pinned={this.state.isArticlePinned}>
+              <SectionBody 
+                showProgressBar={showProgressBar}
+                progressBarMaxValue={progressBarMaxValue}
+                progressBarValue={progressBarValue}
+                progressBarLabel={progressBarLabel}
+                progressBarDropDownContent={progressBarDropDownContent}
+                withScroll={withBodyScroll}
+                autoFocus={withBodyAutoFocus}
+                pinned={this.state.isArticlePinned}
+              >
                 {this.state.isSectionFilterAvailable && (
               <SectionFilter className="section-body_filter">{this.state.sectionFilterContent}</SectionFilter>
             )}
@@ -263,6 +273,12 @@ PageLayoutComponent.propTypes = {
   withBodyScroll: PropTypes.bool,
   withBodyAutoFocus: PropTypes.bool,
   t: PropTypes.func,
+
+  showProgressBar: PropTypes.bool,
+  progressBarMaxValue: PropTypes.number,
+  progressBarValue: PropTypes.number,
+  progressBarDropDownContent: PropTypes.any,
+  progressBarLabel: PropTypes.string
 };
 
 PageLayoutComponent.defaultProps = {
