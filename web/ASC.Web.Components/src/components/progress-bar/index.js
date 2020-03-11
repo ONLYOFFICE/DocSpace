@@ -67,6 +67,7 @@ const ProgressBar = props => {
     setIsOpen(!isOpen);
   };
 
+  //console.log("ProgressBar render");
   return (
     <StyledProgressBar ref={ref} {...rest} percent={percent} percent2={100 - percent} >
       <Link

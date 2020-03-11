@@ -45,24 +45,38 @@ const StyledLink = styled.a`
   }
 `;
 
-const Link = props => {
-  //console.log("Link render");
+class Link extends React.Component {
+  shouldComponentUpdate(nextState) {
+    const { isOpen, children } = this.props;
+    if (isOpen !== nextState.isOpen) {
+      return true;
+    }
+    if (children !== nextState.children) {
+      return true;
+    }
+    return false;
+  }
+  render() {
+    const { color, children, isOpen, ...rest } = this.props;
 
-  const { color, children, isOpen, ...rest } = props;
-  return (
-    <StyledLinkWrapper {...rest}>
-      <StyledLink color={color} isOpen={isOpen}>
-        <Text color={color}>{children}</Text>
-        <Icons.ExpanderDownIcon className="progress-bar_icon" />
-      </StyledLink>
-    </StyledLinkWrapper>
-  );
-};
+    //console.log("ProgressBar link render");
+    return (
+      <StyledLinkWrapper {...rest}>
+        <StyledLink color={color} isOpen={isOpen}>
+          <Text color={color}>{children}</Text>
+          <Icons.ExpanderDownIcon className="progress-bar_icon" />
+        </StyledLink>
+      </StyledLinkWrapper>
+    );
+  }
+}
 
 Link.propTypes = {
   color: PropTypes.string,
   children: PropTypes.any,
   isOpen: PropTypes.bool
 };
+
+Link.displayName = "Link";
 
 export default Link;
