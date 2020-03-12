@@ -21,6 +21,7 @@
   <ItemGroup>
     <None Remove="proto\BoxCacheItem.proto" />
     <None Remove="proto\DropboxCacheItem.proto" />
+    <None Remove="proto\GoogleDriveCacheItem.proto" />
     <None Remove="proto\ProviderAccountCacheItem.proto" />
   </ItemGroup>
   <ItemGroup>
@@ -28,6 +29,7 @@
     <PackageReference Include="DocuSign.eSign.dll" Version="4.1.1" />
     <PackageReference Include="DotNetZip" Version="1.13.5" />
     <PackageReference Include="Dropbox.Api" Version="4.9.4" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.44.1.1876" />
     <PackageReference Include="Grpc.Tools" Version="2.27.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -46,6 +48,7 @@
     <ProjectReference Include="..\..\..\web\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Protobuf Include="proto\GoogleDriveCacheItem.proto" />
     <Protobuf Include="proto\BoxCacheItem.proto" />
     <Protobuf Include="proto\ProviderAccountCacheItem.proto" />
     <Protobuf Include="proto\DropboxCacheItem.proto" />

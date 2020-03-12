@@ -306,7 +306,7 @@ namespace ASC.Files.Thirdparty.Box
                 }
                 key += boxId;
 
-                CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, Key = key }, CacheNotifyAction.Remove);
+                CacheNotify.Publish(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
             }
         }
     }

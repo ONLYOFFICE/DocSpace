@@ -42,6 +42,7 @@ using ASC.Files.Core.EF;
 using ASC.Files.Resources;
 using ASC.Files.Thirdparty.Box;
 using ASC.Files.Thirdparty.Dropbox;
+using ASC.Files.Thirdparty.GoogleDrive;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 
@@ -570,6 +571,7 @@ namespace ASC.Files.Thirdparty
             //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
 
             return services
+                .AddGoogleDriveProviderInfoService()
                 .AddBoxProviderInfoService()
                 .AddDropboxProviderInfoService()
                 .AddTenantUtilService()
