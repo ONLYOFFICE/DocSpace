@@ -3,9 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
-import { renameFolder, updateFile } from '../../../../../store/files/actions';
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { createFile, createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
+import { history } from "asc-web-common";
+import { fetchFolder } from "../../../../../store/files/actions";
+import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {
 
@@ -22,7 +25,7 @@ class FilesRowContent extends React.PureComponent {
     };
   }
 
-  updateFile = () => {
+  updateItem = () => {
     const { editingId, updateFile, renameFolder, item, onEditComplete } = this.props;
     const { itemTitle } = this.state;
 
@@ -42,6 +45,22 @@ class FilesRowContent extends React.PureComponent {
     });
   };
 
+  createItem = () => {
+    const { createFile, createFolder, item, onEditComplete } = this.props;
+    const { itemTitle } = this.state;
+
+    this.setState({ editingId: -1 }, () => {
+      if (itemTitle.trim() === '')
+        return onEditComplete();
+
+      item.fileExst === 'folder'
+        ? createFolder(item.parentId, itemTitle)
+          .then(() => onEditComplete())
+        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+          .then(() => onEditComplete())
+    });
+  }
+
   componentDidUpdate(prevProps) {
     const { editingId } = this.props;
 
@@ -54,18 +73,43 @@ class FilesRowContent extends React.PureComponent {
     this.setState({ itemTitle: e.target.value });
   }
 
-  cancelUpdateFile = () => {
+  cancelUpdateItem = () => {
     this.setState({ editingId: -1 }, () =>
       this.props.onEditComplete());
   }
 
-  onKeyUpUpdateFile = e => {
-    if (e.keyCode === 13)
-      return this.updateFile()
+  onClickUpdateItem = () => {
+    (this.state.editingId === -2)
+      ? this.createItem()
+      : this.updateItem();
+  }
+
+  onKeyUpUpdateItem = e => {
+    if (e.keyCode === 13) {
+      (this.state.editingId === -2)
+        ? this.createItem()
+        : this.updateItem();
+    }
 
     if (e.keyCode === 27)
-      return this.cancelUpdateFile()
+      return this.cancelUpdateItem()
   }
+
+  onFilesClick = () => {
+    const { id, fileExst } = this.props.item;
+    if (!fileExst) {
+      const a =
+        history.location.search !== ""
+          ? history.location.search
+          : history.location.state;
+      const url = `${history.location.pathname}${a}`;
+      history.push(`${url}#${id}`);
+
+      fetchFolder(id, store.dispatch).catch(err =>
+        toastr.error("Something went wrong", err)
+      );
+    }
+  };
 
   render() {
     const { item } = this.props;
@@ -102,19 +146,27 @@ class FilesRowContent extends React.PureComponent {
     const EditingWrapper = styled.div`
       width: 100%;
       display: inline-flex;
+      align-items: center;
 
+      @media (max-width: 1024px) {
+      height: 56px;
+    }
+      .edit-text {
+        height: 30px;
+      }
       .edit-button {
         margin-left: 8px;
+        height: 30px;
       }
 
       .edit-ok-icon {
-        margin-top: -4px;
+        margin-top: -6px;
         width: 16px;
         height: 16px;
       }
 
       .edit-cancel-icon {
-        margin-top: -4px;
+        margin-top: -6px;
         width: 14px;
         height: 14px;
       }
@@ -124,8 +176,8 @@ class FilesRowContent extends React.PureComponent {
       ? title.split('.').slice(0, -1).join('.')
       : title;
 
-    const fileOwner = (this.props.viewer.id === createdBy.id && "Me") || createdBy.displayName;
-    const createdDate = new Date(created).toLocaleString("EN-US");
+    const fileOwner = createdBy && ((this.props.viewer.id === createdBy && createdBy.id && "Me") || createdBy.displayName);
+    const createdDate = created && new Date(created).toLocaleString("EN-US");
     const canEditFile = fileExst && canWebEdit(fileExst);
     const canConvertFile = fileExst && canConvert(fileExst);
 
@@ -148,26 +200,27 @@ class FilesRowContent extends React.PureComponent {
     return isEdit
       ? (<EditingWrapper>
         <TextInput
+          className='edit-text'
           name='title'
           scale={true}
           value={itemTitle}
           tabIndex={1}
           isAutoFocussed={true}
           onChange={this.renameTitle}
-          onKeyUp={this.onKeyUpUpdateFile}
+          onKeyUp={this.onKeyUpUpdateItem}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.updateFile}
+          onClick={this.onClickUpdateItem}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
           isDisabled={false}
-          onClick={this.cancelUpdateFile}
+          onClick={this.cancelUpdateItem}
           icon={cancelIcon}
         />
       </EditingWrapper>)
@@ -180,7 +233,7 @@ class FilesRowContent extends React.PureComponent {
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
-            onClick={() => { }}
+            onClick={this.onFilesClick}
             fontSize='15px'
             color="#333"
             isTextOverflow={true}
@@ -285,7 +338,7 @@ class FilesRowContent extends React.PureComponent {
             onClick={() => { }}
             isTextOverflow={true}
           >
-            {`Created: ${createdDate}`}
+            {createdDate && `Created: ${createdDate}`}
           </Link>
           <Text
             containerWidth='10%'
@@ -305,6 +358,6 @@ class FilesRowContent extends React.PureComponent {
   }
 };
 
-export default connect(null, { updateFile, renameFolder })(
+export default connect(null, { createFile, createFolder, updateFile, renameFolder })(
   withRouter(FilesRowContent)
 );

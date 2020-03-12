@@ -280,6 +280,24 @@ export function testUpdateMyFolder(folders) {
   //setRootFolders
 }
 
+export function createFile(folderId, title) {
+  return dispatch => {
+    return files.createFile(folderId, title)
+      .then(folder => {
+        fetchFolder(folderId, dispatch);
+      });
+  };
+}
+
+export function createFolder(parentFolderId, title) {
+  return dispatch => {
+    return files.createFolder(parentFolderId, title)
+      .then(folder => {
+        fetchFolder(parentFolderId, dispatch);
+      });
+  };
+}
+
 export function updateFile(fileId, title) {
   return dispatch => {
     return files.updateFile(fileId, title)
@@ -296,6 +314,24 @@ export function renameFolder(folderId, title) {
         dispatch(setFolder(folder));
       });
   };
+}
+
+export function deleteFile(fileId, deleteAfter, immediately) {
+  return dispatch => {
+    return files.deleteFile(fileId, deleteAfter, immediately)
+  }
+}
+
+export function deleteFolder(folderId, deleteAfter, immediately) {
+  return (dispatch, getState) => {
+    const { files } = getState();
+    const { folders } = files;
+
+    return api.files.deleteFolder(folderId, deleteAfter, immediately)
+    .then(res => {
+      return dispatch(setFolder(folders.filter(f => f.id !== folderId)));
+    })
+  }
 }
 
 /*export function deleteGroup(id) {

@@ -39,13 +39,12 @@ const StyledTreeMenu = styled(Tree)`
     }
     .rc-tree-child-tree-open {
         display: block;
-
+        margin-left: 8px;
         li:first-child{
             margin-top: 6px;
+            margin-left: 0;
         }
-        span.rc-tree-iconEle{
-            margin: 3px 7px 3px 20px;
-        }
+        
     }
     .rc-tree-treenode-disabled > span:not(.rc-tree-switcher),
     .rc-tree-treenode-disabled > a,
@@ -87,7 +86,7 @@ const StyledTreeMenu = styled(Tree)`
   
 `;
 
-const TreeMenu = props => {
+const TreeMenu = React.forwardRef((props, ref) => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
@@ -104,6 +103,7 @@ const TreeMenu = props => {
             style={style}
         >
             <StyledTreeMenu
+                ref={ref}
                 loadData={loadData}
                 checkable={!!checkable}
                 draggable={!!draggable}
@@ -158,7 +158,7 @@ const TreeMenu = props => {
                 )}
         </StyledTreeContainer>
     );
-}
+})
 
 TreeMenu.propTypes = {
     checkable: PropTypes.bool,
@@ -185,5 +185,7 @@ TreeMenu.propTypes = {
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     badgeLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 }
+
+TreeMenu.displayName = "TreeMenu";
 
 export default TreeMenu

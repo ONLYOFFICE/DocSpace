@@ -15,6 +15,10 @@ const { isAdmin } = store.auth.selectors;
 
 class PureArticleMainButtonContent extends React.Component {
 
+  onCreate = (format) => {
+    this.props.onCreate(format);
+  }
+
   render() {
     console.log("Files ArticleMainButtonContent render");
     const { isAdmin, t } = this.props;
@@ -30,22 +34,22 @@ class PureArticleMainButtonContent extends React.Component {
             <DropDownItem
               icon="ActionsDocumentsIcon"
               label={t('NewDocument')}
-              onClick={() => toastr.info("New Document click")}
+              onClick={this.onCreate.bind(this, 'docx')}
             />
             <DropDownItem
               icon="SpreadsheetIcon"
               label={t('NewSpreadsheet')}
-              onClick={() => toastr.info("New SpreadSheet click")}
+              onClick={this.onCreate.bind(this, 'xlsx')}
             />
             <DropDownItem
               icon="ActionsPresentationIcon"
               label={t('NewPresentation')}
-              onClick={() => toastr.info("New Presentation click")}
+              onClick={this.onCreate.bind(this, 'pptx')}
             />
             <DropDownItem
               icon="CatalogFolderIcon"
               label={t('NewFolder')}
-              onClick={() => toastr.info("New Folder click")}
+              onClick={this.onCreate.bind(this, 'folder')}
             />
             <DropDownItem isSeparator />
             <DropDownItem
