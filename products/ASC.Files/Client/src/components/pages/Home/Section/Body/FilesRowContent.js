@@ -3,9 +3,12 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
 import { createFile, createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
+import { history } from "asc-web-common";
+import { fetchFolder } from "../../../../../store/files/actions";
+import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {
 
@@ -91,6 +94,22 @@ class FilesRowContent extends React.PureComponent {
     if (e.keyCode === 27)
       return this.cancelUpdateItem()
   }
+
+  onFilesClick = () => {
+    const { id, fileExst } = this.props.item;
+    if (!fileExst) {
+      const a =
+        history.location.search !== ""
+          ? history.location.search
+          : history.location.state;
+      const url = `${history.location.pathname}${a}`;
+      history.push(`${url}#${id}`);
+
+      fetchFolder(id, store.dispatch).catch(err =>
+        toastr.error("Something went wrong", err)
+      );
+    }
+  };
 
   render() {
     const { item } = this.props;
@@ -214,7 +233,7 @@ class FilesRowContent extends React.PureComponent {
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
-            onClick={() => { }}
+            onClick={this.onFilesClick}
             fontSize='15px'
             color="#333"
             isTextOverflow={true}

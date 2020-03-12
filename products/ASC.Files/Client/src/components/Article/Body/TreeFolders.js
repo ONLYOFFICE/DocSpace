@@ -65,8 +65,8 @@ class TreeFolders extends React.Component {
           ? ""
           : "/";
       history.push(`${url}${symbol}#${data[0]}`);
-      fetchFolder(data[0], store.dispatch).catch(() =>
-        toastr.error("Something went wrong")
+      fetchFolder(data[0], store.dispatch).catch(err =>
+        toastr.error("Something went wrong", err)
       );
     }
 
@@ -135,7 +135,7 @@ class TreeFolders extends React.Component {
         }
         return arrayFolders;
       })
-      .catch(() => toastr.error("Something went wrong"));
+      .catch(err => toastr.error("Something went wrong", err));
   };
 
   onLoadData = treeNode => {

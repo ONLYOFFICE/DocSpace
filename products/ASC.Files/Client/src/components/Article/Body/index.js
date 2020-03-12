@@ -38,19 +38,15 @@ class ArticleBodyContent extends React.Component {
             .then(() => {
               history.push(`${url}${symbol}#${folderId}`);
             })
-            .catch(() => toastr.error("Something went wrong"));
+            .catch(err => toastr.error("Something went wrong", err));
         })
-        .catch(() => toastr.error("Something went wrong"))
+        .catch(err => toastr.error("Something went wrong", err))
         .finally(() => this.setState({ defaultExpandedKeys }));
     }
   }
   shouldComponentUpdate(nextProps) {
     const { selectedKeys, data, fakeNewDocuments, currentModule } = this.props;
     if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
-      return true;
-    }
-
-    if (!utils.array.isArrayEqual(nextProps.data, data)) {
       return true;
     }
 
