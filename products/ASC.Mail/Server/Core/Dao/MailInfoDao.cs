@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,54 +24,47 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Expressions.Message;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Enums;
-//using ASC.Mail.Extensions;
+using System;
+using System.Collections.Generic;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Expressions.Message;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class MailInfoDao : IMailInfoDao
+    public class MailInfoDao : BaseDao, IMailInfoDao
     {
-        public IDbManager Db { get; private set; }
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
-
-        public MailInfoDao(IDbManager dbManager, int tenant, string user)
-        {
-            Db = dbManager;
-            Tenant = tenant;
-            User = user;
+        public MailInfoDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext) { 
         }
 
-        private const string MM_ALIAS = "mm";
-        private const string MTM_ALIAS = "tm";
-        private const string UFXM_ALIAS = "ufxm";
+        //private const string MM_ALIAS = "mm";
+        //private const string MTM_ALIAS = "tm";
+        //private const string UFXM_ALIAS = "ufxm";
 
-        private static readonly string CountMailId = "count(" + MailTable.Columns.Id.Prefix(MM_ALIAS) + ")";
+        //private static readonly string CountMailId = "count(" + MailTable.Columns.Id.Prefix(MM_ALIAS) + ")";
 
-        private static readonly string ConcatTagIds =
-            string.Format(
-                "(SELECT CAST(group_concat({4}.{0} ORDER BY {4}.{3} SEPARATOR ',') AS CHAR) from {1} as {4} WHERE {4}.{2} = {5}.{6}) tagIds",
-                TagMailTable.Columns.TagId,
-                TagMailTable.TABLE_NAME,
-                TagMailTable.Columns.MailId,
-                TagMailTable.Columns.TimeCreated,
-                MTM_ALIAS,
-                MM_ALIAS,
-                MailTable.Columns.Id);
+        //private static readonly string ConcatTagIds =
+        //    string.Format(
+        //        "(SELECT CAST(group_concat({4}.{0} ORDER BY {4}.{3} SEPARATOR ',') AS CHAR) from {1} as {4} WHERE {4}.{2} = {5}.{6}) tagIds",
+        //        TagMailTable.Columns.TagId,
+        //        TagMailTable.TABLE_NAME,
+        //        TagMailTable.Columns.MailId,
+        //        TagMailTable.Columns.TimeCreated,
+        //        MTM_ALIAS,
+        //        MM_ALIAS,
+        //        MailTable.Columns.Id);
 
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)
         {
-            var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
+            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                 .Select(MailTable.Columns.Id.Prefix(MM_ALIAS),
                     MailTable.Columns.From.Prefix(MM_ALIAS),
                     MailTable.Columns.To.Prefix(MM_ALIAS),
@@ -152,12 +145,14 @@ namespace ASC.Mail.Core.Dao
             var list = Db.ExecuteList(query)
                 .ConvertAll(ToMailInfo);
 
-            return list;
+            return list;*/
+
+            throw new NotImplementedException();
         }
 
         public long GetMailInfoTotal(IMessagesExp exp)
         {
-            long total;
+            /*long total;
 
             var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                 .SelectCount(MailTable.Columns.Id.Prefix(MM_ALIAS));
@@ -197,12 +192,14 @@ namespace ASC.Mail.Core.Dao
                 total = Db.ExecuteScalar<long>(query);
             }
 
-            return total;
+            return total;*/
+
+            throw new NotImplementedException();
         }
 
         public Dictionary<int, int> GetMailCount(IMessagesExp exp)
         {
-            var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
+            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                 .Select(MailTable.Columns.Folder.Prefix(MM_ALIAS))
                 .SelectCount()
                 .Where(exp.GetExpression())
@@ -214,12 +211,48 @@ namespace ASC.Mail.Core.Dao
                     folder = Convert.ToInt32(r[0]),
                     count = Convert.ToInt32(r[1])
                 })
+                .ToDictionary(o => o.folder, o => o.count);*/
+
+            throw new NotImplementedException();
+        }
+
+        public Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
+        {
+            /*var exp = Exp.Eq(UserFoldertXMailTable.Columns.Tenant.Prefix(UFXM_ALIAS), Tenant) &
+                      Exp.Eq(UserFoldertXMailTable.Columns.User.Prefix(UFXM_ALIAS), User) &
+                      Exp.In(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS), userFolderIds);
+
+            if (unread.HasValue)
+            {
+                exp = exp & Exp.Eq(MailTable.Columns.Unread.Prefix(MM_ALIAS), unread.Value);
+            }
+
+            var query = new SqlQuery(UserFoldertXMailTable.TABLE_NAME.Alias(UFXM_ALIAS))
+                .InnerJoin(MailTable.TABLE_NAME.Alias(MM_ALIAS),
+                    Exp.EqColumns(
+                        UserFoldertXMailTable.Columns.MailId.Prefix(UFXM_ALIAS),
+                        MailTable.Columns.Id.Prefix(MM_ALIAS)))
+                .Select(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS))
+                .SelectCount()
+                .Where(exp)
+                .GroupBy(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS));
+
+            var result = Db.ExecuteList(query)
+                .ConvertAll(r => new
+                {
+                    folder = Convert.ToUInt32(r[0]),
+                    count = Convert.ToInt32(r[1])
+                })
                 .ToDictionary(o => o.folder, o => o.count);
+
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null)
         {
-            var exp = Exp.Eq(UserFoldertXMailTable.Columns.Tenant.Prefix(UFXM_ALIAS), Tenant) &
+            /*var exp = Exp.Eq(UserFoldertXMailTable.Columns.Tenant.Prefix(UFXM_ALIAS), Tenant) &
                       Exp.Eq(UserFoldertXMailTable.Columns.User.Prefix(UFXM_ALIAS), User);
 
             if (unread.HasValue)
@@ -245,12 +278,14 @@ namespace ASC.Mail.Core.Dao
                 })
                 .ToDictionary(o => o.folder, o => o.count);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public Tuple<int, int> GetRangeMails(IMessagesExp exp)
         {
-            var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
+            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                 .SelectMin(MailTable.Columns.Id.Prefix(MM_ALIAS))
                 .SelectMax(MailTable.Columns.Id.Prefix(MM_ALIAS))
                 .Where(exp.GetExpression());
@@ -259,75 +294,82 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1])))
                 .SingleOrDefault();
 
-            return range;
+            return range;*/
+
+            throw new NotImplementedException();
         }
 
         public T GetFieldMaxValue<T>(IMessagesExp exp, string field)
         {
-            var fieldQuery = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
+            /*var fieldQuery = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                 .SelectMax(field.Prefix(MM_ALIAS))
                 .Where(exp.GetExpression());
 
             var fieldVal = Db.ExecuteScalar<T>(fieldQuery);
 
-            return fieldVal;
+            return fieldVal;*/
+            throw new NotImplementedException();
         }
 
         public int SetFieldValue<T>(IMessagesExp exp, string field, T value)
         {
-            var query =
+            /*var query =
                 new SqlUpdate(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                     .Set(field.Prefix(MM_ALIAS), value)
                     .Where(exp.GetExpression());
 
             var result = Db.ExecuteNonQuery(query);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public int SetFieldsEqual(IMessagesExp exp, string fieldFrom, string fieldTo)
         {
-            var query =
+            /*var query =
                 new SqlUpdate(MailTable.TABLE_NAME.Alias(MM_ALIAS))
                     .Set(string.Format("{0}={1}", fieldTo.Prefix(MM_ALIAS), fieldFrom.Prefix(MM_ALIAS)))
                     .Where(exp.GetExpression());
 
             var result = Db.ExecuteNonQuery(query);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
-        protected MailInfo ToMailInfo(object[] r)
+        protected MailInfo ToMailInfo(MailMail r)
         {
             var mailInfo = new MailInfo
             {
-                Id = Convert.ToInt32(r[0]),
-                From = Convert.ToString(r[1]),
-                To = Convert.ToString(r[2]),
-                Cc = Convert.ToString(r[3]),
-                ReplyTo = Convert.ToString(r[4]),
-                Subject = Convert.ToString(r[5]),
-                Importance = Convert.ToBoolean(r[6]),
-                DateSent = Convert.ToDateTime(r[7]),
-                Size = Convert.ToInt32(r[8]),
-                HasAttachments = Convert.ToInt32(r[9]) > 0,
-                IsNew = Convert.ToBoolean(r[10]),
-                IsAnswered = Convert.ToBoolean(r[11]),
-                IsForwarded = Convert.ToBoolean(r[12]),
-                LabelsString = Convert.ToString(r[13]),
-                FolderRestore = (FolderType) Convert.ToInt32(r[14]),
-                Folder = (FolderType) Convert.ToInt32(r[15]),
-                ChainId = Convert.ToString(r[16]),
-                ChainDate = Convert.ToDateTime(r[17]),
-                MailboxId = Convert.ToInt32(r[18]),
-                CalendarUid = r[18] != null ? Convert.ToString(r[19]) : null,
-                Stream = Convert.ToString(r[20]),
-                Uidl = Convert.ToString(r[21]),
-                IsRemoved = Convert.ToBoolean(r[22]),
-                Intoduction = Convert.ToString(r[23])
+                Id = r.Id,
+                From = r.FromText,
+                To = r.ToText,
+                Cc = r.Cc,
+                ReplyTo = r.ReplyTo,
+                Subject = r.Subject,
+                Importance = r.Importance,
+                DateSent = r.DateSent,
+                Size = r.Size,
+                HasAttachments = r.AttachmentsCount > 0,
+                IsNew = r.Unread,
+                IsAnswered = r.IsAnswered,
+                IsForwarded = r.IsForwarded,
+                LabelsString = "", //TODO: fix Convert.ToString(r[13]),
+                FolderRestore = (FolderType) r.Folder,
+                Folder = (FolderType) r.FolderRestore,
+                ChainId = r.ChainId,
+                ChainDate = r.ChainDate,
+                MailboxId = r.IdMailbox,
+                CalendarUid = string.IsNullOrEmpty(r.CalendarUid) ? null : r.CalendarUid,
+                Stream = r.Stream,
+                Uidl = r.Uidl,
+                IsRemoved = r.IsRemoved,
+                Intoduction = r.Introduction
             };
 
             return mailInfo;
         }
-    }*/
+    }
 }

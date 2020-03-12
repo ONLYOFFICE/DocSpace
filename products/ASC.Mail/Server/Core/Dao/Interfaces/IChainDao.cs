@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -30,7 +30,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface IChainDao
+    public interface IChainDao
     {
         List<Chain> GetChains(IConversationsExp exp);
 
@@ -38,10 +38,12 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         Dictionary<uint, int> GetChainUserFolderCount(bool? unread = null);
 
+        Dictionary<uint, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null);
+
         int SaveChain(Chain chain);
 
         int Delete(IConversationsExp exp);
 
         int SetFieldValue<T>(IConversationsExp exp, string field, T value);
-    }*/
+    }
 }

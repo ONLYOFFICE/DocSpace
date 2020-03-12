@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -31,22 +31,24 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    //public interface IMailInfoDao
-    //{
-    //    List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false);
+    public interface IMailInfoDao
+    {
+        List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false);
         
-    //    long GetMailInfoTotal(IMessagesExp exp);
+        long GetMailInfoTotal(IMessagesExp exp);
 
-    //    Dictionary<int, int> GetMailCount(IMessagesExp exp);
+        Dictionary<int, int> GetMailCount(IMessagesExp exp);
 
-    //    Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null);
+        Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null);
 
-    //    Tuple<int, int> GetRangeMails(IMessagesExp exp);
+        Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null);
 
-    //    T GetFieldMaxValue<T>(IMessagesExp exp, string field);
+        Tuple<int, int> GetRangeMails(IMessagesExp exp);
 
-    //    int SetFieldValue<T>(IMessagesExp exp, string field, T value);
+        T GetFieldMaxValue<T>(IMessagesExp exp, string field);
 
-    //    int SetFieldsEqual(IMessagesExp exp, string fieldFrom, string fieldTo);
-    //}
+        int SetFieldValue<T>(IMessagesExp exp, string field, T value);
+
+        int SetFieldsEqual(IMessagesExp exp, string fieldFrom, string fieldTo);
+    }
 }
