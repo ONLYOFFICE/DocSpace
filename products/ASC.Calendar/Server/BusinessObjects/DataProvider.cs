@@ -50,6 +50,7 @@ using ASC.Core.Users;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Calendars;
 using ASC.Web.Core.WhiteLabel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
@@ -83,7 +84,7 @@ namespace ASC.Calendar.BusinessObjects
                 return SecurityContext.CurrentAccount.ID.ToString();
             }
         }
-
+        private AuthManager Authentication { get; }
         public SecurityContext SecurityContext { get; }
         public AuthContext AuthContext { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
@@ -91,10 +92,10 @@ namespace ASC.Calendar.BusinessObjects
         private TenantManager TenantManager { get; }
         protected UserManager UserManager { get; }
         protected DDayICalParser DDayICalParser { get; }
-
         public ILog Log { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
+            AuthManager authentication,
             ApiContext apiContext,
             SecurityContext securityContext,
             AuthContext authContext,
@@ -105,6 +106,7 @@ namespace ASC.Calendar.BusinessObjects
             DDayICalParser dDayICalParser,
             IOptionsMonitor<ILog> option)
         {
+            Authentication = authentication;
             CalendarDb = calendarDbContext.Get("calendar");
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -582,6 +584,9 @@ namespace ASC.Calendar.BusinessObjects
               }
               ).ToList();
 
+            CalendarDb.SaveChanges();
+            tx.Commit();
+
             foreach (var r in eventsData)
             {
                 UpdateEventNotifications(r.eId, calendarId,
@@ -591,8 +596,7 @@ namespace ASC.Calendar.BusinessObjects
                                             Convert.ToBoolean(r.eIsAllDay));
             }
 
-            CalendarDb.SaveChanges();
-            tx.Commit();
+
 
             return GetCalendarById(calendarId);
         }
@@ -642,6 +646,10 @@ namespace ASC.Calendar.BusinessObjects
                           eIsAllDay = s.AllDayLong
                       }
                       ).ToList();
+
+                CalendarDb.SaveChanges();
+                tx.Commit();
+
                 foreach (var r in eventsData)
                 {
                     UpdateEventNotifications(r.eId, calendarId,
@@ -666,6 +674,9 @@ namespace ASC.Calendar.BusinessObjects
                     TimeZone = viewSettings.TimeZone != null ? viewSettings.TimeZone.Id : null
                 };
                 CalendarDb.CalendarCalendarUser.Add(calendarUser);
+
+                CalendarDb.SaveChanges();
+                tx.Commit();
 
                 if (String.Equals(viewSettings.CalendarId, SharedEventsCalendar.CalendarId,
                                     StringComparison.InvariantCultureIgnoreCase))
@@ -705,70 +716,70 @@ namespace ASC.Calendar.BusinessObjects
                     }
                 }
             }
+        }
+
+        public void RemoveCalendar(int calendarId, Uri myUri)
+        {
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            try
+            {
+                var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id == calendarId).Select(s => s.CaldavGuid).ToArray();
+                var caldavGuid = dataCaldavGuid[0] != null ? Guid.Parse(dataCaldavGuid[0].ToString()) : Guid.Empty;
+                if (caldavGuid != Guid.Empty)
+                {
+                    var caldavHost = myUri.Host;
+
+                    Log.Info("RADICALE REWRITE URL: " + myUri);
+
+                    var currentUserName = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + "@" + caldavHost;
+                    var _email = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email;
+                    string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
+                    var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
+
+                    //TODO Caldav
+                    /*var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
+                    caldavTask.Start();*/
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
+            var cc = CalendarDb.CalendarCalendars.Where(r => r.Id == calendarId).SingleOrDefault();
+            if (cc != null) CalendarDb.CalendarCalendars.Remove(cc);
+
+            var ccu = CalendarDb.CalendarCalendarUser.Where(r => r.CalendarId == calendarId).SingleOrDefault();
+            if (ccu != null) CalendarDb.CalendarCalendarUser.Remove(ccu);
+
+            var cci = CalendarDb.CalendarCalendarItem.Where(r => r.CalendarId == calendarId).SingleOrDefault();
+            if (cci != null) CalendarDb.CalendarCalendarItem.Remove(cci);
+
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+
+            var data = CalendarDb.CalendarEvents.Where(p => p.CalendarId == calendarId && p.Tenant == tenant).Select(s => s.Id).ToArray();
+
+            var ce = CalendarDb.CalendarEvents.Where(r => r.CalendarId == calendarId && r.Tenant == tenant).SingleOrDefault();
+            if (ce != null) CalendarDb.CalendarEvents.Remove(ce);
+
+            var cei = CalendarDb.CalendarEventItem.Where(r => data.Contains(r.EventId)).ToList();
+            foreach (var eventItem in cei) { CalendarDb.CalendarEventItem.Remove(eventItem); }
+
+            var ceu = CalendarDb.CalendarEventUser.Where(r => data.Contains(r.EventId)).ToList();
+            foreach (var eventUser in ceu) { CalendarDb.CalendarEventUser.Remove(eventUser); }
+
+            var cn = CalendarDb.CalendarNotifications.Where(r => data.Contains(r.EventId)).ToList();
+            foreach (var calNotifications in cn) { CalendarDb.CalendarNotifications.Remove(calNotifications); }
+
+            var ceh = CalendarDb.CalendarEventHistory.Where(r => data.Contains(r.EventId) && r.Tenant == tenant).ToList();
+            foreach (var eventHistory in ceh) { CalendarDb.CalendarEventHistory.Remove(eventHistory); }
 
             CalendarDb.SaveChanges();
             tx.Commit();
         }
         /*
-        public void RemoveCalendar(int calendarId)
-        {
-            using (var tr = db.BeginTransaction())
-            {
-
-                try
-                {
-                    var dataCaldavGuid =
-                        db.ExecuteList(new SqlQuery("calendar_calendars").Select("caldav_guid").Where("id", calendarId))
-                          .Select(r => r[0])
-                          .ToArray();
-                    var caldavGuid = dataCaldavGuid[0] != null ? Guid.Parse(dataCaldavGuid[0].ToString()) : Guid.Empty;
-
-                    if (caldavGuid != Guid.Empty)
-                    {
-
-                        var myUri = HttpContext.Current.Request.GetUrlRewriter();
-                        
-                        var caldavHost = myUri.Host;
-
-                        LogManager.GetLogger("ASC.Calendar").Info("RADICALE REWRITE URL: " + myUri);
-
-                        var currentUserName = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower() + "@" + caldavHost;
-                        var _email = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email;
-                        string currentAccountPaswd = AuthManager.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
-                        var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
-
-                        var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
-                        caldavTask.Start();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogManager.GetLogger("ASC.Calendar").Error(ex);
-                }
-
-                db.ExecuteNonQuery(new SqlDelete("calendar_calendars").Where("id", calendarId));
-                db.ExecuteNonQuery(new SqlDelete("calendar_calendar_user").Where("calendar_id", calendarId));
-                db.ExecuteNonQuery(new SqlDelete("calendar_calendar_item").Where("calendar_id", calendarId));
-
-                var tenant = TenantManager.GetCurrentTenant().TenantId;
-
-                var data = db.ExecuteList(new SqlQuery("calendar_events")
-                                                .Select("id")
-                                                .Where("calendar_id", calendarId)
-                                                .Where("tenant", tenant))
-                                .Select(r => r[0])
-                                .ToArray();
-
-                db.ExecuteNonQuery(new SqlDelete("calendar_events").Where("calendar_id", calendarId).Where("tenant", tenant));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_item").Where(Exp.In("event_id", data)));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_user").Where(Exp.In("event_id", data)));
-                db.ExecuteNonQuery(new SqlDelete("calendar_notifications").Where(Exp.In("event_id", data)));
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_history").Where("tenant", tenant).Where(Exp.In("event_id", data)));
-
-                tr.Commit();
-            }
-        }
-
         public void RemoveCaldavCalendar(string currentUserName, string email, string currentAccountPaswd, string encoded, string calDavGuid, Uri myUri, bool isShared = false)
         {
             var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
