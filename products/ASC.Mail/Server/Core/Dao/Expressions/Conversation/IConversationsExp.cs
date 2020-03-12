@@ -24,12 +24,16 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+
+
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Conversation
 {
-    /*public interface IConversationsExp
+    public interface IConversationsExp
     {
-        Exp GetExpression();
-    }*/
+        Expression<Func<MailChain, bool>> GetExpression();
+    }
 }

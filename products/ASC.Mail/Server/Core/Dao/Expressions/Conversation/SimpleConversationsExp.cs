@@ -24,14 +24,15 @@
 */
 
 
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Conversation
 {
-    /*public class SimpleConversationsExp : IConversationsExp
+    public class SimpleConversationsExp : IConversationsExp
     {
         public int Tenant { get; private set; }
         public string User { get; private set; }
@@ -55,46 +56,46 @@ namespace ASC.Mail.Core.Dao.Expressions.Conversation
             return new ConversationsExpBuilder(tenant, user);
         }
         
-        public Exp GetExpression()
+        public Expression<Func<MailChain, bool>> GetExpression()
         {
-            var exp = Exp.Eq(ChainTable.Columns.Tenant, Tenant);
+            Expression<Func<MailChain, bool>> exp = c => c.Tenant == Tenant;
 
             if (!string.IsNullOrEmpty(User))
             {
-                exp &= Exp.Eq(ChainTable.Columns.User, User);
+                exp = exp.And(c => c.IdUser == User);
             }
 
             if (FoldersIds != null && FoldersIds.Any())
             {
-                exp &= Exp.In(ChainTable.Columns.Folder, FoldersIds.ToArray());
+                exp = exp.And(c => FoldersIds.Contains((int)c.Folder));
             }
 
             if (Folder.HasValue)
             {
-                exp &= Exp.Eq(ChainTable.Columns.Folder, Folder.Value);
+                exp = exp.And(c => c.Folder == Folder.Value);
             }
 
             if (ChainIds != null && ChainIds.Any())
             {
-                exp &= Exp.In(ChainTable.Columns.Id, ChainIds);
+                exp = exp.And(c => ChainIds.Contains(c.Id));
             }
 
             if (MailboxId.HasValue)
             {
-                exp &= Exp.Eq(ChainTable.Columns.MailboxId, MailboxId.Value);
+                exp = exp.And(c => c.IdMailbox == MailboxId.Value);
             }
 
             if (!string.IsNullOrEmpty(ChainId))
             {
-                exp &= Exp.Eq(ChainTable.Columns.Id, ChainId);
+                exp = exp.And(c => c.Id == ChainId);
             }
 
             if (Unread.HasValue)
             {
-                exp &= Exp.Eq(ChainTable.Columns.Unread, Unread.Value);
+                exp = exp.And(c => c.Unread == Unread.Value);
             }
 
             return exp;
         }
-    }*/
+    }
 }

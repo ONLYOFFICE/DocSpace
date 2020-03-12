@@ -24,11 +24,11 @@
 */
 
 
-//using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Dao.Expressions.Conversation
 {
-    /*public class ConversationsExpBuilder
+    public class ConversationsExpBuilder
     {
         private readonly SimpleConversationsExp _exp;
 
@@ -82,5 +82,5 @@ namespace ASC.Mail.Core.Dao.Expressions.Conversation
         {
             return builder._exp;
         }
-    }*/
+    }
 }
