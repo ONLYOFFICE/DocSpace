@@ -24,14 +24,15 @@
 */
 
 
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 {
-    /*public class SimpleUserFoldersExp : IUserFoldersExp
+    public class SimpleUserFoldersExp : IUserFoldersExp
     {
         public int Tenant { get; private set; }
         public string User { get; private set; }
@@ -58,41 +59,40 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
             return new UserFoldersExpBuilder(tenant, user);
         }
 
-        public Exp GetExpression()
+        public Expression<Func<MailUserFolder, bool>> GetExpression()
         {
-            var exp = Exp.Eq(UserFolderTable.Columns.Tenant, Tenant)
-                      & Exp.Eq(UserFolderTable.Columns.User, User);
+            Expression<Func<MailUserFolder, bool>> exp = f => f.Tenant == Tenant && f.IdUser == User;
 
             if (Ids != null && Ids.Any())
             {
-                exp &= Exp.In(UserFolderTable.Columns.Id, Ids);
+                exp = exp.And(f => Ids.Contains(f.Id));
             }
 
             if (ParentId.HasValue)
             {
-                exp &= Exp.Eq(UserFolderTable.Columns.ParentId, ParentId.Value);
+                exp = exp.And(f => f.ParentId == ParentId.Value);
             }
 
             if (!string.IsNullOrEmpty(Name))
             {
-                exp &= Exp.Eq(UserFolderTable.Columns.Name, Name);
+                exp = exp.And(f => f.Name == Name);
             }
 
             if (HasMails.HasValue)
             {
-                exp &= HasMails.Value
-                    ? Exp.Gt(UserFolderTable.Columns.TotalMessagesCount, 0)
-                    : Exp.Eq(UserFolderTable.Columns.TotalMessagesCount, 0);
+                exp = HasMails.Value
+                    ?  exp.And(f => f.TotalMessagesCount > 0)
+                    :  exp.And(f => f.TotalMessagesCount == 0);
             }
 
             if (HasFolders.HasValue)
             {
-                exp &= HasFolders.Value 
-                    ? Exp.Gt(UserFolderTable.Columns.FolderCount, 0)
-                    : Exp.Eq(UserFolderTable.Columns.FolderCount, 0);
+                exp = HasFolders.Value
+                    ? exp.And(f => f.FoldersCount > 0)
+                    : exp.And(f => f.FoldersCount == 0);
             }
 
             return exp;
         }
-    }*/
+    }
 }

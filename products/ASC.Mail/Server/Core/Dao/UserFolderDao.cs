@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -24,37 +24,32 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Expressions.UserFolder;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Expressions.UserFolder;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Extensions;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class UserFolderDao : BaseDao, IUserFolderDao
+    public class UserFolderDao : BaseDao, IUserFolderDao
     {
-        protected static ITable table = new MailTableFactory().Create<UserFolderTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public UserFolderDao(IDbManager dbManager, int tenant, string user) 
-            : base(table, dbManager, tenant)
+        public UserFolderDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public UserFolder Get(uint id)
         {
-            var query = Query()
+            /*var query = Query()
                 .Where(UserFolderTable.Columns.Tenant, Tenant)
                 .Where(UserFolderTable.Columns.User, CurrentUserId)
                 .Where(UserFolderTable.Columns.Id, id);
@@ -63,12 +58,14 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(ToUserFolder)
                 .SingleOrDefault();
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public UserFolder GetByMail(uint mailId)
         {
-            var subQuery = new SqlQuery(UserFoldertXMailTable.TABLE_NAME)
+            /*var subQuery = new SqlQuery(UserFoldertXMailTable.TABLE_NAME)
                 .Select(UserFoldertXMailTable.Columns.FolderId)
                 .Where(UserFoldertXMailTable.Columns.MailId, mailId)
                 .Distinct();
@@ -80,12 +77,14 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(ToUserFolder)
                 .SingleOrDefault();
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public List<UserFolder> GetList(IUserFoldersExp exp)
         {
-            var query = Query()
+            /*var query = Query()
                 .Where(exp.GetExpression());
 
             if (exp.StartIndex.HasValue)
@@ -113,12 +112,14 @@ namespace ASC.Mail.Core.Dao
             var list = Db.ExecuteList(query)
                 .ConvertAll(ToUserFolder);
 
-            return list;
+            return list;*/
+
+            throw new NotImplementedException();
         }
 
         public UserFolder GetRootFolder(uint folderId)
         {
-            var subQuery = new SqlQuery(UserFolderTreeTable.TABLE_NAME)
+            /*var subQuery = new SqlQuery(UserFolderTreeTable.TABLE_NAME)
                 .Select(UserFolderTreeTable.Columns.ParentId)
                 .Where(UserFolderTreeTable.Columns.FolderId, folderId)
                 .SetMaxResults(1)
@@ -131,12 +132,14 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(ToUserFolder)
                 .SingleOrDefault();
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public UserFolder GetRootFolderByMailId(int mailId)
         {
-            var subSubQuery = new SqlQuery(UserFoldertXMailTable.TABLE_NAME)
+            /*var subSubQuery = new SqlQuery(UserFoldertXMailTable.TABLE_NAME)
                 .Select(UserFoldertXMailTable.Columns.FolderId)
                 .Where(UserFoldertXMailTable.Columns.MailId, mailId)
                 .Distinct();
@@ -154,12 +157,14 @@ namespace ASC.Mail.Core.Dao
                 .ConvertAll(ToUserFolder)
                 .SingleOrDefault();
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public List<UserFolder> GetParentFolders(uint folderId)
         {
-            const string folder_alias = "f";
+            /*const string folder_alias = "f";
             const string folder_tree_alias = "ft";
 
             var query = Query(folder_alias)
@@ -172,12 +177,14 @@ namespace ASC.Mail.Core.Dao
             var list = Db.ExecuteList(query)
                 .ConvertAll(ToUserFolder);
 
-            return list;
+            return list;*/
+
+            throw new NotImplementedException();
         }
 
         public uint Save(UserFolder folder)
         {
-            var query = new SqlInsert(UserFolderTable.TABLE_NAME, true)
+            /*var query = new SqlInsert(UserFolderTable.TABLE_NAME, true)
                 .InColumnValue(UserFolderTable.Columns.Id, folder.Id)
                 .InColumnValue(UserFolderTable.Columns.ParentId, folder.ParentId)
                 .InColumnValue(UserFolderTable.Columns.Tenant, folder.Tenant)
@@ -191,39 +198,45 @@ namespace ASC.Mail.Core.Dao
                 .InColumnValue(UserFolderTable.Columns.TimeModified, folder.TimeModified)
                 .Identity(0, (uint) 0, true);
 
-            return Db.ExecuteScalar<uint>(query);
+            return Db.ExecuteScalar<uint>(query);*/
+
+            throw new NotImplementedException();
         }
 
         public int Remove(uint id)
         {
-            var query = new SqlDelete(UserFolderTable.TABLE_NAME)
+            /*var query = new SqlDelete(UserFolderTable.TABLE_NAME)
                 .Where(UserFolderTable.Columns.Tenant, Tenant)
                 .Where(UserFolderTable.Columns.User, CurrentUserId)
                 .Where(UserFolderTable.Columns.Id, id);
 
             var result = Db.ExecuteNonQuery(query);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
         public int Remove(IUserFoldersExp exp)
         {
-            var query = new SqlDelete(UserFolderTable.TABLE_NAME)
+            /*var query = new SqlDelete(UserFolderTable.TABLE_NAME)
                 .Where(exp.GetExpression());
 
             var result = Db.ExecuteNonQuery(query);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
-        private static readonly string SetFolderCount =
-            string.Format("{0} = (select count(*) - 1 from {1} where {2} = {3})",
-                UserFolderTable.Columns.FolderCount, UserFolderTreeTable.TABLE_NAME,
-                UserFolderTreeTable.Columns.ParentId, UserFolderTable.Columns.Id);
+        //private static readonly string SetFolderCount =
+        //    string.Format("{0} = (select count(*) - 1 from {1} where {2} = {3})",
+        //        UserFolderTable.Columns.FolderCount, UserFolderTreeTable.TABLE_NAME,
+        //        UserFolderTreeTable.Columns.ParentId, UserFolderTable.Columns.Id);
 
         public void RecalculateFoldersCount(uint id)
         {
-            var subQuery = new SqlQuery(UserFolderTreeTable.TABLE_NAME)
+            /*var subQuery = new SqlQuery(UserFolderTreeTable.TABLE_NAME)
                 .Select(UserFolderTreeTable.Columns.ParentId)
                 .Where(UserFolderTreeTable.Columns.FolderId, id);
 
@@ -232,16 +245,57 @@ namespace ASC.Mail.Core.Dao
                 .Where(Exp.In(UserFolderTable.Columns.Id, subQuery));
 
             // ReSharper disable once UnusedVariable
-            var result =  Db.ExecuteNonQuery(query);
+            var result =  Db.ExecuteNonQuery(query);*/
+
+            throw new NotImplementedException();
         }
 
-        private const string INCR_VALUE_FORMAT = "{0}={0}+({1})";
-        private const string SET_VALUE_FORMAT = "{0}={1}";
+        //private const string INCR_VALUE_FORMAT = "{0}={0}+({1})";
+        //private const string SET_VALUE_FORMAT = "{0}={1}";
+
+        public int SetFolderCounters(uint folderId, int? unreadMess = null, int? totalMess = null,
+            int? unreadConv = null, int? totalConv = null)
+        {
+            /*if (!unreadMess.HasValue
+                && !totalMess.HasValue
+                && !unreadConv.HasValue
+                && !totalConv.HasValue)
+            {
+                return -1;
+            }
+
+            var updateQuery = new SqlUpdate(UserFolderTable.TABLE_NAME)
+                .Where(UserFolderTable.Columns.Tenant, Tenant)
+                .Where(UserFolderTable.Columns.User, CurrentUserId)
+                .Where(UserFolderTable.Columns.Id, folderId);
+
+            Action<string, int?> setColumnValue = (column, item) =>
+            {
+                if (!item.HasValue)
+                    return;
+
+                updateQuery.Set(string.Format(SET_VALUE_FORMAT, column, item.Value));
+            };
+
+            setColumnValue(UserFolderTable.Columns.UnreadMessagesCount, unreadMess);
+
+            setColumnValue(UserFolderTable.Columns.TotalMessagesCount, totalMess);
+
+            setColumnValue(UserFolderTable.Columns.UnreadConversationsCount, unreadConv);
+
+            setColumnValue(UserFolderTable.Columns.TotalConversationsCount, totalConv);
+
+            var result = Db.ExecuteNonQuery(updateQuery);
+
+            return result;*/
+
+            throw new NotImplementedException();
+        }
 
         public int ChangeFolderCounters(uint folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
             int? unreadConvDiff = null, int? totalConvDiff = null)
         {
-            if (!unreadMessDiff.HasValue
+            /*if (!unreadMessDiff.HasValue
                 && !totalMessDiff.HasValue
                 && !unreadConvDiff.HasValue
                 && !totalConvDiff.HasValue)
@@ -274,32 +328,34 @@ namespace ASC.Mail.Core.Dao
 
             var result = Db.ExecuteNonQuery(updateQuery);
 
-            return result;
+            return result;*/
+
+            throw new NotImplementedException();
         }
 
-        protected UserFolder ToUserFolder(object[] r)
+        protected UserFolder ToUserFolder(MailUserFolder r)
         {
             var folder = new UserFolder
             {
-                Id = Convert.ToUInt32(r[0]),
-                ParentId = Convert.ToUInt32(r[1]),
+                Id = r.Id,
+                ParentId = (uint)r.ParentId,
                 
-                Tenant = Convert.ToInt32(r[2]),
-                User = Convert.ToString(r[3]),
+                Tenant = r.Tenant,
+                User = r.IdUser,
                 
-                Name = Convert.ToString(r[4]),
-                FolderCount = Convert.ToInt32(r[5]),
+                Name = r.Name,
+                FolderCount = (int)r.FoldersCount,
 
-                UnreadCount = Convert.ToInt32(r[6]),
-                TotalCount = Convert.ToInt32(r[7]),
+                UnreadCount = (int)r.UnreadMessagesCount,
+                TotalCount = (int)r.TotalMessagesCount,
 
-                UnreadChainCount = Convert.ToInt32(r[8]),
-                TotalChainCount = Convert.ToInt32(r[9]),
+                UnreadChainCount = (int)r.UnreadConversationsCount,
+                TotalChainCount = (int)r.TotalConversationsCount,
 
-                TimeModified = Convert.ToDateTime(r[10])
+                TimeModified = r.ModifiedOn
             };
 
             return folder;
         }
-    }*/
+    }
 }

@@ -1,6 +1,6 @@
 /*
  *
- * (c) Copyright Ascensio System Limited 2010-2018
+ * (c) Copyright Ascensio System Limited 2010-2020
  *
  * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
  * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
@@ -30,7 +30,7 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface IUserFolderDao
+    public interface IUserFolderDao
     {
         UserFolder Get(uint id);
 
@@ -46,10 +46,13 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         void RecalculateFoldersCount(uint id);
 
+        int SetFolderCounters(uint folderId, int? unreadMess = null, int? totalMess = null,
+            int? unreadConv = null, int? totalConv = null);
+
         /// <summary>
         ///     Update folder counters
         /// </summary>
         int ChangeFolderCounters(uint folderId, int? unreadMessDiff = null, int? totalMessDiff = null,
             int? unreadConvDiff = null, int? totalConvDiff = null);
-    }*/
+    }
 }
