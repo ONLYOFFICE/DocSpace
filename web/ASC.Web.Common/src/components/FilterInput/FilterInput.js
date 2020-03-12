@@ -131,20 +131,21 @@ class FilterInput extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.throttledResize);
     }
-    componentDidUpdate(prevProps){
-        if(this.props.needForUpdate && this.props.needForUpdate(prevProps, this.props)){
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.needForUpdate && this.props.needForUpdate(prevProps, this.props)) {
             let internalFilterData = convertToInternalData(this.props.getFilterData(), cloneObjectsArray(this.props.selectedFilterData.filterValues));
             this.updateFilter(internalFilterData);
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
-
         const { selectedFilterData, getFilterData, getSortData, value, id,
-                isDisabled, size, placeholder } = this.props;
+            isDisabled, size, placeholder } = this.props;
         if (!isEqual(selectedFilterData, nextProps.selectedFilterData)) {
             let internalFilterData = cloneObjectsArray(this.state.filterValues);
             if (nextProps.selectedFilterData.filterValues) {
                 internalFilterData = convertToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
+                let internalFilterDataSelectors = this.convertSelectorToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
+                internalFilterData = internalFilterData.concat(internalFilterDataSelectors);
                 this.updateFilter(internalFilterData);
             }
             this.setState(
@@ -157,6 +158,26 @@ class FilterInput extends React.Component {
             );
             return true;
         }
+
+        if (this.props.isReady !== nextProps.isReady) {
+            let internalFilterData = cloneObjectsArray(this.state.filterValues);
+            internalFilterData = convertToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
+
+            let internalFilterDataSelectors = this.convertSelectorToInternalData(getFilterData(), cloneObjectsArray(nextProps.selectedFilterData.filterValues));
+            internalFilterData = internalFilterData.concat(internalFilterDataSelectors);
+            this.updateFilter(internalFilterData);
+
+            this.setState(
+                {
+                    sortDirection: nextProps.selectedFilterData.sortDirection === "desc" ? true : false,
+                    sortId: getSortData().findIndex(x => x.key === nextProps.selectedFilterData.sortId) != -1 ? nextProps.selectedFilterData.sortId : "",
+                    filterValues: internalFilterData,
+                    searchText: nextProps.selectedFilterData.inputValue || value
+                }
+            );
+            // return true;
+        }
+
         if (id != nextProps.id ||
             isDisabled != nextProps.isDisabled ||
             size != nextProps.size ||
@@ -168,6 +189,36 @@ class FilterInput extends React.Component {
             return true;
         }
         return !isEqual(this.state, nextState);
+    }
+
+    convertSelectorToInternalData = (filterData, filterValues) => {
+        const resultValues = [];
+        filterValues.forEach((item) => {
+            const isSelector = item.group.includes('filter-author');
+            if (isSelector) {
+                const typeSelector = item.key.includes('user') ? 'user'
+                    : item.key.includes('group') ? 'group'
+                        : null;
+                const hasUnderscore = item.key.indexOf('_') !== -1;
+                const key = hasUnderscore ? item.key.slice(0, item.key.indexOf('_')) : item.key;
+                const finded = filterData.find(x => x.key === key && x.group === item.group);
+                if (!finded) return;
+                const convertedItem = {
+                    key: item.group + '_' + item.key,
+                    label: finded.label,
+                    group: item.group,
+                    groupLabel: finded.label,
+                    typeSelector,
+                    groupsCaption: finded.groupsCaption,
+                    defaultOptionLabel: finded.defaultOptionLabel,
+                    defaultOption: finded.defaultOption,
+                    defaultSelectLabel: finded.defaultSelectLabel,
+                    selectedItem: finded.selectedItem,
+                };
+                resultValues.push(convertedItem);
+            }
+        });
+        return resultValues;
     }
 
     resize = () => {
@@ -254,7 +305,7 @@ class FilterInput extends React.Component {
                 elementsWidth = elementsWidth + element.getBoundingClientRect().width;
             });
 
-            if ( filterButton !== null && (elementsWidth >= (fullWidth / 3) - filterButton.getBoundingClientRect().width)) {
+            if (filterButton !== null && (elementsWidth >= (fullWidth / 3) - filterButton.getBoundingClientRect().width)) {
                 for (let i = 0; i < filterArr.length; i++) {
                     if (elementsWidth > (fullWidth / 3) - filterButton.getBoundingClientRect().width) {
                         elementsWidth = elementsWidth - filterArr[i].getBoundingClientRect().width;
@@ -270,6 +321,7 @@ class FilterInput extends React.Component {
             });
 
         } else {
+
             this.setState({
                 openFilterItems: currentFilterItems.slice(),
                 hideFilterItems: []
@@ -327,6 +379,51 @@ class FilterInput extends React.Component {
     }
     onClickFilterItem(event, filterItem) {
         const currentFilterItems = cloneObjectsArray(this.state.filterValues);
+
+
+        if (filterItem.isSelector) {
+            const indexFilterItem = currentFilterItems.findIndex(x => x.group === filterItem.group);
+            if (indexFilterItem != -1) {
+                currentFilterItems.splice(indexFilterItem, 1);
+            }
+            const typeSelector = filterItem.key.includes('user') ? 'user'
+                : filterItem.key.includes('group') ? 'group'
+                    : null;
+            const itemId = filterItem.key.indexOf('_') !== filterItem.key.lastIndexOf('_') ? filterItem.key.slice(0, filterItem.key.lastIndexOf('_')) : filterItem.key;
+            const itemKey = filterItem.selectedItem && filterItem.selectedItem.key ? itemId + "_" + filterItem.selectedItem.key : filterItem.key;
+            const selectedItem = filterItem.typeSelector === typeSelector ? filterItem.selectedItem : {};
+            const selectFilterItem = {
+                key: itemKey,
+                group: filterItem.group,
+                label: filterItem.label,
+                groupLabel: filterItem.label,
+                typeSelector,
+                defaultOption: filterItem.defaultOption,
+                groupsCaption: filterItem.groupsCaption,
+                defaultOptionLabel: filterItem.defaultOptionLabel,
+                defaultSelectLabel: filterItem.defaultSelectLabel,
+                selectedItem,
+            };
+            currentFilterItems.push(selectFilterItem);
+            this.setState({
+                filterValues: currentFilterItems,
+                openFilterItems: currentFilterItems,
+                hideFilterItems: []
+            });
+
+            if (selectFilterItem.selectedItem.key) {
+                const clone = cloneObjectsArray(currentFilterItems.filter(item => item.key != '-1'));
+                clone.map(function (item) {
+                    item.key = item.key.replace(item.group + "_", '');
+                    return item;
+                })
+
+
+                this.onFilter(clone.filter(item => item.key != '-1'), this.state.sortId, this.state.sortDirection ? "desc" : "asc");
+            }
+
+            return;
+        }
 
         if (filterItem.subgroup) {
             const indexFilterItem = currentFilterItems.findIndex(x => x.group === filterItem.subgroup);
@@ -414,14 +511,14 @@ class FilterInput extends React.Component {
     render() {
         /* eslint-disable react/prop-types */
         const { className, id, style, size,
-            isDisabled, scale, getFilterData, placeholder, 
+            isDisabled, scale, getFilterData, placeholder,
             getSortData, directionAscLabel, directionDescLabel } = this.props;
         /* eslint-enable react/prop-types */
 
         const { searchText, filterValues, openFilterItems,
-                hideFilterItems, sortId, sortDirection} = this.state;
+            hideFilterItems, sortId, sortDirection } = this.state;
 
-        //console.log("FilterInput render");
+        // console.log("FilterInput render", this.state.openFilterItems);
         let iconSize = 33;
         switch (size) {
             case 'base':

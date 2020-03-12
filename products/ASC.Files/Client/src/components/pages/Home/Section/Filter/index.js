@@ -1,13 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { FilterInput } from "asc-web-components";
 import { fetchFiles } from "../../../../../store/files/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { constants } from 'asc-web-common';
+import { constants, FilterInput, api } from 'asc-web-common';
 
 const { FilterType } = constants;
 
@@ -33,16 +32,10 @@ const getAuthorType = filterValues => {
   return authorType ? authorType : null;
 };
 
-// const getRole = filterValues => {
-//   const employeeStatus = result(
-//     find(filterValues, value => {
-//       return value.group === "filter-type";
-//     }),
-//     "key"
-//   );
-
-//   return employeeStatus || null;
-// };
+const getSelectedItem = (filterValues, type) => {
+  const selectedItem = filterValues.find(item => item.key === type);
+  return selectedItem || null;
+};
 
 // const getGroup = filterValues => {
 //   const groupId = result(
@@ -56,12 +49,64 @@ const getAuthorType = filterValues => {
 // };
 
 class SectionFilterContent extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isReady: false,
+      selectedItem: {
+      }
+    }
+
+  }
   componentDidMount() {
     const { location, filter, onLoading, fetchFiles } = this.props;
 
     const newFilter = getFilterByLocation(location);
 
     if (!newFilter || newFilter.equals(filter)) return;
+
+    if (newFilter.authorType) {
+      const authorType = newFilter.authorType;
+      const indexOfUnderscore = authorType.indexOf('_');
+      const cleanAuthorType = authorType.slice(0, indexOfUnderscore);
+      const itemId = authorType.slice(indexOfUnderscore + 1);
+      if (!itemId) return;
+      switch (cleanAuthorType) {
+        case 'group':
+          api.groups.getGroup(itemId)
+            .then((data) => {
+              this.setState({
+                selectedItem: {
+                  key: data.id,
+                  label: data.name,
+                  type: 'group'
+                },
+                isReady: true
+              });
+            }
+            )
+          break;
+        case 'user':
+          api.people.getUserById(itemId)
+            .then((data) => {
+              this.setState({
+                selectedItem: {
+                  key: data.id,
+                  label: data.displayName,
+                  type: 'user'
+                },
+                isReady: true
+              });
+            })
+          break;
+        default:
+          this.setState({ isReady: true })
+
+          break;
+      }
+    }
+
 
     onLoading(true);
     fetchFiles(newFilter)
@@ -78,6 +123,18 @@ class SectionFilterContent extends React.Component {
       data.sortDirection === "desc" ? "descending" : "ascending";
     const authorType = getAuthorType(data.filterValues);
 
+
+    const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
+    selectedItem ? this.setState({
+      selectedItem: {
+        key: selectedItem.selectedItem.key,
+        label: selectedItem.selectedItem.label,
+        type: selectedItem.typeSelector
+      }
+    })
+      :
+      this.setState({ selectedItem: {} });
+
     const newFilter = filter.clone();
     newFilter.page = 0;
     newFilter.sortBy = sortBy;
@@ -88,61 +145,62 @@ class SectionFilterContent extends React.Component {
 
     onLoading(true);
     fetchFiles(newFilter)
-    .finally(() => onLoading(false));
+      .finally(() => onLoading(false));
   };
 
   getData = () => {
-    const { t, settings } = this.props;
+    const { t, settings, user } = this.props;
+    const { selectedItem } = this.state;
     const { usersCaption, groupsCaption } = settings.customNames;
 
     const options = [
-        {
-          key: "filter-filterType",
-          group: "filter-filterType",
-          label: t("Type"),
-          isHeader: true
-        },
-        {
-          key: FilterType.FoldersOnly.toString(),
-          group: "filter-filterType",
-          label: t("Folders")
-        },
-        {
-          key: FilterType.DocumentsOnly.toString(),
-          group: "filter-filterType",
-          label: t("Documents")
-        },
-        {
-          key: FilterType.PresentationsOnly.toString(),
-          group: "filter-filterType",
-          label: t("Presentations")
-        },
-        {
-          key: FilterType.SpreadsheetsOnly.toString(),
-          group: "filter-filterType",
-          label: t("Spreadsheets")
-        },
-        {
-          key: FilterType.ImagesOnly.toString(),
-          group: "filter-filterType",
-          label: t("Images")
-        },
-        {
-          key: FilterType.MediaOnly.toString(),
-          group: "filter-filterType",
-          label: t("Media")
-        },
-        {
-          key: FilterType.ArchiveOnly.toString(),
-          group: "filter-filterType",
-          label: t("Archives")
-        },
-        {
-          key: FilterType.FilesOnly.toString(),
-          group: "filter-filterType",
-          label: t("AllFiles")
-        }
-      ];
+      {
+        key: "filter-filterType",
+        group: "filter-filterType",
+        label: t("Type"),
+        isHeader: true
+      },
+      {
+        key: FilterType.FoldersOnly.toString(),
+        group: "filter-filterType",
+        label: t("Folders")
+      },
+      {
+        key: FilterType.DocumentsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Documents")
+      },
+      {
+        key: FilterType.PresentationsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Presentations")
+      },
+      {
+        key: FilterType.SpreadsheetsOnly.toString(),
+        group: "filter-filterType",
+        label: t("Spreadsheets")
+      },
+      {
+        key: FilterType.ImagesOnly.toString(),
+        group: "filter-filterType",
+        label: t("Images")
+      },
+      {
+        key: FilterType.MediaOnly.toString(),
+        group: "filter-filterType",
+        label: t("Media")
+      },
+      {
+        key: FilterType.ArchiveOnly.toString(),
+        group: "filter-filterType",
+        label: t("Archives")
+      },
+      {
+        key: FilterType.FilesOnly.toString(),
+        group: "filter-filterType",
+        label: t("AllFiles")
+      }
+    ];
 
     const filterOptions = [
       ...options,
@@ -150,17 +208,26 @@ class SectionFilterContent extends React.Component {
         key: "filter-author",
         group: "filter-author",
         label: t("Author"),
-        isHeader: true
+        isHeader: true,
       },
       {
         key: "user",
         group: "filter-author",
-        label: usersCaption
+        label: usersCaption,
+        isSelector: true,
+        defaultOptionLabel: t("DefaultOptionLabel"),
+        defaultSelectLabel: t("LblSelect"),
+        groupsCaption,
+        defaultOption: user,
+        selectedItem
       },
       {
         key: "group",
         group: "filter-author",
-        label: groupsCaption
+        label: groupsCaption,
+        defaultSelectLabel: t("LblSelect"),
+        isSelector: true,
+        selectedItem
       },
       {
         key: "filter-folders",
@@ -235,16 +302,15 @@ class SectionFilterContent extends React.Component {
   };
 
   needForUpdate = (currentProps, nextProps) => {
-    // if (currentProps.language !== nextProps.language) {
+    if (currentProps.language !== nextProps.language) {
       return true;
-    // }
-    // return false;
+    }
+    return false;
   };
 
 
   render() {
     const selectedFilterData = this.getSelectedFilterData();
-    //console.log('selectedFilterData', selectedFilterData);
     const { t, i18n } = this.props;
     return (
       <FilterInput
@@ -257,6 +323,7 @@ class SectionFilterContent extends React.Component {
         placeholder={t("Search")}
         needForUpdate={this.needForUpdate}
         language={i18n.language}
+        isReady={this.state.isReady}
       />
     );
   }

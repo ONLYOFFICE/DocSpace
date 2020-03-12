@@ -36,5 +36,7 @@
   "CountPerPage": "{{count}} per page",
   "PageOfTotalPage": "{{page}} of {{totalPage}}",
   "PreviousPage": "Previous",
-  "NextPage": "Next"
+  "NextPage": "Next",
+  "DefaultOptionLabel": "Me",
+  "LblSelect": "Select"
 }

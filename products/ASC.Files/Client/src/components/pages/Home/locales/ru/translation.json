@@ -36,5 +36,7 @@
   "CountPerPage": "{{count}} на странице",
   "PageOfTotalPage": "{{page}} из {{totalPage}}",
   "PreviousPage": "Предыдущая",
-  "NextPage": "Следующая"
+  "NextPage": "Следующая",
+  "DefaultOptionLabel": "Я",
+  "LblSelect": "Выберите"
 }
