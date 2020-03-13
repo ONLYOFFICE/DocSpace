@@ -87,6 +87,8 @@ const StyledFilterInput = styled.div`
     .styled-filter-name {
       line-height: 18px;
       margin-left: 5px;
+      margin-top: -2px;
+      margin-right: 4px;
     }
 
     .styled-hide-filter {
