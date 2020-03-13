@@ -3,31 +3,31 @@ export const getRootFolders = files => {
 
   const data = [
     {
-      id: my.id,
+      id: my.id.toString(),
       key: "0-0",
       title: my.title,
       foldersCount: my.folders.length
     },
     {
-      id: share.id,
+      id: share.id.toString(),
       key: "0-1",
       title: share.title,
       foldersCount: share.folders.length
     },
     {
-      id: common.id,
+      id: common.id.toString(),
       key: "0-2",
       title: common.title,
       foldersCount: common.folders.length
     },
     {
-      id: project.id,
+      id: project.id.toString(),
       key: "0-3",
       title: project.title,
       foldersCount: project.folders.length
     },
     {
-      id: trash.id,
+      id: trash.id.toString(),
       key: "0-4",
       title: trash.title,
       foldersCount: null

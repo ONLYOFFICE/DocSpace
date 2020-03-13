@@ -9,48 +9,75 @@ import { api, history } from "asc-web-common";
 const { files } = api;
 
 class ArticleBodyContent extends React.Component {
-  state = { defaultExpandedKeys: [] };
+  state = { expandedKeys: this.props.filter.treeFolders };
+
   componentDidMount() {
     if (history.location.hash) {
-      const folderId = history.location.hash.slice(1);
-
-      const url = `${history.location.pathname}${history.location.search}`;
-      const symbol =
-        history.location.hash ||
-        history.location.search[history.location.search.length - 1] === "/"
-          ? ""
-          : "/";
-
-      let defaultExpandedKeys = [];
-      files
-        .getFolder(folderId)
-        .then(data => {
-          let newExpandedKeys = [];
-          for (let item of data.pathParts) {
-            newExpandedKeys.push(item.toString());
-          }
-          newExpandedKeys.pop();
-          const newFilter = this.props.filter.clone();
-          newFilter.TreeFolders = newExpandedKeys;
-          this.props.setFilter(newFilter);
-          defaultExpandedKeys = newExpandedKeys;
-          fetchFolder(folderId, store.dispatch)
-            .then(() => {
-              history.push(`${url}${symbol}#${folderId}`);
-            })
-            .catch(err => toastr.error("Something went wrong", err));
-        })
-        .catch(err => toastr.error("Something went wrong", err))
-        .finally(() => this.setState({ defaultExpandedKeys }));
+      this.fetchData();
     }
   }
-  shouldComponentUpdate(nextProps) {
-    const { selectedKeys, data, fakeNewDocuments, currentModule } = this.props;
+
+  componentDidUpdate(prevProps) {
+    const { treeFolders } = this.props.filter;
+
+    if (!utils.array.isArrayEqual(treeFolders, this.state.expandedKeys)) {
+      let expandedKeys = treeFolders;
+      expandedKeys = [...new Set(expandedKeys)];
+      this.setState({ expandedKeys });
+    }
+  }
+
+  fetchData = () => {
+    const folderId = history.location.hash.slice(1);
+
+    const url = `${history.location.pathname}${history.location.search}`;
+    const symbol =
+      history.location.hash ||
+      history.location.search[history.location.search.length - 1] === "/"
+        ? ""
+        : "/";
+
+    let expandedKeys = [];
+    files
+      .getFolder(folderId)
+      .then(data => {
+        for (let item of data.pathParts) {
+          expandedKeys.push(item.toString());
+        }
+
+        expandedKeys.pop();
+
+        fetchFolder(folderId, store.dispatch)
+          .then(() => {
+            history.push(`${url}${symbol}#${folderId}`);
+          })
+          .catch(err => toastr.error("Something went wrong", err));
+      })
+      .catch(err => toastr.error("Something went wrong", err))
+      .finally(() => this.setState({ expandedKeys }));
+  };
+
+  /*shouldComponentUpdate(nextProps, nextState) {
+    const {
+      selectedKeys,
+      data,
+      fakeNewDocuments,
+      currentModule,
+      filter
+    } = this.props;
     if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
       return true;
     }
 
     if (!utils.array.isArrayEqual(nextProps.data, data)) {
+      return true;
+    }
+    if (
+      !utils.array.isArrayEqual(
+        filter.treeFolders,
+        nextProps.filter.treeFolders
+      )
+    ) {
       return true;
     }
 
@@ -62,8 +89,14 @@ class ArticleBodyContent extends React.Component {
       return true;
     }
 
+    if (
+      !utils.array.isArrayEqual(nextState.expandedKeys, this.state.expandedKeys)
+    ) {
+      return true;
+    }
+
     return false;
-  }
+  }*/
 
   render() {
     const {
@@ -75,7 +108,7 @@ class ArticleBodyContent extends React.Component {
       setFilter
     } = this.props;
 
-    //console.log("FilesTreeMenu", this.props);
+    //console.log("TreeFolders render", this.props);
     return (
       <TreeFolders
         selectedKeys={selectedKeys}
@@ -84,7 +117,7 @@ class ArticleBodyContent extends React.Component {
         data={data}
         filter={filter}
         setFilter={setFilter}
-        defaultExpandedKeys={this.state.defaultExpandedKeys}
+        expandedKeys={this.state.expandedKeys}
       />
     );
   }

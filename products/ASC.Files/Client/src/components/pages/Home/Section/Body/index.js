@@ -220,7 +220,7 @@ class SectionBodyContent extends React.PureComponent {
       </RowContainer>
     ) : parentId !== 0 ? (
       <EmptyFolderContainer parentId={parentId} />
-    ) : <a>RootFolderContainer</a>;
+    ) : <p>RootFolderContainer</p>;
   }
 }
 

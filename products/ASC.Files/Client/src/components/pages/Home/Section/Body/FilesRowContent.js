@@ -5,7 +5,7 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
-import { createFile, createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, setFilter } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 import { history } from "asc-web-common";
 import { fetchFolder } from "../../../../../store/files/actions";
@@ -98,6 +98,7 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst } = this.props.item;
+    const { filter, setFilter } = this.props;
     if (!fileExst) {
       const a =
         history.location.search !== ""
@@ -106,9 +107,18 @@ class FilesRowContent extends React.PureComponent {
       const url = `${history.location.pathname}${a}`;
       history.push(`${url}#${id}`);
 
-      fetchFolder(id, store.dispatch).catch(err =>
-        toastr.error("Something went wrong", err)
-      );
+      fetchFolder(id, store.dispatch).then(data => {
+        const newFilter = filter.clone();
+        if (
+          newFilter.treeFolders.indexOf(
+            data.selectedFolder.parentId.toString()
+          ) === -1
+        ) {
+          newFilter.treeFolders.push(data.selectedFolder.parentId.toString());
+        }
+        newFilter.treeFolders.push(id.toString());
+        setFilter(newFilter);
+      });
     }
   };
 
@@ -371,6 +381,12 @@ class FilesRowContent extends React.PureComponent {
   }
 };
 
-export default connect(null, { createFile, createFolder, updateFile, renameFolder })(
+function mapStateToProps(state) {
+  return {
+    filter: state.files.filter
+  }
+}
+
+export default connect(mapStateToProps, { createFile, createFolder, updateFile, renameFolder, setFilter })(
   withRouter(withTranslation()(FilesRowContent))
 );
