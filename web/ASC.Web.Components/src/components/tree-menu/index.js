@@ -90,7 +90,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
     //console.log("TreeMenu render");
     const { defaultExpandAll, defaultExpandParent, showIcon, showLine, multiple, disabled, draggable, checkable, children, switcherIcon, icon,
         onDragStart, onDrop, onSelect, onDragEnter, onDragEnd, onDragLeave, onDragOver, onCheck, onExpand, onLoad, onMouseEnter, onMouseLeave, onRightClick,
-        defaultSelectedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick, loadData } = props;
+        defaultSelectedKeys, expandedKeys, defaultExpandedKeys, defaultCheckedKeys, selectedKeys, className, id, style, badgeLabel, onBadgeClick, loadData } = props;
 
     const onTreeNodeSelect = (data, e) => {
         const result = e.selected ? data : [e.node.props.eventKey];
@@ -104,6 +104,7 @@ const TreeMenu = React.forwardRef((props, ref) => {
         >
             <StyledTreeMenu
                 ref={ref}
+                expandedKeys={expandedKeys}
                 loadData={loadData}
                 checkable={!!checkable}
                 draggable={!!draggable}
@@ -184,6 +185,10 @@ TreeMenu.propTypes = {
     id: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     badgeLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+}
+
+TreeMenu.defaultProps = {
+    expandedKeys: []
 }
 
 TreeMenu.displayName = "TreeMenu";
