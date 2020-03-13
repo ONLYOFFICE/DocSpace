@@ -11,7 +11,7 @@ class TreeFolders extends React.Component {
 
     const treeData = props.data;
 
-    this.state = { treeData };
+    this.state = { treeData, expandedKeys: this.props.expandedKeys };
 
     this.ref = React.createRef();
   }
@@ -160,9 +160,13 @@ class TreeFolders extends React.Component {
     });
   };
 
+  onExpand = data => {
+    this.setState({expandedKeys: data})
+  }
+
   render() {
-    const { selectedKeys, fakeNewDocuments, expandedKeys } = this.props;
-    const { treeData } = this.state;
+    const { selectedKeys, fakeNewDocuments } = this.props;
+    const { treeData, expandedKeys } = this.state;
 
     //console.log("TreeFolders render", this.props);
     return (
@@ -181,6 +185,7 @@ class TreeFolders extends React.Component {
         onBadgeClick={() => console.log("onBadgeClick")}
         loadData={this.onLoadData}
         expandedKeys={expandedKeys}
+        onExpand={this.onExpand}
       >
         {this.getItems(treeData)}
       </TreeMenu>

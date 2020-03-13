@@ -98,7 +98,7 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst } = this.props.item;
-    const { filter, setFilter } = this.props;
+    const { filter } = this.props;
     if (!fileExst) {
       const a =
         history.location.search !== ""
@@ -107,19 +107,9 @@ class FilesRowContent extends React.PureComponent {
       const url = `${history.location.pathname}${a}`;
       history.push(`${url}#${id}`);
 
-
-  fetchFiles(id, filter, store.dispatch).then(data => {
-        const newFilter = filter.clone();
-        if (
-          newFilter.treeFolders.indexOf(
-            data.selectedFolder.parentId.toString()
-          ) === -1
-        ) {
-          newFilter.treeFolders.push(data.selectedFolder.parentId.toString());
-        }
-        newFilter.treeFolders.push(id.toString());
-        setFilter(newFilter);
-      });
+      const newFilter = filter.clone();
+      newFilter.treeFolders.push(id.toString());
+      fetchFiles(id, newFilter, store.dispatch);
     }
   };
 
