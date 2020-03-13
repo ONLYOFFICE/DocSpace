@@ -235,7 +235,8 @@ const SectionHeaderContent = props => {
 const mapStateToProps = state => {
   return {
     isAdmin: isAdmin(state.auth.user),
-    title: state.files.selectedFolder.title
+    title: state.files.selectedFolder.title,
+    folder: state.files.selectedFolder.parentId !== 0
   };
 };
 
