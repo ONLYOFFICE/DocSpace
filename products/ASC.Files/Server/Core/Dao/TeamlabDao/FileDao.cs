@@ -181,7 +181,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    query = query.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    query = BuildSearch(query, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -211,7 +211,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        query = query.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        query = BuildSearch(query, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -261,7 +261,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -313,7 +313,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        q = BuildSearch(q, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -970,7 +970,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -1000,7 +1000,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        q = BuildSearch(q, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -1023,7 +1023,7 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                var query = GetFileQuery(r => r.CurrentVersion && BuildSearch(r, searchText, SearhTypeEnum.Any));
+                var query = BuildSearch(GetFileQuery(r => r.CurrentVersion), searchText, SearhTypeEnum.Any);
                 return FromQueryWithShared(query)
                     .Where(f =>
                            bunch

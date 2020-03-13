@@ -160,13 +160,14 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var q = GetFolderQuery(r => r.ParentId.ToString() == parentId.ToString());
+            var parentIdString = parentId.ToString();
+            var q = GetFolderQuery(r => r.ParentId.ToString() == parentIdString);
 
             if (withSubfolders)
             {
                 q = GetFolderQuery()
                     .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => r.tree.ParentId.ToString() == parentId.ToString() && r.tree.Level != 0)
+                    .Where(r => r.tree.ParentId.ToString() == parentIdString && r.tree.Level != 0)
                     .Select(r => r.folder);
             }
 
@@ -178,7 +179,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -248,7 +249,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -694,7 +695,7 @@ namespace ASC.Files.Core.Data
                 return FromQueryWithShared(q1);
             }
 
-            var q = GetFolderQuery(r => BuildSearch(r, text, SearhTypeEnum.Any));
+            var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
             return FromQueryWithShared(q);
         }
 
