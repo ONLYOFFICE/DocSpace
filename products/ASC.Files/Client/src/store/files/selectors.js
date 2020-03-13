@@ -37,21 +37,6 @@ export const getRootFolders = files => {
   return data;
 };
 
-export const setTreeFilter = (filter, rootFolders) => {
-  let newFilter = filter.clone();
-
-  if (newFilter.treeFolders.length === 0) {
-    newFilter.treeFolders = [
-      { id: rootFolders.my.id, key: "0-0" },
-      { id: rootFolders.share.id, key: "0-1" },
-      { id: rootFolders.common.id, key: "0-2" },
-      { id: rootFolders.project.id, key: "0-3" },
-      { id: rootFolders.trash.id, key: "0-4" }
-    ];
-  }
-  return newFilter;
-};
-
 export const canWebEdit = fileExst => {
   const editedDocs = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv', '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
   const result = editedDocs.findIndex(item => item === fileExst);
