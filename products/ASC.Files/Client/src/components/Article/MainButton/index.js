@@ -56,6 +56,7 @@ class PureArticleMainButtonContent extends React.Component {
               icon="ActionsUploadIcon"
               label={t('Upload')}
               onClick={() => toastr.info("Upload click")}
+              disabled
             />
           </MainButton>
         </>
