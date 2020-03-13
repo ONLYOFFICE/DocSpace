@@ -115,7 +115,6 @@ class SectionFilterContent extends React.Component {
 
   onFilter = data => {
     const { onLoading, fetchFiles, filter } = this.props;
-    console.log('on filteR', data)
 
     const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
@@ -124,7 +123,6 @@ class SectionFilterContent extends React.Component {
       data.sortDirection === "desc" ? "descending" : "ascending";
     const authorType = getAuthorType(data.filterValues);
     const withSubfolders = getSearchParams(data.filterValues);
-    console.log('SEARCH params', withSubfolders)
 
 
     const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
