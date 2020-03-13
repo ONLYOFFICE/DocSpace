@@ -45,6 +45,7 @@ using ASC.Files.Thirdparty.Dropbox;
 using ASC.Files.Thirdparty.GoogleDrive;
 using ASC.Files.Thirdparty.OneDrive;
 using ASC.Files.Thirdparty.SharePoint;
+using ASC.Files.Thirdparty.Sharpbox;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 
@@ -376,6 +377,7 @@ namespace ASC.Files.Thirdparty
             var owner = input.UserId;
             var folderType = input.FolderType;
             var createOn = TenantUtil.DateTimeFromUtc(input.CreateOn);
+            var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
 
             if (string.IsNullOrEmpty(token)) throw new ArgumentException("Token can't be null");
 
@@ -408,8 +410,6 @@ namespace ASC.Files.Thirdparty
 
             if (key == ProviderTypes.SharePoint)
             {
-                var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
-
                 if (!string.IsNullOrEmpty(authData.Login) && string.IsNullOrEmpty(authData.Password))
                     throw new ArgumentNullException("password", "Password can't be null");
 
@@ -452,16 +452,23 @@ namespace ASC.Files.Thirdparty
                 return od;
             }
 
-            //return new SharpBoxProviderInfo(
-            //    id,
-            //    key.ToString(),
-            //    providerTitle,
-            //    new AuthData(input[9] as string, input[3] as string, DecryptPassword(input[4] as string), token),
-            //    owner,
-            //    folderType,
-            //    createOn);
+            if (string.IsNullOrEmpty(input.Provider))
+                throw new ArgumentNullException("providerKey");
+            if (string.IsNullOrEmpty(authData.Token) && string.IsNullOrEmpty(authData.Password))
+                throw new ArgumentNullException("token", "Both token and password can't be null");
+            if (!string.IsNullOrEmpty(authData.Login) && string.IsNullOrEmpty(authData.Password) && string.IsNullOrEmpty(authData.Token))
+                throw new ArgumentNullException("password", "Password can't be null");
 
-            return null;
+            var sharpBoxProviderInfo = ServiceProvider.GetService<SharpBoxProviderInfo>();
+            sharpBoxProviderInfo.ID = id;
+            sharpBoxProviderInfo.CustomerTitle = providerTitle;
+            sharpBoxProviderInfo.Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
+            sharpBoxProviderInfo.ProviderKey = input.Provider;
+            sharpBoxProviderInfo.RootFolderType = folderType;
+            sharpBoxProviderInfo.CreateOn = createOn;
+            sharpBoxProviderInfo.AuthData = authData;
+
+            return sharpBoxProviderInfo;
         }
 
         private AuthData GetEncodedAccesToken(AuthData authData, ProviderTypes provider)
@@ -583,6 +590,7 @@ namespace ASC.Files.Thirdparty
             //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
 
             return services
+                .AddSharpBoxProviderInfoService()
                 .AddSharePointProviderInfoService()
                 .AddOneDriveProviderInfoService()
                 .AddGoogleDriveProviderInfoService()
