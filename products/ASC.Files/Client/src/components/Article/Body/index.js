@@ -17,7 +17,7 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { treeFolders } = this.props.filter;
 
     if (!utils.array.isArrayEqual(treeFolders, this.state.expandedKeys)) {
@@ -81,17 +81,20 @@ class ArticleBodyContent extends React.Component {
       return true;
     }
 
-    if (fakeNewDocuments !== nextProps.fakeNewDocuments) {
+    if (currentModule[0] !== nextProps.currentModule[0]) {
       return true;
     }
 
-    if (currentModule !== nextProps.currentModule) {
+    if (fakeNewDocuments !== nextProps.fakeNewDocuments) {
       return true;
     }
 
     if (
       !utils.array.isArrayEqual(nextState.expandedKeys, this.state.expandedKeys)
     ) {
+      return true;
+    }
+    if (nextState.expandedKeys.length !== this.state.expandedKeys.length) {
       return true;
     }
 
@@ -108,7 +111,7 @@ class ArticleBodyContent extends React.Component {
       setFilter
     } = this.props;
 
-    //console.log("TreeFolders render", this.props);
+    //console.log("Article Body render", this.props, this.state.expandedKeys);
     return (
       <TreeFolders
         selectedKeys={selectedKeys}
