@@ -38,26 +38,26 @@ using ASC.Core;
 
 namespace ASC.Calendar.iCalParser
 {
-    /*
     public class iCalendar : BaseCalendar
     {
-        public TenantManager TenantManager { get; }
-        public static iCalendar GetFromStream(TextReader reader)
+        private TenantManager TenantManager { get; }
+       
+        public iCalendar GetFromStream(TextReader reader)
         {
-            var emitter = new iCalendarEmitter();
+            var emitter = new iCalendarEmitter(AuthContext, TimeZoneConverter, TenantManager);
             var parser = new Parser(reader, emitter);
             parser.Parse();
             return emitter.GetCalendar();
         }
 
-        public static iCalendar GetFromUrl(string url)
+        public iCalendar GetFromUrl(string url)
         {
             return GetFromUrl(url, null);
         }
 
-        public static iCalendar GetFromUrl(string url, string calendarId)
+        public iCalendar GetFromUrl(string url, string calendarId)
         {
-            var cache = new iCalendarCache();
+            var cache = new iCalendarCache(AuthContext, TimeZoneConverter, TenantManager);
             iCalendar calendar = null;
             if (calendarId != null)
                 calendar = cache.GetCalendarFromCache(calendarId);
@@ -99,25 +99,26 @@ namespace ASC.Calendar.iCalParser
 
 
         public List<iCalEvent> Events { get; set; }
+        
 
         public iCalendar(
-            AuthContext context,
+            AuthContext authContext,
             TimeZoneConverter timeZoneConverter,
             TenantManager tenantManager)
-        : base(context, timeZoneConverter)
+        : base(authContext, timeZoneConverter)
         {
             TenantManager = tenantManager;
             this.Context.CanChangeAlertType = false;
             this.Context.CanChangeTimeZone = false;
-            this.Context.GetGroupMethod = delegate() { return Resources.CalendarApiResource.iCalCalendarsGroup; };
+            this.Context.GetGroupMethod = delegate () { return Resources.CalendarApiResource.iCalCalendarsGroup; };
 
             this.EventAlertType = EventAlertType.Never;
-            this.Events = new List<iCalEvent>();            
+            this.Events = new List<iCalEvent>();
         }
 
         public bool isEmptyName
         {
-            get { return String.IsNullOrEmpty(_name);}
+            get { return String.IsNullOrEmpty(_name); }
         }
 
         private string _name;
@@ -152,7 +153,7 @@ namespace ASC.Calendar.iCalParser
 
                 if (String.IsNullOrEmpty(TZID))
                 {
-                    _timeZone = TimeZoneInfo.FindSystemTimeZoneById(TenantManager.GetCurrentTenant().TimeZone);
+                    _timeZone = TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
                     return _timeZone;
                 }
 
@@ -165,15 +166,14 @@ namespace ASC.Calendar.iCalParser
                 _timeZone = value;
             }
         }
-        
+
         public string TZID { get; set; }
 
         public string xTimeZone { get; set; }
-       
+
         public override List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
         {
             return Events.Cast<IEvent>().ToList();
-        }       
+        }
     }
-    */
 }

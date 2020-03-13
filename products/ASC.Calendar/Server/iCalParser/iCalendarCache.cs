@@ -29,10 +29,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using ASC.Core;
+using ASC.Common.Utils;
 
 namespace ASC.Calendar.iCalParser
 {
-    /*
     internal class iCalendarCacheParams
     {
         public string FolderCachePath { get; private set; }
@@ -57,9 +58,24 @@ namespace ASC.Calendar.iCalParser
     {
         private iCalendarCacheParams _cacheParams;
 
-        public iCalendarCache() : this(iCalendarCacheParams.Default){}
-        public iCalendarCache(iCalendarCacheParams cacheParams)
+        public AuthContext AuthContext { get; }
+        public TimeZoneConverter TimeZoneConverter { get; }
+        public TenantManager TenantManager { get; }
+
+        public iCalendarCache(
+            AuthContext authContext,
+            TimeZoneConverter timeZoneConverter,
+            TenantManager tenantManager
+        ) : this(authContext, timeZoneConverter, tenantManager, iCalendarCacheParams.Default){}
+        public iCalendarCache(
+            AuthContext authContext,
+            TimeZoneConverter timeZoneConverter,
+            TenantManager tenantManager,
+            iCalendarCacheParams cacheParams)
         {
+            AuthContext = authContext;
+            TimeZoneConverter = timeZoneConverter;
+            TenantManager = tenantManager;
             _cacheParams = cacheParams;
         }
 
@@ -107,7 +123,8 @@ namespace ASC.Calendar.iCalParser
 
                 using (var tr = new StreamReader(File.OpenRead(filePath)))
                 {
-                    return iCalendar.GetFromStream(tr);
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    return icalendar.GetFromStream(tr);
                 }
             }
 
@@ -137,5 +154,4 @@ namespace ASC.Calendar.iCalParser
             }
         }
     }
-*/
 }

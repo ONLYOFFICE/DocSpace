@@ -30,9 +30,10 @@ using System.Linq;
 using ASC.Common.Utils;
 using ASC.Web.Core.Calendars;
 using System.Globalization;
+using ASC.Core;
 
 namespace ASC.Calendar.iCalParser
-{/*
+{
     public class iCalendarEmitter : IEmitter
     {
         private iCalendar _curCalendar;
@@ -43,10 +44,23 @@ namespace ASC.Calendar.iCalParser
 
         public Parser VParser { get; set; }
 
+        private AuthContext AuthContext { get; }
+        private TimeZoneConverter TimeZoneConverter { get; }
+        private TenantManager TenantManager { get; }
+        public iCalendarEmitter(
+            AuthContext authContext,
+            TimeZoneConverter timeZoneConverter,
+            TenantManager tenantManager)
+        {
+            AuthContext = authContext;
+            TimeZoneConverter = timeZoneConverter;
+            TenantManager = tenantManager;
+        }
         public iCalendar GetCalendar()
         {
             return _curCalendar;
         }
+
 
         public void doIntro(){}
         public void doOutro()
@@ -83,7 +97,7 @@ namespace ASC.Calendar.iCalParser
             switch (t.TokenVal)
             {
                 case TokenValue.Tvcalendar:                    
-                    _curCalendar = new iCalendar();
+                    _curCalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
                     break;
 
                 case TokenValue.Tvevent:
@@ -310,6 +324,5 @@ namespace ASC.Calendar.iCalParser
                 }
             }
         }
-    }    
-    */
+    }
 }

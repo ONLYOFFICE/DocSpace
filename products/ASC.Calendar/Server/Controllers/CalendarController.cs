@@ -1378,6 +1378,47 @@ namespace ASC.Calendar.Controllers
             return PublicItemCollectionHelper.GetDefault();
         }
 
+        [Create("calendarUrl")]
+        public CalendarWrapper CreateCalendarStream(СalendarUrlModel сalendarUrl)
+        {
+            var iCalUrl = сalendarUrl.ICalUrl;
+            var name = сalendarUrl.Name;
+            var textColor = сalendarUrl.TextColor;
+            var backgroundColor = сalendarUrl.BackgroundColor;
+
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+            var cal = icalendar.GetFromUrl(iCalUrl);
+            if (cal.isEmptyName)
+                cal.Name = iCalUrl;
+
+            if (String.IsNullOrEmpty(name))
+                name = cal.Name;
+
+            textColor = (textColor ?? "").Trim();
+            backgroundColor = (backgroundColor ?? "").Trim();
+
+            var calendar = DataProvider.CreateCalendar(
+                        AuthContext.CurrentAccount.ID, name, cal.Description ?? "", textColor, backgroundColor,
+                        cal.TimeZone, cal.EventAlertType, iCalUrl, null, new List<UserViewSettings>(), Guid.Empty);
+
+            if (calendar != null)
+            {
+                var calendarWrapperr = UpdateCalendarView(calendar.Id, new CalendarModel
+                {
+                    Name = calendar.Name,
+                    TextColor = textColor,
+                    BackgroundColor = backgroundColor,
+                    TimeZone = calendar.TimeZone.Id,
+                    AlertType = cal.EventAlertType,
+                    HideEvents = false
+                });
+
+                return calendarWrapperr;
+            }
+
+            return null;
+        }
+
         private List<CalendarWrapper> LoadInternalCalendars()
         {
             var result = new List<CalendarWrapper>();
