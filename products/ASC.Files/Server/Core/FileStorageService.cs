@@ -1832,7 +1832,7 @@ namespace ASC.Web.Files.Services.WCFService
                     var folderAccess = folder.Access;
 
                     newFolder.CreateBy = userInfo.ID;
-                    var newFolderID = folderDao.SaveFolder((Folder<T>)newFolder);
+                    var newFolderID = folderDao.SaveFolder(newFolder);
 
                     newFolder = folderDao.GetFolder(newFolderID);
                     newFolder.Access = folderAccess;

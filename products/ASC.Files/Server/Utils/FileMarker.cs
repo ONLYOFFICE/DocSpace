@@ -477,7 +477,7 @@ namespace ASC.Web.Files.Utils
                                     }
                                     else if ((fromCache) > 0)
                                     {
-                                        news.Add(rootId, (int)fromCache);
+                                        news.Add(rootId, fromCache);
                                     }
                                 });
 

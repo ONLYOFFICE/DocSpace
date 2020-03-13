@@ -397,7 +397,7 @@ namespace ASC.Files.Core.Data
                     Version = file.Version,
                     VersionGroup = file.VersionGroup,
                     CurrentVersion = true,
-                    FolderId = (int)file.FolderID,
+                    FolderId = file.FolderID,
                     Title = file.Title,
                     ContentLength = file.ContentLength,
                     Category = (int)file.FilterType,
@@ -421,7 +421,7 @@ namespace ASC.Files.Core.Data
 
                 parentFoldersIds =
                     FilesDbContext.Tree
-                    .Where(r => r.FolderId == (int)file.FolderID)
+                    .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
                     .Select(r => r.ParentId)
                     .ToList();
@@ -513,7 +513,7 @@ namespace ASC.Files.Core.Data
 
                 toUpdate.Version = file.Version;
                 toUpdate.VersionGroup = file.VersionGroup;
-                toUpdate.FolderId = (int)file.FolderID;
+                toUpdate.FolderId = file.FolderID;
                 toUpdate.Title = file.Title;
                 toUpdate.ContentLength = file.ContentLength;
                 toUpdate.Category = (int)file.FilterType;
@@ -533,7 +533,7 @@ namespace ASC.Files.Core.Data
                 file.PureTitle = file.Title;
 
                 parentFoldersIds = FilesDbContext.Tree
-                    .Where(r => r.FolderId == (int)file.FolderID)
+                    .Where(r => r.FolderId == file.FolderID)
                     .OrderByDescending(r => r.Level)
                     .Select(r => r.ParentId)
                     .ToList();
@@ -649,7 +649,7 @@ namespace ASC.Files.Core.Data
                 DeleteFolder(fileId);
 
             var wrapper = ServiceProvider.GetService<FilesWrapper>();
-            wrapper.Id = (int)fileId;
+            wrapper.Id = fileId;
             FactoryIndexer.DeleteAsync(wrapper);
         }
 
@@ -703,7 +703,7 @@ namespace ASC.Files.Core.Data
 
             var parentFoldersIds =
                 FilesDbContext.Tree
-                .Where(r => r.FolderId == (int)toFolderId)
+                .Where(r => r.FolderId == toFolderId)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
                 .ToList();

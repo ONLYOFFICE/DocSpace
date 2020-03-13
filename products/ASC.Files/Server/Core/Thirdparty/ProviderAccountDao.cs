@@ -43,6 +43,8 @@ using ASC.Files.Resources;
 using ASC.Files.Thirdparty.Box;
 using ASC.Files.Thirdparty.Dropbox;
 using ASC.Files.Thirdparty.GoogleDrive;
+using ASC.Files.Thirdparty.OneDrive;
+using ASC.Files.Thirdparty.SharePoint;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 
@@ -375,6 +377,8 @@ namespace ASC.Files.Thirdparty
             var folderType = input.FolderType;
             var createOn = TenantUtil.DateTimeFromUtc(input.CreateOn);
 
+            if (string.IsNullOrEmpty(token)) throw new ArgumentException("Token can't be null");
+
             if (key == ProviderTypes.Box)
             {
                 var box = ServiceProvider.GetService<BoxProviderInfo>();
@@ -390,8 +394,6 @@ namespace ASC.Files.Thirdparty
 
             if (key == ProviderTypes.DropboxV2)
             {
-                if (string.IsNullOrEmpty(token)) throw new ArgumentException("Token can't be null");
-
                 var drop = ServiceProvider.GetService<DropboxProviderInfo>();
                 drop.ID = id;
                 drop.CustomerTitle = providerTitle;
@@ -404,41 +406,51 @@ namespace ASC.Files.Thirdparty
                 return drop;
             }
 
-            //if (key == ProviderTypes.SharePoint)
-            //{
-            //    return new SharePointProviderInfo(
-            //        id,
-            //        key.ToString(),
-            //        providerTitle,
-            //        new AuthData(input[9] as string, input[3] as string, DecryptPassword(input[4] as string), token),
-            //        owner,
-            //        folderType,
-            //        createOn);
-            //}
+            if (key == ProviderTypes.SharePoint)
+            {
+                var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password), token);
 
-            //if (key == ProviderTypes.GoogleDrive)
-            //{
-            //    return new GoogleDriveProviderInfo(
-            //        id,
-            //        key.ToString(),
-            //        providerTitle,
-            //        token,
-            //        owner,
-            //        folderType,
-            //        createOn);
-            //}
+                if (!string.IsNullOrEmpty(authData.Login) && string.IsNullOrEmpty(authData.Password))
+                    throw new ArgumentNullException("password", "Password can't be null");
 
-            //if (key == ProviderTypes.OneDrive)
-            //{
-            //    return new OneDriveProviderInfo(
-            //        id,
-            //        key.ToString(),
-            //        providerTitle,
-            //        token,
-            //        owner,
-            //        folderType,
-            //        createOn);
-            //}
+                var sh = ServiceProvider.GetService<SharePointProviderInfo>();
+                sh.ID = id;
+                sh.CustomerTitle = providerTitle;
+                sh.Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
+                sh.ProviderKey = input.Provider;
+                sh.RootFolderType = folderType;
+                sh.CreateOn = createOn;
+                sh.InitClientContext(authData);
+                return sh;
+            }
+
+            if (key == ProviderTypes.GoogleDrive)
+            {
+                var gd = ServiceProvider.GetService<GoogleDriveProviderInfo>();
+                gd.ID = id;
+                gd.CustomerTitle = providerTitle;
+                gd.Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
+                gd.ProviderKey = input.Provider;
+                gd.RootFolderType = folderType;
+                gd.CreateOn = createOn;
+                gd.Token = OAuth20Token.FromJson(token);
+
+                return gd;
+            }
+
+            if (key == ProviderTypes.OneDrive)
+            {
+                var od = ServiceProvider.GetService<OneDriveProviderInfo>();
+                od.ID = id;
+                od.CustomerTitle = providerTitle;
+                od.Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
+                od.ProviderKey = input.Provider;
+                od.RootFolderType = folderType;
+                od.CreateOn = createOn;
+                od.Token = OAuth20Token.FromJson(token);
+
+                return od;
+            }
 
             //return new SharpBoxProviderInfo(
             //    id,
@@ -571,6 +583,8 @@ namespace ASC.Files.Thirdparty
             //services.TryAddScoped<IProviderDao, ProviderAccountDao>();
 
             return services
+                .AddSharePointProviderInfoService()
+                .AddOneDriveProviderInfoService()
                 .AddGoogleDriveProviderInfoService()
                 .AddBoxProviderInfoService()
                 .AddDropboxProviderInfoService()

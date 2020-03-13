@@ -71,20 +71,20 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public int ID { get; set; }
 
-        public Guid Owner { get; private set; }
+        public Guid Owner { get; set; }
 
-        public string CustomerTitle { get; private set; }
+        public string CustomerTitle { get; set; }
 
-        public DateTime CreateOn { get; }
+        public DateTime CreateOn { get; set; }
 
         public string RootFolderId
         {
             get { return "drive-" + ID; }
         }
 
-        public string ProviderKey { get; private set; }
+        public string ProviderKey { get; set; }
 
-        public FolderType RootFolderType { get; }
+        public FolderType RootFolderType { get; set; }
 
         public string DriveRootId
         {
@@ -191,27 +191,27 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             ServiceProvider = serviceProvider;
         }
 
-        public GoogleDriveStorage CreateStorage(OAuth20Token _token, int id)
+        public GoogleDriveStorage CreateStorage(OAuth20Token token, int id)
         {
             if (Storage != null) return Storage;
 
             var driveStorage = ServiceProvider.GetService<GoogleDriveStorage>();
 
-            CheckToken(_token, id);
+            CheckToken(token, id);
 
-            driveStorage.Open(_token);
+            driveStorage.Open(token);
             return Storage = driveStorage;
         }
 
-        private void CheckToken(OAuth20Token _token, int id)
+        private void CheckToken(OAuth20Token token, int id)
         {
-            if (_token == null) throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
-            if (_token.IsExpired)
+            if (token == null) throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
+            if (token.IsExpired)
             {
-                _token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, _token);
+                token = OAuth20TokenHelper.RefreshToken<GoogleLoginProvider>(ConsumerFactory, token);
 
                 var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-                var authData = new AuthData(token: _token.ToJson());
+                var authData = new AuthData(token: token.ToJson());
                 dbDao.UpdateProviderInfo(id, authData);
             }
         }
@@ -369,6 +369,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             services.TryAddScoped<GoogleDriveProviderInfo>();
             services.TryAddScoped<GoogleDriveStorageDisposableWrapper>();
+            services.TryAddScoped<GoogleDriveStorage>();
             services.TryAddSingleton<GoogleDriveProviderInfoHelper>();
 
             return services;

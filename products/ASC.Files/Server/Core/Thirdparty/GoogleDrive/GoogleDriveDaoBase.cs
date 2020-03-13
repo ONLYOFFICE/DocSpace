@@ -59,7 +59,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public string PathPrefix { get; set; }
         public IServiceProvider ServiceProvider { get; }
         public UserManager UserManager { get; }
-        public TenantManager TenantManager { get; }
         public TenantUtil TenantUtil { get; }
         public FilesDbContext FilesDbContext { get; }
         public SetupInfo SetupInfo { get; }
@@ -76,7 +75,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             ServiceProvider = serviceProvider;
             UserManager = userManager;
-            TenantManager = tenantManager;
             TenantUtil = tenantUtil;
             TenantID = tenantManager.GetCurrentTenant().TenantId;
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);

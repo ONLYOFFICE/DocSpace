@@ -425,7 +425,7 @@ namespace ASC.Files.Core.Data
                 RecalculateFoldersCount(parent);
             }
 
-            FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = (int)id });
+            FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }
 
         public int MoveFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
@@ -733,7 +733,7 @@ namespace ASC.Files.Core.Data
                             break;
                         default:
                             folder.FolderType = FolderType.BUNCH;
-                            folder.Title = (string)key;
+                            folder.Title = key;
                             break;
                     }
                     using var tx = FilesDbContext.Database.BeginTransaction();//NOTE: Maybe we shouldn't start transaction here at all

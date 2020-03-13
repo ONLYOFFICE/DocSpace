@@ -36,6 +36,8 @@ using ASC.Files.Resources;
 using ASC.Files.Thirdparty.Box;
 using ASC.Files.Thirdparty.Dropbox;
 using ASC.Files.Thirdparty.GoogleDrive;
+using ASC.Files.Thirdparty.OneDrive;
+using ASC.Files.Thirdparty.SharePoint;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
@@ -64,12 +66,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
                 //Fill in selectors
                 //Selectors.Add(new SharpBoxDaoSelector());
-                //Selectors.Add(new SharePointDaoSelector());
+                ServiceProvider.GetService<SharePointDaoSelector>(),
                 ServiceProvider.GetService<GoogleDriveDaoSelector>(),
                 ServiceProvider.GetService<BoxDaoSelector>(),
-                ServiceProvider.GetService<DropboxDaoSelector>()
+                ServiceProvider.GetService<DropboxDaoSelector>(),
+                ServiceProvider.GetService<OneDriveDaoSelector>()
             };
-            //            Selectors.Add(new OneDriveDaoSelector());
         }
 
         public IServiceProvider ServiceProvider { get; }
@@ -265,6 +267,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public static DIHelper AddProviderDaoBaseService(this DIHelper services)
         {
             return services
+                .AddSharePointSelectorService()
+                .AddOneDriveSelectorService()
                 .AddGoogleDriveSelectorService()
                 .AddDropboxDaoSelectorService()
                 .AddBoxDaoSelectorService();
