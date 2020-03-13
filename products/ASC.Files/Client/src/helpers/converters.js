@@ -23,7 +23,7 @@ export function getFilterByLocation(location) {
     (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
     defaultFilter.filterType;
   const authorType = (urlFilter[AUTHOR_TYPE] && urlFilter[AUTHOR_TYPE].includes('_') && urlFilter[AUTHOR_TYPE]) || defaultFilter.authorType;
-  const withSubfolders = (urlFilter[SEARCH_TYPE] && +urlFilter[SEARCH_TYPE]) ||
+  const withSubfolders = (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
   defaultFilter.withSubfolders;
   const search = urlFilter[SEARCH] || defaultFilter.search;
   const sortBy = urlFilter[SORT_BY] || defaultFilter.sortBy;

@@ -37,16 +37,16 @@ const getSelectedItem = (filterValues, type) => {
   return selectedItem || null;
 };
 
-// const getGroup = filterValues => {
-//   const groupId = result(
-//     find(filterValues, value => {
-//       return value.group === "filter-group";
-//     }),
-//     "key"
-//   );
+const getSearchParams = filterValues => {
+  const searchParams = result(
+    find(filterValues, value => {
+      return value.group === "filter-folders";
+    }),
+    "key"
+  );
 
-//   return groupId || null;
-// };
+  return searchParams || null;
+};
 
 class SectionFilterContent extends React.Component {
 
@@ -115,6 +115,7 @@ class SectionFilterContent extends React.Component {
 
   onFilter = data => {
     const { onLoading, fetchFiles, filter } = this.props;
+    console.log('on filteR', data)
 
     const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
@@ -122,6 +123,8 @@ class SectionFilterContent extends React.Component {
     const sortOrder =
       data.sortDirection === "desc" ? "descending" : "ascending";
     const authorType = getAuthorType(data.filterValues);
+    const withSubfolders = getSearchParams(data.filterValues);
+    console.log('SEARCH params', withSubfolders)
 
 
     const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
@@ -142,6 +145,7 @@ class SectionFilterContent extends React.Component {
     newFilter.filterType = filterType;
     newFilter.search = search;
     newFilter.authorType = authorType;
+    newFilter.withSubfolders = withSubfolders;
 
     onLoading(true);
     fetchFiles(newFilter)
@@ -236,7 +240,7 @@ class SectionFilterContent extends React.Component {
         isHeader: true
       },
       {
-        key: "1",
+        key: "true",
         group: "filter-folders",
         label: t('NoSubfolders')
       },
@@ -284,12 +288,12 @@ class SectionFilterContent extends React.Component {
       });
     }
 
-    // if (filter.role) {
-    //   selectedFilterData.filterValues.push({
-    //     key: filter.role,
-    //     group: "filter-type"
-    //   });
-    // }
+    if (filter.withSubfolders) {
+      selectedFilterData.filterValues.push({
+        key: filter.withSubfolders,
+        group: "filter-folders"
+      });
+    }
 
     // if (filter.group) {
     //   selectedFilterData.filterValues.push({
