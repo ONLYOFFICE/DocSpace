@@ -24,14 +24,15 @@
 */
 
 
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 {
-    /*public class SimpleUserFoldersTreeExp : IUserFoldersTreeExp
+    public class SimpleUserFoldersTreeExp : IUserFoldersTreeExp
     {
         public List<uint> Ids { get; set; }
         public uint? ParentId { get; set; }
@@ -47,26 +48,26 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
             return new UserFoldersTreeExpBuilder();
         }
 
-        public Exp GetExpression()
+        public Expression<Func<MailUserFolderTree, bool>> GetExpression()
         {
-            var exp = Exp.Empty;
+            Expression<Func<MailUserFolderTree, bool>> exp = t => true;
 
             if (Ids != null && Ids.Any())
             {
-                exp &= Exp.In(UserFolderTreeTable.Columns.FolderId, Ids);
+                exp = exp.And(t => Ids.Contains(t.FolderId));
             }
 
             if (ParentId.HasValue)
             {
-                exp &= Exp.Eq(UserFolderTreeTable.Columns.ParentId, ParentId.Value);
+                exp = exp.And(t => t.ParentId == ParentId.Value);
             }
 
             if (Level.HasValue)
             {
-                exp &= Exp.Eq(UserFolderTreeTable.Columns.Level, Level.Value);
+                exp = exp.And(t => Level == Level.Value);
             }
 
             return exp;
         }
-    }*/
+    }
 }

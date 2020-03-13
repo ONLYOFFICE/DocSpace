@@ -24,11 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 {
-    /*public interface IUserFoldersTreeExp
+    public interface IUserFoldersTreeExp
     {
         string OrderBy { get; }
 
@@ -38,6 +40,6 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 
         int? Limit { get; }
 
-        Exp GetExpression();
-    }*/
+        Expression<Func<MailUserFolderTree, bool>> GetExpression();
+    }
 }

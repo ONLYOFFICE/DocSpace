@@ -24,11 +24,11 @@
 */
 
 
-//using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Dao.Expressions.UserFolder
 {
-    /*public class UserFoldersTreeExpBuilder
+    public class UserFoldersTreeExpBuilder
     {
         private readonly SimpleUserFoldersTreeExp _exp;
 
@@ -88,5 +88,5 @@ namespace ASC.Mail.Core.Dao.Expressions.UserFolder
         {
             return builder._exp;
         }
-    }*/
+    }
 }

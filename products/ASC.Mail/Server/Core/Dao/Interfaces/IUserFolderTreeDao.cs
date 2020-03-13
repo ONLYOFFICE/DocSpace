@@ -30,12 +30,12 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface IUserFolderTreeDao
+    public interface IUserFolderTreeDao
     {
         List<UserFolderTreeItem> Get(IUserFoldersTreeExp exp);
         int Save(UserFolderTreeItem item);
         int InsertFullPathToRoot(uint folderId, uint parentId);
         int Remove(IUserFoldersTreeExp exp);
         void Move(uint folderId, uint toFolderId);
-    }*/
+    }
 }
