@@ -2,6 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
+import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
 import { createFile, createFolder, renameFolder, updateFile } from '../../../../../store/files/actions';
@@ -111,12 +112,24 @@ class FilesRowContent extends React.PureComponent {
     }
   };
 
+  getStatusByDate = () => {
+    const { culture, t, item } = this.props;
+    const { created, updated, version, fileExst } = item;
+    
+    const title = version > 1 ? t("TitleModified") : fileExst ? t("TitleUploaded") : t("TitleCreated");
+    const date = fileExst ? updated : created;
+
+    return `${title}: ${new Date(date).toLocaleString(culture)}`;
+  };
+
   render() {
-    const { item } = this.props;
+    const { culture, t, item } = this.props;
     const { itemTitle, editingId } = this.state;
     const {
       contentLength,
+      comment,
       created,
+      updated,
       createdBy,
       fileExst,
       filesCount,
@@ -124,7 +137,7 @@ class FilesRowContent extends React.PureComponent {
       foldersCount,
       id,
       title,
-      version
+      versionGroup
     } = item;
 
     const SimpleFilesRowContent = styled(RowContent)`
@@ -176,8 +189,8 @@ class FilesRowContent extends React.PureComponent {
       ? title.split('.').slice(0, -1).join('.')
       : title;
 
-    const fileOwner = createdBy && ((this.props.viewer.id === createdBy && createdBy.id && "Me") || createdBy.displayName);
-    const createdDate = created && new Date(created).toLocaleString("EN-US");
+    const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
+    const updatedDate = updated && this.getStatusByDate();
     const canEditFile = fileExst && canWebEdit(fileExst);
     const canConvertFile = fileExst && canConvert(fileExst);
 
@@ -286,7 +299,7 @@ class FilesRowContent extends React.PureComponent {
                     color='#3B72A7'
                   />
                 }
-                {version > 1 &&
+                {versionGroup > 1 &&
                   <Badge
                     className='badge-version'
                     backgroundColor="#A3A9AE"
@@ -294,7 +307,7 @@ class FilesRowContent extends React.PureComponent {
                     color="#FFFFFF"
                     fontSize="10px"
                     fontWeight={800}
-                    label={`Ver.${version}`}
+                    label={`Ver.${versionGroup}`}
                     maxWidth="50px"
                     onClick={() => { }}
                     padding="0 5px"
@@ -331,14 +344,14 @@ class FilesRowContent extends React.PureComponent {
           <Link
             containerWidth='12%'
             type='page'
-            title={createdDate}
+            title={updatedDate}
             fontSize='12px'
             fontWeight={400}
             color="#333"
             onClick={() => { }}
             isTextOverflow={true}
           >
-            {createdDate && `Created: ${createdDate}`}
+            {updatedDate && updatedDate}
           </Link>
           <Text
             containerWidth='10%'
@@ -351,7 +364,7 @@ class FilesRowContent extends React.PureComponent {
           >
             {fileExst
               ? contentLength
-              : `Dcs: ${filesCount} / Flds: ${foldersCount}`}
+              : `${t("TitleDocuments")}: ${filesCount} / ${t("TitleSubfolders")}: ${foldersCount}`}
           </Text>
         </SimpleFilesRowContent>
       )
@@ -359,5 +372,5 @@ class FilesRowContent extends React.PureComponent {
 };
 
 export default connect(null, { createFile, createFolder, updateFile, renameFolder })(
-  withRouter(FilesRowContent)
+  withRouter(withTranslation()(FilesRowContent))
 );

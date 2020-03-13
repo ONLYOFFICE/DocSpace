@@ -39,4 +39,12 @@
   "NextPage": "Следующая",
   "DefaultOptionLabel": "Я",
   "LblSelect": "Выберите"
+
+  "AuthorMe": "Я",
+  "TitleCreated": "Создана",
+  "TitleUploaded": "Загружен",
+  "TitleModified": "Обновлён",
+  "TitleRemoved": "Удалён",
+  "TitleSubfolders": "Flds",
+  "TitleDocuments": "Dcs"
 }

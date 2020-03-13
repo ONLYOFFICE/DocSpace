@@ -39,4 +39,11 @@
   "NextPage": "Next",
   "DefaultOptionLabel": "Me",
   "LblSelect": "Select"
+  "AuthorMe": "Me",
+  "TitleCreated": "Created",
+  "TitleUploaded": "Uploaded",
+  "TitleModified": "Updated",
+  "TitleRemoved": "Removed",
+  "TitleSubfolders": "Flds",
+  "TitleDocuments": "Dcs"
 }

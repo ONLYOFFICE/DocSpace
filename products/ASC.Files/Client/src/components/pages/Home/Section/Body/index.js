@@ -20,8 +20,6 @@ import config from "../../../../../../package.json";
 
 const { FilesFilter } = api;
 
-//import i18n from '../../i18n';
-
 class SectionBodyContent extends React.PureComponent {
 
   constructor(props) {
@@ -175,7 +173,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId, folderId } = this.props;
+    const { files, folders, viewer, parentId, folderId, settings } = this.props;
     const { editingId, isEdit, isCreating } = this.state;
 
     let items = [...folders, ...files];
@@ -215,7 +213,7 @@ class SectionBodyContent extends React.PureComponent {
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} editingId={editingId} onEditComplete={this.onEditComplete} />
+              <FilesRowContent item={item} viewer={viewer} editingId={editingId} culture={settings.culture} onEditComplete={this.onEditComplete} />
             </Row>
           );
         })}
