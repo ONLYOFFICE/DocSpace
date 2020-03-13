@@ -70,14 +70,14 @@ class FilesFilter {
     } = this;
 
     let dtoFilter = {
-      from: this.getStartIndex(),
+      startIndex: this.getStartIndex(),
       count: pageCount,
       sortby: sortBy,
-      orderBy: sortOrder,
-      filter: filterType,
-      search: (search ?? "").trim(),
-      withSubfolders,
-      authorType
+      sortOrder: sortOrder,
+      filterType: filterType,
+      filterValue: (search ?? "").trim(),
+      // withSubfolders,
+      userIdOrGroupId: authorType && authorType.includes('_') ? authorType.slice(authorType.indexOf('_') + 1) : null //TODO: replace with FilterInput refactoring
     };
 
 

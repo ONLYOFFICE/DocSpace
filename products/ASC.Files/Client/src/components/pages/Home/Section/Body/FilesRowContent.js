@@ -8,7 +8,7 @@ import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from 
 import { createFile, createFolder, renameFolder, updateFile, setFilter } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
 import { history } from "asc-web-common";
-import { fetchFolder } from "../../../../../store/files/actions";
+import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {
@@ -107,7 +107,8 @@ class FilesRowContent extends React.PureComponent {
       const url = `${history.location.pathname}${a}`;
       history.push(`${url}#${id}`);
 
-      fetchFolder(id, store.dispatch).then(data => {
+
+  fetchFiles(id, filter, store.dispatch).then(data => {
         const newFilter = filter.clone();
         if (
           newFilter.treeFolders.indexOf(

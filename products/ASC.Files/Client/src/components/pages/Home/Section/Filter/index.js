@@ -7,6 +7,7 @@ import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { constants, FilterInput, api } from 'asc-web-common';
+import store from "../../../../../store/store";
 
 const { FilterType } = constants;
 
@@ -60,7 +61,7 @@ class SectionFilterContent extends React.Component {
 
   }
   componentDidMount() {
-    const { location, filter, onLoading, fetchFiles } = this.props;
+    const { location, filter, onLoading, selectedFolderId } = this.props;
 
     const newFilter = getFilterByLocation(location);
 
@@ -109,12 +110,12 @@ class SectionFilterContent extends React.Component {
 
 
     onLoading(true);
-    fetchFiles(newFilter)
+    fetchFiles(selectedFolderId, newFilter, store.dispatch)
       .finally(() => onLoading(false));
   }
 
   onFilter = data => {
-    const { onLoading, fetchFiles, filter } = this.props;
+    const { onLoading, filter, selectedFolderId } = this.props;
 
     const filterType = getFilterType(data.filterValues) || null;
     const search = data.inputValue || null;
@@ -146,7 +147,7 @@ class SectionFilterContent extends React.Component {
     newFilter.withSubfolders = withSubfolders;
 
     onLoading(true);
-    fetchFiles(newFilter)
+    fetchFiles(selectedFolderId, newFilter, store.dispatch)
       .finally(() => onLoading(false));
   };
 
@@ -336,7 +337,8 @@ function mapStateToProps(state) {
     user: state.auth.user,
     folders: state.files.folders,
     filter: state.files.filter,
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    selectedFolderId: state.files.selectedFolder.id
   };
 }
 

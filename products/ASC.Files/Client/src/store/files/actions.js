@@ -89,7 +89,6 @@ export function setFilesFilter(filter) {
   };
 }
 export function setFilter(filter) {
-  //setFilterUrl(filter);
   return {
     type: SET_FILTER,
     filter
@@ -126,53 +125,16 @@ export function setFilterUrl(filter) {
   history.push(`${config.homepage}/filter?${params.join("&")}`);
 }
 
-export function fetchFiles(filter) {
-  //TODO: add real API request, change algorithm
-  return (dispatch, getState) => {
-    let filterData = filter && filter.clone();
-    const { files: filesStore } = getState();
-    const totalFiles = filesStore.files.length;
-    filterData.total = totalFiles;
+// TODO: similar to fetchFolder, remove one
+export function fetchFiles(folderId, filter, dispatch) {
+  const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+  return files.getFolder(folderId, filter).then(data => {
+    filterData.total = data.total;
     dispatch(setFilesFilter(filterData));
-    const currentFilterType = filter.filterType;
-    const fileType = getFileTypeByFilterType(currentFilterType);
-    const selectedFolderId = filesStore.selectedFolder.id;
-
-    if (currentFilterType === FilterType.None) {
-      return fetchFolder(selectedFolderId, dispatch)
-    }
-    else {
-      return files.getFolder(selectedFolderId)
-        .then(data => {
-          const sortedFiles = fileType
-            ? data.files
-              .filter(file => file.fileType === fileType)
-            : data.files;
-          dispatch(setFiles(sortedFiles));
-        });
-    }
-  }
-}
-
-// only for fake sorting
-function getFileTypeByFilterType(filterType) {
-  switch (filterType) {
-    case FilterType.ImagesOnly:
-      return FileType.Image;
-    case FilterType.DocumentsOnly:
-      return FileType.Document;
-    case FilterType.PresentationsOnly:
-      return FileType.Presentation;
-    case FilterType.SpreadsheetsOnly:
-      return FileType.Spreadsheet;
-    case FilterType.ArchiveOnly:
-      return FileType.Archive;
-    case FilterType.MediaOnly:
-      // without FileType.Video for simplifying
-      return FileType.Audio;
-    default:
-      return FileType.Unknown;
-  }
+    dispatch(setFolders(data.folders));
+    dispatch(setFiles(data.files));
+    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current }));
+  })
 }
 
 export function fetchFolders() {

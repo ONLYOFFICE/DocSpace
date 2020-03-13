@@ -8,8 +8,8 @@ import "./custom.scss";
 import App from "./App";
 
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, ErrorBoundary } from "asc-web-common";
-//import { getFilterByLocation } from "./helpers/converters";
+import { store as commonStore, constants, ErrorBoundary, history } from "asc-web-common";
+import { getFilterByLocation } from "./helpers/converters";
 const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
 
@@ -23,13 +23,14 @@ if (token) {
     .then(() => fetchMyFolder(store.dispatch))
     .then(() => fetchRootFolders(store.dispatch))
     .then(() => {
-      // var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-      // const match = window.location.pathname.match(re);
+      const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+      const match = window.location.pathname.match(re);
 
-      // if (match && match.length > 0) {
-      //   const newFilter = getFilterByLocation(window.location);
-      //   return fetchFiles(newFilter, store.dispatch);
-      // }
+      if (match && match.length > 0) {
+        const newFilter = getFilterByLocation(window.location);
+        const folderId = window.location.hash.slice(1) || '@my';
+        return fetchFiles(folderId, newFilter, store.dispatch);
+      }
 
       return Promise.resolve();
     })

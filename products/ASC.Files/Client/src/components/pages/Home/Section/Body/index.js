@@ -37,21 +37,21 @@ class SectionBodyContent extends React.PureComponent {
 
     //TODO: use right algorithm, fix fetching in src/index.html
 
-    var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
-    const match = window.location.pathname.match(re);
+    // var re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
+    // const match = window.location.pathname.match(re);
 
-    if (match && match.length > 0) {
-      const newFilter = getFilterByLocation(window.location);
-      if (newFilter) {
-        return fetchFiles(newFilter)
-          .catch(error => toastr.error(error));
-      } else {
-        const filter = FilesFilter.getDefault();
+    // if (match && match.length > 0) {
+    //   const newFilter = getFilterByLocation(window.location);
+    //   if (newFilter) {
+    //     return fetchFiles(newFilter)
+    //       .catch(error => toastr.error(error));
+    //   } else {
+    //     const filter = FilesFilter.getDefault();
 
-        fetchFiles(filter)
-          .catch(error => toastr.error(error));
-      }
-    }
+    //     fetchFiles(filter)
+    //       .catch(error => toastr.error(error));
+    //   }
+    // }
   }
 
   componentDidUpdate(prevProps) {
