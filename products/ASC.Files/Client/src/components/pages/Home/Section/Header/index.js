@@ -27,11 +27,14 @@ const StyledContainer = styled.div`
       margin-left: 16px;
 
       @media (max-width: 1024px) {
-        margin-left: auto;
+        &:first-of-type{
+          margin-left: auto;
+        }
+        
 
         & > div:first-child {
-          padding: 8px 16px 8px 16px;
-          margin-right: -16px;
+          padding: 8px 8px 8px 8px;
+          margin-right: -8px;
         }
       }
     }
@@ -39,25 +42,25 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
 
-  const { t, folder, title } = props;
+  const { t, folder, title, onCreate } = props;
 
   const createDocument = useCallback(
-    () => toastr.info("New Document click"),
+    () => onCreate('docx'),
     []
   );
 
   const createSpreadsheet = useCallback(
-    () => toastr.info("New Spreadsheet click"),
+    () => onCreate('xlsx'),
     []
   );
 
   const createPresentation = useCallback(
-    () => toastr.info("New Presentation click"),
+    () => onCreate('pptx'),
     []
   );
 
   const createFolder = useCallback(
-    () => toastr.info("New Folder click"),
+    () => onCreate('folder'),
     []
   );
 
@@ -92,7 +95,8 @@ const SectionHeaderContent = props => {
       {
         key: "make-invitation-link",
         label: t('UploadToFolder'),
-        onClick: uploadToFolder
+        onClick: uploadToFolder,
+        disabled: true
       }
     ];
   }, [
@@ -145,38 +149,45 @@ const SectionHeaderContent = props => {
       {
         key: "sharing-settings",
         label: t('SharingSettings'),
-        onClick: openSharingSettings
+        onClick: openSharingSettings,
+        disabled: true
       },
       {
         key: "link-portal-users",
         label: t('LinkForPortalUsers'),
-        onClick: createLinkForPortalUsers
+        onClick: createLinkForPortalUsers,
+        disabled: true
       },
       { key: "separator-2", isSeparator: true },
       {
         key: "move-to",
         label: t('MoveTo'),
-        onClick: moveAction
+        onClick: moveAction,
+        disabled: true
       },
       {
         key: "copy",
         label: t('Copy'),
-        onClick: copyAction
+        onClick: copyAction,
+        disabled: true
       },
       {
         key: "download",
         label: t('Download'),
-        onClick: downloadAction
+        onClick: downloadAction,
+        disabled: true
       },
       {
         key: "rename",
         label: t('Rename'),
-        onClick: renameAction
+        onClick: renameAction,
+        disabled: true
       },
       {
         key: "delete",
         label: t('Delete'),
-        onClick: deleteAction
+        onClick: deleteAction,
+        disabled: true
       }
     ];
   }, [
@@ -235,7 +246,8 @@ const SectionHeaderContent = props => {
 const mapStateToProps = state => {
   return {
     isAdmin: isAdmin(state.auth.user),
-    title: state.files.selectedFolder.title
+    title: state.files.selectedFolder.title,
+    folder: state.files.selectedFolder.parentId !== 0
   };
 };
 
