@@ -72,10 +72,6 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        //private readonly string _levelUp = string.Format("{0} + 1", UserFolderTreeTable.Columns.Level);
-
-        //private const string UFT_ALIAS = "uft";
-
         public int InsertFullPathToRoot(uint folderId, uint parentId)
         {
             var treeItems = MailDb.MailUserFolderTree
@@ -105,7 +101,7 @@ namespace ASC.Mail.Core.Dao
 
         public void Move(uint folderId, uint toFolderId)
         {
-            /*var exp = SimpleUserFoldersTreeExp.CreateBuilder()
+            var exp = SimpleUserFoldersTreeExp.CreateBuilder()
                 .SetParent(folderId)
                 .Build();
 
@@ -117,32 +113,33 @@ namespace ASC.Mail.Core.Dao
                 return;
             }
 
-            var query = new SqlDelete(UserFolderTreeTable.TABLE_NAME)
-                .Where(Exp.In(UserFolderTreeTable.Columns.FolderId, subFolders.Keys) &
-                       !Exp.In(UserFolderTreeTable.Columns.ParentId, subFolders.Keys));
+            var folderIds = subFolders.Keys;
 
-            // ReSharper disable once NotAccessedVariable
-            var result = Db.ExecuteNonQuery(query);
+            var deleteQuery = MailDb.MailUserFolderTree
+                .Where(t => folderIds.Contains(t.FolderId) && !folderIds.Contains(t.ParentId));
+
+            MailDb.MailUserFolderTree.RemoveRange(deleteQuery);
+            MailDb.SaveChanges();
 
             foreach (var subFolder in subFolders)
             {
-                var subQuery = new SqlQuery(UserFolderTreeTable.TABLE_NAME)
-                    .Select(subFolder.Key.ToString(CultureInfo.InvariantCulture),
-                        UserFolderTreeTable.Columns.ParentId,
-                        string.Format("{0} + {1}", _levelUp, subFolder.Value.ToString(CultureInfo.InvariantCulture)))
-                    .Where(UserFolderTreeTable.Columns.FolderId, toFolderId);
+                var newTreeItems = MailDb.MailUserFolderTree
+                    .Where(t => t.FolderId == toFolderId)
+                    .Select(t => new MailUserFolderTree
+                    {
+                        FolderId = subFolder.Key,
+                        ParentId = t.ParentId,
+                        Level = t.Level + 1 + subFolder.Value
+                    });
 
-                var insertQuery = new SqlInsert(UserFolderTreeTable.TABLE_NAME, true)
-                    .InColumns(UserFolderTreeTable.Columns.FolderId,
-                        UserFolderTreeTable.Columns.ParentId,
-                        UserFolderTreeTable.Columns.Level)
-                    .Values(subQuery);
+                foreach (var treeItem in newTreeItems)
+                {
+                    MailDb.AddOrUpdate(r => r.MailUserFolderTree, treeItem);
+                }
 
-                // ReSharper disable once RedundantAssignment
-                result = Db.ExecuteNonQuery(insertQuery);
-            }*/
+            }
 
-            throw new NotImplementedException();
+            MailDb.SaveChanges();
         }
 
         protected UserFolderTreeItem ToUserFolderTreeItem(MailUserFolderTree r)
