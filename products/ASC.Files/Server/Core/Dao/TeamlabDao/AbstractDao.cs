@@ -174,16 +174,16 @@ namespace ASC.Files.Core.Data
             return MappingID(id, false);
         }
 
-        internal static bool BuildSearch(IDbSearch dbSearch, string text, SearhTypeEnum searhTypeEnum)
+        internal static IQueryable<T> BuildSearch<T>(IQueryable<T> query, string text, SearhTypeEnum searhTypeEnum) where T : IDbSearch
         {
-            var lowerTitle = dbSearch.Title.ToLower();
             var lowerText = text.ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+
             return searhTypeEnum switch
             {
-                SearhTypeEnum.Start => lowerTitle.StartsWith(lowerText),
-                SearhTypeEnum.End => lowerTitle.EndsWith(lowerText),
-                SearhTypeEnum.Any => lowerTitle.Contains(lowerText),
-                _ => lowerTitle.EndsWith(lowerText),
+                SearhTypeEnum.Start => query.Where(r => r.Title.ToLower().StartsWith(lowerText)),
+                SearhTypeEnum.End => query.Where(r => r.Title.ToLower().EndsWith(lowerText)),
+                SearhTypeEnum.Any => query.Where(r => r.Title.ToLower().Contains(lowerText)),
+                _ => query,
             };
         }
 

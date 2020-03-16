@@ -1536,7 +1536,7 @@ namespace ASC.Api.Documents
             var startIndex = Convert.ToInt32(ApiContext.StartIndex);
             return FolderContentWrapperHelper.Get(FileStorageService.GetFolderItems(folderId.ToString(),
                                                                                startIndex,
-                                                                               Convert.ToInt32(ApiContext.Count) - 1, //NOTE: in ApiContext +1
+                                                                               Convert.ToInt32(ApiContext.Count), //NOTE: last value: Convert.ToInt32(ApiContext.Count) - 1; in ApiContext +1
                                                                                filterType,
                                                                                filterType == FilterType.ByUser,
                                                                                userIdOrGroupId.ToString(),

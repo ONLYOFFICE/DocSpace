@@ -108,13 +108,15 @@ namespace ASC.Files.Core.Data
 
         public File GetFile(object fileId)
         {
-            var query = GetFileQuery(r => r.Id.ToString() == fileId.ToString() && r.CurrentVersion);
+            var fileIdString = fileId.ToString();
+            var query = GetFileQuery(r => r.Id.ToString() == fileIdString && r.CurrentVersion);
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
         public File GetFile(object fileId, int fileVersion)
         {
-            var query = GetFileQuery(r => r.Id.ToString() == fileId.ToString() && r.Version == fileVersion);
+            var fileIdString = fileId.ToString();
+            var query = GetFileQuery(r => r.Id.ToString() == fileIdString && r.Version == fileVersion);
             return FromQueryWithShared(query).SingleOrDefault();
         }
 
@@ -122,7 +124,8 @@ namespace ASC.Files.Core.Data
         {
             if (string.IsNullOrEmpty(title)) throw new ArgumentNullException(title);
 
-            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId.ToString() == parentId.ToString())
+            var parentIdString = parentId.ToString();
+            var query = GetFileQuery(r => r.Title == title && r.CurrentVersion == true && r.FolderId.ToString() == parentIdString)
                 .OrderBy(r => r.CreateOn);
 
             return FromQueryWithShared(query).FirstOrDefault();
@@ -130,7 +133,8 @@ namespace ASC.Files.Core.Data
 
         public File GetFileStable(object fileId, int fileVersion = -1)
         {
-            var query = GetFileQuery(r => r.Id.ToString() == fileId.ToString() && r.Forcesave == ForcesaveType.None);
+            var fileIdString = fileId.ToString();
+            var query = GetFileQuery(r => r.Id.ToString() == fileIdString && r.Forcesave == ForcesaveType.None);
 
             if (fileVersion >= 0)
             {
@@ -144,7 +148,8 @@ namespace ASC.Files.Core.Data
 
         public List<File> GetFileHistory(object fileId)
         {
-            var query = GetFileQuery(r => r.Id.ToString() == fileId.ToString()).OrderByDescending(r => r.Version);
+            var fileIdString = fileId.ToString();
+            var query = GetFileQuery(r => r.Id.ToString() == fileIdString).OrderByDescending(r => r.Version);
 
             return FromQueryWithShared(query);
         }
@@ -153,7 +158,8 @@ namespace ASC.Files.Core.Data
         {
             if (fileIds == null || fileIds.Length == 0) return new List<File>();
 
-            var query = GetFileQuery(r => fileIds.Any(a => a.ToString() == r.Id.ToString()) && r.CurrentVersion);
+            var fileIdsString = fileIds.Select(r => r.ToString()).ToList();
+            var query = GetFileQuery(r => fileIdsString.Any(a => a == r.Id.ToString()) && r.CurrentVersion);
 
             return FromQueryWithShared(query);
         }
@@ -175,7 +181,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    query = query.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    query = BuildSearch(query, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -205,7 +211,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        query = query.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        query = BuildSearch(query, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -255,7 +261,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -307,7 +313,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        q = BuildSearch(q, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -384,8 +390,9 @@ namespace ASC.Files.Core.Data
                 if (file.CreateBy == default) file.CreateBy = AuthContext.CurrentAccount.ID;
                 if (file.CreateOn == default) file.CreateOn = TenantUtil.DateTimeNow();
 
+                var fileIdString = file.ID.ToString();
                 var toUpdate = FilesDbContext.Files
-                    .Where(r => r.Id.ToString() == file.ID.ToString() && r.CurrentVersion && r.TenantId == TenantID)
+                    .Where(r => r.Id.ToString() == fileIdString && r.CurrentVersion && r.TenantId == TenantID)
                     .FirstOrDefault();
 
                 if (toUpdate != null)
@@ -658,9 +665,10 @@ namespace ASC.Files.Core.Data
 
         public bool IsExist(string title, object folderId)
         {
+            var folderIdString = folderId.ToString();
             return Query(FilesDbContext.Files)
                 .Where(r => r.Title == title)
-                .Where(r => r.FolderId == (int)folderId)
+                .Where(r => r.FolderId.ToString() == folderIdString)
                 .Where(r => r.CurrentVersion)
                 .Any();
         }
@@ -745,9 +753,10 @@ namespace ASC.Files.Core.Data
 
         public object FileRename(File file, string newTitle)
         {
+            var fileIdString = file.ID.ToString();
             newTitle = Global.ReplaceInvalidCharsAndTruncate(newTitle);
             var toUpdate = Query(FilesDbContext.Files)
-                .Where(r => r.Id == (int)file.ID)
+                .Where(r => r.Id.ToString() == fileIdString)
                 .Where(r => r.CurrentVersion)
                 .FirstOrDefault();
 
@@ -928,9 +937,10 @@ namespace ASC.Files.Core.Data
 
         public void ReassignFiles(object[] fileIds, Guid newOwnerId)
         {
+            var fileIdsStrings = fileIds.Select(r => r.ToString()).ToList();
             var toUpdate = Query(FilesDbContext.Files)
                 .Where(r => r.CurrentVersion)
-                .Where(r => fileIds.Any(a => a.ToString() == r.Id.ToString()));
+                .Where(r => fileIdsStrings.Any(a => a == r.Id.ToString()));
 
             foreach (var f in toUpdate)
             {
@@ -944,9 +954,10 @@ namespace ASC.Files.Core.Data
         {
             if (parentIds == null || parentIds.Length == 0 || filterType == FilterType.FoldersOnly) return new List<File>();
 
+            var parentIdsStrings = parentIds.Select(r => r.ToString()).ToList();
             var q = GetFileQuery(r => r.CurrentVersion)
                 .Join(FilesDbContext.Tree, a => a.FolderId, t => t.FolderId, (file, tree) => new { file, tree })
-                .Where(r => parentIds.Any(a => a.ToString() == r.tree.ParentId.ToString()))
+                .Where(r => parentIdsStrings.Any(a => a == r.tree.ParentId.ToString()))
                 .Select(r => r.file);
 
             if (!string.IsNullOrEmpty(searchText))
@@ -959,7 +970,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -989,7 +1000,7 @@ namespace ASC.Files.Core.Data
                 case FilterType.ByExtension:
                     if (!string.IsNullOrEmpty(searchText))
                     {
-                        q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.End));
+                        q = BuildSearch(q, searchText, SearhTypeEnum.End);
                     }
                     break;
             }
@@ -1012,7 +1023,7 @@ namespace ASC.Files.Core.Data
             }
             else
             {
-                var query = GetFileQuery(r => r.CurrentVersion && BuildSearch(r, searchText, SearhTypeEnum.Any));
+                var query = BuildSearch(GetFileQuery(r => r.CurrentVersion), searchText, SearhTypeEnum.Any);
                 return FromQueryWithShared(query)
                     .Where(f =>
                            bunch

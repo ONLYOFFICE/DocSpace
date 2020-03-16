@@ -115,8 +115,9 @@ namespace ASC.Files.Core.Data
 
         public Folder GetRootFolder(object folderId)
         {
+            var folderIdString = folderId.ToString();
             var id = FilesDbContext.Tree
-                .Where(r => r.FolderId == (int)folderId)
+                .Where(r => r.FolderId.ToString() == folderIdString)
                 .OrderByDescending(r => r.Level)
                 .Select(r => r.ParentId)
                 .FirstOrDefault();
@@ -159,13 +160,14 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var q = GetFolderQuery(r => r.ParentId.ToString() == parentId.ToString());
+            var parentIdString = parentId.ToString();
+            var q = GetFolderQuery(r => r.ParentId.ToString() == parentIdString);
 
             if (withSubfolders)
             {
                 q = GetFolderQuery()
                     .Join(FilesDbContext.Tree, r => r.Id, a => a.FolderId, (folder, tree) => new { folder, tree })
-                    .Where(r => r.tree.ParentId.ToString() == parentId.ToString() && r.tree.Level != 0)
+                    .Where(r => r.tree.ParentId.ToString() == parentIdString && r.tree.Level != 0)
                     .Select(r => r.folder);
             }
 
@@ -177,7 +179,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -247,7 +249,7 @@ namespace ASC.Files.Core.Data
                 }
                 else
                 {
-                    q = q.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                    q = BuildSearch(q, searchText, SearhTypeEnum.Any);
                 }
             }
 
@@ -596,8 +598,9 @@ namespace ASC.Files.Core.Data
 
         private int GetFoldersCount(object parentId)
         {
+            var parentIdString = parentId.ToString();
             var count = FilesDbContext.Tree
-                .Where(r => r.ParentId == (int)parentId)
+                .Where(r => r.ParentId.ToString() == parentIdString)
                 .Where(r => r.Level >= 0)
                 .Count();
 
@@ -606,9 +609,10 @@ namespace ASC.Files.Core.Data
 
         private int GetFilesCount(object folderId)
         {
+            var folderIdString = folderId.ToString();
             var count = Query(FilesDbContext.Files)
                 .Distinct()
-                .Where(r => FilesDbContext.Tree.Where(r => r.ParentId == (int)folderId).Select(r => r.FolderId).Any(b => b == r.FolderId))
+                .Where(r => FilesDbContext.Tree.Where(r => r.ParentId.ToString() == folderIdString).Select(r => r.FolderId).Any(b => b == r.FolderId))
                 .Count();
 
             return count;
@@ -691,7 +695,7 @@ namespace ASC.Files.Core.Data
                 return FromQueryWithShared(q1);
             }
 
-            var q = GetFolderQuery(r => BuildSearch(r, text, SearhTypeEnum.Any));
+            var q = BuildSearch(GetFolderQuery(), text, SearhTypeEnum.Any);
             return FromQueryWithShared(q);
         }
 
