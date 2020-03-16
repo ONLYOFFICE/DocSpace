@@ -38,7 +38,7 @@ namespace ASC.Calendar.Models
         public string BackgroundColor { get; set; }
 
         [DataMember(Name = "ical_url", Order = 60)]
-        public string iCalUrl { get; set; }
+        public string ICalUrl { get; set; }
 
         [DataMember(Name = "caldav_guid", Order = 60)]
         public string calDavGuid { get; set; }

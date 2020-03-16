@@ -152,7 +152,7 @@ namespace ASC.Calendar.Models
 
     public static class TodoWrapperExtension
     {
-        public static DIHelper AddEmployeeWraper(this DIHelper services)
+        public static DIHelper AddTodoWrapper(this DIHelper services)
         {
             services.TryAddScoped<TodoWrapperHelper>();
 

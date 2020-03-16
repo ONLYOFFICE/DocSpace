@@ -150,25 +150,21 @@ namespace ASC.Calendar.BusinessObjects
 
             return options;
         }
+
+        public List<Calendar> LoadTodoCalendarsForUser(Guid userId)
+        {
+            var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
+            groups.AddRange(
+                UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
+            var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+
+            var calIds = CalendarDb.CalendarCalendars.Where(p => p.OwnerId == userId.ToString() && p.IsTodo == 1 && p.Tenant == currentTenantId).Select(s => s.Id).ToArray();
+
+            var cals = GetCalendarsByIds(calIds);
+
+            return cals;
+        }
         /*
-         public List<Calendar> LoadTodoCalendarsForUser(Guid userId)
-         {
-             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
-             groups.AddRange(
-                 UserManager.GetUserGroups(userId, Core.Users.Constants.SysGroupCategoryId).Select(g => g.ID));
-             var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
-             var queryGetCalIds = new SqlQuery(_calendarTable)
-                            .Select("cal.id")
-                            .Where("cal.owner_id", userId)
-                            .Where("cal.is_todo", 1)
-                            .Where("cal.tenant", currentTenantId);
-
-             var calIds = db.ExecuteList(queryGetCalIds).Select(r => r[0]);
-
-             var cals = GetCalendarsByIds(calIds.ToArray());
-
-             return cals;
-         }
          public void RemoveTodo(int todoId)
          {
              using (var tr = db.BeginTransaction())
@@ -809,57 +805,53 @@ namespace ASC.Calendar.BusinessObjects
             }
         }
 
-
+    */
         public Todo GetTodoByUid(string todoUid)
         {
-            var sql = new SqlQuery("calendar_todos t")
-                .Select("t.id")
-                .InnerJoin("calendar_calendars c", Exp.EqColumns("c.id", "t.calendar_id"))
-                .Where("t.tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where(Exp.Like("t.uid", todoUid))
-                .Where("t.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.owner_id", AuthContext.CurrentAccount.ID)
-                .Where("c.ical_url", null);
+            var data = from todos in CalendarDb.CalendarTodos
+                       join calendar in CalendarDb.CalendarCalendars on todos.CalendarId equals calendar.Id
+                       where
+                          todos.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                          todos.Uid.Contains(todoUid) &&
+                          todos.OwnerId == AuthContext.CurrentAccount.ID &&
+                          calendar.OwnerId == AuthContext.CurrentAccount.ID.ToString() &&
+                          calendar.IcalUrl == null
+                       select todos.Id;
 
-            var todoId = db.ExecuteScalar<int>(sql);
+            var todoId = data.FirstOrDefault();
 
             return todoId == 0 ? null : GetTodoById(todoId);
         }
         public Todo GetTodoIdByUid(string uid, int calendarId)
         {
-            var sql = new SqlQuery("calendar_todos")
-                .Select("id")
-                .Where(Exp.Like("uid", uid))
-                .Where("calendar_id", calendarId);
-
-            var todoId = db.ExecuteScalar<int>(sql);
+            var todoId = CalendarDb.CalendarTodos.Where(p => p.Uid.Contains(uid) && p.CalendarId == calendarId).Select(s => s.Id).FirstOrDefault();
 
             return todoId == 0 ? null : GetTodoById(todoId);
         }
+
         public Todo UpdateTodo(string id, int calendarId, Guid ownerId, string name, string description, DateTime utcStartDate, string uid, DateTime completed)
         {
-            int todoId;
+            var todoUid = GetEventUid(uid);
+            using var tx = CalendarDb.Database.BeginTransaction();
 
-
-            using (var tr = db.BeginTransaction())
+            var updateTodo = new CalendarTodos
             {
+                Id = Convert.ToInt32(id),
+                Name = name,
+                Description = description,
+                CalendarId = calendarId,
+                OwnerId = ownerId,
+                StartDate = utcStartDate,
+                Uid = todoUid,
+                Completed = completed
+            };
+            CalendarDb.AddOrUpdate(r => r.CalendarTodos, updateTodo);
 
-                todoId = db.ExecuteScalar<int>(new SqlUpdate("calendar_todos")
-                                                            .Set("name", name)
-                                                            .Set("description", description)
-                                                            .Set("calendar_id", calendarId)
-                                                            .Set("owner_id", ownerId)
-                                                            .Set("start_date", utcStartDate == DateTime.MinValue ? null : utcStartDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                                                            .Set("uid", GetEventUid(uid))
-                                                            .Set("completed", completed == DateTime.MinValue ? null : completed.ToString("yyyy-MM-dd HH:mm:ss"))
-                                                            .Where(Exp.Eq("id", id)));
-
-
-                tr.Commit();
-            }
+            CalendarDb.SaveChanges();
+            tx.Commit();
 
             return GetTodoById(int.Parse(id));
-            
+
         }
 
         public Todo CreateTodo(int calendarId,
@@ -870,119 +862,133 @@ namespace ASC.Calendar.BusinessObjects
                                  string uid,
                                  DateTime completed)
         {
-            int todoId;
-            
-            
-            using (var tr = db.BeginTransaction())
+            var todoUid = GetEventUid(uid);
+
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var newTodo = new CalendarTodos
             {
+                Tenant = TenantManager.GetCurrentTenant().TenantId,
+                Name = name,
+                Description = description,
+                CalendarId = calendarId,
+                OwnerId = ownerId,
+                StartDate = utcStartDate,
+                Uid = todoUid,
+                Completed = completed
+            };
 
-                todoId = db.ExecuteScalar<int>(new SqlInsert("calendar_todos")
-                                                            .InColumnValue("id", 0)
-                                                            .InColumnValue("tenant",
-                                                                            TenantManager.GetCurrentTenant
-                                                                                ().TenantId)
-                                                            .InColumnValue("name", name)
-                                                            .InColumnValue("description", description)
-                                                            .InColumnValue("calendar_id", calendarId)
-                                                            .InColumnValue("owner_id", ownerId)
-                                                            .InColumnValue("start_date", utcStartDate == DateTime.MinValue ? null : utcStartDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                                                            .InColumnValue("uid", GetEventUid(uid))
-                                                            .InColumnValue("completed", completed == DateTime.MinValue ? null : completed.ToString("yyyy-MM-dd HH:mm:ss"))
-                                                            .Identity(0, 0, true));
+            newTodo = CalendarDb.CalendarTodos.Add(newTodo).Entity;
 
+            CalendarDb.SaveChanges();
+            tx.Commit();
 
-                tr.Commit();
-            }
-
-            return GetTodoById(todoId);
+            return GetTodoById(newTodo.Id);
         }
         public Todo GetTodoById(int todoId)
         {
-            var todos = GetTodosByIds(new object[] { todoId }, AuthContext.CurrentAccount.ID);
+            var todos = GetTodosByIds(new int[] { todoId }, AuthContext.CurrentAccount.ID);
             if (todos.Count > 0)
                 return todos[0];
 
             return null;
         }
 
-        public List<Todo> GetTodosByIds(object[] todoIds, Guid userId, int tenantId = -1)
+        public List<Todo> GetTodosByIds(int[] todoIds, Guid userId, int tenantId = -1)
         {
-            var cc = new ColumnCollection();
-            var tdId = cc.RegistryColumn("td.id");
-            var tdName = cc.RegistryColumn("td.name");
-            var tdDescription = cc.RegistryColumn("td.description");
-            var tdTenant = cc.RegistryColumn("td.tenant");
-            var tdCalId = cc.RegistryColumn("td.calendar_id");
-            var tdStartDate = cc.RegistryColumn("td.start_date");
-            var tdCompleted = cc.RegistryColumn("td.completed");
-            var tdOwner = cc.RegistryColumn("td.owner_id");
-            var tdUid = cc.RegistryColumn("td.uid");
 
-            var data = new List<Object[]>();
-
+            var todoList = new List<Todo>();
             if (todoIds.Length > 0)
             {
+
                 if (tenantId != -1)
                 {
-                    data = db.ExecuteList(new SqlQuery(_todoTable)
+                    var data = CalendarDb.CalendarTodos
+                                 .Where(p => todoIds.Contains(p.Id) && p.Tenant == tenantId)
+                                 .Select(s => new
+                                 {
+                                     Id = s.Id.ToString(),
+                                     Name = s.Name,
+                                     Description = s.Description,
+                                     TenantId = s.Tenant,
+                                     CalendarId = s.CalendarId.ToString(),
+                                     UtcStartDate = s.StartDate,
+                                     Completed = s.Completed,
+                                     OwnerId = s.OwnerId,
+                                     Uid = s.Uid
+                                 })
+                                 .ToList();
+                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter)
+                    {
+                        Id = r.Id.ToString(),
+                        Name = r.Name,
+                        Description = r.Description,
+                        TenantId = r.TenantId,
+                        CalendarId = r.CalendarId.ToString(),
+                        UtcStartDate = r.UtcStartDate,
+                        Completed = r.Completed,
+                        OwnerId = r.OwnerId,
+                        Uid = r.Uid
 
-                                              .Select(cc.SelectQuery)
-                                              .Where(Exp.In(tdId.Name, todoIds))
-                                              .Where("tenant", tenantId));
+                    });
                 }
                 else
                 {
-                    data = db.ExecuteList(new SqlQuery(_todoTable)
+                    var data = CalendarDb.CalendarTodos
+                                 .Where(p => todoIds.Contains(p.Id))
+                                 .Select(s => new
+                                 {
+                                     Id = s.Id.ToString(),
+                                     Name = s.Name,
+                                     Description = s.Description,
+                                     TenantId = s.Tenant,
+                                     CalendarId = s.CalendarId.ToString(),
+                                     UtcStartDate = s.StartDate,
+                                     Completed = s.Completed,
+                                     OwnerId = s.OwnerId,
+                                     Uid = s.Uid
+                                 })
+                                 .ToList();
 
-                                                   .Select(cc.SelectQuery)
-                                                   .Where(Exp.In(tdId.Name, todoIds)));
+                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter)
+                    {
+                        Id = r.Id.ToString(),
+                        Name = r.Name,
+                        Description = r.Description,
+                        TenantId = r.TenantId,
+                        CalendarId = r.CalendarId.ToString(),
+                        UtcStartDate = r.UtcStartDate,
+                        Completed = r.Completed,
+                        OwnerId = r.OwnerId,
+                        Uid = r.Uid
+                    });
                 }
-               
             }
-            
+
 
             //parsing           
             var todos = new List<Todo>();
 
-            foreach (var r in data)
+            foreach (var r in todoList)
             {
                 var td =
                     todos.Find(
-                        e => String.Equals(e.Id, tdId.Parse<string>(r), StringComparison.InvariantCultureIgnoreCase));
+                        e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                 if (td == null)
                 {
-                    td = new Todo()
-                    {
-                        Id = tdId.Parse<string>(r),
-                        Name = tdName.Parse<string>(r),
-                        Description = tdDescription.Parse<string>(r),
-                        TenantId = tdTenant.Parse<int>(r),
-                        CalendarId = tdCalId.Parse<string>(r),
-                        UtcStartDate = tdStartDate.Parse<DateTime>(r),
-                        Completed = tdCompleted.Parse<DateTime>(r),
-                        OwnerId = tdOwner.Parse<Guid>(r),
-                        Uid = tdUid.Parse<string>(r)
-                        
-                    };
-                    todos.Add(td);
+                    todos.Add(r);
                 }
             }
             return todos;
         }
-       
+
         public List<Todo> LoadTodos(int calendarId, Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            var sqlQuery = new SqlQuery(_todoTable)
-                .Select("td.id")
-                .Where(
-                    Exp.Eq("td.calendar_id", calendarId) &
-                    Exp.Eq("td.tenant", tenantId)
-                );
+            var tdIds = CalendarDb.CalendarTodos.Where(p => p.CalendarId == calendarId && p.Tenant == tenantId).Select(s => s.Id).ToArray();
 
-            var tdIds = db.ExecuteList(sqlQuery).Select(r => r[0]);
-
-            return GetTodosByIds(tdIds.ToArray(), userId, tenantId);
+            return GetTodosByIds(tdIds, userId, tenantId);
         }
+        /*
         internal List<Event> LoadSharedEvents(Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();

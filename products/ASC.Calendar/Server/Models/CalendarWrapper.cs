@@ -149,7 +149,7 @@ namespace ASC.Calendar.Models
             AuthContext authContext,
             AuthManager authentication,
             TenantManager tenantManager,
-            TimeZoneWrapperHelper timeZoneWrapperHelper, 
+            TimeZoneWrapperHelper timeZoneWrapperHelper,
             UserManager userManager,
             DisplayUserSettingsHelper dsplayUserSettingsHelper,
             PublicItemCollectionHelper publicItemCollectionHelper,
@@ -189,97 +189,101 @@ namespace ASC.Calendar.Models
                 UserCalendar = calendar.GetUserCalendar(_userViewSettings);
                 _userId = _userViewSettings.UserId;
             }
-            
+
             //---IsSubscription
-            if (UserCalendar.IsiCalStream() || UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
-                calendarWraper.IsSubscription = true;
-            else if (UserCalendar.OwnerId.Equals(_userId))
-                calendarWraper.IsSubscription = false;
-            else
-                calendarWraper.IsSubscription = true;
-            
-            //---iCalUrl
-            if (UserCalendar.IsiCalStream())
-                calendarWraper.iCalUrl = (UserCalendar as BusinessObjects.Calendar).iCalUrl;
-            else
-                calendarWraper.iCalUrl = "";
-            
-            //---isiCalStream
-            if (UserCalendar.IsiCalStream())
-                calendarWraper.IsiCalStream = true;
-            else
-                calendarWraper.IsiCalStream = false;
-            
-            //---IsHidden
-            calendarWraper.IsHidden = _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
-           
-            //---CanAlertModify
-            calendarWraper.CanAlertModify = UserCalendar.Context.CanChangeAlertType;
-            
-            //---IsShared
-            calendarWraper.IsShared = UserCalendar.SharingOptions.SharedForAll || UserCalendar.SharingOptions.PublicItems.Count > 0;
-
-            //---Permissions
-            var p = new CalendarPermissions() { Data = PublicItemCollectionHelper.GetForCalendar(UserCalendar) };
-            foreach (var item in UserCalendar.SharingOptions.PublicItems)
+            if (UserCalendar.Id != null)
             {
-                if (item.IsGroup)
-                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
+                if (UserCalendar.IsiCalStream())
+                    calendarWraper.IsSubscription = true;
+                else if (UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
+                    calendarWraper.IsSubscription = true;
+                else if (UserCalendar.OwnerId.Equals(_userId))
+                    calendarWraper.IsSubscription = false;
                 else
-                    p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
+                    calendarWraper.IsSubscription = true;
+
+                //---iCalUrl
+                if (UserCalendar.IsiCalStream())
+                    calendarWraper.iCalUrl = (UserCalendar as BusinessObjects.Calendar).iCalUrl;
+                else
+                    calendarWraper.iCalUrl = "";
+
+                //---isiCalStream
+                if (UserCalendar.IsiCalStream())
+                    calendarWraper.IsiCalStream = true;
+                else
+                    calendarWraper.IsiCalStream = false;
+
+                //---IsHidden
+                calendarWraper.IsHidden = _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
+
+                //---CanAlertModify
+                calendarWraper.CanAlertModify = UserCalendar.Context.CanChangeAlertType;
+
+                //---IsShared
+                calendarWraper.IsShared = UserCalendar.SharingOptions.SharedForAll || UserCalendar.SharingOptions.PublicItems.Count > 0;
+
+                //---Permissions
+                var p = new CalendarPermissions() { Data = PublicItemCollectionHelper.GetForCalendar(UserCalendar) };
+                foreach (var item in UserCalendar.SharingOptions.PublicItems)
+                {
+                    if (item.IsGroup)
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
+                    else
+                        p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetUsers(item.Id).DisplayUserName(DisplayUserSettingsHelper) });
+                }
+                calendarWraper.Permissions = p;
+
+                //---IsEditable
+                if (UserCalendar.IsiCalStream())
+                    calendarWraper.IsEditable = false;
+                else if (UserCalendar is ISecurityObject)
+                    calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
+                else
+                    calendarWraper.IsEditable = false;
+
+                //---TextColor
+                calendarWraper.TextColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlTextColor) ? BusinessObjects.Calendar.DefaultTextColor :
+                        UserCalendar.Context.HtmlTextColor;
+
+                //---BackgroundColor
+                calendarWraper.BackgroundColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
+                        UserCalendar.Context.HtmlBackgroundColor;
+
+                //---Description
+                calendarWraper.Description = UserCalendar.Description;
+
+                //---Title
+                calendarWraper.Title = UserCalendar.Name;
+
+                //---Id
+                calendarWraper.Id = UserCalendar.Id;
+
+                //---IsTodo
+                if (UserCalendar.IsExistTodo())
+                    calendarWraper.IsTodo = (UserCalendar as BusinessObjects.Calendar).IsTodo;
+                else
+                    calendarWraper.IsTodo = 0;
+
+                //---Owner
+                var owner = new UserParams() { Id = UserCalendar.OwnerId, Name = "" };
+                if (UserCalendar.OwnerId != Guid.Empty)
+                    owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
+
+                calendarWraper.Owner = owner;
+
+                //---IsAcceptedSubscription
+                calendarWraper.IsAcceptedSubscription = _userViewSettings == null || _userViewSettings.IsAccepted;
+
+                //---DefaultAlertType
+                calendarWraper.DefaultAlertType = EventAlertWrapper.ConvertToTypeSurrogated(UserCalendar.EventAlertType);
+
+                //---TimeZoneInfo
+                calendarWraper.TimeZoneInfo = TimeZoneWrapperHelper.Get(UserCalendar.TimeZone);
+
+                //---CanEditTimeZone
+                calendarWraper.CanEditTimeZone = UserCalendar.Context.CanChangeTimeZone;
             }
-            calendarWraper.Permissions = p;
-
-            //---IsEditable
-            if (UserCalendar.IsiCalStream())
-                calendarWraper.IsEditable = false;
-            else if (UserCalendar is ISecurityObject)
-                calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
-            else
-                calendarWraper.IsEditable = false;
-
-            //---TextColor
-            calendarWraper.TextColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlTextColor) ? BusinessObjects.Calendar.DefaultTextColor :
-                    UserCalendar.Context.HtmlTextColor;
-
-            //---BackgroundColor
-            calendarWraper.BackgroundColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
-                    UserCalendar.Context.HtmlBackgroundColor;
-
-            //---Description
-            calendarWraper.Description = UserCalendar.Description;
-
-            //---Title
-            calendarWraper.Title = UserCalendar.Name;
-
-            //---Id
-            calendarWraper.Id = UserCalendar.Id;
-
-            //---IsTodo
-            if (UserCalendar.IsExistTodo())
-                calendarWraper.IsTodo = (UserCalendar as BusinessObjects.Calendar).IsTodo;
-            else
-                calendarWraper.IsTodo = 0;
-
-            //---Owner
-            var owner = new UserParams() { Id = UserCalendar.OwnerId, Name = "" };
-            if (UserCalendar.OwnerId != Guid.Empty)
-                owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
-
-            calendarWraper.Owner = owner;
-
-            //---IsAcceptedSubscription
-            calendarWraper.IsAcceptedSubscription = _userViewSettings == null || _userViewSettings.IsAccepted;
-
-            //---DefaultAlertType
-            calendarWraper.DefaultAlertType = EventAlertWrapper.ConvertToTypeSurrogated(UserCalendar.EventAlertType);
-
-            //---TimeZoneInfo
-            calendarWraper.TimeZoneInfo = TimeZoneWrapperHelper.Get(UserCalendar.TimeZone);
-
-            //---CanEditTimeZone
-            calendarWraper.CanEditTimeZone = UserCalendar.Context.CanChangeTimeZone;
-
 
             return calendarWraper;
         }
