@@ -24,7 +24,6 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
@@ -47,164 +46,142 @@ namespace ASC.Mail.Core.Dao
 
         public UserFolderXMail Get(int mailId)
         {
-            /*var query = Query()
-                .Where(UserFoldertXMailTable.Columns.Tenant, Tenant)
-                .Where(UserFoldertXMailTable.Columns.User, CurrentUserId)
-                .Where(UserFoldertXMailTable.Columns.MailId, mailId);
-
-            var result = Db.ExecuteList(query)
-                .ConvertAll(ToUserFolderXMail)
+            var result = MailDb.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdMail == mailId)
+                .Select(ToUserFolderXMail)
                 .SingleOrDefault();
 
-            return result;*/
-
-            throw new NotImplementedException();
+            return result;
         }
 
         public List<UserFolderXMail> GetList(uint? folderId = null, List<int> mailIds = null)
         {
-            /*var query = Query()
-                .Where(UserFoldertXMailTable.Columns.Tenant, Tenant)
-                .Where(UserFoldertXMailTable.Columns.User, CurrentUserId);
+            var query = MailDb.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
 
             if (folderId.HasValue)
             {
-                query.Where(UserFoldertXMailTable.Columns.FolderId, folderId.Value);
+                query.Where(r => r.IdFolder == folderId.Value);
             }
 
             if (mailIds != null && mailIds.Any())
             {
-                query.Where(Exp.In(UserFoldertXMailTable.Columns.MailId, mailIds));
+                query.Where(r => mailIds.Contains((int)r.IdMail));
             }
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToUserFolderXMail);
+            var list = query.Select(ToUserFolderXMail).ToList();
 
-            return list;*/
-
-            throw new NotImplementedException();
+            return list;
         }
 
         public List<int> GetMailIds(uint folderId)
         {
-            /*var query = new SqlQuery(UserFoldertXMailTable.TABLE_NAME)
-                .Select(UserFoldertXMailTable.Columns.MailId)
-                .Where(UserFoldertXMailTable.Columns.Tenant, Tenant)
-                .Where(UserFoldertXMailTable.Columns.User, CurrentUserId)
-                .Where(UserFoldertXMailTable.Columns.FolderId, folderId);
+            var list = MailDb.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId && r.IdFolder == folderId)
+                .Select(r => (int)r.IdMail)
+                .ToList();
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt32(r[0]));
-
-            return list;*/
-
-            throw new NotImplementedException();
+            return list;
         }
-
-        //private delegate SqlInsert CreateInsertDelegate();
 
         public void SetMessagesFolder(IEnumerable<int> messageIds, uint folderId)
         {
-            /*var idMessages = messageIds as IList<int> ?? messageIds.ToList();
+            var idMessages = messageIds as IList<int> ?? messageIds.ToList();
             if (!idMessages.Any())
                 return;
 
-            CreateInsertDelegate createInsertQuery = ()
-                => new SqlInsert(UserFoldertXMailTable.TABLE_NAME)
-                    .IgnoreExists(true)
-                    .InColumns(UserFoldertXMailTable.Columns.Tenant,
-                        UserFoldertXMailTable.Columns.User,
-                        UserFoldertXMailTable.Columns.MailId,
-                        UserFoldertXMailTable.Columns.FolderId);
-
-            var insertQuery = createInsertQuery();
-
+            var items = new List<MailUserFolderXMail>();
             int i, messagessLen;
             for (i = 0, messagessLen = idMessages.Count; i < messagessLen; i++)
             {
-                var messageId = idMessages[i];
+                var messageId = (uint)idMessages[i];
 
-                insertQuery
-                    .Values(Tenant, CurrentUserId, messageId, folderId);
+                items.Add(new MailUserFolderXMail { 
+                    Tenant = Tenant,
+                    IdUser = UserId,
+                    IdMail = messageId,
+                    IdFolder = folderId
+                });
 
                 if ((i % 100 != 0 || i == 0) && i + 1 != messagessLen)
                     continue;
 
-                Db.ExecuteNonQuery(insertQuery);
+                MailDb.MailUserFolderXMail.AddRange(items);
 
-                insertQuery = createInsertQuery();
-            }*/
+                MailDb.SaveChanges();
 
-            throw new NotImplementedException();
+                items = new List<MailUserFolderXMail>();
+            }
         }
 
         public int Save(UserFolderXMail item)
         {
-            /*var query = new SqlInsert(UserFoldertXMailTable.TABLE_NAME, true)
-                .InColumnValue(UserFoldertXMailTable.Columns.Tenant, item.Tenant)
-                .InColumnValue(UserFoldertXMailTable.Columns.User, item.User)
-                .InColumnValue(UserFoldertXMailTable.Columns.MailId, item.MailId)
-                .InColumnValue(UserFoldertXMailTable.Columns.FolderId, item.FolderId);
+            var newItem = new MailUserFolderXMail
+            {
+                Tenant = item.Tenant,
+                IdUser = item.User,
+                IdMail = (uint)item.MailId,
+                IdFolder = item.FolderId
+            };
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.AddOrUpdate(t => t.MailUserFolderXMail, newItem);
 
-            return result;*/
+            var result = MailDb.SaveChanges();
 
-            throw new NotImplementedException();
+            return result;
         }
 
         public int Remove(int? mailId = null, uint? folderId = null)
         {
-            /*var query = new SqlDelete(UserFoldertXMailTable.TABLE_NAME)
-                .Where(UserFoldertXMailTable.Columns.Tenant, Tenant)
-                .Where(UserFoldertXMailTable.Columns.User, CurrentUserId);
+            var query = MailDb.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId);
 
             if (mailId.HasValue)
             {
-                query.Where(UserFoldertXMailTable.Columns.MailId, mailId.Value);
+                query.Where(r => r.IdMail == mailId.Value);
             }
 
             if (folderId.HasValue)
             {
-                query.Where(UserFoldertXMailTable.Columns.FolderId, folderId.Value);
+                query.Where(r => r.IdFolder == folderId.Value);
             }
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailUserFolderXMail.RemoveRange(query);
 
-            return result;*/
+            var result = MailDb.SaveChanges();
 
-            throw new NotImplementedException();
+            return result;
         }
 
         public int Remove(List<int> mailIds)
         {
-            /*var query = new SqlDelete(UserFoldertXMailTable.TABLE_NAME)
-                .Where(UserFoldertXMailTable.Columns.Tenant, Tenant)
-                .Where(UserFoldertXMailTable.Columns.User, CurrentUserId)
-                .Where(Exp.In(UserFoldertXMailTable.Columns.MailId, mailIds));
+            var query = MailDb.MailUserFolderXMail
+                .Where(r => r.Tenant == Tenant && r.IdUser == UserId)
+                .Where(r => mailIds.Contains((int)r.IdMail));
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailUserFolderXMail.RemoveRange(query);
 
-            return result;*/
+            var result = MailDb.SaveChanges();
 
-            throw new NotImplementedException();
+            return result;
         }
-
-        //private static readonly string QueryDeleteFormat =
-        //        string.Format(
-        //            "delete t from {0} t inner join {1} m " +
-        //            "on t.{2} = m.{3} and t.{4} = m.{5} and t.{6} = m.{7} " +
-        //            "where m.{8} = @mailbox_id and m.{5} = @tenant and m.{7} = @user",
-        //            UserFoldertXMailTable.TABLE_NAME, MailTable.TABLE_NAME,
-        //            UserFoldertXMailTable.Columns.MailId, MailTable.Columns.Id,
-        //            UserFoldertXMailTable.Columns.Tenant, MailTable.Columns.Tenant,
-        //            UserFoldertXMailTable.Columns.User, MailTable.Columns.User,
-        //            MailTable.Columns.MailboxId);
 
         public int RemoveByMailbox(int mailboxId)
         {
-            //return Db.ExecuteNonQuery(QueryDeleteFormat, new {mailbox_id = mailboxId, tenant = Tenant, user = CurrentUserId});
-            throw new NotImplementedException();
+            var queryDelete = MailDb.MailUserFolderXMail
+                .Join(MailDb.MailMail, r => (int)r.IdMail, r => r.Id, (ufxm, m) => new
+                {
+                    UserFoldertXMail = ufxm,
+                    MailMail = m
+                })
+                .Where(o => o.MailMail.IdMailbox == mailboxId && o.MailMail.Tenant == Tenant && o.MailMail.IdUser == UserId)
+                .Select(o => o.UserFoldertXMail);
+
+            MailDb.MailUserFolderXMail.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
         protected UserFolderXMail ToUserFolderXMail(MailUserFolderXMail r)
