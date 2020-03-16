@@ -1372,6 +1372,9 @@ namespace ASC.Calendar.Controllers
         {
             public string ics { get; set; }
             public string todoUid { get; set; }
+            public string todoId { get; set; }
+            public string calendarId { get; set; }
+            public bool fromCalDavServer { get; set; }
 
         }
         [Create("icstodo")]
@@ -1473,6 +1476,94 @@ namespace ASC.Calendar.Controllers
             }
             return result;
         }
+
+        [Update("icstodo")]
+        public List<TodoWrapper> UpdateTodo(CreateTodoModel createTodoModel)
+        {
+            var ics = createTodoModel.ics;
+            var todoId = createTodoModel.todoId;
+            var calendarId = createTodoModel.calendarId;
+            var fromCalDavServer = createTodoModel.fromCalDavServer;
+
+            var todo = DataProvider.GetTodoById(Convert.ToInt32(todoId));
+            if (todo == null)
+                throw new Exception(Resources.CalendarApiResource.ErrorItemNotFound);
+            var old_ics = ics;
+
+            var cal = DataProvider.GetCalendarById(Int32.Parse(todo.CalendarId));
+            if (!fromCalDavServer)
+            {
+                if (!todo.OwnerId.Equals(AuthContext.CurrentAccount.ID) &&
+                    !CheckPermissions(todo, CalendarAccessRights.FullAccessAction, true) &&
+                    !CheckPermissions(cal, CalendarAccessRights.FullAccessAction, true))
+                    throw new System.Security.SecurityException(Resources.CalendarApiResource.ErrorAccessDenied);
+            }
+            int calId;
+
+            if (!int.TryParse(calendarId, out calId))
+            {
+                calId = int.Parse(todo.CalendarId);
+            }
+
+            var calendars = DDayICalParser.DeserializeCalendar(ics);
+
+            if (calendars == null) return null;
+
+            var calendar = calendars.FirstOrDefault();
+
+            if (calendar == null || calendar.Events == null) return null;
+
+            var todoObj = calendar.Todos.FirstOrDefault();
+
+            if (todoObj == null) return null;
+
+            var calendarObj = DataProvider.GetCalendarById(calId);
+            var calendarObjViewSettings = calendarObj != null && calendarObj.ViewSettings != null ? calendarObj.ViewSettings.FirstOrDefault() : null;
+            var targetCalendar = DDayICalParser.ConvertCalendar(calendarObj?.GetUserCalendar(calendarObjViewSettings));
+
+
+            if (targetCalendar == null) return null;
+
+
+            todoObj.Uid = todo.Uid;
+
+            if (!fromCalDavServer)
+            {
+                try
+                {
+                    var uid = todo.Uid;
+                    string[] split = uid.Split(new Char[] { '@' });
+
+                    var calDavGuid = calendarObj != null ? calendarObj.calDavGuid : "";
+                    var myUri = HttpContext.Request.GetUrlRewriter();
+                    var currentUserEmail = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email.ToLower();
+                    string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+
+                    //TODO Caldav
+                  /* var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
+                    updateCaldavThread.Start();*/
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e.Message);
+                }
+
+            }
+
+            var completed = todoObj.Completed == null ? DateTime.MinValue : DDayICalParser.ToUtc(todoObj.Completed);
+            var utcStartDate = todoObj.DtStart != null ? DDayICalParser.ToUtc(todoObj.DtStart) : DateTime.MinValue;
+
+            var result = UpdateTodo(
+                                   int.Parse(calendarId),
+                                   todoObj.Summary,
+                                   todoObj.Description,
+                                   utcStartDate,
+                                   todoObj.Uid,
+                                   completed);
+
+            return result;
+
+        }
         private List<TodoWrapper> CreateTodo(int calendarId, string name, string description, DateTime utcStartDate, string uid, DateTime completed)
         {
             name = (name ?? "").Trim();
@@ -1505,6 +1596,29 @@ namespace ASC.Calendar.Controllers
                                         DataProvider.GetTimeZoneForCalendar(AuthContext.CurrentAccount.ID, calendarId))
                                         .GetList();
                 return todoResult;
+            }
+            return null;
+        }
+        private List<TodoWrapper> UpdateTodo(int calendarId, string name, string description, DateTime utcStartDate, string uid, DateTime completed)
+        {
+            name = (name ?? "").Trim();
+            description = (description ?? "").Trim();
+
+            if (!string.IsNullOrEmpty(uid))
+            {
+                var existTodo = DataProvider.GetTodoByUid(uid);
+                CheckPermissions(DataProvider.GetCalendarById(calendarId), CalendarAccessRights.FullAccessAction);
+
+                var todo = DataProvider.UpdateTodo(existTodo.Id, calendarId, AuthContext.CurrentAccount.ID, name, description, utcStartDate, uid, completed);
+
+                if (todo != null)
+                {
+
+                    var todoResult = TodoWrapperHelper.Get(todo, AuthContext.CurrentAccount.ID,
+                                            DataProvider.GetTimeZoneForCalendar(AuthContext.CurrentAccount.ID, calendarId))
+                                            .GetList();
+                    return todoResult;
+                }
             }
             return null;
         }

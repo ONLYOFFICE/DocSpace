@@ -925,8 +925,8 @@ namespace ASC.Calendar.BusinessObjects
                         Description = r.Description,
                         TenantId = r.TenantId,
                         CalendarId = r.CalendarId.ToString(),
-                        UtcStartDate = r.UtcStartDate,
-                        Completed = r.Completed,
+                        UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
+                        Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
                         Uid = r.Uid
 
@@ -957,8 +957,8 @@ namespace ASC.Calendar.BusinessObjects
                         Description = r.Description,
                         TenantId = r.TenantId,
                         CalendarId = r.CalendarId.ToString(),
-                        UtcStartDate = r.UtcStartDate,
-                        Completed = r.Completed,
+                        UtcStartDate = r.UtcStartDate ?? DateTime.MinValue,
+                        Completed = r.Completed ?? DateTime.MinValue,
                         OwnerId = r.OwnerId,
                         Uid = r.Uid
                     });

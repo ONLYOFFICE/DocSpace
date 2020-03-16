@@ -24,9 +24,9 @@ namespace ASC.Calendar.Core.Dao.Models
         [Column("calendar_id", TypeName = "int(11)")]
         public int CalendarId { get; set; }
         [Column("start_date", TypeName = "datetime")]
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         [Column("completed", TypeName = "datetime")]
-        public DateTime Completed { get; set; }
+        public DateTime? Completed { get; set; }
         [Required]
         [Column("owner_id", TypeName = "char(38)")]
         public Guid OwnerId { get; set; }
