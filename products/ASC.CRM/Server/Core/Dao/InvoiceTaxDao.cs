@@ -41,8 +41,14 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<InvoiceTax> _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>("crm_invoice_tax");
 
-        public CachedInvoiceTaxDao(int tenantID)
-            : base(tenantID)
+        public CachedInvoiceTaxDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext
+            )
+            : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
+
         {
         }
 

@@ -302,8 +302,7 @@ namespace ASC.CRM.Core.Dao
             
             if (!table.Contains(" ")) return tenant;
         
-            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;
-        
+            return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;        
         }
 
 
@@ -311,8 +310,7 @@ namespace ASC.CRM.Core.Dao
         {
             var str = guid as string;
             
-            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;
-        
+            return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;        
         }
 
     }

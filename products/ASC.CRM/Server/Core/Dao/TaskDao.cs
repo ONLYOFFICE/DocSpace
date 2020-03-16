@@ -46,12 +46,24 @@ namespace ASC.CRM.Core.Dao
     {
 
         private readonly HttpRequestDictionary<Task> _contactCache = new HttpRequestDictionary<Task>("crm_task");
-
-        public CachedTaskDao(int tenantID)
-            : base(tenantID)
+            
+        public CachedTaskDao(DbContextManager<CRMDbContext> dbContextManager,
+                      TenantManager tenantManager,
+                      SecurityContext securityContext,
+                      CRMSecurity cRMSecurity,
+                      TenantUtil tenantUtil,
+                      FactoryIndexer<TasksWrapper> factoryIndexer
+                      ):
+           base(dbContextManager,
+                tenantManager,
+                securityContext,
+                cRMSecurity,
+                tenantUtil,
+                factoryIndexer)
         {
-
+            
         }
+
 
         public override Task GetByID(int taskID)
         {
@@ -110,6 +122,7 @@ namespace ASC.CRM.Core.Dao
         public FactoryIndexer<TasksWrapper> FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
+        
         public CRMSecurity CRMSecurity { get; }
 
         public void OpenTask(int taskId)
@@ -130,7 +143,6 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Tasks.Update(entity);
 
             CRMDbContext.SaveChanges();
-
         }
 
         public void CloseTask(int taskId)
@@ -174,13 +186,12 @@ namespace ASC.CRM.Core.Dao
 
         public List<Task> GetAllTasks()
         {
-
-            
-            return Db.ExecuteList(
-                GetTaskQuery(null)
-                .OrderBy("deadline", true)
-                .OrderBy("title", true))
-                .ConvertAll(row => ToTask(row)).FindAll(CRMSecurity.CanAccessTo);
+           return Query(CRMDbContext.Tasks)
+                .OrderBy(x => x.Deadline)
+                .OrderBy(x => x.Title)
+                .ToList()
+                .ConvertAll(ToTask)
+                .FindAll(CRMSecurity.CanAccessTo);
         }
 
         public void ExecAlert(IEnumerable<int> ids)
@@ -679,50 +690,50 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, Task> GetNearestTask(int[] contactID)
         {
-            var sqlSubQuery =
-                        Query("crm_task")
-                        .SelectMin("id")
-                        .SelectMin("deadline")
-                        .Select("contact_id")
-                        .Where(Exp.In("contact_id", contactID) & Exp.Eq("is_closed", false))
-                        .GroupBy("contact_id");
 
-            var taskIDs = Db.ExecuteList(sqlSubQuery).ConvertAll(row => row[0]);
+                                                                
+            throw new Exception();
 
-            if (taskIDs.Count == 0) return new Dictionary<int, Task>();
+            //Query(CRMDbContext.Tasks)
+            //  .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed)
+            //  .GroupBy(x => x.ContactId)
+            //  .Select(x => x.);
 
-            var tasks = Db.ExecuteList(GetTaskQuery(Exp.In("id", taskIDs))).ConvertAll(row => ToTask(row)).Where(CRMSecurity.CanAccessTo);
 
-            var result = new Dictionary<int, Task>();
+            //  var sqlSubQuery =
+            //            Query("crm_task")
+            //            .SelectMin("id")
+            //            .SelectMin("deadline")
+            //            .Select("contact_id")
+            //            .Where(Exp.In("contact_id", contactID) & Exp.Eq("is_closed", false))
+            //            .GroupBy("contact_id");
 
-            foreach (var task in tasks.Where(task => !result.ContainsKey(task.ContactID)))
-            {
-                result.Add(task.ContactID, task);
-            }
+            //var taskIDs = Db.ExecuteList(sqlSubQuery).ConvertAll(row => row[0]);
 
-            return result;
+            //if (taskIDs.Count == 0) return new Dictionary<int, Task>();
+
+            //var tasks = Db.ExecuteList(GetTaskQuery(Exp.In("id", taskIDs))).ConvertAll(row => ToTask(row)).Where(CRMSecurity.CanAccessTo);
+
+            //var result = new Dictionary<int, Task>();
+
+            //foreach (var task in tasks.Where(task => !result.ContainsKey(task.ContactID)))
+            //{
+            //    result.Add(task.ContactID, task);
+            //}
+
+            //return result;
         }
 
         public IEnumerable<Guid> GetResponsibles(int categoryID)
         {
+            var sqlQuery = Query(CRMDbContext.Tasks);
 
-
-           // CRMDbContext.Tasks.Select(x=>x.ResponsibleId)
-
-            var q = Query("crm_task")
-                .Select("responsible_id")
-                .GroupBy(1);
-
-            if (0 < categoryID) q.Where("category_id", categoryID);
-
-            return Db.ExecuteList(q)
-                .ConvertAll(r => (string)r[0])
-                .Select(r => new Guid(r))
-                .Where(g => g != Guid.Empty)
-                .ToList();
+            if (0 < categoryID)
+                sqlQuery = sqlQuery.Where(x => x.CategoryId == categoryID);
+            
+            return sqlQuery.GroupBy(x => x.ResponsibleId).Select(x => x.Key).ToList();
         }
-
-
+        
         public Dictionary<int, int> GetTasksCount(int[] contactID)
         {
             return CRMDbContext.Tasks
@@ -742,17 +753,10 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, bool> HaveLateTask(int[] contactID)
         {
-            var sqlQuery = Query("crm_task")
-                          .Select("contact_id")
-                          .Where(Exp.In("contact_id", contactID))
-                          .Where(Exp.Eq("is_closed", false) &
-                           Exp.Lt("deadline", DateTime.UtcNow))
-                          .SelectCount()
-                          .GroupBy("contact_id");
-
-            var sqlResult = Db.ExecuteList(sqlQuery);
-
-            return sqlResult.ToDictionary(item => Convert.ToInt32(item[0]), item => Convert.ToInt32(item[1]) > 0);
+            return Query(CRMDbContext.Tasks)
+                    .Where(x => contactID.Contains(x.ContactId) && !x.IsClosed && x.Deadline <= DateTime.UtcNow)
+                    .GroupBy(x => x.ContactId)
+                    .ToDictionary(x => x.Key, x => x.Any());      
         }
 
 
@@ -1128,7 +1132,27 @@ namespace ASC.CRM.Core.Dao
 
         public Task ToTask(DbTask dbTask)
         {
-            throw new NotImplementedException();
+            if (dbTask == null) return null;
+
+            return new Task
+            {
+                ID = dbTask.Id,
+                AlertValue = dbTask.AlertValue,
+                CategoryID = dbTask.CategoryId,
+                ContactID = dbTask.ContactId,
+                CreateBy = dbTask.CreateBy,
+                CreateOn = dbTask.CreateOn,
+                DeadLine = dbTask.Deadline,
+                Description = dbTask.Description,
+                IsClosed = dbTask.IsClosed,
+                EntityID = dbTask.EntityId,
+                EntityType = dbTask.EntityType,
+                LastModifedBy = dbTask.LastModifedBy,
+                LastModifedOn = dbTask.LastModifedOn,
+                ResponsibleID = dbTask.ResponsibleId,
+                Title = dbTask.Title
+            };
+
         }
     }
 }

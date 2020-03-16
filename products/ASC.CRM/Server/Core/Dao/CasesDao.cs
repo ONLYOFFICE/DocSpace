@@ -31,6 +31,7 @@ using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
+using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using System;
@@ -46,9 +47,24 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<Cases> _casesCache = new HttpRequestDictionary<Cases>("crm_cases");
 
-        public CachedCasesDao(int tenantID)
-            : base(tenantID)
+        public CachedCasesDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            CRMSecurity cRMSecurity,
+            TenantUtil tenantUtil,
+            FilesIntegration filesIntegration
+            ) :
+                 base(dbContextManager,
+                 tenantManager,
+                 securityContext,
+                 cRMSecurity,
+                 tenantUtil,
+                 filesIntegration)
+
         {
+
+            
+
         }
 
         public override Cases GetByID(int caseID)
@@ -90,7 +106,8 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             CRMSecurity cRMSecurity,
             TenantUtil tenantUtil,
-            FilesIntegration filesIntegration
+            FilesIntegration filesIntegration,
+            AuthorizationManager authorizationManager
             ) :
                  base(dbContextManager,
                  tenantManager,
@@ -99,9 +116,10 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             FilesIntegration = filesIntegration;
+            AuthorizationManager = authorizationManager;
         }
 
-        public CoreContext CoreContext { get; }
+        public AuthorizationManager AuthorizationManager { get; }
 
         public FilesIntegration FilesIntegration { get; }
 
@@ -324,7 +342,7 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            caseses.ForEach(item => CoreContext.AuthorizationManager.RemoveAllAces(item));
+            caseses.ForEach(item => AuthorizationManager.RemoveAllAces(item));
 
             if (0 < tagNames.Length)
             {
@@ -341,7 +359,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<Cases> GetAllCases()
         {
-            return GetCases(String.Empty, 0, null, null, 0, 0, new OrderBy(SortedByType.Title, true));
+            return GetCases(String.Empty, 0, null, null, 0, 0, new OrderBy(Enums.SortedByType.Title, true));
         }
 
         public int GetCasesCount()
@@ -532,6 +550,7 @@ namespace ASC.CRM.Core.Dao
             if (0 < count && count < int.MaxValue) sqlQuery.SetMaxResults(count);
 
             sqlQuery.OrderBy("is_closed", true);
+
 
             if (orderBy != null && Enum.IsDefined(typeof(SortedByType), orderBy.SortedBy))
                 switch ((SortedByType)orderBy.SortedBy)

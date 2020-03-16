@@ -287,5 +287,4 @@ namespace ASC.CRM.Core.Dao
             };
         }     
     }
-
 }

@@ -96,6 +96,8 @@ namespace ASC.CRM.Core.Dao
         public IEnumerable<int> GetTagsLinkCount(EntityType entityType)
         {
 
+
+
             //var temp =  Query(CRMDbContext.Tags)
             //   .Join(CRMDbContext.CrmEntityTag,
             //           x => x.Id,

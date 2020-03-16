@@ -93,15 +93,12 @@ namespace ASC.CRM.Core.Dao
     }
 
     public class ContactInfoDao : AbstractDao
-    {
-        #region Constructor
-
+    {     
         public ContactInfoDao(int tenantID)
             : base(tenantID)
         {
-        }
 
-        #endregion
+        }
 
         public virtual ContactInfo GetByID(int id)
         {

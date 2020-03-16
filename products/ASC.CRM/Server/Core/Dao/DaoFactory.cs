@@ -34,16 +34,10 @@ namespace ASC.CRM.Core.Dao
         private readonly TypedParameter tenant;
         public ILifetimeScope Container { get; set; }
 
-        #region Constructor
-
         public DaoFactory(int tenantID)
         {
             tenant = GetParameter(tenantID);
         }
-
-        #endregion
-
-        #region Methods
 
         public TaskDao TaskDao
         {
@@ -164,6 +158,6 @@ namespace ASC.CRM.Core.Dao
         {
             return new TypedParameter(typeof(T), data);
         }
-        #endregion
+
     }
 }

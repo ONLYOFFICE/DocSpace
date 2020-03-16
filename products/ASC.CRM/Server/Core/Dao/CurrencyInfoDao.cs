@@ -24,17 +24,12 @@
 */
 
 
-#region Import
-
 using System;
 using System.Collections.Generic;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using System.Linq;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
-
-#endregion
 
 namespace ASC.CRM.Core.Dao
 {
@@ -55,51 +50,40 @@ namespace ASC.CRM.Core.Dao
 
         public virtual List<CurrencyInfo> GetAll()
         {
-            return Db.ExecuteList(GetSqlQuery(null)).ConvertAll(ToCurrencyInfo);
+            return CRMDbContext.CurrencyInfo.ToList().ConvertAll(ToCurrencyInfo);
         }
         
         public virtual CurrencyInfo GetByAbbreviation(string abbreviation)
         {
-            var currencies = Db.ExecuteList(GetSqlQuery(Exp.Eq("abbreviation", abbreviation))).ConvertAll(ToCurrencyInfo);
-
-            return currencies.Count > 0 ? currencies[0] : null;
+            return ToCurrencyInfo(CRMDbContext.CurrencyInfo
+                            .FirstOrDefault(x => String.Compare(x.Abbreviation, abbreviation, true) == 0));
         }
 
         public List<CurrencyInfo> GetBasic()
         {
-            return Db.ExecuteList(GetSqlQuery(Exp.Eq("is_basic", true))).ConvertAll(ToCurrencyInfo);
+            return CRMDbContext.CurrencyInfo
+                                        .Where(x => x.IsBasic)
+                                        .ToList()
+                                        .ConvertAll(ToCurrencyInfo);
         }
 
         public List<CurrencyInfo> GetOther()
         {
-            return Db.ExecuteList(GetSqlQuery(Exp.Eq("is_basic", false))).ConvertAll(ToCurrencyInfo);
+            return CRMDbContext.CurrencyInfo
+                                            .Where(x => !x.IsBasic)
+                                            .ToList()
+                                            .ConvertAll(ToCurrencyInfo);
         }
-
-        private SqlQuery GetSqlQuery(Exp where)
-        {
-            var sqlQuery = new SqlQuery("crm_currency_info")
-                .Select("resource_key",
-                        "abbreviation",
-                        "symbol",
-                        "culture_name",
-                        "is_convertable",
-                        "is_basic");
-
-            if (where != null)
-                sqlQuery.Where(where);
-
-            return sqlQuery;
-        }
-
-        private static CurrencyInfo ToCurrencyInfo(object[] row)
+                
+        private static CurrencyInfo ToCurrencyInfo(DbCurrencyInfo dbCurrencyInfo)
         {
             return new CurrencyInfo(
-                    Convert.ToString(row[0]),
-                    Convert.ToString(row[1]),
-                    Convert.ToString(row[2]),
-                    Convert.ToString(row[3]),
-                    Convert.ToBoolean(row[4]),
-                    Convert.ToBoolean(row[5])
+                    dbCurrencyInfo.ResourceKey,
+                    dbCurrencyInfo.Abbreviation,
+                    dbCurrencyInfo.Abbreviation,
+                    dbCurrencyInfo.CultureName,
+                    dbCurrencyInfo.IsConvertable,
+                    dbCurrencyInfo.IsBasic               
                 );
         }
     }

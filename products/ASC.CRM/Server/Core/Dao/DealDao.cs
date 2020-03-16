@@ -48,9 +48,18 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly HttpRequestDictionary<Deal> _dealCache = new HttpRequestDictionary<Deal>("crm_deal");
 
-        public CachedDealDao(int tenantID)
-            : base(tenantID)
+        public CachedDealDao(DbContextManager<CRMDbContext> dbContextManager,
+                       TenantManager tenantManager,
+                       SecurityContext securityContext,
+                       CRMSecurity cRMSecurity,
+                       FactoryIndexer<DealsWrapper> factoryIndexer)
+            : base(dbContextManager,
+                 tenantManager,
+                 securityContext,
+                 cRMSecurity,
+                 factoryIndexer)
         {
+
         }
 
         public override void EditDeal(Deal deal)
@@ -95,17 +104,22 @@ namespace ASC.CRM.Core.Dao
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
-                       CRMSecurity cRMSecurity) :
+                       CRMSecurity cRMSecurity,
+                       FactoryIndexer<DealsWrapper> factoryIndexer) :
             base(dbContextManager,
                  tenantManager,
                  securityContext)
         {
-
+            CRMSecurity = cRMSecurity;
+            FactoryIndexer = factoryIndexer;
         }
 
+        FactoryIndexer<DealsWrapper> FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
         public CRMSecurity CRMSecurity { get; }
+
+        public AuthorizationManager AuthorizationManager { get; }
 
         #endregion
 
@@ -159,7 +173,7 @@ namespace ASC.CRM.Core.Dao
 
             deal.ID = result;
 
-            FactoryIndexer<DealsWrapper>.IndexAsync(deal);
+            FactoryIndexer.IndexAsync(deal);
 
             return result;
         }
@@ -208,7 +222,7 @@ namespace ASC.CRM.Core.Dao
                 tx.Commit();
                 foreach (var item in items)
                 {
-                    FactoryIndexer<DealsWrapper>.IndexAsync(item);
+                    FactoryIndexer.IndexAsync(item);
                 }
                 return result;
             }
@@ -244,7 +258,7 @@ namespace ASC.CRM.Core.Dao
                 .Where(Exp.Eq("id", deal.ID))
                 );
 
-            FactoryIndexer<DealsWrapper>.IndexAsync(deal);
+            FactoryIndexer.IndexAsync(deal);
         }
 
 
@@ -293,7 +307,7 @@ namespace ASC.CRM.Core.Dao
                 {
                     if (!BundleSearch.TrySelectOpportunity(searchText, out ids))
                     {
-                        conditions.Add(BuildLike(new[] {"tblDeal.title", "tblDeal.description"}, keywords));
+                        conditions.Add(BuildLike(new[] { "tblDeal.title", "tblDeal.description" }, keywords));
                     }
                     else if (ids.Count == 0) return null;
                 }
@@ -706,7 +720,7 @@ namespace ASC.CRM.Core.Dao
 
             DeleteBatchDealsExecute(new List<Deal>() { deal });
 
-            FactoryIndexer<DealsWrapper>.DeleteAsync(deal);
+            FactoryIndexer.DeleteAsync(deal);
 
             return deal;
         }
@@ -762,40 +776,59 @@ namespace ASC.CRM.Core.Dao
                     tx.Commit();
                 }
 
-                deals.ForEach(deal => CoreContext.AuthorizationManager.RemoveAllAces(deal));
+                deals.ForEach(deal => AuthorizationManager.RemoveAllAces(deal));
             }
 
-            using (var filedao = FilesIntegration.GetFileDao())
+            var filedao = FilesIntegration.GetFileDao();
+
+            foreach (var filesID in filesIDs)
             {
-                foreach (var filesID in filesIDs)
-                {
-                    filedao.DeleteFile(filesID);
-                }
+                filedao.DeleteFile(filesID);
             }
+
         }
 
-        #region Private Methods
-
-        private static Deal ToDeal(object[] row)
+        private Deal ToDeal(DbDeal dbDeal)
         {
+            if (dbDeal == null) return null;
+
             return new Deal
-                {
-                    ID = Convert.ToInt32(row[0]),
-                    Title = Convert.ToString(row[1]),
-                    Description = Convert.ToString(row[2]),
-                    ResponsibleID = ToGuid(row[3]),
-                    ContactID = Convert.ToInt32(row[4]),
-                    BidCurrency = Convert.ToString(row[5]),
-                    BidValue = Convert.ToDecimal(row[6]),
-                    BidType = (BidType)Convert.ToInt32(row[7]),
-                    DealMilestoneID = Convert.ToInt32(row[8]),
-                    ExpectedCloseDate = Convert.ToDateTime(row[9]) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[9])),
-                    PerPeriodValue = Convert.ToInt32(row[10]),
-                    DealMilestoneProbability = Convert.ToInt32(row[11]),
-                    CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[12])),
-                    CreateBy = ToGuid(row[13]),
-                    ActualCloseDate = Convert.ToDateTime(row[14]) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[14]))
-                };
+            {
+                ID = dbDeal.Id,
+                Title = dbDeal.Title,
+                Description = dbDeal.Description,
+                ResponsibleID = dbDeal.ResponsibleId,
+                ContactID = dbDeal.ContactId,
+                BidCurrency = dbDeal.BidCurrency,
+                BidValue = dbDeal.BidValue,
+                DealMilestoneID = dbDeal.DealMilestoneId,
+                ExpectedCloseDate = dbDeal.ExpectedCloseDate,
+                PerPeriodValue = dbDeal.PerPeriodValue,
+                DealMilestoneProbability = dbDeal.DealMilestoneProbability,
+                CreateOn = dbDeal.CreateOn,
+                CreateBy = dbDeal.CreateBy,
+                ActualCloseDate = Convert.ToDateTime(row[14]) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[14]))
+            };
+
+            return new Deal
+            {
+                ID = Convert.ToInt32(row[0]),
+                Title = Convert.ToString(row[1]),
+                Description = Convert.ToString(row[2]),
+                ResponsibleID = ToGuid(row[3]),
+                ContactID = Convert.ToInt32(row[4]),
+                BidCurrency = Convert.ToString(row[5]),
+                BidValue = Convert.ToDecimal(row[6]),
+                BidType = (BidType)Convert.ToInt32(row[7]),
+                DealMilestoneID = Convert.ToInt32(row[8]),
+                ExpectedCloseDate = Convert.ToDateTime(row[9]) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[9])),
+                PerPeriodValue = Convert.ToInt32(row[10]),
+                DealMilestoneProbability = Convert.ToInt32(row[11]),
+                CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[12])),
+                CreateBy = ToGuid(row[13]),
+                ActualCloseDate = 
+                Convert.ToDateTime(row[14]) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[14]))
+            };
         }
 
         private SqlQuery GetDealSqlQuery(Exp where)
@@ -834,8 +867,6 @@ namespace ASC.CRM.Core.Dao
             return sqlQuery;
         }
 
-        #endregion
-
 
         public void ReassignDealsResponsible(Guid fromUserId, Guid toUserId)
         {
@@ -844,7 +875,7 @@ namespace ASC.CRM.Core.Dao
                             0,
                             null,
                             0,
-                            DealMilestoneStatus.Open, 
+                            DealMilestoneStatus.Open,
                             null,
                             DateTime.MinValue,
                             DateTime.MinValue,
@@ -869,9 +900,6 @@ namespace ASC.CRM.Core.Dao
             }
         }
 
-        #endregion
-
-
         /// <summary>
         /// Test method
         /// </summary>
@@ -894,13 +922,13 @@ namespace ASC.CRM.Core.Dao
         /// <param name="lastModifedDate"></param>
         public void SetDealLastModifedDate(int opportunityid, DateTime lastModifedDate)
         {
-            
+
 
             Db.ExecuteNonQuery(
                 Update("crm_deal")
                     .Set("last_modifed_on", TenantUtil.DateTimeToUtc(lastModifedDate))
                     .Where(Exp.Eq("id", opportunityid)));
-            
+
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_task")]
-    public partial class DbTask
+    public partial class DbTask: IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(11)")]
