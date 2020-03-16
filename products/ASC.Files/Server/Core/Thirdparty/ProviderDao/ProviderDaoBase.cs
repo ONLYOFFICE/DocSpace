@@ -46,7 +46,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
-    internal class ProviderDaoBase
+    internal class ProviderDaoBase : IDisposable
     {
         private readonly List<IDaoSelector> Selectors;
 
@@ -259,6 +259,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             if (copyException != null) throw copyException;
 
             return toFolderDao.GetFolder(toSelector.ConvertId(toFolderId));
+        }
+
+        public void Dispose()
+        {
+            //TODO
+            //throw new NotImplementedException();
         }
     }
 

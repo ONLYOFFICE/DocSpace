@@ -35,6 +35,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Thirdparty;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
@@ -45,9 +46,9 @@ using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    internal abstract class OneDriveDaoBase
+    internal abstract class OneDriveDaoBase : IThirdPartyProviderDao<OneDriveProviderInfo>
     {
-        public OneDriveDaoSelector OneDriveDaoSelector { get; set; }
+        public RegexDaoSelectorBase<OneDriveProviderInfo> OneDriveDaoSelector { get; set; }
 
         public int TenantID { get; private set; }
         public OneDriveProviderInfo OneDriveProviderInfo { get; set; }
@@ -74,9 +75,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             SetupInfo = setupInfo;
         }
 
-        public void Init(OneDriveDaoSelector.OneDriveInfo onedriveInfo, OneDriveDaoSelector onedriveDaoSelector)
+        public void Init(BaseProviderInfo<OneDriveProviderInfo> onedriveInfo, RegexDaoSelectorBase<OneDriveProviderInfo> onedriveDaoSelector)
         {
-            OneDriveProviderInfo = onedriveInfo.OneDriveProviderInfo;
+            OneDriveProviderInfo = onedriveInfo.ProviderInfo;
             PathPrefix = onedriveInfo.PathPrefix;
             OneDriveDaoSelector = onedriveDaoSelector;
         }

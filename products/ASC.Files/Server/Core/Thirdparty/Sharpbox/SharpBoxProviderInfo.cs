@@ -52,24 +52,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             Wrapper = storageDisposableWrapper;
             Log = monitor.CurrentValue;
         }
-        //public SharpBoxProviderInfo(int id, string providerKey, string customerTitle, AuthData authData, Guid owner, FolderType rootFolderType, DateTime createOn)
-        //{
-        //    if (string.IsNullOrEmpty(providerKey))
-        //        throw new ArgumentNullException("providerKey");
-        //    if (string.IsNullOrEmpty(authData.Token) && string.IsNullOrEmpty(authData.Password))
-        //        throw new ArgumentNullException("token", "Both token and password can't be null");
-        //    if (!string.IsNullOrEmpty(authData.Login) && string.IsNullOrEmpty(authData.Password) && string.IsNullOrEmpty(authData.Token))
-        //        throw new ArgumentNullException("password", "Password can't be null");
 
-        //    ID = id;
-        //    CustomerTitle = customerTitle;
-        //    Owner = owner == Guid.Empty ? SecurityContext.CurrentAccount.ID : owner;
-
-        //    _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), providerKey, true);
-        //    _authData = authData;
-        //    RootFolderType = rootFolderType;
-        //    CreateOn = createOn;
-        //}
 
         public void Dispose()
         {

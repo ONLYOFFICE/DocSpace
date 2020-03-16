@@ -36,6 +36,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Thirdparty;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
@@ -47,9 +48,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
-    internal abstract class DropboxDaoBase
+    internal abstract class DropboxDaoBase : IThirdPartyProviderDao<DropboxProviderInfo>
     {
-        protected DropboxDaoSelector DropboxDaoSelector { get; set; }
+        protected RegexDaoSelectorBase<DropboxProviderInfo> DropboxDaoSelector { get; set; }
 
         public int TenantID { get; private set; }
         public DropboxProviderInfo DropboxProviderInfo { get; private set; }
@@ -76,9 +77,9 @@ namespace ASC.Files.Thirdparty.Dropbox
             FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
         }
 
-        public void Init(DropboxDaoSelector.DropboxInfo dropboxInfo, DropboxDaoSelector dropboxDaoSelector)
+        public void Init(BaseProviderInfo<DropboxProviderInfo> dropboxInfo, RegexDaoSelectorBase<DropboxProviderInfo> dropboxDaoSelector)
         {
-            DropboxProviderInfo = dropboxInfo.DropboxProviderInfo;
+            DropboxProviderInfo = dropboxInfo.ProviderInfo;
             PathPrefix = dropboxInfo.PathPrefix;
             DropboxDaoSelector = dropboxDaoSelector;
         }

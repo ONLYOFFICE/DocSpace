@@ -29,54 +29,28 @@ using System.Text.RegularExpressions;
 
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Thirdparty;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty
 {
-    internal abstract class RegexDaoSelectorBase<T> : IDaoSelector
+    internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T>, IDisposable where T : class, IProviderInfo
     {
+        public IServiceProvider ServiceProvider { get; }
+        public IDaoFactory DaoFactory { get; }
         public Regex Selector { get; set; }
-        public Func<string, IFileDao<string>> FileDaoActivator { get; set; }
-        public Func<string, ISecurityDao<string>> SecurityDaoActivator { get; set; }
-        public Func<string, IFolderDao<string>> FolderDaoActivator { get; set; }
-        public Func<string, ITagDao<string>> TagDaoActivator { get; set; }
-        public Func<string, string> IDConverter { get; set; }
-
-        protected RegexDaoSelectorBase(Regex selector)
-            : this(selector, null, null, null, null)
-        {
-        }
-
-        protected RegexDaoSelectorBase(Regex selector,
-                                       Func<string, IFileDao<string>> fileDaoActivator,
-                                       Func<string, IFolderDao<string>> folderDaoActivator,
-                                       Func<string, ISecurityDao<string>> securityDaoActivator,
-                                       Func<string, ITagDao<string>> tagDaoActivator
-            )
-            : this(selector, fileDaoActivator, folderDaoActivator, securityDaoActivator, tagDaoActivator, null)
-        {
-        }
+        protected internal abstract string Name { get; }
+        protected internal abstract string Id { get; }
 
         protected RegexDaoSelectorBase(
-            Regex selector,
-            Func<string, IFileDao<string>> fileDaoActivator,
-            Func<string, IFolderDao<string>> folderDaoActivator,
-            Func<string, ISecurityDao<string>> securityDaoActivator,
-            Func<string, ITagDao<string>> tagDaoActivator,
-            Func<string, string> idConverter)
+            IServiceProvider serviceProvider,
+            IDaoFactory daoFactory)
         {
-            Selector = selector ?? throw new ArgumentNullException("selector");
-            FileDaoActivator = fileDaoActivator;
-            FolderDaoActivator = folderDaoActivator;
-            SecurityDaoActivator = securityDaoActivator;
-            TagDaoActivator = tagDaoActivator;
-            IDConverter = idConverter;
+            ServiceProvider = serviceProvider;
+            DaoFactory = daoFactory;
+            Selector = new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
         }
-
-        public virtual ISecurityDao<string> GetSecurityDao(string id)
-        {
-            return SecurityDaoActivator != null ? SecurityDaoActivator(id) : null;
-        }
-
 
         public virtual string ConvertId(string id)
         {
@@ -84,7 +58,12 @@ namespace ASC.Files.Thirdparty
             {
                 if (id == null) return null;
 
-                return IDConverter != null ? IDConverter(id) : id;
+                var match = Selector.Match(id);
+                if (match.Success)
+                {
+                    return match.Groups["path"].Value.Replace('|', '/');
+                }
+                throw new ArgumentException($"Id is not a {Name} id");
             }
             catch (Exception fe)
             {
@@ -102,20 +81,79 @@ namespace ASC.Files.Thirdparty
             return id != null && Selector.IsMatch(id);
         }
 
-
-        public virtual IFileDao<string> GetFileDao(string id)
+        public virtual ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ISecurityDao<string>, IThirdPartyProviderDao<T>
         {
-            return FileDaoActivator != null ? FileDaoActivator(id) : null;
+            return GetDao<T1>(id);
         }
 
-        public virtual IFolderDao<string> GetFolderDao(string id)
+        public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>, IThirdPartyProviderDao<T>
         {
-            return FolderDaoActivator != null ? FolderDaoActivator(id) : null;
+            return GetDao<T1>(id);
         }
 
-        public virtual ITagDao<string> GetTagDao(string id)
+        public virtual ITagDao<string> GetTagDao<T1>(string id) where T1 : ITagDao<string>, IThirdPartyProviderDao<T>
         {
-            return TagDaoActivator != null ? TagDaoActivator(id) : null;
+            return GetDao<T1>(id);
         }
+
+        public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>, IThirdPartyProviderDao<T>
+        {
+            return GetDao<T1>(id);
+        }
+
+        private T1 GetDao<T1>(string id) where T1 : IThirdPartyProviderDao<T>
+        {
+            var res = ServiceProvider.GetService<T1>();
+
+            res.Init(GetInfo(id), this);
+
+            return res;
+        }
+
+
+        internal BaseProviderInfo<T> GetInfo(string objectId)
+        {
+            if (objectId == null) throw new ArgumentNullException("objectId");
+            var id = objectId;
+            var match = Selector.Match(id);
+            if (match.Success)
+            {
+                var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
+
+                return new BaseProviderInfo<T>
+                {
+                    Path = match.Groups["path"].Value,
+                    ProviderInfo = providerInfo,
+                    PathPrefix = Id + "-" + match.Groups["id"].Value
+                };
+            }
+            throw new ArgumentException($"Id is not {Name} id");
+        }
+
+        public abstract void RenameProvider(T provider, string newTitle);
+
+        protected virtual T GetProviderInfo(int linkId)
+        {
+            var dbDao = DaoFactory.ProviderDao;
+            try
+            {
+                return dbDao.GetProviderInfo(linkId) as T;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new ArgumentException("Provider id not found or you have no access");
+            }
+        }
+
+        public void Dispose()
+        {
+            //TODO
+            //throw new NotImplementedException();
+        }
+    }
+
+    internal interface IThirdPartyProviderDao<T> where T : class, IProviderInfo
+    {
+        void Init(BaseProviderInfo<T> t1, RegexDaoSelectorBase<T> selectorBase);
     }
 }

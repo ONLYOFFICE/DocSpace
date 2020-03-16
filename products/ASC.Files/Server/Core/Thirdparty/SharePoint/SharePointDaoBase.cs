@@ -33,6 +33,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Security.Cryptography;
 using ASC.Web.Studio.Core;
 
@@ -42,10 +43,10 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
-    internal class SharePointDaoBase
+    internal class SharePointDaoBase : IThirdPartyProviderDao<SharePointProviderInfo>
     {
         public SharePointProviderInfo ProviderInfo { get; private set; }
-        public SharePointDaoSelector SharePointDaoSelector { get; private set; }
+        public RegexDaoSelectorBase<SharePointProviderInfo> SharePointDaoSelector { get; private set; }
 
         public SharePointDaoBase(
                 IServiceProvider serviceProvider,
@@ -63,9 +64,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             SetupInfo = setupInfo;
         }
 
-        public void Init(SharePointProviderInfo sharePointInfo, SharePointDaoSelector sharePointDaoSelector)
+        public void Init(BaseProviderInfo<SharePointProviderInfo> sharePointInfo, RegexDaoSelectorBase<SharePointProviderInfo> sharePointDaoSelector)
         {
-            ProviderInfo = sharePointInfo;
+            ProviderInfo = sharePointInfo.ProviderInfo;
             SharePointDaoSelector = sharePointDaoSelector;
         }
 

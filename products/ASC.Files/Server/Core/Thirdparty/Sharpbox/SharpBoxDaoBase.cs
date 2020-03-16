@@ -41,6 +41,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Thirdparty;
 using ASC.Security.Cryptography;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
@@ -51,7 +52,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
-    internal abstract class SharpBoxDaoBase : IDisposable
+    internal abstract class SharpBoxDaoBase : IThirdPartyProviderDao<SharpBoxProviderInfo>
     {
         protected class ErrorEntry : ICloudDirectoryEntry
         {
@@ -168,16 +169,11 @@ namespace ASC.Files.Thirdparty.Sharpbox
             Log = monitor.CurrentValue;
         }
 
-        public void Init(SharpBoxDaoSelector.SharpBoxInfo sharpBoxInfo, SharpBoxDaoSelector sharpBoxDaoSelector)
+        public void Init(BaseProviderInfo<SharpBoxProviderInfo> sharpBoxInfo, RegexDaoSelectorBase<SharpBoxProviderInfo> sharpBoxDaoSelector)
         {
-            SharpBoxProviderInfo = sharpBoxInfo.SharpBoxProviderInfo;
+            SharpBoxProviderInfo = sharpBoxInfo.ProviderInfo;
             PathPrefix = sharpBoxInfo.PathPrefix;
             SharpBoxDaoSelector = sharpBoxDaoSelector;
-        }
-
-        public void Dispose()
-        {
-            SharpBoxProviderInfo.Dispose();
         }
 
         protected string MappingID(string id, bool saveIfNotExist)
@@ -274,7 +270,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
         }
 
-        protected SharpBoxDaoSelector SharpBoxDaoSelector;
+        protected RegexDaoSelectorBase<SharpBoxProviderInfo> SharpBoxDaoSelector;
         public SharpBoxProviderInfo SharpBoxProviderInfo { get; set; }
         public string PathPrefix { get; private set; }
         public IServiceProvider ServiceProvider { get; }

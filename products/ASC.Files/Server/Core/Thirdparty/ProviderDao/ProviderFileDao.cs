@@ -40,7 +40,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
-        public ProviderFileDao(IServiceProvider serviceProvider,
+        public ProviderFileDao(
+            IServiceProvider serviceProvider,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             SetupInfo setupInfo,

@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -35,93 +34,34 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Box
 {
-    internal class BoxDaoSelector : RegexDaoSelectorBase<string>
+    internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IDaoFactory DaoFactory { get; }
-
-        internal class BoxInfo
-        {
-            public BoxProviderInfo BoxProviderInfo { get; set; }
-
-            public string Path { get; set; }
-            public string PathPrefix { get; set; }
-        }
+        protected internal override string Name { get => "Box"; }
+        protected internal override string Id { get => "box"; }
 
         public BoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-            : base(new Regex(@"^box-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
+            : base(serviceProvider, daoFactory)
         {
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
         }
 
-        public override IFileDao<string> GetFileDao(string id)
+        public IFileDao<string> GetFileDao(string id)
         {
-            var res = ServiceProvider.GetService<BoxFileDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFileDao<BoxFileDao>(id);
         }
 
-        public override IFolderDao<string> GetFolderDao(string id)
+        public IFolderDao<string> GetFolderDao(string id)
         {
-            var res = ServiceProvider.GetService<BoxFolderDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFolderDao<BoxFolderDao>(id);
         }
 
-        public override ITagDao<string> GetTagDao(string id)
+        public ITagDao<string> GetTagDao(string id)
         {
-            var res = ServiceProvider.GetService<BoxTagDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetTagDao<BoxTagDao>(id);
         }
 
-        public override ISecurityDao<string> GetSecurityDao(string id)
+        public ISecurityDao<string> GetSecurityDao(string id)
         {
-            var res = ServiceProvider.GetService<BoxSecurityDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
-        }
-
-        public override string ConvertId(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["path"].Value.Replace('|', '/');
-                }
-                throw new ArgumentException("Id is not a Box id");
-            }
-            return base.ConvertId(null);
-        }
-
-        private BoxInfo GetInfo(string objectId)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            var id = objectId;
-            var match = Selector.Match(id);
-            if (match.Success)
-            {
-                var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
-
-                return new BoxInfo
-                {
-                    Path = match.Groups["path"].Value,
-                    BoxProviderInfo = providerInfo,
-                    PathPrefix = "box-" + match.Groups["id"].Value
-                };
-            }
-            throw new ArgumentException("Id is not a Box id");
+            return base.GetSecurityDao<BoxSecurityDao>(id);
         }
 
         public override string GetIdCode(string id)
@@ -137,23 +77,7 @@ namespace ASC.Files.Thirdparty.Box
             return base.GetIdCode(id);
         }
 
-        private BoxProviderInfo GetProviderInfo(int linkId)
-        {
-            BoxProviderInfo info;
-
-            var dbDao = DaoFactory.ProviderDao;
-            try
-            {
-                info = (BoxProviderInfo)dbDao.GetProviderInfo(linkId);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new ArgumentException("Provider id not found or you have no access");
-            }
-            return info;
-        }
-
-        public void RenameProvider(BoxProviderInfo boxProviderInfo, string newTitle)
+        public override void RenameProvider(BoxProviderInfo boxProviderInfo, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
             dbDao.UpdateProviderInfo(boxProviderInfo.ID, newTitle, null, boxProviderInfo.RootFolderType);

@@ -36,6 +36,19 @@ namespace ASC.Files.Thirdparty
         IFolderDao<string> GetFolderDao(string id);
         ISecurityDao<string> GetSecurityDao(string id);
         ITagDao<string> GetTagDao(string id);
+
+        string ConvertId(string id);
+        string GetIdCode(string id);
+    }
+
+    internal interface IDaoSelector<T> where T : class, IProviderInfo
+    {
+        bool IsMatch(string id);
+        IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>, IThirdPartyProviderDao<T>;
+        IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>, IThirdPartyProviderDao<T>;
+        ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ISecurityDao<string>, IThirdPartyProviderDao<T>;
+        ITagDao<string> GetTagDao<T1>(string id) where T1 : ITagDao<string>, IThirdPartyProviderDao<T>;
+
         string ConvertId(string id);
         string GetIdCode(string id);
     }

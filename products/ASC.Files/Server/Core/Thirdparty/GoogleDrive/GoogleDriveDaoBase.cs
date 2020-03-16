@@ -38,6 +38,7 @@ using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Files.Core.Thirdparty;
 using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
@@ -50,9 +51,9 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    internal abstract class GoogleDriveDaoBase
+    internal abstract class GoogleDriveDaoBase : IThirdPartyProviderDao<GoogleDriveProviderInfo>
     {
-        public GoogleDriveDaoSelector GoogleDriveDaoSelector { get; set; }
+        public RegexDaoSelectorBase<GoogleDriveProviderInfo> GoogleDriveDaoSelector { get; set; }
 
         public int TenantID { get; set; }
         public GoogleDriveProviderInfo GoogleDriveProviderInfo { get; set; }
@@ -82,9 +83,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             FileUtility = fileUtility;
         }
 
-        public void Init(GoogleDriveDaoSelector.GoogleDriveInfo googleDriveInfo, GoogleDriveDaoSelector googleDriveDaoSelector)
+        public void Init(BaseProviderInfo<GoogleDriveProviderInfo> googleDriveInfo, RegexDaoSelectorBase<GoogleDriveProviderInfo> googleDriveDaoSelector)
         {
-            GoogleDriveProviderInfo = googleDriveInfo.GoogleDriveProviderInfo;
+            GoogleDriveProviderInfo = googleDriveInfo.ProviderInfo;
             PathPrefix = googleDriveInfo.PathPrefix;
             GoogleDriveDaoSelector = googleDriveDaoSelector;
         }

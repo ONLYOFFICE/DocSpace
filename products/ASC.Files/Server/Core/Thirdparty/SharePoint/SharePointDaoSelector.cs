@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -35,52 +34,33 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
-    internal class SharePointDaoSelector : RegexDaoSelectorBase<string>
+    internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IDaoFactory DaoFactory { get; }
-
+        protected internal override string Name { get => "sharepoint"; }
+        protected internal override string Id { get => "spoint"; }
         public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-            : base(new Regex(@"^spoint-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
+            : base(serviceProvider, daoFactory)
         {
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
         }
 
-        public override IFileDao<string> GetFileDao(string id)
+        public IFileDao<string> GetFileDao(string id)
         {
-            var res = ServiceProvider.GetService<SharePointFileDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFileDao<SharePointFileDao>(id);
         }
 
-        public override IFolderDao<string> GetFolderDao(string id)
+        public IFolderDao<string> GetFolderDao(string id)
         {
-            var res = ServiceProvider.GetService<SharePointFolderDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFolderDao<SharePointFolderDao>(id);
         }
 
-        public override ITagDao<string> GetTagDao(string id)
+        public ITagDao<string> GetTagDao(string id)
         {
-            var res = ServiceProvider.GetService<SharePointTagDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetTagDao<SharePointTagDao>(id);
         }
 
-        public override ISecurityDao<string> GetSecurityDao(string id)
+        public ISecurityDao<string> GetSecurityDao(string id)
         {
-            var res = ServiceProvider.GetService<SharePointSecurityDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetSecurityDao<SharePointSecurityDao>(id);
         }
 
         public override string ConvertId(string id)
@@ -90,23 +70,11 @@ namespace ASC.Files.Thirdparty.SharePoint
                 var match = Selector.Match(id);
                 if (match.Success)
                 {
-                    return GetInfo(id).SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
+                    return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
                 }
                 throw new ArgumentException("Id is not a sharepoint id");
             }
             return base.ConvertId(null);
-        }
-
-        private SharePointProviderInfo GetInfo(string objectId)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            var id = objectId;
-            var match = Selector.Match(id);
-            if (match.Success)
-            {
-                return GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
-            }
-            throw new ArgumentException("Id is not a sharepoint id");
         }
 
         public override string GetIdCode(string id)
@@ -122,24 +90,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             return base.GetIdCode(id);
         }
 
-        private SharePointProviderInfo GetProviderInfo(int linkId)
-        {
-            SharePointProviderInfo info;
-
-            var dbDao = DaoFactory.ProviderDao;
-
-            try
-            {
-                info = (SharePointProviderInfo)dbDao.GetProviderInfo(linkId);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new ArgumentException("Provider id not found or you have no access");
-            }
-            return info;
-        }
-
-        public void RenameProvider(SharePointProviderInfo sharePointProviderInfo, string newTitle)
+        public override void RenameProvider(SharePointProviderInfo sharePointProviderInfo, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
             dbDao.UpdateProviderInfo(sharePointProviderInfo.ID, newTitle, null, sharePointProviderInfo.RootFolderType);

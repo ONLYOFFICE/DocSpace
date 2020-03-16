@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -35,93 +34,34 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    internal class OneDriveDaoSelector : RegexDaoSelectorBase<string>
+    internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IDaoFactory DaoFactory { get; }
-
-        internal class OneDriveInfo
-        {
-            public OneDriveProviderInfo OneDriveProviderInfo { get; set; }
-
-            public string Path { get; set; }
-            public string PathPrefix { get; set; }
-        }
+        protected internal override string Name { get => "OneDrive"; }
+        protected internal override string Id { get => "onedrive"; }
 
         public OneDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-            : base(new Regex(@"^onedrive-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
+            : base(serviceProvider, daoFactory)
         {
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
         }
 
-        public override IFileDao<string> GetFileDao(string id)
+        public IFileDao<string> GetFileDao(string id)
         {
-            var res = ServiceProvider.GetService<OneDriveFileDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFileDao<OneDriveFileDao>(id);
         }
 
-        public override IFolderDao<string> GetFolderDao(string id)
+        public IFolderDao<string> GetFolderDao(string id)
         {
-            var res = ServiceProvider.GetService<OneDriveFolderDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFolderDao<OneDriveFolderDao>(id);
         }
 
-        public override ITagDao<string> GetTagDao(string id)
+        public ITagDao<string> GetTagDao(string id)
         {
-            var res = ServiceProvider.GetService<OneDriveTagDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetTagDao<OneDriveTagDao>(id);
         }
 
-        public override ISecurityDao<string> GetSecurityDao(string id)
+        public ISecurityDao<string> GetSecurityDao(string id)
         {
-            var res = ServiceProvider.GetService<OneDriveSecurityDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
-        }
-
-        public override string ConvertId(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["path"].Value.Replace('|', '/');
-                }
-                throw new ArgumentException("Id is not a OneDrive id");
-            }
-            return base.ConvertId(null);
-        }
-
-        private OneDriveInfo GetInfo(string objectId)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            var id = objectId;
-            var match = Selector.Match(id);
-            if (match.Success)
-            {
-                var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
-
-                return new OneDriveInfo
-                {
-                    Path = match.Groups["path"].Value,
-                    OneDriveProviderInfo = providerInfo,
-                    PathPrefix = "onedrive-" + match.Groups["id"].Value
-                };
-            }
-            throw new ArgumentException("Id is not a OneDrive id");
+            return base.GetSecurityDao<OneDriveSecurityDao>(id);
         }
 
         public override string GetIdCode(string id)
@@ -137,24 +77,8 @@ namespace ASC.Files.Thirdparty.OneDrive
             return base.GetIdCode(id);
         }
 
-        private OneDriveProviderInfo GetProviderInfo(int linkId)
-        {
-            OneDriveProviderInfo info;
 
-            var dbDao = DaoFactory.ProviderDao;
-
-            try
-            {
-                info = (OneDriveProviderInfo)dbDao.GetProviderInfo(linkId);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new ArgumentException("Provider id not found or you have no access");
-            }
-            return info;
-        }
-
-        public void RenameProvider(OneDriveProviderInfo onedriveProviderInfo, string newTitle)
+        public override void RenameProvider(OneDriveProviderInfo onedriveProviderInfo, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
             dbDao.UpdateProviderInfo(onedriveProviderInfo.ID, newTitle, null, onedriveProviderInfo.RootFolderType);

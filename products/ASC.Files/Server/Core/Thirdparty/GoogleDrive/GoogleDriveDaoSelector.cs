@@ -25,7 +25,6 @@
 
 
 using System;
-using System.Text.RegularExpressions;
 
 using ASC.Common;
 using ASC.Files.Core;
@@ -35,93 +34,33 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<string>
+    internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProviderInfo>, IDaoSelector
     {
-        public IServiceProvider ServiceProvider { get; }
-        public IDaoFactory DaoFactory { get; }
-
-        internal class GoogleDriveInfo
-        {
-            public GoogleDriveProviderInfo GoogleDriveProviderInfo { get; set; }
-
-            public string Path { get; set; }
-            public string PathPrefix { get; set; }
-        }
-
+        protected internal override string Name { get => "GoogleDrive"; }
+        protected internal override string Id { get => "drive"; }
         public GoogleDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-            : base(new Regex(@"^drive-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled))
+            : base(serviceProvider, daoFactory)
         {
-            ServiceProvider = serviceProvider;
-            DaoFactory = daoFactory;
         }
 
-        public override IFileDao<string> GetFileDao(string id)
+        public IFileDao<string> GetFileDao(string id)
         {
-            var res = ServiceProvider.GetService<GoogleDriveFileDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFileDao<GoogleDriveFileDao>(id);
         }
 
-        public override IFolderDao<string> GetFolderDao(string id)
+        public IFolderDao<string> GetFolderDao(string id)
         {
-            var res = ServiceProvider.GetService<GoogleDriveFolderDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetFolderDao<GoogleDriveFolderDao>(id);
         }
 
-        public override ITagDao<string> GetTagDao(string id)
+        public ITagDao<string> GetTagDao(string id)
         {
-            var res = ServiceProvider.GetService<GoogleDriveTagDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
+            return base.GetTagDao<GoogleDriveTagDao>(id);
         }
 
-        public override ISecurityDao<string> GetSecurityDao(string id)
+        public ISecurityDao<string> GetSecurityDao(string id)
         {
-            var res = ServiceProvider.GetService<GoogleDriveSecurityDao>();
-
-            res.Init(GetInfo(id), this);
-
-            return res;
-        }
-
-        public override string ConvertId(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["path"].Value.Replace('|', '/');
-                }
-                throw new ArgumentException("Id is not a GoogleDrive id");
-            }
-            return base.ConvertId(null);
-        }
-
-        private GoogleDriveInfo GetInfo(string objectId)
-        {
-            if (objectId == null) throw new ArgumentNullException("objectId");
-            var id = objectId;
-            var match = Selector.Match(id);
-            if (match.Success)
-            {
-                var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
-
-                return new GoogleDriveInfo
-                {
-                    Path = match.Groups["path"].Value,
-                    GoogleDriveProviderInfo = providerInfo,
-                    PathPrefix = "drive-" + match.Groups["id"].Value
-                };
-            }
-            throw new ArgumentException("Id is not a GoogleDrive id");
+            return base.GetSecurityDao<GoogleDriveSecurityDao>(id);
         }
 
         public override string GetIdCode(string id)
@@ -137,24 +76,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return base.GetIdCode(id);
         }
 
-        private GoogleDriveProviderInfo GetProviderInfo(int linkId)
-        {
-            GoogleDriveProviderInfo info;
-
-            var dbDao = DaoFactory.ProviderDao;
-
-            try
-            {
-                info = (GoogleDriveProviderInfo)dbDao.GetProviderInfo(linkId);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new ArgumentException("Provider id not found or you have no access");
-            }
-            return info;
-        }
-
-        public void RenameProvider(GoogleDriveProviderInfo googleDriveProviderInfo, string newTitle)
+        public override void RenameProvider(GoogleDriveProviderInfo googleDriveProviderInfo, string newTitle)
         {
             var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
             dbDao.UpdateProviderInfo(googleDriveProviderInfo.ID, newTitle, null, googleDriveProviderInfo.RootFolderType);
