@@ -44,7 +44,13 @@ export const canWebEdit = fileExst => {
 }
 
 export const canConvert = fileExst => {
-  const convertedDocs = ['.pptm','.ppt','.ppsm','.pps','.potx','.potm','.pot','.odp','.fodp','.otp','.xlsm','.xls','.xltx','.xltm','.xlt','.ods','.fods','.ots','.docm','.doc','.dotx','.dotm','.dot','.odt','.fodt','.ott','.rtf'];
+  const convertedDocs = ['.pptm', '.ppt', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.rtf'];
   const result = convertedDocs.findIndex(item => item === fileExst);
   return result === -1 ? false : true;
+}
+
+export const getTitleWithoutExst = item => {
+  return item.fileExst
+    ? item.title.split('.').slice(0, -1).join('.')
+    : item.title;
 }
