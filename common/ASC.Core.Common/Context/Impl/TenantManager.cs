@@ -102,6 +102,8 @@ namespace ASC.Core
         internal CoreBaseSettings CoreBaseSettings { get; set; }
         internal CoreSettings CoreSettings { get; set; }
 
+        public Tenant CurrentTenant { get; set; }
+
         static TenantManager()
         {
             thisCompAddresses.Add("localhost");
@@ -215,6 +217,11 @@ namespace ASC.Core
         public Tenant GetCurrentTenant(bool throwIfNotFound, HttpContext context)
         {
             Tenant tenant = null;
+            if (CurrentTenant != null)
+            {
+                return CurrentTenant;
+            }
+
             if (context != null)
             {
                 tenant = context.Items[CURRENT_TENANT] as Tenant;
@@ -249,7 +256,7 @@ namespace ASC.Core
         {
             if (tenant != null)
             {
-                CallContext.SetData(CURRENT_TENANT, tenant);
+                CurrentTenant = tenant;
                 if (HttpContext != null)
                 {
                     HttpContext.Items[CURRENT_TENANT] = tenant;
