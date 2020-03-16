@@ -29,8 +29,7 @@ class PureHome extends React.Component {
       isHeaderVisible: false,
       isHeaderIndeterminate: false,
       isHeaderChecked: false,
-      isLoading: false,
-      isCreating: ''
+      isLoading: false
     };
   }
 
@@ -94,13 +93,8 @@ class PureHome extends React.Component {
     this.setState({ isLoading: status });
   };
 
-  onCreate = status => {
-    this.setState({ isCreating: status });
-  }
-
   render() {
     const {
-      isCreating,
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -130,9 +124,7 @@ class PureHome extends React.Component {
 
           articleHeaderContent={<ArticleHeaderContent />}
           articleMainButtonContent={
-            <ArticleMainButtonContent
-              onCreate={this.onCreate}
-            />
+            <ArticleMainButtonContent/>
           }
           articleBodyContent={<ArticleBodyContent />}
           sectionHeaderContent={
@@ -144,14 +136,11 @@ class PureHome extends React.Component {
               onSelect={this.onSectionHeaderContentSelect}
               onClose={this.onClose}
               onLoading={this.onLoading}
-              onCreate={this.onCreate}
             />
           }
           sectionFilterContent={<SectionFilterContent onLoading={this.onLoading} />}
           sectionBodyContent={
             <SectionBodyContent
-              onCreate={this.onCreate}
-              isCreating={isCreating}
               selected={selected}
               onLoading={this.onLoading}
               onChange={this.onRowChange}

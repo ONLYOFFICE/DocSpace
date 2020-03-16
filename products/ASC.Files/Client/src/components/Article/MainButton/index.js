@@ -8,6 +8,7 @@ import {
   toastr
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from 'react-i18next';
+import { setAction } from '../../../store/files/actions';
 import i18n from '../i18n';
 import { store, utils } from 'asc-web-common';
 const { changeLanguage } = utils;
@@ -16,7 +17,12 @@ const { isAdmin } = store.auth.selectors;
 class PureArticleMainButtonContent extends React.Component {
 
   onCreate = (format) => {
-    this.props.onCreate(format);
+    this.props.setAction(
+      {
+        type: 'create',
+        exst: format,
+        tempId: -1
+      });
   }
 
   render() {
@@ -49,7 +55,7 @@ class PureArticleMainButtonContent extends React.Component {
             <DropDownItem
               icon="CatalogFolderIcon"
               label={t('NewFolder')}
-              onClick={this.onCreate.bind(this, 'folder')}
+              onClick={this.onCreate}
             />
             <DropDownItem isSeparator />
             <DropDownItem
@@ -85,4 +91,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(ArticleMainButtonContent));
+export default connect(mapStateToProps, { setAction })(withRouter(ArticleMainButtonContent));

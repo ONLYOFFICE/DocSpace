@@ -7,13 +7,12 @@ import {
   Row,
   toastr,
   Icons,
-  RowContainer,
-  Loader
+  RowContainer
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import { api } from 'asc-web-common';
-import { fetchFiles, deleteFile, deleteFolder, fetchFolder } from '../../../../../store/files/actions';
+import { fetchFiles, deleteFile, deleteFolder, fetchFolder, setAction } from '../../../../../store/files/actions';
 import store from "../../../../../store/store";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import config from "../../../../../../package.json";
@@ -21,14 +20,11 @@ import config from "../../../../../../package.json";
 const { FilesFilter } = api;
 
 class SectionBodyContent extends React.PureComponent {
-
   constructor(props) {
     super(props);
 
     this.state = {
-      editingId: -1,
-      isEdit: false,
-      isCreating: ''
+      editingId: null
     };
   }
 
@@ -54,42 +50,26 @@ class SectionBodyContent extends React.PureComponent {
     // }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.isCreating !== prevProps.isCreating) {
-      let tempId = this.state.editingId;
-
-      if (this.props.isCreating !== '') {
-        tempId = -2;
-      }
-
-      this.setState({
-        editingId: tempId,
-        isCreating: this.props.isCreating
-      });
-    }
-  }
-
   onClickRename = (itemId) => {
-    this.setState({
-      editingId: itemId,
-      isEdit: true
-    });
+    this.setState({ editingId: itemId }, () => {
+      this.props.setAction({ type: 'rename', tempId: itemId });
+    })
   };
 
   onEditComplete = () => {
-    const { folderId, onCreate } = this.props;
+    const { folderId, action } = this.props;
 
-    onCreate(false);
-
-    if (this.state.isCreating !== '') {
+    if (action.type === 'create') {
       fetchFolder(folderId, store.dispatch)
     }
 
-    this.setState({
-      editingId: -1,
-      isEdit: false,
-      isCreating: ''
-    });
+    this.setState({ editingId: null }, () => {
+      this.props.setAction({
+        type: null,
+        exst: null,
+        tempId: null
+      });
+    })
   }
 
   onClickDelete = (item) => {
@@ -173,17 +153,17 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId, folderId, settings } = this.props;
-    const { editingId, isEdit, isCreating } = this.state;
+    const { files, folders, viewer, parentId, folderId, settings, action } = this.props;
+    const { editingId } = this.state;
 
     let items = [...folders, ...files];
 
-    if (isCreating !== '') {
+    if (action && action.type === 'create') {
       items.unshift({
-        id: -2,
+        id: -1,
         title: '',
         parentId: folderId,
-        fileExst: isCreating
+        fileExst: action.exst
       })
     }
 
@@ -191,16 +171,14 @@ class SectionBodyContent extends React.PureComponent {
       <RowContainer useReactWindow={false}>
         {items.map(item => {
           const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
-          const contextOptionsProps = !contextOptions.length || item.id === -2
+          const contextOptionsProps = !contextOptions.length || action.type
             ? {}
             : { contextOptions };
           const checked = false; //isUserSelected(selection, user.id);
-          const checkedProps = /* isAdmin(viewer) */ item.id !== -2 && true ? { checked } : {};
-          const element = (isEdit || isCreating) && (item.id === editingId || item.id === -2)
-            ? <Loader type='oval' color="black" size='24px' label="Editing..." />
-            : item.fileExst
-              ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
-              : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
+          const checkedProps = /* isAdmin(viewer) */ action.type && (editingId === item.id || item.id === -1) ? {} : { checked };
+          const element = item.fileExst
+            ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
+            : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
 
           return (
             <Row
@@ -213,7 +191,7 @@ class SectionBodyContent extends React.PureComponent {
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} editingId={editingId} culture={settings.culture} onEditComplete={this.onEditComplete} />
+              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete} />
             </Row>
           );
         })}
@@ -230,19 +208,20 @@ SectionBodyContent.defaultProps = {
 
 const mapStateToProps = state => {
   return {
-    selection: state.files.selection,
-    selected: state.files.selected,
+    action: state.files.action,
     files: state.files.files,
-    folders: state.files.folders,
-    viewer: state.auth.user,
-    settings: state.auth.settings,
     filter: state.files.filter,
+    folderId: state.files.selectedFolder.id,
+    folders: state.files.folders,
     parentId: state.files.selectedFolder.parentId,
-    folderId: state.files.selectedFolder.id
+    selected: state.files.selected,
+    selection: state.files.selection,
+    settings: state.auth.settings,
+    viewer: state.auth.user
   };
 };
 
 export default connect(
   mapStateToProps,
-  { fetchFiles, deleteFile, deleteFolder }
+  { fetchFiles, deleteFile, deleteFolder, setAction }
 )(withRouter(withTranslation()(SectionBodyContent)));
