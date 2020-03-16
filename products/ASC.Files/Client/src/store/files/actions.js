@@ -1,13 +1,13 @@
 import { api, constants, history } from "asc-web-common";
 import {
+  AUTHOR_TYPE,
   FILTER_TYPE,
+  PAGE_COUNT,
+  PAGE,
   SEARCH_TYPE,
   SEARCH,
   SORT_BY,
-  SORT_ORDER,
-  PAGE,
-  PAGE_COUNT,
-  AUTHOR_TYPE
+  SORT_ORDER
 } from "../../helpers/constants";
 import config from "../../../package.json";
 
@@ -24,6 +24,7 @@ export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
 export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
 export const SET_FILES_FILTER = "SET_FILES_FILTER";
 export const SET_FILTER = "SET_FILTER";
+export const SET_ACTION = "SET_ACTION";
 
 export function setFile(file) {
   return {
@@ -64,6 +65,13 @@ export function setSelected(selected) {
   return {
     type: SET_SELECTED,
     selected
+  };
+}
+
+export function setAction(action) {
+  return {
+    type: SET_ACTION,
+    action
   };
 }
 
