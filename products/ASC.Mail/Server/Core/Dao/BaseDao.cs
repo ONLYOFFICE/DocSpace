@@ -24,12 +24,6 @@
 */
 
 
-//using System.IO;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Extensions;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -67,20 +61,5 @@ namespace ASC.Mail.Core.Dao
             SecurityContext = securityContext;
             MailDb = dbContext.Get("mail");
         }
-
-        //protected SqlQuery Query(string alias = null)
-        //{
-        //    if (!Table.OrderedColumnCollection.Any())
-        //        throw new InvalidDataException("Table.OrderedColumnCollection is null or empty");
-
-        //    if (string.IsNullOrEmpty(alias))
-        //    {
-        //        return new SqlQuery(Table.Name).Select(Table.OrderedColumnCollection.ToArray());
-        //    }
-
-        //    return
-        //        new SqlQuery(Table.Name.Alias(alias)).Select(
-        //            Table.OrderedColumnCollection.Select(c => c.Prefix(alias)).ToArray());
-        //}
     }
 }
