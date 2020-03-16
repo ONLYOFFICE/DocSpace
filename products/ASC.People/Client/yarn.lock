@@ -1951,7 +1951,7 @@ asap@~2.0.6:
   integrity sha1-5QNHYR1+aQlDIIu9r+vLwvuGbUY=
 
 "asc-web-common@file:../../../packages/asc-web-common":
-  version "1.0.92"
+  version "1.0.93"
   dependencies:
     axios "^0.19.1"
     faker "^4.1.0"
@@ -1960,7 +1960,7 @@ asap@~2.0.6:
     react-window-infinite-loader "^1.0.5"
 
 "asc-web-components@file:../../../packages/asc-web-components":
-  version "1.0.361"
+  version "1.0.362"
   dependencies:
     email-addresses "^3.1.0"
     html-to-react "^1.4.2"
