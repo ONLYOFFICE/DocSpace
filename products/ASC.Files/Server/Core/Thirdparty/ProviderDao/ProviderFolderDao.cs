@@ -348,6 +348,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         public static DIHelper AddProviderFolderDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
+            services.TryAddScoped<Folder<string>>();
 
             return services
                 .AddProviderDaoBaseService();

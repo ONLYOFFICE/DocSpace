@@ -77,6 +77,7 @@ namespace ASC.Files.Core.Data
                 .AddTagDaoService()
                 .AddSecurityDaoService()
                 .AddCachedProviderAccountDaoService()
+                .AddProviderTagDaoService()
                 .AddProviderSecurityDaoService()
                 .AddProviderFileDaoService()
                 .AddProviderFolderDaoService()

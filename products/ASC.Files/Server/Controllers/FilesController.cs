@@ -817,7 +817,7 @@ namespace ASC.Api.Documents
         /// <short>File information</short>
         /// <category>Files</category>
         /// <returns>File info</returns>
-        [Read("file/{fileId}")]
+        [Read("file/{fileId}", DisableFormat = true)]
         public FileWrapper<string> GetFileInfo(string fileId, int version = -1)
         {
             var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");

@@ -475,6 +475,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public static DIHelper AddProviderFileDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
+            services.TryAddScoped<File<string>>();
 
             return services
                 .AddProviderDaoBaseService();
