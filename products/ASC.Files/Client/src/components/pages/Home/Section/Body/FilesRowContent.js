@@ -116,7 +116,7 @@ class FilesRowContent extends React.PureComponent {
   getStatusByDate = () => {
     const { culture, t, item } = this.props;
     const { created, updated, version, fileExst } = item;
-    
+
     const title = version > 1 ? t("TitleModified") : fileExst ? t("TitleUploaded") : t("TitleCreated");
     const date = fileExst ? updated : created;
 
@@ -154,6 +154,11 @@ class FilesRowContent extends React.PureComponent {
     .badges {
       display: flex;
       align-items: center;
+    }
+
+    .share-icon {
+      margin-top: -4px;
+      padding-right: 8px;
     }
     `;
 
@@ -244,6 +249,7 @@ class FilesRowContent extends React.PureComponent {
           isFile={fileExst}
         >
           <Link
+            containerWidth='100%'
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
@@ -254,7 +260,7 @@ class FilesRowContent extends React.PureComponent {
           >
             {titleWithoutExt}
           </Link>
-          <div>
+          <>
             {fileExst &&
               <div className='badges'>
                 <Text
@@ -330,8 +336,9 @@ class FilesRowContent extends React.PureComponent {
                 }
               </div>
             }
-          </div>
+          </>
           <Text
+            containerMinWidth='120px'
             containerWidth='10%'
             as="div"
             color="#333"
@@ -343,7 +350,8 @@ class FilesRowContent extends React.PureComponent {
             {fileOwner}
           </Text>
           <Link
-            containerWidth='12%'
+            containerMinWidth='190px'
+            containerWidth='15%'
             type='page'
             title={updatedDate}
             fontSize='12px'
@@ -355,7 +363,8 @@ class FilesRowContent extends React.PureComponent {
             {updatedDate && updatedDate}
           </Link>
           <Text
-            containerWidth='10%'
+            containerMinWidth='90px'
+            containerWidth='8%'
             as="div"
             color="#333"
             fontSize='12px'
