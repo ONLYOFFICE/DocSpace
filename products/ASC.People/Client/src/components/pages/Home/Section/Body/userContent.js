@@ -25,7 +25,8 @@ const getFormatedGroups = (user, status, selectGroup) => {
     return (
       <Link
         isTextOverflow={true}
-        containerWidth='25%'
+        containerMinWidth='120px'
+        containerWidth='15%'
         type='action'
         title={temp[0].label}
         fontSize='12px'
@@ -39,7 +40,8 @@ const getFormatedGroups = (user, status, selectGroup) => {
     return (
       <LinkWithDropdown
         isTextOverflow={true}
-        containerWidth='25%'
+        containerMinWidth='120px'
+        containerWidth='15%'
         title={temp[0].label}
         fontSize='12px'
         fontWeight={400}
@@ -78,7 +80,7 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
   const sideInfoColor = "#333";
 
   const headDepartmentStyle = {
-    maxWidth: '1fr'
+    width: '28%'
   }
 
   return (
@@ -105,8 +107,9 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
       {title
         ?
         <Text
-          containerWidth='30%'
-          style={headDepartmentStyle}
+          containerMinWidth='120px'
+          containerWidth='20%'
+          //style={headDepartmentStyle}
           as="div"
           color={sideInfoColor}
           fontSize='12px'
@@ -116,11 +119,16 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
         >
           {title}
         </Text>
-        : <div containerWidth='30%' style={headDepartmentStyle}></div>
+        : <div 
+          containerMinWidth='120px' 
+          containerWidth='20%' 
+          //style={headDepartmentStyle}
+        ></div>
       }
       {groups}
       <Link
-        containerWidth='5%'
+        containerMinWidth='60px' 
+        containerWidth='15%' 
         type='page'
         title={mobilePhone}
         fontSize='12px'
@@ -132,7 +140,8 @@ const UserContent = ({ user, history, settings, selectGroup }) => {
         {mobilePhone}
       </Link>
       <Link
-        containerWidth='15%'
+        containerMinWidth='140px' 
+        containerWidth='15%' 
         type='page'
         title={email}
         fontSize='12px'
