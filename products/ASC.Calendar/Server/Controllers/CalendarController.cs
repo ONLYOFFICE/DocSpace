@@ -626,7 +626,6 @@ namespace ASC.Calendar.Controllers
             return GetEventHistoryWrapper(evt);
         }
 
-
         [Create("event")]
         public List<EventWrapper> CreateEvent(EventModel eventModel)
         {
@@ -1540,8 +1539,8 @@ namespace ASC.Calendar.Controllers
                     string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
                     //TODO Caldav
-                  /* var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
-                    updateCaldavThread.Start();*/
+                    /* var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
+                      updateCaldavThread.Start();*/
                 }
                 catch (Exception e)
                 {
@@ -1562,6 +1561,29 @@ namespace ASC.Calendar.Controllers
                                    completed);
 
             return result;
+
+        }
+
+        [Delete("todos/{todoId}")]
+        public void RemoveTodo(int todoId, CreateTodoModel createTodoModel)
+        {
+            var fromCaldavServer = createTodoModel.fromCalDavServer;
+            var todo = DataProvider.GetTodoById(todoId);
+
+            var uid = todo.Uid;
+            string[] split = uid.Split(new Char[] { '@' });
+
+            if (!fromCaldavServer)
+            {
+                var email = UserManager.GetUsers(AuthContext.CurrentAccount.ID).Email;
+                string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
+                var myUri = HttpContext.Request.GetUrlRewriter();
+
+                //TODO Caldav
+                // deleteEvent(split[0], todo.CalendarId, email, currentAccountPaswd, myUri);
+            }
+
+            DataProvider.RemoveTodo(todoId);
 
         }
         private List<TodoWrapper> CreateTodo(int calendarId, string name, string description, DateTime utcStartDate, string uid, DateTime completed)

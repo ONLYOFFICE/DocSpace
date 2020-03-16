@@ -164,18 +164,20 @@ namespace ASC.Calendar.BusinessObjects
 
             return cals;
         }
-        /*
-         public void RemoveTodo(int todoId)
-         {
-             using (var tr = db.BeginTransaction())
-             {
-                 var tenant = TenantManager.GetCurrentTenant().TenantId;
 
-                 db.ExecuteNonQuery(new SqlDelete("calendar_todos").Where("id", todoId).Where("tenant", tenant));
+        public void RemoveTodo(int todoId)
+        {
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+            using var tx = CalendarDb.Database.BeginTransaction();
+            var calendarTodo = CalendarDb.CalendarTodos.Where(r => r.Id == todoId && r.Tenant == tenant).SingleOrDefault();
 
-                 tr.Commit();
-             }
-         }*/
+            if (calendarTodo != null)
+            {
+                CalendarDb.CalendarTodos.Remove(calendarTodo);
+            }
+            CalendarDb.SaveChanges();
+            tx.Commit();
+        }
         public List<Calendar> LoadCalendarsForUser(Guid userId, out int newCalendarsCount)
         {
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
