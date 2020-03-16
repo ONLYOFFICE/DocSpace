@@ -51,15 +51,18 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickRename = (itemId) => {
+    if (this.state.editingId === itemId)
+      return;
+
     this.setState({ editingId: itemId }, () => {
       this.props.setAction({ type: 'rename', tempId: itemId });
-    })
+    });
   };
 
   onEditComplete = () => {
-    const { folderId, action } = this.props;
+    const { folderId, fileAction } = this.props;
 
-    if (action.type === 'create') {
+    if (fileAction.type === 'create') {
       fetchFolder(folderId, store.dispatch)
     }
 
@@ -153,17 +156,17 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId, folderId, settings, action } = this.props;
+    const { files, folders, viewer, parentId, folderId, settings, fileAction } = this.props;
     const { editingId } = this.state;
 
     let items = [...folders, ...files];
 
-    if (action && action.type === 'create') {
+    if (fileAction && fileAction.type === 'create') {
       items.unshift({
         id: -1,
         title: '',
         parentId: folderId,
-        fileExst: action.exst
+        fileExst: fileAction.exst
       })
     }
 
@@ -171,11 +174,11 @@ class SectionBodyContent extends React.PureComponent {
       <RowContainer useReactWindow={false}>
         {items.map(item => {
           const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
-          const contextOptionsProps = !contextOptions.length || action.type
+          const contextOptionsProps = !contextOptions.length || fileAction.type
             ? {}
             : { contextOptions };
           const checked = false; //isUserSelected(selection, user.id);
-          const checkedProps = /* isAdmin(viewer) */ action.type && (editingId === item.id || item.id === -1) ? {} : { checked };
+          const checkedProps = /* isAdmin(viewer) */ fileAction.type && (editingId === item.id || item.id === -1) ? {} : { checked };
           const element = item.fileExst
             ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
             : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
@@ -208,7 +211,7 @@ SectionBodyContent.defaultProps = {
 
 const mapStateToProps = state => {
   return {
-    action: state.files.action,
+    fileAction: state.files.fileAction,
     files: state.files.files,
     filter: state.files.filter,
     folderId: state.files.selectedFolder.id,

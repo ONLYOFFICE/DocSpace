@@ -15,7 +15,7 @@ import { api } from "asc-web-common";
 const { FilesFilter } = api;
 
 const initialState = {
-  action: {
+  fileAction: {
     type: null
   },
   files: null,
@@ -75,7 +75,7 @@ const filesReducer = (state = initialState, action) => {
       });
     case SET_ACTION:
       return Object.assign({}, state, {
-        action: action.action
+        fileAction: action.fileAction
       })
     default:
       return state;
