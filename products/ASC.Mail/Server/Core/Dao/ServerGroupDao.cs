@@ -24,38 +24,32 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Server.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ServerGroupDao : BaseDao, IServerGroupDao
+    public class ServerGroupDao : BaseDao, IServerGroupDao
     {
-        protected static ITable table = new MailTableFactory().Create<ServerMailGroupTable>();
-
-        public ServerGroupDao(IDbManager dbManager, int tenant) 
-            : base(table, dbManager, tenant)
+        public ServerGroupDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public ServerGroup Get(int id)
         {
-            var query = Query()
-                .Where(ServerMailGroupTable.Columns.Tenant, Tenant)
-                .Where(ServerMailGroupTable.Columns.Id, id);
-
-            var group = Db.ExecuteList(query)
-                .ConvertAll(ToServerGroup)
+            var group = MailDb.MailServerMailGroup
+                .Where(g => g.IdTenant == Tenant)
+                .Where(g => g.Id == id)
+                .Select(ToServerGroup)
                 .SingleOrDefault();
 
             return group;
@@ -63,70 +57,73 @@ namespace ASC.Mail.Core.Dao
 
         public List<ServerGroup> GetList()
         {
-            var query = Query()
-                .Where(ServerMailGroupTable.Columns.Tenant, Tenant);
-
-            var groups = Db.ExecuteList(query)
-                .ConvertAll(ToServerGroup);
+            var groups = MailDb.MailServerMailGroup
+                .Where(g => g.IdTenant == Tenant)
+                .Select(ToServerGroup)
+                .ToList();
 
             return groups;
         }
 
         public List<ServerGroup> GetList(int domainId)
         {
-            const string group_alias = "msg";
-            const string address_alias = "msa";
-
-            var query = Query(group_alias)
-                .InnerJoin(ServerAddressTable.TABLE_NAME.Alias(address_alias),
-                    Exp.EqColumns(
-                        ServerMailGroupTable.Columns.AddressId.Prefix(group_alias),
-                        ServerAddressTable.Columns.Id.Prefix(address_alias)
-                        )
-                )
-                .Where(ServerMailGroupTable.Columns.Tenant.Prefix(group_alias), Tenant)
-                .Where(ServerAddressTable.Columns.DomainId.Prefix(address_alias), domainId)
-                .Where(ServerAddressTable.Columns.IsMailGroup.Prefix(address_alias), true);
-
-            var groups = Db.ExecuteList(query)
-                .ConvertAll(ToServerGroup);
+            var groups = MailDb.MailServerMailGroup
+                .Join(MailDb.MailServerAddress, g => g.IdAddress, a => a.Id, 
+                    (g, a) => new { 
+                        Group = g,
+                        Address = a
+                    })
+                .Where(o => o.Group.IdTenant == Tenant)
+                .Where(o => o.Address.IdDomain == domainId && o.Address.IsMailGroup == true)
+                .Select(o => ToServerGroup(o.Group))
+                .ToList();
 
             return groups;
         }
 
         public int Save(ServerGroup @group)
         {
-            var query = new SqlInsert(ServerMailGroupTable.TABLE_NAME, true)
-                .InColumnValue(ServerMailGroupTable.Columns.Id, group.Id)
-                .InColumnValue(ServerMailGroupTable.Columns.Tenant, group.Tenant)
-                .InColumnValue(ServerMailGroupTable.Columns.Address, group.Address)
-                .InColumnValue(ServerMailGroupTable.Columns.AddressId, group.AddressId)
-                .InColumnValue(ServerMailGroupTable.Columns.DateCreated, group.DateCreated)
-                .Identity(0, 0, true);
+            var mailServerGroup = new MailServerMailGroup { 
+                Id = group.Id,
+                IdTenant = group.Tenant,
+                Address = group.Address,
+                IdAddress = group.AddressId,
+                DateCreated = group.DateCreated
+            };
 
-            return Db.ExecuteScalar<int>(query);
+            var entry = MailDb.AddOrUpdate(t => t.MailServerMailGroup, mailServerGroup);
+
+            MailDb.SaveChanges();
+
+            return entry.Id;
         }
 
         public int Delete(int id)
         {
-            var query = new SqlDelete(ServerMailGroupTable.TABLE_NAME)
-                .Where(ServerMailGroupTable.Columns.Id, id);
+            var mailServerGroup = new MailServerMailGroup
+            {
+                Id = id
+            };
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailServerMailGroup.Remove(mailServerGroup);
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
-        protected ServerGroup ToServerGroup(object[] r)
+        protected ServerGroup ToServerGroup(MailServerMailGroup r)
         {
             var group = new ServerGroup
             {
-                Id = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                AddressId = Convert.ToInt32(r[2]),
-                Address = Convert.ToString(r[3]),
-                DateCreated = Convert.ToDateTime(r[4])
+                Id = r.Id,
+                Tenant = r.IdTenant,
+                AddressId = r.IdAddress,
+                Address = r.Address,
+                DateCreated = r.DateCreated
             };
 
             return group;
         }
-    }*/
+    }
 }
