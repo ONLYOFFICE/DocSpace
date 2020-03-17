@@ -169,8 +169,10 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public void Dispose()
         {
-            if (Storage.IsOpened)
+            if (Storage != null && Storage.IsOpened)
+            {
                 Storage.Close();
+            }
         }
     }
 

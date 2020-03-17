@@ -179,7 +179,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public void Dispose()
         {
-            Storage.Close();
+            if (Storage != null && Storage.IsOpened)
+            {
+                Storage.Close();
+            }
         }
     }
 

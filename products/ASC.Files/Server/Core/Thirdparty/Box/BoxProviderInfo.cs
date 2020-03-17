@@ -203,7 +203,10 @@ namespace ASC.Files.Thirdparty.Box
 
         public void Dispose()
         {
-            Storage.Close();
+            if (Storage != null)
+            {
+                Storage.Close();
+            }
         }
     }
 
