@@ -30,102 +30,28 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
+using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
-    internal abstract class BoxDaoBase : IThirdPartyProviderDao<BoxProviderInfo>
+    internal abstract class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>
     {
-        public RegexDaoSelectorBase<BoxProviderInfo> BoxDaoSelector { get; set; }
+        public override string Id { get => "box"; }
 
-        public int TenantID { get; private set; }
-        public BoxProviderInfo BoxProviderInfo { get; set; }
-        public string PathPrefix { get; private set; }
-        public FilesDbContext FilesDbContext { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public SetupInfo SetupInfo { get; }
-
-        public BoxDaoBase(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
+        public BoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            SetupInfo = setupInfo;
-        }
-
-        public void Init(BaseProviderInfo<BoxProviderInfo> boxInfo, RegexDaoSelectorBase<BoxProviderInfo> selectorBase)
-        {
-            BoxProviderInfo = boxInfo.ProviderInfo;
-            PathPrefix = boxInfo.PathPrefix;
-            BoxDaoSelector = selectorBase;
-        }
-
-        public void Dispose()
-        {
-            if (BoxProviderInfo != null)
-            {
-                BoxProviderInfo.Dispose();
-            }
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.StartsWith("box"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                        .Where(r => r.HashId == id)
-                        .Select(r => r.Id)
-                        .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-            return result;
-        }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
         }
 
 
@@ -155,18 +81,16 @@ namespace ASC.Files.Thirdparty.Box
             return MakeId(path);
         }
 
-        protected string MakeId(string path = null)
+        protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix,
-                                 string.IsNullOrEmpty(path) || path == "0"
-                                     ? "" : ("-|" + path.TrimStart('/')));
+            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "0" ? "" : ("-|" + path.TrimStart('/')));
         }
 
         protected string MakeFolderTitle(BoxFolder boxFolder)
         {
             if (boxFolder == null || IsRoot(boxFolder))
             {
-                return BoxProviderInfo.CustomerTitle;
+                return ProviderInfo.CustomerTitle;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(boxFolder.Name);
@@ -176,7 +100,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (boxFile == null || string.IsNullOrEmpty(boxFile.Name))
             {
-                return BoxProviderInfo.ProviderKey;
+                return ProviderInfo.ProviderKey;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(boxFile.Name);
@@ -193,22 +117,13 @@ namespace ASC.Files.Thirdparty.Box
 
             var isRoot = IsRoot(boxFolder);
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetFolder();
 
             folder.ID = MakeId(boxFolder.Id);
             folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(boxFolder));
-            folder.CreateBy = BoxProviderInfo.Owner;
-            folder.CreateOn = isRoot ? BoxProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = BoxProviderInfo.Owner;
-            folder.ModifiedOn = isRoot ? BoxProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
-            folder.ProviderId = BoxProviderInfo.ID;
-            folder.ProviderKey = BoxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = BoxProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = BoxProviderInfo.RootFolderType;
+            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.CreatedAt ?? default);
+            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (boxFolder.ModifiedAt ?? default);
 
-            folder.Shareable = false;
             folder.Title = MakeFolderTitle(boxFolder);
             folder.TotalFiles = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFile) : 0;
             folder.TotalSubFolders = boxFolder.ItemCollection != null ? boxFolder.ItemCollection.Entries.Count(item => item is BoxFolder) : 0;
@@ -230,20 +145,10 @@ namespace ASC.Files.Thirdparty.Box
         private File<string> ToErrorFile(ErrorFile boxFile)
         {
             if (boxFile == null) return null;
-            var file = ServiceProvider.GetService<File<string>>();
 
-            file.ID = MakeId(boxFile.ErrorId);
-            file.CreateBy = BoxProviderInfo.Owner;
-            file.CreateOn = TenantUtil.DateTimeNow();
-            file.ModifiedBy = BoxProviderInfo.Owner;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
-            file.ProviderId = BoxProviderInfo.ID;
-            file.ProviderKey = BoxProviderInfo.ProviderKey;
-            file.RootFolderCreator = BoxProviderInfo.Owner;
-            file.RootFolderId = MakeId();
-            file.RootFolderType = BoxProviderInfo.RootFolderType;
+            var file = GetErrorFile(new ErrorEntry(boxFile.Error, boxFile.ErrorId));
+
             file.Title = MakeFileTitle(boxFile);
-            file.Error = boxFile.Error;
 
             return file;
         }
@@ -252,25 +157,9 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (boxFolder == null) return null;
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetErrorFolder(new ErrorEntry(boxFolder.Error, boxFolder.ErrorId));
 
-            folder.ID = MakeId(boxFolder.ErrorId);
-            folder.ParentFolderID = null;
-            folder.CreateBy = BoxProviderInfo.Owner;
-            folder.CreateOn = TenantUtil.DateTimeNow();
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = BoxProviderInfo.Owner;
-            folder.ModifiedOn = TenantUtil.DateTimeNow();
-            folder.ProviderId = BoxProviderInfo.ID;
-            folder.ProviderKey = BoxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = BoxProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = BoxProviderInfo.RootFolderType;
-            folder.Shareable = false;
             folder.Title = MakeFolderTitle(boxFolder);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
-            folder.Error = boxFolder.Error;
 
             return folder;
         }
@@ -285,26 +174,15 @@ namespace ASC.Files.Thirdparty.Box
                 return ToErrorFile(boxFile as ErrorFile);
             }
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(boxFile.Id);
-            file.Access = FileShare.None;
             file.ContentLength = boxFile.Size.HasValue ? (long)boxFile.Size : 0;
-            file.CreateBy = BoxProviderInfo.Owner;
             file.CreateOn = boxFile.CreatedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.CreatedAt.Value) : default;
-            file.FileStatus = FileStatus.None;
             file.FolderID = MakeId(GetParentFolderId(boxFile));
-            file.ModifiedBy = BoxProviderInfo.Owner;
             file.ModifiedOn = boxFile.ModifiedAt.HasValue ? TenantUtil.DateTimeFromUtc(boxFile.ModifiedAt.Value) : default;
             file.NativeAccessor = boxFile;
-            file.ProviderId = BoxProviderInfo.ID;
-            file.ProviderKey = BoxProviderInfo.ProviderKey;
             file.Title = MakeFileTitle(boxFile);
-            file.RootFolderId = MakeId();
-            file.RootFolderType = BoxProviderInfo.RootFolderType;
-            file.RootFolderCreator = BoxProviderInfo.Owner;
-            file.Shared = false;
-            file.Version = 1;
 
             return file;
         }
@@ -314,12 +192,12 @@ namespace ASC.Files.Thirdparty.Box
             return ToFolder(GetBoxFolder("0"));
         }
 
-        protected BoxFolder GetBoxFolder(object folderId)
+        protected BoxFolder GetBoxFolder(string folderId)
         {
             var boxFolderId = MakeBoxId(folderId);
             try
             {
-                var folder = BoxProviderInfo.GetBoxFolder(boxFolderId);
+                var folder = ProviderInfo.GetBoxFolder(boxFolderId);
                 return folder;
             }
             catch (Exception ex)
@@ -333,7 +211,7 @@ namespace ASC.Files.Thirdparty.Box
             var boxFileId = MakeBoxId(fileId);
             try
             {
-                var file = BoxProviderInfo.GetBoxFile(boxFileId);
+                var file = ProviderInfo.GetBoxFile(boxFileId);
                 return file;
             }
             catch (Exception ex)
@@ -342,15 +220,15 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        protected IEnumerable<string> GetChildren(object folderId)
+        protected IEnumerable<string> GetChildren(string folderId)
         {
             return GetBoxItems(folderId).Select(entry => MakeId(entry.Id));
         }
 
-        protected List<BoxItem> GetBoxItems(object parentId, bool? folder = null)
+        protected List<BoxItem> GetBoxItems(string parentId, bool? folder = null)
         {
             var boxFolderId = MakeBoxId(parentId);
-            var items = BoxProviderInfo.GetBoxItems(boxFolderId);
+            var items = ProviderInfo.GetBoxItems(boxFolderId);
 
             if (folder.HasValue)
             {

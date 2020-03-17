@@ -30,20 +30,24 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     {
-        public BoxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public BoxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -172,11 +176,11 @@ namespace ASC.Files.Thirdparty.Box
 
                 folder.Title = GetAvailableTitle(folder.Title, boxFolderId, IsExist);
 
-                var boxFolder = BoxProviderInfo.Storage.CreateFolder(folder.Title, boxFolderId);
+                var boxFolder = ProviderInfo.Storage.CreateFolder(folder.Title, boxFolderId);
 
-                BoxProviderInfo.CacheReset(boxFolder);
+                ProviderInfo.CacheReset(boxFolder);
                 var parentFolderId = GetParentFolderId(boxFolder);
-                if (parentFolderId != null) BoxProviderInfo.CacheReset(parentFolderId);
+                if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
 
                 return MakeId(boxFolder);
             }
@@ -230,12 +234,12 @@ namespace ASC.Files.Thirdparty.Box
 
             if (!(boxFolder is ErrorFolder))
             {
-                BoxProviderInfo.Storage.DeleteItem(boxFolder);
+                ProviderInfo.Storage.DeleteItem(boxFolder);
             }
 
-            BoxProviderInfo.CacheReset(boxFolder.Id, true);
+            ProviderInfo.CacheReset(boxFolder.Id, true);
             var parentFolderId = GetParentFolderId(boxFolder);
-            if (parentFolderId != null) BoxProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -249,11 +253,11 @@ namespace ASC.Files.Thirdparty.Box
             var fromFolderId = GetParentFolderId(boxFolder);
 
             var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
-            boxFolder = BoxProviderInfo.Storage.MoveFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
+            boxFolder = ProviderInfo.Storage.MoveFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
 
-            BoxProviderInfo.CacheReset(boxFolder.Id, false);
-            BoxProviderInfo.CacheReset(fromFolderId);
-            BoxProviderInfo.CacheReset(toBoxFolder.Id);
+            ProviderInfo.CacheReset(boxFolder.Id, false);
+            ProviderInfo.CacheReset(fromFolderId);
+            ProviderInfo.CacheReset(toBoxFolder.Id);
 
             return MakeId(boxFolder.Id);
         }
@@ -267,11 +271,11 @@ namespace ASC.Files.Thirdparty.Box
             if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
 
             var newTitle = GetAvailableTitle(boxFolder.Name, toBoxFolder.Id, IsExist);
-            var newBoxFolder = BoxProviderInfo.Storage.CopyFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
+            var newBoxFolder = ProviderInfo.Storage.CopyFolder(boxFolder.Id, newTitle, toBoxFolder.Id);
 
-            BoxProviderInfo.CacheReset(newBoxFolder);
-            BoxProviderInfo.CacheReset(newBoxFolder.Id, false);
-            BoxProviderInfo.CacheReset(toBoxFolder.Id);
+            ProviderInfo.CacheReset(newBoxFolder);
+            ProviderInfo.CacheReset(newBoxFolder.Id, false);
+            ProviderInfo.CacheReset(toBoxFolder.Id);
 
             return ToFolder(newBoxFolder);
         }
@@ -289,7 +293,7 @@ namespace ASC.Files.Thirdparty.Box
             if (IsRoot(boxFolder))
             {
                 //It's root folder
-                BoxDaoSelector.RenameProvider(BoxProviderInfo, newTitle);
+                DaoSelector.RenameProvider(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
@@ -297,11 +301,11 @@ namespace ASC.Files.Thirdparty.Box
                 newTitle = GetAvailableTitle(newTitle, parentFolderId, IsExist);
 
                 //rename folder
-                boxFolder = BoxProviderInfo.Storage.RenameFolder(boxFolder.Id, newTitle);
+                boxFolder = ProviderInfo.Storage.RenameFolder(boxFolder.Id, newTitle);
             }
 
-            BoxProviderInfo.CacheReset(boxFolder);
-            if (parentFolderId != null) BoxProviderInfo.CacheReset(parentFolderId);
+            ProviderInfo.CacheReset(boxFolder);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
 
             return MakeId(boxFolder.Id);
         }
@@ -315,7 +319,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             var boxFolderId = MakeBoxId(folderId);
             //note: without cache
-            return BoxProviderInfo.Storage.GetItems(boxFolderId, 1).Count == 0;
+            return ProviderInfo.Storage.GetItems(boxFolderId, 1).Count == 0;
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -335,7 +339,7 @@ namespace ASC.Files.Thirdparty.Box
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = BoxProviderInfo.Storage.GetMaxUploadSize();
+            var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

@@ -28,19 +28,23 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxSecurityDao : BoxDaoBase, ISecurityDao<string>
     {
-        public BoxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public BoxSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 

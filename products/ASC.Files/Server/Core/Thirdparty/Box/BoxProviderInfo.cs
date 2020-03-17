@@ -44,7 +44,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ASC.Files.Thirdparty.Box
 {
     [DebuggerDisplay("{CustomerTitle}")]
-    internal class BoxProviderInfo : IProviderInfo, IDisposable
+    internal class BoxProviderInfo : IProviderInfo
     {
         public OAuth20Token Token { get; set; }
 

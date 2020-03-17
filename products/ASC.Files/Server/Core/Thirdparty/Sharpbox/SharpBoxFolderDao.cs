@@ -42,6 +42,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Resources;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Options;
@@ -50,7 +51,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
-        public SharpBoxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor)
+        public SharpBoxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -61,7 +62,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public Folder<string> GetFolder(string title, string parentId)
         {
-            var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
+            var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
             return ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase)));
         }
 
@@ -77,7 +78,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public List<Folder<string>> GetFolders(string parentId)
         {
-            var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
+            var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
             return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToList();
         }
 
@@ -171,7 +172,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 if (folder.ID != null)
                 {
                     //Create with id
-                    var savedfolder = SharpBoxProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
+                    var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.ID));
                     return MakeId(savedfolder);
                 }
                 if (folder.ParentFolderID != null)
@@ -180,7 +181,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
                     folder.Title = GetAvailableTitle(folder.Title, parentFolder, IsExist);
 
-                    var newFolder = SharpBoxProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
+                    var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
                     return MakeId(newFolder);
                 }
             }
@@ -243,14 +244,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
 
             if (!(folder is ErrorEntry))
-                SharpBoxProviderInfo.Storage.DeleteFileSystemEntry(folder);
+                ProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }
 
         public bool IsExist(string title, ICloudDirectoryEntry folder)
         {
             try
             {
-                return SharpBoxProviderInfo.Storage.GetFileSystemObject(title, folder) != null;
+                return ProviderInfo.Storage.GetFileSystemObject(title, folder) != null;
             }
             catch (ArgumentException)
             {
@@ -270,7 +271,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             var oldFolderId = MakeId(entry);
 
-            if (!SharpBoxProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+            if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
                 throw new Exception("Error while moving");
 
             var newFolderId = MakeId(entry);
@@ -283,7 +284,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var folder = GetFolderById(folderId);
-            if (!SharpBoxProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
+            if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
                 throw new Exception("Error while copying");
             return ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name));
         }
@@ -303,7 +304,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if ("/".Equals(MakePath(folder.ID)))
             {
                 //It's root folder
-                SharpBoxDaoSelector.RenameProvider(SharpBoxProviderInfo, newTitle);
+                DaoSelector.RenameProvider(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
@@ -312,7 +313,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 newTitle = GetAvailableTitle(newTitle, parentFolder, IsExist);
 
                 //rename folder
-                if (SharpBoxProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
+                if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
                 {
                     //Folder data must be already updated by provider
                     //We can't search google folders by title because root can have multiple folders with the same name
@@ -355,8 +356,8 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             var storageMaxUploadSize =
                 chunkedUpload
-                    ? SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
-                    : SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
+                    ? ProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
+                    : ProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
 
             if (storageMaxUploadSize == -1)
                 storageMaxUploadSize = long.MaxValue;

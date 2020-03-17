@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -37,11 +38,13 @@ using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal class GoogleDriveSecurityDao : GoogleDriveDaoBase, ISecurityDao<string>
     {
-        public GoogleDriveSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility)
+        public GoogleDriveSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 

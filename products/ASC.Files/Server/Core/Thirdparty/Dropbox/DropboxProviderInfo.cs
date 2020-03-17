@@ -39,7 +39,7 @@ using Dropbox.Api.Files;
 namespace ASC.Files.Thirdparty.Dropbox
 {
     [DebuggerDisplay("{CustomerTitle}")]
-    internal class DropboxProviderInfo : IProviderInfo, IDisposable
+    internal class DropboxProviderInfo : IProviderInfo
     {
         public OAuth20Token Token { get; set; }
 

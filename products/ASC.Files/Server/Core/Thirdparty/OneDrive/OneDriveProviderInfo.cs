@@ -43,7 +43,7 @@ using Microsoft.OneDrive.Sdk;
 namespace ASC.Files.Thirdparty.OneDrive
 {
     [DebuggerDisplay("{CustomerTitle}")]
-    internal class OneDriveProviderInfo : IProviderInfo, IDisposable
+    internal class OneDriveProviderInfo : IProviderInfo
     {
         public OAuth20Token Token { get; set; }
 

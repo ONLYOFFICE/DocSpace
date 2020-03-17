@@ -36,6 +36,7 @@ using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Thirdparty.Dropbox;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Options;
@@ -44,7 +45,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal class SharpBoxTagDao : SharpBoxDaoBase, ITagDao<string>
     {
-        public SharpBoxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor)
+        public SharpBoxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -72,7 +73,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
-            var folderId = SharpBoxDaoSelector.ConvertId(parentFolder.ID);
+            var folderId = DaoSelector.ConvertId(parentFolder.ID);
 
             var fakeFolderId = parentFolder.ID.ToString();
 

@@ -44,7 +44,7 @@ namespace ASC.Files.Thirdparty
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }
 
-        private Dictionary<string, IThirdPartyProviderDao<T>> Providers { get; set; }
+        private Dictionary<string, ThirdPartyProviderDao<T>> Providers { get; set; }
 
         protected RegexDaoSelectorBase(
             IServiceProvider serviceProvider,
@@ -53,7 +53,7 @@ namespace ASC.Files.Thirdparty
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
             Selector = new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
-            Providers = new Dictionary<string, IThirdPartyProviderDao<T>>();
+            Providers = new Dictionary<string, ThirdPartyProviderDao<T>>();
         }
 
         public virtual string ConvertId(string id)
@@ -93,27 +93,27 @@ namespace ASC.Files.Thirdparty
             return id != null && Selector.IsMatch(id);
         }
 
-        public virtual ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ISecurityDao<string>, IThirdPartyProviderDao<T>
+        public virtual ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>
         {
             return GetDao<T1>(id);
         }
 
-        public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>, IThirdPartyProviderDao<T>
+        public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>
         {
             return GetDao<T1>(id);
         }
 
-        public virtual ITagDao<string> GetTagDao<T1>(string id) where T1 : ITagDao<string>, IThirdPartyProviderDao<T>
+        public virtual ITagDao<string> GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ITagDao<string>
         {
             return GetDao<T1>(id);
         }
 
-        public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>, IThirdPartyProviderDao<T>
+        public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>
         {
             return GetDao<T1>(id);
         }
 
-        private T1 GetDao<T1>(string id) where T1 : IThirdPartyProviderDao<T>
+        private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
         {
             if (Providers.ContainsKey(id)) return (T1)Providers[id];
 

@@ -30,25 +30,22 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
     {
-        public OneDriveFolderDao(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public OneDriveFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -177,11 +174,11 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 folder.Title = GetAvailableTitle(folder.Title, onedriveFolderId, IsExist);
 
-                var onedriveFolder = OneDriveProviderInfo.Storage.CreateFolder(folder.Title, onedriveFolderId);
+                var onedriveFolder = ProviderInfo.Storage.CreateFolder(folder.Title, onedriveFolderId);
 
-                OneDriveProviderInfo.CacheReset(onedriveFolder.Id);
+                ProviderInfo.CacheReset(onedriveFolder.Id);
                 var parentFolderId = GetParentFolderId(onedriveFolder);
-                if (parentFolderId != null) OneDriveProviderInfo.CacheReset(parentFolderId);
+                if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
 
                 return MakeId(onedriveFolder);
             }
@@ -234,11 +231,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
 
             if (!(onedriveFolder is ErrorItem))
-                OneDriveProviderInfo.Storage.DeleteItem(onedriveFolder);
+                ProviderInfo.Storage.DeleteItem(onedriveFolder);
 
-            OneDriveProviderInfo.CacheReset(onedriveFolder.Id);
+            ProviderInfo.CacheReset(onedriveFolder.Id);
             var parentFolderId = GetParentFolderId(onedriveFolder);
-            if (parentFolderId != null) OneDriveProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -252,11 +249,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             var fromFolderId = GetParentFolderId(onedriveFolder);
 
             var newTitle = GetAvailableTitle(onedriveFolder.Name, toOneDriveFolder.Id, IsExist);
-            onedriveFolder = OneDriveProviderInfo.Storage.MoveItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
+            onedriveFolder = ProviderInfo.Storage.MoveItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
 
-            OneDriveProviderInfo.CacheReset(onedriveFolder.Id);
-            OneDriveProviderInfo.CacheReset(fromFolderId);
-            OneDriveProviderInfo.CacheReset(toOneDriveFolder.Id);
+            ProviderInfo.CacheReset(onedriveFolder.Id);
+            ProviderInfo.CacheReset(fromFolderId);
+            ProviderInfo.CacheReset(toOneDriveFolder.Id);
 
             return MakeId(onedriveFolder.Id);
         }
@@ -270,10 +267,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
 
             var newTitle = GetAvailableTitle(onedriveFolder.Name, toOneDriveFolder.Id, IsExist);
-            var newOneDriveFolder = OneDriveProviderInfo.Storage.CopyItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
+            var newOneDriveFolder = ProviderInfo.Storage.CopyItem(onedriveFolder.Id, newTitle, toOneDriveFolder.Id);
 
-            OneDriveProviderInfo.CacheReset(newOneDriveFolder.Id);
-            OneDriveProviderInfo.CacheReset(toOneDriveFolder.Id);
+            ProviderInfo.CacheReset(newOneDriveFolder.Id);
+            ProviderInfo.CacheReset(toOneDriveFolder.Id);
 
             return ToFolder(newOneDriveFolder);
         }
@@ -291,7 +288,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (IsRoot(onedriveFolder))
             {
                 //It's root folder
-                OneDriveDaoSelector.RenameProvider(OneDriveProviderInfo, newTitle);
+                DaoSelector.RenameProvider(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
@@ -299,11 +296,11 @@ namespace ASC.Files.Thirdparty.OneDrive
                 newTitle = GetAvailableTitle(newTitle, parentFolderId, IsExist);
 
                 //rename folder
-                onedriveFolder = OneDriveProviderInfo.Storage.RenameItem(onedriveFolder.Id, newTitle);
+                onedriveFolder = ProviderInfo.Storage.RenameItem(onedriveFolder.Id, newTitle);
             }
 
-            OneDriveProviderInfo.CacheReset(onedriveFolder.Id);
-            if (parentFolderId != null) OneDriveProviderInfo.CacheReset(parentFolderId);
+            ProviderInfo.CacheReset(onedriveFolder.Id);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
 
             return MakeId(onedriveFolder.Id);
         }
@@ -343,7 +340,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = OneDriveProviderInfo.Storage.MaxChunkedUploadFileSize;
+            var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

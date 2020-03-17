@@ -30,104 +30,29 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
+using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
 using Dropbox.Api.Files;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
-    internal abstract class DropboxDaoBase : IThirdPartyProviderDao<DropboxProviderInfo>
+    internal abstract class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>
     {
-        protected RegexDaoSelectorBase<DropboxProviderInfo> DropboxDaoSelector { get; set; }
+        public override string Id { get => "dropbox"; }
 
-        public int TenantID { get; private set; }
-        public DropboxProviderInfo DropboxProviderInfo { get; private set; }
-        public string PathPrefix { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public SetupInfo SetupInfo { get; }
-        public FilesDbContext FilesDbContext { get; }
-
-        public DropboxDaoBase(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
+        public DropboxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            SetupInfo = setupInfo;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
         }
-
-        public void Init(BaseProviderInfo<DropboxProviderInfo> dropboxInfo, RegexDaoSelectorBase<DropboxProviderInfo> dropboxDaoSelector)
-        {
-            DropboxProviderInfo = dropboxInfo.ProviderInfo;
-            PathPrefix = dropboxInfo.PathPrefix;
-            DropboxDaoSelector = dropboxDaoSelector;
-        }
-
-        public void Dispose()
-        {
-            if (DropboxProviderInfo != null)
-            {
-                DropboxProviderInfo.Dispose();
-            }
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.StartsWith("dropbox"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id, HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.HashId == id)
-                    .Select(r => r.Id)
-                    .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-            return result;
-        }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
-        }
-
 
         protected static string GetParentFolderPath(Metadata dropboxItem)
         {
@@ -159,7 +84,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             return MakeId(MakeDropboxPath(dropboxItem));
         }
 
-        protected string MakeId(string path = null)
+        protected override string MakeId(string path = null)
         {
             return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|')));
         }
@@ -168,7 +93,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (dropboxFolder == null || IsRoot(dropboxFolder))
             {
-                return DropboxProviderInfo.CustomerTitle;
+                return ProviderInfo.CustomerTitle;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(dropboxFolder.Name);
@@ -178,7 +103,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             if (dropboxFile == null || string.IsNullOrEmpty(dropboxFile.Name))
             {
-                return DropboxProviderInfo.ProviderKey;
+                return ProviderInfo.ProviderKey;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(dropboxFile.Name);
@@ -195,24 +120,13 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             var isRoot = IsRoot(dropboxFolder);
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetFolder();
 
             folder.ID = MakeId(dropboxFolder);
             folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderPath(dropboxFolder));
-            folder.CreateBy = DropboxProviderInfo.Owner;
-            folder.CreateOn = isRoot ? DropboxProviderInfo.CreateOn : default;
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = DropboxProviderInfo.Owner;
-            folder.ModifiedOn = isRoot ? DropboxProviderInfo.CreateOn : default;
-            folder.ProviderId = DropboxProviderInfo.ID;
-            folder.ProviderKey = DropboxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = DropboxProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = DropboxProviderInfo.RootFolderType;
-            folder.Shareable = false;
+            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : default;
+            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : default;
             folder.Title = MakeFolderTitle(dropboxFolder);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
@@ -231,19 +145,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         private File<string> ToErrorFile(ErrorFile dropboxFile)
         {
             if (dropboxFile == null) return null;
-            var file = ServiceProvider.GetService<File<string>>();
-            file.ID = MakeId(dropboxFile.ErrorId);
-            file.CreateBy = DropboxProviderInfo.Owner;
-            file.CreateOn = TenantUtil.DateTimeNow();
-            file.ModifiedBy = DropboxProviderInfo.Owner;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
-            file.ProviderId = DropboxProviderInfo.ID;
-            file.ProviderKey = DropboxProviderInfo.ProviderKey;
-            file.RootFolderCreator = DropboxProviderInfo.Owner;
-            file.RootFolderId = MakeId();
-            file.RootFolderType = DropboxProviderInfo.RootFolderType;
+
+            var file = GetErrorFile(new ErrorEntry(dropboxFile.ErrorId, dropboxFile.Error));
+
             file.Title = MakeFileTitle(dropboxFile);
-            file.Error = dropboxFile.Error;
 
             return file;
         }
@@ -251,25 +156,10 @@ namespace ASC.Files.Thirdparty.Dropbox
         private Folder<string> ToErrorFolder(ErrorFolder dropboxFolder)
         {
             if (dropboxFolder == null) return null;
-            var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ID = MakeId(dropboxFolder.ErrorId);
-            folder.ParentFolderID = null;
-            folder.CreateBy = DropboxProviderInfo.Owner;
-            folder.CreateOn = TenantUtil.DateTimeNow();
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = DropboxProviderInfo.Owner;
-            folder.ModifiedOn = TenantUtil.DateTimeNow();
-            folder.ProviderId = DropboxProviderInfo.ID;
-            folder.ProviderKey = DropboxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = DropboxProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = DropboxProviderInfo.RootFolderType;
-            folder.Shareable = false;
+            var folder = GetErrorFolder(new ErrorEntry(dropboxFolder.Error, dropboxFolder.ErrorId));
+
             folder.Title = MakeFolderTitle(dropboxFolder);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
-            folder.Error = dropboxFolder.Error;
 
             return folder;
         }
@@ -284,26 +174,15 @@ namespace ASC.Files.Thirdparty.Dropbox
                 return ToErrorFile(dropboxFile as ErrorFile);
             }
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(dropboxFile);
-            file.Access = FileShare.None;
             file.ContentLength = (long)dropboxFile.Size;
-            file.CreateBy = DropboxProviderInfo.Owner;
             file.CreateOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
-            file.FileStatus = FileStatus.None;
             file.FolderID = MakeId(GetParentFolderPath(dropboxFile));
-            file.ModifiedBy = DropboxProviderInfo.Owner;
             file.ModifiedOn = TenantUtil.DateTimeFromUtc(dropboxFile.ServerModified);
             file.NativeAccessor = dropboxFile;
-            file.ProviderId = DropboxProviderInfo.ID;
-            file.ProviderKey = DropboxProviderInfo.ProviderKey;
             file.Title = MakeFileTitle(dropboxFile);
-            file.RootFolderId = MakeId();
-            file.RootFolderType = DropboxProviderInfo.RootFolderType;
-            file.RootFolderCreator = DropboxProviderInfo.Owner;
-            file.Shared = false;
-            file.Version = 1;
 
             return file;
         }
@@ -318,7 +197,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var dropboxFolderPath = MakeDropboxPath(folderId);
             try
             {
-                var folder = DropboxProviderInfo.GetDropboxFolder(dropboxFolderPath);
+                var folder = ProviderInfo.GetDropboxFolder(dropboxFolderPath);
                 return folder;
             }
             catch (Exception ex)
@@ -332,7 +211,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             var dropboxFilePath = MakeDropboxPath(fileId);
             try
             {
-                var file = DropboxProviderInfo.GetDropboxFile(dropboxFilePath);
+                var file = ProviderInfo.GetDropboxFile(dropboxFilePath);
                 return file;
             }
             catch (Exception ex)
@@ -349,7 +228,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         protected List<Metadata> GetDropboxItems(object parentId, bool? folder = null)
         {
             var dropboxFolderPath = MakeDropboxPath(parentId);
-            var items = DropboxProviderInfo.GetDropboxItems(dropboxFolderPath);
+            var items = ProviderInfo.GetDropboxItems(dropboxFolderPath);
 
             if (folder.HasValue)
             {

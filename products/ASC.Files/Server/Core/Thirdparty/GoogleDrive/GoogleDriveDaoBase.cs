@@ -28,8 +28,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,104 +37,23 @@ using ASC.Core.Tenants;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
-    internal abstract class GoogleDriveDaoBase : IThirdPartyProviderDao<GoogleDriveProviderInfo>
+    internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>
     {
-        public RegexDaoSelectorBase<GoogleDriveProviderInfo> GoogleDriveDaoSelector { get; set; }
+        public override string Id { get => "drive"; }
 
-        public int TenantID { get; set; }
-        public GoogleDriveProviderInfo GoogleDriveProviderInfo { get; set; }
-        public string PathPrefix { get; set; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public SetupInfo SetupInfo { get; }
-        public FileUtility FileUtility { get; }
-
-        public GoogleDriveDaoBase(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            FileUtility fileUtility)
+        public GoogleDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            SetupInfo = setupInfo;
-            FileUtility = fileUtility;
         }
-
-        public void Init(BaseProviderInfo<GoogleDriveProviderInfo> googleDriveInfo, RegexDaoSelectorBase<GoogleDriveProviderInfo> googleDriveDaoSelector)
-        {
-            GoogleDriveProviderInfo = googleDriveInfo.ProviderInfo;
-            PathPrefix = googleDriveInfo.PathPrefix;
-            GoogleDriveDaoSelector = googleDriveDaoSelector;
-        }
-
-        public void Dispose()
-        {
-            if (GoogleDriveProviderInfo != null)
-            {
-                GoogleDriveProviderInfo.Dispose();
-            }
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.ToString().StartsWith("drive"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                        .Where(r => r.HashId == id)
-                        .Select(r => r.Id)
-                        .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-
-            return result;
-        }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
-        }
-
 
         protected static string MakeDriveId(object entryId)
         {
@@ -162,18 +81,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return MakeId(path);
         }
 
-        protected string MakeId(string path = null)
+        protected override string MakeId(string path = null)
         {
-            return string.Format("{0}{1}", PathPrefix,
-                                 string.IsNullOrEmpty(path) || path == "root" || path == GoogleDriveProviderInfo.DriveRootId
-                                     ? "" : ("-|" + path.TrimStart('/')));
+            return string.Format("{0}{1}", PathPrefix, string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.DriveRootId ? "" : ("-|" + path.TrimStart('/')));
         }
 
         protected string MakeFolderTitle(DriveFile driveFolder)
         {
             if (driveFolder == null || IsRoot(driveFolder))
             {
-                return GoogleDriveProviderInfo.CustomerTitle;
+                return ProviderInfo.CustomerTitle;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(driveFolder.Name);
@@ -183,7 +100,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (driveFile == null || string.IsNullOrEmpty(driveFile.Name))
             {
-                return GoogleDriveProviderInfo.ProviderKey;
+                return ProviderInfo.ProviderKey;
             }
 
             var title = driveFile.Name;
@@ -217,25 +134,14 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             var isRoot = IsRoot(driveEntry);
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetFolder();
 
             folder.ID = MakeId(driveEntry);
             folder.ParentFolderID = isRoot ? null : MakeId(GetParentDriveId(driveEntry));
-            folder.CreateBy = GoogleDriveProviderInfo.Owner;
-            folder.CreateOn = isRoot ? GoogleDriveProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = GoogleDriveProviderInfo.Owner;
-            folder.ModifiedOn = isRoot ? GoogleDriveProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
-            folder.ProviderId = GoogleDriveProviderInfo.ID;
-            folder.ProviderKey = GoogleDriveProviderInfo.ProviderKey;
-            folder.RootFolderCreator = GoogleDriveProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = GoogleDriveProviderInfo.RootFolderType;
+            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
+            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
 
-            folder.Shareable = false;
             folder.Title = MakeFolderTitle(driveEntry);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
 
             if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
                 folder.CreateOn = TenantUtil.DateTimeFromUtc(folder.CreateOn);
@@ -260,19 +166,9 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             if (driveEntry == null) return null;
 
-            var file = ServiceProvider.GetService<File<string>>();
-            file.ID = MakeId(driveEntry.ErrorId);
-            file.CreateBy = GoogleDriveProviderInfo.Owner;
-            file.CreateOn = TenantUtil.DateTimeNow();
-            file.ModifiedBy = GoogleDriveProviderInfo.Owner;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
-            file.ProviderId = GoogleDriveProviderInfo.ID;
-            file.ProviderKey = GoogleDriveProviderInfo.ProviderKey;
-            file.RootFolderCreator = GoogleDriveProviderInfo.Owner;
-            file.RootFolderId = MakeId();
-            file.RootFolderType = GoogleDriveProviderInfo.RootFolderType;
+            var file = GetErrorFile(new ErrorEntry(driveEntry.Error, driveEntry.ErrorId));
+
             file.Title = MakeFileTitle(driveEntry);
-            file.Error = driveEntry.Error;
 
             return file;
         }
@@ -280,25 +176,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         private Folder<string> ToErrorFolder(ErrorDriveEntry driveEntry)
         {
             if (driveEntry == null) return null;
-            var folder = ServiceProvider.GetService<Folder<string>>();
 
-            folder.ID = MakeId(driveEntry.ErrorId);
-            folder.ParentFolderID = null;
-            folder.CreateBy = GoogleDriveProviderInfo.Owner;
-            folder.CreateOn = TenantUtil.DateTimeNow();
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = GoogleDriveProviderInfo.Owner;
-            folder.ModifiedOn = TenantUtil.DateTimeNow();
-            folder.ProviderId = GoogleDriveProviderInfo.ID;
-            folder.ProviderKey = GoogleDriveProviderInfo.ProviderKey;
-            folder.RootFolderCreator = GoogleDriveProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = GoogleDriveProviderInfo.RootFolderType;
-            folder.Shareable = false;
+            var folder = GetErrorFolder(new ErrorEntry(driveEntry.Error, driveEntry.ErrorId));
+
             folder.Title = MakeFolderTitle(driveEntry);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
-            folder.Error = driveEntry.Error;
 
             return folder;
         }
@@ -313,26 +194,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
                 return ToErrorFile(driveFile as ErrorDriveEntry);
             }
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetFile();
 
             file.ID = MakeId(driveFile.Id);
-            file.Access = FileShare.None;
             file.ContentLength = driveFile.Size.HasValue ? (long)driveFile.Size : 0;
-            file.CreateBy = GoogleDriveProviderInfo.Owner;
-            file.CreateOn = driveFile.CreatedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default(DateTime);
-            file.FileStatus = FileStatus.None;
+            file.CreateOn = driveFile.CreatedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default;
             file.FolderID = MakeId(GetParentDriveId(driveFile));
-            file.ModifiedBy = GoogleDriveProviderInfo.Owner;
-            file.ModifiedOn = driveFile.ModifiedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default(DateTime);
+            file.ModifiedOn = driveFile.ModifiedTime.HasValue ? TenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
             file.NativeAccessor = driveFile;
-            file.ProviderId = GoogleDriveProviderInfo.ID;
-            file.ProviderKey = GoogleDriveProviderInfo.ProviderKey;
             file.Title = MakeFileTitle(driveFile);
-            file.RootFolderId = MakeId();
-            file.RootFolderType = GoogleDriveProviderInfo.RootFolderType;
-            file.RootFolderCreator = GoogleDriveProviderInfo.Owner;
-            file.Shared = false;
-            file.Version = 1;
 
             return file;
         }
@@ -347,7 +217,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var driveId = MakeDriveId(entryId);
             try
             {
-                var entry = GoogleDriveProviderInfo.GetDriveEntry(driveId);
+                var entry = ProviderInfo.GetDriveEntry(driveId);
                 return entry;
             }
             catch (Exception ex)
@@ -364,7 +234,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         protected List<DriveFile> GetDriveEntries(object parentId, bool? folder = null)
         {
             var parentDriveId = MakeDriveId(parentId);
-            var entries = GoogleDriveProviderInfo.GetDriveEntries(parentDriveId, folder);
+            var entries = ProviderInfo.GetDriveEntries(parentDriveId, folder);
             return entries;
         }
 

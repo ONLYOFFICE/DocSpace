@@ -47,7 +47,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     [DebuggerDisplay("{CustomerTitle}")]
-    internal class GoogleDriveProviderInfo : IProviderInfo, IDisposable
+    internal class GoogleDriveProviderInfo : IProviderInfo
     {
         public OAuth20Token Token { get; set; }
         private string _driveRootId;

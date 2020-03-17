@@ -28,59 +28,26 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
-using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
-    internal class SharePointDaoBase : IThirdPartyProviderDao<SharePointProviderInfo>
+    internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
     {
-        public SharePointProviderInfo ProviderInfo { get; private set; }
-        public RegexDaoSelectorBase<SharePointProviderInfo> SharePointDaoSelector { get; private set; }
+        public override string Id { get => "spoint"; }
 
-        public SharePointDaoBase(
-                IServiceProvider serviceProvider,
-                UserManager userManager,
-                TenantManager tenantManager,
-                TenantUtil tenantUtil,
-                DbContextManager<FilesDbContext> dbContextManager,
-                SetupInfo setupInfo)
+        public SharePointDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            SetupInfo = setupInfo;
-        }
-
-        public void Init(BaseProviderInfo<SharePointProviderInfo> sharePointInfo, RegexDaoSelectorBase<SharePointProviderInfo> sharePointDaoSelector)
-        {
-            ProviderInfo = sharePointInfo.ProviderInfo;
-            SharePointDaoSelector = sharePointDaoSelector;
-        }
-
-        protected int TenantID { get; set; }
-
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public SetupInfo SetupInfo { get; }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
         }
 
         protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
@@ -112,39 +79,6 @@ namespace ASC.Files.Thirdparty.SharePoint
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
             return string.Format(" ({0}){1}", index + 1, staticText);
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist)
-        {
-            if (id == null) return null;
-
-            string result;
-
-            if (id.ToString().StartsWith("spoint"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.HashId == id)
-                    .Select(r => r.Id)
-                    .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-
-            return result;
         }
 
         protected void UpdatePathInDB(string oldValue, string newValue)
@@ -208,12 +142,9 @@ namespace ASC.Files.Thirdparty.SharePoint
             return MappingID(id, false);
         }
 
-        public void Dispose()
+        protected override string MakeId(string path = null)
         {
-            if (ProviderInfo != null)
-            {
-                ProviderInfo.Dispose();
-            }
+            return path;
         }
     }
 }

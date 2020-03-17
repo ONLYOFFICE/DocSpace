@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -42,29 +43,24 @@ using ASC.Web.Studio.Core;
 
 using Box.V2.Models;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
-        public BoxFileDao(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public BoxFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
         public void InvalidateCache(string fileId)
         {
             var boxFileId = MakeBoxId(fileId);
-            BoxProviderInfo.CacheReset(boxFileId, true);
+            ProviderInfo.CacheReset(boxFileId, true);
 
             var boxFile = GetBoxFile(fileId);
             var parentPath = GetParentFolderId(boxFile);
-            if (parentPath != null) BoxProviderInfo.CacheReset(parentPath);
+            if (parentPath != null) ProviderInfo.CacheReset(parentPath);
         }
 
         public File<string> GetFile(string fileId)
@@ -238,13 +234,13 @@ namespace ASC.Files.Thirdparty.Box
         public Stream GetFileStream(File<string> file, long offset)
         {
             var boxFileId = MakeBoxId(file.ID);
-            BoxProviderInfo.CacheReset(boxFileId, true);
+            ProviderInfo.CacheReset(boxFileId, true);
 
             var boxFile = GetBoxFile(file.ID);
             if (boxFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (boxFile is ErrorFile) throw new Exception(((ErrorFile)boxFile).Error);
 
-            var fileStream = BoxProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
+            var fileStream = ProviderInfo.Storage.DownloadStream(boxFile, (int)offset);
 
             return fileStream;
         }
@@ -269,25 +265,25 @@ namespace ASC.Files.Thirdparty.Box
             if (file.ID != null)
             {
                 var fileId = MakeBoxId(file.ID);
-                newBoxFile = BoxProviderInfo.Storage.SaveStream(fileId, fileStream);
+                newBoxFile = ProviderInfo.Storage.SaveStream(fileId, fileStream);
 
                 if (!newBoxFile.Name.Equals(file.Title))
                 {
                     var folderId = GetParentFolderId(GetBoxFile(fileId));
                     file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                    newBoxFile = BoxProviderInfo.Storage.RenameFile(fileId, file.Title);
+                    newBoxFile = ProviderInfo.Storage.RenameFile(fileId, file.Title);
                 }
             }
             else if (file.FolderID != null)
             {
                 var folderId = MakeBoxId(file.FolderID);
                 file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                newBoxFile = BoxProviderInfo.Storage.CreateFile(fileStream, file.Title, folderId);
+                newBoxFile = ProviderInfo.Storage.CreateFile(fileStream, file.Title, folderId);
             }
 
-            BoxProviderInfo.CacheReset(newBoxFile);
+            ProviderInfo.CacheReset(newBoxFile);
             var parentId = GetParentFolderId(newBoxFile);
-            if (parentId != null) BoxProviderInfo.CacheReset(parentId);
+            if (parentId != null) ProviderInfo.CacheReset(parentId);
 
             return ToFile(newBoxFile);
         }
@@ -339,17 +335,17 @@ namespace ASC.Files.Thirdparty.Box
 
             if (!(boxFile is ErrorFile))
             {
-                BoxProviderInfo.Storage.DeleteItem(boxFile);
+                ProviderInfo.Storage.DeleteItem(boxFile);
             }
 
-            BoxProviderInfo.CacheReset(boxFile.Id, true);
+            ProviderInfo.CacheReset(boxFile.Id, true);
             var parentFolderId = GetParentFolderId(boxFile);
-            if (parentFolderId != null) BoxProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
         }
 
         public bool IsExist(string title, object folderId)
         {
-            return GetBoxItems(folderId, false)
+            return GetBoxItems(folderId.ToString(), false)
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -364,11 +360,11 @@ namespace ASC.Files.Thirdparty.Box
             var fromFolderId = GetParentFolderId(boxFile);
 
             var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
-            boxFile = BoxProviderInfo.Storage.MoveFile(boxFile.Id, newTitle, toBoxFolder.Id);
+            boxFile = ProviderInfo.Storage.MoveFile(boxFile.Id, newTitle, toBoxFolder.Id);
 
-            BoxProviderInfo.CacheReset(boxFile.Id, true);
-            BoxProviderInfo.CacheReset(fromFolderId);
-            BoxProviderInfo.CacheReset(toBoxFolder.Id);
+            ProviderInfo.CacheReset(boxFile.Id, true);
+            ProviderInfo.CacheReset(fromFolderId);
+            ProviderInfo.CacheReset(toBoxFolder.Id);
 
             return MakeId(boxFile.Id);
         }
@@ -382,10 +378,10 @@ namespace ASC.Files.Thirdparty.Box
             if (toBoxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toBoxFolder).Error);
 
             var newTitle = GetAvailableTitle(boxFile.Name, toBoxFolder.Id, IsExist);
-            var newBoxFile = BoxProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
+            var newBoxFile = ProviderInfo.Storage.CopyFile(boxFile.Id, newTitle, toBoxFolder.Id);
 
-            BoxProviderInfo.CacheReset(newBoxFile);
-            BoxProviderInfo.CacheReset(toBoxFolder.Id);
+            ProviderInfo.CacheReset(newBoxFile);
+            ProviderInfo.CacheReset(toBoxFolder.Id);
 
             return ToFile(newBoxFile);
         }
@@ -395,11 +391,11 @@ namespace ASC.Files.Thirdparty.Box
             var boxFile = GetBoxFile(file.ID);
             newTitle = GetAvailableTitle(newTitle, GetParentFolderId(boxFile), IsExist);
 
-            boxFile = BoxProviderInfo.Storage.RenameFile(boxFile.Id, newTitle);
+            boxFile = ProviderInfo.Storage.RenameFile(boxFile.Id, newTitle);
 
-            BoxProviderInfo.CacheReset(boxFile);
+            ProviderInfo.CacheReset(boxFile);
             var parentId = GetParentFolderId(boxFile);
-            if (parentId != null) BoxProviderInfo.CacheReset(parentId);
+            if (parentId != null) ProviderInfo.CacheReset(parentId);
 
             return MakeId(boxFile.Id);
         }

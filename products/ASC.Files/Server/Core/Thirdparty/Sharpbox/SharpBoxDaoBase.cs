@@ -40,20 +40,22 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
+using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Sharpbox
 {
-    internal abstract class SharpBoxDaoBase : IThirdPartyProviderDao<SharpBoxProviderInfo>
+    internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
     {
+        public override string Id { get => "sbox"; }
+
+        public SharpBoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        {
+        }
+
         protected class ErrorEntry : ICloudDirectoryEntry
         {
             public ErrorEntry(Exception e, object id)
@@ -149,66 +151,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
         }
 
-        public int TenantID { get; private set; }
-
-        public SharpBoxDaoBase(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            IOptionsMonitor<ILog> monitor)
-        {
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            SetupInfo = setupInfo;
-            Log = monitor.CurrentValue;
-        }
-
-        public void Init(BaseProviderInfo<SharpBoxProviderInfo> sharpBoxInfo, RegexDaoSelectorBase<SharpBoxProviderInfo> sharpBoxDaoSelector)
-        {
-            SharpBoxProviderInfo = sharpBoxInfo.ProviderInfo;
-            PathPrefix = sharpBoxInfo.PathPrefix;
-            SharpBoxDaoSelector = sharpBoxDaoSelector;
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.ToString().StartsWith("sbox"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.HashId == id)
-                   .Select(r => r.Id)
-                   .FirstOrDefault();
-            }
-
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-
-            return result;
-        }
-
         protected string MappingID(string id)
         {
             return MappingID(id, false);
@@ -270,31 +212,14 @@ namespace ASC.Files.Thirdparty.Sharpbox
             }
         }
 
-        protected RegexDaoSelectorBase<SharpBoxProviderInfo> SharpBoxDaoSelector;
-        public SharpBoxProviderInfo SharpBoxProviderInfo { get; set; }
-        public string PathPrefix { get; private set; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public SetupInfo SetupInfo { get; }
-        public ILog Log { get; }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
-        }
-
-        protected string GetTenantColumnName(string table)
-        {
-            const string tenant = "tenant_id";
-            if (!table.Contains(" ")) return tenant;
-            return table.Substring(table.IndexOf(" ", StringComparison.InvariantCulture)).Trim() + "." + tenant;
-        }
-
         protected string MakePath(object entryId)
         {
             return string.Format("/{0}", Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/'));
+        }
+
+        protected override string MakeId(string path = null)
+        {
+            return path;
         }
 
         protected string MakeId(ICloudFileSystemEntry entry)
@@ -304,7 +229,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             {
                 try
                 {
-                    path = SharpBoxProviderInfo.Storage.GetFileSystemObjectPath(entry);
+                    path = ProviderInfo.Storage.GetFileSystemObjectPath(entry);
                 }
                 catch (Exception ex)
                 {
@@ -323,7 +248,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (fsEntry is ICloudDirectoryEntry && IsRoot(fsEntry as ICloudDirectoryEntry))
             {
-                return SharpBoxProviderInfo.CustomerTitle;
+                return ProviderInfo.CustomerTitle;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(fsEntry.Name);
@@ -354,22 +279,15 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
             //var childFoldersCount = fsEntry.OfType<ICloudDirectoryEntry>().Count();//NOTE: Removed due to performance isssues
             var isRoot = IsRoot(fsEntry);
-            var folder = ServiceProvider.GetService<Folder<string>>();
+
+            var folder = GetFolder();
 
             folder.ID = MakeId(fsEntry);
             folder.ParentFolderID = isRoot ? null : MakeId(fsEntry.Parent);
-            folder.CreateBy = SharpBoxProviderInfo.Owner;
-            folder.CreateOn = isRoot ? SharpBoxProviderInfo.CreateOn : fsEntry.Modified;
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = SharpBoxProviderInfo.Owner;
-            folder.ModifiedOn = isRoot ? SharpBoxProviderInfo.CreateOn : fsEntry.Modified;
-            folder.ProviderId = SharpBoxProviderInfo.ID;
-            folder.ProviderKey = SharpBoxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = SharpBoxProviderInfo.Owner;
+            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
+            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : fsEntry.Modified;
             folder.RootFolderId = MakeId(RootFolder());
-            folder.RootFolderType = SharpBoxProviderInfo.RootFolderType;
 
-            folder.Shareable = false;
             folder.Title = MakeTitle(fsEntry);
             folder.TotalFiles = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
             folder.TotalSubFolders = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
@@ -394,20 +312,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             if (fsEntry == null) return null;
 
-            var file = ServiceProvider.GetService<File<string>>();
+            var file = GetErrorFile(new Thirdparty.ErrorEntry(fsEntry.Error, null));
 
             file.ID = MakeId(fsEntry);
-            file.CreateBy = SharpBoxProviderInfo.Owner;
             file.CreateOn = fsEntry.Modified;
-            file.ModifiedBy = SharpBoxProviderInfo.Owner;
             file.ModifiedOn = fsEntry.Modified;
-            file.ProviderId = SharpBoxProviderInfo.ID;
-            file.ProviderKey = SharpBoxProviderInfo.ProviderKey;
-            file.RootFolderCreator = SharpBoxProviderInfo.Owner;
             file.RootFolderId = MakeId(null);
-            file.RootFolderType = SharpBoxProviderInfo.RootFolderType;
             file.Title = MakeTitle(fsEntry);
-            file.Error = fsEntry.Error;
 
             return file;
         }
@@ -415,25 +326,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
         private Folder<string> ToErrorFolder(ErrorEntry fsEntry)
         {
             if (fsEntry == null) return null;
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetErrorFolder(new Thirdparty.ErrorEntry(fsEntry.Error, null));
 
             folder.ID = MakeId(fsEntry);
-            folder.ParentFolderID = null;
-            folder.CreateBy = SharpBoxProviderInfo.Owner;
             folder.CreateOn = fsEntry.Modified;
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = SharpBoxProviderInfo.Owner;
             folder.ModifiedOn = fsEntry.Modified;
-            folder.ProviderId = SharpBoxProviderInfo.ID;
-            folder.ProviderKey = SharpBoxProviderInfo.ProviderKey;
-            folder.RootFolderCreator = SharpBoxProviderInfo.Owner;
             folder.RootFolderId = MakeId(null);
-            folder.RootFolderType = SharpBoxProviderInfo.RootFolderType;
-            folder.Shareable = false;
             folder.Title = MakeTitle(fsEntry);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
-            folder.Error = fsEntry.Error;
 
             return folder;
         }
@@ -448,34 +347,23 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 return ToErrorFile(fsEntry as ErrorEntry);
             }
 
-            var file = ServiceProvider.GetService<File<string>>();
-
+            var file = GetFile();
 
             file.ID = MakeId(fsEntry);
-            file.Access = FileShare.None;
             file.ContentLength = fsEntry.Length;
-            file.CreateBy = SharpBoxProviderInfo.Owner;
             file.CreateOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
-            file.FileStatus = FileStatus.None;
             file.FolderID = MakeId(fsEntry.Parent);
-            file.ModifiedBy = SharpBoxProviderInfo.Owner;
             file.ModifiedOn = fsEntry.Modified.Kind == DateTimeKind.Utc ? TenantUtil.DateTimeFromUtc(fsEntry.Modified) : fsEntry.Modified;
             file.NativeAccessor = fsEntry;
-            file.ProviderId = SharpBoxProviderInfo.ID;
-            file.ProviderKey = SharpBoxProviderInfo.ProviderKey;
             file.Title = MakeTitle(fsEntry);
             file.RootFolderId = MakeId(RootFolder());
-            file.RootFolderType = SharpBoxProviderInfo.RootFolderType;
-            file.RootFolderCreator = SharpBoxProviderInfo.Owner;
-            file.Shared = false;
-            file.Version = 1;
 
             return file;
         }
 
         protected ICloudDirectoryEntry RootFolder()
         {
-            return SharpBoxProviderInfo.Storage.GetRoot();
+            return ProviderInfo.Storage.GetRoot();
         }
 
         protected ICloudDirectoryEntry GetFolderById(object folderId)
@@ -485,7 +373,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
                 var path = MakePath(folderId);
                 return path == "/"
                            ? RootFolder()
-                           : SharpBoxProviderInfo.Storage.GetFolder(path);
+                           : ProviderInfo.Storage.GetFolder(path);
             }
             catch (SharpBoxException sharpBoxException)
             {
@@ -505,7 +393,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         {
             try
             {
-                return SharpBoxProviderInfo.Storage.GetFile(MakePath(fileId), null);
+                return ProviderInfo.Storage.GetFile(MakePath(fileId), null);
             }
             catch (SharpBoxException sharpBoxException)
             {
@@ -523,12 +411,12 @@ namespace ASC.Files.Thirdparty.Sharpbox
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(object folderId)
         {
-            return GetFolderFiles(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
+            return GetFolderFiles(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
         }
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(object folderId)
         {
-            return GetFolderSubfolders(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
+            return GetFolderSubfolders(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
         }
 
         protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
@@ -570,14 +458,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var index = Convert.ToInt32(match.Groups[2].Value);
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
             return string.Format(" ({0}){1}", index + 1, staticText);
-        }
-
-        public void Dispose()
-        {
-            if (SharpBoxProviderInfo != null)
-            {
-                SharpBoxProviderInfo.Dispose();
-            }
         }
     }
 }

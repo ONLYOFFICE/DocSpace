@@ -48,7 +48,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
-    public class SharePointProviderInfo : IProviderInfo, IDisposable
+    public class SharePointProviderInfo : IProviderInfo
     {
         private ClientContext clientContext;
 

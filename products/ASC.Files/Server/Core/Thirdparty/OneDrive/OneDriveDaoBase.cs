@@ -29,103 +29,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
+using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Studio.Core;
 
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
-    internal abstract class OneDriveDaoBase : IThirdPartyProviderDao<OneDriveProviderInfo>
+    internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
     {
-        public RegexDaoSelectorBase<OneDriveProviderInfo> OneDriveDaoSelector { get; set; }
+        public override string Id { get => "onedrive"; }
 
-        public int TenantID { get; private set; }
-        public OneDriveProviderInfo OneDriveProviderInfo { get; set; }
-        public string PathPrefix { get; set; }
-        public TenantUtil TenantUtil { get; }
-        public FilesDbContext FilesDbContext { get; }
-        public SetupInfo SetupInfo { get; }
-        public IServiceProvider ServiceProvider { get; }
-        public UserManager UserManager { get; }
-
-        public OneDriveDaoBase(
-                IServiceProvider serviceProvider,
-                UserManager userManager,
-                TenantManager tenantManager,
-                TenantUtil tenantUtil,
-                DbContextManager<FilesDbContext> dbContextManager,
-                SetupInfo setupInfo)
+        public OneDriveDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-            FilesDbContext = dbContextManager.Get(FileConstant.DatabaseId);
-            SetupInfo = setupInfo;
         }
-
-        public void Init(BaseProviderInfo<OneDriveProviderInfo> onedriveInfo, RegexDaoSelectorBase<OneDriveProviderInfo> onedriveDaoSelector)
-        {
-            OneDriveProviderInfo = onedriveInfo.ProviderInfo;
-            PathPrefix = onedriveInfo.PathPrefix;
-            OneDriveDaoSelector = onedriveDaoSelector;
-        }
-
-        public void Dispose()
-        {
-            if (OneDriveProviderInfo != null)
-            {
-                OneDriveProviderInfo.Dispose();
-            }
-        }
-
-        protected string MappingID(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
-
-            string result;
-            if (id.ToString().StartsWith("onedrive"))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id.ToString(), HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = FilesDbContext.ThirdpartyIdMapping
-                    .Where(r => r.HashId == id)
-                    .Select(r => r.Id)
-                    .FirstOrDefault();
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
-
-                FilesDbContext.ThirdpartyIdMapping.Add(newMapping);
-                FilesDbContext.SaveChanges();
-            }
-            return result;
-        }
-
-        protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbFile
-        {
-            return set.Where(r => r.TenantId == TenantID);
-        }
-
 
         protected static string MakeOneDriveId(string entryId)
         {
@@ -155,7 +81,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             return MakeId(id);
         }
 
-        protected string MakeId(string id = null)
+        protected override string MakeId(string id = null)
         {
             return string.Format("{0}{1}", PathPrefix,
                                  string.IsNullOrEmpty(id) || id == ""
@@ -175,7 +101,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             if (onedriveItem == null || IsRoot(onedriveItem))
             {
-                return OneDriveProviderInfo.CustomerTitle;
+                return ProviderInfo.CustomerTitle;
             }
 
             return Global.ReplaceInvalidCharsAndTruncate(onedriveItem.Name);
@@ -194,25 +120,14 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             var isRoot = IsRoot(onedriveFolder);
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetFolder();
 
             folder.ID = MakeId(isRoot ? string.Empty : onedriveFolder.Id);
             folder.ParentFolderID = isRoot ? null : MakeId(GetParentFolderId(onedriveFolder));
-            folder.CreateBy = OneDriveProviderInfo.Owner;
-            folder.CreateOn = isRoot ? OneDriveProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default(DateTime));
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = OneDriveProviderInfo.Owner;
-            folder.ModifiedOn = isRoot ? OneDriveProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default(DateTime));
-            folder.ProviderId = OneDriveProviderInfo.ID;
-            folder.ProviderKey = OneDriveProviderInfo.ProviderKey;
-            folder.RootFolderCreator = OneDriveProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = OneDriveProviderInfo.RootFolderType;
+            folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.CreatedDateTime.Value.DateTime) : default);
+            folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (onedriveFolder.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFolder.LastModifiedDateTime.Value.DateTime) : default);
 
-            folder.Shareable = false;
             folder.Title = MakeItemTitle(onedriveFolder);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
 
             return folder;
         }
@@ -225,20 +140,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         private File<string> ToErrorFile(ErrorItem onedriveFile)
         {
             if (onedriveFile == null) return null;
-            var file = ServiceProvider.GetService<File<string>>();
 
-            file.ID = MakeId(onedriveFile.ErrorId);
-            file.CreateBy = OneDriveProviderInfo.Owner;
-            file.CreateOn = TenantUtil.DateTimeNow();
-            file.ModifiedBy = OneDriveProviderInfo.Owner;
-            file.ModifiedOn = TenantUtil.DateTimeNow();
-            file.ProviderId = OneDriveProviderInfo.ID;
-            file.ProviderKey = OneDriveProviderInfo.ProviderKey;
-            file.RootFolderCreator = OneDriveProviderInfo.Owner;
-            file.RootFolderId = MakeId();
-            file.RootFolderType = OneDriveProviderInfo.RootFolderType;
+            var file = GetErrorFile(new ErrorEntry(onedriveFile.Error, onedriveFile.ErrorId));
+
             file.Title = MakeItemTitle(onedriveFile);
-            file.Error = onedriveFile.Error;
 
             return file;
         }
@@ -247,25 +152,10 @@ namespace ASC.Files.Thirdparty.OneDrive
         {
             if (onedriveFolder == null) return null;
 
-            var folder = ServiceProvider.GetService<Folder<string>>();
+            var folder = GetErrorFolder(new ErrorEntry(onedriveFolder.Error, onedriveFolder.ErrorId));
 
-            folder.ID = MakeId(onedriveFolder.ErrorId);
-            folder.ParentFolderID = null;
-            folder.CreateBy = OneDriveProviderInfo.Owner;
-            folder.CreateOn = TenantUtil.DateTimeNow();
-            folder.FolderType = FolderType.DEFAULT;
-            folder.ModifiedBy = OneDriveProviderInfo.Owner;
-            folder.ModifiedOn = TenantUtil.DateTimeNow();
-            folder.ProviderId = OneDriveProviderInfo.ID;
-            folder.ProviderKey = OneDriveProviderInfo.ProviderKey;
-            folder.RootFolderCreator = OneDriveProviderInfo.Owner;
-            folder.RootFolderId = MakeId();
-            folder.RootFolderType = OneDriveProviderInfo.RootFolderType;
-            folder.Shareable = false;
             folder.Title = MakeItemTitle(onedriveFolder);
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
-            folder.Error = onedriveFolder.Error;
+
             return folder;
         }
 
@@ -284,23 +174,12 @@ namespace ASC.Files.Thirdparty.OneDrive
             var file = ServiceProvider.GetService<File<string>>();
 
             file.ID = MakeId(onedriveFile.Id);
-            file.Access = FileShare.None;
             file.ContentLength = onedriveFile.Size.HasValue ? (long)onedriveFile.Size : 0;
-            file.CreateBy = OneDriveProviderInfo.Owner;
             file.CreateOn = onedriveFile.CreatedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.CreatedDateTime.Value.DateTime) : default;
-            file.FileStatus = FileStatus.None;
             file.FolderID = MakeId(GetParentFolderId(onedriveFile));
-            file.ModifiedBy = OneDriveProviderInfo.Owner;
             file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? TenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
             file.NativeAccessor = onedriveFile;
-            file.ProviderId = OneDriveProviderInfo.ID;
-            file.ProviderKey = OneDriveProviderInfo.ProviderKey;
             file.Title = MakeItemTitle(onedriveFile);
-            file.RootFolderId = MakeId();
-            file.RootFolderType = OneDriveProviderInfo.RootFolderType;
-            file.RootFolderCreator = OneDriveProviderInfo.Owner;
-            file.Shared = false;
-            file.Version = 1;
 
             return file;
         }
@@ -315,7 +194,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveId = MakeOneDriveId(itemId);
             try
             {
-                return OneDriveProviderInfo.GetOneDriveItem(onedriveId);
+                return ProviderInfo.GetOneDriveItem(onedriveId);
             }
             catch (Exception ex)
             {
@@ -331,7 +210,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         protected List<Item> GetOneDriveItems(string parentId, bool? folder = null)
         {
             var onedriveFolderId = MakeOneDriveId(parentId);
-            var items = OneDriveProviderInfo.GetOneDriveItems(onedriveFolderId);
+            var items = ProviderInfo.GetOneDriveItems(onedriveFolderId);
 
             if (folder.HasValue)
             {

@@ -30,24 +30,22 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
     {
-        public DropboxFolderDao(IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public DropboxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -180,11 +178,11 @@ namespace ASC.Files.Thirdparty.Dropbox
 
                 folder.Title = GetAvailableTitle(folder.Title, dropboxFolderPath, IsExist);
 
-                var dropboxFolder = DropboxProviderInfo.Storage.CreateFolder(folder.Title, dropboxFolderPath);
+                var dropboxFolder = ProviderInfo.Storage.CreateFolder(folder.Title, dropboxFolderPath);
 
-                DropboxProviderInfo.CacheReset(dropboxFolder);
+                ProviderInfo.CacheReset(dropboxFolder);
                 var parentFolderPath = GetParentFolderPath(dropboxFolder);
-                if (parentFolderPath != null) DropboxProviderInfo.CacheReset(parentFolderPath);
+                if (parentFolderPath != null) ProviderInfo.CacheReset(parentFolderPath);
 
                 return MakeId(dropboxFolder);
             }
@@ -237,11 +235,11 @@ namespace ASC.Files.Thirdparty.Dropbox
             }
 
             if (!(dropboxFolder is ErrorFolder))
-                DropboxProviderInfo.Storage.DeleteItem(dropboxFolder);
+                ProviderInfo.Storage.DeleteItem(dropboxFolder);
 
-            DropboxProviderInfo.CacheReset(MakeDropboxPath(dropboxFolder), true);
+            ProviderInfo.CacheReset(MakeDropboxPath(dropboxFolder), true);
             var parentFolderPath = GetParentFolderPath(dropboxFolder);
-            if (parentFolderPath != null) DropboxProviderInfo.CacheReset(parentFolderPath);
+            if (parentFolderPath != null) ProviderInfo.CacheReset(parentFolderPath);
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -254,11 +252,11 @@ namespace ASC.Files.Thirdparty.Dropbox
 
             var fromFolderPath = GetParentFolderPath(dropboxFolder);
 
-            dropboxFolder = DropboxProviderInfo.Storage.MoveFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
+            dropboxFolder = ProviderInfo.Storage.MoveFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 
-            DropboxProviderInfo.CacheReset(MakeDropboxPath(dropboxFolder), false);
-            DropboxProviderInfo.CacheReset(fromFolderPath);
-            DropboxProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
+            ProviderInfo.CacheReset(MakeDropboxPath(dropboxFolder), false);
+            ProviderInfo.CacheReset(fromFolderPath);
+            ProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
 
             return MakeId(dropboxFolder);
         }
@@ -271,11 +269,11 @@ namespace ASC.Files.Thirdparty.Dropbox
             var toDropboxFolder = GetDropboxFolder(toFolderId);
             if (toDropboxFolder is ErrorFolder) throw new Exception(((ErrorFolder)toDropboxFolder).Error);
 
-            var newDropboxFolder = DropboxProviderInfo.Storage.CopyFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
+            var newDropboxFolder = ProviderInfo.Storage.CopyFolder(MakeDropboxPath(dropboxFolder), MakeDropboxPath(toDropboxFolder), dropboxFolder.Name);
 
-            DropboxProviderInfo.CacheReset(newDropboxFolder);
-            DropboxProviderInfo.CacheReset(MakeDropboxPath(newDropboxFolder), false);
-            DropboxProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
+            ProviderInfo.CacheReset(newDropboxFolder);
+            ProviderInfo.CacheReset(MakeDropboxPath(newDropboxFolder), false);
+            ProviderInfo.CacheReset(MakeDropboxPath(toDropboxFolder));
 
             return ToFolder(newDropboxFolder);
         }
@@ -293,7 +291,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             if (IsRoot(dropboxFolder))
             {
                 //It's root folder
-                DropboxDaoSelector.RenameProvider(DropboxProviderInfo, newTitle);
+                DaoSelector.RenameProvider(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
@@ -301,11 +299,11 @@ namespace ASC.Files.Thirdparty.Dropbox
                 newTitle = GetAvailableTitle(newTitle, parentFolderPath, IsExist);
 
                 //rename folder
-                dropboxFolder = DropboxProviderInfo.Storage.MoveFolder(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle);
+                dropboxFolder = ProviderInfo.Storage.MoveFolder(MakeDropboxPath(dropboxFolder), parentFolderPath, newTitle);
             }
 
-            DropboxProviderInfo.CacheReset(dropboxFolder);
-            if (parentFolderPath != null) DropboxProviderInfo.CacheReset(parentFolderPath);
+            ProviderInfo.CacheReset(dropboxFolder);
+            if (parentFolderPath != null) ProviderInfo.CacheReset(parentFolderPath);
 
             return MakeId(dropboxFolder);
         }
@@ -319,7 +317,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         {
             var dropboxFolderPath = MakeDropboxPath(folderId);
             //note: without cache
-            return DropboxProviderInfo.Storage.GetItems(dropboxFolderPath).Count == 0;
+            return ProviderInfo.Storage.GetItems(dropboxFolderPath).Count == 0;
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -339,7 +337,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = DropboxProviderInfo.Storage.MaxChunkedUploadFileSize;
+            var storageMaxUploadSize = ProviderInfo.Storage.MaxChunkedUploadFileSize;
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

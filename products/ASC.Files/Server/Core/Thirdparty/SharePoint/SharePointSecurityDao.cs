@@ -28,19 +28,23 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
 using ASC.Files.Core.Security;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointSecurityDao : SharePointDaoBase, ISecurityDao<string>
     {
-        public SharePointSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public SharePointSecurityDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -84,11 +88,6 @@ namespace ASC.Files.Thirdparty.SharePoint
         public bool IsShared(object entryId, FileEntryType type)
         {
             throw new NotImplementedException();
-        }
-
-        public void Dispose()
-        {
-            ProviderInfo.Dispose();
         }
     }
 

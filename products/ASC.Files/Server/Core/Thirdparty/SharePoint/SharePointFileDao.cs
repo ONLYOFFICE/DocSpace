@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -40,17 +41,14 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
     {
-        public SharePointFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public SharePointFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
-        }
-
-        public void Dispose()
-        {
-            ProviderInfo.Dispose();
         }
 
         public void InvalidateCache(string fileId)
@@ -259,8 +257,8 @@ namespace ASC.Files.Thirdparty.SharePoint
                     var folder = ProviderInfo.GetFolderById(file.FolderID);
                     file.Title = GetAvailableTitle(file.Title, folder, IsExist);
 
-                    var id = ProviderInfo.RenameFile(SharePointDaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
-                    return GetFile(SharePointDaoSelector.ConvertId(id));
+                    var id = ProviderInfo.RenameFile(DaoSelector.ConvertId(resultFile.ID).ToString(), file.Title);
+                    return GetFile(DaoSelector.ConvertId(id));
                 }
                 return resultFile;
             }

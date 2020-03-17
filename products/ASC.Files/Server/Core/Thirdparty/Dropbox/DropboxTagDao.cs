@@ -30,19 +30,22 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+
+using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
     internal class DropboxTagDao : DropboxDaoBase, ITagDao<string>
     {
-        public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public DropboxTagDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -70,7 +73,7 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public IEnumerable<Tag> GetNewTags(Guid subject, Folder<string> parentFolder, bool deepSearch)
         {
-            var folderId = DropboxDaoSelector.ConvertId(parentFolder.ID);
+            var folderId = DaoSelector.ConvertId(parentFolder.ID);
             var fakeFolderId = parentFolder.ID.ToString();
 
             var entryIDs = FilesDbContext.ThirdpartyIdMapping

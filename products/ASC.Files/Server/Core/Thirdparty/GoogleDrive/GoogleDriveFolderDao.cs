@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -38,12 +39,13 @@ using ASC.Files.Core.EF;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.Options;
+
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
     {
-        public GoogleDriveFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, FileUtility fileUtility)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility)
+        public GoogleDriveFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
@@ -170,11 +172,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             {
                 var driveFolderId = MakeDriveId(folder.ParentFolderID);
 
-                var driveFolder = GoogleDriveProviderInfo.Storage.InsertEntry(null, folder.Title, driveFolderId, true);
+                var driveFolder = ProviderInfo.Storage.InsertEntry(null, folder.Title, driveFolderId, true);
 
-                GoogleDriveProviderInfo.CacheReset(driveFolder);
+                ProviderInfo.CacheReset(driveFolder);
                 var parentDriveId = GetParentDriveId(driveFolder);
-                if (parentDriveId != null) GoogleDriveProviderInfo.CacheReset(parentDriveId, true);
+                if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId, true);
 
                 return MakeId(driveFolder);
             }
@@ -221,11 +223,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
 
             if (!(driveFolder is ErrorDriveEntry))
-                GoogleDriveProviderInfo.Storage.DeleteEntry(driveFolder.Id);
+                ProviderInfo.Storage.DeleteEntry(driveFolder.Id);
 
-            GoogleDriveProviderInfo.CacheReset(driveFolder.Id);
+            ProviderInfo.CacheReset(driveFolder.Id);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) GoogleDriveProviderInfo.CacheReset(parentDriveId, true);
+            if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId, true);
         }
 
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -238,15 +240,15 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
             var fromFolderDriveId = GetParentDriveId(driveFolder);
 
-            driveFolder = GoogleDriveProviderInfo.Storage.InsertEntryIntoFolder(driveFolder, toDriveFolder.Id);
+            driveFolder = ProviderInfo.Storage.InsertEntryIntoFolder(driveFolder, toDriveFolder.Id);
             if (fromFolderDriveId != null)
             {
-                GoogleDriveProviderInfo.Storage.RemoveEntryFromFolder(driveFolder, fromFolderDriveId);
+                ProviderInfo.Storage.RemoveEntryFromFolder(driveFolder, fromFolderDriveId);
             }
 
-            GoogleDriveProviderInfo.CacheReset(driveFolder.Id);
-            GoogleDriveProviderInfo.CacheReset(fromFolderDriveId, true);
-            GoogleDriveProviderInfo.CacheReset(toDriveFolder.Id, true);
+            ProviderInfo.CacheReset(driveFolder.Id);
+            ProviderInfo.CacheReset(fromFolderDriveId, true);
+            ProviderInfo.CacheReset(toDriveFolder.Id, true);
 
             return MakeId(driveFolder.Id);
         }
@@ -259,11 +261,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             var toDriveFolder = GetDriveEntry(toFolderId);
             if (toDriveFolder is ErrorDriveEntry) throw new Exception(((ErrorDriveEntry)toDriveFolder).Error);
 
-            var newDriveFolder = GoogleDriveProviderInfo.Storage.InsertEntry(null, driveFolder.Name, toDriveFolder.Id, true);
+            var newDriveFolder = ProviderInfo.Storage.InsertEntry(null, driveFolder.Name, toDriveFolder.Id, true);
 
-            GoogleDriveProviderInfo.CacheReset(newDriveFolder);
-            GoogleDriveProviderInfo.CacheReset(toDriveFolder.Id, true);
-            GoogleDriveProviderInfo.CacheReset(toDriveFolder.Id);
+            ProviderInfo.CacheReset(newDriveFolder);
+            ProviderInfo.CacheReset(toDriveFolder.Id, true);
+            ProviderInfo.CacheReset(toDriveFolder.Id);
 
             return ToFolder(newDriveFolder);
         }
@@ -280,19 +282,19 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (IsRoot(driveFolder))
             {
                 //It's root folder
-                GoogleDriveDaoSelector.RenameProvider(GoogleDriveProviderInfo, newTitle);
+                DaoSelector.RenameProvider(ProviderInfo, newTitle);
                 //rename provider customer title
             }
             else
             {
                 //rename folder
                 driveFolder.Name = newTitle;
-                driveFolder = GoogleDriveProviderInfo.Storage.RenameEntry(driveFolder.Id, driveFolder.Name);
+                driveFolder = ProviderInfo.Storage.RenameEntry(driveFolder.Id, driveFolder.Name);
             }
 
-            GoogleDriveProviderInfo.CacheReset(driveFolder);
+            ProviderInfo.CacheReset(driveFolder);
             var parentDriveId = GetParentDriveId(driveFolder);
-            if (parentDriveId != null) GoogleDriveProviderInfo.CacheReset(parentDriveId, true);
+            if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId, true);
 
             return MakeId(driveFolder.Id);
         }
@@ -306,7 +308,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         {
             var driveId = MakeDriveId(folderId);
             //note: without cache
-            return GoogleDriveProviderInfo.Storage.GetEntries(driveId).Count == 0;
+            return ProviderInfo.Storage.GetEntries(driveId).Count == 0;
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
@@ -326,7 +328,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public long GetMaxUploadSize(string folderId, bool chunkedUpload)
         {
-            var storageMaxUploadSize = GoogleDriveProviderInfo.Storage.GetMaxUploadSize();
+            var storageMaxUploadSize = ProviderInfo.Storage.GetMaxUploadSize();
 
             return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, SetupInfo.AvailableFileSize);
         }

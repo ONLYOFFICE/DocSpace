@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.Files.Core
 {
-    public interface IProviderInfo
+    public interface IProviderInfo : IDisposable
     {
         int ID { get; set; }
         string ProviderKey { get; }

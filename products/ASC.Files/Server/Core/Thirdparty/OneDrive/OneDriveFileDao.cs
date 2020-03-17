@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -40,31 +41,25 @@ using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
 using ASC.Web.Studio.Core;
 
+using Microsoft.Extensions.Options;
 using Microsoft.OneDrive.Sdk;
 
 namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
-        public OneDriveFileDao(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo)
-            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo)
+        public OneDriveFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 
         public void InvalidateCache(string fileId)
         {
             var onedriveFileId = MakeOneDriveId(fileId);
-            OneDriveProviderInfo.CacheReset(onedriveFileId);
+            ProviderInfo.CacheReset(onedriveFileId);
 
             var onedriveFile = GetOneDriveItem(fileId);
             var parentId = GetParentFolderId(onedriveFile);
-            if (parentId != null) OneDriveProviderInfo.CacheReset(parentId);
+            if (parentId != null) ProviderInfo.CacheReset(parentId);
         }
 
         public File<string> GetFile(string fileId)
@@ -238,13 +233,13 @@ namespace ASC.Files.Thirdparty.OneDrive
         public Stream GetFileStream(File<string> file, long offset)
         {
             var onedriveFileId = MakeOneDriveId(file.ID);
-            OneDriveProviderInfo.CacheReset(onedriveFileId);
+            ProviderInfo.CacheReset(onedriveFileId);
 
             var onedriveFile = GetOneDriveItem(file.ID);
             if (onedriveFile == null) throw new ArgumentNullException("file", FilesCommonResource.ErrorMassage_FileNotFound);
             if (onedriveFile is ErrorItem) throw new Exception(((ErrorItem)onedriveFile).Error);
 
-            var fileStream = OneDriveProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
+            var fileStream = ProviderInfo.Storage.DownloadStream(onedriveFile, (int)offset);
 
             return fileStream;
         }
@@ -268,11 +263,11 @@ namespace ASC.Files.Thirdparty.OneDrive
 
             if (file.ID != null)
             {
-                newOneDriveFile = OneDriveProviderInfo.Storage.SaveStream(MakeOneDriveId(file.ID), fileStream);
+                newOneDriveFile = ProviderInfo.Storage.SaveStream(MakeOneDriveId(file.ID), fileStream);
                 if (!newOneDriveFile.Name.Equals(file.Title))
                 {
                     file.Title = GetAvailableTitle(file.Title, GetParentFolderId(newOneDriveFile), IsExist);
-                    newOneDriveFile = OneDriveProviderInfo.Storage.RenameItem(newOneDriveFile.Id, file.Title);
+                    newOneDriveFile = ProviderInfo.Storage.RenameItem(newOneDriveFile.Id, file.Title);
                 }
             }
             else if (file.FolderID != null)
@@ -280,12 +275,12 @@ namespace ASC.Files.Thirdparty.OneDrive
                 var folderId = MakeOneDriveId(file.FolderID);
                 var folder = GetOneDriveItem(folderId);
                 file.Title = GetAvailableTitle(file.Title, folderId, IsExist);
-                newOneDriveFile = OneDriveProviderInfo.Storage.CreateFile(fileStream, file.Title, MakeOneDrivePath(folder));
+                newOneDriveFile = ProviderInfo.Storage.CreateFile(fileStream, file.Title, MakeOneDrivePath(folder));
             }
 
-            if (newOneDriveFile != null) OneDriveProviderInfo.CacheReset(newOneDriveFile.Id);
+            if (newOneDriveFile != null) ProviderInfo.CacheReset(newOneDriveFile.Id);
             var parentId = GetParentFolderId(newOneDriveFile);
-            if (parentId != null) OneDriveProviderInfo.CacheReset(parentId);
+            if (parentId != null) ProviderInfo.CacheReset(parentId);
 
             return ToFile(newOneDriveFile);
         }
@@ -336,11 +331,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             }
 
             if (!(onedriveFile is ErrorItem))
-                OneDriveProviderInfo.Storage.DeleteItem(onedriveFile);
+                ProviderInfo.Storage.DeleteItem(onedriveFile);
 
-            OneDriveProviderInfo.CacheReset(onedriveFile.Id);
+            ProviderInfo.CacheReset(onedriveFile.Id);
             var parentFolderId = GetParentFolderId(onedriveFile);
-            if (parentFolderId != null) OneDriveProviderInfo.CacheReset(parentFolderId);
+            if (parentFolderId != null) ProviderInfo.CacheReset(parentFolderId);
         }
 
         public bool IsExist(string title, object folderId)
@@ -360,11 +355,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             var fromFolderId = GetParentFolderId(onedriveFile);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
-            onedriveFile = OneDriveProviderInfo.Storage.MoveItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
+            onedriveFile = ProviderInfo.Storage.MoveItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-            OneDriveProviderInfo.CacheReset(onedriveFile.Id);
-            OneDriveProviderInfo.CacheReset(fromFolderId);
-            OneDriveProviderInfo.CacheReset(toOneDriveFolder.Id);
+            ProviderInfo.CacheReset(onedriveFile.Id);
+            ProviderInfo.CacheReset(fromFolderId);
+            ProviderInfo.CacheReset(toOneDriveFolder.Id);
 
             return MakeId(onedriveFile.Id);
         }
@@ -378,10 +373,10 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (toOneDriveFolder is ErrorItem) throw new Exception(((ErrorItem)toOneDriveFolder).Error);
 
             var newTitle = GetAvailableTitle(onedriveFile.Name, toOneDriveFolder.Id, IsExist);
-            var newOneDriveFile = OneDriveProviderInfo.Storage.CopyItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
+            var newOneDriveFile = ProviderInfo.Storage.CopyItem(onedriveFile.Id, newTitle, toOneDriveFolder.Id);
 
-            OneDriveProviderInfo.CacheReset(newOneDriveFile.Id);
-            OneDriveProviderInfo.CacheReset(toOneDriveFolder.Id);
+            ProviderInfo.CacheReset(newOneDriveFile.Id);
+            ProviderInfo.CacheReset(toOneDriveFolder.Id);
 
             return ToFile(newOneDriveFile);
         }
@@ -391,11 +386,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             var onedriveFile = GetOneDriveItem(file.ID);
             newTitle = GetAvailableTitle(newTitle, GetParentFolderId(onedriveFile), IsExist);
 
-            onedriveFile = OneDriveProviderInfo.Storage.RenameItem(onedriveFile.Id, newTitle);
+            onedriveFile = ProviderInfo.Storage.RenameItem(onedriveFile.Id, newTitle);
 
-            OneDriveProviderInfo.CacheReset(onedriveFile.Id);
+            ProviderInfo.CacheReset(onedriveFile.Id);
             var parentId = GetParentFolderId(onedriveFile);
-            if (parentId != null) OneDriveProviderInfo.CacheReset(parentId);
+            if (parentId != null) ProviderInfo.CacheReset(parentId);
 
             return MakeId(onedriveFile.Id);
         }
@@ -451,7 +446,7 @@ namespace ASC.Files.Thirdparty.OneDrive
                 onedriveFile = new Item { Name = file.Title, ParentReference = new ItemReference { Id = folder.Id } };
             }
 
-            var onedriveSession = OneDriveProviderInfo.Storage.CreateResumableSession(onedriveFile, contentLength);
+            var onedriveSession = ProviderInfo.Storage.CreateResumableSession(onedriveFile, contentLength);
             if (onedriveSession != null)
             {
                 uploadSession.Items["OneDriveSession"] = onedriveSession;
@@ -480,7 +475,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (uploadSession.Items.ContainsKey("OneDriveSession"))
             {
                 var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
-                OneDriveProviderInfo.Storage.Transfer(oneDriveSession, stream, chunkLength);
+                ProviderInfo.Storage.Transfer(oneDriveSession, stream, chunkLength);
             }
             else
             {
@@ -509,9 +504,9 @@ namespace ASC.Files.Thirdparty.OneDrive
             {
                 var oneDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("OneDriveSession");
 
-                OneDriveProviderInfo.CacheReset(oneDriveSession.FileId);
+                ProviderInfo.CacheReset(oneDriveSession.FileId);
                 var parentDriveId = oneDriveSession.FolderId;
-                if (parentDriveId != null) OneDriveProviderInfo.CacheReset(parentDriveId);
+                if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId);
 
                 return ToFile(GetOneDriveItem(oneDriveSession.FileId));
             }
@@ -530,7 +525,7 @@ namespace ASC.Files.Thirdparty.OneDrive
 
                 if (oneDriveSession.Status != ResumableUploadSessionStatus.Completed)
                 {
-                    OneDriveProviderInfo.Storage.CancelTransfer(oneDriveSession);
+                    ProviderInfo.Storage.CancelTransfer(oneDriveSession);
 
                     oneDriveSession.Status = ResumableUploadSessionStatus.Aborted;
                 }
