@@ -158,6 +158,8 @@ class SectionBodyContent extends React.PureComponent {
 
   onContentRowSelect = (checked, file) => {
 
+    if (!file) return;
+
     if (checked) {
       this.props.selectFile(file);
     } else {
