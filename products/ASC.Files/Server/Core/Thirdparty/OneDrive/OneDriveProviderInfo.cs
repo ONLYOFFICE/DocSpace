@@ -119,10 +119,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             CacheReset();
         }
 
-        internal void UpdateTitle(string newtitle)
+        public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
         }
+
         internal Item GetOneDriveItem(string itemId)
         {
             return OneDriveProviderInfoHelper.GetOneDriveItem(Storage, ID, itemId);

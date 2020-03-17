@@ -86,7 +86,10 @@ namespace ASC.Files.Thirdparty.Dropbox
 
         public void Dispose()
         {
-            DropboxProviderInfo.Dispose();
+            if (DropboxProviderInfo != null)
+            {
+                DropboxProviderInfo.Dispose();
+            }
         }
 
         protected string MappingID(string id, bool saveIfNotExist = false)

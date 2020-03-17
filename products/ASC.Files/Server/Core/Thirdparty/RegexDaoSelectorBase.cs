@@ -25,6 +25,7 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using ASC.Files.Core;
@@ -35,13 +36,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty
 {
-    internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T>, IDisposable where T : class, IProviderInfo
+    internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : class, IProviderInfo
     {
         public IServiceProvider ServiceProvider { get; }
         public IDaoFactory DaoFactory { get; }
         public Regex Selector { get; set; }
         protected internal abstract string Name { get; }
         protected internal abstract string Id { get; }
+
+        private Dictionary<string, IThirdPartyProviderDao<T>> Providers { get; set; }
 
         protected RegexDaoSelectorBase(
             IServiceProvider serviceProvider,
@@ -50,6 +53,7 @@ namespace ASC.Files.Thirdparty
             ServiceProvider = serviceProvider;
             DaoFactory = daoFactory;
             Selector = new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
+            Providers = new Dictionary<string, IThirdPartyProviderDao<T>>();
         }
 
         public virtual string ConvertId(string id)
@@ -71,9 +75,17 @@ namespace ASC.Files.Thirdparty
             }
         }
 
-        public virtual string GetIdCode(string id)
+        public string GetIdCode(string id)
         {
-            return null;
+            if (id != null)
+            {
+                var match = Selector.Match(id);
+                if (match.Success)
+                {
+                    return match.Groups["id"].Value;
+                }
+            }
+            throw new ArgumentException($"Id is not a {Name} id");
         }
 
         public virtual bool IsMatch(string id)
@@ -103,9 +115,13 @@ namespace ASC.Files.Thirdparty
 
         private T1 GetDao<T1>(string id) where T1 : IThirdPartyProviderDao<T>
         {
+            if (Providers.ContainsKey(id)) return (T1)Providers[id];
+
             var res = ServiceProvider.GetService<T1>();
 
             res.Init(GetInfo(id), this);
+
+            Providers.Add(id, res);
 
             return res;
         }
@@ -130,7 +146,12 @@ namespace ASC.Files.Thirdparty
             throw new ArgumentException($"Id is not {Name} id");
         }
 
-        public abstract void RenameProvider(T provider, string newTitle);
+        public void RenameProvider(T provider, string newTitle)
+        {
+            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
+            dbDao.UpdateProviderInfo(provider.ID, newTitle, null, provider.RootFolderType);
+            provider.UpdateTitle(newTitle); //This will update cached version too
+        }
 
         protected virtual T GetProviderInfo(int linkId)
         {
@@ -147,13 +168,10 @@ namespace ASC.Files.Thirdparty
 
         public void Dispose()
         {
-            //TODO
-            //throw new NotImplementedException();
+            foreach (var p in Providers)
+            {
+                p.Value.Dispose();
+            }
         }
-    }
-
-    internal interface IThirdPartyProviderDao<T> where T : class, IProviderInfo
-    {
-        void Init(BaseProviderInfo<T> t1, RegexDaoSelectorBase<T> selectorBase);
     }
 }

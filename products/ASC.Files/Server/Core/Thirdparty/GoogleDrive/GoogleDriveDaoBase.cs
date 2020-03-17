@@ -92,7 +92,10 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 
         public void Dispose()
         {
-            GoogleDriveProviderInfo.Dispose();
+            if (GoogleDriveProviderInfo != null)
+            {
+                GoogleDriveProviderInfo.Dispose();
+            }
         }
 
         protected string MappingID(string id, bool saveIfNotExist = false)

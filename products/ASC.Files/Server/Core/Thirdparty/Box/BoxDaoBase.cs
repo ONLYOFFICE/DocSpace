@@ -86,7 +86,10 @@ namespace ASC.Files.Thirdparty.Box
 
         public void Dispose()
         {
-            BoxProviderInfo.Dispose();
+            if (BoxProviderInfo != null)
+            {
+                BoxProviderInfo.Dispose();
+            }
         }
 
         protected string MappingID(string id, bool saveIfNotExist = false)

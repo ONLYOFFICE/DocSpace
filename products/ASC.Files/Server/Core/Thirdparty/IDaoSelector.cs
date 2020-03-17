@@ -24,12 +24,14 @@
 */
 
 
+using System;
+
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
 namespace ASC.Files.Thirdparty
 {
-    internal interface IDaoSelector
+    internal interface IDaoSelector : IDisposable
     {
         bool IsMatch(string id);
         IFileDao<string> GetFileDao(string id);

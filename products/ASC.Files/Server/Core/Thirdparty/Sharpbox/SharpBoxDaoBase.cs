@@ -571,5 +571,13 @@ namespace ASC.Files.Thirdparty.Sharpbox
             var staticText = match.Value.Substring(string.Format(" ({0})", index).Length);
             return string.Format(" ({0}){1}", index + 1, staticText);
         }
+
+        public void Dispose()
+        {
+            if (SharpBoxProviderInfo != null)
+            {
+                SharpBoxProviderInfo.Dispose();
+            }
+        }
     }
 }

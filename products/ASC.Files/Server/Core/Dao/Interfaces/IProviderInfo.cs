@@ -41,5 +41,6 @@ namespace ASC.Files.Core
 
         bool CheckAccess();
         void InvalidateStorage();
+        void UpdateTitle(string newtitle);
     }
 }

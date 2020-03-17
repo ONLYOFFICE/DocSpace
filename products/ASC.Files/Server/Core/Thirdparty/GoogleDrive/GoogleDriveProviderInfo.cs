@@ -148,7 +148,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             CacheReset();
         }
 
-        internal void UpdateTitle(string newtitle)
+        public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
         }

@@ -30,8 +30,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<GoogleDriveProviderInfo>, IDaoSelector
@@ -61,26 +59,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<GoogleDriveSecurityDao>(id);
-        }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-            }
-            return base.GetIdCode(id);
-        }
-
-        public override void RenameProvider(GoogleDriveProviderInfo googleDriveProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(googleDriveProviderInfo.ID, newTitle, null, googleDriveProviderInfo.RootFolderType);
-            googleDriveProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
 

@@ -30,8 +30,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector
@@ -62,27 +60,6 @@ namespace ASC.Files.Thirdparty.OneDrive
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<OneDriveSecurityDao>(id);
-        }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-            }
-            return base.GetIdCode(id);
-        }
-
-
-        public override void RenameProvider(OneDriveProviderInfo onedriveProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(onedriveProviderInfo.ID, newTitle, null, onedriveProviderInfo.RootFolderType);
-            onedriveProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
 

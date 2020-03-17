@@ -118,7 +118,7 @@ namespace ASC.Files.Thirdparty.Dropbox
             CacheReset();
         }
 
-        internal void UpdateTitle(string newtitle)
+        public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
         }

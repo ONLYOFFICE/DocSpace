@@ -30,8 +30,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector
@@ -63,27 +61,8 @@ namespace ASC.Files.Thirdparty.Box
         {
             return base.GetSecurityDao<BoxSecurityDao>(id);
         }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-            }
-            return base.GetIdCode(id);
-        }
-
-        public override void RenameProvider(BoxProviderInfo boxProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(boxProviderInfo.ID, newTitle, null, boxProviderInfo.RootFolderType);
-            boxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
-        }
     }
+
     public static class BoxDaoSelectorExtention
     {
         public static DIHelper AddBoxDaoSelectorService(this DIHelper services)

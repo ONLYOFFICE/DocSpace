@@ -30,8 +30,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal class SharpBoxDaoSelector : RegexDaoSelectorBase<SharpBoxProviderInfo>, IDaoSelector
@@ -62,26 +60,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<SharpBoxSecurityDao>(id);
-        }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-            }
-            return base.GetIdCode(id);
-        }
-
-        public override void RenameProvider(SharpBoxProviderInfo sharpBoxProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(sharpBoxProviderInfo.ID, newTitle, null, sharpBoxProviderInfo.RootFolderType);
-            sharpBoxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
 

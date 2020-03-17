@@ -207,5 +207,13 @@ namespace ASC.Files.Thirdparty.SharePoint
         {
             return MappingID(id, false);
         }
+
+        public void Dispose()
+        {
+            if (ProviderInfo != null)
+            {
+                ProviderInfo.Dispose();
+            }
+        }
     }
 }

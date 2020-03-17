@@ -95,7 +95,7 @@ namespace ASC.Files.Thirdparty.SharePoint
             SharePointProviderInfoHelper.Invalidate();
         }
 
-        internal void UpdateTitle(string newtitle)
+        public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
         }

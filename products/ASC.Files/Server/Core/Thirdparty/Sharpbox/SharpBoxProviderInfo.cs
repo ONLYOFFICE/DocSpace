@@ -79,7 +79,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
         }
 
-        internal void UpdateTitle(string newtitle)
+        public void UpdateTitle(string newtitle)
         {
             CustomerTitle = newtitle;
         }

@@ -263,8 +263,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
         public void Dispose()
         {
-            //TODO
-            //throw new NotImplementedException();
+            Selectors.ForEach(r => r.Dispose());
         }
     }
 

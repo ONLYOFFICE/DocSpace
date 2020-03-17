@@ -84,7 +84,10 @@ namespace ASC.Files.Thirdparty.OneDrive
 
         public void Dispose()
         {
-            OneDriveProviderInfo.Dispose();
+            if (OneDriveProviderInfo != null)
+            {
+                OneDriveProviderInfo.Dispose();
+            }
         }
 
         protected string MappingID(string id, bool saveIfNotExist = false)

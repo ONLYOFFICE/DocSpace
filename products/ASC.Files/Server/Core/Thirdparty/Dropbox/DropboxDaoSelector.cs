@@ -25,13 +25,10 @@
 
 
 using System;
-using System.Globalization;
 
 using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
-
-using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Thirdparty.Dropbox
 {
@@ -63,27 +60,6 @@ namespace ASC.Files.Thirdparty.Dropbox
         public ISecurityDao<string> GetSecurityDao(string id)
         {
             return base.GetSecurityDao<DropboxSecurityDao>(id);
-        }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(Convert.ToString(id, CultureInfo.InvariantCulture));
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-                throw new ArgumentException("Id is not a Dropbox id");
-            }
-            return base.GetIdCode(id);
-        }
-
-        public override void RenameProvider(DropboxProviderInfo dropboxProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(dropboxProviderInfo.ID, newTitle, null, dropboxProviderInfo.RootFolderType);
-            dropboxProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
 

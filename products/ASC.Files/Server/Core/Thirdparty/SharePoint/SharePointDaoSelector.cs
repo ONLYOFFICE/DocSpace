@@ -30,8 +30,6 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Security;
 
-using Microsoft.Extensions.DependencyInjection;
-
 namespace ASC.Files.Thirdparty.SharePoint
 {
     internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
@@ -75,26 +73,6 @@ namespace ASC.Files.Thirdparty.SharePoint
                 throw new ArgumentException("Id is not a sharepoint id");
             }
             return base.ConvertId(null);
-        }
-
-        public override string GetIdCode(string id)
-        {
-            if (id != null)
-            {
-                var match = Selector.Match(id);
-                if (match.Success)
-                {
-                    return match.Groups["id"].Value;
-                }
-            }
-            return base.GetIdCode(id);
-        }
-
-        public override void RenameProvider(SharePointProviderInfo sharePointProviderInfo, string newTitle)
-        {
-            var dbDao = ServiceProvider.GetService<CachedProviderAccountDao>();
-            dbDao.UpdateProviderInfo(sharePointProviderInfo.ID, newTitle, null, sharePointProviderInfo.RootFolderType);
-            sharePointProviderInfo.UpdateTitle(newTitle); //This will update cached version too
         }
     }
 
