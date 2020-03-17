@@ -61,10 +61,10 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onEditComplete = () => {
-    const { folderId, fileAction } = this.props;
+    const { folderId, fileAction, filter } = this.props;
 
     if (fileAction.type === 'create') {
-      fetchFolder(folderId, store.dispatch)
+      fetchFiles(folderId, filter, store.dispatch)
     }
 
     this.setState({ editingId: null }, () => {
