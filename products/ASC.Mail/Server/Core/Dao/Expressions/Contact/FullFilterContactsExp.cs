@@ -35,44 +35,59 @@
 //using ASC.Mail.Enums;
 //using ASC.Mail.Extensions;
 
+using ASC.ElasticSearch;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Enums;
+using ASC.Mail.Models;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+
 namespace ASC.Mail.Core.Dao.Expressions.Contact
 {
-    /*public class FullFilterContactsExp : SimpleFilterContactsExp
+    public class FullFilterContactsExp : SimpleFilterContactsExp
     {
         public ContactInfoType? InfoType { get; private set; }
         public bool? IsPrimary { get; private set; }
+        public MailDbContext MailDb { get; }
+        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
         public string SearchTerm { get; private set; }
         public int? Type { get; set; }
 
-        private const string MAIL_CONTACTS = "mc";
-        private const string CONTACT_INFO = "ci";
-
-        public FullFilterContactsExp(int tenant, string user, string searchTerm = null, int? type = null,
-            ContactInfoType? infoType = null, bool? isPrimary = null, bool? orderAsc = true, int? startIndex = null,
+        public FullFilterContactsExp(int tenant, string user, 
+            MailDbContext mailDbContext,
+            FactoryIndexer<MailContactWrapper> factoryIndexer, 
+            string searchTerm = null, int? type = null, ContactInfoType? infoType = null, 
+            bool? isPrimary = null, bool? orderAsc = true, int? startIndex = null,
             int? limit = null)
             : base(tenant, user, orderAsc, startIndex, limit)
         {
             InfoType = infoType;
             IsPrimary = isPrimary;
+            MailDb = mailDbContext;
+            FactoryIndexer = factoryIndexer;
             SearchTerm = searchTerm;
             Type = type;
         }
 
-        public override Exp GetExpression()
+        public override Expression<Func<MailContacts, bool>> GetExpression()
         {
             var exp = base.GetExpression();
 
             if (!string.IsNullOrEmpty(SearchTerm))
             {
-                var bySearch = Exp.Empty;
+                var foundIndex = false;
 
-                if (FactoryIndexer<MailContactWrapper>.Support && FactoryIndexer.CheckState(false))
+                var t = FactoryIndexer.ServiceProvider.GetService<MailContactWrapper>();
+                if (FactoryIndexer.FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
                 {
-                    var selector = new Selector<MailContactWrapper>()
+                    var selector = new Selector<MailContactWrapper>(FactoryIndexer.ServiceProvider)
                         .MatchAll(SearchTerm)
                         .Where(s => s.User, new Guid(User));
 
-                    if (InfoType.HasValue) 
+                    if (InfoType.HasValue)
                     {
                         selector.InAll(s => s.InfoList.Select(i => i.InfoType), new[] { (int)InfoType.Value });
                     }
@@ -82,51 +97,45 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
                         selector.InAll(s => s.InfoList.Select(i => i.IsPrimary), new[] { IsPrimary.Value });
                     }
 
-                    List<int> ids;
-                    if (FactoryIndexer<MailContactWrapper>.TrySelectIds(s => selector, out ids))
+                    if (FactoryIndexer.TrySelectIds(s => selector, out List<int> ids))
                     {
-                        bySearch = Exp.In(ContactsTable.Columns.Id.Prefix(MAIL_CONTACTS), ids); // if ids.length == 0 then IN (1=0) - equals to no results
+                        foundIndex = true;
+                        exp = exp.And(r => ids.Contains((int)r.Id)); // if ids.length == 0 then IN (1=0) - equals to no results
                     }
                 }
 
-                if (bySearch == Exp.Empty)
+                if (!foundIndex)
                 {
-                    var contactInfoQuery = new SqlQuery(ContactInfoTable.TABLE_NAME.Alias(CONTACT_INFO))
-                        .Distinct()
-                        .Select(ContactInfoTable.Columns.ContactId.Prefix(CONTACT_INFO))
-                        .Where(ContactInfoTable.Columns.Tenant.Prefix(CONTACT_INFO), Tenant)
-                        .Where(ContactInfoTable.Columns.User.Prefix(CONTACT_INFO), User)
-                        .Where(Exp.Like(ContactInfoTable.Columns.Data.Prefix(CONTACT_INFO), SearchTerm, SqlLike.AnyWhere));
+                    var contactInfoQuery = MailDb.MailContactInfo
+                        .Where(o => o.Tenant == Tenant 
+                            && o.IdUser == User 
+                            && o.Data.Contains(SearchTerm, StringComparison.InvariantCultureIgnoreCase));
 
                     if (IsPrimary.HasValue)
                     {
-                        contactInfoQuery.Where(Exp.Eq(ContactInfoTable.Columns.IsPrimary.Prefix(CONTACT_INFO), IsPrimary.Value));
+                        contactInfoQuery.Where(o => o.IsPrimary == IsPrimary.Value);
                     }
 
                     if (InfoType.HasValue)
                     {
-                        contactInfoQuery.Where(Exp.Eq(ContactInfoTable.Columns.Type.Prefix(CONTACT_INFO), (int)InfoType.Value));
+                        contactInfoQuery.Where(o => o.Type == (int)InfoType.Value);
                     }
 
-                    bySearch =
-                        Exp.Or(
-                            Exp.Like(ContactsTable.Columns.Description.Prefix(MAIL_CONTACTS), SearchTerm,
-                                SqlLike.AnyWhere),
-                            Exp.Or(
-                                Exp.Like(ContactsTable.Columns.ContactName.Prefix(MAIL_CONTACTS), SearchTerm,
-                                    SqlLike.AnyWhere),
-                                Exp.In(ContactsTable.Columns.Id.Prefix(MAIL_CONTACTS), contactInfoQuery)));
-                }
+                    var ids = contactInfoQuery
+                        .Select(o => o.IdContact)
+                        .Distinct()
+                        .ToList();
 
-                exp &= bySearch;
+                    exp = exp.And(r => r.Description.Contains(SearchTerm) || r.Name.Contains(SearchTerm) || ids.Contains(r.Id));
+                }
             }
 
             if (Type.HasValue)
             {
-                exp &= Exp.Eq(ContactsTable.Columns.Type.Prefix(MAIL_CONTACTS), Type.Value);
+                exp = exp.And(c => c.Type == Type.Value);
             }
 
             return exp;
         }
-    }*/
+    }
 }

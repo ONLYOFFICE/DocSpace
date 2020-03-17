@@ -34,54 +34,72 @@
 //using ASC.Mail.Core.DbSchema.Tables;
 //using ASC.Mail.Core.Entities;
 
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ContactInfoDao : BaseDao, IContactInfoDao
+    public class ContactInfoDao : BaseDao, IContactInfoDao
     {
-        protected static ITable table = new MailTableFactory().Create<ContactInfoTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public ContactInfoDao(IDbManager dbManager, int tenant, string user) 
-            : base(table, dbManager, tenant)
+        public ContactInfoDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public int SaveContactInfo(ContactInfo contactInfo)
         {
-            var query = new SqlInsert(ContactInfoTable.TABLE_NAME, true)
-                .InColumnValue(ContactInfoTable.Columns.Id, contactInfo.Id)
-                .InColumnValue(ContactInfoTable.Columns.Tenant, contactInfo.Tenant)
-                .InColumnValue(ContactInfoTable.Columns.User, contactInfo.User)
-                .InColumnValue(ContactInfoTable.Columns.ContactId, contactInfo.ContactId)
-                .InColumnValue(ContactInfoTable.Columns.Data, contactInfo.Data)
-                .InColumnValue(ContactInfoTable.Columns.Type, contactInfo.Type)
-                .InColumnValue(ContactInfoTable.Columns.IsPrimary, contactInfo.IsPrimary);
+            var mailContactInfo = new MailContactInfo { 
+                Id = (uint)contactInfo.Id,
+                Tenant = contactInfo.Tenant,
+                IdUser = contactInfo.User,
+                IdContact = (uint)contactInfo.ContactId,
+                Data = contactInfo.Data,
+                Type = contactInfo.Type,
+                IsPrimary = contactInfo.IsPrimary
+            };
 
-            return Db.ExecuteScalar<int>(query);
+            var entity = MailDb.AddOrUpdate(t => t.MailContactInfo, mailContactInfo);
+
+            MailDb.SaveChanges();
+
+            return (int)entity.Id;
         }
 
         public int RemoveContactInfo(int id)
         {
-            var query = new SqlDelete(ContactInfoTable.TABLE_NAME)
-                .Where(ContactInfoTable.Columns.Id, id)
-                .Where(ContactInfoTable.Columns.Tenant, Tenant)
-                .Where(ContactInfoTable.Columns.User, CurrentUserId);
+            var queryDelete = MailDb.MailContactInfo
+                .Where(c => c.Tenant == Tenant
+                    && c.IdUser == UserId
+                    && c.Id == id);
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailContactInfo.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
 
             return result;
         }
 
+        //TODO: Move this method into ContactDao
         public int RemoveByContactIds(List<int> contactIds)
         {
-            var deleteContact = new SqlDelete(ContactsTable.TABLE_NAME)
-                .Where(Exp.In(ContactsTable.Columns.Id, contactIds))
-                .Where(ContactInfoTable.Columns.Tenant, Tenant)
-                .Where(ContactInfoTable.Columns.User, CurrentUserId);
+            var queryDelete = MailDb.MailContacts
+                .Where(c => c.Tenant == Tenant
+                    && c.IdUser == UserId
+                    && contactIds.Contains((int)c.Id));
 
-            return Db.ExecuteNonQuery(deleteContact);
+            MailDb.MailContacts.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
-    }*/
+    }
 }

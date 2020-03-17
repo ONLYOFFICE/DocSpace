@@ -24,11 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Contact
 {
-    /*public interface IContactsExp
+    public interface IContactsExp
     {
         bool? OrderAsc { get; }
 
@@ -36,6 +38,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
 
         int? Limit { get; }
 
-        Exp GetExpression();
-    }*/
+        Expression<Func<MailContacts, bool>> GetExpression();
+    }
 }

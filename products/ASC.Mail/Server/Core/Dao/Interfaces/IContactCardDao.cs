@@ -30,12 +30,12 @@ using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface IContactCardDao
+    public interface IContactCardDao
     {
         ContactCard GetContactCard(int id);
 
         List<ContactCard> GetContactCards(IContactsExp exp);
 
         int GetContactCardsCount(IContactsExp exp);
-    }*/
+    }
 }

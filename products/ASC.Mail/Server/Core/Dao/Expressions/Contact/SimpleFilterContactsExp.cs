@@ -24,13 +24,13 @@
 */
 
 
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using ASC.Mail.Core.Dao.Entities;
+using System;
+using System.Linq.Expressions;
 
 namespace ASC.Mail.Core.Dao.Expressions.Contact
 {
-    /*public class SimpleFilterContactsExp : IContactsExp
+    public class SimpleFilterContactsExp : IContactsExp
     {
         public int Tenant { get; private set; }
         public string User { get; private set; }
@@ -38,8 +38,6 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
         public bool? OrderAsc { get; private set; }
         public int? StartIndex { get; private set; }
         public int? Limit { get; private set; }
-
-        private const string MAIL_CONTACTS = "mc";
 
         public SimpleFilterContactsExp(int tenant, string user, bool? orderAsc = null,
             int? startIndex = null, int? limit = null)
@@ -52,10 +50,9 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             Limit = limit;
         }
 
-        public virtual Exp GetExpression()
+        public virtual Expression<Func<MailContacts, bool>> GetExpression()
         {
-            return Exp.Eq(ContactsTable.Columns.Tenant.Prefix(MAIL_CONTACTS), Tenant)
-                   & Exp.Eq(ContactsTable.Columns.User.Prefix(MAIL_CONTACTS), User);
+            return r => r.Tenant == Tenant && r.IdUser == User;
         }
-    }*/
+    }
 }
