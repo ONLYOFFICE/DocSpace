@@ -45,5 +45,11 @@
   "TitleModified": "Updated",
   "TitleRemoved": "Removed",
   "TitleSubfolders": "Flds",
-  "TitleDocuments": "Dcs"
+  "TitleDocuments": "Dcs",
+  "Share": "Share",
+  "DownloadAs": "Download as",
+  "More": "More",
+  "CloseButton": "Close",
+  "All": "All",
+  "Files": "Files"
 }

@@ -1,26 +1,32 @@
 import React, { useCallback } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { Headline, store } from 'asc-web-common';
+import { Headline, store, constants } from 'asc-web-common';
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
   toastr,
-  ContextMenuButton
+  ContextMenuButton,
+  GroupButtonsMenu,
+  DropDownItem
 } from "asc-web-components";
 
 const { isAdmin } = store.auth.selectors;
+const { FilterType } = constants;
 
 const StyledContainer = styled.div`
+
+  @media (min-width: 1024px) {
+    ${props => props.isHeaderVisible &&
+    css`width: calc(100% + 76px);`}
+  }
+
+  .header-container {
 
   position: relative;
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
-
-  @media (min-width: 1024px) {
-    ${props => props.isHeaderVisible && css`width: calc(100% + 76px);`}
-  }
 
     .action-button {
       margin-bottom: -1px;
@@ -38,11 +44,41 @@ const StyledContainer = styled.div`
         }
       }
     }
+  }
+
+  .group-button-menu-container {
+    margin: 0 -16px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    padding-bottom: 56px;
+
+    @media (max-width: 1024px) {
+      & > div:first-child {
+        ${props =>
+    props.isArticlePinned &&
+    css`
+            width: calc(100% - 240px);
+          `}
+        position: absolute;
+        top: 56px;
+        z-index: 180;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      margin: 0 -24px;
+    }
+  }
 `;
 
 const SectionHeaderContent = props => {
 
-  const { t, folder, title, onCreate } = props;
+  const { t, folder, title,
+    onCreate, onCheck, onSelect,
+    onClose,
+    isHeaderVisible,
+    isHeaderChecked,
+    isHeaderIndeterminate,
+    selection } = props;
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -133,6 +169,11 @@ const SectionHeaderContent = props => {
     []
   );
 
+  const downloadAsAction = useCallback(
+    () => toastr.info("downloadAsAction click"),
+    []
+  );
+
   const renameAction = useCallback(
     () => toastr.info("renameAction click"),
     []
@@ -201,43 +242,116 @@ const SectionHeaderContent = props => {
     deleteAction
   ]);
 
-  return (
-    <StyledContainer isHeaderVisible={true}>
-      <Headline className='headline-header' type="content" truncate={true}>{title}</Headline>
-      {folder ? (
-        <>
-          <ContextMenuButton
-            className="action-button"
-            directionX="right"
-            iconName="PlusIcon"
-            size={16}
-            color="#657077"
-            getData={getContextOptionsPlus}
-            isDisabled={false}
-          />
 
-          <ContextMenuButton
-            className="action-button"
-            directionX="right"
-            iconName="VerticalDotsIcon"
-            size={16}
-            color="#A3A9AE"
-            getData={getContextOptionsFolder}
-            isDisabled={false}
+  const isItemsSelected = selection.length;
+  const isOnlyFolderSelected = selection.every(selected => !selected.fileType);
+
+  const menuItems = [
+    {
+      label: t("LblSelect"),
+      isDropdown: true,
+      isSeparator: true,
+      isSelect: true,
+      fontWeight: "bold",
+      children: [
+        <DropDownItem key='all' label={t("All")} />,
+        <DropDownItem key={FilterType.FoldersOnly} label={t("Folders")} />,
+        <DropDownItem key={FilterType.DocumentsOnly} label={t("Documents")} />,
+        <DropDownItem key={FilterType.PresentationsOnly} label={t("Presentations")} />,
+        <DropDownItem key={FilterType.SpreadsheetsOnly} label={t("Spreadsheets")} />,
+        <DropDownItem key={FilterType.ImagesOnly} label={t("Images")} />,
+        <DropDownItem key={FilterType.MediaOnly} label={t("Media")} />,
+        <DropDownItem key={FilterType.ArchiveOnly} label={t("Archives")} />,
+        <DropDownItem key={FilterType.FilesOnly} label={t("AllFiles")} />,
+      ],
+      onSelect: item => onSelect(item.key)
+    },
+    {
+      label: t("Share"),
+      disabled: !isItemsSelected,
+      onClick: openSharingSettings
+    },
+    {
+      label: t("Download"),
+      disabled: !isItemsSelected,
+      onClick: downloadAction
+    },
+    {
+      label: t("DownloadAs"),
+      disabled: !isItemsSelected || isOnlyFolderSelected,
+      onClick: downloadAsAction
+    },
+    {
+      label: t("MoveTo"),
+      disabled: !isItemsSelected,
+      onClick: moveAction
+    },
+    {
+      label: t("Copy"),
+      disabled: !isItemsSelected,
+      onClick: copyAction
+    },
+    {
+      label: t("Delete"),
+      disabled: !isItemsSelected,
+      onClick: deleteAction
+    }
+  ];
+
+  return (
+    <StyledContainer isHeaderVisible={isHeaderVisible}>
+      {isHeaderVisible ? (
+        <div className="group-button-menu-container">
+          <GroupButtonsMenu
+            checked={isHeaderChecked}
+            isIndeterminate={isHeaderIndeterminate}
+            onChange={onCheck}
+            menuItems={menuItems}
+            visible={isHeaderVisible}
+            moreLabel={t("More")}
+            closeTitle={t("CloseButton")}
+            onClose={onClose}
+            selected={menuItems[0].label}
           />
-        </>
-      ) : (
-          <>
-            <ContextMenuButton
-              className="action-button"
-              directionX="right"
-              iconName="PlusIcon"
-              size={16}
-              color="#657077"
-              getData={getContextOptionsPlus}
-              isDisabled={false}
-            />
-          </>
+        </div>
+      )
+        : (
+          <div className='header-container'>
+            <Headline className='headline-header' type="content" truncate={true}>{title}</Headline>
+            {folder ?
+              <>
+                <ContextMenuButton
+                  className="action-button"
+                  directionX="right"
+                  iconName="PlusIcon"
+                  size={16}
+                  color="#657077"
+                  getData={getContextOptionsPlus}
+                  isDisabled={false}
+                />
+
+                <ContextMenuButton
+                  className="action-button"
+                  directionX="right"
+                  iconName="VerticalDotsIcon"
+                  size={16}
+                  color="#A3A9AE"
+                  getData={getContextOptionsFolder}
+                  isDisabled={false}
+                />
+              </>
+              :
+              <ContextMenuButton
+                className="action-button"
+                directionX="right"
+                iconName="PlusIcon"
+                size={16}
+                color="#657077"
+                getData={getContextOptionsPlus}
+                isDisabled={false}
+              />
+            }
+          </div>
         )}
     </StyledContainer>
   );
@@ -247,7 +361,8 @@ const mapStateToProps = state => {
   return {
     isAdmin: isAdmin(state.auth.user),
     title: state.files.selectedFolder.title,
-    folder: state.files.selectedFolder.parentId !== 0
+    folder: state.files.selectedFolder.parentId !== 0,
+    selection: state.files.selection
   };
 };
 

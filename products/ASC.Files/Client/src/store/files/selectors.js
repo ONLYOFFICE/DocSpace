@@ -1,3 +1,8 @@
+import { find, filter } from "lodash";
+import { constants } from 'asc-web-common';
+
+const { FileType, FilterType } = constants;
+
 export const getRootFolders = files => {
   const { my, share, common, project, trash } = files;
 
@@ -48,3 +53,58 @@ export const canConvert = fileExst => {
   const result = convertedDocs.findIndex(item => item === fileExst);
   return result === -1 ? false : true;
 }
+
+export function getSelectedFile(selection, fileId) {
+  return find(selection, function (obj) {
+      return obj.id === fileId;
+  });
+};
+
+export function isFileSelected(selection, fileId) {
+  return getSelectedFile(selection, fileId) !== undefined;
+};
+
+export function skipFile(selection, fileId) {
+  return filter(selection, function (obj) {
+      return obj.id !== fileId;
+  });
+};
+
+export function getFilesBySelected(files, selected) {
+  let newSelection = [];
+  files.forEach(file => {
+      const checked = getFilesChecked(file, selected);
+
+      if (checked)
+          newSelection.push(file);
+  });
+
+  return newSelection;
+};
+
+const getFilesChecked = (file, selected) => {
+  const type = file.fileType;
+  switch (selected) {
+      case "all":
+          return true;
+      case FilterType.FoldersOnly.toString():
+          return !type;
+      case FilterType.DocumentsOnly.toString():
+          return type === FileType.Document;
+      case FilterType.PresentationsOnly.toString():
+          return type === FileType.Presentation;
+      case FilterType.SpreadsheetsOnly.toString():
+          return type === FileType.Spreadsheet;
+      case FilterType.ImagesOnly.toString():
+          return type === FileType.Image;
+      case FilterType.MediaOnly.toString():
+          return type === FileType.Video || type === FileType.Audio;
+      case FilterType.ArchiveOnly.toString():
+          return type === FileType.Archive;
+      case FilterType.FilesOnly.toString():
+          return type;
+      default:
+          return false;
+  }
+};
+

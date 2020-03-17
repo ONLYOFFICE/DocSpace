@@ -13,7 +13,8 @@ import {
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
 import { api } from 'asc-web-common';
-import { fetchFiles, deleteFile, deleteFolder, fetchFolder } from '../../../../../store/files/actions';
+import { fetchFiles, deleteFile, deleteFolder, fetchFolder, selectFile, deselectFile } from '../../../../../store/files/actions';
+import { isFileSelected } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import config from "../../../../../../package.json";
@@ -172,8 +173,17 @@ class SectionBodyContent extends React.PureComponent {
     return false;
   };
 
+  onContentRowSelect = (checked, file) => {
+
+    if (checked) {
+      this.props.selectFile(file);
+    } else {
+      this.props.deselectFile(file);
+    }
+  };
+
   render() {
-    const { files, folders, viewer, parentId, folderId, settings } = this.props;
+    const { files, folders, viewer, parentId, folderId, settings, selection } = this.props;
     const { editingId, isEdit, isCreating } = this.state;
 
     let items = [...folders, ...files];
@@ -194,7 +204,7 @@ class SectionBodyContent extends React.PureComponent {
           const contextOptionsProps = !contextOptions.length || item.id === -2
             ? {}
             : { contextOptions };
-          const checked = false; //isUserSelected(selection, user.id);
+          const checked = isFileSelected(selection, item.id);
           const checkedProps = /* isAdmin(viewer) */ item.id !== -2 && true ? { checked } : {};
           const element = (isEdit || isCreating) && (item.id === editingId || item.id === -2)
             ? <Loader type='oval' color="black" size='24px' label="Editing..." />
@@ -207,7 +217,7 @@ class SectionBodyContent extends React.PureComponent {
               key={item.id}
               data={item}
               element={element}
-              onSelect={() => { }}
+              onSelect={this.onContentRowSelect}
               editing={editingId}
               {...checkedProps}
               {...contextOptionsProps}
@@ -244,5 +254,5 @@ const mapStateToProps = state => {
 
 export default connect(
   mapStateToProps,
-  { fetchFiles, deleteFile, deleteFolder }
+  { fetchFiles, deleteFile, deleteFolder, selectFile, deselectFile }
 )(withRouter(withTranslation()(SectionBodyContent)));

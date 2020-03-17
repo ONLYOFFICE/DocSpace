@@ -35,12 +35,12 @@ class PureHome extends React.Component {
   }
 
   renderGroupButtonMenu = () => {
-    const { files, selection, selected, setSelected } = this.props;
+    const { files, selection, selected, setSelected, folders } = this.props;
 
     const headerVisible = selection.length > 0;
     const headerIndeterminate =
-      headerVisible && selection.length > 0 && selection.length < files.length;
-    const headerChecked = headerVisible && selection.length === files.length;
+      headerVisible && selection.length > 0 && selection.length < files.length + folders.length;
+    const headerChecked = headerVisible && selection.length === files.length + folders.length;
 
     /*console.log(`renderGroupButtonMenu()
       headerVisible=${headerVisible} 
@@ -182,6 +182,7 @@ Home.propTypes = {
 function mapStateToProps(state) {
   return {
     files: state.files.files,
+    folders: state.files.folders,
     selection: state.files.selection,
     selected: state.files.selected,
     isLoaded: state.auth.isLoaded

@@ -8,9 +8,12 @@ import {
   SET_ROOT_FOLDERS,
   SET_SELECTED_FOLDER,
   SET_SELECTED,
-  SET_SELECTION
+  SET_SELECTION,
+  SELECT_FILE,
+  DESELECT_FILE
 } from "./actions";
 import { api } from "asc-web-common";
+import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
 const { FilesFilter } = api;
 
 const initialState = {
@@ -49,10 +52,11 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selection: action.selection
       });
-    case SET_SELECTED:
-      return Object.assign({}, state, {
-        selected: action.selected
-      });
+      case SET_SELECTED:
+        return Object.assign({}, state, {
+          selected: action.selected,
+          selection: getFilesBySelected(state.files.concat(state.folders), action.selected)
+        });
     case SET_SELECTED_FOLDER:
       return Object.assign({}, state, {
         selectedFolder: action.selectedFolder
@@ -69,6 +73,18 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         filter: action.filter
       });
+      case SELECT_FILE:
+        if (!isFileSelected(state.selection, action.file.id)) {
+          return Object.assign({}, state, {
+            selection: [...state.selection, action.file]
+          });
+        } else return state;
+      case DESELECT_FILE:
+        if (isFileSelected(state.selection, action.file.id)) {
+          return Object.assign({}, state, {
+            selection: skipFile(state.selection, action.file.id)
+          });
+        } else return state;
     default:
       return state;
   }

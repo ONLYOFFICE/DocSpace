@@ -39,12 +39,17 @@
   "NextPage": "Следующая",
   "DefaultOptionLabel": "Я",
   "LblSelect": "Выберите",
-
   "AuthorMe": "Я",
   "TitleCreated": "Создана",
   "TitleUploaded": "Загружен",
   "TitleModified": "Обновлён",
   "TitleRemoved": "Удалён",
   "TitleSubfolders": "Flds",
-  "TitleDocuments": "Dcs"
+  "TitleDocuments": "Dcs",
+  "Share": "Общий доступ",
+  "DownloadAs": "Скачать как",
+  "More": "Больше",
+  "CloseButton": "Закрыть",
+  "All": "Все",
+  "Files": "Файлы"
 }

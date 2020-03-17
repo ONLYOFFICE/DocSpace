@@ -24,6 +24,8 @@ export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
 export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
 export const SET_FILES_FILTER = "SET_FILES_FILTER";
 export const SET_FILTER = "SET_FILTER";
+export const SELECT_FILE = "SELECT_FILE";
+export const DESELECT_FILE = "DESELECT_FILE";
 
 export function setFile(file) {
   return {
@@ -92,6 +94,20 @@ export function setFilter(filter) {
   return {
     type: SET_FILTER,
     filter
+  };
+};
+
+export function selectFile(file) {
+  return {
+    type: SELECT_FILE,
+    file
+  };
+}
+
+export function deselectFile(file) {
+  return {
+    type: DESELECT_FILE,
+    file
   };
 }
 
