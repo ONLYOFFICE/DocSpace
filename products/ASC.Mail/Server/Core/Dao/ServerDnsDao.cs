@@ -24,40 +24,34 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ServerDnsDao : BaseDao, IServerDnsDao
+    public class ServerDnsDao : BaseDao, IServerDnsDao
     {
-        protected static ITable table = new MailTableFactory().Create<ServerDnsTable>();
-
-        public string User { get; private set; }
-
-        public ServerDnsDao(IDbManager dbManager, int tenant, string user) 
-            : base(table, dbManager, tenant)
+        public ServerDnsDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            User = user;
         }
 
         public ServerDns Get(int domainId)
         {
-            var query = Query()
-                .Where(Exp.In(ServerDnsTable.Columns.Tenant, new List<int> {Tenant, Defines.SHARED_TENANT_ID}))
-                .Where(ServerDnsTable.Columns.DomainId, domainId);
+            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
 
-            var dns = Db.ExecuteList(query)
-                .ConvertAll(ToServerDns)
+            var dns = MailDb.MailServerDns
+                .Where(d => tenants.Contains(d.Tenant))
+                .Where(d => d.IdDomain == domainId)
+                .Select(ToServerDns)
                 .SingleOrDefault();
 
             return dns;
@@ -65,100 +59,102 @@ namespace ASC.Mail.Core.Dao
 
         public ServerDns GetById(int id)
         {
-            var query = Query()
-                .Where(ServerDnsTable.Columns.Tenant, Tenant)
-                .Where(ServerDnsTable.Columns.Id, id);
-
-            var dns = Db.ExecuteList(query)
-                .ConvertAll(ToServerDns)
-                .SingleOrDefault();
+            var dns = MailDb.MailServerDns
+               .Where(d => d.Tenant == Tenant)
+               .Where(d => d.Id == id)
+               .Select(ToServerDns)
+               .SingleOrDefault();
 
             return dns;
         }
 
         public ServerDns GetFree()
         {
-            var query = Query()
-                .Where(ServerDnsTable.Columns.Tenant, Tenant)
-                .Where(ServerDnsTable.Columns.User, User)
-                .Where(ServerDnsTable.Columns.DomainId, Defines.UNUSED_DNS_SETTING_DOMAIN_ID);
-
-            var dns = Db.ExecuteList(query)
-                .ConvertAll(ToServerDns)
-                .SingleOrDefault();
+            var dns = MailDb.MailServerDns
+               .Where(d => d.Tenant == Tenant)
+               .Where(d => d.IdUser == UserId)
+               .Where(d => d.IdDomain == Defines.UNUSED_DNS_SETTING_DOMAIN_ID)
+               .Select(ToServerDns)
+               .SingleOrDefault();
 
             return dns;
         }
 
         public int Save(ServerDns dns)
         {
-            var query = new SqlInsert(ServerDnsTable.TABLE_NAME, true)
-                .InColumnValue(ServerDnsTable.Columns.Id, dns.Id)
-                .InColumnValue(ServerDnsTable.Columns.Tenant, dns.Tenant)
-                .InColumnValue(ServerDnsTable.Columns.User, dns.User)
-                .InColumnValue(ServerDnsTable.Columns.DomainId, dns.DomainId)
-                .InColumnValue(ServerDnsTable.Columns.DomainCheck, dns.DomainCheck)
-                .InColumnValue(ServerDnsTable.Columns.DkimSelector, dns.DkimSelector)
-                .InColumnValue(ServerDnsTable.Columns.DkimPrivateKey, dns.DkimPrivateKey)
-                .InColumnValue(ServerDnsTable.Columns.DkimPublicKey, dns.DkimPublicKey)
-                .InColumnValue(ServerDnsTable.Columns.DkimTtl, dns.DkimTtl)
-                .InColumnValue(ServerDnsTable.Columns.DkimVerified, dns.DkimVerified)
-                .InColumnValue(ServerDnsTable.Columns.DkimDateChecked, dns.DkimDateChecked)
-                .InColumnValue(ServerDnsTable.Columns.Spf, dns.Spf)
-                .InColumnValue(ServerDnsTable.Columns.SpfTtl, dns.SpfTtl)
-                .InColumnValue(ServerDnsTable.Columns.SpfVerified, dns.SpfVerified)
-                .InColumnValue(ServerDnsTable.Columns.SpfDateChecked, dns.SpfDateChecked)
-                .InColumnValue(ServerDnsTable.Columns.Mx, dns.Mx)
-                .InColumnValue(ServerDnsTable.Columns.MxTtl, dns.MxTtl)
-                .InColumnValue(ServerDnsTable.Columns.MxVerified, dns.MxVerified)
-                .InColumnValue(ServerDnsTable.Columns.MxDateChecked, dns.MxDateChecked)
-                .InColumnValue(ServerDnsTable.Columns.TimeModified, dns.TimeModified)
-                .Identity(0, 0, true);
+            var mailDns = new MailServerDns { 
+                Id = (uint)dns.Id,
+                Tenant = dns.Tenant,
+                IdUser = dns.User,
+                IdDomain = dns.DomainId,
+                DomainCheck = dns.DomainCheck,
+                DkimSelector = dns.DkimSelector,
+                DkimPrivateKey = dns.DkimPrivateKey,
+                DkimPublicKey = dns.DkimPublicKey,
+                DkimTtl = dns.DkimTtl,
+                DkimVerified = dns.DkimVerified,
+                DkimDateChecked = dns.DkimDateChecked,
+                Spf = dns.Spf,
+                SpfTtl = dns.SpfTtl,
+                SpfVerified = dns.SpfVerified,
+                SpfDateChecked = dns.SpfDateChecked,
+                Mx = dns.Mx,
+                MxTtl = dns.MxTtl,
+                MxVerified = dns.MxVerified,
+                MxDateChecked = dns.MxDateChecked,
+                TimeModified = dns.TimeModified
+            };
 
-            var id = Db.ExecuteScalar<int>(query);
+            var entry = MailDb.AddOrUpdate(t => t.MailServerDns, mailDns);
 
-            return id;
+            MailDb.SaveChanges();
+
+            return (int)entry.Id;
         }
 
         public int Delete(int id)
         {
-            var query = new SqlDelete(ServerDnsTable.TABLE_NAME)
-                .Where(ServerDnsTable.Columns.Tenant, Tenant)
-                .Where(ServerDnsTable.Columns.User, User)
-                .Where(ServerDnsTable.Columns.Id, id);
+            var mailDns = new MailServerDns
+            {
+                Id = (uint)id,
+                Tenant = Tenant,
+                IdUser = UserId
+            };
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailServerDns.Remove(mailDns);
+
+            var result = MailDb.SaveChanges();
 
             return result;
         }
 
-        protected ServerDns ToServerDns(object[] r)
+        protected ServerDns ToServerDns(MailServerDns r)
         {
             var s = new ServerDns
             {
-                Id = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                User = Convert.ToString(r[2]),
-                DomainId = Convert.ToInt32(r[3]),
-                DomainCheck = Convert.ToString(r[4]),
-                DkimSelector = Convert.ToString(r[5]),
-                DkimPrivateKey = Convert.ToString(r[6]),
-                DkimPublicKey = Convert.ToString(r[7]),
-                DkimTtl = Convert.ToInt32(r[8]),
-                DkimVerified = Convert.ToBoolean(r[9]),
-                DkimDateChecked = Convert.ToDateTime(r[10]),
-                Spf = Convert.ToString(r[11]),
-                SpfTtl = Convert.ToInt32(r[12]),
-                SpfVerified = Convert.ToBoolean(r[13]),
-                SpfDateChecked = Convert.ToDateTime(r[14]),
-                Mx = Convert.ToString(r[15]),
-                MxTtl = Convert.ToInt32(r[16]),
-                MxVerified = Convert.ToBoolean(r[17]),
-                MxDateChecked = Convert.ToDateTime(r[18]),
-                TimeModified = Convert.ToDateTime(r[19])
+                Id = (int)r.Id,
+                Tenant = r.Tenant,
+                User = r.IdUser,
+                DomainId = r.IdDomain,
+                DomainCheck = r.DomainCheck,
+                DkimSelector = r.DkimSelector,
+                DkimPrivateKey = r.DkimPrivateKey,
+                DkimPublicKey = r.DkimPublicKey,
+                DkimTtl = r.DkimTtl,
+                DkimVerified = r.DkimVerified,
+                DkimDateChecked = r.DkimDateChecked,
+                Spf = r.Spf,
+                SpfTtl = r.SpfTtl,
+                SpfVerified = r.SpfVerified,
+                SpfDateChecked = r.SpfDateChecked,
+                Mx = r.Mx,
+                MxTtl = r.MxTtl,
+                MxVerified = r.MxVerified,
+                MxDateChecked = r.MxDateChecked,
+                TimeModified = r.TimeModified
             };
 
             return s;
         }
-    }*/
+    }
 }
