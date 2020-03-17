@@ -98,7 +98,8 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isHeaderIndeterminate,
       isHeaderChecked,
-      selected
+      selected,
+      isLoading
     } = this.state;
     const { t } = this.props;
     return (
@@ -126,7 +127,7 @@ class PureHome extends React.Component {
           articleMainButtonContent={
             <ArticleMainButtonContent/>
           }
-          articleBodyContent={<ArticleBodyContent />}
+          articleBodyContent={<ArticleBodyContent  onLoading={this.onLoading} isLoading={isLoading} />}
           sectionHeaderContent={
             <SectionHeaderContent
               isHeaderVisible={isHeaderVisible}

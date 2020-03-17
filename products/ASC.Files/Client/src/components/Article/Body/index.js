@@ -13,93 +13,35 @@ class ArticleBodyContent extends React.Component {
 
   componentDidMount() {
     if (history.location.hash) {
-      this.fetchData();
+      const folderId = history.location.hash.slice(1);
+
+      const url = `${history.location.pathname}${history.location.search}`;
+      const symbol =
+        history.location.hash ||
+        history.location.search[history.location.search.length - 1] === "/"
+          ? ""
+          : "/";
+
+      let expandedKeys = [];
+      files
+        .getFolder(folderId)
+        .then(data => {
+          for (let item of data.pathParts) {
+            expandedKeys.push(item.toString());
+          }
+
+          expandedKeys.pop();
+
+          fetchFolder(folderId, store.dispatch)
+            .then(() => {
+              history.push(`${url}${symbol}#${folderId}`);
+            })
+            .catch(err => toastr.error("Something went wrong", err));
+        })
+        .catch(err => toastr.error("Something went wrong", err))
+        .finally(() => this.setState({ expandedKeys }));
     }
   }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { treeFolders } = this.props.filter;
-
-    if (!utils.array.isArrayEqual(treeFolders, this.state.expandedKeys)) {
-      let expandedKeys = treeFolders;
-      expandedKeys = [...new Set(expandedKeys)];
-      this.setState({ expandedKeys });
-    }
-  }
-
-  fetchData = () => {
-    const folderId = history.location.hash.slice(1);
-
-    const url = `${history.location.pathname}${history.location.search}`;
-    const symbol =
-      history.location.hash ||
-      history.location.search[history.location.search.length - 1] === "/"
-        ? ""
-        : "/";
-
-    let expandedKeys = [];
-    files
-      .getFolder(folderId)
-      .then(data => {
-        for (let item of data.pathParts) {
-          expandedKeys.push(item.toString());
-        }
-
-        expandedKeys.pop();
-
-        fetchFolder(folderId, store.dispatch)
-          .then(() => {
-            history.push(`${url}${symbol}#${folderId}`);
-          })
-          .catch(err => toastr.error("Something went wrong", err));
-      })
-      .catch(err => toastr.error("Something went wrong", err))
-      .finally(() => this.setState({ expandedKeys }));
-  };
-
-  /*shouldComponentUpdate(nextProps, nextState) {
-    const {
-      selectedKeys,
-      data,
-      fakeNewDocuments,
-      currentModule,
-      filter
-    } = this.props;
-    if (!utils.array.isArrayEqual(nextProps.selectedKeys, selectedKeys)) {
-      return true;
-    }
-
-    if (!utils.array.isArrayEqual(nextProps.data, data)) {
-      return true;
-    }
-    if (
-      !utils.array.isArrayEqual(
-        filter.treeFolders,
-        nextProps.filter.treeFolders
-      )
-    ) {
-      return true;
-    }
-
-    if (currentModule[0] !== nextProps.currentModule[0]) {
-      return true;
-    }
-
-    if (fakeNewDocuments !== nextProps.fakeNewDocuments) {
-      return true;
-    }
-
-    if (
-      !utils.array.isArrayEqual(nextState.expandedKeys, this.state.expandedKeys)
-    ) {
-      return true;
-    }
-    if (nextState.expandedKeys.length !== this.state.expandedKeys.length) {
-      return true;
-    }
-
-    return false;
-  }*/
 
   render() {
     const {
@@ -108,7 +50,9 @@ class ArticleBodyContent extends React.Component {
       fakeNewDocuments,
       currentModule,
       filter,
-      setFilter
+      setFilter,
+      onLoading,
+      isLoading
     } = this.props;
 
     //console.log("Article Body render", this.props, this.state.expandedKeys);
@@ -121,6 +65,8 @@ class ArticleBodyContent extends React.Component {
         filter={filter}
         setFilter={setFilter}
         expandedKeys={this.state.expandedKeys}
+        onLoading={onLoading}
+        isLoading={isLoading}
       />
     );
   }
@@ -130,13 +76,15 @@ function mapStateToProps(state) {
   const { rootFolders, selectedFolder, filter } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
+  const parentId = selectedFolder.parentId;
 
   return {
     data: getRootFolders(rootFolders),
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
     currentModule: currentFolderId,
-    filter
+    filter,
+    parentId
   };
 }
 

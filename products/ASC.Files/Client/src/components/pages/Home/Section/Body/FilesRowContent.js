@@ -4,10 +4,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
-import { history } from "asc-web-common";
 import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {
@@ -97,18 +96,20 @@ class FilesRowContent extends React.PureComponent {
 
   onFilesClick = () => {
     const { id, fileExst } = this.props.item;
-    const { filter } = this.props;
+    const { filter, parentFolder, onLoading } = this.props;
+    onLoading(true);
     if (!fileExst) {
-      const a =
-        history.location.search !== ""
-          ? history.location.search
-          : history.location.state;
-      const url = `${history.location.pathname}${a}`;
-      history.push(`${url}#${id}`);
-
       const newFilter = filter.clone();
-      newFilter.treeFolders.push(id.toString());
-      fetchFiles(id, newFilter, store.dispatch);
+      if (!newFilter.treeFolders.includes(parentFolder.toString())) {
+        newFilter.treeFolders.push(parentFolder.toString());
+      }
+
+      fetchFiles(id, newFilter, store.dispatch)
+        .catch(err => {
+          toastr.error("Something went wrong", err);
+          onLoading(false);
+        })
+        .finally(() => onLoading(false));
     }
   };
 
@@ -384,7 +385,8 @@ class FilesRowContent extends React.PureComponent {
 function mapStateToProps(state) {
   return {
     filter: state.files.filter,
-    fileAction: state.files.fileAction
+    fileAction: state.files.fileAction,
+	parentFolder: state.files.selectedFolder.id
   }
 }
 

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { EmptyScreenContainer, Link } from "asc-web-components";
 import { fetchFolder } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
+import { history } from "asc-web-common";
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -42,9 +43,15 @@ const EmptyFolderContainer = props => {
   const onCreatePresentationClick = () =>
     console.log("Create presentation click");
   const onCreateFolderClick = () => console.log("Create folder click");
-  const onBackToParentFolder = () =>
+  const onBackToParentFolder = () => {
     fetchFolder(props.parentId, store.dispatch);
-    
+    const url =
+      history.location.search !== ""
+        ? history.location.search
+        : history.location.state;
+    history.push(`${history.location.pathname}${url}#${props.parentId}`);
+  };
+
   return (
     <EmptyFolderWrapper>
       <EmptyScreenContainer
