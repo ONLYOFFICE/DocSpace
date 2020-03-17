@@ -54,14 +54,14 @@ export const canConvert = fileExst => {
   return result === -1 ? false : true;
 }
 
-export function getSelectedFile(selection, fileId) {
+export function getSelectedFile(selection, fileId, parentId) {
   return find(selection, function (obj) {
-      return obj.id === fileId;
+      return obj.id === fileId && obj.parentId === parentId;
   });
 };
 
-export function isFileSelected(selection, fileId) {
-  return getSelectedFile(selection, fileId) !== undefined;
+export function isFileSelected(selection, fileId, parentId) {
+  return getSelectedFile(selection, fileId, parentId) !== undefined;
 };
 
 export function skipFile(selection, fileId) {
