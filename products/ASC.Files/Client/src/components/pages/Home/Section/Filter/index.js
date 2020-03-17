@@ -65,7 +65,7 @@ class SectionFilterContent extends React.Component {
 
     const newFilter = getFilterByLocation(location);
 
-    if (!newFilter || newFilter.equals(filter)) return;
+    // if (!newFilter || newFilter.equals(filter)) return;
 
     if (newFilter.authorType) {
       const authorType = newFilter.authorType;

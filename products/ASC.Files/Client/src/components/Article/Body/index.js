@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { utils, toastr } from "asc-web-components";
 import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
-import { setFilter, fetchFolder } from "../../../store/files/actions";
+import { setFilter, fetchFiles } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
 const { files } = api;
@@ -32,11 +32,11 @@ class ArticleBodyContent extends React.Component {
 
           expandedKeys.pop();
 
-          fetchFolder(folderId, store.dispatch)
-            .then(() => {
-              history.push(`${url}${symbol}#${folderId}`);
-            })
-            .catch(err => toastr.error("Something went wrong", err));
+          fetchFiles(folderId, this.props.filter, store.dispatch)
+            // .then(() => {
+            //   history.push(`${url}${symbol}#${folderId}`);
+            // })
+            // .catch(err => toastr.error("Something went wrong", err));
         })
         .catch(err => toastr.error("Something went wrong", err))
         .finally(() => this.setState({ expandedKeys }));
