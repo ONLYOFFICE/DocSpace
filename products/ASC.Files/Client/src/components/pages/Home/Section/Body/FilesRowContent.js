@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
 import { createFile, createFolder, renameFolder, updateFile, setFilter } from '../../../../../store/files/actions';
-import { canWebEdit, canConvert } from '../../../../../store/files/selectors';
+import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import { history } from "asc-web-common";
 import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
@@ -15,58 +15,58 @@ class FilesRowContent extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    const titleWithoutExt = props.item.fileExst
-      ? props.item.title.split('.').slice(0, -1).join('.')
-      : props.item.title;
+    const titleWithoutExt = getTitleWithoutExst(props.item);
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.editingId
+      editingId: props.action.tempId,
+      loading: false
     };
   }
 
+  completeAction = () => {
+    this.setState({ loading: false }, () =>
+      this.props.onEditComplete());
+  }
+
   updateItem = () => {
-    const { editingId, updateFile, renameFolder, item, onEditComplete } = this.props;
+    const { action, updateFile, renameFolder, item } = this.props;
     const { itemTitle } = this.state;
+    const originalTitle = getTitleWithoutExst(item);
 
-    const originalTitle = item.fileExst
-      ? item.title.split('.').slice(0, -1).join('.')
-      : item.title;
+    this.setState({ loading: true });
 
-    this.setState({ editingId: -1 }, () => {
-      if (originalTitle === itemTitle)
-        return onEditComplete();
+    if (originalTitle === itemTitle)
+      return this.completeAction();
 
-      item.fileExst
-        ? updateFile(editingId, itemTitle)
-          .then(() => onEditComplete())
-        : renameFolder(editingId, itemTitle)
-          .then(() => onEditComplete());
-    });
+    item.fileExst
+      ? updateFile(action.tempId, itemTitle)
+        .then(() => this.completeAction())
+      : renameFolder(action.tempId, itemTitle)
+        .then(() => this.completeAction());
   };
 
   createItem = () => {
-    const { createFile, createFolder, item, onEditComplete } = this.props;
+    const { createFile, createFolder, item } = this.props;
     const { itemTitle } = this.state;
 
-    this.setState({ editingId: -1 }, () => {
-      if (itemTitle.trim() === '')
-        return onEditComplete();
+    this.setState({ loading: true });
 
-      item.fileExst === 'folder'
-        ? createFolder(item.parentId, itemTitle)
-          .then(() => onEditComplete())
-        : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
-          .then(() => onEditComplete())
-    });
+    if (itemTitle.trim() === '')
+      return this.completeAction();
+
+    !item.fileExst
+      ? createFolder(item.parentId, itemTitle)
+        .then(() => this.completeAction())
+      : createFile(item.parentId, `${itemTitle}.${item.fileExst}`)
+        .then(() => this.completeAction())
   }
 
   componentDidUpdate(prevProps) {
-    const { editingId } = this.props;
+    const { action } = this.props;
 
-    if (editingId !== prevProps.editingId) {
-      this.setState({ editingId })
+    if (action.tempId !== prevProps.action.tempId) {
+      this.setState({ editingId: action.tempId })
     }
   }
 
@@ -75,19 +75,19 @@ class FilesRowContent extends React.PureComponent {
   }
 
   cancelUpdateItem = () => {
-    this.setState({ editingId: -1 }, () =>
-      this.props.onEditComplete());
+    this.setState({ loading: false });
+    this.completeAction();
   }
 
   onClickUpdateItem = () => {
-    (this.state.editingId === -2)
+    (this.props.action.type === 'create')
       ? this.createItem()
       : this.updateItem();
   }
 
   onKeyUpUpdateItem = e => {
     if (e.keyCode === 13) {
-      (this.state.editingId === -2)
+      (this.props.action.type === 'create')
         ? this.createItem()
         : this.updateItem();
     }
@@ -116,20 +116,24 @@ class FilesRowContent extends React.PureComponent {
   getStatusByDate = () => {
     const { culture, t, item } = this.props;
     const { created, updated, version, fileExst } = item;
-    
-    const title = version > 1 ? t("TitleModified") : fileExst ? t("TitleUploaded") : t("TitleCreated");
-    const date = fileExst ? updated : created;
 
-    return `${title}: ${new Date(date).toLocaleString(culture)}`;
+    const title = version > 1
+      ? t("TitleModified")
+      : fileExst
+        ? t("TitleUploaded")
+        : t("TitleCreated");
+
+    const date = fileExst ? updated : created;
+    const dateLabel = new Date(date).toLocaleString(culture);
+
+    return `${title}: ${dateLabel}`;
   };
 
   render() {
-    const { culture, t, item } = this.props;
-    const { itemTitle, editingId } = this.state;
+    const { t, item } = this.props;
+    const { itemTitle, editingId, loading } = this.state;
     const {
       contentLength,
-      comment,
-      created,
       updated,
       createdBy,
       fileExst,
@@ -137,7 +141,6 @@ class FilesRowContent extends React.PureComponent {
       fileStatus,
       foldersCount,
       id,
-      title,
       versionGroup
     } = item;
 
@@ -154,6 +157,11 @@ class FilesRowContent extends React.PureComponent {
     .badges {
       display: flex;
       align-items: center;
+    }
+
+    .share-icon {
+      margin-top: -4px;
+      padding-right: 8px;
     }
     `;
 
@@ -186,10 +194,7 @@ class FilesRowContent extends React.PureComponent {
       }
     `;
 
-    const titleWithoutExt = fileExst
-      ? title.split('.').slice(0, -1).join('.')
-      : title;
-
+    const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
     const canEditFile = fileExst && canWebEdit(fileExst);
@@ -222,18 +227,19 @@ class FilesRowContent extends React.PureComponent {
           isAutoFocussed={true}
           onChange={this.renameTitle}
           onKeyUp={this.onKeyUpUpdateItem}
+          isDisabled={loading}
         />
         <Button
           className='edit-button'
           size='medium'
-          isDisabled={false}
+          isDisabled={loading}
           onClick={this.onClickUpdateItem}
           icon={okIcon}
         />
         <Button
           className='edit-button'
           size='medium'
-          isDisabled={false}
+          isDisabled={loading}
           onClick={this.cancelUpdateItem}
           icon={cancelIcon}
         />
@@ -244,6 +250,7 @@ class FilesRowContent extends React.PureComponent {
           isFile={fileExst}
         >
           <Link
+            containerWidth='100%'
             type='page'
             title={titleWithoutExt}
             fontWeight="bold"
@@ -254,7 +261,7 @@ class FilesRowContent extends React.PureComponent {
           >
             {titleWithoutExt}
           </Link>
-          <div>
+          <>
             {fileExst &&
               <div className='badges'>
                 <Text
@@ -330,8 +337,9 @@ class FilesRowContent extends React.PureComponent {
                 }
               </div>
             }
-          </div>
+          </>
           <Text
+            containerMinWidth='120px'
             containerWidth='10%'
             as="div"
             color="#333"
@@ -343,7 +351,8 @@ class FilesRowContent extends React.PureComponent {
             {fileOwner}
           </Text>
           <Link
-            containerWidth='12%'
+            containerMinWidth='190px'
+            containerWidth='15%'
             type='page'
             title={updatedDate}
             fontSize='12px'
@@ -355,7 +364,8 @@ class FilesRowContent extends React.PureComponent {
             {updatedDate && updatedDate}
           </Link>
           <Text
-            containerWidth='10%'
+            containerMinWidth='90px'
+            containerWidth='8%'
             as="div"
             color="#333"
             fontSize='12px'
@@ -374,7 +384,8 @@ class FilesRowContent extends React.PureComponent {
 
 function mapStateToProps(state) {
   return {
-    filter: state.files.filter
+    filter: state.files.filter,
+    action: state.files.action
   }
 }
 

@@ -1,4 +1,5 @@
 import {
+  SET_ACTION,
   SET_FILE,
   SET_FILES_FILTER,
   SET_FILES,
@@ -17,13 +18,16 @@ import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
 const { FilesFilter } = api;
 
 const initialState = {
+  action: {
+    type: null
+  },
   files: null,
+  filter: FilesFilter.getDefault(),
   folders: null,
-  selection: [],
+  rootFolders: [],
   selected: "none",
   selectedFolder: null,
-  rootFolders: [],
-  filter: FilesFilter.getDefault()
+  selection: []
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -52,11 +56,11 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selection: action.selection
       });
-      case SET_SELECTED:
-        return Object.assign({}, state, {
-          selected: action.selected,
-          selection: getFilesBySelected(state.files.concat(state.folders), action.selected)
-        });
+    case SET_SELECTED:
+      return Object.assign({}, state, {
+        selected: action.selected,
+        selection: getFilesBySelected(state.files.concat(state.folders), action.selected)
+      });
     case SET_SELECTED_FOLDER:
       return Object.assign({}, state, {
         selectedFolder: action.selectedFolder
@@ -73,18 +77,22 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         filter: action.filter
       });
-      case SELECT_FILE:
-        if (!isFileSelected(state.selection, action.file.id)) {
-          return Object.assign({}, state, {
-            selection: [...state.selection, action.file]
-          });
-        } else return state;
-      case DESELECT_FILE:
-        if (isFileSelected(state.selection, action.file.id)) {
-          return Object.assign({}, state, {
-            selection: skipFile(state.selection, action.file.id)
-          });
-        } else return state;
+    case SELECT_FILE:
+      if (!isFileSelected(state.selection, action.file.id)) {
+        return Object.assign({}, state, {
+          selection: [...state.selection, action.file]
+        });
+      } else return state;
+    case DESELECT_FILE:
+      if (isFileSelected(state.selection, action.file.id)) {
+        return Object.assign({}, state, {
+          selection: skipFile(state.selection, action.file.id)
+        });
+      } else return state;
+    case SET_ACTION:
+      return Object.assign({}, state, {
+        action: action.action
+      })
     default:
       return state;
   }
