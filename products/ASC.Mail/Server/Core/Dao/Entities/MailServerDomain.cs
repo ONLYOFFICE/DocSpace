@@ -18,7 +18,7 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("name", TypeName = "varchar(255)")]
         public string Name { get; set; }
         [Column("is_verified", TypeName = "int(10)")]
-        public int IsVerified { get; set; }
+        public bool IsVerified { get; set; }
         [Column("date_added", TypeName = "datetime")]
         public DateTime DateAdded { get; set; }
         [Column("date_checked", TypeName = "datetime")]

@@ -24,84 +24,93 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ServerDomainDao : BaseDao, IServerDomainDao
+    public class ServerDomainDao : BaseDao, IServerDomainDao
     {
-        protected static ITable table = new MailTableFactory().Create<ServerDomainTable>();
-
-        public ServerDomainDao(IDbManager dbManager, int tenant)
-            : base(table, dbManager, tenant)
+        public ServerDomainDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public int Save(ServerDomain domain)
         {
-            var query = new SqlInsert(ServerDomainTable.TABLE_NAME)
-                .InColumnValue(ServerDomainTable.Columns.Id, domain.Id)
-                .InColumnValue(ServerDomainTable.Columns.DomainName, domain.Name)
-                .InColumnValue(ServerDomainTable.Columns.Tenant, Tenant)
-                .InColumnValue(ServerDomainTable.Columns.IsVerified, domain.IsVerified)
-                .Identity(0, 0, true);
+            var mailServerDomain = new MailServerDomain { 
+                Id = domain.Id,
+                Name = domain.Name,
+                Tenant = domain.Tenant,
+                IsVerified = domain.IsVerified
+            };
 
             if (domain.Id <= 0)
             {
-                query.InColumnValue(ServerDomainTable.Columns.DateAdded, DateTime.UtcNow);
+                mailServerDomain.DateAdded = DateTime.UtcNow;
             }
 
-            var id = Db.ExecuteScalar<int>(query);
+            var entry = MailDb.MailServerDomain.Add(mailServerDomain).Entity;
 
-            return id;
+            MailDb.SaveChanges();
+
+            return entry.Id;
         }
 
         public int Delete(int id)
         {
-            var query = new SqlDelete(ServerDomainTable.TABLE_NAME)
-                .Where(ServerDomainTable.Columns.Tenant, Tenant)
-                .Where(ServerDomainTable.Columns.Id, id);
+            var mailServerDomain = new MailServerDomain
+            {
+                Id = id,
+                Tenant = Tenant
+            };
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailServerDomain.Remove(mailServerDomain);
 
-            query = new SqlDelete(ServerDnsTable.TABLE_NAME)
-                .Where(ServerDnsTable.Columns.Tenant, Tenant)
-                .Where(ServerDnsTable.Columns.DomainId, id);
+            var result = MailDb.SaveChanges();
 
-            Db.ExecuteNonQuery(query);
+            var mailServerDns = new MailServerDns
+            {
+                IdDomain = id,
+                Tenant = Tenant
+            };
+
+            MailDb.MailServerDns.Remove(mailServerDns);
+
+            MailDb.SaveChanges();
 
             return result;
         }
 
         public List<ServerDomain> GetDomains()
         {
-            var query = Query()
-                .Where(Exp.In(ServerDomainTable.Columns.Tenant, new List<int> {Tenant, Defines.SHARED_TENANT_ID}));
+            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToServerDomain);
+            var list = MailDb.MailServerDomain
+                .Where(d => tenants.Contains(d.Tenant))
+                .Select(ToServerDomain)
+                .ToList();
 
             return list;
         }
 
         public ServerDomain GetDomain(int id)
         {
-            var query = Query()
-                .Where(Exp.In(ServerDomainTable.Columns.Tenant, new List<int> { Tenant, Defines.SHARED_TENANT_ID }))
-                .Where(ServerDomainTable.Columns.Id, id);
+            var tenants = new List<int> { Tenant, Defines.SHARED_TENANT_ID };
 
-            var domain = Db.ExecuteList(query)
-                .ConvertAll(ToServerDomain)
+            var domain = MailDb.MailServerDomain
+                .Where(d => tenants.Contains(d.Tenant))
+                .Where(d => d.Id == id)
+                .Select(ToServerDomain)
                 .SingleOrDefault();
 
             return domain;
@@ -109,11 +118,9 @@ namespace ASC.Mail.Core.Dao
 
         public bool IsDomainExists(string name)
         {
-            var query = Query()
-                .Where(ServerDomainTable.Columns.DomainName, name);
-
-            var domain = Db.ExecuteList(query)
-                .ConvertAll(ToServerDomain)
+            var domain = MailDb.MailServerDomain
+                .Where(d => d.Name == name)
+                .Select(ToServerDomain)
                 .SingleOrDefault();
 
             return domain != null;
@@ -121,27 +128,29 @@ namespace ASC.Mail.Core.Dao
 
         public int SetVerified(int id, bool isVerified)
         {
-            var query = new SqlUpdate(ServerDomainTable.TABLE_NAME)
-                .Set(ServerDomainTable.Columns.IsVerified, isVerified)
-                .Set(ServerDomainTable.Columns.DateChecked, DateTime.UtcNow)
-                .Where(ServerDomainTable.Columns.Id, id);
+            var domain = GetDomain(id);
 
-            return Db.ExecuteNonQuery(query);
+            domain.IsVerified = isVerified;
+            domain.DateChecked = DateTime.UtcNow;
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
-        protected ServerDomain ToServerDomain(object[] r)
+        protected ServerDomain ToServerDomain(MailServerDomain r)
         {
             var d = new ServerDomain
             {
-                Id = Convert.ToInt32(r[0]),
-                Tenant = Convert.ToInt32(r[1]),
-                Name = Convert.ToString(r[2]),
-                IsVerified = Convert.ToBoolean(r[3]),
-                DateAdded = Convert.ToDateTime(r[4]),
-                DateChecked = Convert.ToDateTime(r[5])
+                Id = r.Id,
+                Tenant = r.Tenant,
+                Name = r.Name,
+                IsVerified = r.IsVerified,
+                DateAdded = r.DateAdded,
+                DateChecked = r.DateChecked
             };
 
             return d;
         }
-    }*/
+    }
 }
