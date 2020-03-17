@@ -24,119 +24,136 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Extensions;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ServerDao : BaseDao, IServerDao
+    public class ServerDao : BaseDao, IServerDao
     {
-        protected static ITable table = new MailTableFactory().Create<ServerTable>();
-
-        public ServerDao(IDbManager dbManager)
-            : base(table, dbManager, -1)
+        public ServerDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         private const string SERVER_ALIAS = "ms";
         private const string SERVER_X_TENANT_ALIAS = "st";
 
-        public Entities.Server Get(int tenant)
+        public Server Get(int tenant)
         {
-            var query = Query(SERVER_ALIAS);
-
-            query.InnerJoin(TenantXServerTable.TABLE_NAME.Alias(SERVER_X_TENANT_ALIAS),
-                Exp.EqColumns(
-                    ServerTable.Columns.Id.Prefix(SERVER_ALIAS),
-                    TenantXServerTable.Columns.ServerId.Prefix(SERVER_X_TENANT_ALIAS)))
-                .Where(TenantXServerTable.Columns.Tenant, tenant);
-
-            return Db.ExecuteList(query)
-                .ConvertAll(ToServer)
+            var server = MailDb.MailServerServer
+                .Join(MailDb.MailServerServerXTenant, s => s.Id, x => x.IdServer, 
+                    (s, x) => new { 
+                        Server = s,
+                        Xtenant = x
+                    })
+                .Where(o => o.Xtenant.IdTenant == tenant)
+                .Select(o => ToServer(o.Server))
                 .SingleOrDefault();
+
+            return server;
         }
 
-        public List<Entities.Server> GetList()
+        public List<Server> GetList()
         {
-            var query = Query();
+            var list = MailDb.MailServerServer.Select(ToServer).ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToServer);
+            return list;
         }
 
-        public int Link(Entities.Server server, int tenant)
+        public int Link(Server server, int tenant)
         {
-            var query = new SqlInsert(TenantXServerTable.TABLE_NAME, true)
-                 .InColumnValue(TenantXServerTable.Columns.ServerId, server.Id)
-                 .InColumnValue(TenantXServerTable.Columns.Tenant, tenant);
+            var xItem = new MailServerServerXTenant
+            {
+                IdServer = server.Id,
+                IdTenant = tenant
+            };
 
-            return Db.ExecuteNonQuery(query);
-        }
+            MailDb.AddOrUpdate(t => t.MailServerServerXTenant, xItem);
 
-        public int UnLink(Entities.Server server, int tenant)
-        {
-            var query = new SqlDelete(TenantXServerTable.TABLE_NAME)
-                .Where(TenantXServerTable.Columns.ServerId, server.Id)
-                .Where(TenantXServerTable.Columns.Tenant, tenant);
-
-            var result = Db.ExecuteNonQuery(query);
+            var result = MailDb.SaveChanges();
 
             return result;
         }
 
-        public int Save(Entities.Server server)
+        public int UnLink(Server server, int tenant)
         {
-            var query = new SqlInsert(ServerTable.TABLE_NAME, true)
-                .InColumnValue(ServerTable.Columns.Id, server.Id)
-                .InColumnValue(ServerTable.Columns.MxRecord, server.MxRecord)
-                .InColumnValue(ServerTable.Columns.ConnectionString, server.ConnectionString)
-                .InColumnValue(ServerTable.Columns.ServerType, server.Type)
-                .InColumnValue(ServerTable.Columns.SmtpSettingsId, server.SmtpSettingsId)
-                .InColumnValue(ServerTable.Columns.ImapSettingsId, server.ImapSettingsId)
-                .Identity(0, 0, true);
+            var deleteItem = new MailServerServerXTenant
+            {
+                IdServer = server.Id,
+                IdTenant = tenant
+            };
 
-            var id = Db.ExecuteScalar<int>(query);
+            MailDb.MailServerServerXTenant.Remove(deleteItem);
 
-            return id;
+            var result = MailDb.SaveChanges();
+
+            return result;
+        }
+
+        public int Save(Server server)
+        {
+            var mailServer = new MailServerServer
+            {
+                Id = server.Id,
+                MxRecord = server.MxRecord,
+                ConnectionString = server.ConnectionString,
+                ServerType = server.Type,
+                SmtpSettingsId = server.SmtpSettingsId,
+                ImapSettingsId = server.ImapSettingsId
+            };
+
+            var entry = MailDb.AddOrUpdate(t => t.MailServerServer, mailServer);
+
+            MailDb.SaveChanges();
+
+            return entry.Id;
         }
 
         public int Delete(int id)
         {
-            var query = new SqlDelete(TenantXServerTable.TABLE_NAME)
-                .Where(TenantXServerTable.Columns.ServerId, id);
+            var deleteItem = new MailServerServerXTenant
+            {
+                IdServer = id
+            };
 
-            Db.ExecuteNonQuery(query);
+            MailDb.MailServerServerXTenant.Remove(deleteItem);
 
-            query = new SqlDelete(ServerTable.TABLE_NAME)
-                .Where(ServerTable.Columns.Id, id);
+            MailDb.SaveChanges();
 
-            var result = Db.ExecuteNonQuery(query);
+            var mailServer = new MailServerServer
+            {
+                Id = id
+            };
+
+            MailDb.MailServerServer.Remove(mailServer);
+
+            var result = MailDb.SaveChanges();
 
             return result;
         }
 
-        protected Entities.Server ToServer(object[] r)
+        protected Server ToServer(MailServerServer r)
         {
-            var s = new Entities.Server
+            var s = new Server
             {
-                Id = Convert.ToInt32(r[0]),
-                MxRecord = Convert.ToString(r[1]),
-                ConnectionString = Convert.ToString(r[2]),
-                Type = Convert.ToInt32(r[3]),
-                SmtpSettingsId = Convert.ToInt32(r[4]),
-                ImapSettingsId = Convert.ToInt32(r[5])
+                Id = r.Id,
+                MxRecord = r.MxRecord,
+                ConnectionString = r.ConnectionString,
+                Type = r.ServerType,
+                SmtpSettingsId = r.SmtpSettingsId,
+                ImapSettingsId = r.ImapSettingsId
             };
 
             return s;
         }
-    }*/
+    }
 }
