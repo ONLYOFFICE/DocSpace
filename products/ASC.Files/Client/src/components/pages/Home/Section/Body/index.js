@@ -189,7 +189,7 @@ class SectionBodyContent extends React.PureComponent {
           const contextOptionsProps = !contextOptions.length || fileAction.type
             ? {}
             : { contextOptions };
-          const checked = isFileSelected(selection, item.id);
+          const checked = isFileSelected(selection, item.id, item.parentId);
           const checkedProps = /* isAdmin(viewer) */ fileAction.type && (editingId === item.id || item.id === -1) ? {} : { checked };
           const element = item.fileExst
             ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />

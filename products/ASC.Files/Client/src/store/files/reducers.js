@@ -78,13 +78,13 @@ const filesReducer = (state = initialState, action) => {
         filter: action.filter
       });
     case SELECT_FILE:
-      if (!isFileSelected(state.selection, action.file.id)) {
+      if (!isFileSelected(state.selection, action.file.id, action.file.parentId)) {
         return Object.assign({}, state, {
           selection: [...state.selection, action.file]
         });
       } else return state;
     case DESELECT_FILE:
-      if (isFileSelected(state.selection, action.file.id)) {
+      if (isFileSelected(state.selection, action.file.id, action.file.parentId)) {
         return Object.assign({}, state, {
           selection: skipFile(state.selection, action.file.id)
         });
