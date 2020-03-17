@@ -102,7 +102,7 @@ const getFilesChecked = (file, selected) => {
       case FilterType.ArchiveOnly.toString():
           return type === FileType.Archive;
       case FilterType.FilesOnly.toString():
-          return type;
+          return type || !file.parentId;
       default:
           return false;
   }
