@@ -15,6 +15,6 @@ namespace ASC.Mail.Core.Dao.Entities
         [Column("folder_id", TypeName = "int(11)")]
         public int FolderId { get; set; }
         [Column("skip", TypeName = "int(11)")]
-        public int Skip { get; set; }
+        public bool Skip { get; set; }
     }
 }

@@ -24,44 +24,44 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ImapFlagsDao : BaseDao, IImapFlagsDao
+    public class ImapFlagsDao : BaseDao, IImapFlagsDao
     {
-        protected static ITable table = new MailTableFactory().Create<ImapFlagsTable>();
-
-        public ImapFlagsDao(IDbManager dbManager)
-            : base(table, dbManager)
+        public ImapFlagsDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public List<ImapFlag> GetImapFlags()
         {
-            var query = Query();
+            var list = MailDb.MailImapFlags.Select(ToImapFlag)
+                .ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToImapFlag);
+            return list;
         }
 
-        protected ImapFlag ToImapFlag(object[] r)
+        protected ImapFlag ToImapFlag(MailImapFlags r)
         {
             var imapFlag = new ImapFlag
             {
-                FolderId = Convert.ToInt32(r[0]),
-                Name = Convert.ToString(r[1]),
-                Skip = Convert.ToBoolean(r[2]),
+                FolderId = r.FolderId,
+                Name = r.Name,
+                Skip = r.Skip
             };
 
             return imapFlag;
         }
-    }*/
+    }
 }
