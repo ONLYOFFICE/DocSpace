@@ -166,7 +166,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId, folderId, settings, selection, fileAction } = this.props;
+    const { files, folders, viewer, parentId, folderId, settings, selection, fileAction, onLoading } = this.props;
     const { editingId, isEdit, isCreating } = this.state;
 
     let items = [...folders, ...files];
@@ -204,7 +204,7 @@ class SectionBodyContent extends React.PureComponent {
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete} />
+              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete} onLoading={onLoading} />
             </Row>
           );
         })}

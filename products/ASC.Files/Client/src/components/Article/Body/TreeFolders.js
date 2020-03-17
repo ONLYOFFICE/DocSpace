@@ -78,7 +78,7 @@ class TreeFolders extends React.Component {
     data.forEach(item => {
       const itemId = item.id.toString();
       if (curId.indexOf(itemId) >= 0) {
-        const { filter, setFilter } = this.props;
+        const { filter } = this.props;
         const newFilter = filter.clone();
         const treeItem = newFilter.treeFolders.find(
           x => x.toString() === itemId
@@ -86,7 +86,6 @@ class TreeFolders extends React.Component {
         if (treeItem === undefined) {
           newFilter.treeFolders.push(itemId);
         }
-        setFilter(newFilter);
         if (item.folders) {
           this.loop(item.folders, newFilter.treeFolders, child);
         } else {
@@ -127,8 +126,11 @@ class TreeFolders extends React.Component {
     const folderIndex = treeNode.props.pos;
     let arrayFolders;
 
+    const newFilter = this.props.filter.clone();
+    newFilter.filterType = 2;
+
     return files
-      .getFolder(folderId)
+      .getFolder(folderId, newFilter)
       .then(data => {
         arrayFolders = data.folders;
         let i = 0;
@@ -142,40 +144,46 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = treeNode => {
+    this.props.onLoading(true);
     //console.log("load data...", treeNode);
 
-    return this.generateTreeNodes(treeNode).then(folders => {
-      let listId;
-      const itemId = treeNode.props.id.toString();
-      if (this.props.filter.treeFolders.length === 0) {
-        listId = [itemId];
-      } else {
-        listId = this.props.filter;
-        listId.treeFolders.push(itemId);
-        listId = listId.treeFolders;
-      }
-      const treeData = [...this.state.treeData];
-      this.getNewTreeData(treeData, listId, folders, 10);
-      this.setState({ treeData });
-    });
+    return this.generateTreeNodes(treeNode)
+      .then(folders => {
+        let listId;
+        const itemId = treeNode.props.id.toString();
+        if (this.props.filter.treeFolders.length === 0) {
+          listId = [itemId];
+        } else {
+          listId = this.props.filter.clone();
+          if (!listId.treeFolders.includes(itemId)) {
+            listId.treeFolders.push(itemId);
+          }
+          listId = listId.treeFolders;
+        }
+        const treeData = [...this.state.treeData];
+        this.getNewTreeData(treeData, listId, folders, 10);
+
+        this.setState({ treeData });
+      })
+      .catch(() => this.props.onLoading(false))
+      .finally(() => this.props.onLoading(false));
   };
 
   onExpand = data => {
-    this.setState({expandedKeys: data})
-  }
+    this.setState({ expandedKeys: data });
+  };
 
   render() {
-    const { selectedKeys, fakeNewDocuments } = this.props;
+    const { selectedKeys, fakeNewDocuments, isLoading } = this.props;
     const { treeData, expandedKeys } = this.state;
 
-    //console.log("TreeFolders render", this.props);
     return (
       <TreeMenu
         ref={this.ref}
         className="files-tree-menu"
         checkable={false}
         draggable={false}
-        disabled={false}
+        disabled={isLoading}
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}

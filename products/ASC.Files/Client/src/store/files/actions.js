@@ -92,6 +92,7 @@ export function setRootFolders(rootFolders) {
 }
 
 export function setFilesFilter(filter) {
+  //history
   setFilterUrl(filter);
   return {
     type: SET_FILES_FILTER,
