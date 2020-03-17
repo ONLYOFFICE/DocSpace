@@ -43,6 +43,16 @@ class ArticleBodyContent extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.filter.treeFolders.length !==
+        prevProps.filter.treeFolders.length ||
+      this.state.expandedKeys.length !== this.props.filter.treeFolders.length
+    ) {
+      this.setState({ expandedKeys: this.props.filter.treeFolders });
+    }
+  }
+
   render() {
     const {
       data,

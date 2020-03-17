@@ -155,6 +155,16 @@ export function setFilterUrl(filter, folderId) {
 export function fetchFiles(folderId, filter, dispatch) {
   const filterData = filter ? filter.clone() : FilesFilter.getDefault();
   return files.getFolder(folderId, filter).then(data => {
+
+
+    let treeFolders = [];
+    if(data.pathParts.length > 0) {
+      for(let item of data.pathParts) {
+        treeFolders.push(item.toString());
+      }
+    }
+    filterData.treeFolders = treeFolders;
+
     filterData.total = data.total;
     dispatch(setFilesFilter(filterData, folderId));
     dispatch(setFolders(data.folders));

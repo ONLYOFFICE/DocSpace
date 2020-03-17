@@ -170,13 +170,15 @@ class TreeFolders extends React.Component {
   };
 
   onExpand = data => {
+    const newFilter = this.props.filter;
+    newFilter.treeFolders = data;
+
+    this.props.setFilter(newFilter);
     this.setState({ expandedKeys: data });
   };
-  
-  componentDidUpdate(prevProps) {
-    if (
-      this.state.expandedKeys.length !== this.props.expandedKeys.length
-    ) {
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.expandedKeys.length !== this.props.expandedKeys.length) {
       this.setState({ expandedKeys: this.props.expandedKeys });
     }
   }
