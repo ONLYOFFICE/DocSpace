@@ -24,96 +24,94 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class TagAddressDao: BaseDao, ITagAddressDao
+    public class TagAddressDao: BaseDao, ITagAddressDao
     {
-        protected static ITable table = new MailTableFactory().Create<TagAddressTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public TagAddressDao(IDbManager dbManager, int tenant, string user) 
-            : base(table, dbManager, tenant)
+        public TagAddressDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
         public List<int> GetTagIds(string email)
         {
-            var query = new SqlQuery(TagAddressTable.TABLE_NAME)
+            var tagIds = MailDb.MailTagAddresses
+                .Join(MailDb.MailTag, ta => (int)ta.IdTag, t => t.Id,
+                (ta, t) => new
+                {
+                    TagAddress = ta,
+                    Tag = t
+                })
+                .Where(o => o.TagAddress.Address == email)
+                .Where(o => o.Tag.Tenant == Tenant && o.Tag.IdUser == UserId)
+                .Select(o => (int)o.TagAddress.IdTag)
                 .Distinct()
-                .Select(TagAddressTable.Columns.TagId)
-                .Where(TagAddressTable.Columns.Address, email)
-                .Where(Exp.In(TagAddressTable.Columns.TagId,
-                    new SqlQuery(TagTable.TABLE_NAME)
-                        .Select(TagTable.Columns.Id)
-                        .Where(TagTable.Columns.Tenant, Tenant)
-                        .Where(TagTable.Columns.User, CurrentUserId)
-                    )
-                );
-
-            var tagIds = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToInt32(r[0]));
+                .ToList();
 
             return tagIds;
         }
 
         public List<string> GetTagAddresses(int tagId)
         {
-            var query = new SqlQuery(TagAddressTable.TABLE_NAME)
-                .Select(TagAddressTable.Columns.Address)
-                .Where(TagAddressTable.Columns.TagId, tagId)
-                .Where(TagAddressTable.Columns.Tenant, Tenant);
-
-            var list = Db.ExecuteList(query)
-                .ConvertAll(r => Convert.ToString(r[0]));
+            var list = MailDb.MailTagAddresses
+                .Where(a => a.IdTag == tagId && a.Tenant == Tenant)
+                .Select(a => a.Address)
+                .ToList();
 
             return list;
         }
 
         public int Save(int tagId, string email)
         {
-            var query = new SqlInsert(TagAddressTable.TABLE_NAME, true)
-                .InColumnValue(TagAddressTable.Columns.TagId, tagId)
-                .InColumnValue(TagAddressTable.Columns.Address, email)
-                .InColumnValue(TagAddressTable.Columns.Tenant, Tenant);
+            var mailTagAddress = new MailTagAddresses
+            {
+                IdTag = (uint)tagId,
+                Address = email,
+                Tenant = Tenant
+            };
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.AddOrUpdate(t => t.MailTagAddresses, mailTagAddress);
+
+            var result = MailDb.SaveChanges();
+
             return result;
         }
 
         public int Delete(int tagId, string email = null)
         {
-            var query = new SqlDelete(TagAddressTable.TABLE_NAME)
-                .Where(TagAddressTable.Columns.TagId, tagId)
-                .Where(TagAddressTable.Columns.Tenant, Tenant);
+            var queryDelete = MailDb.MailTagAddresses.Where(a => a.IdTag == tagId && a.Tenant == Tenant);
 
             if (!string.IsNullOrEmpty(email))
             {
-                query.Where(TagAddressTable.Columns.Address, email);
+                queryDelete.Where(a => a.Address == email);
             }
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
+
             return result;
         }
 
         public int DeleteAll()
         {
-            var query = new SqlDelete(TagAddressTable.TABLE_NAME)
-                .Where(TagAddressTable.Columns.Tenant, Tenant);
+            var queryDelete = MailDb.MailTagAddresses.Where(a => a.Tenant == Tenant);
 
-            var result = Db.ExecuteNonQuery(query);
+            MailDb.MailTagAddresses.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
+
             return result;
         }
-    }*/
+    }
 }
