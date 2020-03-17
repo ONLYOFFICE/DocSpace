@@ -83,20 +83,20 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onDeleteFile = (fileId, currentFolderId) => {
-    const { deleteFile } = this.props;
+    const { deleteFile, filter } = this.props;
 
     deleteFile(fileId)
       .catch(err => toastr.error(err))
-      .then(() => fetchFolder(currentFolderId, store.dispatch))
+      .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
       .then(() => toastr.success(`File moved to recycle bin`));
   }
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder } = this.props;
+    const { deleteFolder, filter } = this.props;
 
     deleteFolder(folderId)
       .catch(err => toastr.error(err))
-      .then(() => fetchFolder(currentFolderId, store.dispatch))
+      .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
       .then(() => toastr.success(`Folder moved to recycle bin`));
   }
 
@@ -169,7 +169,7 @@ class SectionBodyContent extends React.PureComponent {
 
   render() {
     const { files, folders, viewer, parentId, folderId, settings, selection, fileAction, onLoading } = this.props;
-    const { editingId, isEdit, isCreating } = this.state;
+    const { editingId } = this.state;
 
     let items = [...folders, ...files];
 
