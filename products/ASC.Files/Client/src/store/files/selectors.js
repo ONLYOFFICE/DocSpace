@@ -88,7 +88,7 @@ const getFilesChecked = (file, selected) => {
       case "all":
           return true;
       case FilterType.FoldersOnly.toString():
-          return !type;
+          return file.parentId;
       case FilterType.DocumentsOnly.toString():
           return type === FileType.Document;
       case FilterType.PresentationsOnly.toString():
