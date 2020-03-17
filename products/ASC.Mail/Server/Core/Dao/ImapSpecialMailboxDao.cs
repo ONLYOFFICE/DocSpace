@@ -24,46 +24,47 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class ImapSpecialMailboxDao : BaseDao, IImapSpecialMailboxDao
+    public class ImapSpecialMailboxDao : BaseDao, IImapSpecialMailboxDao
     {
-        protected static ITable table = new MailTableFactory().Create<ImapSpecialMailboxTable>();
-
-        public ImapSpecialMailboxDao(IDbManager dbManager)
-            : base(table, dbManager)
+        public ImapSpecialMailboxDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
         }
 
         public List<ImapSpecialMailbox> GetImapSpecialMailboxes()
         {
-            var query = Query();
+            var list = MailDb.MailImapSpecialMailbox
+                .Select(ToImapSpecialMailbox)
+                .ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToImapSpecialMailbox);
+            return list;
         }
 
-        protected ImapSpecialMailbox ToImapSpecialMailbox(object[] r)
+        protected ImapSpecialMailbox ToImapSpecialMailbox(MailImapSpecialMailbox r)
         {
             var obj = new ImapSpecialMailbox
             {
-                Server = Convert.ToString(r[0]),
-                MailboxName = Convert.ToString(r[1]),
-                FolderId = (FolderType) Convert.ToInt32(r[2]),
-                Skip = Convert.ToBoolean(r[3])
+                Server = r.Server,
+                MailboxName = r.Name,
+                FolderId = (FolderType) r.FolderId,
+                Skip = r.Skip
             };
 
             return obj;
         }
-    }*/
+    }
 }
