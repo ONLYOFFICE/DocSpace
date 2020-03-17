@@ -24,70 +24,66 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Enums;
+using System.Collections.Generic;
+using System.Linq;
+using ASC.Api.Core;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
-    /*public class FolderDao : BaseDao, IFolderDao
+    public class FolderDao : BaseDao, IFolderDao
     {
-        protected static ITable table = new MailTableFactory().Create<FolderCountersTable>();
-
-        protected string CurrentUserId { get; private set; }
-
-        public FolderDao(IDbManager dbManager, int tenant, string user)
-            : base(table, dbManager, tenant)
+        public FolderDao(ApiContext apiContext,
+            SecurityContext securityContext,
+            DbContextManager<MailDbContext> dbContext)
+            : base(apiContext, securityContext, dbContext)
         {
-            CurrentUserId = user;
         }
 
-        public Folder GetFolder(FolderType folder)
+        public Folder GetFolder(FolderType folderType)
         {
-            var query = Query()
-                .Where(FolderCountersTable.Columns.Folder, (int) folder)
-                .Where(FolderCountersTable.Columns.Tenant, Tenant)
-                .Where(FolderCountersTable.Columns.User, CurrentUserId);
-
-            return Db.ExecuteList(query)
-                .ConvertAll(ToFolder)
+            var folder = MailDb.MailFolderCounters
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == (int)folderType)
+                .Select(ToFolder)
                 .SingleOrDefault();
+
+            return folder;
         }
 
         public List<Folder> GetFolders()
         {
-            var query = Query()
-                .Where(FolderCountersTable.Columns.Tenant, Tenant)
-                .Where(FolderCountersTable.Columns.User, CurrentUserId);
+            var folders = MailDb.MailFolderCounters
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId)
+                .Select(ToFolder)
+                .ToList();
 
-            return Db.ExecuteList(query)
-                .ConvertAll(ToFolder);
+            return folders;
         }
 
         public int Save(Folder folder)
         {
-            var query = new SqlInsert(FolderCountersTable.TABLE_NAME, true)
-                .InColumnValue(FolderCountersTable.Columns.Tenant, folder.Tenant)
-                .InColumnValue(FolderCountersTable.Columns.User, folder.UserId)
-                .InColumnValue(FolderCountersTable.Columns.Folder, (int) folder.FolderType)
-                .InColumnValue(FolderCountersTable.Columns.UnreadMessagesCount, folder.UnreadCount)
-                .InColumnValue(FolderCountersTable.Columns.UnreadConversationsCount, folder.UnreadChainCount)
-                .InColumnValue(FolderCountersTable.Columns.TotalMessagesCount, folder.TotalCount)
-                .InColumnValue(FolderCountersTable.Columns.TotalConversationsCount, folder.TotalChainCount);
+            var mailFolder = new MailFolderCounters
+            {
+                Tenant = folder.Tenant,
+                IdUser = folder.UserId,
+                Folder = (ushort)folder.FolderType,
+                UnreadMessagesCount = (uint)folder.UnreadCount,
+                UnreadConversationsCount = (uint)folder.UnreadChainCount,
+                TotalMessagesCount = (uint)folder.TotalCount,
+                TotalConversationsCount = (uint)folder.TotalChainCount
+            };
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.AddOrUpdate(t => t.MailFolderCounters, mailFolder);
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
-
-        private const string INCR_VALUE_FORMAT = "{0}={0}+({1})";
-        private const string SET_VALUE_FORMAT = "{0}={1}";
 
         public int ChangeFolderCounters(
             FolderType folder,
@@ -104,58 +100,77 @@ namespace ASC.Mail.Core.Dao
                 return -1;
             }
 
-            var updateQuery = new SqlUpdate(FolderCountersTable.TABLE_NAME)
-                .Where(FolderCountersTable.Columns.Tenant, Tenant)
-                .Where(FolderCountersTable.Columns.User, CurrentUserId)
-                .Where(FolderCountersTable.Columns.Folder, (int) folder);
+            var mailFolder = MailDb.MailFolderCounters
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == (int)folder)
+                .SingleOrDefault();
 
-            Action<string, int?> setColumnValue = (column, item) =>
+            if (mailFolder == null)
+                return -1;
+
+            if (unreadMessDiff.HasValue)
             {
-                if (!item.HasValue)
-                    return;
+                if (unreadMessDiff.Value == 0)
+                    mailFolder.UnreadMessagesCount = 0;
+                else
+                    mailFolder.UnreadMessagesCount += (uint)unreadMessDiff.Value;
+            }
 
-                updateQuery.Set(item.Value != 0
-                    ? string.Format(INCR_VALUE_FORMAT, column, item.Value)
-                    : string.Format(SET_VALUE_FORMAT, column, 0));
-            };
+            if (totalMessDiff.HasValue)
+            {
+                if (totalMessDiff.Value == 0)
+                    mailFolder.TotalMessagesCount = 0;
+                else
+                    mailFolder.TotalMessagesCount += (uint)totalMessDiff.Value;
+            }
 
-            setColumnValue(FolderCountersTable.Columns.UnreadMessagesCount, unreadMessDiff);
+            if (unreadConvDiff.HasValue)
+            {
+                if (unreadConvDiff.Value == 0)
+                    mailFolder.UnreadConversationsCount = 0;
+                else
+                    mailFolder.UnreadConversationsCount += (uint)unreadConvDiff.Value;
+            }
 
-            setColumnValue(FolderCountersTable.Columns.TotalMessagesCount, totalMessDiff);
+            if (totalConvDiff.HasValue)
+            {
+                if (totalConvDiff.Value == 0)
+                    mailFolder.TotalConversationsCount = 0;
+                else
+                    mailFolder.TotalConversationsCount += (uint)totalConvDiff.Value;
+            }
 
-            setColumnValue(FolderCountersTable.Columns.UnreadConversationsCount, unreadConvDiff);
-
-            setColumnValue(FolderCountersTable.Columns.TotalConversationsCount, totalConvDiff);
-
-            var result = Db.ExecuteNonQuery(updateQuery);
+            var result = MailDb.SaveChanges();
 
             return result;
         }
 
         public int Delete()
         {
-            var query = new SqlDelete(FolderCountersTable.TABLE_NAME)
-                .Where(MailTable.Columns.Tenant, Tenant)
-                .Where(MailTable.Columns.User, CurrentUserId);
+            var queryDelete = MailDb.MailFolderCounters
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId);
 
-            return Db.ExecuteNonQuery(query);
+            MailDb.MailFolderCounters.RemoveRange(queryDelete);
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
-        protected Folder ToFolder(object[] r)
+        protected Folder ToFolder(MailFolderCounters r)
         {
             var f = new Folder
             {
-                Tenant = Convert.ToInt32(r[0]),
-                UserId = Convert.ToString(r[1]),
-                FolderType = (FolderType) Convert.ToInt32(r[2]),
-                TimeModified = Convert.ToDateTime(r[3]),
-                UnreadCount = Convert.ToInt32(r[4]),
-                TotalCount = Convert.ToInt32(r[5]),
-                UnreadChainCount = Convert.ToInt32(r[6]),
-                TotalChainCount = Convert.ToInt32(r[7])
+                Tenant = r.Tenant,
+                UserId = r.IdUser,
+                FolderType = (FolderType) r.Folder,
+                TimeModified = r.TimeModified,
+                UnreadCount = (int)r.UnreadMessagesCount,
+                TotalCount = (int)r.TotalMessagesCount,
+                UnreadChainCount = (int)r.UnreadConversationsCount,
+                TotalChainCount = (int)r.TotalConversationsCount
             };
 
             return f;
         }
-    }*/
+    }
 }
