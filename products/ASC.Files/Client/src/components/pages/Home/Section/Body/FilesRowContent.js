@@ -5,10 +5,9 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button } from "asc-web-components";
-import { createFile, createFolder, renameFolder, updateFile, setFilter } from '../../../../../store/files/actions';
+import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import { history } from "asc-web-common";
-import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {
@@ -19,7 +18,7 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.action.tempId,
+      editingId: props.fileAction.tempId,
       loading: false
     };
   }
@@ -30,7 +29,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   updateItem = () => {
-    const { action, updateFile, renameFolder, item } = this.props;
+    const { fileAction, updateFile, renameFolder, item } = this.props;
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
@@ -40,9 +39,9 @@ class FilesRowContent extends React.PureComponent {
       return this.completeAction();
 
     item.fileExst
-      ? updateFile(action.tempId, itemTitle)
+      ? updateFile(fileAction.tempId, itemTitle)
         .then(() => this.completeAction())
-      : renameFolder(action.tempId, itemTitle)
+      : renameFolder(fileAction.tempId, itemTitle)
         .then(() => this.completeAction());
   };
 
@@ -63,10 +62,10 @@ class FilesRowContent extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { action } = this.props;
+    const { fileAction } = this.props;
 
-    if (action.tempId !== prevProps.action.tempId) {
-      this.setState({ editingId: action.tempId })
+    if (fileAction.tempId !== prevProps.fileAction.tempId) {
+      this.setState({ editingId: fileAction.tempId })
     }
   }
 
@@ -80,14 +79,14 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onClickUpdateItem = () => {
-    (this.props.action.type === 'create')
+    (this.props.fileAction.type === 'create')
       ? this.createItem()
       : this.updateItem();
   }
 
   onKeyUpUpdateItem = e => {
     if (e.keyCode === 13) {
-      (this.props.action.type === 'create')
+      (this.props.fileAction.type === 'create')
         ? this.createItem()
         : this.updateItem();
     }
@@ -385,7 +384,7 @@ class FilesRowContent extends React.PureComponent {
 function mapStateToProps(state) {
   return {
     filter: state.files.filter,
-    action: state.files.action
+    fileAction: state.files.fileAction
   }
 }
 

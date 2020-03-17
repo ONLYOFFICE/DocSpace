@@ -70,10 +70,10 @@ export function setSelected(selected) {
   };
 }
 
-export function setAction(action) {
+export function setAction(fileAction) {
   return {
     type: SET_ACTION,
-    action
+    fileAction
   };
 }
 
