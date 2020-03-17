@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
-import { history } from "asc-web-common";
 import store from "../../../../../store/store";
 
 class FilesRowContent extends React.PureComponent {

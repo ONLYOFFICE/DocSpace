@@ -91,9 +91,8 @@ export function setRootFolders(rootFolders) {
   };
 }
 
-export function setFilesFilter(filter) {
-  //history
-  setFilterUrl(filter);
+export function setFilesFilter(filter, folderId) {
+  setFilterUrl(filter, folderId);
   return {
     type: SET_FILES_FILTER,
     filter
@@ -120,7 +119,7 @@ export function deselectFile(file) {
   };
 }
 
-export function setFilterUrl(filter) {
+export function setFilterUrl(filter, folderId) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
 
@@ -147,7 +146,8 @@ export function setFilterUrl(filter) {
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  history.push(`${config.homepage}/filter?${params.join("&")}`);
+  const hash = folderId === "@my" ? "" : `#${folderId}`;
+  history.push(`${config.homepage}/filter?${params.join("&")}${hash}`);
 }
 
 // TODO: similar to fetchFolder, remove one
@@ -155,7 +155,7 @@ export function fetchFiles(folderId, filter, dispatch) {
   const filterData = filter ? filter.clone() : FilesFilter.getDefault();
   return files.getFolder(folderId, filter).then(data => {
     filterData.total = data.total;
-    dispatch(setFilesFilter(filterData));
+    dispatch(setFilesFilter(filterData, folderId));
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     return dispatch(setSelectedFolder({ folders: data.folders, ...data.current }));
