@@ -1,4 +1,5 @@
 import { api, constants, history } from "asc-web-common";
+import axios from "axios";
 import {
   AUTHOR_TYPE,
   FILTER_TYPE,
@@ -225,8 +226,6 @@ export function fetchSharedFolder(dispatch) {
 
 export function fetchRootFolders(dispatch) {
 
-  //TODO: Make some more Useful
-
   let root = {
     my: null,
     share: null,
@@ -235,17 +234,21 @@ export function fetchRootFolders(dispatch) {
     trash: null
   };
 
-  return files.getMyFolderList()
-    .then(data => root.my = { folders: data.folders, ...data.current })
-    .then(() => files.getCommonFolderList()
-      .then(data => root.common = { folders: data.folders, ...data.current }))
-    .then(() => files.getProjectsFolderList()
-      .then(data => root.project = { folders: data.folders, ...data.current }))
-    .then(() => files.getTrashFolderList()
-      .then(data => root.trash = { folders: data.folders, ...data.current }))
-    .then(() => files.getSharedFolderList()
-      .then(data => root.share = { folders: data.folders, ...data.current }))
-    .then(() => dispatch(setRootFolders(root)));
+  return axios.all([
+    files.getMyFolderList(),
+    files.getSharedFolderList(),
+    files.getCommonFolderList(),
+    files.getProjectsFolderList(),
+    files.getTrashFolderList()
+  ])
+    .then(axios.spread((my, share, common, project, trash) => {
+      root.my = { folders: my.folders, ...my.current }
+      root.share = { folders: share.folders, ...share.current }
+      root.common = { folders: common.folders, ...common.current }
+      root.project = { folders: project.folders, ...project.current }
+      root.trash = { folders: trash.folders, ...trash.current }
+    }))
+    .then(() => dispatch(setRootFolders(root)));;
 }
 
 export function testUpdateMyFolder(folders) {
@@ -315,9 +318,9 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
     const { folders } = files;
 
     return api.files.deleteFolder(folderId, deleteAfter, immediately)
-    .then(res => {
-      return dispatch(setFolder(folders.filter(f => f.id !== folderId)));
-    })
+      .then(res => {
+        return dispatch(setFolder(folders.filter(f => f.id !== folderId)));
+      })
   }
 }
 
