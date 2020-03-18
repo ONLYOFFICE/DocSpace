@@ -656,7 +656,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in toUpdate)
             {
-                var count = FilesDbContext.Tree.Where(r => r.ParentId == (int)id).Count() - 1;
+                var count = FilesDbContext.Tree.Where(r => r.ParentId == f.Id).Count() - 1;
                 f.FoldersCount = count;
             }
 
