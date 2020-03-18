@@ -56,7 +56,7 @@ export const canConvert = fileExst => {
 
 export function getSelectedFile(selection, fileId, parentId) {
   return find(selection, function (obj) {
-      return obj.id === fileId && obj.parentId === parentId;
+    return obj.id === fileId && obj.parentId === parentId;
   });
 };
 
@@ -66,17 +66,17 @@ export function isFileSelected(selection, fileId, parentId) {
 
 export function skipFile(selection, fileId) {
   return filter(selection, function (obj) {
-      return obj.id !== fileId;
+    return obj.id !== fileId;
   });
 };
 
 export function getFilesBySelected(files, selected) {
   let newSelection = [];
   files.forEach(file => {
-      const checked = getFilesChecked(file, selected);
+    const checked = getFilesChecked(file, selected);
 
-      if (checked)
-          newSelection.push(file);
+    if (checked)
+      newSelection.push(file);
   });
 
   return newSelection;
@@ -85,26 +85,26 @@ export function getFilesBySelected(files, selected) {
 const getFilesChecked = (file, selected) => {
   const type = file.fileType;
   switch (selected) {
-      case "all":
-          return true;
-      case FilterType.FoldersOnly.toString():
-          return file.parentId;
-      case FilterType.DocumentsOnly.toString():
-          return type === FileType.Document;
-      case FilterType.PresentationsOnly.toString():
-          return type === FileType.Presentation;
-      case FilterType.SpreadsheetsOnly.toString():
-          return type === FileType.Spreadsheet;
-      case FilterType.ImagesOnly.toString():
-          return type === FileType.Image;
-      case FilterType.MediaOnly.toString():
-          return type === FileType.Video || type === FileType.Audio;
-      case FilterType.ArchiveOnly.toString():
-          return type === FileType.Archive;
-      case FilterType.FilesOnly.toString():
-          return type || !file.parentId;
-      default:
-          return false;
+    case "all":
+      return true;
+    case FilterType.FoldersOnly.toString():
+      return file.parentId;
+    case FilterType.DocumentsOnly.toString():
+      return type === FileType.Document;
+    case FilterType.PresentationsOnly.toString():
+      return type === FileType.Presentation;
+    case FilterType.SpreadsheetsOnly.toString():
+      return type === FileType.Spreadsheet;
+    case FilterType.ImagesOnly.toString():
+      return type === FileType.Image;
+    case FilterType.MediaOnly.toString():
+      return type === FileType.Video || type === FileType.Audio;
+    case FilterType.ArchiveOnly.toString():
+      return type === FileType.Archive;
+    case FilterType.FilesOnly.toString():
+      return type || !file.parentId;
+    default:
+      return false;
   }
 };
 
