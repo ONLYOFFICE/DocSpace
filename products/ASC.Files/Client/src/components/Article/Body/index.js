@@ -15,13 +15,6 @@ class ArticleBodyContent extends React.Component {
     if (history.location.hash) {
       const folderId = history.location.hash.slice(1);
 
-      const url = `${history.location.pathname}${history.location.search}`;
-      const symbol =
-        history.location.hash ||
-        history.location.search[history.location.search.length - 1] === "/"
-          ? ""
-          : "/";
-
       let expandedKeys = [];
       files
         .getFolder(folderId)
@@ -32,11 +25,9 @@ class ArticleBodyContent extends React.Component {
 
           expandedKeys.pop();
 
-          fetchFiles(folderId, this.props.filter, store.dispatch)
-            // .then(() => {
-            //   history.push(`${url}${symbol}#${folderId}`);
-            // })
-            // .catch(err => toastr.error("Something went wrong", err));
+          fetchFiles(folderId, this.props.filter, store.dispatch).catch(err =>
+            toastr.error("Something went wrong", err)
+          );
         })
         .catch(err => toastr.error("Something went wrong", err))
         .finally(() => this.setState({ expandedKeys }));

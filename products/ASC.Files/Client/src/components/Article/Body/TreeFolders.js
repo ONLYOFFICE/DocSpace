@@ -123,7 +123,6 @@ class TreeFolders extends React.Component {
 
   generateTreeNodes = treeNode => {
     const folderId = treeNode.props.id;
-    const folderIndex = treeNode.props.pos;
     let arrayFolders;
 
     const newFilter = this.props.filter.clone();
@@ -133,12 +132,20 @@ class TreeFolders extends React.Component {
       .getFolder(folderId, newFilter)
       .then(data => {
         arrayFolders = data.folders;
+        
+        let listIds = [];
+        for (let item of data.pathParts) {
+          listIds.push(item.toString());
+        }
+        
+        const folderIndex = treeNode.props.pos;
         let i = 0;
         for (let item of arrayFolders) {
           item["key"] = `${folderIndex}-${i}`;
           i++;
         }
-        return arrayFolders;
+
+        return { folders: arrayFolders, listIds };
       })
       .catch(err => toastr.error("Something went wrong", err));
   };
@@ -148,20 +155,13 @@ class TreeFolders extends React.Component {
     //console.log("load data...", treeNode);
 
     return this.generateTreeNodes(treeNode)
-      .then(folders => {
-        let listId;
+      .then(data => {
         const itemId = treeNode.props.id.toString();
-        if (this.props.filter.treeFolders.length === 0) {
-          listId = [itemId];
-        } else {
-          listId = this.props.filter.clone();
-          if (!listId.treeFolders.includes(itemId)) {
-            listId.treeFolders.push(itemId);
-          }
-          listId = listId.treeFolders;
-        }
+        const listIds = data.listIds;
+        listIds.push(itemId);
+
         const treeData = [...this.state.treeData];
-        this.getNewTreeData(treeData, listId, folders, 10);
+        this.getNewTreeData(treeData, listIds, data.folders, 10);
 
         this.setState({ treeData });
       })
