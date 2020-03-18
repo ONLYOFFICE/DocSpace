@@ -5,9 +5,12 @@ import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { constants } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+
+const { FileAction } = constants;
 
 class FilesRowContent extends React.PureComponent {
 
@@ -17,7 +20,7 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.tempId,
+      editingId: props.fileAction.id,
       loading: false
     };
   }
@@ -38,9 +41,9 @@ class FilesRowContent extends React.PureComponent {
       return this.completeAction();
 
     item.fileExst
-      ? updateFile(fileAction.tempId, itemTitle)
+      ? updateFile(fileAction.id, itemTitle)
         .then(() => this.completeAction())
-      : renameFolder(fileAction.tempId, itemTitle)
+      : renameFolder(fileAction.id, itemTitle)
         .then(() => this.completeAction());
   };
 
@@ -62,9 +65,10 @@ class FilesRowContent extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { fileAction } = this.props;
-
-    if (fileAction.tempId !== prevProps.fileAction.tempId) {
-      this.setState({ editingId: fileAction.tempId })
+    if (fileAction) {
+      if (fileAction.id !== prevProps.fileAction.id) {
+        this.setState({ editingId: fileAction.id })
+      }
     }
   }
 
@@ -78,14 +82,14 @@ class FilesRowContent extends React.PureComponent {
   }
 
   onClickUpdateItem = () => {
-    (this.props.fileAction.type === 'create')
+    (this.props.fileAction.type === FileAction.Create)
       ? this.createItem()
       : this.updateItem();
   }
 
   onKeyUpUpdateItem = e => {
     if (e.keyCode === 13) {
-      (this.props.fileAction.type === 'create')
+      (this.props.fileAction.type === FileAction.Create)
         ? this.createItem()
         : this.updateItem();
     }
@@ -130,7 +134,7 @@ class FilesRowContent extends React.PureComponent {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fileAction } = this.props;
     const { itemTitle, editingId, loading } = this.state;
     const {
       contentLength,
@@ -140,6 +144,7 @@ class FilesRowContent extends React.PureComponent {
       filesCount,
       fileStatus,
       foldersCount,
+      folderId,
       id,
       versionGroup
     } = item;
@@ -214,7 +219,7 @@ class FilesRowContent extends React.PureComponent {
       color='#A3A9AE'
     />;
 
-    const isEdit = id === editingId;
+    const isEdit = (id === editingId) && (folderId === fileAction.folderId);
 
     return isEdit
       ? (<EditingWrapper>
@@ -386,7 +391,7 @@ function mapStateToProps(state) {
   return {
     filter: state.files.filter,
     fileAction: state.files.fileAction,
-	parentFolder: state.files.selectedFolder.id
+    parentFolder: state.files.selectedFolder.id
   }
 }
 

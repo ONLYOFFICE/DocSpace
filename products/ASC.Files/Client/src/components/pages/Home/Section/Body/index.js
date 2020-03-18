@@ -4,21 +4,30 @@ import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
 import {
-  Row,
-  toastr,
   Icons,
-  RowContainer
+  Row,
+  RowContainer,
+  toastr
 } from "asc-web-components";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import FilesRowContent from "./FilesRowContent";
-import { api } from 'asc-web-common';
-import { fetchFiles, deleteFile, deleteFolder, fetchFolder, selectFile, deselectFile, setAction } from '../../../../../store/files/actions';
+import { api, constants } from 'asc-web-common';
+import {
+  deleteFile,
+  deleteFolder,
+  deselectFile,
+  fetchFiles,
+  fetchFolder,
+  selectFile,
+  setAction
+} from '../../../../../store/files/actions';
 import { isFileSelected } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
-import { getFilterByLocation } from "../../../../../helpers/converters";
-import config from "../../../../../../package.json";
+//import { getFilterByLocation } from "../../../../../helpers/converters";
+//import config from "../../../../../../package.json";
 
-const { FilesFilter } = api;
+//const { FilesFilter } = api;
+const { FileAction } = constants;
 
 class SectionBodyContent extends React.PureComponent {
   constructor(props) {
@@ -30,7 +39,7 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { fetchFiles } = this.props;
+    //const { fetchFiles } = this.props;
 
     //TODO: use right algorithm, fix fetching in src/index.html
 
@@ -51,27 +60,33 @@ class SectionBodyContent extends React.PureComponent {
     // }
   }
 
-  onClickRename = (itemId) => {
-    if (this.state.editingId === itemId)
+  onClickRename = (item) => {
+    const { id, folderId } = item;
+
+    if (this.state.editingId === id)
       return;
 
-    this.setState({ editingId: itemId }, () => {
-      this.props.setAction({ type: 'rename', tempId: itemId });
+    this.setState({ editingId: id }, () => {
+      this.props.setAction(
+        {
+          type: FileAction.Rename,
+          folderId,
+          id
+        }
+      );
     });
   };
 
   onEditComplete = () => {
     const { folderId, fileAction, filter } = this.props;
 
-    if (fileAction.type === 'create') {
-      fetchFiles(folderId, filter, store.dispatch)
+    if (fileAction.type === FileAction.Create) {
+      fetchFiles(folderId, filter, store.dispatch);
     }
 
     this.setState({ editingId: null }, () => {
       this.props.setAction({
-        type: null,
-        exst: null,
-        tempId: null
+        type: null
       });
     })
   }
@@ -131,7 +146,7 @@ class SectionBodyContent extends React.PureComponent {
       {
         key: "rename",
         label: "Rename",
-        onClick: this.onClickRename.bind(this, item.id),
+        onClick: this.onClickRename.bind(this, item),
         disabled: false
       },
       {
@@ -173,12 +188,12 @@ class SectionBodyContent extends React.PureComponent {
 
     let items = [...folders, ...files];
 
-    if (fileAction && fileAction.type === 'create') {
+    if (fileAction && fileAction.type === FileAction.Create) {
       items.unshift({
         id: -1,
         title: '',
         parentId: folderId,
-        fileExst: fileAction.exst
+        fileExst: fileAction.extension
       })
     }
 
@@ -186,11 +201,11 @@ class SectionBodyContent extends React.PureComponent {
       <RowContainer useReactWindow={false}>
         {items.map(item => {
           const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
-          const contextOptionsProps = !contextOptions.length || fileAction.type
+          const contextOptionsProps = !contextOptions.length || (fileAction && fileAction.type)
             ? {}
             : { contextOptions };
           const checked = isFileSelected(selection, item.id, item.parentId);
-          const checkedProps = /* isAdmin(viewer) */ fileAction.type && (editingId === item.id || item.id === -1) ? {} : { checked };
+          const checkedProps = /* isAdmin(viewer) */ (fileAction && fileAction.type) && (editingId === item.id || item.id === -1) ? {} : { checked };
           const element = item.fileExst
             ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
             : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
