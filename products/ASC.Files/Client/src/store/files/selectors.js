@@ -114,3 +114,17 @@ export const getTitleWithoutExst = item => {
     : item.title;
 }
 
+export const getTreeFolders = (pathParts, filterData) => {
+  let treeFolders = [];
+  if (pathParts.length > 0) {
+    for (let item of pathParts) {
+      treeFolders.push(item.toString());
+    }
+  }
+  if (treeFolders.length > 0) {
+    treeFolders = treeFolders.concat(
+      filterData.treeFolders.filter(x => !treeFolders.includes(x))
+    );
+  }
+  return treeFolders;
+};
