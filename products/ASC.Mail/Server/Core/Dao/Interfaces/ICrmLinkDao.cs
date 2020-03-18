@@ -24,12 +24,12 @@
 */
 
 
+using ASC.Mail.Models;
 using System.Collections.Generic;
-//using ASC.Mail.Data.Contracts;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
-    /*public interface ICrmLinkDao
+    public interface ICrmLinkDao
     {
         List<CrmContactData> GetLinkedCrmContactEntities(string chainId, int mailboxId);
 
@@ -42,5 +42,5 @@ namespace ASC.Mail.Core.Dao.Interfaces
         void RemoveCrmLinks(string chainId, int mailboxId, IEnumerable<CrmContactData> crmContactEntities);
 
         int RemoveCrmLinks(int mailboxId);
-    }*/
+    }
 }
