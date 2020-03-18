@@ -62,16 +62,13 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickRename = (item) => {
-    const { id, folderId } = item;
-
-    if (this.state.editingId === id)
-      return;
+    const { id, fileExst } = item;
 
     this.setState({ editingId: id }, () => {
       this.props.setAction(
         {
           type: FileAction.Rename,
-          folderId,
+          extension: fileExst,
           id
         }
       );
@@ -204,12 +201,13 @@ class SectionBodyContent extends React.PureComponent {
     return items.length > 0 ? (
       <RowContainer useReactWindow={false}>
         {items.map(item => {
+          const isEdit = fileAction.type && (editingId === item.id || item.id === -1) && (item.fileExst === fileAction.extension);
           const contextOptions = this.getFilesContextOptions(item, viewer).filter(o => o);
-          const contextOptionsProps = !contextOptions.length || (fileAction && fileAction.type)
+          const contextOptionsProps = !contextOptions.length || isEdit
             ? {}
             : { contextOptions };
           const checked = isFileSelected(selection, item.id, item.parentId);
-          const checkedProps = /* isAdmin(viewer) */ (fileAction && fileAction.type) && (editingId === item.id || item.id === -1) ? {} : { checked };
+          const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
           const element = item.fileExst
             ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
             : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
