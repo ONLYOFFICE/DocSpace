@@ -11,6 +11,7 @@ const DEFAULT_SEARCH_TYPE = null; //withSubfolders
 const DEFAULT_SEARCH = null;
 const DEFAULT_FOLDER_PATH = [];
 const DEFAULT_AUTHOR_TYPE = null;
+const DEFAULT_SELECTED_ITEM = {};
 
 // TODO: add next params
 // subjectGroup bool
@@ -32,7 +33,8 @@ class FilesFilter {
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
     authorType = DEFAULT_AUTHOR_TYPE,
-    treeFolders = DEFAULT_FOLDER_PATH
+    treeFolders = DEFAULT_FOLDER_PATH,
+    selectedItem = DEFAULT_SELECTED_ITEM,
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -44,6 +46,7 @@ class FilesFilter {
     this.total = total;
     this.authorType = authorType;
     this.treeFolders = treeFolders;
+    this.selectedItem = selectedItem;
   }
 
   getStartIndex = () => {
@@ -102,7 +105,8 @@ class FilesFilter {
           this.withSubfolders,
           this.search,
           this.authorType,
-          this.treeFolders
+          this.treeFolders,
+          this.selectedItem
         );
   }
 
@@ -115,6 +119,7 @@ class FilesFilter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
+      this.selectedItem.key === filter.selectedItem.key &&
       this.pageCount === filter.pageCount;
 
     return equals;
