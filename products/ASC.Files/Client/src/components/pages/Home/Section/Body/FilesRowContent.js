@@ -144,7 +144,6 @@ class FilesRowContent extends React.PureComponent {
       filesCount,
       fileStatus,
       foldersCount,
-      folderId,
       id,
       versionGroup
     } = item;
@@ -219,7 +218,7 @@ class FilesRowContent extends React.PureComponent {
       color='#A3A9AE'
     />;
 
-    const isEdit = (id === editingId) && (folderId === fileAction.folderId);
+    const isEdit = (id === editingId) && (fileExst === fileAction.extension);
 
     return isEdit
       ? (<EditingWrapper>
