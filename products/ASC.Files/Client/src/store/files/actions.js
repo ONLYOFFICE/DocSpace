@@ -162,7 +162,7 @@ export function fetchFiles(folderId, filter, dispatch) {
       }
     }
     if(treeFolders.length > 0) {
-      treeFolders = treeFolders.concat(filter.treeFolders.filter(x => !treeFolders.includes(x)));
+      treeFolders = treeFolders.concat(filterData.treeFolders.filter(x => !treeFolders.includes(x)));
     }
     filterData.treeFolders = treeFolders;
     filterData.total = data.total;
