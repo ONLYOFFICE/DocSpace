@@ -6,7 +6,7 @@ import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { constants, FilterInput, api } from 'asc-web-common';
+import { constants, FilterInput } from 'asc-web-common';
 import store from "../../../../../store/store";
 
 const { FilterType } = constants;
@@ -65,50 +65,8 @@ class SectionFilterContent extends React.Component {
 
     const newFilter = getFilterByLocation(location);
 
-    // if (!newFilter || newFilter.equals(filter)) return;
-
-    if (newFilter.authorType) {
-      const authorType = newFilter.authorType;
-      const indexOfUnderscore = authorType.indexOf('_');
-      const cleanAuthorType = authorType.slice(0, indexOfUnderscore);
-      const itemId = authorType.slice(indexOfUnderscore + 1);
-      if (!itemId) return;
-      switch (cleanAuthorType) {
-        case 'group':
-          api.groups.getGroup(itemId)
-            .then((data) => {
-              this.setState({
-                selectedItem: {
-                  key: data.id,
-                  label: data.name,
-                  type: 'group'
-                },
-                isReady: true
-              });
-            }
-            )
-          break;
-        case 'user':
-          api.people.getUserById(itemId)
-            .then((data) => {
-              this.setState({
-                selectedItem: {
-                  key: data.id,
-                  label: data.displayName,
-                  type: 'user'
-                },
-                isReady: true
-              });
-            })
-          break;
-        default:
-          this.setState({ isReady: true })
-
-          break;
-      }
-    }
-
-
+    if (!newFilter || newFilter.equals(filter)) return;
+    this.setState({ isReady: true })
     onLoading(true);
     fetchFiles(selectedFolderId, newFilter, store.dispatch)
       .finally(() => onLoading(false));
@@ -127,15 +85,12 @@ class SectionFilterContent extends React.Component {
 
 
     const selectedItem = authorType ? getSelectedItem(data.filterValues, authorType) : null;
-    selectedItem ? this.setState({
-      selectedItem: {
-        key: selectedItem.selectedItem.key,
-        label: selectedItem.selectedItem.label,
-        type: selectedItem.typeSelector
-      }
-    })
-      :
-      this.setState({ selectedItem: {} });
+    const selectedFilterItem = {};
+    if (selectedItem) {
+      selectedFilterItem.key = selectedItem.selectedItem.key;
+      selectedFilterItem.label = selectedItem.selectedItem.label;
+      selectedFilterItem.type = selectedItem.typeSelector;
+    }
 
     const newFilter = filter.clone();
     newFilter.page = 0;
@@ -145,6 +100,7 @@ class SectionFilterContent extends React.Component {
     newFilter.search = search;
     newFilter.authorType = authorType;
     newFilter.withSubfolders = withSubfolders;
+    newFilter.selectedItem = selectedFilterItem;
 
     onLoading(true);
     fetchFiles(selectedFolderId, newFilter, store.dispatch)
@@ -152,8 +108,7 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { t, settings, user } = this.props;
-    const { selectedItem } = this.state;
+    const { t, settings, user, selectedItem } = this.props;
     const { usersCaption, groupsCaption } = settings.customNames;
 
     const options = [
@@ -338,7 +293,8 @@ function mapStateToProps(state) {
     folders: state.files.folders,
     filter: state.files.filter,
     settings: state.auth.settings,
-    selectedFolderId: state.files.selectedFolder.id
+    selectedFolderId: state.files.selectedFolder.id,
+    selectedItem: state.files.filter.selectedItem
   };
 }
 
