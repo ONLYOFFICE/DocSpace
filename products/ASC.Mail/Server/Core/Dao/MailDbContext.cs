@@ -55,6 +55,8 @@ namespace ASC.Mail.Core.Dao
         public virtual DbSet<MailUserFolder> MailUserFolder { get; set; }
         public virtual DbSet<MailUserFolderTree> MailUserFolderTree { get; set; }
         public virtual DbSet<MailUserFolderXMail> MailUserFolderXMail { get; set; }
+        public virtual DbSet<CrmContact> CrmContact { get; set; }
+        public virtual DbSet<CrmContactInfo> CrmContactInfo { get; set; }
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -817,6 +819,78 @@ namespace ASC.Mail.Core.Dao
                 entity.Property(e => e.TimeCreated)
                     .HasDefaultValueSql("CURRENT_TIMESTAMP")
                     .ValueGeneratedOnAddOrUpdate();
+            });
+
+            modelBuilder.Entity<CrmContact>(entity =>
+            {
+                entity.HasIndex(e => e.CreateOn)
+                    .HasName("create_on");
+
+                entity.HasIndex(e => new { e.LastModifedOn, e.TenantId })
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => new { e.TenantId, e.CompanyId })
+                    .HasName("company_id");
+
+                entity.HasIndex(e => new { e.TenantId, e.DisplayName })
+                    .HasName("display_name");
+
+                entity.Property(e => e.CompanyName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.CreateBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Currency)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.DisplayName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.FirstName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Industry)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastName)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Notes)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.Title)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+            });
+
+            modelBuilder.Entity<CrmContactInfo>(entity =>
+            {
+                entity.HasIndex(e => e.LastModifedOn)
+                    .HasName("last_modifed_on");
+
+                entity.HasIndex(e => new { e.TenantId, e.ContactId })
+                    .HasName("IX_Contact");
+
+                entity.Property(e => e.Data)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
+
+                entity.Property(e => e.LastModifedBy)
+                    .HasCharSet("utf8")
+                    .HasCollation("utf8_general_ci");
             });
 
             OnModelCreatingPartial(modelBuilder);

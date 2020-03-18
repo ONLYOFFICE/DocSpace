@@ -31,4 +31,11 @@ namespace ASC.Mail.Enums
         Email = 1,
         Phone
     }
+
+    public enum ShareType
+    {
+        None = 0,
+        ReadWrite = 1,
+        Read = 2
+    }
 }
