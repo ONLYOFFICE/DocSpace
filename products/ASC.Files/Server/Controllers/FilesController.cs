@@ -29,22 +29,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Runtime.Serialization;
-using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web;
 
 using ASC.Api.Core;
-using ASC.Api.Utils;
 using ASC.Common;
-using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
 using ASC.Core.Users;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Files.Core;
+using ASC.Files.Helpers;
 using ASC.Files.Model;
 using ASC.MessagingSystem;
 using ASC.Web.Api.Routing;
@@ -61,11 +58,11 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 using Newtonsoft.Json.Linq;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
-using MimeMapping = ASC.Common.Web.MimeMapping;
 using SortedByType = ASC.Files.Core.SortedByType;
 
 namespace ASC.Api.Documents
@@ -80,6 +77,8 @@ namespace ASC.Api.Documents
         private readonly ApiContext ApiContext;
         private readonly FileStorageService<string> FileStorageService;
 
+        public FilesControllerHelper<string> FilesControllerHelperString { get; }
+        public FilesControllerHelper<int> FilesControllerHelperInt { get; }
         public FileStorageService<int> FileStorageServiceInt { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
         public FileWrapperHelper FileWrapperHelper { get; }
@@ -119,6 +118,8 @@ namespace ASC.Api.Documents
         /// <param name="fileStorageService"></param>
         public FilesController(
             ApiContext context,
+            FilesControllerHelper<string> filesControllerHelperString,
+            FilesControllerHelper<int> filesControllerHelperInt,
             FileStorageService<string> fileStorageService,
             FileStorageService<int> fileStorageServiceInt,
             GlobalFolderHelper globalFolderHelper,
@@ -150,6 +151,8 @@ namespace ASC.Api.Documents
             ProductEntryPoint productEntryPoint)
         {
             ApiContext = context;
+            FilesControllerHelperString = filesControllerHelperString;
+            FilesControllerHelperInt = filesControllerHelperInt;
             FileStorageService = fileStorageService;
             FileStorageServiceInt = fileStorageServiceInt;
             GlobalFolderHelper = globalFolderHelper;
@@ -258,9 +261,9 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Trash folder contents</returns>
         [Read("@trash")]
-        public FolderContentWrapper<string> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(GlobalFolderHelper.GetFolderTrash<string>(), userIdOrGroupId, filterType);
+            return ToFolderContentWrapper(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -277,13 +280,13 @@ namespace ASC.Api.Documents
         [Read("{folderId}", order: int.MaxValue)]
         public FolderContentWrapper<string> GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
+            return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType);
         }
 
         [Read("{folderId:int}", order: int.MaxValue)]
         public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType)
         {
-            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
+            return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType);
         }
 
         /// <summary>
@@ -305,10 +308,10 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@my/upload")]
-        public object UploadFileToMy(UploadModel uploadModel)
+        public List<FileWrapper<int>> UploadFileToMy(UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
-            return UploadFile(GlobalFolderHelper.FolderMy.ToString(), uploadModel);
+            return UploadFile(GlobalFolderHelper.FolderMy, uploadModel);
         }
 
         /// <summary>
@@ -330,10 +333,10 @@ namespace ASC.Api.Documents
         /// <param name="files" visible="false">List of files when posted as multipart/form-data</param>
         /// <returns>Uploaded file</returns>
         [Create("@common/upload")]
-        public object UploadFileToCommon(UploadModel uploadModel)
+        public List<FileWrapper<int>> UploadFileToCommon(UploadModel uploadModel)
         {
             uploadModel.CreateNewIfExist = false;
-            return UploadFile(GlobalFolderHelper.FolderCommon.ToString(), uploadModel);
+            return UploadFile(GlobalFolderHelper.FolderCommon, uploadModel);
         }
 
 
@@ -360,35 +363,15 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
         [Create("{folderId}/upload")]
-        public object UploadFile(string folderId, UploadModel uploadModel)
+        public List<FileWrapper<string>> UploadFile(string folderId, UploadModel uploadModel)
         {
-            if (uploadModel.StoreOriginalFileFlag.HasValue)
-            {
-                FilesSettingsHelper.StoreOriginalFiles = uploadModel.StoreOriginalFileFlag.Value;
-            }
+            return FilesControllerHelperString.UploadFile(folderId, uploadModel);
+        }
 
-            if (uploadModel.Files != null && uploadModel.Files.Any())
-            {
-                if (uploadModel.Files.Count() == 1)
-                {
-                    //Only one file. return it
-                    var postedFile = uploadModel.Files.First();
-                    return InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
-                }
-                //For case with multiple files
-                return uploadModel.Files.Select(postedFile => InsertFile(folderId, postedFile.OpenReadStream(), postedFile.FileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus)).ToList();
-            }
-            if (uploadModel.File != null)
-            {
-                var fileName = "file" + MimeMapping.GetExtention(uploadModel.ContentType.MediaType);
-                if (uploadModel.ContentDisposition != null)
-                {
-                    fileName = uploadModel.ContentDisposition.FileName;
-                }
-
-                return InsertFile(folderId, uploadModel.File, fileName, uploadModel.CreateNewIfExist, uploadModel.KeepConvertStatus);
-            }
-            throw new InvalidOperationException("No input files");
+        [Create("{folderId:int}/upload")]
+        public List<FileWrapper<int>> UploadFile(int folderId, UploadModel uploadModel)
+        {
+            return FilesControllerHelperInt.UploadFile(folderId, uploadModel);
         }
 
         /// <summary>
@@ -401,9 +384,9 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@my/insert")]
-        public FileWrapper<string> InsertFileToMy(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<int> InsertFileToMy(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
-            return InsertFile(GlobalFolderHelper.FolderMy.ToString(), file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(GlobalFolderHelper.FolderMy, file, title, createNewIfExist, keepConvertStatus);
         }
 
         /// <summary>
@@ -416,9 +399,9 @@ namespace ASC.Api.Documents
         /// <category>Uploads</category>
         /// <returns></returns>
         [Create("@common/insert")]
-        public FileWrapper<string> InsertFileToCommon(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        public FileWrapper<int> InsertFileToCommon(Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
-            return InsertFile(GlobalFolderHelper.FolderCommon.ToString(), file, title, createNewIfExist, keepConvertStatus);
+            return InsertFile(GlobalFolderHelper.FolderCommon, file, title, createNewIfExist, keepConvertStatus);
         }
 
         /// <summary>
@@ -434,19 +417,13 @@ namespace ASC.Api.Documents
         [Create("{folderId}/insert")]
         public FileWrapper<string> InsertFile(string folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
-            try
-            {
-                var resultFile = FileUploader.Exec(folderId, title, file.Length, file, createNewIfExist ?? !FilesSettingsHelper.UpdateIfExist, !keepConvertStatus);
-                return FileWrapperHelper.Get(resultFile);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new ItemNotFoundException("File not found", e);
-            }
-            catch (DirectoryNotFoundException e)
-            {
-                throw new ItemNotFoundException("Folder not found", e);
-            }
+            return FilesControllerHelperString.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
+        }
+
+        [Create("{folderId:int}/insert")]
+        public FileWrapper<int> InsertFile(int folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
+        {
+            return FilesControllerHelperInt.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
         }
 
         /// <summary>
@@ -460,15 +437,13 @@ namespace ASC.Api.Documents
         [Update("{fileId}/update")]
         public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
         {
-            try
-            {
-                var resultFile = FileStorageService.UpdateFileStream(fileId, file, encrypted);
-                return FileWrapperHelper.Get(resultFile);
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new ItemNotFoundException("File not found", e);
-            }
+            return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted);
+        }
+
+        [Update("{fileId:int}/update")]
+        public FileWrapper<int> UpdateFileStream(Stream file, int fileId, bool encrypted = false)
+        {
+            return FilesControllerHelperInt.UpdateFileStream(file, fileId, encrypted);
         }
 
 
@@ -486,7 +461,13 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/saveediting")]
         public FileWrapper<string> SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
         {
-            return FileWrapperHelper.Get(FileStorageService.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave));
+            return FilesControllerHelperString.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave);
+        }
+
+        [Update("file/{fileId:int}/saveediting")]
+        public FileWrapper<int> SaveEditing(int fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
+        {
+            return FilesControllerHelperInt.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave);
         }
 
         /// <summary>
@@ -500,7 +481,13 @@ namespace ASC.Api.Documents
         [Create("file/{fileId}/startedit")]
         public string StartEdit(string fileId, bool editingAlone, string doc)
         {
-            return FileStorageService.StartEdit(fileId, editingAlone, doc);
+            return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
+        }
+
+        [Create("file/{fileId:int}/startedit")]
+        public string StartEdit(int fileId, bool editingAlone, string doc)
+        {
+            return FilesControllerHelperInt.StartEdit(fileId, editingAlone, doc);
         }
 
         /// <summary>
@@ -516,7 +503,13 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/trackeditfile")]
         public KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
         {
-            return FileStorageService.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
+            return FilesControllerHelperString.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
+        }
+
+        [Read("file/{fileId:int}/trackeditfile")]
+        public KeyValuePair<bool, string> TrackEditFile(int fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
+        {
+            return FilesControllerHelperInt.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
         }
 
         /// <summary>
@@ -530,10 +523,13 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/openedit")]
         public Configuration<string> OpenEdit(string fileId, int version, string doc)
         {
-            DocumentServiceHelper.GetParams(fileId, version, doc, true, true, true, out var configuration);
-            configuration.Type = EditorType.External;
-            configuration.Token = DocumentServiceHelper.GetSignature(configuration);
-            return configuration;
+            return FilesControllerHelperString.OpenEdit(fileId, version, doc);
+        }
+
+        [Read("file/{fileId:int}/openedit")]
+        public Configuration<int> OpenEdit(int fileId, int version, string doc)
+        {
+            return FilesControllerHelperInt.OpenEdit(fileId, version, doc);
         }
 
 
@@ -572,43 +568,13 @@ namespace ASC.Api.Documents
         [Create("{folderId}/upload/create_session")]
         public object CreateUploadSession(string folderId, string fileName, long fileSize, string relativePath, bool encrypted)
         {
-            var file = FileUploader.VerifyChunkedUpload(folderId, fileName, fileSize, FilesSettingsHelper.UpdateIfExist, relativePath);
+            return FilesControllerHelperString.CreateUploadSession(folderId, fileName, fileSize, relativePath, encrypted);
+        }
 
-            if (FilesLinkUtility.IsLocalFileUploader)
-            {
-                var session = FileUploader.InitiateUpload(file.FolderID.ToString(), (file.ID ?? "").ToString(), file.Title, file.ContentLength, encrypted);
-
-                var response = ChunkedUploadSessionHelper.ToResponseObject(session, true);
-                return new
-                {
-                    success = true,
-                    data = response
-                };
-            }
-
-            var createSessionUrl = FilesLinkUtility.GetInitiateUploadSessionUrl(TenantManager.GetCurrentTenant().TenantId, file.FolderID, file.ID, file.Title, file.ContentLength, encrypted, SecurityContext);
-            var request = (HttpWebRequest)WebRequest.Create(createSessionUrl);
-            request.Method = "POST";
-            request.ContentLength = 0;
-
-            // hack for uploader.onlyoffice.com in api requests
-            var rewriterHeader = ApiContext.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
-            if (!string.IsNullOrEmpty(rewriterHeader))
-            {
-                request.Headers[HttpRequestExtensions.UrlRewriterHeader] = rewriterHeader;
-            }
-
-            // hack. http://ubuntuforums.org/showthread.php?t=1841740
-            if (WorkContext.IsMono)
-            {
-                ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
-            }
-
-            using (var response = request.GetResponse())
-            using (var responseStream = response.GetResponseStream())
-            {
-                return JObject.Parse(new StreamReader(responseStream).ReadToEnd()); //result is json string
-            }
+        [Create("{folderId:int}/upload/create_session")]
+        public object CreateUploadSession(int folderId, string fileName, long fileSize, string relativePath, bool encrypted)
+        {
+            return FilesControllerHelperInt.CreateUploadSession(folderId, fileName, fileSize, relativePath, encrypted);
         }
 
         /// <summary>
@@ -620,9 +586,9 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/text")]
-        public FileWrapper<string> CreateTextFileInMy(string title, string content)
+        public FileWrapper<int> CreateTextFileInMy(string title, string content)
         {
-            return CreateTextFile(GlobalFolderHelper.FolderMy.ToString(), title, content);
+            return CreateTextFile(GlobalFolderHelper.FolderMy, title, content);
         }
 
         /// <summary>
@@ -634,9 +600,9 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@common/text")]
-        public FileWrapper<string> CreateTextFileInCommon(string title, string content)
+        public FileWrapper<int> CreateTextFileInCommon(string title, string content)
         {
-            return CreateTextFile(GlobalFolderHelper.FolderCommon.ToString(), title, content);
+            return CreateTextFile(GlobalFolderHelper.FolderCommon, title, content);
         }
 
         /// <summary>
@@ -651,28 +617,13 @@ namespace ASC.Api.Documents
         [Create("{folderId}/text")]
         public FileWrapper<string> CreateTextFile(string folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
-            //Try detect content
-            var extension = ".txt";
-            if (!string.IsNullOrEmpty(content))
-            {
-                if (Regex.IsMatch(content, @"<([^\s>]*)(\s[^<]*)>"))
-                {
-                    extension = ".html";
-                }
-            }
-            return CreateFile(folderId, title, content, extension);
+            return FilesControllerHelperString.CreateTextFile(folderId, title, content);
         }
 
-        private FileWrapper<T> CreateFile<T>(T folderId, string title, string content, string extension)
+        [Create("{folderId:int}/text")]
+        public FileWrapper<int> CreateTextFile(int folderId, string title, string content)
         {
-            using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(content)))
-            {
-                var file = FileUploader.Exec(folderId,
-                                  title.EndsWith(extension, StringComparison.OrdinalIgnoreCase) ? title : (title + extension),
-                                  memStream.Length, memStream);
-                return FileWrapperHelper.Get(file);
-            }
+            return FilesControllerHelperInt.CreateTextFile(folderId, title, content);
         }
 
         /// <summary>
@@ -687,8 +638,13 @@ namespace ASC.Api.Documents
         [Create("{folderId}/html")]
         public FileWrapper<string> CreateHtmlFile(string folderId, string title, string content)
         {
-            if (title == null) throw new ArgumentNullException("title");
-            return CreateFile(folderId, title, content, ".html");
+            return FilesControllerHelperString.CreateHtmlFile(folderId, title, content);
+        }
+
+        [Create("{folderId:int}/html")]
+        public FileWrapper<int> CreateHtmlFile(int folderId, string title, string content)
+        {
+            return FilesControllerHelperInt.CreateHtmlFile(folderId, title, content);
         }
 
         /// <summary>
@@ -700,9 +656,9 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
         [Create("@my/html")]
-        public FileWrapper<string> CreateHtmlFileInMy(string title, string content)
+        public FileWrapper<int> CreateHtmlFileInMy(string title, string content)
         {
-            return CreateHtmlFile(GlobalFolderHelper.FolderMy.ToString(), title, content);
+            return CreateHtmlFile(GlobalFolderHelper.FolderMy, title, content);
         }
 
 
@@ -715,9 +671,9 @@ namespace ASC.Api.Documents
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>        
         [Create("@common/html")]
-        public FileWrapper<string> CreateHtmlFileInCommon(string title, string content)
+        public FileWrapper<int> CreateHtmlFileInCommon(string title, string content)
         {
-            return CreateHtmlFile(GlobalFolderHelper.FolderCommon.ToString(), title, content);
+            return CreateHtmlFile(GlobalFolderHelper.FolderCommon, title, content);
         }
 
 
@@ -734,9 +690,15 @@ namespace ASC.Api.Documents
         [Create("folder/{folderId}")]
         public FolderWrapper<string> CreateFolder(string folderId, string title)
         {
-            var folder = FileStorageService.CreateNewFolder(folderId, title);
-            return FolderWrapperHelper.Get(folder);
+            return FilesControllerHelperString.CreateFolder(folderId, title);
         }
+
+        [Create("folder/{folderId:int}")]
+        public FolderWrapper<int> CreateFolder(int folderId, string title)
+        {
+            return FilesControllerHelperInt.CreateFolder(folderId, title);
+        }
+
 
         /// <summary>
         /// Creates a new file in the 'My Documents' section with the title sent in the request
@@ -747,9 +709,9 @@ namespace ASC.Api.Documents
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
         [Create("@my/file")]
-        public FileWrapper<string> CreateFile(string title)
+        public FileWrapper<int> CreateFile(string title)
         {
-            return CreateFile(GlobalFolderHelper.FolderMy.ToString(), title);
+            return CreateFile(GlobalFolderHelper.FolderMy, title);
         }
 
         /// <summary>
@@ -764,8 +726,13 @@ namespace ASC.Api.Documents
         [Create("{folderId}/file")]
         public FileWrapper<string> CreateFile(string folderId, string title)
         {
-            var file = FileStorageService.CreateNewFile(new FileModel<string> { ParentId = folderId, Title = title });
-            return FileWrapperHelper.Get(file);
+            return FilesControllerHelperString.CreateFile(folderId, title);
+        }
+
+        [Create("{folderId:int}/file")]
+        public FileWrapper<int> CreateFile(int folderId, string title)
+        {
+            return FilesControllerHelperInt.CreateFile(folderId, title);
         }
 
         /// <summary>
@@ -781,8 +748,13 @@ namespace ASC.Api.Documents
         [Update("folder/{folderId}")]
         public FolderWrapper<string> RenameFolder(string folderId, string title)
         {
-            var folder = FileStorageService.FolderRename(folderId, title);
-            return FolderWrapperHelper.Get(folder);
+            return FilesControllerHelperString.RenameFolder(folderId, title);
+        }
+
+        [Update("folder/{folderId:int}")]
+        public FolderWrapper<int> RenameFolder(int folderId, string title)
+        {
+            return FilesControllerHelperInt.RenameFolder(folderId, title);
         }
 
         /// <summary>
@@ -794,9 +766,13 @@ namespace ASC.Api.Documents
         [Read("folder/{folderId}")]
         public FolderWrapper<string> GetFolderInfo(string folderId)
         {
-            var folder = FileStorageService.GetFolder(folderId).NotFoundIfNull("Folder not found");
+            return FilesControllerHelperString.GetFolderInfo(folderId);
+        }
 
-            return FolderWrapperHelper.Get(folder);
+        [Read("folder/{folderId:int}")]
+        public FolderWrapper<int> GetFolderInfo(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolderInfo(folderId);
         }
 
         /// <summary>
@@ -808,7 +784,13 @@ namespace ASC.Api.Documents
         [Read("folder/{folderId}/path")]
         public IEnumerable<FolderWrapper<string>> GetFolderPath(string folderId)
         {
-            return EntryManager.GetBreadCrumbs(folderId).Select(FolderWrapperHelper.Get);
+            return FilesControllerHelperString.GetFolderPath(folderId);
+        }
+
+        [Read("folder/{folderId:int}/path")]
+        public IEnumerable<FolderWrapper<int>> GetFolderPath(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolderPath(folderId);
         }
 
         /// <summary>
@@ -820,21 +802,13 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}", DisableFormat = true)]
         public FileWrapper<string> GetFileInfo(string fileId, int version = -1)
         {
-            var file = FileStorageService.GetFile(fileId, version).NotFoundIfNull("File not found");
-            return FileWrapperHelper.Get(file);
+            return FilesControllerHelperString.GetFileInfo(fileId, version);
         }
 
-        /// <summary>
-        /// Returns a detailed information about the file with the ID specified in the request
-        /// </summary>
-        /// <short>File information</short>
-        /// <category>Files</category>
-        /// <returns>File info</returns>
-        [Read("file/{fileId:int}")]
+        [Read("file/{fileId:int}", DisableFormat = true)]
         public FileWrapper<int> GetFileInfo(int fileId, int version = -1)
         {
-            var file = FileStorageServiceInt.GetFile(fileId, version).NotFoundIfNull("File not found");
-            return FileWrapperHelper.Get(file);
+            return FilesControllerHelperInt.GetFileInfo(fileId, version);
         }
 
         /// <summary>
@@ -849,13 +823,13 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}")]
         public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
         {
-            if (!string.IsNullOrEmpty(title))
-                FileStorageService.FileRename(fileId.ToString(CultureInfo.InvariantCulture), title);
+            return FilesControllerHelperString.UpdateFile(fileId, title, lastVersion);
+        }
 
-            if (lastVersion > 0)
-                FileStorageService.UpdateToVersion(fileId.ToString(CultureInfo.InvariantCulture), lastVersion);
-
-            return GetFileInfo(fileId);
+        [Update("file/{fileId:int}")]
+        public FileWrapper<int> UpdateFile(int fileId, string title, int lastVersion)
+        {
+            return FilesControllerHelperInt.UpdateFile(fileId, title, lastVersion);
         }
 
         /// <summary>
@@ -870,14 +844,13 @@ namespace ASC.Api.Documents
         [Delete("file/{fileId}")]
         public IEnumerable<FileOperationWraper<string>> DeleteFile(string fileId, bool deleteAfter, bool immediately)
         {
-            var model = new DeleteBatchModel
-            {
-                FileIds = new List<string> { fileId },
-                DeleteAfter = deleteAfter,
-                Immediately = immediately
-            };
+            return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
+        }
 
-            return DeleteBatchItems(model);
+        [Delete("file/{fileId:int}")]
+        public IEnumerable<FileOperationWraper<int>> DeleteFile(int fileId, bool deleteAfter, bool immediately)
+        {
+            return FilesControllerHelperInt.DeleteFile(fileId, deleteAfter, immediately);
         }
 
         /// <summary>
@@ -888,9 +861,15 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
         [Update("file/{fileId}/checkconversion")]
-        public IEnumerable<ConversationResult> StartConversion(string fileId)
+        public IEnumerable<ConversationResult<string>> StartConversion(string fileId)
         {
-            return CheckConversion(fileId, true);
+            return FilesControllerHelperString.StartConversion(fileId);
+        }
+
+        [Update("file/{fileId:int}/checkconversion")]
+        public IEnumerable<ConversationResult<int>> StartConversion(int fileId)
+        {
+            return FilesControllerHelperInt.StartConversion(fileId);
         }
 
         /// <summary>
@@ -902,30 +881,15 @@ namespace ASC.Api.Documents
         /// <param name="start"></param>
         /// <returns>Operation result</returns>
         [Read("file/{fileId}/checkconversion")]
-        public IEnumerable<ConversationResult> CheckConversion(string fileId, bool start)
+        public IEnumerable<ConversationResult<string>> CheckConversion(string fileId, bool start)
         {
-            return FileStorageService.CheckConversion(new ItemList<ItemList<string>>
-            {
-                new ItemList<string> { fileId, "0", start.ToString() }
-            })
-            .Select(r =>
-            {
-                var o = new ConversationResult
-                {
-                    Id = r.Id,
-                    Error = r.Error,
-                    OperationType = r.OperationType,
-                    Processed = r.Processed,
-                    Progress = r.Progress,
-                    Source = r.Source,
-                };
-                if (!string.IsNullOrEmpty(r.Result))
-                {
-                    var jResult = JObject.Parse(r.Result);
-                    o.File = GetFileInfo(jResult.Value<string>("id"), jResult.Value<int>("version"));
-                }
-                return o;
-            });
+            return FilesControllerHelperString.CheckConversion(fileId, start);
+        }
+
+        [Read("file/{fileId:int}/checkconversion")]
+        public IEnumerable<ConversationResult<int>> CheckConversion(int fileId, bool start)
+        {
+            return FilesControllerHelperInt.CheckConversion(fileId, start);
         }
 
         /// <summary>
@@ -940,14 +904,13 @@ namespace ASC.Api.Documents
         [Delete("folder/{folderId}")]
         public IEnumerable<FileOperationWraper<string>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
-            var model = new DeleteBatchModel
-            {
-                FolderIds = new List<string> { folderId },
-                DeleteAfter = deleteAfter,
-                Immediately = immediately
-            };
+            return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
+        }
 
-            return DeleteBatchItems(model);
+        [Delete("folder/{folderId:int}")]
+        public IEnumerable<FileOperationWraper<int>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
+        {
+            return FilesControllerHelperInt.DeleteFolder(folderId, deleteAfter, immediately);
         }
 
         /// <summary>
@@ -959,17 +922,16 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public IEnumerable<FileWrapper<string>> MoveOrCopyBatchCheck(BatchModel batchModel)
+        public IEnumerable<FileWrapper<string>> MoveOrCopyBatchCheck(BatchModel<string> batchModel)
         {
-            var itemList = new ItemList<string>();
+            return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
+        }
 
-            itemList.AddRange((batchModel.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<string>()).Select(x => "file_" + x));
-
-            var ids = FileStorageService.MoveOrCopyFilesCheck(itemList, batchModel.DestFolderId).Keys.Select(id => "file_" + id);
-
-            var entries = FileStorageService.GetItems(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
-            return entries.Select(x => FileWrapperHelper.Get((File<string>)x));
+        [Read("fileops/move")]
+        [BodySpecific]
+        public IEnumerable<FileWrapper<int>> MoveOrCopyBatchCheck(BatchModel<int> batchModel)
+        {
+            return FilesControllerHelperInt.MoveOrCopyBatchCheck(batchModel);
         }
 
         /// <summary>
@@ -984,14 +946,16 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/move")]
-        public IEnumerable<FileOperationWraper<string>> MoveBatchItems(BatchModel batchModel)
+        public IEnumerable<FileOperationWraper<string>> MoveBatchItems(BatchModel<string> batchModel)
         {
-            var itemList = new ItemList<string>();
+            return FilesControllerHelperString.MoveBatchItems(batchModel);
+        }
 
-            itemList.AddRange((batchModel.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<string>()).Select(x => "file_" + x));
-
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get<string>);
+        [Update("fileops/move")]
+        [BodySpecific]
+        public IEnumerable<FileOperationWraper<int>> MoveBatchItems(BatchModel<int> batchModel)
+        {
+            return FilesControllerHelperInt.MoveBatchItems(batchModel);
         }
 
         /// <summary>
@@ -1006,14 +970,16 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/copy")]
-        public IEnumerable<FileOperationWraper<string>> CopyBatchItems(BatchModel batchModel)
+        public IEnumerable<FileOperationWraper<string>> CopyBatchItems(BatchModel<string> batchModel)
         {
-            var itemList = new ItemList<string>();
+            return FilesControllerHelperString.CopyBatchItems(batchModel);
+        }
 
-            itemList.AddRange((batchModel.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<string>()).Select(x => "file_" + x));
-
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter).Select(FileOperationWraperHelper.Get<string>);
+        [BodySpecific]
+        [Update("fileops/copy")]
+        public IEnumerable<FileOperationWraper<int>> CopyBatchItems(BatchModel<int> batchModel)
+        {
+            return FilesControllerHelperInt.CopyBatchItems(batchModel);
         }
 
         /// <summary>
@@ -1023,14 +989,16 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper<string>> MarkAsRead(BaseBatchModel model)
+        public IEnumerable<FileOperationWraper<string>> MarkAsRead(BaseBatchModel<string> model)
         {
-            var itemList = new ItemList<string>();
+            return FilesControllerHelperString.MarkAsRead(model);
+        }
 
-            itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
-
-            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get<string>);
+        [Update("fileops/markasread")]
+        [BodySpecific]
+        public IEnumerable<FileOperationWraper<int>> MarkAsRead(BaseBatchModel<int> model)
+        {
+            return FilesControllerHelperInt.MarkAsRead(model);
         }
 
         /// <summary>
@@ -1068,26 +1036,16 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper<string>> BulkDownload(DownloadModel model)
+        public IEnumerable<FileOperationWraper<string>> BulkDownload(DownloadModel<string> model)
         {
-            var itemList = new Dictionary<string, string>();
+            return FilesControllerHelperString.BulkDownload(model);
+        }
 
-            foreach (var fileId in model.FileConvertIds.Where(fileId => !itemList.ContainsKey(fileId.Key)))
-            {
-                itemList.Add("file_" + fileId.Key, fileId.Value);
-            }
-
-            foreach (var fileId in model.FileIds.Where(fileId => !itemList.ContainsKey(fileId)))
-            {
-                itemList.Add("file_" + fileId, string.Empty);
-            }
-
-            foreach (var folderId in model.FolderIds.Where(folderId => !itemList.ContainsKey(folderId)))
-            {
-                itemList.Add("folder_" + folderId, string.Empty);
-            }
-
-            return FileStorageService.BulkDownload(itemList).Select(FileOperationWraperHelper.Get<string>);
+        [BodySpecific]
+        [Update("fileops/bulkdownload")]
+        public IEnumerable<FileOperationWraper<int>> BulkDownload(DownloadModel<int> model)
+        {
+            return FilesControllerHelperInt.BulkDownload(model);
         }
 
         /// <summary>
@@ -1101,7 +1059,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper<string>> DeleteBatchItems(DeleteBatchModel batch)
+        public IEnumerable<FileOperationWraper<string>> DeleteBatchItems(DeleteBatchModel<string> batch)
         {
             var itemList = new ItemList<string>();
 
@@ -1133,8 +1091,13 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/history")]
         public IEnumerable<FileWrapper<string>> GetFileVersionInfo(string fileId)
         {
-            var files = FileStorageService.GetFileHistory(fileId);
-            return files.Select(FileWrapperHelper.Get);
+            return FilesControllerHelperString.GetFileVersionInfo(fileId);
+        }
+
+        [Read("file/{fileId:int}/history")]
+        public IEnumerable<FileWrapper<int>> GetFileVersionInfo(int fileId)
+        {
+            return FilesControllerHelperInt.GetFileVersionInfo(fileId);
         }
 
         /// <summary>
@@ -1148,8 +1111,12 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/history")]
         public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
         {
-            var history = FileStorageService.CompleteVersion(fileId, version, continueVersion).Value;
-            return history.Select(FileWrapperHelper.Get);
+            return FilesControllerHelperString.ChangeHistory(fileId, version, continueVersion);
+        }
+        [Update("file/{fileId:int}/history")]
+        public IEnumerable<FileWrapper<int>> ChangeHistory(int fileId, int version, bool continueVersion)
+        {
+            return FilesControllerHelperInt.ChangeHistory(fileId, version, continueVersion);
         }
 
         /// <summary>
@@ -1162,8 +1129,13 @@ namespace ASC.Api.Documents
         [Read("file/{fileId}/share")]
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(string fileId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("file_{0}", fileId) });
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return FilesControllerHelperString.GetFileSecurityInfo(fileId);
+        }
+
+        [Read("file/{fileId:int}/share")]
+        public IEnumerable<FileShareWrapper> GetFileSecurityInfo(int fileId)
+        {
+            return FilesControllerHelperInt.GetFileSecurityInfo(fileId);
         }
 
         /// <summary>
@@ -1176,8 +1148,13 @@ namespace ASC.Api.Documents
         [Read("folder/{folderId}/share")]
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(string folderId)
         {
-            var fileShares = FileStorageService.GetSharedInfo(new ItemList<string> { string.Format("folder_{0}", folderId) });
-            return fileShares.Select(FileShareWrapperHelper.Get);
+            return FilesControllerHelperString.GetFolderSecurityInfo(folderId);
+        }
+
+        [Read("folder/{folderId:int}/share")]
+        public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(int folderId)
+        {
+            return FilesControllerHelperInt.GetFolderSecurityInfo(folderId);
         }
 
         /// <summary>
@@ -1196,18 +1173,13 @@ namespace ASC.Api.Documents
         [Update("file/{fileId}/share")]
         public IEnumerable<FileShareWrapper> SetFileSecurityInfo(string fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            if (share != null && share.Any())
-            {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
-                {
-                    Entries = new ItemList<string> { "file_" + fileId },
-                    Aces = list,
-                    Message = sharingMessage
-                };
-                FileStorageService.SetAceObject(aceCollection, notify);
-            }
-            return GetFileSecurityInfo(fileId);
+            return FilesControllerHelperString.SetFileSecurityInfo(fileId, share, notify, sharingMessage);
+        }
+
+        [Update("file/{fileId:int}/share")]
+        public IEnumerable<FileShareWrapper> SetFileSecurityInfo(int fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        {
+            return FilesControllerHelperInt.SetFileSecurityInfo(fileId, share, notify, sharingMessage);
         }
 
         /// <summary>
@@ -1226,19 +1198,12 @@ namespace ASC.Api.Documents
         [Update("folder/{folderId}/share")]
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(string folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
-            if (share != null && share.Any())
-            {
-                var list = new ItemList<AceWrapper>(share.Select(FileShareParamsHelper.ToAceObject));
-                var aceCollection = new AceCollection
-                {
-                    Entries = new ItemList<string> { "folder_" + folderId },
-                    Aces = list,
-                    Message = sharingMessage
-                };
-                FileStorageService.SetAceObject(aceCollection, notify);
-            }
-
-            return GetFolderSecurityInfo(folderId);
+            return FilesControllerHelperString.SetFolderSecurityInfo(folderId, share, notify, sharingMessage);
+        }
+        [Update("folder/{folderId:int}/share")]
+        public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(int folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+        {
+            return FilesControllerHelperInt.SetFolderSecurityInfo(folderId, share, notify, sharingMessage);
         }
 
         /// <summary>
@@ -1250,12 +1215,12 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <returns>Shared file information</returns>
         [Delete("share")]
-        public bool RemoveSecurityInfo(BaseBatchModel model)
+        public bool RemoveSecurityInfo(BaseBatchModel<int> model)
         {
             var itemList = new ItemList<string>();
 
-            itemList.AddRange((model.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<string>()).Select(x => "file_" + x));
+            itemList.AddRange((model.FolderIds ?? new List<int>()).Select(x => "folder_" + x));
+            itemList.AddRange((model.FileIds ?? new List<int>()).Select(x => "file_" + x));
 
             FileStorageService.RemoveAce(itemList);
 
@@ -1789,7 +1754,7 @@ namespace ASC.Api.Documents
         /// Result of file conversation operation.
         /// </summary>
         [DataContract(Name = "operation_result", Namespace = "")]
-        public class ConversationResult
+        public class ConversationResult<T>
         {
             /// <summary>
             /// Operation Id.
@@ -1819,7 +1784,7 @@ namespace ASC.Api.Documents
             /// Result file of operation.
             /// </summary>
             [DataMember(Name = "result")]
-            public FileWrapper<string> File { get; set; }
+            public FileWrapper<T> File { get; set; }
 
             /// <summary>
             /// Error during conversation.
@@ -1839,41 +1804,47 @@ namespace ASC.Api.Documents
     {
         public static DIHelper AddDocumentsControllerService(this DIHelper services)
         {
-            return services
-                .AddEasyBibHelperService()
-                .AddWordpressTokenService()
-                .AddWordpressHelperService()
-                .AddFolderContentWrapperHelperService()
-                .AddFileUploaderService()
-                .AddFileShareParamsService()
-                .AddFileShareWrapperService()
-                .AddFileOperationWraperHelperService()
-                .AddFileWrapperHelperService()
-                .AddFolderWrapperHelperService()
-                .AddConsumerFactoryService()
-                .AddDocumentServiceConnectorService()
-                .AddCommonLinkUtilityService()
-                .AddMessageServiceService()
-                .AddThirdpartyConfigurationService()
-                .AddCoreBaseSettingsService()
-                .AddWebItemSecurity()
-                .AddUserManagerService()
-                .AddEntryManagerService()
-                .AddTenantManagerService()
-                .AddSecurityContextService()
-                .AddDocumentServiceHelperService()
-                .AddFilesLinkUtilityService()
-                .AddApiContextService()
-                .AddFileStorageService()
-                .AddGlobalFolderHelperService()
-                .AddFilesSettingsHelperService()
-                .AddBoxLoginProviderService()
-                .AddDropboxLoginProviderService()
-                .AddOneDriveLoginProviderService()
-                .AddGoogleLoginProviderService()
-                .AddChunkedUploadSessionHelperService()
-                .AddProductEntryPointService()
-                ;
+            return services.AddFilesControllerHelperService();
+        }
+    }
+
+    public class BodySpecificAttribute : Attribute, IActionConstraint
+    {
+        public BodySpecificAttribute()
+        {
+        }
+
+        public int Order
+        {
+            get
+            {
+                return 0;
+            }
+        }
+
+        public bool Accept(ActionConstraintContext context)
+        {
+            var options = new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            };
+
+            try
+            {
+                context.RouteContext.HttpContext.Request.EnableBuffering();
+                _ = JsonSerializer.DeserializeAsync<BaseBatchModel<int>>(context.RouteContext.HttpContext.Request.Body, options).Result;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                context.RouteContext.HttpContext.Request.Body.Seek(0, SeekOrigin.Begin);
+            }
+
         }
     }
 }
