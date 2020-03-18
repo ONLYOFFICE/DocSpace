@@ -161,7 +161,9 @@ export function fetchFiles(folderId, filter, dispatch) {
         treeFolders.push(item.toString());
       }
     }
-    treeFolders = treeFolders.concat(filter.treeFolders.filter(x => treeFolders.indexOf(x) === -1));
+    if(treeFolders.length > 0) {
+      treeFolders = treeFolders.concat(filter.treeFolders.filter(x => !treeFolders.includes(x)));
+    }
     filterData.treeFolders = treeFolders;
     filterData.total = data.total;
     dispatch(setFilesFilter(filterData, folderId));
