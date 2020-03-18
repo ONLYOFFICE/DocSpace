@@ -11,6 +11,7 @@ import {
   SORT_ORDER
 } from "../../helpers/constants";
 import config from "../../../package.json";
+import { getTreeFolders } from "./selectors";
 
 const { FilterType, FileType } = constants;
 const { files, FilesFilter } = api;
@@ -155,16 +156,7 @@ export function setFilterUrl(filter, folderId) {
 export function fetchFiles(folderId, filter, dispatch) {
   const filterData = filter ? filter.clone() : FilesFilter.getDefault();
   return files.getFolder(folderId, filter).then(data => {
-    let treeFolders = [];
-    if(data.pathParts.length > 0) {
-      for(let item of data.pathParts) {
-        treeFolders.push(item.toString());
-      }
-    }
-    if(treeFolders.length > 0) {
-      treeFolders = treeFolders.concat(filterData.treeFolders.filter(x => !treeFolders.includes(x)));
-    }
-    filterData.treeFolders = treeFolders;
+    filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
     filterData.total = data.total;
     dispatch(setFilesFilter(filterData, folderId));
     dispatch(setFolders(data.folders));
