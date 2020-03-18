@@ -10,18 +10,19 @@ import {
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import { setAction } from '../../../store/files/actions';
 import i18n from '../i18n';
-import { store, utils } from 'asc-web-common';
+import { store, utils, constants } from 'asc-web-common';
 const { changeLanguage } = utils;
 const { isAdmin } = store.auth.selectors;
+const {FileAction} = constants;
 
 class PureArticleMainButtonContent extends React.Component {
 
   onCreate = (format) => {
     this.props.setAction(
       {
-        type: 'create',
-        exst: format,
-        tempId: -1
+        type: FileAction.Create,
+        extension: format,
+        id: -1
       });
   }
 
