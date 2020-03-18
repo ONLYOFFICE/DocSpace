@@ -64,3 +64,12 @@ export const FileType = Object.freeze({
   Presentation: 6,
   Document: 7
 });
+
+/**
+ * Enum for file action.
+ * @readonly
+ */
+export const FileAction = Object.freeze({
+  Create: 0,
+  Rename: 1
+});
