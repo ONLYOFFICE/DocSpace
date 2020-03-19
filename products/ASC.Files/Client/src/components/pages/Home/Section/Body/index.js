@@ -184,7 +184,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   render() {
-    const { files, folders, viewer, parentId, folderId, settings, selection, fileAction, onLoading } = this.props;
+    const { files, folders, viewer, parentId, folderId, settings, selection, fileAction, onLoading, filter } = this.props;
     const { editingId } = this.state;
 
     let items = [...folders, ...files];
@@ -229,7 +229,7 @@ class SectionBodyContent extends React.PureComponent {
         })}
       </RowContainer>
     ) : parentId !== 0 ? (
-      <EmptyFolderContainer parentId={parentId} />
+      <EmptyFolderContainer parentId={parentId} filter={filter}/>
     ) : <p>RootFolderContainer</p>;
   }
 }

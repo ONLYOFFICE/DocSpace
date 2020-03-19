@@ -1,6 +1,6 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
-import { fetchFolder } from "../../../store/files/actions";
+import { fetchFolder, fetchFiles } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
 const { files } = api;
@@ -65,7 +65,8 @@ class TreeFolders extends React.Component {
           ? ""
           : "/";
       history.push(`${url}${symbol}#${data[0]}`);
-      fetchFolder(data[0], store.dispatch).catch(err =>
+      const newFilter = this.props.filter.clone();
+      fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
         toastr.error("Something went wrong", err)
       );
     }
