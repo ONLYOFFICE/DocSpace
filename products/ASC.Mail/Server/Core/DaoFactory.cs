@@ -43,6 +43,7 @@ namespace ASC.Mail.Core
         public MailboxSignatureDao MailboxSignatureDao { get; }
         public TagDao TagDao { get; }
         public AttachmentDao AttachmentDao { get; }
+        public FolderDao FolderDao { get; }
 
         public DaoFactory(
             AccountDao accountDao,
@@ -56,7 +57,8 @@ namespace ASC.Mail.Core
             DisplayImagesAddressDao displayImagesAddressDao,
             MailboxSignatureDao mailboxSignatureDao,
             TagDao tagDao,
-            AttachmentDao attachmentDao)
+            AttachmentDao attachmentDao,
+            FolderDao folderDao)
         {
             AccountDao = accountDao;
             MailboxAutoreplyDao = mailboxAutoreplyDao;
@@ -70,6 +72,7 @@ namespace ASC.Mail.Core
             MailboxSignatureDao = mailboxSignatureDao;
             TagDao = tagDao;
             AttachmentDao = attachmentDao;
+            FolderDao = folderDao;
         }
     }
 
