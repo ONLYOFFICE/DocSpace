@@ -24,17 +24,6 @@
 */
 
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.ElasticSearch;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Data.Search;
-//using ASC.Mail.Enums;
-//using ASC.Mail.Extensions;
-
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Enums;
@@ -53,12 +42,16 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
         public bool? IsPrimary { get; private set; }
         public MailDbContext MailDb { get; }
         public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
+        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
         public string SearchTerm { get; private set; }
         public int? Type { get; set; }
 
         public FullFilterContactsExp(int tenant, string user, 
             MailDbContext mailDbContext,
-            FactoryIndexer<MailContactWrapper> factoryIndexer, 
+            FactoryIndexer<MailContactWrapper> factoryIndexer,
+            FactoryIndexerHelper factoryIndexerHelper,
+            IServiceProvider serviceProvider,
             string searchTerm = null, int? type = null, ContactInfoType? infoType = null, 
             bool? isPrimary = null, bool? orderAsc = true, int? startIndex = null,
             int? limit = null)
@@ -68,6 +61,8 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             IsPrimary = isPrimary;
             MailDb = mailDbContext;
             FactoryIndexer = factoryIndexer;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
             SearchTerm = searchTerm;
             Type = type;
         }
@@ -80,10 +75,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Contact
             {
                 var foundIndex = false;
 
-                var t = FactoryIndexer.ServiceProvider.GetService<MailContactWrapper>();
-                if (FactoryIndexer.FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                var t = ServiceProvider.GetService<MailContactWrapper>();
+                if (FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
                 {
-                    var selector = new Selector<MailContactWrapper>(FactoryIndexer.ServiceProvider)
+                    var selector = new Selector<MailContactWrapper>(ServiceProvider)
                         .MatchAll(SearchTerm)
                         .Where(s => s.User, new Guid(User));
 

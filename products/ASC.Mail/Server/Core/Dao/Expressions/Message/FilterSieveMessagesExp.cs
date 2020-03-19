@@ -4,7 +4,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Entities;
+using ASC.Mail.Enums.Filter;
 using ASC.Mail.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Mail.Core.Dao.Expressions.Message
 {
@@ -31,6 +33,9 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         public int? StartIndex { get; set; }
 
         public int? Limit { get; set; }
+        public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
+        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         public List<int> TagIds
         {
@@ -43,7 +48,10 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
         }
 
         public FilterSieveMessagesExp(List<int> ids, int tenant, string user, MailSieveFilterData filter, int page,
-            int pageSize)
+            int pageSize, 
+            FactoryIndexer<MailWrapper> factoryIndexer, 
+            FactoryIndexerHelper factoryIndexerHelper, 
+            IServiceProvider serviceProvider)
         {
             Filter = filter;
             Tenant = tenant;
@@ -57,74 +65,80 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             StartIndex = page*pageSize;
             Limit = pageSize;
+            FactoryIndexer = factoryIndexer;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
         }
-
-        private const string MM_ALIAS = "mm";
 
         public virtual Expression<Func<MailMail, bool>> GetExpression()
         {
-            return m => true;
+            Expression<Func<MailMail, bool>> filterExp = m => 
+                m.Tenant == Tenant && m.IdUser == User && m.IsRemoved == false;
 
-            //TODO: Fix
-            /*var filterExp = Exp.Empty;
-
-            if (!FactoryIndexer<MailWrapper>.Support)
+            var t = ServiceProvider.GetService<MailWrapper>();
+            if (!FactoryIndexerHelper.Support(t))
             {
-                Func<ConditionKeyType, string> toDbField = c =>
+                Expression<Func<MailMail, bool>> getConditionExp(MailSieveFilterConditionData c)
                 {
-                    switch (c)
-                    {
-                        case ConditionKeyType.From:
-                            return MailTable.Columns.From.Prefix(MM_ALIAS);
-                        case ConditionKeyType.To:
-                            return MailTable.Columns.To.Prefix(MM_ALIAS);
-                        case ConditionKeyType.Cc:
-                            return MailTable.Columns.Cc.Prefix(MM_ALIAS);
-                        case ConditionKeyType.Subject:
-                            return MailTable.Columns.Subject.Prefix(MM_ALIAS);
-                        default:
-                            throw new ArgumentOutOfRangeException("c", c, null);
-                    }
-                };
-
-                Func<MailSieveFilterConditionData, Expression<Func<MailMail, bool>>> getConditionExp = c =>
-                {
-                    var e = Exp.Empty;
+                    Expression<Func<MailMail, bool>> e = m => true;
 
                     switch (c.Operation)
                     {
                         case ConditionOperationType.Matches:
-                            e = c.Key == ConditionKeyType.ToOrCc
-                                ? Exp.Or(Exp.Eq(MailTable.Columns.To.Prefix(MM_ALIAS), c.Value),
-                                    Exp.Eq(MailTable.Columns.Cc.Prefix(MM_ALIAS), c.Value))
-                                : Exp.Eq(toDbField(c.Key), c.Value);
+                            e = c.Key switch
+                            {
+                                ConditionKeyType.From => m => m.FromText == c.Value,
+                                ConditionKeyType.To => m => m.ToText == c.Value,
+                                ConditionKeyType.Cc => m => m.Cc == c.Value,
+                                ConditionKeyType.Subject => m => m.Subject == c.Value,
+                                ConditionKeyType.ToOrCc => m => m.ToText == c.Value || m.Cc == c.Value,
+                                _ => throw new ArgumentOutOfRangeException("c", c, null),
+                            };
+
                             break;
                         case ConditionOperationType.Contains:
-                            e = c.Key == ConditionKeyType.ToOrCc
-                                ? Exp.Or(Exp.Like(MailTable.Columns.To.Prefix(MM_ALIAS), c.Value, SqlLike.AnyWhere),
-                                    Exp.Like(MailTable.Columns.Cc.Prefix(MM_ALIAS), c.Value, SqlLike.AnyWhere))
-                                : Exp.Like(toDbField(c.Key), c.Value, SqlLike.AnyWhere);
+                            e = c.Key switch
+                            {
+                                ConditionKeyType.From => m => m.FromText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.To => m => m.ToText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.Cc => m => m.Cc.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.Subject => m => m.Subject.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.ToOrCc => m => m.ToText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase)
+                                                             || m.Cc.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                _ => throw new ArgumentOutOfRangeException("c", c, null),
+                            };
                             break;
                         case ConditionOperationType.NotMatches:
-                            e = c.Key == ConditionKeyType.ToOrCc
-                                ? !Exp.And(Exp.Eq(MailTable.Columns.To.Prefix(MM_ALIAS), c.Value),
-                                    Exp.Eq(MailTable.Columns.Cc.Prefix(MM_ALIAS), c.Value))
-                                : !Exp.Eq(toDbField(c.Key), c.Value);
+                            e = c.Key switch
+                            {
+                                ConditionKeyType.From => m => m.FromText != c.Value,
+                                ConditionKeyType.To => m => m.ToText != c.Value,
+                                ConditionKeyType.Cc => m => m.Cc != c.Value,
+                                ConditionKeyType.Subject => m => m.Subject != c.Value,
+                                ConditionKeyType.ToOrCc => m => m.ToText != c.Value && m.Cc != c.Value,
+                                _ => throw new ArgumentOutOfRangeException("c", c, null),
+                            };
                             break;
                         case ConditionOperationType.NotContains:
-                            e = c.Key == ConditionKeyType.ToOrCc
-                                ? Exp.And(!Exp.Like(MailTable.Columns.To.Prefix(MM_ALIAS), c.Value, SqlLike.AnyWhere),
-                                    !Exp.Like(MailTable.Columns.Cc.Prefix(MM_ALIAS), c.Value, SqlLike.AnyWhere))
-                                : !Exp.Like(toDbField(c.Key), c.Value, SqlLike.AnyWhere);
+                            e = c.Key switch
+                            {
+                                ConditionKeyType.From => m => !m.FromText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.To => m => !m.ToText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.Cc => m => !m.Cc.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.Subject => m => !m.Subject.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                ConditionKeyType.ToOrCc => m => !m.ToText.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase)
+                                                             && !m.Cc.Contains(c.Value, StringComparison.InvariantCultureIgnoreCase),
+                                _ => throw new ArgumentOutOfRangeException("c", c, null),
+                            };
                             break;
                     }
 
                     return e;
-                };
+                }
 
                 if (Filter.Conditions != null && Filter.Conditions.Any())
                 {
-                    var cExp = Exp.Empty;
+                    Expression<Func<MailMail, bool>> cExp = null;
 
                     foreach (var c in Filter.Conditions)
                     {
@@ -132,41 +146,40 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                         {
                             case MatchMultiConditionsType.MatchAll:
                             case MatchMultiConditionsType.None:
-                                cExp &= getConditionExp(c);
+                                cExp = cExp == null ? getConditionExp(c) : cExp.And(getConditionExp(c));
                                 break;
                             case MatchMultiConditionsType.MatchAtLeastOne:
-                                cExp |= getConditionExp(c);
+                                cExp = cExp == null ? getConditionExp(c) : cExp.Or(getConditionExp(c));
                                 break;
                         }
                     }
 
-                    filterExp &= cExp;
+                    filterExp = filterExp.And(cExp);
                 }
-
             }
 
             if (Ids != null && Ids.Any())
             {
-                filterExp &= Exp.In(MailTable.Columns.Id.Prefix(MM_ALIAS), Ids);
+                filterExp = filterExp.And(m => Ids.Contains(m.Id));
             }
 
             if (Filter.Options.ApplyTo.Folders.Any())
             {
-                filterExp &= Exp.In(MailTable.Columns.Folder.Prefix(MM_ALIAS), Filter.Options.ApplyTo.Folders);
+                filterExp = filterExp.And(m => Filter.Options.ApplyTo.Folders.Contains(m.Folder));
             }
 
             if (Filter.Options.ApplyTo.Mailboxes.Any())
             {
-                filterExp &= Exp.In(MailTable.Columns.MailboxId.Prefix(MM_ALIAS), Filter.Options.ApplyTo.Mailboxes);
+                filterExp = filterExp.And(m => Filter.Options.ApplyTo.Mailboxes.Contains(m.IdMailbox));
             }
 
             switch (Filter.Options.ApplyTo.WithAttachments)
             {
                 case ApplyToAttachmentsType.WithAttachments:
-                    filterExp &= Exp.Gt(MailTable.Columns.AttachCount.Prefix(MM_ALIAS), 0);
+                    filterExp = filterExp.And(m => m.AttachmentsCount > 0);
                     break;
                 case ApplyToAttachmentsType.WithoutAttachments:
-                    filterExp &= Exp.Eq(MailTable.Columns.AttachCount.Prefix(MM_ALIAS), 0);
+                    filterExp = filterExp.And(m => m.AttachmentsCount == 0);
                     break;
                 case ApplyToAttachmentsType.WithAndWithoutAttachments:
                     break;
@@ -174,20 +187,15 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                     throw new ArgumentOutOfRangeException();
             }
 
-            var exp = Exp.Eq(MailTable.Columns.Tenant.Prefix(MM_ALIAS), Tenant) &
-                      Exp.Eq(MailTable.Columns.User.Prefix(MM_ALIAS), User) &
-                      Exp.Eq(MailTable.Columns.IsRemoved.Prefix(MM_ALIAS), false);
-
-            exp &= filterExp;
-
-            return exp;*/
+            return filterExp;
         }
 
-        /*public static bool TryGetFullTextSearchIds(MailSieveFilterData filter, string user, out List<int> ids, out long total)
+        public bool TryGetFullTextSearchIds(MailSieveFilterData filter, string user, out List<int> ids, out long total)
         {
             ids = new List<int>();
 
-            if (!FactoryIndexer<MailWrapper>.Support)
+            var t = ServiceProvider.GetService<MailWrapper>();
+            if (!FactoryIndexerHelper.Support(t))
             {
                 total = 0;
                 return false;
@@ -195,29 +203,24 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
             var userId = new Guid(user);
 
-            Func<ConditionKeyType, Expression<Func<MailWrapper, object>>> getExp = (c) =>
+            static Expression<Func<MailWrapper, object>> getExp(ConditionKeyType c)
             {
-                switch (c)
+                return c switch
                 {
-                    case ConditionKeyType.From:
-                        return w => w.FromText;
-                    case ConditionKeyType.To:
-                        return w => w.ToText;
-                    case ConditionKeyType.Cc:
-                        return w => w.Cc;
-                    case ConditionKeyType.Subject:
-                        return w => w.Subject;
-                    default:
-                        throw new ArgumentOutOfRangeException("c", c, null);
-                }
-            };
+                    ConditionKeyType.From => w => w.FromText,
+                    ConditionKeyType.To => w => w.ToText,
+                    ConditionKeyType.Cc => w => w.Cc,
+                    ConditionKeyType.Subject => w => w.Subject,
+                    _ => throw new ArgumentOutOfRangeException("c", c, null),
+                };
+            }
 
-            Func<MailSieveFilterConditionData, string> getValue = (c) =>
+            static string getValue(MailSieveFilterConditionData c)
             {
                 return c.Operation == ConditionOperationType.Matches || c.Operation == ConditionOperationType.NotMatches
                     ? string.Format("\"{0}\"", c.Value)
                     : c.Value;
-            };
+            }
 
             Func<MailSieveFilterConditionData, Selector<MailWrapper>> setSelector = (c) =>
             {
@@ -227,25 +230,25 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
                 if (c.Key == ConditionKeyType.ToOrCc)
                 {
-                    sel = new Selector<MailWrapper>().Or(
+                    sel = new Selector<MailWrapper>(ServiceProvider).Or(
                         s => s.Match(w => w.ToText, value), 
                         s => s.Match(w => w.Cc, value));
                 }
                 else
                 {
-                    sel = new Selector<MailWrapper>().Match(getExp(c.Key), value);
+                    sel = new Selector<MailWrapper>(ServiceProvider).Match(getExp(c.Key), value);
                 }
 
                 if (c.Operation == ConditionOperationType.NotMatches ||
                     c.Operation == ConditionOperationType.NotContains)
                 {
-                    return new Selector<MailWrapper>().Not(s => sel);
+                    return new Selector<MailWrapper>(ServiceProvider).Not(s => sel);
                 }
 
                 return sel;
             };
 
-            var selector = new Selector<MailWrapper>();
+            var selector = new Selector<MailWrapper>(ServiceProvider);
 
             foreach (var c in filter.Conditions)
             {
@@ -280,13 +283,12 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 .Where(r => r.UserId, userId)
                 .Sort(r => r.DateSent, true);
 
-            List<int> mailIds;
-            if (!FactoryIndexer<MailWrapper>.TrySelectIds(s => selector, out mailIds, out total))
+            if (!FactoryIndexer.TrySelectIds(s => selector, out List<int> mailIds, out total))
                 return false;
 
             ids = mailIds;
 
             return true;
-        }*/
+        }
     }
 }

@@ -35,17 +35,17 @@ namespace ASC.Mail.Core.Dao.Interfaces
     {
         Mailbox GetMailBox(IMailboxExp exp);
 
-        /*List<Mailbox> GetMailBoxes(IMailboxesExp exp);
+        List<Mailbox> GetMailBoxes(IMailboxesExp exp);
 
         Mailbox GetNextMailBox(IMailboxExp exp);
 
         Tuple<int, int> GetRangeMailboxes(IMailboxExp exp);
 
-        List<Tuple<int, string>> GetMailUsers(IMailboxExp exp);*/
+        List<Tuple<int, string>> GetMailUsers(IMailboxExp exp);
 
         int SaveMailBox(Mailbox mailbox);
 
-        /*bool SetMailboxRemoved(Mailbox mailbox);
+        bool SetMailboxRemoved(Mailbox mailbox);
 
         bool RemoveMailbox(Mailbox mailbox);
 
@@ -68,6 +68,6 @@ namespace ASC.Mail.Core.Dao.Interfaces
 
         bool CanAccessTo(IMailboxExp exp);
 
-        MailboxStatus GetMailBoxStatus(IMailboxExp exp);*/
+        MailboxStatus GetMailBoxStatus(IMailboxExp exp);
     }
 }
