@@ -6,8 +6,8 @@ const DEFAULT_PAGE_COUNT = 25;
 const DEFAULT_TOTAL = 0;
 const DEFAULT_SORT_BY = "lastModifiedDate";
 const DEFAULT_SORT_ORDER = "ascending";
-const DEFAULT_FILTER_TYPE = FilterType.None;
-const DEFAULT_SEARCH_TYPE = null; //withSubfolders
+const DEFAULT_FILTER_TYPE = null;
+const DEFAULT_SEARCH_TYPE = true; //withSubfolders
 const DEFAULT_SEARCH = null;
 const DEFAULT_FOLDER_PATH = [];
 const DEFAULT_AUTHOR_TYPE = null;
@@ -72,6 +72,9 @@ class FilesFilter {
       authorType
     } = this;
 
+    const isFilterSet = (filterType || (search ?? "").trim() || authorType) ? withSubfolders : false;
+    const userIdOrGroupId = authorType && authorType.includes('_') ? authorType.slice(authorType.indexOf('_') + 1) : null;
+
     let dtoFilter = {
       startIndex: this.getStartIndex(),
       count: pageCount,
@@ -79,8 +82,8 @@ class FilesFilter {
       sortOrder: sortOrder,
       filterType: filterType,
       filterValue: (search ?? "").trim(),
-      // withSubfolders,
-      userIdOrGroupId: authorType && authorType.includes('_') ? authorType.slice(authorType.indexOf('_') + 1) : null //TODO: replace with FilterInput refactoring
+      withSubfolders: isFilterSet,
+      userIdOrGroupId
     };
 
 
