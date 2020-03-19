@@ -76,6 +76,7 @@ if (token) {
           return Promise.resolve(newFilter);
       }
     })
+    .catch(err => Promise.resolve(FilesFilter.getDefault()))
     .then(data => {
       if (data instanceof FilesFilter) return Promise.resolve(data);
       const result = data[0];
