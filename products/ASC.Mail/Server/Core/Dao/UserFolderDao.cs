@@ -228,7 +228,7 @@ namespace ASC.Mail.Core.Dao
             foreach (var f in toUpdate)
             {
                 var count = MailDb.MailUserFolderTree
-                    .Where(r => r.ParentId == (int)id)
+                    .Where(r => r.ParentId == f.Id)
                     .Count() - 1;
 
                 f.FoldersCount = (uint)count;
