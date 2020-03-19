@@ -96,18 +96,18 @@ class FilesFilter {
 
   clone() {
     return new FilesFilter(
-          this.page,
-          this.pageCount,
-          this.total,
-          this.sortBy,
-          this.sortOrder,
-          this.filterType,
-          this.withSubfolders,
-          this.search,
-          this.authorType,
-          this.treeFolders,
-          this.selectedItem
-        );
+      this.page,
+      this.pageCount,
+      this.total,
+      this.sortBy,
+      this.sortOrder,
+      this.filterType,
+      this.withSubfolders,
+      this.search,
+      this.authorType,
+      this.treeFolders,
+      this.selectedItem
+    );
   }
 
   equals(filter) {
