@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { EmptyScreenContainer, Link } from "asc-web-components";
-import { fetchFolder } from "../../../../../store/files/actions";
+import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
 import { history } from "asc-web-common";
 
@@ -44,7 +44,8 @@ const EmptyFolderContainer = props => {
     console.log("Create presentation click");
   const onCreateFolderClick = () => console.log("Create folder click");
   const onBackToParentFolder = () => {
-    fetchFolder(props.parentId, store.dispatch);
+    const newFilter = props.filter.clone();
+    fetchFiles(props.parentId, newFilter, store.dispatch);
     const url =
       history.location.search !== ""
         ? history.location.search
