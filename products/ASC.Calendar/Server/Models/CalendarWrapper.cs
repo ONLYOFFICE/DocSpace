@@ -43,6 +43,8 @@ namespace ASC.Calendar.Models
     [DataContract(Name = "calendar", Namespace = "")]
     public class CalendarWrapper
     {
+        public BaseCalendar UserCalendar { get; set; }
+
         [DataMember(Name = "isSubscription", Order = 80)]
         public bool IsSubscription { get; set; }
 
@@ -132,7 +134,7 @@ namespace ASC.Calendar.Models
 
     public class CalendarWrapperHelper
     {
-        public BaseCalendar UserCalendar { get; private set; }
+
         protected UserViewSettings _userViewSettings;
         protected Guid _userId;
 
@@ -181,35 +183,35 @@ namespace ASC.Calendar.Models
 
             if (_userViewSettings == null)
             {
-                UserCalendar = calendar;
+                calendarWraper.UserCalendar = calendar;
                 _userId = AuthContext.CurrentAccount.ID;
             }
             else
             {
-                UserCalendar = calendar.GetUserCalendar(_userViewSettings);
+                calendarWraper.UserCalendar = calendar.GetUserCalendar(_userViewSettings);
                 _userId = _userViewSettings.UserId;
             }
 
             //---IsSubscription
-            if (UserCalendar.Id != null)
+            if (calendarWraper.UserCalendar.Id != null)
             {
-                if (UserCalendar.IsiCalStream())
+                if (calendarWraper.UserCalendar.IsiCalStream())
                     calendarWraper.IsSubscription = true;
-                else if (UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
+                else if (calendarWraper.UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
                     calendarWraper.IsSubscription = true;
-                else if (UserCalendar.OwnerId.Equals(_userId))
+                else if (calendarWraper.UserCalendar.OwnerId.Equals(_userId))
                     calendarWraper.IsSubscription = false;
                 else
                     calendarWraper.IsSubscription = true;
 
                 //---iCalUrl
-                if (UserCalendar.IsiCalStream())
-                    calendarWraper.iCalUrl = (UserCalendar as BusinessObjects.Calendar).iCalUrl;
+                if (calendarWraper.UserCalendar.IsiCalStream())
+                    calendarWraper.iCalUrl = (calendarWraper.UserCalendar as BusinessObjects.Calendar).iCalUrl;
                 else
                     calendarWraper.iCalUrl = "";
 
                 //---isiCalStream
-                if (UserCalendar.IsiCalStream())
+                if (calendarWraper.UserCalendar.IsiCalStream())
                     calendarWraper.IsiCalStream = true;
                 else
                     calendarWraper.IsiCalStream = false;
@@ -218,14 +220,14 @@ namespace ASC.Calendar.Models
                 calendarWraper.IsHidden = _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
 
                 //---CanAlertModify
-                calendarWraper.CanAlertModify = UserCalendar.Context.CanChangeAlertType;
+                calendarWraper.CanAlertModify = calendarWraper.UserCalendar.Context.CanChangeAlertType;
 
                 //---IsShared
-                calendarWraper.IsShared = UserCalendar.SharingOptions.SharedForAll || UserCalendar.SharingOptions.PublicItems.Count > 0;
+                calendarWraper.IsShared = calendarWraper.UserCalendar.SharingOptions.SharedForAll || calendarWraper.UserCalendar.SharingOptions.PublicItems.Count > 0;
 
                 //---Permissions
-                var p = new CalendarPermissions() { Data = PublicItemCollectionHelper.GetForCalendar(UserCalendar) };
-                foreach (var item in UserCalendar.SharingOptions.PublicItems)
+                var p = new CalendarPermissions() { Data = PublicItemCollectionHelper.GetForCalendar(calendarWraper.UserCalendar) };
+                foreach (var item in calendarWraper.UserCalendar.SharingOptions.PublicItems)
                 {
                     if (item.IsGroup)
                         p.UserParams.Add(new UserParams() { Id = item.Id, Name = UserManager.GetGroupInfo(item.Id).Name });
@@ -235,40 +237,40 @@ namespace ASC.Calendar.Models
                 calendarWraper.Permissions = p;
 
                 //---IsEditable
-                if (UserCalendar.IsiCalStream())
+                if (calendarWraper.UserCalendar.IsiCalStream())
                     calendarWraper.IsEditable = false;
-                else if (UserCalendar is ISecurityObject)
-                    calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
+                else if (calendarWraper.UserCalendar is ISecurityObject)
+                    calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)calendarWraper.UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
                 else
                     calendarWraper.IsEditable = false;
 
                 //---TextColor
-                calendarWraper.TextColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlTextColor) ? BusinessObjects.Calendar.DefaultTextColor :
-                        UserCalendar.Context.HtmlTextColor;
+                calendarWraper.TextColor = String.IsNullOrEmpty(calendarWraper.UserCalendar.Context.HtmlTextColor) ? BusinessObjects.Calendar.DefaultTextColor :
+                        calendarWraper.UserCalendar.Context.HtmlTextColor;
 
                 //---BackgroundColor
-                calendarWraper.BackgroundColor = String.IsNullOrEmpty(UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
-                        UserCalendar.Context.HtmlBackgroundColor;
+                calendarWraper.BackgroundColor = String.IsNullOrEmpty(calendarWraper.UserCalendar.Context.HtmlBackgroundColor) ? BusinessObjects.Calendar.DefaultBackgroundColor :
+                        calendarWraper.UserCalendar.Context.HtmlBackgroundColor;
 
                 //---Description
-                calendarWraper.Description = UserCalendar.Description;
+                calendarWraper.Description = calendarWraper.UserCalendar.Description;
 
                 //---Title
-                calendarWraper.Title = UserCalendar.Name;
+                calendarWraper.Title = calendarWraper.UserCalendar.Name;
 
                 //---Id
-                calendarWraper.Id = UserCalendar.Id;
+                calendarWraper.Id = calendarWraper.UserCalendar.Id;
 
                 //---IsTodo
-                if (UserCalendar.IsExistTodo())
-                    calendarWraper.IsTodo = (UserCalendar as BusinessObjects.Calendar).IsTodo;
+                if (calendarWraper.UserCalendar.IsExistTodo())
+                    calendarWraper.IsTodo = (calendarWraper.UserCalendar as BusinessObjects.Calendar).IsTodo;
                 else
                     calendarWraper.IsTodo = 0;
 
                 //---Owner
-                var owner = new UserParams() { Id = UserCalendar.OwnerId, Name = "" };
-                if (UserCalendar.OwnerId != Guid.Empty)
-                    owner.Name = UserManager.GetUsers(UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
+                var owner = new UserParams() { Id = calendarWraper.UserCalendar.OwnerId, Name = "" };
+                if (calendarWraper.UserCalendar.OwnerId != Guid.Empty)
+                    owner.Name = UserManager.GetUsers(calendarWraper.UserCalendar.OwnerId).DisplayUserName(DisplayUserSettingsHelper);
 
                 calendarWraper.Owner = owner;
 
@@ -276,13 +278,13 @@ namespace ASC.Calendar.Models
                 calendarWraper.IsAcceptedSubscription = _userViewSettings == null || _userViewSettings.IsAccepted;
 
                 //---DefaultAlertType
-                calendarWraper.DefaultAlertType = EventAlertWrapper.ConvertToTypeSurrogated(UserCalendar.EventAlertType);
+                calendarWraper.DefaultAlertType = EventAlertWrapper.ConvertToTypeSurrogated(calendarWraper.UserCalendar.EventAlertType);
 
                 //---TimeZoneInfo
-                calendarWraper.TimeZoneInfo = TimeZoneWrapperHelper.Get(UserCalendar.TimeZone);
+                calendarWraper.TimeZoneInfo = TimeZoneWrapperHelper.Get(calendarWraper.UserCalendar.TimeZone);
 
                 //---CanEditTimeZone
-                calendarWraper.CanEditTimeZone = UserCalendar.Context.CanChangeTimeZone;
+                calendarWraper.CanEditTimeZone = calendarWraper.UserCalendar.Context.CanChangeTimeZone;
             }
 
             return calendarWraper;

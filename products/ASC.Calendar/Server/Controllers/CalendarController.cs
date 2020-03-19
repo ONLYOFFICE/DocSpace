@@ -218,7 +218,50 @@ namespace ASC.Calendar.Controllers
             product.Init();
             return new Module(product, true);
         }
+        [Read("calendars/{startDate}/{endDate}")]
+        public List<CalendarWrapper> LoadCalendars(ApiDateTime startDate, ApiDateTime endDate)
+        {
+            var result = LoadInternalCalendars();
 
+            //external
+           
+                var extCalendars = CalendarManager.Instance.GetCalendarsForUser(SecurityContext.CurrentAccount.ID, UserManager);
+                var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, extCalendars.ConvertAll(c => c.Id));
+
+                var extCalendarsWrappers = extCalendars.ConvertAll(c =>
+                                          CalendarWrapperHelper.Get(c, viewSettings.Find(o => o.CalendarId.Equals(c.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                        )
+                                        .FindAll(c => c.IsAcceptedSubscription);
+
+
+                extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate));
+
+                var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
+                if (sharedEvents != null)
+                    result.ForEach(c =>
+                    {
+                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                        c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                        c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
+                    });
+                else
+                    result.ForEach(c =>
+                    {
+                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                        c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                    });
+
+                result.AddRange(extCalendarsWrappers);
+           
+            //TODO For personal
+            /*
+                //remove all subscription except ical streams
+                result.RemoveAll(c => c.IsSubscription && !c.IsiCalStream);
+                result.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate));
+            */
+
+            return result;
+        }
         [Read("{calendarId}")]
         public CalendarWrapper GetCalendarById(string calendarId)
         {
