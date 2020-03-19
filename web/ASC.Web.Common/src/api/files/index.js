@@ -21,7 +21,7 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter = FilesFilter.getDefault(), fake = false) {
+export function getFolder(folderId, filter, fake = false) {
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Fake folder");
   }

@@ -127,6 +127,7 @@ class TreeFolders extends React.Component {
 
     const newFilter = this.props.filter.clone();
     newFilter.filterType = 2;
+    newFilter.withSubfolders = null;
 
     return files
       .getFolder(folderId, newFilter)
