@@ -16,7 +16,8 @@ import {
   IconButton,
   toastr
 } from "asc-web-components";
-import { EmptyTrashDialog } from '../../../../dialogs';import { fetchFolder } from "../../../../../store/files/actions";
+import { EmptyTrashDialog } from '../../../../dialogs';
+import { fetchFolder } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 
 const { isAdmin } = store.auth.selectors;
