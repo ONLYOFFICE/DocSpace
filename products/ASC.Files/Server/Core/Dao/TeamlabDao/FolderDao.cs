@@ -115,7 +115,6 @@ namespace ASC.Files.Core.Data
 
         public Folder<int> GetRootFolder(int folderId)
         {
-            var folderIdString = folderId.ToString();
             var id = FilesDbContext.Tree
                 .Where(r => r.FolderId == folderId)
                 .OrderByDescending(r => r.Level)
@@ -160,8 +159,7 @@ namespace ASC.Files.Core.Data
 
             if (orderBy == null) orderBy = new OrderBy(SortedByType.DateAndTime, false);
 
-            var parentIdString = parentId.ToString();
-            var q = GetFolderQuery(r => r.ParentId.ToString() == parentIdString);
+            var q = GetFolderQuery(r => r.ParentId == parentId);
 
             if (withSubfolders)
             {
@@ -342,18 +340,20 @@ namespace ASC.Files.Core.Data
 
                     //full path to root
                     var oldTree = FilesDbContext.Tree
-                        .Where(r => r.FolderId == folder.ParentFolderID)
-                        .FirstOrDefault();
+                        .Where(r => r.FolderId == (int)folder.ParentFolderID);
 
                     foreach (var o in oldTree)
                     {
-                        FolderId = folder.ID,
-                        ParentId = oldTree.ParentId,
-                        Level = oldTree.Level + 1
-                    };
+                        var treeToAdd = new DbFolderTree
+                        {
+                            FolderId = (int)folder.ID,
+                            ParentId = o.ParentId,
+                            Level = o.Level + 1
+                        };
 
                         FilesDbContext.Tree.Add(treeToAdd);
                     }
+
                     FilesDbContext.SaveChanges();
                 }
 
@@ -605,7 +605,6 @@ namespace ASC.Files.Core.Data
 
         private int GetFilesCount(int folderId)
         {
-            var folderIdString = folderId.ToString();
             var count = Query(FilesDbContext.Files)
                 .Distinct()
                 .Where(r => FilesDbContext.Tree.Where(r => r.ParentId == folderId).Select(r => r.FolderId).Any(b => b == r.FolderId))

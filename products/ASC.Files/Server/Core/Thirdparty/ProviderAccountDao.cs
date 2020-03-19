@@ -156,7 +156,7 @@ namespace ASC.Files.Thirdparty
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                querySelect = querySelect.Where(r => BuildSearch(r, searchText, SearhTypeEnum.Any));
+                querySelect = BuildSearch(querySelect, searchText, SearhTypeEnum.Any);
             }
 
             try

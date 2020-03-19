@@ -34,6 +34,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 
 using ASC.Api.Core;
+using ASC.Api.Utils;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
@@ -184,7 +185,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>My folder contents</returns>
         [Read("@my")]
-        public FolderContentWrapper GetMyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public FolderContentWrapper<int> GetMyFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return ToFolderContentWrapper(GlobalFolderHelper.FolderMy, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -227,7 +228,7 @@ namespace ASC.Api.Documents
         /// <category>Folders</category>
         /// <returns>Shared folder contents</returns>
         [Read("@share")]
-        public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfold)
+        public FolderContentWrapper<int> GetShareFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return ToFolderContentWrapper(GlobalFolderHelper.FolderShare, userIdOrGroupId, filterType, withsubfolders);
         }
@@ -243,7 +244,7 @@ namespace ASC.Api.Documents
         [Read("@trash")]
         public FolderContentWrapper<int> GetTrashFolder(Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return ToFolderContentWrapper(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfold);
+            return ToFolderContentWrapper(Convert.ToInt32(GlobalFolderHelper.FolderTrash), userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -258,15 +259,15 @@ namespace ASC.Api.Documents
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
         [Read("{folderId}", order: int.MaxValue)]
-        public FolderContentWrapper GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
+        public FolderContentWrapper<string> GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull
+            return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull();
         }
 
         [Read("{folderId:int}", order: int.MaxValue)]
-        public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
-            return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType);
+            return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
         }
 
         /// <summary>
@@ -1487,7 +1488,7 @@ namespace ASC.Api.Documents
                                             startIndex);
         }
 
-        private FolderContentWrapper<int> ToFolderContentWrapper(int folderId, Guid userIdOrGroupId, FilterType filterType)
+        private FolderContentWrapper<int> ToFolderContentWrapper(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {

@@ -150,9 +150,9 @@ namespace ASC.Files.Helpers
             ProductEntryPoint = productEntryPoint;
         }
 
-        public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType)
+        public FolderContentWrapper<T> GetFolder(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
-            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType).NotFoundIfNull();
+            return ToFolderContentWrapper(folderId, userIdOrGroupId, filterType, withSubFolders).NotFoundIfNull();
         }
 
         public List<FileWrapper<T>> UploadFile(T folderId, UploadModel uploadModel)
@@ -766,7 +766,7 @@ namespace ASC.Files.Helpers
         }
 
 
-        private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType)
+        private FolderContentWrapper<T> ToFolderContentWrapper(T folderId, Guid userIdOrGroupId, FilterType filterType, bool withSubFolders)
         {
             if (!Enum.TryParse(ApiContext.SortBy, true, out SortedByType sortBy))
             {
@@ -782,7 +782,7 @@ namespace ASC.Files.Helpers
                                                                                userIdOrGroupId.ToString(),
                                                                                ApiContext.FilterValue,
                                                                                false,
-                                                                               false,
+                                                                               withSubFolders,
                                                                                new OrderBy(sortBy, !ApiContext.SortDescending)),
                                             startIndex);
         }
