@@ -34,8 +34,6 @@ using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
