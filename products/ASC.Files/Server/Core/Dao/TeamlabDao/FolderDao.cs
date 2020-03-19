@@ -344,17 +344,19 @@ namespace ASC.Files.Core.Data
 
                     //full path to root
                     var oldTree = FilesDbContext.Tree
-                        .Where(r => r.FolderId == (int)folder.ParentFolderID)
-                        .FirstOrDefault();
+                        .Where(r => r.FolderId == (int)folder.ParentFolderID);
 
-                    var treeToAdd = new DbFolderTree
+                    foreach (var o in oldTree)
                     {
-                        FolderId = (int)folder.ID,
-                        ParentId = oldTree.ParentId,
-                        Level = oldTree.Level + 1
-                    };
+                        var treeToAdd = new DbFolderTree
+                        {
+                            FolderId = (int)folder.ID,
+                            ParentId = o.ParentId,
+                            Level = o.Level + 1
+                        };
 
-                    FilesDbContext.Tree.Add(treeToAdd);
+                        FilesDbContext.Tree.Add(treeToAdd);
+                    }
                     FilesDbContext.SaveChanges();
                 }
 
@@ -656,7 +658,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in toUpdate)
             {
-                var count = FilesDbContext.Tree.Where(r => r.ParentId == (int)id).Count() - 1;
+                var count = FilesDbContext.Tree.Where(r => r.ParentId == f.Id).Count() - 1;
                 f.FoldersCount = count;
             }
 
