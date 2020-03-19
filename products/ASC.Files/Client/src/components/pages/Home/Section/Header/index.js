@@ -1,15 +1,23 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import { Headline, store, constants } from 'asc-web-common';
+import {
+  constants,
+  Headline,
+  history,
+  store
+} from 'asc-web-common';
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import {
-  toastr,
   ContextMenuButton,
+  DropDownItem,
   GroupButtonsMenu,
-  DropDownItem
+  IconButton,
+  toastr
 } from "asc-web-components";
+import { EmptyTrashDialog } from '../../../../dialogs';import { fetchFolder } from "../../../../../store/files/actions";
+import { default as filesStore } from "../../../../../store/store";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType } = constants;
@@ -22,22 +30,39 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: calc(100vw - 32px);
 
-  position: relative;
-  display: flex;
-  align-items: center;
-  max-width: calc(100vw - 32px);
+    .arrow-button {
+      margin-right: 16px;
 
-    .action-button {
+      @media (max-width: 1024px) {
+        padding: 8px 0 8px 8px;
+        margin-left: -8px;
+      }
+    }
+
+    .add-button {
       margin-bottom: -1px;
       margin-left: 16px;
 
       @media (max-width: 1024px) {
-        &:first-of-type{
-          margin-left: auto;
+        margin-left: auto;
+      
+        & > div:first-child {
+          padding: 8px 8px 8px 8px;
+          margin-right: -8px;
         }
-        
+      }
+    }
 
+    .option-button {
+      margin-bottom: -1px;
+      margin-left: 16px;
+
+      @media (max-width: 1024px) {
         & > div:first-child {
           padding: 8px 8px 8px 8px;
           margin-right: -8px;
@@ -78,7 +103,8 @@ const SectionHeaderContent = props => {
     isHeaderVisible,
     isHeaderChecked,
     isHeaderIndeterminate,
-    selection } = props;
+    selection,
+    isRecycleBinFolder } = props;
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -183,7 +209,9 @@ const SectionHeaderContent = props => {
     () => toastr.info("deleteAction click"),
     []
   );
-
+  
+  const [showEmptyTrashDialog, setEmptyTrashDialog] = useState(false);
+  const onCloseEmptyTrashDialog = useCallback(() => setEmptyTrashDialog(!showEmptyTrashDialog), [showEmptyTrashDialog]);
 
   const getContextOptionsFolder = useCallback(() => {
     return [
@@ -242,6 +270,16 @@ const SectionHeaderContent = props => {
     deleteAction
   ]);
 
+  const onBackToParentFolder = () => {
+    fetchFolder(props.parentId, filesStore.dispatch);
+
+    const url =
+      history.location.search !== ""
+        ? history.location.search
+        : history.location.state;
+
+    history.push(`${history.location.pathname}${url}#${props.parentId}`);
+  };
 
   const isItemsSelected = selection.length;
   const isOnlyFolderSelected = selection.every(selected => !selected.fileType);
@@ -298,6 +336,12 @@ const SectionHeaderContent = props => {
     }
   ];
 
+  isRecycleBinFolder &&
+    menuItems.push({
+      label: t("EmptyRecycleBin"),
+      onClick: onCloseEmptyTrashDialog
+    });
+
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible}>
       {isHeaderVisible ? (
@@ -317,11 +361,22 @@ const SectionHeaderContent = props => {
       )
         : (
           <div className='header-container'>
+            {folder &&
+              <IconButton
+                iconName="ArrowPathIcon"
+                size="16"
+                color="#A3A9AE"
+                hoverColor="#657077"
+                isFill={true}
+                onClick={onBackToParentFolder}
+                className="arrow-button"
+              />
+            }
             <Headline className='headline-header' type="content" truncate={true}>{title}</Headline>
             {folder ?
               <>
                 <ContextMenuButton
-                  className="action-button"
+                  className="add-button"
                   directionX="right"
                   iconName="PlusIcon"
                   size={16}
@@ -329,9 +384,8 @@ const SectionHeaderContent = props => {
                   getData={getContextOptionsPlus}
                   isDisabled={false}
                 />
-
                 <ContextMenuButton
-                  className="action-button"
+                  className="option-button"
                   directionX="right"
                   iconName="VerticalDotsIcon"
                   size={16}
@@ -353,16 +407,26 @@ const SectionHeaderContent = props => {
             }
           </div>
         )}
+
+          {true &&
+            <EmptyTrashDialog
+              visible={showEmptyTrashDialog}
+              onClose={onCloseEmptyTrashDialog}
+            />
+          }
     </StyledContainer>
   );
 };
 
 const mapStateToProps = state => {
+  const { selectedFolder, selection, rootFolders } = state.files;
   return {
+    folder: selectedFolder.parentId !== 0,
     isAdmin: isAdmin(state.auth.user),
-    title: state.files.selectedFolder.title,
-    folder: state.files.selectedFolder.parentId !== 0,
-    selection: state.files.selection
+    isRecycleBinFolder: rootFolders.trash.id === selectedFolder.id,
+    parentId: selectedFolder.parentId,
+    selection,
+    title: selectedFolder.title,
   };
 };
 

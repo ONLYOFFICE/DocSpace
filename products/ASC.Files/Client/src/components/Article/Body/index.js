@@ -3,7 +3,11 @@ import { connect } from "react-redux";
 import { utils, toastr } from "asc-web-components";
 import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
-import { setFilter, fetchFiles, setRootFolders } from "../../../store/files/actions";
+import {
+  setFilter,
+  fetchFiles,
+  setRootFolders
+} from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
 const { files } = api;
@@ -79,16 +83,16 @@ function mapStateToProps(state) {
   const { rootFolders, selectedFolder, filter } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
-  const parentId = selectedFolder.parentId;
 
   return {
     data: getRootFolders(rootFolders),
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
     currentModule: currentFolderId,
-    filter,
-    parentId
+    filter
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setRootFolders })(ArticleBodyContent);
+export default connect(mapStateToProps, { setFilter, setRootFolders })(
+  ArticleBodyContent
+);

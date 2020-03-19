@@ -270,3 +270,7 @@ export function deleteFile(fileId, deleteAfter, immediately) {
 
   return request(options);
 }
+
+export function emptyTrash() {
+  return request({ method: "put", url: "/files/fileops/emptytrash" });
+}
