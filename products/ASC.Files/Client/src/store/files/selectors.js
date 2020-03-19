@@ -6,38 +6,15 @@ const { FileType, FilterType } = constants;
 export const getRootFolders = files => {
   const { my, share, common, project, trash } = files;
 
-  const data = [
-    {
-      id: my.id.toString(),
-      key: "0-0",
-      title: my.title,
-      foldersCount: my.folders.length
-    },
-    {
-      id: share.id.toString(),
-      key: "0-1",
-      title: share.title,
-      foldersCount: share.folders.length
-    },
-    {
-      id: common.id.toString(),
-      key: "0-2",
-      title: common.title,
-      foldersCount: common.folders.length
-    },
-    {
-      id: project.id.toString(),
-      key: "0-3",
-      title: project.title,
-      foldersCount: project.folders.length
-    },
-    {
-      id: trash.id.toString(),
-      key: "0-4",
-      title: trash.title,
-      foldersCount: null
-    }
-  ];
+  my.key = "0-0";
+  share.key = "0-1";
+  common.key = "0-2";
+  project.key = "0-3";
+  trash.key = "0-4";
+  trash.folders = null;
+  trash.foldersCount = null;
+
+  const data = [ my, share, common, project, trash];
 
   return data;
 };

@@ -132,12 +132,12 @@ class TreeFolders extends React.Component {
       .getFolder(folderId, newFilter)
       .then(data => {
         arrayFolders = data.folders;
-        
+
         let listIds = [];
         for (let item of data.pathParts) {
           listIds.push(item.toString());
         }
-        
+
         const folderIndex = treeNode.props.pos;
         let i = 0;
         for (let item of arrayFolders) {
@@ -163,6 +163,22 @@ class TreeFolders extends React.Component {
         const treeData = [...this.state.treeData];
         this.getNewTreeData(treeData, listIds, data.folders, 10);
 
+        const root = {
+          my: null,
+          share: null,
+          common: null,
+          project: null,
+          trash: null
+        };
+        root.my = treeData[0];
+        root.share = treeData[1];
+        root.common = treeData[2];
+        root.project = treeData[3];
+        root.trash = treeData[4];
+        root.trash.folders = null;
+        root.trash.foldersCount = null;
+
+        this.props.setRootFolders(root);
         this.setState({ treeData });
       })
       .catch(() => this.props.onLoading(false))
@@ -177,9 +193,14 @@ class TreeFolders extends React.Component {
     this.setState({ expandedKeys: data });
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.expandedKeys.length !== this.props.expandedKeys.length) {
-      this.setState({ expandedKeys: this.props.expandedKeys });
+  componentDidUpdate(prevProps) {
+    const { expandedKeys, data } = this.props;
+    if (this.state.expandedKeys.length !== expandedKeys.length) {
+      this.setState({ expandedKeys });
+    }
+
+    if (!utils.array.isArrayEqual(prevProps.data, data)) {
+      this.setState({ treeData: data });
     }
   }
 

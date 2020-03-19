@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { utils, toastr } from "asc-web-components";
 import { getRootFolders } from "../../../store/files/selectors";
 import TreeFolders from "./TreeFolders";
-import { setFilter, fetchFiles } from "../../../store/files/actions";
+import { setFilter, fetchFiles, setRootFolders } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
 const { files } = api;
@@ -52,6 +52,7 @@ class ArticleBodyContent extends React.Component {
       currentModule,
       filter,
       setFilter,
+      setRootFolders,
       onLoading,
       isLoading
     } = this.props;
@@ -65,6 +66,7 @@ class ArticleBodyContent extends React.Component {
         data={data}
         filter={filter}
         setFilter={setFilter}
+        setRootFolders={setRootFolders}
         expandedKeys={this.state.expandedKeys}
         onLoading={onLoading}
         isLoading={isLoading}
@@ -89,4 +91,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setFilter })(ArticleBodyContent);
+export default connect(mapStateToProps, { setFilter, setRootFolders })(ArticleBodyContent);
