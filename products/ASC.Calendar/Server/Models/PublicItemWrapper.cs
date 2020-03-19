@@ -35,6 +35,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common.Utils;
 using ASC.Web.Core.Users;
 using ASC.Common;
+using ASC.Calendar.iCalParser;
+using ASC.Calendar.BusinessObjects;
 
 namespace ASC.Calendar.Models
 {
@@ -83,6 +85,9 @@ namespace ASC.Calendar.Models
         private TimeZoneConverter TimeZoneConverter { get; }
         private PermissionContext PermissionContext { get; }
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
+        public DataProvider DataProvider { get; }
+
+        
         public PublicItemWrapperHelper(
             UserManager userManager,
             AuthManager authentication,
@@ -90,7 +95,8 @@ namespace ASC.Calendar.Models
             TenantManager tenantManager,
             TimeZoneConverter timeZoneConverter,
             PermissionContext permissionContext,
-            DisplayUserSettingsHelper displayUserSettingsHelper)
+            DisplayUserSettingsHelper displayUserSettingsHelper,
+            DataProvider dataProvider)
         {
             UserManager = userManager;
             Authentication = authentication;
@@ -99,6 +105,7 @@ namespace ASC.Calendar.Models
             TimeZoneConverter = timeZoneConverter;
             PermissionContext = permissionContext;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
+            DataProvider = dataProvider;
         }
 
         public PublicItemWrapper Get(ASC.Web.Core.Calendars.SharingOptions.PublicItem publicItem, string calendartId, Guid owner)
@@ -157,7 +164,8 @@ namespace ASC.Calendar.Models
                 int calId;
                 if (_isCalendar && int.TryParse(_calendarId, out calId))
                 {
-                    var obj = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter) { Id = _calendarId };
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var obj = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider) { Id = _calendarId };
                     if (PermissionContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
                         result.SharingOption = AccessOption.FullAccessOption;
                     else
@@ -165,7 +173,8 @@ namespace ASC.Calendar.Models
                 }
                 else if (!_isCalendar)
                 {
-                    var obj = new BusinessObjects.Event(AuthContext, TimeZoneConverter) { Id = _eventId, CalendarId = _calendarId };
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    var obj = new BusinessObjects.Event(AuthContext, TimeZoneConverter, icalendar, DataProvider) { Id = _eventId, CalendarId = _calendarId };
                     if (PermissionContext.PermissionResolver.Check(subject, obj, null, CalendarAccessRights.FullAccessAction))
                         result.SharingOption = AccessOption.FullAccessOption;
                     else

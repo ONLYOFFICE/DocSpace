@@ -92,6 +92,7 @@ namespace ASC.Calendar.BusinessObjects
         private TenantManager TenantManager { get; }
         protected UserManager UserManager { get; }
         protected DDayICalParser DDayICalParser { get; }
+
         public ILog Log { get; }
 
         public DataProvider(DbContextManager<CalendarDbContext> calendarDbContext,
@@ -340,7 +341,8 @@ namespace ASC.Calendar.BusinessObjects
                         string.Equals(c.Id, r.calId.ToString(), StringComparison.InvariantCultureIgnoreCase));
                 if (calendar == null)
                 {
-                    calendar = new Calendar(AuthContext, TimeZoneConverter)
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    calendar = new Calendar(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.calId.ToString(),
                         Name = r.calName,
@@ -920,7 +922,8 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter)
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.Id.ToString(),
                         Name = r.Name,
@@ -951,8 +954,8 @@ namespace ASC.Calendar.BusinessObjects
                                      Uid = s.Uid
                                  })
                                  .ToList();
-
-                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter)
+                    var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                    todoList = data.ConvertAll(r => new Todo(AuthContext, TimeZoneConverter, icalendar, this)
                     {
                         Id = r.Id.ToString(),
                         Name = r.Name,
@@ -1016,31 +1019,32 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
-
+        */
         public List<Event> LoadEvents(int calendarId, Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            var sqlQuery = new SqlQuery(_eventTable)
-                .Select("evt.id")
-                .Where(
-                    Exp.Eq("evt.calendar_id", calendarId) &
-                    Exp.Eq("evt.tenant", tenantId) &
+
+            var evIds = CalendarDb.CalendarEvents
+                .Where(p =>
+                    p.CalendarId == calendarId &&
+                    p.Tenant == tenantId &&
                     (
-                        !Exp.Eq("evt.rrule", "") |
-                        (Exp.Eq("evt.rrule", "") &
+                        p.Rrule != "" ||
+                        (
+                            p.Rrule == "" &&
                             (
-                                    (Exp.Ge("evt.start_date", utcStartDate) & Exp.Le("evt.end_date", utcEndDate)) |
-                                    (Exp.Le("evt.start_date", utcStartDate) & Exp.Ge("evt.end_date", utcStartDate)) |
-                                    (Exp.Le("evt.start_date", utcEndDate) & Exp.Ge("evt.end_date", utcEndDate))
-                                )
+                               (p.StartDate >= utcStartDate && p.EndDate <= utcEndDate) ||
+                               (p.StartDate <= utcStartDate && p.EndDate >= utcEndDate) ||
+                               (p.StartDate <= utcEndDate && p.EndDate >= utcStartDate)
+
+                            )
                         )
                     )
-                );
-
-            var evIds = db.ExecuteList(sqlQuery).Select(r => r[0]);
+                )
+                .Select(s => s.Id).ToList();
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
-
+        /*
         public Event GetEventById(int eventId)
         {
             var events = GetEventsByIds(new object[] { eventId }, AuthContext.CurrentAccount.ID);
@@ -1221,7 +1225,8 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            ev = new Event(AuthContext, TimeZoneConverter)
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,
                                 Name = r.Name,
@@ -1286,7 +1291,8 @@ namespace ASC.Calendar.BusinessObjects
                                 e => String.Equals(e.Id, r.Id, StringComparison.InvariantCultureIgnoreCase));
                         if (ev == null)
                         {
-                            ev = new Event(AuthContext, TimeZoneConverter)
+                            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                            ev = new Event(AuthContext, TimeZoneConverter, icalendar, this)
                             {
                                 Id = r.Id,
                                 Name = r.Name,

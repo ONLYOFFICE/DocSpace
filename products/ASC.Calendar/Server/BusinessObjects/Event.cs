@@ -34,6 +34,7 @@ using ASC.Web.Core.Calendars;
 using ASC.Core.Tenants;
 using ASC.Core;
 using ASC.Common.Utils;
+using ASC.Calendar.iCalParser;
 
 namespace ASC.Calendar.BusinessObjects
 {    
@@ -43,11 +44,18 @@ namespace ASC.Calendar.BusinessObjects
     {
         private AuthContext AuthContext { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
+        private iCalendar ICalendar { get; }
+        private DataProvider DataProvider { get; }
+        
         public Event(AuthContext context,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            iCalendar iCalendar,
+            DataProvider dataProvider)
         {
             AuthContext = context;
+            ICalendar = iCalendar;
             TimeZoneConverter = timeZoneConverter;
+            DataProvider = dataProvider;
         }
 
         public int TenantId { get; set; }
@@ -82,7 +90,7 @@ namespace ASC.Calendar.BusinessObjects
         {
             int calId;
             if (int.TryParse(this.CalendarId, out calId))
-                return new Calendar(AuthContext, TimeZoneConverter) { Id = this.CalendarId };
+                return new Calendar(AuthContext, TimeZoneConverter, ICalendar, DataProvider) { Id = this.CalendarId };
 
             return null;
         }

@@ -42,7 +42,7 @@ using ASC.Common.Utils;
 
 namespace ASC.Calendar.BusinessObjects
 {
-    
+
     public static class CalendarExtention
     {
         public static bool IsiCalStream(this BaseCalendar calendar)
@@ -60,7 +60,7 @@ namespace ASC.Calendar.BusinessObjects
 
             if (userViewSettings == null)
                 return cal;
-            
+
             //name             
             if (!String.IsNullOrEmpty(userViewSettings.Name))
                 cal.Name = userViewSettings.Name;
@@ -74,7 +74,7 @@ namespace ASC.Calendar.BusinessObjects
                 cal.Context.HtmlTextColor = userViewSettings.TextColor;
 
             //TimeZoneInfo      
-            if (userViewSettings.TimeZone!= null)
+            if (userViewSettings.TimeZone != null)
                 cal.TimeZone = userViewSettings.TimeZone;
 
             //alert type            
@@ -84,7 +84,7 @@ namespace ASC.Calendar.BusinessObjects
         }
 
         public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate)
-        {   
+        {
             var result = new List<EventWrapper>();
             /*if (calendar != null)
             {
@@ -125,27 +125,35 @@ namespace ASC.Calendar.BusinessObjects
             return null;
         }
     }
-    
+
 
     [DataContract(Name = "calendar", Namespace = "")]
-    public class Calendar : BaseCalendar,  ISecurityObject
+    public class Calendar : BaseCalendar, ISecurityObject
     {
-        public static string DefaultTextColor { get { return "#000000";} }
+        public static string DefaultTextColor { get { return "#000000"; } }
         public static string DefaultBackgroundColor { get { return "#9bb845"; } }
         public static string DefaultTodoBackgroundColor { get { return "#ffb45e"; } }
 
+        public iCalendar ICalendar { get; }
+        public DataProvider DataProvider { get; }
+
+
         public Calendar(
             AuthContext context,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            iCalendar iCalendar,
+            DataProvider dataProvider)
         : base(context, timeZoneConverter)
         {
+            ICalendar = iCalendar;
+            DataProvider = dataProvider;
             this.ViewSettings = new List<UserViewSettings>();
             this.Context.CanChangeAlertType = true;
             this.Context.CanChangeTimeZone = true;
         }
 
         public int TenantId { get; set; }
-        
+
         public List<UserViewSettings> ViewSettings { get; set; }
 
         public string iCalUrl { get; set; }
@@ -200,11 +208,11 @@ namespace ASC.Calendar.BusinessObjects
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            /*if (!String.IsNullOrEmpty(iCalUrl))
+            if (!String.IsNullOrEmpty(iCalUrl))
             {
                 try
                 {
-                    var cal = iCalendar.GetFromUrl(iCalUrl,this.Id);
+                    var cal = ICalendar.GetFromUrl(iCalUrl, this.Id);
                     return cal.LoadEvents(userId, utcStartDate, utcEndDate);
                 }
                 catch
@@ -213,14 +221,11 @@ namespace ASC.Calendar.BusinessObjects
                 }
             }
 
-            using (var provider = new DataProvider())
-            {
-                return provider.LoadEvents(Convert.ToInt32(this.Id), userId, TenantId, utcStartDate, utcEndDate)
+            return DataProvider.LoadEvents(Convert.ToInt32(this.Id), userId, TenantId, utcStartDate, utcEndDate)
                         .Cast<IEvent>()
                         .ToList();
-            }*/
-            return null;
+
         }
-    }    
-    
+    }
+
 }

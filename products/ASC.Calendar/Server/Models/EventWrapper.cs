@@ -39,6 +39,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common.Utils;
 using ASC.Common;
+using ASC.Calendar.iCalParser;
+using ASC.Calendar.BusinessObjects;
 
 namespace ASC.Calendar.Models
 {
@@ -139,6 +141,8 @@ namespace ASC.Calendar.Models
         public PublicItemCollectionHelper PublicItemCollectionHelper { get; }
         private AuthContext AuthContext { get; }
         private TimeZoneConverter TimeZoneConverter { get; }
+        private DataProvider DataProvider { get; }
+
         public EventWrapperHelper(
             UserManager userManager,
             AuthManager authentication,
@@ -147,7 +151,8 @@ namespace ASC.Calendar.Models
             DisplayUserSettingsHelper displayUserSettingsHelper,
             PublicItemCollectionHelper publicItemCollectionHelper,
             AuthContext context,
-            TimeZoneConverter timeZoneConverter)
+            TimeZoneConverter timeZoneConverter,
+            DataProvider dataProvider)
         {
             Authentication = authentication;
             TenantManager = tenantManager;
@@ -157,6 +162,7 @@ namespace ASC.Calendar.Models
             PermissionContext = permissionContext;
             AuthContext = context;
             TimeZoneConverter = timeZoneConverter;
+            DataProvider = dataProvider;
         }
         public EventWrapper Get(IEvent baseEvent, Guid userId, TimeZoneInfo timeZone, DateTime utcStartDate, DateTime utcEndDate, DateTime utcUpdateDate)
         {
@@ -180,6 +186,7 @@ namespace ASC.Calendar.Models
             eventWraper.Description = _baseEvent.Description;
             eventWraper.AllDayLong = _baseEvent.AllDayLong; ;
 
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
             //---
             var startD = _utcStartDate != DateTime.MinValue ? _utcStartDate : _baseEvent.UtcStartDate;
             startD = new DateTime(startD.Ticks, DateTimeKind.Utc);
@@ -190,7 +197,7 @@ namespace ASC.Calendar.Models
             {
                 eventWraper.Start = new ApiDateTime(startD, TimeZoneInfo.Utc.GetOffset());
             }
-            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter).GetType().Namespace)
+            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter, icalendar, DataProvider).GetType().Namespace)
             {
                 eventWraper.Start = new ApiDateTime(startD, _timeZone.GetOffset(false, updateD));
             }
@@ -205,11 +212,12 @@ namespace ASC.Calendar.Models
 
             updateD = _utcUpdateDate != DateTime.MinValue ? _utcUpdateDate : _baseEvent.UtcStartDate;
 
+
             if (_baseEvent.AllDayLong && _baseEvent.GetType().GetCustomAttributes(typeof(AllDayLongUTCAttribute), true).Length > 0)
             {
                 eventWraper.End = new ApiDateTime(endD, TimeZoneInfo.Utc.GetOffset());
             }
-            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter).GetType().Namespace)
+            else if (_baseEvent.GetType().Namespace == new BusinessObjects.Event(AuthContext, TimeZoneConverter, icalendar, DataProvider).GetType().Namespace)
             {
                 eventWraper.End = new ApiDateTime(endD, _timeZone.GetOffset(false, updateD));
             }

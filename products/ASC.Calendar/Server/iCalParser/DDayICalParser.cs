@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ASC.Calendar.BusinessObjects;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
@@ -45,6 +46,8 @@ namespace ASC.Calendar.iCalParser
         public TenantManager TenantManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public AuthContext AuthContext { get; }
+        public iCalendar ICalendar { get; }
+
         public DDayICalParser(
              IServiceProvider serviceProvider,
              TenantManager tenantManager,
@@ -202,11 +205,12 @@ namespace ASC.Calendar.iCalParser
         }
 
 
-        public BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
+       /* public BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
         {
             if (calandarObj == null) return null;
-            
-            var result = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter);
+
+            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+            var result = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
 
             result.Name = string.IsNullOrEmpty(calandarObj.Name)
                            ? calandarObj.Properties.ContainsKey("X-WR-CALNAME")
@@ -228,7 +232,7 @@ namespace ASC.Calendar.iCalParser
                                          : TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
 
             return result;
-        }
+        }*/
 
         public Ical.Net.Calendar ConvertCalendar(BaseCalendar calandarObj)
         {
@@ -270,11 +274,11 @@ namespace ASC.Calendar.iCalParser
 
 
 
-        public BaseEvent ConvertEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
+        /*public BaseEvent ConvertEvent(Ical.Net.CalendarComponents.CalendarEvent eventObj)
         {
             if (eventObj == null) return null;
             
-            var result = new BusinessObjects.Event(AuthContext, TimeZoneConverter);
+            var result = new BusinessObjects.Event(AuthContext, TimeZoneConverter, ICalendar, DataProvider);
 
             result.Name = eventObj.Summary;
 
@@ -322,7 +326,7 @@ namespace ASC.Calendar.iCalParser
             result.Status = ConvertEventStatus(eventObj.Status);
 
             return result;
-        }
+        }*/
 
         public Ical.Net.CalendarComponents.CalendarEvent ConvertEvent(BaseEvent eventObj)
         {
