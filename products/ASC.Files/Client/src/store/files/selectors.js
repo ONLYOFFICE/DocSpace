@@ -11,6 +11,8 @@ export const getRootFolders = files => {
   common.key = "0-2";
   project.key = "0-3";
   trash.key = "0-4";
+  trash.folders = null;
+  trash.foldersCount = null;
 
   const data = [ my, share, common, project, trash];
 

@@ -175,6 +175,8 @@ class TreeFolders extends React.Component {
         root.common = treeData[2];
         root.project = treeData[3];
         root.trash = treeData[4];
+        root.trash.folders = null;
+        root.trash.foldersCount = null;
 
         this.props.setRootFolders(root);
         this.setState({ treeData });
