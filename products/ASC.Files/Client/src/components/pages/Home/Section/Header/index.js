@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { Headline, store, constants } from 'asc-web-common';
@@ -10,6 +10,7 @@ import {
   GroupButtonsMenu,
   DropDownItem
 } from "asc-web-components";
+import { EmptyTrashDialog } from '../../../../dialogs';
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType } = constants;
@@ -78,7 +79,8 @@ const SectionHeaderContent = props => {
     isHeaderVisible,
     isHeaderChecked,
     isHeaderIndeterminate,
-    selection } = props;
+    selection,
+    isRecycleBinFolder } = props;
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -183,6 +185,9 @@ const SectionHeaderContent = props => {
     () => toastr.info("deleteAction click"),
     []
   );
+  
+  const [showEmptyTrashDialog, setEmptyTrashDialog] = useState(false);
+  const onCloseEmptyTrashDialog = useCallback(() => setEmptyTrashDialog(!showEmptyTrashDialog), [showEmptyTrashDialog]);
 
 
   const getContextOptionsFolder = useCallback(() => {
@@ -298,6 +303,12 @@ const SectionHeaderContent = props => {
     }
   ];
 
+  isRecycleBinFolder &&
+    menuItems.push({
+      label: t("EmptyRecycleBin"),
+      onClick: onCloseEmptyTrashDialog
+    });
+
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible}>
       {isHeaderVisible ? (
@@ -353,16 +364,25 @@ const SectionHeaderContent = props => {
             }
           </div>
         )}
+
+          {true &&
+            <EmptyTrashDialog
+              visible={showEmptyTrashDialog}
+              onClose={onCloseEmptyTrashDialog}
+            />
+          }
     </StyledContainer>
   );
 };
 
 const mapStateToProps = state => {
+  const { selectedFolder, selection, rootFolders } = state.files;
   return {
     isAdmin: isAdmin(state.auth.user),
-    title: state.files.selectedFolder.title,
-    folder: state.files.selectedFolder.parentId !== 0,
-    selection: state.files.selection
+    title: selectedFolder.title,
+    folder: selectedFolder.parentId !== 0,
+    selection,
+    isRecycleBinFolder: rootFolders.trash.id === selectedFolder.id
   };
 };
 
