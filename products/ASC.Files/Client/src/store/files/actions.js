@@ -129,7 +129,7 @@ export function setFilterUrl(filter, folderId) {
     params.push(`${FILTER_TYPE}=${filter.filterType}`);
   }
 
-  if (filter.withSubfolders) {
+  if (filter.withSubfolders === 'false') {
     params.push(`${SEARCH_TYPE}=${filter.withSubfolders}`);
   }
 

@@ -1,5 +1,5 @@
 import { request } from "../client";
-//import axios from "axios";
+import axios from "axios";
 import FilesFilter from "./filter";
 import * as fakeFiles from "./fake";
 
@@ -21,15 +21,15 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter = FilesFilter.getDefault(), fake = false) {
+export function getFolder(folderId, filter, fake = false) {
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Fake folder");
   }
 
   const params =
-      filter && filter instanceof FilesFilter
-        ? `${folderId}?${filter.toUrlParams()}`
-        : folderId;
+    filter && filter instanceof FilesFilter
+      ? `${folderId}?${filter.toUrlParams()}`
+      : folderId;
 
   const options = {
     method: "get",
@@ -37,6 +37,32 @@ export function getFolder(folderId, filter = FilesFilter.getDefault(), fake = fa
   };
 
   return request(options);
+}
+
+export function getFoldersTree() {
+  const rootFoldersPaths = ['@my', '@share', '@common', '@projects', '@trash']; //TODO: need get from settings
+  const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}` }));
+
+  return axios.all(requestsArray)
+    .then(axios.spread((...responses) =>
+      responses.map(data => {
+        return {
+          id: data.current.id,
+          key: `0-${data.current.id}`,
+          title: data.current.title,
+          folders: data.folders.map(folder => {
+            return {
+              id: folder.id,
+              key: `0-${folder.parentId}-${folder.id}`,
+              title: folder.title,
+              folders: [],
+              foldersCount: folder.foldersCount
+            }
+          }),
+          foldersCount: data.current.foldersCount
+        }
+      })
+    ))
 }
 
 export function getMyFolderList(filter = FilesFilter.getDefault(), fake = false) {
@@ -48,7 +74,7 @@ export function getMyFolderList(filter = FilesFilter.getDefault(), fake = false)
     method: "get",
     url: `/files/@my`
   };
-  
+
   return request(options);
 }
 
@@ -61,7 +87,7 @@ export function getCommonFolderList(filter = FilesFilter.getDefault(), fake = fa
     method: "get",
     url: `/files/@common`
   };
-  
+
   return request(options);
 }
 
@@ -69,12 +95,12 @@ export function getProjectsFolderList(filter = FilesFilter.getDefault(), fake = 
   if (fake) {
     return fakeFiles.getFakeElements(filter, "Project Documents");
   }
-  
+
   const options = {
     method: "get",
     url: `/files/@projects`
   };
-  
+
   return request(options);
 }
 
@@ -87,7 +113,7 @@ export function getTrashFolderList(filter = FilesFilter.getDefault(), fake = fal
     method: "get",
     url: `/files/@trash`
   };
-  
+
   return request(options);
 }
 
@@ -100,7 +126,7 @@ export function getSharedFolderList(filter = FilesFilter.getDefault(), fake = fa
     method: "get",
     url: `/files/@share`
   };
-  
+
   return request(options);
 }
 

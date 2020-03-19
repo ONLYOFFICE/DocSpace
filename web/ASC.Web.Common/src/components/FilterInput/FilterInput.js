@@ -390,7 +390,7 @@ class FilterInput extends React.Component {
                 : filterItem.key.includes('group') ? 'group'
                     : null;
             const itemId = filterItem.key.indexOf('_') !== filterItem.key.lastIndexOf('_') ? filterItem.key.slice(0, filterItem.key.lastIndexOf('_')) : filterItem.key;
-            const itemKey = filterItem.selectedItem && filterItem.selectedItem.key ? itemId + "_" + filterItem.selectedItem.key : filterItem.key;
+            const itemKey = filterItem.selectedItem && filterItem.selectedItem.key && filterItem.typeSelector === typeSelector ? itemId + "_" + filterItem.selectedItem.key : filterItem.key + '_-1';
             const selectedItem = filterItem.typeSelector === typeSelector ? filterItem.selectedItem : {};
             const selectFilterItem = {
                 key: itemKey,
@@ -518,7 +518,7 @@ class FilterInput extends React.Component {
         const { searchText, filterValues, openFilterItems,
             hideFilterItems, sortId, sortDirection } = this.state;
 
-        // console.log("FilterInput render", this.state.openFilterItems);
+        // console.log("filter input render, openFilterItems", openFilterItems, 'hideFilterItems', hideFilterItems);
         let iconSize = 33;
         switch (size) {
             case 'base':

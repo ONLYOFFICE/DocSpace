@@ -1,13 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import { FilterInput } from "asc-web-components";
 import { fetchPeople } from "../../../../../store/people/actions";
 import find from "lodash/find";
 import result from "lodash/result";
 import { withTranslation } from "react-i18next";
 import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
-import { store } from 'asc-web-common';
+import { store, FilterInput } from 'asc-web-common';
 const { isAdmin } = store.auth.selectors;
 
 const getEmployeeStatus = filterValues => {

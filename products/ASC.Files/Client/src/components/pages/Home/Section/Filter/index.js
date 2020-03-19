@@ -46,7 +46,7 @@ const getSearchParams = filterValues => {
     "key"
   );
 
-  return searchParams || null;
+  return searchParams || 'true';
 };
 
 class SectionFilterContent extends React.Component {
@@ -194,7 +194,7 @@ class SectionFilterContent extends React.Component {
         isHeader: true
       },
       {
-        key: "true",
+        key: "false",
         group: "filter-folders",
         label: t('NoSubfolders')
       },
@@ -242,7 +242,7 @@ class SectionFilterContent extends React.Component {
       });
     }
 
-    if (filter.withSubfolders) {
+    if (filter.withSubfolders === 'false') {
       selectedFilterData.filterValues.push({
         key: filter.withSubfolders,
         group: "filter-folders"

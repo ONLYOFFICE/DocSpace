@@ -35,6 +35,7 @@ class FilterItem extends React.Component {
       selectedOption
     };
 
+
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -121,13 +122,9 @@ class FilterItem extends React.Component {
 
   onPeopleSelectorClick = () => this.setState({ isOpenSelector: !this.state.isOpenSelector });
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (nextProps.selectedItem && nextProps.selectedItem.key && this.props.selectedItem)
-  // }
-  
-
 
   render() {
+
     const { id, isOpen, isOpenSelector, selectedOption } = this.state;
     const { block, opened, isDisabled, groupLabel,
       groupItems, label, typeSelector, defaultOptionLabel, groupsCaption, defaultOption } = this.props;
