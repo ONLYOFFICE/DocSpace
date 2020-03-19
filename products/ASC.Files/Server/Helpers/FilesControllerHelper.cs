@@ -508,9 +508,9 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get<T>);
         }
 
-        public IEnumerable<FileOperationWraper<string>> EmptyTrash()
+        public IEnumerable<FileOperationWraper<int>> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<int>);
         }
 
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)

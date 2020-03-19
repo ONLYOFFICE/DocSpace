@@ -1358,6 +1358,11 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.Delete(foldersId, filesId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
+        public ItemList<FileOperationResult> DeleteItems(string action, List<object> files, List<object> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+        {
+            return FileOperationsManagerHelper.Delete(folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        }
+
         public ItemList<FileOperationResult> EmptyTrash()
         {
             var folderDao = GetFolderDao();

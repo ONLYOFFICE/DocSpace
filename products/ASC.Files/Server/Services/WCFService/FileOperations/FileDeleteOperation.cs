@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using ASC.Core.Tenants;
 using ASC.Files.Core;
@@ -52,6 +53,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             IgnoreException = ignoreException;
             Immediately = immediately;
             Headers = headers;
+        }
+    }
+
+    class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>, FileDeleteOperationData<int>>
+    {
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
+            : base(serviceProvider, f1, f2)
+        {
+        }
+
+        public override FileOperationType OperationType
+        {
+            get { return FileOperationType.Delete; }
         }
     }
 

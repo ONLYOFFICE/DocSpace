@@ -48,26 +48,7 @@ using Microsoft.Extensions.Options;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    abstract class FileOperationData<T>
-    {
-        public List<T> Folders { get; private set; }
-
-        public List<T> Files { get; private set; }
-
-        public Tenant Tenant { get; }
-
-        public bool HoldResult { get; private set; }
-
-        protected FileOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true)
-        {
-            Folders = folders ?? new List<T>();
-            Files = files ?? new List<T>();
-            Tenant = tenant;
-            HoldResult = holdResult;
-        }
-    }
-
-    public static class FileOperation
+    public abstract class FileOperation
     {
         public const string SPLIT_CHAR = ":";
         public const string OWNER = "Owner";
@@ -79,23 +60,107 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public const string PROCESSED = "Processed";
         public const string FINISHED = "Finished";
         public const string HOLD = "Hold";
-    }
 
-    abstract class FileOperation<T, TId> where T : FileOperationData<TId>
-    {
-        private readonly IPrincipal principal;
-        private readonly string culture;
-        private int total;
-        private int processed;
-        private int successProcessed;
+        protected readonly IPrincipal principal;
+        protected readonly string culture;
+        protected int total;
+        protected int processed;
+        protected int successProcessed;
 
-
-        protected DistributedTask TaskInfo { get; private set; }
+        public virtual FileOperationType OperationType { get; }
+        public bool HoldResult { get; set; }
 
         protected string Status { get; set; }
 
         protected string Error { get; set; }
 
+        protected DistributedTask TaskInfo { get; set; }
+
+        public FileOperation(IServiceProvider serviceProvider)
+        {
+            principal = serviceProvider.GetService<Microsoft.AspNetCore.Http.IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
+            culture = Thread.CurrentThread.CurrentCulture.Name;
+
+            TaskInfo = new DistributedTask();
+        }
+
+        public virtual DistributedTask GetDistributedTask()
+        {
+            FillDistributedTask();
+            return TaskInfo;
+        }
+
+
+        protected internal virtual void FillDistributedTask()
+        {
+            var progress = total != 0 ? 100 * processed / total : 0;
+
+            TaskInfo.SetProperty(OPERATION_TYPE, OperationType);
+            TaskInfo.SetProperty(OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
+            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
+            TaskInfo.SetProperty(RESULT, Status);
+            TaskInfo.SetProperty(ERROR, Error);
+            TaskInfo.SetProperty(PROCESSED, successProcessed);
+            TaskInfo.SetProperty(HOLD, HoldResult);
+        }
+
+        public abstract void RunJob(DistributedTask _, CancellationToken cancellationToken);
+        protected abstract void Do(IServiceScope serviceScope);
+    }
+
+    internal class ComposeFileOperation<T1, T2> : FileOperation
+        where T1 : FileOperationData<string>
+        where T2 : FileOperationData<int>
+    {
+        public FileOperation<T1, string> F1 { get; set; }
+        public FileOperation<T2, int> F2 { get; set; }
+
+        public ComposeFileOperation(IServiceProvider serviceProvider, FileOperation<T1, string> f1, FileOperation<T2, int> f2)
+            : base(serviceProvider)
+        {
+            F1 = f1;
+            F2 = f2;
+        }
+
+        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        {
+            F1.RunJob(_, cancellationToken);
+            F2.RunJob(_, cancellationToken);
+        }
+
+        protected internal override void FillDistributedTask()
+        {
+            F1.FillDistributedTask();
+            F2.FillDistributedTask();
+        }
+
+        protected override void Do(IServiceScope serviceScope)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    abstract class FileOperationData<T>
+    {
+        public List<T> Folders { get; private set; }
+
+        public List<T> Files { get; private set; }
+
+        public Tenant Tenant { get; }
+
+        public bool HoldResult { get; set; }
+
+        protected FileOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true)
+        {
+            Folders = folders ?? new List<T>();
+            Files = files ?? new List<T>();
+            Tenant = tenant;
+            HoldResult = holdResult;
+        }
+    }
+
+    abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData<TId>
+    {
         protected Tenant CurrentTenant { get; private set; }
 
         protected FileSecurity FilesSecurity { get; private set; }
@@ -116,17 +181,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected List<TId> Files { get; private set; }
 
-        protected bool HoldResult { get; private set; }
-
-        public abstract FileOperationType OperationType { get; }
         public IServiceProvider ServiceProvider { get; }
 
-        protected FileOperation(IServiceProvider serviceProvider, T fileOperationData)
+        protected FileOperation(IServiceProvider serviceProvider, T fileOperationData) : base(serviceProvider)
         {
-            principal = Thread.CurrentPrincipal;
-            culture = Thread.CurrentThread.CurrentCulture.Name;
-
-            TaskInfo = new DistributedTask();
             ServiceProvider = serviceProvider;
             Files = fileOperationData.Files;
             Folders = fileOperationData.Folders;
@@ -134,7 +192,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             CurrentTenant = fileOperationData.Tenant;
         }
 
-        public void RunJob(DistributedTask _, CancellationToken cancellationToken)
+        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
             try
             {
@@ -184,32 +242,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             {
                 try
                 {
-                    TaskInfo.SetProperty(FileOperation.FINISHED, true);
+                    TaskInfo.SetProperty(FINISHED, true);
                     PublishTaskInfo();
                 }
                 catch { /* ignore */ }
             }
         }
 
-        public virtual DistributedTask GetDistributedTask()
+        protected internal override void FillDistributedTask()
         {
-            FillDistributedTask();
-            return TaskInfo;
-        }
+            base.FillDistributedTask();
 
-
-        protected virtual void FillDistributedTask()
-        {
-            var progress = total != 0 ? 100 * processed / total : 0;
-
-            TaskInfo.SetProperty(FileOperation.SOURCE, string.Join(FileOperation.SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray()));
-            TaskInfo.SetProperty(FileOperation.OPERATION_TYPE, OperationType);
-            TaskInfo.SetProperty(FileOperation.OWNER, ((IAccount)Thread.CurrentPrincipal.Identity).ID);
-            TaskInfo.SetProperty(FileOperation.PROGRESS, progress < 100 ? progress : 100);
-            TaskInfo.SetProperty(FileOperation.RESULT, Status);
-            TaskInfo.SetProperty(FileOperation.ERROR, Error);
-            TaskInfo.SetProperty(FileOperation.PROCESSED, successProcessed);
-            TaskInfo.SetProperty(FileOperation.HOLD, HoldResult);
+            TaskInfo.SetProperty(SOURCE, string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray()));
         }
 
         protected virtual int InitTotalProgressSteps()
@@ -235,7 +279,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             successProcessed++;
             if (Folders.Contains(folderId))
             {
-                Status += string.Format("folder_{0}{1}", folderId, FileOperation.SPLIT_CHAR);
+                Status += string.Format("folder_{0}{1}", folderId, SPLIT_CHAR);
                 return true;
             }
             return false;
@@ -246,7 +290,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             successProcessed++;
             if (Files.Contains(fileId))
             {
-                Status += string.Format("file_{0}{1}", fileId, FileOperation.SPLIT_CHAR);
+                Status += string.Format("file_{0}{1}", fileId, SPLIT_CHAR);
                 return true;
             }
             return false;
@@ -257,7 +301,5 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             FillDistributedTask();
             TaskInfo.PublishChanges();
         }
-
-        protected abstract void Do(IServiceScope serviceScope);
     }
 }

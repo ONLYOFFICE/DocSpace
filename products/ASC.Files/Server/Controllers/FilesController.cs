@@ -81,17 +81,11 @@ namespace ASC.Api.Documents
         public FilesControllerHelper<int> FilesControllerHelperInt { get; }
         public FileStorageService<int> FileStorageServiceInt { get; }
         public GlobalFolderHelper GlobalFolderHelper { get; }
-        public FileWrapperHelper FileWrapperHelper { get; }
         public FilesSettingsHelper FilesSettingsHelper { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
-        public FileUploader FileUploader { get; }
-        public DocumentServiceHelper DocumentServiceHelper { get; }
-        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
         public FolderWrapperHelper FolderWrapperHelper { get; }
         public FileOperationWraperHelper FileOperationWraperHelper { get; }
-        public FileShareWrapperHelper FileShareWrapperHelper { get; }
-        public FileShareParamsHelper FileShareParamsHelper { get; }
         public EntryManager EntryManager { get; }
         public UserManager UserManager { get; }
         public WebItemSecurity WebItemSecurity { get; }
@@ -109,7 +103,6 @@ namespace ASC.Api.Documents
         public WordpressHelper WordpressHelper { get; }
         public ConsumerFactory ConsumerFactory { get; }
         public EasyBibHelper EasyBibHelper { get; }
-        public ChunkedUploadSessionHelper ChunkedUploadSessionHelper { get; }
         public ProductEntryPoint ProductEntryPoint { get; }
 
         /// <summary>
@@ -123,17 +116,11 @@ namespace ASC.Api.Documents
             FileStorageService<string> fileStorageService,
             FileStorageService<int> fileStorageServiceInt,
             GlobalFolderHelper globalFolderHelper,
-            FileWrapperHelper fileWrapperHelper,
             FilesSettingsHelper filesSettingsHelper,
             FilesLinkUtility filesLinkUtility,
-            FileUploader fileUploader,
-            DocumentServiceHelper documentServiceHelper,
-            TenantManager tenantManager,
             SecurityContext securityContext,
             FolderWrapperHelper folderWrapperHelper,
             FileOperationWraperHelper fileOperationWraperHelper,
-            FileShareWrapperHelper fileShareWrapperHelper,
-            FileShareParamsHelper fileShareParamsHelper,
             EntryManager entryManager,
             UserManager userManager,
             WebItemSecurity webItemSecurity,
@@ -156,17 +143,11 @@ namespace ASC.Api.Documents
             FileStorageService = fileStorageService;
             FileStorageServiceInt = fileStorageServiceInt;
             GlobalFolderHelper = globalFolderHelper;
-            FileWrapperHelper = fileWrapperHelper;
             FilesSettingsHelper = filesSettingsHelper;
             FilesLinkUtility = filesLinkUtility;
-            FileUploader = fileUploader;
-            DocumentServiceHelper = documentServiceHelper;
-            TenantManager = tenantManager;
             SecurityContext = securityContext;
             FolderWrapperHelper = folderWrapperHelper;
             FileOperationWraperHelper = fileOperationWraperHelper;
-            FileShareWrapperHelper = fileShareWrapperHelper;
-            FileShareParamsHelper = fileShareParamsHelper;
             EntryManager = entryManager;
             UserManager = userManager;
             WebItemSecurity = webItemSecurity;
@@ -184,7 +165,6 @@ namespace ASC.Api.Documents
             WordpressToken = wordpressToken;
             WordpressHelper = wordpressHelper;
             EasyBibHelper = easyBibHelper;
-            ChunkedUploadSessionHelper = chunkedUploadSessionHelper;
             ProductEntryPoint = productEntryPoint;
         }
 
@@ -1059,14 +1039,10 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper<string>> DeleteBatchItems(DeleteBatchModel<string> batch)
+        public IEnumerable<FileOperationWraper<object>> DeleteBatchItems(DeleteBatchModel<object> batch)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((batch.FolderIds ?? new List<string>()).Select(x => "folder_" + x));
-            itemList.AddRange((batch.FileIds ?? new List<string>()).Select(x => "file_" + x));
-
-            return FileStorageService.DeleteItems("delete", itemList, false, batch.DeleteAfter, batch.Immediately).Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
+                .Select(FileOperationWraperHelper.Get<object>);
         }
 
         /// <summary>
@@ -1076,9 +1052,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/emptytrash")]
-        public IEnumerable<FileOperationWraper<string>> EmptyTrash()
+        public IEnumerable<FileOperationWraper<int>> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<string>);
+            return FilesControllerHelperInt.EmptyTrash();
         }
 
         /// <summary>
@@ -1240,31 +1216,13 @@ namespace ASC.Api.Documents
         [Update("{fileId}/sharedlink")]
         public string GenerateSharedLink(string fileId, FileShare share)
         {
-            var file = GetFileInfo(fileId);
+            return FilesControllerHelperString.GenerateSharedLink(fileId, share);
+        }
 
-            var objectId = "file_" + file.Id;
-            var sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
-            if (sharedInfo == null || sharedInfo.Share != share)
-            {
-                var list = new ItemList<AceWrapper>
-                    {
-                        new AceWrapper
-                            {
-                                SubjectId = FileConstant.ShareLinkId,
-                                SubjectGroup = true,
-                                Share = share
-                            }
-                    };
-                var aceCollection = new AceCollection
-                {
-                    Entries = new ItemList<string> { objectId },
-                    Aces = list
-                };
-                FileStorageService.SetAceObject(aceCollection, false);
-                sharedInfo = FileStorageService.GetSharedInfo(new ItemList<string> { objectId }).Find(r => r.SubjectId == FileConstant.ShareLinkId);
-            }
-
-            return sharedInfo.Link;
+        [Update("{fileId:int}/sharedlink")]
+        public string GenerateSharedLink(int fileId, FileShare share)
+        {
+            return FilesControllerHelperInt.GenerateSharedLink(fileId, share);
         }
 
         /// <summary>
@@ -1384,7 +1342,7 @@ namespace ASC.Api.Documents
         [Read("thirdparty/common")]
         public IEnumerable<Folder<string>> GetCommonThirdPartyFolders()
         {
-            var parent = FileStorageService.GetFolder(GlobalFolderHelper.FolderCommon.ToString());
+            var parent = FileStorageServiceInt.GetFolder(GlobalFolderHelper.FolderCommon);
             return EntryManager.GetThirpartyFolders(parent);
         }
 

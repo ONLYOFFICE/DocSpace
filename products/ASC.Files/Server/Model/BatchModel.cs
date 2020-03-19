@@ -7,10 +7,13 @@ namespace ASC.Files.Model
 {
     public class BaseBatchModel<T>
     {
-        public IEnumerable<int> FolderIdsInt { get; set; }
-        public IEnumerable<string> FolderIdsString { get; set; }
         public IEnumerable<T> FolderIds { get; set; }
         public IEnumerable<T> FileIds { get; set; }
+        public BaseBatchModel()
+        {
+            FolderIds = new List<T>();
+            FileIds = new List<T>();
+        }
     }
 
     public class DownloadModel<T> : BaseBatchModel<T>
