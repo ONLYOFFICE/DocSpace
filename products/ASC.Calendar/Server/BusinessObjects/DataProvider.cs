@@ -993,33 +993,30 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetTodosByIds(tdIds, userId, tenantId);
         }
-        /*
+
         internal List<Event> LoadSharedEvents(Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
-            groups.AddRange(UserManager.GetUserGroups(userId, Core.Users.Constants.SysGroupCategoryId).Select(g => g.ID));
+            groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
 
-            var evIds = db.ExecuteList(
-                new SqlQuery(_eventTable).Select("evt.id")
-                    .InnerJoin(_eventItemTable, Exp.EqColumns("evt_itm.event_id", "evt.id"))
-                    .Where("evt.tenant", tenantId)
-                    .Where(
-                    (Exp.Eq("evt_itm.item_id", userId) | (Exp.In("evt_itm.item_id", groups.ToArray()) & Exp.Eq("evt_itm.is_group", true)))
-                    & Exp.Eq("evt.tenant", tenantId)
-                    & ((Exp.Ge("evt.start_date", utcStartDate) & Exp.Le("evt.start_date", utcEndDate) & Exp.Eq("evt.rrule", "")
-                        | !Exp.Eq("evt.rrule", "")))
-
-                    & !Exp.Eq("evt.owner_id", userId)
-
-                    & !Exp.Exists(new SqlQuery("calendar_event_user evt_usr").Select("evt_usr.event_id")
-                                                                                .Where(Exp.EqColumns("evt_usr.event_id", "evt.id")
-                                                                                        & Exp.Eq("evt_usr.user_id", userId)
-                                                                                        & Exp.Eq("evt_usr.is_unsubscribe", true)))
-                    )).Select(r => r[0]);
+            var evIds = from events in CalendarDb.CalendarEvents
+                       join eventItem in CalendarDb.CalendarEventItem on events.Id equals eventItem.EventId
+                       where
+                            events.Tenant == tenantId &&
+                            (
+                                eventItem.ItemId == userId || (groups.Contains(eventItem.ItemId) && eventItem.IsGroup == 1) &&
+                                events.Tenant == tenantId &&
+                                ((events.StartDate >= utcStartDate && events.StartDate <= utcEndDate && events.Rrule == "") || events.Rrule != "") &&
+                                events.OwnerId != userId &&
+                                !(from calEventUser in CalendarDb.CalendarEventUser
+                                    where calEventUser.EventId == events.Id && calEventUser.UserId == userId && calEventUser.IsUnsubscribe == 1 
+                                    select calEventUser.EventId).Any()
+                            )
+                       select events.Id;
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
-        */
+
         public List<Event> LoadEvents(int calendarId, Guid userId, int tenantId, DateTime utcStartDate, DateTime utcEndDate)
         {
 

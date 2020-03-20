@@ -176,9 +176,8 @@ namespace ASC.Calendar.Controllers
             Signature = signature;
             SecurityContext = securityContext;
             ExportDataCache = exportDataCache;
-            
 
-            CalendarManager.Instance.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager));
+            CalendarManager.Instance.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager, DataProvider));
             var birthdayReminderCalendar = new BirthdayReminderCalendar(AuthContext, TimeZoneConverter, UserManager, DisplayUserSettingsHelper);
             if (UserManager.IsUserInGroup(AuthContext.CurrentAccount.ID, Constants.GroupVisitor.ID))
             {
@@ -218,6 +217,73 @@ namespace ASC.Calendar.Controllers
             product.Init();
             return new Module(product, true);
         }
+        [Read("eventdays/{startDate}/{endDate}")]
+        public List<ApiDateTime> GetEventDays(ApiDateTime startDate, ApiDateTime endDate)
+        {
+            var result = new List<CalendarWrapper>();
+            int newCalendarsCount;
+            //internal
+            var calendars = DataProvider.LoadCalendarsForUser(SecurityContext.CurrentAccount.ID, out newCalendarsCount);
+
+            result.AddRange(calendars.ConvertAll(c => CalendarWrapperHelper.Get(c)));
+
+            
+            //external
+            var extCalendars = CalendarManager.Instance.GetCalendarsForUser(SecurityContext.CurrentAccount.ID, UserManager);
+            var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, extCalendars.ConvertAll(c => c.Id));
+
+            var extCalendarsWrappers = extCalendars.ConvertAll(c =>
+                                      CalendarWrapperHelper.Get(c, viewSettings.Find(o => o.CalendarId.Equals(c.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                    )
+                                    .FindAll(c => c.IsAcceptedSubscription);
+
+
+            extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
+            var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
+
+
+            if (sharedEvents != null)
+                result.ForEach(c =>
+                {
+                    c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
+                    c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
+                });
+            else
+                result.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
+
+            result.AddRange(extCalendarsWrappers);
+            
+            //TODO for personal
+            /*
+                //remove all subscription except ical streams
+                result.RemoveAll(c => c.IsSubscription && !c.IsiCalStream);
+
+                result.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate));
+            */
+
+            var days = new List<ApiDateTime>();
+            foreach (var cal in result)
+            {
+                if (cal.IsHidden)
+                    continue;
+
+                foreach (var e in cal.Events)
+                {
+                    var d = (e.Start.UtcTime + e.Start.TimeZoneOffset).Date;
+                    var dend = (e.End.UtcTime + e.End.TimeZoneOffset).Date;
+                    while (d <= dend)
+                    {
+                        if (!days.Exists(day => day == d))
+                            days.Add(new ApiDateTime(d, TimeZoneInfo.Utc.GetOffset()));
+
+                        d = d.AddDays(1);
+                    }
+
+                }
+            }
+
+            return days;
+        }
         [Read("calendars/{startDate}/{endDate}")]
         public List<CalendarWrapper> LoadCalendars(ApiDateTime startDate, ApiDateTime endDate)
         {
@@ -234,20 +300,20 @@ namespace ASC.Calendar.Controllers
                                         .FindAll(c => c.IsAcceptedSubscription);
 
 
-                extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate));
+                extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
 
                 var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
                 if (sharedEvents != null)
                     result.ForEach(c =>
                     {
-                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
                         c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
                         c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
                     });
                 else
                     result.ForEach(c =>
                     {
-                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
                         c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
                     });
 

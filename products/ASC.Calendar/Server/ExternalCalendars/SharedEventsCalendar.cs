@@ -40,11 +40,13 @@ namespace ASC.Calendar.ExternalCalendars
         public static string CalendarId { get { return "shared_events"; } }
 
         private TenantManager TenantManager { get; }
+        private DataProvider DataProvider { get; }
 
-        public SharedEventsCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter, TenantManager tenantManager)
+        public SharedEventsCalendar(AuthContext authContext, TimeZoneConverter timeZoneConverter, TenantManager tenantManager, DataProvider dataProvider)
         : base(authContext, timeZoneConverter)
         {
             TenantManager = tenantManager;
+            DataProvider = dataProvider;
             Id = CalendarId;
             Context.HtmlBackgroundColor = "#0797ba";
             Context.HtmlTextColor = "#000000";
@@ -57,14 +59,12 @@ namespace ASC.Calendar.ExternalCalendars
 
         public override List<IEvent> LoadEvents(Guid userId, DateTime utcStartDate, DateTime utcEndDate)
         {
-            /* using (var provider = new DataProvider())
-             {
-                 var events = provider.LoadSharedEvents(userId, TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
-                 events.ForEach(e => e.CalendarId = Id);
-                 var ievents = new List<IEvent>(events.Select(e => (IEvent)e));
-                 return ievents;
-             }*/
-            return null;
+
+            var events = DataProvider.LoadSharedEvents(userId, TenantManager.GetCurrentTenant().TenantId, utcStartDate, utcEndDate);
+            events.ForEach(e => e.CalendarId = Id);
+            var ievents = new List<IEvent>(events.Select(e => (IEvent)e));
+            return ievents;
+            
         }
 
         private string _name;

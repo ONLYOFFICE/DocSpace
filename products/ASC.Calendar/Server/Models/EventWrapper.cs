@@ -264,7 +264,7 @@ namespace ASC.Calendar.Models
 
         }
 
-        public List<EventWrapper> GetList(DateTime utcStartDate, DateTime utcEndDate, Guid userId, BaseEvent baseEvent)
+        public List<EventWrapper> GetList(DateTime utcStartDate, DateTime utcEndDate, Guid userId, IEvent baseEvent)
         {
             var list = new List<EventWrapper>();
             var _baseEvent = baseEvent;

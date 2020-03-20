@@ -83,19 +83,19 @@ namespace ASC.Calendar.BusinessObjects
             return cal;
         }
 
-        public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate)
+        public static List<EventWrapper> GetEventWrappers(this BaseCalendar calendar, Guid userId, ApiDateTime startDate, ApiDateTime endDate, EventWrapperHelper eventWrapperHelper)
         {
             var result = new List<EventWrapper>();
-            /*if (calendar != null)
+            if (calendar != null)
             {
                 var events = calendar.LoadEvents(userId, startDate.UtcTime, endDate.UtcTime);
                 foreach (var e in events)
                 {
-                    var wrapper = new EventWrapperHelper().Get(e, userId, calendar.TimeZone);
-                    var listWrapper = wrapper.GetList(startDate.UtcTime, endDate.UtcTime);
+                    var wrapper = eventWrapperHelper.Get(e, userId, calendar.TimeZone);
+                    var listWrapper = eventWrapperHelper.GetList(startDate.UtcTime, endDate.UtcTime, userId, e);
                     result.AddRange(listWrapper);
                 }
-            }*/
+            }
 
             return result;
         }
