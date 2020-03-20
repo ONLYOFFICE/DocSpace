@@ -31,7 +31,6 @@ using System.Net.Mail;
 //using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Mail.Models;
-//using ASC.Mail.Data.Contracts;
 //using ASC.Web.Core.Utility;
 using MimeKit;
 //using Resources;

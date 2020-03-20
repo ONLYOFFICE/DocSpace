@@ -26,10 +26,11 @@
 
 using ASC.Common;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Interfaces;
 
 namespace ASC.Mail.Core
 {
-    public class DaoFactory
+    public class DaoFactory : IDaoFactory
     {
         public AccountDao AccountDao { get; }
         public MailboxAutoreplyDao MailboxAutoreplyDao { get; }

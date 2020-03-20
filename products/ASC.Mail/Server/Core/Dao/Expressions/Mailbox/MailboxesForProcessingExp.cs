@@ -24,11 +24,6 @@
 */
 
 
-//using System.Linq;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Data.Contracts;
-
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Models;
 using System;

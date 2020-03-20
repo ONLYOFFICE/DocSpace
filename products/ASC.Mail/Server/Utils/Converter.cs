@@ -29,13 +29,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using ASC.Common.Logging;
-//using ASC.Mail.Core.Entities;
-//using ASC.Mail.Data.Contracts;
-//using ASC.Mail.Data.Search;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
-//using ASC.Mail.Extensions;
 using MimeKit;
 //using ContactInfo = ASC.Mail.Core.Entities.ContactInfo;
 
