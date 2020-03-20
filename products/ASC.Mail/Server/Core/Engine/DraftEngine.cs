@@ -51,7 +51,8 @@ using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using MimeKit;
-//using MailMessage = ASC.Mail.Data.Contracts.MailMessageData;
+using FileShare = ASC.Files.Core.Security.FileShare;
+using MailMessage = ASC.Mail.Models.MailMessageData;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -76,7 +77,7 @@ namespace ASC.Mail.Core.Engine
             List<int> tags,
             string body,
             List<MailAttachmentData> attachments,
-            Files.Core.Security.FileShare fileLinksShareMode,
+            FileShare fileLinksShareMode,
             string calendarIcs,
             bool isAutoreply,
             bool requestReceipt,

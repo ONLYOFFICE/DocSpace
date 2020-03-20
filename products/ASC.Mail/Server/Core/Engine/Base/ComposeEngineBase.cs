@@ -52,7 +52,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Models.Base;
 using ASC.Mail.Utils;
 using MimeKit;
-//using MailMessage = ASC.Mail.Data.Contracts.MailMessageData;
+using MailMessage = ASC.Mail.Models.MailMessageData;
 
 namespace ASC.Mail.Core.Engine
 {
