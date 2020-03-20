@@ -44,39 +44,102 @@ namespace ASC.Mail.Core
         public AlertEngine AlertEngine { get; }
 
         public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
-
+        public DocumentsEngine DocumentsEngine { get; }
+        public DraftEngine DraftEngine { get; }
+        public EmailInEngine EmailInEngine { get; }
+        public FilterEngine FilterEngine { get; }
+        public FolderEngine FolderEngine { get; }
+        public IndexEngine IndexEngine { get; }
+        public MailboxEngine MailboxEngine { get; }
+        public MailBoxSettingEngine MailBoxSettingEngine { get; }
+        public MailGarbageEngine MailGarbageEngine { get; }
+        public MessageEngine MessageEngine { get; }
+        public OperationEngine OperationEngine { get; }
         public SignatureEngine SignatureEngine { get; }
-
+        public SpamEngine SpamEngine { get; }
         public TagEngine TagEngine { get; }
+        public TemplateEngine TemplateEngine { get; }
+        public TestEngine TestEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
         public AttachmentEngine AttachmentEngine { get; }
         public CacheEngine CacheEngine { get; }
         public AutoreplyEngine AutoreplyEngine { get; }
         public CalendarEngine CalendarEngine { get; }
+        public ChainEngine ChainEngine { get; }
+        public ContactEngine ContactEngine { get; }
+        public CrmLinkEngine CrmLinkEngine { get; }
         public QuotaEngine QuotaEngine { get; }
+        public ServerDomainEngine ServerDomainEngine { get; }
+        public ServerEngine ServerEngine { get; }
+        public ServerMailboxEngine ServerMailboxEngine { get; }
+        public ServerMailgroupEngine ServerMailgroupEngine { get; }
 
         public EngineFactory(
             AccountEngine accountEngine,
             AlertEngine alertEngine,
-            DisplayImagesAddressEngine displayImagesAddressEngine,
-            SignatureEngine signatureEngine,
-            TagEngine tagEngine,
             AttachmentEngine attachmentEngine,
-            CacheEngine cacheEngine,
             AutoreplyEngine autoreplyEngine,
+            CacheEngine cacheEngine,
             CalendarEngine calendarEngine,
-            QuotaEngine quotaEngine
-            )
+            ChainEngine chainEngine,
+            ContactEngine contactEngine,
+            CrmLinkEngine crmLinkEngine,
+            DisplayImagesAddressEngine displayImagesAddressEngine,
+            DocumentsEngine documentsEngine,
+            DraftEngine draftEngine,
+            EmailInEngine emailInEngine,
+            FilterEngine filterEngine,
+            FolderEngine folderEngine,
+            IndexEngine indexEngine,
+            MailboxEngine mailboxEngine,
+            MailBoxSettingEngine mailBoxSettingEngine,
+            MailGarbageEngine mailGarbageEngine,
+            MessageEngine messageEngine,
+            OperationEngine operationEngine,
+            QuotaEngine quotaEngine,
+            ServerDomainEngine serverDomainEngine,
+            ServerEngine serverEngine,
+            ServerMailboxEngine serverMailboxEngine,
+            ServerMailgroupEngine serverMailgroupEngine,
+            SignatureEngine signatureEngine,
+            SpamEngine spamEngine,
+            TagEngine tagEngine,
+            TemplateEngine templateEngine,
+            TestEngine testEngine,
+            UserFolderEngine userFolderEngine)
         {
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
             DisplayImagesAddressEngine = displayImagesAddressEngine;
+            DocumentsEngine = documentsEngine;
+            DraftEngine = draftEngine;
+            EmailInEngine = emailInEngine;
+            FilterEngine = filterEngine;
+            FolderEngine = folderEngine;
+            IndexEngine = indexEngine;
+            MailboxEngine = mailboxEngine;
+            MailBoxSettingEngine = mailBoxSettingEngine;
+            MailGarbageEngine = mailGarbageEngine;
+            MessageEngine = messageEngine;
+            OperationEngine = operationEngine;
             SignatureEngine = signatureEngine;
+            SpamEngine = spamEngine;
             TagEngine = tagEngine;
+            TemplateEngine = templateEngine;
+            TestEngine = testEngine;
+            UserFolderEngine = userFolderEngine;
             AttachmentEngine = attachmentEngine;
             CacheEngine = cacheEngine;
             AutoreplyEngine = autoreplyEngine;
             CalendarEngine = calendarEngine;
+            ChainEngine = chainEngine;
+            ContactEngine = contactEngine;
+            CrmLinkEngine = crmLinkEngine;
             QuotaEngine = quotaEngine;
+            ServerDomainEngine = serverDomainEngine;
+            ServerEngine = serverEngine;
+            ServerMailboxEngine = serverMailboxEngine;
+            ServerMailgroupEngine = serverMailgroupEngine;
         }
     }
 
