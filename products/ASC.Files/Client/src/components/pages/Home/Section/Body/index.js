@@ -3,6 +3,7 @@ import { withRouter } from "react-router";
 import { connect } from "react-redux";
 import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
+import styled from "styled-components";
 import {
   Icons,
   Row,
@@ -18,7 +19,7 @@ import {
   deselectFile,
   fetchFiles,
   fetchFolder,
-  fetchRootFolders,
+  //fetchRootFolders,
   selectFile,
   setAction
 } from '../../../../../store/files/actions';
@@ -88,7 +89,7 @@ class SectionBodyContent extends React.PureComponent {
       });
     })
 
-    fetchRootFolders(store.dispatch);
+    //fetchRootFolders(store.dispatch);
   }
 
   onClickDelete = (item) => {
@@ -112,7 +113,7 @@ class SectionBodyContent extends React.PureComponent {
     deleteFolder(folderId)
       .catch(err => toastr.error(err))
       .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
-      .then(() => fetchRootFolders(store.dispatch))
+      //.then(() => fetchRootFolders(store.dispatch))
       .then(() => toastr.success(`Folder moved to recycle bin`));
   }
 
@@ -183,11 +184,37 @@ class SectionBodyContent extends React.PureComponent {
     }
   };
 
+  getItemIcon = (extension, isEdit) => {
+    const setEditIconStyle = isEdit ? { style: { marginLeft: '24px' } } : {};
+
+    return extension
+      ? <Icons.ActionsDocumentsIcon
+        {...setEditIconStyle}
+        size='big'
+        isfill={true}
+        color="#A3A9AE"
+      />
+      : <Icons.CatalogFolderIcon
+        {...setEditIconStyle}
+        size='big'
+        isfill={true}
+        color="#A3A9AE"
+      />
+  };
+
   render() {
     const { files, folders, viewer, parentId, folderId, settings, selection, fileAction, onLoading, filter } = this.props;
     const { editingId } = this.state;
 
     let items = [...folders, ...files];
+
+    const SimpleFilesRow = styled(Row)`
+      ${props => !props.contextOptions && `
+          & > div:last-child {
+              width: 0px;
+            }
+        `}
+    `;
 
     if (fileAction && fileAction.type === FileAction.Create) {
       items.unshift({
@@ -208,12 +235,10 @@ class SectionBodyContent extends React.PureComponent {
             : { contextOptions };
           const checked = isFileSelected(selection, item.id, item.parentId);
           const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-          const element = item.fileExst
-            ? <Icons.ActionsDocumentsIcon size='big' isfill={true} color="#A3A9AE" />
-            : <Icons.CatalogFolderIcon size='big' isfill={true} color="#A3A9AE" />;
+          const element = this.getItemIcon(item.fileExst, isEdit);
 
           return (
-            <Row
+            <SimpleFilesRow
               key={item.id}
               data={item}
               element={element}
@@ -224,12 +249,12 @@ class SectionBodyContent extends React.PureComponent {
               needForUpdate={this.needForUpdate}
             >
               <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete} onLoading={onLoading} />
-            </Row>
+            </SimpleFilesRow>
           );
         })}
       </RowContainer>
     ) : parentId !== 0 ? (
-      <EmptyFolderContainer parentId={parentId} filter={filter}/>
+      <EmptyFolderContainer parentId={parentId} filter={filter} />
     ) : <p>RootFolderContainer</p>;
   }
 }
@@ -260,7 +285,7 @@ export default connect(
     deleteFolder,
     deselectFile,
     fetchFiles,
-    fetchRootFolders,
+    //fetchRootFolders,
     selectFile,
     setAction
   }

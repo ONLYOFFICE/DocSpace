@@ -23,7 +23,7 @@ export const SET_FILES = "SET_FILES";
 export const SET_SELECTION = "SET_SELECTION";
 export const SET_SELECTED = "SET_SELECTED";
 export const SET_SELECTED_FOLDER = "SET_SELECTED_FOLDER";
-export const SET_ROOT_FOLDERS = "SET_ROOT_FOLDERS";
+export const SET_TREE_FOLDERS = "SET_TREE_FOLDERS";
 export const SET_FILES_FILTER = "SET_FILES_FILTER";
 export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
@@ -86,10 +86,10 @@ export function setSelectedFolder(selectedFolder) {
   };
 }
 
-export function setRootFolders(rootFolders) {
+export function setTreeFolders(treeFolders) {
   return {
-    type: SET_ROOT_FOLDERS,
-    rootFolders
+    type: SET_TREE_FOLDERS,
+    treeFolders
   };
 }
 
@@ -229,37 +229,13 @@ export function fetchSharedFolder(dispatch) {
   });
 }
 
-export function fetchRootFolders(dispatch) {
-
-  let root = {
-    my: null,
-    share: null,
-    common: null,
-    project: null,
-    trash: null
-  };
-
-  return axios.all([
-    files.getMyFolderList(),
-    files.getSharedFolderList(),
-    files.getCommonFolderList(),
-    files.getProjectsFolderList(),
-    files.getTrashFolderList()
-  ])
-    .then(axios.spread((my, share, common, project, trash) => {
-      root.my = { folders: my.folders, ...my.current }
-      root.share = { folders: share.folders, ...share.current }
-      root.common = { folders: common.folders, ...common.current }
-      root.project = { folders: project.folders, ...project.current }
-      root.trash = { folders: trash.folders, ...trash.current }
-    }))
-    .then(() => dispatch(setRootFolders(root)));;
+export function fetchTreeFolders(dispatch) {
+  return files.getFoldersTree().then(data => dispatch(setTreeFolders(data)));
 }
 
-export function testUpdateMyFolder(folders) {
+/*export function testUpdateMyFolder(folders) {
   return (dispatch, getState) => {
     const { files } = getState();
-    const { rootFolders } = files;
 
     console.log("folders", folders);
 
@@ -273,7 +249,7 @@ export function testUpdateMyFolder(folders) {
 
   }
   //setRootFolders
-}
+}*/
 
 export function createFile(folderId, title) {
   return dispatch => {

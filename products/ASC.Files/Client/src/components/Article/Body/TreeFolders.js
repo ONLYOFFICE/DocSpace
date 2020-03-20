@@ -73,9 +73,7 @@ class TreeFolders extends React.Component {
       const itemId = item.id.toString();
       if (curId.indexOf(itemId) >= 0) {
         const listIds = curId;
-        const treeItem = listIds.find(
-          x => x.toString() === itemId
-        );
+        const treeItem = listIds.find(x => x.toString() === itemId);
         if (treeItem === undefined) {
           listIds.push(itemId);
         }
@@ -156,23 +154,7 @@ class TreeFolders extends React.Component {
 
         const treeData = [...this.state.treeData];
         this.getNewTreeData(treeData, listIds, data.folders, 10);
-
-        const root = {
-          my: null,
-          share: null,
-          common: null,
-          project: null,
-          trash: null
-        };
-        root.my = treeData[0];
-        root.share = treeData[1];
-        root.common = treeData[2];
-        root.project = treeData[3];
-        root.trash = treeData[4];
-        root.trash.folders = null;
-        root.trash.foldersCount = null;
-
-        this.props.setRootFolders(root);
+        this.props.setTreeFolders(treeData);
         this.setState({ treeData });
       })
       .catch(() => this.props.onLoading(false))

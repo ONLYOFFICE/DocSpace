@@ -413,11 +413,12 @@ const SectionHeaderContent = props => {
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, selection, rootFolders } = state.files;
+  const { selectedFolder, selection, treeFolders } = state.files;
+  const trashFolderIndex = 3;
   return {
     folder: selectedFolder.parentId !== 0,
     isAdmin: isAdmin(state.auth.user),
-    isRecycleBinFolder: rootFolders.trash.id === selectedFolder.id,
+    isRecycleBinFolder: treeFolders[trashFolderIndex].id === selectedFolder.id,
     parentId: selectedFolder.parentId,
     selection,
     title: selectedFolder.title,

@@ -40,26 +40,26 @@ export function getFolder(folderId, filter, fake = false) {
 }
 
 export function getFoldersTree() {
-  const rootFoldersPaths = ['@my', '@share', '@common', '@projects', '@trash']; //TODO: need get from settings
+  const rootFoldersPaths = ['@my', '@share', '@common', /*'@projects',*/ '@trash']; //TODO: need get from settings
   const requestsArray = rootFoldersPaths.map(path => request({ method: "get", url: `/files/${path}` }));
 
   return axios.all(requestsArray)
     .then(axios.spread((...responses) =>
-      responses.map(data => {
+      responses.map((data, index) => {
+        const trashIndex = 3;
         return {
           id: data.current.id,
-          key: `0-${data.current.id}`,
+          key: `0-${index}`,
           title: data.current.title,
-          folders: data.folders.map(folder => {
+          folders: index !== trashIndex ? data.folders.map(folder => {
             return {
               id: folder.id,
-              key: `0-${folder.parentId}-${folder.id}`,
               title: folder.title,
-              folders: [],
-              foldersCount: folder.foldersCount
+              foldersCount: folder.foldersCount,
             }
-          }),
-          foldersCount: data.current.foldersCount
+          }) : null,
+          pathParts: data.pathParts,
+          foldersCount: index !== trashIndex ? data.current.foldersCount : null
         }
       })
     ))
