@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
@@ -43,14 +44,14 @@ namespace ASC.Mail.Core.Engine
         public int Tenant { get; private set; }
 
         public string User { get; private set; }
-
+        public StorageFactory StorageFactory { get; }
         public ILog Log { get; private set; }
 
-        public SpamEngine(int tenant, string user, ILog log = null)
+        public SpamEngine(int tenant, string user, StorageFactory storageFactory, ILog log = null)
         {
             Tenant = tenant;
             User = user;
-
+            StorageFactory = storageFactory;
             Log = log ?? LogManager.GetLogger("ASC.Mail.CrmLinkEngine");
         }
 
@@ -174,7 +175,7 @@ namespace ASC.Mail.Core.Engine
         {
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
             var emlPath = MailStoragePathCombiner.GetEmlKey(user, streamId);
-            var dataStore = MailDataStore.GetDataStore(tenant);
+            var dataStore = StorageFactory.GetMailStorage(tenant);
 
             try
             {

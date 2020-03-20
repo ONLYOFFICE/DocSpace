@@ -215,7 +215,7 @@ namespace ASC.Mail.Data.Storage
                 if (string.IsNullOrEmpty(mailAttachmentData.fileName))
                     mailAttachmentData.fileName = "attachment.ext";
 
-                var storage = StorageFactory.GetStorage(Tenant.ToString(CultureInfo.InvariantCulture), Defines.MODULE_NAME);
+                var storage = StorageFactory.GetMailStorage(Tenant);
 
                 storage.QuotaController = null;
 

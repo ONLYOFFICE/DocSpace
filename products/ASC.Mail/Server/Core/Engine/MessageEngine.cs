@@ -35,6 +35,7 @@ using System.Text;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
+using ASC.Data.Storage;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
@@ -56,16 +57,16 @@ namespace ASC.Mail.Core.Engine
     {
         public int Tenant { get; private set; }
         public string User { get; private set; }
-
+        public StorageFactory StorageFactory { get; }
         public ILog Log { get; private set; }
 
         public EngineFactory Factory { get; private set; }
 
-        public MessageEngine(int tenant, string user, ILog log = null)
+        public MessageEngine(int tenant, string user, StorageFactory storageFactory, ILog log = null)
         {
             Tenant = tenant;
             User = user;
-
+            StorageFactory = storageFactory;
             Log = log ?? LogManager.GetLogger("ASC.Mail.MessageEngine");
 
             Factory = new EngineFactory(Tenant, User, Log);
@@ -111,7 +112,7 @@ namespace ASC.Mail.Core.Engine
                 if (mail == null)
                     throw new ArgumentException("Message not found with id=" + id);
 
-                var dataStore = MailDataStore.GetDataStore(Tenant);
+                var dataStore = StorageFactory.GetMailStorage(Tenant);
 
                 var key = MailStoragePathCombiner.GetBodyKey(User, mail.Stream);
 
@@ -1382,7 +1383,7 @@ namespace ASC.Mail.Core.Engine
 
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
             var savePath = MailStoragePathCombiner.GetBodyKey(mailBoxData.UserId, messageItem.StreamId);
-            var storage = MailDataStore.GetDataStore(mailBoxData.TenantId);
+            var storage = StorageFactory.GetMailStorage(mailBoxData.TenantId);
 
             storage.QuotaController = null;
 
@@ -1619,10 +1620,10 @@ namespace ASC.Mail.Core.Engine
             return true;
         }
         //TODO: Need refactoring
-        private static bool TryRemoveMailDirectory(MailBoxData mailbox, string streamId, ILog log)
+        private bool TryRemoveMailDirectory(MailBoxData mailbox, string streamId, ILog log)
         {
             //Trying to delete all attachments and mailbody
-            var storage = MailDataStore.GetDataStore(mailbox.TenantId);
+            var storage = StorageFactory.GetMailStorage(mailbox.TenantId);
             try
             {
                 storage.DeleteDirectory(string.Empty,
@@ -1848,7 +1849,7 @@ namespace ASC.Mail.Core.Engine
                     double swtSanitazeilliseconds = 0;
 #endif
 
-                    var dataStore = MailDataStore.GetDataStore(Tenant);
+                    var dataStore = StorageFactory.GetMailStorage(Tenant);
                     var key = MailStoragePathCombiner.GetBodyKey(User, item.StreamId);
 
                     try

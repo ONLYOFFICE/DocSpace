@@ -293,7 +293,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.DebugFormat("MailDataStore.GetDataStore(Tenant = {0})", mailbox.TenantId);
 
-                var dataStorage = MailDataStore.GetDataStore(mailbox.TenantId);
+                var dataStorage = StorageFactory.GetDataStore(mailbox.TenantId);
 
                 dataStorage.QuotaController = null;
 
@@ -421,7 +421,7 @@ namespace ASC.Mail.Core.Engine
         {
             log.DebugFormat("MailDataStore.GetDataStore(Tenant = {0})", tenant);
 
-            var dataStorage = MailDataStore.GetDataStore(tenant);
+            var dataStorage = StorageFactory.GetDataStore(tenant);
 
             var userMailDir = MailStoragePathCombiner.GetUserMailsDirectory(userId);
 

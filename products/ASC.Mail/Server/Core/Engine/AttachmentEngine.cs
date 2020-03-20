@@ -322,7 +322,7 @@ namespace ASC.Mail.Core.Engine
 
                 string s3Key;
 
-                var dataClient = StorageFactory.GetStorage(tenant.ToString(CultureInfo.InvariantCulture), Defines.MODULE_NAME);
+                var dataClient = StorageFactory.GetMailStorage(tenant);
 
                 if (attachment.needSaveToTemp || attachment.isTemp)
                 {
@@ -463,7 +463,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (storedAttachmentsKeys.Any())
                 {
-                    var storage = StorageFactory.GetStorage(mailBoxData.TenantId.ToString(CultureInfo.InvariantCulture), Defines.MODULE_NAME);
+                    var storage = StorageFactory.GetMailStorage(mailBoxData.TenantId);
 
                     storedAttachmentsKeys.ForEach(key => storage.Delete(string.Empty, key));
                 }
