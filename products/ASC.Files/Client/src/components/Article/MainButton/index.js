@@ -87,7 +87,7 @@ ArticleMainButtonContent.propTypes = {
 const mapStateToProps = (state) => {
   return {
     settings: state.auth.settings,
-    isMyDocuments: isMyDocuments(state.files.rootFolders.my.id, state.files.selectedFolder.id)
+    isMyDocuments: isMyDocuments(state.files.rootFolders.my.id, state.files.selectedFolder.pathParts[0])
   }
 }
 

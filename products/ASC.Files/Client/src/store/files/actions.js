@@ -161,7 +161,7 @@ export function fetchFiles(folderId, filter, dispatch) {
     dispatch(setFilesFilter(filterData, folderId));
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
-    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current }));
+    return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));
   })
 }
 
