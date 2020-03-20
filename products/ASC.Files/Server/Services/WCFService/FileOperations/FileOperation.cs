@@ -63,16 +63,18 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected readonly IPrincipal principal;
         protected readonly string culture;
-        protected int total;
+        public int Total { get; set; }
+        public string Source { get; set; }
+
         protected int processed;
         protected int successProcessed;
 
         public virtual FileOperationType OperationType { get; }
         public bool HoldResult { get; set; }
 
-        protected string Status { get; set; }
+        public string Status { get; set; }
 
-        protected string Error { get; set; }
+        public string Error { get; set; }
 
         protected DistributedTask TaskInfo { get; set; }
 
@@ -93,7 +95,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected internal virtual void FillDistributedTask()
         {
-            var progress = total != 0 ? 100 * processed / total : 0;
+            var progress = Total != 0 ? 100 * processed / Total : 0;
 
             TaskInfo.SetProperty(OPERATION_TYPE, OperationType);
             TaskInfo.SetProperty(OWNER, ((IAccount)(principal ?? Thread.CurrentPrincipal).Identity).ID);
@@ -112,26 +114,84 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         where T1 : FileOperationData<string>
         where T2 : FileOperationData<int>
     {
-        public FileOperation<T1, string> F1 { get; set; }
-        public FileOperation<T2, int> F2 { get; set; }
+        public FileOperation<T1, string> ThirdPartyOperation { get; set; }
+        public FileOperation<T2, int> DaoOperation { get; set; }
 
-        public ComposeFileOperation(IServiceProvider serviceProvider, FileOperation<T1, string> f1, FileOperation<T2, int> f2)
+        public ComposeFileOperation(
+            IServiceProvider serviceProvider,
+            FileOperation<T1, string> thirdPartyOperation,
+            FileOperation<T2, int> daoOperation)
             : base(serviceProvider)
         {
-            F1 = f1;
-            F2 = f2;
+            ThirdPartyOperation = thirdPartyOperation;
+            DaoOperation = daoOperation;
         }
 
         public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
-            F1.RunJob(_, cancellationToken);
-            F2.RunJob(_, cancellationToken);
+            ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
+            ThirdPartyOperation.RunJob(_, cancellationToken);
+
+            DaoOperation.GetDistributedTask().Publication = PublishChanges;
+            DaoOperation.RunJob(_, cancellationToken);
         }
 
         protected internal override void FillDistributedTask()
         {
-            F1.FillDistributedTask();
-            F2.FillDistributedTask();
+            ThirdPartyOperation.FillDistributedTask();
+            DaoOperation.FillDistributedTask();
+
+            Total = ThirdPartyOperation.Total + DaoOperation.Total;
+            Source = string.Join(SPLIT_CHAR, ThirdPartyOperation.Source, DaoOperation.Source);
+            base.FillDistributedTask();
+        }
+
+        public void PublishChanges(DistributedTask task)
+        {
+            var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
+            var daoTask = DaoOperation.GetDistributedTask();
+
+            var error1 = thirdpartyTask.GetProperty<string>(ERROR);
+            var error2 = daoTask.GetProperty<string>(ERROR);
+
+            if (!string.IsNullOrEmpty(error1))
+            {
+                Error = error1;
+            }
+            else if (!string.IsNullOrEmpty(error2))
+            {
+                Error = error2;
+            }
+
+            var status1 = thirdpartyTask.GetProperty<string>(RESULT);
+            var status2 = daoTask.GetProperty<string>(RESULT);
+
+            if (!string.IsNullOrEmpty(status1))
+            {
+                Status = status1;
+            }
+            else if (!string.IsNullOrEmpty(status2))
+            {
+                Status = status2;
+            }
+
+            var finished1 = thirdpartyTask.GetProperty<string>(FINISHED);
+            var finished2 = daoTask.GetProperty<string>(FINISHED);
+
+            if (!string.IsNullOrEmpty(finished1))
+            {
+                TaskInfo.SetProperty(FINISHED, finished1);
+            }
+            else if (!string.IsNullOrEmpty(finished2))
+            {
+                TaskInfo.SetProperty(FINISHED, finished2);
+            }
+
+            successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
+            processed = (thirdpartyTask.GetProperty<int>(PROGRESS) + daoTask.GetProperty<int>(PROGRESS)) / 2;
+
+            base.FillDistributedTask();
+            TaskInfo.PublishChanges();
         }
 
         protected override void Do(IServiceScope serviceScope)
@@ -190,6 +250,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Folders = fileOperationData.Folders;
             HoldResult = fileOperationData.HoldResult;
             CurrentTenant = fileOperationData.Tenant;
+            Total = InitTotalProgressSteps();
+            Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
 
         public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
@@ -217,8 +279,6 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 FilesSecurity = fileSecurity;
 
                 Logger = logger;
-
-                total = InitTotalProgressSteps();
 
                 Do(scope);
             }
@@ -253,7 +313,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         {
             base.FillDistributedTask();
 
-            TaskInfo.SetProperty(SOURCE, string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray()));
+            TaskInfo.SetProperty(SOURCE, Source);
         }
 
         protected virtual int InitTotalProgressSteps()
