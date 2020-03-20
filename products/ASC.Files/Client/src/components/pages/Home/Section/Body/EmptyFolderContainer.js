@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { EmptyScreenContainer, Link } from "asc-web-components";
 import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
-import { history } from "asc-web-common";
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -46,11 +45,6 @@ const EmptyFolderContainer = props => {
   const onBackToParentFolder = () => {
     const newFilter = props.filter.clone();
     fetchFiles(props.parentId, newFilter, store.dispatch);
-    const url =
-      history.location.search !== ""
-        ? history.location.search
-        : history.location.state;
-    history.push(`${history.location.pathname}${url}#${props.parentId}`);
   };
 
   return (

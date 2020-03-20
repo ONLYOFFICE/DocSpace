@@ -8,7 +8,7 @@ import "./custom.scss";
 import App from "./App";
 
 import * as serviceWorker from "./serviceWorker";
-import { store as commonStore, constants, ErrorBoundary, history, api } from "asc-web-common";
+import { store as commonStore, constants, ErrorBoundary, api } from "asc-web-common";
 import { getFilterByLocation } from "./helpers/converters";
 const { setIsLoaded, getUserInfo, setCurrentProductId, setCurrentProductHomePage, getPortalPasswordSettings, getPortalCultures } = commonStore.auth.actions;
 const { AUTH_KEY } = constants;
@@ -91,7 +91,7 @@ if (token) {
       return Promise.resolve(filter);
     })
     .then(filter => {
-      const folderId = window.location.hash.slice(1) || '@my';
+      const folderId = filter.folder;
       return fetchFiles(folderId, filter, store.dispatch);
     })
     .then(() => {
