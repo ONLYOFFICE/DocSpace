@@ -6,7 +6,7 @@ import {
   SET_FILTER,
   SET_FOLDER,
   SET_FOLDERS,
-  SET_ROOT_FOLDERS,
+  SET_TREE_FOLDERS,
   SET_SELECTED_FOLDER,
   SET_SELECTED,
   SET_SELECTION,
@@ -24,7 +24,7 @@ const initialState = {
   files: null,
   filter: FilesFilter.getDefault(),
   folders: null,
-  rootFolders: [],
+  treeFolders: [],
   selected: "none",
   selectedFolder: null,
   selection: []
@@ -65,9 +65,9 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         selectedFolder: action.selectedFolder
       });
-    case SET_ROOT_FOLDERS:
+    case SET_TREE_FOLDERS:
       return Object.assign({}, state, {
-        rootFolders: action.rootFolders
+        treeFolders: action.treeFolders
       });
     case SET_FILTER:
       return Object.assign({}, state, {

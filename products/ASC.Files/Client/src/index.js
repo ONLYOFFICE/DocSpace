@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import store from "./store/store";
-import { fetchMyFolder, fetchRootFolders, fetchFiles } from "./store/files/actions";
+import { fetchMyFolder, fetchTreeFolders, fetchFiles } from "./store/files/actions";
 import config from "../package.json";
 import "./custom.scss";
 import App from "./App";
@@ -21,7 +21,7 @@ if (token) {
     .then(() => getPortalPasswordSettings(store.dispatch))
     .then(() => getPortalCultures(store.dispatch))
     .then(() => fetchMyFolder(store.dispatch))
-    .then(() => fetchRootFolders(store.dispatch))
+    .then(() => fetchTreeFolders(store.dispatch))
     .then(() => {
       const re = new RegExp(`${config.homepage}((/?)$|/filter)`, "gm");
       const match = window.location.pathname.match(re);

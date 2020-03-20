@@ -19,7 +19,7 @@ import {
   deselectFile,
   fetchFiles,
   fetchFolder,
-  fetchRootFolders,
+  //fetchRootFolders,
   selectFile,
   setAction
 } from '../../../../../store/files/actions';
@@ -89,7 +89,7 @@ class SectionBodyContent extends React.PureComponent {
       });
     })
 
-    fetchRootFolders(store.dispatch);
+    //fetchRootFolders(store.dispatch);
   }
 
   onClickDelete = (item) => {
@@ -113,7 +113,7 @@ class SectionBodyContent extends React.PureComponent {
     deleteFolder(folderId)
       .catch(err => toastr.error(err))
       .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
-      .then(() => fetchRootFolders(store.dispatch))
+      //.then(() => fetchRootFolders(store.dispatch))
       .then(() => toastr.success(`Folder moved to recycle bin`));
   }
 
@@ -285,7 +285,7 @@ export default connect(
     deleteFolder,
     deselectFile,
     fetchFiles,
-    fetchRootFolders,
+    //fetchRootFolders,
     selectFile,
     setAction
   }
