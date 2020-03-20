@@ -101,8 +101,8 @@ class FilesRowContent extends React.PureComponent {
   onFilesClick = () => {
     const { id, fileExst } = this.props.item;
     const { filter, parentFolder, onLoading } = this.props;
-    onLoading(true);
     if (!fileExst) {
+      onLoading(true);
       const newFilter = filter.clone();
       if (!newFilter.treeFolders.includes(parentFolder.toString())) {
         newFilter.treeFolders.push(parentFolder.toString());
@@ -116,6 +116,13 @@ class FilesRowContent extends React.PureComponent {
         .finally(() => onLoading(false));
     }
   };
+
+  onMobileRowClick = (e) => {
+    if (window.innerWidth > 1024)
+      return;
+
+    this.onFilesClick();
+  }
 
   getStatusByDate = () => {
     const { culture, t, item } = this.props;
@@ -252,6 +259,7 @@ class FilesRowContent extends React.PureComponent {
         <SimpleFilesRowContent
           sideColor="#333"
           isFile={fileExst}
+          onClick={this.onMobileRowClick}
         >
           <Link
             containerWidth='100%'
