@@ -9,11 +9,11 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import { setAction } from '../../../store/files/actions';
+import { isMyDocuments } from '../../../store/files/selectors';
 import i18n from '../i18n';
-import { store, utils, constants } from 'asc-web-common';
+import { utils, constants } from 'asc-web-common';
 const { changeLanguage } = utils;
-const { isAdmin } = store.auth.selectors;
-const {FileAction} = constants;
+const { FileAction } = constants;
 
 class PureArticleMainButtonContent extends React.Component {
 
@@ -28,47 +28,42 @@ class PureArticleMainButtonContent extends React.Component {
 
   render() {
     console.log("Files ArticleMainButtonContent render");
-    const { isAdmin, t } = this.props;
+    const { t, isMyDocuments } = this.props;
 
     return (
-      isAdmin ?
-        <>
-          <MainButton
-            isDisabled={false}
-            isDropdown={true}
-            text={t('Actions')}
-          >
-            <DropDownItem
-              icon="ActionsDocumentsIcon"
-              label={t('NewDocument')}
-              onClick={this.onCreate.bind(this, 'docx')}
-            />
-            <DropDownItem
-              icon="SpreadsheetIcon"
-              label={t('NewSpreadsheet')}
-              onClick={this.onCreate.bind(this, 'xlsx')}
-            />
-            <DropDownItem
-              icon="ActionsPresentationIcon"
-              label={t('NewPresentation')}
-              onClick={this.onCreate.bind(this, 'pptx')}
-            />
-            <DropDownItem
-              icon="CatalogFolderIcon"
-              label={t('NewFolder')}
-              onClick={this.onCreate}
-            />
-            <DropDownItem isSeparator />
-            <DropDownItem
-              icon="ActionsUploadIcon"
-              label={t('Upload')}
-              onClick={() => toastr.info("Upload click")}
-              disabled
-            />
-          </MainButton>
-        </>
-        :
-        <></>
+      <MainButton
+        isDisabled={!isMyDocuments}
+        isDropdown={true}
+        text={t('Actions')}
+      >
+        <DropDownItem
+          icon="ActionsDocumentsIcon"
+          label={t('NewDocument')}
+          onClick={this.onCreate.bind(this, 'docx')}
+        />
+        <DropDownItem
+          icon="SpreadsheetIcon"
+          label={t('NewSpreadsheet')}
+          onClick={this.onCreate.bind(this, 'xlsx')}
+        />
+        <DropDownItem
+          icon="ActionsPresentationIcon"
+          label={t('NewPresentation')}
+          onClick={this.onCreate.bind(this, 'pptx')}
+        />
+        <DropDownItem
+          icon="CatalogFolderIcon"
+          label={t('NewFolder')}
+          onClick={this.onCreate}
+        />
+        <DropDownItem isSeparator />
+        <DropDownItem
+          icon="ActionsUploadIcon"
+          label={t('Upload')}
+          onClick={() => toastr.info("Upload click")}
+          disabled
+        />
+      </MainButton>
     );
   };
 };
@@ -87,8 +82,8 @@ ArticleMainButtonContent.propTypes = {
 
 const mapStateToProps = (state) => {
   return {
-    isAdmin: isAdmin(state.auth.user),
-    settings: state.auth.settings
+    settings: state.auth.settings,
+    isMyDocuments: isMyDocuments(state.files.rootFolders.my.id, state.files.selectedFolder.id)
   }
 }
 

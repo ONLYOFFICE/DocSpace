@@ -105,3 +105,5 @@ export const getTreeFolders = (pathParts, filterData) => {
   }
   return treeFolders;
 };
+
+export const isMyDocuments = (myDocFolderId, currentFolderId) => myDocFolderId === currentFolderId;
