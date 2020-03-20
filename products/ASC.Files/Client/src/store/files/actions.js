@@ -1,4 +1,4 @@
-import { api, constants, history } from "asc-web-common";
+import { api, history } from "asc-web-common";
 import axios from "axios";
 import {
   AUTHOR_TYPE,
@@ -8,12 +8,12 @@ import {
   SEARCH_TYPE,
   SEARCH,
   SORT_BY,
-  SORT_ORDER
+  SORT_ORDER,
+  FOLDER
 } from "../../helpers/constants";
 import config from "../../../package.json";
 import { getTreeFolders } from "./selectors";
 
-const { FilterType, FileType } = constants;
 const { files, FilesFilter } = api;
 
 export const SET_FOLDER = "SET_FOLDER";
@@ -93,8 +93,8 @@ export function setRootFolders(rootFolders) {
   };
 }
 
-export function setFilesFilter(filter, folderId) {
-  setFilterUrl(filter, folderId);
+export function setFilesFilter(filter) {
+  setFilterUrl(filter);
   return {
     type: SET_FILES_FILTER,
     filter
@@ -121,7 +121,7 @@ export function deselectFile(file) {
   };
 }
 
-export function setFilterUrl(filter, folderId) {
+export function setFilterUrl(filter) {
   const defaultFilter = FilesFilter.getDefault();
   const params = [];
 
@@ -139,6 +139,9 @@ export function setFilterUrl(filter, folderId) {
   if (filter.authorType) {
     params.push(`${AUTHOR_TYPE}=${filter.authorType}`);
   }
+  if (filter.folder) {
+    params.push(`${FOLDER}=${filter.folder}`);
+  }
 
   if (filter.pageCount !== defaultFilter.pageCount) {
     params.push(`${PAGE_COUNT}=${filter.pageCount}`);
@@ -148,17 +151,17 @@ export function setFilterUrl(filter, folderId) {
   params.push(`${SORT_BY}=${filter.sortBy}`);
   params.push(`${SORT_ORDER}=${filter.sortOrder}`);
 
-  const hash = folderId === "@my" ? "" : `#${folderId}`;
-  history.push(`${config.homepage}/filter?${params.join("&")}${hash}`);
+  history.push(`${config.homepage}/filter?${params.join("&")}`);
 }
 
 // TODO: similar to fetchFolder, remove one
 export function fetchFiles(folderId, filter, dispatch) {
   const filterData = filter ? filter.clone() : FilesFilter.getDefault();
+  filterData.folder = folderId;
   return files.getFolder(folderId, filter).then(data => {
     filterData.treeFolders = getTreeFolders(data.pathParts, filterData);
     filterData.total = data.total;
-    dispatch(setFilesFilter(filterData, folderId));
+    dispatch(setFilesFilter(filterData));
     dispatch(setFolders(data.folders));
     dispatch(setFiles(data.files));
     return dispatch(setSelectedFolder({ folders: data.folders, ...data.current, pathParts: data.pathParts }));

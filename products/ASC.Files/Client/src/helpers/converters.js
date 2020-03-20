@@ -6,7 +6,8 @@ import {
   SORT_ORDER,
   PAGE,
   PAGE_COUNT,
-  AUTHOR_TYPE
+  AUTHOR_TYPE,
+  FOLDER
 } from "./constants";
 import { api, utils } from "asc-web-common";
 const { FilesFilter } = api;
@@ -32,6 +33,7 @@ export function getFilterByLocation(location) {
   const pageCount =
     (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
     defaultFilter.pageCount;
+  const folder = urlFilter[FOLDER] || defaultFilter.folder;
 
   const newFilter = new FilesFilter(
     page,
@@ -42,7 +44,10 @@ export function getFilterByLocation(location) {
     filterType,
     withSubfolders,
     search,
-    authorType
+    authorType,
+    defaultFilter.treeFolders,
+    defaultFilter.selectedItem,
+    folder
   );
 
   return newFilter;

@@ -58,13 +58,6 @@ class TreeFolders extends React.Component {
 
   onSelect = data => {
     if (this.props.selectedKeys[0] !== data[0]) {
-      const url = `${history.location.pathname}${history.location.search}`;
-      const symbol =
-        history.location.hash ||
-        history.location.search[history.location.search.length - 1] === "/"
-          ? ""
-          : "/";
-      history.push(`${url}${symbol}#${data[0]}`);
       const newFilter = this.props.filter.clone();
       fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
         toastr.error("Something went wrong", err)

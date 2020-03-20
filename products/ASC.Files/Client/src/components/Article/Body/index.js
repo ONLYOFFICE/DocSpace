@@ -9,39 +9,38 @@ import {
   setRootFolders
 } from "../../../store/files/actions";
 import store from "../../../store/store";
-import { api, history } from "asc-web-common";
+import { api } from "asc-web-common";
 const { files } = api;
 
 class ArticleBodyContent extends React.Component {
   state = { expandedKeys: this.props.filter.treeFolders };
 
   componentDidMount() {
-    if (history.location.hash) {
-      const folderId = history.location.hash.slice(1);
+    const newFilter = this.props.filter.clone();
+    const folderId = newFilter.folder;
 
-      let expandedKeys = [];
-      files
-        .getFolder(folderId)
-        .then(data => {
-          for (let item of data.pathParts) {
-            expandedKeys.push(item.toString());
-          }
+    let expandedKeys = [];
+    files
+      .getFolder(folderId)
+      .then(data => {
+        for (let item of data.pathParts) {
+          expandedKeys.push(item.toString());
+        }
 
-          expandedKeys.pop();
+        expandedKeys.pop();
 
-          fetchFiles(folderId, this.props.filter, store.dispatch).catch(err =>
-            toastr.error("Something went wrong", err)
-          );
-        })
-        .catch(err => toastr.error("Something went wrong", err))
-        .finally(() => this.setState({ expandedKeys }));
-    }
+        fetchFiles(folderId, newFilter, store.dispatch).catch(err =>
+          toastr.error("Something went wrong", err)
+        );
+      })
+      .catch(err => toastr.error("Something went wrong", err))
+      .finally(() => this.setState({ expandedKeys }));
   }
 
   componentDidUpdate(prevProps) {
     if (
       this.props.filter.treeFolders.length !==
-        prevProps.filter.treeFolders.length ||
+      prevProps.filter.treeFolders.length ||
       this.state.expandedKeys.length !== this.props.filter.treeFolders.length
     ) {
       this.setState({ expandedKeys: this.props.filter.treeFolders });

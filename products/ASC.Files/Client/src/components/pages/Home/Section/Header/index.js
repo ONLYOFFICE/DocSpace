@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import {
   constants,
   Headline,
-  history,
   store
 } from 'asc-web-common';
 import { connect } from "react-redux";
@@ -17,7 +16,7 @@ import {
   toastr
 } from "asc-web-components";
 import { EmptyTrashDialog } from '../../../../dialogs';
-import { fetchFolder } from "../../../../../store/files/actions";
+import { fetchFiles } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 
 const { isAdmin } = store.auth.selectors;
@@ -105,7 +104,8 @@ const SectionHeaderContent = props => {
     isHeaderChecked,
     isHeaderIndeterminate,
     selection,
-    isRecycleBinFolder } = props;
+    isRecycleBinFolder,
+    filter } = props;
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -272,14 +272,7 @@ const SectionHeaderContent = props => {
   ]);
 
   const onBackToParentFolder = () => {
-    fetchFolder(props.parentId, filesStore.dispatch);
-
-    const url =
-      history.location.search !== ""
-        ? history.location.search
-        : history.location.state;
-
-    history.push(`${history.location.pathname}${url}#${props.parentId}`);
+    fetchFiles(props.parentId, filter, filesStore.dispatch);
   };
 
   const isItemsSelected = selection.length;
@@ -428,6 +421,7 @@ const mapStateToProps = state => {
     parentId: selectedFolder.parentId,
     selection,
     title: selectedFolder.title,
+    filter: state.files.filter
   };
 };
 

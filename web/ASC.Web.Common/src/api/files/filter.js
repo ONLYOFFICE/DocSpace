@@ -1,5 +1,4 @@
 import { toUrlParams } from "../../utils";
-import { FilterType } from '../../constants';
 
 const DEFAULT_PAGE = 0;
 const DEFAULT_PAGE_COUNT = 25;
@@ -12,6 +11,7 @@ const DEFAULT_SEARCH = null;
 const DEFAULT_FOLDER_PATH = [];
 const DEFAULT_AUTHOR_TYPE = null;
 const DEFAULT_SELECTED_ITEM = {};
+const DEFAULT_FOLDER = '@my';
 
 // TODO: add next params
 // subjectGroup bool
@@ -35,6 +35,7 @@ class FilesFilter {
     authorType = DEFAULT_AUTHOR_TYPE,
     treeFolders = DEFAULT_FOLDER_PATH,
     selectedItem = DEFAULT_SELECTED_ITEM,
+    folder = DEFAULT_FOLDER
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -47,6 +48,7 @@ class FilesFilter {
     this.authorType = authorType;
     this.treeFolders = treeFolders;
     this.selectedItem = selectedItem;
+    this.folder = folder;
   }
 
   getStartIndex = () => {
@@ -109,7 +111,8 @@ class FilesFilter {
       this.search,
       this.authorType,
       this.treeFolders,
-      this.selectedItem
+      this.selectedItem,
+      this.folder
     );
   }
 
@@ -123,6 +126,7 @@ class FilesFilter {
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
       this.selectedItem.key === filter.selectedItem.key &&
+      this.folder === filter.folder &&
       this.pageCount === filter.pageCount;
 
     return equals;
