@@ -406,6 +406,16 @@ namespace ASC.Files.Thirdparty.Box
             return null;
         }
 
+        public string MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IFolderDao<string>.MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

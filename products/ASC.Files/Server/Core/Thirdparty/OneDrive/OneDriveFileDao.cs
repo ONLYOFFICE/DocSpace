@@ -585,6 +585,16 @@ namespace ASC.Files.Thirdparty.OneDrive
             throw new NotImplementedException();
         }
 
+        public string MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IFileDao<string>.MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

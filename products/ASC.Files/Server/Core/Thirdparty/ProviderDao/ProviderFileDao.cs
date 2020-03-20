@@ -32,9 +32,8 @@ using System.Linq;
 using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
+using ASC.Files.Core.Thirdparty;
 using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
@@ -44,9 +43,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
             IServiceProvider serviceProvider,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
-            SetupInfo setupInfo,
-            FileConverter fileConverter)
-            : base(serviceProvider, securityDao, tagDao, setupInfo, fileConverter)
+            CrossDao crossDao)
+            : base(serviceProvider, securityDao, tagDao, crossDao)
         {
 
         }
@@ -468,6 +466,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
             throw new NotImplementedException();
         }
 
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            var movedFile = PerformCrossDaoFileCopy(fileId, toFolderId, true);
+            return movedFile.ID;
+        }
+
         #endregion
     }
 
@@ -476,6 +480,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public static DIHelper AddProviderFileDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFileDao<string>, ProviderFileDao>();
+            services.TryAddScoped<ProviderFileDao>();
             services.TryAddScoped<File<string>>();
 
             return services

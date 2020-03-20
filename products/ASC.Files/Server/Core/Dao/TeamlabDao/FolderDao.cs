@@ -31,14 +31,15 @@ using System.Linq.Expressions;
 using System.Threading;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
+using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
 using ASC.Web.Studio.Core;
@@ -46,11 +47,10 @@ using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace ASC.Files.Core.Data
 {
-    public class FolderDao : AbstractDao, IFolderDao<int>
+    internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         private const string my = "my";
         private const string common = "common";
@@ -60,7 +60,9 @@ namespace ASC.Files.Core.Data
 
         public FactoryIndexer<FoldersWrapper> FactoryIndexer { get; }
         public GlobalSpace GlobalSpace { get; }
-        public ILog Logger { get; }
+        public IDaoFactory DaoFactory { get; }
+        public ProviderFolderDao ProviderFolderDao { get; }
+        public CrossDao CrossDao { get; }
 
         public FolderDao(
             FactoryIndexer<FoldersWrapper> factoryIndexer,
@@ -77,7 +79,9 @@ namespace ASC.Files.Core.Data
             AuthContext authContext,
             IServiceProvider serviceProvider,
             GlobalSpace globalSpace,
-            IOptionsMonitor<ILog> options)
+            IDaoFactory daoFactory,
+            ProviderFolderDao providerFolderDao,
+            CrossDao crossDao)
             : base(
                   dbContextManager,
                   userManager,
@@ -94,7 +98,9 @@ namespace ASC.Files.Core.Data
         {
             FactoryIndexer = factoryIndexer;
             GlobalSpace = globalSpace;
-            Logger = options.Get("ASC.Files");
+            DaoFactory = daoFactory;
+            ProviderFolderDao = providerFolderDao;
+            CrossDao = crossDao;
         }
 
         public Folder<int> GetFolder(int folderId)
@@ -494,6 +500,18 @@ namespace ASC.Files.Core.Data
                 recalcFolders.ForEach(fid => GetRecalculateFilesCountUpdate(fid));
             }
             return folderId;
+        }
+
+        public string MoveFolder(int folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
+            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, DaoFactory.GetFileDao<int>(), r => r,
+                toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
+                true, cancellationToken);
+
+            return moved.ID;
         }
 
         public Folder<int> CopyFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)

@@ -197,6 +197,9 @@ namespace ASC.Files.Core
         /// <param name="toFolderId">The ID of the destination folder</param>
         T MoveFile(T fileId, T toFolderId);
 
+        string MoveFile(T fileId, string toFolderId);
+        int MoveFile(T fileId, int toFolderId);
+
         /// <summary>
         ///  Copy the files in a folder
         /// </summary>

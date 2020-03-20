@@ -1028,14 +1028,11 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            var files = fileDao.GetFiles(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true);
-            foreach (var file
-                in files.Where(file =>
-                               file.Shared
-                               && fileSecurity.GetShares(file)
-                                              .Any(record =>
-                                                   record.Subject != FileConstant.ShareLinkId
-                                                   && record.Share != FileShare.Restrict)))
+            var files = fileDao.GetFiles(parentId, null, FilterType.None, false, Guid.Empty, string.Empty, true)
+                .Where(file => file.Shared &&
+                fileSecurity.GetShares(file).Any(record => record.Subject != FileConstant.ShareLinkId && record.Share != FileShare.Restrict));
+
+            foreach (var file in files)
             {
                 Logger.InfoFormat("Move shared file {0} from {1} to {2}", file.ID, parentId, toId);
                 fileDao.MoveFile(file.ID, toId);

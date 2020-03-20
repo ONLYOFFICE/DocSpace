@@ -395,6 +395,11 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return null;
         }
 
+        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

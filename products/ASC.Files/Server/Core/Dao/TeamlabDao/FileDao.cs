@@ -37,7 +37,9 @@ using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.ElasticSearch;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
+using ASC.Files.Thirdparty.ProviderDao;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 using ASC.Web.Files.Core.Search;
@@ -51,7 +53,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
-    public class FileDao : AbstractDao, IFileDao<int>
+    internal class FileDao : AbstractDao, IFileDao<int>
     {
         private static readonly object syncRoot = new object();
         public FactoryIndexer<FilesWrapper> FactoryIndexer { get; }
@@ -60,6 +62,8 @@ namespace ASC.Files.Core.Data
         public GlobalFolder GlobalFolder { get; }
         public IDaoFactory DaoFactory { get; }
         public ChunkedUploadSessionHolder ChunkedUploadSessionHolder { get; }
+        public ProviderFolderDao ProviderFolderDao { get; }
+        public CrossDao CrossDao { get; }
 
         public FileDao(
             FactoryIndexer<FilesWrapper> factoryIndexer,
@@ -79,7 +83,9 @@ namespace ASC.Files.Core.Data
             GlobalSpace globalSpace,
             GlobalFolder globalFolder,
             IDaoFactory daoFactory,
-            ChunkedUploadSessionHolder chunkedUploadSessionHolder)
+            ChunkedUploadSessionHolder chunkedUploadSessionHolder,
+            ProviderFolderDao providerFolderDao,
+            CrossDao crossDao)
             : base(
                   dbContextManager,
                   userManager,
@@ -100,6 +106,8 @@ namespace ASC.Files.Core.Data
             GlobalFolder = globalFolder;
             DaoFactory = daoFactory;
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
+            ProviderFolderDao = providerFolderDao;
+            CrossDao = crossDao;
         }
 
         public void InvalidateCache(int fileId)
@@ -672,7 +680,6 @@ namespace ASC.Files.Core.Data
         {
             if (fileId == default) return default;
 
-            var fileIdString = fileId.ToString();
             using (var tx = FilesDbContext.Database.BeginTransaction())
             {
                 var fromFolders = Query(FilesDbContext.Files)
@@ -703,7 +710,6 @@ namespace ASC.Files.Core.Data
                 RecalculateFilesCount(toFolderId);
             }
 
-            var toFolderIdString = toFolderId.ToString();
             var parentFoldersIds =
                 FilesDbContext.Tree
                 .Where(r => r.FolderId == toFolderId)
@@ -720,6 +726,18 @@ namespace ASC.Files.Core.Data
                 w => w.Folders);
 
             return fileId;
+        }
+
+        public string MoveFile(int fileId, string toFolderId)
+        {
+            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                fileId, this, r => r,
+                toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
+                true);
+
+            return moved.ID;
         }
 
         public File<int> CopyFile(int fileId, int toFolderId)

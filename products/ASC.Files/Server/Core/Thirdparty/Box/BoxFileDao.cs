@@ -537,6 +537,11 @@ namespace ASC.Files.Thirdparty.Box
             throw new NotImplementedException();
         }
 
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

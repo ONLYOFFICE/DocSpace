@@ -584,6 +584,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return null;
         }
 
+        public string MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
+        int IFileDao<string>.MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

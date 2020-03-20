@@ -370,6 +370,11 @@ namespace ASC.Files.Thirdparty.Dropbox
             return MakeId(dropboxFile);
         }
 
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            throw new NotImplementedException();
+        }
+
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var dropboxFile = GetDropboxFile(fileId);

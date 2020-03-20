@@ -407,6 +407,11 @@ namespace ASC.Files.Thirdparty.OneDrive
             return null;
         }
 
+        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
     }
 

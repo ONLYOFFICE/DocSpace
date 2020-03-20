@@ -120,6 +120,8 @@ namespace ASC.Files.Core
         /// <param name="toFolderId">destination folder id</param>
         /// <param name="cancellationToken"></param>
         T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         ///     copy folder

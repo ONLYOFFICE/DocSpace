@@ -32,8 +32,7 @@ using System.Threading;
 using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
+using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
@@ -43,9 +42,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
             IServiceProvider serviceProvider,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
-            SetupInfo setupInfo,
-            FileConverter fileConverter)
-            : base(serviceProvider, securityDao, tagDao, setupInfo, fileConverter)
+            CrossDao crossDao)
+            : base(serviceProvider, securityDao, tagDao, crossDao)
         {
         }
 
@@ -184,6 +182,12 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             }
             var folderDao = selector.GetFolderDao(folderId);
             return folderDao.MoveFolder(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
+        }
+
+        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var newFolder = PerformCrossDaoFolderCopy(folderId, toFolderId, true, cancellationToken);
+            return newFolder.ID;
         }
 
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
@@ -348,6 +352,7 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
         public static DIHelper AddProviderFolderDaoService(this DIHelper services)
         {
             services.TryAddScoped<IFolderDao<string>, ProviderFolderDao>();
+            services.TryAddScoped<ProviderFolderDao>();
             services.TryAddScoped<Folder<string>>();
 
             return services

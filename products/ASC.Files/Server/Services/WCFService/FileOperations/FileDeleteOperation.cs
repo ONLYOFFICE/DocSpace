@@ -71,7 +71,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
     class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     {
-        private T _trashId;
+        private int _trashId;
         private readonly bool _ignoreException;
         private readonly bool _immediately;
         private readonly Dictionary<string, string> _headers;
@@ -93,7 +93,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            _trashId = FolderDao.GetFolderIDTrash(true);
+            var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
+            _trashId = folderDao.GetFolderIDTrash(true);
 
             Folder<T> root = null;
             if (0 < Folders.Count)

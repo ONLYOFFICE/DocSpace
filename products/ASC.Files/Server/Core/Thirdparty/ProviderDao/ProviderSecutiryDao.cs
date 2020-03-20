@@ -32,8 +32,7 @@ using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
+using ASC.Files.Core.Thirdparty;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -44,9 +43,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public ProviderSecurityDao(IServiceProvider serviceProvider,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
-            SetupInfo setupInfo,
-            FileConverter fileConverter)
-            : base(serviceProvider, securityDao, tagDao, setupInfo, fileConverter)
+            CrossDao crossDao)
+            : base(serviceProvider, securityDao, tagDao, crossDao)
         {
         }
 

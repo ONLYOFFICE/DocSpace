@@ -30,14 +30,18 @@ using System.Collections.Generic;
 using ASC.Common;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Core;
+using ASC.Files.Core.Thirdparty;
 
 namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
     {
-        public ProviderTagDao(IServiceProvider serviceProvider, SecurityDao<string> securityDao, TagDao<string> tagDao, SetupInfo setupInfo, FileConverter fileConverter) : base(serviceProvider, securityDao, tagDao, setupInfo, fileConverter)
+        public ProviderTagDao(
+            IServiceProvider serviceProvider,
+            SecurityDao<string> securityDao,
+            TagDao<string> tagDao,
+            CrossDao crossDao)
+            : base(serviceProvider, securityDao, tagDao, crossDao)
         {
         }
 
