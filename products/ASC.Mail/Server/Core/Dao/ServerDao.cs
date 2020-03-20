@@ -47,7 +47,7 @@ namespace ASC.Mail.Core.Dao
         private const string SERVER_ALIAS = "ms";
         private const string SERVER_X_TENANT_ALIAS = "st";
 
-        public Server Get(int tenant)
+        public Core.Entities.Server Get(int tenant)
         {
             var server = MailDb.MailServerServer
                 .Join(MailDb.MailServerServerXTenant, s => s.Id, x => x.IdServer, 
@@ -62,14 +62,14 @@ namespace ASC.Mail.Core.Dao
             return server;
         }
 
-        public List<Server> GetList()
+        public List<Core.Entities.Server> GetList()
         {
             var list = MailDb.MailServerServer.Select(ToServer).ToList();
 
             return list;
         }
 
-        public int Link(Server server, int tenant)
+        public int Link(Core.Entities.Server server, int tenant)
         {
             var xItem = new MailServerServerXTenant
             {
@@ -84,7 +84,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public int UnLink(Server server, int tenant)
+        public int UnLink(Core.Entities.Server server, int tenant)
         {
             var deleteItem = new MailServerServerXTenant
             {
@@ -99,7 +99,7 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        public int Save(Server server)
+        public int Save(Core.Entities.Server server)
         {
             var mailServer = new MailServerServer
             {
@@ -141,9 +141,9 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
-        protected Server ToServer(MailServerServer r)
+        protected Core.Entities.Server ToServer(MailServerServer r)
         {
-            var s = new Server
+            var s = new Core.Entities.Server
             {
                 Id = r.Id,
                 MxRecord = r.MxRecord,

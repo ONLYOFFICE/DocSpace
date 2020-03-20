@@ -24,18 +24,17 @@
 */
 
 
-using ASC.Mail.Core.Entities;
 using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
     public interface IServerDao
     {
-        Server Get(int tenant);
-        List<Server> GetList();
-        int Link(Server server, int tenant);
-        int UnLink(Server server, int tenant);
-        int Save(Server server);
+        Core.Entities.Server Get(int tenant);
+        List<Core.Entities.Server> GetList();
+        int Link(Core.Entities.Server server, int tenant);
+        int UnLink(Core.Entities.Server server, int tenant);
+        int Save(Core.Entities.Server server);
         int Delete(int id);
     }
 }
