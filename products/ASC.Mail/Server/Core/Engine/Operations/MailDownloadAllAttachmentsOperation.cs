@@ -45,7 +45,7 @@ using ASC.Data.Storage;
 
 using Ionic.Zip;
 using Ionic.Zlib;
-using Resources;
+//using Resources;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
