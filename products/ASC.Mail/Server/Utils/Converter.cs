@@ -29,10 +29,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using MimeKit;
-//using ContactInfo = ASC.Mail.Core.Entities.ContactInfo;
 
 namespace ASC.Mail.Utils
 {
@@ -189,129 +192,133 @@ namespace ASC.Mail.Utils
             return format.Replace("%EMAILDOMAIN%", host);
         }
 
-        //public static MailWrapper ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
-        //{
-        //    var now = DateTime.UtcNow;
+        public static MailWrapper ToMailWrapper(this MailMessageData message, int tenant, Guid userId)
+        {
+            var now = DateTime.UtcNow;
 
-        //    var mailWrapper = new MailWrapper
-        //    {
-        //        Id = message.Id,
-        //        TenantId = tenant,
-        //        UserId = userId,
-        //        FromText = message.From,
-        //        ToText = message.To,
-        //        Cc = message.Cc,
-        //        Bcc = message.Bcc,
-        //        Subject = message.Subject,
-        //        Folder = (byte)message.Folder,
-        //        DateSent = message.Date,
-        //        MailboxId = message.MailboxId,
-        //        ChainId = message.ChainId,
-        //        ChainDate = message.ChainDate,
-        //        IsRemoved = false,
-        //        Unread = message.IsNew,
-        //        Importance = message.Important,
-        //        HasAttachments = message.HasAttachments,
-        //        WithCalendar = !string.IsNullOrEmpty(message.CalendarUid),
-        //        LastModifiedOn = now
-        //    };
+            var mailWrapper = new MailWrapper
+            {
+                Id = message.Id,
+                TenantId = tenant,
+                UserId = userId,
+                FromText = message.From,
+                ToText = message.To,
+                Cc = message.Cc,
+                Bcc = message.Bcc,
+                Subject = message.Subject,
+                Folder = (byte)message.Folder,
+                DateSent = message.Date,
+                MailboxId = message.MailboxId,
+                ChainId = message.ChainId,
+                ChainDate = message.ChainDate,
+                IsRemoved = false,
+                Unread = message.IsNew,
+                Importance = message.Important,
+                HasAttachments = message.HasAttachments,
+                WithCalendar = !string.IsNullOrEmpty(message.CalendarUid),
+                LastModifiedOn = now
+            };
 
-        //    if (message.Folder == FolderType.UserFolder && message.UserFolderId.HasValue)
-        //    {
-        //        mailWrapper.UserFolders = new List<UserFolderWrapper>
-        //        {
-        //            new UserFolderWrapper
-        //            {
-        //                Id = (int) message.UserFolderId.Value
-        //            }
-        //        };
-        //    }
-        //    else
-        //    {
-        //        mailWrapper.UserFolders = new List<UserFolderWrapper>();
-        //    }
+            if (message.Folder == FolderType.UserFolder && message.UserFolderId.HasValue)
+            {
+                mailWrapper.UserFolders = new List<UserFolderWrapper>
+                {
+                    new UserFolderWrapper
+                    {
+                        Id = (int) message.UserFolderId.Value
+                    }
+                };
+            }
+            else
+            {
+                mailWrapper.UserFolders = new List<UserFolderWrapper>();
+            }
 
-        //    if (message.TagIds != null && message.TagIds.Any())
-        //    {
-        //        mailWrapper.Tags = message.TagIds.ConvertAll(tagId => new TagWrapper
-        //        {
-        //            Id = tagId,
-        //            TenantId = tenant,
-        //            LastModifiedOn = now
-        //        });
-        //    }
-        //    else
-        //    {
-        //        mailWrapper.Tags = new List<TagWrapper>();
-        //    }
+            if (message.TagIds != null && message.TagIds.Any())
+            {
+                mailWrapper.Tags = message.TagIds.ConvertAll(tagId => new TagWrapper
+                {
+                    Id = tagId,
+                    TenantId = tenant,
+                    LastModifiedOn = now
+                });
+            }
+            else
+            {
+                mailWrapper.Tags = new List<TagWrapper>();
+            }
 
-        //    return mailWrapper;
-        //}
+            return mailWrapper;
+        }
 
-        //public static MailMessageData ConvertToMailMessage(this MimeMessage mimeMessage, MailFolder folder, bool unread,
-        //    string chainId, DateTime? chainDate, string streamId, int mailboxId, bool createFailedFake = true, ILog log = null)
-        //{
-        //    MailMessageData message;
+        public static MailMessageData ConvertToMailMessage(this MimeMessage mimeMessage, 
+            TenantManager tenantManager, CoreSettings coreSettings, 
+            MailFolder folder, bool unread, string chainId, DateTime? chainDate, string streamId, int mailboxId, 
+            bool createFailedFake = true, ILog log = null)
+        {
+            MailMessageData message;
 
-        //    try
-        //    {
-        //        message = mimeMessage.CreateMailMessage(mailboxId, folder.Folder, unread, chainId, chainDate, streamId, log);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        if (!createFailedFake)
-        //            throw;
+            try
+            {
+                message = mimeMessage.CreateMailMessage(tenantManager, coreSettings, 
+                    mailboxId, folder.Folder, unread, chainId, chainDate, streamId, log);
+            }
+            catch (Exception ex)
+            {
+                if (!createFailedFake)
+                    throw;
 
-        //        var logger = log ?? new NullLog();
+                var logger = log ?? new NullLog();
 
-        //        logger.ErrorFormat("Convert MimeMessage->MailMessage: Exception: {0}", ex.ToString());
+                logger.ErrorFormat("Convert MimeMessage->MailMessage: Exception: {0}", ex.ToString());
 
-        //        logger.Debug("Creating fake message with original MimeMessage in attachments");
+                logger.Debug("Creating fake message with original MimeMessage in attachments");
 
-        //        message = mimeMessage.CreateCorruptedMesage(folder.Folder, unread, chainId, streamId);
-        //    }
+                message = mimeMessage.CreateCorruptedMesage(tenantManager, coreSettings, 
+                    folder.Folder, unread, chainId, streamId);
+            }
 
-        //    return message;
-        //}
+            return message;
+        }
 
-        //public static MailContactWrapper ToMailContactWrapper(this ContactCard contactCard)
-        //{
-        //    var now = DateTime.UtcNow;
+        public static MailContactWrapper ToMailContactWrapper(this ContactCard contactCard)
+        {
+            var now = DateTime.UtcNow;
 
-        //    var infoList = contactCard.ContactItems.ConvertAll(ToMailContactInfoWrapper);
+            var infoList = contactCard.ContactItems.ConvertAll(ToMailContactInfoWrapper);
 
-        //    var contact = new MailContactWrapper
-        //    {
-        //        Id = contactCard.ContactInfo.Id,
-        //        TenantId = contactCard.ContactInfo.Tenant,
-        //        User = Guid.Parse(contactCard.ContactInfo.User),
-        //        Name = contactCard.ContactInfo.ContactName,
-        //        ContactType = (int) contactCard.ContactInfo.Type,
-        //        Description = contactCard.ContactInfo.Description,
-        //        InfoList = infoList,
-        //        LastModifiedOn = now
-        //    };
+            var contact = new MailContactWrapper
+            {
+                Id = contactCard.ContactInfo.Id,
+                TenantId = contactCard.ContactInfo.Tenant,
+                User = Guid.Parse(contactCard.ContactInfo.User),
+                Name = contactCard.ContactInfo.ContactName,
+                ContactType = (int)contactCard.ContactInfo.Type,
+                Description = contactCard.ContactInfo.Description,
+                InfoList = infoList,
+                LastModifiedOn = now
+            };
 
-        //    return contact;
-        //}
+            return contact;
+        }
 
-        //public static MailContactInfoWrapper ToMailContactInfoWrapper(this ContactInfo contactInfo)
-        //{
-        //    var now = DateTime.UtcNow;
+        public static MailContactInfoWrapper ToMailContactInfoWrapper(this Core.Entities.ContactInfo contactInfo)
+        {
+            var now = DateTime.UtcNow;
 
-        //    var info = new MailContactInfoWrapper
-        //    {
-        //        Id = contactInfo.Id,
-        //        TenantId = contactInfo.Tenant,
-        //        User = Guid.Parse(contactInfo.User),
-        //        ContactId = contactInfo.ContactId,
-        //        InfoType = contactInfo.Type,
-        //        Text = contactInfo.Data,
-        //        IsPrimary = contactInfo.IsPrimary,
-        //        LastModifiedOn = now
-        //    };
+            var info = new MailContactInfoWrapper
+            {
+                Id = contactInfo.Id,
+                TenantId = contactInfo.Tenant,
+                User = Guid.Parse(contactInfo.User),
+                ContactId = contactInfo.ContactId,
+                InfoType = contactInfo.Type,
+                Text = contactInfo.Data,
+                IsPrimary = contactInfo.IsPrimary,
+                LastModifiedOn = now
+            };
 
-        //    return info;
-        //}
+            return info;
+        }
     }
 }
