@@ -124,7 +124,7 @@ const getSideInfo = content => {
 
 const RowContent = props => {
   //console.log("RowContent render");
-  const { children, disableSideInfo, id, className, style, sideColor } = props;
+  const { children, disableSideInfo, id, className, style, sideColor, onClick } = props;
 
   const sideInfo = getSideInfo(children);
 
@@ -133,7 +133,8 @@ const RowContent = props => {
       disableSideInfo={disableSideInfo}
       id={id}
       className={className}
-      style={style}>
+      style={style}
+      onClick={onClick}>
       <MainContainerWrapper
         disableSideInfo={disableSideInfo}
         mainContainerWidth={children[0].props && children[0].props.containerWidth}>
@@ -168,10 +169,11 @@ const RowContent = props => {
 
 RowContent.propTypes = {
   children: PropTypes.node.isRequired,
-  disableSideInfo: PropTypes.bool,
-  sideColor: PropTypes.string,
   className: PropTypes.string,
+  disableSideInfo: PropTypes.bool,
   id: PropTypes.string,
+  onClick: PropTypes.func,
+  sideColor: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
