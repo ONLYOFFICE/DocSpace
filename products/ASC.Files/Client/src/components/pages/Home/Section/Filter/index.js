@@ -8,6 +8,7 @@ import { withRouter } from "react-router";
 import { getFilterByLocation } from "../../../../../helpers/converters";
 import { constants, FilterInput } from 'asc-web-common';
 import store from "../../../../../store/store";
+import isEqual from "lodash/isEqual";
 
 const { FilterType } = constants;
 
@@ -54,9 +55,7 @@ class SectionFilterContent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isReady: false,
-      selectedItem: {
-      }
+      isReady: false
     }
 
   }
@@ -108,8 +107,8 @@ class SectionFilterContent extends React.Component {
   };
 
   getData = () => {
-    const { t, settings, user, selectedItem } = this.props;
-    const { usersCaption, groupsCaption } = settings.customNames;
+    const { t, customNames, user, selectedItem } = this.props;
+    const { usersCaption, groupsCaption } = customNames;
 
     const options = [
       {
@@ -267,6 +266,11 @@ class SectionFilterContent extends React.Component {
   };
 
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (!isEqual(this.props.filter, nextProps.filter) || this.props.selectedFolderId !== nextProps.selectedFolderId || this.state.isReady !== nextState.isReady);
+  }
+  
+
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, i18n } = this.props;
@@ -290,9 +294,8 @@ class SectionFilterContent extends React.Component {
 function mapStateToProps(state) {
   return {
     user: state.auth.user,
-    folders: state.files.folders,
     filter: state.files.filter,
-    settings: state.auth.settings,
+    customNames: state.auth.settings.customNames,
     selectedFolderId: state.files.selectedFolder.id,
     selectedItem: state.files.filter.selectedItem
   };
