@@ -141,6 +141,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             ThirdPartyOperation.FillDistributedTask();
             DaoOperation.FillDistributedTask();
 
+            HoldResult = ThirdPartyOperation.HoldResult || DaoOperation.HoldResult;
             Total = ThirdPartyOperation.Total + DaoOperation.Total;
             Source = string.Join(SPLIT_CHAR, ThirdPartyOperation.Source, DaoOperation.Source);
             base.FillDistributedTask();

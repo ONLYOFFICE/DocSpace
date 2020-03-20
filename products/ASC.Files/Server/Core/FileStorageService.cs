@@ -1351,11 +1351,13 @@ namespace ASC.Web.Files.Services.WCFService
             return result;
         }
 
-        public ItemList<FileOperationResult> DeleteItems(string action, ItemList<string> items, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+        public ItemList<FileOperationResult> DeleteFile(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
         {
-            ParseArrayItems(items, out var foldersId, out var filesId);
-
-            return FileOperationsManagerHelper.Delete(foldersId, filesId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+            return FileOperationsManagerHelper.DeleteFile(fileId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        }
+        public ItemList<FileOperationResult> DeleteFolder(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
+        {
+            return FileOperationsManagerHelper.DeleteFolder(folderId, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
         }
 
         public ItemList<FileOperationResult> DeleteItems(string action, List<object> files, List<object> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)

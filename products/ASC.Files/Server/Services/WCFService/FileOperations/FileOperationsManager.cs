@@ -79,7 +79,8 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     Result = o.GetProperty<string>(FileOperation.RESULT),
                     Error = o.GetProperty<string>(FileOperation.ERROR),
                     Finished = o.GetProperty<bool>(FileOperation.FINISHED),
-                });
+                })
+                .ToList();
 
             return new ItemList<FileOperationResult>(results);
         }
@@ -170,15 +171,30 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             TenantManager = tenantManager;
         }
 
-        public ItemList<FileOperationResult> GetOperationResults() => FileOperationsManager.GetOperationResults(AuthContext);
-        public ItemList<FileOperationResult> CancelOperations() => FileOperationsManager.CancelOperations(AuthContext);
+        public ItemList<FileOperationResult> GetOperationResults()
+        {
+            return FileOperationsManager.GetOperationResults(AuthContext);
+        }
+
+        public ItemList<FileOperationResult> CancelOperations()
+        {
+            return FileOperationsManager.CancelOperations(AuthContext);
+        }
+
         public ItemList<FileOperationResult> MarkAsRead<T>(List<T> folderIds, List<T> fileIds)
-            => FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
+        {
+            return FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
+        }
+
         public ItemList<FileOperationResult> Download<T>(Dictionary<T, string> folders, Dictionary<T, string> files, Dictionary<string, string> headers)
-            => FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
+        {
+            return FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
+        }
 
         public ItemList<FileOperationResult> MoveOrCopy<T>(List<T> folders, List<T> files, T destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
-            => FileOperationsManager.MoveOrCopy(AuthContext, TenantManager, folders, files, destFolderId, copy, resolveType, holdResult, headers);
+        {
+            return FileOperationsManager.MoveOrCopy(AuthContext, TenantManager, folders, files, destFolderId, copy, resolveType, holdResult, headers);
+        }
 
         public ItemList<FileOperationResult> Delete(List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
         {
@@ -186,7 +202,19 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
         public ItemList<FileOperationResult> Delete<T>(List<T> folders, List<T> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
-            => FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
+        {
+            return FileOperationsManager.Delete(AuthContext, TenantManager, folders, files, ignoreException, holdResult, immediately, headers);
+        }
+
+        public ItemList<FileOperationResult> DeleteFile<T>(T file, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        {
+            return Delete(new List<T>(), new List<T>() { file }, ignoreException, holdResult, immediately, headers);
+        }
+
+        public ItemList<FileOperationResult> DeleteFolder<T>(T folder, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        {
+            return Delete(new List<T>() { folder }, new List<T>(), ignoreException, holdResult, immediately, headers);
+        }
     }
 
     public static class FileOperationsManagerHelperExtention

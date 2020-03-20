@@ -367,14 +367,8 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper<T>> DeleteFile(T fileId, bool deleteAfter, bool immediately)
         {
-            var model = new DeleteBatchModel<T>
-            {
-                FileIds = new List<T> { fileId },
-                DeleteAfter = deleteAfter,
-                Immediately = immediately
-            };
-
-            return DeleteBatchItems(model);
+            return FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately)
+                .Select(FileOperationWraperHelper.Get<T>);
         }
 
         public IEnumerable<ConversationResult<T>> StartConversion(T fileId)
@@ -410,14 +404,8 @@ namespace ASC.Files.Helpers
 
         public IEnumerable<FileOperationWraper<T>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
-            var model = new DeleteBatchModel<T>
-            {
-                FolderIds = new List<T> { folderId },
-                DeleteAfter = deleteAfter,
-                Immediately = immediately
-            };
-
-            return DeleteBatchItems(model);
+            return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
+                    .Select(FileOperationWraperHelper.Get<T>);
         }
 
         public IEnumerable<FileWrapper<T>> MoveOrCopyBatchCheck(BatchModel<T> batchModel)
@@ -495,17 +483,6 @@ namespace ASC.Files.Helpers
             }
 
             return FileStorageService.BulkDownload(itemList).Select(FileOperationWraperHelper.Get<T>);
-        }
-
-        public IEnumerable<FileOperationWraper<T>> DeleteBatchItems(DeleteBatchModel<T> batch)
-        {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((batch.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((batch.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            return FileStorageService.DeleteItems("delete", itemList, false, batch.DeleteAfter, batch.Immediately)
-                .Select(FileOperationWraperHelper.Get<T>);
         }
 
         public IEnumerable<FileOperationWraper<int>> EmptyTrash()

@@ -684,13 +684,13 @@ namespace ASC.Files.Core.Data
             {
                 var fromFolders = Query(FilesDbContext.Files)
                     .Where(r => r.Id == fileId)
-                    .GroupBy(r => r.Id)
-                    .SelectMany(r => r.Select(a => a.FolderId))
+                    .Select(a => a.FolderId)
                     .Distinct()
                     .ToList();
 
                 var toUpdate = Query(FilesDbContext.Files)
-                    .Where(r => r.Id == fileId);
+                    .Where(r => r.Id == fileId)
+                    .ToList();
 
                 foreach (var f in toUpdate)
                 {

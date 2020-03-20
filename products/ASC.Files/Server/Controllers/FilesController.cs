@@ -135,7 +135,6 @@ namespace ASC.Api.Documents
             WordpressHelper wordpressHelper,
             ConsumerFactory consumerFactory,
             EasyBibHelper easyBibHelper,
-            ChunkedUploadSessionHelper chunkedUploadSessionHelper,
             ProductEntryPoint productEntryPoint)
         {
             ApiContext = context;
