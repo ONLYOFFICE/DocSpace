@@ -1,12 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { utils, toastr } from "asc-web-components";
-import { getRootFolders } from "../../../store/files/selectors";
+import { toastr } from "asc-web-components";
 import TreeFolders from "./TreeFolders";
 import {
   setFilter,
   fetchFiles,
-  setRootFolders
+  setTreeFolders
 } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
@@ -56,7 +55,7 @@ class ArticleBodyContent extends React.Component {
       currentModule,
       filter,
       setFilter,
-      setRootFolders,
+      setTreeFolders,
       onLoading,
       isLoading
     } = this.props;
@@ -70,7 +69,7 @@ class ArticleBodyContent extends React.Component {
         data={data}
         filter={filter}
         setFilter={setFilter}
-        setRootFolders={setRootFolders}
+        setTreeFolders={setTreeFolders}
         expandedKeys={this.state.expandedKeys}
         onLoading={onLoading}
         isLoading={isLoading}
@@ -80,12 +79,12 @@ class ArticleBodyContent extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { rootFolders, selectedFolder, filter } = state.files;
+  const { treeFolders, selectedFolder, filter } = state.files;
   const currentFolderId = selectedFolder.id.toString();
   const fakeNewDocuments = 8;
 
   return {
-    data: getRootFolders(rootFolders),
+    data: treeFolders,
     selectedKeys: selectedFolder ? [currentFolderId] : [""],
     fakeNewDocuments,
     currentModule: currentFolderId,
@@ -93,6 +92,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, { setFilter, setRootFolders })(
+export default connect(mapStateToProps, { setFilter, setTreeFolders })(
   ArticleBodyContent
 );

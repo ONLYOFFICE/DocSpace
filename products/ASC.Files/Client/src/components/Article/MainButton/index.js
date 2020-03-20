@@ -85,10 +85,11 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const rootFolderOfCurrent = state.files.selectedFolder ? state.files.selectedFolder.pathParts[0] : -1; 
+  const rootFolderOfCurrent = state.files.selectedFolder ? state.files.selectedFolder.pathParts[0] : -1;
+  const myFolderIndex = 0;
   return {
     settings: state.auth.settings,
-    isMyDocuments: isMyDocuments(state.files.rootFolders.my.id, rootFolderOfCurrent)
+    isMyDocuments: isMyDocuments(state.files.treeFolders[myFolderIndex].id, rootFolderOfCurrent)
   }
 }
 

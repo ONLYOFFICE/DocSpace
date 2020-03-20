@@ -3,22 +3,6 @@ import { constants } from 'asc-web-common';
 
 const { FileType, FilterType } = constants;
 
-export const getRootFolders = files => {
-  const { my, share, common, project, trash } = files;
-
-  my.key = "0-0";
-  share.key = "0-1";
-  common.key = "0-2";
-  project.key = "0-3";
-  trash.key = "0-4";
-  trash.folders = null;
-  trash.foldersCount = null;
-
-  const data = [ my, share, common, project, trash];
-
-  return data;
-};
-
 export const canWebEdit = fileExst => {
   const editedDocs = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv', '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
   const result = editedDocs.findIndex(item => item === fileExst);
