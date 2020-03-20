@@ -1,6 +1,6 @@
 import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
-import { fetchFolder, fetchFiles } from "../../../store/files/actions";
+import { fetchFiles } from "../../../store/files/actions";
 import store from "../../../store/store";
 import { api, history } from "asc-web-common";
 const { files } = api;
@@ -79,16 +79,15 @@ class TreeFolders extends React.Component {
     data.forEach(item => {
       const itemId = item.id.toString();
       if (curId.indexOf(itemId) >= 0) {
-        const { filter } = this.props;
-        const newFilter = filter.clone();
-        const treeItem = newFilter.treeFolders.find(
+        const listIds = curId;
+        const treeItem = listIds.find(
           x => x.toString() === itemId
         );
         if (treeItem === undefined) {
-          newFilter.treeFolders.push(itemId);
+          listIds.push(itemId);
         }
         if (item.folders) {
-          this.loop(item.folders, newFilter.treeFolders, child);
+          this.loop(item.folders, listIds, child);
         } else {
           item.folders = child;
         }

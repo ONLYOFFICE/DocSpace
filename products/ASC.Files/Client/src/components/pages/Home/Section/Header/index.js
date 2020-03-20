@@ -409,7 +409,7 @@ const SectionHeaderContent = props => {
           </div>
         )}
 
-          {true &&
+          {showEmptyTrashDialog &&
             <EmptyTrashDialog
               visible={showEmptyTrashDialog}
               onClose={onCloseEmptyTrashDialog}
