@@ -26,6 +26,10 @@ class PureArticleMainButtonContent extends React.Component {
       });
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.isMyDocuments !== this.props.isMyDocuments;
+  }
+
   render() {
     console.log("Files ArticleMainButtonContent render");
     const { t, isMyDocuments } = this.props;
