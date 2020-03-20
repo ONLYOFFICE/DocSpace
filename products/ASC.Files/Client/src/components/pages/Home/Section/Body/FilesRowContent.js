@@ -186,6 +186,13 @@ class FilesRowContent extends React.PureComponent {
     }
       .edit-text {
         height: 30px;
+        font-size: 15px;
+        outline: 0 !important;
+        font-weight: bold;
+        margin: 0;
+        font-family: 'Open Sans',sans-serif,Arial;
+        text-align: left;
+        color: #333333;
       }
       .edit-button {
         margin-left: 8px;
