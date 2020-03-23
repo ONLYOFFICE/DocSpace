@@ -895,7 +895,18 @@ namespace ASC.Calendar.Controllers
 
             return GetEventHistoryWrapper(evt);
         }
+        [Read("events/{eventId}/historybyid")]
+        public EventHistoryWrapper GetEventHistoryById(int eventId)
+        {
+            if (eventId <= 0)
+            {
+                throw new ArgumentException("eventId");
+            }
 
+            var evt = DataProvider.GetEventById(eventId);
+
+            return GetEventHistoryWrapper(evt);
+        }
         [Create("event")]
         public List<EventWrapper> CreateEvent(EventModel eventModel)
         {
