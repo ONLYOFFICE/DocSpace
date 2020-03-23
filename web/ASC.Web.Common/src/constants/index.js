@@ -73,3 +73,17 @@ export const FileAction = Object.freeze({
   Create: 0,
   Rename: 1
 });
+
+/**
+ * Enum for root folders type.
+ * @readonly
+ */
+export const FolderType = Object.freeze({
+  DEFAULT: 0,
+  COMMON: 1,
+  BUNCH: 2,
+  TRASH: 3,
+  USER: 5,
+  SHARE: 6,
+  Projects: 8
+});
