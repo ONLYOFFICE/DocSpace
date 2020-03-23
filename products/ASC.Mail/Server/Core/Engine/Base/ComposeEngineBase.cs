@@ -268,98 +268,86 @@ namespace ASC.Mail.Core.Engine
 
             long usedQuota;
 
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                var db = daoFactory.DbManager;
+                compose.Id = EngineFactory.MessageEngine.MailSave(compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
+                    string.Empty, string.Empty, false, out usedQuota);
 
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+                message.Id = compose.Id;
+
+                if (compose.AccountChanged)
                 {
-                    compose.Id = EngineFactory.MessageEngine.MailSave(daoFactory, compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
-                        string.Empty, string.Empty, false, out usedQuota);
+                    EngineFactory.ChainEngine.UpdateChain(message.ChainId, message.Folder, null, compose.PreviousMailboxId,
+                        compose.Mailbox.TenantId, compose.Mailbox.UserId);
+                }
 
-                    message.Id = compose.Id;
+                if (compose.Id > 0 && needRestoreAttachments)
+                {
+                    var existingAttachments = DaoFactory.AttachmentDao.GetAttachments(
+                        new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
-                    if (compose.AccountChanged)
+                    foreach (var attachment in message.Attachments)
                     {
-                        EngineFactory.ChainEngine.UpdateChain(daoFactory, message.ChainId, message.Folder, null, compose.PreviousMailboxId,
-                            compose.Mailbox.TenantId, compose.Mailbox.UserId);
+                        if (existingAttachments.Any(x => x.Id == attachment.fileId))
+                        {
+                            continue;
+                        }
+
+                        var attach = attachment.ToAttachmnet(compose.Id);
+                        attach.Id = 0;
+
+                        var newId = DaoFactory.AttachmentDao.SaveAttachment(attach);
+                        attachment.fileId = newId;
                     }
 
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(compose.Mailbox.TenantId, compose.Mailbox.UserId);
-
-                    if (compose.Id > 0 && needRestoreAttachments)
+                    if (message.Attachments.Any())
                     {
-                        var daoAttachment = daoFactory.CreateAttachmentDao(compose.Mailbox.TenantId, compose.Mailbox.UserId);
-                        var existingAttachments = daoAttachment.GetAttachments(
+                        var count = DaoFactory.AttachmentDao.GetAttachmentsCount(
                             new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
-                        foreach (var attachment in message.Attachments)
-                        {
-                            if (existingAttachments.Any(x => x.Id == attachment.fileId))
-                            {
-                                continue;
-                            }
-
-                            var attach = attachment.ToAttachmnet(compose.Id);
-                            attach.Id = 0;
-
-                            var newId = daoAttachment.SaveAttachment(attach);
-                            attachment.fileId = newId;
-                        }
-
-                        if (message.Attachments.Any())
-                        {
-                            var count = daoAttachment.GetAttachmentsCount(
-                                new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
-
-                            daoMailInfo.SetFieldValue(
-                                SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
-                                    .SetMessageId(compose.Id)
-                                    .Build(),
-                                MailTable.Columns.AttachCount,
-                                count);
-                        }
+                        DaoFactory.MailInfoDao.SetFieldValue(
+                            SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
+                                .SetMessageId(compose.Id)
+                                .Build(),
+                            MailTable.Columns.AttachCount,
+                            count);
                     }
-
-                    if (compose.Id > 0 && embededAttachmentsForSaving.Any())
-                    {
-                        var daoAttachment = daoFactory.CreateAttachmentDao(compose.Mailbox.TenantId, compose.Mailbox.UserId);
-
-                        foreach (var attachment in embededAttachmentsForSaving)
-                        {
-                            var newId = daoAttachment.SaveAttachment(attachment.ToAttachmnet(compose.Id));
-                            attachment.fileId = newId;
-                        }
-
-                        if (message.Attachments.Any())
-                        {
-                            var count = daoAttachment.GetAttachmentsCount(
-                                new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
-
-                            daoMailInfo.SetFieldValue(
-                                SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
-                                    .SetMessageId(compose.Id)
-                                    .Build(),
-                                MailTable.Columns.AttachCount,
-                                count);
-                        }
-                    }
-
-                    EngineFactory.ChainEngine
-                        .UpdateChain(daoFactory, message.ChainId, message.Folder, null, 
-                        compose.Mailbox.MailBoxId, compose.Mailbox.TenantId, compose.Mailbox.UserId);
-
-                    if (compose.AccountChanged)
-                    {
-                        var daoCrmLink = daoFactory.CreateCrmLinkDao(compose.Mailbox.TenantId, compose.Mailbox.UserId);
-
-                        daoCrmLink.UpdateCrmLinkedMailboxId(message.ChainId, compose.PreviousMailboxId,
-                            compose.Mailbox.MailBoxId);
-                    }
-
-                    tx.Commit();
-
                 }
+
+                if (compose.Id > 0 && embededAttachmentsForSaving.Any())
+                {
+                    foreach (var attachment in embededAttachmentsForSaving)
+                    {
+                        var newId = DaoFactory.AttachmentDao.SaveAttachment(attachment.ToAttachmnet(compose.Id));
+                        attachment.fileId = newId;
+                    }
+
+                    if (message.Attachments.Any())
+                    {
+                        var count = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                            new ConcreteMessageAttachmentsExp(compose.Id, compose.Mailbox.TenantId, compose.Mailbox.UserId));
+
+                        DaoFactory.MailInfoDao.SetFieldValue(
+                            SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
+                                .SetMessageId(compose.Id)
+                                .Build(),
+                            MailTable.Columns.AttachCount,
+                            count);
+                    }
+                }
+
+                EngineFactory.ChainEngine
+                    .UpdateChain(message.ChainId, message.Folder, null, 
+                    compose.Mailbox.MailBoxId, compose.Mailbox.TenantId, compose.Mailbox.UserId);
+
+                if (compose.AccountChanged)
+                {
+                    DaoFactory.CrmLinkDao.UpdateCrmLinkedMailboxId(message.ChainId, compose.PreviousMailboxId,
+                        compose.Mailbox.MailBoxId);
+                }
+
+                tx.Commit();
+
             }
 
             if (usedQuota > 0)

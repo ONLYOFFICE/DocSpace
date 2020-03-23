@@ -26,43 +26,46 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
-using ASC.Mail.Clients;
-using ASC.Mail.Core.Dao.Expressions.Attachment;
-using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
-using ASC.Mail.Models.Base;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
-using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
-using MimeKit;
-//using MailMessage = ASC.Mail.Data.Contracts.MailMessageData;
+using MailMessage = ASC.Mail.Models.MailMessageData;
+using ASC.Data.Storage;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     public class TemplateEngine : ComposeEngineBase
     {
-        public TemplateEngine(int tenant, string user, DeliveryFailureMessageTranslates daemonLabels = null, ILog log = null)
-            : base(tenant, user, daemonLabels, log)
+        public TemplateEngine(int tenant, string user, EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            StorageManager storageManager,
+            TenantManager tenantManager,
+            CoreSettings coreSettings,
+            StorageFactory storageFactory,
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+            IOptionsMonitor<ILog> option, 
+            DeliveryFailureMessageTranslates daemonLabels = null)
+            : base(tenant, user,
+            engineFactory,
+            daoFactory,
+            storageManager,
+            tenantManager,
+            coreSettings,
+            storageFactory,
+            optionsSnapshot,
+            option,
+            daemonLabels)
         {
-            Log = log ?? LogManager.GetLogger("ASC.Mail.TemplateEngine");
+            Log = option.Get("ASC.Mail.TemplateEngine");
         }
 
         public override MailMessage Save(int id, string from, List<string> to, List<string> cc, List<string> bcc, string mimeReplyToId,
@@ -71,9 +74,7 @@ namespace ASC.Mail.Core.Engine
         {
             var mailAddress = new MailAddress(from);
 
-            var engine = new EngineFactory(Tenant, User);
-
-            var accounts = engine.AccountEngine.GetAccountInfoList().ToAccountData();
+            var accounts = EngineFactory.AccountEngine.GetAccountInfoList().ToAccountData();
 
             var account = accounts.FirstOrDefault(a => a.Email.ToLower().Equals(mailAddress.Address));
 
@@ -83,7 +84,7 @@ namespace ASC.Mail.Core.Engine
             if (account.IsGroup)
                 throw new InvalidOperationException("Saving emails from a group address is forbidden");
 
-            var mbox = engine.MailboxEngine.GetMailboxData(
+            var mbox = EngineFactory.MailboxEngine.GetMailboxData(
                 new СoncreteUserMailboxExp(account.MailboxId, Tenant, User));
 
             if (mbox == null)
@@ -95,7 +96,7 @@ namespace ASC.Mail.Core.Engine
 
             if (id > 0)
             {
-                var message = engine.MessageEngine.GetMessage(id, new MailMessage.Options
+                var message = EngineFactory.MessageEngine.GetMessage(id, new MailMessage.Options
                 {
                     LoadImages = false,
                     LoadBody = true,
@@ -131,7 +132,7 @@ namespace ASC.Mail.Core.Engine
             }
             else
             {
-                mimeMessageId = MailUtil.CreateMessageId();
+                mimeMessageId = MailUtil.CreateMessageId(TenantManager, CoreSettings);
                 streamId = MailUtil.CreateStreamId();
             }
 
