@@ -78,16 +78,17 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onEditComplete = currentId => {
-    const { folderId, fileAction, filter, treeFolders, setTreeFolders } = this.props;
+    const { folderId, fileAction, filter, treeFolders, setTreeFolders, onLoading } = this.props;
 
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
+      onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
         const path = data.selectedFolder.pathParts;
         const newTreeFolders = treeFolders;
         const folders = data.selectedFolder.folders;
         this.loop(path, newTreeFolders, currentId, folders);
         setTreeFolders(newTreeFolders);
-      })
+      }).finally(() => onLoading(false))
     }
 
     this.setState({ editingId: null }, () => {
@@ -128,8 +129,8 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, filter, treeFolders, setTreeFolders } = this.props;
-
+    const { deleteFolder, filter, treeFolders, setTreeFolders, onLoading } = this.props;
+    onLoading(true);
     deleteFolder(folderId, currentFolderId)
       .catch(err => toastr.error(err))
       .then(() =>
@@ -142,7 +143,8 @@ class SectionBodyContent extends React.PureComponent {
           setTreeFolders(newTreeFolders);
         })
       )
-      .then(() => toastr.success(`Folder moved to recycle bin`));
+      .then(() => toastr.success(`Folder moved to recycle bin`))
+      .finally(() => onLoading(false));
   }
 
   onClickLinkForPortal = (folderId) => {
