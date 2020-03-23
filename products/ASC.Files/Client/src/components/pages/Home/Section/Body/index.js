@@ -121,6 +121,7 @@ class SectionBodyContent extends React.PureComponent {
         const currentItem = item.find(x => x.id === folderId);
         currentItem.folders = folders;
         currentItem.foldersCount = foldersCount;
+        return;
       }
       this.loop(newPath, newItems.folders, folderId, folders, foldersCount);
     }
