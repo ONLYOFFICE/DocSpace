@@ -25,14 +25,24 @@
 
 
 using ASC.Common;
+using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Interfaces;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ASC.Mail.Core
 {
     public class DaoFactory : IDaoFactory
     {
+        public MailDbContext MailDb { get; }
         public AccountDao AccountDao { get; }
+        public AlertDao AlertDao1 { get; }
+        public ChainDao ChainDao { get; }
+        public ContactCardDao ContactCardDao { get; }
+        public ContactDao ContactDao { get; }
+        public ContactInfoDao ContactInfoDao { get; }
+        public CrmContactDao CrmContactDao { get; }
+        public CrmLinkDao CrmLinkDao { get; }
         public MailboxAutoreplyDao MailboxAutoreplyDao { get; }
         public MailboxAutoreplyHistoryDao MailboxAutoreplyHistoryDao { get; }
         public MailboxDao MailboxDao { get; }
@@ -41,27 +51,72 @@ namespace ASC.Mail.Core
         public MailboxProviderDao MailboxProviderDao { get; }
         public AlertDao AlertDao { get; }
         public DisplayImagesAddressDao DisplayImagesAddressDao { get; }
+        public FilterDao FilterDao { get; }
         public MailboxSignatureDao MailboxSignatureDao { get; }
+        public MailDao MailDao { get; }
+        public MailGarbageDao MailGarbageDao { get; }
+        public MailInfoDao MailInfoDao { get; }
+        public ServerDao ServerDao { get; }
+        public ServerDnsDao ServerDnsDao { get; }
+        public ServerDomainDao ServerDomainDao { get; }
+        public ServerGroupDao ServerGroupDao { get; }
+        public TagAddressDao TagAddressDao { get; }
         public TagDao TagDao { get; }
+        public TagMailDao TagMailDao { get; }
+        public UserFolderDao UserFolderDao { get; }
+        public UserFolderTreeDao UserFolderTreeDao { get; }
+        public UserFolderXMailDao UserFolderXMailDao { get; }
         public AttachmentDao AttachmentDao { get; }
         public FolderDao FolderDao { get; }
+        public ImapFlagsDao ImapFlagsDao { get; }
+        public ImapSpecialMailboxDao ImapSpecialMailboxDao { get; }
 
         public DaoFactory(
+            DbContextManager<MailDbContext> dbContext,
             AccountDao accountDao,
+            AlertDao alertDao,
+            AttachmentDao attachmentDao,
+            ChainDao chainDao,
+            ContactCardDao contactCardDao,
+            ContactDao contactDao,
+            ContactInfoDao contactInfoDao,
+            CrmContactDao crmContactDao,
+            CrmLinkDao crmLinkDao,
+            DisplayImagesAddressDao displayImagesAddressDao,
+            FilterDao filterDao,
+            FolderDao folderDao,
+            ImapFlagsDao imapFlagsDao,
+            ImapSpecialMailboxDao imapSpecialMailboxDao,
             MailboxAutoreplyDao mailboxAutoreplyDao,
             MailboxAutoreplyHistoryDao mailboxAutoreplyHistoryDao,
             MailboxDao mailboxDao,
-            MailboxServerDao mailboxServerDao,
             MailboxDomainDao mailboxDomainDao,
             MailboxProviderDao mailboxProviderDao,
-            AlertDao alertDao,
-            DisplayImagesAddressDao displayImagesAddressDao,
+            MailboxServerDao mailboxServerDao,
             MailboxSignatureDao mailboxSignatureDao,
+            MailDao mailDao,
+            MailGarbageDao mailGarbageDao,
+            MailInfoDao mailInfoDao,
+            ServerDao serverDao,
+            ServerDnsDao serverDnsDao,
+            ServerDomainDao serverDomainDao,
+            ServerGroupDao serverGroupDao,
+            TagAddressDao tagAddressDao,
             TagDao tagDao,
-            AttachmentDao attachmentDao,
-            FolderDao folderDao)
+            TagMailDao tagMailDao,
+            UserFolderDao userFolderDao,
+            UserFolderTreeDao userFolderTreeDao,
+            UserFolderXMailDao userFolderXMailDao)
         {
+            MailDb = dbContext.Get("mail");
             AccountDao = accountDao;
+            AlertDao1 = alertDao;
+            ChainDao = chainDao;
+            ContactCardDao = contactCardDao;
+            ContactDao = contactDao;
+            ContactInfoDao = contactInfoDao;
+            CrmContactDao = crmContactDao;
+            CrmLinkDao = crmLinkDao;
             MailboxAutoreplyDao = mailboxAutoreplyDao;
             MailboxAutoreplyHistoryDao = mailboxAutoreplyHistoryDao;
             MailboxDao = mailboxDao;
@@ -70,10 +125,29 @@ namespace ASC.Mail.Core
             MailboxProviderDao = mailboxProviderDao;
             AlertDao = alertDao;
             DisplayImagesAddressDao = displayImagesAddressDao;
+            FilterDao = filterDao;
             MailboxSignatureDao = mailboxSignatureDao;
+            MailDao = mailDao;
+            MailGarbageDao = mailGarbageDao;
+            MailInfoDao = mailInfoDao;
+            ServerDao = serverDao;
+            ServerDnsDao = serverDnsDao;
+            ServerDomainDao = serverDomainDao;
+            ServerGroupDao = serverGroupDao;
+            TagAddressDao = tagAddressDao;
             TagDao = tagDao;
+            TagMailDao = tagMailDao;
+            UserFolderDao = userFolderDao;
+            UserFolderTreeDao = userFolderTreeDao;
+            UserFolderXMailDao = userFolderXMailDao;
             AttachmentDao = attachmentDao;
             FolderDao = folderDao;
+            ImapFlagsDao = imapFlagsDao;
+            ImapSpecialMailboxDao = imapSpecialMailboxDao;
+        }
+
+        public IDbContextTransaction BeginTransaction() {
+            return MailDb.Database.BeginTransaction();
         }
     }
 
