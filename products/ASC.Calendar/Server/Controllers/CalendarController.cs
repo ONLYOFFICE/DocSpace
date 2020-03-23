@@ -883,6 +883,96 @@ namespace ASC.Calendar.Controllers
 
         }
 
+        [Delete("events/{eventId}/unsubscribe")]
+        public void UnsubscribeEvent(int eventId)
+        {
+            var evt = DataProvider.GetEventById(eventId);
+
+            if (evt != null)
+            {
+                string[] split = evt.Uid.Split(new Char[] { '@' });
+                var myUri = HttpContext.Request.GetUrlRewriter();
+                var email = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email;
+                var currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID);
+                var fullAccess = CheckPermissions(evt, CalendarAccessRights.FullAccessAction, true);
+
+                deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, email, currentAccountPaswd, myUri, SecurityContext.CurrentAccount.ID != evt.OwnerId);
+
+                DataProvider.UnsubscribeFromEvent(eventId, SecurityContext.CurrentAccount.ID);
+            }
+        }
+        //TODO Caldav
+        private void deleteEvent(string uid, string calendarId, string email, string currentAccountPaswd, Uri myUri, bool isShared = false)
+        {
+            
+            try
+            {
+                 /*var сaldavGuid = "";
+                if (calendarId != BirthdayReminderCalendar.CalendarId &&
+                    calendarId != SharedEventsCalendar.CalendarId &&
+                    calendarId != "crm_calendar" &&
+                    !calendarId.Contains("Project_"))
+                {
+                    var dataCaldavGuid = db.ExecuteList(new SqlQuery("calendar_calendars")
+                        .Select("caldav_guid")
+                        .Where("id", calendarId))
+                        .Select(r => r[0])
+                        .ToArray();
+
+                    сaldavGuid = dataCaldavGuid[0].ToString();
+                }
+                else
+                {
+                    сaldavGuid = calendarId;
+                }
+
+                if (сaldavGuid != "")
+                {
+                    var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
+
+                    Logger.Info("RADICALE REWRITE URL: " + myUri);
+
+                    var currentUserName = email + "@" + myUri.Host;
+
+                    var encoded = isShared ? Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID)) : Convert.ToBase64String(Encoding.UTF8.GetBytes(email.ToLower() + ":" + currentAccountPaswd));
+
+                    var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + (isShared ? сaldavGuid + "-shared" : сaldavGuid) + "/" + uid + ".ics";
+
+                    try
+                    {
+                        var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
+                        webRequest.Method = "DELETE";
+                        webRequest.Headers.Add("Authorization", "Basic " + encoded);
+                        using (var webResponse = webRequest.GetResponse())
+                        using (var reader = new StreamReader(webResponse.GetResponseStream())) { }
+                    }
+                    catch (WebException ex)
+                    {
+                        if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
+                        {
+                            var resp = (HttpWebResponse)ex.Response;
+                            if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
+                                Logger.Debug("ERROR: " + ex.Message);
+                            else
+                                Logger.Error("ERROR: " + ex.Message);
+                        }
+                        else
+                        {
+                            Logger.Error("ERROR: " + ex.Message);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("ERROR: " + ex.Message);
+                    }
+                }*/
+            }
+            catch (Exception ex)
+            {
+                Log.Error("ERROR: " + ex.Message);
+            }
+
+        }
         [Read("events/{eventUid}/historybyuid")]
         public EventHistoryWrapper GetEventHistoryByUid(string eventUid)
         {
