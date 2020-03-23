@@ -190,12 +190,16 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
             return filterExp;
         }
 
-        public bool TryGetFullTextSearchIds(MailSieveFilterData filter, string user, out List<int> ids, out long total)
+        public static bool TryGetFullTextSearchIds(
+            FactoryIndexer<MailWrapper> factoryIndexer, 
+            FactoryIndexerHelper factoryIndexerHelper, 
+            IServiceProvider serviceProvider, 
+            MailSieveFilterData filter, string user, out List<int> ids, out long total)
         {
             ids = new List<int>();
 
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t))
+            var t = serviceProvider.GetService<MailWrapper>();
+            if (!factoryIndexerHelper.Support(t))
             {
                 total = 0;
                 return false;
@@ -230,25 +234,25 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
 
                 if (c.Key == ConditionKeyType.ToOrCc)
                 {
-                    sel = new Selector<MailWrapper>(ServiceProvider).Or(
+                    sel = new Selector<MailWrapper>(serviceProvider).Or(
                         s => s.Match(w => w.ToText, value), 
                         s => s.Match(w => w.Cc, value));
                 }
                 else
                 {
-                    sel = new Selector<MailWrapper>(ServiceProvider).Match(getExp(c.Key), value);
+                    sel = new Selector<MailWrapper>(serviceProvider).Match(getExp(c.Key), value);
                 }
 
                 if (c.Operation == ConditionOperationType.NotMatches ||
                     c.Operation == ConditionOperationType.NotContains)
                 {
-                    return new Selector<MailWrapper>(ServiceProvider).Not(s => sel);
+                    return new Selector<MailWrapper>(serviceProvider).Not(s => sel);
                 }
 
                 return sel;
             };
 
-            var selector = new Selector<MailWrapper>(ServiceProvider);
+            var selector = new Selector<MailWrapper>(serviceProvider);
 
             foreach (var c in filter.Conditions)
             {
@@ -283,7 +287,7 @@ namespace ASC.Mail.Core.Dao.Expressions.Message
                 .Where(r => r.UserId, userId)
                 .Sort(r => r.DateSent, true);
 
-            if (!FactoryIndexer.TrySelectIds(s => selector, out List<int> mailIds, out total))
+            if (!factoryIndexer.TrySelectIds(s => selector, out List<int> mailIds, out total))
                 return false;
 
             ids = mailIds;
