@@ -21,7 +21,8 @@ import {
   fetchFolder,
   //fetchRootFolders,
   selectFile,
-  setAction
+  setAction,
+  setTreeFolders
 } from '../../../../../store/files/actions';
 import { isFileSelected } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
@@ -76,11 +77,17 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onEditComplete = () => {
-    const { folderId, fileAction, filter } = this.props;
+  onEditComplete = currentId => {
+    const { folderId, fileAction, filter, treeFolders, setTreeFolders } = this.props;
 
-    if (fileAction.type === FileAction.Create) {
-      fetchFiles(folderId, filter, store.dispatch);
+    if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
+      fetchFiles(folderId, filter, store.dispatch).then(data => {
+        const path = data.selectedFolder.pathParts;
+        const newTreeFolders = treeFolders;
+        const folders = data.selectedFolder.folders;
+        this.loop(path, newTreeFolders, currentId, folders);
+        setTreeFolders(newTreeFolders);
+      })
     }
 
     this.setState({ editingId: null }, () => {
@@ -88,8 +95,6 @@ class SectionBodyContent extends React.PureComponent {
         type: null
       });
     })
-
-    //fetchRootFolders(store.dispatch);
   }
 
   onClickDelete = (item) => {
@@ -107,13 +112,35 @@ class SectionBodyContent extends React.PureComponent {
       .then(() => toastr.success(`File moved to recycle bin`));
   }
 
-  onDeleteFolder = (folderId, currentFolderId) => {
-    const { deleteFolder, filter } = this.props;
+  loop = (path, item, folderId, folders, foldersCount) => {
+    const newPath = path;
+    while (path.length !== 0) {
+      const newItems = item.find(x => x.id === path[0]);
+      newPath.shift();
+      if (path.length === 0) {
+        const currentItem = item.find(x => x.id === folderId);
+        currentItem.folders = folders;
+        currentItem.foldersCount = foldersCount;
+      }
+      this.loop(newPath, newItems.folders, folderId, folders, foldersCount);
+    }
+  };
 
-    deleteFolder(folderId)
+  onDeleteFolder = (folderId, currentFolderId) => {
+    const { deleteFolder, filter, treeFolders, setTreeFolders } = this.props;
+
+    deleteFolder(folderId, currentFolderId)
       .catch(err => toastr.error(err))
-      .then(() => fetchFiles(currentFolderId, filter, store.dispatch))
-      //.then(() => fetchRootFolders(store.dispatch))
+      .then(() =>
+        fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
+          const path = data.selectedFolder.pathParts;
+          const newTreeFolders = treeFolders;
+          const folders = data.selectedFolder.folders;
+          const foldersCount = data.selectedFolder.foldersCount;
+          this.loop(path, newTreeFolders, currentFolderId, folders, foldersCount);
+          setTreeFolders(newTreeFolders);
+        })
+      )
       .then(() => toastr.success(`Folder moved to recycle bin`));
   }
 
@@ -248,7 +275,7 @@ class SectionBodyContent extends React.PureComponent {
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete} onLoading={onLoading} />
+              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete.bind(this, item.parentId)} onLoading={onLoading} />
             </SimpleFilesRow>
           );
         })}
@@ -274,7 +301,8 @@ const mapStateToProps = state => {
     selected: state.files.selected,
     selection: state.files.selection,
     settings: state.auth.settings,
-    viewer: state.auth.user
+    viewer: state.auth.user,
+    treeFolders: state.files.treeFolders
   };
 };
 
@@ -287,6 +315,7 @@ export default connect(
     fetchFiles,
     //fetchRootFolders,
     selectFile,
-    setAction
+    setAction,
+    setTreeFolders
   }
 )(withRouter(withTranslation()(SectionBodyContent)));
