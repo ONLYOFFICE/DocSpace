@@ -35,6 +35,7 @@ using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
+using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
@@ -48,16 +49,20 @@ namespace ASC.Mail.Core.Engine
 {
     public class AttachmentEngine
     {
+        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
         public StorageFactory StorageFactory { get; }
         public StorageManager StorageManager { get; }
         public ILog Log { get; }
 
-        public AttachmentEngine(DaoFactory daoFactory,
+        public AttachmentEngine(
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
             StorageFactory storageFactory,
             StorageManager storageManager,
             IOptionsMonitor<ILog> option)
         {
+            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             StorageFactory = storageFactory;
             StorageManager = storageManager;
@@ -191,128 +196,114 @@ namespace ASC.Mail.Core.Engine
         //    return result;
         //}
 
-        //public MailAttachmentData AttachFile(int tenant, string user, MailMessageData message,
-        //    string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
-        //{
-        //    if (message == null)
-        //        throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "Message not found.");
+        public MailAttachmentData AttachFile(int tenant, string user, MailMessageData message,
+            string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
+        {
+            if (message == null)
+                throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "Message not found.");
 
-        //    if (string.IsNullOrEmpty(message.StreamId))
-        //        throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "StreamId is empty.");
+            if (string.IsNullOrEmpty(message.StreamId))
+                throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "StreamId is empty.");
 
-        //    var messageId = message.Id;
+            var messageId = message.Id;
 
-        //    var engine = new EngineFactory(tenant, user);
+            var totalSize = GetAttachmentsSize(new ConcreteMessageAttachmentsExp(messageId, tenant, user));
 
-        //    var totalSize = GetAttachmentsSize(new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+            totalSize += contentLength;
 
-        //    totalSize += contentLength;
+            if (totalSize > Defines.ATTACHMENTS_TOTAL_SIZE_LIMIT)
+                throw new AttachmentsException(AttachmentsException.Types.TotalSizeExceeded,
+                    "Total size of all files exceeds limit!");
 
-        //    if (totalSize > Defines.ATTACHMENTS_TOTAL_SIZE_LIMIT)
-        //        throw new AttachmentsException(AttachmentsException.Types.TotalSizeExceeded,
-        //            "Total size of all files exceeds limit!");
+            var fileNumber =
+                EngineFactory.AttachmentEngine.GetAttachmentNextFileNumber(new ConcreteMessageAttachmentsExp(messageId, tenant,
+                    user));
 
-        //    var fileNumber =
-        //        engine.AttachmentEngine.GetAttachmentNextFileNumber(new ConcreteMessageAttachmentsExp(messageId, tenant,
-        //            user));
+            var attachment = new MailAttachmentData
+            {
+                fileName = name,
+                contentType = string.IsNullOrEmpty(contentType) ? MimeMapping.GetMimeMapping(name) : contentType,
+                needSaveToTemp = needSaveToTemp,
+                fileNumber = fileNumber,
+                size = contentLength,
+                data = inputStream.ReadToEnd(),
+                streamId = message.StreamId,
+                tenant = tenant,
+                user = user,
+                mailboxId = message.MailboxId
+            };
 
-        //    var attachment = new MailAttachmentData
-        //    {
-        //        fileName = name,
-        //        contentType = string.IsNullOrEmpty(contentType) ? MimeMapping.GetMimeMapping(name) : contentType,
-        //        needSaveToTemp = needSaveToTemp,
-        //        fileNumber = fileNumber,
-        //        size = contentLength,
-        //        data = inputStream.ReadToEnd(),
-        //        streamId = message.StreamId,
-        //        tenant = tenant,
-        //        user = user,
-        //        mailboxId = message.MailboxId
-        //    };
+            EngineFactory.QuotaEngine.QuotaUsedAdd(contentLength);
 
-        //    engine.QuotaEngine.QuotaUsedAdd(contentLength);
+            try
+            {
+                StorageManager.StoreAttachmentWithoutQuota(attachment);
+            }
+            catch
+            {
+                EngineFactory.QuotaEngine.QuotaUsedDelete(contentLength);
+                throw;
+            }
 
-        //    try
-        //    {
-        //        var storage = new StorageManager(tenant, user);
-        //        storage.StoreAttachmentWithoutQuota(attachment);
-        //    }
-        //    catch
-        //    {
-        //        engine.QuotaEngine.QuotaUsedDelete(contentLength);
-        //        throw;
-        //    }
+            if (!needSaveToTemp)
+            {
+                int attachCount;
 
-        //    if (!needSaveToTemp)
-        //    {
-        //        int attachCount;
+                using (var tx = DaoFactory.BeginTransaction())
+                {
+                    attachment.fileId = DaoFactory.AttachmentDao.SaveAttachment(attachment.ToAttachmnet(messageId));
 
-        //        using (var daoFactory = new DaoFactory())
-        //        {
-        //            var db = daoFactory.DbManager;
+                    attachCount = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                        new ConcreteMessageAttachmentsExp(messageId, tenant, user));
 
-        //            using (var tx = db.BeginTransaction())
-        //            {
-        //                var daoAttachment = daoFactory.CreateAttachmentDao(tenant, user);
+                    DaoFactory.MailInfoDao.SetFieldValue(
+                        SimpleMessagesExp.CreateBuilder(tenant, user)
+                            .SetMessageId(messageId)
+                            .Build(),
+                        "AttachCount",
+                        attachCount);
 
-        //                attachment.fileId = DaoFactory.AttachmentDao.SaveAttachment(attachment.ToAttachmnet(messageId));
+                    EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(DaoFactory, tenant, user, messageId);
 
-        //                attachCount = daoAttachment.GetAttachmentsCount(
-        //                    new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+                    tx.Commit();
+                }
 
-        //                var daoMailInfo = daoFactory.CreateMailInfoDao(tenant, user);
+                if (attachCount == 1)
+                {
+                    var data = new MailWrapper
+                    {
+                        HasAttachments = true
+                    };
 
-        //                daoMailInfo.SetFieldValue(
-        //                    SimpleMessagesExp.CreateBuilder(tenant, user)
-        //                        .SetMessageId(messageId)
-        //                        .Build(),
-        //                    MailTable.Columns.AttachCount,
-        //                    attachCount);
+                    EngineFactory.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+                }
+            }
 
-        //                engine.ChainEngine.UpdateMessageChainAttachmentsFlag(daoFactory, tenant, user, messageId);
+            return attachment;
+        }
 
-        //                tx.Commit();
-        //            }
-        //        }
+        public MailAttachmentData AttachFileToDraft(int tenant, string user, int messageId,
+            string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
+        {
+            if (messageId < 1)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_message' must have non-negative value.");
 
-        //        if (attachCount == 1)
-        //        {
-        //            var data = new MailWrapper
-        //            {
-        //                HasAttachments = true
-        //            };
+            if (tenant < 0)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_tenant' must have non-negative value.");
 
-        //            engine.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
-        //        }
-        //    }
+            if (String.IsNullOrEmpty(user))
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_user' is empty.");
 
-        //    return attachment;
-        //}
+            if (contentLength == 0)
+                throw new AttachmentsException(AttachmentsException.Types.EmptyFile, "Empty files not supported.");
 
-        //public MailAttachmentData AttachFileToDraft(int tenant, string user, int messageId,
-        //    string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
-        //{
-        //    if (messageId < 1)
-        //        throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_message' must have non-negative value.");
+            var message = EngineFactory.MessageEngine.GetMessage(messageId, new MailMessageData.Options());
 
-        //    if (tenant < 0)
-        //        throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_tenant' must have non-negative value.");
+            if (message.Folder != FolderType.Draft && message.Folder != FolderType.Templates && message.Folder != FolderType.Sending)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Message is not a draft or templates.");
 
-        //    if (String.IsNullOrEmpty(user))
-        //        throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_user' is empty.");
-
-        //    if (contentLength == 0)
-        //        throw new AttachmentsException(AttachmentsException.Types.EmptyFile, "Empty files not supported.");
-
-        //    var engine = new EngineFactory(tenant, user);
-
-        //    var message = engine.MessageEngine.GetMessage(messageId, new MailMessageData.Options());
-
-        //    if (message.Folder != FolderType.Draft && message.Folder != FolderType.Templates && message.Folder != FolderType.Sending)
-        //        throw new AttachmentsException(AttachmentsException.Types.BadParams, "Message is not a draft or templates.");
-
-        //    return AttachFile(tenant, user, message, name, inputStream, contentLength, contentType, needSaveToTemp);
-        //}
+            return AttachFile(tenant, user, message, name, inputStream, contentLength, contentType, needSaveToTemp);
+        }
 
         public void StoreAttachmentCopy(int tenant, string user, MailAttachmentData attachment, string streamId)
         {

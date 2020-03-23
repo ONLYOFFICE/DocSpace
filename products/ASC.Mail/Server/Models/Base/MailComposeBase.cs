@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Files.Core.Security;
 //using ASC.Files.Core.Security;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
@@ -115,7 +116,7 @@ namespace ASC.Mail.Models.Base
 
         public string MimeReplyToId { get; set; }
 
-        //public FileShare FileLinksShareMode { get; set; }
+        public FileShare FileLinksShareMode { get; set; }
 
         public bool AccountChanged {
             get { return Mailbox.MailBoxId != PreviousMailboxId; }

@@ -39,29 +39,65 @@ using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
+using ASC.Data.Storage;
 using ASC.Mail.Clients;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MailMessage = ASC.Mail.Models.MailMessageData;
+using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
+using ASC.ElasticSearch;
 
 namespace ASC.Mail.Core.Engine
 {
     public class DraftEngine : ComposeEngineBase
     {
-        public DraftEngine(int tenant, string user, DeliveryFailureMessageTranslates daemonLabels = null, ILog log = null)
-            : base(tenant, user, daemonLabels, log)
+        public HttpContext HttpContext { get; set; }
+
+        public DraftEngine(int tenant, string user,
+            IHttpContextAccessor httpContextAccessor,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            StorageManager storageManager,
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            CoreSettings coreSettings,
+            StorageFactory storageFactory,
+            FactoryIndexer<MailContactWrapper> factoryIndexer,
+            FactoryIndexerHelper factoryIndexerHelper,
+            IServiceProvider serviceProvider,
+            IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+            IOptionsMonitor<ILog> option,
+            DeliveryFailureMessageTranslates daemonLabels = null)
+            : base(tenant, user,
+            engineFactory,
+            daoFactory,
+            storageManager,
+            tenantManager,
+            coreSettings,
+            storageFactory,
+            optionsSnapshot,
+            option,
+            daemonLabels)
         {
-            Log = log ?? LogManager.GetLogger("ASC.Mail.DraftEngine");
+            Log = option.Get("ASC.Mail.DraftEngine");
+            SecurityContext = securityContext;
+            FactoryIndexer = factoryIndexer;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
+            HttpContext = httpContextAccessor?.HttpContext;
         }
 
         #region .Public
@@ -95,9 +131,7 @@ namespace ASC.Mail.Core.Engine
 
             var mailAddress = new MailAddress(from);
 
-            var engine = new EngineFactory(Tenant, User);
-
-            var accounts = engine.AccountEngine.GetAccountInfoList().ToAccountData();
+            var accounts = EngineFactory.AccountEngine.GetAccountInfoList().ToAccountData();
 
             var account = accounts.FirstOrDefault(a => a.Email.ToLower().Equals(mailAddress.Address));
 
@@ -107,7 +141,7 @@ namespace ASC.Mail.Core.Engine
             if (account.IsGroup)
                 throw new InvalidOperationException("Sending emails from a group address is forbidden");
 
-            var mbox = engine.MailboxEngine.GetMailboxData(
+            var mbox = EngineFactory.MailboxEngine.GetMailboxData(
                 new СoncreteUserMailboxExp(account.MailboxId, Tenant, User));
 
             if (mbox == null)
@@ -122,7 +156,7 @@ namespace ASC.Mail.Core.Engine
 
             if (id > 0)
             {
-                var message = engine.MessageEngine.GetMessage(id, new MailMessage.Options
+                var message = EngineFactory.MessageEngine.GetMessage(id, new MailMessage.Options
                 {
                     LoadImages = false,
                     LoadBody = true,
@@ -153,7 +187,7 @@ namespace ASC.Mail.Core.Engine
             }
             else
             {
-                mimeMessageId = MailUtil.CreateMessageId();
+                mimeMessageId = MailUtil.CreateMessageId(TenantManager, CoreSettings);
                 streamId = MailUtil.CreateStreamId();
             }
 
@@ -191,9 +225,9 @@ namespace ASC.Mail.Core.Engine
             message.CcList = ValidateAddresses(DraftFieldTypes.Cc, draft.Cc, false);
             message.BccList = ValidateAddresses(DraftFieldTypes.Bcc, draft.Bcc, false);
 
-            var scheme = HttpContext.Current == null
+            var scheme = HttpContext == null
                 ? Uri.UriSchemeHttp
-                : HttpContext.Current.Request.GetUrlRewriter().Scheme;
+                : HttpContext.Request.GetUrlRewriter().Scheme;
 
             SetDraftSending(draft);
 
@@ -201,7 +235,7 @@ namespace ASC.Mail.Core.Engine
             {
                 try
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(draft.Mailbox.TenantId);
+                    TenantManager.SetCurrentTenant(draft.Mailbox.TenantId);
 
                     SecurityContext.AuthenticateMe(new Guid(draft.Mailbox.UserId));
 
@@ -238,23 +272,21 @@ namespace ASC.Mail.Core.Engine
 
                         ReleaseSendingDraftOnSuccess(draft, message);
 
-                        var factory = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId, Log);
+                        EngineFactory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(draft.Mailbox, message, scheme);
 
-                        factory.CrmLinkEngine.AddRelationshipEventForLinkedAccounts(draft.Mailbox, message, scheme);
-
-                        factory.EmailInEngine.SaveEmailInData(draft.Mailbox, message, scheme);
+                        EngineFactory.EmailInEngine.SaveEmailInData(draft.Mailbox, message, scheme);
 
                         SaveFrequentlyContactedAddress(draft.Mailbox.TenantId, draft.Mailbox.UserId, mimeMessage,
                             scheme);
 
-                        var filters = factory.FilterEngine.GetList();
+                        var filters = EngineFactory.FilterEngine.GetList();
 
                         if (filters.Any())
                         {
-                            factory.FilterEngine.ApplyFilters(message, draft.Mailbox, new MailFolder(FolderType.Sent, ""), filters);
+                            EngineFactory.FilterEngine.ApplyFilters(message, draft.Mailbox, new MailFolder(FolderType.Sent, ""), filters);
                         }
 
-                        factory.IndexEngine.Update(new List<MailWrapper>
+                        EngineFactory.IndexEngine.Update(new List<MailWrapper>
                         {
                             message.ToMailWrapper(draft.Mailbox.TenantId,
                                 new Guid(draft.Mailbox.UserId))
@@ -280,9 +312,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     if (draft.IsAutoreplied)
                     {
-                        var engineFactory = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId, Log);
-
-                        engineFactory
+                        EngineFactory
                             .AutoreplyEngine
                             .SaveAutoreplyHistory(draft.Mailbox, message);
                     }
@@ -298,90 +328,72 @@ namespace ASC.Mail.Core.Engine
 
         private void SetDraftSending(MailDraftData draft)
         {
-            var engine = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-            engine.ChainEngine.SetConversationsFolder(new List<int> { draft.Id }, FolderType.Sending);
+            EngineFactory.ChainEngine.SetConversationsFolder(new List<int> { draft.Id }, FolderType.Sending);
         }
 
         private void ReleaseSendingDraftOnSuccess(MailDraftData draft, MailMessage message)
         {
-            var engine = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                var db = daoFactory.DbManager;
+                // message was correctly send - lets update its chains id
+                var draftChainId = message.ChainId;
+                // before moving message from draft to sent folder - lets recalculate its correct chain id
+                var chainInfo = EngineFactory.MessageEngine.DetectChain(DaoFactory, draft.Mailbox,
+                    message.MimeMessageId, message.MimeReplyToId, message.Subject);
 
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+                message.ChainId = chainInfo.Id;
+
+                if (message.ChainId.Equals(message.MimeMessageId))
+                    message.MimeReplyToId = null;
+
+                if (!draftChainId.Equals(message.ChainId))
                 {
-                    // message was correctly send - lets update its chains id
-                    var draftChainId = message.ChainId;
-                    // before moving message from draft to sent folder - lets recalculate its correct chain id
-                    var chainInfo = engine.MessageEngine.DetectChain(daoFactory, draft.Mailbox,
-                        message.MimeMessageId, message.MimeReplyToId, message.Subject);
+                    DaoFactory.MailInfoDao.SetFieldValue(
+                        SimpleMessagesExp.CreateBuilder(Tenant, User)
+                            .SetMessageId(message.Id)
+                            .Build(),
+                        "ChainId",
+                        message.ChainId);
 
-                    message.ChainId = chainInfo.Id;
-
-                    if (message.ChainId.Equals(message.MimeMessageId))
-                        message.MimeReplyToId = null;
-
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                    if (!draftChainId.Equals(message.ChainId))
-                    {
-                        daoMailInfo.SetFieldValue(
-                            SimpleMessagesExp.CreateBuilder(Tenant, User)
-                                .SetMessageId(message.Id)
-                                .Build(),
-                            MailTable.Columns.ChainId,
-                            message.ChainId);
-
-                        engine.ChainEngine.UpdateChain(daoFactory, draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
-                            draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                        var daoCrmLink = daoFactory.CreateCrmLinkDao(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                        daoCrmLink.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
-                    }
-
-                    engine.ChainEngine.UpdateChain(daoFactory, message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                    EngineFactory.ChainEngine.UpdateChain(DaoFactory, draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                         draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
-                    var listObjects = engine.ChainEngine.GetChainedMessagesInfo(daoFactory, new List<int> { draft.Id });
-
-                    if (!listObjects.Any())
-                        return;
-
-                    engine.MessageEngine.SetFolder(daoFactory, listObjects, FolderType.Sent);
-
-                    daoMailInfo.SetFieldValue(
-                        SimpleMessagesExp.CreateBuilder(Tenant, User)
-                            .SetMessageId(draft.Id)
-                            .Build(),
-                        MailTable.Columns.FolderRestore,
-                        FolderType.Sent);
-
-                    tx.Commit();
+                    DaoFactory.CrmLinkDao.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
                 }
+
+                EngineFactory.ChainEngine.UpdateChain(DaoFactory, message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                    draft.Mailbox.TenantId, draft.Mailbox.UserId);
+
+                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, new List<int> { draft.Id });
+
+                if (!listObjects.Any())
+                    return;
+
+                EngineFactory.MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Sent);
+
+                DaoFactory.MailInfoDao.SetFieldValue(
+                    SimpleMessagesExp.CreateBuilder(Tenant, User)
+                        .SetMessageId(draft.Id)
+                        .Build(),
+                    "FolderRestore",
+                    FolderType.Sent);
+
+                tx.Commit();
             }
         }
 
         private void ReleaseSendingDraftOnFailure(MailDraftData draft)
         {
-            var engine = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    var listObjects = engine.ChainEngine.GetChainedMessagesInfo(daoFactory, new List<int> { draft.Id });
+                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, new List<int> { draft.Id });
 
-                    if (!listObjects.Any())
-                        return;
+                if (!listObjects.Any())
+                    return;
 
-                    engine.MessageEngine.SetFolder(daoFactory, listObjects, FolderType.Draft);
+                EngineFactory.MessageEngine.SetFolder(DaoFactory, listObjects, FolderType.Draft);
 
-                    tx.Commit();
-                }
+                tx.Commit();
             }
         }
 
@@ -398,11 +410,9 @@ namespace ASC.Mail.Core.Engine
                 if (icsAttachment == null)
                     return;
 
-                var engine = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
                 using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(draft.CalendarIcs)))
                 {
-                    engine.AttachmentEngine
+                    EngineFactory.AttachmentEngine
                         .AttachFileToDraft(draft.Mailbox.TenantId, draft.Mailbox.UserId, draft.Id,
                             icsAttachment.ContentType.Name, memStream, memStream.Length);
                 }
@@ -480,7 +490,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        private static void SaveFrequentlyContactedAddress(int tenant, string user, MimeMessage mimeMessage,
+        private void SaveFrequentlyContactedAddress(int tenant, string user, MimeMessage mimeMessage,
             string scheme)
         {
             var recipients = new List<MailboxAddress>();
@@ -495,21 +505,20 @@ namespace ASC.Mail.Core.Engine
                 if (treatedAddresses.Contains(email))
                     continue;
 
-                var engine = new EngineFactory(tenant, user);
+                var exp = new FullFilterContactsExp(tenant, user, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+                    searchTerm: email, infoType: ContactInfoType.Email);
 
-                var exp = new FullFilterContactsExp(tenant, user, searchTerm: email, infoType: ContactInfoType.Email);
-
-                var contacts = engine.ContactEngine.GetContactCards(exp);
+                var contacts = EngineFactory.ContactEngine.GetContactCards(exp);
 
                 if (!contacts.Any())
                 {
-                    var emails = engine.ContactEngine.SearchEmails(tenant, user, email, 1, scheme);
+                    var emails = EngineFactory.ContactEngine.SearchEmails(tenant, user, email, 1, scheme);
                     if (!emails.Any())
                     {
                         var contactCard = new ContactCard(0, tenant, user, recipient.Name, "",
                             ContactType.FrequentlyContacted, new[] { email });
 
-                        engine.ContactEngine.SaveContactCard(contactCard);
+                        EngineFactory.ContactEngine.SaveContactCard(contactCard);
                     }
                 }
 
@@ -525,6 +534,11 @@ namespace ASC.Mail.Core.Engine
                 return string.IsNullOrEmpty(config) ? new List<string>() : config.Split('|').ToList();
             }
         }
+
+        public SecurityContext SecurityContext { get; }
+        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
+        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
 
         private void AddNotificationAlertToMailbox(MailDraftData draft, Exception exOnSanding)
         {
@@ -583,15 +597,13 @@ namespace ASC.Mail.Core.Engine
                 notifyMessageItem.ChainId = notifyMessageItem.MimeMessageId;
                 notifyMessageItem.IsNew = true;
 
-                MessageEngine.StoreMailBody(draft.Mailbox, notifyMessageItem, Log);
+                EngineFactory.MessageEngine.StoreMailBody(draft.Mailbox, notifyMessageItem, Log);
 
-                var engine = new EngineFactory(draft.Mailbox.TenantId, draft.Mailbox.UserId);
-
-                var mailDaemonMessageid = engine.MessageEngine.MailSave(draft.Mailbox, notifyMessageItem, 0,
+                var mailDaemonMessageid = EngineFactory.MessageEngine.MailSave(draft.Mailbox, notifyMessageItem, 0,
                     FolderType.Inbox, FolderType.Inbox, null,
                     string.Empty, string.Empty, false);
 
-                engine.AlertEngine.CreateDeliveryFailureAlert(
+                EngineFactory.AlertEngine.CreateDeliveryFailureAlert(
                     draft.Mailbox.TenantId,
                     draft.Mailbox.UserId,
                     draft.Mailbox.MailBoxId,
