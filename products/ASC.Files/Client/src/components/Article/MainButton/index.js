@@ -9,9 +9,11 @@ import {
 } from "asc-web-components";
 import { withTranslation, I18nextProvider } from 'react-i18next';
 import { setAction } from '../../../store/files/actions';
-import { isMyDocuments } from '../../../store/files/selectors';
+import { isCanCreate } from '../../../store/files/selectors';
 import i18n from '../i18n';
-import { utils, constants } from 'asc-web-common';
+import { utils, constants, store } from 'asc-web-common';
+
+const { isAdmin } = store.auth.selectors;
 const { changeLanguage } = utils;
 const { FileAction } = constants;
 
@@ -27,16 +29,16 @@ class PureArticleMainButtonContent extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.isMyDocuments !== this.props.isMyDocuments;
+    return nextProps.isCanCreate !== this.props.isCanCreate;
   }
 
   render() {
     console.log("Files ArticleMainButtonContent render");
-    const { t, isMyDocuments } = this.props;
+    const { t, isCanCreate } = this.props;
 
     return (
       <MainButton
-        isDisabled={!isMyDocuments}
+        isDisabled={!isCanCreate}
         isDropdown={true}
         text={t('Actions')}
       >
@@ -85,11 +87,10 @@ ArticleMainButtonContent.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-  const rootFolderOfCurrent = state.files.selectedFolder ? state.files.selectedFolder.pathParts[0] : -1;
-  const myFolderIndex = 0;
+
   return {
     settings: state.auth.settings,
-    isMyDocuments: isMyDocuments(state.files.treeFolders[myFolderIndex].id, rootFolderOfCurrent)
+    isCanCreate: isCanCreate(state.files.selectedFolder, isAdmin(state.auth.user))
   }
 }
 
