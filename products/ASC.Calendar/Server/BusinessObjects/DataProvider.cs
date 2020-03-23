@@ -213,35 +213,33 @@ namespace ASC.Calendar.BusinessObjects
             return cals;
 
         }
-        /*
-         public List<Calendar> LoadiCalStreamsForUser(Guid userId)
-         {
-             var queryGetCalIds = new SqlQuery(_calendarTable)
-                 .Select("cal.id")
-                 .Where("cal.tenant", TenantManager.GetCurrentTenant().TenantId)
-                 .Where("cal.owner_id", userId)
-                 .Where(!Exp.Eq("cal.ical_url", null));
 
-             var calIds = db.ExecuteList(queryGetCalIds).Select(r => r[0]);
+        public List<Calendar> LoadiCalStreamsForUser(Guid userId)
+        {
+            var calIds = CalendarDb.CalendarCalendars.Where(p => 
+                    p.Tenant == TenantManager.GetCurrentTenant().TenantId && 
+                    p.OwnerId == userId.ToString() && 
+                    p.IcalUrl != null)
+                .Select(s => s.Id).ToArray();
+            var calendars = GetCalendarsByIds(calIds.ToArray());
+            return calendars;
+        }
 
-             var calendars = GetCalendarsByIds(calIds.ToArray());
-             return calendars;
-         }
+        public List<Calendar> LoadSubscriptionsForUser(Guid userId)
+        {
+            var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
+            groups.AddRange(UserManager.GetUserGroups(userId, Constants.SysGroupCategoryId).Select(g => g.ID));
 
-         public List<Calendar> LoadSubscriptionsForUser(Guid userId)
-         {
-             var groups = UserManager.GetUserGroups(userId).Select(g => g.ID).ToList();
-             groups.AddRange(UserManager.GetUserGroups(userId, Core.Users.Constants.SysGroupCategoryId).Select(g => g.ID));
+            var calIds = from calItem in CalendarDb.CalendarCalendarItem
+                         join calendar in CalendarDb.CalendarCalendars on calItem.CalendarId equals calendar.Id
+                         where
+                              calendar.Tenant == TenantManager.GetCurrentTenant().TenantId &&
+                              (calItem.ItemId == userId || (groups.Contains(calItem.ItemId) && calItem.IsGroup == 1))
+                         select calItem.CalendarId;
 
-             var calIds = db.ExecuteList(new SqlQuery(_calendarItemTable).Select("cal_itm.calendar_id")
-                                                 .InnerJoin(_calendarTable, Exp.EqColumns("cal.id", "cal_itm.calendar_id"))
-                                                 .Where("cal.tenant", TenantManager.GetCurrentTenant().TenantId)
-                                                 .Where(Exp.Eq("cal_itm.item_id", userId) | (Exp.In("cal_itm.item_id", groups.ToArray()) & Exp.Eq("cal_itm.is_group", true)))
-                                             ).Select(r => r[0]);
-
-             var calendars = GetCalendarsByIds(calIds.ToArray());
-             return calendars;
-         }*/
+            var calendars = GetCalendarsByIds(calIds.ToArray());
+            return calendars;
+        }
 
         public TimeZoneInfo GetTimeZoneForSharedEventsCalendar(Guid userId)
         {

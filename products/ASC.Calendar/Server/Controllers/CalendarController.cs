@@ -127,6 +127,8 @@ namespace ASC.Calendar.Controllers
         public Signature Signature { get; }
         public SecurityContext SecurityContext { get; }
         public ExportDataCache ExportDataCache { get; }
+        public SubscriptionWrapperHelper SubscriptionWrapperHelper { get; }
+
 
         public CalendarController(
 
@@ -152,7 +154,8 @@ namespace ASC.Calendar.Controllers
             TodoWrapperHelper todoWrapperHelper,
             Signature signature,
             SecurityContext securityContext,
-            ExportDataCache exportDataCache)
+            ExportDataCache exportDataCache,
+            SubscriptionWrapperHelper subscriptionWrapperHelper)
         {
             AuthContext = authContext;
             Authentication = authentication;
@@ -176,6 +179,7 @@ namespace ASC.Calendar.Controllers
             Signature = signature;
             SecurityContext = securityContext;
             ExportDataCache = exportDataCache;
+            SubscriptionWrapperHelper = subscriptionWrapperHelper;
 
             CalendarManager.Instance.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager, DataProvider));
             var birthdayReminderCalendar = new BirthdayReminderCalendar(AuthContext, TimeZoneConverter, UserManager, DisplayUserSettingsHelper);
@@ -216,6 +220,34 @@ namespace ASC.Calendar.Controllers
             var product = new CalendarProduct();
             product.Init();
             return new Module(product, true);
+        }
+        [Read("subscriptions")]
+        public List<SubscriptionWrapper> LoadSubscriptions()
+        {
+            var result = new List<SubscriptionWrapper>();
+
+            var calendars = DataProvider.LoadSubscriptionsForUser(SecurityContext.CurrentAccount.ID);
+            result.AddRange(calendars.FindAll(c => !c.OwnerId.Equals(SecurityContext.CurrentAccount.ID)).ConvertAll(c => SubscriptionWrapperHelper.Get(c)));
+
+            var iCalStreams = DataProvider.LoadiCalStreamsForUser(SecurityContext.CurrentAccount.ID);
+            result.AddRange(iCalStreams.ConvertAll(c => SubscriptionWrapperHelper.Get(c)));
+
+
+            var extCalendars = CalendarManager.Instance.GetCalendarsForUser(SecurityContext.CurrentAccount.ID, UserManager);
+            var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, extCalendars.ConvertAll(c => c.Id));
+
+            result.AddRange(extCalendars.ConvertAll(c =>
+                                    SubscriptionWrapperHelper.Get(c, viewSettings.Find(o => o.CalendarId.Equals(c.Id, StringComparison.InvariantCultureIgnoreCase)))));
+
+
+            //TODO For personal
+            /*else
+            {
+                var iCalStreams = DataProvider.LoadiCalStreamsForUser(SecurityContext.CurrentAccount.ID);
+                result.AddRange(iCalStreams.ConvertAll(c => new SubscriptionWrapper(c)));
+            }*/
+
+            return result;
         }
         [Read("eventdays/{startDate}/{endDate}")]
         public List<ApiDateTime> GetEventDays(ApiDateTime startDate, ApiDateTime endDate)
@@ -2647,7 +2679,8 @@ namespace ASC.Calendar.Controllers
                 .AddEventHistoryWrapper()
                 .AddEventWrapper()
                 .AddTodoWrapper()
-                .AddExportDataCache();
+                .AddExportDataCache()
+                .AddSubscriptionWrapperHelper();
         }
     }
 }

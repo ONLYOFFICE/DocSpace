@@ -43,6 +43,8 @@ namespace ASC.Calendar.Models
     [DataContract(Name = "calendar", Namespace = "")]
     public class CalendarWrapper
     {
+        internal UserViewSettings _userViewSettings;
+        internal Guid _userId;
         public BaseCalendar UserCalendar { get; set; }
 
         [DataMember(Name = "isSubscription", Order = 80)]
@@ -64,7 +66,7 @@ namespace ASC.Calendar.Models
         public bool IsShared { get; set; }
 
         [DataMember(Name = "permissions", Order = 70)]
-        public CalendarPermissions Permissions { get; set; }
+        public virtual CalendarPermissions Permissions { get; set; }
 
         [DataMember(Name = "isEditable", Order = 90)]
         public bool IsEditable { get; set; }
@@ -135,9 +137,6 @@ namespace ASC.Calendar.Models
     public class CalendarWrapperHelper
     {
 
-        protected UserViewSettings _userViewSettings;
-        protected Guid _userId;
-
         public AuthContext AuthContext { get; }
         private AuthManager Authentication { get; }
         private PermissionContext PermissionContext { get; }
@@ -174,22 +173,22 @@ namespace ASC.Calendar.Models
         {
             var calendarWraper = new CalendarWrapper();
 
-            _userViewSettings = userViewSettings;
-            if (_userViewSettings == null && calendar is BusinessObjects.Calendar)
+            calendarWraper._userViewSettings = userViewSettings;
+            if (calendarWraper._userViewSettings == null && calendar is BusinessObjects.Calendar)
             {
-                _userViewSettings = (calendar as BusinessObjects.Calendar)
+                calendarWraper._userViewSettings = (calendar as BusinessObjects.Calendar)
                                     .ViewSettings.Find(s => s.UserId == AuthContext.CurrentAccount.ID);
             }
 
-            if (_userViewSettings == null)
+            if (calendarWraper._userViewSettings == null)
             {
                 calendarWraper.UserCalendar = calendar;
-                _userId = AuthContext.CurrentAccount.ID;
+                calendarWraper._userId = AuthContext.CurrentAccount.ID;
             }
             else
             {
-                calendarWraper.UserCalendar = calendar.GetUserCalendar(_userViewSettings);
-                _userId = _userViewSettings.UserId;
+                calendarWraper.UserCalendar = calendar.GetUserCalendar(calendarWraper._userViewSettings);
+                calendarWraper._userId = calendarWraper._userViewSettings.UserId;
             }
 
             //---IsSubscription
@@ -199,7 +198,7 @@ namespace ASC.Calendar.Models
                     calendarWraper.IsSubscription = true;
                 else if (calendarWraper.UserCalendar.Id.Equals(SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase))
                     calendarWraper.IsSubscription = true;
-                else if (calendarWraper.UserCalendar.OwnerId.Equals(_userId))
+                else if (calendarWraper.UserCalendar.OwnerId.Equals(calendarWraper._userId))
                     calendarWraper.IsSubscription = false;
                 else
                     calendarWraper.IsSubscription = true;
@@ -217,7 +216,7 @@ namespace ASC.Calendar.Models
                     calendarWraper.IsiCalStream = false;
 
                 //---IsHidden
-                calendarWraper.IsHidden = _userViewSettings != null ? _userViewSettings.IsHideEvents : false;
+                calendarWraper.IsHidden = calendarWraper._userViewSettings != null ? calendarWraper._userViewSettings.IsHideEvents : false;
 
                 //---CanAlertModify
                 calendarWraper.CanAlertModify = calendarWraper.UserCalendar.Context.CanChangeAlertType;
@@ -240,7 +239,7 @@ namespace ASC.Calendar.Models
                 if (calendarWraper.UserCalendar.IsiCalStream())
                     calendarWraper.IsEditable = false;
                 else if (calendarWraper.UserCalendar is ISecurityObject)
-                    calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, _userId), (ISecurityObject)calendarWraper.UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
+                    calendarWraper.IsEditable = PermissionContext.PermissionResolver.Check(Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, calendarWraper._userId), (ISecurityObject)calendarWraper.UserCalendar as ISecurityObject, null, CalendarAccessRights.FullAccessAction);
                 else
                     calendarWraper.IsEditable = false;
 
@@ -275,7 +274,7 @@ namespace ASC.Calendar.Models
                 calendarWraper.Owner = owner;
 
                 //---IsAcceptedSubscription
-                calendarWraper.IsAcceptedSubscription = _userViewSettings == null || _userViewSettings.IsAccepted;
+                calendarWraper.IsAcceptedSubscription = calendarWraper._userViewSettings == null || calendarWraper._userViewSettings.IsAccepted;
 
                 //---DefaultAlertType
                 calendarWraper.DefaultAlertType = EventAlertWrapper.ConvertToTypeSurrogated(calendarWraper.UserCalendar.EventAlertType);

@@ -29,58 +29,24 @@ using System.Runtime.Serialization;
 using ASC.Web.Core.Calendars;
 using ASC.Calendar.BusinessObjects;
 using System.Collections.Generic;
+using ASC.Common;
 
 namespace ASC.Calendar.Models
 {
-    /*
     [DataContract(Name = "subscription", Namespace = "")]
     public class SubscriptionWrapper : CalendarWrapper
     {
-        public SubscriptionWrapper(BaseCalendar calendar)
-            : base(calendar) { }
-        public SubscriptionWrapper(BaseCalendar calendar, UserViewSettings userViewSettings)
-            : base(calendar, userViewSettings) { }
-
-
         [DataMember(Name = "isSubscribed", Order = 100)]
-        public bool IsAccepted
-        {
-            get
-            {
-                if(UserCalendar is Calendar.BusinessObjects.Calendar)
-                    return _userViewSettings != null && _userViewSettings.IsAccepted;
-
-                return this.IsAcceptedSubscription;
-            }
-            set { }
-        }
-
+        public bool IsAccepted { get; set; }
 
         [DataMember(Name = "isNew", Order = 140)]
-        public bool IsNew
-        {
-            get
-            {
-                return _userViewSettings==null;
-            }
-            set { }
-        }
+        public bool IsNew { get; set; }
 
         [DataMember(Name = "group", Order = 130)]
-        public string Group 
-        {
-            get {
+        public string Group { get; set; }
 
-                if(UserCalendar.IsiCalStream())
-                    return Resources.CalendarApiResource.iCalCalendarsGroup;
-
-                return String.IsNullOrEmpty(UserCalendar.Context.Group) ? Resources.CalendarApiResource.SharedCalendarsGroup : UserCalendar.Context.Group;
-            }
-            set { }
-        }
-
-        [DataMember(IsRequired=false)]
-        public override CalendarPermissions Permissions{get; set;}
+        [DataMember(IsRequired = false)]
+        public override CalendarPermissions Permissions { get; set; }
 
         public new static object GetSample()
         {
@@ -110,5 +76,70 @@ namespace ASC.Calendar.Models
             };
         }
     }
-    */
+
+    public class SubscriptionWrapperHelper
+    {
+
+        public CalendarWrapperHelper CalendarWrapperHelper;
+        public SubscriptionWrapperHelper(
+            CalendarWrapperHelper calendarWrapperHelper)
+        {
+            CalendarWrapperHelper = calendarWrapperHelper;
+        }
+
+        public SubscriptionWrapper Get(BaseCalendar calendar)
+        {
+            var subscriptionWrapper = (SubscriptionWrapper)CalendarWrapperHelper.Get(calendar);
+            var _userViewSettings = subscriptionWrapper._userViewSettings;
+
+            //isSubscribed
+            if (subscriptionWrapper.UserCalendar is Calendar.BusinessObjects.Calendar)
+                subscriptionWrapper.IsAccepted = _userViewSettings != null && _userViewSettings.IsAccepted;
+            else
+                subscriptionWrapper.IsAccepted = subscriptionWrapper.IsAcceptedSubscription;
+
+            //isNew
+            subscriptionWrapper.IsNew = _userViewSettings == null;
+
+            //group
+            if (subscriptionWrapper.UserCalendar.IsiCalStream())
+                subscriptionWrapper.Group = Resources.CalendarApiResource.iCalCalendarsGroup;
+            else
+                subscriptionWrapper.Group = String.IsNullOrEmpty(subscriptionWrapper.UserCalendar.Context.Group) ? Resources.CalendarApiResource.SharedCalendarsGroup : subscriptionWrapper.UserCalendar.Context.Group;
+
+            return subscriptionWrapper;
+        }
+        public SubscriptionWrapper Get(BaseCalendar calendar, UserViewSettings userViewSettings)
+        {
+            var subscriptionWrapper = (SubscriptionWrapper)CalendarWrapperHelper.Get(calendar, userViewSettings);
+            var _userViewSettings = subscriptionWrapper._userViewSettings;
+
+            //isSubscribed
+            if (subscriptionWrapper.UserCalendar is Calendar.BusinessObjects.Calendar)
+                subscriptionWrapper.IsAccepted = _userViewSettings != null && _userViewSettings.IsAccepted;
+            else
+                subscriptionWrapper.IsAccepted = subscriptionWrapper.IsAcceptedSubscription;
+
+            //isNew
+            subscriptionWrapper.IsNew = _userViewSettings == null;
+
+            //group
+            if (subscriptionWrapper.UserCalendar.IsiCalStream())
+                subscriptionWrapper.Group = Resources.CalendarApiResource.iCalCalendarsGroup;
+            else
+                subscriptionWrapper.Group = String.IsNullOrEmpty(subscriptionWrapper.UserCalendar.Context.Group) ? Resources.CalendarApiResource.SharedCalendarsGroup : subscriptionWrapper.UserCalendar.Context.Group;
+            return subscriptionWrapper;
+        }
+    }
+
+    public static class SubscriptionWrapperExtension
+    {
+        public static DIHelper AddSubscriptionWrapperHelper(this DIHelper services)
+        {
+            services.TryAddScoped<SubscriptionWrapperHelper>();
+
+            return services
+                .AddCalendarWrapper();
+        }
+    }
 }
