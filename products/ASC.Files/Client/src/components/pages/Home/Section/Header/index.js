@@ -445,7 +445,7 @@ const mapStateToProps = state => {
     isRecycleBinFolder: treeFolders[indexOfTrash].id === id,
     parentId,
     selection,
-    title: title,
+    title,
     filter,
 
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user)

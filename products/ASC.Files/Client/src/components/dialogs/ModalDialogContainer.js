@@ -43,14 +43,14 @@ const ModalDialogContainer = styled.div`
     .heading-toggle-content {
       font-size: 16px;
     }
-
-
   }
 
 
-
-
   .delete_dialog-header-text {
+    padding-bottom: 8px;
+  }
+
+  .delete_dialog-text {
     padding-top: 8px;
   }
 

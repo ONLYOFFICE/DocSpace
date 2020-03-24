@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   toastr,
@@ -6,11 +6,9 @@ import {
   Button,
   Text,
   Checkbox,
-  CustomScrollbarsVirtualList
+  Scrollbar
 } from "asc-web-components";
 import { withTranslation } from "react-i18next";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
 
@@ -51,33 +49,30 @@ class DeleteDialogComponent extends React.Component {
     const folderIds = [];
     const fileIds = [];
 
-    
     let i = 0;
     while (selection.length !== i) {
       if (selection[i].fileExst && selection[i].checked) {
         fileIds.push(selection[i].id.toString());
-      } else if(selection[i].checked) {
+      } else if (selection[i].checked) {
         folderIds.push(selection[i].id.toString());
       }
       i++;
     }
 
-    console.log("fileIds", fileIds);
-    console.log("folderIds", folderIds);
-
-    //this.setState({ isLoading: true }, () => {
-    //  files
-    //    .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-    //    .then(() => {
-    //      toastr.success(successMessage);
-    //    })
-    //    .catch(err => {
-    //      toastr.error(err);
-    //    })
-    //    .finally(() => {
-    //      this.setState({ isLoading: false }, () => onClose());
-    //    });
-    //});
+    this.setState({ isLoading: true }, () => {
+      files
+        .removeFiles(folderIds, fileIds, deleteAfter, immediately)
+        .then((res) => {
+          console.log("res", res);
+          toastr.success(successMessage);
+        })
+        .catch(err => {
+          toastr.error(err);
+        })
+        .finally(() => {
+          this.setState({ isLoading: false }, () => onClose());
+        });
+    });
   };
 
   onChange = event => {
@@ -92,7 +87,6 @@ class DeleteDialogComponent extends React.Component {
       a.checked = !a.checked;
       this.setState({ selection: newSelection });
     } else {
-
       const a = newSelection.find(x => x.id === id && !x.fileExst);
       a.checked = !a.checked;
       this.setState({ selection: newSelection });
@@ -100,66 +94,18 @@ class DeleteDialogComponent extends React.Component {
   };
 
   render() {
-    const { onClose, visible, t, selection } = this.props;
-    const { isLoading, filesList, foldersList } = this.state;
+    const { onClose, visible, t } = this.props;
+    const { isLoading, filesList, foldersList, selection } = this.state;
 
-    const renderItems = memo(({ data, index, style }) => {
-      return (
-        <Checkbox
-          truncate
-          style={style}
-          className="modal-dialog-checkbox"
-          //value={data[index].id}
-          value={`${data[index].fileExst}/${data[index].id}`}
-          onChange={this.onChange}
-          key={`checkbox_${index}`}
-          isChecked={data[index].checked}
-          label={data[index].title}
-        />
-      );
-    }, areEqual);
+    const checkedSelections = selection.filter(x => x.checked === true);
 
-    const renderList = ({ height, width }) => {
-      const filesHeight = filesList.length * 25;
-      const foldersHeight = foldersList.length * 25;
+    const questionMessage =
+      checkedSelections.length === 1
+        ? checkedSelections[0].fileExst
+          ? t("QuestionDeleteFile")
+          : t("QuestionDeleteFolder")
+        : t("QuestionDeleteElements");
 
-      return (
-        <>
-          <Text isBold>Folders:</Text>
-          <List
-            className="List"
-            height={foldersHeight}
-            width={width}
-            itemSize={25}
-            itemCount={foldersList.length}
-            itemData={foldersList}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {renderItems}
-          </List>
-
-          <Text isBold className="delete_dialog-header-text">
-            Files:
-          </Text>
-          <List
-            className="List"
-            height={filesHeight}
-            width={width}
-            itemSize={25}
-            itemCount={filesList.length}
-            itemData={filesList}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {renderItems}
-          </List>
-        </>
-      );
-    };
-
-    const containerStyles = {
-      height: selection.length * 25 + 50,
-      maxHeight: 480
-    };
     return (
       <ModalDialogContainer>
         <ModalDialog
@@ -168,9 +114,37 @@ class DeleteDialogComponent extends React.Component {
           headerContent={t("ConfirmationTitle")}
           bodyContent={
             <>
-              <Text>{t("DeleteDialogQuestion")}</Text>
-              <div style={containerStyles} className="modal-dialog-content">
-                <AutoSizer>{renderList}</AutoSizer>
+              <div className="modal-dialog-content">
+                <Text className="delete_dialog-header-text">{questionMessage}</Text>
+                <Scrollbar style={{ height: 330 }} stype="mediumBlack">
+                  <Text isBold>{t("FoldersModule")}:</Text>
+                  {foldersList.map((item, index) => (
+                    <Checkbox
+                      truncate
+                      className="modal-dialog-checkbox"
+                      value={`${item.fileExst}/${item.id}`}
+                      onChange={this.onChange}
+                      key={`checkbox_${index}`}
+                      isChecked={item.checked}
+                      label={item.title}
+                    />
+                  ))}
+
+                  <Text isBold className="delete_dialog-text">
+                    {t("FilesModule")}:
+                  </Text>
+                  {filesList.map((item, index) => (
+                    <Checkbox
+                      truncate
+                      className="modal-dialog-checkbox"
+                      value={`${item.fileExst}/${item.id}`}
+                      onChange={this.onChange}
+                      key={`checkbox_${index}`}
+                      isChecked={item.checked}
+                      label={item.title}
+                    />
+                  ))}
+                </Scrollbar>
               </div>
             </>
           }

@@ -10,62 +10,25 @@
     ]
   },
   "dialogs": {
-    "InviteDialog": {
-      "Resource": [
-        "HelpAnswerLinkInviteSettings",
-        "CopyToClipboard",
-        "CloseButton",
-        "GetShortenLink",
-        "LoadingProcessing",
-        "InviteUsersAsCollaborators",
-        "InviteLinkTitle"
-      ],
-    "ResourceJS": [
-      "LinkCopySuccess"
-    ]
-  },
-  "ChangeEmailDialog":{
+  "DeleteDialog":{
     "Resource": [
-      "EmailChangeTitle",
-      "EnterEmail",
-      "EmailActivationDescription",
-      "SendButton"
-    ]
-  },
-  "DeleteSelfProfileDialog":{
-    "Resource": [
-      "DeleteProfileTitle",
-      "DeleteProfileInfo",
-      "CloseButton",
-      "SendButton"
-    ]
-  },
-  "ChangePhoneDialog":{
-    "Resource": [
-      "SendButton",
-      "MobilePhoneChangeTitle",
-      "MobilePhoneEraseDescription"
-    ]
-  },
-  "DeleteProfileEverDialog":{
-    "Resource": [
-      "Confirmation",
-      "DeleteUserConfirmation",
-      "Warning",
-      "DeleteUserDataConfirmation"      
+      "OKButton",
+      "CancelButton",
+      "ConfirmationTitle"
     ],
-    "PeopleResource": [
-      "SuccessfullyDeleteUserInfoMessage"
+    "UserControlsCommonResource": [
+      "QuestionDeleteFile"
     ],
-    "UserControlsCommonResource":[
-      "NotBeUndone"
+    "FeedResource": [
+      "FilesModule",
+      "FoldersModule"
     ]
   },
-  "ChangePasswordDialog":{
+  "EmptyTrashDialog": {
     "Resource": [
-      "PasswordChangeTitle",
-      "MessageSendPasswordChangeInstructionsOnEmail",
-      "SendButton"
+      "OKButton",
+      "CancelButton",
+      "ConfirmationTitle"
     ]
   }
 },
