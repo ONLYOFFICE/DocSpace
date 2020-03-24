@@ -24,16 +24,6 @@
 */
 
 
-//using System.Collections.Generic;
-//using ASC.Common.Data;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
-//using ASC.Mail.Core.Dao.Interfaces;
-//using ASC.Mail.Core.DbSchema;
-//using ASC.Mail.Core.DbSchema.Interfaces;
-//using ASC.Mail.Core.DbSchema.Tables;
-//using ASC.Mail.Core.Entities;
-
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
