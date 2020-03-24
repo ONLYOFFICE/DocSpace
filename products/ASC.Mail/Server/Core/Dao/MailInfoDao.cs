@@ -26,6 +26,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -45,301 +47,243 @@ namespace ASC.Mail.Core.Dao
             : base(apiContext, securityContext, dbContext) { 
         }
 
-        //private const string MM_ALIAS = "mm";
-        //private const string MTM_ALIAS = "tm";
-        //private const string UFXM_ALIAS = "ufxm";
-
-        //private static readonly string CountMailId = "count(" + MailTable.Columns.Id.Prefix(MM_ALIAS) + ")";
-
-        //private static readonly string ConcatTagIds =
-        //    string.Format(
-        //        "(SELECT CAST(group_concat({4}.{0} ORDER BY {4}.{3} SEPARATOR ',') AS CHAR) from {1} as {4} WHERE {4}.{2} = {5}.{6}) tagIds",
-        //        TagMailTable.Columns.TagId,
-        //        TagMailTable.TABLE_NAME,
-        //        TagMailTable.Columns.MailId,
-        //        TagMailTable.Columns.TimeCreated,
-        //        MTM_ALIAS,
-        //        MM_ALIAS,
-        //        MailTable.Columns.Id);
-
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)
         {
-            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                .Select(MailTable.Columns.Id.Prefix(MM_ALIAS),
-                    MailTable.Columns.From.Prefix(MM_ALIAS),
-                    MailTable.Columns.To.Prefix(MM_ALIAS),
-                    MailTable.Columns.Cc.Prefix(MM_ALIAS),
-                    MailTable.Columns.Reply.Prefix(MM_ALIAS),
-                    MailTable.Columns.Subject.Prefix(MM_ALIAS),
-                    MailTable.Columns.Importance.Prefix(MM_ALIAS),
-                    MailTable.Columns.DateSent.Prefix(MM_ALIAS),
-                    MailTable.Columns.Size.Prefix(MM_ALIAS),
-                    MailTable.Columns.AttachCount.Prefix(MM_ALIAS),
-                    MailTable.Columns.Unread.Prefix(MM_ALIAS),
-                    MailTable.Columns.IsAnswered.Prefix(MM_ALIAS),
-                    MailTable.Columns.IsForwarded.Prefix(MM_ALIAS),
-                    skipSelectTags ? "\"\" as tagIds" : ConcatTagIds,
-                    MailTable.Columns.FolderRestore.Prefix(MM_ALIAS),
-                    MailTable.Columns.Folder.Prefix(MM_ALIAS),
-                    MailTable.Columns.ChainId.Prefix(MM_ALIAS),
-                    MailTable.Columns.ChainDate.Prefix(MM_ALIAS),
-                    MailTable.Columns.MailboxId.Prefix(MM_ALIAS),
-                    MailTable.Columns.CalendarUid.Prefix(MM_ALIAS),
-                    MailTable.Columns.Stream.Prefix(MM_ALIAS),
-                    MailTable.Columns.Uidl.Prefix(MM_ALIAS),
-                    MailTable.Columns.IsRemoved.Prefix(MM_ALIAS),
-                    MailTable.Columns.Introduction.Prefix(MM_ALIAS));
+            var query = MailDb.MailMail
+                .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query
-                    .InnerJoin(TagMailTable.TABLE_NAME.Alias(MTM_ALIAS),
-                        Exp.EqColumns(MailTable.Columns.Id.Prefix(MM_ALIAS),
-                            TagMailTable.Columns.MailId.Prefix(MTM_ALIAS)))
-                    .Where(Exp.In(TagMailTable.Columns.TagId.Prefix(MTM_ALIAS), exp.TagIds))
-                    .GroupBy(1)
-                    .Having(Exp.Eq(CountMailId, exp.TagIds.Count));
+                query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
+                    (m, tm) => new
+                    {
+                        Mail = m,
+                        Xtags = tm
+                    })
+                    .Where(g => exp.TagIds.Contains(g.Xtags.IdTag))
+                    .GroupBy(g => g.Mail.Id)
+                    .Where(g => g.Count() == exp.TagIds.Count);
             }
 
             if (exp.UserFolderId.HasValue)
             {
-                query
-                    .InnerJoin(UserFoldertXMailTable.TABLE_NAME.Alias(UFXM_ALIAS),
-                        Exp.EqColumns(MailTable.Columns.Id.Prefix(MM_ALIAS),
-                            UserFoldertXMailTable.Columns.MailId.Prefix(UFXM_ALIAS)))
-                    .Where(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS), exp.UserFolderId.Value);
+                query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
+                    (m, x) => new
+                    {
+                        Mail = m,
+                        XuserFolder = x
+                    })
+                    .Where(g => g.XuserFolder.IdFolder == exp.UserFolderId.Value);
             }
 
-            query.Where(exp.GetExpression());
-
-            if (exp.StartIndex.HasValue)
+            if(exp.StartIndex.HasValue)
             {
-                query.SetFirstResult(exp.StartIndex.Value);
+                query.Skip(exp.StartIndex.Value);
             }
 
             if (exp.Limit.HasValue)
             {
-                query.SetMaxResults(exp.Limit.Value);
+                query.Take(exp.Limit.Value);
             }
 
             if (!string.IsNullOrEmpty(exp.OrderBy))
             {
-                var sortField = MailTable.Columns.DateSent.Prefix(MM_ALIAS);
+                var sortField = "DateSent";
 
                 if (exp.OrderBy == Defines.ORDER_BY_SUBJECT)
                 {
-                    sortField = MailTable.Columns.Subject.Prefix(MM_ALIAS);
+                    sortField = "Subject";
                 }
                 else if (exp.OrderBy == Defines.ORDER_BY_SENDER)
                 {
-                    sortField = MailTable.Columns.From.Prefix(MM_ALIAS);
+                    sortField = "FromText";
                 }
                 else if (exp.OrderBy == Defines.ORDER_BY_DATE_CHAIN)
                 {
-                    sortField = MailTable.Columns.ChainDate.Prefix(MM_ALIAS);
+                    sortField = "ChainDate";
                 }
 
-                query.OrderBy(sortField, exp.OrderAsc != null && exp.OrderAsc.Value);
+                query.OrderBy(sortField, exp.OrderAsc.GetValueOrDefault());
             }
 
-            var list = Db.ExecuteList(query)
-                .ConvertAll(ToMailInfo);
+            var list = query
+                .Select(m => new { 
+                    Mail = m,
+                    LabelsString = skipSelectTags ? "" : string.Join(",", MailDb.MailTagMail.Where(t => t.IdMail == m.Id).Select(t => t.IdTag))
+                })
+                .Select(x => ToMailInfo(x.Mail, x.LabelsString))
+                .ToList();
 
-            return list;*/
-
-            throw new NotImplementedException();
+            return list;
         }
 
         public long GetMailInfoTotal(IMessagesExp exp)
         {
-            /*long total;
-
-            var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                .SelectCount(MailTable.Columns.Id.Prefix(MM_ALIAS));
+            var query = MailDb.MailMail
+                .Where(exp.GetExpression());
 
             if (exp.TagIds != null && exp.TagIds.Any())
             {
-                query
-                    .InnerJoin(TagMailTable.TABLE_NAME.Alias(MTM_ALIAS),
-                        Exp.EqColumns(MailTable.Columns.Id.Prefix(MM_ALIAS),
-                            TagMailTable.Columns.MailId.Prefix(MTM_ALIAS)))
-                    .Where(Exp.In(TagMailTable.Columns.TagId.Prefix(MTM_ALIAS), exp.TagIds))
-                    .GroupBy(MailTable.Columns.Id.Prefix(MM_ALIAS))
-                    .Having(Exp.Eq(CountMailId, exp.TagIds.Count));
+                query.Join(MailDb.MailTagMail, m => m.Id, tm => tm.IdMail,
+                    (m, tm) => new
+                    {
+                        Mail = m,
+                        Xtags = tm
+                    })
+                    .Where(g => exp.TagIds.Contains(g.Xtags.IdTag))
+                    .GroupBy(g => g.Mail.Id)
+                    .Where(g => g.Count() == exp.TagIds.Count);
             }
 
             if (exp.UserFolderId.HasValue)
             {
-                query
-                    .InnerJoin(UserFoldertXMailTable.TABLE_NAME.Alias(UFXM_ALIAS),
-                        Exp.EqColumns(MailTable.Columns.Id.Prefix(MM_ALIAS),
-                            UserFoldertXMailTable.Columns.MailId.Prefix(UFXM_ALIAS)))
-                    .Where(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS), exp.UserFolderId.Value);
+                query.Join(MailDb.MailUserFolderXMail, m => m.Id, x => (int)x.IdMail,
+                    (m, x) => new
+                    {
+                        Mail = m,
+                        XuserFolder = x
+                    })
+                    .Where(g => g.XuserFolder.IdFolder == exp.UserFolderId.Value);
             }
 
-            query.Where(exp.GetExpression());
+            var total = query.Count();
 
-            if (exp.TagIds != null && exp.TagIds.Any())
-            {
-                var queryTempCount = new SqlQuery()
-                    .SelectCount()
-                    .From(query, "tbl");
-
-                total = Db.ExecuteScalar<long>(queryTempCount);
-            }
-            else
-            {
-                total = Db.ExecuteScalar<long>(query);
-            }
-
-            return total;*/
-
-            throw new NotImplementedException();
+            return total;
         }
 
         public Dictionary<int, int> GetMailCount(IMessagesExp exp)
         {
-            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                .Select(MailTable.Columns.Folder.Prefix(MM_ALIAS))
-                .SelectCount()
+            var dictionary = MailDb.MailMail
                 .Where(exp.GetExpression())
-                .GroupBy(MailTable.Columns.Folder.Prefix(MM_ALIAS));
-
-            return Db.ExecuteList(query)
-                .ConvertAll(r => new
+                .GroupBy(m => m.Folder)
+                .Select(g => new
                 {
-                    folder = Convert.ToInt32(r[0]),
-                    count = Convert.ToInt32(r[1])
+                    FolderId = g.Key,
+                    Count = g.Count()
                 })
-                .ToDictionary(o => o.folder, o => o.count);*/
+                .ToDictionary(o => o.FolderId, o => o.Count);
 
-            throw new NotImplementedException();
+            return dictionary;
         }
 
         public Dictionary<uint, int> GetMailUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            /*var exp = Exp.Eq(UserFoldertXMailTable.Columns.Tenant.Prefix(UFXM_ALIAS), Tenant) &
-                      Exp.Eq(UserFoldertXMailTable.Columns.User.Prefix(UFXM_ALIAS), User) &
-                      Exp.In(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS), userFolderIds);
+            var dictionary = (from t in MailDb.MailUserFolderXMail
+                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
+                              from ufxm in UFxMail
+                              where t.Tenant == Tenant && t.IdUser == UserId
+                                && userFolderIds.Contains((int)t.IdFolder)
+                                && (unread.HasValue && ufxm.Unread == unread.Value)
+                              group t by t.IdFolder into UFCounters
+                              select new
+                              {
+                                  FolderId = UFCounters.Key,
+                                  Count = UFCounters.Count()
+                              })
+                             .ToList()
+                             .ToDictionary(o => o.FolderId, o => o.Count);
 
-            if (unread.HasValue)
-            {
-                exp = exp & Exp.Eq(MailTable.Columns.Unread.Prefix(MM_ALIAS), unread.Value);
-            }
-
-            var query = new SqlQuery(UserFoldertXMailTable.TABLE_NAME.Alias(UFXM_ALIAS))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MM_ALIAS),
-                    Exp.EqColumns(
-                        UserFoldertXMailTable.Columns.MailId.Prefix(UFXM_ALIAS),
-                        MailTable.Columns.Id.Prefix(MM_ALIAS)))
-                .Select(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS))
-                .SelectCount()
-                .Where(exp)
-                .GroupBy(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS));
-
-            var result = Db.ExecuteList(query)
-                .ConvertAll(r => new
-                {
-                    folder = Convert.ToUInt32(r[0]),
-                    count = Convert.ToInt32(r[1])
-                })
-                .ToDictionary(o => o.folder, o => o.count);
-
-            return result;*/
-
-            throw new NotImplementedException();
+            return dictionary;
         }
 
         public Dictionary<uint, int> GetMailUserFolderCount(bool? unread = null)
         {
-            /*var exp = Exp.Eq(UserFoldertXMailTable.Columns.Tenant.Prefix(UFXM_ALIAS), Tenant) &
-                      Exp.Eq(UserFoldertXMailTable.Columns.User.Prefix(UFXM_ALIAS), User);
+            var dictionary = (from t in MailDb.MailUserFolderXMail
+                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
+                              from ufxm in UFxMail
+                              where t.Tenant == Tenant && t.IdUser == UserId
+                                && (unread.HasValue && ufxm.Unread == unread.Value)
+                              group t by t.IdFolder into UFCounters
+                              select new
+                              {
+                                  FolderId = UFCounters.Key,
+                                  Count = UFCounters.Count()
+                              })
+                             .ToList()
+                             .ToDictionary(o => o.FolderId, o => o.Count);
 
-            if (unread.HasValue)
-            {
-                exp = exp & Exp.Eq(MailTable.Columns.Unread.Prefix(MM_ALIAS), unread.Value);
-            }
-
-            var query = new SqlQuery(UserFoldertXMailTable.TABLE_NAME.Alias(UFXM_ALIAS))
-                .InnerJoin(MailTable.TABLE_NAME.Alias(MM_ALIAS),
-                    Exp.EqColumns(
-                        UserFoldertXMailTable.Columns.MailId.Prefix(UFXM_ALIAS),
-                        MailTable.Columns.Id.Prefix(MM_ALIAS)))
-                .Select(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS))
-                .SelectCount()
-                .Where(exp)
-                .GroupBy(UserFoldertXMailTable.Columns.FolderId.Prefix(UFXM_ALIAS));
-
-            var result = Db.ExecuteList(query)
-                .ConvertAll(r => new
-                {
-                    folder = Convert.ToUInt32(r[0]),
-                    count = Convert.ToInt32(r[1])
-                })
-                .ToDictionary(o => o.folder, o => o.count);
-
-            return result;*/
-
-            throw new NotImplementedException();
+            return dictionary;
         }
 
         public Tuple<int, int> GetRangeMails(IMessagesExp exp)
         {
-            /*var query = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                .SelectMin(MailTable.Columns.Id.Prefix(MM_ALIAS))
-                .SelectMax(MailTable.Columns.Id.Prefix(MM_ALIAS))
-                .Where(exp.GetExpression());
+            var max = MailDb.MailMail
+                .Where(exp.GetExpression())
+                .Max(m => m.Id);
 
-            var range = Db.ExecuteList(query)
-                .ConvertAll(r => new Tuple<int, int>(Convert.ToInt32(r[0]), Convert.ToInt32(r[1])))
-                .SingleOrDefault();
+            var min = MailDb.MailMail
+                .Where(exp.GetExpression())
+                .Min(m => m.Id);
 
-            return range;*/
-
-            throw new NotImplementedException();
+            return new Tuple<int, int>(min, max);
         }
 
         public T GetFieldMaxValue<T>(IMessagesExp exp, string field)
         {
-            /*var fieldQuery = new SqlQuery(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                .SelectMax(field.Prefix(MM_ALIAS))
-                .Where(exp.GetExpression());
+            Type type = typeof(T);
+            PropertyInfo pi = type.GetProperty(field);
 
-            var fieldVal = Db.ExecuteScalar<T>(fieldQuery);
+            if (pi == null)
+                throw new ArgumentException("Field not found");
 
-            return fieldVal;*/
-            throw new NotImplementedException();
+            var max = MailDb.MailMail
+                .Where(exp.GetExpression())
+                .Max(m => pi.GetValue(m));
+
+            return (T)max;
         }
 
         public int SetFieldValue<T>(IMessagesExp exp, string field, T value)
         {
-            /*var query =
-                new SqlUpdate(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                    .Set(field.Prefix(MM_ALIAS), value)
-                    .Where(exp.GetExpression());
+            Type type = typeof(T);
+            PropertyInfo pi = type.GetProperty(field);
 
-            var result = Db.ExecuteNonQuery(query);
+            if (pi == null)
+                throw new ArgumentException("Field not found");
 
-            return result;*/
+            var mails = MailDb.MailMail
+                .Where(exp.GetExpression())
+                .ToList();
 
-            throw new NotImplementedException();
+            foreach (var mail in mails)
+            {
+                pi.SetValue(mail, Convert.ChangeType(value, pi.PropertyType), null);
+            }
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
         public int SetFieldsEqual(IMessagesExp exp, string fieldFrom, string fieldTo)
         {
-            /*var query =
-                new SqlUpdate(MailTable.TABLE_NAME.Alias(MM_ALIAS))
-                    .Set(string.Format("{0}={1}", fieldTo.Prefix(MM_ALIAS), fieldFrom.Prefix(MM_ALIAS)))
-                    .Where(exp.GetExpression());
+            Type type = typeof(MailMail);
+            PropertyInfo piFrom = type.GetProperty(fieldFrom);
+            PropertyInfo piTo = type.GetProperty(fieldTo);
 
-            var result = Db.ExecuteNonQuery(query);
+            if (piFrom == null)
+                throw new ArgumentException("FieldFrom not found");
 
-            return result;*/
+            if (piTo == null)
+                throw new ArgumentException("FieldTo not found");
 
-            throw new NotImplementedException();
+            var mails = MailDb.MailMail
+                .Where(exp.GetExpression())
+                .ToList();
+
+            foreach (var mail in mails)
+            {
+                var value = piFrom.GetValue(mail);
+
+                piTo.SetValue(mail, Convert.ChangeType(value, piFrom.PropertyType), null);
+            }
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
-        protected MailInfo ToMailInfo(MailMail r)
+        protected MailInfo ToMailInfo(MailMail r, string labelsString)
         {
             var mailInfo = new MailInfo
             {
@@ -356,7 +300,7 @@ namespace ASC.Mail.Core.Dao
                 IsNew = r.Unread,
                 IsAnswered = r.IsAnswered,
                 IsForwarded = r.IsForwarded,
-                LabelsString = "", //TODO: fix Convert.ToString(r[13]),
+                LabelsString = labelsString,
                 FolderRestore = (FolderType) r.Folder,
                 Folder = (FolderType) r.FolderRestore,
                 ChainId = r.ChainId,
