@@ -1,0 +1,8 @@
+{
+  "OKButton": "OK",
+  "CancelButton": "Cancel",
+  "ConfirmationTitle": "Confirmation",
+
+  "DeleteDialogQuestion": "Are you sure you want to delete these elements?",
+  "DeleteDialogNote": "Note: This action can not be undone."
+}

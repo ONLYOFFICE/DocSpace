@@ -1,7 +1,8 @@
 import { find, filter } from "lodash";
-import { constants } from 'asc-web-common';
+import { constants, store } from 'asc-web-common';
 
 const { FileType, FilterType, FolderType } = constants;
+const { isAdmin } = store.auth.selectors;
 
 export const canWebEdit = fileExst => {
   const editedDocs = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv', '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
@@ -90,9 +91,12 @@ export const getTreeFolders = (pathParts, filterData) => {
   return treeFolders;
 };
 
-export const isCanCreate = (selectedFolder, isAdmin ) => {
+export const isCanCreate = (selectedFolder, user) => {
   if (!selectedFolder || !selectedFolder.id) return;
+
+  const admin = isAdmin(user);
   const rootFolderType = selectedFolder.rootFolderType;
+
   switch (rootFolderType) {
     case FolderType.USER:
       return true;
@@ -102,8 +106,26 @@ export const isCanCreate = (selectedFolder, isAdmin ) => {
       const canCreateinSharedFolder = access === 1;
       return isNotRootFolder && canCreateinSharedFolder;
     case FolderType.COMMON:
-      return isAdmin;
+      return admin;
     case FolderType.TRASH:
+    default:
+      return false;
+  }
+};
+
+export const isCanBeDeleted = (selectedFolder, user) => {
+  const admin = isAdmin(user);
+  const rootFolderType = selectedFolder.rootFolderType;
+
+  switch (rootFolderType) {
+    case FolderType.USER:
+      return true;
+    case FolderType.SHARE:
+      return false;
+    case FolderType.COMMON:
+      return admin;
+    case FolderType.TRASH:
+      return true;
     default:
       return false;
   }

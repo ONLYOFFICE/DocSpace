@@ -44,7 +44,17 @@ const ModalDialogContainer = styled.div`
       font-size: 16px;
     }
 
-    .modal-dialog-content {
+
+  }
+
+
+
+
+  .delete_dialog-header-text {
+    padding-top: 8px;
+  }
+
+  .modal-dialog-content {
       padding: 8px 16px;
       border: 1px solid lightgray;
 
@@ -52,7 +62,6 @@ const ModalDialogContainer = styled.div`
         padding-bottom: 4px;
       }
     }
-  }
 `;
 
 export default ModalDialogContainer;

@@ -15,9 +15,10 @@ import {
   IconButton,
   toastr
 } from "asc-web-components";
-import { EmptyTrashDialog } from '../../../../dialogs';
 import { fetchFiles } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
+import { EmptyTrashDialog, DeleteDialog } from '../../../../dialogs';
+import { isCanBeDeleted } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType } = constants;
@@ -97,15 +98,22 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = props => {
 
-  const { t, folder, title,
-    onCreate, onCheck, onSelect,
+  const {
+    t,
+    folder,
+    title,
+    onCreate,
+    onCheck,
+    onSelect,
     onClose,
     isHeaderVisible,
     isHeaderChecked,
     isHeaderIndeterminate,
     selection,
     isRecycleBinFolder,
-    filter } = props;
+    filter,
+    deleteDialogVisible
+  } = props;
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -206,13 +214,15 @@ const SectionHeaderContent = props => {
     []
   );
 
-  const deleteAction = useCallback(
-    () => toastr.info("deleteAction click"),
-    []
-  );
+
   
+  const [showDeleteDialog, setDeleteDialog] = useState(false);
+  const onDeleteAction = useCallback(() => setDeleteDialog(!showDeleteDialog), [showDeleteDialog]);
+
   const [showEmptyTrashDialog, setEmptyTrashDialog] = useState(false);
-  const onCloseEmptyTrashDialog = useCallback(() => setEmptyTrashDialog(!showEmptyTrashDialog), [showEmptyTrashDialog]);
+  const onEmptyTrashAction = useCallback(() => setEmptyTrashDialog(!showEmptyTrashDialog), [showEmptyTrashDialog]);
+
+
 
   const getContextOptionsFolder = useCallback(() => {
     return [
@@ -256,7 +266,7 @@ const SectionHeaderContent = props => {
       {
         key: "delete",
         label: t('Delete'),
-        onClick: deleteAction,
+        onClick: onDeleteAction,
         disabled: true
       }
     ];
@@ -268,7 +278,7 @@ const SectionHeaderContent = props => {
     copyAction,
     downloadAction,
     renameAction,
-    deleteAction
+    onDeleteAction
   ]);
 
   const onBackToParentFolder = () => {
@@ -325,15 +335,15 @@ const SectionHeaderContent = props => {
     },
     {
       label: t("Delete"),
-      disabled: !isItemsSelected,
-      onClick: deleteAction
+      disabled: !isItemsSelected || !deleteDialogVisible,
+      onClick: onDeleteAction
     }
   ];
 
   isRecycleBinFolder &&
     menuItems.push({
       label: t("EmptyRecycleBin"),
-      onClick: onCloseEmptyTrashDialog
+      onClick: onEmptyTrashAction
     });
 
   return (
@@ -352,43 +362,24 @@ const SectionHeaderContent = props => {
             selected={menuItems[0].label}
           />
         </div>
-      )
-        : (
-          <div className='header-container'>
-            {folder &&
-              <IconButton
-                iconName="ArrowPathIcon"
-                size="16"
-                color="#A3A9AE"
-                hoverColor="#657077"
-                isFill={true}
-                onClick={onBackToParentFolder}
-                className="arrow-button"
-              />
-            }
-            <Headline className='headline-header' type="content" truncate={true}>{title}</Headline>
-            {folder ?
-              <>
-                <ContextMenuButton
-                  className="add-button"
-                  directionX="right"
-                  iconName="PlusIcon"
-                  size={16}
-                  color="#657077"
-                  getData={getContextOptionsPlus}
-                  isDisabled={false}
-                />
-                <ContextMenuButton
-                  className="option-button"
-                  directionX="right"
-                  iconName="VerticalDotsIcon"
-                  size={16}
-                  color="#A3A9AE"
-                  getData={getContextOptionsFolder}
-                  isDisabled={false}
-                />
-              </>
-              :
+      ) : (
+        <div className="header-container">
+          {folder && (
+            <IconButton
+              iconName="ArrowPathIcon"
+              size="16"
+              color="#A3A9AE"
+              hoverColor="#657077"
+              isFill={true}
+              onClick={onBackToParentFolder}
+              className="arrow-button"
+            />
+          )}
+          <Headline className="headline-header" type="content" truncate={true}>
+            {title}
+          </Headline>
+          {folder ? (
+            <>
               <ContextMenuButton
                 className="add-button"
                 directionX="right"
@@ -398,34 +389,69 @@ const SectionHeaderContent = props => {
                 getData={getContextOptionsPlus}
                 isDisabled={false}
               />
-            }
-          </div>
-        )}
-
-          {showEmptyTrashDialog &&
-            <EmptyTrashDialog
-              visible={showEmptyTrashDialog}
-              onClose={onCloseEmptyTrashDialog}
+              <ContextMenuButton
+                className="option-button"
+                directionX="right"
+                iconName="VerticalDotsIcon"
+                size={16}
+                color="#A3A9AE"
+                getData={getContextOptionsFolder}
+                isDisabled={false}
+              />
+            </>
+          ) : (
+            <ContextMenuButton
+              className="add-button"
+              directionX="right"
+              iconName="PlusIcon"
+              size={16}
+              color="#657077"
+              getData={getContextOptionsPlus}
+              isDisabled={false}
             />
-          }
+          )}
+        </div>
+      )}
+
+      {showDeleteDialog && (
+        <DeleteDialog
+          isRecycleBinFolder={isRecycleBinFolder}
+          visible={showDeleteDialog}
+          onClose={onDeleteAction}
+          selection={selection}
+        />
+      )}
+
+      {showEmptyTrashDialog && (
+        <EmptyTrashDialog
+          visible={showEmptyTrashDialog}
+          onClose={onEmptyTrashAction}
+        />
+      )}
     </StyledContainer>
   );
 };
 
 const mapStateToProps = state => {
-  const { selectedFolder, selection, treeFolders } = state.files;
-  const trashFolderIndex = 3;
+  const { selectedFolder, selection, treeFolders, filter } = state.files;
+  const { parentId, title, id } = selectedFolder;
+  const { user } = state.auth;
+
+  const indexOfTrash = 3;
+
   return {
-    folder: selectedFolder.parentId !== 0,
-    isAdmin: isAdmin(state.auth.user),
-    isRecycleBinFolder: treeFolders[trashFolderIndex].id === selectedFolder.id,
-    parentId: selectedFolder.parentId,
+    folder: parentId !== 0,
+    isAdmin: isAdmin(user),
+    isRecycleBinFolder: treeFolders[indexOfTrash].id === id,
+    parentId,
     selection,
-    title: selectedFolder.title,
-    filter: state.files.filter
+    title: title,
+    filter,
+
+    deleteDialogVisible: isCanBeDeleted(selectedFolder, user)
   };
 };
 
-export default connect(
-  mapStateToProps
-)(withTranslation()(withRouter(SectionHeaderContent)));
+export default connect(mapStateToProps)(
+  withTranslation()(withRouter(SectionHeaderContent))
+);

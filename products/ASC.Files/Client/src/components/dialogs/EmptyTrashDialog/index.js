@@ -14,12 +14,14 @@ const EmptyTrashDialogComponent = props => {
 
   changeLanguage(i18n);
 
+  const successMessage = "Success empty recycle bin";
+
   const onEmptyTrash = useCallback(() => {
     setIsLoading(true);
     files
       .emptyTrash()
       .then(res => {
-        toastr.success("Success empty recycle bin");
+        toastr.success(successMessage);
       }) //toastr.success("It was successfully deleted 24 from 24"); + progressBar
       .catch(err => toastr.error(err))
       .finally(() => {
@@ -38,6 +40,7 @@ const EmptyTrashDialogComponent = props => {
           <>
             <Text>{t("EmptyTrashDialogQuestion")}</Text>
             <Text>{t("EmptyTrashDialogMessage")}</Text>
+            <Text>{t("EmptyTrashDialogWarning")}</Text>
           </>
         }
         footerContent={

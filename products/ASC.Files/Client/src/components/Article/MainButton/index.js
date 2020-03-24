@@ -11,9 +11,8 @@ import { withTranslation, I18nextProvider } from 'react-i18next';
 import { setAction } from '../../../store/files/actions';
 import { isCanCreate } from '../../../store/files/selectors';
 import i18n from '../i18n';
-import { utils, constants, store } from 'asc-web-common';
+import { utils, constants } from 'asc-web-common';
 
-const { isAdmin } = store.auth.selectors;
 const { changeLanguage } = utils;
 const { FileAction } = constants;
 
@@ -90,7 +89,7 @@ const mapStateToProps = (state) => {
 
   return {
     settings: state.auth.settings,
-    isCanCreate: isCanCreate(state.files.selectedFolder, isAdmin(state.auth.user))
+    isCanCreate: isCanCreate(state.files.selectedFolder, state.auth.user)
   }
 }
 

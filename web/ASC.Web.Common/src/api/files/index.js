@@ -274,3 +274,8 @@ export function deleteFile(fileId, deleteAfter, immediately) {
 export function emptyTrash() {
   return request({ method: "put", url: "/files/fileops/emptytrash" });
 }
+
+export function removeFiles(folderIds, fileIds, deleteAfter, immediately) {
+  const data = { folderIds, fileIds, deleteAfter, immediately };
+  return request({ method: "put", url: "/files/fileops/delete", data });
+}
