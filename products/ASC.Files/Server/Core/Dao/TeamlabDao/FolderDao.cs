@@ -438,6 +438,21 @@ namespace ASC.Files.Core.Data
             FactoryIndexer.DeleteAsync(new FoldersWrapper { Id = id });
         }
 
+        public TTo MoveFolder<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
         public int MoveFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             using (var tx = FilesDbContext.Database.BeginTransaction())
@@ -514,6 +529,22 @@ namespace ASC.Files.Core.Data
             return moved.ID;
         }
 
+
+        public Folder<TTo> CopyFolder<TTo>(int folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public Folder<int> CopyFolder(int folderId, int toFolderId, CancellationToken? cancellationToken)
         {
             var folder = GetFolder(folderId);
@@ -535,6 +566,38 @@ namespace ASC.Files.Core.Data
 
             FactoryIndexer.IndexAsync(FoldersWrapper.GetFolderWrapper(ServiceProvider, copy));
             return copy;
+        }
+
+        public Folder<string> CopyFolder(int folderId, string toFolderId, CancellationToken? cancellationToken)
+        {
+            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, DaoFactory.GetFileDao<int>(), r => r,
+                toFolderId, toSelector.GetFolderDao(toFolderId), toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
+                false, cancellationToken);
+
+            return moved;
+        }
+
+        public IDictionary<int, string> CanMoveOrCopy<TTo>(int[] folderIds, TTo to)
+        {
+            if (to is int tId)
+            {
+                return CanMoveOrCopy(folderIds, tId);
+            }
+
+            if (to is string tsId)
+            {
+                return CanMoveOrCopy(folderIds, tsId);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<int, string> CanMoveOrCopy(int[] folderIds, string to)
+        {
+            return new Dictionary<int, string>();
         }
 
         public IDictionary<int, string> CanMoveOrCopy(int[] folderIds, int to)
@@ -641,7 +704,17 @@ namespace ASC.Files.Core.Data
             return folder.RootFolderType != FolderType.TRASH && folder.FolderType != FolderType.BUNCH;
         }
 
+        public bool UseRecursiveOperation(int folderId, string toRootFolderId)
+        {
+            return true;
+        }
+
         public bool UseRecursiveOperation(int folderId, int toRootFolderId)
+        {
+            return true;
+        }
+
+        public bool UseRecursiveOperation<TTo>(int folderId, TTo toRootFolderId)
         {
             return true;
         }
@@ -1049,6 +1122,8 @@ namespace ASC.Files.Core.Data
             //}
             //return projectTitle;
         }
+
+
     }
 
     public class DbFolderQuery

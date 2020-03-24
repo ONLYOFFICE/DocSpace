@@ -80,7 +80,7 @@ namespace ASC.Files.Thirdparty.OneDrive
         public string ProviderKey { get; set; }
 
         public FolderType RootFolderType { get; set; }
-        public OneDriveStorageDisposableWrapper Wrapper { get; }
+        public OneDriveStorageDisposableWrapper Wrapper { get; private set; }
         public OneDriveProviderInfoHelper OneDriveProviderInfoHelper { get; }
 
         public OneDriveProviderInfo(
@@ -114,6 +114,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
+                Wrapper = null;
             }
 
             CacheReset();
@@ -182,6 +183,7 @@ namespace ASC.Files.Thirdparty.OneDrive
             if (Storage != null && Storage.IsOpened)
             {
                 Storage.Close();
+                Storage = null;
             }
         }
     }

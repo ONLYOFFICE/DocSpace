@@ -115,6 +115,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
+                Wrapper = null;
             }
         }
 
@@ -125,7 +126,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         public FolderType RootFolderType { get; set; }
-        public SharpBoxStorageDisposableWrapper Wrapper { get; }
+        public SharpBoxStorageDisposableWrapper Wrapper { get; private set; }
     }
 
     class SharpBoxStorageDisposableWrapper : IDisposable
@@ -172,6 +173,7 @@ namespace ASC.Files.Thirdparty.Sharpbox
             if (Storage != null && Storage.IsOpened)
             {
                 Storage.Close();
+                Storage = null;
             }
         }
     }

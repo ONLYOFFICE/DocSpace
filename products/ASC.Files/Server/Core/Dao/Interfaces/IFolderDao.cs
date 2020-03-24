@@ -120,6 +120,7 @@ namespace ASC.Files.Core
         /// <param name="toFolderId">destination folder id</param>
         /// <param name="cancellationToken"></param>
         T MoveFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        TTo MoveFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
         string MoveFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
         int MoveFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
@@ -132,6 +133,9 @@ namespace ASC.Files.Core
         /// <returns> 
         /// </returns>
         Folder<T> CopyFolder(T folderId, T toFolderId, CancellationToken? cancellationToken);
+        Folder<TTo> CopyFolder<TTo>(T folderId, TTo toFolderId, CancellationToken? cancellationToken);
+        Folder<string> CopyFolder(T folderId, string toFolderId, CancellationToken? cancellationToken);
+        Folder<int> CopyFolder(T folderId, int toFolderId, CancellationToken? cancellationToken);
 
         /// <summary>
         /// Validate the transfer operation directory to another directory.
@@ -142,6 +146,9 @@ namespace ASC.Files.Core
         /// Returns pair of file ID, file name, in which the same name.
         /// </returns>
         IDictionary<T, string> CanMoveOrCopy(T[] folderIds, T to);
+        IDictionary<T, string> CanMoveOrCopy<TTo>(T[] folderIds, TTo to);
+        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, string to);
+        IDictionary<T, string> CanMoveOrCopy(T[] folderIds, int to);
 
         /// <summary>
         ///     Rename folder
@@ -178,6 +185,9 @@ namespace ASC.Files.Core
         /// <param name="toRootFolderId"> </param>
         /// <returns></returns>
         bool UseRecursiveOperation(T folderId, T toRootFolderId);
+        bool UseRecursiveOperation<TTo>(T folderId, TTo toRootFolderId);
+        bool UseRecursiveOperation(T folderId, string toRootFolderId);
+        bool UseRecursiveOperation(T folderId, int toRootFolderId);
 
         /// <summary>
         /// Check the possibility to calculate the number of subitems

@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Thirdparty;
@@ -41,10 +42,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public ProviderFileDao(
             IServiceProvider serviceProvider,
+            TenantManager tenantManager,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             CrossDao crossDao)
-            : base(serviceProvider, securityDao, tagDao, crossDao)
+            : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
         {
 
         }
@@ -310,6 +312,27 @@ namespace ASC.Files.Thirdparty.ProviderDao
             return fileDao.IsExist(title, selector.ConvertId(folderId.ToString()));
         }
 
+        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            var movedFile = PerformCrossDaoFileCopy(fileId, toFolderId, true);
+            return movedFile.ID;
+        }
+
         public string MoveFile(string fileId, string toFolderId)
         {
             var selector = GetSelector(fileId);
@@ -321,6 +344,26 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             var fileDao = selector.GetFileDao(fileId);
             return fileDao.MoveFile(selector.ConvertId(fileId), selector.ConvertId(toFolderId));
+        }
+
+        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFile(fileId, tId) as File<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFile(fileId, tsId) as File<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public File<int> CopyFile(string fileId, int toFolderId)
+        {
+            return PerformCrossDaoFileCopy(fileId, toFolderId, false);
         }
 
         public File<string> CopyFile(string fileId, string toFolderId)
@@ -464,12 +507,6 @@ namespace ASC.Files.Thirdparty.ProviderDao
         public string GetUniqFilePath(File<string> file, string fileTitle)
         {
             throw new NotImplementedException();
-        }
-
-        public int MoveFile(string fileId, int toFolderId)
-        {
-            var movedFile = PerformCrossDaoFileCopy(fileId, toFolderId, true);
-            return movedFile.ID;
         }
 
         #endregion

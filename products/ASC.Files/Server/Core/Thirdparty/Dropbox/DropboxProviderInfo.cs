@@ -170,6 +170,7 @@ namespace ASC.Files.Thirdparty.Dropbox
         public void Dispose()
         {
             Storage?.Close();
+            Storage = null;
         }
     }
 

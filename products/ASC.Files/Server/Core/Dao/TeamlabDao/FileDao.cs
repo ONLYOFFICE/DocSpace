@@ -676,6 +676,21 @@ namespace ASC.Files.Core.Data
                 .Any();
         }
 
+        public TTo MoveFile<TTo>(int fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
         public int MoveFile(int fileId, int toFolderId)
         {
             if (fileId == default) return default;
@@ -740,6 +755,21 @@ namespace ASC.Files.Core.Data
             return moved.ID;
         }
 
+        public File<TTo> CopyFile<TTo>(int fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFile(fileId, tId) as File<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFile(fileId, tsId) as File<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public File<int> CopyFile(int fileId, int toFolderId)
         {
             var file = GetFile(fileId);
@@ -762,6 +792,18 @@ namespace ASC.Files.Core.Data
                 return copy;
             }
             return null;
+        }
+
+        public File<string> CopyFile(int fileId, string toFolderId)
+        {
+            var toSelector = ProviderFolderDao.GetSelector(toFolderId);
+
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                fileId, this, r => r,
+                toFolderId, toSelector.GetFileDao(toFolderId), toSelector.ConvertId,
+                false);
+
+            return moved;
         }
 
         public int FileRename(File<int> file, string newTitle)

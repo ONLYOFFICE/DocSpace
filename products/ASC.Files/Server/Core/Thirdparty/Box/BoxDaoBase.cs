@@ -50,7 +50,15 @@ namespace ASC.Files.Thirdparty.Box
     {
         public override string Id { get => "box"; }
 
-        public BoxDaoBase(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public BoxDaoBase(
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            DbContextManager<FilesDbContext> dbContextManager,
+            SetupInfo setupInfo,
+            IOptionsMonitor<ILog> monitor,
+            FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
         }
 

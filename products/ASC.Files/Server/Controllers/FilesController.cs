@@ -822,13 +822,13 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("file/{fileId}")]
-        public IEnumerable<FileOperationWraper<string>> DeleteFile(string fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
         }
 
         [Delete("file/{fileId:int}")]
-        public IEnumerable<FileOperationWraper<int>> DeleteFile(int fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(int fileId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperInt.DeleteFile(fileId, deleteAfter, immediately);
         }
@@ -882,13 +882,13 @@ namespace ASC.Api.Documents
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
         [Delete("folder/{folderId}")]
-        public IEnumerable<FileOperationWraper<string>> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
         }
 
         [Delete("folder/{folderId:int}")]
-        public IEnumerable<FileOperationWraper<int>> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFolder(int folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperInt.DeleteFolder(folderId, deleteAfter, immediately);
         }
@@ -902,16 +902,9 @@ namespace ASC.Api.Documents
         /// <param name="fileIds">File ID list</param>
         /// <returns>Conflicts file ids</returns>
         [Read("fileops/move")]
-        public IEnumerable<FileWrapper<string>> MoveOrCopyBatchCheck(BatchModel<string> batchModel)
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
             return FilesControllerHelperString.MoveOrCopyBatchCheck(batchModel);
-        }
-
-        [Read("fileops/move")]
-        [BodySpecific]
-        public IEnumerable<FileWrapper<int>> MoveOrCopyBatchCheck(BatchModel<int> batchModel)
-        {
-            return FilesControllerHelperInt.MoveOrCopyBatchCheck(batchModel);
         }
 
         /// <summary>
@@ -926,16 +919,9 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/move")]
-        public IEnumerable<FileOperationWraper<string>> MoveBatchItems(BatchModel<string> batchModel)
+        public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
             return FilesControllerHelperString.MoveBatchItems(batchModel);
-        }
-
-        [Update("fileops/move")]
-        [BodySpecific]
-        public IEnumerable<FileOperationWraper<int>> MoveBatchItems(BatchModel<int> batchModel)
-        {
-            return FilesControllerHelperInt.MoveBatchItems(batchModel);
         }
 
         /// <summary>
@@ -950,16 +936,9 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <returns>Operation result</returns>
         [Update("fileops/copy")]
-        public IEnumerable<FileOperationWraper<string>> CopyBatchItems(BatchModel<string> batchModel)
+        public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
             return FilesControllerHelperString.CopyBatchItems(batchModel);
-        }
-
-        [BodySpecific]
-        [Update("fileops/copy")]
-        public IEnumerable<FileOperationWraper<int>> CopyBatchItems(BatchModel<int> batchModel)
-        {
-            return FilesControllerHelperInt.CopyBatchItems(batchModel);
         }
 
         /// <summary>
@@ -969,14 +948,14 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper<string>> MarkAsRead(BaseBatchModel<string> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<string> model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
         }
 
         [Update("fileops/markasread")]
         [BodySpecific]
-        public IEnumerable<FileOperationWraper<int>> MarkAsRead(BaseBatchModel<int> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<int> model)
         {
             return FilesControllerHelperInt.MarkAsRead(model);
         }
@@ -988,9 +967,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/terminate")]
-        public IEnumerable<FileOperationWraper<string>> TerminateTasks()
+        public IEnumerable<FileOperationWraper> TerminateTasks()
         {
-            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get);
         }
 
 
@@ -1001,9 +980,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Read("fileops")]
-        public IEnumerable<FileOperationWraper<string>> GetOperationStatuses()
+        public IEnumerable<FileOperationWraper> GetOperationStatuses()
         {
-            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1016,14 +995,14 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper<string>> BulkDownload(DownloadModel<string> model)
+        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<string> model)
         {
             return FilesControllerHelperString.BulkDownload(model);
         }
 
         [BodySpecific]
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper<int>> BulkDownload(DownloadModel<int> model)
+        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<int> model)
         {
             return FilesControllerHelperInt.BulkDownload(model);
         }
@@ -1039,10 +1018,10 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper<object>> DeleteBatchItems(DeleteBatchModel<object> batch)
+        public IEnumerable<FileOperationWraper> DeleteBatchItems(DeleteBatchModel<object> batch)
         {
             return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
-                .Select(FileOperationWraperHelper.Get<object>);
+                .Select(FileOperationWraperHelper.Get);
         }
 
         /// <summary>
@@ -1052,7 +1031,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/emptytrash")]
-        public IEnumerable<FileOperationWraper<int>> EmptyTrash()
+        public IEnumerable<FileOperationWraper> EmptyTrash()
         {
             return FilesControllerHelperInt.EmptyTrash();
         }

@@ -36,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
@@ -48,8 +49,27 @@ namespace ASC.Files.Thirdparty.OneDrive
 {
     internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
     {
-        public OneDriveFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public CrossDao CrossDao { get; }
+        public OneDriveDaoSelector OneDriveDaoSelector { get; }
+        public IFileDao<int> FileDao { get; }
+
+        public OneDriveFileDao(
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            DbContextManager<FilesDbContext> dbContextManager,
+            SetupInfo setupInfo,
+            IOptionsMonitor<ILog> monitor,
+            FileUtility fileUtility,
+            CrossDao crossDao,
+            OneDriveDaoSelector oneDriveDaoSelector,
+            IFileDao<int> fileDao)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
+            CrossDao = crossDao;
+            OneDriveDaoSelector = oneDriveDaoSelector;
+            FileDao = fileDao;
         }
 
         public void InvalidateCache(string fileId)
@@ -344,6 +364,31 @@ namespace ASC.Files.Thirdparty.OneDrive
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                fileId, this, OneDriveDaoSelector.ConvertId,
+                toFolderId, FileDao, r => r,
+                true);
+
+            return moved.ID;
+        }
+
         public string MoveFile(string fileId, string toFolderId)
         {
             var onedriveFile = GetOneDriveItem(fileId);
@@ -362,6 +407,31 @@ namespace ASC.Files.Thirdparty.OneDrive
             ProviderInfo.CacheReset(toOneDriveFolder.Id);
 
             return MakeId(onedriveFile.Id);
+        }
+
+        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFile(fileId, tId) as File<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFile(fileId, tsId) as File<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public File<int> CopyFile(string fileId, int toFolderId)
+        {
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                    fileId, this, OneDriveDaoSelector.ConvertId,
+                    toFolderId, FileDao, r => r,
+                    false);
+
+            return moved;
         }
 
         public File<string> CopyFile(string fileId, string toFolderId)
@@ -581,16 +651,6 @@ namespace ASC.Files.Thirdparty.OneDrive
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string MoveFile(string fileId, int toFolderId)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IFileDao<string>.MoveFile(string fileId, int toFolderId)
         {
             throw new NotImplementedException();
         }

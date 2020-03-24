@@ -143,6 +143,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
+                Wrapper = null;
             }
 
             CacheReset();

@@ -172,6 +172,7 @@ namespace ASC.Files.Thirdparty
             if (ProviderInfo != null)
             {
                 ProviderInfo.Dispose();
+                ProviderInfo = null;
             }
         }
     }

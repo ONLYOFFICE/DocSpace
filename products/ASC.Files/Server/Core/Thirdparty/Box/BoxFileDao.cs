@@ -36,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Services.DocumentService;
@@ -49,8 +50,26 @@ namespace ASC.Files.Thirdparty.Box
 {
     internal class BoxFileDao : BoxDaoBase, IFileDao<string>
     {
-        public BoxFileDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public CrossDao CrossDao { get; }
+        public BoxDaoSelector BoxDaoSelector { get; }
+        public IFileDao<int> FileDao { get; }
+
+        public BoxFileDao(
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            DbContextManager<FilesDbContext> dbContextManager,
+            SetupInfo setupInfo,
+            IOptionsMonitor<ILog> monitor,
+            FileUtility fileUtility,
+            CrossDao crossDao,
+            BoxDaoSelector boxDaoSelector,
+            IFileDao<int> fileDao) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
+            CrossDao = crossDao;
+            BoxDaoSelector = boxDaoSelector;
+            FileDao = fileDao;
         }
 
         public void InvalidateCache(string fileId)
@@ -349,6 +368,31 @@ namespace ASC.Files.Thirdparty.Box
                 .Any(item => item.Name.Equals(title, StringComparison.InvariantCultureIgnoreCase));
         }
 
+        public TTo MoveFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tId), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFile(fileId, tsId), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public int MoveFile(string fileId, int toFolderId)
+        {
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                fileId, this, BoxDaoSelector.ConvertId,
+                toFolderId, FileDao, r => r,
+                true);
+
+            return moved.ID;
+        }
+
         public string MoveFile(string fileId, string toFolderId)
         {
             var boxFile = GetBoxFile(fileId);
@@ -369,6 +413,21 @@ namespace ASC.Files.Thirdparty.Box
             return MakeId(boxFile.Id);
         }
 
+        public File<TTo> CopyFile<TTo>(string fileId, TTo toFolderId)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFile(fileId, tId) as File<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFile(fileId, tsId) as File<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
         public File<string> CopyFile(string fileId, string toFolderId)
         {
             var boxFile = GetBoxFile(fileId);
@@ -384,6 +443,16 @@ namespace ASC.Files.Thirdparty.Box
             ProviderInfo.CacheReset(toBoxFolder.Id);
 
             return ToFile(newBoxFile);
+        }
+
+        public File<int> CopyFile(string fileId, int toFolderId)
+        {
+            var moved = CrossDao.PerformCrossDaoFileCopy(
+                fileId, this, BoxDaoSelector.ConvertId,
+                toFolderId, FileDao, r => r,
+                false);
+
+            return moved;
         }
 
         public string FileRename(File<string> file, string newTitle)
@@ -484,7 +553,7 @@ namespace ASC.Files.Thirdparty.Box
         {
             if (uploadSession.Items.ContainsKey("TempPath"))
             {
-                System.IO.File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
+                File.Delete(uploadSession.GetItemOrDefault<string>("TempPath"));
             }
         }
 
@@ -533,11 +602,6 @@ namespace ASC.Files.Thirdparty.Box
         }
 
         public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int MoveFile(string fileId, int toFolderId)
         {
             throw new NotImplementedException();
         }

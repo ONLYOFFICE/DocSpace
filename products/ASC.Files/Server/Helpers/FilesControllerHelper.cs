@@ -365,10 +365,10 @@ namespace ASC.Files.Helpers
             return GetFileInfo(fileId);
         }
 
-        public IEnumerable<FileOperationWraper<T>> DeleteFile(T fileId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFile(T fileId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFile("delete", fileId, false, deleteAfter, immediately)
-                .Select(FileOperationWraperHelper.Get<T>);
+                .Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<ConversationResult<T>> StartConversion(T fileId)
@@ -402,68 +402,69 @@ namespace ASC.Files.Helpers
             });
         }
 
-        public IEnumerable<FileOperationWraper<T>> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
+        public IEnumerable<FileOperationWraper> DeleteFolder(T folderId, bool deleteAfter, bool immediately)
         {
             return FileStorageService.DeleteFile("delete", folderId, false, deleteAfter, immediately)
-                    .Select(FileOperationWraperHelper.Get<T>);
+                    .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileWrapper<T>> MoveOrCopyBatchCheck(BatchModel<T> batchModel)
+        public IEnumerable<FileEntryWrapper> MoveOrCopyBatchCheck(BatchModel batchModel)
         {
-            var itemList = new ItemList<string>();
+            FileStorageService.MoveOrCopyFilesCheck(batchModel.FileIds, batchModel.FolderIds, batchModel.DestFolderId, out var checkedFiles, out var checkedFolders);
 
-            itemList.AddRange((batchModel.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<T>()).Select(x => "file_" + x));
+            var entries = FileStorageService.GetItems(checkedFiles.OfType<long>().Select(Convert.ToInt32), checkedFiles.OfType<long>().Select(Convert.ToInt32), FilterType.FilesOnly, false, "", "");
 
-            var ids = FileStorageService.MoveOrCopyFilesCheck(itemList, batchModel.DestFolderId).Keys.Select(id => "file_" + id);
+            entries.AddRange(FileStorageService.GetItems(checkedFiles.OfType<string>(), checkedFiles.OfType<string>(), FilterType.FilesOnly, false, "", ""));
 
-            var entries = FileStorageService.GetItems(new ItemList<string>(ids), FilterType.FilesOnly, false, "", "");
-            return entries.Select(x => FileWrapperHelper.Get((File<T>)x));
+            return entries.Select(r =>
+            {
+                FileEntryWrapper wrapper = null;
+                if (r is Folder<int> fol1)
+                {
+                    wrapper = FolderWrapperHelper.Get(fol1);
+                }
+                if (r is Folder<string> fol2)
+                {
+                    wrapper = FolderWrapperHelper.Get(fol2);
+                }
+
+                return wrapper;
+            });
         }
 
-        public IEnumerable<FileOperationWraper<T>> MoveBatchItems(BatchModel<T> batchModel)
+        public IEnumerable<FileOperationWraper> MoveBatchItems(BatchModel batchModel)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((batchModel.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get<T>);
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, false, batchModel.DeleteAfter)
+                .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<T>> CopyBatchItems(BatchModel<T> batchModel)
+        public IEnumerable<FileOperationWraper> CopyBatchItems(BatchModel batchModel)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((batchModel.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((batchModel.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            return FileStorageService.MoveOrCopyItems(itemList, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
-                .Select(FileOperationWraperHelper.Get<T>);
+            return FileStorageService.MoveOrCopyItems(batchModel.FolderIds, batchModel.FileIds, batchModel.DestFolderId, batchModel.ConflictResolveType, true, batchModel.DeleteAfter)
+                .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<T>> MarkAsRead(BaseBatchModel<T> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<T> model)
         {
             var itemList = new ItemList<string>();
 
             itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
             itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
 
-            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get<T>);
+            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<string>> TerminateTasks()
+        public IEnumerable<FileOperationWraper> TerminateTasks()
         {
-            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.TerminateTasks().Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<string>> GetOperationStatuses()
+        public IEnumerable<FileOperationWraper> GetOperationStatuses()
         {
-            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get<string>);
+            return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<T>> BulkDownload(DownloadModel<T> model)
+        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<T> model)
         {
             var itemList = new Dictionary<string, string>();
 
@@ -482,12 +483,12 @@ namespace ASC.Files.Helpers
                 itemList.Add("folder_" + folderId, string.Empty);
             }
 
-            return FileStorageService.BulkDownload(itemList).Select(FileOperationWraperHelper.Get<T>);
+            return FileStorageService.BulkDownload(itemList).Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper<int>> EmptyTrash()
+        public IEnumerable<FileOperationWraper> EmptyTrash()
         {
-            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get<int>);
+            return FileStorageService.EmptyTrash().Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<FileWrapper<T>> GetFileVersionInfo(T fileId)

@@ -120,22 +120,26 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy<T>(AuthContext authContext, TenantManager tenantManager, List<T> folders, List<T> files, T destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(AuthContext authContext, TenantManager tenantManager, IEnumerable<object> folders, IEnumerable<object> files, object destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
         {
-            var op = new FileMoveCopyOperation<T>(ServiceProvider, new FileMoveCopyOperationData<T>(folders, files, tenantManager.GetCurrentTenant(), destFolderId, copy, resolveType, holdResult, headers));
+            var tenant = tenantManager.GetCurrentTenant();
+            var op1 = new FileMoveCopyOperation<int>(ServiceProvider, new FileMoveCopyOperationData<int>(folders.OfType<long>().Select(Convert.ToInt32), files.OfType<long>().Select(Convert.ToInt32), tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op2 = new FileMoveCopyOperation<string>(ServiceProvider, new FileMoveCopyOperationData<string>(folders, files, tenant, destFolderId, copy, resolveType, holdResult, headers));
+            var op = new FileMoveCopyOperation(ServiceProvider, op2, op1);
+
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Delete<T>(AuthContext authContext, TenantManager tenantManager, List<T> folders, List<T> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete<T>(AuthContext authContext, TenantManager tenantManager, IEnumerable<T> folders, IEnumerable<T> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
         {
             var op = new FileDeleteOperation<T>(ServiceProvider, new FileDeleteOperationData<T>(folders, files, tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Delete(AuthContext authContext, TenantManager tenantManager, List<object> folders, List<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Delete(AuthContext authContext, TenantManager tenantManager, IEnumerable<object> folders, IEnumerable<object> files, bool ignoreException, bool holdResult, bool immediately, Dictionary<string, string> headers)
         {
-            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.OfType<long>().Select(Convert.ToInt32).ToList(), files.OfType<long>().Select(Convert.ToInt32).ToList(), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
-            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders.OfType<string>().ToList(), files.OfType<string>().ToList(), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
+            var op1 = new FileDeleteOperation<int>(ServiceProvider, new FileDeleteOperationData<int>(folders.OfType<long>().Select(Convert.ToInt32), files.OfType<long>().Select(Convert.ToInt32), tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
+            var op2 = new FileDeleteOperation<string>(ServiceProvider, new FileDeleteOperationData<string>(folders, files, tenantManager.GetCurrentTenant(), holdResult, ignoreException, immediately, headers));
             var op = new FileDeleteOperation(ServiceProvider, op2, op1);
 
             return QueueTask(authContext, op);
@@ -191,7 +195,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
         }
 
-        public ItemList<FileOperationResult> MoveOrCopy<T>(List<T> folders, List<T> files, T destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> MoveOrCopy(IEnumerable<object> folders, IEnumerable<object> files, object destFolderId, bool copy, FileConflictResolveType resolveType, bool holdResult, Dictionary<string, string> headers)
         {
             return FileOperationsManager.MoveOrCopy(AuthContext, TenantManager, folders, files, destFolderId, copy, resolveType, holdResult, headers);
         }

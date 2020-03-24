@@ -41,6 +41,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Files.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
@@ -51,8 +52,30 @@ namespace ASC.Files.Thirdparty.Sharpbox
 {
     internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
-        public SharpBoxFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public CrossDao CrossDao { get; }
+        public SharpBoxDaoSelector SharpBoxDaoSelector { get; }
+        public IFileDao<int> FileDao { get; }
+        public IFolderDao<int> FolderDao { get; }
+
+        public SharpBoxFolderDao(
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            DbContextManager<FilesDbContext> dbContextManager,
+            SetupInfo setupInfo,
+            IOptionsMonitor<ILog> monitor,
+            FileUtility fileUtility,
+            CrossDao crossDao,
+            SharpBoxDaoSelector sharpBoxDaoSelector,
+            IFileDao<int> fileDao,
+            IFolderDao<int> folderDao)
+            : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
+            CrossDao = crossDao;
+            SharpBoxDaoSelector = sharpBoxDaoSelector;
+            FileDao = fileDao;
+            FolderDao = folderDao;
         }
 
         public Folder<string> GetFolder(string folderId)
@@ -264,6 +287,31 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return false;
         }
 
+        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
+                toFolderId, FolderDao, FileDao, r => r,
+                true, cancellationToken);
+
+            return moved.ID;
+        }
+
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var entry = GetFolderById(folderId);
@@ -281,6 +329,31 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return newFolderId;
         }
 
+        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, SharpBoxDaoSelector.GetFileDao(folderId), SharpBoxDaoSelector.ConvertId,
+                toFolderId, FolderDao, FileDao, r => r,
+                false, cancellationToken);
+
+            return moved;
+        }
+
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var folder = GetFolderById(folderId);
@@ -289,7 +362,27 @@ namespace ASC.Files.Thirdparty.Sharpbox
             return ToFolder(GetFolderById(toFolderId).OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name == folder.Name));
         }
 
+        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
+        {
+            if (to is int tId)
+            {
+                return CanMoveOrCopy(folderIds, tId);
+            }
+
+            if (to is string tsId)
+            {
+                return CanMoveOrCopy(folderIds, tsId);
+            }
+
+            throw new NotImplementedException();
+        }
+
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
         {
             return new Dictionary<string, string>();
         }
@@ -338,6 +431,17 @@ namespace ASC.Files.Thirdparty.Sharpbox
         }
 
         public bool UseTrashForRemove(Folder<string> folder)
+        {
+            return false;
+        }
+
+
+        public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)
+        {
+            return false;
+        }
+
+        public bool UseRecursiveOperation(string folderId, int toRootFolderId)
         {
             return false;
         }
@@ -424,11 +528,6 @@ namespace ASC.Files.Thirdparty.Sharpbox
         public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
         {
             return null;
-        }
-
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

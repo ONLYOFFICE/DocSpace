@@ -200,7 +200,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             using (var zip = new ZipOutputStream(stream, true))
             {
                 zip.CompressionLevel = Ionic.Zlib.CompressionLevel.Level3;
-                zip.AlternateEncodingUsage = Ionic.Zip.ZipOption.AsNecessary;
+                zip.AlternateEncodingUsage = ZipOption.AsNecessary;
                 zip.AlternateEncoding = Encoding.UTF8;
 
                 foreach (var path in entriesPathId.AllKeys)

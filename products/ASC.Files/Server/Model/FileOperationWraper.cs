@@ -40,7 +40,7 @@ namespace ASC.Api.Documents
     /// <summary>
     /// </summary>
     [DataContract(Name = "operation_result", Namespace = "")]
-    public class FileOperationWraper<T>
+    public class FileOperationWraper
     {
         /// <summary>
         /// </summary>
@@ -80,12 +80,12 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         [DataMember(Name = "files", IsRequired = true, EmitDefaultValue = true)]
-        public List<FileWrapper<T>> Files { get; set; }
+        public List<FileEntryWrapper> Files { get; set; }
 
         /// <summary>
         /// </summary>
         [DataMember(Name = "folders", IsRequired = true, EmitDefaultValue = true)]
-        public List<FolderWrapper<T>> Folders { get; set; }
+        public List<FileEntryWrapper> Folders { get; set; }
 
         /// <summary>
         /// </summary>
@@ -96,9 +96,9 @@ namespace ASC.Api.Documents
         /// <summary>
         /// </summary>
         /// <returns></returns>
-        public static FileOperationWraper<int> GetSample()
+        public static FileOperationWraper GetSample()
         {
-            return new FileOperationWraper<int>
+            return new FileOperationWraper
             {
                 Id = Guid.NewGuid().ToString(),
                 OperationType = FileOperationType.Move,
@@ -107,8 +107,8 @@ namespace ASC.Api.Documents
                 //Result = "folder_1,file_1",
                 Error = "",
                 Processed = "1",
-                Files = new List<FileWrapper<int>> { FileWrapper<int>.GetSample() },
-                Folders = new List<FolderWrapper<int>> { FolderWrapper<int>.GetSample() }
+                Files = new List<FileEntryWrapper> { FileWrapper<int>.GetSample() },
+                Folders = new List<FileEntryWrapper> { FolderWrapper<int>.GetSample() }
             };
         }
     }
@@ -132,9 +132,9 @@ namespace ASC.Api.Documents
             CommonLinkUtility = commonLinkUtility;
         }
 
-        public FileOperationWraper<T> Get<T>(FileOperationResult o)
+        public FileOperationWraper Get(FileOperationResult o)
         {
-            var result = new FileOperationWraper<T>
+            var result = new FileOperationWraper
             {
                 Id = o.Id,
                 OperationType = o.OperationType,
@@ -149,23 +149,51 @@ namespace ASC.Api.Documents
                 var arr = o.Result.Split(':');
                 var folders = arr
                     .Where(s => s.StartsWith("folder_"))
-                    .Select(s => s.Substring(7))
-                    .Select(r => (T)Convert.ChangeType(r, typeof(T)));
+                    .Select(s => s.Substring(7));
 
                 if (folders.Any())
                 {
-                    var folderDao = DaoFactory.GetFolderDao<T>();
-                    result.Folders = folderDao.GetFolders(folders.ToArray()).Select(r => FolderWrapperHelper.Get(r)).ToList();
+                    var fInt = new List<int>();
+                    var fString = new List<string>();
+
+                    foreach (var folder in folders)
+                    {
+                        if (int.TryParse(folder, out var f))
+                        {
+                            fInt.Add(f);
+                        }
+                        else
+                        {
+                            fString.Add(folder);
+                        }
+                    }
+
+                    result.Folders = GetFolders(folders).ToList();
+                    result.Folders.AddRange(GetFolders(fInt));
                 }
                 var files = arr
                     .Where(s => s.StartsWith("file_"))
-                    .Select(s => s.Substring(5))
-                    .Select(r => (T)Convert.ChangeType(r, typeof(T)));
+                    .Select(s => s.Substring(5));
 
                 if (files.Any())
                 {
-                    var fileDao = DaoFactory.GetFileDao<T>();
-                    result.Files = fileDao.GetFiles(files.ToArray()).Select(r => FilesWrapperHelper.Get(r)).ToList();
+                    var fInt = new List<int>();
+                    var fString = new List<string>();
+
+                    foreach (var file in files)
+                    {
+                        if (int.TryParse(file, out var f))
+                        {
+                            fInt.Add(f);
+                        }
+                        else
+                        {
+                            fString.Add(file);
+                        }
+                    }
+
+                    result.Files = GetFiles(fString).ToList();
+                    result.Files.AddRange(GetFiles(fInt));
                 }
 
                 if (result.OperationType == FileOperationType.Download)
@@ -175,6 +203,22 @@ namespace ASC.Api.Documents
             }
 
             return result;
+
+            IEnumerable<FileEntryWrapper> GetFolders<T>(IEnumerable<T> folders)
+            {
+                var folderDao = DaoFactory.GetFolderDao<T>();
+                return folderDao.GetFolders(folders.ToArray())
+                    .Select(FolderWrapperHelper.Get)
+                    .Cast<FileEntryWrapper>();
+            }
+
+            IEnumerable<FileEntryWrapper> GetFiles<T>(IEnumerable<T> files)
+            {
+                var fileDao = DaoFactory.GetFileDao<T>();
+                return fileDao.GetFiles(files.ToArray())
+                    .Select(FilesWrapperHelper.Get)
+                    .Cast<FileEntryWrapper>();
+            }
         }
     }
     public static class FileOperationWraperHelperExtention

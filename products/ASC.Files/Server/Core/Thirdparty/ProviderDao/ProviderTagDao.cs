@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Thirdparty;
@@ -38,10 +39,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public ProviderTagDao(
             IServiceProvider serviceProvider,
+            TenantManager tenantManager,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             CrossDao crossDao)
-            : base(serviceProvider, securityDao, tagDao, crossDao)
+            : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
         {
         }
 

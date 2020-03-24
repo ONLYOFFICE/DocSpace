@@ -27,9 +27,9 @@ namespace ASC.Files.Model
         public bool Immediately { get; set; }
     }
 
-    public class BatchModel<T> : BaseBatchModel<T>
+    public class BatchModel : BaseBatchModel<object>
     {
-        public T DestFolderId { get; set; }
+        public object DestFolderId { get; set; }
         public FileConflictResolveType ConflictResolveType { get; set; }
         public bool DeleteAfter { get; set; }
     }

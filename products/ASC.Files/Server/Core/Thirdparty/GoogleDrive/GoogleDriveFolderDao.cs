@@ -36,6 +36,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.Files.Core;
 using ASC.Files.Core.EF;
+using ASC.Files.Core.Thirdparty;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
@@ -45,8 +46,30 @@ namespace ASC.Files.Thirdparty.GoogleDrive
 {
     internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
     {
-        public GoogleDriveFolderDao(IServiceProvider serviceProvider, UserManager userManager, TenantManager tenantManager, TenantUtil tenantUtil, DbContextManager<FilesDbContext> dbContextManager, SetupInfo setupInfo, IOptionsMonitor<ILog> monitor, FileUtility fileUtility) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
+        public CrossDao CrossDao { get; }
+        public GoogleDriveDaoSelector GoogleDriveDaoSelector { get; }
+        public IFileDao<int> FileDao { get; }
+        public IFolderDao<int> FolderDao { get; }
+
+        public GoogleDriveFolderDao(
+            IServiceProvider serviceProvider,
+            UserManager userManager,
+            TenantManager tenantManager,
+            TenantUtil tenantUtil,
+            DbContextManager<FilesDbContext> dbContextManager,
+            SetupInfo setupInfo,
+            IOptionsMonitor<ILog> monitor,
+            FileUtility fileUtility,
+            CrossDao crossDao,
+            GoogleDriveDaoSelector googleDriveDaoSelector,
+            IFileDao<int> fileDao,
+            IFolderDao<int> folderDao
+            ) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility)
         {
+            CrossDao = crossDao;
+            GoogleDriveDaoSelector = googleDriveDaoSelector;
+            FileDao = fileDao;
+            FolderDao = folderDao;
         }
 
         public Folder<string> GetFolder(string folderId)
@@ -230,6 +253,32 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             if (parentDriveId != null) ProviderInfo.CacheReset(parentDriveId, true);
         }
 
+
+        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, GoogleDriveDaoSelector.GetFileDao(folderId), GoogleDriveDaoSelector.ConvertId,
+                toFolderId, FolderDao, FileDao, r => r,
+                true, cancellationToken);
+
+            return moved.ID;
+        }
+
+        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = GetDriveEntry(folderId);
@@ -253,6 +302,31 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return MakeId(driveFolder.Id);
         }
 
+        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            var moved = CrossDao.PerformCrossDaoFolderCopy(
+                folderId, this, GoogleDriveDaoSelector.GetFileDao(folderId), GoogleDriveDaoSelector.ConvertId,
+                toFolderId, FolderDao, FileDao, r => r,
+                false, cancellationToken);
+
+            return moved;
+        }
+
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var driveFolder = GetDriveEntry(folderId);
@@ -270,7 +344,27 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             return ToFolder(newDriveFolder);
         }
 
+        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
+        {
+            if (to is int tId)
+            {
+                return CanMoveOrCopy(folderIds, tId);
+            }
+
+            if (to is string tsId)
+            {
+                return CanMoveOrCopy(folderIds, tsId);
+            }
+
+            throw new NotImplementedException();
+        }
+
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
+        {
+            return new Dictionary<string, string>();
+        }
+
+        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
         {
             return new Dictionary<string, string>();
         }
@@ -317,6 +411,16 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         }
 
         public bool UseRecursiveOperation(string folderId, string toRootFolderId)
+        {
+            return true;
+        }
+
+        public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)
+        {
+            return true;
+        }
+
+        public bool UseRecursiveOperation(string folderId, int toRootFolderId)
         {
             return true;
         }
@@ -393,11 +497,6 @@ namespace ASC.Files.Thirdparty.GoogleDrive
         public Dictionary<string, string> GetBunchObjectIDs(List<string> folderIDs)
         {
             return null;
-        }
-
-        public int MoveFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         #endregion

@@ -115,13 +115,14 @@ namespace ASC.Files.Thirdparty
 
         private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
         {
-            if (Providers.ContainsKey(id)) return (T1)Providers[id];
+            var providerKey = $"{id}{typeof(T1)}";
+            if (Providers.ContainsKey(providerKey)) return (T1)Providers[providerKey];
 
             var res = ServiceProvider.GetService<T1>();
 
             res.Init(GetInfo(id), this);
 
-            Providers.Add(id, res);
+            Providers.Add(providerKey, res);
 
             return res;
         }

@@ -91,7 +91,12 @@ namespace ASC.Files.Thirdparty.SharePoint
 
         public void InvalidateStorage()
         {
-            clientContext.Dispose();
+            if (clientContext != null)
+            {
+                clientContext.Dispose();
+                clientContext = null;
+            }
+
             SharePointProviderInfoHelper.Invalidate();
         }
 

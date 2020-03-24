@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
@@ -40,11 +41,13 @@ namespace ASC.Files.Thirdparty.ProviderDao
 {
     internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
     {
-        public ProviderSecurityDao(IServiceProvider serviceProvider,
+        public ProviderSecurityDao(
+            IServiceProvider serviceProvider,
+            TenantManager tenantManager,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             CrossDao crossDao)
-            : base(serviceProvider, securityDao, tagDao, crossDao)
+            : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
         {
         }
 

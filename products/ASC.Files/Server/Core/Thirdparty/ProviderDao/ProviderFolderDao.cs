@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Thirdparty;
@@ -40,10 +41,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         public ProviderFolderDao(
             IServiceProvider serviceProvider,
+            TenantManager tenantManager,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             CrossDao crossDao)
-            : base(serviceProvider, securityDao, tagDao, crossDao)
+            : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
         {
         }
 
@@ -172,6 +174,21 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             folderDao.DeleteFolder(selector.ConvertId(folderId));
         }
 
+        public TTo MoveFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tId, cancellationToken), typeof(TTo));
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return (TTo)Convert.ChangeType(MoveFolder(folderId, tsId, cancellationToken), typeof(TTo));
+            }
+
+            throw new NotImplementedException();
+        }
+
         public string MoveFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var selector = GetSelector(folderId);
@@ -190,6 +207,26 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             return newFolder.ID;
         }
 
+        public Folder<TTo> CopyFolder<TTo>(string folderId, TTo toFolderId, CancellationToken? cancellationToken)
+        {
+            if (toFolderId is int tId)
+            {
+                return CopyFolder(folderId, tId, cancellationToken) as Folder<TTo>;
+            }
+
+            if (toFolderId is string tsId)
+            {
+                return CopyFolder(folderId, tsId, cancellationToken) as Folder<TTo>;
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public Folder<int> CopyFolder(string folderId, int toFolderId, CancellationToken? cancellationToken)
+        {
+            return PerformCrossDaoFolderCopy(folderId, toFolderId, false, cancellationToken);
+        }
+
         public Folder<string> CopyFolder(string folderId, string toFolderId, CancellationToken? cancellationToken)
         {
             var selector = GetSelector(folderId);
@@ -197,6 +234,26 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             return IsCrossDao(folderId, toFolderId)
                     ? PerformCrossDaoFolderCopy(folderId, toFolderId, false, cancellationToken)
                     : folderDao.CopyFolder(selector.ConvertId(folderId), selector.ConvertId(toFolderId), null);
+        }
+
+        public IDictionary<string, string> CanMoveOrCopy<TTo>(string[] folderIds, TTo to)
+        {
+            if (to is int tId)
+            {
+                return CanMoveOrCopy(folderIds, tId);
+            }
+
+            if (to is string tsId)
+            {
+                return CanMoveOrCopy(folderIds, tsId);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, int to)
+        {
+            return new Dictionary<string, string>();
         }
 
         public IDictionary<string, string> CanMoveOrCopy(string[] folderIds, string to)
@@ -241,6 +298,16 @@ filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
             var selector = GetSelector(folder.ID);
             var folderDao = selector.GetFolderDao(folder.ID);
             return folderDao.UseTrashForRemove(folder);
+        }
+
+        public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)
+        {
+            return false;
+        }
+
+        public bool UseRecursiveOperation(string folderId, int toRootFolderId)
+        {
+            return false;
         }
 
         public bool UseRecursiveOperation(string folderId, string toRootFolderId)

@@ -96,7 +96,7 @@ namespace ASC.Files.Thirdparty.Box
             }
         }
 
-        public BoxStorageDisposableWrapper Wrapper { get; }
+        public BoxStorageDisposableWrapper Wrapper { get; private set; }
         public BoxProviderInfoHelper BoxProviderInfoHelper { get; }
 
         public BoxProviderInfo(
@@ -130,6 +130,7 @@ namespace ASC.Files.Thirdparty.Box
             if (Wrapper != null)
             {
                 Wrapper.Dispose();
+                Wrapper = null;
             }
 
             CacheReset();
@@ -206,6 +207,7 @@ namespace ASC.Files.Thirdparty.Box
             if (Storage != null)
             {
                 Storage.Close();
+                Storage = null;
             }
         }
     }

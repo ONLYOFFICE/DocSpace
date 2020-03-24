@@ -46,7 +46,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         public bool Immediately { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileDeleteOperationData(List<T> folders, List<T> files, Tenant tenant,
+        public FileDeleteOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant,
+            bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
+            : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult, ignoreException, immediately, headers)
+        {
+        }
+
+        public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
             bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
             : base(folders, files, tenant, holdResult)
         {
@@ -107,7 +113,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (root != null)
             {
-                Status += string.Format("folder_{0}{1}", root.ID, FileOperation.SPLIT_CHAR);
+                Status += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
             }
 
             DeleteFiles(Files, scope);
@@ -157,7 +163,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     else
                     {
                         var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default))
+                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
                         {
                             DeleteFiles(FileDao.GetFiles(folder.ID), scope);
                             DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);

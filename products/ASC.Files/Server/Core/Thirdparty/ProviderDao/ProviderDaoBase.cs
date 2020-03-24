@@ -30,6 +30,7 @@ using System.Linq;
 using System.Threading;
 
 using ASC.Common;
+using ASC.Core;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Thirdparty;
@@ -48,8 +49,11 @@ namespace ASC.Files.Thirdparty.ProviderDao
     {
         private readonly List<IDaoSelector> Selectors;
 
+        private int TenantID { get; set; }
+
         public ProviderDaoBase(
             IServiceProvider serviceProvider,
+            TenantManager tenantManager,
             SecurityDao<string> securityDao,
             TagDao<string> tagDao,
             CrossDao crossDao)
@@ -58,6 +62,8 @@ namespace ASC.Files.Thirdparty.ProviderDao
             SecurityDao = securityDao;
             TagDao = tagDao;
             CrossDao = crossDao;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+
             Selectors = new List<IDaoSelector>
             {
                 //Fill in selectors
@@ -122,9 +128,12 @@ namespace ASC.Files.Thirdparty.ProviderDao
         {
             var fromSelector = GetSelector(fromFileId);
             using var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(TenantID);
+
             return CrossDao.PerformCrossDaoFileCopy(
                 fromFileId, fromSelector.GetFileDao(fromFileId), fromSelector.ConvertId,
-                toFolderId, scope.ServiceProvider.GetService<FileDao>(), r => r,
+                toFolderId, scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
                 deleteSourceFile);
         }
 
@@ -146,7 +155,7 @@ namespace ASC.Files.Thirdparty.ProviderDao
 
             return CrossDao.PerformCrossDaoFolderCopy(
                 fromFolderId, fromSelector.GetFolderDao(fromFolderId), fromSelector.GetFileDao(fromFolderId), fromSelector.ConvertId,
-                toRootFolderId, scope.ServiceProvider.GetService<FolderDao>(), scope.ServiceProvider.GetService<FileDao>(), r => r,
+                toRootFolderId, scope.ServiceProvider.GetService<FolderDao>(), scope.ServiceProvider.GetService<IFileDao<int>>(), r => r,
                 deleteSourceFolder, cancellationToken);
         }
 

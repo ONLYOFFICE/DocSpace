@@ -189,9 +189,28 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
 
             successProcessed = thirdpartyTask.GetProperty<int>(PROCESSED) + daoTask.GetProperty<int>(PROCESSED);
-            processed = (thirdpartyTask.GetProperty<int>(PROGRESS) + daoTask.GetProperty<int>(PROGRESS)) / 2;
+
 
             base.FillDistributedTask();
+
+            var progress = 0;
+
+            if (ThirdPartyOperation.Total != 0)
+            {
+                progress += thirdpartyTask.GetProperty<int>(PROGRESS);
+            }
+
+            if (DaoOperation.Total != 0)
+            {
+                progress += daoTask.GetProperty<int>(PROGRESS);
+            }
+
+            if (ThirdPartyOperation.Total != 0 && DaoOperation.Total != 0)
+            {
+                progress /= 2;
+            }
+
+            TaskInfo.SetProperty(PROGRESS, progress < 100 ? progress : 100);
             TaskInfo.PublishChanges();
         }
 
@@ -211,10 +230,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         public bool HoldResult { get; set; }
 
-        protected FileOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true)
+        protected FileOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true)
         {
-            Folders = folders ?? new List<T>();
-            Files = files ?? new List<T>();
+            Folders = folders?.ToList() ?? new List<T>();
+            Files = files?.ToList() ?? new List<T>();
             Tenant = tenant;
             HoldResult = holdResult;
         }
@@ -251,6 +270,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             Folders = fileOperationData.Folders;
             HoldResult = fileOperationData.HoldResult;
             CurrentTenant = fileOperationData.Tenant;
+
+            using var scope = ServiceProvider.CreateScope();
+            var daoFactory = scope.ServiceProvider.GetService<IDaoFactory>();
+            FolderDao = daoFactory.GetFolderDao<TId>();
+
             Total = InitTotalProgressSteps();
             Source = string.Join(SPLIT_CHAR, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
         }
