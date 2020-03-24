@@ -62,8 +62,7 @@ class DeleteDialogComponent extends React.Component {
     this.setState({ isLoading: true }, () => {
       files
         .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then((res) => {
-          console.log("res", res);
+        .then(res => {
           toastr.success(successMessage);
         })
         .catch(err => {
@@ -106,6 +105,22 @@ class DeleteDialogComponent extends React.Component {
           : t("QuestionDeleteFolder")
         : t("QuestionDeleteElements");
 
+    const accuracy = 20;
+    const filesHeight = 25 * foldersList.length + accuracy;
+    const foldersHeight = 25 * filesList.length + accuracy;
+
+    let height = filesHeight + foldersHeight;
+
+    const foldersListAccuracy = 30;
+    const filesListAccuracy = 50;
+
+    if (foldersList.length === 0) {
+      height -= foldersListAccuracy;
+    }
+    if (filesList.length === 0) {
+      height -= filesListAccuracy;
+    }
+
     return (
       <ModalDialogContainer>
         <ModalDialog
@@ -115,9 +130,16 @@ class DeleteDialogComponent extends React.Component {
           bodyContent={
             <>
               <div className="modal-dialog-content">
-                <Text className="delete_dialog-header-text">{questionMessage}</Text>
-                <Scrollbar style={{ height: 330 }} stype="mediumBlack">
-                  <Text isBold>{t("FoldersModule")}:</Text>
+                <Text className="delete_dialog-header-text">
+                  {questionMessage}
+                </Text>
+                <Scrollbar
+                  style={{ height, maxHeight: 330 }}
+                  stype="mediumBlack"
+                >
+                  {foldersList.length > 0 && (
+                    <Text isBold>{t("FoldersModule")}:</Text>
+                  )}
                   {foldersList.map((item, index) => (
                     <Checkbox
                       truncate
@@ -130,9 +152,11 @@ class DeleteDialogComponent extends React.Component {
                     />
                   ))}
 
-                  <Text isBold className="delete_dialog-text">
-                    {t("FilesModule")}:
-                  </Text>
+                  {filesList.length > 0 && (
+                    <Text isBold className="delete_dialog-text">
+                      {t("FilesModule")}:
+                    </Text>
+                  )}
                   {filesList.map((item, index) => (
                     <Checkbox
                       truncate
