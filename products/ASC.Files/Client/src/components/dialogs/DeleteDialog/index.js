@@ -63,6 +63,7 @@ class DeleteDialogComponent extends React.Component {
       files
         .removeFiles(folderIds, fileIds, deleteAfter, immediately)
         .then(res => {
+          console.log("res", res);
           toastr.success(successMessage);
         })
         .catch(err => {
@@ -106,20 +107,12 @@ class DeleteDialogComponent extends React.Component {
         : t("QuestionDeleteElements");
 
     const accuracy = 20;
-    const filesHeight = 25 * foldersList.length + accuracy;
-    const foldersHeight = 25 * filesList.length + accuracy;
+    let filesHeight = 25 * filesList.length + accuracy + 8;
+    let foldersHeight = 25 * foldersList.length + accuracy;
+    if(foldersList.length === 0) { foldersHeight = 0; }
+    if(filesList.length === 0) { filesHeight = 0; }
 
-    let height = filesHeight + foldersHeight;
-
-    const foldersListAccuracy = 30;
-    const filesListAccuracy = 50;
-
-    if (foldersList.length === 0) {
-      height -= foldersListAccuracy;
-    }
-    if (filesList.length === 0) {
-      height -= filesListAccuracy;
-    }
+    const height = filesHeight + foldersHeight;
 
     return (
       <ModalDialogContainer>
