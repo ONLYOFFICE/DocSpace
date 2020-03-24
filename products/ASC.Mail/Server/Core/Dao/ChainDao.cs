@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -72,74 +73,52 @@ namespace ASC.Mail.Core.Dao
             return dictionary;
         }
 
-        //private const string QUERY_COUNT_FORMAT = "SELECT chains.{3}, COUNT(*) FROM " +
-        //                                          "(select t.{3}, c.{4} from {0} t " +
-        //                                          "inner join {1} m on t.{5} = m.{6} " +
-        //                                          "inner join {2} c on m.{7} = c.{4} " +
-        //                                          "where t.{8} = @tenant and t.{9} = @user {10}" +
-        //                                          "group by t.{3}, c.{4}) as chains " + 
-        //                                          "GROUP BY chains.{3};";
-
         public Dictionary<uint, int> GetChainUserFolderCount(bool? unread = null)
         {
-            //TODO: Fix
-            /*var query = string.Format(QUERY_COUNT_FORMAT,
-                UserFoldertXMailTable.TABLE_NAME,
-                MailTable.TABLE_NAME,
-                ChainTable.TABLE_NAME,
-                UserFoldertXMailTable.Columns.FolderId,
-                ChainTable.Columns.Id,
-                UserFoldertXMailTable.Columns.MailId,
-                MailTable.Columns.Id,
-                MailTable.Columns.ChainId,
-                UserFoldertXMailTable.Columns.Tenant,
-                UserFoldertXMailTable.Columns.User,
-                unread.HasValue ? string.Format("and m.{0} = {1} ", MailTable.Columns.Unread, unread.Value ? 1 : 0) : "");
+            var dictionary = (from t in MailDb.MailUserFolderXMail
+                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
+                              from ufxm in UFxMail
+                              join c in MailDb.MailChain on ufxm.ChainId equals c.Id
+                              where t.Tenant == Tenant && t.IdUser == UserId && (unread.HasValue && ufxm.Unread == unread.Value)
+                              group t by new
+                              {
+                                  t.IdFolder,
+                                  c.Id
+                              } into Chains
+                              select new
+                              {
+                                  FolderId = Chains.Key.IdFolder,
+                                  Count = Chains.Count()
+                              })
+                              .ToList()
+                              .ToDictionary(o => o.FolderId, o => o.Count);
 
-            var result = Db.ExecuteList(query, new { tenant = Tenant, user = CurrentUserId })
-                .ConvertAll(r => new
-                {
-                    folder = Convert.ToUInt32(r[0]),
-                    count = Convert.ToInt32(r[1])
-                })
-                .ToDictionary(o => o.folder, o => o.count);
-
-            return result;*/
-
-            throw new NotImplementedException();
+            return dictionary;
         }
 
         public Dictionary<uint, int> GetChainUserFolderCount(List<int> userFolderIds, bool? unread = null)
         {
-            //TODO: Fix
-            /*var query = string.Format(QUERY_COUNT_FORMAT,
-                UserFoldertXMailTable.TABLE_NAME,
-                MailTable.TABLE_NAME,
-                ChainTable.TABLE_NAME,
-                UserFoldertXMailTable.Columns.FolderId,
-                ChainTable.Columns.Id,
-                UserFoldertXMailTable.Columns.MailId,
-                MailTable.Columns.Id,
-                MailTable.Columns.ChainId,
-                UserFoldertXMailTable.Columns.Tenant,
-                UserFoldertXMailTable.Columns.User,
-                string.Format("and t.{0} in ({1}) {2}", UserFoldertXMailTable.Columns.FolderId, string.Join(",", userFolderIds), 
-                    unread.HasValue 
-                        ? string.Format("and m.{0} = {1} ", MailTable.Columns.Unread, unread.Value ? 1 : 0) 
-                        : "")
-                );
+            var dictionary = (from t in MailDb.MailUserFolderXMail
+                              join m in MailDb.MailMail on (int)t.IdMail equals m.Id into UFxMail
+                              from ufxm in UFxMail
+                              join c in MailDb.MailChain on ufxm.ChainId equals c.Id
+                              where t.Tenant == Tenant && t.IdUser == UserId 
+                                && userFolderIds.Contains((int)t.IdFolder)
+                                && (unread.HasValue && ufxm.Unread == unread.Value)
+                              group t by new
+                              {
+                                  t.IdFolder,
+                                  c.Id
+                              } into Chains
+                              select new
+                              {
+                                  FolderId = Chains.Key.IdFolder,
+                                  Count = Chains.Count()
+                              })
+                             .ToList()
+                             .ToDictionary(o => o.FolderId, o => o.Count);
 
-            var result = Db.ExecuteList(query, new { tenant = Tenant, user = CurrentUserId })
-                .ConvertAll(r => new
-                {
-                    folder = Convert.ToUInt32(r[0]),
-                    count = Convert.ToInt32(r[1])
-                })
-                .ToDictionary(o => o.folder, o => o.count);
-
-            return result;*/
-
-            throw new NotImplementedException();
+            return dictionary;
         }
 
         public int SaveChain(Chain chain)
@@ -177,15 +156,24 @@ namespace ASC.Mail.Core.Dao
 
         public int SetFieldValue<T>(IConversationsExp exp, string field, T value)
         {
-            //TODO: Fix
-            /*var query =
-                new SqlUpdate(ChainTable.TABLE_NAME)
-                    .Set(field, value)
-                    .Where(exp.GetExpression());
+            Type type = typeof(T);
+            PropertyInfo pi = type.GetProperty(field);
 
-            return Db.ExecuteNonQuery(query);*/
+            if (pi == null)
+                throw new ArgumentException("Field not found");
 
-            throw new NotImplementedException();
+            var chains = MailDb.MailChain
+                .Where(exp.GetExpression())
+                .ToList();
+
+            foreach (var chain in chains)
+            {
+                pi.SetValue(chain, Convert.ChangeType(value, pi.PropertyType), null);
+            }
+
+            var result = MailDb.SaveChanges();
+
+            return result;
         }
 
         protected Chain ToChain(MailChain r)
