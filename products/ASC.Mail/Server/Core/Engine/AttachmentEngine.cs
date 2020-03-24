@@ -34,6 +34,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Data.Storage;
+using ASC.Files.Core.Security;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
@@ -43,6 +44,8 @@ using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Core.Files;
+using ASC.Web.Files.Api;
+using ASC.Web.Files.Utils;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -53,6 +56,9 @@ namespace ASC.Mail.Core.Engine
         public DaoFactory DaoFactory { get; }
         public StorageFactory StorageFactory { get; }
         public StorageManager StorageManager { get; }
+        public FilesIntegration FilesIntegration { get; }
+        public FileSecurity FilesSeurity { get; }
+        public FileConverter FileConverter { get; }
         public ILog Log { get; }
 
         public AttachmentEngine(
@@ -60,12 +66,18 @@ namespace ASC.Mail.Core.Engine
             DaoFactory daoFactory,
             StorageFactory storageFactory,
             StorageManager storageManager,
+            FilesIntegration filesIntegration,
+            FileSecurity filesSeurity,
+            FileConverter fileConverter,
             IOptionsMonitor<ILog> option)
         {
             EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             StorageFactory = storageFactory;
             StorageManager = storageManager;
+            FilesIntegration = filesIntegration;
+            FilesSeurity = filesSeurity;
+            FileConverter = fileConverter;
             Log = option.Get("ASC.Mail.AttachmentEngine");
         }
 
@@ -99,102 +111,98 @@ namespace ASC.Mail.Core.Engine
             return number;
         }
 
-        //public MailAttachmentData AttachFileFromDocuments(int tenant, string user, int messageId, string fileId, string version, bool needSaveToTemp = false)
-        //{
-        //    MailAttachmentData result;
+        public MailAttachmentData AttachFileFromDocuments(int tenant, string user, int messageId, string fileId, string version, bool needSaveToTemp = false)
+        {
+            MailAttachmentData result;
 
-        //    using (var fileDao = FilesIntegration.GetFileDao())
-        //    {
-        //        var file = string.IsNullOrEmpty(version)
-        //                       ? fileDao.GetFile(fileId)
-        //                       : fileDao.GetFile(fileId, Convert.ToInt32(version));
+            var fileDao = FilesIntegration.GetFileDao();
 
-        //        if (file == null)
-        //            throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound, "File not found.");
+            var file = string.IsNullOrEmpty(version)
+                           ? fileDao.GetFile(fileId)
+                           : fileDao.GetFile(fileId, Convert.ToInt32(version));
 
-        //        if (!FilesIntegration.GetFileSecurity().CanRead(file))
-        //            throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied,
-        //                                           "Access denied.");
+            if (file == null)
+                throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound, "File not found.");
 
-        //        if (!fileDao.IsExistOnStorage(file))
-        //        {
-        //            throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound,
-        //                                           "File not exists on storage.");
-        //        }
+            if (!FilesSeurity.CanRead(file))
+                throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied,
+                                               "Access denied.");
 
-        //        Log.InfoFormat("Original file id: {0}", file.ID);
-        //        Log.InfoFormat("Original file name: {0}", file.Title);
-        //        var fileExt = FileUtility.GetFileExtension(file.Title);
-        //        var curFileType = FileUtility.GetFileTypeByFileName(file.Title);
-        //        Log.InfoFormat("File converted type: {0}", file.ConvertedType);
+            if (!fileDao.IsExistOnStorage(file))
+            {
+                throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound,
+                                               "File not exists on storage.");
+            }
 
-        //        if (file.ConvertedType != null)
-        //        {
-        //            switch (curFileType)
-        //            {
-        //                case FileType.Image:
-        //                    fileExt = file.ConvertedType == ".zip" ? ".pptt" : file.ConvertedType;
-        //                    break;
-        //                case FileType.Spreadsheet:
-        //                    fileExt = file.ConvertedType != ".xlsx" ? ".xlst" : file.ConvertedType;
-        //                    break;
-        //                default:
-        //                    if (file.ConvertedType == ".doct" || file.ConvertedType == ".xlst" || file.ConvertedType == ".pptt")
-        //                        fileExt = file.ConvertedType;
-        //                    break;
-        //            }
-        //        }
+            Log.InfoFormat("Original file id: {0}", file.ID);
+            Log.InfoFormat("Original file name: {0}", file.Title);
+            var fileExt = FileUtility.GetFileExtension(file.Title);
+            var curFileType = FileUtility.GetFileTypeByFileName(file.Title);
+            Log.InfoFormat("File converted type: {0}", file.ConvertedType);
 
-        //        var convertToExt = string.Empty;
-        //        switch (curFileType)
-        //        {
-        //            case FileType.Document:
-        //                if (fileExt == ".doct")
-        //                    convertToExt = ".docx";
-        //                break;
-        //            case FileType.Spreadsheet:
-        //                if (fileExt == ".xlst")
-        //                    convertToExt = ".xlsx";
-        //                break;
-        //            case FileType.Presentation:
-        //                if (fileExt == ".pptt")
-        //                    convertToExt = ".pptx";
-        //                break;
-        //        }
+            if (file.ConvertedType != null)
+            {
+                switch (curFileType)
+                {
+                    case FileType.Image:
+                        fileExt = file.ConvertedType == ".zip" ? ".pptt" : file.ConvertedType;
+                        break;
+                    case FileType.Spreadsheet:
+                        fileExt = file.ConvertedType != ".xlsx" ? ".xlst" : file.ConvertedType;
+                        break;
+                    default:
+                        if (file.ConvertedType == ".doct" || file.ConvertedType == ".xlst" || file.ConvertedType == ".pptt")
+                            fileExt = file.ConvertedType;
+                        break;
+                }
+            }
 
-        //        if (!string.IsNullOrEmpty(convertToExt) && fileExt != convertToExt)
-        //        {
-        //            var fileName = Path.ChangeExtension(file.Title, convertToExt);
-        //            Log.InfoFormat("Changed file name - {0} for file {1}:", fileName, file.ID);
+            var convertToExt = string.Empty;
+            switch (curFileType)
+            {
+                case FileType.Document:
+                    if (fileExt == ".doct")
+                        convertToExt = ".docx";
+                    break;
+                case FileType.Spreadsheet:
+                    if (fileExt == ".xlst")
+                        convertToExt = ".xlsx";
+                    break;
+                case FileType.Presentation:
+                    if (fileExt == ".pptt")
+                        convertToExt = ".pptx";
+                    break;
+            }
 
-        //            using (var readStream = FileConverter.Exec(file, convertToExt))
-        //            {
-        //                if (readStream == null)
-        //                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
+            if (!string.IsNullOrEmpty(convertToExt) && fileExt != convertToExt)
+            {
+                var fileName = Path.ChangeExtension(file.Title, convertToExt);
+                Log.InfoFormat("Changed file name - {0} for file {1}:", fileName, file.ID);
 
-        //                using (var memStream = new MemoryStream())
-        //                {
-        //                    readStream.StreamCopyTo(memStream);
-        //                    result = AttachFileToDraft(tenant, user, messageId, fileName, memStream, memStream.Length, null, needSaveToTemp);
-        //                    Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
-        //                }
-        //            }
-        //        }
-        //        else
-        //        {
-        //            using (var readStream = fileDao.GetFileStream(file))
-        //            {
-        //                if (readStream == null)
-        //                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
+                using var readStream = FileConverter.Exec(file, convertToExt);
 
-        //                result = AttachFileToDraft(tenant, user, messageId, file.Title, readStream, readStream.CanSeek ? readStream.Length : file.ContentLength, null, needSaveToTemp);
-        //                Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
-        //            }
-        //        }
-        //    }
+                if (readStream == null)
+                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
 
-        //    return result;
-        //}
+                using var memStream = new MemoryStream();
+
+                readStream.StreamCopyTo(memStream);
+                result = AttachFileToDraft(tenant, user, messageId, fileName, memStream, memStream.Length, null, needSaveToTemp);
+                Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
+            }
+            else
+            {
+                using var readStream = fileDao.GetFileStream(file);
+
+                if (readStream == null)
+                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
+
+                result = AttachFileToDraft(tenant, user, messageId, file.Title, readStream, readStream.CanSeek ? readStream.Length : file.ContentLength, null, needSaveToTemp);
+                Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
+            }
+
+            return result;
+        }
 
         public MailAttachmentData AttachFile(int tenant, string user, MailMessageData message,
             string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
@@ -356,61 +364,50 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        //public void DeleteMessageAttachments(int tenant, string user, int messageId, List<int> attachmentIds)
-        //{
-        //    var engine = new EngineFactory(tenant, user);
+        public void DeleteMessageAttachments(int tenant, string user, int messageId, List<int> attachmentIds)
+        {
+            long usedQuota;
+            int attachCount;
 
-        //    long usedQuota;
-        //    int attachCount;
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                var exp = new ConcreteMessageAttachmentsExp(messageId, tenant, user, attachmentIds,
+                    onlyEmbedded: null);
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
-        //        {
-        //            var exp = new ConcreteMessageAttachmentsExp(messageId, tenant, user, attachmentIds,
-        //                onlyEmbedded: null);
+                usedQuota = DaoFactory.AttachmentDao.GetAttachmentsSize(exp);
 
-        //            var daoAttachment = daoFactory.CreateAttachmentDao(tenant, user);
+                DaoFactory.AttachmentDao.SetAttachmnetsRemoved(exp);
 
-        //            usedQuota = daoAttachment.GetAttachmentsSize(exp);
+                attachCount = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                    new ConcreteMessageAttachmentsExp(messageId, tenant, user));
 
-        //            daoAttachment.SetAttachmnetsRemoved(exp);
+                DaoFactory.MailInfoDao.SetFieldValue(
+                    SimpleMessagesExp.CreateBuilder(tenant, user)
+                        .SetMessageId(messageId)
+                        .Build(),
+                    "AttachCount",
+                    attachCount);
 
-        //            attachCount = daoAttachment.GetAttachmentsCount(
-        //                new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+                EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(DaoFactory, tenant, user, messageId);
 
-        //            var daoMailInfo = daoFactory.CreateMailInfoDao(tenant, user);
+                tx.Commit();
+            }
 
-        //            daoMailInfo.SetFieldValue(
-        //                SimpleMessagesExp.CreateBuilder(tenant, user)
-        //                    .SetMessageId(messageId)
-        //                    .Build(),
-        //                MailTable.Columns.AttachCount,
-        //                attachCount);
+            if (attachCount == 0)
+            {
+                var data = new MailWrapper
+                {
+                    HasAttachments = false
+                };
 
-        //            engine.ChainEngine.UpdateMessageChainAttachmentsFlag(daoFactory, tenant, user, messageId);
+                EngineFactory.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+            }
 
-        //            tx.Commit();
-        //        }
-        //    }
+            if (usedQuota <= 0)
+                return;
 
-        //    //TODO: Fix IndexEngine
-        //    //if (attachCount == 0)
-        //    //{
-        //    //    var data = new MailWrapper
-        //    //    {
-        //    //        HasAttachments = false
-        //    //    };
-
-        //    //    engine.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
-        //    //}
-
-        //    if (usedQuota <= 0)
-        //        return;
-
-        //    //TODO: Fix QuotaEngine
-        //    //engine.QuotaEngine.QuotaUsedDelete(usedQuota);
-        //}
+            EngineFactory.QuotaEngine.QuotaUsedDelete(usedQuota);
+        }
 
         public void StoreAttachments(MailBoxData mailBoxData, List<MailAttachmentData> attachments, string streamId)
         {
@@ -419,9 +416,6 @@ namespace ASC.Mail.Core.Engine
             try
             {
                 var quotaAddSize = attachments.Sum(a => a.data != null ? a.data.LongLength : a.dataStream.Length);
-
-                //TODO: Check TenantId and UserId in StorageManager
-                //var storageManager = new StorageManager(mailBoxData.TenantId, mailBoxData.UserId);
 
                 foreach (var attachment in attachments)
                 {
@@ -438,12 +432,11 @@ namespace ASC.Mail.Core.Engine
                     attachment.tenant = mailBoxData.TenantId;
                     attachment.user = mailBoxData.UserId;
 
+                    //TODO: Check TenantId and UserId in StorageManager
                     StorageManager.StoreAttachmentWithoutQuota(attachment);
                 }
 
-                //TODO: Fix QuotaEngine
-                //var engine = new EngineFactory(mailBoxData.TenantId);
-                //engine.QuotaEngine.QuotaUsedAdd(quotaAddSize);
+                EngineFactory.QuotaEngine.QuotaUsedAdd(quotaAddSize);
             }
             catch
             {
