@@ -28,24 +28,40 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-//using ASC.Common.Data;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     public class FolderEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
 
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
+
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public DaoFactory DaoFactory { get; }
         public ILog Log { get; private set; }
 
         public class MailFolderInfo
@@ -60,62 +76,63 @@ namespace ASC.Mail.Core.Engine
 
         public EngineFactory Factory { get; private set; }
 
-        public FolderEngine(int tenant, string user, ILog log = null)
+        public FolderEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            Factory = engineFactory;
+            DaoFactory = daoFactory;
 
-            Log = log ?? LogManager.GetLogger("ASC.Mail.FolderEngine");
-
-            Factory = new EngineFactory(Tenant, User, Log);
+            Log = option.Get("ASC.Mail.FolderEngine");
         }
 
         public List<MailFolderInfo> GetFolders()
         {
             List<MailFolderInfo> folders;
+
             var needRecalculation = false;
 
-            using (var daoFactory = new DaoFactory())
+            var folderList = DaoFactory.FolderDao.GetFolders();
+
+            foreach (var folder in DefaultFolders)
             {
-                var dao = daoFactory.CreateFolderDao(Tenant, User);
+                if (folderList.Exists(f => f.FolderType == folder))
+                    continue;
 
-                var folderList = dao.GetFolders();
+                needRecalculation = true;
 
-                foreach (var folder in DefaultFolders)
+                var newFolder = new Folder
                 {
-                    if (folderList.Exists(f => f.FolderType == folder)) 
-                        continue;
+                    FolderType = folder,
+                    Tenant = Tenant,
+                    UserId = User,
+                    TotalCount = 0,
+                    UnreadCount = 0,
+                    UnreadChainCount = 0,
+                    TotalChainCount = 0,
+                    TimeModified = DateTime.UtcNow
+                };
 
-                    needRecalculation = true;
+                DaoFactory.FolderDao.Save(newFolder);
 
-                    var newFolder = new Folder
-                    {
-                        FolderType = folder,
-                        Tenant = Tenant,
-                        UserId = User,
-                        TotalCount = 0,
-                        UnreadCount = 0,
-                        UnreadChainCount = 0,
-                        TotalChainCount = 0,
-                        TimeModified = DateTime.UtcNow
-                    };
-
-                    dao.Save(newFolder);
-
-                    folderList.Add(newFolder);
-                }
-
-                folders = folderList
-                    .ConvertAll(x => new MailFolderInfo
-                    {
-                        id = x.FolderType,
-                        timeModified = x.TimeModified,
-                        unread = x.UnreadChainCount,
-                        unreadMessages = x.UnreadCount,
-                        total = x.TotalChainCount,
-                        totalMessages = x.TotalCount
-                    });
+                folderList.Add(newFolder);
             }
+
+            folders = folderList
+                .ConvertAll(x => new MailFolderInfo
+                {
+                    id = x.FolderType,
+                    timeModified = x.TimeModified,
+                    unread = x.UnreadChainCount,
+                    unreadMessages = x.UnreadCount,
+                    total = x.TotalChainCount,
+                    totalMessages = x.TotalCount
+                });
 
             if (!needRecalculation)
                 return folders;
@@ -126,7 +143,6 @@ namespace ASC.Mail.Core.Engine
         }
 
         public void ChangeFolderCounters(
-            IDaoFactory daoFactory,
             FolderType folder,
             uint? userFolder = null,
             int? unreadMessDiff = null,
@@ -139,9 +155,7 @@ namespace ASC.Mail.Core.Engine
 
             try
             {
-                var dao = daoFactory.CreateFolderDao(Tenant, User);
-
-                var res = dao 
+                var res = DaoFactory.FolderDao
                     .ChangeFolderCounters(folder, unreadMessDiff, totalMessDiff, unreadConvDiff, totalConvDiff);
 
                 if (res == 0)
@@ -154,13 +168,13 @@ namespace ASC.Mail.Core.Engine
                     if (totalCount < 0 || unreadCount < 0 || unreadChainCount < 0 || totalChainCount < 0)
                         throw new Exception("Need recalculation");
 
-                    var f = dao.GetFolder(folder);
+                    var f = DaoFactory.FolderDao.GetFolder(folder);
 
                     if (f == null)
                     {
                         // Folder is not found
 
-                        res = dao.Save(new Folder
+                        res = DaoFactory.FolderDao.Save(new Folder
                         {
                             FolderType = folder,
                             Tenant = Tenant,
@@ -185,182 +199,160 @@ namespace ASC.Mail.Core.Engine
             catch (Exception ex)
             {
                 Log.ErrorFormat("ChangeFolderCounters() Exception: {0}", ex.ToString());
-                var engine = new EngineFactory(Tenant, User);
-                engine.OperationEngine.RecalculateFolders();
+                Factory.OperationEngine.RecalculateFolders();
             }
 
             if (!userFolder.HasValue)
                 return;
 
-            Factory.UserFolderEngine.ChangeFolderCounters(daoFactory, userFolder.Value, unreadMessDiff, totalMessDiff, unreadConvDiff, totalConvDiff);
+            Factory.UserFolderEngine.ChangeFolderCounters(userFolder.Value, unreadMessDiff, totalMessDiff, unreadConvDiff, totalConvDiff);
         }
 
         public void RecalculateFolders(Action<MailOperationRecalculateMailboxProgress> callback = null)
         {
-            using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RecalculateFoldersTimeout))
-            {
-                var daoFactory = new DaoFactory(db);
+            using var tx = DaoFactory.BeginTransaction();
 
-                var daoFolder = daoFactory.CreateFolderDao(Tenant, User);
+            var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>();
 
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>();
+            callback?.Invoke(MailOperationRecalculateMailboxProgress.CountUnreadMessages);
 
-                    var daoMailInfo = daoFactory.CreateMailInfoDao(Tenant, User);
-
-                    if (callback != null)
-                        callback(MailOperationRecalculateMailboxProgress.CountUnreadMessages);
-
-                    var unreadMessagesCountByFolder =
-                        daoMailInfo.GetMailCount(
-                            SimpleMessagesExp.CreateBuilder(Tenant, User)
-                                .SetUnread(true)
-                                .Build());
-
-                    if (callback != null)
-                        callback(MailOperationRecalculateMailboxProgress.CountTotalMessages);
-
-                    var totalMessagesCountByFolder = daoMailInfo.GetMailCount(
+            var unreadMessagesCountByFolder =
+                    DaoFactory.MailInfoDao.GetMailCount(
                         SimpleMessagesExp.CreateBuilder(Tenant, User)
-                            .Build());
-
-                    var daoChain = daoFactory.CreateChainDao(Tenant, User);
-
-                    if (callback != null)
-                        callback(MailOperationRecalculateMailboxProgress.CountUreadConversation);
-
-                    var unreadConversationsCountByFolder = daoChain.GetChainCount(
-                        SimpleConversationsExp.CreateBuilder(Tenant, User)
                             .SetUnread(true)
                             .Build());
 
-                    if (callback != null)
-                        callback(MailOperationRecalculateMailboxProgress.CountTotalConversation);
+            callback?.Invoke(MailOperationRecalculateMailboxProgress.CountTotalMessages);
 
-                    var totalConversationsCountByFolder = daoChain.GetChainCount(
-                        SimpleConversationsExp.CreateBuilder(Tenant, User)
+            var totalMessagesCountByFolder = DaoFactory.MailInfoDao.GetMailCount(
+                    SimpleMessagesExp.CreateBuilder(Tenant, User)
+                        .Build());
+
+            callback?.Invoke(MailOperationRecalculateMailboxProgress.CountUreadConversation);
+
+            var unreadConversationsCountByFolder =
+                DaoFactory.ChainDao.GetChainCount(
+                    SimpleConversationsExp.CreateBuilder(Tenant, User)
+                        .SetUnread(true)
+                        .Build());
+
+            if (callback != null)
+                callback(MailOperationRecalculateMailboxProgress.CountTotalConversation);
+
+            var totalConversationsCountByFolder =
+            DaoFactory.ChainDao.GetChainCount(
+                SimpleConversationsExp.CreateBuilder(Tenant, User)
+                    .Build());
+
+            callback?.Invoke(MailOperationRecalculateMailboxProgress.UpdateFoldersCounters);
+
+            var now = DateTime.UtcNow;
+
+            var folders = (from folderId in folderTypes
+                           let unreadMessCount =
+                               unreadMessagesCountByFolder.ContainsKey(folderId)
+                                   ? unreadMessagesCountByFolder[folderId]
+                                   : 0
+                           let totalMessCount =
+                               totalMessagesCountByFolder.ContainsKey(folderId)
+                                   ? totalMessagesCountByFolder[folderId]
+                                   : 0
+                           let unreadConvCount =
+                               unreadConversationsCountByFolder.ContainsKey(folderId)
+                                   ? unreadConversationsCountByFolder[folderId]
+                                   : 0
+                           let totalConvCount =
+                               totalConversationsCountByFolder.ContainsKey(folderId)
+                                   ? totalConversationsCountByFolder[folderId]
+                                   : 0
+                           select new Folder
+                           {
+                               FolderType = (FolderType)folderId,
+                               Tenant = Tenant,
+                               UserId = User,
+                               UnreadCount = unreadMessCount,
+                               UnreadChainCount = unreadConvCount,
+                               TotalCount = totalMessCount,
+                               TotalChainCount = totalConvCount,
+                               TimeModified = now
+                           })
+                .ToList();
+
+            foreach (var folder in folders)
+            {
+                DaoFactory.FolderDao.Save(folder);
+            }
+
+            var userFolder = folders.FirstOrDefault(f => f.FolderType == FolderType.UserFolder);
+
+            if (userFolder != null)
+            {
+                var userFolders =
+                    DaoFactory.UserFolderDao.GetList(
+                        SimpleUserFoldersExp.CreateBuilder(Tenant, User)
                             .Build());
 
-                    if (callback != null)
-                        callback(MailOperationRecalculateMailboxProgress.UpdateFoldersCounters);
+                if (userFolders.Any())
+                {
+                    var totalMessagesCountByUserFolder = DaoFactory.MailInfoDao.GetMailUserFolderCount();
 
-                    var now = DateTime.UtcNow;
+                    callback?.Invoke(MailOperationRecalculateMailboxProgress.CountTotalUserFolderMessages);
 
-                    var folders = (from folderId in folderTypes
-                        let unreadMessCount =
-                            unreadMessagesCountByFolder.ContainsKey(folderId)
-                                ? unreadMessagesCountByFolder[folderId]
-                                : 0
-                        let totalMessCount =
-                            totalMessagesCountByFolder.ContainsKey(folderId)
-                                ? totalMessagesCountByFolder[folderId]
-                                : 0
-                        let unreadConvCount =
-                            unreadConversationsCountByFolder.ContainsKey(folderId)
-                                ? unreadConversationsCountByFolder[folderId]
-                                : 0
-                        let totalConvCount =
-                            totalConversationsCountByFolder.ContainsKey(folderId)
-                                ? totalConversationsCountByFolder[folderId]
-                                : 0
-                        select new Folder
-                        {
-                            FolderType = (FolderType) folderId,
-                            Tenant = Tenant,
-                            UserId = User,
-                            UnreadCount = unreadMessCount,
-                            UnreadChainCount = unreadConvCount,
-                            TotalCount = totalMessCount,
-                            TotalChainCount = totalConvCount,
-                            TimeModified = now
-                        })
+                    var unreadMessagesCountByUserFolder = DaoFactory.MailInfoDao.GetMailUserFolderCount(true);
+
+                    callback?.Invoke(MailOperationRecalculateMailboxProgress.CountUnreadUserFolderMessages);
+
+                    var totalConversationsCountByUserFolder = DaoFactory.ChainDao.GetChainUserFolderCount();
+
+                    callback?.Invoke(MailOperationRecalculateMailboxProgress.CountTotalUserFolderConversation);
+
+                    var unreadConversationsCountByUserFolder = DaoFactory.ChainDao.GetChainUserFolderCount(true);
+
+                    callback?.Invoke(MailOperationRecalculateMailboxProgress.CountUreadUserFolderConversation);
+
+                    var newUserFolders = (from folder in userFolders
+                                          let unreadMessCount =
+                                              unreadMessagesCountByUserFolder.ContainsKey(folder.Id)
+                                                  ? unreadMessagesCountByUserFolder[folder.Id]
+                                                  : 0
+                                          let totalMessCount =
+                                              totalMessagesCountByUserFolder.ContainsKey(folder.Id)
+                                                  ? totalMessagesCountByUserFolder[folder.Id]
+                                                  : 0
+                                          let unreadConvCount =
+                                              unreadConversationsCountByUserFolder.ContainsKey(folder.Id)
+                                                  ? unreadConversationsCountByUserFolder[folder.Id]
+                                                  : 0
+                                          let totalConvCount =
+                                              totalConversationsCountByUserFolder.ContainsKey(folder.Id)
+                                                  ? totalConversationsCountByUserFolder[folder.Id]
+                                                  : 0
+                                          select new UserFolder
+                                          {
+                                              Id = folder.Id,
+                                              ParentId = folder.ParentId,
+                                              Name = folder.Name,
+                                              FolderCount = folder.FolderCount,
+                                              Tenant = Tenant,
+                                              User = User,
+                                              UnreadCount = unreadMessCount,
+                                              UnreadChainCount = unreadConvCount,
+                                              TotalCount = totalMessCount,
+                                              TotalChainCount = totalConvCount,
+                                              TimeModified = now
+                                          })
                         .ToList();
 
-                    foreach (var folder in folders)
+                    callback?.Invoke(MailOperationRecalculateMailboxProgress.UpdateUserFoldersCounters);
+
+                    foreach (var folder in newUserFolders)
                     {
-                        daoFolder.Save(folder);
+                        DaoFactory.UserFolderDao.Save(folder);
                     }
-
-                    var userFolder = folders.FirstOrDefault(f => f.FolderType == FolderType.UserFolder);
-
-                    if (userFolder != null)
-                    {
-                        var daoUserFolder = daoFactory.CreateUserFolderDao(Tenant, User);
-
-                        var userFolders =
-                            daoUserFolder.GetList(
-                                SimpleUserFoldersExp.CreateBuilder(Tenant, User)
-                                    .Build());
-
-                        if (userFolders.Any())
-                        {
-                            var totalMessagesCountByUserFolder = daoMailInfo.GetMailUserFolderCount();
-
-                            if (callback != null)
-                                callback(MailOperationRecalculateMailboxProgress.CountTotalUserFolderMessages);
-
-                            var unreadMessagesCountByUserFolder = daoMailInfo.GetMailUserFolderCount(true);
-
-                            if (callback != null)
-                                callback(MailOperationRecalculateMailboxProgress.CountUnreadUserFolderMessages);
-
-                            var totalConversationsCountByUserFolder = daoChain.GetChainUserFolderCount();
-
-                            if (callback != null)
-                                callback(MailOperationRecalculateMailboxProgress.CountTotalUserFolderConversation);
-
-                            var unreadConversationsCountByUserFolder = daoChain.GetChainUserFolderCount(true);
-
-                            if (callback != null)
-                                callback(MailOperationRecalculateMailboxProgress.CountUreadUserFolderConversation);
-
-                            var newUserFolders = (from folder in userFolders
-                                let unreadMessCount =
-                                    unreadMessagesCountByUserFolder.ContainsKey(folder.Id)
-                                        ? unreadMessagesCountByUserFolder[folder.Id]
-                                        : 0
-                                let totalMessCount =
-                                    totalMessagesCountByUserFolder.ContainsKey(folder.Id)
-                                        ? totalMessagesCountByUserFolder[folder.Id]
-                                        : 0
-                                let unreadConvCount =
-                                    unreadConversationsCountByUserFolder.ContainsKey(folder.Id)
-                                        ? unreadConversationsCountByUserFolder[folder.Id]
-                                        : 0
-                                let totalConvCount =
-                                    totalConversationsCountByUserFolder.ContainsKey(folder.Id)
-                                        ? totalConversationsCountByUserFolder[folder.Id]
-                                        : 0
-                                select new UserFolder
-                                {
-                                    Id = folder.Id,
-                                    ParentId = folder.ParentId,
-                                    Name = folder.Name,
-                                    FolderCount = folder.FolderCount,
-                                    Tenant = Tenant,
-                                    User = User,
-                                    UnreadCount = unreadMessCount,
-                                    UnreadChainCount = unreadConvCount,
-                                    TotalCount = totalMessCount,
-                                    TotalChainCount = totalConvCount,
-                                    TimeModified = now
-                                })
-                                .ToList();
-
-                            if (callback != null)
-                                callback(MailOperationRecalculateMailboxProgress.UpdateUserFoldersCounters);
-
-                            foreach (var folder in newUserFolders)
-                            {
-                                daoUserFolder.Save(folder);
-                            }
-                        }
-                    }
-
-                    tx.Commit();
                 }
             }
+
+            tx.Commit();
         }
 
         public Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>> GetSpecialDomainFolders()
@@ -369,11 +361,8 @@ namespace ASC.Mail.Core.Engine
 
             try
             {
-                using (var daoFactory = new DaoFactory())
-                {
-                    var imapSpecialMailboxes = daoFactory
-                        .CreateImapSpecialMailboxDao()
-                        .GetImapSpecialMailboxes();
+                var imapSpecialMailboxes =
+                    DaoFactory.ImapSpecialMailboxDao.GetImapSpecialMailboxes();
 
                     imapSpecialMailboxes.ForEach(r =>
                     {
@@ -390,8 +379,6 @@ namespace ASC.Mail.Core.Engine
                                 {r.MailboxName, mb}
                             };
                     });
-                }
-
             }
             catch (Exception ex)
             {
@@ -410,5 +397,6 @@ namespace ASC.Mail.Core.Engine
                     .ToList();
             }
         }
+
     }
 }
