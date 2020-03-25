@@ -244,7 +244,7 @@ namespace ASC.Mail.Core.Engine
 
                     var unreadMessDiff = keyPair.Value != 0 ? keyPair.Value * (-1) : (int?)null;
 
-                    EngineFactory.FolderEngine.ChangeFolderCounters(DaoFactory, folderType, userFolder,
+                    EngineFactory.FolderEngine.ChangeFolderCounters(folderType, userFolder,
                             unreadMessDiff, unreadConvDiff: -1);
 
                     DaoFactory.ChainDao.SetFieldValue(
@@ -627,7 +627,7 @@ namespace ASC.Mail.Core.Engine
 
                 var unreadConvDiff = chainUnreadFlag ? -1 : (int?) null;
 
-                EngineFactory.FolderEngine.ChangeFolderCounters(DaoFactory, folder, userFolderId,
+                EngineFactory.FolderEngine.ChangeFolderCounters(folder, userFolderId,
                     unreadConvDiff: unreadConvDiff, totalConvDiff: -1);
             }
             else
@@ -683,7 +683,7 @@ namespace ASC.Mail.Core.Engine
                     }
                 }
 
-                EngineFactory.FolderEngine.ChangeFolderCounters(DaoFactory, folder, userFolderId,
+                EngineFactory.FolderEngine.ChangeFolderCounters(folder, userFolderId,
                     unreadConvDiff: unreadConvDiff, totalConvDiff: totalConvDiff);
             }
         }

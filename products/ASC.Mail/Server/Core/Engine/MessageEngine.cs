@@ -410,7 +410,7 @@ namespace ASC.Mail.Core.Factory
                     var unreadMessDiff = f.Item2 != 0 ? sign * f.Item2 : (int?)null;
                     var unreadConvDiff = f.Item3 != 0 ? sign * f.Item3 : (int?)null;
 
-                    Factory.FolderEngine.ChangeFolderCounters(DaoFactory, folder, userFolder,
+                    Factory.FolderEngine.ChangeFolderCounters(folder, userFolder,
                         unreadMessDiff, unreadConvDiff: unreadConvDiff);
                 }
 
@@ -573,7 +573,7 @@ namespace ASC.Mail.Core.Factory
 
                 unreadMessDiff = unreadRestore != 0 ? unreadRestore : (int?) null;
 
-                Factory.FolderEngine.ChangeFolderCounters(daoFactory, folderRestore, null,
+                Factory.FolderEngine.ChangeFolderCounters(folderRestore, null,
                     unreadMessDiff, totalMessDiff);
 
                 prevTotalUnreadCount -= unreadRestore;
@@ -585,7 +585,7 @@ namespace ASC.Mail.Core.Factory
             unreadMessDiff = prevTotalUnreadCount != 0 ? prevTotalUnreadCount : (int?) null;
             totalMessDiff = prevTotalCount != 0 ? prevTotalCount : (int?) null;
 
-            Factory.FolderEngine.ChangeFolderCounters(daoFactory, prevInfo[0].folder, null,
+            Factory.FolderEngine.ChangeFolderCounters(prevInfo[0].folder, null,
                 unreadMessDiff, totalMessDiff);
         }
 
@@ -760,7 +760,7 @@ namespace ASC.Mail.Core.Factory
                 unreadMessDiff = unreadMove != 0 ? unreadMove*(-1) : (int?) null;
                 totalMessDiff = totalMove != 0 ? totalMove*(-1) : (int?) null;
 
-                Factory.FolderEngine.ChangeFolderCounters(daoFactory, srcFolder, srcUserFolder,
+                Factory.FolderEngine.ChangeFolderCounters(srcFolder, srcUserFolder,
                     unreadMessDiff, totalMessDiff);
 
                 movedTotalUnreadCount += unreadMove;
@@ -770,7 +770,7 @@ namespace ASC.Mail.Core.Factory
             unreadMessDiff = movedTotalUnreadCount != 0 ? movedTotalUnreadCount : (int?) null;
             totalMessDiff = movedTotalCount != 0 ? movedTotalCount : (int?) null;
 
-            Factory.FolderEngine.ChangeFolderCounters(daoFactory, toFolder, toUserFolderId,
+            Factory.FolderEngine.ChangeFolderCounters(toFolder, toUserFolderId,
                 unreadMessDiff, totalMessDiff);
 
             // Correction of UserFolders counters
@@ -886,7 +886,7 @@ namespace ASC.Mail.Core.Factory
                 var unreadMessDiff = unreadInFolder != null ? unreadInFolder.diff : (int?)null;
                 var totalMessDiff = folder.diff != 0 ? folder.diff : (int?)null;
 
-                Factory.FolderEngine.ChangeFolderCounters(daoFactory, folder.id, null,
+                Factory.FolderEngine.ChangeFolderCounters(folder.id, null,
                     unreadMessDiff, totalMessDiff);
             }
 
@@ -1035,7 +1035,7 @@ namespace ASC.Mail.Core.Factory
             if (messageId == 0)
             {
                 var unreadMessDiff = message.IsNew ? 1 : (int?)null;
-                Factory.FolderEngine.ChangeFolderCounters(daoFactory, folder, userFolderId, unreadMessDiff, 1);
+                Factory.FolderEngine.ChangeFolderCounters(folder, userFolderId, unreadMessDiff, 1);
 
                 if (userFolderId.HasValue)
                 {
