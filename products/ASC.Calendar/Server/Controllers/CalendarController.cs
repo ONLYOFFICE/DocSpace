@@ -2153,6 +2153,32 @@ namespace ASC.Calendar.Controllers
 
             return counter;
         }
+
+        public class ImportModel
+        {
+            public int CalendarId { get; set; }
+            public string ICalString { get; set; }
+        }
+        [Create("importIcs")]
+        public int ImportEvents(ImportModel importModel)
+        {
+            var calendarId = importModel.CalendarId;
+            var iCalString = importModel.ICalString;
+
+            if (calendarId > 0)
+            {
+                var cals = DDayICalParser.DeserializeCalendar(iCalString);
+                return ImportEvents(calendarId, cals);
+            }
+
+            var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
+
+            if (int.TryParse(calendar.Id, out calendarId))
+                return ImportEvents(calendarId, iCalString);
+
+            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+        }
+      
         [Create("calendarUrl")]
         public CalendarWrapper CreateCalendarStream(СalendarUrlModel сalendarUrl)
         {
