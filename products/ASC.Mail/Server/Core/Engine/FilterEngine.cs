@@ -31,12 +31,14 @@ using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
 using ASC.Common.Logging;
+using ASC.Core;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Enums.Filter;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -46,47 +48,59 @@ namespace ASC.Mail.Core.Engine
 {
     public class FilterEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
         public ILog Log { get; private set; }
 
         public EngineFactory Factory { get; private set; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
 
-        public FilterEngine(int tenant, string user, ILog log = null)
+        public FilterEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
 
-            Factory = new EngineFactory(tenant, user);
-
-            Log = log ?? LogManager.GetLogger("ASC.Mail.FilterEngine");
+            Log = option.Get("ASC.Mail.FilterEngine");
         }
 
         public MailSieveFilterData Get(int id)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var dao = daoFactory.CreateFilterDao(Tenant, User);
+            var filter = DaoFactory.FilterDao.Get(id);
 
-                var filter = dao.Get(id);
-
-                return ToFilterData(filter);
-            }
+            return ToFilterData(filter);
         }
 
         public List<MailSieveFilterData> GetList()
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var dao = daoFactory.CreateFilterDao(Tenant, User);
+            var filters = DaoFactory.FilterDao.GetList();
 
-                var filters = dao.GetList();
-
-                return filters
-                    .ConvertAll(ToFilterData)
-                    .OrderBy(p => p.Position)
-                    .ToList();
-            }
+            return filters
+                .ConvertAll(ToFilterData)
+                .OrderBy(p => p.Position)
+                .ToList();
         }
 
         public int Create(MailSieveFilterData filterData)
@@ -208,9 +222,8 @@ namespace ASC.Mail.Core.Engine
                                     throw new ArgumentException(
                                         "Have no userFolderId value in json data of 'Move to' action");
 
-                                uint userFolderId;
 
-                                if (!uint.TryParse(dataJson["userFolderId"].ToString(), out userFolderId))
+                                if (!uint.TryParse(dataJson["userFolderId"].ToString(), out uint userFolderId))
                                     throw new ArgumentException(
                                         "Not valid userFolderId value in json data of 'Move to' action");
                             }
@@ -262,26 +275,16 @@ namespace ASC.Mail.Core.Engine
                 Position = filterData.Position
             };
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var dao = daoFactory.CreateFilterDao(Tenant, User);
+            var id = DaoFactory.FilterDao.Save(filter);
 
-                var id = dao.Save(filter);
-
-                return id;
-            }
+            return id;
         }
 
         public bool Delete(int id)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var dao = daoFactory.CreateFilterDao(Tenant, User);
+            var res = DaoFactory.FilterDao.Delete(id);
 
-                var res = dao.Delete(id);
-
-                return res > 0;
-            }
+            return res > 0;
         }
 
         public bool IsConditionSucceed(MailSieveFilterConditionData condition, MailMessageData message)
