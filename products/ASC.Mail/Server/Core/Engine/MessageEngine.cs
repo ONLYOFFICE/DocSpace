@@ -311,7 +311,7 @@ namespace ASC.Mail.Core.Factory
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                chainedMessages = Factory.ChainEngine.GetChainedMessagesInfo(DaoFactory, ids);
+                chainedMessages = Factory.ChainEngine.GetChainedMessagesInfo(ids);
 
                 if (!chainedMessages.Any())
                     return true;
@@ -401,7 +401,7 @@ namespace ASC.Mail.Core.Factory
                 }
 
                 foreach (var id in ids2Update)
-                    Factory.ChainEngine.UpdateMessageChainUnreadFlag(DaoFactory, Tenant, User, id);
+                    Factory.ChainEngine.UpdateMessageChainUnreadFlag(Tenant, User, id);
 
                 if (userFolder.HasValue)
                 {
@@ -439,7 +439,7 @@ namespace ASC.Mail.Core.Factory
                 DaoFactory.MailInfoDao.SetFieldValue(exp, "Importance", importance);
 
                 foreach (var messageId in ids)
-                    Factory.ChainEngine.UpdateMessageChainImportanceFlag(DaoFactory, Tenant, User, messageId);
+                    Factory.ChainEngine.UpdateMessageChainImportanceFlag(Tenant, User, messageId);
 
                 tx.Commit();
             }
@@ -520,7 +520,7 @@ namespace ASC.Mail.Core.Factory
 
             // Update chains in old folder
             foreach (var info in uniqueChainInfo)
-                Factory.ChainEngine.UpdateChain(daoFactory, info.chain_id, info.folder, null, info.id_mailbox, Tenant, User);
+                Factory.ChainEngine.UpdateChain(info.chain_id, info.folder, null, info.id_mailbox, Tenant, User);
 
             var unreadMessagesCountCollection = new Dictionary<FolderType, int>();
             var totalMessagesCountCollection = new Dictionary<FolderType, int>();
@@ -540,7 +540,7 @@ namespace ASC.Mail.Core.Factory
             }
 
             // Update chains in new restored folder
-            Factory.ChainEngine.UpdateChainFields(daoFactory, Tenant, User, ids);
+            Factory.ChainEngine.UpdateChainFields(Tenant, User, ids);
 
             var prevTotalUnreadCount = 0;
             var prevTotalCount = 0;
@@ -709,7 +709,7 @@ namespace ASC.Mail.Core.Factory
 
             foreach (var info in uniqueChainInfo)
             {
-                Factory.ChainEngine.UpdateChain(daoFactory,
+                Factory.ChainEngine.UpdateChain(
                     info.chain_id,
                     info.folder,
                     info.userFolderId,
@@ -725,7 +725,7 @@ namespace ASC.Mail.Core.Factory
                 .Select(group => new {group.Key, Count = group.Count()})
                 .ToList();
 
-            Factory.ChainEngine.UpdateChainFields(daoFactory, Tenant, User, ids);
+            Factory.ChainEngine.UpdateChainFields(Tenant, User, ids);
 
             var movedTotalUnreadCount = 0;
             var movedTotalCount = 0;
@@ -876,7 +876,7 @@ namespace ASC.Mail.Core.Factory
                     unreadMessDiff, totalMessDiff);
             }
 
-            Factory.ChainEngine.UpdateChainFields(daoFactory, Tenant, User,
+            Factory.ChainEngine.UpdateChainFields(Tenant, User,
                 messageFieldsInfo.Select(m => Convert.ToInt32(m.id)).ToList());
 
             return usedQuota;
@@ -1410,7 +1410,7 @@ namespace ASC.Mail.Core.Factory
 
             foreach (var c in chainsForUpdate.Distinct())
             {
-                Factory.ChainEngine.UpdateChain(daoFactory, c.id, c.folder, userFolderId, mailbox.MailBoxId,
+                Factory.ChainEngine.UpdateChain(c.id, c.folder, userFolderId, mailbox.MailBoxId,
                     mailbox.TenantId, mailbox.UserId);
             }
         }
