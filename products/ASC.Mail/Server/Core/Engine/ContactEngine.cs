@@ -33,27 +33,68 @@ using System.Text;
 using System.Threading.Tasks;
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
+using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     public class ContactEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
 
         public ILog Log { get; private set; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
+        public ApiHelper ApiHelper { get; }
+        public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
+        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
+        public WebItemSecurity WebItemSecurity { get; }
 
-        public ContactEngine(int tenant, string user, ILog log = null)
+        public ContactEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            ApiHelper apiHelper,
+            FactoryIndexer<MailContactWrapper> factoryIndexer,
+            FactoryIndexerHelper factoryIndexerHelper,
+            IServiceProvider serviceProvider,
+            WebItemSecurity webItemSecurity,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
-
-            Log = log ?? LogManager.GetLogger("ASC.Mail.ContactEngine");
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
+            ApiHelper = apiHelper;
+            FactoryIndexer = factoryIndexer;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
+            WebItemSecurity = webItemSecurity;
+            Log = option.Get("ASC.Mail.ContactEngine");
         }
 
         public List<ContactCard> GetContactCards(IContactsExp exp)
@@ -61,14 +102,9 @@ namespace ASC.Mail.Core.Engine
             if (exp == null)
                 throw new ArgumentNullException("exp");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var daoContacts = daoFactory.CreateContactCardDao(Tenant, User);
+            var list = DaoFactory.ContactCardDao.GetContactCards(exp);
 
-                var list = daoContacts.GetContactCards(exp);
-
-                return list;
-            }
+            return list;
         }
 
         public int GetContactCardsCount(IContactsExp exp)
@@ -76,59 +112,41 @@ namespace ASC.Mail.Core.Engine
             if (exp == null)
                 throw new ArgumentNullException("exp");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var daoContacts = daoFactory.CreateContactCardDao(Tenant, User);
+            var count = DaoFactory.ContactCardDao.GetContactCardsCount(exp);
 
-                var count = daoContacts.GetContactCardsCount(exp);
-
-                return count;
-            }
+            return count;
         }
 
         public ContactCard GetContactCard(int id)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var daoContacts = daoFactory.CreateContactCardDao(Tenant, User);
+            var contactCard = DaoFactory.ContactCardDao.GetContactCard(id);
 
-                var contactCard = daoContacts.GetContactCard(id);
-
-                return contactCard;
-            }
+            return contactCard;
         }
 
         public ContactCard SaveContactCard(ContactCard contactCard)
         {
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
+                var contactId = DaoFactory.ContactDao.SaveContact(contactCard.ContactInfo);
+
+                contactCard.ContactInfo.Id = contactId;
+
+                foreach (var contactItem in contactCard.ContactItems)
                 {
-                    var daoContact = daoFactory.CreateContactDao(Tenant, User);
-                    var daoContactInfo = daoFactory.CreateContactInfoDao(Tenant, User);
+                    contactItem.ContactId = contactId;
 
-                    var contactId = daoContact.SaveContact(contactCard.ContactInfo);
+                    var contactItemId = DaoFactory.ContactInfoDao.SaveContactInfo(contactItem);
 
-                    contactCard.ContactInfo.Id = contactId;
-
-                    foreach (var contactItem in contactCard.ContactItems)
-                    {
-                        contactItem.ContactId = contactId;
-
-                        var contactItemId = daoContactInfo.SaveContactInfo(contactItem);
-
-                        contactItem.Id = contactItemId;
-                    }
-
-                    tx.Commit();
+                    contactItem.Id = contactItemId;
                 }
-            }
 
-            var factory = new EngineFactory(Tenant, User, Log);
+                tx.Commit();
+            }
 
             Log.Debug("IndexEngine->SaveContactCard()");
 
-            factory.IndexEngine.Add(contactCard.ToMailContactWrapper());
+            EngineFactory.IndexEngine.Add(contactCard.ToMailContactWrapper());
 
             return contactCard;
         }
@@ -137,7 +155,7 @@ namespace ASC.Mail.Core.Engine
         {
             var contactId = newContactCard.ContactInfo.Id;
 
-            if(contactId < 0)
+            if (contactId < 0)
                 throw new ArgumentException("Invalid contact id");
 
             var contactCard = GetContactCard(contactId);
@@ -154,54 +172,45 @@ namespace ASC.Mail.Core.Engine
             if (!contactChanged && !newContactItems.Any() && !removedContactItems.Any())
                 return contactCard;
 
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
+                if (contactChanged)
                 {
-                    if (contactChanged)
-                    {
-                        var daoContact = daoFactory.CreateContactDao(Tenant, User);
+                    DaoFactory.ContactDao.SaveContact(newContactCard.ContactInfo);
 
-                        daoContact.SaveContact(newContactCard.ContactInfo);
-
-                        contactCard.ContactInfo = newContactCard.ContactInfo;
-                    }
-
-                    var daoContactInfo = daoFactory.CreateContactInfoDao(Tenant, User);
-
-                    if (newContactItems.Any())
-                    {
-                        foreach (var contactItem in newContactItems)
-                        {
-                            contactItem.ContactId = contactId;
-
-                            var contactItemId = daoContactInfo.SaveContactInfo(contactItem);
-
-                            contactItem.Id = contactItemId;
-
-                            contactCard.ContactItems.Add(contactItem);
-                        }
-                    }
-
-                    if (removedContactItems.Any())
-                    {
-                        foreach (var contactItem in removedContactItems)
-                        {
-                            daoContactInfo.RemoveContactInfo(contactItem.Id);
-
-                            contactCard.ContactItems.Remove(contactItem);
-                        }
-                    }
-
-                    tx.Commit();
+                    contactCard.ContactInfo = newContactCard.ContactInfo;
                 }
-            }
 
-            var factory = new EngineFactory(Tenant, User, Log);
+                if (newContactItems.Any())
+                {
+                    foreach (var contactItem in newContactItems)
+                    {
+                        contactItem.ContactId = contactId;
+
+                        var contactItemId = DaoFactory.ContactInfoDao.SaveContactInfo(contactItem);
+
+                        contactItem.Id = contactItemId;
+
+                        contactCard.ContactItems.Add(contactItem);
+                    }
+                }
+
+                if (removedContactItems.Any())
+                {
+                    foreach (var contactItem in removedContactItems)
+                    {
+                        DaoFactory.ContactInfoDao.RemoveContactInfo(contactItem.Id);
+
+                        contactCard.ContactItems.Remove(contactItem);
+                    }
+                }
+
+                tx.Commit();
+            }
 
             Log.Debug("IndexEngine->UpdateContactCard()");
 
-            factory.IndexEngine.Update(new List<MailContactWrapper> {contactCard.ToMailContactWrapper()});
+            EngineFactory.IndexEngine.Update(new List<MailContactWrapper> { contactCard.ToMailContactWrapper() });
 
             return contactCard;
         }
@@ -211,27 +220,18 @@ namespace ASC.Mail.Core.Engine
             if (!ids.Any())
                 throw new ArgumentNullException("ids");
 
-            using (var daoFactory = new DaoFactory())
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                using (var tx = daoFactory.DbManager.BeginTransaction())
-                {
-                    var daoContact = daoFactory.CreateContactDao(Tenant, User);
+                DaoFactory.ContactDao.RemoveContacts(ids);
 
-                    daoContact.RemoveContacts(ids);
+                DaoFactory.ContactInfoDao.RemoveByContactIds(ids);
 
-                    var daoContactInfo = daoFactory.CreateContactInfoDao(Tenant, User);
-
-                    daoContactInfo.RemoveByContactIds(ids);
-
-                    tx.Commit();
-                }
+                tx.Commit();
             }
-
-            var factory = new EngineFactory(Tenant, User, Log);
 
             Log.Debug("IndexEngine->RemoveContacts()");
 
-            factory.IndexEngine.RemoveContacts(ids, Tenant, new Guid(User));
+            EngineFactory.IndexEngine.RemoveContacts(ids, Tenant, new Guid(User));
         }
 
         /// <summary>
@@ -254,20 +254,17 @@ namespace ASC.Mail.Core.Engine
 
             watch.Start();
 
-            var apiHelper = new ApiHelper(httpContextScheme);
-
             var taskList = new List<Task<List<string>>>()
             {
                 Task.Run(() =>
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    var engine = new EngineFactory(tenant, userName);
+                    var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+                        term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
 
-                    var exp = new FullFilterContactsExp(tenant, userName, term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
-
-                    var contactCards = engine.ContactEngine.GetContactCards(exp);
+                    var contactCards = EngineFactory.ContactEngine.GetContactCards(exp);
 
                     return (from contactCard in contactCards
                         from contactItem in contactCard.ContactItems
@@ -280,30 +277,29 @@ namespace ASC.Mail.Core.Engine
 
                 Task.Run(() =>
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    var engine = new EngineFactory(tenant, userGuid.ToString());
-                    return engine.AccountEngine.SearchAccountEmails(term);
+                    return EngineFactory.AccountEngine.SearchAccountEmails(term);
                 }),
 
                 Task.Run(() =>
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
                     return WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID)
-                        ? apiHelper.SearchCrmEmails(term, maxCountPerSystem)
+                        ? ApiHelper.SearchCrmEmails(term, maxCountPerSystem)
                         : new List<string>();
                 }),
 
                 Task.Run(() =>
                 {
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
                     return WebItemSecurity.IsAvailableForMe(WebItemManager.PeopleProductID)
-                        ? apiHelper.SearchPeopleEmails(term, 0, maxCountPerSystem)
+                        ? ApiHelper.SearchPeopleEmails(term, 0, maxCountPerSystem)
                         : new List<string>();
                 })
             };
