@@ -1,4 +1,6 @@
 import React from "react";
+import { withRouter } from "react-router";
+import { connect } from "react-redux";
 import ModalDialogContainer from "../ModalDialogContainer";
 import {
   toastr,
@@ -11,6 +13,8 @@ import {
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import { api, utils } from "asc-web-common";
+import { fetchFiles, setTreeFolders } from "../../../store/files/actions";
+import store from "../../../store/store";
 
 const { files } = api;
 const { changeLanguage } = utils;
@@ -38,6 +42,21 @@ class DeleteDialogComponent extends React.Component {
     this.state = { isLoading: false, foldersList, filesList, selection };
   }
 
+  loop = (path, item, folderId, folders, foldersCount) => {
+    const newPath = path;
+    while (path.length !== 0) {
+      const newItems = item.find(x => x.id === path[0]);
+      newPath.shift();
+      if (path.length === 0) {
+        const currentItem = item.find(x => x.id === folderId);
+        currentItem.folders = folders;
+        currentItem.foldersCount = foldersCount;
+        return;
+      }
+      this.loop(newPath, newItems.folders, folderId, folders, foldersCount);
+    }
+  };
+
   onDelete = () => {
     const { isRecycleBinFolder, onClose } = this.props;
     const { selection } = this.state;
@@ -60,12 +79,36 @@ class DeleteDialogComponent extends React.Component {
     }
 
     this.setState({ isLoading: true }, () => {
+      const {
+        currentFolderId,
+        filter,
+        treeFolders,
+        setTreeFolders
+      } = this.props;
+
       files
         .removeFiles(folderIds, fileIds, deleteAfter, immediately)
-        .then(res => {
-          console.log("res", res);
-          toastr.success(successMessage);
-        })
+
+        .then(() =>
+          fetchFiles(currentFolderId, filter, store.dispatch).then(data => {
+            if (!isRecycleBinFolder) {
+              const path = data.selectedFolder.pathParts;
+              const newTreeFolders = treeFolders;
+              const folders = data.selectedFolder.folders;
+              const foldersCount = data.selectedFolder.foldersCount;
+              this.loop(
+                path,
+                newTreeFolders,
+                currentFolderId,
+                folders,
+                foldersCount
+              );
+              setTreeFolders(newTreeFolders);
+            }
+          })
+        )
+        .then(() => toastr.success(successMessage))
+
         .catch(err => {
           toastr.error(err);
         })
@@ -109,8 +152,12 @@ class DeleteDialogComponent extends React.Component {
     const accuracy = 20;
     let filesHeight = 25 * filesList.length + accuracy + 8;
     let foldersHeight = 25 * foldersList.length + accuracy;
-    if(foldersList.length === 0) { foldersHeight = 0; }
-    if(filesList.length === 0) { filesHeight = 0; }
+    if (foldersList.length === 0) {
+      foldersHeight = 0;
+    }
+    if (filesList.length === 0) {
+      filesHeight = 0;
+    }
 
     const height = filesHeight + foldersHeight;
 
@@ -197,4 +244,15 @@ const DeleteDialog = props => (
   <ModalDialogContainerTranslated i18n={i18n} {...props} />
 );
 
-export default DeleteDialog;
+const mapStateToProps = state => {
+  const { selectedFolder, filter, treeFolders } = state.files;
+  return {
+    currentFolderId: selectedFolder.id,
+    filter,
+    treeFolders
+  };
+};
+
+export default connect(mapStateToProps, { setTreeFolders })(
+  withRouter(DeleteDialog)
+);

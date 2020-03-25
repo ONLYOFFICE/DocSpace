@@ -2,7 +2,7 @@ import React from "react";
 import { TreeMenu, TreeNode, Icons, toastr, utils } from "asc-web-components";
 import { fetchFiles } from "../../../store/files/actions";
 import store from "../../../store/store";
-import { api, history } from "asc-web-common";
+import { api } from "asc-web-common";
 const { files } = api;
 
 class TreeFolders extends React.Component {
