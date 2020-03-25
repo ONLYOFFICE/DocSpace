@@ -56,10 +56,9 @@ namespace ASC.Mail.Core.Factory
 {
     public class MessageEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
         public DaoFactory DaoFactory { get; }
         public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
         public TenantUtil TenantUtil { get; }
         public CoreSettings CoreSettings { get; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
@@ -67,13 +66,29 @@ namespace ASC.Mail.Core.Factory
         public IServiceProvider ServiceProvider { get; }
         public StorageFactory StorageFactory { get; }
         public ILog Log { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
 
         public EngineFactory Factory { get; private set; }
 
-        public MessageEngine(int tenant, string user,
+        public MessageEngine(
             EngineFactory engineFactory,
             DaoFactory daoFactory,
             TenantManager tenantManager,
+            SecurityContext securityContext,
             TenantUtil tenantUtil,
             CoreSettings coreSettings,
             FactoryIndexer<MailWrapper> factoryIndexer,
@@ -82,10 +97,9 @@ namespace ASC.Mail.Core.Factory
             StorageFactory storageFactory,
             IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
             DaoFactory = daoFactory;
             TenantManager = tenantManager;
+            SecurityContext = securityContext;
             TenantUtil = tenantUtil;
             CoreSettings = coreSettings;
             FactoryIndexer = factoryIndexer;
