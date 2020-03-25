@@ -609,6 +609,7 @@ namespace ASC.Calendar.Controllers
             if (int.TryParse(calendarId, out calId))
             {
                 var oldCal = DataProvider.GetCalendarById(calId);
+
                 if (CheckPermissions(oldCal, CalendarAccessRights.FullAccessAction, true))
                 {
                     //update calendar and share options
@@ -2045,6 +2046,63 @@ namespace ASC.Calendar.Controllers
             }
             return null;
         }
+
+        [Create("outsideevent")]
+        public void AddEventOutside(string calendarGuid, string eventGuid, string ics)
+        {
+
+            if (calendarGuid.IndexOf("-shared") > 0)
+            {
+                var caldavGuid = calendarGuid.Replace("-shared", "");
+
+                var calendarTmp = DataProvider.GetCalendarIdByCaldavGuid(caldavGuid);
+                var calendarId = Convert.ToInt32(calendarTmp[0][0]);
+
+                var eventData = DataProvider.GetEventIdByUid(eventGuid.Split('.')[0], calendarId);
+
+                if (eventData == null)
+                {
+                    var eventModel = new EventModel
+                    {
+                        Ics = ics,
+                        AlertType = EventAlertType.Never,
+                        SharingOptions = new List<SharingParam>()
+                    };
+                    AddEvent(calendarId, eventModel);
+                }
+                else
+                {
+                    if (eventData.OwnerId == SecurityContext.CurrentAccount.ID)
+                    {
+                        var cal = DataProvider.GetCalendarById(calendarId);
+                        var sharingOptions = eventData.SharingOptions;
+                        var eventCharingList = new List<SharingParam>();
+                        if (sharingOptions.PublicItems.Count > 1)
+                        {
+                            eventCharingList.AddRange(from publicItem in sharingOptions.PublicItems
+                                                      where publicItem.Id.ToString() != AccessOption.OwnerOption.Id
+                                                      select new SharingParam
+                                                      {
+                                                          Id = publicItem.Id,
+                                                          isGroup = publicItem.IsGroup
+                                                      });
+                        }
+                        var eventModel = new EventModel
+                        {
+                            EventId = Convert.ToInt32(eventData.Id),
+                            CalendarId = calendarId.ToString(),
+                            Ics = ics,
+                            AlertType = EventAlertType.Never,
+                            SharingOptions = eventCharingList
+
+                        };
+                        UpdateEvent(eventModel);
+                    }
+
+                }
+            }
+        }
+
         [Read("{calendarId}/sharing")]
         public PublicItemCollection GetCalendarSharingOptions(int calendarId)
         {

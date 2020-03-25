@@ -268,23 +268,31 @@ namespace ASC.Calendar.BusinessObjects
             return data.FirstOrDefault().calUsrTimeZone == null ? TimeZoneConverter.GetTimeZone(data.FirstOrDefault().calTimeZone) : TimeZoneConverter.GetTimeZone(data.FirstOrDefault().calUsrTimeZone);
 
         }
-        /*
+
          public List<object[]> GetCalendarIdByCaldavGuid(string caldavGuid)
          {
-             var data = db.ExecuteList(new SqlQuery(_calendarTable).Select("id", "owner_id", "tenant").Where("caldav_guid", caldavGuid));
+            var data = CalendarDb.CalendarCalendars
+                .Where(p => p.CaldavGuid == caldavGuid)
+                .Select(s => new object[]{ 
+                    s.Id,
+                    s.OwnerId,
+                    s.Tenant
+                }).ToList();
+
              return data;
          }
          public Event GetEventIdByUid(string uid, int calendarId)
          {
-             var sql = new SqlQuery("calendar_events")
-                 .Select("id")
-                 .Where(Exp.Like("uid", uid))
-                 .Where("calendar_id", calendarId);
-
-             var eventId = db.ExecuteScalar<int>(sql);
+            var eventId = CalendarDb.CalendarEvents
+                .Where(p => 
+                    uid.Contains(p.Uid) &&
+                    p.CalendarId == calendarId
+                 )
+                .Select(s => s.Id).FirstOrDefault();
 
              return eventId == 0 ? null : GetEventById(eventId);
          }
+         /*
          public Event GetEventIdOnlyByUid(string uid)
          {
              var sql = new SqlQuery("calendar_events")
