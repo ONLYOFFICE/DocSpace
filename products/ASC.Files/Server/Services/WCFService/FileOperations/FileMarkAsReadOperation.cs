@@ -40,8 +40,25 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
     class FileMarkAsReadOperationData<T> : FileOperationData<T>
     {
-        public FileMarkAsReadOperationData(List<T> folders, List<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+        public FileMarkAsReadOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant, bool holdResult = true)
+            : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult)
         {
+        }
+        public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, bool holdResult = true) : base(folders, files, tenant, holdResult)
+        {
+        }
+    }
+
+    class FileMarkAsReadOperation : ComposeFileOperation<FileMarkAsReadOperationData<string>, FileMarkAsReadOperationData<int>>
+    {
+        public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileOperation<FileMarkAsReadOperationData<string>, string> f1, FileOperation<FileMarkAsReadOperationData<int>, int> f2)
+            : base(serviceProvider, f1, f2)
+        {
+        }
+
+        public override FileOperationType OperationType
+        {
+            get { return FileOperationType.MarkAsRead; }
         }
     }
 

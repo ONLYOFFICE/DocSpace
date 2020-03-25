@@ -106,7 +106,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive
             }
         }
 
-        public GoogleDriveStorageDisposableWrapper Wrapper { get; }
+        public GoogleDriveStorageDisposableWrapper Wrapper { get; set; }
         public GoogleDriveProviderInfoHelper GoogleDriveProviderInfoHelper { get; }
         public ILog Log { get; }
 

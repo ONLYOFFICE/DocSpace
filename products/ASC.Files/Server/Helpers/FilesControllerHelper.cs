@@ -444,14 +444,9 @@ namespace ASC.Files.Helpers
                 .Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<T> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<object> model)
         {
-            var itemList = new ItemList<string>();
-
-            itemList.AddRange((model.FolderIds ?? new List<T>()).Select(x => "folder_" + x));
-            itemList.AddRange((model.FileIds ?? new List<T>()).Select(x => "file_" + x));
-
-            return FileStorageService.MarkAsRead(itemList).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.MarkAsRead(model.FolderIds, model.FileIds).Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<FileOperationWraper> TerminateTasks()

@@ -1039,9 +1039,9 @@ namespace ASC.Web.Files.Services.WCFService
 
                 result = new List<FileEntry>(EntryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 
-                if (!result.ToList().Any())
+                if (!result.Any())
                 {
-                    MarkAsRead(new ItemList<string> { "folder_" + folderId });
+                    MarkAsRead(new List<object>() { folderId }, new List<object>() { });
                 }
 
                 var response = new HttpResponseMessage(HttpStatusCode.OK)
@@ -1057,11 +1057,9 @@ namespace ASC.Web.Files.Services.WCFService
             }
         }
 
-        public ItemList<FileOperationResult> MarkAsRead(ItemList<string> items)
+        public ItemList<FileOperationResult> MarkAsRead(IEnumerable<object> foldersId, IEnumerable<object> filesId)
         {
-            if (items.Count == 0) return GetTasksStatuses();
-
-            ParseArrayItems(items, out var foldersId, out var filesId);
+            if (!foldersId.Any() && !filesId.Any()) return GetTasksStatuses();
 
             return FileOperationsManagerHelper.MarkAsRead(foldersId, filesId);
         }

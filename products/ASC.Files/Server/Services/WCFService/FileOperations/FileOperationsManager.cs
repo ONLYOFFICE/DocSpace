@@ -99,9 +99,12 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public ItemList<FileOperationResult> MarkAsRead<T>(AuthContext authContext, TenantManager tenantManager, List<T> folderIds, List<T> fileIds)
+        public ItemList<FileOperationResult> MarkAsRead(AuthContext authContext, TenantManager tenantManager, IEnumerable<object> folderIds, IEnumerable<object> fileIds)
         {
-            var op = new FileMarkAsReadOperation<T>(ServiceProvider, new FileMarkAsReadOperationData<T>(folderIds, fileIds, tenantManager.GetCurrentTenant()));
+            var tenant = tenantManager.GetCurrentTenant();
+            var op1 = new FileMarkAsReadOperation<int>(ServiceProvider, new FileMarkAsReadOperationData<int>(folderIds.OfType<long>().Select(Convert.ToInt32), fileIds.OfType<long>().Select(Convert.ToInt32), tenant));
+            var op2 = new FileMarkAsReadOperation<string>(ServiceProvider, new FileMarkAsReadOperationData<string>(folderIds, fileIds, tenant));
+            var op = new FileMarkAsReadOperation(ServiceProvider, op2, op1);
             return QueueTask(authContext, op);
         }
 
@@ -185,7 +188,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return FileOperationsManager.CancelOperations(AuthContext);
         }
 
-        public ItemList<FileOperationResult> MarkAsRead<T>(List<T> folderIds, List<T> fileIds)
+        public ItemList<FileOperationResult> MarkAsRead(IEnumerable<object> folderIds, IEnumerable<object> fileIds)
         {
             return FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
         }

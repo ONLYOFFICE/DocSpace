@@ -263,7 +263,7 @@ namespace ASC.Api.Documents
             return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull();
         }
 
-        [Read("{folderId:int}", order: int.MaxValue)]
+        [Read("{folderId:int}", order: int.MaxValue - 1)]
         public FolderContentWrapper<int> GetFolder(int folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperInt.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders);
@@ -948,16 +948,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/markasread")]
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<string> model)
+        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<object> model)
         {
             return FilesControllerHelperString.MarkAsRead(model);
-        }
-
-        [Update("fileops/markasread")]
-        [BodySpecific]
-        public IEnumerable<FileOperationWraper> MarkAsRead(BaseBatchModel<int> model)
-        {
-            return FilesControllerHelperInt.MarkAsRead(model);
         }
 
         /// <summary>
