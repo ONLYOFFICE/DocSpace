@@ -1,4 +1,6 @@
 
+using System.Text;
+
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
@@ -35,6 +37,8 @@ namespace ASC.Files
 
         public void ConfigureServices(IServiceCollection services)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             services.AddHttpContextAccessor();
 
             services.AddControllers()

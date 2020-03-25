@@ -1260,10 +1260,9 @@ namespace ASC.Web.Files.Services.WCFService
             return FileOperationsManagerHelper.CancelOperations();
         }
 
-        public ItemList<FileOperationResult> BulkDownload(Dictionary<string, string> items)
+        public ItemList<FileOperationResult> BulkDownload(Dictionary<object, string> folders, Dictionary<object, string> files)
         {
-            ParseArrayItems(items, out var folders, out var files);
-            ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
+            ErrorIf(!folders.Any() && !files.Any(), FilesCommonResource.ErrorMassage_BadRequest);
 
             return FileOperationsManagerHelper.Download(folders, files, GetHttpHeaders());
         }

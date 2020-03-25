@@ -334,6 +334,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
+        public IServiceScope CreateScope()
+        {
+            var scope = ServiceProvider.CreateScope();
+            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+            tenantManager.SetCurrentTenant(CurrentTenant);
+            return scope;
+        }
+
         protected internal override void FillDistributedTask()
         {
             base.FillDistributedTask();

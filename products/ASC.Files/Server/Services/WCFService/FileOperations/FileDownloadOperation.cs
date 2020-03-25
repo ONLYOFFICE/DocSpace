@@ -32,6 +32,7 @@ using System.Text;
 using System.Threading;
 
 using ASC.Common.Security.Authentication;
+using ASC.Common.Threading;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Files.Core;
@@ -62,41 +63,38 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
+    class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<string>, FileDownloadOperationData<int>>
     {
-        private readonly Dictionary<T, string> files;
-        private readonly Dictionary<string, string> headers;
+        public FileDownloadOperation(IServiceProvider serviceProvider, FileOperation<FileDownloadOperationData<string>, string> f1, FileOperation<FileDownloadOperationData<int>, int> f2)
+            : base(serviceProvider, f1, f2)
+        {
+        }
 
         public override FileOperationType OperationType
         {
             get { return FileOperationType.Download; }
         }
 
-
-        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
-            : base(serviceProvider, fileDownloadOperationData)
+        public override void RunJob(DistributedTask _, CancellationToken cancellationToken)
         {
-            files = fileDownloadOperationData.FilesDownload;
-            headers = fileDownloadOperationData.Headers;
-        }
+            base.RunJob(_, cancellationToken);
 
-
-        protected override void Do(IServiceScope scope)
-        {
-            var entriesPathId = GetEntriesPathId(scope);
-            if (entriesPathId == null || entriesPathId.Count == 0)
-            {
-                if (0 < Files.Count)
-                    throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
-                throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
-            }
-
+            using var scope = ThirdPartyOperation.CreateScope();
             var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
             var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
 
-            ReplaceLongPath(entriesPathId);
+            using var stream = TempStream.Create();
+            using (var zip = new ZipOutputStream(stream, true)
+            {
+                CompressionLevel = Ionic.Zlib.CompressionLevel.Level3,
+                AlternateEncodingUsage = ZipOption.AsNecessary,
+                AlternateEncoding = Encoding.UTF8,
+            })
+            {
+                (ThirdPartyOperation as FileDownloadOperation<string>).CompressToZip(zip, stream, scope);
+                (DaoOperation as FileDownloadOperation<int>).CompressToZip(zip, stream, scope);
+            }
 
-            using var stream = CompressToZip(scope, entriesPathId);
             if (stream != null)
             {
                 stream.Position = 0;
@@ -109,6 +107,76 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     "application/zip",
                     "attachment; filename=\"" + fileName + "\"");
                 Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+            }
+        }
+    }
+
+    class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
+    {
+        private readonly Dictionary<T, string> files;
+        private readonly Dictionary<string, string> headers;
+        ItemNameValueCollection<T> entriesPathId;
+        public override FileOperationType OperationType
+        {
+            get { return FileOperationType.Download; }
+        }
+
+        public bool Compress { get; }
+
+        public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData, bool compress = true)
+            : base(serviceProvider, fileDownloadOperationData)
+        {
+            files = fileDownloadOperationData.FilesDownload;
+            headers = fileDownloadOperationData.Headers;
+            Compress = compress;
+        }
+
+
+        protected override void Do(IServiceScope scope)
+        {
+            if (!Compress && !Files.Any() && !Folders.Any()) return;
+
+            entriesPathId = GetEntriesPathId(scope);
+            if (entriesPathId == null || entriesPathId.Count == 0)
+            {
+                if (Files.Count > 0)
+                {
+                    throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
+                }
+
+                throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
+            }
+
+            var globalStore = scope.ServiceProvider.GetService<GlobalStore>();
+            var filesLinkUtility = scope.ServiceProvider.GetService<FilesLinkUtility>();
+
+            ReplaceLongPath(entriesPathId);
+
+            if (Compress)
+            {
+                using var stream = TempStream.Create();
+                using var zip = new ZipOutputStream(stream, true)
+                {
+                    CompressionLevel = Ionic.Zlib.CompressionLevel.Level3,
+                    AlternateEncodingUsage = ZipOption.AsNecessary,
+                    AlternateEncoding = Encoding.UTF8
+                };
+
+                CompressToZip(zip, stream, scope);
+
+                if (stream != null)
+                {
+                    stream.Position = 0;
+                    const string fileName = FileConstant.DownloadTitle + ".zip";
+                    var store = globalStore.GetStore();
+                    store.Save(
+                        FileConstant.StorageDomainTmp,
+                        string.Format(@"{0}\{1}", ((IAccount)Thread.CurrentPrincipal.Identity).ID, fileName),
+                        stream,
+                        "application/zip",
+                        "attachment; filename=\"" + fileName + "\"");
+                    Status = string.Format("{0}?{1}=bulk", filesLinkUtility.FileHandlerPath, FilesLinkUtility.Action);
+                }
             }
         }
 
@@ -190,119 +258,109 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return entriesPathId;
         }
 
-        private Stream CompressToZip(IServiceScope scope, ItemNameValueCollection<T> entriesPathId)
+        internal void CompressToZip(ZipOutputStream zip, Stream stream, IServiceScope scope)
         {
             var setupInfo = scope.ServiceProvider.GetService<SetupInfo>();
             var fileConverter = scope.ServiceProvider.GetService<FileConverter>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
+            var FileDao = scope.ServiceProvider.GetService<IFileDao<T>>();
 
-            var stream = TempStream.Create();
-            using (var zip = new ZipOutputStream(stream, true))
+            foreach (var path in entriesPathId.AllKeys)
             {
-                zip.CompressionLevel = Ionic.Zlib.CompressionLevel.Level3;
-                zip.AlternateEncodingUsage = ZipOption.AsNecessary;
-                zip.AlternateEncoding = Encoding.UTF8;
-
-                foreach (var path in entriesPathId.AllKeys)
+                var counter = 0;
+                foreach (var entryId in entriesPathId[path])
                 {
-                    var counter = 0;
-                    foreach (var entryId in entriesPathId[path])
+                    if (CancellationToken.IsCancellationRequested)
                     {
-                        if (CancellationToken.IsCancellationRequested)
+                        zip.Dispose();
+                        stream.Dispose();
+                        CancellationToken.ThrowIfCancellationRequested();
+                    }
+
+                    var newtitle = path;
+
+                    File<T> file = null;
+                    var convertToExt = string.Empty;
+
+                    if (!entryId.Equals(default(T)))
+                    {
+                        FileDao.InvalidateCache(entryId);
+                        file = FileDao.GetFile(entryId);
+
+                        if (file == null)
                         {
-                            zip.Dispose();
-                            stream.Dispose();
-                            CancellationToken.ThrowIfCancellationRequested();
+                            Error = FilesCommonResource.ErrorMassage_FileNotFound;
+                            continue;
                         }
 
-                        var newtitle = path;
+                        if (file.ContentLength > setupInfo.AvailableFileSize)
+                        {
+                            Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize));
+                            continue;
+                        }
 
-                        File<T> file = null;
-                        var convertToExt = string.Empty;
+                        if (files.ContainsKey(file.ID))
+                        {
+                            convertToExt = files[file.ID];
+                            if (!string.IsNullOrEmpty(convertToExt))
+                            {
+                                newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);
+                            }
+                        }
+                    }
+
+                    if (0 < counter)
+                    {
+                        var suffix = " (" + counter + ")";
 
                         if (!entryId.Equals(default(T)))
                         {
-                            FileDao.InvalidateCache(entryId);
-                            file = FileDao.GetFile(entryId);
+                            newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
 
-                            if (file == null)
-                            {
-                                Error = FilesCommonResource.ErrorMassage_FileNotFound;
-                                continue;
-                            }
+                    zip.PutNextEntry(newtitle);
 
-                            if (file.ContentLength > setupInfo.AvailableFileSize)
+                    if (!entryId.Equals(default(T)) && file != null)
+                    {
+                        try
+                        {
+                            if (fileConverter.EnableConvert(file, convertToExt))
                             {
-                                Error = string.Format(FilesCommonResource.ErrorMassage_FileSizeZip, FileSizeComment.FilesSizeToString(setupInfo.AvailableFileSize));
-                                continue;
-                            }
-
-                            if (files.ContainsKey(file.ID))
-                            {
-                                convertToExt = files[file.ID];
+                                //Take from converter
+                                using var readStream = fileConverter.Exec(file, convertToExt);
+                                readStream.StreamCopyTo(zip);
                                 if (!string.IsNullOrEmpty(convertToExt))
                                 {
-                                    newtitle = FileUtility.ReplaceFileExtension(path, convertToExt);
-                                }
-                            }
-                        }
-
-                        if (0 < counter)
-                        {
-                            var suffix = " (" + counter + ")";
-
-                            if (!entryId.Equals(default(T)))
-                            {
-                                newtitle = 0 < newtitle.IndexOf('.') ? newtitle.Insert(newtitle.LastIndexOf('.'), suffix) : newtitle + suffix;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        zip.PutNextEntry(newtitle);
-
-                        if (!entryId.Equals(default(T)) && file != null)
-                        {
-                            try
-                            {
-                                if (fileConverter.EnableConvert(file, convertToExt))
-                                {
-                                    //Take from converter
-                                    using (var readStream = fileConverter.Exec(file, convertToExt))
-                                    {
-                                        readStream.StreamCopyTo(zip);
-                                        if (!string.IsNullOrEmpty(convertToExt))
-                                        {
-                                            filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
-                                        }
-                                        else
-                                        {
-                                            filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
-                                        }
-                                    }
+                                    filesMessageService.Send(file, headers, MessageAction.FileDownloadedAs, file.Title, convertToExt);
                                 }
                                 else
                                 {
-                                    using var readStream = FileDao.GetFileStream(file);
-                                    readStream.StreamCopyTo(zip);
                                     filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                                 }
                             }
-                            catch (Exception ex)
+                            else
                             {
-                                Error = ex.Message;
-                                Logger.Error(Error, ex);
+                                using var readStream = FileDao.GetFileStream(file);
+                                readStream.StreamCopyTo(zip);
+                                filesMessageService.Send(file, headers, MessageAction.FileDownloaded, file.Title);
                             }
                         }
-                        counter++;
+                        catch (Exception ex)
+                        {
+                            Error = ex.Message;
+                            Logger.Error(Error, ex);
+                        }
                     }
-
-                    ProgressStep();
+                    counter++;
                 }
+
+                ProgressStep();
             }
-            return stream;
         }
 
         private void ReplaceLongPath(ItemNameValueCollection<T> entriesPathId)
@@ -320,61 +378,60 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 entriesPathId.Add(newtitle, ids);
             }
         }
+    }
+
+    internal class ItemNameValueCollection<T>
+    {
+        private readonly Dictionary<string, List<T>> dic = new Dictionary<string, List<T>>();
 
 
-        class ItemNameValueCollection<T>
+        public IEnumerable<string> AllKeys
         {
-            private readonly Dictionary<string, List<T>> dic = new Dictionary<string, List<T>>();
+            get { return dic.Keys; }
+        }
 
+        public IEnumerable<T> this[string name]
+        {
+            get { return dic[name].ToArray(); }
+        }
 
-            public IEnumerable<string> AllKeys
+        public int Count
+        {
+            get { return dic.Count; }
+        }
+
+        public void Add(string name, T value)
+        {
+            if (!dic.ContainsKey(name))
             {
-                get { return dic.Keys; }
+                dic.Add(name, new List<T>());
             }
+            dic[name].Add(value);
+        }
 
-            public IEnumerable<T> this[string name]
+        public void Add(ItemNameValueCollection<T> collection)
+        {
+            foreach (var key in collection.AllKeys)
             {
-                get { return dic[name].ToArray(); }
-            }
-
-            public int Count
-            {
-                get { return dic.Count; }
-            }
-
-            public void Add(string name, T value)
-            {
-                if (!dic.ContainsKey(name))
+                foreach (var value in collection[key])
                 {
-                    dic.Add(name, new List<T>());
-                }
-                dic[name].Add(value);
-            }
-
-            public void Add(ItemNameValueCollection<T> collection)
-            {
-                foreach (var key in collection.AllKeys)
-                {
-                    foreach (var value in collection[key])
-                    {
-                        Add(key, value);
-                    }
+                    Add(key, value);
                 }
             }
+        }
 
-            public void Add(string name, IEnumerable<T> values)
+        public void Add(string name, IEnumerable<T> values)
+        {
+            if (!dic.ContainsKey(name))
             {
-                if (!dic.ContainsKey(name))
-                {
-                    dic.Add(name, new List<T>());
-                }
-                dic[name].AddRange(values);
+                dic.Add(name, new List<T>());
             }
+            dic[name].AddRange(values);
+        }
 
-            public void Remove(string name)
-            {
-                dic.Remove(name);
-            }
+        public void Remove(string name)
+        {
+            dic.Remove(name);
         }
     }
 }

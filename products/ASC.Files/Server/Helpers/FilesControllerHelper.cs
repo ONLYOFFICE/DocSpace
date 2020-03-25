@@ -459,26 +459,27 @@ namespace ASC.Files.Helpers
             return FileStorageService.GetTasksStatuses().Select(FileOperationWraperHelper.Get);
         }
 
-        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<T> model)
+        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
         {
-            var itemList = new Dictionary<string, string>();
+            var folders = new Dictionary<object, string>();
+            var files = new Dictionary<object, string>();
 
-            foreach (var fileId in model.FileConvertIds.Where(fileId => !itemList.ContainsKey(fileId.Key)))
+            foreach (var fileId in model.FileConvertIds.Where(fileId => !files.ContainsKey(fileId.Key)))
             {
-                itemList.Add("file_" + fileId.Key, fileId.Value);
+                files.Add(fileId.Key, fileId.Value);
             }
 
-            foreach (var fileId in model.FileIds.Where(fileId => !itemList.ContainsKey(fileId.ToString())))
+            foreach (var fileId in model.FileIds.Where(fileId => !files.ContainsKey(fileId)))
             {
-                itemList.Add("file_" + fileId, string.Empty);
+                files.Add(fileId, string.Empty);
             }
 
-            foreach (var folderId in model.FolderIds.Where(folderId => !itemList.ContainsKey(folderId.ToString())))
+            foreach (var folderId in model.FolderIds.Where(folderId => !folders.ContainsKey(folderId)))
             {
-                itemList.Add("folder_" + folderId, string.Empty);
+                folders.Add(folderId, string.Empty);
             }
 
-            return FileStorageService.BulkDownload(itemList).Select(FileOperationWraperHelper.Get);
+            return FileStorageService.BulkDownload(folders, files).Select(FileOperationWraperHelper.Get);
         }
 
         public IEnumerable<FileOperationWraper> EmptyTrash()

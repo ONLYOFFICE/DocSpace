@@ -988,16 +988,9 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<string> model)
+        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel model)
         {
             return FilesControllerHelperString.BulkDownload(model);
-        }
-
-        [BodySpecific]
-        [Update("fileops/bulkdownload")]
-        public IEnumerable<FileOperationWraper> BulkDownload(DownloadModel<int> model)
-        {
-            return FilesControllerHelperInt.BulkDownload(model);
         }
 
         /// <summary>
@@ -1011,7 +1004,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <returns>Operation result</returns>
         [Update("fileops/delete")]
-        public IEnumerable<FileOperationWraper> DeleteBatchItems(DeleteBatchModel<object> batch)
+        public IEnumerable<FileOperationWraper> DeleteBatchItems(DeleteBatchModel batch)
         {
             return FileStorageService.DeleteItems("delete", batch.FileIds.ToList(), batch.FolderIds.ToList(), false, batch.DeleteAfter, batch.Immediately)
                 .Select(FileOperationWraperHelper.Get);

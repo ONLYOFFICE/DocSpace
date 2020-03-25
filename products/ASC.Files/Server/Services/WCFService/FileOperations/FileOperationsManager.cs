@@ -108,7 +108,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return QueueTask(authContext, op);
         }
 
-        public ItemList<FileOperationResult> Download<T>(AuthContext authContext, TenantManager tenantManager, Dictionary<T, string> folders, Dictionary<T, string> files, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Download(AuthContext authContext, TenantManager tenantManager, Dictionary<object, string> folders, Dictionary<object, string> files, Dictionary<string, string> headers)
         {
             var operations = tasks.GetTasks()
                 .Where(t => t.GetProperty<Guid>(FileOperation.OWNER) == authContext.CurrentAccount.ID)
@@ -119,7 +119,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 throw new InvalidOperationException(FilesCommonResource.ErrorMassage_ManyDownloads);
             }
 
-            var op = new FileDownloadOperation<T>(ServiceProvider, new FileDownloadOperationData<T>(folders, files, tenantManager.GetCurrentTenant(), headers));
+            var tenant = tenantManager.GetCurrentTenant();
+            var op1 = new FileDownloadOperation<int>(ServiceProvider, new FileDownloadOperationData<int>(folders.Where(r => r.Key is long).ToDictionary(r => Convert.ToInt32(r.Key), r => r.Value), files.Where(r => r.Key is long).ToDictionary(r => Convert.ToInt32(r.Key), r => r.Value), tenant, headers), false);
+            var op2 = new FileDownloadOperation<string>(ServiceProvider, new FileDownloadOperationData<string>(folders.Where(r => r.Key is string).ToDictionary(r => r.Key.ToString(), r => r.Value), files.Where(r => r.Key is string).ToDictionary(r => r.Key.ToString(), r => r.Value), tenant, headers), false);
+            var op = new FileDownloadOperation(ServiceProvider, op2, op1);
+
             return QueueTask(authContext, op);
         }
 
@@ -193,7 +197,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             return FileOperationsManager.MarkAsRead(AuthContext, TenantManager, folderIds, fileIds);
         }
 
-        public ItemList<FileOperationResult> Download<T>(Dictionary<T, string> folders, Dictionary<T, string> files, Dictionary<string, string> headers)
+        public ItemList<FileOperationResult> Download(Dictionary<object, string> folders, Dictionary<object, string> files, Dictionary<string, string> headers)
         {
             return FileOperationsManager.Download(AuthContext, TenantManager, folders, files, headers);
         }

@@ -16,12 +16,16 @@ namespace ASC.Files.Model
         }
     }
 
-    public class DownloadModel<T> : BaseBatchModel<T>
+    public class DownloadModel : BaseBatchModel<object>
     {
         public IEnumerable<ItemKeyValuePair<string, string>> FileConvertIds { get; set; }
+        public DownloadModel() : base()
+        {
+            FileConvertIds = new List<ItemKeyValuePair<string, string>>();
+        }
     }
 
-    public class DeleteBatchModel<T> : BaseBatchModel<T>
+    public class DeleteBatchModel : BaseBatchModel<object>
     {
         public bool DeleteAfter { get; set; }
         public bool Immediately { get; set; }
