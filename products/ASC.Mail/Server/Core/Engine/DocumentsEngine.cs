@@ -24,10 +24,10 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Core;
+using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
@@ -38,32 +38,44 @@ namespace ASC.Mail.Core.Engine
     public class DocumentsEngine
     {
         public const string MY_DOCS_FOLDER_ID = "@my";
-        private readonly int _tenantId;
-        private readonly string _userId;
-
-        private int Tenant
+        public int Tenant
         {
-            get { return _tenantId; }
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
         }
 
-        private string User
+        public string User
         {
-            get { return _userId; }
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
         }
 
-        private string HttpContextScheme { get; set; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public ApiHelper ApiHelper { get; }
+        public EngineFactory EngineFactory { get; }
+        public StorageFactory StorageFactory { get; }
 
-        public DocumentsEngine(int tenant, string user, string httpContextScheme)
+        public DocumentsEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            ApiHelper apiHelper,
+            EngineFactory engineFactory,
+            StorageFactory storageFactory)
         {
-            _tenantId = tenant;
-            _userId = user;
-
-            HttpContextScheme = httpContextScheme;
-
             if (SecurityContext.IsAuthenticated) return;
 
-            CoreContext.TenantManager.SetCurrentTenant(Tenant);
-            SecurityContext.AuthenticateMe(new Guid(_userId));
+            //TenantManager.SetCurrentTenant(Tenant);
+            //SecurityContext.AuthenticateMe(new Guid(_userId));
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            ApiHelper = apiHelper;
+            EngineFactory = engineFactory;
+            StorageFactory = storageFactory;
         }
 
         public List<object> StoreAttachmentsToMyDocuments(int messageId)
@@ -78,9 +90,8 @@ namespace ASC.Mail.Core.Engine
 
         public List<object> StoreAttachmentsToDocuments(int messageId, string folderId)
         {
-            var engine = new EngineFactory(Tenant, User);
             var attachments =
-                engine.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
+                EngineFactory.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
 
             return
                 attachments.Select(attachment => StoreAttachmentToDocuments(attachment, folderId))
@@ -90,8 +101,7 @@ namespace ASC.Mail.Core.Engine
 
         public object StoreAttachmentToDocuments(int attachmentId, string folderId)
         {
-            var engine = new EngineFactory(Tenant, User);
-            var attachment = engine.AttachmentEngine.GetAttachment(
+            var attachment = EngineFactory.AttachmentEngine.GetAttachment(
                 new ConcreteUserAttachmentExp(attachmentId, Tenant, User));
 
             if (attachment == null)
@@ -105,11 +115,11 @@ namespace ASC.Mail.Core.Engine
             if (mailAttachmentData == null)
                 return -1;
 
-            var apiHelper = new ApiHelper(HttpContextScheme);
+            var dataStore = StorageFactory.GetMailStorage(Tenant);
 
-            using (var file = mailAttachmentData.ToAttachmentStream())
+            using (var file = mailAttachmentData.ToAttachmentStream(dataStore))
             {
-                var uploadedFileId = apiHelper.UploadToDocuments(file.FileStream, file.FileName,
+                var uploadedFileId = ApiHelper.UploadToDocuments(file.FileStream, file.FileName,
                     mailAttachmentData.contentType, folderId, true);
 
                 return uploadedFileId;
