@@ -249,6 +249,35 @@ namespace ASC.Calendar.Controllers
 
             return result;
         }
+
+        public class SubscriptionState
+        {
+            public string id { get; set; }
+            public bool isAccepted { get; set; }
+        }
+        [Update("subscriptions/manage")]
+        public void ManageSubscriptions(IEnumerable<SubscriptionState> states)
+        {
+            var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, states.Select(s => s.id).ToList());
+
+            var settingsCollection = new List<UserViewSettings>();
+            foreach (var s in states)
+            {
+                var settings = viewSettings.Find(vs => vs.CalendarId.Equals(s.id, StringComparison.InvariantCultureIgnoreCase));
+                if (settings == null)
+                {
+                    settings = new UserViewSettings
+                    {
+                        CalendarId = s.id,
+                        UserId = SecurityContext.CurrentAccount.ID
+                    };
+                }
+                settings.IsAccepted = s.isAccepted;
+                settingsCollection.Add(settings);
+
+            }
+            DataProvider.UpdateCalendarUserView(settingsCollection);
+        }
         [Read("eventdays/{startDate}/{endDate}")]
         public List<ApiDateTime> GetEventDays(ApiDateTime startDate, ApiDateTime endDate)
         {
