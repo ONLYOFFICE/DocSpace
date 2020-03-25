@@ -2117,7 +2117,42 @@ namespace ASC.Calendar.Controllers
         {
             return PublicItemCollectionHelper.GetDefault();
         }
+        public class UploadModel
+        {
+            public IEnumerable<IFormFile> Files { get; set; }
+        }
+        [Create("import")]
+        public int ImportEvents(UploadModel uploadModel)
+        {
+            var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
+            int calendarId;
 
+            if (int.TryParse(calendar.Id, out calendarId))
+                return ImportEvents(calendarId, uploadModel);
+
+            throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
+        }
+        [Create("{calendarId}/import")]
+        public int ImportEvents(int calendarId, UploadModel uploadModel)
+        {
+            var counter = 0;
+            var files = uploadModel.Files;
+
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    {
+                        var cals = DDayICalParser.DeserializeCalendar(reader);
+
+                        counter = ImportEvents(calendarId, cals);
+                    }
+                }
+            }
+
+            return counter;
+        }
         [Create("calendarUrl")]
         public CalendarWrapper CreateCalendarStream(СalendarUrlModel сalendarUrl)
         {
