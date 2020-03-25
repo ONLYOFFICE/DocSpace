@@ -30,6 +30,8 @@ using System.Data;
 using System.IO;
 using System.Linq;
 using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Data.Storage;
 //using ASC.CRM.Core;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Data.Storage;
@@ -38,6 +40,7 @@ using ASC.Mail.Models;
 using ASC.Mail.Utils;
 //using ASC.Web.CRM.Core;
 using Autofac;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -48,32 +51,42 @@ namespace ASC.Mail.Core.Engine
         public string User { get; private set; }
 
         public ILog Log { get; private set; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public ApiHelper ApiHelper { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
+        public StorageFactory StorageFactory { get; }
 
-        public CrmLinkEngine(int tenant, string user, ILog log = null)
+        public CrmLinkEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            ApiHelper apiHelper,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            StorageFactory storageFactory,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
-
-            Log = log ?? LogManager.GetLogger("ASC.Mail.CrmLinkEngine");
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            ApiHelper = apiHelper;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
+            StorageFactory = storageFactory;
+            Log = option.Get("ASC.Mail.CrmLinkEngine");
         }
 
         public List<CrmContactData> GetLinkedCrmEntitiesId(int messageId)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var daoCrmLink = daoFactory.CreateCrmLinkDao(Tenant, User);
+                var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-                var daoMail = daoFactory.CreateMailDao(Tenant, User);
-
-                var mail = daoMail.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
-
-                return daoCrmLink.GetLinkedCrmContactEntities(mail.ChainId, mail.MailboxId);
-            }
+                return DaoFactory.CrmLinkDao.GetLinkedCrmContactEntities(mail.ChainId, mail.MailboxId);
         }
 
         public void LinkChainToCrm(int messageId, List<CrmContactData> contactIds, string httpContextScheme)
         {
-            using (var scope = DIHelper.Resolve())
+            //TODO: fix
+            /*using (var scope = DIHelper.Resolve())
             {
                 var factory = scope.Resolve<CRM.Core.Dao.DaoFactory>();
                 foreach (var crmContactEntity in contactIds)
@@ -94,110 +107,76 @@ namespace ASC.Mail.Core.Engine
                             break;
                     }
                 }
-            }
+            }*/
 
-            using (var daoFactory = new DaoFactory())
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
+
+            var chainedMessages = DaoFactory.MailInfoDao.GetMailInfoList(
+                SimpleMessagesExp.CreateBuilder(Tenant, User)
+                    .SetChainId(mail.ChainId)
+                    .Build());
+
+            if (!chainedMessages.Any())
+                return;
+
+            var linkingMessages = new List<MailMessageData>();
+
+            foreach (var chainedMessage in chainedMessages)
             {
-                var db = daoFactory.DbManager;
-
-                var daoMail = daoFactory.CreateMailDao(Tenant, User);
-
-                var mail = daoMail.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
-
-                var daoMailInfo = daoFactory.CreateMailInfoDao(Tenant, User);
-
-                var chainedMessages = daoMailInfo.GetMailInfoList(
-                    SimpleMessagesExp.CreateBuilder(Tenant, User)
-                        .SetChainId(mail.ChainId)
-                        .Build());
-
-                    if (!chainedMessages.Any())
-                        return;
-
-                var linkingMessages = new List<MailMessageData>();
-
-                var engine = new EngineFactory(Tenant, User);
-
-                foreach (var chainedMessage in chainedMessages)
-                {
-                    var message = engine.MessageEngine.GetMessage(chainedMessage.Id,
-                        new MailMessageData.Options
-                        {
-                            LoadImages = true,
-                            LoadBody = true,
-                            NeedProxyHttp = false
-                        });
-
-                    message.LinkedCrmEntityIds = contactIds;
-
-                    linkingMessages.Add(message);
-
-                }
-
-                var daoCrmLink = daoFactory.CreateCrmLinkDao(Tenant, User);
-
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    daoCrmLink.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
-
-                    foreach (var message in linkingMessages)
+                var message = EngineFactory.MessageEngine.GetMessage(chainedMessage.Id,
+                    new MailMessageData.Options
                     {
-                        try
-                        {
-                            AddRelationshipEvents(message, httpContextScheme);
-                        }
-                        catch (ApiHelperException ex)
-                        {
-                            if (!ex.Message.Equals("Already exists"))
-                                throw;
-                        }
-                    }
+                        LoadImages = true,
+                        LoadBody = true,
+                        NeedProxyHttp = false
+                    });
 
-                    tx.Commit();
+                message.LinkedCrmEntityIds = contactIds;
+
+                linkingMessages.Add(message);
+
+            }
+
+            using var tx = DaoFactory.BeginTransaction();
+
+            DaoFactory.CrmLinkDao.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
+
+            foreach (var message in linkingMessages)
+            {
+                try
+                {
+                    AddRelationshipEvents(message, httpContextScheme);
+                }
+                catch (ApiHelperException ex)
+                {
+                    if (!ex.Message.Equals("Already exists"))
+                        throw;
                 }
             }
+
+            tx.Commit();
         }
 
         public void MarkChainAsCrmLinked(int messageId, List<CrmContactData> contactIds)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var db = daoFactory.DbManager;
+            using var tx = DaoFactory.BeginTransaction();
 
-                var daoCrmLink = daoFactory.CreateCrmLinkDao(Tenant, User);
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    var daoMail = daoFactory.CreateMailDao(Tenant, User);
+            DaoFactory.CrmLinkDao.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
-                    var mail = daoMail.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
-
-                    daoCrmLink.SaveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
-
-                    tx.Commit();
-                }
-            }
+            tx.Commit();
         }
 
         public void UnmarkChainAsCrmLinked(int messageId, IEnumerable<CrmContactData> contactIds)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var db = daoFactory.DbManager;
+            using var tx = DaoFactory.BeginTransaction();
 
-                var daoCrmLink = daoFactory.CreateCrmLinkDao(Tenant, User);
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
 
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
-                {
-                    var daoMail = daoFactory.CreateMailDao(Tenant, User);
+            DaoFactory.CrmLinkDao.RemoveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
 
-                    var mail = daoMail.GetMail(new ConcreteUserMessageExp(messageId, Tenant, User));
-
-                    daoCrmLink.RemoveCrmLinks(mail.ChainId, mail.MailboxId, contactIds);
-
-                    tx.Commit();
-                }
-            }
+            tx.Commit();
         }
 
         public void ExportMessageToCrm(int messageId, IEnumerable<CrmContactData> crmContactIds)
@@ -207,9 +186,7 @@ namespace ASC.Mail.Core.Engine
             if (crmContactIds == null)
                 throw new ArgumentException(@"Invalid contact ids list", "crmContactIds");
 
-            var engine = new EngineFactory(Tenant, User);
-
-            var messageItem = engine.MessageEngine.GetMessage(messageId, new MailMessageData.Options
+            var messageItem = EngineFactory.MessageEngine.GetMessage(messageId, new MailMessageData.Options
             {
                 LoadImages = true,
                 LoadBody = true,
@@ -225,12 +202,8 @@ namespace ASC.Mail.Core.Engine
         {
             try
             {
-                using (var daoFactory = new DaoFactory())
-                {
-                    var dao = daoFactory.CreateCrmLinkDao(mailbox.TenantId, mailbox.UserId);
-
-                    messageItem.LinkedCrmEntityIds = dao.GetLinkedCrmContactEntities(messageItem.ChainId, mailbox.MailBoxId);
-                }
+                messageItem.LinkedCrmEntityIds = DaoFactory.CrmLinkDao
+                    .GetLinkedCrmContactEntities(messageItem.ChainId, mailbox.MailBoxId);
 
                 if (!messageItem.LinkedCrmEntityIds.Any()) return;
 
@@ -244,38 +217,51 @@ namespace ASC.Mail.Core.Engine
 
         public void AddRelationshipEvents(MailMessageData message, string httpContextScheme = null)
         {
-            using (var scope = DIHelper.Resolve())
+            //TODO: fix
+            //using var scope = DIHelper.Resolve();
+
+            //var factory = scope.Resolve<CRM.Core.Dao.DaoFactory>();
+            foreach (var contactEntity in message.LinkedCrmEntityIds)
             {
-                var factory = scope.Resolve<CRM.Core.Dao.DaoFactory>();
-                foreach (var contactEntity in message.LinkedCrmEntityIds)
+                /*switch (contactEntity.Type)
                 {
-                    switch (contactEntity.Type)
+                    case CrmContactData.EntityTypes.Contact:
+                        var crmContact = factory.ContactDao.GetByID(contactEntity.Id);
+                        CRMSecurity.DemandAccessTo(crmContact);
+                        break;
+                    case CrmContactData.EntityTypes.Case:
+                        var crmCase = factory.CasesDao.GetByID(contactEntity.Id);
+                        CRMSecurity.DemandAccessTo(crmCase);
+                        break;
+                    case CrmContactData.EntityTypes.Opportunity:
+                        var crmOpportunity = factory.DealDao.GetByID(contactEntity.Id);
+                        CRMSecurity.DemandAccessTo(crmOpportunity);
+                        break;
+                }*/
+
+                var fileIds = new List<object>();
+
+                foreach (var attachment in message.Attachments.FindAll(attach => !attach.isEmbedded))
+                {
+                    if (attachment.dataStream != null)
                     {
-                        case CrmContactData.EntityTypes.Contact:
-                            var crmContact = factory.ContactDao.GetByID(contactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmContact);
-                            break;
-                        case CrmContactData.EntityTypes.Case:
-                            var crmCase = factory.CasesDao.GetByID(contactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmCase);
-                            break;
-                        case CrmContactData.EntityTypes.Opportunity:
-                            var crmOpportunity = factory.DealDao.GetByID(contactEntity.Id);
-                            CRMSecurity.DemandAccessTo(crmOpportunity);
-                            break;
-                    }
+                        attachment.dataStream.Seek(0, SeekOrigin.Begin);
 
-                    var fileIds = new List<object>();
+                        var uploadedFileId = ApiHelper.UploadToCrm(attachment.dataStream, attachment.fileName,
+                            attachment.contentType, contactEntity);
 
-                    var apiHelper = new ApiHelper(httpContextScheme ?? Defines.DefaultApiSchema);
-
-                    foreach (var attachment in message.Attachments.FindAll(attach => !attach.isEmbedded))
-                    {
-                        if (attachment.dataStream != null)
+                        if (uploadedFileId != null)
                         {
-                            attachment.dataStream.Seek(0, SeekOrigin.Begin);
+                            fileIds.Add(uploadedFileId);
+                        }
+                    }
+                    else
+                    {
+                        var dataStore = StorageFactory.GetMailStorage(Tenant);
 
-                            var uploadedFileId = apiHelper.UploadToCrm(attachment.dataStream, attachment.fileName,
+                        using (var file = attachment.ToAttachmentStream(dataStore))
+                        {
+                            var uploadedFileId = ApiHelper.UploadToCrm(file.FileStream, file.FileName,
                                 attachment.contentType, contactEntity);
 
                             if (uploadedFileId != null)
@@ -283,27 +269,14 @@ namespace ASC.Mail.Core.Engine
                                 fileIds.Add(uploadedFileId);
                             }
                         }
-                        else
-                        {
-                            using (var file = attachment.ToAttachmentStream())
-                            {
-                                var uploadedFileId = apiHelper.UploadToCrm(file.FileStream, file.FileName,
-                                    attachment.contentType, contactEntity);
-                                
-                                if (uploadedFileId != null)
-                                {
-                                    fileIds.Add(uploadedFileId);
-                                }
-                            }
-                        }
                     }
-
-                    apiHelper.AddToCrmHistory(message, contactEntity, fileIds);
-
-                    Log.InfoFormat(
-                        "CrmLinkEngine->AddRelationshipEvents(): message with id = {0} has been linked successfully to contact with id = {1}",
-                        message.Id, contactEntity.Id);
                 }
+
+                ApiHelper.AddToCrmHistory(message, contactEntity, fileIds);
+
+                Log.InfoFormat(
+                    "CrmLinkEngine->AddRelationshipEvents(): message with id = {0} has been linked successfully to contact with id = {1}",
+                    message.Id, contactEntity.Id);
             }
         }
     }
