@@ -36,7 +36,7 @@ namespace ASC.Mail.Core
     {
         public MailDbContext MailDb { get; }
         public AccountDao AccountDao { get; }
-        public AlertDao AlertDao1 { get; }
+        public AlertDao AlertDao { get; }
         public ChainDao ChainDao { get; }
         public ContactCardDao ContactCardDao { get; }
         public ContactDao ContactDao { get; }
@@ -49,7 +49,6 @@ namespace ASC.Mail.Core
         public MailboxServerDao MailboxServerDao { get; }
         public MailboxDomainDao MailboxDomainDao { get; }
         public MailboxProviderDao MailboxProviderDao { get; }
-        public AlertDao AlertDao { get; }
         public DisplayImagesAddressDao DisplayImagesAddressDao { get; }
         public FilterDao FilterDao { get; }
         public MailboxSignatureDao MailboxSignatureDao { get; }
@@ -110,7 +109,7 @@ namespace ASC.Mail.Core
         {
             MailDb = dbContext.Get("mail");
             AccountDao = accountDao;
-            AlertDao1 = alertDao;
+            AlertDao = alertDao;
             ChainDao = chainDao;
             ContactCardDao = contactCardDao;
             ContactDao = contactDao;
@@ -123,7 +122,6 @@ namespace ASC.Mail.Core
             MailboxServerDao = mailboxServerDao;
             MailboxDomainDao = mailboxDomainDao;
             MailboxProviderDao = mailboxProviderDao;
-            AlertDao = alertDao;
             DisplayImagesAddressDao = displayImagesAddressDao;
             FilterDao = filterDao;
             MailboxSignatureDao = mailboxSignatureDao;
