@@ -55,6 +55,7 @@ namespace ASC.Mail.Core
         public MailDao MailDao { get; }
         public MailGarbageDao MailGarbageDao { get; }
         public MailInfoDao MailInfoDao { get; }
+        public ServerAddressDao ServerAddressDao { get; }
         public ServerDao ServerDao { get; }
         public ServerDnsDao ServerDnsDao { get; }
         public ServerDomainDao ServerDomainDao { get; }
@@ -96,6 +97,7 @@ namespace ASC.Mail.Core
             MailDao mailDao,
             MailGarbageDao mailGarbageDao,
             MailInfoDao mailInfoDao,
+            ServerAddressDao serverAddressDao,
             ServerDao serverDao,
             ServerDnsDao serverDnsDao,
             ServerDomainDao serverDomainDao,
@@ -128,6 +130,7 @@ namespace ASC.Mail.Core
             MailDao = mailDao;
             MailGarbageDao = mailGarbageDao;
             MailInfoDao = mailInfoDao;
+            ServerAddressDao = serverAddressDao;
             ServerDao = serverDao;
             ServerDnsDao = serverDnsDao;
             ServerDomainDao = serverDomainDao;
