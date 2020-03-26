@@ -53,6 +53,7 @@ using ASC.Common.Caching;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Security;
 
 namespace ASC.Calendar.Controllers
 {
@@ -129,7 +130,7 @@ namespace ASC.Calendar.Controllers
         public SecurityContext SecurityContext { get; }
         public ExportDataCache ExportDataCache { get; }
         public SubscriptionWrapperHelper SubscriptionWrapperHelper { get; }
-
+        public EmailValidationKeyProvider EmailValidationKeyProvider { get; }
 
         public CalendarController(
 
@@ -156,7 +157,8 @@ namespace ASC.Calendar.Controllers
             Signature signature,
             SecurityContext securityContext,
             ExportDataCache exportDataCache,
-            SubscriptionWrapperHelper subscriptionWrapperHelper)
+            SubscriptionWrapperHelper subscriptionWrapperHelper,
+            EmailValidationKeyProvider emailValidationKeyProvider)
         {
             AuthContext = authContext;
             Authentication = authentication;
@@ -181,6 +183,7 @@ namespace ASC.Calendar.Controllers
             SecurityContext = securityContext;
             ExportDataCache = exportDataCache;
             SubscriptionWrapperHelper = subscriptionWrapperHelper;
+            EmailValidationKeyProvider = emailValidationKeyProvider;
 
             CalendarManager.Instance.RegistryCalendar(new SharedEventsCalendar(AuthContext, TimeZoneConverter, TenantManager, DataProvider));
             var birthdayReminderCalendar = new BirthdayReminderCalendar(AuthContext, TimeZoneConverter, UserManager, DisplayUserSettingsHelper);
@@ -687,6 +690,70 @@ namespace ASC.Calendar.Controllers
                 return calUrl;
             }
             return "";
+        }
+
+        /// <summary>
+        /// Run caldav event update function
+        /// </summary>
+        /// <short>
+        /// Update CalDav Event
+        /// </short>
+        /// <param name="change">changes of event</param>
+        /// <param name="key"></param>
+        /// <visible>false</visible>
+        [Read("change_to_storage", false)] //NOTE: this method doesn't requires auth!!!
+        public void ChangeOfCalendarStorage(string change, string key)
+        {
+            var authInterval = TimeSpan.FromHours(1);
+            var checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(change + ConfirmType.Auth, key, authInterval);
+            if (checkKeyResult != EmailValidationKeyProvider.ValidationResult.Ok) throw new SecurityException("Access Denied.");
+
+            var urlRewriter = HttpContext.Request.GetUrlRewriter();
+            var caldavUser = change.Split('/')[0];
+            var portalName = caldavUser.Split('@')[2];
+
+            if (change != null && portalName != null)
+            {
+                //TODO Caldav
+               /* var calDavUrl = new Uri(urlRewriter.Scheme + "://" + portalName);
+                var caldavTask = new Task(() => UpdateCalDavEvent(change, calDavUrl));
+                caldavTask.Start();*/
+            }
+        }
+
+        /// <summary>
+        /// Run caldav event delete function
+        /// </summary>
+        /// <short>
+        /// Delete CalDav Event
+        /// </short>
+        /// <param name="eventInfo">event info</param>
+        /// <param name="key"></param>
+        /// <visible>false</visible>
+        [Read("caldav_delete_event", false)] //NOTE: this method doesn't requires auth!!!
+        public void CaldavDeleteEvent(string eventInfo, string key)
+        {
+            var authInterval = TimeSpan.FromHours(1);
+            var checkKeyResult = EmailValidationKeyProvider.ValidateEmailKey(eventInfo + ConfirmType.Auth, key, authInterval);
+            if (checkKeyResult != EmailValidationKeyProvider.ValidationResult.Ok) throw new SecurityException("Access Denied.");
+
+            if (eventInfo != null)
+            {
+                var myUri = HttpContext.Request.GetUrlRewriter();
+                var calEvent = eventInfo.Split('/')[2].Replace("_write", "");
+                var eventGuid = calEvent.Split('.')[0];
+
+                //TODO Caldav
+               /* var updateEventGuid = updatedEvents.Find((x) => x == eventGuid);
+                if (updateEventGuid == null)
+                {
+                    Task.Run(() => DeleteCalDavEvent(eventInfo, myUri));
+                }
+                else
+                {
+                    updatedEvents.Remove(updateEventGuid);
+                }*/
+            }
         }
         private string SyncCaldavCalendar(string calendarId,
                                             string name,
@@ -3617,7 +3684,8 @@ namespace ASC.Calendar.Controllers
                 .AddEventWrapper()
                 .AddTodoWrapper()
                 .AddExportDataCache()
-                .AddSubscriptionWrapperHelper();
+                .AddSubscriptionWrapperHelper()
+                .AddEmailValidationKeyProviderService();
         }
     }
 }
