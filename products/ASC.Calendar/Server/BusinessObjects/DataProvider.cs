@@ -471,18 +471,32 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetCalendarById(calendar.Id);
         }
-        /*
+
         public Calendar UpdateCalendarGuid(int calendarId, Guid calDavGuid)
         {
-            using (var tr = db.BeginTransaction())
+
+            using var tx = CalendarDb.Database.BeginTransaction();
+
+            var originalData = CalendarDb.CalendarCalendars.SingleOrDefault(i => i.Id == calendarId);
+            if (originalData != null)
             {
-                db.ExecuteNonQuery(new SqlUpdate("calendar_calendars")
-                                                .Set("caldav_guid", calDavGuid)
-                                                .Where("id", calendarId));
-                tr.Commit();
+                originalData.CaldavGuid = calDavGuid.ToString();
+
+                CalendarDb.AddOrUpdate(r => r.CalendarCalendars, originalData);
             }
+
+            CalendarDb.SaveChanges();
+            tx.Commit();
+
             return GetCalendarById(calendarId);
-        }*/
+        }
+        public string GetCalDavGuid(string id)
+        {
+            var dataCaldavGuid = CalendarDb.CalendarCalendars.Where(p => p.Id.ToString() == id).Select(s => s.CaldavGuid).FirstOrDefault();
+
+            return dataCaldavGuid;
+           
+        }
         public Calendar UpdateCalendar(int calendarId, string name, string description, List<SharingOptions.PublicItem> publicItems, List<UserViewSettings> viewSettings)
         {
 

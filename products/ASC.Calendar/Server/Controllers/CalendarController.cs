@@ -52,6 +52,7 @@ using System.Net.Mime;
 using ASC.Common.Caching;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ASC.Calendar.Controllers
 {
@@ -482,6 +483,359 @@ namespace ASC.Calendar.Controllers
 
             return new{result};
         }
+
+        /// <summary>
+        /// Returns the link for the CalDav associated with the calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Get CalDav link
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <returns>CalDav link</returns>
+        [Read("{calendarId}/caldavurl")]
+        public string GetCalendarCalDavUrl(string calendarId)
+        {
+            var myUri = HttpContext.Request.GetUrlRewriter();
+
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
+            var caldavHost = myUri.Host;
+
+            var userId = SecurityContext.CurrentAccount.ID;
+            var userName = UserManager.GetUsers(userId).Email.ToLower();
+
+            string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, userId);
+
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(userName + ":" + currentAccountPaswd));
+            var curCaldavUserName = userName + "@" + caldavHost;
+
+            if (calendarId == "todo_calendar")
+            {
+                var todoCalendars = DataProvider.LoadTodoCalendarsForUser(SecurityContext.CurrentAccount.ID);
+                var userTimeZone = TenantManager.GetCurrentTenant().TimeZone;
+
+                var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+                var newCalendar = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
+                var todoCal = CalendarWrapperHelper.Get(newCalendar);
+
+                if (todoCalendars.Count == 0)
+                {
+                    var todoCalModel = new CalendarModel
+                    {
+                        Name = "Todo_calendar",
+                        Description = "",
+                        TextColor = BusinessObjects.Calendar.DefaultTextColor,
+                        BackgroundColor = BusinessObjects.Calendar.DefaultTodoBackgroundColor,
+                        TimeZone = userTimeZone.ToString(),
+                        AlertType = EventAlertType.FifteenMinutes,
+                        SharingOptions = null,
+                        ICalUrl = null,
+                        IsTodo = 1
+                    };
+                    todoCal = CreateCalendar(todoCalModel);
+
+                    if (todoCal != null)
+                    {  
+                        try
+                        {
+                            var dataCaldavGuid = DataProvider.GetCalDavGuid(todoCal.Id);
+
+                            var caldavGuid = dataCaldavGuid != null
+                                        ? Guid.Parse(dataCaldavGuid)
+                                        : Guid.Empty;
+
+                            var sharedCalUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + caldavGuid).ToString();
+                            var calendar = GetUserCaldavCalendar(sharedCalUrl, encoded);
+                            if (calendar != "")
+                            {
+                                if (calendar == "NotFound")
+                                {
+                                    return CreateCalDavCalendar(
+                                                            "Todo_calendar",
+                                                            "",
+                                                            BusinessObjects.Calendar.DefaultTodoBackgroundColor,
+                                                            caldavGuid.ToString(),
+                                                            myUri,
+                                                            curCaldavUserName,
+                                                            userName,
+                                                            currentAccountPaswd
+                                                        );
+                                }
+                                return sharedCalUrl;
+                            }
+                            else
+                            {
+                                return "";
+                            }
+
+                        }
+                        catch (Exception exception)
+                        {
+                            Log.Error("ERROR: " + exception.Message);
+                            return "";
+                        }
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+                else
+                {
+                    var sharedCalUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + todoCalendars[0].calDavGuid).ToString();
+                    var calendar = GetUserCaldavCalendar(sharedCalUrl, encoded);
+                    if (calendar != "")
+                    {
+                        if (calendar == "NotFound")
+                        {
+                            return CreateCalDavCalendar(
+                                                    "Todo_calendar",
+                                                    "",
+                                                    BusinessObjects.Calendar.DefaultTodoBackgroundColor,
+                                                    todoCalendars[0].calDavGuid.ToString(),
+                                                    myUri,
+                                                    curCaldavUserName,
+                                                    userName,
+                                                    currentAccountPaswd
+                                                );
+                        }
+                        return sharedCalUrl;
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
+
+            if (calendarId == BirthdayReminderCalendar.CalendarId ||
+                calendarId == SharedEventsCalendar.CalendarId ||
+                calendarId == "crm_calendar" ||
+                calendarId.Contains("Project_"))
+            {
+
+                if (SecurityContext.IsAuthenticated)
+                {
+                    var sharedCalendar = GetCalendarById(calendarId);
+                    var currentUserId = SecurityContext.CurrentAccount.ID;
+                    var currentUserEmail = UserManager.GetUsers(currentUserId).Email;
+                    var currentUserPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, currentUserId);
+
+                    var currentCaldavUserName = currentUserEmail + "@" + caldavHost;
+
+                    var sharedEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(currentUserEmail + ":" + currentUserPaswd));
+                    var sharedCalUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + currentCaldavUserName + "/" + calendarId + "-shared").ToString();
+
+                    var calendar = GetUserCaldavCalendar(sharedCalUrl, sharedEncoded);
+
+                    if (calendar != "")
+                    {
+                        if (calendar == "NotFound")
+                        {
+                            sharedCalUrl = CreateCalDavCalendar(
+                                sharedCalendar.UserCalendar.Name,
+                                sharedCalendar.UserCalendar.Description,
+                                sharedCalendar.TextColor,
+                                calendarId,
+                                myUri,
+                                currentCaldavUserName,
+                                currentUserEmail,
+                                Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, currentUserId),
+                                true
+                                );
+                        }
+                        if (sharedCalUrl != "")
+                        {
+                            var calendarIcs = GetCalendariCalString(calendarId, true);
+
+                            //TODO Caldav
+                            /*var tenant = TenantManager.GetCurrentTenant();
+                            var caldavTask = new Task(() => CreateCaldavSharedEvents(calendarId, calendarIcs, myUri, currentUserEmail, currentUserPaswd, sharedCalendar.UserCalendar, SecurityContext.CurrentAccount, tenant.TenantId));
+                            caldavTask.Start();*/
+
+                            return sharedCalUrl;
+                        }
+                    }
+                }
+                return "";
+            }
+
+            var cal = DataProvider.GetCalendarById(Convert.ToInt32(calendarId));
+            var ownerId = cal.OwnerId;
+
+            TenantManager.SetCurrentTenant(cal.TenantId);
+
+            var isShared = ownerId != SecurityContext.CurrentAccount.ID;
+            var calDavGuid = cal.calDavGuid;
+            if (calDavGuid == "" || calDavGuid == Guid.Empty.ToString())
+            {
+                calDavGuid = Guid.NewGuid().ToString();
+                DataProvider.UpdateCalendarGuid(Convert.ToInt32(cal.Id), Guid.Parse(calDavGuid));
+            }
+
+            var calUrl = new Uri(new Uri(calDavServerUrl), "/caldav/" + curCaldavUserName + "/" + calDavGuid + (isShared ? "-shared" : "")).ToString();
+
+            Log.Info("RADICALE REWRITE URL: " + myUri);
+
+            var caldavCalendar = GetUserCaldavCalendar(calUrl, encoded);
+
+            if (caldavCalendar != "")
+            {
+                if (caldavCalendar == "NotFound")
+                {
+                    return SyncCaldavCalendar(calendarId, cal.Name, cal.Description, cal.Context.HtmlBackgroundColor, Guid.Parse(calDavGuid), myUri, curCaldavUserName, userName, currentAccountPaswd, isShared, cal.SharingOptions);
+                }
+                return calUrl;
+            }
+            return "";
+        }
+        private string SyncCaldavCalendar(string calendarId,
+                                            string name,
+                                            string description,
+                                            string backgroundColor,
+                                            Guid calDavGuid,
+                                            Uri myUri,
+                                            string curCaldavUserName,
+                                            string email,
+                                            string currentAccountPaswd,
+                                            bool isShared = false,
+                                            SharingOptions sharingOptions = null)
+        {
+            var calendarUrl = CreateCalDavCalendar(name, description, backgroundColor, calDavGuid.ToString(), myUri, curCaldavUserName, email, currentAccountPaswd, isShared);
+
+            BaseCalendar icalendar;
+            int calId;
+
+            var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, new List<string> { calendarId });
+
+            if (int.TryParse(calendarId, out calId))
+            {
+                icalendar = DataProvider.GetCalendarById(calId);
+                if (icalendar != null)
+                {
+                    icalendar = icalendar.GetUserCalendar(viewSettings.FirstOrDefault());
+                }
+            }
+            else
+            {
+                //external
+                icalendar = CalendarManager.Instance.GetCalendarForUser(SecurityContext.CurrentAccount.ID, calendarId, UserManager);
+                if (icalendar != null)
+                {
+                    icalendar = icalendar.GetUserCalendar(viewSettings.FirstOrDefault());
+                }
+            }
+
+            if (icalendar == null) return "";
+
+            var calendarIcs = GetCalendariCalString(icalendar.Id, true);
+
+            //TODO Caldav
+            /*
+            var tenant = TenantManager.GetCurrentTenant();
+            var caldavTask = isShared ? new Task(() => CreateCaldavSharedEvents(calDavGuid.ToString(), calendarIcs, myUri, email, currentAccountPaswd, icalendar, SecurityContext.CurrentAccount, tenant.TenantId))
+                                      : new Task(() => CreateCaldavEvents(calDavGuid.ToString(), myUri, email, currentAccountPaswd, icalendar, calendarIcs));
+            caldavTask.Start();*/
+
+            return calendarUrl;
+        }
+        private string HexFromRGB(int r, int g, int b)
+        {
+            return String.Format("#{0:X2}{1:X2}{2:X2}", r, g, b);
+        }
+        private string GetUserCaldavCalendar(string calUrl, string encoded)
+        {
+            var webRequest = (HttpWebRequest)WebRequest.Create(calUrl);
+            webRequest.Method = "GET";
+            webRequest.ContentType = "text/calendar; charset=utf-8";
+            webRequest.Headers.Add("Authorization", "Basic " + encoded);
+
+            try
+            {
+                using (var webResponse = webRequest.GetResponse())
+                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                {
+                    string ics = reader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(ics))
+                    {
+                        return ics;
+                    }
+                    return "";
+
+                }
+            }
+            catch (WebException exception)
+            {
+                if (exception.Status == WebExceptionStatus.ProtocolError && exception.Response != null)
+                {
+                    var resp = (HttpWebResponse)exception.Response;
+                    if (resp.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return "NotFound";
+                    }
+                }
+                Log.Info("ERROR. Get calendar CalDav url: " + exception.Message);
+                return "";
+            }
+        }
+        private string CreateCalDavCalendar(string name, string description, string backgroundColor, string calDavGuid, Uri myUri, string currentUserName, string email, string currentAccountPaswd, bool isSharedCalendar = false)
+        {
+            name = (name ?? "").Trim();
+            if (String.IsNullOrEmpty(name))
+                throw new Exception(Resources.CalendarApiResource.ErrorEmptyName);
+
+            description = (description ?? "").Trim();
+            backgroundColor = (backgroundColor ?? "").Trim();
+
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
+
+            Log.Info("RADICALE REWRITE URL: " + myUri);
+
+            string[] numbers = Regex.Split(backgroundColor, @"\D+");
+            var color = numbers.Length > 4 ? HexFromRGB(int.Parse(numbers[1]), int.Parse(numbers[2]), int.Parse(numbers[3])) : "#000000";
+
+            var data = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>" +
+                      "<mkcol xmlns=\"DAV:\" xmlns:C=\"urn:ietf:params:xml:ns:caldav\" xmlns:CR=\"urn:ietf:params:xml:ns:carddav\" xmlns:I=\"http://apple.com/ns/ical/\" xmlns:INF=\"http://inf-it.com/ns/ab/\">" +
+                      "<set><prop>" +
+                      "<resourcetype><collection /><C:calendar /></resourcetype>" +
+                      "<C:supported-calendar-component-set><C:comp name=\"VEVENT\" /><C:comp name=\"VJOURNAL\" /><C:comp name=\"VTODO\" />" +
+                      "</C:supported-calendar-component-set><displayname>" + name + "</displayname>" +
+                      "<I:calendar-color>" + color + "</I:calendar-color>" +
+                      "<C:calendar-description>" + description + "</C:calendar-description></prop></set></mkcol>";
+
+            var calDavUrl = calDavServerUrl.Insert(calDavServerUrl.IndexOf("://") + 3, HttpUtility.UrlEncode(currentUserName) + ":" + HttpUtility.UrlEncode(currentAccountPaswd) + "@");
+
+            var requestUrl = calDavUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + calDavGuid + (isSharedCalendar ? "-shared" : "");
+
+            try
+            {
+                var encoded = isSharedCalendar ? Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID)) : Convert.ToBase64String(Encoding.UTF8.GetBytes(email.ToLower() + ":" + currentAccountPaswd));
+                var webRequest = (HttpWebRequest)WebRequest.Create(requestUrl);
+                webRequest.Method = "MKCOL";
+                webRequest.ContentType = "text/plain;charset=UTF-8";
+                webRequest.Headers.Add("Authorization", "Basic " + encoded);
+
+                var encoding = new UTF8Encoding();
+                byte[] bytes = encoding.GetBytes(data);
+                webRequest.ContentLength = bytes.Length;
+                using (Stream writeStream = webRequest.GetRequestStream())
+                {
+                    writeStream.Write(bytes, 0, bytes.Length);
+                }
+
+                using (var webResponse = webRequest.GetResponse())
+                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                {
+                    reader.ReadToEnd();
+                    return calDavServerUrl + "/" + currentUserName + "/" + calDavGuid + (isSharedCalendar ? "-shared" : "");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                return "";
+            }
+        }
+
 
         /// <summary>
         /// Returns the feed for the iCal associated with the calendar by its ID and signagure specified in the request
