@@ -33,7 +33,10 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Authorization;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Expressions.Attachment;
+using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
+using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
@@ -76,6 +79,7 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public DaoFactory DaoFactory { get; }
+        public EngineFactory EngineFactory { get; }
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
 
         public MailboxEngine(DbContextManager<MailDbContext> dbContext,
@@ -83,6 +87,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
             DaoFactory daoFactory,
+            EngineFactory engineFactory,
             MailBoxSettingEngine mailBoxSettingEngine)
         {
             ApiContext = apiContext;
@@ -92,6 +97,7 @@ namespace ASC.Mail.Core.Engine
             MailDb = dbContext.Get("mail");
 
             DaoFactory = daoFactory;
+            EngineFactory = engineFactory;
             MailBoxSettingEngine = mailBoxSettingEngine;
         }
 
@@ -503,11 +509,9 @@ namespace ASC.Mail.Core.Engine
             return status;
         }
 
-        /*public bool ReleaseMaibox(MailBoxData account, TasksConfig tasksConfig)
+        public bool ReleaseMaibox(MailBoxData account, TasksConfig tasksConfig)
         {
             var disableMailbox = false;
-
-            var engineFactory = new EngineFactory(account.TenantId, account.UserId);
 
             if (account.AuthErrorDate.HasValue)
             {
@@ -517,12 +521,12 @@ namespace ASC.Mail.Core.Engine
                 {
                     disableMailbox = true;
 
-                    engineFactory.AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
+                    EngineFactory.AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
                 else if (difference > tasksConfig.AuthErrorWarningTimeout)
                 {
-                    engineFactory.AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
+                    EngineFactory.AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
             }
@@ -531,77 +535,72 @@ namespace ASC.Mail.Core.Engine
             {
                 if (account.QuotaError)
                 {
-                    engineFactory.AlertEngine.CreateQuotaErrorWarningAlert(account.TenantId, account.UserId);
+                    EngineFactory.AlertEngine.CreateQuotaErrorWarningAlert(account.TenantId, account.UserId);
                 }
                 else
                 {
-                    engineFactory.AlertEngine.DeleteAlert(MailAlertTypes.QuotaError);
+                    EngineFactory.AlertEngine.DeleteAlert(MailAlertTypes.QuotaError);
                 }
             }
 
-            using (var daoFactory = new DaoFactory())
+            var exp = new СoncreteUserMailboxExp(account.MailBoxId, account.TenantId, account.UserId);
+
+            var mailbox = DaoFactory.MailboxDao.GetMailBox(exp);
+
+            if (mailbox == null) // Mailbox has been removed
+                return true;
+
+            bool? enabled = null;
+            int? messageCount = null;
+            long? size = null;
+            bool? quotaError = null;
+            string oAuthToken = null;
+            string imapIntervalsJson = null;
+            bool? resetImapIntervals = null;
+
+            if (account.AuthErrorDate.HasValue)
             {
-                var daoMailbox = daoFactory.CreateMailboxDao();
-
-                var mailbox =
-                    daoMailbox.GetMailBox(new СoncreteUserMailboxExp(account.MailBoxId, account.TenantId,
-                        account.UserId));
-
-                if (mailbox == null) // Mailbox has been removed
-                    return true;
-
-                bool? enabled = null;
-                int? messageCount = null;
-                long? size = null;
-                bool? quotaError = null;
-                string oAuthToken = null;
-                string imapIntervalsJson = null;
-                bool? resetImapIntervals = null;
-
-                if (account.AuthErrorDate.HasValue)
+                if (disableMailbox)
                 {
-                    if (disableMailbox)
-                    {
-                        enabled = false;
-                    }
+                    enabled = false;
                 }
-
-                if (mailbox.MsgCountLast != account.MessagesCount)
-                {
-                    messageCount = account.MessagesCount;
-                }
-
-                if (mailbox.SizeLast != account.Size)
-                {
-                    size = account.Size;
-                }
-
-                if (account.QuotaErrorChanged)
-                {
-                    quotaError = account.QuotaError;
-                }
-
-                if (account.AccessTokenRefreshed)
-                {
-                    oAuthToken = account.OAuthToken;
-                }
-
-                if (account.Imap && account.ImapFolderChanged)
-                {
-                    if (account.BeginDateChanged)
-                    {
-                        resetImapIntervals = true;
-                    }
-                    else
-                    {
-                        imapIntervalsJson = account.ImapIntervalsJson;
-                    }
-                }
-
-                return daoMailbox.SetMailboxProcessed(mailbox, account.ServerLoginDelay, enabled, messageCount, size,
-                    quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
             }
-        }*/
+
+            if (mailbox.MsgCountLast != account.MessagesCount)
+            {
+                messageCount = account.MessagesCount;
+            }
+
+            if (mailbox.SizeLast != account.Size)
+            {
+                size = account.Size;
+            }
+
+            if (account.QuotaErrorChanged)
+            {
+                quotaError = account.QuotaError;
+            }
+
+            if (account.AccessTokenRefreshed)
+            {
+                oAuthToken = account.OAuthToken;
+            }
+
+            if (account.Imap && account.ImapFolderChanged)
+            {
+                if (account.BeginDateChanged)
+                {
+                    resetImapIntervals = true;
+                }
+                else
+                {
+                    imapIntervalsJson = account.ImapIntervalsJson;
+                }
+            }
+
+            return DaoFactory.MailboxDao.SetMailboxProcessed(mailbox, account.ServerLoginDelay, enabled, messageCount, size,
+                quotaError, oAuthToken, imapIntervalsJson, resetImapIntervals);
+        }
 
         public bool SetMaiboxAuthError(int id, DateTime? authErroDate)
         {
@@ -628,52 +627,41 @@ namespace ASC.Mail.Core.Engine
             return DaoFactory.MailboxDao.SetNextLoginDelay(exp, delay);
         }
 
-        /*public void RemoveMailBox(MailBoxData mailbox, bool needRecalculateFolders = true)
+        public void RemoveMailBox(MailBoxData mailbox, bool needRecalculateFolders = true)
         {
             if (mailbox.MailBoxId <= 0)
                 throw new Exception("MailBox id is 0");
 
             long freedQuotaSize;
 
-            using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveMailboxTimeout))
+            // using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveMailboxTimeout))
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                var daoFactory = new DaoFactory(db);
-                using (var tx = daoFactory.DbManager.BeginTransaction())
-                {
-                    freedQuotaSize = RemoveMailBoxInfo(daoFactory, mailbox);
+                if (mailbox.MailBoxId <= 0)
+                    throw new Exception("MailBox id is 0");
 
-                    tx.Commit();
-                }
+                freedQuotaSize = RemoveMailBoxInfo(mailbox);
+
+                EngineFactory.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+
+                if (!needRecalculateFolders)
+                    return;
+
+                EngineFactory.OperationEngine.RecalculateFolders();
+
+                tx.Commit();
             }
 
-            var engine = new EngineFactory(mailbox.TenantId, mailbox.UserId, Log);
-            engine.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+            EngineFactory.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
 
-            CacheEngine.Clear(mailbox.UserId);
+            EngineFactory.CacheEngine.Clear(mailbox.UserId);
 
-            engine.IndexEngine.Remove(mailbox);
-
-            if (!needRecalculateFolders)
-                return;
-
-            engine.OperationEngine.RecalculateFolders();
-        }
-
-        public void RemoveMailBox(IDaoFactory daoFactory, MailBoxData mailbox, bool needRecalculateFolders = true)
-        {
-            if (mailbox.MailBoxId <= 0)
-                throw new Exception("MailBox id is 0");
-
-            var freedQuotaSize = RemoveMailBoxInfo(daoFactory, mailbox);
-
-            var engine = new EngineFactory(mailbox.TenantId, mailbox.UserId);
-
-            engine.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+            EngineFactory.IndexEngine.Remove(mailbox);
 
             if (!needRecalculateFolders)
                 return;
 
-            engine.OperationEngine.RecalculateFolders();
+            EngineFactory.OperationEngine.RecalculateFolders();
         }
 
         /// <summary>
@@ -683,114 +671,91 @@ namespace ASC.Mail.Core.Engine
         /// <returns>Return freed quota value</returns>
         public long RemoveMailBoxInfo(MailBoxData mailBoxData)
         {
-            long freedQuotaSize;
+            long totalAttachmentsSize;
 
-            using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveMailboxTimeout))
+            //TODO: Check timeout on big mailboxes
+            //using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveMailboxTimeout))
+
+            using (var tx = DaoFactory.BeginTransaction())
             {
-                var daoFactory = new DaoFactory(db);
-                using (var tx = daoFactory.DbManager.BeginTransaction())
+                if (mailBoxData.MailBoxId <= 0)
+                    throw new Exception("MailBox id is 0");
+
+                var mailbox = DaoFactory.MailboxDao.GetMailBox(
+                    new СoncreteUserMailboxExp(mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId, null));
+
+                if (mailbox == null)
                 {
-                    freedQuotaSize = RemoveMailBoxInfo(daoFactory, mailBoxData);
-
-                    tx.Commit();
+                    throw new Exception(string.Format("MailBox with id = {0} (Tenant={1}, User='{2}') not found",
+                        mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId));
                 }
+
+                DaoFactory.MailboxDao.SetMailboxRemoved(mailbox);
+
+                var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>().ToList();
+
+                var exp = SimpleConversationsExp.CreateBuilder(mailBoxData.TenantId, mailBoxData.UserId)
+                        .SetFoldersIds(folderTypes)
+                        .SetMailboxId(mailBoxData.MailBoxId)
+                        .Build();
+
+                DaoFactory.ChainDao.Delete(exp);
+
+                DaoFactory.CrmLinkDao.RemoveCrmLinks(mailBoxData.MailBoxId);
+
+                var exp1 = SimpleMessagesExp.CreateBuilder(mailBoxData.TenantId, mailBoxData.UserId)
+                        .SetMailboxId(mailBoxData.MailBoxId)
+                        .Build();
+
+                DaoFactory.MailInfoDao.SetFieldValue(exp1,
+                    "IsRemoved",
+                    true);
+
+                var exp2 = new ConcreteMailboxAttachmentsExp(mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId,
+                    onlyEmbedded: null);
+
+                totalAttachmentsSize = DaoFactory.AttachmentDao.GetAttachmentsSize(exp2);
+
+                DaoFactory.AttachmentDao.SetAttachmnetsRemoved(exp2);
+
+                var tagIds = DaoFactory.TagMailDao.GetTagIds(mailBoxData.MailBoxId);
+
+                DaoFactory.TagMailDao.DeleteByMailboxId(mailBoxData.MailBoxId);
+
+                foreach (var tagId in tagIds)
+                {
+                    var tag = DaoFactory.TagDao.GetTag(tagId);
+
+                    if (tag == null)
+                        continue;
+
+                    var count = DaoFactory.TagMailDao.CalculateTagCount(tag.Id);
+
+                    tag.Count = count;
+
+                    DaoFactory.TagDao.SaveTag(tag);
+                }
+
+                DaoFactory.MailboxSignatureDao
+                    .DeleteSignature(mailBoxData.MailBoxId);
+
+                DaoFactory.MailboxAutoreplyDao
+                    .DeleteAutoreply(mailBoxData.MailBoxId);
+
+                DaoFactory.MailboxAutoreplyHistoryDao
+                    .DeleteAutoreplyHistory(mailBoxData.MailBoxId);
+
+                DaoFactory.AlertDao
+                    .DeleteAlerts(mailBoxData.MailBoxId);
+
+                DaoFactory.UserFolderXMailDao
+                    .RemoveByMailbox(mailBoxData.MailBoxId);
+
+                tx.Commit();
             }
-
-            return freedQuotaSize;
-        }
-
-        /// <summary>
-        /// Set mailbox removed
-        /// </summary>
-        /// <param name="daoFactory"></param>
-        /// <param name="mailBoxData"></param>
-        /// <returns>Return freed quota value</returns>
-        private static long RemoveMailBoxInfo(IDaoFactory daoFactory, MailBoxData mailBoxData)
-        {
-            if (mailBoxData.MailBoxId <= 0)
-                throw new Exception("MailBox id is 0");
-
-            var daoMailbox = daoFactory.CreateMailboxDao();
-
-            var mailbox = daoMailbox.GetMailBox(
-                new СoncreteUserMailboxExp(mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId, null));
-
-            if (mailbox == null)
-            {
-                throw new Exception(string.Format("MailBox with id = {0} (Tenant={1}, User='{2}') not found",
-                    mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId));
-            }
-
-            daoMailbox.SetMailboxRemoved(mailbox);
-
-            var daoChain = daoFactory.CreateChainDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            var folderTypes = Enum.GetValues(typeof(FolderType)).Cast<int>().ToList();
-
-            daoChain.Delete(
-                SimpleConversationsExp.CreateBuilder(mailBoxData.TenantId, mailBoxData.UserId)
-                    .SetFoldersIds(folderTypes)
-                    .SetMailboxId(mailBoxData.MailBoxId)
-                    .Build());
-
-            var daoCrmLink = daoFactory.CreateCrmLinkDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            daoCrmLink.RemoveCrmLinks(mailBoxData.MailBoxId);
-
-            var daoMailInfo = daoFactory.CreateMailInfoDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            daoMailInfo.SetFieldValue(
-                SimpleMessagesExp.CreateBuilder(mailBoxData.TenantId, mailBoxData.UserId)
-                    .SetMailboxId(mailBoxData.MailBoxId)
-                    .Build(),
-                MailTable.Columns.IsRemoved,
-                true);
-
-            var exp = new ConcreteMailboxAttachmentsExp(mailBoxData.MailBoxId, mailBoxData.TenantId, mailBoxData.UserId,
-                onlyEmbedded: null);
-
-            var daoAttachment = daoFactory.CreateAttachmentDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            var totalAttachmentsSize = daoAttachment.GetAttachmentsSize(exp);
-
-            daoAttachment.SetAttachmnetsRemoved(exp);
-
-            var tagDao = daoFactory.CreateTagDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            var tagMailDao = daoFactory.CreateTagMailDao(mailBoxData.TenantId, mailBoxData.UserId);
-
-            var tagIds = tagMailDao.GetTagIds(mailBoxData.MailBoxId);
-
-            tagMailDao.DeleteByMailboxId(mailBoxData.MailBoxId);
-
-            foreach (var tagId in tagIds)
-            {
-                var tag = tagDao.GetTag(tagId);
-
-                if (tag == null)
-                    continue;
-
-                var count = tagMailDao.CalculateTagCount(tag.Id);
-
-                tag.Count = count;
-
-                tagDao.SaveTag(tag);
-            }
-
-            daoFactory.CreateMailboxSignatureDao(mailBoxData.TenantId, mailBoxData.UserId).DeleteSignature(mailBoxData.MailBoxId);
-
-            daoFactory.CreateMailboxAutoreplyDao(mailBoxData.TenantId, mailBoxData.UserId)
-                .DeleteAutoreply(mailBoxData.MailBoxId);
-
-            daoFactory.CreateMailboxAutoreplyHistoryDao(mailBoxData.TenantId, mailBoxData.UserId).DeleteAutoreplyHistory(mailBoxData.MailBoxId);
-
-            daoFactory.CreateAlertDao(mailBoxData.TenantId, mailBoxData.UserId).DeleteAlerts(mailBoxData.MailBoxId);
-
-            daoFactory.CreateUserFolderXMailDao(mailBoxData.TenantId, mailBoxData.UserId)
-                .RemoveByMailbox(mailBoxData.MailBoxId);
 
             return totalAttachmentsSize;
-        }*/
+        }
 
         private IEnumerable<MailBoxData> GetActiveMailboxesForProcessing(TasksConfig tasksConfig, int tasksLimit)
         {
