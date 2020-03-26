@@ -26,14 +26,15 @@
 
 using System;
 using System.Collections.Generic;
-//using System.Net;
 using System.Net.Mail;
-//using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 using ASC.Mail.Models;
-//using ASC.Web.Core.Utility;
+using ASC.Web.Core.Utility;
 using MimeKit;
-//using Resources;
+using ASC.Core.Common.Settings;
+using ASC.Web.Core.Users;
+using ASC.Web.Core.PublicResources;
 
 namespace ASC.Mail.Utils
 {
@@ -157,44 +158,44 @@ namespace ASC.Mail.Utils
         /// </summary>
         /// <param name="password">String contains valid password according to portal settings</param>
         /// <returns>trimmed password or exception</returns>
-        //public static string GetValidPassword(string password)
-        //{
-        //    var trimPwd = password.Trim();
+        public static string GetValidPassword(string password, SettingsManager settingsManager, UserManagerWrapper userManagerWrapper)
+        {
+            var trimPwd = password.Trim();
 
-        //    if (string.IsNullOrEmpty(trimPwd))
-        //        throw new ArgumentException(Resource.ErrorPasswordEmpty);
+            if (string.IsNullOrEmpty(trimPwd))
+                throw new ArgumentException(Resource.ErrorPasswordEmpty);
 
-        //    var pwdSettings = PasswordSettings.Load();
+            var pwdSettings = settingsManager.Load<PasswordSettings>();
 
-        //    if (!PasswordSettings.CheckPasswordRegex(pwdSettings, trimPwd)
-        //        || RegxNoneAscii.IsMatch(trimPwd)
-        //        || RegxWhiteSpaces.IsMatch(trimPwd))
-        //    {
-        //        throw new ArgumentException(GeneratePasswordErrorMessage(pwdSettings));
-        //    }
+            if (!userManagerWrapper.CheckPasswordRegex(pwdSettings, trimPwd)
+                || RegxNoneAscii.IsMatch(trimPwd)
+                || RegxWhiteSpaces.IsMatch(trimPwd))
+            {
+                throw new ArgumentException(GeneratePasswordErrorMessage(pwdSettings));
+            }
 
-        //    return trimPwd;
-        //}
+            return trimPwd;
+        }
 
-        //internal static string GeneratePasswordErrorMessage(PasswordSettings passwordSettings)
-        //{
-        //    var error = new StringBuilder();
+        internal static string GeneratePasswordErrorMessage(PasswordSettings passwordSettings)
+        {
+            var error = new StringBuilder();
 
-        //    error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
-        //    error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+            error.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+            error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
 
-        //    error.AppendFormat(", {0}", Resource.ErrorPasswordOnlyLatinLetters);
-        //    error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpaces);
+            error.AppendFormat(", {0}", Resource.ErrorPasswordOnlyLatinLetters);
+            error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpaces);
 
-        //    if (passwordSettings.UpperCase)
-        //        error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
-        //    if (passwordSettings.Digits)
-        //        error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
-        //    if (passwordSettings.SpecSymbols)
-        //        error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+            if (passwordSettings.UpperCase)
+                error.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+            if (passwordSettings.Digits)
+                error.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+            if (passwordSettings.SpecSymbols)
+                error.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
 
-        //    return error.ToString();
-        //}
+            return error.ToString();
+        }
 
         public static List<MailAddress> ToMailAddresses(this List<string> addresses)
         {
