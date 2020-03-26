@@ -77,17 +77,19 @@ class SectionBodyContent extends React.PureComponent {
     });
   };
 
-  onEditComplete = currentId => {
+  onEditComplete = item => {
     const { folderId, fileAction, filter, treeFolders, setTreeFolders, onLoading } = this.props;
 
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
-        const path = data.selectedFolder.pathParts;
-        const newTreeFolders = treeFolders;
-        const folders = data.selectedFolder.folders;
-        this.loop(path, newTreeFolders, currentId, folders);
-        setTreeFolders(newTreeFolders);
+        if(!item.fileExst) {
+          const path = data.selectedFolder.pathParts;
+          const newTreeFolders = treeFolders;
+          const folders = data.selectedFolder.folders;
+          this.loop(path, newTreeFolders, item.parentId, folders);
+          setTreeFolders(newTreeFolders);
+        }
       }).finally(() => onLoading(false))
     }
 
@@ -278,7 +280,7 @@ class SectionBodyContent extends React.PureComponent {
               {...contextOptionsProps}
               needForUpdate={this.needForUpdate}
             >
-              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete.bind(this, item.parentId)} onLoading={onLoading} />
+              <FilesRowContent item={item} viewer={viewer} culture={settings.culture} onEditComplete={this.onEditComplete.bind(this, item)} onLoading={onLoading} />
             </SimpleFilesRow>
           );
         })}
