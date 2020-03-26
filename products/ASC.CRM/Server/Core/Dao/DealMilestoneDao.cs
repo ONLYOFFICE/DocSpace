@@ -33,6 +33,7 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,19 +44,18 @@ namespace ASC.CRM.Core.Dao
 {
     public class CachedDealMilestoneDao : DealMilestoneDao
     {
-        private readonly HttpRequestDictionary<DealMilestone> _dealMilestoneCache =
-            new HttpRequestDictionary<DealMilestone>("crm_deal_milestone");
+        private readonly HttpRequestDictionary<DealMilestone> _dealMilestoneCache;
 
         public CachedDealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
                                 TenantManager tenantManager,
-                                SecurityContext securityContext)
+                                SecurityContext securityContext,
+                                IHttpContextAccessor httpContextAccessor)
             : base(dbContextManager,
                   tenantManager,
                   securityContext)
         {
 
-
-
+            _dealMilestoneCache = new HttpRequestDictionary<DealMilestone>(httpContextAccessor?.HttpContext, "crm_deal_milestone");
         }
 
         private void ResetCache(int id)
@@ -147,30 +147,12 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, int> GetRelativeItemsCount()
         {
-            var sqlQuery = Query(CRMDbContext.DealMilestones)
-                           .GroupJoin(CRMDbContext.Deals,
+            return Query(CRMDbContext.DealMilestones).GroupJoin(CRMDbContext.Deals,
                                  x => x.Id,
-                                 x => x.DealMilestoneId, 
-                                 (x,y) =>
-                                 {
-                                    
-                                 });
-                        
-
-
-            throw new Exception();
-
-            //var sqlQuery = Query("crm_deal_milestone tbl_deal_milestone")
-            //              .Select("tbl_deal_milestone.id")
-            //              .OrderBy("tbl_deal_milestone.sort_order", true)
-            //              .GroupBy("tbl_deal_milestone.id");
-
-            //sqlQuery.LeftOuterJoin("crm_deal tbl_crm_deal",
-            //                          Exp.EqColumns("tbl_deal_milestone.id", "tbl_crm_deal.deal_milestone_id"))
-            //    .Select("count(tbl_crm_deal.deal_milestone_id)");
-
-            //var queryResult = Db.ExecuteList(sqlQuery);
-            //return queryResult.ToDictionary(x => Convert.ToInt32(x[0]), y => Convert.ToInt32(y[1]));
+                                 x => x.DealMilestoneId,
+                                 (x, y) => new { x = x, count = y.Count() })
+                            .OrderBy(x => x.x.SortOrder)
+                            .ToDictionary(x => x.x.Id, y => y.count);                         
         }
 
         public int GetRelativeItemsCount(int id)
@@ -215,10 +197,15 @@ namespace ASC.CRM.Core.Dao
 
         public virtual void ChangeColor(int id, String newColor)
         {
-            var item = CRMDbContext.DealMilestones.First(x => x.Id == id);
+            var itemToUpdate = new DbDealMilestone
+            {
+                Id = id,
+                Color = newColor,
+                TenantId = TenantID
+            };
 
-            item.Color = newColor;
-
+            CRMDbContext.Attach(itemToUpdate);
+            CRMDbContext.Entry(itemToUpdate).Property(x => x.Color).IsModified = true;
             CRMDbContext.SaveChanges();
         }
 
@@ -252,9 +239,13 @@ namespace ASC.CRM.Core.Dao
             if (HaveContactLink(id))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeDeleted, CRMErrorsResource.DealMilestoneHasRelatedDeals));
 
-            var item = CRMDbContext.DealMilestones.First(x => x.Id == id);
+            var dbDealMilestones = new DbDealMilestone
+            {
+                Id = id,
+                TenantId = TenantID
+            };
             
-            CRMDbContext.DealMilestones.Remove(item);
+            CRMDbContext.DealMilestones.Remove(dbDealMilestones);
 
             CRMDbContext.SaveChanges();
 
@@ -273,12 +264,14 @@ namespace ASC.CRM.Core.Dao
         public List<DealMilestone> GetAll(int[] id)
         {
             return Query(CRMDbContext.DealMilestones)
-                .Where(x => id.Contains(x.Id)).ToList().ConvertAll(ToDealMilestone);
+                  .OrderBy(x => x.SortOrder)
+                  .Where(x => id.Contains(x.Id)).ToList().ConvertAll(ToDealMilestone);
         }
 
         public List<DealMilestone> GetAll()
         {
             return Query(CRMDbContext.DealMilestones)
+                    .OrderBy(x => x.SortOrder)
                     .ToList()
                     .ConvertAll(ToDealMilestone);
         }

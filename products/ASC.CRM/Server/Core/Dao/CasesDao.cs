@@ -34,37 +34,41 @@ using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
+using Microsoft.EntityFrameworkCore;
+using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 
 namespace ASC.CRM.Core.Dao
 {
     public class CachedCasesDao : CasesDao
     {
-        private readonly HttpRequestDictionary<Cases> _casesCache = new HttpRequestDictionary<Cases>("crm_cases");
+        private readonly HttpRequestDictionary<Cases> _casesCache;
 
         public CachedCasesDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
             CRMSecurity cRMSecurity,
             TenantUtil tenantUtil,
-            FilesIntegration filesIntegration
-            ) :
+            FilesIntegration filesIntegration,
+            AuthorizationManager authorizationManager,
+            IHttpContextAccessor httpContextAccessor)
+            :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
                  cRMSecurity,
                  tenantUtil,
-                 filesIntegration)
+                 filesIntegration,
+                 authorizationManager)
 
         {
-
-            
-
+            _casesCache = new HttpRequestDictionary<Cases>(httpContextAccessor?.HttpContext, "crm_cases");
         }
 
         public override Cases GetByID(int caseID)
@@ -176,7 +180,7 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandAccessTo(cases);
 
-            CRMDbContext.Cases.Update(new DbCase
+            var itemToUpdate = new DbCase
             {
                 Id = cases.ID,
                 CreateBy = cases.CreateBy,
@@ -186,7 +190,9 @@ namespace ASC.CRM.Core.Dao
                 LastModifedOn = cases.LastModifedOn,
                 TenantId = TenantID,
                 Title = cases.Title
-            });
+            };
+
+            CRMDbContext.Cases.Update(itemToUpdate);
 
             CRMDbContext.SaveChanges();
 
@@ -281,6 +287,7 @@ namespace ASC.CRM.Core.Dao
             if (casesID <= 0) return null;
 
             var cases = GetByID(casesID);
+
             if (cases == null) return null;
 
             CRMSecurity.DemandDelete(cases);
@@ -295,6 +302,7 @@ namespace ASC.CRM.Core.Dao
         public virtual List<Cases> DeleteBatchCases(List<Cases> caseses)
         {
             caseses = caseses.FindAll(CRMSecurity.CanDelete).ToList();
+            
             if (!caseses.Any()) return caseses;
 
             // Delete relative  keys
@@ -310,6 +318,7 @@ namespace ASC.CRM.Core.Dao
             if (casesID == null || !casesID.Any()) return null;
 
             var cases = GetCases(casesID).FindAll(CRMSecurity.CanDelete).ToList();
+            
             if (!cases.Any()) return cases;
 
             // Delete relative  keys
@@ -324,21 +333,33 @@ namespace ASC.CRM.Core.Dao
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
-            var tagdao = FilesIntegration.GetTagDao();
+            var tagdao = FilesIntegration.TagDao();
 
-            var tagNames = Db.ExecuteList(Query("crm_relationship_event").Select("id")
-                .Where(Exp.Eq("have_files", true) & Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)))
-                .Select(row => String.Format("RelationshipEvent_{0}", row[0])).ToArray();
-
+            var tagNames = Query(CRMDbContext.RelationshipEvent)
+                            .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
+                            .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
+            
             var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
 
             using var tx = CRMDbContext.Database.BeginTransaction();
 
-            Db.ExecuteNonQuery(Delete("crm_field_value").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-            Db.ExecuteNonQuery(Delete("crm_relationship_event").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-            Db.ExecuteNonQuery(Delete("crm_task").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-            Db.ExecuteNonQuery(new SqlDelete("crm_entity_tag").Where(Exp.In("entity_id", casesID) & Exp.Eq("entity_type", (int)EntityType.Case)));
-            Db.ExecuteNonQuery(Delete("crm_case").Where(Exp.In("id", casesID)));
+            CRMDbContext.RemoveRange(Query(CRMDbContext.FieldValue)
+                                     .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+
+            CRMDbContext.RemoveRange(Query(CRMDbContext.RelationshipEvent)
+                                     .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+
+            CRMDbContext.RemoveRange(Query(CRMDbContext.Tasks)
+                                    .Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+
+            CRMDbContext.RemoveRange(CRMDbContext.EntityTags.Where(x => casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case));
+
+            CRMDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
+            {
+                 Id = x.ID
+            }));
+
+            CRMDbContext.SaveChanges();
 
             tx.Commit();
 
@@ -403,12 +424,16 @@ namespace ASC.CRM.Core.Dao
 
             if (withParams)
             {
-                var whereConditional = WhereConditional(exceptIDs, searchText, contactID, isClosed, tags);
-                result = whereConditional != null ? Db.ExecuteScalar<int>(Query("crm_case").Where(whereConditional).SelectCount()) : 0;
+                var dbCasesQuery = GetDbCasesByFilters(exceptIDs, searchText, contactID, isClosed, tags);
+                                               
+                result = dbCasesQuery != null ? dbCasesQuery.Count() : 0;
+            
             }
             else
             {
-                var countWithoutPrivate = Db.ExecuteScalar<int>(Query("crm_case").SelectCount());
+
+                var countWithoutPrivate = Query(CRMDbContext.Cases).Count();
+                
                 var privateCount = exceptIDs.Count;
 
                 if (privateCount > countWithoutPrivate)
@@ -428,11 +453,13 @@ namespace ASC.CRM.Core.Dao
             {
                 _cache.Insert(cacheKey, result, TimeSpan.FromSeconds(30));
             }
+
             return result;
+        
         }
 
 
-        private Exp WhereConditional(
+        private IQueryable<DbCase> GetDbCasesByFilters(
                                 ICollection<int> exceptIDs,
                                 String searchText,
                                 int contactID,
@@ -440,7 +467,7 @@ namespace ASC.CRM.Core.Dao
                                 IEnumerable<String> tags)
         {
 
-            var conditions = new List<Exp>();
+            var result = Query(CRMDbContext.Cases);
 
             var ids = new List<int>();
 
@@ -455,32 +482,35 @@ namespace ASC.CRM.Core.Dao
                 {
                     if (!BundleSearch.TrySelectCase(searchText, out ids))
                     {
-                        conditions.Add(BuildLike(new[] { "title" }, keywords));
+                        foreach(var k in keywords)
+                        { 
+                            result = result.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k));
+                        }
                     }
                     else if (!ids.Any())
                     {
                         return null;
-
                     }
                 }
             }
 
             if (contactID > 0)
             {
-
-                var sqlQuery = new SqlQuery("crm_entity_contact")
-                    .Select("entity_id")
-                    .Where(Exp.Eq("contact_id", contactID) & Exp.Eq("entity_type", (int)EntityType.Case));
-
+                var sqlQuery = CRMDbContext.EntityContact
+                    .Where(x => x.ContactId == contactID && x.EntityType == EntityType.Case);
+                
                 if (ids.Count > 0)
-                    sqlQuery.Where(Exp.In("entity_id", ids));
+                    sqlQuery = sqlQuery.Where(x => ids.Contains(x.EntityId));
 
-                ids = Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList();
+                ids = sqlQuery.Select(x => x.EntityId).ToList();
+                
                 if (ids.Count == 0) return null;
             }
 
             if (isClosed.HasValue)
-                conditions.Add(Exp.Eq("is_closed", isClosed));
+            {
+                result = result.Where(x => x.IsClosed == isClosed);
+            }
 
             if (tags != null && tags.Any())
             {
@@ -498,27 +528,26 @@ namespace ASC.CRM.Core.Dao
                     if (ids.Count == 0) return null;
                 }
 
-                conditions.Add(Exp.In("id", ids));
+                result = result.Where(x => ids.Contains(x.Id));
 
             }
             else if (exceptIDs.Count > 0)
             {
-                conditions.Add(!Exp.In("id", exceptIDs.ToArray()));
+                result = result.Where(x => !exceptIDs.Contains(x.Id));
             }
 
-            if (conditions.Count == 0) return null;
-
-            return conditions.Count == 1 ? conditions[0] : conditions.Aggregate((i, j) => i & j);
+            return result;
         }
 
         public List<Cases> GetCases(IEnumerable<int> casesID)
         {
-
             if (casesID == null || !casesID.Any()) return new List<Cases>();
 
-            var sqlQuery = GetCasesSqlQuery(Exp.In("id", casesID.ToArray()));
-
-            return Db.ExecuteList(sqlQuery).ConvertAll(ToCases).FindAll(CRMSecurity.CanAccessTo);
+            return Query(CRMDbContext.Cases)
+                        .Where(x => casesID.Contains(x.Id))
+                        .ToList()
+                        .ConvertAll(ToCases)
+                        .FindAll(CRMSecurity.CanAccessTo);
         }
 
         public List<Cases> GetCases(
@@ -530,44 +559,33 @@ namespace ASC.CRM.Core.Dao
                                  int count,
                                  OrderBy orderBy)
         {
-            var sqlQuery = GetCasesSqlQuery(null);
-
-            var withParams = !(String.IsNullOrEmpty(searchText) &&
-                          contactID <= 0 &&
-                          isClosed == null &&
-                          (tags == null || !tags.Any()));
-
-            var whereConditional = WhereConditional(CRMSecurity.GetPrivateItems(typeof(Cases)).ToList(), searchText,
+            var dbCasesQuery = GetDbCasesByFilters(CRMSecurity.GetPrivateItems(typeof(Cases)).ToList(), searchText,
                                                     contactID, isClosed,
                                                     tags);
 
-            if (withParams && whereConditional == null)
-                return new List<Cases>();
+            if (dbCasesQuery == null) return new List<Cases>();
 
-            sqlQuery.Where(whereConditional);
+            if (0 < from && from < int.MaxValue) dbCasesQuery.Skip(from);
+            if (0 < count && count < int.MaxValue) dbCasesQuery.Take(count);
 
-            if (0 < from && from < int.MaxValue) sqlQuery.SetFirstResult(from);
-            if (0 < count && count < int.MaxValue) sqlQuery.SetMaxResults(count);
+            dbCasesQuery = dbCasesQuery.OrderBy(x => x.IsClosed);
 
-            sqlQuery.OrderBy("is_closed", true);
-
-
-            if (orderBy != null && Enum.IsDefined(typeof(SortedByType), orderBy.SortedBy))
+            if (orderBy != null && Enum.IsDefined(typeof(Enums.SortedByType), orderBy.SortedBy))
                 switch ((SortedByType)orderBy.SortedBy)
                 {
                     case SortedByType.Title:
-                        sqlQuery.OrderBy("title", orderBy.IsAsc);
+                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.Title);
                         break;
                     case SortedByType.CreateBy:
-                        sqlQuery.OrderBy("create_by", orderBy.IsAsc);
+                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.CreateBy);
                         break;
                     case SortedByType.DateAndTime:
-                        sqlQuery.OrderBy("create_on", orderBy.IsAsc);
+                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.CreateOn);
                         break;
                 }
 
 
-            return Db.ExecuteList(sqlQuery).ConvertAll(ToCases);
+            return dbCasesQuery.ToList().ConvertAll(ToCases);
         }
 
         public List<Cases> GetCasesByPrefix(String prefix, int from, int count)
@@ -579,26 +597,28 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            var q = GetCasesSqlQuery(null);
-
+            var q = Query(CRMDbContext.Cases); 
+          
             if (keywords.Length == 1)
             {
-                q.Where(Exp.Like("title", keywords[0]));
+                q = q.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, keywords[0]));
             }
             else
             {
                 foreach (var k in keywords)
                 {
-                    q.Where(Exp.Like("title", k));
+                    q = q.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k));
                 }
             }
+            
+            if (0 < from && from < int.MaxValue) q = q.Skip(from);
+            if (0 < count && count < int.MaxValue) q = q.Take(count);
 
-            if (0 < from && from < int.MaxValue) q.SetFirstResult(from);
-            if (0 < count && count < int.MaxValue) q.SetMaxResults(count);
-
-            var sqlResult = Db.ExecuteList(q).ConvertAll(row => ToCases(row)).FindAll(CRMSecurity.CanAccessTo);
-            return sqlResult.OrderBy(cases => cases.Title).ToList();
+            q = q.OrderBy(x => x.Title);
+                       
+            return q.ToList().ConvertAll(ToCases).FindAll(CRMSecurity.CanAccessTo);
         }
+
 
         public virtual List<Cases> GetByID(int[] ids)
         {
@@ -619,30 +639,18 @@ namespace ASC.CRM.Core.Dao
 
         private Cases ToCases(DbCase dbCase)
         {
+            if (dbCase == null) return null;
+
             return new Cases
             {
                 ID = dbCase.Id,
                 Title = dbCase.Title,
                 CreateBy = dbCase.CreateBy,
-                CreateOn = dbCase.CreateOn,
+                CreateOn = TenantUtil.DateTimeFromUtc(dbCase.CreateOn),
                 IsClosed = dbCase.IsClosed,
                 LastModifedBy = dbCase.LastModifedBy,
                 LastModifedOn = dbCase.LastModifedOn
             };
-        }
-
-        private SqlQuery GetCasesSqlQuery(Exp where)
-        {
-
-            var sqlQuery = Query("crm_case")
-                .Select("id", "title", "create_by", "create_on", "is_closed");
-
-            if (where != null)
-            {
-                sqlQuery.Where(where);
-            }
-
-            return sqlQuery;
         }
 
         public void ReassignCasesResponsible(Guid fromUserId, Guid toUserId)

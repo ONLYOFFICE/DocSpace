@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ASC.CRM.Core.Enums;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_contact_info")]
-    public partial class DbContactInfo
+    public partial class DbContactInfo : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(10)")]
@@ -22,19 +23,19 @@ namespace ASC.CRM.Core.EF
         public int TenantId { get; set; }
         
         [Column("is_primary", TypeName = "tinyint(4)")]
-        public sbyte IsPrimary { get; set; }
+        public bool IsPrimary { get; set; }
         
         [Column("contact_id", TypeName = "int(11)")]
         public int ContactId { get; set; }
         
         [Column("type", TypeName = "int(255)")]
-        public int Type { get; set; }
+        public ContactInfoType Type { get; set; }
         
         [Column("last_modifed_on", TypeName = "datetime")]
         public DateTime? LastModifedOn { get; set; }
         
         [Column("last_modifed_by", TypeName = "char(38)")]
-        public string LastModifedBy { get; set; }
+        public Guid LastModifedBy { get; set; }
 
     }
 }

@@ -34,6 +34,7 @@ using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,17 +48,19 @@ namespace ASC.CRM.Core.Dao
 {
     public class CachedInvoiceDao : InvoiceDao
     {
-        private readonly HttpRequestDictionary<Invoice> _invoiceCache = new HttpRequestDictionary<Invoice>("crm_invoice");
+        private readonly HttpRequestDictionary<Invoice> _invoiceCache;
 
         public CachedInvoiceDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            FactoryIndexer<InvoicesWrapper> factoryIndexer)
+            FactoryIndexer<InvoicesWrapper> factoryIndexer,
+            IHttpContextAccessor httpContextAccessor)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  factoryIndexer)
         {
+            _invoiceCache = new HttpRequestDictionary<Invoice>(httpContextAccessor?.HttpContext, "crm_invoice");
         }
 
         public override Invoice GetByID(int invoiceID)

@@ -35,6 +35,7 @@ using ASC.CRM.Resources;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
+using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core;
 using Autofac;
 using System;

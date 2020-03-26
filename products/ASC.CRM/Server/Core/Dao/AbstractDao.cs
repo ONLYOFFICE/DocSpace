@@ -95,7 +95,7 @@ namespace ASC.CRM.Core.Dao
 
         protected int TenantID { get; private set; }
 
-        protected List<int> SearchByTags(EntityType entityType, int[] exceptIDs, IEnumerable<String> tags)
+        protected List<int> SearchByTags(EntityType entityType, int[] exceptIDs, IEnumerable<string> tags)
         {
             if (tags == null || !tags.Any())
                 throw new ArgumentException();
@@ -108,35 +108,16 @@ namespace ASC.CRM.Core.Dao
                     .Where(x => x.EntityType == entityType && String.Compare(x.Title, tag.Trim(), true) == 0)
                     .Select(x => x.Id).Single());
             }
-
-            Expression<Func<DbEntityTag, bool>> exp = null;
+            
+            var sqlQuery = CRMDbContext.EntityTags.Where(x => x.EntityType == entityType && tagIDs.Contains(x.TagId));
 
             if (exceptIDs != null && exceptIDs.Length > 0)
-                exp = x => exceptIDs.Contains(x.EntityId) && x.EntityType == entityType;
-            else
-                exp = x => x.EntityType == entityType;
-            
-                                                         
-            throw new NotImplementedException();
-
-            // exp.Update() Exp.In("tag_id", tagIDs)
-            // return CRMDbContext.CrmEntityTag.Where(exp).GroupBy(x => x.EntityId).Select(x=>)
-            // .Where(x => true).Select(x=>x); 
-
-            //var sqlQuery = new SqlQuery("crm_entity_tag")
-            //    .Select("entity_id")
-            //    .Select("count(*) as count")
-            //    .GroupBy("entity_id")
-            //    .Having(Exp.Eq("count", tags.Count()));
-
-            //if (exceptIDs != null && exceptIDs.Length > 0)
-            //    sqlQuery.Where(Exp.In("entity_id", exceptIDs) & Exp.Eq("entity_type", (int)entityType));
-            //else
-            //    sqlQuery.Where(Exp.Eq("entity_type", (int)entityType));
-
-            //sqlQuery.Where(Exp.In("tag_id", tagIDs));
-
-            //return Db.ExecuteList(sqlQuery).ConvertAll(row => Convert.ToInt32(row[0]));
+                sqlQuery = sqlQuery.Where(x => exceptIDs.Contains(x.EntityId));
+                        
+            return sqlQuery.GroupBy(x => x.EntityId)
+                           .Where(x => x.Count() == tags.Count())
+                           .Select(x => x.Key)
+                           .ToList();
         }
 
         protected Dictionary<int, int[]> GetRelativeToEntity(int[] contactID, EntityType entityType, int[] entityID)
@@ -144,9 +125,9 @@ namespace ASC.CRM.Core.Dao
             Expression<Func<DbEntityContact, bool>> exp = null;
 
             if (contactID != null && contactID.Length > 0 && (entityID == null || entityID.Length == 0))
-                exp = x => x.EntityType == (int)entityType && contactID.Contains(x.ContactId);
+                exp = x => x.EntityType == entityType && contactID.Contains(x.ContactId);
             else if (entityID != null && entityID.Length > 0 && (contactID == null || contactID.Length == 0))
-                exp = x => x.EntityType == (int)entityType && entityID.Contains(x.EntityId);
+                exp = x => x.EntityType == entityType && entityID.Contains(x.EntityId);
             
             return CRMDbContext.EntityContact.Where(exp).GroupBy(x => x.EntityId).ToDictionary(
                     x => x.Key,
@@ -162,13 +143,13 @@ namespace ASC.CRM.Core.Dao
         {
             if (contactID.HasValue && !entityID.HasValue)
                 return CRMDbContext.EntityContact
-                       .Where(x => x.EntityType == (int)entityType && x.ContactId == contactID.Value)
+                       .Where(x => x.EntityType == entityType && x.ContactId == contactID.Value)
                        .Select(x => x.EntityId)
                        .ToArray();
 
             if (!contactID.HasValue && entityID.HasValue)
                 return CRMDbContext.EntityContact
-                       .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID.Value)
+                       .Where(x => x.EntityType == entityType && x.EntityId == entityID.Value)
                        .Select(x => x.ContactId)
                        .ToArray();
 
@@ -183,14 +164,14 @@ namespace ASC.CRM.Core.Dao
             using var tx = CRMDbContext.Database.BeginTransaction();
 
             var exists = CRMDbContext.EntityContact
-                                    .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID)
+                                    .Where(x => x.EntityType == entityType && x.EntityId == entityID)
                                     .Select(x => x.ContactId)
                                     .ToArray();
 
             foreach (var existContact in exists)
             {
                 var items = CRMDbContext.EntityContact
-                                        .Where(x => x.EntityType == (int)entityType && x.EntityId == entityID && x.ContactId == existContact);
+                                        .Where(x => x.EntityType == entityType && x.EntityId == entityID && x.ContactId == existContact);
 
                 CRMDbContext.EntityContact.RemoveRange(items);
             }
@@ -207,7 +188,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.EntityContact.Add(new DbEntityContact
             {
                 ContactId = contactID,
-                EntityType = (int)entityType,
+                EntityType = entityType,
                 EntityId = entityID
             });
 
@@ -225,7 +206,7 @@ namespace ASC.CRM.Core.Dao
                 expr = x => contactID.Contains(x.ContactId);
 
             if (entityID != null && entityID.Length > 0)
-                expr = x => entityID.Contains(x.EntityId) && x.EntityType == (int)entityType;
+                expr = x => entityID.Contains(x.EntityId) && x.EntityType == entityType;
 
             var dbCrmEntity = CRMDbContext.EntityContact;
 
@@ -268,28 +249,22 @@ namespace ASC.CRM.Core.Dao
         }
 
         public string GetOrganisationLogoBase64(int logo_id)
-        {
-           
+        {           
             if (logo_id <= 0) throw new ArgumentException();
-
-
-            return CRMDbContext.OrganisationLogo
+            
+            return Query(CRMDbContext.OrganisationLogo)
                                 .Where(x => x.Id == logo_id)
                                 .Select(x => x.Content)
                                 .FirstOrDefault();
         }
 
-
-        #region HasCRMActivity
-
         public bool HasActivity()
         {
-            return Db.ExecuteScalar<bool>(@"select exists(select 1 from crm_case where tenant_id = @tid) or " +
-                "exists(select 1 from crm_deal where tenant_id = @tid) or exists(select 1 from crm_task where tenant_id = @tid) or " +
-                "exists(select 1 from crm_contact where tenant_id = @tid)", new { tid = TenantID });
+            return Query(CRMDbContext.Cases).Any() &&
+                   Query(CRMDbContext.Deals).Any() &&
+                   Query(CRMDbContext.Tasks).Any() &&
+                   Query(CRMDbContext.Contacts).Any();
         }
-
-        #endregion
 
         protected IQueryable<T> Query<T>(DbSet<T> set) where T : class, IDbCrm
         {
@@ -305,13 +280,11 @@ namespace ASC.CRM.Core.Dao
             return table.Substring(table.IndexOf(" ")).Trim() + "." + tenant;        
         }
 
-
         protected static Guid ToGuid(object guid)
         {
             var str = guid as string;
             
             return !string.IsNullOrEmpty(str) ? new Guid(str) : Guid.Empty;        
         }
-
     }
 }

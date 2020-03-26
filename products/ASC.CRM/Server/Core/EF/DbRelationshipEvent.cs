@@ -44,6 +44,6 @@ namespace ASC.CRM.Core.EF
         public DateTime? LastModifedOn { get; set; }
         
         [Column("have_files", TypeName = "int(11)")]
-        public int HaveFiles { get; set; }
+        public bool HaveFiles { get; set; }
     }
 }

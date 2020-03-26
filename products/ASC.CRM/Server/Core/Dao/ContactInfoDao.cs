@@ -23,34 +23,39 @@
  *
 */
 
-
-#region Import
-
+using ASC.Collections;
+using ASC.Core;
+using ASC.Core.Common.EF;
+using ASC.Core.Tenants;
+using ASC.CRM.Core.EF;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.ElasticSearch;
+using ASC.Web.CRM.Core.Search;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Collections;
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.Core.Tenants;
-using ASC.Common.Data;
-using ASC.CRM.Core.Entities;
-using ASC.ElasticSearch;
-using ASC.Web.CRM.Core.Search;
-using ASC.CRM.Core.Enums;
-
-#endregion
 
 namespace ASC.CRM.Core.Dao
 {
     public class CachedContactInfo : ContactInfoDao
     {
-        private readonly HttpRequestDictionary<ContactInfo> _contactInfoCache = new HttpRequestDictionary<ContactInfo>("crm_contact_info");
+        private readonly HttpRequestDictionary<ContactInfo> _contactInfoCache;
 
-        public CachedContactInfo(int tenantID)
-            : base(tenantID)
+        public CachedContactInfo(
+             DbContextManager<CRMDbContext> dbContextManager,
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             TenantUtil tenantUtil,
+             IHttpContextAccessor httpContextAccessor)
+            : base(
+                dbContextManager,
+                tenantManager,
+                securityContext, 
+                tenantUtil)
         {
-
+            _contactInfoCache = new HttpRequestDictionary<ContactInfo>(httpContextAccessor?.HttpContext, "crm_contact_info");
         }
 
         public override ContactInfo GetByID(int id)
@@ -94,35 +99,56 @@ namespace ASC.CRM.Core.Dao
 
     public class ContactInfoDao : AbstractDao
     {     
-        public ContactInfoDao(int tenantID)
-            : base(tenantID)
+        public ContactInfoDao(
+             DbContextManager<CRMDbContext> dbContextManager,
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             TenantUtil tenantUtil)
+           : base(dbContextManager,
+                 tenantManager,
+                 securityContext)
         {
-
+            TenantUtil = tenantUtil;
         }
 
+        TenantUtil TenantUtil { get; }
+        FactoryIndexer<EmailWrapper> emailWrapperIndexer;
+        FactoryIndexer<InfoWrapper> infoWrapperIndexer;
+               
         public virtual ContactInfo GetByID(int id)
         {
-            var sqlResult = Db.ExecuteList(GetSqlQuery(Exp.Eq("id", id))).ConvertAll(row => ToContactInfo(row));
-
-            if (sqlResult.Count == 0) return null;
-
-            return sqlResult[0];
+            return ToContactInfo(CRMDbContext.ContactsInfo.SingleOrDefault(x => x.Id == id));
         }
 
         public virtual void Delete(int id)
         {
-            Db.ExecuteNonQuery(Delete("crm_contact_info").Where(Exp.Eq("id", id)));
-            FactoryIndexer<InfoWrapper>.DeleteAsync(r => r.Where(a => a.Id, id));
+            var itemToDelete = new DbContactInfo
+            {
+                Id = id
+            };
+
+            CRMDbContext.ContactsInfo.Remove(itemToDelete);
+            CRMDbContext.SaveChanges();
+            
+            infoWrapperIndexer.DeleteAsync(r => r.Where(a => a.Id, id));
+        
         }
 
         public virtual void DeleteByContact(int contactID)
         {
             if (contactID <= 0) return;
-            Db.ExecuteNonQuery(Delete("crm_contact_info").Where(Exp.Eq("contact_id", contactID)));
-            FactoryIndexer<InfoWrapper>.DeleteAsync(r => r.Where(a => a.ContactId, contactID));
+                        
+            CRMDbContext.RemoveRange(Query(CRMDbContext.ContactsInfo)
+                                        .Where(x => x.ContactId == contactID));
+
+            CRMDbContext.SaveChanges();
+                        
+            infoWrapperIndexer.DeleteAsync(r => r.Where(a => a.ContactId, contactID));
 
             var infos = GetList(contactID, ContactInfoType.Email, null, null);
-            FactoryIndexer<EmailWrapper>.Update(new EmailWrapper { Id = contactID, EmailInfoWrapper = infos.Select(r => (EmailInfoWrapper)r).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
+         
+            emailWrapperIndexer.Update(new EmailWrapper { Id = contactID, EmailInfoWrapper = infos.Select(r => (EmailInfoWrapper)r).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
+        
         }
 
         public virtual int Update(ContactInfo contactInfo)
@@ -133,10 +159,10 @@ namespace ASC.CRM.Core.Dao
             {
                 var infos = GetList(contactInfo.ContactID, ContactInfoType.Email, null, null);
 
-                FactoryIndexer<EmailWrapper>.Update(new EmailWrapper { Id = contactInfo.ContactID, EmailInfoWrapper = infos.Select(r => (EmailInfoWrapper)r).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
+                emailWrapperIndexer.Update(new EmailWrapper { Id = contactInfo.ContactID, EmailInfoWrapper = infos.Select(r => (EmailInfoWrapper)r).ToList() }, UpdateAction.Replace, r => r.EmailInfoWrapper);
             }
 
-            FactoryIndexer<InfoWrapper>.UpdateAsync(contactInfo);
+            infoWrapperIndexer.UpdateAsync(contactInfo);
 
             return result;
         }
@@ -146,16 +172,23 @@ namespace ASC.CRM.Core.Dao
             if (contactInfo == null || contactInfo.ID == 0 || contactInfo.ContactID == 0)
                 throw new ArgumentException();
 
-            Db.ExecuteNonQuery(Update("crm_contact_info")
-                                              .Where("id", contactInfo.ID)
-                                              .Set("data", contactInfo.Data)
-                                              .Set("category", contactInfo.Category)
-                                              .Set("is_primary", contactInfo.IsPrimary)
-                                              .Set("contact_id", contactInfo.ContactID)
-                                              .Set("type", (int)contactInfo.InfoType)
-                                              .Set("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                                              .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                                               );
+            var itemToUpdate = new DbContactInfo
+            {
+                Id = contactInfo.ID,
+                Data = contactInfo.Data,
+                Category = contactInfo.Category,
+                IsPrimary = contactInfo.IsPrimary,
+                ContactId = contactInfo.ContactID,
+                Type = contactInfo.InfoType,
+                LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                LastModifedBy = SecurityContext.CurrentAccount.ID,
+                TenantId = TenantID                
+            };
+
+            CRMDbContext.ContactsInfo.Update(itemToUpdate);
+
+            CRMDbContext.SaveChanges();
+                                                      
             return contactInfo.ID;
         }
 
@@ -166,11 +199,11 @@ namespace ASC.CRM.Core.Dao
 
             contactInfo.ID = id;
 
-            FactoryIndexer<InfoWrapper>.IndexAsync(contactInfo);
+            infoWrapperIndexer.IndexAsync(contactInfo);
 
             if (contactInfo.InfoType == ContactInfoType.Email)
             {
-                FactoryIndexer<EmailWrapper>.Index(new EmailWrapper
+                emailWrapperIndexer.Index(new EmailWrapper
                 {
                     Id = contactInfo.ContactID, 
                     TenantId = TenantID, 
@@ -186,16 +219,25 @@ namespace ASC.CRM.Core.Dao
 
         private int SaveInDb(ContactInfo contactInfo)
         {
-            return Db.ExecuteScalar<int>(Insert("crm_contact_info")
-                                                               .InColumnValue("id", 0)
-                                                               .InColumnValue("data", contactInfo.Data)
-                                                               .InColumnValue("category", contactInfo.Category)
-                                                               .InColumnValue("is_primary", contactInfo.IsPrimary)
-                                                               .InColumnValue("contact_id", contactInfo.ContactID)
-                                                               .InColumnValue("type", (int)contactInfo.InfoType)
-                                                               .InColumnValue("last_modifed_on", TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()))
-                                                               .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                                                               .Identity(1, 0, true));
+            var itemToInsert = new DbContactInfo
+            {
+                 Data = contactInfo.Data,
+                 Category = contactInfo.Category,
+                 IsPrimary = contactInfo.IsPrimary,
+                 ContactId = contactInfo.ContactID,
+                 Type = contactInfo.InfoType,
+                 LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow()),
+                 LastModifedBy = SecurityContext.CurrentAccount.ID,
+                 TenantId = TenantID
+
+            };
+
+            CRMDbContext.Add(itemToInsert);
+                                   
+            CRMDbContext.SaveChanges();
+
+            return itemToInsert.Id;
+
         }
 
         public List<String> GetListData(int contactID, ContactInfoType infoType)
@@ -210,131 +252,105 @@ namespace ASC.CRM.Core.Dao
 
         public List<ContactInfo> GetAll(int[] contactID)
         {
-
             if (contactID == null || contactID.Length == 0) return null;
 
-            SqlQuery sqlQuery = GetSqlQuery(null);
-
-            sqlQuery.Where(Exp.In("contact_id", contactID));
-
-            return Db.ExecuteList(sqlQuery).ConvertAll(row => ToContactInfo(row));
+            return Query(CRMDbContext.ContactsInfo)
+                .Where(x => contactID.Contains(x.ContactId))
+                .ToList().ConvertAll(ToContactInfo);         
         }
 
         public virtual List<ContactInfo> GetList(int contactID, ContactInfoType? infoType, int? categoryID, bool? isPrimary)
         {
-            SqlQuery sqlQuery = GetSqlQuery(null);
+            var items = Query(CRMDbContext.ContactsInfo);
 
             if (contactID > 0)
-                sqlQuery.Where(Exp.Eq("contact_id", contactID));
+                items = items.Where(x => x.ContactId == contactID);
 
             if (infoType.HasValue)
-                sqlQuery.Where(Exp.Eq("type", infoType.Value));
+                items =  items.Where(x => x.Type == infoType.Value);
 
             if (categoryID.HasValue)
-                sqlQuery.Where(Exp.Eq("category", categoryID.Value));
+                items =  items.Where(x => x.Category == categoryID.Value);
 
             if (isPrimary.HasValue)
-                sqlQuery.Where(Exp.Eq("is_primary", isPrimary.Value));
+                items = items.Where(x => x.IsPrimary == isPrimary.Value);
 
-            sqlQuery.OrderBy("type", true);
-            // sqlQuery.OrderBy("category", true);
-            //  sqlQuery.OrderBy("is_primary", true);
+            items = items.OrderBy(x => x.Type);
 
-
-            return Db.ExecuteList(sqlQuery).ConvertAll(row => ToContactInfo(row));
+            return items.ToList().ConvertAll(row => ToContactInfo(row));
         }
 
 
         public int[] UpdateList(List<ContactInfo> items, Contact contact = null)
         {
-
             if (items == null || items.Count == 0) return null;
 
             var result = new List<int>();
 
-            using (var tx = Db.BeginTransaction(true))
-            {
-                foreach (var contactInfo in items)
-                    result.Add(UpdateInDb(contactInfo));
-
-
-                tx.Commit();
-            }
-
+            var tx = CRMDbContext.Database.BeginTransaction();
+            
+            foreach (var contactInfo in items)
+                result.Add(UpdateInDb(contactInfo));
+            
+            tx.Commit();
+            
             if (contact != null)
             {
-                FactoryIndexer<EmailWrapper>.IndexAsync(EmailWrapper.ToEmailWrapper(contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
+                emailWrapperIndexer.IndexAsync(EmailWrapper.ToEmailWrapper(contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
+                
                 foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
                 {
-                    FactoryIndexer<InfoWrapper>.IndexAsync(item);
+                    infoWrapperIndexer.IndexAsync(item);
                 }
             }
 
             return result.ToArray();
         }
-
-
-
 
         public int[] SaveList(List<ContactInfo> items, Contact contact = null)
         {
             if (items == null || items.Count == 0) return null;
 
             var result = new List<int>();
+                       
+            var tx = CRMDbContext.Database.BeginTransaction();
 
-            using (var tx = Db.BeginTransaction(true))
+            foreach (var contactInfo in items)
             {
-                foreach (var contactInfo in items)
-                {
-                    var contactInfoId = SaveInDb(contactInfo);
-                    contactInfo.ID = contactInfoId;
-                    result.Add(contactInfoId);
-                }
-
-
-                tx.Commit();
+                var contactInfoId = SaveInDb(contactInfo);
+                contactInfo.ID = contactInfoId;
+                result.Add(contactInfoId);
             }
 
+            tx.Commit();
+            
             if (contact != null)
             {
-                FactoryIndexer<EmailWrapper>.IndexAsync(EmailWrapper.ToEmailWrapper(contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
+                emailWrapperIndexer.IndexAsync(EmailWrapper.ToEmailWrapper(contact, items.Where(r => r.InfoType == ContactInfoType.Email).ToList()));
+            
                 foreach (var item in items.Where(r => r.InfoType != ContactInfoType.Email))
                 {
-                    FactoryIndexer<InfoWrapper>.IndexAsync(item);
+                    infoWrapperIndexer.IndexAsync(item);
                 }
+            
             }
 
             return result.ToArray();
         }
 
-        protected static ContactInfo ToContactInfo(object[] row)
+        protected static ContactInfo ToContactInfo(DbContactInfo dbContactInfo)
         {
+            if (dbContactInfo == null) return null;
+
             return new ContactInfo
                        {
-                           ID = Convert.ToInt32(row[0]),
-                           Category = Convert.ToInt32(row[1]),
-                           Data = row[2].ToString(),
-                           InfoType = (ContactInfoType)Convert.ToInt32(row[3]),
-                           IsPrimary = Convert.ToBoolean(row[4]),
-                           ContactID = Convert.ToInt32(row[5])
+                             ID = dbContactInfo.Id,
+                             Category = dbContactInfo.Category,
+                             ContactID = dbContactInfo.ContactId,
+                             Data = dbContactInfo.Data,
+                             InfoType = dbContactInfo.Type,
+                             IsPrimary = dbContactInfo.IsPrimary                              
                        };
-        }
-
-        private SqlQuery GetSqlQuery(Exp where)
-        {
-            var sqlQuery = Query("crm_contact_info")
-                .Select("id",
-                        "category",
-                        "data",
-                        "type",
-                        "is_primary",
-                        "contact_id");
-
-            if (where != null)
-                sqlQuery.Where(where);
-
-            return sqlQuery;
-
         }
     }
 }

@@ -98,9 +98,7 @@ namespace ASC.CRM.Core.Dao
     }
 
     public class DealDao : AbstractDao
-    {
-        #region Constructor
-
+    {     
         public DealDao(DbContextManager<CRMDbContext> dbContextManager,
                        TenantManager tenantManager,
                        SecurityContext securityContext,
@@ -121,10 +119,7 @@ namespace ASC.CRM.Core.Dao
 
         public AuthorizationManager AuthorizationManager { get; }
 
-        #endregion
-
-        #region Methods
-
+        
         public void AddMember(int dealID, int memberID)
         {
             SetRelative(memberID, EntityType.Opportunity, dealID);

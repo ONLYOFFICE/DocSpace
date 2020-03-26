@@ -47,7 +47,7 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            TenantUtil tenantUtil       
+            TenantUtil tenantUtil
             ) :
               base(dbContextManager,
                  tenantManager,
@@ -90,7 +90,7 @@ namespace ASC.CRM.Core.Dao
                 throw new ArgumentException();
 
             fieldValue = fieldValue.Trim();
-            
+
             var itemToDelete = Query(CRMDbContext.FieldValue)
                 .Where(x => x.EntityId == entityID && x.EntityType == entityType && x.FieldId == fieldID);
 
@@ -100,17 +100,22 @@ namespace ASC.CRM.Core.Dao
             if (!String.IsNullOrEmpty(fieldValue))
             {
                 var lastModifiedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
-                                
-                var id = Db.ExecuteScalar<int>(
-                        Insert("crm_field_value")
-                        .InColumnValue("id", 0)
-                        .InColumnValue("entity_id", entityID)
-                        .InColumnValue("value", fieldValue)
-                        .InColumnValue("field_id", fieldID)
-                        .InColumnValue("entity_type", (int)entityType)
-                        .InColumnValue("last_modifed_on", lastModifiedOn)
-                        .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                        .Identity(1, 0, true));
+
+                var dbFieldValue = new DbFieldValue
+                {
+                    EntityId = entityID,
+                    Value = fieldValue,
+                    FieldId = fieldID,
+                    EntityType = entityType,
+                    LastModifedOn = lastModifiedOn,
+                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    TenantId = TenantID
+                };
+
+                CRMDbContext.Add(dbFieldValue);
+                CRMDbContext.SaveChanges();
+
+                var id = dbFieldValue.Id;
 
                 FactoryIndexer.IndexAsync(new FieldsWrapper
                 {
@@ -225,14 +230,14 @@ namespace ASC.CRM.Core.Dao
 
             var sortOrder = Query(CRMDbContext.FieldDescription).Select(x => x.SortOrder).Max() + 1;
 
-            var itemToInsert = new DbFieldDescription 
+            var itemToInsert = new DbFieldDescription
             {
-                 Label = label,
-                 Type = customFieldType,
-                 Mask = resultMask,
-                 SortOrder = sortOrder,
-                 EntityType = entityType,
-                 TenantId = TenantID
+                Label = label,
+                Type = customFieldType,
+                Mask = resultMask,
+                SortOrder = sortOrder,
+                EntityType = entityType,
+                TenantId = TenantID
             };
 
             CRMDbContext.FieldDescription.Add(itemToInsert);
@@ -244,32 +249,36 @@ namespace ASC.CRM.Core.Dao
 
         public String GetValue(EntityType entityType, int entityID, int fieldID)
         {
+            var sqlQuery = Query(CRMDbContext.FieldValue).Where(x => x.FieldId == fieldID && x.EntityId == entityID);
 
-            Query(CRMDbContext.FieldValue).Where(x => x.FieldId == fieldID && x.EntityId == entityID);
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType || x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType);
+            }
 
-
-            var sqlQuery = Query("crm_field_value")
-                          .Select("value")
-                          .Where(Exp.Eq("field_id", fieldID)
-                                 & BuildEntityTypeConditions(entityType, "entity_type")
-                                 & Exp.Eq("entity_id", entityID));
-
-            return Db.ExecuteScalar<String>(sqlQuery);
+            return sqlQuery.Select(x => x.Value).FirstOrDefault();
         }
 
         public List<Int32> GetEntityIds(EntityType entityType, int fieldID, String fieldValue)
         {
+            var sqlQuery = Query(CRMDbContext.FieldValue)
+                               .Where(x => x.FieldId == fieldID && String.Compare(x.Value, fieldValue, true) == 0);
 
-            Query(CRMDbContext.FieldValue).Where(x => x.FieldId == fieldID && String.Compare(x.Value, fieldValue, true) == 0);
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType || x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType);
+            }
 
 
-            var sqlQuery = Query("crm_field_value")
-                          .Select("entity_id")
-                          .Where(Exp.Eq("field_id", fieldID)
-                                 & BuildEntityTypeConditions(entityType, "entity_type")
-                                 & Exp.Eq("value", fieldValue));
-
-            return Db.ExecuteList(sqlQuery).ConvertAll(row => Convert.ToInt32(row[0]));
+            return sqlQuery.Select(x => x.EntityId).ToList();
         }
 
         public bool IsExist(int id)
@@ -279,14 +288,23 @@ namespace ASC.CRM.Core.Dao
 
         public int GetFieldId(EntityType entityType, String label, CustomFieldType customFieldType)
         {
-            var result = Db.ExecuteList(GetFieldDescriptionSqlQuery(
-                Exp.Eq("type", (int)customFieldType)
-                & BuildEntityTypeConditions(entityType, "entity_type")
-                & Exp.Eq("label", label))).ConvertAll(row => ToCustomField(row));
+            var sqlQuery = Query(CRMDbContext.FieldDescription).Where(x => x.Type == customFieldType && x.Label == label);
 
-            if (result.Count == 0) return 0;
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType || x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType);
+            }
 
-            else return result[0].ID;
+
+            var result = sqlQuery.FirstOrDefault();
+
+            if (result == null) return 0;
+
+            return result.Id;
         }
 
         public void EditItem(CustomField customField)
@@ -300,12 +318,10 @@ namespace ASC.CRM.Core.Dao
                 {
                     var resultMask = "";
 
-                    var row = Db.ExecuteList(Query("crm_field_description")
-                    .Where(Exp.Eq("id", customField.ID))
-                    .Select("type", "mask")).FirstOrDefault();
+                    var row = Query(CRMDbContext.FieldDescription).Where(x => x.Id == customField.ID).Select(x => new { x.Type, x.Mask }).Single();
 
-                    var fieldType = (CustomFieldType)Convert.ToInt32(row[0]);
-                    var oldMask = Convert.ToString(row[1]);
+                    var fieldType = row.Type;
+                    var oldMask = row.Mask;
 
                     if (fieldType == CustomFieldType.SelectBox)
                     {
@@ -345,23 +361,27 @@ namespace ASC.CRM.Core.Dao
                     throw ex;
                 }
 
-                Db.ExecuteNonQuery(
-                    Update("crm_field_description")
-                    .Set("label", customField.Label)
-                    .Set("mask", customField.Mask)
-                    .Where(Exp.Eq("id", customField.ID)));
+                var itemToUpdate = Query(CRMDbContext.FieldDescription).FirstOrDefault(x => x.Id == customField.ID);
+
+                itemToUpdate.Label = customField.Label;
+                itemToUpdate.Mask = customField.Mask;
+
+                CRMDbContext.Update(itemToUpdate);
+                CRMDbContext.SaveChanges();
+
             }
             else
             {
                 var resultMask = GetValidMask(customField.FieldType, customField.Mask);
-                
-                Db.ExecuteNonQuery(
-                    Update("crm_field_description")
-                    .Set("label", customField.Label)
-                    .Set("type", (int)customField.FieldType)
-                    .Set("mask", resultMask)
-                    .Where(Exp.Eq("id", customField.ID)));
-            
+
+                var itemToUpdate = Query(CRMDbContext.FieldDescription).FirstOrDefault(x => x.Id == customField.ID);
+
+                itemToUpdate.Label = customField.Label;
+                itemToUpdate.Type = customField.FieldType;
+                itemToUpdate.Mask = customField.Mask;
+
+                CRMDbContext.Update(itemToUpdate);
+                CRMDbContext.SaveChanges();
             }
         }
 
@@ -390,17 +410,24 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            var sqlQuery = Query("crm_field_description tblFD")
-                .Select("count(tblFV.field_id)")
-                .LeftOuterJoin("crm_field_value tblFV", Exp.EqColumns("tblFD.id", "tblFV.field_id"))
-                .OrderBy("tblFD.sort_order", true)
-                .GroupBy("tblFD.id");
+            var sqlQuery = Query(CRMDbContext.FieldDescription).GroupJoin(Query(CRMDbContext.FieldValue),
+                                      x => x.Id,
+                                      y => y.FieldId,
+                                      (x, y) => new { x = x, count = y.Count() }
+                                     );
 
-            sqlQuery.Where(BuildEntityTypeConditions(entityType, "tblFD.entity_type"));
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType || x.x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
+            }
 
-            var queryResult = Db.ExecuteList(sqlQuery);
+            sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
 
-            return JsonConvert.SerializeObject(queryResult.ConvertAll(row => row[0]));
+            return JsonConvert.SerializeObject(sqlQuery.Select(x => x.count).ToList());
         }
 
         public int GetContactLinkCount(EntityType entityType, int entityID)
@@ -408,17 +435,25 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            Query();
-                
-            var sqlQuery = Query("crm_field_description tblFD")
-                .Select("count(tblFV.field_id)")
-                .LeftOuterJoin("crm_field_value tblFV", Exp.EqColumns("tblFD.id", "tblFV.field_id"))
-                .Where(Exp.Eq("tblFD.id", entityID))
-                .OrderBy("tblFD.sort_order", true);
+            var sqlQuery = Query(CRMDbContext.FieldDescription).GroupJoin(Query(CRMDbContext.FieldValue),
+                          x => x.Id,
+                          y => y.FieldId,
+                          (x, y) => new { x = x, count = y.Count() }
+                         );
 
-            sqlQuery.Where(BuildEntityTypeConditions(entityType, "tblFD.entity_type"));
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType || x.x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
+            }
 
-            return Db.ExecuteScalar<int>(sqlQuery);
+            sqlQuery = sqlQuery.Where(x => x.x.Id == entityID);
+            sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
+
+            return sqlQuery.Single().count;
         }
 
         public List<CustomField> GetEnityFields(EntityType entityType, int entityID, bool includeEmptyFields)
@@ -434,59 +469,44 @@ namespace ASC.CRM.Core.Dao
         private List<CustomField> GetEnityFields(EntityType entityType, int[] entityID, bool includeEmptyFields)
         {
             // TODO: Refactoring Query!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            SqlQuery sqlQuery = Query("crm_field_description tbl_field")
-                .Select("tbl_field.id",
-                        "tbl_field_value.entity_id",
-                        "tbl_field.label",
-                        "tbl_field_value.value",
-                        "tbl_field.type",
-                        "tbl_field.sort_order",
-                        "tbl_field.mask",
-                        "tbl_field.entity_type");
+            var sqlQuery = Query(CRMDbContext.FieldDescription).GroupJoin(Query(CRMDbContext.FieldValue),
+                                         x => x.Id,
+                                         y => y.FieldId,
+                                         (x, y) => new { x, y }
+                                        ).SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y });
 
-            sqlQuery.Where(BuildEntityTypeConditions(entityType, "tbl_field.entity_type"));
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType || x.x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.x.EntityType == entityType);
+            }
 
             if (entityID != null && entityID.Length > 0)
-                sqlQuery.LeftOuterJoin("crm_field_value tbl_field_value",
-                                   Exp.EqColumns("tbl_field_value.field_id", "tbl_field.id") &
-                                   Exp.In("tbl_field_value.entity_id", entityID))
-                .OrderBy("tbl_field.sort_order", true);
+            {
+                sqlQuery = sqlQuery.Where(x => entityID.Contains(x.y.EntityId));
+                sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
+            }
             else
-                sqlQuery.LeftOuterJoin("crm_field_value tbl_field_value",
-                                      Exp.EqColumns("tbl_field_value.field_id", "tbl_field.id"))
-               .Where(Exp.Eq("tbl_field_value.tenant_id", TenantID))
-               .OrderBy("tbl_field_value.entity_id", true)
-               .OrderBy("tbl_field.sort_order", true);
+            {
+                sqlQuery = sqlQuery.OrderBy(x => x.y.EntityId);
+                sqlQuery = sqlQuery.OrderBy(x => x.x.SortOrder);
+            }
 
             if (!includeEmptyFields)
-                return Db.ExecuteList(sqlQuery)
-                        .ConvertAll(row => ToCustomField(row)).FindAll(item =>
-                        {
-                            if (item.FieldType == CustomFieldType.Heading)
-                                return true;
+                sqlQuery = sqlQuery.Where(x => x.y != null && x.x.Type == CustomFieldType.Heading);
 
-                            return !String.IsNullOrEmpty(item.Value.Trim());
-
-                        }).ToList();
-
-            return Db.ExecuteList(sqlQuery)
-                    .ConvertAll(row => ToCustomField(row));
+            return sqlQuery.ToList().ConvertAll(x => ToCustomField(x.x, x.y));
         }
 
         public CustomField GetFieldDescription(int fieldID)
         {
-
-            var sqlQuery = GetFieldDescriptionSqlQuery(null);
-
-            sqlQuery.Where(Exp.Eq("id", fieldID));
-
-            var fields = Db.ExecuteList(sqlQuery).ConvertAll(row => ToCustomField(row));
-
-            return fields.Count == 0 ? null : fields[0];
+            return ToCustomField(Query(CRMDbContext.FieldDescription).FirstOrDefault(x => x.Id == fieldID));
         }
 
         public List<CustomField> GetFieldsDescription(EntityType entityType)
@@ -494,46 +514,18 @@ namespace ASC.CRM.Core.Dao
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
 
-            SqlQuery sqlQuery = GetFieldDescriptionSqlQuery(null);
+            var sqlQuery = Query(CRMDbContext.FieldDescription);
 
-            sqlQuery.Where(BuildEntityTypeConditions(entityType, "entity_type"));
-
-            return Db.ExecuteList(sqlQuery)
-                .ConvertAll(row => ToCustomField(row));
-        }
-
-        private SqlQuery GetFieldDescriptionSqlQuery(Exp where)
-        {
-            var sqlQuery = Query("crm_field_description")
-                .Select("id",
-                        "-1",
-                        "label",
-                        "\" \"",
-                        "type",
-                        "sort_order",
-                        "mask",
-                        "entity_type")
-                .OrderBy("sort_order", true);
-
-            if (where != null)
-                sqlQuery.Where(where);
-
-            return sqlQuery;
-        }
-
-        private Exp BuildEntityTypeConditions(EntityType entityType, String dbFieldName)
-        {
-            switch (entityType)
+            if (entityType == EntityType.Company || entityType == EntityType.Person)
             {
-                case EntityType.Company:
-                case EntityType.Person:
-                    return Exp.In(dbFieldName, new[] { (int)entityType, (int)EntityType.Contact });
-
-                default:
-                    return Exp.Eq(dbFieldName, (int)entityType);
-
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType || x.EntityType == EntityType.Contact);
+            }
+            else
+            {
+                sqlQuery = sqlQuery.Where(x => x.EntityType == entityType);
             }
 
+            return sqlQuery.ToList().ConvertAll(x => ToCustomField(x));
         }
 
         public void DeleteField(int fieldID)
@@ -554,26 +546,32 @@ namespace ASC.CRM.Core.Dao
 
             CRMDbContext.SaveChanges();
 
-            tx.Commit();            
+            tx.Commit();
         }
 
-        public static CustomField ToCustomField(DbFieldDescription dbFieldDescription,
-                                                DbFieldValue dbFieldValue)
+        public CustomField ToCustomField(DbFieldDescription dbFieldDescription,
+                                                DbFieldValue dbFieldValue = null)
         {
+            if (dbFieldDescription == null || dbFieldValue == null) return null;
 
+            var customField = new CustomField
+            {
+                ID = dbFieldDescription.Id,
+                EntityType = dbFieldDescription.EntityType,
+                FieldType = dbFieldDescription.Type,
+                Label = dbFieldDescription.Label,
+                Mask = dbFieldDescription.Mask,
+                Position = dbFieldDescription.SortOrder
 
-            throw new NotImplementedException();
-            //return new CustomField
-            //{
-            //    ID = Convert.ToInt32(row[0]),
-            //    EntityID = Convert.ToInt32(row[1]),
-            //    EntityType = (EntityType)Convert.ToInt32(row[7]),
-            //    Label = Convert.ToString(row[2]),
-            //    Value = Convert.ToString(row[3]),
-            //    FieldType = (CustomFieldType)Convert.ToInt32(row[4]),
-            //    Position = Convert.ToInt32(row[5]),
-            //    Mask = Convert.ToString(row[6])
-            //};
+            };
+
+            if (dbFieldValue != null)
+            {
+                dbFieldValue.Value = dbFieldValue.Value;
+                dbFieldValue.EntityId = dbFieldValue.EntityId;
+            }
+
+            return customField;
         }
     }
 

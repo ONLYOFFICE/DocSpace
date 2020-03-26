@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_organisation_logo")]
-    public partial class DbOrganisationLogo
+    public partial class DbOrganisationLogo : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "int(11)")]

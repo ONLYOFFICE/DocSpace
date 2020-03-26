@@ -85,7 +85,7 @@ namespace ASC.CRM.Core.Dao
 
         public List<int> GetEventsByFile(int id)
         {
-            var tagdao = FilesIntegration.GetTagDao();
+            var tagdao = FilesIntegration.TagDao();
             var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
             
             return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();

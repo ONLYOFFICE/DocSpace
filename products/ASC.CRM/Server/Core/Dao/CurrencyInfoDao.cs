@@ -35,8 +35,7 @@ namespace ASC.CRM.Core.Dao
 {
     public class CurrencyInfoDao : AbstractDao
     {
-
-
+               
         public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext):

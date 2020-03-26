@@ -34,6 +34,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -45,15 +46,16 @@ namespace ASC.CRM.Core.Dao
     public class CachedTaskDao : TaskDao
     {
 
-        private readonly HttpRequestDictionary<Task> _contactCache = new HttpRequestDictionary<Task>("crm_task");
+        private readonly HttpRequestDictionary<Task> _contactCache;
             
         public CachedTaskDao(DbContextManager<CRMDbContext> dbContextManager,
                       TenantManager tenantManager,
                       SecurityContext securityContext,
                       CRMSecurity cRMSecurity,
                       TenantUtil tenantUtil,
-                      FactoryIndexer<TasksWrapper> factoryIndexer
-                      ):
+                      FactoryIndexer<TasksWrapper> factoryIndexer,
+                      IHttpContextAccessor httpContextAccessor
+                      ) :
            base(dbContextManager,
                 tenantManager,
                 securityContext,
@@ -61,7 +63,7 @@ namespace ASC.CRM.Core.Dao
                 tenantUtil,
                 factoryIndexer)
         {
-            
+            _contactCache = new HttpRequestDictionary<Task>(httpContextAccessor?.HttpContext, "crm_task");
         }
 
 
