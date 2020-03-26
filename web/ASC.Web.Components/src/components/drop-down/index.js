@@ -33,6 +33,11 @@ const StyledDropdown = styled.div`
     -moz-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.13);
     padding: ${props => !props.maxHeight && props.children && props.children.length > 1 && `6px 0px`};
+    ${props => props.columnCount && `
+      -webkit-column-count: ${props.columnCount};
+      -moz-column-count: ${props.columnCount};
+            column-count: ${props.columnCount};
+    `}
 `;
 
 // eslint-disable-next-line react/display-name, react/prop-types
@@ -148,7 +153,7 @@ DropDown.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string,
   clickOutsideAction: PropTypes.func,
-  directionX: PropTypes.oneOf(['left', 'right']),
+  directionX: PropTypes.oneOf(['left', 'right']), //TODO: make more informative
   directionY: PropTypes.oneOf(['bottom', 'top']),
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
@@ -159,7 +164,8 @@ DropDown.propTypes = {
   maxHeight: PropTypes.number,
   open: PropTypes.bool,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  withBackdrop: PropTypes.bool
+  withBackdrop: PropTypes.bool,
+  columnCount: PropTypes.number
 };
 
 DropDown.defaultProps = {

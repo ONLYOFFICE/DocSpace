@@ -73,23 +73,24 @@ class ContextMenuButton extends React.Component {
   render() {
     //console.log("ContextMenuButton render");
     const {
-      color,
-      hoverColor,
+      className,
       clickColor,
-      size,
+      color,
+      columnCount,
+      directionX,
+      directionY,
+      hoverColor,
+      iconClickName,
+      iconHoverName,
       iconName,
       iconOpenName,
-      iconHoverName,
-      iconClickName,
+      id,
       isDisabled,
       onMouseEnter,
       onMouseLeave,
-      onMouseOver,
       onMouseOut,
-      directionX,
-      directionY,
-      className,
-      id,
+      onMouseOver,
+      size,
       style
     } = this.props;
 
@@ -118,6 +119,7 @@ class ContextMenuButton extends React.Component {
           directionY={directionY}
           open={isOpen}
           clickOutsideAction={this.clickOutsideAction}
+          columnCount={columnCount}
         >
           {
             this.state.data.map((item, index) =>
@@ -158,7 +160,8 @@ ContextMenuButton.propTypes = {
 
   className: PropTypes.string,
   id: PropTypes.string,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  columnCount: PropTypes.number
 };
 
 ContextMenuButton.defaultProps = {
