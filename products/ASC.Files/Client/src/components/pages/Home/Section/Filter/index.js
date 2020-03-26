@@ -60,7 +60,7 @@ class SectionFilterContent extends React.Component {
 
   }
   componentDidMount() {
-    const { location, filter, onLoading, selectedFolderId } = this.props;
+    const { location, filter, onLoading, selectedFolderId, filterColumnCount } = this.props;
 
     const newFilter = getFilterByLocation(location);
 
@@ -274,6 +274,7 @@ class SectionFilterContent extends React.Component {
   render() {
     const selectedFilterData = this.getSelectedFilterData();
     const { t, i18n } = this.props;
+    const filterColumnCount = window.innerWidth < 500 ? {} : {filterColumnCount: 3} 
     return (
       <FilterInput
         getFilterData={this.getData}
@@ -286,6 +287,7 @@ class SectionFilterContent extends React.Component {
         needForUpdate={this.needForUpdate}
         language={i18n.language}
         isReady={this.state.isReady}
+        {...filterColumnCount}
       />
     );
   }
