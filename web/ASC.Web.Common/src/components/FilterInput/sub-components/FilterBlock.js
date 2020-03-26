@@ -375,7 +375,7 @@ class FilterBlock extends React.Component {
         <div className='styled-filter-block' ref={this.filterWrapper} id='filter-items-container'>
           {filterItems}
         </div>
-        {filterData.length > 0 && <FilterButton id='filter-button' iconSize={iconSize} getData={_this.getData} isDisabled={isDisabled} />}
+        {filterData.length > 0 && <FilterButton columnCount={this.props.columnCount} id='filter-button' iconSize={iconSize} getData={_this.getData} isDisabled={isDisabled} />}
       </>
     );
   }
@@ -389,6 +389,7 @@ FilterBlock.propTypes = {
   onDeleteFilterItem: PropTypes.func,
   onRender: PropTypes.func,
   openFilterItems: PropTypes.array,
+  columnCount: PropTypes.number
 }
 
 export default FilterBlock;

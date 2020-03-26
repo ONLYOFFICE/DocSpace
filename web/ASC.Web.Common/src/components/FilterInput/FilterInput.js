@@ -512,7 +512,8 @@ class FilterInput extends React.Component {
         /* eslint-disable react/prop-types */
         const { className, id, style, size,
             isDisabled, scale, getFilterData, placeholder,
-            getSortData, directionAscLabel, directionDescLabel } = this.props;
+            getSortData, directionAscLabel, directionDescLabel,
+            filterColumnCount } = this.props;
         /* eslint-enable react/prop-types */
 
         const { searchText, filterValues, openFilterItems,
@@ -562,6 +563,7 @@ class FilterInput extends React.Component {
                                 isResizeUpdate={this.isResizeUpdate}
                                 onRender={this.onFilterRender}
                                 isDisabled={isDisabled}
+                                columnCount={filterColumnCount}
                             />
                         </div>
 
@@ -594,7 +596,8 @@ FilterInput.protoTypes = {
     className: PropTypes.string,
     id: PropTypes.string,
     style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-    needForUpdate: PropTypes.bool
+    needForUpdate: PropTypes.bool,
+    filterColumnCount: PropTypes.number
 };
 
 FilterInput.defaultProps = {

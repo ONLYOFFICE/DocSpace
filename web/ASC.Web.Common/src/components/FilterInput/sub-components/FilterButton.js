@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 class FilterButton extends React.PureComponent {
   render() {
-    const { getData, id, isDisabled, iconSize } = this.props;
+    const { getData, id, isDisabled, iconSize, columnCount } = this.props;
     //console.log('render FilterButton)
     return (
       <ContextMenuButton
@@ -18,6 +18,7 @@ class FilterButton extends React.PureComponent {
         isDisabled={isDisabled}
         size={iconSize}
         title='Actions'
+        columnCount={columnCount}
       ></ContextMenuButton>
     )
   }
@@ -27,5 +28,6 @@ FilterButton.propTypes = {
   iconSize: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   id: PropTypes.string,
   isDisabled: PropTypes.bool,
+  columnCount: PropTypes.number
 }
 export default FilterButton
