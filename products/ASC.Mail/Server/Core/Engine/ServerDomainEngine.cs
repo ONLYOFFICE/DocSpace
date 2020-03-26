@@ -34,7 +34,6 @@ using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
@@ -43,41 +42,73 @@ using ASC.Mail.Extensions;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     public class ServerDomainEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
+
+        private bool IsAdmin
+        {
+            get
+            {
+                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
+            }
+        }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
 
         public ILog Log { get; private set; }
 
-        public ServerDomainEngine(int tenant, string user, ILog log = null)
+        public ServerDomainEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            CoreBaseSettings coreBaseSettings,
+            WebItemSecurity webItemSecurity,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            CoreBaseSettings = coreBaseSettings;
+            WebItemSecurity = webItemSecurity;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
 
-            Log = log ?? LogManager.GetLogger("ASC.Mail.ServerDomainEngine");
+            Log = option.Get("ASC.Mail.ServerDomainEngine");
         }
 
         public ServerDomainData GetDomain(int id)
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
+            var serverDomain = DaoFactory.ServerDomainDao.GetDomain(id);
 
-                var serverDomain = serverDomainDao.GetDomain(id);
+            if (serverDomain == null)
+                throw new Exception("Domain not found");
 
-                if (serverDomain == null)
-                    throw new Exception("Domain not found");
+            var dnsData = UpdateDnsStatus(serverDomain);
 
-                var serverDnsDao = daoFactory.CreateServerDnsDao(Tenant, User);
-
-                var dnsData = UpdateDnsStatus(serverDomain, serverDnsDao, serverDomainDao);
-
-                return ToServerDomainData(serverDomain, dnsData);
-            }
+            return ToServerDomainData(serverDomain, dnsData);
         }
 
         public List<ServerDomainData> GetDomains()
@@ -85,28 +116,16 @@ namespace ASC.Mail.Core.Engine
             if (!IsAdmin)
                 throw new SecurityException("Need admin privileges.");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                return GetDomains(daoFactory);
-            }
-        }
-
-        public List<ServerDomainData> GetDomains(IDaoFactory daoFactory)
-        {
-            var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
-
-            var listDomains = serverDomainDao.GetDomains();
+            var listDomains = DaoFactory.ServerDomainDao.GetDomains();
 
             if (!listDomains.Any())
                 return new List<ServerDomainData>();
-
-            var serverDnsDao = daoFactory.CreateServerDnsDao(Tenant, User);
 
             var list = new List<ServerDomainData>();
 
             foreach (var domain in listDomains)
             {
-                var dnsData = UpdateDnsStatus(domain, serverDnsDao, serverDomainDao);
+                var dnsData = UpdateDnsStatus(domain);
 
                 var serverDomain = ToServerDomainData(domain, dnsData);
 
@@ -118,20 +137,15 @@ namespace ASC.Mail.Core.Engine
 
         public ServerDomainData GetCommonDomain()
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
+            var domainCommon = DaoFactory.ServerDomainDao.GetDomains()
+                .SingleOrDefault(x => x.Tenant == Defines.SHARED_TENANT_ID);
 
-                var domainCommon = serverDomainDao.GetDomains()
-                    .SingleOrDefault(x => x.Tenant == Defines.SHARED_TENANT_ID);
+            if (domainCommon == null)
+                return null;
 
-                if (domainCommon == null)
-                    return null;
+            var serverDomain = ToServerDomainData(domainCommon, null);
 
-                var serverDomain = ToServerDomainData(domainCommon, null);
-
-                return serverDomain;
-            }
+            return serverDomain;
         }
 
         public ServerDomainDnsData GetDnsData(int domainId)
@@ -142,21 +156,14 @@ namespace ASC.Mail.Core.Engine
             if (domainId < 0)
                 throw new ArgumentException(@"Invalid domain id.", "domainId");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
+            var domain = DaoFactory.ServerDomainDao.GetDomain(domainId);
 
-                var domain = serverDomainDao.GetDomain(domainId);
+            if (domain == null)
+                return null;
 
-                if (domain == null)
-                    return null;
+            var dnsData = UpdateDnsStatus(domain, true);
 
-                var serverDnsDao = daoFactory.CreateServerDnsDao(Tenant, User);
-
-                var dnsData = UpdateDnsStatus(domain, serverDnsDao, serverDomainDao, true);
-
-                return dnsData;
-            }
+            return dnsData;
         }
 
         public bool IsDomainExists(string name)
@@ -175,11 +182,7 @@ namespace ASC.Mail.Core.Engine
 
             var domainName = name.ToLowerInvariant();
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
-                return serverDomainDao.IsDomainExists(domainName);
-            }
+            return DaoFactory.ServerDomainDao.IsDomainExists(domainName);
         }
 
         public ServerDomainData AddDomain(string domain, int dnsId)
@@ -198,22 +201,16 @@ namespace ASC.Mail.Core.Engine
 
             var domainName = domain.ToLowerInvariant();
 
-            var engine = new EngineFactory(Tenant, User);
-
             var dnsLookup = new DnsLookup();
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
+                var server = DaoFactory.ServerDao.Get(Tenant);
 
-                var server = serverDao.Get(Tenant);
-
-                var freeDns = engine.ServerEngine.GetOrCreateUnusedDnsData(daoFactory, server);
+                var freeDns = EngineFactory.ServerEngine.GetOrCreateUnusedDnsData(DaoFactory, server);
 
                 if (freeDns.Id != dnsId)
                     throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
 
-                if (!CoreContext.Configuration.Standalone &&
+                if (!CoreBaseSettings.Standalone &&
                     !dnsLookup.IsDomainTxtRecordExists(domainName, freeDns.DomainCheckRecord.Value))
                 {
                     throw new InvalidOperationException("txt record is not correct.");
@@ -221,10 +218,8 @@ namespace ASC.Mail.Core.Engine
 
                 var isVerified = freeDns.CheckDnsStatus(domainName);
 
-                using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = DaoFactory.BeginTransaction())
                 {
-                    var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
-
                     var utcNow = DateTime.UtcNow;
 
                     var mailServerEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
@@ -250,10 +245,11 @@ namespace ASC.Mail.Core.Engine
                         DateChecked = utcNow
                     };
 
-                    serverDomain.Id = serverDomainDao.Save(serverDomain);
+                    serverDomain.Id = DaoFactory.ServerDomainDao
+                        .Save(serverDomain);
 
-                    var serverDnsDao = daoFactory.CreateServerDnsDao(Tenant, User);
-                    var serverDns = serverDnsDao.GetById(freeDns.Id);
+                    var serverDns = DaoFactory.ServerDnsDao
+                        .GetById(freeDns.Id);
 
                     var mailServerDkim = new Server.Core.Entities.Dkim
                     {
@@ -267,13 +263,13 @@ namespace ASC.Mail.Core.Engine
 
                     serverDns.DomainId = serverDomain.Id;
                     serverDns.TimeModified = utcNow;
-                    serverDnsDao.Save(serverDns);
+
+                    DaoFactory.ServerDnsDao.Save(serverDns);
 
                     tx.Commit();
 
                     return ToServerDomainData(serverDomain, freeDns);
                 }
-            }
         }
 
         public MailOperationStatus RemoveDomain(int id)
@@ -289,7 +285,7 @@ namespace ASC.Mail.Core.Engine
             if (domain.IsSharedDomain)
                 throw new SecurityException("Can not remove shared domain.");
 
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operationEngine = new OperationEngine();
@@ -327,21 +323,20 @@ namespace ASC.Mail.Core.Engine
             return operationEngine.QueueTask(op);
         }
 
-        private ServerDomainDnsData UpdateDnsStatus(ServerDomain domain, 
-            IServerDnsDao serverDnsDao, IServerDomainDao serverDomainDao, bool force = false)
+        private ServerDomainDnsData UpdateDnsStatus(ServerDomain domain, bool force = false)
         {
-            var serverDns = serverDnsDao.Get(domain.Id);
+            var serverDns = DaoFactory.ServerDnsDao.Get(domain.Id);
 
-            if (serverDns.UpdateRecords(domain.Name, force))
+            if (serverDns.UpdateRecords(EngineFactory, domain.Name, force))
             {
-                serverDnsDao.Save(serverDns);
+                DaoFactory.ServerDnsDao.Save(serverDns);
             }
 
             var dnsData = ToServerDomainDnsData(serverDns);
 
             if (dnsData != null && domain.IsVerified != dnsData.IsVerified)
             {
-                serverDomainDao.SetVerified(domain.Id, dnsData.IsVerified);
+                DaoFactory.ServerDomainDao.SetVerified(domain.Id, dnsData.IsVerified);
             }
 
             return dnsData;
@@ -395,14 +390,6 @@ namespace ASC.Mail.Core.Engine
             };
 
             return dnsData;
-        }
-
-        private static bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
         }
     }
 }
