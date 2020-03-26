@@ -221,6 +221,14 @@ namespace ASC.Calendar.Controllers
             product.Init();
             return new Module(product, true);
         }
+
+        /// <summary>
+        /// Returns the list of all subscriptions available to the user
+        /// </summary>
+        /// <short>
+        /// Subscription list
+        /// </short>
+        /// <returns>List of subscriptions</returns>
         [Read("subscriptions")]
         public List<SubscriptionWrapper> LoadSubscriptions()
         {
@@ -249,15 +257,29 @@ namespace ASC.Calendar.Controllers
 
             return result;
         }
-
         public class SubscriptionState
         {
             public string id { get; set; }
             public bool isAccepted { get; set; }
         }
-        [Update("subscriptions/manage")]
-        public void ManageSubscriptions(IEnumerable<SubscriptionState> states)
+
+        public class SubscriptionModel
         {
+            public IEnumerable<SubscriptionState> States { get; set; }
+        }
+
+        /// <summary>
+        /// Updates the subscription state either subscribing or unsubscribing the user to/from it
+        /// </summary>
+        /// <short>
+        /// Update subscription
+        /// </short>
+        /// <param name="states">Updated subscription states</param>
+        /// <visible>false</visible>
+        [Update("subscriptions/manage")]
+        public void ManageSubscriptions(SubscriptionModel subscriptionModel)
+        {
+            var states = subscriptionModel.States;
             var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, states.Select(s => s.id).ToList());
 
             var settingsCollection = new List<UserViewSettings>();
@@ -278,6 +300,17 @@ namespace ASC.Calendar.Controllers
             }
             DataProvider.UpdateCalendarUserView(settingsCollection);
         }
+
+        /// <summary>
+        /// Returns the list of all dates which contain the events from the displayed calendars
+        /// </summary>
+        /// <short>
+        /// Calendar events
+        /// </short>
+        /// <param name="startDate">Period start date</param>
+        /// <param name="endDate">Period end date</param>
+        /// <returns>Date list</returns>
+        /// <visible>false</visible>
         [Read("eventdays/{startDate}/{endDate}")]
         public List<ApiDateTime> GetEventDays(ApiDateTime startDate, ApiDateTime endDate)
         {
@@ -345,6 +378,16 @@ namespace ASC.Calendar.Controllers
 
             return days;
         }
+
+        /// <summary>
+        /// Returns the list of calendars and subscriptions with the events for the current user for the selected period
+        /// </summary>
+        /// <short>
+        /// Calendars and subscriptions
+        /// </short>
+        /// <param name="startDate">Period start date</param>
+        /// <param name="endDate">Period end date</param>
+        /// <returns>List of calendars and subscriptions with events</returns>
         [Read("calendars/{startDate}/{endDate}")]
         public List<CalendarWrapper> LoadCalendars(ApiDateTime startDate, ApiDateTime endDate)
         {
@@ -389,6 +432,15 @@ namespace ASC.Calendar.Controllers
 
             return result;
         }
+
+        /// <summary>
+        /// Returns the detailed information about the calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Calendar by ID
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <returns>Calendar</returns>
         [Read("{calendarId}")]
         public CalendarWrapper GetCalendarById(string calendarId)
         {
@@ -408,7 +460,15 @@ namespace ASC.Calendar.Controllers
             }
             return null;
         }
-        
+
+        /// <summary>
+        /// Returns the link for the iCal associated with the calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Get iCal link
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <returns>iCal link</returns>
         [Read("{calendarId}/icalurl")]
         public object GetCalendariCalUrl(string calendarId)
         {
@@ -422,6 +482,15 @@ namespace ASC.Calendar.Controllers
 
             return new{result};
         }
+
+        /// <summary>
+        /// Returns the feed for the iCal associated with the calendar by its ID and signagure specified in the request
+        /// </summary>
+        /// <short>Get iCal feed</short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <param name="signature">Signature</param>
+        /// <remarks>To get the feed you need to use the method returning the iCal feed link (it will generate the necessary signature)</remarks>
+        /// <returns>Calendar iCal feed</returns>
         [Read("{calendarId}/ical/{signature}", false)] //NOTE: this method doesn't requires auth!!!
         public iCalApiContentResponse GetCalendariCalStream(string calendarId, string signature)
         {
@@ -481,6 +550,23 @@ namespace ASC.Calendar.Controllers
             return resp;
         }
 
+
+        /// <summary>
+        /// Creates the new calendar with the parameters (name, description, color, etc.) specified in the request
+        /// </summary>
+        /// <short>
+        /// Create calendar
+        /// </short>
+        /// <param name="name">Calendar name</param>
+        /// <param name="description">Calendar description</param>
+        /// <param name="textColor">Event text color</param>
+        /// <param name="backgroundColor">Event background color</param>
+        /// <param name="timeZone">Calendar time zone</param>
+        /// <param name="alertType">Event alert type, in case alert type is set by default</param>
+        /// <param name="sharingOptions">Calendar sharing options with other users</param>
+        /// <param name="iCalUrl">iCal url</param>
+        /// <param name="isTodo">Calendar for todo list</param>
+        /// <returns>Created calendar</returns>
         [Create]
         public CalendarWrapper CreateCalendar(CalendarModel calendar)
         {
@@ -563,6 +649,23 @@ namespace ASC.Calendar.Controllers
             return CalendarWrapperHelper.Get(cal);
         }
 
+        /// <summary>
+        /// Updates the selected calendar with the parameters (name, description, color, etc.) specified in the request for the current user and access rights for other users
+        /// </summary>
+        /// <short>
+        /// Update calendar
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <param name="name">Calendar new name</param>
+        /// <param name="description">Calendar new description</param>
+        /// <param name="textColor">Event text color</param>
+        /// <param name="backgroundColor">Event background color</param>
+        /// <param name="timeZone">Calendar time zone</param>
+        /// <param name="alertType">Event alert type, in case alert type is set by default</param>
+        /// <param name="hideEvents">Display type: show or hide events in calendar</param>
+        /// <param name="sharingOptions">Calendar sharing options with other users</param>
+        /// <param name="iCalUrl">iCal url</param>
+        /// <returns>Updated calendar</returns>
         [Update("{calendarId}")]
         public CalendarWrapper UpdateCalendar(string calendarId, CalendarModel calendar)
         {
@@ -774,6 +877,20 @@ namespace ASC.Calendar.Controllers
 
         }
 
+        /// <summary>
+        /// Change the calendar display parameters specified in the request for the current user
+        /// </summary>
+        /// <short>
+        /// Update calendar user view
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <param name="name">Calendar name</param>
+        /// <param name="textColor">Event text color</param>
+        /// <param name="backgroundColor">Event background color</param>
+        /// <param name="timeZone">Calendar time zone</param>
+        /// <param name="alertType">Event alert type, in case alert type is set by default</param>
+        /// <param name="hideEvents">Display type: show or hide events in calendar</param>
+        /// <returns>Updated calendar</returns>
         [Update("{calendarId}/view")]
         public CalendarWrapper UpdateCalendarView(string calendarId, CalendarModel calendar)
         {
@@ -807,6 +924,13 @@ namespace ASC.Calendar.Controllers
             return GetCalendarById(calendarId);
         }
 
+        /// <summary>
+        /// Deletes the calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Delete calendar
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
         [Delete("{calendarId}")]
         public void RemoveCalendar(int calendarId)
         {
@@ -913,6 +1037,13 @@ namespace ASC.Calendar.Controllers
 
         }
 
+        /// <summary>
+        /// Unsubscribes the current user from the event with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Unsubscribe from event
+        /// </short>
+        /// <param name="eventId">Event ID</param>
         [Delete("events/{eventId}/unsubscribe")]
         public void UnsubscribeEvent(int eventId)
         {
@@ -931,6 +1062,7 @@ namespace ASC.Calendar.Controllers
                 DataProvider.UnsubscribeFromEvent(eventId, SecurityContext.CurrentAccount.ID);
             }
         }
+
         //TODO Caldav
         private void deleteEvent(string uid, string calendarId, string email, string currentAccountPaswd, Uri myUri, bool isShared = false)
         {
@@ -1003,6 +1135,15 @@ namespace ASC.Calendar.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Returns the event in ics format from history
+        /// </summary>
+        /// <short>
+        /// Returns the event in ics format from history
+        /// </short>
+        /// <param name="eventUid">Event UID</param>
+        /// <returns>Event History</returns>
         [Read("events/{eventUid}/historybyuid")]
         public EventHistoryWrapper GetEventHistoryByUid(string eventUid)
         {
@@ -1015,6 +1156,15 @@ namespace ASC.Calendar.Controllers
 
             return GetEventHistoryWrapper(evt);
         }
+
+        /// <summary>
+        /// Returns the event in ics format from history
+        /// </summary>
+        /// <short>
+        /// Returns the event in ics format from history
+        /// </short>
+        /// <param name="eventId">Event ID</param>
+        /// <returns>Event History</returns>
         [Read("events/{eventId}/historybyid")]
         public EventHistoryWrapper GetEventHistoryById(int eventId)
         {
@@ -1027,6 +1177,22 @@ namespace ASC.Calendar.Controllers
 
             return GetEventHistoryWrapper(evt);
         }
+
+        /// <summary>
+        /// Creates the new event in the default calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Create new event
+        /// </short>
+        /// <param name="name">Event name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="startDate">Event start date</param>
+        /// <param name="endDate">Event end date</param>
+        /// <param name="repeatType">Event recurrence type (RRULE string in iCal format)</param>
+        /// <param name="alertType">Event notification type</param>
+        /// <param name="isAllDayLong">Event duration type: all day long or not</param>
+        /// <param name="sharingOptions">Event sharing access parameters</param>
+        /// <returns>Event list</returns>
         [Create("event")]
         public List<EventWrapper> CreateEvent(EventModel eventModel)
         {
@@ -1040,6 +1206,23 @@ namespace ASC.Calendar.Controllers
 
             throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
         }
+
+        /// <summary>
+        /// Creates the new event in the selected calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Create new event
+        /// </short>
+        /// <param name="calendarId">ID of the calendar where the event is created</param>
+        /// <param name="name">Event name</param>
+        /// <param name="description">Event description</param>
+        /// <param name="startDate">Event start date</param>
+        /// <param name="endDate">Event end date</param>
+        /// <param name="repeatType">Event recurrence type (RRULE string in iCal format)</param>
+        /// <param name="alertType">Event notification type</param>
+        /// <param name="isAllDayLong">Event duration type: all day long or not</param>
+        /// <param name="sharingOptions">Event sharing access parameters</param>
+        /// <returns>Event list</returns>
         [Create("{calendarId}/event")]
         public List<EventWrapper> AddEvent(int calendarId, EventModel eventModel)
         {
@@ -1047,6 +1230,24 @@ namespace ASC.Calendar.Controllers
             return AddEvent(eventModel);
         }
 
+        /// <summary>
+        /// Updates the existing event in the selected calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Update event
+        /// </short>
+        /// <param name="calendarId">ID of the calendar where the event belongs</param>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="name">Event new name</param>
+        /// <param name="description">Event new description</param>
+        /// <param name="startDate">Event start date</param>
+        /// <param name="endDate">Event end date</param>
+        /// <param name="repeatType">Event recurrence type (RRULE string in iCal format)</param>
+        /// <param name="alertType">Event notification type</param>
+        /// <param name="isAllDayLong">Event duration type: all day long or not</param>
+        /// <param name="sharingOptions">Event sharing access parameters</param>
+        /// <param name="status">Event status</param>
+        /// <returns>Updated event list</returns>
         [Update("{calendarId}/{eventId}")]
         public List<EventWrapper> Update(string calendarId, int eventId, EventModel eventModel)
         {
@@ -1056,6 +1257,18 @@ namespace ASC.Calendar.Controllers
             return UpdateEvent(eventModel);
         }
 
+        /// <summary>
+        /// Creates the new event in the selected calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Create new event
+        /// </short>
+        /// <param name="calendarId">ID of the calendar where the event is created</param>
+        /// <param name="ics">Event in iCal format</param>
+        /// <param name="alertType">Event notification type</param>
+        /// <param name="sharingOptions">Event sharing access parameters</param>
+        /// <param name="eventUid">Event uid</param>
+        /// <returns>Event</returns>
         [Create("icsevent")]
         public List<EventWrapper> AddEvent(EventModel eventData)
         {
@@ -1265,6 +1478,20 @@ namespace ASC.Calendar.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Updates the existing event in the selected calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Update event
+        /// </short>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="calendarId">ID of the calendar where the event belongs</param>
+        /// <param name="ics">Event in iCal format</param>
+        /// <param name="alertType">Event notification type</param>
+        /// <param name="sharingOptions">Event sharing access parameters</param>
+        /// <param name="fromCalDavServer">bool flag says that request from caldav server</param>
+        /// <param name="ownerId">Event owner id</param>
+        /// <returns>Updated event</returns>
         [Update("icsevent.json")]
         public List<EventWrapper> UpdateEvent(EventModel eventData)
         {
@@ -1496,12 +1723,31 @@ namespace ASC.Calendar.Controllers
                                fromCalDavServer, ownerId);
         }
 
+        /// <summary>
+        /// Deletes the whole event from the calendar (all events in the series)
+        /// </summary>
+        /// <short>
+        /// Delete event series
+        /// </short>
+        /// <param name="eventId">Event ID</param>
         [Delete("events/{eventId}")]
         public void RemoveEvent(int eventId)
         {
-
             RemoveEvent(eventId, new EventDeleteModel { EventId = eventId, Date = null, Type = EventRemoveType.AllSeries });
         }
+
+        /// <summary>
+        /// Deletes one event from the series of recurrent events
+        /// </summary>
+        /// <short>
+        /// Delete event
+        /// </short>
+        /// <param name="eventId">Event ID</param>
+        /// <param name="date">Date to be deleted from the recurrent event</param>
+        /// <param name="type">Recurrent event deletion type</param>
+        /// <param name="fromCaldavServer">Bool flag says that request from caldav server</param>
+        /// <param name="uri">Current uri</param>
+        /// <returns>Updated event series collection</returns>
         [Delete("events/{eventId}/custom")]
         public List<EventWrapper> RemoveEvent(int eventId, EventDeleteModel eventDeleteModel)
         {
@@ -1767,7 +2013,6 @@ namespace ASC.Calendar.Controllers
             return events;
         }
 
-
         public class CreateTodoModel
         {
             public string ics { get; set; }
@@ -1777,6 +2022,16 @@ namespace ASC.Calendar.Controllers
             public bool fromCalDavServer { get; set; }
 
         }
+
+        /// <summary>
+        /// Creates the new task in the selected calendar with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Create new task
+        /// </short>
+        /// <param name="ics">Task in iCal format</param>
+        /// <param name="todoUid">Task uid</param>
+        /// <returns>Todo</returns>
         [Create("icstodo")]
         public List<TodoWrapper> AddTodo(CreateTodoModel createTodoModel)
         {
@@ -1878,6 +2133,17 @@ namespace ASC.Calendar.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Updates the existing task with the parameters specified in the request
+        /// </summary>
+        /// <short>
+        /// Update task
+        /// </short>
+        /// <param name="todoId">Task ID</param>
+        /// <param name="calendarId">ID of the calendar where the task belongs</param>
+        /// <param name="ics">Task in iCal format</param>
+        /// <param name="fromCalDavServer">bool flag says that request from caldav server</param>
+        /// <returns>Updated task</returns>
         [Update("icstodo")]
         public List<TodoWrapper> UpdateTodo(CreateTodoModel createTodoModel)
         {
@@ -1966,6 +2232,14 @@ namespace ASC.Calendar.Controllers
 
         }
 
+        /// <summary>
+        /// Deletes task
+        /// </summary>
+        /// <short>
+        /// Delete task
+        /// </short>
+        /// <param name="todoId">Task ID</param>
+        /// <param name="fromCaldavServer">Bool flag says that request from caldav server</param>
         [Delete("todos/{todoId}")]
         public void RemoveTodo(int todoId, CreateTodoModel createTodoModel)
         {
@@ -2047,6 +2321,7 @@ namespace ASC.Calendar.Controllers
             return null;
         }
 
+
         [Create("outsideevent")]
         public void AddEventOutside(string calendarGuid, string eventGuid, string ics)
         {
@@ -2103,6 +2378,14 @@ namespace ASC.Calendar.Controllers
             }
         }
 
+        /// <summary>
+        /// Returns the sharing access parameters to the calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Get access parameters
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <returns>Sharing access parameters</returns>
         [Read("{calendarId}/sharing")]
         public PublicItemCollection GetCalendarSharingOptions(int calendarId)
         {
@@ -2112,6 +2395,14 @@ namespace ASC.Calendar.Controllers
 
             return PublicItemCollectionHelper.GetForCalendar(cal);
         }
+
+        /// <summary>
+        /// Returns the default values for the sharing access parameters
+        /// </summary>
+        /// <short>
+        /// Get default access
+        /// </short>
+        /// <returns>Default sharing access parameters</returns>
         [Read("sharing")]
         public PublicItemCollection GetDefaultSharingOptions()
         {
@@ -2121,6 +2412,15 @@ namespace ASC.Calendar.Controllers
         {
             public IEnumerable<IFormFile> Files { get; set; }
         }
+
+        /// <summary>
+        /// Imports the events from the iCal files
+        /// </summary>
+        /// <short>
+        /// Import iCal
+        /// </short>
+        /// <param name="files">iCal formatted files with the events to be imported</param>
+        /// <returns>Returns the number of imported events</returns>
         [Create("import")]
         public int ImportEvents(UploadModel uploadModel)
         {
@@ -2132,6 +2432,16 @@ namespace ASC.Calendar.Controllers
 
             throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
         }
+
+        /// <summary>
+        /// Imports the events from the iCal files to the existing calendar
+        /// </summary>
+        /// <short>
+        /// Import iCal
+        /// </short>
+        /// <param name="calendarId">ID for the calendar which serves as the future storage base for the imported events</param>
+        /// <param name="files">iCal formatted files with the events to be imported</param>
+        /// <returns>Returns the number of imported events</returns>
         [Create("{calendarId}/import")]
         public int ImportEvents(int calendarId, UploadModel uploadModel)
         {
@@ -2159,6 +2469,16 @@ namespace ASC.Calendar.Controllers
             public int CalendarId { get; set; }
             public string ICalString { get; set; }
         }
+
+        /// <summary>
+        /// Imports the events from the iCal files
+        /// </summary>
+        /// <short>
+        /// Import iCal
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <param name="iCalString">iCal formatted string</param>
+        /// <returns>Returns the number of imported events</returns>
         [Create("importIcs")]
         public int ImportEvents(ImportModel importModel)
         {
@@ -2174,11 +2494,26 @@ namespace ASC.Calendar.Controllers
             var calendar = LoadInternalCalendars().First(x => (!x.IsSubscription && x.IsTodo != 1));
 
             if (int.TryParse(calendar.Id, out calendarId))
-                return ImportEvents(calendarId, iCalString);
+            {
+                importModel.CalendarId = calendarId;
+                return ImportEvents(importModel);
+            }
+
 
             throw new Exception(string.Format("Can't parse {0} to int", calendar.Id));
         }
-      
+
+        /// <summary>
+        /// Creates a calendar by the link to the external iCal feed
+        /// </summary>
+        /// <short>
+        /// Create calendar
+        /// </short>
+        /// <param name="iCalUrl">Link to the external iCal feed</param>
+        /// <param name="name">Calendar name</param>
+        /// <param name="textColor">Event text name</param>
+        /// <param name="backgroundColor">Event background name</param>
+        /// <returns>Created calendar</returns>
         [Create("calendarUrl")]
         public CalendarWrapper CreateCalendarStream(СalendarUrlModel сalendarUrl)
         {
@@ -2737,7 +3072,6 @@ namespace ASC.Calendar.Controllers
             }
             return null;
         }
-
         private string GetCalendariCalString(string calendarId, bool ignoreCache = false)
         {
             Log.Debug("GetCalendariCalString calendarId = " + calendarId);
