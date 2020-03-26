@@ -29,149 +29,157 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Security;
-//using ASC.Common.Data.Sql;
-//using ASC.Common.Data.Sql.Expressions;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
-using ASC.Mail.Extensions;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Options;
+using ASC.Core.Common.Settings;
+using ASC.Web.Core.Users;
 
 namespace ASC.Mail.Core.Engine
 {
     public class ServerEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
+
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public SettingsManager SettingsManager { get; }
+        public UserManagerWrapper UserManagerWrapper { get; }
+        public IServiceProvider ServiceProvider { get; }
+
+        private bool IsAdmin
+        {
+            get
+            {
+                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
+            }
+        }
 
         public ILog Log { get; private set; }
 
-        public ServerEngine(int tenant, string user, ILog log = null)
+        public ServerEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreBaseSettings coreBaseSettings,
+            WebItemSecurity webItemSecurity,
+            SettingsManager settingsManager,
+            UserManagerWrapper userManagerWrapper,
+            IServiceProvider serviceProvider,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
-
-            Log = log ?? LogManager.GetLogger("ASC.Mail.ServerEngine");
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
+            CoreBaseSettings = coreBaseSettings;
+            WebItemSecurity = webItemSecurity;
+            SettingsManager = settingsManager;
+            UserManagerWrapper = userManagerWrapper;
+            ServiceProvider = serviceProvider;
+            
+            Log = option.Get("ASC.Mail.ServerEngine");
         }
 
         public List<MailAddressInfo> GetAliases(int mailboxId)
         {
-            const string server_address = "sa";
-            const string server_domain = "sd";
+            var MailDb = DaoFactory.MailDb;
 
-            var queryForExecution = new SqlQuery(ServerAddressTable.TABLE_NAME.Alias(server_address))
-                .Select(ServerAddressTable.Columns.Id.Prefix(server_address))
-                .Select(ServerAddressTable.Columns.AddressName.Prefix(server_address))
-                .Select(ServerDomainTable.Columns.DomainName.Prefix(server_domain))
-                .Select(ServerDomainTable.Columns.Id.Prefix(server_domain))
-                .InnerJoin(ServerDomainTable.TABLE_NAME.Alias(server_domain),
-                    Exp.EqColumns(ServerAddressTable.Columns.DomainId.Prefix(server_address),
-                        ServerDomainTable.Columns.Id.Prefix(server_domain)))
-                .Where(ServerAddressTable.Columns.MailboxId.Prefix(server_address), mailboxId)
-                .Where(ServerAddressTable.Columns.IsAlias.Prefix(server_address), true);
-
-            using (var daoFactory = new DaoFactory())
-            {
-                var res = daoFactory.DbManager.ExecuteList(queryForExecution);
-                if (res == null)
+            var list = MailDb.MailServerAddress
+                .Join(MailDb.MailServerDomain, a => a.IdDomain, d => d.Id,
+                (a, d) => new
                 {
-                    return new List<MailAddressInfo>();
-                }
-                return res.ConvertAll(r => new MailAddressInfo(Convert.ToInt32(r[0]),
-                      string.Format("{0}@{1}", r[1], r[2]), Convert.ToInt32(r[3])));
-            }
+                    Address = a,
+                    Domain = d
+                })
+                .Where(x => x.Address.IdMailbox == mailboxId && x.Address.IsAlias)
+                .Select(x => new MailAddressInfo(x.Address.Id, string.Format("{0}@{1}", x.Address.Name, x.Domain.Name), x.Domain.Id))
+                .ToList();
+
+            return list;
         }
 
         public List<MailAddressInfo> GetGroups(int mailboxId)
         {
-            const string groups = "sg";
-            const string group_x_address = "ga";
-            const string server_address = "sa";
-            const string server_domain = "sd";
+            var MailDb = DaoFactory.MailDb;
 
-            var queryForExecution = new SqlQuery(ServerAddressTable.TABLE_NAME.Alias(server_address))
-                .Select(ServerMailGroupTable.Columns.Id.Prefix(groups))
-                .Select(ServerMailGroupTable.Columns.Address.Prefix(groups))
-                .Select(ServerDomainTable.Columns.Id.Prefix(server_domain))
-                .InnerJoin(ServerDomainTable.TABLE_NAME.Alias(server_domain),
-                           Exp.EqColumns(ServerAddressTable.Columns.DomainId.Prefix(server_address),
-                                         ServerDomainTable.Columns.Id.Prefix(server_domain)))
-                .InnerJoin(ServerMailGroupXAddressesTable.TABLE_NAME.Alias(group_x_address),
-                           Exp.EqColumns(ServerAddressTable.Columns.Id.Prefix(server_address),
-                                         ServerMailGroupXAddressesTable.Columns.AddressId.Prefix(group_x_address)))
-                .InnerJoin(ServerMailGroupTable.TABLE_NAME.Alias(groups),
-                           Exp.EqColumns(ServerMailGroupXAddressesTable.Columns.MailGroupId.Prefix(group_x_address),
-                                         ServerMailGroupTable.Columns.Id.Prefix(groups)))
-                .Where(ServerAddressTable.Columns.MailboxId.Prefix(server_address), mailboxId);
-
-            using (var daoFactory = new DaoFactory())
-            {
-                var res = daoFactory.DbManager.ExecuteList(queryForExecution);
-                if (res == null)
+            var list = MailDb.MailServerAddress
+                .Join(MailDb.MailServerDomain, a => a.IdDomain, d => d.Id,
+                (a, d) => new
                 {
-                    return new List<MailAddressInfo>();
-                }
-                return res.ConvertAll(r =>
-                    new MailAddressInfo(Convert.ToInt32(r[0]), Convert.ToString(r[1]), Convert.ToInt32(r[2])));
-            }
+                    Address = a,
+                    Domain = d
+                })
+                .Join(MailDb.MailServerMailGroupXMailServerAddress, a => a.Address.Id, x => x.IdAddress,
+                (a, x) => new
+                {
+                    a.Address,
+                    a.Domain,
+                    XGroup = x
+                })
+                 .Join(MailDb.MailServerMailGroup, x => x.XGroup.IdMailGroup, g => g.Id,
+                (x, g) => new
+                {
+                    x.Address,
+                    x.Domain,
+                    x.XGroup,
+                    Group = g
+                })
+                .Where(x => x.Address.IdMailbox == mailboxId)
+                .Select(x => new MailAddressInfo(x.Group.Id, x.Group.Address, x.Domain.Id))
+                .ToList();
+
+            return list;
         }
 
         public Entities.Server GetLinkedServer()
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
+            var linkedServer = DaoFactory.ServerDao.Get(Tenant);
 
-                var linkedServer = serverDao.Get(Tenant);
-
-                return linkedServer;
-            }
+            return linkedServer;
         }
 
-        public List<Entities.Server> GetAllServers()
+        private List<Entities.Server> GetAllServers()
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                return GetAllServers(daoFactory);
-            }
-        }
-
-        private static List<Entities.Server> GetAllServers(IDaoFactory daoFactory)
-        {
-            var serverDao = daoFactory.CreateServerDao();
-
-            var servers = serverDao.GetList();
+            var servers = DaoFactory.ServerDao.GetList();
 
             return servers;
         }
 
         public void Link(Entities.Server server, int tenant)
         {
-            if(server == null)
-                return;
-
-            using (var daoFactory = new DaoFactory())
-            {
-                Link(daoFactory, server, tenant);
-            }
-        }
-
-        public void Link(IDaoFactory daoFactory, Entities.Server server, int tenant)
-        {
             if (server == null)
                 return;
 
-            var serverDao = daoFactory.CreateServerDao();
-
-            var result = serverDao.Link(server, Tenant);
+            var result = DaoFactory.ServerDao.Link(server, Tenant);
 
             if (result <= 0)
                 throw new Exception("Invalid insert operation");
@@ -182,12 +190,7 @@ namespace ASC.Mail.Core.Engine
             if (server == null)
                 return;
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
-
-                serverDao.UnLink(server, Tenant);
-            }
+            DaoFactory.ServerDao.UnLink(server, Tenant);
         }
 
         public int Save(Entities.Server server)
@@ -195,14 +198,9 @@ namespace ASC.Mail.Core.Engine
             if (server == null)
                 throw new ArgumentNullException("server");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
+            var id = DaoFactory.ServerDao.Save(server);
 
-                var id = serverDao.Save(server);
-
-                return id;
-            }
+            return id;
         }
 
         public void Delete(int serverId)
@@ -210,68 +208,48 @@ namespace ASC.Mail.Core.Engine
             if (serverId <= 0)
                 throw new ArgumentOutOfRangeException("serverId");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
-
-                serverDao.Delete(serverId);
-            }
+            DaoFactory.ServerDao.Delete(serverId);
         }
 
-        public Entities.Server GetOrCreate(IDaoFactory daoFactory)
+        public Entities.Server GetOrCreate()
         {
-            var serverDao = daoFactory.CreateServerDao();
-
-            var linkedServer = serverDao.Get(Tenant);
+            var linkedServer = DaoFactory.ServerDao.Get(Tenant);
 
             if (linkedServer != null) 
                 return linkedServer;
 
-            var servers = GetAllServers(daoFactory);
+            var servers = GetAllServers();
 
             if (!servers.Any())
                 throw new Exception("Mail Server not configured");
 
             var server = servers.First();
 
-            Link(daoFactory, server, Tenant);
+            Link(server, Tenant);
 
             linkedServer = server;
 
             return linkedServer;
         }
 
-        public ServerData GetMailServer()
+        public string GetMailServerMxDomain()
+        {
+            var server = GetMailServer();
+
+            return server.Dns.MxRecord.Host;
+        }
+
+        private ServerData GetMailServer()
         {
             if (!IsAdmin)
                 throw new SecurityException("Need admin privileges.");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                return GetMailServer(daoFactory);
-            }
-        }
+            var linkedServer = GetOrCreate();
 
-        public string GetMailServerMxDomain()
-        {
-            using (var daoFactory = new DaoFactory())
-            {
-                var server = GetMailServer(daoFactory);
+            var dns = GetOrCreateUnusedDnsData(linkedServer);
 
-                return server.Dns.MxRecord.Host;
-            }
-        }
-
-        private ServerData GetMailServer(IDaoFactory daoFactory)
-        {
-            var linkedServer = GetOrCreate(daoFactory);
-
-            var dns = GetOrCreateUnusedDnsData(daoFactory, linkedServer);
-
-            var mailboxServerDao = daoFactory.CreateMailboxServerDao();
-
-            var inServer = mailboxServerDao.GetServer(linkedServer.ImapSettingsId);
-            var outServer = mailboxServerDao.GetServer(linkedServer.SmtpSettingsId);
+            var inServer = DaoFactory.MailboxServerDao.GetServer(linkedServer.ImapSettingsId);
+            var outServer = DaoFactory.MailboxServerDao.GetServer(linkedServer.SmtpSettingsId);
 
             return new ServerData
             {
@@ -291,18 +269,13 @@ namespace ASC.Mail.Core.Engine
             if (!IsAdmin)
                 throw new SecurityException("Need admin privileges.");
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var server = GetOrCreate(daoFactory);
-                return GetOrCreateUnusedDnsData(daoFactory, server);
-            }
+            var server = GetOrCreate();
+            return GetOrCreateUnusedDnsData(server);
         }
 
-        public ServerDomainDnsData GetOrCreateUnusedDnsData(IDaoFactory daoFactory, Entities.Server server)
+        public ServerDomainDnsData GetOrCreateUnusedDnsData(Entities.Server server)
         {
-            var serverDnsDao = daoFactory.CreateServerDnsDao(Tenant, User);
-
-            var dnsSettings = serverDnsDao.GetFree();
+            var dnsSettings = DaoFactory.ServerDnsDao.GetFree();
 
             if (dnsSettings == null)
             {
@@ -336,7 +309,7 @@ namespace ASC.Mail.Core.Engine
                     TimeModified = DateTime.UtcNow
                 };
 
-                serverDns.Id = serverDnsDao.Save(serverDns);
+                serverDns.Id = DaoFactory.ServerDnsDao.Save(serverDns);
 
                 dnsSettings = serverDns;
             }
@@ -398,7 +371,7 @@ namespace ASC.Mail.Core.Engine
 
         public ServerNotificationAddressData CreateNotificationAddress(string localPart, string password, int domainId)
         {
-            if (!CoreContext.Configuration.Standalone)
+            if (!CoreBaseSettings.Standalone)
                 throw new SecurityException("Only for standalone");
 
             if (!IsAdmin)
@@ -415,12 +388,12 @@ namespace ASC.Mail.Core.Engine
             if (!Parser.IsEmailLocalPartValid(localPart))
                 throw new ArgumentException(@"Incorrect address username.", "localPart");
 
-            var trimPwd = Parser.GetValidPassword(password);
+            var trimPwd = Parser.GetValidPassword(password, SettingsManager, UserManagerWrapper);
 
             if (domainId < 0)
                 throw new ArgumentException(@"Invalid domain id.", "domainId");
 
-            var notificationAddressSettings = ServerNotificationAddressSettings.LoadForTenant(Tenant);
+            var notificationAddressSettings = SettingsManager.LoadSettings<ServerNotificationAddressSettings>(Tenant);
 
             if (!string.IsNullOrEmpty(notificationAddressSettings.NotificationAddress))
             {
@@ -429,82 +402,76 @@ namespace ASC.Mail.Core.Engine
 
             var utcNow = DateTime.UtcNow;
 
-            using (var daoFactory = new DaoFactory())
+            var serverDomain = DaoFactory.ServerDomainDao.GetDomain(domainId);
+
+            if (localPart.Length + serverDomain.Name.Length > 318) // 318 because of @ sign
+                throw new ArgumentException(@"Address of mailbox exceed limitation of 319 characters.", "localPart");
+
+            var login = string.Format("{0}@{1}", localPart, serverDomain.Name);
+
+            var server = DaoFactory.ServerDao.Get(Tenant);
+
+            if (server == null)
+                throw new ArgumentException("Server not configured");
+
+            var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+
+            var maildir = PostfixMaildirUtil.GenerateMaildirPath(serverDomain.Name, localPart, utcNow);
+
+            var serverMailbox = new Server.Core.Entities.Mailbox
             {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
-                var serverDomain = serverDomainDao.GetDomain(domainId);
+                Name = localPart,
+                Password = trimPwd,
+                Login = login,
+                LocalPart = localPart,
+                Domain = serverDomain.Name,
+                Active = true,
+                Quota = 0,
+                Maldir = maildir,
+                Modified = utcNow,
+                Created = utcNow,
+            };
 
-                if (localPart.Length + serverDomain.Name.Length > 318) // 318 because of @ sign
-                    throw new ArgumentException(@"Address of mailbox exceed limitation of 319 characters.", "localPart");
+            var serverAddress = new Alias
+            {
+                Name = localPart,
+                Address = login,
+                GoTo = login,
+                Domain = serverDomain.Name,
+                IsActive = true,
+                IsGroup = false,
+                Modified = utcNow,
+                Created = utcNow
+            };
 
-                var login = string.Format("{0}@{1}", localPart, serverDomain.Name);
+            engine.SaveMailbox(serverMailbox, serverAddress, false);
 
-                var serverDao = daoFactory.CreateServerDao();
-                var server = serverDao.Get(Tenant);
+            notificationAddressSettings = new ServerNotificationAddressSettings { NotificationAddress = login };
 
-                if (server == null)
-                    throw new ArgumentException("Server not configured");
+            SettingsManager.SaveSettings(notificationAddressSettings, Tenant);
 
-                var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+            var smtpSettings = DaoFactory.MailboxServerDao
+                .GetServer(server.SmtpSettingsId);
 
-                var maildir = PostfixMaildirUtil.GenerateMaildirPath(serverDomain.Name, localPart, utcNow);
+            var address = new MailAddress(login);
 
-                var serverMailbox = new Server.Core.Entities.Mailbox
-                {
-                    Name = localPart,
-                    Password = trimPwd,
-                    Login = login,
-                    LocalPart = localPart,
-                    Domain = serverDomain.Name,
-                    Active = true,
-                    Quota = 0,
-                    Maldir = maildir,
-                    Modified = utcNow,
-                    Created = utcNow,
-                };
+            var notifyAddress = new ServerNotificationAddressData
+            {
+                Email = address.ToString(),
+                SmtpPort = smtpSettings.Port,
+                SmtpServer = smtpSettings.Hostname,
+                SmtpAccount = address.ToLogin(smtpSettings.Username),
+                SmptEncryptionType = smtpSettings.SocketType,
+                SmtpAuth = true,
+                SmtpAuthenticationType = smtpSettings.Authentication
+            };
 
-                var serverAddress = new Alias
-                {
-                    Name = localPart,
-                    Address = login,
-                    GoTo = login,
-                    Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = false,
-                    Modified = utcNow,
-                    Created = utcNow
-                };
-
-                engine.SaveMailbox(serverMailbox, serverAddress, false);
-
-                notificationAddressSettings = new ServerNotificationAddressSettings {NotificationAddress = login};
-
-                notificationAddressSettings.SaveForTenant(Tenant);
-
-                var mailboxServerDao = daoFactory.CreateMailboxServerDao();
-
-                var smtpSettings = mailboxServerDao.GetServer(server.SmtpSettingsId);
-
-                var address = new MailAddress(login);
-
-                var notifyAddress = new ServerNotificationAddressData
-                {
-                    Email = address.ToString(),
-                    SmtpPort = smtpSettings.Port,
-                    SmtpServer = smtpSettings.Hostname,
-                    SmtpAccount = address.ToLogin(smtpSettings.Username),
-                    SmptEncryptionType = smtpSettings.SocketType,
-                    SmtpAuth = true,
-                    SmtpAuthenticationType = smtpSettings.Authentication
-                };
-
-                return notifyAddress;
-            }
+            return notifyAddress;
         }
 
         public void RemoveNotificationAddress(string address)
         {
-            if (!CoreContext.Configuration.Standalone)
+            if (!CoreBaseSettings.Standalone)
                 throw new SecurityException("Only for standalone");
 
             if (!IsAdmin)
@@ -514,34 +481,31 @@ namespace ASC.Mail.Core.Engine
                 throw new ArgumentNullException("address");
 
             var deleteAddress = address.ToLowerInvariant().Trim();
-            var notificationAddressSettings = ServerNotificationAddressSettings.LoadForTenant(Tenant);
+            var notificationAddressSettings = SettingsManager.LoadSettings<ServerNotificationAddressSettings>(Tenant);
 
             if (notificationAddressSettings.NotificationAddress != deleteAddress)
                 throw new ArgumentException("Mailbox not exists");
 
             var mailAddress = new MailAddress(deleteAddress);
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDomainDao = daoFactory.CreateServerDomainDao(Tenant);
-                var serverDomain = serverDomainDao.GetDomains().FirstOrDefault(d => d.Name == mailAddress.Host);
+            var serverDomain = DaoFactory.ServerDomainDao
+                .GetDomains()
+                .FirstOrDefault(d => d.Name == mailAddress.Host);
 
-                if(serverDomain == null)
-                    throw new ArgumentException("Domain not exists");
+            if (serverDomain == null)
+                throw new ArgumentException("Domain not exists");
 
-                var serverDao = daoFactory.CreateServerDao();
-                var server = serverDao.Get(Tenant);
+            var server = DaoFactory.ServerDao.Get(Tenant);
 
-                if (server == null)
-                    throw new ArgumentException("Server not configured");
+            if (server == null)
+                throw new ArgumentException("Server not configured");
 
-                var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+            var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
 
-                engine.RemoveMailbox(deleteAddress);
-            }
+            engine.RemoveMailbox(deleteAddress);
 
-            var addressSettings = notificationAddressSettings.GetDefault() as ServerNotificationAddressSettings;
-            if (addressSettings != null && !addressSettings.SaveForTenant(Tenant))
+            var addressSettings = notificationAddressSettings.GetDefault(ServiceProvider) as ServerNotificationAddressSettings;
+            if (addressSettings != null && !SettingsManager.SaveSettings(addressSettings, Tenant))
             {
                 throw new Exception("Could not delete notification address setting.");
             }
@@ -555,108 +519,85 @@ namespace ASC.Mail.Core.Engine
             var fullServerInfo = new ServerFullData();
             var mailboxDataList = new List<ServerMailboxData>();
             var mailgroupDataList = new List<ServerDomainGroupData>();
-            
-            var domainEngine = new ServerDomainEngine(Tenant, User);
 
-            using (var daoFactory = new DaoFactory())
+            var server = GetMailServer();
+
+            var domains = EngineFactory.ServerDomainEngine.GetDomains();
+
+            var mailboxes = DaoFactory.MailboxDao.GetMailBoxes(new TenantServerMailboxesExp(Tenant));
+
+            var addresses = DaoFactory.ServerAddressDao.GetList();
+
+            foreach (var mailbox in mailboxes)
             {
-                var server = GetMailServer(daoFactory);
+                var address =
+                    addresses.FirstOrDefault(
+                        a => a.MailboxId == mailbox.Id && a.IsAlias == false && a.IsMailGroup == false);
 
-                var domains = domainEngine.GetDomains(daoFactory);
+                if (address == null)
+                    continue;
 
-                var mailboxDao = daoFactory.CreateMailboxDao();
+                var domain = domains.FirstOrDefault(d => d.Id == address.DomainId);
 
-                var mailboxes = mailboxDao.GetMailBoxes(new TenantServerMailboxesExp(Tenant));
+                if (domain == null)
+                    continue;
 
-                var serverAddressDao = daoFactory.CreateServerAddressDao(Tenant);
+                var serverAddressData = ServerMailboxEngine.ToServerDomainAddressData(address, domain);
 
-                var addresses = serverAddressDao.GetList();
+                var aliases =
+                    addresses.Where(a => a.MailboxId == mailbox.Id && a.IsAlias && !a.IsMailGroup)
+                        .ToList()
+                        .ConvertAll(a => ServerMailboxEngine.ToServerDomainAddressData(a, domain));
 
-                foreach (var mailbox in mailboxes)
-                {
-                    var address =
-                        addresses.FirstOrDefault(
-                            a => a.MailboxId == mailbox.Id && a.IsAlias == false && a.IsMailGroup == false);
-
-                    if (address == null)
-                        continue;
-
-                    var domain = domains.FirstOrDefault(d => d.Id == address.DomainId);
-
-                    if (domain == null)
-                        continue;
-
-                    var serverAddressData = ServerMailboxEngine.ToServerDomainAddressData(address, domain);
-
-                    var aliases =
-                        addresses.Where(a => a.MailboxId == mailbox.Id && a.IsAlias && !a.IsMailGroup)
-                            .ToList()
-                            .ConvertAll(a => ServerMailboxEngine.ToServerDomainAddressData(a, domain));
-
-                    mailboxDataList.Add(ServerMailboxEngine.ToMailboxData(mailbox, serverAddressData, aliases));
-                }
-
-                var serverGroupDao = daoFactory.CreateServerGroupDao(Tenant);
-
-                var groups = serverGroupDao.GetList();
-
-                foreach (var serverGroup in groups)
-                {
-                    var address =
-                        addresses.FirstOrDefault(
-                            a => a.Id == serverGroup.AddressId && !a.IsAlias && a.IsMailGroup);
-
-                    if (address == null)
-                        continue;
-
-                    var domain = domains.FirstOrDefault(d => d.Id == address.DomainId);
-
-                    if (domain == null)
-                        continue;
-
-                    var email = string.Format("{0}@{1}", address.AddressName, domain.Name);
-
-                    var serverGroupAddress = ServerMailboxEngine.ToServerDomainAddressData(address, email);
-
-                    var serverGroupAddresses =
-                        serverAddressDao.GetGroupAddresses(serverGroup.Id)
-                            .ConvertAll(a => ServerMailboxEngine.ToServerDomainAddressData(a,
-                                string.Format("{0}@{1}", a.AddressName, domain.Name)));
-
-                    mailgroupDataList.Add(ServerMailgroupEngine.ToServerDomainGroupData(serverGroup.Id, serverGroupAddress, serverGroupAddresses));
-                }
-
-                fullServerInfo.Server = server;
-                fullServerInfo.Domains = domains;
-                fullServerInfo.Mailboxes = mailboxDataList;
-                fullServerInfo.Mailgroups = mailgroupDataList;
+                mailboxDataList.Add(ServerMailboxEngine.ToMailboxData(mailbox, serverAddressData, aliases));
             }
+
+            var groups = DaoFactory.ServerGroupDao.GetList();
+
+            foreach (var serverGroup in groups)
+            {
+                var address =
+                    addresses.FirstOrDefault(
+                        a => a.Id == serverGroup.AddressId && !a.IsAlias && a.IsMailGroup);
+
+                if (address == null)
+                    continue;
+
+                var domain = domains.FirstOrDefault(d => d.Id == address.DomainId);
+
+                if (domain == null)
+                    continue;
+
+                var email = string.Format("{0}@{1}", address.AddressName, domain.Name);
+
+                var serverGroupAddress = ServerMailboxEngine.ToServerDomainAddressData(address, email);
+
+                var serverGroupAddresses =
+                    DaoFactory.ServerAddressDao.GetGroupAddresses(serverGroup.Id)
+                        .ConvertAll(a => ServerMailboxEngine.ToServerDomainAddressData(a,
+                            string.Format("{0}@{1}", a.AddressName, domain.Name)));
+
+                mailgroupDataList.Add(ServerMailgroupEngine.ToServerDomainGroupData(serverGroup.Id, serverGroupAddress, serverGroupAddresses));
+            }
+
+            fullServerInfo.Server = server;
+            fullServerInfo.Domains = domains;
+            fullServerInfo.Mailboxes = mailboxDataList;
+            fullServerInfo.Mailgroups = mailgroupDataList;
 
             return fullServerInfo;
         }
 
         public string GetServerVersion()
         {
-            using (var daoFactory = new DaoFactory())
-            {
-                var serverDao = daoFactory.CreateServerDao();
-                var server = serverDao.Get(Tenant);
+            var server = DaoFactory.ServerDao.Get(Tenant);
 
-                if (server == null)
-                    return null;
+            if (server == null)
+                return null;
 
-                var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
-                var version = engine.GetVersion();
-                return version;
-            }
-        }
-
-        private static bool IsAdmin
-        {
-            get
-            {
-                return WebItemSecurity.IsProductAdministrator(WebItemManager.MailProductID, SecurityContext.CurrentAccount.ID);
-            }
+            var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+            var version = engine.GetVersion();
+            return version;
         }
     }
 }

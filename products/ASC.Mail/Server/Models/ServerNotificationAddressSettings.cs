@@ -32,17 +32,17 @@ namespace ASC.Mail.Models
 {
     [Serializable]
     [DataContract]
-    public class ServerNotificationAddressSettings : BaseSettings<ServerNotificationAddressSettings>
+    public class ServerNotificationAddressSettings : ISettings
     {
         [DataMember]
         public string NotificationAddress { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
-            return new ServerNotificationAddressSettings {NotificationAddress = string.Empty};
+            return new ServerNotificationAddressSettings { NotificationAddress = string.Empty };
         }
 
-        public override Guid ID
+        public Guid ID
         {
             get { return new Guid("{C440A7BE-A336-4071-A57E-5E89725E1CF8}"); }
         }
