@@ -292,17 +292,16 @@ namespace ASC.Calendar.BusinessObjects
 
              return eventId == 0 ? null : GetEventById(eventId);
          }
-         /*
-         public Event GetEventIdOnlyByUid(string uid)
-         {
-             var sql = new SqlQuery("calendar_events")
-                 .Select("id")
-                 .Where(Exp.Like("uid", uid));
 
-             var eventId = db.ExecuteScalar<int>(sql);
-
-             return eventId == 0 ? null : GetEventById(eventId);
-         }*/
+        public Event GetEventIdOnlyByUid(string uid)
+        {
+            var eventId = CalendarDb.CalendarEvents
+                .Where(p =>
+                    uid.Contains(p.Uid)
+                 )
+                .Select(s => s.Id).FirstOrDefault();
+            return eventId == 0 ? null : GetEventById(eventId);
+        }
         public List<Calendar> GetCalendarsByIds(int[] calIds)
         {
             var data = from cc in CalendarDb.CalendarCalendars
@@ -1345,17 +1344,12 @@ namespace ASC.Calendar.BusinessObjects
 
             return events;
         }
-        /*public Event GetEventOnlyByUid(string eventUid)
+        public Event GetEventOnlyByUid(string eventUid)
         {
-            var sql = new SqlQuery("calendar_events e")
-                .Select("e.id")
-                .Where("e.tenant", TenantManager.GetCurrentTenant().TenantId)
-                .Where("e.uid", eventUid);
-
-            var eventId = db.ExecuteScalar<int>(sql);
+            var eventId = CalendarDb.CalendarEvents.Where(p => p.Tenant == TenantManager.GetCurrentTenant().TenantId && p.Uid == eventUid).Select(s => s.Id).FirstOrDefault();
 
             return eventId == 0 ? null : GetEventById(eventId);
-        }*/
+        }
 
         public void SetEventUid(int eventId, string uid)
         {
