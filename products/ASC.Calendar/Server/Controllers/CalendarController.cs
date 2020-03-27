@@ -2058,23 +2058,23 @@ namespace ASC.Calendar.Controllers
                                                      });
                     }
                     //TODO caldav
-                    /*
+
                     var sharingEventThread = new Thread(() =>
                     {
-                        CoreContext.TenantManager.SetCurrentTenant(currentTenantId);
+                        TenantManager.SetCurrentTenant(currentTenantId);
                         //event sharing ptions
-                        foreach (var sharingOption in sharingOptions)
+                        foreach (var sharingOption in eventData.SharingOptions)
                         {
                             if (!sharingOption.IsGroup)
                             {
-                                var user = CoreContext.UserManager.GetUsers(sharingOption.itemId);
+                                var user = UserManager.GetUsers(sharingOption.itemId);
                                 ReplaceSharingEvent(user, sharingOption.actionId, uidData[0], myUri, old_ics,
                                                     calendarId, createDate, targetCalendar.TimeZones[0],
                                                     calendarObj.TimeZone);
                             }
                             else
                             {
-                                var users = CoreContext.UserManager.GetUsersByGroup(sharingOption.itemId);
+                                var users = UserManager.GetUsersByGroup(sharingOption.itemId);
                                 foreach (var user in users)
                                 {
                                     ReplaceSharingEvent(user, sharingOption.actionId, uidData[0], myUri, old_ics,
@@ -2088,14 +2088,14 @@ namespace ASC.Calendar.Controllers
                         {
                             if (!sharingOption.IsGroup)
                             {
-                                var user = CoreContext.UserManager.GetUsers(sharingOption.itemId);
+                                var user = UserManager.GetUsers(sharingOption.itemId);
                                 ReplaceSharingEvent(user, sharingOption.actionId, uidData[0], myUri, old_ics,
                                                     calendarId, createDate, targetCalendar.TimeZones[0],
                                                     calendarObj.TimeZone, cal.calDavGuid);
                             }
                             else
                             {
-                                var users = CoreContext.UserManager.GetUsersByGroup(sharingOption.itemId);
+                                var users = UserManager.GetUsersByGroup(sharingOption.itemId);
                                 foreach (var user in users)
                                 {
                                     ReplaceSharingEvent(user, sharingOption.actionId, uidData[0], myUri, old_ics,
@@ -2110,14 +2110,13 @@ namespace ASC.Calendar.Controllers
                         }
                         else
                         {
-                            var owner = CoreContext.UserManager.GetUsers(evt.OwnerId);
-                            var ownerPaswd = CoreContext.Authentication.GetUserPasswordHash(evt.OwnerId);
+                            var owner = UserManager.GetUsers(evt.OwnerId);
+                            var ownerPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, evt.OwnerId);
                             updateCaldavEvent(old_ics, uidData[0], true, calendarObj.calDavGuid, myUri, owner.Email, ownerPaswd, createDate, targetCalendar.TimeZones[0], calendarObj.TimeZone, false, false);
                         }
 
                     });
                     sharingEventThread.Start();
-                    */
 
                 }
                 catch (Exception e)
@@ -2208,9 +2207,9 @@ namespace ASC.Calendar.Controllers
             var currentUserId = AuthContext.CurrentAccount.ID;
 
             //TODO Caldav
-            /* var removeEventThread = new Thread(() =>
+            var removeEventThread = new Thread(() =>
              {
-                 CoreContext.TenantManager.SetCurrentTenant(currentTenantId);
+                 TenantManager.SetCurrentTenant(currentTenantId);
                  //calendar sharing list
                  foreach (var sharingOption in sharingList)
                  {
@@ -2218,20 +2217,20 @@ namespace ASC.Calendar.Controllers
 
                      if (!sharingOption.IsGroup)
                      {
-                         var user = CoreContext.UserManager.GetUsers(sharingOption.itemId);
-                         var currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(user.ID);
+                         var user = UserManager.GetUsers(sharingOption.itemId);
+                         var currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, user.ID);
 
                          deleteEvent(fullAccess ? split[0] + "_write" : split[0], calendarId, user.Email, currentAccountPaswd, myUri, user.ID != cal.OwnerId);
                      }
                      else
                      {
-                         var users = CoreContext.UserManager.GetUsersByGroup(sharingOption.itemId);
+                         var users = UserManager.GetUsersByGroup(sharingOption.itemId);
                          foreach (var user in users)
                          {
                              var eventUid = user.ID == evt.OwnerId
                                                 ? split[0]
                                                 : fullAccess ? split[0] + "_write" : split[0];
-                             var currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(user.ID);
+                             var currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, user.ID);
                              deleteEvent(eventUid, calendarId, user.Email, currentAccountPaswd, myUri, true);
                          }
                      }
@@ -2243,20 +2242,20 @@ namespace ASC.Calendar.Controllers
 
                      if (!sharingOption.IsGroup)
                      {
-                         var user = CoreContext.UserManager.GetUsers(sharingOption.itemId);
-                         var currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(user.ID);
+                         var user = UserManager.GetUsers(sharingOption.itemId);
+                         var currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, user.ID);
 
                          deleteEvent(fullAccess ? split[0] + "_write" : split[0], SharedEventsCalendar.CalendarId, user.Email, currentAccountPaswd, myUri, user.ID != evt.OwnerId);
                      }
                      else
                      {
-                         var users = CoreContext.UserManager.GetUsersByGroup(sharingOption.itemId);
+                         var users = UserManager.GetUsersByGroup(sharingOption.itemId);
                          foreach (var user in users)
                          {
                              var eventUid = user.ID == evt.OwnerId
                                                 ? split[0]
                                                 : fullAccess ? split[0] + "_write" : split[0];
-                             var currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(user.ID);
+                             var currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, user.ID);
 
                              deleteEvent(eventUid, SharedEventsCalendar.CalendarId, user.Email, currentAccountPaswd, myUri, true);
                          }
@@ -2264,8 +2263,8 @@ namespace ASC.Calendar.Controllers
                  }
                  if (currentUserId == evt.OwnerId)
                  {
-                     var owner = CoreContext.UserManager.GetUsers(evt.OwnerId);
-                     var ownerPaswd = CoreContext.Authentication.GetUserPasswordHash(evt.OwnerId);
+                     var owner = UserManager.GetUsers(evt.OwnerId);
+                     var ownerPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, evt.OwnerId);
                      deleteEvent(split[0], evt.CalendarId, owner.Email, ownerPaswd, myUri, false);
                  }
                  if (calendarId != BirthdayReminderCalendar.CalendarId &&
@@ -2275,13 +2274,13 @@ namespace ASC.Calendar.Controllers
                  {
                      if (currentUserId == cal.OwnerId)
                      {
-                         var owner = CoreContext.UserManager.GetUsers(currentUserId);
-                         var ownerPaswd = CoreContext.Authentication.GetUserPasswordHash(currentUserId);
+                         var owner = UserManager.GetUsers(currentUserId);
+                         var ownerPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, currentUserId);
 
                          deleteEvent(split[0], evt.CalendarId, owner.Email, ownerPaswd, myUri, false);
                      }
                  }
-             }); */
+             });
 
 
             if (evt.OwnerId.Equals(AuthContext.CurrentAccount.ID) || CheckPermissions(evt, CalendarAccessRights.FullAccessAction, true) || CheckPermissions(cal, CalendarAccessRights.FullAccessAction, true))
@@ -2290,14 +2289,14 @@ namespace ASC.Calendar.Controllers
                 {
                     DataProvider.RemoveEvent(eventId);
                     //TODO Caldav
-                    /* if (!fromCaldavServer)
+                     if (!eventDeleteModel.FromCaldavServer)
                      {
                          var ownerId = SecurityContext.CurrentAccount.ID != cal.OwnerId ? cal.OwnerId : SecurityContext.CurrentAccount.ID;
-                         var email = CoreContext.UserManager.GetUsers(ownerId).Email;
-                         string currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(ownerId);
+                         var email = UserManager.GetUsers(ownerId).Email;
+                         string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, ownerId);
                          deleteEvent(split[0], evt.CalendarId, email, currentAccountPaswd, myUri);
                          removeEventThread.Start();
-                     }*/
+                     }
                     return events;
                 }
 
@@ -2368,8 +2367,8 @@ namespace ASC.Calendar.Controllers
                         var ics = DDayICalParser.SerializeCalendar(targetCalendar);
 
                         //TODo Caldav
-                        /* var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, targetCalendar.TimeZones[0], cal.TimeZone, true));
-                         updateCaldavThread.Start();*/
+                        var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, targetCalendar.TimeZones[0], cal.TimeZone, true));
+                        updateCaldavThread.Start();
                     }
                     catch (Exception e)
                     {
@@ -2540,8 +2539,8 @@ namespace ASC.Calendar.Controllers
                 string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
                 //TODO Caldav
-                /*var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
-                updateCaldavThread.Start();*/
+                var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
+                updateCaldavThread.Start();
             }
             catch (Exception e)
             {
@@ -2624,8 +2623,8 @@ namespace ASC.Calendar.Controllers
                     string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
                     //TODO Caldav
-                    /* var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
-                      updateCaldavThread.Start();*/
+                    var updateCaldavThread = new Thread(() => updateCaldavEvent(old_ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd));
+                    updateCaldavThread.Start();
                 }
                 catch (Exception e)
                 {
@@ -2673,7 +2672,7 @@ namespace ASC.Calendar.Controllers
                 var myUri = HttpContext.Request.GetUrlRewriter();
 
                 //TODO Caldav
-                // deleteEvent(split[0], todo.CalendarId, email, currentAccountPaswd, myUri);
+                deleteEvent(split[0], todo.CalendarId, email, currentAccountPaswd, myUri);
             }
 
             DataProvider.RemoveTodo(todoId);
@@ -3166,8 +3165,8 @@ namespace ASC.Calendar.Controllers
                             string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, AuthContext.CurrentAccount.ID);
 
                             //TODO caldav
-                            /*var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, tmpCalendar.TimeZones[0], existCalendar.TimeZone));
-                             updateCaldavThread.Start();*/
+                            var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, tmpCalendar.TimeZones[0], existCalendar.TimeZone));
+                            updateCaldavThread.Start();
                         }
                         catch (Exception e)
                         {
@@ -3196,12 +3195,12 @@ namespace ASC.Calendar.Controllers
                     }
                     else
                     {
-                        /* if (eventHistory.Contains(tmpCalendar)) continue;
+                        if (EventHistoryHelper.Contains(tmpCalendar, eventHistory)) continue;
 
-                         eventHistory = _dataProvider.AddEventHistory(eventHistory.CalendarId, eventHistory.EventUid,
+                         eventHistory = DataProvider.AddEventHistory(eventHistory.CalendarId, eventHistory.EventUid,
                                                                       eventHistory.EventId, ics);
 
-                         var mergedCalendar = eventHistory.GetMerged();
+                         var mergedCalendar = EventHistoryHelper.GetMerged(eventHistory);
 
                          if (mergedCalendar == null || mergedCalendar.Events == null || !mergedCalendar.Events.Any()) continue;
 
@@ -3212,7 +3211,7 @@ namespace ASC.Calendar.Controllers
                          var utcStartDate = mergedEvent.IsAllDay ? mergedEvent.Start.Value : DDayICalParser.ToUtc(mergedEvent.Start);
                          var utcEndDate = mergedEvent.IsAllDay ? mergedEvent.End.Value : DDayICalParser.ToUtc(mergedEvent.End);
 
-                         var existCalendar = _dataProvider.GetCalendarById(calendarId);
+                         var existCalendar = DataProvider.GetCalendarById(calendarId);
                          if (!eventObj.IsAllDay && eventObj.Created != null && !eventObj.Start.IsUtc)
                          {
                              var offset = existCalendar.TimeZone.GetUtcOffset(eventObj.Created.Value);
@@ -3228,7 +3227,7 @@ namespace ASC.Calendar.Controllers
                              utcEndDate = utcEndDate.AddDays(-1);
 
                          var targetEvent = DataProvider.GetEventById(eventHistory.EventId);
-                         var permissions = PublicItemCollection.GetForEvent(targetEvent);
+                         var permissions = PublicItemCollectionHelper.GetForEvent(targetEvent);
                          var sharingOptions = permissions.Items
                              .Where(x => x.SharingOption.Id != AccessOption.OwnerOption.Id)
                              .Select(x => new SharingParam
@@ -3244,13 +3243,13 @@ namespace ASC.Calendar.Controllers
                              string[] split = uid.Split(new Char[] { '@' });
 
                              var calDavGuid = existCalendar != null ? existCalendar.calDavGuid : "";
-                             var myUri = HttpContext.Current.Request.GetUrlRewriter();
-                             var currentUserEmail = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower();
-                             string currentAccountPaswd = CoreContext.Authentication.GetUserPasswordHash(SecurityContext.CurrentAccount.ID);
+                             var myUri = HttpContext.Request.GetUrlRewriter(); ;
+                             var currentUserEmail = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower();
+                             string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, SecurityContext.CurrentAccount.ID);
 
                             //TODO caldav
-                            // var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, tmpCalendar.TimeZones[0], existCalendar.TimeZone));
-                            // updateCaldavThread.Start();
+                             var updateCaldavThread = new Thread(() => updateCaldavEvent(ics, split[0], true, calDavGuid, myUri, currentUserEmail, currentAccountPaswd, DateTime.Now, tmpCalendar.TimeZones[0], existCalendar.TimeZone));
+                             updateCaldavThread.Start();
                          }
                          catch (Exception e)
                          {
@@ -3271,7 +3270,7 @@ namespace ASC.Calendar.Controllers
                                      mergedEvent.Uid,
                                      DDayICalParser.ConvertEventStatus(mergedEvent.Status), eventObj.Created != null ? eventObj.Created.Value : DateTime.Now);
 
-                         counter++;*/
+                         counter++;
                     }
                 }
             }
@@ -4393,6 +4392,87 @@ namespace ASC.Calendar.Controllers
             catch (Exception ex)
             {
                 Log.Error("ERROR: " + ex.Message);
+            }
+
+        }
+        private void ReplaceSharingEvent(
+                            ASC.Core.Users.UserInfo user,
+                            string actionId,
+                            string guid,
+                            Uri myUri,
+                            string oldIcs,
+                            string calendarId,
+                            DateTime updateDate = default(DateTime),
+                            VTimeZone calendarVTimeZone = null,
+                            TimeZoneInfo calendarTimeZone = null,
+                            string calGuid = null)
+        {
+            if (calGuid != "" && myUri != null && user != null)
+            {
+                string eventUid = guid,
+                    oldEventUid = guid;
+                if (actionId == AccessOption.FullAccessOption.Id)
+                {
+                    eventUid = guid + "_write";
+                    oldEventUid = guid;
+                }
+                else if (actionId != AccessOption.OwnerOption.Id)
+                {
+                    oldEventUid = guid + "_write";
+                    eventUid = guid;
+                }
+
+                var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
+                var caldavHost = myUri.Host;
+
+                Log.Info("RADICALE REWRITE URL: " + myUri);
+
+                var encoded =
+                    Convert.ToBase64String(
+                        Encoding.UTF8.GetBytes("admin@ascsystem" + ":" +
+                                                ASC.Core.Configuration.Constants.CoreSystem.ID));
+
+                var currentUserName = user.Email.ToLower() + "@" + caldavHost;
+
+                var requestDeleteUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" +
+                    (calGuid ?? SharedEventsCalendar.CalendarId) + (actionId != AccessOption.OwnerOption.Id ? "-shared" : "") + "/" + oldEventUid +
+                                        ".ics";
+
+                try
+                {
+                    var webRequest = (HttpWebRequest)WebRequest.Create(requestDeleteUrl);
+                    webRequest.Method = "DELETE";
+                    webRequest.Headers.Add("Authorization", "Basic " + encoded);
+                    using (var webResponse = webRequest.GetResponse())
+                    using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                    {
+                    }
+                }
+                catch (WebException ex)
+                {
+                    if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
+                    {
+                        var resp = (HttpWebResponse)ex.Response;
+                        if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
+                            Log.Debug("ERROR: " + ex.Message);
+                        else
+                            Log.Error("ERROR: " + ex.Message);
+                    }
+                    else
+                    {
+                        Log.Error("ERROR: " + ex.Message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("ERROR: " + ex.Message);
+                }
+                finally
+                {
+                    updateCaldavEvent(oldIcs, eventUid, true,
+                                        (calGuid ?? SharedEventsCalendar.CalendarId), myUri,
+                                        user.Email, actionId != AccessOption.OwnerOption.Id ? null : Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, user.ID), updateDate, calendarVTimeZone, calendarTimeZone, false, actionId != AccessOption.OwnerOption.Id);
+                }
             }
 
         }
