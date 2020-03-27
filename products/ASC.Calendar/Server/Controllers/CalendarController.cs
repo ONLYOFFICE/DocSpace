@@ -4361,7 +4361,7 @@ namespace ASC.Calendar.Controllers
                                 var ics = DDayICalParser.SerializeCalendar(calendar);
 
                                 //TODO
-                                //UpdateSharedEvent(userGroup, evt.Uid, fullAccess, myUri, ics, calendarGuid, updateDate, calendarVTimeZone, calendarTimeZone);
+                                UpdateSharedEvent(userGroup, evt.Uid, fullAccess, myUri, ics, calendarGuid, updateDate, calendarVTimeZone, calendarTimeZone);
                             }
                         }
                     }
@@ -4384,7 +4384,7 @@ namespace ASC.Calendar.Controllers
                             var ics = DDayICalParser.SerializeCalendar(calendar);
 
                             //TODO
-                            //UpdateSharedEvent(user, evt.Uid, fullAccess, myUri, ics, calendarGuid, updateDate, calendarVTimeZone, calendarTimeZone);
+                            UpdateSharedEvent(user, evt.Uid, fullAccess, myUri, ics, calendarGuid, updateDate, calendarVTimeZone, calendarTimeZone);
                         }
                     }
                 }
@@ -4475,6 +4475,76 @@ namespace ASC.Calendar.Controllers
                 }
             }
 
+        }
+        private void UpdateSharedEvent(UserInfo userSharingInfo, string guid, bool fullAccess,
+                            Uri myUri,
+                            string oldIcs,
+                            string calendarId,
+                            DateTime updateDate = default(DateTime),
+                            VTimeZone calendarVTimeZone = null,
+                            TimeZoneInfo calendarTimeZone = null)
+        {
+            string eventUid = guid,
+                   oldEventUid = guid;
+
+            if (fullAccess)
+            {
+                eventUid = guid + "_write";
+                oldEventUid = guid;
+            }
+            else
+            {
+                oldEventUid = guid + "_write";
+                eventUid = guid;
+            }
+
+            var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
+            var caldavHost = myUri.Host;
+
+            Log.Info("RADICALE REWRITE URL: " + myUri);
+
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID));
+
+            var currentUserName = userSharingInfo.Email.ToLower() + "@" + caldavHost;
+
+            var requestDeleteUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + calendarId + "-shared" + "/" + oldEventUid + ".ics";
+
+            updatedEvents.Add(guid);
+
+            try
+            {
+                var webRequest = (HttpWebRequest)WebRequest.Create(requestDeleteUrl);
+                webRequest.Method = "DELETE";
+                webRequest.Headers.Add("Authorization", "Basic " + encoded);
+                using (var webResponse = webRequest.GetResponse())
+                using (var reader = new StreamReader(webResponse.GetResponseStream()))
+                {
+                }
+            }
+            catch (WebException ex)
+            {
+                if (ex.Status == WebExceptionStatus.ProtocolError && ex.Response != null)
+                {
+                    var resp = (HttpWebResponse)ex.Response;
+                    if (resp.StatusCode == HttpStatusCode.NotFound || resp.StatusCode == HttpStatusCode.Conflict)
+                        Log.Debug("ERROR: " + ex.Message);
+                    else
+                        Log.Error("ERROR: " + ex.Message);
+                }
+                else
+                {
+                    Log.Error("ERROR: " + ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+            finally
+            {
+                updateCaldavEvent(oldIcs, eventUid, true, calendarId, myUri,
+                                  userSharingInfo.Email, null, updateDate, calendarVTimeZone, calendarTimeZone, false, true);
+            }
         }
     }
 
