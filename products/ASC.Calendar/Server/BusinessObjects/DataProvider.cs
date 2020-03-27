@@ -798,7 +798,7 @@ namespace ASC.Calendar.BusinessObjects
             CalendarDb.SaveChanges();
             tx.Commit();
         }
-        /*
+
         public void RemoveCaldavCalendar(string currentUserName, string email, string currentAccountPaswd, string encoded, string calDavGuid, Uri myUri, bool isShared = false)
         {
             var calDavServerUrl = myUri.Scheme + "://" + myUri.Host + "/caldav";
@@ -816,19 +816,24 @@ namespace ASC.Calendar.BusinessObjects
             }
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.Calendar").Error(ex);
+                Log.Error(ex);
             }
         }
         public void RemoveExternalCalendarData(string calendarId)
         {
-            using (var tr = db.BeginTransaction())
+            using var tx = CalendarDb.Database.BeginTransaction();
+            
+            var ccu = CalendarDb.CalendarCalendarUser.Where(r => r.ExtCalendarId == calendarId).SingleOrDefault();
+
+            if (ccu != null)
             {
-                db.ExecuteNonQuery(new SqlDelete("calendar_calendar_user").Where("ext_calendar_id",calendarId));
-                tr.Commit();
+                CalendarDb.CalendarCalendarUser.Remove(ccu);
             }
+            CalendarDb.SaveChanges();
+            tx.Commit();
         }
 
-    */
+
         public Todo GetTodoByUid(string todoUid)
         {
             var data = from todos in CalendarDb.CalendarTodos
