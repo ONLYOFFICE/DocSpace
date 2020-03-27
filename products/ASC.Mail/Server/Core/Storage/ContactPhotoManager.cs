@@ -29,133 +29,143 @@ using System.Collections.Generic;
 using System.Drawing;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
-//using ASC.Web.Files.Classes;
+using ASC.Web.Files.Classes;
 
 namespace ASC.Mail.Data.Storage
 {
-    //public static class ContactPhotoManager
-    //{
-    //    #region Members
+    public static class ContactPhotoManager
+    {
+        #region Members
 
-    //    private const string PHOTOS_BASE_DIR_NAME = "photos";
-    //    private static readonly Dictionary<int, IDictionary<Size, string>> PhotoCache = new Dictionary<int, IDictionary<Size, string>>();
+        private const string PHOTOS_BASE_DIR_NAME = "photos";
+        private static readonly Dictionary<int, IDictionary<Size, string>> PhotoCache = new Dictionary<int, IDictionary<Size, string>>();
 
-    //    private static readonly Size BigSize = new Size(200, 200);
-    //    private static readonly Size MediumSize = new Size(82, 82);
-    //    private static readonly Size SmallSize = new Size(40, 40);
+        private static readonly Size BigSize = new Size(200, 200);
+        private static readonly Size MediumSize = new Size(82, 82);
+        private static readonly Size SmallSize = new Size(40, 40);
 
-    //    private static readonly object Locker = new object();
+        private static readonly object Locker = new object();
 
-    //    #endregion
+        #endregion
 
-    //    #region Get Photo Methods
+        #region Get Photo Methods
 
-    //    public static String GetSmallSizePhoto(int contacId)
-    //    {
-    //        return contacId <= 0 ? GetDefaultPhoto(SmallSize) : GetPhotoUri(contacId, SmallSize);
-    //    }
+        public static string GetSmallSizePhoto(GlobalStore globalStore, WebImageSupplier webImageSupplier, int contacId)
+        {
+            return contacId <= 0 
+                ? GetDefaultPhoto(webImageSupplier, SmallSize) 
+                : GetPhotoUri(globalStore, webImageSupplier, contacId, SmallSize);
+        }
 
-    //    public static String GetMediumSizePhoto(int contacId)
-    //    {
-    //        return contacId <= 0 ? GetDefaultPhoto(MediumSize) : GetPhotoUri(contacId, MediumSize);
-    //    }
+        public static string GetMediumSizePhoto(GlobalStore globalStore, WebImageSupplier webImageSupplier, int contacId)
+        {
+            return contacId <= 0 
+                ? GetDefaultPhoto(webImageSupplier, MediumSize) 
+                : GetPhotoUri(globalStore, webImageSupplier, contacId, MediumSize);
+        }
 
-    //    public static String GetBigSizePhoto(int contacId)
-    //    {
-    //        return contacId <= 0 ? GetDefaultPhoto(BigSize) : GetPhotoUri(contacId, BigSize);
-    //    }
+        public static string GetBigSizePhoto(GlobalStore globalStore, WebImageSupplier webImageSupplier, int contacId)
+        {
+            return contacId <= 0 
+                ? GetDefaultPhoto(webImageSupplier, BigSize) 
+                : GetPhotoUri(globalStore, webImageSupplier, contacId, BigSize);
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region Private Methods
+        #region Private Methods
 
-    //    private static String GetDefaultPhoto(Size photoSize)
-    //    {
-    //        const int contacе_id = -1;
+        private static string GetDefaultPhoto(WebImageSupplier webImageSupplier, Size photoSize)
+        {
+            const int contacе_id = -1;
 
-    //        var defaultPhotoUri = FromCache(contacе_id, photoSize);
+            var defaultPhotoUri = FromCache(contacе_id, photoSize);
 
-    //        if (!String.IsNullOrEmpty(defaultPhotoUri)) return defaultPhotoUri;
+            if (!string.IsNullOrEmpty(defaultPhotoUri)) return defaultPhotoUri;
 
-    //        defaultPhotoUri = WebImageSupplier.GetAbsoluteWebPath(String.Format("empty_people_logo_{0}_{1}.png", photoSize.Height, photoSize.Width), WebItemManager.MailProductID);
+            defaultPhotoUri = webImageSupplier.GetAbsoluteWebPath(
+                string.Format("empty_people_logo_{0}_{1}.png", 
+                photoSize.Height, photoSize.Width), 
+                WebItemManager.MailProductID);
 
-    //        ToCache(contacе_id, defaultPhotoUri, photoSize);
+            ToCache(contacе_id, defaultPhotoUri, photoSize);
 
-    //        return defaultPhotoUri;
-    //    }
+            return defaultPhotoUri;
+        }
 
-    //    private static String GetPhotoUri(int contactId, Size photoSize)
-    //    {
-    //        var photoUri = FromCache(contactId, photoSize);
+        private static string GetPhotoUri(GlobalStore globalStore, WebImageSupplier webImageSupplier, int contactId, Size photoSize)
+        {
+            var photoUri = FromCache(contactId, photoSize);
 
-    //        if (!String.IsNullOrEmpty(photoUri)) return photoUri;
+            if (!string.IsNullOrEmpty(photoUri)) return photoUri;
 
-    //        photoUri = FromDataStore(contactId, photoSize);
+            photoUri = FromDataStore(globalStore, contactId, photoSize);
 
-    //        if (String.IsNullOrEmpty(photoUri))
-    //            photoUri = GetDefaultPhoto(photoSize);
+            if (string.IsNullOrEmpty(photoUri))
+                photoUri = GetDefaultPhoto(webImageSupplier, photoSize);
 
-    //        ToCache(contactId, photoUri, photoSize);
+            ToCache(contactId, photoUri, photoSize);
 
-    //        return photoUri;
-    //    }
+            return photoUri;
+        }
 
-    //    private static String BuildFileDirectory(int contactId)
-    //    {
-    //        var s = contactId.ToString("000000");
+        private static string BuildFileDirectory(int contactId)
+        {
+            var s = contactId.ToString("000000");
 
-    //        return String.Concat(PHOTOS_BASE_DIR_NAME, "/", s.Substring(0, 2), "/",
-    //                             s.Substring(2, 2), "/",
-    //                             s.Substring(4), "/");
-    //    }
+            return string.Concat(PHOTOS_BASE_DIR_NAME, "/", s.Substring(0, 2), "/",
+                                 s.Substring(2, 2), "/",
+                                 s.Substring(4), "/");
+        }
 
-    //    private static String BuildFileName(int contactId, Size photoSize)
-    //    {
-    //        return String.Format("contact_{0}_{1}_{2}", contactId, photoSize.Width, photoSize.Height);
-    //    }
+        private static string BuildFileName(int contactId, Size photoSize)
+        {
+            return string.Format("contact_{0}_{1}_{2}", contactId, photoSize.Width, photoSize.Height);
+        }
 
-    //    #endregion
+        #endregion
 
-    //    #region Cache and DataStore Methods
+        #region Cache and DataStore Methods
 
-    //    private static String FromCache(int contactId, Size photoSize)
-    //    {
-    //        lock (Locker)
-    //        {
-    //            if (PhotoCache.ContainsKey(contactId))
-    //            {
-    //                if (PhotoCache[contactId].ContainsKey(photoSize))
-    //                {
-    //                    return PhotoCache[contactId][photoSize];
-    //                }
-    //            }
-    //        }
-    //        return String.Empty;
-    //    }
+        private static string FromCache(int contactId, Size photoSize)
+        {
+            lock (Locker)
+            {
+                if (PhotoCache.ContainsKey(contactId))
+                {
+                    if (PhotoCache[contactId].ContainsKey(photoSize))
+                    {
+                        return PhotoCache[contactId][photoSize];
+                    }
+                }
+            }
 
-    //    private static void ToCache(int contactId, String photoUri, Size photoSize)
-    //    {
-    //        lock (Locker)
-    //        {
-    //            if (PhotoCache.ContainsKey(contactId))
-    //                if (PhotoCache[contactId].ContainsKey(photoSize))
-    //                    PhotoCache[contactId][photoSize] = photoUri;
-    //                else
-    //                    PhotoCache[contactId].Add(photoSize, photoUri);
-    //            else
-    //                PhotoCache.Add(contactId, new Dictionary<Size, string> { { photoSize, photoUri } });
-    //        }
-    //    }
+            return string.Empty;
+        }
 
-    //    private static String FromDataStore(int contactId, Size photoSize)
-    //    {
-    //        var directoryPath = BuildFileDirectory(contactId);
+        private static void ToCache(int contactId, string photoUri, Size photoSize)
+        {
+            lock (Locker)
+            {
+                if (PhotoCache.ContainsKey(contactId))
+                    if (PhotoCache[contactId].ContainsKey(photoSize))
+                        PhotoCache[contactId][photoSize] = photoUri;
+                    else
+                        PhotoCache[contactId].Add(photoSize, photoUri);
+                else
+                    PhotoCache.Add(contactId, new Dictionary<Size, string> { { photoSize, photoUri } });
+            }
+        }
 
-    //        var filesUri = Global.GetStore().ListFiles(directoryPath, BuildFileName(contactId, photoSize) + "*", false);
+        private static string FromDataStore(GlobalStore globalStore, int contactId, Size photoSize)
+        {
+            var directoryPath = BuildFileDirectory(contactId);
 
-    //        return filesUri.Length == 0 ? String.Empty : filesUri[0].ToString();
-    //    }
+            var filesUri = globalStore.GetStore().ListFiles(directoryPath, BuildFileName(contactId, photoSize) + "*", false);
 
-    //    #endregion
-    //}
+            return filesUri.Length == 0 ? String.Empty : filesUri[0].ToString();
+        }
+
+        #endregion
+    }
 }
