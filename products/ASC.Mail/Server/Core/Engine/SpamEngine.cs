@@ -35,6 +35,7 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
 namespace ASC.Mail.Core.Engine
@@ -45,14 +46,28 @@ namespace ASC.Mail.Core.Engine
 
         public string User { get; private set; }
         public StorageFactory StorageFactory { get; }
+        public SecurityContext SecurityContext { get; }
+        public TenantManager TenantManager { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
+        public ApiHelper ApiHelper { get; }
         public ILog Log { get; private set; }
 
-        public SpamEngine(int tenant, string user, StorageFactory storageFactory, ILog log = null)
+        public SpamEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            ApiHelper apiHelper,
+            IOptionsMonitor<ILog> option)
         {
-            Tenant = tenant;
-            User = user;
-            StorageFactory = storageFactory;
-            Log = log ?? LogManager.GetLogger("ASC.Mail.CrmLinkEngine");
+
+            Log = option.Get("ASC.Mail.SpamEngine");
+            SecurityContext = securityContext;
+            TenantManager = tenantManager;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
+            ApiHelper = apiHelper;
         }
 
         public void SendConversationsToSpamTrainer(int tenant, string user, List<int> ids, bool isSpam, string httpContextScheme)
@@ -67,7 +82,7 @@ namespace ASC.Mail.Core.Engine
                     Thread.CurrentThread.CurrentCulture = userCulture;
                     Thread.CurrentThread.CurrentUICulture = userUiCulture;
 
-                    CoreContext.TenantManager.SetCurrentTenant(tenant);
+                    TenantManager.SetCurrentTenant(tenant);
 
                     var tlMails = GetTlMailStreamList(tenant, user, ids);
                     SendEmlUrlsToSpamTrainer(tenant, user, tlMails, isSpam, httpContextScheme);
@@ -84,25 +99,18 @@ namespace ASC.Mail.Core.Engine
         {
             var streamList = new Dictionary<int, string>();
 
-            var engine = new EngineFactory(tenant, user);
+            var tlMailboxes =
+                DaoFactory.MailboxDao.GetMailBoxes(new UserMailboxesExp(tenant, user, false, true));
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var daoMailbox = daoFactory.CreateMailboxDao();
+            var tlMailboxesIds = tlMailboxes.ConvertAll(mb => mb.Id);
 
-                var tlMailboxes =
-                    daoMailbox.GetMailBoxes(new UserMailboxesExp(tenant, user, false, true));
+            if (!tlMailboxesIds.Any())
+                return streamList;
 
-                var tlMailboxesIds = tlMailboxes.ConvertAll(mb => mb.Id);
-
-                if (!tlMailboxesIds.Any())
-                    return streamList;
-
-                streamList = engine.ChainEngine.GetChainedMessagesInfo(daoFactory, ids)
-                    .Where(r => r.FolderRestore != FolderType.Sent)
-                    .Where(r => tlMailboxesIds.Contains(r.MailboxId))
-                    .ToDictionary(r => r.Id, r => r.Stream);
-            }
+            streamList = EngineFactory.ChainEngine.GetChainedMessagesInfo(ids)
+                .Where(r => r.FolderRestore != FolderType.Sent)
+                .Where(r => tlMailboxesIds.Contains(r.MailboxId))
+                .ToDictionary(r => r.Id, r => r.Stream);
 
             return streamList;
         }
@@ -113,20 +121,18 @@ namespace ASC.Mail.Core.Engine
             if (!tlMails.Any())
                 return;
 
-            using (var daoFactory = new DaoFactory())
-            {
-                var db = daoFactory.DbManager;
-
-                var serverInformationQuery = new SqlQuery(ServerTable.TABLE_NAME)
-                    .InnerJoin(TenantXServerTable.TABLE_NAME,
-                        Exp.EqColumns(TenantXServerTable.Columns.ServerId, ServerTable.Columns.Id))
-                    .Select(ServerTable.Columns.ConnectionString)
-                    .Where(TenantXServerTable.Columns.Tenant, tenant);
-
-                var serverInfo = db.ExecuteList(serverInformationQuery)
-                    .ConvertAll(r =>
+            var serverInfo = DaoFactory.MailDb.MailServerServer
+                    .Join(DaoFactory.MailDb.MailServerServerXTenant, s => s.Id, sxt => sxt.IdServer,
+                        (s, x) => new
+                        {
+                            Server = s,
+                            Xtenant = x
+                        })
+                    .Where(x => x.Xtenant.IdTenant == Tenant)
+                    .Select(x => x.Server.ConnectionString)
+                    .ToList()
+                    .ConvertAll(connectionString =>
                     {
-                        var connectionString = Convert.ToString(r[0]);
                         var json = JObject.Parse(connectionString);
 
                         if (json["Api"] != null)
@@ -142,31 +148,28 @@ namespace ASC.Mail.Core.Engine
                         }
 
                         return null;
-                    }
-                    ).SingleOrDefault(info => info != null);
+                    })
+                    .SingleOrDefault(info => info != null);
 
-                if (serverInfo == null)
+            if (serverInfo == null)
+            {
+                Log.Error(
+                    "SendEmlUrlsToSpamTrainer: Can't sent task to spam trainer. Empty server api info.");
+                return;
+            }
+
+            foreach (var tlSpamMail in tlMails)
+            {
+                try
                 {
-                    Log.Error(
-                        "SendEmlUrlsToSpamTrainer: Can't sent task to spam trainer. Empty server api info.");
-                    return;
+                    var emlUrl = GetMailEmlUrl(tenant, user, tlSpamMail.Value);
+
+                    ApiHelper.SendEmlToSpamTrainer(serverInfo.server_ip, serverInfo.protocol, serverInfo.port,
+                        serverInfo.version, serverInfo.token, emlUrl, isSpam);
                 }
-
-                var apiHelper = new ApiHelper(httpContextScheme);
-
-                foreach (var tlSpamMail in tlMails)
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        var emlUrl = GetMailEmlUrl(tenant, user, tlSpamMail.Value);
-
-                        apiHelper.SendEmlToSpamTrainer(serverInfo.server_ip, serverInfo.protocol, serverInfo.port,
-                            serverInfo.version, serverInfo.token, emlUrl, isSpam);
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.ErrorFormat("SendEmlUrlsToSpamTrainer() Exception: \r\n {0}", ex.ToString());
-                    }
+                    Log.ErrorFormat("SendEmlUrlsToSpamTrainer() Exception: \r\n {0}", ex.ToString());
                 }
             }
         }
