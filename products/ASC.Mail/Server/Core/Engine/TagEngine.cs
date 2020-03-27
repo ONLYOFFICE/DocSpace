@@ -31,22 +31,18 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Enums;
 using ASC.Mail.Models;
-using ASC.Mail.Utils;
+using ASC.Web.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.Serialization;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -75,6 +71,7 @@ namespace ASC.Mail.Core.Engine
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
+        public WebItemSecurity WebItemSecurity { get; }
         public MailDbContext MailDb { get; }
         public TagEngine(
             DbContextManager<MailDbContext> dbContext,
@@ -85,7 +82,8 @@ namespace ASC.Mail.Core.Engine
             DaoFactory daoFactory,
             FactoryIndexer<MailWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            WebItemSecurity webItemSecurity)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
@@ -97,6 +95,7 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
+            WebItemSecurity = webItemSecurity;
         }
 
         public Tag GetTag(int id)
@@ -113,14 +112,13 @@ namespace ASC.Mail.Core.Engine
         {
             var tagList = DaoFactory.TagDao.GetTags();
 
-            //TODO: Fix if CRM exist
-            //if (!WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID)) 
-            //{
-            //    return tagList
-            //        .Where(p => p.TagName != "")
-            //        .OrderByDescending(p => p.Id)
-            //        .ToList();
-            //}
+            if (!WebItemSecurity.IsAvailableForMe(WebItemManager.CRMProductID))
+            {
+                return tagList
+                    .Where(p => p.TagName != "")
+                    .OrderByDescending(p => p.Id)
+                    .ToList();
+            }
 
             var actualCrmTags = DaoFactory.TagDao.GetCrmTags();
 
@@ -428,7 +426,7 @@ namespace ASC.Mail.Core.Engine
                     return;
                 }
 
-                var foundedChains = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, (List<int>)messagesIds);
+                var foundedChains = EngineFactory.ChainEngine.GetChainedMessagesInfo(messagesIds.ToList());
 
                 if (!foundedChains.Any())
                 {
@@ -477,7 +475,7 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                var foundedChains = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, (List<int>)messagesIds);
+                var foundedChains = EngineFactory.ChainEngine.GetChainedMessagesInfo(messagesIds.ToList());
 
                 if (!foundedChains.Any())
                 {
