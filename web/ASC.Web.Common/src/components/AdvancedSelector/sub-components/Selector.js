@@ -734,7 +734,9 @@ Selector.propTypes = {
   onSelect: PropTypes.func,
   onSearchChanged: PropTypes.func,
   onGroupChanged: PropTypes.func,
-  getOptionTooltipContent: PropTypes.func
+  getOptionTooltipContent: PropTypes.func,
+
+  comboBoxOptions: PropTypes.any
 };
 
 Selector.defaultProps = {

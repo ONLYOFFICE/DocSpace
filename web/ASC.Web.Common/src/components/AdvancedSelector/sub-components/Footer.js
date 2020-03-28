@@ -51,7 +51,8 @@ Footer.propTypes = {
   selectButtonLabel: PropTypes.string,
   isDisabled: PropTypes.bool,
   isVisible: PropTypes.bool,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  comboBoxOptions: PropTypes.any
 };
 
 export default Footer;
