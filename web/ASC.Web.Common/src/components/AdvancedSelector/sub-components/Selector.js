@@ -67,7 +67,8 @@ const Selector = props => {
     onSearchChanged,
     onGroupChanged,
     size,
-    allowGroupSelection
+    allowGroupSelection,
+    comboBoxOptions
   } = props;
 
   //console.log("options", options);
@@ -570,6 +571,7 @@ const Selector = props => {
       isMultiSelect={isMultiSelect}
       allowGroupSelection={allowGroupSelection}
       hasSelected={hasSelected()}
+      className="selector-wrapper"
     >
       <Column className="column-options" displayType={displayType} size={size}>
         <Header className="header-options">
@@ -697,6 +699,7 @@ const Selector = props => {
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}
         onClick={onAddClick}
+        comboBoxOptions={comboBoxOptions}
       />
     </StyledSelector>
   );

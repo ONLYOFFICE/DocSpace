@@ -202,7 +202,10 @@ class PeopleSelector extends React.Component {
       onCancel,
       t,
       searchPlaceHolderLabel,
-      groupsCaption
+      groupsCaption,
+      displayType,
+      withoutAside,
+      comboBoxOptions
     } = this.props;
 
     return (
@@ -216,7 +219,7 @@ class PeopleSelector extends React.Component {
         isNextPageLoading={isNextPageLoading}
         loadNextPage={this.loadNextPage}
         size={size}
-        displayType={"auto"}
+        displayType={displayType}
         selectedOptions={selectedOptions}
         selectedGroups={selectedGroups}
         isOpen={isOpen}
@@ -234,6 +237,8 @@ class PeopleSelector extends React.Component {
         onGroupChanged={this.onGroupChanged}
         getOptionTooltipContent={this.getOptionTooltipContent}
         onCancel={onCancel}
+        withoutAside={withoutAside}
+        comboBoxOptions={comboBoxOptions}
       />
     );
   }
@@ -256,7 +261,10 @@ PeopleSelector.propTypes = {
   t: PropTypes.func,
   groupsCaption: PropTypes.string,
   searchPlaceHolderLabel: PropTypes.string,
-  role: PropTypes.oneOf(["admin", "user", "guest"])
+  role: PropTypes.oneOf(["admin", "user", "guest"]),
+  displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
+  withoutAside: PropTypes.bool,
+  comboBoxOptions: PropTypes.any
 };
 
 PeopleSelector.defaultProps = {
@@ -266,7 +274,9 @@ PeopleSelector.defaultProps = {
   role: null,
   defaultOption: null,
   defaultOptionLabel: "Me",
-  groupsCaption: "Groups"
+  groupsCaption: "Groups",
+  displayType: "auto",
+  withoutAside: false
 };
 
 const ExtendedPeopleSelector = withTranslation()(PeopleSelector);
