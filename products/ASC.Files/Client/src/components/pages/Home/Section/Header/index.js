@@ -20,6 +20,10 @@ import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog } from '../../../../dialogs';
 import { isCanBeDeleted } from "../../../../../store/files/selectors";
 
+import SharingPanel from "./panels/SharingPanel";
+import AddUsersPanel from "./panels/AddUsersPanel";
+import AddGroupPanel from "./panels/AddGroupPanel";
+
 const { isAdmin } = store.auth.selectors;
 const { FilterType } = constants;
 
@@ -112,7 +116,9 @@ const SectionHeaderContent = props => {
     selection,
     isRecycleBinFolder,
     filter,
-    deleteDialogVisible
+    deleteDialogVisible,
+    user,
+    groupsCaption
   } = props;
 
   const createDocument = useCallback(
@@ -179,25 +185,14 @@ const SectionHeaderContent = props => {
     uploadToFolder
   ]);
 
-  const openSharingSettings = useCallback(
-    () => toastr.info("openSharingSettings click"),
-    []
-  );
-
   const createLinkForPortalUsers = useCallback(
     () => toastr.info("createLinkForPortalUsers click"),
     []
   );
 
-  const moveAction = useCallback(
-    () => toastr.info("moveAction click"),
-    []
-  );
+  const moveAction = useCallback(() => toastr.info("moveAction click"), []);
 
-  const copyAction = useCallback(
-    () => toastr.info("copyAction click"),
-    []
-  );
+  const copyAction = useCallback(() => toastr.info("copyAction click"), []);
 
   const downloadAction = useCallback(
     () => toastr.info("downloadAction click"),
@@ -209,27 +204,45 @@ const SectionHeaderContent = props => {
     []
   );
 
-  const renameAction = useCallback(
-    () => toastr.info("renameAction click"),
-    []
+  const renameAction = useCallback(() => toastr.info("renameAction click"), []);
+
+  const [showSharingPanel, setShowSharingPanel] = useState(false);
+  const openSharingPanel = useCallback(
+    () => setShowSharingPanel(!showSharingPanel),
+    [showSharingPanel]
   );
 
 
   
   const [showDeleteDialog, setDeleteDialog] = useState(false);
-  const onDeleteAction = useCallback(() => setDeleteDialog(!showDeleteDialog), [showDeleteDialog]);
+  const onDeleteAction = useCallback(() => setDeleteDialog(!showDeleteDialog), [
+    showDeleteDialog
+  ]);
 
   const [showEmptyTrashDialog, setEmptyTrashDialog] = useState(false);
-  const onEmptyTrashAction = useCallback(() => setEmptyTrashDialog(!showEmptyTrashDialog), [showEmptyTrashDialog]);
+  const onEmptyTrashAction = useCallback(
+    () => setEmptyTrashDialog(!showEmptyTrashDialog),
+    [showEmptyTrashDialog]
+  );
 
+  const [showAddUsersPanel, setShowAddUsersPanel] = useState(false);
+  const onShowUsersPanel = useCallback(
+    () => setShowAddUsersPanel(!showAddUsersPanel),
+    [showAddUsersPanel]
+  );
 
+  const [showAddGroupsPanel, setShowAddGroupsPanel] = useState(false);
+  const onShowGroupsPanel = useCallback(
+    () => setShowAddGroupsPanel(!showAddGroupsPanel),
+    [showAddGroupsPanel]
+  );
 
   const getContextOptionsFolder = useCallback(() => {
     return [
       {
         key: "sharing-settings",
         label: t('SharingSettings'),
-        onClick: openSharingSettings,
+        onClick: openSharingPanel,
         disabled: true
       },
       {
@@ -272,7 +285,7 @@ const SectionHeaderContent = props => {
     ];
   }, [
     t,
-    openSharingSettings,
+    openSharingPanel,
     createLinkForPortalUsers,
     moveAction,
     copyAction,
@@ -311,7 +324,7 @@ const SectionHeaderContent = props => {
     {
       label: t("Share"),
       disabled: !isItemsSelected,
-      onClick: openSharingSettings
+      onClick: openSharingPanel
     },
     {
       label: t("Download"),
@@ -345,6 +358,66 @@ const SectionHeaderContent = props => {
       label: t("EmptyRecycleBin"),
       onClick: onEmptyTrashAction
     });
+
+    const onFullAccessClick = () => {
+      console.log("onFullAccessClick");
+      //this.setState({ currentIconName: "AccessEditIcon" });
+    };
+    const onReadOnlyClick = () => {
+      console.log("onReadOnlyClick");
+      //this.setState({ currentIconName: "EyeIcon" });
+    };
+    const onReviewClick = () => {
+      console.log("onReviewClick");
+      //this.setState({ currentIconName: "AccessReviewIcon" });
+    };
+    const onCommentClick = () => {
+      console.log("onCommentClick");
+      //this.setState({ currentIconName: "AccessCommentIcon" });
+    };
+    const onFormFillingClick = () => {
+      console.log("onFormFillingClick");
+      //this.setState({ currentIconName: "AccessFormIcon" });
+    };
+    const onDenyAccessClick = () => {
+      console.log("onDenyAccessClick");
+      //this.setState({ currentIconName: "AccessNoneIcon" });
+    };
+
+    const advancedOptions = (
+      <>
+        <DropDownItem
+          label="Full access"
+          icon="AccessEditIcon"
+          onClick={onFullAccessClick}
+        />
+        <DropDownItem
+          label="Read only"
+          icon="EyeIcon"
+          onClick={onReadOnlyClick}
+        />
+        <DropDownItem
+          label="Review"
+          icon="AccessReviewIcon"
+          onClick={onReviewClick}
+        />
+        <DropDownItem
+          label="Comment"
+          icon="AccessCommentIcon"
+          onClick={onCommentClick}
+        />
+        <DropDownItem
+          label="Form filling"
+          icon="AccessFormIcon"
+          onClick={onFormFillingClick}
+        />
+        <DropDownItem
+          label="Deny access"
+          icon="AccessNoneIcon"
+          onClick={onDenyAccessClick}
+        />
+      </>
+    );
 
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -428,6 +501,32 @@ const SectionHeaderContent = props => {
           onClose={onEmptyTrashAction}
         />
       )}
+
+      <SharingPanel
+        onClose={openSharingPanel}
+        selection={selection}
+        visible={showSharingPanel}
+        onShowUsersPanel={onShowUsersPanel}
+        onShowGroupsPanel={onShowGroupsPanel}
+      />
+
+      <AddUsersPanel
+        onSharingPanelClose={openSharingPanel}
+        onClose={onShowUsersPanel}
+        visible={showAddUsersPanel}
+        me={user}
+        groupsCaption={groupsCaption}
+        advancedOptions={advancedOptions}
+      />
+
+      <AddGroupPanel
+        onSharingPanelClose={openSharingPanel}
+        onClose={onShowGroupsPanel}
+        visible={showAddGroupsPanel}
+        advancedOptions={advancedOptions}
+        //me={user}
+        //groupsCaption={groupsCaption}
+      />
     </StyledContainer>
   );
 };
@@ -435,7 +534,7 @@ const SectionHeaderContent = props => {
 const mapStateToProps = state => {
   const { selectedFolder, selection, treeFolders, filter } = state.files;
   const { parentId, title, id } = selectedFolder;
-  const { user } = state.auth;
+  const { user, settings } = state.auth;
 
   const indexOfTrash = 3;
 
@@ -447,8 +546,8 @@ const mapStateToProps = state => {
     selection,
     title,
     filter,
-
-    deleteDialogVisible: isCanBeDeleted(selectedFolder, user)
+    deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
+    groupsCaption: settings.customNames.groupsCaption
   };
 };
 
