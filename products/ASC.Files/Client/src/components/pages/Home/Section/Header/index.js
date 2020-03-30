@@ -15,7 +15,7 @@ import {
   IconButton,
   toastr
 } from "asc-web-components";
-import { fetchFiles } from "../../../../../store/files/actions";
+import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog } from '../../../../dialogs';
 import { isCanBeDeleted } from "../../../../../store/files/selectors";
@@ -25,7 +25,7 @@ import AddUsersPanel from "./panels/AddUsersPanel";
 import AddGroupPanel from "./panels/AddGroupPanel";
 
 const { isAdmin } = store.auth.selectors;
-const { FilterType } = constants;
+const { FilterType, FileAction } = constants;
 
 const StyledContainer = styled.div`
 
@@ -106,7 +106,6 @@ const SectionHeaderContent = props => {
     t,
     folder,
     title,
-    onCreate,
     onCheck,
     onSelect,
     onClose,
@@ -120,6 +119,15 @@ const SectionHeaderContent = props => {
     user,
     groupsCaption
   } = props;
+
+  const onCreate = (format) => {
+    props.setAction(
+      {
+        type: FileAction.Create,
+        extension: format,
+        id: -1
+      });
+  }
 
   const createDocument = useCallback(
     () => onCreate('docx'),
@@ -137,7 +145,7 @@ const SectionHeaderContent = props => {
   );
 
   const createFolder = useCallback(
-    () => onCreate('folder'),
+    () => onCreate(),
     []
   );
 
@@ -551,6 +559,6 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(
+export default connect(mapStateToProps, {setAction})(
   withTranslation()(withRouter(SectionHeaderContent))
 );
