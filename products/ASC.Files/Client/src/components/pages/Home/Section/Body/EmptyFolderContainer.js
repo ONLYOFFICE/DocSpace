@@ -1,8 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import { constants } from 'asc-web-common';
 import { EmptyScreenContainer, Link } from "asc-web-components";
 import { fetchFiles } from "../../../../../store/files/actions";
 import store from "../../../../../store/store";
+import { string } from "prop-types";
+
+const { FileAction } = constants;
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -37,11 +41,15 @@ const EmptyFolderContainer = props => {
     display: "flex"
   };
 
-  const onCreateDocumentClick = () => console.log("Create document click");
-  const onCreateTableClick = () => console.log("Create table click");
-  const onCreatePresentationClick = () =>
-    console.log("Create presentation click");
-  const onCreateFolderClick = () => console.log("Create folder click");
+  const onCreate = (format) => {
+    props.setAction(
+      {
+        type: FileAction.Create,
+        extension: format,
+        id: -1
+      });
+  }
+
   const onBackToParentFolder = () => {
     const newFilter = props.filter.clone();
     fetchFiles(props.parentId, newFilter, store.dispatch);
@@ -67,13 +75,13 @@ const EmptyFolderContainer = props => {
               >
                 +
               </Link>
-              <Link onClick={onCreateDocumentClick} {...linkStyles}>
+              <Link onClick={onCreate.bind(this, 'docx')} {...linkStyles}>
                 Документ,
               </Link>
-              <Link onClick={onCreateTableClick} {...linkStyles}>
+              <Link onClick={onCreate.bind(this, 'xlsx')} {...linkStyles}>
                 Таблица,
               </Link>
-              <Link onClick={onCreatePresentationClick} {...linkStyles}>
+              <Link onClick={onCreate.bind(this, 'pptx')} {...linkStyles}>
                 Презентация
               </Link>
             </div>
@@ -83,12 +91,12 @@ const EmptyFolderContainer = props => {
                 color="#83888d"
                 fontSize="26px"
                 fontWeight="800"
-                onClick={onCreateFolderClick}
+                onClick={onCreate.bind(this, null)}
                 noHover
               >
                 +
               </Link>
-              <Link {...linkStyles} onClick={onCreateFolderClick}>
+              <Link {...linkStyles} onClick={onCreate.bind(this, null)}>
                 Папка
               </Link>
             </div>
