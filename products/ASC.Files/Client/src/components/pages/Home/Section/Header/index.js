@@ -13,7 +13,9 @@ import {
   DropDownItem,
   GroupButtonsMenu,
   IconButton,
-  toastr
+  toastr,
+  ComboBox,
+  Icons
 } from "asc-web-components";
 import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
@@ -23,6 +25,8 @@ import { isCanBeDeleted } from "../../../../../store/files/selectors";
 import SharingPanel from "./panels/SharingPanel";
 import AddUsersPanel from "./panels/AddUsersPanel";
 import AddGroupPanel from "./panels/AddGroupPanel";
+
+import AccessComboBox from "./";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -116,8 +120,7 @@ const SectionHeaderContent = props => {
     isRecycleBinFolder,
     filter,
     deleteDialogVisible,
-    user,
-    groupsCaption
+    currentUser
   } = props;
 
   const onCreate = (format) => {
@@ -367,65 +370,97 @@ const SectionHeaderContent = props => {
       onClick: onEmptyTrashAction
     });
 
-    const onFullAccessClick = () => {
-      console.log("onFullAccessClick");
-      //this.setState({ currentIconName: "AccessEditIcon" });
-    };
-    const onReadOnlyClick = () => {
-      console.log("onReadOnlyClick");
-      //this.setState({ currentIconName: "EyeIcon" });
-    };
-    const onReviewClick = () => {
-      console.log("onReviewClick");
-      //this.setState({ currentIconName: "AccessReviewIcon" });
-    };
-    const onCommentClick = () => {
-      console.log("onCommentClick");
-      //this.setState({ currentIconName: "AccessCommentIcon" });
-    };
-    const onFormFillingClick = () => {
-      console.log("onFormFillingClick");
-      //this.setState({ currentIconName: "AccessFormIcon" });
-    };
-    const onDenyAccessClick = () => {
-      console.log("onDenyAccessClick");
-      //this.setState({ currentIconName: "AccessNoneIcon" });
-    };
+  const [selectedUsers, setSelectedUsers] = useState([currentUser]);
+  const onSetSelectedUsers = users => setSelectedUsers([...selectedUsers, ...users]);
 
-    const advancedOptions = (
-      <>
-        <DropDownItem
-          label="Full access"
-          icon="AccessEditIcon"
-          onClick={onFullAccessClick}
-        />
-        <DropDownItem
-          label="Read only"
-          icon="EyeIcon"
-          onClick={onReadOnlyClick}
-        />
-        <DropDownItem
-          label="Review"
-          icon="AccessReviewIcon"
-          onClick={onReviewClick}
-        />
-        <DropDownItem
-          label="Comment"
-          icon="AccessCommentIcon"
-          onClick={onCommentClick}
-        />
-        <DropDownItem
-          label="Form filling"
-          icon="AccessFormIcon"
-          onClick={onFormFillingClick}
-        />
-        <DropDownItem
-          label="Deny access"
-          icon="AccessNoneIcon"
-          onClick={onDenyAccessClick}
-        />
-      </>
-    );
+  const [accessRight, setAccessRight] = useState({
+    icon: "EyeIcon",
+    rights: "ReadOnly"
+  });
+
+  const onFullAccessClick = () => {
+    console.log("onFullAccessClick");
+    setAccessRight({ icon: "AccessEditIcon", rights: "FullAccess" });
+  };
+  const onReadOnlyClick = () => {
+    console.log("onReadOnlyClick");
+    setAccessRight({ icon: "EyeIcon", rights: "ReadOnly" });
+  };
+  const onReviewClick = () => {
+    console.log("onReviewClick");
+    setAccessRight({ icon: "AccessReviewIcon", rights: "Review" });
+  };
+  const onCommentClick = () => {
+    console.log("onCommentClick");
+    setAccessRight({ icon: "AccessCommentIcon", rights: "Comment" });
+  };
+  const onFormFillingClick = () => {
+    console.log("onFormFillingClick");
+    setAccessRight({ icon: "AccessFormIcon", rights: "FormFilling" });
+  };
+  const onDenyAccessClick = () => {
+    console.log("onDenyAccessClick");
+    setAccessRight({ icon: "AccessNoneIcon", rights: "DenyAccess" });
+  };
+
+  const onRemoveUserClick = item => {
+    console.log("onRemoveUserClick", item);
+  }
+
+
+  const advancedOptions = (
+    <>
+      <DropDownItem
+        label="Full access"
+        icon="AccessEditIcon"
+        onClick={onFullAccessClick}
+      />
+      <DropDownItem
+        label="Read only"
+        icon="EyeIcon"
+        onClick={onReadOnlyClick}
+      />
+      <DropDownItem
+        label="Review"
+        icon="AccessReviewIcon"
+        onClick={onReviewClick}
+      />
+      <DropDownItem
+        label="Comment"
+        icon="AccessCommentIcon"
+        onClick={onCommentClick}
+      />
+      <DropDownItem
+        label="Form filling"
+        icon="AccessFormIcon"
+        onClick={onFormFillingClick}
+      />
+      <DropDownItem
+        label="Deny access"
+        icon="AccessNoneIcon"
+        onClick={onDenyAccessClick}
+      />
+    </>
+  );
+
+  const accessOptionsComboBox = (
+    <ComboBox
+      advancedOptions={advancedOptions}
+      options={[]}
+      selectedOption={{ key: 0 }}
+      size="content"
+      className="ad-selector_combo-box"
+      scaled={false}
+      directionX="right"
+      //isDisabled={isDisabled}
+    >
+      {React.createElement(Icons[accessRight.icon], {
+        size: "medium"
+        //color: this.state.currentIconColor,
+        //isfill: isFill
+      })}
+    </ComboBox>
+  );
 
   return (
     <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -512,28 +547,31 @@ const SectionHeaderContent = props => {
 
       <SharingPanel
         onClose={openSharingPanel}
-        selection={selection}
         visible={showSharingPanel}
         onShowUsersPanel={onShowUsersPanel}
         onShowGroupsPanel={onShowGroupsPanel}
+        advancedOptions={advancedOptions}
+        accessRight={accessRight}
+        users={selectedUsers}
+        onRemoveUserClick={onRemoveUserClick}
       />
 
       <AddUsersPanel
         onSharingPanelClose={openSharingPanel}
         onClose={onShowUsersPanel}
         visible={showAddUsersPanel}
-        me={user}
-        groupsCaption={groupsCaption}
-        advancedOptions={advancedOptions}
+        embeddedComponent={accessOptionsComboBox}
+        onSetSelectedUsers={onSetSelectedUsers}
+        accessRight={accessRight}
       />
 
       <AddGroupPanel
         onSharingPanelClose={openSharingPanel}
         onClose={onShowGroupsPanel}
         visible={showAddGroupsPanel}
-        advancedOptions={advancedOptions}
-        //me={user}
-        //groupsCaption={groupsCaption}
+        embeddedComponent={accessOptionsComboBox}
+        onSetSelectedUsers={onSetSelectedUsers}
+        accessRight={accessRight}
       />
     </StyledContainer>
   );
@@ -555,7 +593,8 @@ const mapStateToProps = state => {
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    groupsCaption: settings.customNames.groupsCaption
+    //groupsCaption: settings.customNames.groupsCaption,
+    currentUser: user
   };
 };
 
