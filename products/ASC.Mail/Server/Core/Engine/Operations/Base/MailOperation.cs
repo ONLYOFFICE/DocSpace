@@ -35,6 +35,7 @@ using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
+using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Mail.Core.Engine.Operations.Base
@@ -71,11 +72,16 @@ namespace ASC.Mail.Core.Engine.Operations.Base
         protected CancellationToken CancellationToken { get; private set; }
 
         public abstract MailOperationType OperationType { get; }
+        public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
 
-        protected MailOperation(Tenant tenant, IAccount user)
+        protected MailOperation(
+            TenantManager tenantManager, 
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> option)
         {
-            CurrentTenant = tenant ?? CoreContext.TenantManager.GetCurrentTenant();
-            CurrentUser = user ?? SecurityContext.CurrentAccount;
+            CurrentTenant = tenantManager.GetCurrentTenant();
+            CurrentUser = securityContext.CurrentAccount;
 
             _culture = Thread.CurrentThread.CurrentCulture.Name;
 
@@ -86,6 +92,10 @@ namespace ASC.Mail.Core.Engine.Operations.Base
             Source = "";
 
             TaskInfo = new DistributedTask();
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+
+            Logger = option.Get("ASC.Mail.Operation");
         }
 
         public void RunJob(DistributedTask _, CancellationToken cancellationToken)
@@ -94,14 +104,12 @@ namespace ASC.Mail.Core.Engine.Operations.Base
             {
                 CancellationToken = cancellationToken;
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
-
-                SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+                //TODO: Check and fix
+                //TenantManager.SetCurrentTenant(CurrentTenant);
+                //SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
                 Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
                 Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
-
-                Logger = LogManager.GetLogger("ASC.Mail.Operation");
 
                 Do();
             }
