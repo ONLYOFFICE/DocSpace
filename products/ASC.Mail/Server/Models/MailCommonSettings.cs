@@ -32,7 +32,7 @@ namespace ASC.Mail.Models
 {
     [Serializable]
     [DataContract]
-    public class MailCommonSettings : BaseSettings<MailCommonSettings>
+    public class MailCommonSettings : ISettings
     {
         [DataMember(Name = "EnableConversations")]
         public bool EnableConversationsSetting { get; set; }
@@ -49,7 +49,7 @@ namespace ASC.Mail.Models
         [DataMember(Name = "ReplaceMessageBody")]
         public bool ReplaceMessageBodySetting { get; set; }
 
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new MailCommonSettings
             {
@@ -61,11 +61,12 @@ namespace ASC.Mail.Models
             };
         }
 
-        public override Guid ID {
+        public Guid ID {
             get { return new Guid("{AA4E16A0-B9F5-402A-A71E-9A1EC6E6B57A}"); }
         }
 
-        public static bool EnableConversations
+        //TODO: Fix
+        /*public static bool EnableConversations
         {
             set
             {
@@ -133,6 +134,6 @@ namespace ASC.Mail.Models
             {
                 return LoadForCurrentUser().ReplaceMessageBodySetting;
             }
-        }
+        }*/
     }
 }

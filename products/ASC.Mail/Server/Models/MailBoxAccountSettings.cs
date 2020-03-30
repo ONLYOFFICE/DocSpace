@@ -32,17 +32,17 @@ namespace ASC.Mail.Models
 {
     [Serializable]
     [DataContract]
-    public class MailBoxAccountSettings : BaseSettings<MailBoxAccountSettings>
+    public class MailBoxAccountSettings : ISettings
     {
-        public override Guid ID
+        [DataMember]
+        public string DefaultEmail { get; set; }
+
+        public Guid ID
         {
             get { return new Guid("{C550A7BE-A756-4071-A33E-3E89625E7CF8}"); }
         }
 
-        [DataMember]
-        public string DefaultEmail { get; set; }
-
-        public override ISettings GetDefault()
+        public ISettings GetDefault(IServiceProvider serviceProvider)
         {
             return new MailBoxAccountSettings { DefaultEmail = String.Empty };
         }
