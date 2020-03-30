@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, ComboBox, Icons } from "asc-web-components";
+import { Button } from "asc-web-components";
 import StyledFooter from "./StyledFooter";
 
 const Footer = props => {
@@ -10,11 +10,12 @@ const Footer = props => {
     onClick,
     isVisible,
     className,
-    comboBoxOptions
+    embeddedComponent
   } = props;
 
+
   return (
-    <StyledFooter withComboBox={comboBoxOptions} isVisible={isVisible} className={className}>
+    <StyledFooter withEmbeddedComponent={embeddedComponent} isVisible={isVisible} className={className}>
       <Button
         className="add_members_btn"
         primary={true}
@@ -24,24 +25,7 @@ const Footer = props => {
         isDisabled={isDisabled}
         onClick={onClick}
       />
-      {comboBoxOptions && (
-        <ComboBox
-          advancedOptions={comboBoxOptions}
-          options={[]}
-          selectedOption={{ key: 0 }}
-          size="content"
-          className="ad-selector_combo-box"
-          scaled={false}
-          directionX="right"
-          //isDisabled={isDisabled}
-        >
-          {React.createElement(Icons["EyeIcon"], {
-            size: "medium"
-            //color: this.state.currentIconColor,
-            //isfill: isFill
-          })}
-        </ComboBox>
-      )}
+      {embeddedComponent && embeddedComponent}
     </StyledFooter>
   );
 };
@@ -52,7 +36,8 @@ Footer.propTypes = {
   isDisabled: PropTypes.bool,
   isVisible: PropTypes.bool,
   onClick: PropTypes.func,
-  comboBoxOptions: PropTypes.any
+  comboBoxOptions: PropTypes.any,
+  embeddedComponent: PropTypes.any
 };
 
 export default Footer;

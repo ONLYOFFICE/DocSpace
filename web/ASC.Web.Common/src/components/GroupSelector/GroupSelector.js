@@ -95,7 +95,7 @@ class GroupSelector extends React.Component {
       searchPlaceHolderLabel,
       displayType,
       withoutAside,
-      comboBoxOptions
+      embeddedComponent
     } = this.props;
 
     return (
@@ -123,7 +123,7 @@ class GroupSelector extends React.Component {
         onSearchChanged={this.onSearchChanged}
         onCancel={onCancel}
         withoutAside={withoutAside}
-        comboBoxOptions={comboBoxOptions}
+        embeddedComponent={embeddedComponent}
       />
     );
   }
@@ -144,7 +144,7 @@ GroupSelector.propTypes = {
   useFake: PropTypes.bool,
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
-  comboBoxOptions: PropTypes.any
+  embeddedComponent: PropTypes.any
 };
 
 GroupSelector.defaultProps = {

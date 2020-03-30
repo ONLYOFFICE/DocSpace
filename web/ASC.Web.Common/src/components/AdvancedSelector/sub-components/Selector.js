@@ -68,7 +68,7 @@ const Selector = props => {
     onGroupChanged,
     size,
     allowGroupSelection,
-    comboBoxOptions
+    embeddedComponent
   } = props;
 
   //console.log("options", options);
@@ -699,7 +699,7 @@ const Selector = props => {
         isDisabled={isDisabled}
         isVisible={isMultiSelect && hasSelected()}
         onClick={onAddClick}
-        comboBoxOptions={comboBoxOptions}
+        embeddedComponent={embeddedComponent}
       />
     </StyledSelector>
   );
@@ -736,7 +736,7 @@ Selector.propTypes = {
   onGroupChanged: PropTypes.func,
   getOptionTooltipContent: PropTypes.func,
 
-  comboBoxOptions: PropTypes.any
+  embeddedComponent: PropTypes.any
 };
 
 Selector.defaultProps = {
