@@ -24,16 +24,9 @@
 */
 
 
-//using ASC.Api.Core;
-//using ASC.Common.Logging;
-//using ASC.Core;
-//using ASC.Core.Common.EF;
 using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Dao;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Common;
-//using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core
 {
