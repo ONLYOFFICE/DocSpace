@@ -52,7 +52,7 @@ using MimeKit;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Mail.Core.Engine;
 
-namespace ASC.Mail.Core.Factory
+namespace ASC.Mail.Core.Engine
 {
     public class MessageEngine
     {
