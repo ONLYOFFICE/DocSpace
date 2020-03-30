@@ -20,13 +20,10 @@ import {
 import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog } from '../../../../dialogs';
+import { SharingPanel, AddGroupsPanel, AddUsersPanel} from "../../../../panels";
 import { isCanBeDeleted } from "../../../../../store/files/selectors";
 
-import SharingPanel from "./panels/SharingPanel";
-import AddUsersPanel from "./panels/AddUsersPanel";
-import AddGroupPanel from "./panels/AddGroupPanel";
 
-import AccessComboBox from "./";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -565,7 +562,7 @@ const SectionHeaderContent = props => {
         accessRight={accessRight}
       />
 
-      <AddGroupPanel
+      <AddGroupsPanel
         onSharingPanelClose={openSharingPanel}
         onClose={onShowGroupsPanel}
         visible={showAddGroupsPanel}

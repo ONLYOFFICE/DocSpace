@@ -4,8 +4,7 @@ import {
   Backdrop,
   Heading,
   Aside,
-  IconButton,
-  utils
+  IconButton
 } from "asc-web-components";
 import { PeopleSelector } from "asc-web-common";
 import {

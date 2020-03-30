@@ -8,7 +8,7 @@ import {
   toastr
 } from "asc-web-components";
 import { GroupSelector } from "asc-web-common";
-import { getUsersOfGroups } from "../../../../../../store/files/actions";
+import { getUsersOfGroups } from "../../store/files/actions";
 import {
   StyledPanel,
   StyledContent,
