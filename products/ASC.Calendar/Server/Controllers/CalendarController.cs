@@ -724,6 +724,200 @@ namespace ASC.Calendar.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Deletes the project calendar with the ID specified in the request
+        /// </summary>
+        /// <short>
+        /// Delete project calendar
+        /// </short>
+        /// <param name="calendarId">Calendar ID</param>
+        /// <param name="team">Project team</param>
+        [Delete("caldavprojcal")]
+        public void DeleteCaldavCalendar(string calendarId, List<string> team = null)
+        {
+            try
+            {
+                var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes("admin@ascsystem" + ":" + ASC.Core.Configuration.Constants.CoreSystem.ID));
+                var myUri = HttpContext.Request.GetUrlRewriter();
+                var caldavHost = myUri.Host;
+
+                var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                var deleteCaldavCalendar = new Thread(() =>
+                {
+                    TenantManager.SetCurrentTenant(currentTenantId);
+                    foreach (var teamMember in team)
+                    {
+                        var currentUserName = UserManager.GetUsers(Guid.Parse(teamMember)).Email + "@" + caldavHost;
+                        DataProvider.RemoveCaldavCalendar(
+                            currentUserName,
+                            UserManager.GetUsers(Guid.Parse(teamMember)).Email,
+                            Authentication.GetUserPasswordHash(currentTenantId, Guid.Parse(teamMember)),
+                            encoded,
+                            calendarId,
+                            myUri,
+                            true);
+                    }
+                });
+                deleteCaldavCalendar.Start();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(String.Format("Delete project caldav calendar: {0}", ex.Message));
+            }
+
+        }
+
+        /// <summary>
+        /// Deletes the whole caldav event from the calendar
+        /// </summary>
+        /// <short>
+        /// Delete event
+        /// </short>
+        /// <param name="calendarId">ID of the calendar where the event belongs</param>
+        /// <param name="uid">Event uid</param>
+        /// <param name="responsibles">Task responsibles</param>
+        [Delete("caldavevent")]
+        public void DeleteCaldavEvent(string calendarId, string uid, List<string> responsibles = null)
+        {
+            try
+            {
+                var currentUserId = SecurityContext.CurrentAccount.ID;
+                var myUri = HttpContext.Request.GetUrlRewriter();
+                if (responsibles == null || responsibles.Count == 0)
+                {
+                    var currentUserEmail = UserManager.GetUsers(currentUserId).Email;
+                    var currentUserPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, currentUserId);
+                    deleteEvent(uid, calendarId, currentUserEmail, currentUserPaswd, myUri, true);
+                }
+                else if (responsibles.Count > 0)
+                {
+                    var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                    var deleteCaldavEvent = new Thread(() =>
+                    {
+                        TenantManager.SetCurrentTenant(currentTenantId);
+                        foreach (var responsibleSid in responsibles)
+                        {
+                            deleteEvent(
+                                uid,
+                                calendarId,
+                                UserManager.GetUsers(Guid.Parse(responsibleSid)).Email,
+                                Authentication.GetUserPasswordHash(currentTenantId, Guid.Parse(responsibleSid)),
+                                myUri,
+                                true
+                            );
+                        }
+
+                    });
+                    deleteCaldavEvent.Start();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(String.Format("Delete CRM caldav event: {0}", ex.Message));
+            }
+
+        }
+
+        /// <summary>
+        /// Create/update the existing caldav event in the selected calendar
+        /// </summary>
+        /// <short>
+        /// Update caldav event
+        /// </short>
+        /// <param name="calendarId">ID of the calendar where the event belongs</param>
+        /// <param name="uid">Event uid</param>
+        /// <param name="alert">Event notification type</param>
+        /// <param name="responsibles">Task responsibles</param>
+        [Update("caldavevent")]
+        public void UpdateCaldavEvent(string calendarId, string uid, int alert = 0, List<string> responsibles = null)
+        {
+            try
+            {
+                if (responsibles.Count > 0)
+                {
+                    var myUri = HttpContext.Request.GetUrlRewriter();
+                    var currentTenantId = TenantManager.GetCurrentTenant().TenantId;
+                    var sharedCalendar = GetCalendarById(calendarId);
+
+                    SecurityContext.AuthenticateMe(
+                                UserManager.GetUsers(Guid.Parse(responsibles[0])).Email,
+                                Authentication.GetUserPasswordHash(currentTenantId, Guid.Parse(responsibles[0]))
+                            );
+
+                    var calendarIcs = GetCalendariCalString(calendarId, true);
+                    var parseCalendar = DDayICalParser.DeserializeCalendar(calendarIcs);
+                    var calendar = parseCalendar.FirstOrDefault();
+                    if (calendar != null)
+                    {
+                        var events = calendar.Events;
+                        var ddayCalendar = new Ical.Net.Calendar();
+                        foreach (var evt in events)
+                        {
+                            var eventUid = evt.Uid;
+                            string[] split = eventUid.Split(new Char[] { '@' });
+                            if (uid == split[0])
+                            {
+                                ddayCalendar = getEventIcs(alert, sharedCalendar, evt, calendarId);
+                            }
+                        }
+                        var serializeIcs = DDayICalParser.SerializeCalendar(ddayCalendar);
+                        var updateEvent = new Thread(() =>
+                        {
+                            TenantManager.SetCurrentTenant(currentTenantId);
+                            foreach (var responsibleSid in responsibles)
+                            {
+                                updateCaldavEvent(
+                                    serializeIcs,
+                                    uid,
+                                    true,
+                                    calendarId,
+                                    myUri,
+                                    UserManager.GetUsers(Guid.Parse(responsibleSid)).Email,
+                                    Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, Guid.Parse(responsibleSid)),
+                                    DateTime.Now,
+                                    ddayCalendar.TimeZones[0],
+                                    sharedCalendar.UserCalendar.TimeZone, false, true
+                                );
+                            }
+
+                        });
+                        updateEvent.Start();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(String.Format("Create/update CRM caldav event: {0}", ex.Message));
+            }
+
+        }
+
+
+        private Ical.Net.Calendar getEventIcs(int alert, CalendarWrapper calendar, CalendarEvent evt, string calendarId)
+        {
+            var ddayCalendar = DDayICalParser.ConvertCalendar(calendar.UserCalendar);
+            ddayCalendar.Events.Clear();
+            evt.Created = null;
+            if (calendarId.Contains("Project_"))
+            {
+                evt.End = new CalDateTime(evt.End.AddDays(1));
+            }
+            evt.Status = EventStatus.Confirmed.ToString();
+            if (alert > 0)
+            {
+                evt.Alarms.Add(
+                    new Alarm()
+                    {
+                        Action = "DISPLAY",
+                        Description = "Reminder",
+                        Trigger = new Trigger(TimeSpan.FromMinutes((-1) * alert))
+                    }
+                );
+            }
+            ddayCalendar.Events.Add(evt);
+            return ddayCalendar;
+        }
         /// <summary>
         /// Run caldav event delete function
         /// </summary>
