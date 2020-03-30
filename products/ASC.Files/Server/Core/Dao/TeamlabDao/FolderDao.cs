@@ -344,17 +344,19 @@ namespace ASC.Files.Core.Data
 
                     //full path to root
                     var oldTree = FilesDbContext.Tree
-                        .Where(r => r.FolderId == (int)folder.ParentFolderID)
-                        .FirstOrDefault();
+                        .Where(r => r.FolderId == (int)folder.ParentFolderID);
 
-                    var treeToAdd = new DbFolderTree
+                    foreach (var o in oldTree)
                     {
-                        FolderId = (int)folder.ID,
-                        ParentId = oldTree.ParentId,
-                        Level = oldTree.Level + 1
-                    };
+                        var treeToAdd = new DbFolderTree
+                        {
+                            FolderId = (int)folder.ID,
+                            ParentId = o.ParentId,
+                            Level = o.Level + 1
+                        };
 
-                    FilesDbContext.Tree.Add(treeToAdd);
+                        FilesDbContext.Tree.Add(treeToAdd);
+                    }
                     FilesDbContext.SaveChanges();
                 }
 
@@ -406,8 +408,9 @@ namespace ASC.Files.Core.Data
                 var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
                 FilesDbContext.Tree.RemoveRange(treeToDelete);
 
+                var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
                 var linkToDelete = Query(FilesDbContext.TagLink)
-                    .Where(r => subfolders.Any(a => r.EntryId == a.ToString()))
+                    .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                     .Where(r => r.EntryType == FileEntryType.Folder);
                 FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
@@ -417,7 +420,7 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
                 var securityToDelete = Query(FilesDbContext.Security)
-                        .Where(r => subfolders.Any(a => r.EntryId == a.ToString()))
+                        .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                         .Where(r => r.EntryType == FileEntryType.Folder);
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
@@ -601,7 +604,7 @@ namespace ASC.Files.Core.Data
             var parentIdString = parentId.ToString();
             var count = FilesDbContext.Tree
                 .Where(r => r.ParentId.ToString() == parentIdString)
-                .Where(r => r.Level >= 0)
+                .Where(r => r.Level > 0)
                 .Count();
 
             return count;
@@ -656,7 +659,7 @@ namespace ASC.Files.Core.Data
 
             foreach (var f in toUpdate)
             {
-                var count = FilesDbContext.Tree.Where(r => r.ParentId == (int)id).Count() - 1;
+                var count = FilesDbContext.Tree.Where(r => r.ParentId == f.Id).Count() - 1;
                 f.FoldersCount = count;
             }
 
