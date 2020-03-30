@@ -27,12 +27,12 @@
 using System;
 using System.Linq;
 using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Models;
 using ASC.Mail.Enums.Filter;
+using Microsoft.Extensions.Options;
+using ASC.Mail.Data.Storage;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -42,28 +42,30 @@ namespace ASC.Mail.Core.Engine.Operations
 
         public MailSieveFilterData Filter { get; set; }
 
-        public ILog Log { get; set; }
-
         public override MailOperationType OperationType
         {
             get { return MailOperationType.ApplyFilter; }
         }
 
-        public ApplyFilterOperation(Tenant tenant, IAccount user, int filterId)
-            : base(tenant, user)
-        {
-            Factory = new EngineFactory(CurrentTenant.TenantId, CurrentUser.ID.ToString());
+        public DaoFactory DaoFactory { get; }
 
+        public ApplyFilterOperation(
+            TenantManager tenantManager, 
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor, 
+            int filterId)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+        {
             var filter = Factory.FilterEngine.Get(filterId);
 
-            if (filter == null)
-                throw new ArgumentException("Filter not found");
-
-            Filter = filter;
-
-            Log = LogManager.GetLogger("ASC.Mail.ApplyFilterOperation");
+            Filter = filter ?? throw new ArgumentException("Filter not found");
 
             SetSource(filter.Id.ToString());
+            DaoFactory = daoFactory;
         }
 
         protected override void Do()
@@ -72,17 +74,16 @@ namespace ASC.Mail.Core.Engine.Operations
             {
                 SetProgress((int?)MailOperationApplyFilterProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 
                 SetProgress((int?)MailOperationApplyFilterProgress.Filtering, "Filtering");
 
-                long total;
                 const int size = 100;
                 var page = 0;
 
-                var messages = Factory.MessageEngine.GetFilteredMessages(Filter, page, size, out total);
+                var messages = Factory.MessageEngine.GetFilteredMessages(Filter, page, size, out long total);
 
                 while (messages.Any())
                 {

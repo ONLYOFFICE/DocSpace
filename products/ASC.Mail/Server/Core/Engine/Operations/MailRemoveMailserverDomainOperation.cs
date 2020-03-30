@@ -28,13 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-//using ASC.Common.Data;
-using ASC.Common.Security.Authentication;
+using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -47,8 +47,16 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RemoveDomain; }
         }
 
-        public MailRemoveMailserverDomainOperation(Tenant tenant, IAccount user, ServerDomainData domain)
-            : base(tenant, user)
+        public MailRemoveMailserverDomainOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            ServerDomainData domain)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _domain = domain;
 
@@ -59,9 +67,9 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationRemoveDomainProgress.Init, "Setup tenant and user");
+                SetProgress((int?)MailOperationRemoveDomainProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 try
                 {
@@ -73,77 +81,65 @@ namespace ASC.Mail.Core.Engine.Operations
                     SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
                 }
 
-                SetProgress((int?) MailOperationRemoveDomainProgress.RemoveFromDb, "Remove domain from Db");
+                SetProgress((int?)MailOperationRemoveDomainProgress.RemoveFromDb, "Remove domain from Db");
 
                 var tenant = CurrentTenant.TenantId;
 
                 var mailboxes = new List<MailBoxData>();
 
-                var engine = new EngineFactory(tenant);
+                // using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveDomainTimeout))
 
-                using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RemoveDomainTimeout))
+                using (var tx = DaoFactory.BeginTransaction())
                 {
-                    var daoFactory = new DaoFactory(db);
+                    var groups = DaoFactory.ServerGroupDao.GetList(_domain.Id);
 
-                    using (var tx = daoFactory.DbManager.BeginTransaction(IsolationLevel.ReadUncommitted))
+                    foreach (var serverGroup in groups)
                     {
-                        var serverGroupDao = daoFactory.CreateServerGroupDao(tenant);
-
-                        var serverAddressDao = daoFactory.CreateServerAddressDao(tenant);
-
-                        var groups = serverGroupDao.GetList(_domain.Id);
-
-                        foreach (var serverGroup in groups)
-                        {
-                            serverAddressDao.DeleteAddressesFromMailGroup(serverGroup.Id);
-                            serverAddressDao.Delete(serverGroup.AddressId);
-                            serverGroupDao.Delete(serverGroup.Id);
-                        }
-
-                        var serverAddresses = serverAddressDao.GetDomainAddresses(_domain.Id);
-
-                        var serverMailboxAddresses = serverAddresses.Where(a => a.MailboxId > -1 && !a.IsAlias);
-
-                        foreach (var serverMailboxAddress in serverMailboxAddresses)
-                        {
-                            var mailbox =
-                                engine.MailboxEngine.GetMailboxData(
-                                    new ConcreteTenantServerMailboxExp(serverMailboxAddress.MailboxId, tenant, false));
-
-                            if (mailbox == null)
-                                continue;
-
-                            mailboxes.Add(mailbox);
-
-                            engine.MailboxEngine.RemoveMailBox(daoFactory, mailbox, false);
-                        }
-
-                        serverAddressDao.Delete(serverAddresses.Select(a => a.Id).ToList());
-
-                        var serverDomainDao = daoFactory.CreateServerDomainDao(tenant);
-
-                        serverDomainDao.Delete(_domain.Id);
-
-                        var serverDao = daoFactory.CreateServerDao();
-                        var server = serverDao.Get(tenant);
-
-                        var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
-
-                        serverEngine.RemoveDomain(_domain.Name);
-
-                        tx.Commit();
+                        DaoFactory.ServerAddressDao.DeleteAddressesFromMailGroup(serverGroup.Id);
+                        DaoFactory.ServerAddressDao.Delete(serverGroup.AddressId);
+                        DaoFactory.ServerGroupDao.Delete(serverGroup.Id);
                     }
+
+                    var serverAddresses = DaoFactory.ServerAddressDao.GetDomainAddresses(_domain.Id);
+
+                    var serverMailboxAddresses = serverAddresses.Where(a => a.MailboxId > -1 && !a.IsAlias);
+
+                    foreach (var serverMailboxAddress in serverMailboxAddresses)
+                    {
+                        var mailbox =
+                            EngineFactory.MailboxEngine.GetMailboxData(
+                                new ConcreteTenantServerMailboxExp(serverMailboxAddress.MailboxId, tenant, false));
+
+                        if (mailbox == null)
+                            continue;
+
+                        mailboxes.Add(mailbox);
+
+                        EngineFactory.MailboxEngine.RemoveMailBox(mailbox, false);
+                    }
+
+                    DaoFactory.ServerAddressDao.Delete(serverAddresses.Select(a => a.Id).ToList());
+
+                    DaoFactory.ServerDomainDao.Delete(_domain.Id);
+
+                    var server = DaoFactory.ServerDao.Get(tenant);
+
+                    var serverEngine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
+
+                    serverEngine.RemoveDomain(_domain.Name);
+
+                    tx.Commit();
                 }
 
-                SetProgress((int?) MailOperationRemoveDomainProgress.ClearCache, "Clear accounts cache");
+                SetProgress((int?)MailOperationRemoveDomainProgress.ClearCache, "Clear accounts cache");
 
-                CacheEngine.ClearAll();
+                EngineFactory.CacheEngine.ClearAll();
 
                 SetProgress((int?)MailOperationRemoveDomainProgress.RemoveIndex, "Remove Elastic Search index by messages");
 
                 foreach (var mailbox in mailboxes)
                 {
-                    engine.IndexEngine.Remove(mailbox);
+                    EngineFactory.IndexEngine.Remove(mailbox);
                 }
             }
             catch (Exception e)

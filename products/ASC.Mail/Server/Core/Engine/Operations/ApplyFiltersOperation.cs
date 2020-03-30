@@ -28,13 +28,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Models;
 using ASC.Mail.Enums;
+using Microsoft.Extensions.Options;
+using ASC.Mail.Data.Storage;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -44,24 +44,26 @@ namespace ASC.Mail.Core.Engine.Operations
 
         public EngineFactory Factory { get; private set; }
 
-        public ILog Log { get; set; }
-
         public override MailOperationType OperationType
         {
             get { return MailOperationType.ApplyAnyFilters; }
         }
 
-        public ApplyFiltersOperation(Tenant tenant, IAccount user, List<int> ids)
-            : base(tenant, user)
+        public ApplyFiltersOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor, 
+            List<int> ids)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             Ids = ids;
 
             if (ids == null || !ids.Any())
                 throw new ArgumentException("No ids");
-
-            Factory = new EngineFactory(CurrentTenant.TenantId, CurrentUser.ID.ToString());
-
-            Log = LogManager.GetLogger("ASC.Mail.ApplyFiltersOperation");
         }
 
         protected override void Do()
@@ -70,7 +72,7 @@ namespace ASC.Mail.Core.Engine.Operations
             {
                 SetProgress((int?)MailOperationApplyFilterProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 

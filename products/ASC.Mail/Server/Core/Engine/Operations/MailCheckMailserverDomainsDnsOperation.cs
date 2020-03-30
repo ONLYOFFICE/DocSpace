@@ -26,12 +26,13 @@
 
 using System;
 using System.Linq;
-using ASC.Common.Security.Authentication;
+using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Extensions;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -45,8 +46,17 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.CheckDomainDns; }
         }
 
-        public MailCheckMailserverDomainsDnsOperation(Tenant tenant, IAccount user, string domainName, ServerDns dns)
-            : base(tenant, user)
+        public MailCheckMailserverDomainsDnsOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            string domainName, 
+            ServerDns dns)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _domainName = domainName;
             _dns = dns;
@@ -58,9 +68,9 @@ namespace ASC.Mail.Core.Engine.Operations
         {
             try
             {
-                SetProgress((int?) MailOperationCheckDomainDnsProgress.Init, "Setup tenant and user");
+                SetProgress((int?)MailOperationCheckDomainDnsProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 try
                 {
@@ -74,38 +84,33 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 ServerDomain domain;
 
-                using (var daoFactory = new DaoFactory())
-                {
-                    var serverDomainDao = daoFactory.CreateServerDomainDao(CurrentTenant.TenantId);
+                var domains = DaoFactory.ServerDomainDao.GetDomains();
 
-                    var domains = serverDomainDao.GetDomains();
+                domain =
+                    domains.FirstOrDefault(
+                        d => d.Name.Equals(_domainName, StringComparison.InvariantCultureIgnoreCase));
 
-                    domain =
-                        domains.FirstOrDefault(
-                            d => d.Name.Equals(_domainName, StringComparison.InvariantCultureIgnoreCase));
+                if (domain == null)
+                    throw new Exception(string.Format("Domain '{0}' not found", _domainName));
 
-                    if (domain == null)
-                        throw new Exception(string.Format("Domain '{0}' not found", _domainName));
-
-                }
 
                 var hasChanges = false;
 
-                SetProgress((int?) MailOperationCheckDomainDnsProgress.CheckMx, "Check DNS MX record");
+                SetProgress((int?)MailOperationCheckDomainDnsProgress.CheckMx, "Check DNS MX record");
 
                 if (_dns.UpdateMx(domain.Name))
                 {
                     hasChanges = true;
                 }
 
-                SetProgress((int?) MailOperationCheckDomainDnsProgress.CheckSpf, "Check DNS SPF record");
+                SetProgress((int?)MailOperationCheckDomainDnsProgress.CheckSpf, "Check DNS SPF record");
 
                 if (_dns.UpdateSpf(domain.Name))
                 {
                     hasChanges = true;
                 }
 
-                SetProgress((int?) MailOperationCheckDomainDnsProgress.CheckDkim, "Check DNS DKIM record");
+                SetProgress((int?)MailOperationCheckDomainDnsProgress.CheckDkim, "Check DNS DKIM record");
 
                 if (_dns.UpdateDkim(domain.Name))
                 {
@@ -115,14 +120,10 @@ namespace ASC.Mail.Core.Engine.Operations
                 if (!hasChanges)
                     return;
 
-                SetProgress((int?) MailOperationCheckDomainDnsProgress.UpdateResults,
+                SetProgress((int?)MailOperationCheckDomainDnsProgress.UpdateResults,
                     "Update domain dns check results");
 
-                using (var daoFactory = new DaoFactory())
-                {
-                    var serverDnsDao = daoFactory.CreateServerDnsDao(CurrentTenant.TenantId, CurrentUser.ID.ToString());
-                    serverDnsDao.Save(_dns);
-                }
+                DaoFactory.ServerDnsDao.Save(_dns);
             }
             catch (Exception e)
             {

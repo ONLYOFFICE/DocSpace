@@ -25,15 +25,12 @@
 
 
 using System;
-using System.Data;
-using System.IO;
-using System.Linq;
-using ASC.Common.Security.Authentication;
+using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
-using ASC.Mail.Server.Core.Entities;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -46,8 +43,16 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RemoveMailbox; }
         }
 
-        public MailRemoveMailserverMailboxOperation(Tenant tenant, IAccount user, MailBoxData mailBox)
-            : base(tenant, user)
+        public MailRemoveMailserverMailboxOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            MailBoxData mailBox)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _mailBox = mailBox;
             SetSource(_mailBox.MailBoxId.ToString());
@@ -62,7 +67,7 @@ namespace ASC.Mail.Core.Engine.Operations
                 var tenant = _mailBox.TenantId;
                 var user = _mailBox.UserId;
 
-                CoreContext.TenantManager.SetCurrentTenant(tenant);
+                TenantManager.SetCurrentTenant(tenant);
 
                 try
                 {
@@ -76,21 +81,19 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RemoveFromDb, "Remove mailbox from Db");
 
-                var engine = new EngineFactory(tenant);
-
-                engine.ServerMailboxEngine.RemoveMailbox(_mailBox);
+                EngineFactory.ServerMailboxEngine.RemoveMailbox(_mailBox);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RecalculateFolder, "Recalculate folders counters");
 
-                engine.OperationEngine.RecalculateFolders();
+                EngineFactory.OperationEngine.RecalculateFolders();
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.ClearCache, "Clear accounts cache");
 
-                CacheEngine.Clear(user);
+                EngineFactory.CacheEngine.Clear(user);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RemoveIndex, "Remove Elastic Search index by messages");
 
-                engine.IndexEngine.Remove(_mailBox);
+                EngineFactory.IndexEngine.Remove(_mailBox);
             }
             catch (Exception e)
             {

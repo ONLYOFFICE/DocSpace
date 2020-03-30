@@ -34,20 +34,17 @@ using ASC.Core;
 using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
-using ASC.Web.Studio.Utility;
 using ASC.Mail.Models;
 using SecurityContext = ASC.Core.SecurityContext;
+using Microsoft.Extensions.Options;
+using ASC.Common.Logging;
+using ASC.Mail.Data.Storage;
 
 namespace ASC.Mail.Core.Engine
 {
     public class OperationEngine
     {
-        private readonly DistributedTaskQueue _mailOperations;
-
-        public DistributedTaskQueue MailOperations
-        {
-            get { return _mailOperations; }
-        }
+        public DistributedTaskQueue MailOperations { get; }
 
         public int MailOperationsLimit
         {
@@ -58,15 +55,42 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public OperationEngine()
+        public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
+        public TenantManager TenantManager { get; }
+        public SecurityContext SecurityContext { get; }
+        public EngineFactory EngineFactory { get; }
+        public DaoFactory DaoFactory { get; }
+        public CoreSettings CoreSettings { get; }
+        public StorageManager StorageManager { get; }
+        public IOptionsMonitor<ILog> Option { get; }
+
+        public OperationEngine(
+            DistributedTaskCacheNotify distributedTaskCacheNotify,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> option)
         {
-            _mailOperations = new DistributedTaskQueue("mailOperations", MailOperationsLimit);
+            MailOperations = new DistributedTaskQueue(distributedTaskCacheNotify, 
+                "mailOperations", MailOperationsLimit);
+
+            DistributedTaskCacheNotify = distributedTaskCacheNotify;
+            TenantManager = tenantManager;
+            SecurityContext = securityContext;
+            EngineFactory = engineFactory;
+            DaoFactory = daoFactory;
+            CoreSettings = coreSettings;
+            StorageManager = storageManager;
+            Option = option;
         }
 
         public MailOperationStatus RemoveMailbox(MailBoxData mailbox,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -97,7 +121,15 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
 
-            var op = new MailRemoveMailboxOperation(tenant, user, mailbox);
+            var op = new MailRemoveMailboxOperation(
+                TenantManager, 
+                SecurityContext, 
+                EngineFactory, 
+                DaoFactory, 
+                CoreSettings, 
+                StorageManager, 
+                Option, 
+                mailbox);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -105,7 +137,7 @@ namespace ASC.Mail.Core.Engine
         public MailOperationStatus DownloadAllAttachments(int messageId,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -136,14 +168,22 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Download all attachments operation already running.");
 
-            var op = new MailDownloadAllAttachmentsOperation(tenant, user, messageId);
+            var op = new MailDownloadAllAttachmentsOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
+                messageId);
 
             return QueueTask(op, translateMailOperationStatus);
         }
 
         public MailOperationStatus RecalculateFolders(Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -162,7 +202,14 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 return GetMailOperationStatus(runningOperation.Id, translateMailOperationStatus);
 
-            var op = new MailRecalculateFoldersOperation(tenant, user);
+            var op = new MailRecalculateFoldersOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -170,7 +217,7 @@ namespace ASC.Mail.Core.Engine
         public MailOperationStatus CheckDomainDns(string domainName, ServerDns dns,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -191,7 +238,16 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 return GetMailOperationStatus(runningOperation.Id, translateMailOperationStatus);
 
-            var op = new MailCheckMailserverDomainsDnsOperation(tenant, user, domainName, dns);
+            var op = new MailCheckMailserverDomainsDnsOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
+                domainName, 
+                dns);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -199,7 +255,7 @@ namespace ASC.Mail.Core.Engine
         public MailOperationStatus RemoveUserFolder(uint userFolderId,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -230,7 +286,15 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Remove user folder operation already running.");
 
-            var op = new MailRemoveUserFolderOperation(tenant, user, userFolderId);
+            var op = new MailRemoveUserFolderOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
+                userFolderId);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -238,7 +302,7 @@ namespace ASC.Mail.Core.Engine
         public MailOperationStatus ApplyFilter(int filterId,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
             var operations = MailOperations.GetTasks()
@@ -269,7 +333,15 @@ namespace ASC.Mail.Core.Engine
             if (runningOperation != null)
                 throw new MailOperationAlreadyRunningException("Apply filter operation already running.");
 
-            var op = new ApplyFilterOperation(tenant, user, filterId);
+            var op = new ApplyFilterOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
+                filterId);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -277,10 +349,18 @@ namespace ASC.Mail.Core.Engine
         public MailOperationStatus ApplyFilters(List<int> ids,
             Func<DistributedTask, string> translateMailOperationStatus = null)
         {
-            var tenant = CoreContext.TenantManager.GetCurrentTenant();
+            var tenant = TenantManager.GetCurrentTenant();
             var user = SecurityContext.CurrentAccount;
 
-            var op = new ApplyFiltersOperation(tenant, user, ids);
+            var op = new ApplyFiltersOperation(
+                TenantManager,
+                SecurityContext,
+                EngineFactory,
+                DaoFactory,
+                CoreSettings,
+                StorageManager,
+                Option,
+                ids);
 
             return QueueTask(op, translateMailOperationStatus);
         }
@@ -293,9 +373,11 @@ namespace ASC.Mail.Core.Engine
 
         public List<MailOperationStatus> GetMailOperations(Func<DistributedTask, string> translateMailOperationStatus = null)
         {
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+
             var operations = MailOperations.GetTasks().Where(
                     o =>
-                        o.GetProperty<int>(MailOperation.TENANT) == TenantProvider.CurrentTenantID &&
+                        o.GetProperty<int>(MailOperation.TENANT) == tenant &&
                         o.GetProperty<string>(MailOperation.OWNER) == SecurityContext.CurrentAccount.ID.ToString());
 
             var list = new List<MailOperationStatus>();
@@ -331,18 +413,20 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var o in operations)
             {
-                if (!string.IsNullOrEmpty(o.InstanseId) &&
-                    Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanseId)))
+                if (!string.IsNullOrEmpty(o.InstanceId) &&
+                    Process.GetProcesses().Any(p => p.Id == int.Parse(o.InstanceId)))
                     continue;
 
                 o.SetProperty(MailOperation.PROGRESS, 100);
                 MailOperations.RemoveTask(o.Id);
             }
 
+            var tenant = TenantManager.GetCurrentTenant().TenantId;
+
             var operation = operations
                 .FirstOrDefault(
                     o =>
-                        o.GetProperty<int>(MailOperation.TENANT) == TenantProvider.CurrentTenantID &&
+                        o.GetProperty<int>(MailOperation.TENANT) == tenant &&
                         o.GetProperty<string>(MailOperation.OWNER) == SecurityContext.CurrentAccount.ID.ToString() &&
                         o.Id.Equals(operationId));
 

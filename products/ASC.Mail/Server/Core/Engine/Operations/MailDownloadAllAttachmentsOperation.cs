@@ -45,6 +45,8 @@ using ASC.Data.Storage;
 
 using Ionic.Zip;
 using Ionic.Zlib;
+using Microsoft.Extensions.Options;
+using ASC.Web.Core.PublicResources;
 //using Resources;
 
 namespace ASC.Mail.Core.Engine.Operations
@@ -60,12 +62,18 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.DownloadAllAttachments; }
         }
 
-        public MailDownloadAllAttachmentsOperation(Tenant tenant, IAccount user, int messageId)
-            : base(tenant, user)
+        public MailDownloadAllAttachmentsOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            int messageId)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             MessageId = messageId;
-
-            Log = LogManager.GetLogger("ASC.Mail.MailDownloadAllAttachmentsOperation");
         }
 
         protected override void Do()
@@ -74,7 +82,7 @@ namespace ASC.Mail.Core.Engine.Operations
             {
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.Init);
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 try
                 {
@@ -86,12 +94,10 @@ namespace ASC.Mail.Core.Engine.Operations
                     Logger.Error(Error);
                 }
 
-                var engine = new EngineFactory(CurrentTenant.TenantId, CurrentUser.ID.ToString());
-
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.GetAttachments);
 
                 var attachments =
-                    engine.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
+                    EngineFactory.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
                         CurrentTenant.TenantId, CurrentUser.ID.ToString()));
 
                 if (!attachments.Any())
@@ -104,6 +110,8 @@ namespace ASC.Mail.Core.Engine.Operations
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.Zipping);
 
                 var damagedAttachments = 0;
+
+                var mailStorage = StorageManager.StorageFactory.GetMailStorage(CurrentTenant.TenantId);
 
                 using (var stream = TempStream.Create())
                 {
@@ -125,7 +133,7 @@ namespace ASC.Mail.Core.Engine.Operations
                         {
                             try
                             {
-                                using (var file = attachment.ToAttachmentStream())
+                                using (var file = attachment.ToAttachmentStream(mailStorage))
                                 {
                                     ZipFile(zip, file.FileName, file.FileStream);
                                 }
@@ -158,9 +166,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                     stream.Position = 0;
 
-                    var store = Global.GetStore();
-
-                    var path = store.Save(
+                    var path = mailStorage.Save(
                         FileConstant.StorageDomainTmp,
                         string.Format(@"{0}\{1}", ((IAccount) Thread.CurrentPrincipal.Identity).ID, Defines.ARCHIVE_NAME),
                         stream,
@@ -172,7 +178,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.CreateLink);
 
-                var baseDomain = CoreContext.Configuration.BaseDomain;
+                var baseDomain =  CoreSettings.BaseDomain;
 
                 var source = string.Format("{0}?{1}=bulk",
                     "/products/files/httphandlers/filehandler.ashx",

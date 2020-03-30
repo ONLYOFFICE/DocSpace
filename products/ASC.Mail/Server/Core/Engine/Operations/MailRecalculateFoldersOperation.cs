@@ -25,10 +25,13 @@
 
 
 using System;
+using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Data.Storage;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -39,8 +42,14 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RecalculateFolders; }
         }
 
-        public MailRecalculateFoldersOperation(Tenant tenant, IAccount user)
-            : base(tenant, user)
+        public MailRecalculateFoldersOperation(TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
         }
 
@@ -50,13 +59,11 @@ namespace ASC.Mail.Core.Engine.Operations
             {
                 SetProgress((int?) MailOperationRecalculateMailboxProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 
-                var engine = new EngineFactory(CurrentTenant.TenantId, CurrentUser.ID.ToString());
-
-                engine.FolderEngine.RecalculateFolders(progress =>
+                EngineFactory.FolderEngine.RecalculateFolders(progress =>
                 {
                     SetProgress((int?)progress);
                 });

@@ -26,10 +26,10 @@
 
 using System;
 using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
+using ASC.Mail.Data.Storage;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine.Operations
 {
@@ -45,14 +45,18 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RemoveUserFolder; }
         }
 
-        public MailRemoveUserFolderOperation(Tenant tenant, IAccount user, uint userFolderId)
-            : base(tenant, user)
+        public MailRemoveUserFolderOperation(
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            EngineFactory engineFactory,
+            DaoFactory daoFactory,
+            CoreSettings coreSettings,
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> optionsMonitor,
+            uint userFolderId)
+            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _userFolderId = userFolderId;
-
-            _engineFactory = new EngineFactory(CurrentTenant.TenantId, CurrentUser.ID.ToString());
-
-            Log = LogManager.GetLogger("ASC.Mail.RemoveUserFolderOperation");
 
             SetSource(userFolderId.ToString());
         }
@@ -63,7 +67,7 @@ namespace ASC.Mail.Core.Engine.Operations
             {
                 SetProgress((int?) MailOperationRemoveUserFolderProgress.Init, "Setup tenant and user");
 
-                CoreContext.TenantManager.SetCurrentTenant(CurrentTenant);
+                TenantManager.SetCurrentTenant(CurrentTenant);
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 
