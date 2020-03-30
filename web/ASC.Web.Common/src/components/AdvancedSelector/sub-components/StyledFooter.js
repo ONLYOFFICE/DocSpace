@@ -7,7 +7,7 @@ const StyledFooter = styled.div`
   height: 69px;
 
   ${props =>
-    props.withComboBox &&
+    props.withEmbeddedComponent &&
     css`
       display: flex;
       padding: 16px 0;

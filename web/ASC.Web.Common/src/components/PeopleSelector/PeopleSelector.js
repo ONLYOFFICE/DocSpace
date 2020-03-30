@@ -205,7 +205,7 @@ class PeopleSelector extends React.Component {
       groupsCaption,
       displayType,
       withoutAside,
-      comboBoxOptions
+      embeddedComponent
     } = this.props;
 
     return (
@@ -238,7 +238,7 @@ class PeopleSelector extends React.Component {
         getOptionTooltipContent={this.getOptionTooltipContent}
         onCancel={onCancel}
         withoutAside={withoutAside}
-        comboBoxOptions={comboBoxOptions}
+        embeddedComponent={embeddedComponent}
       />
     );
   }
@@ -264,7 +264,7 @@ PeopleSelector.propTypes = {
   role: PropTypes.oneOf(["admin", "user", "guest"]),
   displayType: PropTypes.oneOf(["auto", "aside", "dropdown"]),
   withoutAside: PropTypes.bool,
-  comboBoxOptions: PropTypes.any
+  embeddedComponent: PropTypes.any
 };
 
 PeopleSelector.defaultProps = {
