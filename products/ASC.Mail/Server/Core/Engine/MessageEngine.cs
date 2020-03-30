@@ -1196,7 +1196,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         //TODO: Need refactoring
-        public static MailMessageData Save(EngineFactory factory, DaoFactory daoFactory, IDataStore storage,
+        public MailMessageData Save(EngineFactory factory, DaoFactory daoFactory, IDataStore storage,
             MailBoxData mailbox, MimeMessage mimeMessage, string uidl, MailFolder folder, 
             uint? userFolderId, bool unread = true, ILog log = null)
         {
@@ -1253,7 +1253,10 @@ namespace ASC.Mail.Core.Engine
 
             log.Debug("Convert MimeMessage->MailMessage");
 
-            var message = mimeMessage.ConvertToMailMessage(folder, unread, chainInfo.Id, chainInfo.ChainDate, streamId,
+            var message = mimeMessage.ConvertToMailMessage(
+                TenantManager, CoreSettings,
+                folder, unread, chainInfo.Id,
+                chainInfo.ChainDate, streamId,
                 mailbox.MailBoxId, true, log);
 
             log.Debug("TryStoreMailData()");
