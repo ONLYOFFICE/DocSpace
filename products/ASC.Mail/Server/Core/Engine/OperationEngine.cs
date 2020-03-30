@@ -364,6 +364,91 @@ namespace ASC.Mail.Core.Engine
 
             return QueueTask(op, translateMailOperationStatus);
         }
+
+        public MailOperationStatus RemoveServerDomain(ServerDomainData domain)
+        {
+            var tenant = TenantManager.GetCurrentTenant();
+            var user = SecurityContext.CurrentAccount;
+
+            var operations = MailOperations.GetTasks()
+                .Where(o =>
+                {
+                    var oTenant = o.GetProperty<int>(MailOperation.TENANT);
+                    var oUser = o.GetProperty<string>(MailOperation.OWNER);
+                    var oType = o.GetProperty<MailOperationType>(MailOperation.OPERATION_TYPE);
+                    return oTenant == tenant.TenantId &&
+                           oUser == user.ID.ToString() &&
+                           oType == MailOperationType.RemoveDomain;
+                })
+                .ToList();
+
+            var sameOperation = operations.FirstOrDefault(o =>
+            {
+                var oSource = o.GetProperty<string>(MailOperation.SOURCE);
+                return oSource == domain.Id.ToString();
+            });
+
+            if (sameOperation != null)
+            {
+                return GetMailOperationStatus(sameOperation.Id);
+            }
+
+            var runningOperation = operations.FirstOrDefault(o => o.Status <= DistributedTaskStatus.Running);
+
+            if (runningOperation != null)
+                throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
+
+            var op = new MailRemoveMailserverDomainOperation(
+                TenantManager, SecurityContext, 
+                EngineFactory, DaoFactory, 
+                CoreSettings, StorageManager, 
+                Option, domain);
+
+            return QueueTask(op);
+        }
+
+        public MailOperationStatus RemoveServerMailbox(MailBoxData mailbox)
+        {
+            var tenant = TenantManager.GetCurrentTenant();
+            var user = SecurityContext.CurrentAccount;
+
+            var operations = MailOperations.GetTasks()
+                .Where(o =>
+                {
+                    var oTenant = o.GetProperty<int>(MailOperation.TENANT);
+                    var oUser = o.GetProperty<string>(MailOperation.OWNER);
+                    var oType = o.GetProperty<MailOperationType>(MailOperation.OPERATION_TYPE);
+                    return oTenant == tenant.TenantId &&
+                           oUser == user.ID.ToString() &&
+                           oType == MailOperationType.RemoveMailbox;
+                })
+                .ToList();
+
+            var sameOperation = operations.FirstOrDefault(o =>
+            {
+                var oSource = o.GetProperty<string>(MailOperation.SOURCE);
+                return oSource == mailbox.MailBoxId.ToString();
+            });
+
+            if (sameOperation != null)
+            {
+                return GetMailOperationStatus(sameOperation.Id);
+            }
+
+            var runningOperation = operations.FirstOrDefault(o => o.Status <= DistributedTaskStatus.Running);
+
+            if (runningOperation != null)
+                throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
+
+            var op = new MailRemoveMailserverMailboxOperation(
+                TenantManager, SecurityContext,
+                EngineFactory, DaoFactory,
+                CoreSettings, StorageManager,
+                Option, mailbox);
+
+            return QueueTask(op);
+        }
+
         public MailOperationStatus QueueTask(MailOperation op, Func<DistributedTask, string> translateMailOperationStatus = null)
         {
             var task = op.GetDistributedTask();

@@ -205,7 +205,7 @@ namespace ASC.Mail.Core.Engine
 
                 var server = DaoFactory.ServerDao.Get(Tenant);
 
-                var freeDns = EngineFactory.ServerEngine.GetOrCreateUnusedDnsData(DaoFactory, server);
+                var freeDns = EngineFactory.ServerEngine.GetOrCreateUnusedDnsData(server);
 
                 if (freeDns.Id != dnsId)
                     throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
@@ -285,42 +285,7 @@ namespace ASC.Mail.Core.Engine
             if (domain.IsSharedDomain)
                 throw new SecurityException("Can not remove shared domain.");
 
-            var tenant = TenantManager.GetCurrentTenant();
-            var user = SecurityContext.CurrentAccount;
-
-            var operationEngine = new OperationEngine();
-
-            var operations = operationEngine.MailOperations.GetTasks()
-                .Where(o =>
-                {
-                    var oTenant = o.GetProperty<int>(MailOperation.TENANT);
-                    var oUser = o.GetProperty<string>(MailOperation.OWNER);
-                    var oType = o.GetProperty<MailOperationType>(MailOperation.OPERATION_TYPE);
-                    return oTenant == tenant.TenantId &&
-                           oUser == user.ID.ToString() &&
-                           oType == MailOperationType.RemoveDomain;
-                })
-                .ToList();
-
-            var sameOperation = operations.FirstOrDefault(o =>
-            {
-                var oSource = o.GetProperty<string>(MailOperation.SOURCE);
-                return oSource == domain.Id.ToString();
-            });
-
-            if (sameOperation != null)
-            {
-                return operationEngine.GetMailOperationStatus(sameOperation.Id);
-            }
-
-            var runningOperation = operations.FirstOrDefault(o => o.Status <= DistributedTaskStatus.Running);
-
-            if (runningOperation != null)
-                throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
-
-            var op = new MailRemoveMailserverDomainOperation(tenant, user, domain);
-
-            return operationEngine.QueueTask(op);
+            return EngineFactory.OperationEngine.RemoveServerDomain(domain);
         }
 
         private ServerDomainDnsData UpdateDnsStatus(ServerDomain domain, bool force = false)

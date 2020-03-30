@@ -42,6 +42,7 @@ using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
@@ -706,42 +707,7 @@ namespace ASC.Mail.Core.Engine
                     "Removing of a shared mailbox is allowed only for the current account if user is not admin.");
             }
 
-            var tenant = TenantManager.GetCurrentTenant();
-            var user = SecurityContext.CurrentAccount;
-
-            var operationEngine = new OperationEngine();
-
-            var operations = operationEngine.MailOperations.GetTasks()
-                .Where(o =>
-                {
-                    var oTenant = o.GetProperty<int>(MailOperation.TENANT);
-                    var oUser = o.GetProperty<string>(MailOperation.OWNER);
-                    var oType = o.GetProperty<MailOperationType>(MailOperation.OPERATION_TYPE);
-                    return oTenant == tenant.TenantId &&
-                           oUser == user.ID.ToString() &&
-                           oType == MailOperationType.RemoveMailbox;
-                })
-                .ToList();
-
-            var sameOperation = operations.FirstOrDefault(o =>
-            {
-                var oSource = o.GetProperty<string>(MailOperation.SOURCE);
-                return oSource == mailbox.MailBoxId.ToString();
-            });
-
-            if (sameOperation != null)
-            {
-                return operationEngine.GetMailOperationStatus(sameOperation.Id);
-            }
-
-            var runningOperation = operations.FirstOrDefault(o => o.Status <= DistributedTaskStatus.Running);
-
-            if (runningOperation != null)
-                throw new MailOperationAlreadyRunningException("Remove mailbox operation already running.");
-
-            var op = new MailRemoveMailserverMailboxOperation(tenant, user, mailbox);
-
-            return operationEngine.QueueTask(op);
+            return EngineFactory.OperationEngine.RemoveServerMailbox(mailbox);
         }
 
         public void ChangePassword(int mailboxId, string password)
