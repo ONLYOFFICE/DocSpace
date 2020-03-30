@@ -275,26 +275,7 @@ namespace ASC.CRM.Core.Dao
                     .ToList()
                     .ConvertAll(ToDealMilestone);
         }
-
-        //private SqlQuery GetDealMilestoneQuery(Exp where)
-        //{
-        //    SqlQuery sqlQuery = Query("crm_deal_milestone")
-        //        .Select("id",
-        //                "title",
-        //                "description",
-        //                "color",
-        //                "probability",
-        //                "status",
-        //                "sort_order")
-        //                .OrderBy("sort_order", true);
-
-        //    if (where != null)
-        //        sqlQuery.Where(where);
-
-        //    return sqlQuery;
-
-        //}
-
+               
         private static DealMilestone ToDealMilestone(DbDealMilestone dbDealMilestone)
         {
             return new DealMilestone

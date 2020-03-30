@@ -30,6 +30,7 @@ using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -39,17 +40,19 @@ namespace ASC.CRM.Core.Dao
 {
     public class CachedInvoiceTaxDao : InvoiceTaxDao
     {
-        private readonly HttpRequestDictionary<InvoiceTax> _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>("crm_invoice_tax");
+        private readonly HttpRequestDictionary<InvoiceTax> _invoiceTaxCache;
 
         public CachedInvoiceTaxDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext
+            SecurityContext securityContext,
+            IHttpContextAccessor httpContextAccessor
             )
             : base(dbContextManager,
                  tenantManager,
                  securityContext)
 
         {
+            _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>(httpContextAccessor?.HttpContext, "crm_invoice_tax");
         }
 
         public override InvoiceTax GetByID(int invoiceTaxID)
@@ -94,7 +97,7 @@ namespace ASC.CRM.Core.Dao
                  tenantManager,
                  securityContext)
         {
-            
+
         }
 
         public TenantUtil TenantUtil { get; }
@@ -107,13 +110,13 @@ namespace ASC.CRM.Core.Dao
 
         public Boolean IsExist(String invoiceName)
         {
-            return Query(CRMDbContext.InvoiceTax).Where(x => String.Compare(x.Name, invoiceName, true) == 0).Any();            
+            return Query(CRMDbContext.InvoiceTax).Where(x => String.Compare(x.Name, invoiceName, true) == 0).Any();
         }
 
         public Boolean CanDelete(int invoiceTaxID)
         {
-            return  !Query(CRMDbContext.InvoiceItem)
-                        .Where(x => x.InvoiceTax1Id == invoiceTaxID || x.InvoiceTax2Id == invoiceTaxID).Any() && 
+            return !Query(CRMDbContext.InvoiceItem)
+                        .Where(x => x.InvoiceTax1Id == invoiceTaxID || x.InvoiceTax2Id == invoiceTaxID).Any() &&
                     !Query(CRMDbContext.InvoiceLine)
                         .Where(x => x.InvoiceTax1Id == invoiceTaxID || x.InvoiceTax2Id == invoiceTaxID).Any();
         }
@@ -127,10 +130,11 @@ namespace ASC.CRM.Core.Dao
 
         public DateTime GetMaxLastModified()
         {
-            throw new NotImplementedException();
+            var result = Query(CRMDbContext.InvoiceTax).Max(x => x.LastModifedOn);
 
-//            return Query(CRMDbContext.InvoiceItem).Select(x => x.la)
-//            return Db.ExecuteScalar<DateTime>(Query("crm_invoice_tax").Select("last_modifed_on"));
+            if (result.HasValue) return result.Value;
+
+            return DateTime.MinValue;
         }
 
         public virtual List<InvoiceTax> GetByID(int[] ids)
@@ -169,12 +173,11 @@ namespace ASC.CRM.Core.Dao
 
                 var itemToInsert = new DbInvoiceTax
                 {
-                    Id = 0,
                     Name = invoiceTax.Name,
                     Description = invoiceTax.Description,
                     Rate = invoiceTax.Rate,
                     CreateOn = invoiceTax.CreateOn,
-                    CreateBy = invoiceTax.CreateBy,
+                    CreateBy = SecurityContext.CurrentAccount.ID,
                     LastModifedBy = invoiceTax.LastModifedBy,
                     LastModifedOn = invoiceTax.LastModifedOn,
                     TenantId = TenantID
@@ -183,47 +186,33 @@ namespace ASC.CRM.Core.Dao
                 CRMDbContext.InvoiceTax.Add(itemToInsert);
 
                 CRMDbContext.SaveChanges();
-                                
-                //invoiceTax.ID = Db.ExecuteScalar<int>(
-                //               Insert("crm_invoice_tax")
-                //              .InColumnValue("id", 0)
-                //              .InColumnValue("name", invoiceTax.Name)
-                //              .InColumnValue("description", invoiceTax.Description)
-                //              .InColumnValue("rate", invoiceTax.Rate)
-                //              .InColumnValue("create_on", invoiceTax.CreateOn)
-                //              .InColumnValue("create_by", SecurityContext.CurrentAccount.ID)
-                //              .InColumnValue("last_modifed_on", invoiceTax.LastModifedOn)
-                //              .InColumnValue("last_modifed_by", invoiceTax.LastModifedBy)
-                //              .Identity(1, 0, true));
-            
-            
-            
+
+                invoiceTax.ID = itemToInsert.Id;
             }
             else
             {
-                var oldInvoiceTax = GetByID(invoiceTax.ID);                    
-                                     
+                var oldInvoiceTax = GetByID(invoiceTax.ID);
+
                 CRMSecurity.DemandEdit(oldInvoiceTax);
+                                
+                var itemToUpdate = Query(CRMDbContext.InvoiceTax)
+                                    .FirstOrDefault(x => x.Id == invoiceTax.ID);
 
-//              throw new NotImplementedException();
+                itemToUpdate.Name = invoiceTax.Name;
+                itemToUpdate.Description = invoiceTax.Description;
+                itemToUpdate.Rate = invoiceTax.Rate;
+                itemToUpdate.LastModifedOn = itemToUpdate.LastModifedOn;
+                itemToUpdate.LastModifedBy = itemToUpdate.LastModifedBy;
 
-                CRMDbContext.InvoiceTax.Add(itemToInsert);
+                CRMDbContext.InvoiceTax.Update(itemToUpdate);
 
                 CRMDbContext.SaveChanges();
 
-                Db.ExecuteNonQuery(
-                    Update("crm_invoice_tax")
-                        .Set("name", invoiceTax.Name)
-                        .Set("description", invoiceTax.Description)
-                        .Set("rate", invoiceTax.Rate)
-                        .Set("last_modifed_on", invoiceTax.LastModifedOn)
-                        .Set("last_modifed_by", invoiceTax.LastModifedBy)
-                        .Where(Exp.Eq("id", invoiceTax.ID)));
             }
 
             return invoiceTax;
         }
-               
+
         public virtual InvoiceTax DeleteInvoiceTax(int invoiceTaxID)
         {
             var invoiceTax = GetByID(invoiceTaxID);
@@ -240,10 +229,10 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Attach(invoiceTax);
             CRMDbContext.Remove(itemToDelete);
 
-            CRMDbContext.SaveChanges();            
+            CRMDbContext.SaveChanges();
 
-           /* _cache.Remove(_invoiceItemCacheKey);
-            _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/
+            /* _cache.Remove(_invoiceItemCacheKey);
+             _cache.Insert(_invoiceTaxCacheKey, String.Empty);*/
             return invoiceTax;
         }
 
@@ -251,29 +240,21 @@ namespace ASC.CRM.Core.Dao
         {
             if (dbInvoiceTax == null) return null;
 
-            return new InvoiceTax
+            var result = new InvoiceTax
             {
                 ID = dbInvoiceTax.Id,
                 Name = dbInvoiceTax.Name,
                 Description = dbInvoiceTax.Description,
                 Rate = dbInvoiceTax.Rate,
-                CreateOn = dbInvoiceTax.CreateOn,
+                CreateOn = TenantUtil.DateTimeFromUtc(dbInvoiceTax.CreateOn),
                 CreateBy = dbInvoiceTax.CreateBy,
-                LastModifedOn = TenantUtil.DateTimeFromUtc(dbInvoiceTax.LastModifedOn),
-                LastModifedBy = dbInvoiceTax.LastModifedBy                
+                LastModifedBy = dbInvoiceTax.LastModifedBy
             };
 
-            //return new InvoiceTax
-            //    {
-            //        ID = Convert.ToInt32(row[0]),
-            //        Name = Convert.ToString(row[1]),
-            //        Description = Convert.ToString(row[2]),
-            //        Rate = Convert.ToDecimal(row[3]),
-            //        CreateOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[4].ToString())),
-            //        CreateBy = ToGuid(row[5]),
-            //        LastModifedOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[6].ToString())),
-            //        LastModifedBy = ToGuid(row[7])
-            //    };
+            if (dbInvoiceTax.LastModifedOn.HasValue)
+                result.LastModifedOn = TenantUtil.DateTimeFromUtc(result.LastModifedOn.Value);
+
+            return result;
         }
     }
 }

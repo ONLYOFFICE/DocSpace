@@ -56,8 +56,6 @@ namespace ASC.CRM.Core.Entities
         [DataMember(Name = "lastModifedBy")]
         public Guid? LastModifedBy { get; set; }
 
-
-
         public object SecurityId
         {
             get { return ID; }

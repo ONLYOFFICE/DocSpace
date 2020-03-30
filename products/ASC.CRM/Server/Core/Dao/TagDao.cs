@@ -193,36 +193,16 @@ namespace ASC.CRM.Core.Dao
         {
             if (!_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
-
-            using var tx = CRMDbContext.Database.BeginTransaction();
-
-
-            //var temp = from e in CRMDbContext.Tags
-            //           select new { };
-
-//            Query(CRMDbContext.Tags).Join()
-//              .Select(x => x.Id);
-
-                //var sqlSubQuery = Query("crm_tag")
-                //    .Select("id")
-                //    .LeftOuterJoin("crm_entity_tag", Exp.EqColumns("tag_id", "id"))
-                //    .Where(Exp.Eq("crm_tag.entity_type", (int)entityType) & Exp.Eq("tag_id", Exp.Empty));
-
-                //List<int> tagIDs = Db.ExecuteList(sqlSubQuery).ConvertAll(row => Convert.ToInt32(row[0]));
-
-                //  Query(CRMDbContext.Tags).Join()
-
-
-            //if (tagIDs.Count > 0)
-            //{
-            //    var itemToDelete = Query(CRMDbContext.Tags).Where(x => x.EntityType == entityType && tagIDs.Contains(x.Id));
-
-            //    CRMDbContext.RemoveRange(itemToDelete);
-            //}
-            
+              
+            var itemToDelete = Query(CRMDbContext.Tags).GroupJoin(CRMDbContext.EntityTags,
+                                                                      x => x.Id,
+                                                                      y => y.TagId,
+                                                                      (x, y) => new { x, y }
+                                                                ).Where(x => x.x.EntityType == entityType && x.y == null).Select(x => x.x).ToList();
+                        
+            CRMDbContext.RemoveRange(itemToDelete);
+                        
             CRMDbContext.SaveChanges();
-
-            tx.Commit();
         }
 
         public int AddTag(EntityType entityType, String tagName, bool returnExisted = false)

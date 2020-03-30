@@ -65,15 +65,15 @@ namespace ASC.CRM.Core.Dao
             if (item.ID == 0 && Query(CRMDbContext.TaskTemplateContainer).Where(x => x.Id == item.ID).Any())
             {
                 CRMDbContext.TaskTemplateContainer.Add(dbTaskTemplateContainer);
-
-                item.ID = dbTaskTemplateContainer.Id;
-
+             
                 CRMDbContext.SaveChanges();
 
+                item.ID = dbTaskTemplateContainer.Id;
             }
             else
             {
                 CRMDbContext.TaskTemplateContainer.Attach(dbTaskTemplateContainer);
+                CRMDbContext.TaskTemplateContainer.Update(dbTaskTemplateContainer);
 
                 CRMDbContext.SaveChanges();
             }
@@ -141,48 +141,40 @@ namespace ASC.CRM.Core.Dao
 
         public int SaveOrUpdate(TaskTemplate item)
         {
+            var itemToInsert = new DbTaskTemplate
+            {
+                Id = item.ID,
+                Title = item.Title,
+                CategoryId = item.CategoryID,
+                Description = item.Description,
+                ResponsibleId = item.ResponsibleID,
+                IsNotify = item.isNotify,
+                Offset = item.Offset.Ticks,
+                DeadLineIsFixed = item.DeadLineIsFixed,
+                ContainerId = item.ContainerID,
+                CreateOn = item.CreateOn,
+                CreateBy = item.CreateBy,
+                TenantId = TenantID
+            };
+
             if (item.ID == 0)
             {
-                var itemToInsert = new DbTaskTemplate
-                {
-                    Id = item.ID,
-                    Title = item.Title,
-                    CategoryId = item.CategoryID,
-                    Description = item.Description,
-                    ResponsibleId = item.ResponsibleID,
-                    IsNotify = item.isNotify,
-                    Offset = item.Offset.Ticks,
-                    DeadLineIsFixed = item.DeadLineIsFixed,
-                    ContainerId = item.ContainerID,
-                    CreateOn = DateTime.UtcNow,
-                    CreateBy = SecurityContext.CurrentAccount.ID,
-                    LastModifedOn = DateTime.UtcNow,
-                    LastModifedBy = SecurityContext.CurrentAccount.ID,
-                    TenantId = TenantID
-                };
-
+                itemToInsert.CreateOn = DateTime.UtcNow;
+                itemToInsert.CreateBy = SecurityContext.CurrentAccount.ID;
+                            
                 CRMDbContext.TaskTemplates.Add(itemToInsert);
                 CRMDbContext.SaveChanges();
             }
             else
             {
 
-                //Db.ExecuteNonQuery(
-                //    Update("crm_task_template")
-                //        .Set("title", item.Title)
-                //        .Set("category_id", item.CategoryID)
-                //        .Set("description", item.Description)
-                //        .Set("responsible_id", item.ResponsibleID)
-                //        .Set("is_notify", item.isNotify)
-                //        .Set("offset", item.Offset.Ticks)
-                //        .Set("deadLine_is_fixed", item.DeadLineIsFixed)
-                //        .Set("container_id", item.ContainerID)
-                //        .Set("last_modifed_on", DateTime.UtcNow)
-                //        .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                //        .Where("id", item.ID));
+                itemToInsert.LastModifedOn = DateTime.UtcNow;
+                itemToInsert.LastModifedBy = SecurityContext.CurrentAccount.ID;
 
-                //CRMDbContext.TaskTemplates.Add(itemToInsert);
-                //CRMDbContext.SaveChanges();
+                CRMDbContext.TaskTemplates.Attach(itemToInsert);
+                CRMDbContext.TaskTemplates.Update(itemToInsert);
+
+                CRMDbContext.SaveChanges();
             }
 
             return item.ID;
@@ -192,37 +184,30 @@ namespace ASC.CRM.Core.Dao
         {
             using var tx = CRMDbContext.Database.BeginTransaction();
 
-            var temp = Query(CRMDbContext.TaskTemplateTask)
-                 .Join(CRMDbContext.TaskTemplates,
-                     x => new { x.TenantId, x.TaskTemplateId },
-                     y => new { y.TenantId, y.Id },
-                     (x, y) => new
-                     {
-                         x, y
-                     });
+            var sqlResult = Query(CRMDbContext.TaskTemplateTask)
+                 .Join(Query(CRMDbContext.TaskTemplates),
+                       x => x.TaskTemplateId,
+                       y => y.Id,
+                       (x, y) => new { x, y }
+                       ).Where(x => x.x.TaskId == taskID)
+                        .Select(x => new { x.y.ContainerId, x.y.SortOrder })
+                        .SingleOrDefault();
 
-            //var sqlResult = Db.ExecuteList(
-            //     Query("crm_task_template_task tblTTT")
-            //     .Select("tblTT.container_id")
-            //     .Select("tblTT.sort_order")
-            //     .LeftOuterJoin("crm_task_template tblTT", Exp.EqColumns("tblTT.tenant_id", "tblTTT.tenant_id") & Exp.EqColumns("tblTT.id", "tblTTT.task_template_id"))
-            //     .Where(Exp.Eq("tblTTT.task_id", taskID) & Exp.Eq("tblTT.tenant_id", TenantID)));
+            if (sqlResult == null) return null;
 
-            //if (sqlResult.Count == 0) return null;
+            var result = ToObject(Query(CRMDbContext.TaskTemplates)
+                                       .FirstOrDefault(x => x.ContainerId == sqlResult.ContainerId && 
+                                                            x.SortOrder > sqlResult.SortOrder && !x.DeadLineIsFixed));
 
-            //var result = Db.ExecuteList(GetQuery(Exp.Eq("container_id", sqlResult[0][0]) &
-            //                                Exp.Gt("sort_order", sqlResult[0][1]) &
-            //                                Exp.Eq("deadLine_is_fixed", false)).SetMaxResults(1)).ConvertAll(
-            //                                    row => ToObject(row));
-
-            //Db.ExecuteNonQuery(Delete("crm_task_template_task").Where(Exp.Eq("task_id", taskID)));
+            CRMDbContext.Remove(new DbTaskTemplateTask
+            {
+                TaskId = taskID,
+                TenantId = TenantID
+            });
 
             tx.Commit();
 
-//            if (result.Count == 0) return null;
-
-  //          return result[0];
-
+            return result;        
         }
 
         public List<TaskTemplate> GetAll()

@@ -55,24 +55,41 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.Core;
 using ASC.CRM.Classes;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ASC.CRM.Core.Dao
 {
 
     public class CachedRelationshipEventDao : RelationshipEventDao
     {
-        private readonly HttpRequestDictionary<RelationshipEvent> _contactCache = new HttpRequestDictionary<RelationshipEvent>("crm_relationshipEvent");
+        private readonly HttpRequestDictionary<RelationshipEvent> _contactCache;
 
-        public CachedRelationshipEventDao(int tenantID)
-            : base(tenantID)
+        public CachedRelationshipEventDao(DbContextManager<CRMDbContext> dbContextManager,
+            TenantManager tenantManager,
+            SecurityContext securityContext,
+            FilesIntegration filesIntegration,
+            CRMSecurity cRMSecurity,
+            TenantUtil tenantUtil,
+            SetupInfo setupInfo,
+            PathProvider pathProvider,
+            IHttpContextAccessor httpContextAccessor
+            ) :
+                        base(dbContextManager,
+                            tenantManager,
+                            securityContext,
+                            filesIntegration,
+                            cRMSecurity,
+                            tenantUtil,
+                            setupInfo,
+                            pathProvider)
         {
-
+            _contactCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
         }
 
         public override RelationshipEvent GetByID(int eventID)
         {
             return _contactCache.Get(eventID.ToString(), () => GetByIDBase(eventID));
-
         }
 
         private RelationshipEvent GetByIDBase(int eventID)
@@ -95,7 +112,8 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             CRMSecurity cRMSecurity,
             TenantUtil tenantUtil,
-            SetupInfo setupInfo
+            SetupInfo setupInfo,
+            PathProvider pathProvider
             ) :
                                             base(dbContextManager,
                                                  tenantManager,
@@ -105,8 +123,11 @@ namespace ASC.CRM.Core.Dao
             TenantUtil = tenantUtil;
             CRMSecurity = cRMSecurity;
             SetupInfo = setupInfo;
+            PathProvider = pathProvider;
         }
 
+
+        public PathProvider PathProvider { get; }
 
         public SetupInfo SetupInfo { get; }
 
@@ -122,7 +143,6 @@ namespace ASC.CRM.Core.Dao
         {
             if (entityID > 0 && !_supportedEntityType.Contains(entityType))
                 throw new ArgumentException();
-
 
             var relationshipEvent = new RelationshipEvent
             {
@@ -144,14 +164,25 @@ namespace ASC.CRM.Core.Dao
         {
             if (fileIDs.Length == 0) return;
 
-            var dao = FilesIntegration.GetTagDao();
+            var dao = FilesIntegration.TagDao();
 
             var tags = fileIDs.ToList().ConvertAll(fileID => new Tag("RelationshipEvent_" + eventID, TagType.System, Guid.Empty) { EntryType = FileEntryType.File, EntryId = fileID });
 
             dao.SaveTags(tags);
 
             if (fileIDs.Length > 0)
-                Db.ExecuteNonQuery(Update("crm_relationship_event").Set("have_files", true).Where("id", eventID));
+            {
+                var dbRelationshipEvent = new DbRelationshipEvent
+                {
+                    Id = eventID,
+                    HaveFiles = true,
+                    TenantId = TenantID
+                };
+
+                CRMDbContext.RelationshipEvent.Attach(dbRelationshipEvent);
+                CRMDbContext.Entry(dbRelationshipEvent).Property(x => x.HaveFiles).IsModified = true;
+                CRMDbContext.SaveChanges();
+            }
         }
 
         public int GetFilesCount(int[] contactID, EntityType entityType, int entityID)
@@ -163,24 +194,24 @@ namespace ASC.CRM.Core.Dao
         {
             if (entityID > 0 && entityType != EntityType.Opportunity && entityType != EntityType.Case)
                 throw new ArgumentException();
-            
-            var sqlQuery = Query("crm_relationship_event").Select("id");
+
+            var sqlQuery = Query(CRMDbContext.RelationshipEvent);
 
             if (contactID != null && contactID.Length > 0)
-                sqlQuery.Where(Exp.In("contact_id", contactID));
+                sqlQuery = sqlQuery.Where(x => contactID.Contains(x.ContactId));
 
             if (entityID > 0)
-                sqlQuery.Where(Exp.Eq("entity_id", entityID) & Exp.Eq("entity_type", (int)entityType));
+                sqlQuery = sqlQuery.Where(x => x.EntityId == entityID && x.EntityType == entityType);
 
-            sqlQuery.Where(Exp.Eq("have_files", true));
+            sqlQuery = sqlQuery.Where(x => x.HaveFiles);
 
-            var tagNames = Db.ExecuteList(sqlQuery).ConvertAll(row => String.Format("RelationshipEvent_{0}", row[0]));
-            var tagdao = FilesIntegration.GetTagDao();
-            
-             return tagdao.GetTags(tagNames.ToArray(), TagType.System)
-                .Where(t => t.EntryType == FileEntryType.File)
-                .Select(t => t.EntryId).ToArray();
-            
+            var tagNames = sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id));
+            var tagdao = FilesIntegration.TagDao();
+
+            return tagdao.GetTags(tagNames.ToArray(), TagType.System)
+               .Where(t => t.EntryType == FileEntryType.File)
+               .Select(t => t.EntryId).ToArray();
+
         }
 
         public List<File> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
@@ -197,11 +228,10 @@ namespace ASC.CRM.Core.Dao
 
         public Dictionary<int, List<File>> GetFiles(int[] eventID)
         {
-
             if (eventID == null || eventID.Length == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.GetTagDao();
+            var tagdao = FilesIntegration.TagDao();
             var filedao = FilesIntegration.GetFileDao();
 
             var findedTags = tagdao.GetTags(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
@@ -228,7 +258,7 @@ namespace ASC.CRM.Core.Dao
             if (eventID == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.GetTagDao();
+            var tagdao = FilesIntegration.TagDao();
             var filedao = FilesIntegration.GetFileDao();
 
             var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
@@ -237,7 +267,6 @@ namespace ASC.CRM.Core.Dao
             files.ForEach(CRMSecurity.SetAccessTo);
 
             return files.ToList();
-
         }
 
         private void RemoveAllFiles(int[] contactID, EntityType entityType, int entityID)
@@ -255,7 +284,6 @@ namespace ASC.CRM.Core.Dao
             {
                 dao.DeleteFile(file.ID);
             }
-
         }
 
         public List<int> RemoveFile(File file)
@@ -264,7 +292,7 @@ namespace ASC.CRM.Core.Dao
 
             List<int> eventIDs;
 
-            var tagdao = FilesIntegration.GetTagDao();
+            var tagdao = FilesIntegration.TagDao();
 
             var tags = tagdao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
@@ -278,12 +306,14 @@ namespace ASC.CRM.Core.Dao
             {
                 if (GetFiles(eventID).Count == 0)
                 {
-                                                         
-                    CRMDbContext.Attach();
-                                       
-                //  context.Attach(person);
-                //  context.Entry(person).Property("Name").IsModified = true;
-                //  Db.ExecuteNonQuery(Update("crm_relationship_event").Set("have_files", false).Where("id", eventID));
+                    var dbRelationshipEvent = new DbRelationshipEvent { 
+                        Id = eventID,
+                        HaveFiles = false,
+                        TenantId = TenantID
+                    };
+
+                    CRMDbContext.Attach(dbRelationshipEvent);
+                    CRMDbContext.Entry(dbRelationshipEvent).Property(x => x.HaveFiles).IsModified = true;
 
                     CRMDbContext.SaveChanges();
                 }
@@ -306,17 +336,15 @@ namespace ASC.CRM.Core.Dao
             if (entityID > 0 && entityType != EntityType.Opportunity && entityType != EntityType.Case)
                 throw new ArgumentException();
 
-            var sqlQuery = Query("crm_relationship_event").SelectCount();
-
-            contactID = contactID.Where(item => item != 0).ToArray();
+            var sqlQuery = Query(CRMDbContext.RelationshipEvent);
 
             if (contactID.Length > 0)
-                sqlQuery.Where(Exp.In("contact_id", contactID));
+                sqlQuery = sqlQuery.Where(x => contactID.Contains(x.ContactId));
 
             if (entityID > 0)
-                sqlQuery.Where(Exp.Eq("entity_id", entityID) & Exp.Eq("entity_type", (int)entityType));
+                sqlQuery = sqlQuery.Where(x => x.EntityId == entityID && x.EntityType == entityType);
 
-            return Db.ExecuteScalar<int>(sqlQuery);
+            return sqlQuery.Count();
         }
 
         public RelationshipEvent CreateItem(RelationshipEvent item)
@@ -327,6 +355,7 @@ namespace ASC.CRM.Core.Dao
 
             if (item.CreateOn == DateTime.MinValue)
                 item.CreateOn = TenantUtil.DateTimeNow();
+
             item.CreateBy = SecurityContext.CurrentAccount.ID;
             item.LastModifedBy = SecurityContext.CurrentAccount.ID;
 
@@ -335,11 +364,12 @@ namespace ASC.CRM.Core.Dao
                 var jsonObj = JObject.Parse(item.Content);
                 var messageId = jsonObj.Value<Int32>("message_id");
 
-                var apiServer = new Api.ApiServer();
-                var msg = apiServer.GetApiResponse(
-                    String.Format("{0}mail/messages/{1}.json?id={1}&loadImages=true&needSanitize=true", SetupInfo.WebApiBaseUrl, messageId), "GET");
+                //var apiServer = new ApiServer();
+                //var msg = apiServer.GetApiResponse(
+                //    String.Format("{0}mail/messages/{1}.json?id={1}&loadImages=true&needSanitize=true", SetupInfo.WebApiBaseUrl, messageId), "GET");
 
-                if (msg == null)
+                String msg = null;
+//                if (msg == null)
                     throw new ArgumentException("Mail message cannot be found");
 
                 var msgResponseWrapper = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
@@ -378,47 +408,49 @@ namespace ASC.CRM.Core.Dao
 
                 item.CreateOn = DateTime.Parse(msg_date_created, CultureInfo.InvariantCulture);
 
-                var sqlQueryFindMailsAlready = Query("crm_relationship_event")
-                                                .SelectCount()
-                                                .Where("contact_id", item.ContactID)
-                                                .Where(Exp.Like("content", string.Format("\"message_id\":{0},", message_id)))
-                                                .Where("entity_type", (int)item.EntityType)
-                                                .Where("entity_id", item.EntityID)
-                                                .Where("category_id", item.CategoryID);
-                if (Db.ExecuteScalar<int>(sqlQueryFindMailsAlready) > 0)
+                var sqlQueryFindMailsAlready = Query(CRMDbContext.RelationshipEvent)
+                                                    .Where(x => x.ContactId == item.ContactID)
+                                                    .Where(x => x.EntityType == item.EntityType)
+                                                    .Where(x => x.EntityId == item.EntityID)
+                                                    .Where(x => x.CategoryId == item.CategoryID)
+                                                    .Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, String.Format("\"message_id\":{0},", message_id)));
+
+                if (sqlQueryFindMailsAlready.Count() > 0)
                     throw new Exception("Already exists");
             }
 
+            var itemToInsert = new DbRelationshipEvent
+            {
+                ContactId = item.ContactID,
+                Content = item.Content,
+                CreateOn = TenantUtil.DateTimeToUtc(item.CreateOn),
+                CreateBy = item.CreateBy,
+                EntityType = item.EntityType,
+                EntityId = item.EntityID,
+                CategoryId = item.CategoryID,
+                LastModifedOn = DateTime.UtcNow,
+                LastModifedBy = item.LastModifedBy,
+                TenantId = TenantID,
+                HaveFiles = false
+            };
 
-            item.ID = Db.ExecuteScalar<int>(
-                            Insert("crm_relationship_event")
-                            .InColumnValue("id", 0)
-                            .InColumnValue("contact_id", item.ContactID)
-                            .InColumnValue("content", item.Content)
-                            .InColumnValue("create_on", TenantUtil.DateTimeToUtc(item.CreateOn))
-                            .InColumnValue("create_by", item.CreateBy)
-                            .InColumnValue("entity_type", (int)item.EntityType)
-                            .InColumnValue("entity_id", item.EntityID)
-                            .InColumnValue("category_id", item.CategoryID)
-                            .InColumnValue("last_modifed_on", DateTime.UtcNow)
-                            .InColumnValue("last_modifed_by", item.LastModifedBy)
-                            .InColumnValue("have_files", false)
-                            .Identity(1, 0, true));
+            CRMDbContext.RelationshipEvent.Add(itemToInsert);
+            CRMDbContext.SaveChanges();
+
+            item.ID = itemToInsert.Id;
 
             if (item.CreateOn.Kind == DateTimeKind.Utc)
                 item.CreateOn = TenantUtil.DateTimeFromUtc(item.CreateOn);
 
             FactoryIndexer.IndexAsync(item);
+
             return item;
         }
 
         public virtual RelationshipEvent GetByID(int eventID)
         {
-
-
-
-            return Db.ExecuteList(GetRelationshipEventQuery(Exp.Eq("id", eventID)))
-               .ConvertAll(ToRelationshipEvent).FirstOrDefault();
+            return ToRelationshipEvent(Query(CRMDbContext.RelationshipEvent)
+                                            .FirstOrDefault(x => x.Id == eventID));
         }
 
         public int GetAllItemsCount()
@@ -451,54 +483,67 @@ namespace ASC.CRM.Core.Dao
             int count,
             OrderBy orderBy)
         {
-            var sqlQuery = GetRelationshipEventQuery(null);
+
+            var sqlQuery = Query(CRMDbContext.RelationshipEvent);
 
             if (entityID > 0)
                 switch (entityType)
                 {
                     case EntityType.Contact:
                         var isCompany = false;
-                        isCompany = Db.ExecuteScalar<bool>(Query("crm_contact").Select("is_company").Where(Exp.Eq("id", entityID)));
+
+                        isCompany = Query(CRMDbContext.Contacts).Where(x => x.Id == entityID).Select(x => x.IsCompany).Single();
 
                         if (isCompany)
                             return GetItems(searchText, EntityType.Company, entityID, createBy, categoryID, fromDate, toDate, from, count, orderBy);
                         else
                             return GetItems(searchText, EntityType.Person, entityID, createBy, categoryID, fromDate, toDate, from, count, orderBy);
                     case EntityType.Person:
-                        sqlQuery.Where(Exp.Eq("contact_id", entityID));
+                        sqlQuery = sqlQuery.Where(x => x.ContactId == entityID);
                         break;
                     case EntityType.Company:
 
                         var personIDs = GetRelativeToEntity(entityID, EntityType.Person, null).ToList();
 
                         if (personIDs.Count == 0)
-                            sqlQuery.Where(Exp.Eq("contact_id", entityID));
+                        {
+                            sqlQuery = sqlQuery.Where(x => x.ContactId == entityID);
+                        }
                         else
                         {
                             personIDs.Add(entityID);
-                            sqlQuery.Where(Exp.In("contact_id", personIDs));
+                            sqlQuery = sqlQuery.Where(x => personIDs.Contains(x.ContactId));
                         }
 
                         break;
                     case EntityType.Case:
                     case EntityType.Opportunity:
-                        sqlQuery.Where(Exp.Eq("entity_id", entityID) &
-                                       Exp.Eq("entity_type", (int)entityType));
+                        sqlQuery = sqlQuery.Where(x => x.EntityId == entityID && x.EntityType == entityType);
                         break;
                 }
 
             if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
-                sqlQuery.Where(Exp.Between("create_on", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate.AddDays(1).AddMinutes(-1))));
+            {
+                sqlQuery = sqlQuery.Where(x => x.CreateOn >= TenantUtil.DateTimeToUtc(fromDate) && x.CreateOn <= TenantUtil.DateTimeToUtc(toDate.AddDays(1).AddMinutes(-1)));
+            }
             else if (fromDate != DateTime.MinValue)
-                sqlQuery.Where(Exp.Ge("create_on", TenantUtil.DateTimeToUtc(fromDate)));
+            {
+                sqlQuery = sqlQuery.Where(x => x.CreateOn >= TenantUtil.DateTimeToUtc(fromDate));
+            }
             else if (toDate != DateTime.MinValue)
-                sqlQuery.Where(Exp.Le("create_on", TenantUtil.DateTimeToUtc(toDate).AddDays(1).AddMinutes(-1)));
+            {
+                sqlQuery = sqlQuery.Where(x => x.CreateOn <= TenantUtil.DateTimeToUtc(toDate).AddDays(1).AddMinutes(-1));
+            }
 
             if (createBy != Guid.Empty)
-                sqlQuery.Where(Exp.Eq("create_by", createBy));
+            {
+                sqlQuery = sqlQuery.Where(x => x.CreateBy == createBy);
+            }
 
             if (categoryID != 0)
-                sqlQuery.Where(Exp.Eq("category_id", categoryID));
+            {
+                sqlQuery = sqlQuery.Where(x => x.CategoryId == categoryID);
+            }
 
             if (!String.IsNullOrEmpty(searchText))
             {
@@ -508,82 +553,71 @@ namespace ASC.CRM.Core.Dao
                    .ToArray();
 
                 List<int> eventsIds;
+
                 if (!FactoryIndexer.TrySelectIds(s => s.MatchAll(searchText), out eventsIds))
                 {
                     if (keywords.Length > 0)
-                        sqlQuery.Where(BuildLike(new[] { "content" }, keywords));
+                    {
+                        foreach (var k in keywords)
+                        {
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, k));
+                        }
+                    }
                 }
                 else
                 {
                     if (eventsIds.Count == 0) return new List<RelationshipEvent>();
-                    sqlQuery.Where(Exp.In("id", eventsIds));
+
+                    sqlQuery = sqlQuery.Where(x => eventsIds.Contains(x.Id));
                 }
             }
 
             if (0 < from && from < int.MaxValue)
-                sqlQuery.SetFirstResult(from);
+                sqlQuery = sqlQuery.Skip(from);
 
             if (0 < count && count < int.MaxValue)
-                sqlQuery.SetMaxResults(count);
+                sqlQuery = sqlQuery.Take(count);
 
             if (orderBy != null && Enum.IsDefined(typeof(RelationshipEventByType), orderBy.SortedBy))
                 switch ((RelationshipEventByType)orderBy.SortedBy)
                 {
-
                     case RelationshipEventByType.Category:
-                        sqlQuery.OrderBy("category_id", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy(x => x.CategoryId);
                         break;
                     case RelationshipEventByType.Content:
-                        sqlQuery.OrderBy("content", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy(x => x.Content);
                         break;
                     case RelationshipEventByType.CreateBy:
-                        sqlQuery.OrderBy("create_by", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy(x => x.CreateBy);
                         break;
                     case RelationshipEventByType.Created:
-                        sqlQuery.OrderBy("create_on", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
                         break;
                 }
             else
-                sqlQuery.OrderBy("create_on", false);
+                sqlQuery = sqlQuery.OrderBy(x => x.CreateOn);
 
-            return Db.ExecuteList(sqlQuery)
-                .ConvertAll(row => ToRelationshipEvent(row));
+            return sqlQuery.ToList().ConvertAll(ToRelationshipEvent);
         }
 
 
-        private RelationshipEvent ToRelationshipEvent(object[] row)
+        private RelationshipEvent ToRelationshipEvent(DbRelationshipEvent relationshipEvent)
         {
+            if (relationshipEvent == null) return null;
+
             return new RelationshipEvent
             {
-
-                ID = Convert.ToInt32(row[0]),
-                ContactID = Convert.ToInt32(row[1]),
-                Content = Convert.ToString(row[2]),
-                EntityID = Convert.ToInt32(row[3]),
-                EntityType = (EntityType)Convert.ToInt32(row[4]),
-                CreateOn = TenantUtil.DateTimeFromUtc(Convert.ToDateTime(row[5])),
-                CreateBy = ToGuid(row[6]),
-                CategoryID = Convert.ToInt32(row[7])
+                ID = relationshipEvent.Id,
+                ContactID = relationshipEvent.ContactId,
+                Content = relationshipEvent.Content,
+                EntityID = relationshipEvent.EntityId,
+                EntityType = relationshipEvent.EntityType,
+                CreateOn = TenantUtil.DateTimeFromUtc(relationshipEvent.CreateOn),
+                CreateBy = relationshipEvent.CreateBy,
+                CategoryID = relationshipEvent.CategoryId,
+                LastModifedBy = relationshipEvent.LastModifedBy,
+                LastModifedOn = relationshipEvent.LastModifedOn
             };
-        }
-
-        private SqlQuery GetRelationshipEventQuery(Exp where)
-        {
-            SqlQuery sqlQuery = Query("crm_relationship_event")
-               .Select("id",
-                       "contact_id",
-                       "content",
-                       "entity_id",
-                       "entity_type",
-                       "create_on",
-                       "create_by",
-                       "category_id"
-                  );
-
-            if (where != null)
-                sqlQuery.Where(where);
-
-            return sqlQuery;
         }
 
         public void DeleteItem(int id)
@@ -606,14 +640,17 @@ namespace ASC.CRM.Core.Dao
                 throw new ArgumentException();
 
             relativeFiles.ForEach(f => RemoveFile(f));
-                                    
 
+            var itemToDelete = new DbRelationshipEvent
+            {
+                Id = item.ID,
+                TenantId = TenantID
+            };
 
+            CRMDbContext.RelationshipEvent.Remove(itemToDelete);
+            CRMDbContext.SaveChanges();
 
-            Db.ExecuteNonQuery(Delete("crm_relationship_event").Where(Exp.Eq("id", item.ID)));
-
-
-            FactoryIndexer.DeleteAsync(item);        
+            FactoryIndexer.DeleteAsync(item);
         }
 
         [DataContract]
@@ -621,26 +658,37 @@ namespace ASC.CRM.Core.Dao
         {
             [DataMember]
             public string to;
+
             [DataMember]
             public string from;
+
             [DataMember]
             public string cc;
+
             [DataMember]
             public string bcc;
+
             [DataMember]
             public string subject;
+
             [DataMember]
             public bool important;
+
             [DataMember]
             public string chain_id;
+
             [DataMember]
             public bool is_sended;
+
             [DataMember]
             public string date_created;
+
             [DataMember]
             public string introduction;
+
             [DataMember]
             public long message_id;
+
         }
 
         private static string GetHistoryContentJson(JObject apiResponse)
@@ -661,6 +709,7 @@ namespace ASC.CRM.Core.Dao
             };
 
             var serializer = new DataContractJsonSerializer(typeof(CrmHistoryContent));
+
             using (var stream = new MemoryStream())
             {
                 serializer.WriteObject(stream, content_struct);

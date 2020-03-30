@@ -79,7 +79,7 @@ namespace ASC.CRM.Core.EF
         public int PerPeriodValue { get; set; }
        
         [Column("deal_milestone_probability", TypeName = "int(11)")]
-        public int? DealMilestoneProbability { get; set; }
+        public int DealMilestoneProbability { get; set; }
        
         [Column("last_modifed_on", TypeName = "datetime")]
         public DateTime? LastModifedOn { get; set; }

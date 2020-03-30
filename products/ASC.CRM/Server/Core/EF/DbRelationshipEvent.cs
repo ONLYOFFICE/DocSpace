@@ -38,7 +38,7 @@ namespace ASC.CRM.Core.EF
         public int CategoryId { get; set; }
         
         [Column("last_modifed_by", TypeName = "char(38)")]
-        public Guid LastModifedBy { get; set; }
+        public Guid? LastModifedBy { get; set; }
         
         [Column("last_modifed_on", TypeName = "datetime")]
         public DateTime? LastModifedOn { get; set; }

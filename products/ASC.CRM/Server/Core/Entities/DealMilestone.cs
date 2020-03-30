@@ -34,6 +34,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
+using ASC.CRM.Core.Enums;
 
 #endregion
 

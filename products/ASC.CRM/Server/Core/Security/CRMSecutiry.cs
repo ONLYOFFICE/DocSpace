@@ -32,6 +32,7 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using ASC.Files.Core;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
