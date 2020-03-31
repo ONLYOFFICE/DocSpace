@@ -15,6 +15,9 @@ import {
   Icons,
   utils
 } from "asc-web-components";
+import { withTranslation } from "react-i18next";
+import { utils as commonUtils } from "asc-web-common";
+import i18n from "./i18n";
 import {
   StyledPanel,
   StyledContent,
@@ -23,9 +26,13 @@ import {
   StyledSharingBody
 } from "./StyledPanels";
 
-class SharingPanel extends React.Component {
+const { changeLanguage } = commonUtils;
+
+class SharingPanelComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false,
@@ -61,22 +68,61 @@ class SharingPanel extends React.Component {
   };
 
   onFullAccessClick = item => {
-    console.log("ITEM", item);
+    const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    if (newUsers[elementIndex].rights.rights !== "FullAccess") {
+      newUsers[elementIndex].rights = {
+        icon: "AccessEditIcon",
+        rights: "FullAccess"
+      };
+      this.props.onSetUsers(newUsers);
+    }
   };
   onReadOnlyClick = item => {
-    console.log("ITEM", item);
+    const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    if (newUsers[elementIndex].rights.rights !== "ReadOnly") {
+      newUsers[elementIndex].rights = { icon: "EyeIcon", rights: "ReadOnly" };
+      this.props.onSetUsers(newUsers);
+    }
   };
   onReviewClick = item => {
-    console.log("ITEM", item);
+    /*const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    newUsers[elementIndex].rights = {
+      icon: "AccessReviewIcon",
+      rights: "Review"
+    };
+    this.props.onSetUsers(newUsers);*/
   };
   onCommentClick = item => {
-    console.log("ITEM", item);
+    /*const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    newUsers[elementIndex].rights = {
+      icon: "AccessCommentIcon",
+      rights: "Comment"
+    };
+    this.props.onSetUsers(newUsers);*/
   };
   onFormFillingClick = item => {
-    console.log("ITEM", item);
+    /*const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    newUsers[elementIndex].rights = {
+      icon: "AccessFormIcon",
+      rights: "FormFilling"
+    };
+    this.props.onSetUsers(newUsers);*/
   };
   onDenyAccessClick = item => {
-    console.log("ITEM", item);
+    const newUsers = this.props.users;
+    const elementIndex = newUsers.findIndex(x => x.id === item.id);
+    if (newUsers[elementIndex].rights.rights !== "DenyAccess") {
+      newUsers[elementIndex].rights = {
+        icon: "AccessNoneIcon",
+        rights: "DenyAccess"
+      };
+      this.props.onSetUsers(newUsers);
+    }
   };
 
   /*shouldComponentUpdate(nextProps, nextState) {
@@ -115,7 +161,7 @@ class SharingPanel extends React.Component {
     const addGroupTranslationLabel = "Add group";
     const sharingHeaderText = "Sharing settings";
 
-    const { onClose, visible, users, onRemoveUserClick } = this.props;
+    const { onClose, visible, users, onRemoveUserClick, t } = this.props;
     const { showActionPanel, isNotifyUsers } = this.state;
 
     const zIndex = 310;
@@ -165,6 +211,7 @@ class SharingPanel extends React.Component {
             </StyledSharingHeaderContent>
             <StyledSharingBody>
               {users.map((item, index) => {
+                const isOwner = index === 0;
                 const advancedOptions = (
                   <>
                     <DropDownItem
@@ -221,7 +268,16 @@ class SharingPanel extends React.Component {
                 return (
                   <Row
                     key={index}
-                    element={embeddedComponent}
+                    element={
+                      isOwner ? (
+                        <Icons.AccessEditIcon
+                          size="medium"
+                          className="sharing_panel-owner-icon"
+                        />
+                      ) : (
+                        embeddedComponent
+                      )
+                    }
                     contextButtonSpacerWidth="0px"
                   >
                     <Text truncate>
@@ -231,12 +287,12 @@ class SharingPanel extends React.Component {
                         ? item.name
                         : item.displayName}
                     </Text>
-                    {index === 0 ? (
+                    {isOwner ? (
                       <Text
                         className="sharing_panel-remove-icon"
                         //color="#A3A9AE"
                       >
-                        Owner
+                        {t("Owner")}
                       </Text>
                     ) : (
                       <IconButton
@@ -271,7 +327,7 @@ class SharingPanel extends React.Component {
   }
 }
 
-SharingPanel.propTypes = {
+SharingPanelComponent.propTypes = {
   onClose: PropTypes.func,
   visible: PropTypes.bool,
   onShowUsersPanel: PropTypes.func,
@@ -279,5 +335,13 @@ SharingPanel.propTypes = {
   onRemoveUserClick: PropTypes.func,
   users: PropTypes.array
 };
+
+const SharingPanelContainerTranslated = withTranslation()(
+  SharingPanelComponent
+);
+
+const SharingPanel = props => (
+  <SharingPanelContainerTranslated i18n={i18n} {...props} />
+);
 
 export default SharingPanel;

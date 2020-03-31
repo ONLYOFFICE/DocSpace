@@ -106,6 +106,10 @@ const StyledSharingBody = styled.div`
     }
   }
 
+  .sharing_panel-owner-icon {
+    padding: 0px 24px 0px 8px;
+  }
+
   .sharing_panel-remove-icon {
     margin-left: auto;
   }

@@ -259,8 +259,12 @@ class SectionHeaderContent extends React.Component {
       }
     }
 
-    this.setState({ selectedUsers: newArray });
+    this.onSetUsers(newArray);
   };
+
+  onSetUsers = users => {
+    this.setState({ selectedUsers: users });
+  }
 
   onFullAccessClick = some => {
     console.log("onFullAccessClick", some);
@@ -556,6 +560,8 @@ class SectionHeaderContent extends React.Component {
           accessRight={accessRight}
           users={selectedUsers}
           onRemoveUserClick={this.onRemoveUserClick}
+          onSetUsers={this.onSetUsers}
+          t={t}
         />
 
         <AddUsersPanel

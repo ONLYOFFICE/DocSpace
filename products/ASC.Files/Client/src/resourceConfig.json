@@ -32,6 +32,13 @@
     ]
   }
 },
+  "panels": {
+    "SharingPanel": {
+      "Resource": [
+        "Owner"
+      ]
+    }
+  },
   "pages": {
     "Profile": {
       "Resource": [
