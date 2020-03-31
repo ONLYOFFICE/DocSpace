@@ -311,11 +311,7 @@ export function getUsersOfGroups(groupsIds) {
 
   return axios.all(requests).then(
     axios.spread((...responses) => {
-      let users = [];
-      for(let item of responses) {
-        users = [...users, ...item.members];
-      }
-      return users;
+      return responses;
     })
   );
 }
