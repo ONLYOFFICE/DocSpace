@@ -15,7 +15,6 @@ import {
   Icons,
   utils
 } from "asc-web-components";
-
 import {
   StyledPanel,
   StyledContent,
@@ -61,7 +60,26 @@ class SharingPanel extends React.Component {
     this.props.onShowGroupsPanel();
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
+  onFullAccessClick = item => {
+    console.log("ITEM", item);
+  };
+  onReadOnlyClick = item => {
+    console.log("ITEM", item);
+  };
+  onReviewClick = item => {
+    console.log("ITEM", item);
+  };
+  onCommentClick = item => {
+    console.log("ITEM", item);
+  };
+  onFormFillingClick = item => {
+    console.log("ITEM", item);
+  };
+  onDenyAccessClick = item => {
+    console.log("ITEM", item);
+  };
+
+  /*shouldComponentUpdate(nextProps, nextState) {
     const { showActionPanel, isNotifyUsers } = this.state;
     const { visible, users, accessRight } = this.props;
 
@@ -69,7 +87,10 @@ class SharingPanel extends React.Component {
       return true;
     }
 
-    if (!utils.array.isArrayEqual(nextProps.users, users)) {
+    if (
+      !utils.array.isArrayEqual(nextProps.users, users) ||
+      users.length !== nextProps.users.length
+    ) {
       return true;
     }
 
@@ -86,7 +107,7 @@ class SharingPanel extends React.Component {
     }
 
     return false;
-  }
+  }*/
 
   render() {
     const checkboxNotifyUsersLabel = "Notify users";
@@ -94,38 +115,11 @@ class SharingPanel extends React.Component {
     const addGroupTranslationLabel = "Add group";
     const sharingHeaderText = "Sharing settings";
 
-    const {
-      onClose,
-      visible,
-      users,
-      advancedOptions,
-      accessRight,
-      onRemoveUserClick
-    } = this.props;
+    const { onClose, visible, users, onRemoveUserClick } = this.props;
     const { showActionPanel, isNotifyUsers } = this.state;
-    //const element = select('element', ['', 'Avatar', 'Icon', 'ComboBox'], '');
 
     const zIndex = 310;
 
-    const embeddedComponent = (
-      <ComboBox
-        advancedOptions={advancedOptions}
-        options={[]}
-        selectedOption={{ key: 0 }}
-        size="content"
-        className="ad-selector_combo-box"
-        scaled={false}
-        directionX="left"
-        //isDisabled={isDisabled}
-      >
-        {React.createElement(Icons[accessRight.icon], {
-          size: "medium"
-          //color: this.state.currentIconColor,
-          //isfill: isFill
-        })}
-      </ComboBox>
-    );
-    //console.log("SharingPanel render");
     return (
       <StyledPanel visible={visible}>
         <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
@@ -170,21 +164,91 @@ class SharingPanel extends React.Component {
               </div>
             </StyledSharingHeaderContent>
             <StyledSharingBody>
-              {users.map((item, index) => (
-                <Row
-                  key={index}
-                  element={embeddedComponent}
-                  contextButtonSpacerWidth="0px"
-                >
-                  <Text truncate>
-                    {item.label ? item.label : item.displayName}
-                  </Text>
-                  <Icons.RemoveIcon
-                    onClick={onRemoveUserClick.bind(this, item)}
-                    className="sharing_panel-remove-icon"
-                  />
-                </Row>
-              ))}
+              {users.map((item, index) => {
+                const advancedOptions = (
+                  <>
+                    <DropDownItem
+                      label="Full access"
+                      icon="AccessEditIcon"
+                      onClick={this.onFullAccessClick.bind(this, item)}
+                    />
+                    <DropDownItem
+                      label="Read only"
+                      icon="EyeIcon"
+                      onClick={this.onReadOnlyClick.bind(this, item)}
+                    />
+                    <DropDownItem
+                      label="Review"
+                      icon="AccessReviewIcon"
+                      onClick={this.onReviewClick.bind(this, item)}
+                    />
+                    <DropDownItem
+                      label="Comment"
+                      icon="AccessCommentIcon"
+                      onClick={this.onCommentClick.bind(this, item)}
+                    />
+                    <DropDownItem
+                      label="Form filling"
+                      icon="AccessFormIcon"
+                      onClick={this.onFormFillingClick.bind(this, item)}
+                    />
+                    <DropDownItem
+                      label="Deny access"
+                      icon="AccessNoneIcon"
+                      onClick={this.onDenyAccessClick.bind(this, item)}
+                    />
+                  </>
+                );
+
+                const embeddedComponent = (
+                  <ComboBox
+                    advancedOptions={advancedOptions}
+                    options={[]}
+                    selectedOption={{ key: 0 }}
+                    size="content"
+                    className="panel_combo-box"
+                    scaled={false}
+                    directionX="left"
+                    //isDisabled={isDisabled}
+                  >
+                    {React.createElement(Icons[item.rights.icon], {
+                      size: "medium",
+                      className: "sharing-access-combo-box-icon"
+                    })}
+                  </ComboBox>
+                );
+
+                return (
+                  <Row
+                    key={index}
+                    element={embeddedComponent}
+                    contextButtonSpacerWidth="0px"
+                  >
+                    <Text truncate>
+                      {item.label
+                        ? item.label
+                        : item.name
+                        ? item.name
+                        : item.displayName}
+                    </Text>
+                    {index === 0 ? (
+                      <Text
+                        className="sharing_panel-remove-icon"
+                        //color="#A3A9AE"
+                      >
+                        Owner
+                      </Text>
+                    ) : (
+                      <IconButton
+                        iconName="RemoveIcon"
+                        onClick={onRemoveUserClick.bind(this, item)}
+                        className="sharing_panel-remove-icon"
+                        size="medium"
+                      />
+                    )}
+                  </Row>
+                );
+              })}
             </StyledSharingBody>
             <StyledFooter>
               <Checkbox

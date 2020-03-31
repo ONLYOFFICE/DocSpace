@@ -43,7 +43,12 @@ class AddGroupPanel extends React.Component {
 
     getUsersOfGroups(groupIds)
       .then(res => {
-        this.props.onSetSelectedUsers(res);
+        const newItems = [];
+        for(let item of res) {
+          item.rights = this.props.accessRight
+          newItems.push(item);
+        }
+        this.props.onSetSelectedUsers(newItems);
         this.props.onClose();
       })
       .catch(err => toastr.error(err));

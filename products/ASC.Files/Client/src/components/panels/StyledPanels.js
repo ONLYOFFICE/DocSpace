@@ -10,6 +10,18 @@ const StyledPanel = styled.div`
       transform: translateX(${props => (props.visible ? "0" : "320px")});
     }
   }
+
+  .panel_combo-box {
+    margin-left: 8px;
+
+    .combo-button {
+      height: 36px;
+    }
+
+    .combo-button-label {
+      margin: 0;
+    }
+  }
 `;
 
 const StyledContent = styled.div`
@@ -88,10 +100,29 @@ const StyledSharingBody = styled.div`
   position: relative;
   padding: 16px 0;
 
+  .sharing-access-combo-box-icon {
+    path {
+      fill: #a3a9ae;
+    }
+  }
+
   .sharing_panel-remove-icon {
     margin-left: auto;
-    width: 18px;
-    height: 18px;
+  }
+
+  .panel_combo-box {
+    margin-left: 8px;
+
+    .combo-button {
+      height: 30px;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    .combo-button-label {
+      margin: 0;
+    }
   }
 `;
 
