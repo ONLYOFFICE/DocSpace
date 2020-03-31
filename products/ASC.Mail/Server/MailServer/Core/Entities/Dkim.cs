@@ -23,15 +23,32 @@
  *
 */
 
+using ASC.Core.Common.EF;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Mail.Server.Core.Entities
 {
-    public class Dkim
+    [Table("dkim")]
+    public partial class Dkim : BaseEntity
     {
-        public int Id { get; set; }
+        [Key]
+        [Column("id", TypeName = "int(10) unsigned")]
+        public uint Id { get; set; }
+        [Required]
+        [Column("domain_name", TypeName = "varchar(255)")]
         public string DomainName { get; set; }
+        [Required]
+        [Column("selector", TypeName = "varchar(63)")]
         public string Selector { get; set; }
+        [Column("private_key", TypeName = "text")]
         public string PrivateKey { get; set; }
+        [Column("public_key", TypeName = "text")]
         public string PublicKey { get; set; }
+
+        public override object[] GetKeys()
+        {
+            return new object[] { Id };
+        }
     }
 }

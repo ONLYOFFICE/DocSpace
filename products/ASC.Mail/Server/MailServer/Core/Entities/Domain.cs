@@ -24,16 +24,52 @@
 */
 
 
+using ASC.Core.Common.EF;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ASC.Mail.Server.Core.Entities
 {
-    public class Domain
+
+    [Table("domain")]
+    public partial class Domain : BaseEntity
     {
-        public string Name { get; set; }
+        [Key]
+        [Column("domain", TypeName = "varchar(255)")]
+        public string DomainName { get; set; }
+        [Column("description", TypeName = "text")]
         public string Description { get; set; }
-        public bool Active { get; set; }
+        [Column("disclaimer", TypeName = "text")]
+        public string Disclaimer { get; set; }
+        [Column("aliases", TypeName = "int(10)")]
+        public int Aliases { get; set; }
+        [Column("mailboxes", TypeName = "int(10)")]
+        public int Mailboxes { get; set; }
+        [Column("maxquota", TypeName = "bigint(20)")]
+        public long Maxquota { get; set; }
+        [Column("quota", TypeName = "bigint(20)")]
+        public long Quota { get; set; }
+        [Required]
+        [Column("transport", TypeName = "varchar(255)")]
+        public string Transport { get; set; }
+        [Column("backupmx")]
+        public bool Backupmx { get; set; }
+        [Column("settings", TypeName = "text")]
+        public string Settings { get; set; }
+        [Column("created", TypeName = "datetime")]
         public DateTime Created { get; set; }
+        [Column("modified", TypeName = "datetime")]
         public DateTime Modified { get; set; }
+        [Column("expired", TypeName = "datetime")]
+        public DateTime Expired { get; set; }
+        [Required]
+        [Column("active")]
+        public bool? Active { get; set; }
+
+        public override object[] GetKeys()
+        {
+            return new object[] { DomainName };
+        }
     }
 }

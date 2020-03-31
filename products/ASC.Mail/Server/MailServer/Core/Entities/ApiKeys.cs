@@ -24,42 +24,29 @@
 */
 
 
-using System.Collections.Generic;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ASC.Mail.Server.Core.DbSchema.Tables
+namespace ASC.Mail.Server.Core.Entities
 {
-    public class AliasTable : ITable
+    [Table("api_keys")]
+    public partial class ApiKeys
     {
-        public const string TABLE_NAME = "alias";
-
-        public static class Columns
-        {
-            public const string ADDRESS = "address";
-            public const string GOTO = "goto";
-            public const string DOMAIN = "domain";
-            public const string CREATED = "created";
-            public const string MODIFIED = "modified";
-            public const string ACTIVE = "active";
-            public const string IS_GROUP = "islist";
-        }
-
-        public string Name { get { return TABLE_NAME; } }
-
-        public IEnumerable<string> OrderedColumnCollection { get; private set; }
-
-        public AliasTable()
-        {
-            OrderedColumnCollection = new List<string>
-            {
-                Columns.ADDRESS,
-                Columns.GOTO,
-                Columns.DOMAIN,
-                Columns.CREATED,
-                Columns.MODIFIED,
-                Columns.ACTIVE,
-                Columns.IS_GROUP
-            };
-        }
+        [Key]
+        [Column("id", TypeName = "int(11)")]
+        public int Id { get; set; }
+        [Required]
+        [Column("access_token", TypeName = "varchar(255)")]
+        public string AccessToken { get; set; }
+        [Required]
+        [Column("active")]
+        public bool? Active { get; set; }
+        [Column("expires_at", TypeName = "datetime")]
+        public DateTime? ExpiresAt { get; set; }
+        [Column("created_at", TypeName = "datetime")]
+        public DateTime CreatedAt { get; set; }
+        [Column("updated_at", TypeName = "datetime")]
+        public DateTime UpdatedAt { get; set; }
     }
 }

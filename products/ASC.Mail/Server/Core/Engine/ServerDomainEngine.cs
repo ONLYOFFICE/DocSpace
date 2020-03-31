@@ -226,7 +226,7 @@ namespace ASC.Mail.Core.Engine
 
                     var mailServerDomain = new Server.Core.Entities.Domain
                     {
-                        Name = domainName,
+                        DomainName = domainName,
                         Active = true,
                         Description = string.Format("Domain created in UtcTime: {0}, for tenant: {1}", utcNow, Tenant),
                         Created = utcNow,

@@ -24,45 +24,38 @@
 */
 
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Mail.Server.Core.Dao.Interfaces;
-using ASC.Mail.Server.Core.DbSchema;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
-using ASC.Mail.Server.Core.DbSchema.Tables;
 using ASC.Mail.Server.Core.Entities;
+using ASC.Core.Common.EF;
+using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
     public class DkimDao : BaseDao, IDkimDao
     {
-        protected static ITable table = new MailServerTableFactory().Create<DkimTable>();
-
-        public DkimDao(IDbManager dbManager) 
-            : base(table, dbManager)
+        public DkimDao(MailServerDbContext db)
+            : base(db)
         {
         }
 
         public int Save(Dkim dkim)
         {
-            var query = new SqlInsert(DkimTable.TABLE_NAME, true)
-                .InColumnValue(DkimTable.Columns.ID, dkim.Id)
-                .InColumnValue(DkimTable.Columns.DOMAIN_NAME, dkim.DomainName)
-                .InColumnValue(DkimTable.Columns.SELECTOR, dkim.Selector)
-                .InColumnValue(DkimTable.Columns.PRIVATE_KEY, dkim.PrivateKey)
-                .InColumnValue(DkimTable.Columns.PUBLIC_KEY, dkim.PublicKey);
+            var entry = Db.AddOrUpdate(r => r.Dkim, dkim);
 
-            var id = Db.ExecuteScalar<int>(query);
+            Db.SaveChanges();
 
-            return id;
+            return (int)entry.Id;
         }
 
         public int Remove(string domain)
         {
-            var query = new SqlDelete(DkimTable.TABLE_NAME)
-                .Where(DkimTable.Columns.DOMAIN_NAME, domain);
+            var query = Db.Dkim.Where(d =>
+                d.DomainName.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
 
-            var result = Db.ExecuteNonQuery(query);
+            Db.Dkim.RemoveRange(query);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
     }

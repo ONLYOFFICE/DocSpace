@@ -24,40 +24,15 @@
 */
 
 
-using System.IO;
-using System.Linq;
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
-using ASC.Mail.Server.Extensions;
-
 namespace ASC.Mail.Server.Core.Dao
 {
     public abstract class BaseDao
     {
-        public IDbManager Db { get; private set; }
+        public MailServerDbContext Db { get; private set; }
 
-        public ITable Table { get; private set; }
-
-        protected BaseDao(ITable table, IDbManager dbManager)
+        protected BaseDao(MailServerDbContext db)
         {
-            Db = dbManager;
-            Table = table;
-        }
-
-        protected SqlQuery Query(string alias = null)
-        {
-            if (!Table.OrderedColumnCollection.Any())
-                throw new InvalidDataException("Table.OrderedColumnCollection is null or empty");
-
-            if (string.IsNullOrEmpty(alias))
-            {
-                return new SqlQuery(Table.Name).Select(Table.OrderedColumnCollection.ToArray());
-            }
-
-            return
-                new SqlQuery(Table.Name.Alias(alias)).Select(
-                    Table.OrderedColumnCollection.Select(c => c.Prefix(alias)).ToArray());
+            Db = db;
         }
     }
 }

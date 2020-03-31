@@ -24,73 +24,70 @@
 */
 
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Mail.Server.Core.Dao.Interfaces;
-using ASC.Mail.Server.Core.DbSchema;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
-using ASC.Mail.Server.Core.DbSchema.Tables;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
+using ASC.Core.Common.EF;
+using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
     public class MailboxDao : BaseDao, IMailboxDao
     {
-        protected static ITable table = new MailServerTableFactory().Create<MailboxTable>();
-
-        public MailboxDao(IDbManager dbManager) 
-            : base(table, dbManager)
+        public MailboxDao(MailServerDbContext db)
+            : base(db)
         {
         }
 
         public int Save(Mailbox mailbox, bool deliver = true)
         {
-            var query = new SqlInsert(MailboxTable.TABLE_NAME, true)
-                .InColumnValue(MailboxTable.Columns.USERNAME, mailbox.Login)
-                .InColumnValue(MailboxTable.Columns.NAME, mailbox.Name)
-                .InColumnValue(MailboxTable.Columns.PASSWORD, PostfixPasswordEncryptor.EncryptString(HashType.Md5, mailbox.Password))
-                .InColumnValue(MailboxTable.Columns.MAILDIR, mailbox.Maldir)
-                .InColumnValue(MailboxTable.Columns.LOCAL_PART, mailbox.LocalPart)
-                .InColumnValue(MailboxTable.Columns.DOMAIN, mailbox.Domain)
-                .InColumnValue(MailboxTable.Columns.CREATED, mailbox.Created)
-                .InColumnValue(MailboxTable.Columns.MODIFIED, mailbox.Modified)
-                .InColumnValue(MailboxTable.Columns.ENABLE_IMAP, deliver)
-                .InColumnValue(MailboxTable.Columns.ENABLE_IMAP_SECURED, deliver)
-                .InColumnValue(MailboxTable.Columns.ENABLE_POP, deliver)
-                .InColumnValue(MailboxTable.Columns.ENABLE_POP_SECURED, deliver)
-                .InColumnValue(MailboxTable.Columns.ENABLE_DELIVER, deliver)
-                .InColumnValue(MailboxTable.Columns.ENABLE_LDA, deliver);
+            mailbox.Password = PostfixPasswordEncryptor.EncryptString(HashType.Md5, mailbox.Password);
 
-            var result = Db.ExecuteNonQuery(query);
+            var entry = Db.AddOrUpdate(r => r.Mailbox, mailbox);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int ChangePassword(string username, string newPassword)
         {
-            var query = new SqlUpdate(MailboxTable.TABLE_NAME)
-                .Set(MailboxTable.Columns.PASSWORD, PostfixPasswordEncryptor.EncryptString(HashType.Md5, newPassword))
-                .Where(MailboxTable.Columns.USERNAME, username);
+            var mb = Db.Mailbox
+                .Where(mb => mb.Username
+                    .Equals(username, System.StringComparison.InvariantCultureIgnoreCase))
+                .SingleOrDefault();
 
-            var result = Db.ExecuteNonQuery(query);
+            if (mb == null)
+                return -1;
+
+            mb.Password = PostfixPasswordEncryptor.EncryptString(HashType.Md5, newPassword);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int Remove(string address)
         {
-            var query = new SqlDelete(MailboxTable.TABLE_NAME)
-                .Where(MailboxTable.Columns.USERNAME, address);
+            var query = Db.Mailbox.Where(a =>
+                a.Username.Equals(address, System.StringComparison.InvariantCultureIgnoreCase));
 
-            var result = Db.ExecuteNonQuery(query);
+            Db.Mailbox.RemoveRange(query);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int RemoveByDomain(string domain)
         {
-            var query = new SqlDelete(MailboxTable.TABLE_NAME)
-                .Where(MailboxTable.Columns.DOMAIN, domain);
+            var query = Db.Mailbox.Where(a =>
+                a.Domain.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
 
-            var result = Db.ExecuteNonQuery(query);
+            Db.Mailbox.RemoveRange(query);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
     }

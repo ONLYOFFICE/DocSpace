@@ -359,12 +359,12 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = name,
                     Password = password,
-                    Login = login,
+                    Username = login,
                     LocalPart = localPart,
                     Domain = serverDomain.Name,
                     Active = true,
                     Quota = 0,
-                    Maldir = maildir,
+                    Maildir = maildir,
                     Modified = utcNow,
                     Created = utcNow,
                 };
@@ -373,10 +373,10 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = name,
                     Address = login,
-                    GoTo = login,
+                    Goto = login,
                     Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = false,
+                    Active = true,
+                    Islist = false,
                     Modified = utcNow,
                     Created = utcNow
                 };
@@ -535,10 +535,10 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = mailbox.Name,
                     Address = aliasEmail,
-                    GoTo = mailboxAddress,
+                    Goto = mailboxAddress,
                     Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = false,
+                    Active = true,
+                    Islist = false,
                     Modified = utcNow,
                     Created = utcNow
                 };
@@ -656,10 +656,10 @@ namespace ASC.Mail.Core.Engine
                         {
                             Name = "",
                             Address = serverGroup.Address,
-                            GoTo = goTo,
+                            Goto = goTo,
                             Domain = serverDomain.Name,
-                            IsActive = true,
-                            IsGroup = true,
+                            Active = true,
+                            Islist = true,
                             Modified = utcNow,
                             Created = serverGroup.DateCreated
                         };

@@ -210,10 +210,10 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = "",
                     Address = groupEmail,
-                    GoTo = goTo,
+                    Goto = goTo,
                     Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = true,
+                    Active = true,
+                    Islist = true,
                     Modified = utcNow,
                     Created = utcNow
                 };
@@ -288,10 +288,10 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = "",
                     Address = groupEmail,
-                    GoTo = goTo,
+                    Goto = goTo,
                     Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = true,
+                    Active = true,
+                    Islist = true,
                     Modified = utcNow,
                     Created = utcNow
                 };
@@ -360,10 +360,10 @@ namespace ASC.Mail.Core.Engine
                 {
                     Name = "",
                     Address = groupEmail,
-                    GoTo = goTo,
+                    Goto = goTo,
                     Domain = serverDomain.Name,
-                    IsActive = true,
-                    IsGroup = true,
+                    Active = true,
+                    Islist = true,
                     Modified = utcNow,
                     Created = group.DateCreated
                 };

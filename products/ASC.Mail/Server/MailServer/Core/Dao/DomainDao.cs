@@ -24,44 +24,38 @@
 */
 
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Mail.Server.Core.Dao.Interfaces;
-using ASC.Mail.Server.Core.DbSchema;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
-using ASC.Mail.Server.Core.DbSchema.Tables;
 using ASC.Mail.Server.Core.Entities;
+using ASC.Core.Common.EF;
+using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
     public class DomainDao : BaseDao, IDomainDao
     {
-        protected static ITable table = new MailServerTableFactory().Create<DomainTable>();
-
-        public DomainDao(IDbManager dbManager) 
-            : base(table, dbManager)
+        public DomainDao(MailServerDbContext db) 
+            : base(db)
         {
         }
 
         public int Save(Domain domain)
         {
-            var query = new SqlInsert(DomainTable.TABLE_NAME, true)
-                .InColumnValue(DomainTable.Columns.DOMAIN, domain.Name)
-                .InColumnValue(DomainTable.Columns.DESCRIPTION, domain.Description)
-                .InColumnValue(DomainTable.Columns.CREATED, domain.Created)
-                .InColumnValue(DomainTable.Columns.MODIFIED, domain.Modified)
-                .InColumnValue(DomainTable.Columns.ACTIVE, domain.Active);
+            var entry = Db.AddOrUpdate(r => r.Domain, domain);
 
-            var result = Db.ExecuteNonQuery(query);
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int Remove(string domain)
         {
-            var query = new SqlDelete(DomainTable.TABLE_NAME)
-                .Where(DomainTable.Columns.DOMAIN, domain);
+            var query = Db.Domain.Where(a =>
+                a.DomainName.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
 
-            var result = Db.ExecuteNonQuery(query);
+            Db.Domain.RemoveRange(query);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
     }

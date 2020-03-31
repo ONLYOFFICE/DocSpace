@@ -25,14 +25,12 @@
 
 
 using System;
-using System.Configuration;
-using System.Data;
 using System.Net;
 using System.Net.Mail;
-using ASC.Common.Data;
 using ASC.Mail.Server.Core.Dao;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
@@ -40,30 +38,28 @@ namespace ASC.Mail.Server.Core
 {
     public class ServerEngine
     {
-        private readonly string _csName;
-        private readonly ServerApi _serverApi;
+        public string DbConnectionString { get; }
+
+        public ServerApi ServerApi { get; }
 
         public ServerEngine(int serverId, string connectionString)
         {
-            var serverDbConnection = string.Format("postfixserver{0}", serverId);
+            //var serverDbConnection = string.Format("postfixserver{0}", serverId);
 
             var connectionStringParser = new PostfixConnectionStringParser(connectionString);
 
-            var cs = new ConnectionStringSettings(serverDbConnection,
-                                                  connectionStringParser.PostfixAdminDbConnectionString, "MySql.Data.MySqlClient");
+            //var cs = new ConnectionStringSettings(serverDbConnection,
+            //                                      connectionStringParser.PostfixAdminDbConnectionString, "MySql.Data.MySqlClient");
 
-            if (!DbRegistry.IsDatabaseRegistered(cs.Name))
-            {
-                DbRegistry.RegisterDatabase(cs.Name, cs);
-            }
+            DbConnectionString = connectionStringParser.PostfixAdminDbConnectionString;
 
-            _csName = cs.Name;
+            //_csName = cs.Name;
 
             var json = JObject.Parse(connectionString);
 
             if (json["Api"] != null)
             {
-                _serverApi = new ServerApi
+                ServerApi = new ServerApi
                 {
                     server_ip = json["Api"]["Server"].ToString(),
                     port = Convert.ToInt32(json["Api"]["Port"].ToString()),
@@ -74,9 +70,16 @@ namespace ASC.Mail.Server.Core
             }
         }
 
+        public MailServerDbContext GetDb() {
+            var optionsBuilder = new DbContextOptionsBuilder<MailServerDbContext>();
+            optionsBuilder.UseMySql(DbConnectionString);
+
+            return new MailServerDbContext(optionsBuilder.Options);
+        }
+
         public int SaveDomain(Domain domain)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
                 var domainDao = new DomainDao(db);
 
@@ -86,7 +89,7 @@ namespace ASC.Mail.Server.Core
 
         public int SaveDkim(Dkim dkim)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
                 var dkimDao = new DkimDao(db);
 
@@ -96,7 +99,7 @@ namespace ASC.Mail.Server.Core
 
         public int SaveAlias(Alias alias)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
                 var aliasDao = new AliasDao(db);
 
@@ -106,7 +109,7 @@ namespace ASC.Mail.Server.Core
 
         public int RemoveAlias(string alias)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
                 var aliasDao = new AliasDao(db);
 
@@ -116,7 +119,7 @@ namespace ASC.Mail.Server.Core
 
         public void ChangePassword(string username, string newPassword)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
                 var mailboxDao = new MailboxDao(db);
 
@@ -129,9 +132,9 @@ namespace ASC.Mail.Server.Core
 
         public void SaveMailbox(Mailbox mailbox, Alias address, bool deliver = true)
         {
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = db.Database.BeginTransaction())
                 {
                     var mailboxDao = new MailboxDao(db);
 
@@ -152,9 +155,9 @@ namespace ASC.Mail.Server.Core
 
             ClearMailboxStorageSpace(mailAddress.User, mailAddress.Host);
 
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = db.Database.BeginTransaction())
                 {
                     var mailboxDao = new MailboxDao(db);
 
@@ -173,9 +176,9 @@ namespace ASC.Mail.Server.Core
         {
             ClearDomainStorageSpace(domain);
 
-            using (var db = new DbManager(_csName))
+            using (var db = GetDb())
             {
-                using (var tx = db.BeginTransaction(IsolationLevel.ReadUncommitted))
+                using (var tx = db.Database.BeginTransaction())
                 {
                     var aliasDao = new AliasDao(db);
 
@@ -200,7 +203,7 @@ namespace ASC.Mail.Server.Core
 
         public string GetVersion()
         {
-            if (_serverApi == null) 
+            if (ServerApi == null) 
                 return null;
 
             var client = GetApiClient();
@@ -225,7 +228,7 @@ namespace ASC.Mail.Server.Core
 
         private void ClearDomainStorageSpace(string domain)
         {
-            if (_serverApi == null) return;
+            if (ServerApi == null) return;
 
             var client = GetApiClient();
             var request = GetApiRequest("domains/{domain_name}", Method.DELETE);
@@ -238,7 +241,7 @@ namespace ASC.Mail.Server.Core
 
         private void ClearMailboxStorageSpace(string mailboxLocalpart, string domainName)
         {
-            if (_serverApi == null) return; // Skip if api not presented
+            if (ServerApi == null) return; // Skip if api not presented
 
             var client = GetApiClient();
             var request = GetApiRequest("domains/{domain_name}/mailboxes/{mailbox_localpart}", Method.DELETE);
@@ -253,12 +256,12 @@ namespace ASC.Mail.Server.Core
 
         private RestClient GetApiClient()
         {
-            return _serverApi == null ? null : new RestClient(string.Format("{0}://{1}:{2}/", _serverApi.protocol, _serverApi.server_ip, _serverApi.port));
+            return ServerApi == null ? null : new RestClient(string.Format("{0}://{1}:{2}/", ServerApi.protocol, ServerApi.server_ip, ServerApi.port));
         }
 
         private RestRequest GetApiRequest(string apiUrl, Method method)
         {
-            return _serverApi == null ? null : new RestRequest(string.Format("/api/{0}/{1}?auth_token={2}", _serverApi.version, apiUrl, _serverApi.token), method);
+            return ServerApi == null ? null : new RestRequest(string.Format("/api/{0}/{1}?auth_token={2}", ServerApi.version, apiUrl, ServerApi.token), method);
         }
     }
 }

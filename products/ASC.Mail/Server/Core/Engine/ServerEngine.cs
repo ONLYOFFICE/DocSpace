@@ -422,12 +422,12 @@ namespace ASC.Mail.Core.Engine
             {
                 Name = localPart,
                 Password = trimPwd,
-                Login = login,
+                Username = login,
                 LocalPart = localPart,
                 Domain = serverDomain.Name,
                 Active = true,
                 Quota = 0,
-                Maldir = maildir,
+                Maildir = maildir,
                 Modified = utcNow,
                 Created = utcNow,
             };
@@ -436,10 +436,10 @@ namespace ASC.Mail.Core.Engine
             {
                 Name = localPart,
                 Address = login,
-                GoTo = login,
+                Goto = login,
                 Domain = serverDomain.Name,
-                IsActive = true,
-                IsGroup = false,
+                Active = true,
+                Islist = false,
                 Modified = utcNow,
                 Created = utcNow
             };

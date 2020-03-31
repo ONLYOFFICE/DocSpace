@@ -24,55 +24,49 @@
 */
 
 
-using ASC.Common.Data;
-using ASC.Common.Data.Sql;
 using ASC.Mail.Server.Core.Dao.Interfaces;
-using ASC.Mail.Server.Core.DbSchema;
-using ASC.Mail.Server.Core.DbSchema.Interfaces;
-using ASC.Mail.Server.Core.DbSchema.Tables;
 using ASC.Mail.Server.Core.Entities;
+using System.Linq;
 
 namespace ASC.Mail.Server.Core.Dao
 {
     public class AliasDao : BaseDao, IAliasDao
     {
-        protected static ITable table = new MailServerTableFactory().Create<AliasTable>();
-
-        public AliasDao(IDbManager dbManager) 
-            : base(table, dbManager)
+        public AliasDao(MailServerDbContext db)
+            : base(db)
         {
         }
 
         public int Save(Alias alias)
         {
-            var query = new SqlInsert(AliasTable.TABLE_NAME, true)
-                .InColumnValue(AliasTable.Columns.ADDRESS, alias.Address)
-                .InColumnValue(AliasTable.Columns.GOTO, alias.GoTo)
-                .InColumnValue(AliasTable.Columns.DOMAIN, alias.Domain)
-                .InColumnValue(AliasTable.Columns.CREATED, alias.Created)
-                .InColumnValue(AliasTable.Columns.MODIFIED, alias.Modified)
-                .InColumnValue(AliasTable.Columns.ACTIVE, alias.IsActive)
-                .InColumnValue(AliasTable.Columns.IS_GROUP, alias.IsGroup);
+            Db.Alias.Add(alias);
 
-            var result = Db.ExecuteNonQuery(query);
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int Remove(string address)
         {
-            var query = new SqlDelete(AliasTable.TABLE_NAME)
-                .Where(AliasTable.Columns.ADDRESS, address);
+            var query = Db.Alias.Where(a => 
+                a.Address.Equals(address, System.StringComparison.InvariantCultureIgnoreCase));
+            
+            Db.RemoveRange(query);
 
-            var result = Db.ExecuteNonQuery(query);
+            var result = Db.SaveChanges();
+
             return result;
         }
 
         public int RemoveByDomain(string domain)
         {
-            var query = new SqlDelete(AliasTable.TABLE_NAME)
-                .Where(AliasTable.Columns.DOMAIN, domain);
+            var query = Db.Alias.Where(a =>
+                a.Domain.Equals(domain, System.StringComparison.InvariantCultureIgnoreCase));
 
-            var result = Db.ExecuteNonQuery(query);
+            Db.Alias.RemoveRange(query);
+
+            var result = Db.SaveChanges();
+
             return result;
         }
     }
