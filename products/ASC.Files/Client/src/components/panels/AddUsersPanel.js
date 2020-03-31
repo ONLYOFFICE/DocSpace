@@ -1,11 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton
-} from "asc-web-components";
+import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { PeopleSelector } from "asc-web-common";
 import {
   StyledPanel,
@@ -36,8 +31,16 @@ class AddUsersPanel extends React.Component {
   };
 
   onPeopleSelect = users => {
+    const items = [];
+    for (let item of users) {
+      item.id = item.key;
+      delete item.key;
+      item.rights = this.props.accessRight;
+      items.push(item);
+    }
+
+    this.props.onSetSelectedUsers(items);
     this.props.onClose();
-    this.props.onSetSelectedUsers(users);
   };
 
   shouldComponentUpdate(nextProps, nextState) {
