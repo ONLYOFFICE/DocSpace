@@ -31,26 +31,18 @@ using System.Net.Mail;
 using System.Threading;
 using ASC.Api.Core;
 using ASC.Common;
-//using System.Net.Mail;
-//using System.Threading;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Common.EF;
+using ASC.Core.Common.Configuration;
+using ASC.FederatedLogin.Helpers;
+using ASC.FederatedLogin.LoginProviders;
+using ASC.Mail.Authorization;
 using ASC.Mail.Clients;
-//using ASC.FederatedLogin.Helpers;
-//using ASC.FederatedLogin.LoginProviders;
-//using ASC.Mail.Authorization;
-//using ASC.Mail.Clients;
-//using ASC.Mail.Core.Dao.Expressions.Mailbox;
-//using ASC.Mail.Core.Entities;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-//using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -80,8 +72,11 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
 
         public MailboxEngine MailboxEngine { get; }
+        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
         public CacheEngine CacheEngine { get; }
+        public ConsumerFactory ConsumerFactory { get; }
+        public GoogleLoginProvider GoogleLoginProvider { get; }
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
         public MailDbContext MailDb { get; }
 
@@ -90,18 +85,24 @@ namespace ASC.Mail.Core.Engine
             ApiContext apiContext,
             SecurityContext securityContext,
             MailboxEngine mailboxEngine,
-            IOptionsMonitor<ILog> option,
+            EngineFactory engineFactory,
             DaoFactory daoFactory,
             CacheEngine cacheEngine,
-            MailBoxSettingEngine mailBoxSettingEngine)
+            ConsumerFactory consumerFactory,
+            GoogleLoginProvider googleLoginProvider,
+            MailBoxSettingEngine mailBoxSettingEngine,
+            IOptionsMonitor<ILog> option)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AccountEngine");
 
             MailboxEngine = mailboxEngine;
+            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             CacheEngine = cacheEngine;
+            ConsumerFactory = consumerFactory;
+            GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
         }
 
@@ -315,46 +316,45 @@ namespace ASC.Mail.Core.Engine
             return account;
         }
 
-        //public AccountInfo CreateAccountOAuth(string code, byte type)
-        //{
-        //    var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(code);
+        public AccountInfo CreateAccountOAuth(string code, byte type)
+        {
+            var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
-        //    if (oAuthToken == null)
-        //        throw new Exception(@"Empty oauth token");
+            if (oAuthToken == null)
+                throw new Exception(@"Empty oauth token");
 
-        //    var loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(oAuthToken.AccessToken);
-        //    var email = loginProfile.EMail;
+            var loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(oAuthToken.AccessToken);
+            var email = loginProfile.EMail;
 
-        //    if (string.IsNullOrEmpty(email))
-        //        throw new Exception(@"Empty email");
+            if (string.IsNullOrEmpty(email))
+                throw new Exception(@"Empty email");
 
-        //    var beginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta));
+            var beginDate = DateTime.UtcNow.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta));
 
-        //    var mboxImap = MailboxEngine.GetDefaultMailboxData(email, "", (AuthorizationServiceType)type,
-        //        true, false);
+            var mboxImap = MailboxEngine.GetDefaultMailboxData(email, "", (AuthorizationServiceType)type,
+                true, false);
 
-        //    mboxImap.OAuthToken = oAuthToken.ToJson();
-        //    mboxImap.BeginDate = beginDate; // Apply restrict for download
+            mboxImap.OAuthToken = oAuthToken.ToJson();
+            mboxImap.BeginDate = beginDate; // Apply restrict for download
 
-        //    if (!MailboxEngine.SaveMailBox(mboxImap, (AuthorizationServiceType)type))
-        //        throw new Exception(string.Format("SaveMailBox {0} failed", email));
+            if (!MailboxEngine.SaveMailBox(mboxImap, (AuthorizationServiceType)type))
+                throw new Exception(string.Format("SaveMailBox {0} failed", email));
 
-        //    CacheEngine.Clear(User);
+            EngineFactory.CacheEngine.Clear(UserId);
 
-        //    if (Defines.IsSignalRAvailable)
-        //    {
-        //        var engine = new EngineFactory(Tenant, User);
-        //        engine.AccountEngine.SetAccountsActivity();
-        //    }
+            if (Defines.IsSignalRAvailable)
+            {
+                EngineFactory.AccountEngine.SetAccountsActivity();
+            }
 
-        //    var account = new AccountInfo(mboxImap.MailBoxId, mboxImap.EMailView, mboxImap.Name, mboxImap.Enabled,
-        //        mboxImap.QuotaError,
-        //        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mboxImap.MailBoxId, Tenant, "", false),
-        //        new MailAutoreplyData(mboxImap.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
-        //            DateTime.MinValue, string.Empty, string.Empty), true, mboxImap.EMailInFolder, false, false);
+            var account = new AccountInfo(mboxImap.MailBoxId, mboxImap.EMailView, mboxImap.Name, mboxImap.Enabled,
+                mboxImap.QuotaError,
+                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mboxImap.MailBoxId, Tenant, "", false),
+                new MailAutoreplyData(mboxImap.MailBoxId, Tenant, false, false, false, DateTime.MinValue,
+                    DateTime.MinValue, string.Empty, string.Empty), true, mboxImap.EMailInFolder, false, false);
 
-        //    return account;
-        //}
+            return account;
+        }
 
         public AccountInfo UpdateAccount(MailBoxData newMailBoxData, out LoginResult loginResult)
         {
@@ -425,73 +425,65 @@ namespace ASC.Mail.Core.Engine
             return TryCreateAccount(newMailBoxData, out loginResult);
         }
 
-        //public AccountInfo UpdateAccountOAuth(int mailboxId, string code, byte type)
-        //{
-        //    if (string.IsNullOrEmpty(code))
-        //        throw new ArgumentException(@"Empty OAuth code", "code");
+        public AccountInfo UpdateAccountOAuth(int mailboxId, string code, byte type)
+        {
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentException(@"Empty OAuth code", "code");
 
-        //    var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(code);
+            var oAuthToken = OAuth20TokenHelper.GetAccessToken<GoogleLoginProvider>(ConsumerFactory, code);
 
-        //    if (oAuthToken == null)
-        //        throw new Exception(@"Empty OAuth token");
+            if (oAuthToken == null)
+                throw new Exception(@"Empty OAuth token");
 
-        //    if (string.IsNullOrEmpty(oAuthToken.AccessToken))
-        //        throw new Exception(@"Empty OAuth AccessToken");
+            if (string.IsNullOrEmpty(oAuthToken.AccessToken))
+                throw new Exception(@"Empty OAuth AccessToken");
 
-        //    if (string.IsNullOrEmpty(oAuthToken.RefreshToken))
-        //        throw new Exception(@"Empty OAuth RefreshToken");
+            if (string.IsNullOrEmpty(oAuthToken.RefreshToken))
+                throw new Exception(@"Empty OAuth RefreshToken");
 
-        //    if (oAuthToken.IsExpired)
-        //        throw new Exception(@"OAuth token is expired");
+            if (oAuthToken.IsExpired)
+                throw new Exception(@"OAuth token is expired");
 
-        //    var loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(oAuthToken.AccessToken);
-        //    var email = loginProfile.EMail;
+            var loginProfile = GoogleLoginProvider.Instance.GetLoginProfile(oAuthToken.AccessToken);
+            var email = loginProfile.EMail;
 
-        //    if (string.IsNullOrEmpty(email))
-        //        throw new Exception(@"Empty email");
+            if (string.IsNullOrEmpty(email))
+                throw new Exception(@"Empty email");
 
-        //    Mailbox mbox;
+            var mbox = DaoFactory.MailboxDao.GetMailBox(
+                new СoncreteUserMailboxExp(
+                    mailboxId,
+                    Tenant, UserId));
 
-        //    using (var daoFactory = new DaoFactory())
-        //    {
-        //        var daoMailbox = daoFactory.CreateMailboxDao();
+            if (null == mbox)
+                throw new ArgumentException("Mailbox with specified email doesn't exist.");
 
-        //        mbox = daoMailbox.GetMailBox(
-        //            new СoncreteUserMailboxExp(
-        //                mailboxId,
-        //                Tenant, User));
+            if (mbox.IsTeamlabMailbox || string.IsNullOrEmpty(mbox.OAuthToken))
+                throw new ArgumentException("Mailbox with specified email can't be updated");
 
-        //        if (null == mbox)
-        //            throw new ArgumentException("Mailbox with specified email doesn't exist.");
+            if (!mbox.Address.Equals(email, StringComparison.InvariantCultureIgnoreCase))
+                throw new ArgumentException("Mailbox with specified email can't be updated");
 
-        //        if (mbox.IsTeamlabMailbox || string.IsNullOrEmpty(mbox.OAuthToken))
-        //            throw new ArgumentException("Mailbox with specified email can't be updated");
+            mbox.OAuthToken = oAuthToken.ToJson();
 
-        //        if (!mbox.Address.Equals(email, StringComparison.InvariantCultureIgnoreCase))
-        //            throw new ArgumentException("Mailbox with specified email can't be updated");
+            var result = DaoFactory.MailboxDao.SaveMailBox(mbox);
 
-        //        mbox.OAuthToken = oAuthToken.ToJson();
+            mbox.Id = result;
 
-        //        var result = daoMailbox.SaveMailBox(mbox);
+            EngineFactory.CacheEngine.Clear(UserId);
 
-        //        mbox.Id = result;
-        //    }
+            if (Defines.IsSignalRAvailable)
+            {
+                EngineFactory.AccountEngine.SetAccountsActivity();
+            }
 
-        //    CacheEngine.Clear(User);
+            var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
+                MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
+                new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
+                    DateTime.MinValue, string.Empty, string.Empty), true, mbox.EmailInFolder, false, false);
 
-        //    if (Defines.IsSignalRAvailable)
-        //    {
-        //        var engine = new EngineFactory(Tenant, User);
-        //        engine.AccountEngine.SetAccountsActivity();
-        //    }
-
-        //    var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
-        //        MailBoxData.AuthProblemType.NoProblems, new MailSignatureData(mbox.Id, Tenant, "", false),
-        //        new MailAutoreplyData(mbox.Id, Tenant, false, false, false, DateTime.MinValue,
-        //            DateTime.MinValue, string.Empty, string.Empty), true, mbox.EmailInFolder, false, false);
-
-        //    return accountInfo;
-        //}
+            return accountInfo;
+        }
 
         public int SetAccountEnable(MailAddress address, bool enabled, out LoginResult loginResult)
         {
