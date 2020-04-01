@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -193,6 +194,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return chain;
+        }
+    }
+
+    public static class ChainDaoExtension
+    {
+        public static DIHelper AddChainDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ChainDao>();
+
+            return services;
         }
     }
 }

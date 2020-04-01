@@ -171,7 +171,30 @@ namespace ASC.Mail.Core
                 .AddDisplayImagesAddressDaoService()
                 .AddMailboxSignatureDaoService()
                 .AddTagDaoService()
-                .AddAttachmentDaoService();
+                .AddAttachmentDaoService()
+                .AddChainDaoService()
+                .AddContactCardDaoService()
+                .AddContactDaoService()
+                .AddContactInfoDaoService()
+                .AddCrmContactDaoService()
+                .AddCrmLinkDaoService()
+                .AddFilterDaoService()
+                .AddFolderDaoService()
+                .AddImapFlagsDaoService()
+                .AddImapSpecialMailboxDaoService()
+                .AddMailDaoService()
+                .AddMailGarbageDaoService()
+                .AddMailInfoDaoService()
+                .AddServerAddressDaoService()
+                .AddServerDaoService()
+                .AddServerDnsDaoService()
+                .AddServerDomainDaoService()
+                .AddServerGroupDaoService()
+                .AddTagAddressDaoService()
+                .AddTagMailDaoService()
+                .AddUserFolderDaoService()
+                .AddUserFolderTreeDaoService()
+                .AddUserFolderXMailDaoService();
         }
     }
 }

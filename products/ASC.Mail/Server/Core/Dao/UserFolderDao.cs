@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -350,6 +351,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return folder;
+        }
+    }
+
+    public static class UserFolderDaoExtension
+    {
+        public static DIHelper AddUserFolderDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<UserFolderDao>();
+
+            return services;
         }
     }
 }

@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
@@ -72,6 +73,7 @@ namespace ASC.Mail.Core.Dao
             //TODO: Fix check access rights 
             ids.AddRange(contactList.Select(c => c.Id));
 
+            //TODO: Fix
             //CoreContext.TenantManager.SetCurrentTenant(Tenant);
             //SecurityContext.AuthenticateMe(new Guid(CurrentUserId));
 
@@ -97,6 +99,16 @@ namespace ASC.Mail.Core.Dao
             //}
 
             return ids;
+        }
+    }
+
+    public static class CrmContactDaoExtension
+    {
+        public static DIHelper AddCrmContactDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<CrmContactDao>();
+
+            return services;
         }
     }
 }

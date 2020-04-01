@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -120,6 +121,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return f;
+        }
+    }
+
+    public static class FilterDaoExtension
+    {
+        public static DIHelper AddFilterDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<FilterDao>();
+
+            return services;
         }
     }
 }

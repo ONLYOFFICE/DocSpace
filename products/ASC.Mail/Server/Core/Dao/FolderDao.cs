@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -171,6 +172,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return f;
+        }
+    }
+
+    public static class FolderDaoExtension
+    {
+        public static DIHelper AddFolderDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<FolderDao>();
+
+            return services;
         }
     }
 }

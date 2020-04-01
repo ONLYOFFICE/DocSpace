@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
@@ -193,6 +194,16 @@ namespace ASC.Mail.Core.Dao
             MailDb.MailMail.RemoveRange(deleteQuery);
 
             MailDb.SaveChanges();
+        }
+    }
+
+    public static class MailGarbageDaoExtension
+    {
+        public static DIHelper AddMailGarbageDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<MailGarbageDao>();
+
+            return services;
         }
     }
 }

@@ -25,6 +25,7 @@
 
 
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -161,6 +162,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return c;
+        }
+    }
+
+    public static class ContactCardDaoExtension
+    {
+        public static DIHelper AddContactCardDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ContactCardDao>();
+
+            return services;
         }
     }
 }

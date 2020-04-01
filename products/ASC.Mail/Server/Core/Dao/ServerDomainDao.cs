@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -151,6 +152,16 @@ namespace ASC.Mail.Core.Dao
             };
 
             return d;
+        }
+    }
+
+    public static class ServerDomainDaoExtension
+    {
+        public static DIHelper AddServerDomainDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ServerDomainDao>();
+
+            return services;
         }
     }
 }

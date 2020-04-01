@@ -27,6 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ASC.Api.Core;
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
@@ -137,6 +138,16 @@ namespace ASC.Mail.Core.Dao
             var result = MailDb.SaveChanges();
 
             return result;
+        }
+    }
+
+    public static class CrmLinkDaoExtension
+    {
+        public static DIHelper AddCrmLinkDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<CrmLinkDao>();
+
+            return services;
         }
     }
 }
