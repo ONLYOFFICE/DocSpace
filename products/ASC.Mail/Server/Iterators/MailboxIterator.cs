@@ -49,14 +49,12 @@ namespace ASC.Mail.Iterators
         private MailboxEngine MailboxEngine { get; set; }
 
         // Constructor
-        public MailboxIterator(int tenant = -1, string userId = null, bool? isRemoved = false, ILog log = null)
+        public MailboxIterator(MailboxEngine mailboxEngine, int tenant = -1, string userId = null, bool? isRemoved = false, ILog log = null)
         {
             if (!string.IsNullOrEmpty(userId) && tenant < 0)
                 throw new ArgumentException("Tenant must be initialized if user not empty");
 
-            var engine = new EngineFactory(tenant, userId, log);
-
-            MailboxEngine = engine.MailboxEngine;
+            MailboxEngine = mailboxEngine;
 
             Tenant = tenant;
             UserId = userId;

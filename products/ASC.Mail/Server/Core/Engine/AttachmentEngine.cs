@@ -271,7 +271,7 @@ namespace ASC.Mail.Core.Engine
                         "AttachCount",
                         attachCount);
 
-                    EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(DaoFactory, tenant, user, messageId);
+                    EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
 
                     tx.Commit();
                 }
@@ -388,7 +388,7 @@ namespace ASC.Mail.Core.Engine
                     "AttachCount",
                     attachCount);
 
-                EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(DaoFactory, tenant, user, messageId);
+                EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
 
                 tx.Commit();
             }

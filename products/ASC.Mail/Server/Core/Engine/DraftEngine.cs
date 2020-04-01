@@ -59,6 +59,7 @@ using FileShare = ASC.Files.Core.Security.FileShare;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using ASC.ElasticSearch;
+using ASC.Web.Files.Services.WCFService;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -75,6 +76,7 @@ namespace ASC.Mail.Core.Engine
             TenantManager tenantManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
+            FileStorageService fileStorageService,
             FactoryIndexer<MailContactWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
@@ -94,6 +96,7 @@ namespace ASC.Mail.Core.Engine
         {
             Log = option.Get("ASC.Mail.DraftEngine");
             SecurityContext = securityContext;
+            FileStorageService = fileStorageService;
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
@@ -243,7 +246,7 @@ namespace ASC.Mail.Core.Engine
 
                     draft.ChangeSmileLinks(Log);
 
-                    draft.ChangeAttachedFileLinksAddresses(Log);
+                    draft.ChangeAttachedFileLinksAddresses(FileStorageService, Log);
 
                     draft.ChangeAttachedFileLinksImages(Log);
 
@@ -254,7 +257,7 @@ namespace ASC.Mail.Core.Engine
 
                     draft.ChangeUrlProxyLinks(Log);
 
-                    var mimeMessage = draft.ToMimeMessage();
+                    var mimeMessage = draft.ToMimeMessage(StorageManager);
 
                     using (var mc = new MailClient(draft.Mailbox, CancellationToken.None,
                         certificatePermit: draft.Mailbox.IsTeamlab || _sslCertificatePermit, log: Log,
@@ -355,16 +358,16 @@ namespace ASC.Mail.Core.Engine
                         "ChainId",
                         message.ChainId);
 
-                    EngineFactory.ChainEngine.UpdateChain(DaoFactory, draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                    EngineFactory.ChainEngine.UpdateChain(draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                         draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
                     DaoFactory.CrmLinkDao.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
                 }
 
-                EngineFactory.ChainEngine.UpdateChain(DaoFactory, message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                EngineFactory.ChainEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                     draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
-                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, new List<int> { draft.Id });
+                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(new List<int> { draft.Id });
 
                 if (!listObjects.Any())
                     return;
@@ -386,7 +389,7 @@ namespace ASC.Mail.Core.Engine
         {
             using (var tx = DaoFactory.BeginTransaction())
             {
-                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(DaoFactory, new List<int> { draft.Id });
+                var listObjects = EngineFactory.ChainEngine.GetChainedMessagesInfo(new List<int> { draft.Id });
 
                 if (!listObjects.Any())
                     return;
@@ -536,6 +539,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         public SecurityContext SecurityContext { get; }
+        public FileStorageService FileStorageService { get; }
         public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }

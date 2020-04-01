@@ -51,9 +51,10 @@ namespace ASC.Mail.Iterators
         private readonly int _maxMessageId;
 
         // Constructor
-        public MailboxMessagesIterator(MailBoxData mailBoxData)
+        public MailboxMessagesIterator(EngineFactory engineFactory, MailBoxData mailBoxData)
         {
-            MailEngine = new EngineFactory(mailBoxData.TenantId, mailBoxData.UserId);
+            MailEngine = engineFactory;
+
             var range = MailEngine
                 .MessageEngine
                 .GetRangeMessages(

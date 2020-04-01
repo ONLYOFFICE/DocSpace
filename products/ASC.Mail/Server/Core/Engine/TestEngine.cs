@@ -40,6 +40,8 @@ using ASC.Mail.Utils;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Core;
 using Microsoft.Extensions.Options;
+using ASC.Data.Storage;
+using ASC.Mail.Data.Storage;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -67,6 +69,7 @@ namespace ASC.Mail.Core.Engine
         public CoreSettings CoreSettings { get; }
         public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public StorageFactory StorageFactory { get; }
 
         private const string SAMPLE_UIDL = "api sample";
         private const string SAMPLE_REPLY_UIDL = "api sample reply";
@@ -89,6 +92,7 @@ namespace ASC.Mail.Core.Engine
             CoreSettings coreSettings,
             EngineFactory engineFactory,
             DaoFactory daoFactory,
+            StorageFactory storageFactory,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -96,6 +100,8 @@ namespace ASC.Mail.Core.Engine
             CoreSettings = coreSettings;
             EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            StorageFactory = storageFactory;
+
             Log = option.Get("ASC.Mail.TestEngine");
         }
 
@@ -344,6 +350,8 @@ namespace ASC.Mail.Core.Engine
                 throw new ArgumentException("no such mailbox");
 
             var mimeMessage = MailClient.ParseMimeMessage(emlStream);
+
+            var storage = StorageFactory.GetMailStorage(mbox.TenantId);
 
             var message = EngineFactory.MessageEngine.Save(mbox, mimeMessage, SAMPLE_UIDL,
                 new MailFolder(folder, ""), userFolderId, unread, Log);

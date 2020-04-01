@@ -29,21 +29,35 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using ASC.Common.Logging;
+using ASC.Data.Storage;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
 {
     public class EmailInEngine
     {
         public ILog Log { get; private set; }
+        public EngineFactory EngineFactory { get; }
+        public StorageFactory StorageFactory { get; }
+        public ApiHelper ApiHelper { get; }
 
-        public EmailInEngine(ILog log = null)
+        public EmailInEngine(
+            EngineFactory engineFactory,
+            StorageFactory storageFactory,
+            ApiHelper apiHelper,
+            IOptionsMonitor<ILog> option
+            )
         {
-            Log = log ?? LogManager.GetLogger("ASC.Mail.EmailInEngine");
+            EngineFactory = engineFactory;
+            StorageFactory = storageFactory;
+            ApiHelper = apiHelper;
+
+            Log = option.Get("ASC.Mail.EmailInEngine");
         }
 
         public void SaveEmailInData(MailBoxData mailbox, MailMessageData message, string httpContextScheme = null)
@@ -69,7 +83,9 @@ namespace ASC.Mail.Core.Engine
                     }
                     else
                     {
-                        using (var file = attachment.ToAttachmentStream())
+                        var storage = StorageFactory.GetMailStorage(mailbox.TenantId);
+
+                        using (var file = attachment.ToAttachmentStream(storage))
                         {
                             Log.DebugFormat("SaveEmailInData->ApiHelper.UploadToDocuments(fileName: '{0}', folderId: {1})",
                                       file.FileName, mailbox.EMailInFolder);
@@ -87,15 +103,14 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        private static void UploadToDocuments(Stream fileStream, string fileName, string contentType, MailBoxData mailbox, string httpContextScheme, ILog log = null)
+        private void UploadToDocuments(Stream fileStream, string fileName, string contentType, MailBoxData mailbox, string httpContextScheme, ILog log = null)
         {
             if (log == null)
                 log = new NullLog();
 
             try
             {
-                var apiHelper = new ApiHelper(httpContextScheme);
-                var uploadedFileId = apiHelper.UploadToDocuments(fileStream, fileName, contentType, mailbox.EMailInFolder, true);
+                var uploadedFileId = ApiHelper.UploadToDocuments(fileStream, fileName, contentType, mailbox.EMailInFolder, true);
 
                 log.InfoFormat(
                     "EmailInEngine->UploadToDocuments(): file '{0}' has been uploaded to document folder '{1}' uploadedFileId = {2}",
@@ -109,13 +124,11 @@ namespace ASC.Mail.Core.Engine
                         "EmailInEngine->UploadToDocuments() EMailIN folder '{0}' is unreachable. Try to unlink EMailIN...",
                         mailbox.EMailInFolder);
 
-                    var engine = new EngineFactory(mailbox.TenantId, mailbox.UserId);
-
-                    engine.AccountEngine.SetAccountEmailInFolder(mailbox.MailBoxId, null);
+                    EngineFactory.AccountEngine.SetAccountEmailInFolder(mailbox.MailBoxId, null);
 
                     mailbox.EMailInFolder = null;
 
-                    engine.AlertEngine.CreateUploadToDocumentsFailureAlert(mailbox.TenantId, mailbox.UserId,
+                    EngineFactory.AlertEngine.CreateUploadToDocumentsFailureAlert(mailbox.TenantId, mailbox.UserId,
                         mailbox.MailBoxId,
                         ex.StatusCode == HttpStatusCode.NotFound
                             ? UploadToDocumentsErrorType
@@ -128,7 +141,6 @@ namespace ASC.Mail.Core.Engine
 
                 log.ErrorFormat("EmailInEngine->UploadToDocuments(fileName: '{0}', folderId: {1}) Exception:\r\n{2}\r\n",
                                       fileName, mailbox.EMailInFolder, ex.ToString());
-
             }
         }
     }

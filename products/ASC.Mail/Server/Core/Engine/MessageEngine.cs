@@ -82,6 +82,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public IDataStore Storage { get; set; }
+
         public EngineFactory Factory { get; private set; }
 
         public MessageEngine(
@@ -106,6 +108,9 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             StorageFactory = storageFactory;
+
+            Storage = StorageFactory.GetMailStorage(Tenant);
+
             Log = option.Get("ASC.Mail.MessageEngine");
 
             Factory = engineFactory;
@@ -712,7 +717,7 @@ namespace ASC.Mail.Core.Engine
 
             if (toUserFolderId.HasValue)
             {
-                Factory.UserFolderEngine.SetFolderMessages(daoFactory, toUserFolderId.Value, ids);
+                Factory.UserFolderEngine.SetFolderMessages(toUserFolderId.Value, ids);
             }
             else if (prevInfo.Any(x => x.userFolderId.HasValue))
             {
@@ -968,7 +973,7 @@ namespace ASC.Mail.Core.Engine
             {
                 long usedQuota;
 
-                id = MailSave(DaoFactory, mailbox, message, messageId,
+                id = MailSave(mailbox, message, messageId,
                     folder, folderRestore, userFolderId,
                     uidl, md5, saveAttachments, out usedQuota);
 
@@ -978,7 +983,7 @@ namespace ASC.Mail.Core.Engine
             return id;
         }
 
-        public int MailSave(IDaoFactory daoFactory, MailBoxData mailbox, MailMessageData message,
+        public int MailSave(MailBoxData mailbox, MailMessageData message,
             int messageId, FolderType folder, FolderType folderRestore, uint? userFolderId,
             string uidl, string md5, bool saveAttachments, out long usedQuota)
         {
@@ -1039,7 +1044,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (userFolderId.HasValue)
                 {
-                    Factory.UserFolderEngine.SetFolderMessages(daoFactory, userFolderId.Value, new List<int> { mailId });
+                    Factory.UserFolderEngine.SetFolderMessages(userFolderId.Value, new List<int> { mailId });
                 }
             }
 
@@ -1106,7 +1111,7 @@ namespace ASC.Mail.Core.Engine
                 }
             }
 
-            UpdateMessagesChains(daoFactory, mailbox, message.MimeMessageId, message.ChainId, folder, userFolderId);
+            UpdateMessagesChains(DaoFactory, mailbox, message.MimeMessageId, message.ChainId, folder, userFolderId);
 
             Log.DebugFormat("MailSave() tenant='{0}', user_id='{1}', email='{2}', from='{3}', id_mail='{4}'",
                 mailbox.TenantId, mailbox.UserId, mailbox.EMail, message.From, mailId);
@@ -1196,7 +1201,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         //TODO: Need refactoring
-        public MailMessageData Save(EngineFactory factory, DaoFactory daoFactory, IDataStore storage,
+        public MailMessageData Save(
             MailBoxData mailbox, MimeMessage mimeMessage, string uidl, MailFolder folder, 
             uint? userFolderId, bool unread = true, ILog log = null)
         {
@@ -1232,12 +1237,12 @@ namespace ASC.Mail.Core.Engine
             if (folder.Tags.Any())
             {
                 log.Debug("GetOrCreateTags()");
-                tagsIds = factory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
+                tagsIds = Factory.TagEngine.GetOrCreateTags(mailbox.TenantId, mailbox.UserId, folder.Tags);
             }
 
             log.Debug("UpdateExistingMessages()");
 
-            var found = UpdateExistingMessages(factory, daoFactory, mailbox, folder.Folder, uidl, md5,
+            var found = UpdateExistingMessages(mailbox, folder.Folder, uidl, md5,
                 mimeMessage.MessageId, fromThisMailBox, toThisMailBox, tagsIds, log);
 
             var needSave = !found;
@@ -1246,7 +1251,7 @@ namespace ASC.Mail.Core.Engine
 
             log.Debug("DetectChainId()");
 
-            var chainInfo = factory.MessageEngine.DetectChain(mailbox, mimeMessage.MessageId, mimeMessage.InReplyTo,
+            var chainInfo = Factory.MessageEngine.DetectChain(mailbox, mimeMessage.MessageId, mimeMessage.InReplyTo,
                 mimeMessage.Subject);
 
             var streamId = MailUtil.CreateStreamId();
@@ -1261,19 +1266,19 @@ namespace ASC.Mail.Core.Engine
 
             log.Debug("TryStoreMailData()");
 
-            if (!TryStoreMailData(factory, storage, message, mailbox, log))
+            if (!TryStoreMailData(message, mailbox, log))
             {
                 return null;
             }
 
             log.Debug("MailSave()");
 
-            if (TrySaveMail(factory, mailbox, message, folder, userFolderId, uidl, md5, log))
+            if (TrySaveMail(mailbox, message, folder, userFolderId, uidl, md5, log))
             {
                 return message;
             }
 
-            if (TryRemoveMailDirectory(storage, mailbox, message.StreamId, log))
+            if (TryRemoveMailDirectory(mailbox, message.StreamId, log))
             {
                 log.InfoFormat("Problem with mail proccessing(Account:{0}). Body and attachment have been deleted", mailbox.EMail);
             }
@@ -1285,7 +1290,7 @@ namespace ASC.Mail.Core.Engine
             return null;
         }
         //TODO: Need refactoring
-        public static string StoreMailBody(IDataStore storage, MailBoxData mailBoxData, MailMessageData messageItem, ILog log)
+        public string StoreMailBody(MailBoxData mailBoxData, MailMessageData messageItem, ILog log)
         {
             if (string.IsNullOrEmpty(messageItem.HtmlBody) && (messageItem.HtmlBodyStream == null || messageItem.HtmlBodyStream.Length == 0))
                 return string.Empty;
@@ -1293,7 +1298,7 @@ namespace ASC.Mail.Core.Engine
             // Using id_user as domain in S3 Storage - allows not to add quota to tenant.
             var savePath = MailStoragePathCombiner.GetBodyKey(mailBoxData.UserId, messageItem.StreamId);
 
-            storage.QuotaController = null;
+            Storage.QuotaController = null;
 
             try
             {
@@ -1303,7 +1308,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     messageItem.HtmlBodyStream.Seek(0, SeekOrigin.Begin);
 
-                    response = storage
+                    response = Storage
                             .Save(savePath, messageItem.HtmlBodyStream, MailStoragePathCombiner.BODY_FILE_NAME)
                             .ToString();
                 }
@@ -1311,7 +1316,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     using (var reader = new MemoryStream(Encoding.UTF8.GetBytes(messageItem.HtmlBody)))
                     {
-                        response = storage
+                        response = Storage
                             .Save(savePath, reader, MailStoragePathCombiner.BODY_FILE_NAME)
                             .ToString();
                     }
@@ -1328,7 +1333,7 @@ namespace ASC.Mail.Core.Engine
                     "StoreMailBody() Problems with message saving in messageId={0}. \r\n Exception: \r\n {0}\r\n",
                     messageItem.MimeMessageId, ex.ToString());
 
-                storage.Delete(string.Empty, savePath);
+                Storage.Delete(string.Empty, savePath);
                 throw;
             }
         }
@@ -1433,7 +1438,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         //TODO: Need refactoring
-        private static bool TrySaveMail(EngineFactory factory, MailBoxData mailbox, MailMessageData message, 
+        private bool TrySaveMail(MailBoxData mailbox, MailMessageData message, 
             MailFolder folder, uint? userFolderId, string uidl, string md5, ILog log)
         {
             try
@@ -1446,7 +1451,7 @@ namespace ASC.Mail.Core.Engine
                 {
                     try
                     {
-                        message.Id = factory.MessageEngine.MailSave(mailbox, message, 0,
+                        message.Id = MailSave(mailbox, message, 0,
                             folder.Folder, folderRestoreId, userFolderId, uidl, md5, true);
 
                         break;
@@ -1476,7 +1481,7 @@ namespace ASC.Mail.Core.Engine
         }
 
         //TODO: Need refactoring
-        public static bool TryStoreMailData(EngineFactory factory, IDataStore storage, MailMessageData message, MailBoxData mailbox, ILog log)
+        public bool TryStoreMailData(MailMessageData message, MailBoxData mailbox, ILog log)
         {
             try
             {
@@ -1490,21 +1495,21 @@ namespace ASC.Mail.Core.Engine
                         att.mailboxId = mailbox.MailBoxId;
                     });
 
-                    factory.AttachmentEngine.StoreAttachments(mailbox, message.Attachments, message.StreamId);
+                    Factory.AttachmentEngine.StoreAttachments(mailbox, message.Attachments, message.StreamId);
 
                     log.Debug("MailMessage.ReplaceEmbeddedImages()");
                     message.ReplaceEmbeddedImages(log);
                 }
 
                 log.Debug("StoreMailBody()");
-                StoreMailBody(storage, mailbox, message, log);
+                StoreMailBody(mailbox, message, log);
             }
             catch (Exception ex)
             {
                 log.ErrorFormat("TryStoreMailData(Account:{0}): Exception:\r\n{1}\r\n", mailbox.EMail, ex.ToString());
 
                 //Trying to delete all attachments and mailbody
-                if (TryRemoveMailDirectory(storage, mailbox, message.StreamId, log))
+                if (TryRemoveMailDirectory(mailbox, message.StreamId, log))
                 {
                     log.InfoFormat("Problem with mail proccessing(Account:{0}). Body and attachment have been deleted", mailbox.EMail);
                 }
@@ -1515,12 +1520,12 @@ namespace ASC.Mail.Core.Engine
             return true;
         }
         //TODO: Need refactoring
-        private static bool TryRemoveMailDirectory(IDataStore storage, MailBoxData mailbox, string streamId, ILog log)
+        private bool TryRemoveMailDirectory(MailBoxData mailbox, string streamId, ILog log)
         {
             //Trying to delete all attachments and mailbody
             try
             {
-                storage.DeleteDirectory(string.Empty,
+                Storage.DeleteDirectory(string.Empty,
                     MailStoragePathCombiner.GetMessageDirectory(mailbox.UserId, streamId));
                 return true;
             }
@@ -1534,7 +1539,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
         //TODO: Need refactoring
-        private static bool UpdateExistingMessages(EngineFactory factory, DaoFactory daoFactory, MailBoxData mailbox, FolderType folder, string uidl, string md5,
+        private bool UpdateExistingMessages(MailBoxData mailbox, FolderType folder, string uidl, string md5,
             string mimeMessageId, bool fromThisMailBox, bool toThisMailBox, List<int> tagsIds, ILog log)
         {
             if ((string.IsNullOrEmpty(md5) || md5.Equals(Defines.MD5_EMPTY)) && string.IsNullOrEmpty(mimeMessageId))
@@ -1550,7 +1555,7 @@ namespace ASC.Mail.Core.Engine
                     : builder.SetMimeMessageId(mimeMessageId))
                     .Build();
 
-                var messagesInfo = daoFactory.MailInfoDao.GetMailInfoList(exp);
+                var messagesInfo = DaoFactory.MailInfoDao.GetMailInfoList(exp);
 
                 if (!messagesInfo.Any())
                     return false;
@@ -1566,9 +1571,9 @@ namespace ASC.Mail.Core.Engine
                 {
                     if (tagsIds != null) // Add new tags to existing messages
                     {
-                        using (var tx = daoFactory.BeginTransaction())
+                        using (var tx = DaoFactory.BeginTransaction())
                         {
-                            if (tagsIds.Any(tagId => !factory.TagEngine.SetMessagesTag(daoFactory, idList, tagId)))
+                            if (tagsIds.Any(tagId => !Factory.TagEngine.SetMessagesTag(DaoFactory, idList, tagId)))
                             {
                                 tx.Rollback();
                                 return false;
@@ -1608,7 +1613,7 @@ namespace ASC.Mail.Core.Engine
                     {
                         if (!sentCloneForUpdate.IsRemoved)
                         {
-                            daoFactory.MailInfoDao.SetFieldValue(
+                            DaoFactory.MailInfoDao.SetFieldValue(
                                 SimpleMessagesExp.CreateBuilder(mailbox.TenantId, mailbox.UserId)
                                     .SetMessageId(sentCloneForUpdate.Id)
                                     .Build(),

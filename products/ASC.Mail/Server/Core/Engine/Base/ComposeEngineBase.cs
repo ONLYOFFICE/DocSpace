@@ -264,7 +264,7 @@ namespace ASC.Mail.Core.Engine
                             attachment, compose.StreamId));
             }
 
-            MessageEngine.StoreMailBody(compose.Mailbox, message, Log);
+            EngineFactory.MessageEngine.StoreMailBody(compose.Mailbox, message, Log);
 
             long usedQuota;
 
@@ -309,7 +309,7 @@ namespace ASC.Mail.Core.Engine
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
-                            MailTable.Columns.AttachCount,
+                            "AttachCount",
                             count);
                     }
                 }
@@ -331,7 +331,7 @@ namespace ASC.Mail.Core.Engine
                             SimpleMessagesExp.CreateBuilder(compose.Mailbox.TenantId, compose.Mailbox.UserId)
                                 .SetMessageId(compose.Id)
                                 .Build(),
-                            MailTable.Columns.AttachCount,
+                            "AttachCount",
                             count);
                     }
                 }
@@ -411,7 +411,7 @@ namespace ASC.Mail.Core.Engine
         {
             var embededAttachmentsForSaving = new List<MailAttachmentData>();
 
-            var embeddedLinks = compose.GetEmbeddedAttachmentLinks();
+            var embeddedLinks = compose.GetEmbeddedAttachmentLinks(StorageManager);
             if (!embeddedLinks.Any())
                 return embededAttachmentsForSaving;
 

@@ -108,7 +108,7 @@ namespace ASC.Mail.Core.Engine
 
             var tasks = new List<Task>();
 
-            var mailboxIterator = new MailboxIterator(isRemoved: null, log: Log);
+            var mailboxIterator = new MailboxIterator(EngineFactory.MailboxEngine, isRemoved: null, log: Log);
 
             var mailbox = mailboxIterator.First();
 
@@ -507,7 +507,7 @@ namespace ASC.Mail.Core.Engine
 
         private void RemoveUserMailboxes(int tenant, string user, ILog log)
         {
-            var mailboxIterator = new MailboxIterator(tenant, user);
+            var mailboxIterator = new MailboxIterator(EngineFactory.MailboxEngine, tenant, user);
 
             var mailbox = mailboxIterator.First();
 

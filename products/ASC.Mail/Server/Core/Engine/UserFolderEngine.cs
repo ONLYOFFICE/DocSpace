@@ -325,7 +325,7 @@ namespace ASC.Mail.Core.Engine
             Factory.IndexEngine.Update(data, s => s.In(m => m.Id, affectedIds.ToArray()), wrapper => wrapper.Unread);
         }
 
-        public void SetFolderMessages(IDaoFactory daoFactory, uint userFolderId, List<int> ids)
+        public void SetFolderMessages(uint userFolderId, List<int> ids)
         {
             DaoFactory.UserFolderXMailDao.Remove(ids);
 
