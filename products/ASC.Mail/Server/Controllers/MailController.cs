@@ -1,21 +1,18 @@
 ﻿using ASC.Api.Core;
 using ASC.Common.Logging;
-using ASC.Core.Tenants;
 using ASC.Mail.Models;
 using ASC.Mail.Core;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using ASC.Mail.Extensions;
 using ASC.Core;
-using ASC.Mail.Enums;
-using System.Net.Mail;
 using System;
 using System.Linq;
 using ASC.Mail.Exceptions;
 using ASC.Common;
+using ASC.Web.Mail.Resources;
 
 namespace ASC.Mail.Controllers
 {
@@ -52,7 +49,7 @@ namespace ASC.Mail.Controllers
             ApiContext = apiContext;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Api");
-            MailEngineFactory = engine; //new EngineFactory(TenantId, UserId, Log);
+            MailEngineFactory = engine;
         }
 
         [Read("info")]
@@ -239,12 +236,12 @@ namespace ASC.Mail.Controllers
         /// <short>Create tag</short> 
         /// <category>Tags</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
-        /*[Create(@"tags")]
+        [Create(@"tags")]
         public MailTagData CreateTag(string name, string style, IEnumerable<string> addresses)
         {
             //TODO: Is it necessary?
-            Thread.CurrentThread.CurrentCulture = CurrentCulture;
-            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
+            //Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException(MailApiResource.ErrorTagNameCantBeEmpty);
@@ -254,7 +251,7 @@ namespace ASC.Mail.Controllers
 
             return MailEngineFactory.TagEngine.CreateTag(name, style, addresses).ToTagData();
 
-        }*/
+        }
 
         /// <summary>
         ///    Updates the selected tag
@@ -267,15 +264,15 @@ namespace ASC.Mail.Controllers
         /// <short>Update tag</short> 
         /// <category>Tags</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
-        /*[Update(@"tags/{id}")]
+        [Update(@"tags/{id}")]
         public MailTagData UpdateTag(int id, string name, string style, IEnumerable<string> addresses)
         {
             if (id < 0)
                 throw new ArgumentException(@"Invalid tag id", "id");
 
             //TODO: Is it necessary?
-            Thread.CurrentThread.CurrentCulture = CurrentCulture;
-            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
+            //Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException(MailApiResource.ErrorTagNameCantBeEmpty);
@@ -294,7 +291,7 @@ namespace ASC.Mail.Controllers
 
                 throw;
             }
-        }*/
+        }
 
         /// <summary>
         ///    Deletes the selected tag from TLMail
@@ -304,7 +301,7 @@ namespace ASC.Mail.Controllers
         /// <short>Delete tag</short> 
         /// <category>Tags</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
-        /*[Delete(@"tags/{id}")]
+        [Delete(@"tags/{id}")]
         public int DeleteTag(int id)
         {
             if (id < 0)
@@ -314,7 +311,7 @@ namespace ASC.Mail.Controllers
                 throw new Exception("DeleteTag failed");
 
             return id;
-        }*/
+        }
 
         /// <summary>
         ///    Adds the selected tag to the messages
@@ -325,7 +322,7 @@ namespace ASC.Mail.Controllers
         /// <short>Set tag to messages</short> 
         /// <category>Tags</category>
         /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
-        /*[Update(@"tags/{id}/set")]
+        [Update(@"tags/{id}/set")]
         public int SetTag(int id, List<int> messages)
         {
             if (!messages.Any())
@@ -334,7 +331,7 @@ namespace ASC.Mail.Controllers
             MailEngineFactory.TagEngine.SetMessagesTag(messages, id);
 
             return id;
-        }*/
+        }
 
         /// <summary>
         ///    Removes the specified tag from messages
@@ -345,7 +342,7 @@ namespace ASC.Mail.Controllers
         /// <short>Remove tag from messages</short> 
         /// <category>Tags</category>
         /// <exception cref="ArgumentException">Exception happens when parameters are invalid. Text description contains parameter name and text description.</exception>
-        /*[Update(@"tags/{id}/unset")]
+        [Update(@"tags/{id}/unset")]
         public int UnsetTag(int id, List<int> messages)
         {
             if (!messages.Any())
@@ -354,7 +351,7 @@ namespace ASC.Mail.Controllers
             MailEngineFactory.TagEngine.UnsetMessagesTag(messages, id);
 
             return id;
-        }*/
+        }
         #endregion
     }
 
