@@ -35,7 +35,25 @@
   "panels": {
     "SharingPanel": {
       "Resource": [
-        "Owner"
+        "Owner",
+        "SharingSettingsTitle",
+        "AddGroupsForSharingButton"
+      ],
+      "UserControlsCommonResource" : [
+        "LinkText"
+      ],
+      "ResourceJS": [
+        "AddButton"
+      ]
+    },
+    "AddUsersPanel": {
+      "UserControlsCommonResource" : [
+        "LinkText"
+      ]
+    },
+    "AddGroupsPanel": {
+      "Resource": [
+        "AddGroupsForSharingButton"
       ]
     }
   },

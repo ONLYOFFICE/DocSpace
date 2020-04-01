@@ -1,6 +1,6 @@
 import i18n from "i18next";
 import Backend from "i18next-xhr-backend";
-import config from "../../../package.json";
+import config from "../../../../package.json";
 import { constants } from 'asc-web-common';
 const { LANGUAGE } = constants;
 
@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
         useSuspense: true
       },
       backend: {
-        loadPath: `${config.homepage}/locales/SharingPanel/{{lng}}/{{ns}}.json`
+        loadPath: `${config.homepage}/locales/AddGroupsPanel/{{lng}}/{{ns}}.json`
       }
     });
 } else if (process.env.NODE_ENV === "development") {

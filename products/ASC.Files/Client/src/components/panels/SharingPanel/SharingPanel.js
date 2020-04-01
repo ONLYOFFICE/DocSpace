@@ -24,7 +24,7 @@ import {
   StyledFooter,
   StyledSharingHeaderContent,
   StyledSharingBody
-} from "./StyledPanels";
+} from "../StyledPanels";
 
 const { changeLanguage } = commonUtils;
 
@@ -87,31 +87,37 @@ class SharingPanelComponent extends React.Component {
     }
   };
   onReviewClick = item => {
-    /*const newUsers = this.props.users;
+    const newUsers = this.props.users;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
-    newUsers[elementIndex].rights = {
-      icon: "AccessReviewIcon",
-      rights: "Review"
-    };
-    this.props.onSetUsers(newUsers);*/
+    if (newUsers[elementIndex].rights.rights !== "Review") {
+      newUsers[elementIndex].rights = {
+        icon: "AccessReviewIcon",
+        rights: "Review"
+      };
+      this.props.onSetUsers(newUsers);
+    }
   };
   onCommentClick = item => {
-    /*const newUsers = this.props.users;
+    const newUsers = this.props.users;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
-    newUsers[elementIndex].rights = {
-      icon: "AccessCommentIcon",
-      rights: "Comment"
-    };
-    this.props.onSetUsers(newUsers);*/
+    if (newUsers[elementIndex].rights.rights !== "Comment") {
+      newUsers[elementIndex].rights = {
+        icon: "AccessCommentIcon",
+        rights: "Comment"
+      };
+      this.props.onSetUsers(newUsers);
+    }
   };
   onFormFillingClick = item => {
-    /*const newUsers = this.props.users;
+    const newUsers = this.props.users;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
-    newUsers[elementIndex].rights = {
-      icon: "AccessFormIcon",
-      rights: "FormFilling"
-    };
-    this.props.onSetUsers(newUsers);*/
+    if (newUsers[elementIndex].rights.rights !== "FormFilling") {
+      newUsers[elementIndex].rights = {
+        icon: "AccessFormIcon",
+        rights: "FormFilling"
+      };
+      this.props.onSetUsers(newUsers);
+    }
   };
   onDenyAccessClick = item => {
     const newUsers = this.props.users;
@@ -156,12 +162,14 @@ class SharingPanelComponent extends React.Component {
   }*/
 
   render() {
-    const checkboxNotifyUsersLabel = "Notify users";
-    const addUserTranslationLabel = "Add user";
-    const addGroupTranslationLabel = "Add group";
-    const sharingHeaderText = "Sharing settings";
-
-    const { onClose, visible, users, onRemoveUserClick, t } = this.props;
+    const {
+      onClose,
+      visible,
+      users,
+      onRemoveUserClick,
+      t,
+      accessOptions
+    } = this.props;
     const { showActionPanel, isNotifyUsers } = this.state;
 
     const zIndex = 310;
@@ -173,7 +181,7 @@ class SharingPanelComponent extends React.Component {
           <StyledContent>
             <StyledSharingHeaderContent>
               <Heading className="sharing_panel-header" size="medium" truncate>
-                {sharingHeaderText}
+                {t("SharingSettingsTitle")}
               </Heading>
               <div className="sharing_panel-icons-container">
                 <div ref={this.ref} className="sharing_panel-drop-down-wrapper">
@@ -192,11 +200,11 @@ class SharingPanelComponent extends React.Component {
                     clickOutsideAction={this.onCloseActionPanel}
                   >
                     <DropDownItem
-                      label={addUserTranslationLabel}
+                      label={t("LinkText")}
                       onClick={this.showAddUserPanel}
                     />
                     <DropDownItem
-                      label={addGroupTranslationLabel}
+                      label={t("AddGroupsForSharingButton")}
                       onClick={this.showAddGroupPanel}
                     />
                   </DropDown>
@@ -214,36 +222,52 @@ class SharingPanelComponent extends React.Component {
                 const isOwner = index === 0;
                 const advancedOptions = (
                   <>
-                    <DropDownItem
-                      label="Full access"
-                      icon="AccessEditIcon"
-                      onClick={this.onFullAccessClick.bind(this, item)}
-                    />
-                    <DropDownItem
-                      label="Read only"
-                      icon="EyeIcon"
-                      onClick={this.onReadOnlyClick.bind(this, item)}
-                    />
-                    <DropDownItem
-                      label="Review"
-                      icon="AccessReviewIcon"
-                      onClick={this.onReviewClick.bind(this, item)}
-                    />
-                    <DropDownItem
-                      label="Comment"
-                      icon="AccessCommentIcon"
-                      onClick={this.onCommentClick.bind(this, item)}
-                    />
-                    <DropDownItem
-                      label="Form filling"
-                      icon="AccessFormIcon"
-                      onClick={this.onFormFillingClick.bind(this, item)}
-                    />
-                    <DropDownItem
-                      label="Deny access"
-                      icon="AccessNoneIcon"
-                      onClick={this.onDenyAccessClick.bind(this, item)}
-                    />
+                    {accessOptions.includes("FullAccess") && (
+                      <DropDownItem
+                        label="Full access"
+                        icon="AccessEditIcon"
+                        onClick={this.onFullAccessClick.bind(this, item)}
+                      />
+                    )}
+
+                    {accessOptions.includes("ReadOnly") && (
+                      <DropDownItem
+                        label="Read only"
+                        icon="EyeIcon"
+                        onClick={this.onReadOnlyClick.bind(this, item)}
+                      />
+                    )}
+
+                    {accessOptions.includes("Review") && (
+                      <DropDownItem
+                        label="Review"
+                        icon="AccessReviewIcon"
+                        onClick={this.onReviewClick.bind(this, item)}
+                      />
+                    )}
+
+                    {accessOptions.includes("Comment") && (
+                      <DropDownItem
+                        label="Comment"
+                        icon="AccessCommentIcon"
+                        onClick={this.onCommentClick.bind(this, item)}
+                      />
+                    )}
+
+                    {accessOptions.includes("FormFilling") && (
+                      <DropDownItem
+                        label="Form filling"
+                        icon="AccessFormIcon"
+                        onClick={this.onFormFillingClick.bind(this, item)}
+                      />
+                    )}
+                    {accessOptions.includes("DenyAccess") && (
+                      <DropDownItem
+                        label="Deny access"
+                        icon="AccessNoneIcon"
+                        onClick={this.onDenyAccessClick.bind(this, item)}
+                      />
+                    )}
                   </>
                 );
 
@@ -309,12 +333,12 @@ class SharingPanelComponent extends React.Component {
             <StyledFooter>
               <Checkbox
                 isChecked={isNotifyUsers}
-                label={checkboxNotifyUsersLabel}
+                label={t("Notify users")}
                 onChange={this.onNotifyUsersChange}
               />
               <Button
                 className="sharing_panel-button"
-                label="Save"
+                label={t("AddButton")}
                 size="big"
                 primary
                 onClick={this.onSaveClick}

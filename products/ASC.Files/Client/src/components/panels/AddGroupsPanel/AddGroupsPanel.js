@@ -7,18 +7,24 @@ import {
   IconButton,
   toastr
 } from "asc-web-components";
-import { GroupSelector } from "asc-web-common";
-import { getUsersOfGroups } from "../../store/files/actions";
+import { GroupSelector, utils } from "asc-web-common";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
+import { getUsersOfGroups } from "../../../store/files/actions";
 import {
   StyledPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
-} from "./StyledPanels";
+} from "../StyledPanels";
 
-class AddGroupPanel extends React.Component {
+const { changeLanguage } = utils;
+
+class AddGroupsPanelComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    changeLanguage(i18n);
 
     this.state = { showActionPanel: false };
   }
@@ -44,8 +50,8 @@ class AddGroupPanel extends React.Component {
     getUsersOfGroups(groupIds)
       .then(res => {
         const newItems = [];
-        for(let item of res) {
-          item.rights = this.props.accessRight
+        for (let item of res) {
+          item.rights = this.props.accessRight;
           newItems.push(item);
         }
         this.props.onSetSelectedUsers(newItems);
@@ -74,12 +80,11 @@ class AddGroupPanel extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent } = this.props;
+    const { visible, embeddedComponent, t } = this.props;
 
-    const headerText = "Add group";
     const zIndex = 310;
 
-    //console.log("AddGroupPanel render");
+    //console.log("AddGroupsPanel render");
     return (
       <StyledPanel visible={visible}>
         <Backdrop
@@ -100,7 +105,7 @@ class AddGroupPanel extends React.Component {
                 size="medium"
                 truncate
               >
-                {headerText}
+                {t("AddGroupsForSharingButton")}
               </Heading>
               <IconButton
                 size="16"
@@ -128,11 +133,19 @@ class AddGroupPanel extends React.Component {
   }
 }
 
-AddGroupPanel.propTypes = {
+AddGroupsPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
   onClose: PropTypes.func,
   onSetSelectedUsers: PropTypes.func
 };
 
-export default AddGroupPanel;
+const AddGroupsPanelContainerTranslated = withTranslation()(
+  AddGroupsPanelComponent
+);
+
+const AddGroupsPanel = props => (
+  <AddGroupsPanelContainerTranslated i18n={i18n} {...props} />
+);
+
+export default AddGroupsPanel;

@@ -1,5 +1,5 @@
-import SharingPanel from "./SharingPanel";
-import AddUsersPanel from "./AddUsersPanel";
-import AddGroupsPanel from "./AddGroupPanel";
+import SharingPanel from "./SharingPanel/SharingPanel";
+import AddUsersPanel from "./AddUsersPanel/AddUsersPanel";
+import AddGroupsPanel from "./AddGroupsPanel/AddGroupsPanel";
 
 export { SharingPanel, AddUsersPanel, AddGroupsPanel }

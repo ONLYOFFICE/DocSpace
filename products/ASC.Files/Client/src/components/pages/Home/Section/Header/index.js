@@ -21,7 +21,10 @@ import {
   AddGroupsPanel,
   AddUsersPanel
 } from "../../../../panels";
-import { isCanBeDeleted } from "../../../../../store/files/selectors";
+import {
+  isCanBeDeleted,
+  getAccessOption
+} from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -264,10 +267,9 @@ class SectionHeaderContent extends React.Component {
 
   onSetUsers = users => {
     this.setState({ selectedUsers: users });
-  }
+  };
 
-  onFullAccessClick = some => {
-    console.log("onFullAccessClick", some);
+  onFullAccessClick = () => {
     this.setState({
       accessRight: { icon: "AccessEditIcon", rights: "FullAccess" }
     });
@@ -327,7 +329,8 @@ class SectionHeaderContent extends React.Component {
       deleteDialogVisible,
       folder,
       onCheck,
-      title
+      title,
+      accessOptions
     } = this.props;
     const {
       accessRight,
@@ -412,36 +415,52 @@ class SectionHeaderContent extends React.Component {
 
     const advancedOptions = (
       <>
-        <DropDownItem
-          label="Full access"
-          icon="AccessEditIcon"
-          onClick={this.onFullAccessClick}
-        />
-        <DropDownItem
-          label="Read only"
-          icon="EyeIcon"
-          onClick={this.onReadOnlyClick}
-        />
-        <DropDownItem
-          label="Review"
-          icon="AccessReviewIcon"
-          onClick={this.onReviewClick}
-        />
-        <DropDownItem
-          label="Comment"
-          icon="AccessCommentIcon"
-          onClick={this.onCommentClick}
-        />
-        <DropDownItem
-          label="Form filling"
-          icon="AccessFormIcon"
-          onClick={this.onFormFillingClick}
-        />
-        <DropDownItem
-          label="Deny access"
-          icon="AccessNoneIcon"
-          onClick={this.onDenyAccessClick}
-        />
+        {accessOptions.includes("FullAccess") && (
+          <DropDownItem
+            label="Full access"
+            icon="AccessEditIcon"
+            onClick={this.onFullAccessClick}
+          />
+        )}
+
+        {accessOptions.includes("ReadOnly") && (
+          <DropDownItem
+            label="Read only"
+            icon="EyeIcon"
+            onClick={this.onReadOnlyClick}
+          />
+        )}
+
+        {accessOptions.includes("Review") && (
+          <DropDownItem
+            label="Review"
+            icon="AccessReviewIcon"
+            onClick={this.onReviewClick}
+          />
+        )}
+
+        {accessOptions.includes("Comment") && (
+          <DropDownItem
+            label="Comment"
+            icon="AccessCommentIcon"
+            onClick={this.onCommentClick}
+          />
+        )}
+
+        {accessOptions.includes("FormFilling") && (
+          <DropDownItem
+            label="Form filling"
+            icon="AccessFormIcon"
+            onClick={this.onFormFillingClick}
+          />
+        )}
+        {accessOptions.includes("DenyAccess") && (
+          <DropDownItem
+            label="Deny access"
+            icon="AccessNoneIcon"
+            onClick={this.onDenyAccessClick}
+          />
+        )}
       </>
     );
 
@@ -561,7 +580,8 @@ class SectionHeaderContent extends React.Component {
           users={selectedUsers}
           onRemoveUserClick={this.onRemoveUserClick}
           onSetUsers={this.onSetUsers}
-          t={t}
+          selection={selection}
+          accessOptions={accessOptions}
         />
 
         <AddUsersPanel
@@ -607,7 +627,8 @@ const mapStateToProps = state => {
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     //groupsCaption: settings.customNames.groupsCaption,
-    currentUser
+    currentUser,
+    accessOptions: getAccessOption(selection)
   };
 };
 

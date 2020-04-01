@@ -1,17 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
-import { PeopleSelector } from "asc-web-common";
+import { PeopleSelector, utils } from "asc-web-common";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 import {
   StyledPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
-} from "./StyledPanels";
+} from "../StyledPanels";
 
-class AddUsersPanel extends React.Component {
+const { changeLanguage } = utils;
+
+class AddUsersPanelComponent extends React.Component {
   constructor(props) {
     super(props);
+
+    changeLanguage(i18n);
 
     this.state = {
       showActionPanel: false
@@ -63,9 +69,8 @@ class AddUsersPanel extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent } = this.props;
+    const { visible, embeddedComponent, t } = this.props;
 
-    const headerText = "Add users";
     const zIndex = 310;
 
     //console.log("AddUsersPanel render");
@@ -89,7 +94,7 @@ class AddUsersPanel extends React.Component {
                 size="medium"
                 truncate
               >
-                {headerText}
+                {t("LinkText")}
               </Heading>
               <IconButton
                 size="16"
@@ -120,11 +125,19 @@ class AddUsersPanel extends React.Component {
   }
 }
 
-AddUsersPanel.propTypes = {
+AddUsersPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
   onClose: PropTypes.func,
   onSetSelectedUsers: PropTypes.func
 };
+
+const AddUsersPanelContainerTranslated = withTranslation()(
+  AddUsersPanelComponent
+);
+
+const AddUsersPanel = props => (
+  <AddUsersPanelContainerTranslated i18n={i18n} {...props} />
+);
 
 export default AddUsersPanel;
