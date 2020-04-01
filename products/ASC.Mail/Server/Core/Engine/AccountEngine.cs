@@ -215,7 +215,7 @@ namespace ASC.Mail.Core.Engine
                 Enabled = true
             };
 
-            using (var client = new MailClient(mbox, CancellationToken.None,
+            using (var client = new MailClient(mbox, CancellationToken.None, EngineFactory,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -242,7 +242,7 @@ namespace ASC.Mail.Core.Engine
             if (mbox == null)
                 throw new NullReferenceException("mbox");
 
-            using (var client = new MailClient(mbox, CancellationToken.None,
+            using (var client = new MailClient(mbox, CancellationToken.None, EngineFactory,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -285,8 +285,8 @@ namespace ASC.Mail.Core.Engine
             {
                 LoginResult loginResult;
 
-                using (var client = new MailClient(mb, CancellationToken.None, Defines.TcpTimeout,
-                        Defines.SslCertificatesErrorPermit, log: Log))
+                using (var client = new MailClient(mb, CancellationToken.None, EngineFactory, 
+                    Defines.TcpTimeout, Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
                 }
@@ -499,7 +499,7 @@ namespace ASC.Mail.Core.Engine
             if (enabled)
             {
                 // Check account connection setting on activation
-                using (var client = new MailClient(tuple.Item1, CancellationToken.None,
+                using (var client = new MailClient(tuple.Item1, CancellationToken.None, EngineFactory,
                         certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();

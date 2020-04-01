@@ -259,7 +259,7 @@ namespace ASC.Mail.Core.Engine
 
                     var mimeMessage = draft.ToMimeMessage(StorageManager);
 
-                    using (var mc = new MailClient(draft.Mailbox, CancellationToken.None,
+                    using (var mc = new MailClient(draft.Mailbox, CancellationToken.None, EngineFactory,
                         certificatePermit: draft.Mailbox.IsTeamlab || _sslCertificatePermit, log: Log,
                         enableDsn: draft.RequestReceipt))
                     {

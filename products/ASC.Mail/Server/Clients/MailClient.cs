@@ -54,6 +54,7 @@ namespace ASC.Mail.Clients
     public class MailClient : IDisposable
     {
         public MailBoxData Account { get; private set; }
+        public EngineFactory EngineFactory { get; }
         public ILog Log { get; set; }
 
         public ImapClient Imap { get; private set; }
@@ -120,7 +121,10 @@ namespace ASC.Mail.Clients
 
         #region .Constructor
 
-        public MailClient(MailBoxData mailbox, CancellationToken cancelToken, int tcpTimeout = 30000,
+        public MailClient(MailBoxData mailbox, 
+            CancellationToken cancelToken,
+            EngineFactory engineFactory,
+            int tcpTimeout = 30000,
             bool certificatePermit = false, string protocolLogPath = "",
             ILog log = null, bool skipSmtp = false, bool enableDsn = false)
         {
@@ -130,6 +134,7 @@ namespace ASC.Mail.Clients
                 : new NullProtocolLogger();
 
             Account = mailbox;
+            EngineFactory = engineFactory;
             Log = log ?? new NullLog();
 
             StopTokenSource = new CancellationTokenSource();
@@ -933,12 +938,7 @@ namespace ASC.Mail.Clients
             if (sendFolder != null)
                 return sendFolder;
 
-            //TODO: Fix
-            //var factory = new EngineFactory(Account.TenantId, Account.UserId);
-
-            //var specialDomainFolders = factory.FolderEngine.GetSpecialDomainFolders();
-
-            var specialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();
+            var specialDomainFolders = EngineFactory.FolderEngine.GetSpecialDomainFolders();
 
             if (!specialDomainFolders.Any() || !specialDomainFolders.ContainsKey(Account.Server))
                 return null;
