@@ -279,3 +279,17 @@ export function removeFiles(folderIds, fileIds, deleteAfter, immediately) {
   const data = { folderIds, fileIds, deleteAfter, immediately };
   return request({ method: "put", url: "/files/fileops/delete", data });
 }
+
+export function getShareFolders(folderId) {
+  return request({
+    method: "get",
+    url: `/files/folder/${folderId}/share`
+  });
+}
+
+export function getShareFiles(fileId) {
+  return request({
+    method: "get",
+    url: `/files/file/${fileId}/share`
+  });
+}

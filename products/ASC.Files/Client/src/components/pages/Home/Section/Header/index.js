@@ -25,6 +25,7 @@ import {
   isCanBeDeleted,
   getAccessOption
 } from "../../../../../store/files/selectors";
+import { setShareData } from "../../../../../store/files/actions";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -114,7 +115,6 @@ class SectionHeaderContent extends React.Component {
       showEmptyTrashDialog: false,
       showAddUsersPanel: false,
       showAddGroupsPanel: false,
-      selectedUsers: [props.currentUser],
       accessRight: { icon: "EyeIcon", rights: "ReadOnly" }
     };
   }
@@ -184,8 +184,14 @@ class SectionHeaderContent extends React.Component {
 
   renameAction = () => toastr.info("renameAction click");
 
-  onOpenSharingPanel = () =>
-    this.setState({ showSharingPanel: !this.state.showSharingPanel });
+  onOpenSharingPanel = () => {
+    this.setState({ showSharingPanel: !this.state.showSharingPanel }, () => {
+      if (!this.state.showSharingPanel) {
+        const shareData = this.props.shareData[0];
+        this.props.setShareData([shareData]);
+      }
+    });
+  };
 
   onDeleteAction = () =>
     this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
@@ -252,70 +258,64 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(this.props.parentId, this.props.filter, filesStore.dispatch);
   };
 
-  onSetSelectedUsers = users => {
-    const newArray = this.state.selectedUsers;
-    for (let item of users) {
-      const currentItem = this.state.selectedUsers.find(x => x.id === item.id);
-
-      if (!currentItem) {
-        newArray.push(item);
-      }
-    }
-
-    this.onSetUsers(newArray);
-  };
-
-  onSetUsers = users => {
-    this.setState({ selectedUsers: users });
-  };
-
   onFullAccessClick = () => {
     this.setState({
-      accessRight: { icon: "AccessEditIcon", rights: "FullAccess" }
+      accessRight: {
+        icon: "AccessEditIcon",
+        rights: "FullAccess",
+        isOwner: false
+      }
     });
   };
+
   onReadOnlyClick = () => {
-    console.log("onReadOnlyClick");
-    this.setState({ accessRight: { icon: "EyeIcon", rights: "ReadOnly" } });
+    this.setState({
+      accessRight: { icon: "EyeIcon", rights: "ReadOnly", isOwner: false }
+    });
   };
+
   onReviewClick = () => {
-    console.log("onReviewClick");
     this.setState({
-      accessRight: { icon: "AccessReviewIcon", rights: "Review" }
+      accessRight: {
+        icon: "AccessReviewIcon",
+        rights: "Review",
+        isOwner: false
+      }
     });
   };
+
   onCommentClick = () => {
-    console.log("onCommentClick");
     this.setState({
-      accessRight: { icon: "AccessCommentIcon", rights: "Comment" }
+      accessRight: {
+        icon: "AccessCommentIcon",
+        rights: "Comment",
+        isOwner: false
+      }
     });
   };
+
   onFormFillingClick = () => {
-    console.log("onFormFillingClick");
     this.setState({
-      accessRight: { icon: "AccessFormIcon", rights: "FormFilling" }
+      accessRight: {
+        icon: "AccessFormIcon",
+        rights: "FormFilling",
+        isOwner: false
+      }
     });
   };
+
   onDenyAccessClick = () => {
-    console.log("onDenyAccessClick");
     this.setState({
-      accessRight: { icon: "AccessNoneIcon", rights: "DenyAccess" }
+      accessRight: {
+        icon: "AccessNoneIcon",
+        rights: "DenyAccess",
+        isOwner: false
+      }
     });
-  };
-
-  onRemoveUserClick = item => {
-    let array = this.state.selectedUsers;
-
-    const index = array.findIndex(x => x.id === item.id);
-    if (index !== -1) {
-      array.splice(index, 1);
-
-      this.setState({ selectedUsers: array });
-    }
   };
 
   render() {
-    //console.log("HEADER render");
+    //console.log("Body header render");
 
     const {
       t,
@@ -330,7 +330,9 @@ class SectionHeaderContent extends React.Component {
       folder,
       onCheck,
       title,
-      accessOptions
+      accessOptions,
+      setShareData,
+      shareData
     } = this.props;
     const {
       accessRight,
@@ -338,8 +340,7 @@ class SectionHeaderContent extends React.Component {
       showAddUsersPanel,
       showDeleteDialog,
       showSharingPanel,
-      showEmptyTrashDialog,
-      selectedUsers
+      showEmptyTrashDialog
     } = this.state;
     const isItemsSelected = selection.length;
     const isOnlyFolderSelected = selection.every(
@@ -575,12 +576,7 @@ class SectionHeaderContent extends React.Component {
           visible={showSharingPanel}
           onShowUsersPanel={this.onShowUsersPanel}
           onShowGroupsPanel={this.onShowGroupsPanel}
-          advancedOptions={advancedOptions}
           accessRight={accessRight}
-          users={selectedUsers}
-          onRemoveUserClick={this.onRemoveUserClick}
-          onSetUsers={this.onSetUsers}
-          selection={selection}
           accessOptions={accessOptions}
         />
 
@@ -589,8 +585,9 @@ class SectionHeaderContent extends React.Component {
           onClose={this.onShowUsersPanel}
           visible={showAddUsersPanel}
           embeddedComponent={accessOptionsComboBox}
-          onSetSelectedUsers={this.onSetSelectedUsers}
+          setShareData={setShareData}
           accessRight={accessRight}
+          shareData={shareData}
         />
 
         <AddGroupsPanel
@@ -598,8 +595,9 @@ class SectionHeaderContent extends React.Component {
           onClose={this.onShowGroupsPanel}
           visible={showAddGroupsPanel}
           embeddedComponent={accessOptionsComboBox}
-          onSetSelectedUsers={this.onSetSelectedUsers}
+          setShareData={setShareData}
           accessRight={accessRight}
+          shareData={shareData}
         />
       </StyledContainer>
     );
@@ -607,13 +605,17 @@ class SectionHeaderContent extends React.Component {
 }
 
 const mapStateToProps = state => {
-  const { selectedFolder, selection, treeFolders, filter } = state.files;
+  const {
+    selectedFolder,
+    selection,
+    treeFolders,
+    filter,
+    shareData
+  } = state.files;
   const { parentId, title, id } = selectedFolder;
-  const { user, settings } = state.auth;
+  const { user } = state.auth;
 
   const indexOfTrash = 3;
-
-  //item.access.icon
   const currentUser = user;
   user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
 
@@ -626,12 +628,12 @@ const mapStateToProps = state => {
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    //groupsCaption: settings.customNames.groupsCaption,
     currentUser,
-    accessOptions: getAccessOption(selection)
+    accessOptions: getAccessOption(selection),
+    shareData
   };
 };
 
-export default connect(mapStateToProps, { setAction })(
+export default connect(mapStateToProps, { setAction, setShareData })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

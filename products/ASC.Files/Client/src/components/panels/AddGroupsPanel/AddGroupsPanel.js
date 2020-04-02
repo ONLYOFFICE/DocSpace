@@ -1,16 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  toastr
-} from "asc-web-components";
+import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
 import { GroupSelector, utils } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
-import { getUsersOfGroups } from "../../../store/files/actions";
 import {
   StyledPanel,
   StyledContent,
@@ -42,22 +35,23 @@ class AddGroupsPanelComponent extends React.Component {
   };
 
   onSelectGroups = groups => {
-    const groupIds = [];
+    const { accessRight, shareData, setShareData, onClose } = this.props;
+    const items = shareData;
+
     for (let item of groups) {
-      groupIds.push(item.key);
+      if (item.key) {
+        item.id = item.key;
+        delete item.key;
+      }
+      const currentItem = shareData.find(x => x.id === item.id);
+      if (!currentItem) {
+        item.rights = accessRight;
+        items.push(item);
+      }
     }
 
-    getUsersOfGroups(groupIds)
-      .then(res => {
-        const newItems = [];
-        for (let item of res) {
-          item.rights = this.props.accessRight;
-          newItems.push(item);
-        }
-        this.props.onSetSelectedUsers(newItems);
-        this.props.onClose();
-      })
-      .catch(err => toastr.error(err));
+    setShareData(items);
+    onClose();
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -123,7 +117,6 @@ class AddGroupsPanelComponent extends React.Component {
                 withoutAside
                 onSelect={this.onSelectGroups}
                 embeddedComponent={embeddedComponent}
-                //onCancel={onCloseGroupSelector}
               />
             </StyledBody>
           </StyledContent>
@@ -136,8 +129,7 @@ class AddGroupsPanelComponent extends React.Component {
 AddGroupsPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func,
-  onSetSelectedUsers: PropTypes.func
+  onClose: PropTypes.func
 };
 
 const AddGroupsPanelContainerTranslated = withTranslation()(

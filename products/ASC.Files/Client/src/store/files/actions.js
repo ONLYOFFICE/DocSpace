@@ -29,6 +29,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
+export const SET_SHARE_DATA = "SET_SHARE_DATA";
 
 export function setFile(file) {
   return {
@@ -76,6 +77,13 @@ export function setAction(fileAction) {
   return {
     type: SET_ACTION,
     fileAction
+  };
+}
+
+export function setShareData(shareData) {
+  return {
+    type: SET_SHARE_DATA,
+    shareData
   };
 }
 
@@ -306,12 +314,17 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
   }
 }
 
-export function getUsersOfGroups(groupsIds) {
-  const requests = groupsIds.map(key => groups.getGroup(key));
+export function getShareUsersAndGroups(foldersIds, filesIds) {
+  const getFoldersRequests = foldersIds.map(id => files.getShareFolders(id));
+  const getFilesRequests = filesIds.map(id => files.getShareFiles(id));
 
-  return axios.all(requests).then(
-    axios.spread((...responses) => {
-      return responses;
+  return axios.all(getFoldersRequests, getFilesRequests).then(
+    axios.spread((folders, files) => {
+      if (!folders) {
+        return files;
+      } else if (!files) {
+        return folders;
+      } else return [...folders, ...files];
     })
   );
 }

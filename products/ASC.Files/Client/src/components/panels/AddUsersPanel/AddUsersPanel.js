@@ -37,16 +37,22 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   onPeopleSelect = users => {
-    const items = [];
+    const { accessRight, shareData, setShareData, onClose } = this.props;
+    const items = shareData;
     for (let item of users) {
-      item.id = item.key;
-      delete item.key;
-      item.rights = this.props.accessRight;
-      items.push(item);
+      if (item.key) {
+        item.id = item.key;
+        delete item.key;
+      }
+      const currentItem = shareData.find(x => x.id === item.id);
+      if (!currentItem) {
+        item.rights = accessRight;
+        items.push(item);
+      }
     }
 
-    this.props.onSetSelectedUsers(items);
-    this.props.onClose();
+    setShareData(items);
+    onClose();
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -128,8 +134,7 @@ class AddUsersPanelComponent extends React.Component {
 AddUsersPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func,
-  onSetSelectedUsers: PropTypes.func
+  onClose: PropTypes.func
 };
 
 const AddUsersPanelContainerTranslated = withTranslation()(
