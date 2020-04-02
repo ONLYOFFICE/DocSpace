@@ -25,7 +25,9 @@
 
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
@@ -37,10 +39,12 @@ using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
@@ -60,7 +64,9 @@ namespace ASC.CRM.Core.Dao
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
             FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
-            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper) :
+            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
+            IOptionsMonitor<ILog> logger,
+            DbContextManager<CoreDbContext> coreDbContext) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -69,7 +75,9 @@ namespace ASC.CRM.Core.Dao
                  authorizationManager,
                  filesIntegration,
                  factoryIndexerContactsWrapper,
-                 factoryIndexerEmailWrapper)
+                 factoryIndexerEmailWrapper,
+                 logger,
+                 coreDbContext)
         {
             _contactCache = new HttpRequestDictionary<Contact>(httpContextAccessor?.HttpContext, "crm_contact");
         }
@@ -128,11 +136,14 @@ namespace ASC.CRM.Core.Dao
             AuthorizationManager authorizationManager,
             FilesIntegration filesIntegration,
             FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
-            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper
+            FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
+            IOptionsMonitor<ILog> logger,
+            DbContextManager<CoreDbContext> coreDbContext
             ) :
                  base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
@@ -140,7 +151,10 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration = filesIntegration;
             FactoryIndexerContactsWrapper = factoryIndexerContactsWrapper;
             FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
+            CoreDbContext = coreDbContext.Value;
         }
+
+        public CoreDbContext CoreDbContext { get; }
 
         public FactoryIndexer<EmailWrapper> FactoryIndexerEmailWrapper { get; }
         public FactoryIndexer<ContactsWrapper> FactoryIndexerContactsWrapper { get; }
@@ -158,71 +172,51 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            var query = Query(CRMDbContext.Contacts);
+            var sqlQuery = Query(CRMDbContext.Contacts);
 
             switch (searchType)
             {
                 case 0: // Company
-                    query = query.Where(x => x.IsCompany);
+                    sqlQuery = sqlQuery.Where(x => x.IsCompany);
                     break;
                 case 1: // Persons
-                    query = query.Where(x => !x.IsCompany);
+                    sqlQuery = sqlQuery.Where(x => !x.IsCompany);
                     break;
                 case 2: // PersonsWithoutCompany
-                    query = query.Where(x => x.CompanyId == 0 && !x.IsCompany);
+                    sqlQuery = sqlQuery.Where(x => x.CompanyId == 0 && !x.IsCompany);
                     break;
                 case 3: // CompaniesAndPersonsWithoutCompany 
-                    query = query.Where(x => x.CompanyId == 0);
+                    sqlQuery = sqlQuery.Where(x => x.CompanyId == 0);
                     break;
             }
 
             foreach (var k in keywords)
             {
-                query = query.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.DisplayName, k));
+                sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.DisplayName, k));
             }
+
+            sqlQuery = sqlQuery.OrderBy(x => x.DisplayName);
 
             if (!CRMSecurity.IsAdmin)
             {
-                var sharedContacts = Exp.Gt("c.is_shared", 0);
+                var idsFromAcl = CoreDbContext.Acl.Where(x => x.Tenant == TenantID &&
+                                                     x.Action == CRMSecurity._actionRead.ID &&
+                                                     x.Subject == SecurityContext.CurrentAccount.ID &&
+                                                     Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName. ))
+                                       .Select(x => Convert.ToInt32(x.Object.Split('|', StringSplitOptions.None)[1]))
+                                       .ToList();
 
-                var oldContacts = Exp.And(Exp.Eq("c.is_shared", null), !ExistAclRecord(false, "c"));
+                objectId.ObjectType.FullName
 
-                var privateContacts = Exp.And(Exp.Eq("c.is_shared", 0), ExistAclRecord(true, "c"));
-
-                query = query.Where(Exp.Or(sharedContacts, Exp.Or(oldContacts, privateContacts)));
-
-                query = query.Where(x => x.IsShared >= 0 || (x.IsShared == null && ));
-
+                // oldContacts || publicContact || contact is private, but user is ManagerContact
+                sqlQuery = sqlQuery.Where(x => x.IsShared == null || x.IsShared > 0 || idsFromAcl.Contains(x.Id));
             }
 
-            query = query.OrderBy(x => x.DisplayName);
 
-            if (0 < from && from < int.MaxValue) query = query.Skip(from);
-            if (0 < count && count < int.MaxValue) query = query.Take(count);
+            if (0 < from && from < int.MaxValue) sqlQuery = sqlQuery.Skip(from);
+            if (0 < count && count < int.MaxValue) sqlQuery = sqlQuery.Take(count);
 
-            return query.ToList().ConvertAll(ToContact);
-        }
-
-        private Exp ExistAclRecord(bool forCurrentUser, string contactTebleAlias = "")
-        {
-            var alias = string.IsNullOrEmpty(contactTebleAlias) ? string.Empty : contactTebleAlias + ".";
-
-            var query = new SqlQuery("core_acl a")
-                .Select("a.object")
-                .Where(Exp.EqColumns("a.tenant", alias + "tenant_id"))
-                .Where(Exp.Eq("a.action", CRMSecurity._actionRead.ID));
-
-            if (forCurrentUser)
-                query.Where(Exp.Eq("a.subject", SecurityContext.CurrentAccount.ID));
-
-            query.Where(
-                Exp.Or(
-                    Exp.EqColumns("a.object", string.Format("concat('ASC.CRM.Core.Entities.Company|', {0}id)", alias)),
-                    Exp.EqColumns("a.object", string.Format("concat('ASC.CRM.Core.Entities.Person|', {0}id)", alias))
-                    )
-                );
-
-            return Exp.Exists(query);
+            return sqlQuery.ToList().ConvertAll(ToContact);
         }
 
         public int GetAllContactsCount()
@@ -389,7 +383,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _log.Error("Private contacts count more than all contacts");
+                    Logger.Error("Private contacts count more than all contacts");
 
                     privateCount = 0;
                 }
@@ -702,7 +696,7 @@ namespace ASC.CRM.Core.Dao
                 List<int> contactsIds;
                 if (!BundleSearch.TrySelectContact(searchText, out contactsIds))
                 {
-                    _log.Debug("FullTextSearch.SupportModule('CRM.Contacts') = false");
+                    Logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = false");
 
                     foreach (var k in keywords)
                     {
@@ -711,8 +705,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 else
                 {
-                    _log.Debug("FullTextSearch.SupportModule('CRM.Contacts') = true");
-                    _log.DebugFormat("FullTextSearch.Search: searchText = {0}", searchText);
+                    Logger.Debug("FullTextSearch.SupportModule('CRM.Contacts') = true");
+                    Logger.DebugFormat("FullTextSearch.Search: searchText = {0}", searchText);
 
                     var full_text_ids = contactsIds;
 
@@ -748,13 +742,13 @@ namespace ASC.CRM.Core.Dao
                 case ContactListViewType.Company:
                     {
                         sqlQuery = sqlQuery.Where(x => x.IsCompany);
-                        
+
                         break;
                     }
                 case ContactListViewType.Person:
                     {
                         sqlQuery = sqlQuery.Where(x => !x.IsCompany);
-                    
+
                         break;
                     }
                 case ContactListViewType.WithOpportunity:
@@ -780,7 +774,7 @@ namespace ASC.CRM.Core.Dao
 
             if (contactStage >= 0)
                 sqlQuery = sqlQuery.Where(x => x.StatusId == contactStage);
-            
+
             if (contactType >= 0)
                 sqlQuery = sqlQuery.Where(x => x.ContactTypeId == contactType);
 
@@ -803,11 +797,11 @@ namespace ASC.CRM.Core.Dao
 
                 if (isShared.Value)
                 {
-                    sqlQuery = sqlQuery.Where(x => x.IsShared.HasValue ? sharedTypes.Contains(x.IsShared.Value) : x.IsShared == null );
+                    sqlQuery = sqlQuery.Where(x => x.IsShared.HasValue ? sharedTypes.Contains(x.IsShared.Value) : x.IsShared == null);
                 }
                 else
                 {
-                    sqlQuery = sqlQuery.Where(x => x.IsShared.HasValue ?  x.IsShared == ShareType.None : x.IsShared == null);   
+                    sqlQuery = sqlQuery.Where(x => x.IsShared.HasValue ? x.IsShared == ShareType.None : x.IsShared == null);
                 }
             }
 
@@ -884,66 +878,66 @@ namespace ASC.CRM.Core.Dao
 
             if (0 < from && from < int.MaxValue) dbContactsQuery = dbContactsQuery.Skip(from);
             if (0 < count && count < int.MaxValue) dbContactsQuery = dbContactsQuery.Take(count);
-            
+
             if (orderBy != null)
             {
 
                 if (!Enum.IsDefined(typeof(ContactSortedByType), orderBy.SortedBy.ToString()))
+                {
                     orderBy.SortedBy = ContactSortedByType.Created;
+                }
 
                 switch ((ContactSortedByType)orderBy.SortedBy)
                 {
                     case ContactSortedByType.DisplayName:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.DisplayName);
+                        dbContactsQuery = dbContactsQuery.OrderBy("DisplayName", orderBy.IsAsc);
                         break;
                     case ContactSortedByType.Created:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.CreateOn);
+                        dbContactsQuery = dbContactsQuery.OrderBy("CreateOn", orderBy.IsAsc);
                         break;
                     case ContactSortedByType.ContactType:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.StatusId);
+
+                        dbContactsQuery = dbContactsQuery.OrderBy("StatusId", orderBy.IsAsc);
+
                         break;
                     case ContactSortedByType.FirstName:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.FirstName);
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.LastName);
+                        {
+                            dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
+                            dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
+                        }
+
                         break;
                     case ContactSortedByType.LastName:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.LastName);
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.FirstName);
+                        {
+                            dbContactsQuery = dbContactsQuery.OrderBy("LastName", orderBy.IsAsc);
+                            dbContactsQuery = dbContactsQuery.OrderBy("FirstName", orderBy.IsAsc);
+                        }
                         break;
                     case ContactSortedByType.History:
+                        {
+                            dbContactsQuery = dbContactsQuery.GroupJoin(Query(CRMDbContext.RelationshipEvent),
+                                                                          x => x.Id,
+                                                                          y => y.ContactId,
+                                                                          (x, y) => new { x, y })
+                                                              .OrderBy(x => x.y.Max(x => x.LastModifedOn))
+                                                              .ThenBy(x => x.x.CreateOn)
+                                                              .Select(x => x.x);
 
-                        throw new NotImplementedException();
 
-                        //dbContactsQuery.GroupJoin(Query(CRMDbContext.RelationshipEvent),
-                        //                  x => x.Id,
-                        //                  y => y.ContactId,
-                        //                  (x, y) => new { x, y })
-                        //  .OrderBy(x => x.y?.Select(x=>x.LastModifedOn))
+                        }
 
-
-                        //sqlQuery.Select("last_event_modifed_on");
-                        //var subSqlQuery = Query("crm_relationship_event")
-                        //    .Select("contact_id")
-                        //    .Select("max(last_modifed_on) as last_event_modifed_on")
-                        //    .Where(Exp.Gt("contact_id", 0))
-                        //    .GroupBy("contact_id");
-                        //sqlQuery.LeftOuterJoin(subSqlQuery, "evt", Exp.EqColumns("id", "evt.contact_id"));
-                        //sqlQuery.OrderBy("last_event_modifed_on", orderBy.IsAsc);
-                        //sqlQuery.OrderBy("create_on", orderBy.IsAsc);
-
-                        //dbContactsQuery = dbContactsQuery.OrderBy(x => x.la);
-                        //                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.CreateOn);
                         break;
                     default:
-                        dbContactsQuery = dbContactsQuery.OrderBy(x => x.DisplayName);
+                        {
+                            dbContactsQuery = dbContactsQuery.OrderBy("DisplayName", orderBy.IsAsc);
+                        }
+
                         break;
                 }
             }
 
 
-            var data = Db.ExecuteList(sqlQuery);
-
-            var contacts = data.ConvertAll(ToContact);
+            var contacts = dbContactsQuery.ToList().ConvertAll(ToContact);
 
             return selectIsSharedInNewScheme && isShared.HasValue ?
                 contacts.Where(c => (isShared.Value ? c.ShareType != ShareType.None : c.ShareType == ShareType.None)).ToList() :

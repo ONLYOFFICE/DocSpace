@@ -24,6 +24,7 @@
 */
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -33,6 +34,7 @@ using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Core.Search;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,12 +50,14 @@ namespace ASC.CRM.Core.Dao
              TenantManager tenantManager,
              SecurityContext securityContext,
              TenantUtil tenantUtil,
-             IHttpContextAccessor httpContextAccessor)
+             IHttpContextAccessor httpContextAccessor,
+             IOptionsMonitor<ILog> logger)
             : base(
                 dbContextManager,
                 tenantManager,
                 securityContext, 
-                tenantUtil)
+                tenantUtil,
+                logger)
         {
             _contactInfoCache = new HttpRequestDictionary<ContactInfo>(httpContextAccessor?.HttpContext, "crm_contact_info");
         }
@@ -103,10 +107,13 @@ namespace ASC.CRM.Core.Dao
              DbContextManager<CRMDbContext> dbContextManager,
              TenantManager tenantManager,
              SecurityContext securityContext,
-             TenantUtil tenantUtil)
+             TenantUtil tenantUtil,
+             IOptionsMonitor<ILog> logger
+        )
            : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             TenantUtil = tenantUtil;
         }

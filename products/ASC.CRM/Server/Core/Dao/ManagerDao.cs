@@ -26,20 +26,10 @@
 
 #region Import
 
+using ASC.Core.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.CRM.Core.Entities;
-using ASC.Common.Data.Sql.Expressions;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Web.Core.Utility.Skins;
-using ASC.Web.CRM.Classes;
-using ASC.Web.CRM.Configuration;
-using ASC.Web.Files.Api;
-using ASC.Web.Studio.Helpers;
-using ASC.Web.Studio.Utility;
-using log4net;
 
 #endregion
 

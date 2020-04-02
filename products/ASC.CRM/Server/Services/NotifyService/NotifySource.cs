@@ -23,35 +23,22 @@
  *
 */
 
-
-#region Import
-
+using ASC.Core;
 using ASC.CRM.Services.NotifyService;
 using ASC.Notify.Model;
 using ASC.Notify.Patterns;
+using ASC.Notify.Recipients;
 using System;
 using NotifySourceBase = ASC.Core.Notify.NotifySource;
-
-#endregion
 
 namespace ASC.Web.CRM.Services.NotifyService
 {
 
     public class NotifySource : NotifySourceBase
     {
-        public static NotifySource Instance
-        {
-            get;
-            private set;
-        }
 
-        static NotifySource()
-        {
-            Instance = new NotifySource();
-        }
-
-        public NotifySource()
-            : base(new Guid("{13FF36FB-0272-4887-B416-74F52B0D0B02}"))
+        public NotifySource(UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+            : base(new Guid("{13FF36FB-0272-4887-B416-74F52B0D0B02}"), userManager, recipientsProvider, subscriptionManager)
         {
 
         }

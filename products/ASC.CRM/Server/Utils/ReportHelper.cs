@@ -28,19 +28,34 @@ using ASC.Core.Tenants;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using ASC.Files.Core;
 using ASC.Web.CRM.Core;
+using ASC.Web.Files.Services.DocumentService;
 using Autofac;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 
 namespace ASC.Web.CRM.Classes
 {
     public class ReportHelper
     {
-        private static string GetFileName(ReportType reportType)
+        public ReportHelper(TenantUtil tenantUtil,
+                            Global global,
+                            DocbuilderReportsUtility docbuilderReportsUtility)
+        {
+            TenantUtil = tenantUtil;
+            Global = global;
+            DocbuilderReportsUtility = docbuilderReportsUtility;
+        }
+
+        public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
+        public Global Global { get; }
+
+        public TenantUtil TenantUtil { get; }
+
+        private string GetFileName(ReportType reportType)
         {
             string reportName;
 
@@ -87,7 +102,7 @@ namespace ASC.Web.CRM.Classes
                                  TenantUtil.DateTimeNow().ToShortTimeString());
         }
 
-        public static bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
+        public bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
             using (var scope = DIHelper.Resolve())
             {
@@ -121,7 +136,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static List<string> GetMissingRates(ReportType reportType)
+        public List<string> GetMissingRates(ReportType reportType)
         {
             using (var scope = DIHelper.Resolve())
             {
@@ -133,7 +148,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static object GetReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
+        private object GetReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
             using (var scope = DIHelper.Resolve())
             {
@@ -169,7 +184,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static string GetReportScript(object data, ReportType type, string fileName)
+        private string GetReportScript(object data, ReportType type, string fileName)
         {
             var script =
                 FileHelper.ReadTextFromEmbeddedResource(string.Format("ASC.Web.CRM.ReportTemplates.{0}.docbuilder", type));
@@ -181,16 +196,16 @@ namespace ASC.Web.CRM.Classes
                          .Replace("${reportData}", JsonConvert.SerializeObject(data));
         }
 
-        private static void SaveReportFile(ReportState state, string url)
+        private void SaveReportFile(ReportState state, string url)
         {
             using (var scope = DIHelper.Resolve())
             {
                 var daoFactory = scope.Resolve<DaoFactory>();
                 var data = new WebClient().DownloadData(url);
 
-                using (var stream = new MemoryStream(data))
+                using (var stream = new System.IO.MemoryStream(data))
                 {
-                    var document = new ASC.Files.Core.File
+                    var document = new File
                         {
                             Title = state.FileName,
                             FolderID = daoFactory.FileDao.GetRoot(),
@@ -205,7 +220,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static ReportState RunGenareteReport(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
+        public ReportState RunGenareteReport(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
             var reportData = GetReportData(reportType, timePeriod, managers);
             if (reportData == null)

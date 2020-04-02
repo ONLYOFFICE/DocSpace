@@ -23,6 +23,7 @@
  *
 */
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -33,6 +34,7 @@ using ASC.CRM.Resources;
 using ASC.ElasticSearch;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -47,11 +49,13 @@ namespace ASC.CRM.Core.Dao
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            TenantUtil tenantUtil
+            TenantUtil tenantUtil,
+            IOptionsMonitor<ILog> logger
             ) :
               base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             TenantUtil = tenantUtil;
         }
@@ -215,7 +219,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 if (customFieldType == CustomFieldType.SelectBox)
                 {
-                    _log.Error(ex);
+                    Logger.Error(ex);
+
                     throw ex;
                 }
             }
@@ -357,7 +362,8 @@ namespace ASC.CRM.Core.Dao
                 }
                 catch (Exception ex)
                 {
-                    _log.Error(ex);
+                    Logger.Error(ex);
+
                     throw ex;
                 }
 

@@ -23,9 +23,9 @@
  *
 */
 
-
 using ASC.Common.Logging;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.Core.Configuration;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
@@ -36,7 +36,9 @@ using ASC.Web.Core;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core;
 using ASC.Web.CRM.Services.NotifyService;
+using ASC.Web.Files.Api;
 using Autofac;
+using Microsoft.Extensions.Options;
 using System;
 using System.Linq;
 
@@ -48,29 +50,51 @@ namespace ASC.Web.CRM.Configuration
         public ProductEntryPoint(SecurityContext securityContext,
                                  UserManager userManager,
                                  PathProvider pathProvider,
-                                 DaoFactory daoFactory)
+                                 DaoFactory daoFactory,
+                                 FilesIntegration filesIntegration,
+                                 IOptionsMonitor<ILog> logger,
+                                 CRMSecurity cRMSecurity,
+                                 SettingsManager settingsManager,
+                                 CoreConfiguration coreConfiguration,
+                                 Global global)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
             PathProvider = pathProvider;
             DaoFactory = daoFactory;
+            FilesIntegration = filesIntegration;
+            Logger = logger.Get("ASC");
+            CRMSecurity = cRMSecurity;
+            SettingsManager = settingsManager;
+            CoreConfiguration = coreConfiguration;
+            Global = global;
         }
-
-        #region Property
         
-
-        #endregion
-
         public static readonly Guid ID = WebItemManager.CRMProductID;
+        
         private ProductContext context;
 
         private static readonly object Locker = new object();
         private static bool registered;
+        
+        public Global Global { get; }
+
+        public CoreConfiguration CoreConfiguration { get; }
+
+        public ILog Logger { get; }
+
+        public SettingsManager SettingsManager { get; }
+
+        public CRMSecurity CRMSecurity { get; }
+
+        public FilesIntegration FilesIntegration { get;  }
 
         public DaoFactory DaoFactory { get; }
 
         public PathProvider PathProvider { get; }
+
         public SecurityContext SecurityContext { get; }
+        
         public UserManager UserManager { get; }
 
         // TODO: CRM: Реализовать проперти ApiURL 
@@ -105,7 +129,6 @@ namespace ASC.Web.CRM.Configuration
 
         public string ModuleSysName { get; set; }
 
-
         public override void Init()
         {
             context = new ProductContext
@@ -122,26 +145,26 @@ namespace ASC.Web.CRM.Configuration
 
             if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "crm_common"))
             {
-                FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", new FileSecurityProvider());
+                FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", new FileSecurityProvider(FilesIntegration, CRMSecurity));
             }
             if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "opportunity"))
             {
-                FilesIntegration.RegisterFileSecurityProvider("crm", "opportunity", new FileSecurityProvider());
+                FilesIntegration.RegisterFileSecurityProvider("crm", "opportunity", new FileSecurityProvider(FilesIntegration, CRMSecurity));
             }
 
-            SearchHandlerManager.Registry(new SearchHandler());
+//            SearchHandlerManager.Registry(new SearchHandler());
 
-            GlobalConfiguration.Configuration.Routes.MapHttpRoute(
-                name: "Twilio", 
-                routeTemplate: "twilio/{action}", 
-                defaults: new {controller = "Twilio", action = "index" });
+            //GlobalConfiguration.Configuration.Routes.MapHttpRoute(
+            //    name: "Twilio", 
+            //    routeTemplate: "twilio/{action}", 
+            //    defaults: new {controller = "Twilio", action = "index" });
 
 //            ClientScriptLocalization = new ClientLocalizationResources();
             DIHelper.Register();
         }
 
 
-        public static void ConfigurePortal()
+        public void ConfigurePortal()
         {
             if (!Global.TenantSettings.IsConfiguredPortal)
             {
@@ -165,6 +188,7 @@ namespace ASC.Web.CRM.Configuration
 
                     // Deal Milestone New
                     var milestoneDao = daoFactory.DealMilestoneDao;
+                    
                     milestoneDao.Create(new DealMilestone
                     {
                         Title = CRMDealResource.DealMilestone_InitialContact_Title,
@@ -267,16 +291,22 @@ namespace ASC.Web.CRM.Configuration
                     daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Staff, true);
 
                     var tenantSettings = Global.TenantSettings;
+                    
                     tenantSettings.WebFormKey = Guid.NewGuid();
                     tenantSettings.IsConfiguredPortal = true;
-                    tenantSettings.Save();
+
+                    if (!SettingsManager.Save<CRMSettings>(tenantSettings))
+                    {
+                        throw new Exception("not save CRMSettings");
+                    }
                 }
             }
 
             if (!Global.TenantSettings.IsConfiguredSmtp)
             {
-                var smtp = CRMSettings.Load().SMTPServerSettingOld;
-                if (smtp != null && CoreContext.Configuration.SmtpSettings.IsDefaultSettings)
+                var smtp = SettingsManager.Load<CRMSettings>().SMTPServerSettingOld;
+              
+                if (smtp != null && CoreConfiguration.SmtpSettings.IsDefaultSettings)
                 {
                     try
                     {
@@ -290,18 +320,25 @@ namespace ASC.Web.CRM.Configuration
                         if (!string.IsNullOrEmpty(smtp.HostLogin) && !string.IsNullOrEmpty(smtp.HostPassword))
                         {
                             newSettings.SetCredentials(smtp.HostLogin, smtp.HostPassword);
-        }
+                        }
 
-                        CoreContext.Configuration.SmtpSettings = newSettings;
+                        CoreConfiguration.SmtpSettings = newSettings;
+                    
                     }
                     catch (Exception e)
                     {
-                        LogManager.GetLogger("ASC").Error("ConfigurePortal", e);
+                        Logger.Error("ConfigurePortal", e);
                     }
                 }
+
                 var tenantSettings = Global.TenantSettings;
                 tenantSettings.IsConfiguredSmtp = true;
-                tenantSettings.Save();
+
+                if (!SettingsManager.Save<CRMSettings>(tenantSettings))
+                {
+                    throw new Exception("not save CRMSettings");
+                }
+
             }
         }
 

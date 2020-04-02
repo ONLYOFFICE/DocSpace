@@ -24,13 +24,17 @@
 */
 
 
+using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -45,10 +49,29 @@ namespace ASC.Web.CRM.Classes
 {
     public class Global
     {
-        public Global()
+        public Global(StorageFactory storageFactory,
+                      SecurityContext securityContext,
+                      SetupInfo setupInfo,
+                      FilesLinkUtility filesLinkUtility,
+                      CRMSecurity cRMSecurity,
+                      TenantManager tenantManager,
+                      SettingsManager settingsManager,
+                      IConfiguration configuration
+                      )
         {
-                
+            StorageFactory = storageFactory;
+            FilesLinkUtility = filesLinkUtility;
+            SetupInfo = setupInfo;
+            SecurityContext = securityContext;
+            CRMSecurity = cRMSecurity;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            SettingsManager = settingsManager;
+            Configuration = configuration;
         }
+
+        public IConfiguration Configuration { get; }
+
+        public SettingsManager SettingsManager { get; }
 
         public static readonly int EntryCountOnPage = 25;
         public static readonly int VisiblePageCount = 10;
@@ -64,22 +87,30 @@ namespace ASC.Web.CRM.Classes
         public static readonly int MaxHistoryEventCharacters = 65000;
         public static readonly decimal MaxInvoiceItemPrice = (decimal) 99999999.99;
 
-        public static CRMSettings TenantSettings
+        protected int TenantID { get; private set; }
+
+        public FilesLinkUtility FilesLinkUtility { get; }
+
+        public SetupInfo SetupInfo { get; }
+        public SecurityContext SecurityContext { get; }
+
+        public StorageFactory StorageFactory { get; }
+
+        public CRMSecurity CRMSecurity { get; }
+
+        
+
+        public IDataStore GetStore()
         {
-            get { return CRMSettings.Load(); }
+            return StorageFactory.GetStorage(TenantID.ToString(), "crm");
         }
 
-        public static IDataStore GetStore()
-        {
-            return StorageFactory.GetStorage(TenantProvider.CurrentTenantID.ToString(), "crm");
-        }
-
-        public static IDataStore GetStoreTemplate()
+        public IDataStore GetStoreTemplate()
         {
             return StorageFactory.GetStorage(String.Empty, "crm_template");
         }
 
-        public static bool CanCreateProjects()
+        public bool CanCreateProjects()
         {
             try
             {
@@ -87,22 +118,24 @@ namespace ASC.Web.CRM.Classes
 
                 var cacheKey = String.Format("{0}-{1}", SecurityContext.CurrentAccount.ID, apiUrl);
 
-                bool canCreateProject;
+                bool canCreateProject = false;
 
-                if (HttpRuntime.Cache[cacheKey] != null)
-                    return Convert.ToBoolean(HttpRuntime.Cache[cacheKey]);
+                throw new NotImplementedException();
+                //if (HttpRuntime.Cache[cacheKey] != null)
+                //    return Convert.ToBoolean(HttpRuntime.Cache[cacheKey]);
 
-                var apiServer = new Api.ApiServer();
+                //var apiServer = new Api.ApiServer();
 
-                var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
+                //var responseApi = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(apiServer.GetApiResponse(apiUrl, "GET"))))["response"];
 
-                if (responseApi.HasValues)
-                    canCreateProject = Convert.ToBoolean(responseApi["canCreateProject"].Value<String>());
-                else
-                    canCreateProject = false;
-                HttpRuntime.Cache.Remove(cacheKey);
-                HttpRuntime.Cache.Insert(cacheKey, canCreateProject, null, System.Web.Caching.Cache.NoAbsoluteExpiration,
-                                  TimeSpan.FromMinutes(5));
+                //if (responseApi.HasValues)
+                //    canCreateProject = Convert.ToBoolean(responseApi["canCreateProject"].Value<String>());
+                //else
+                //    canCreateProject = false;
+
+                //HttpRuntime.Cache.Remove(cacheKey);
+                //HttpRuntime.Cache.Insert(cacheKey, canCreateProject, null, System.Web.Caching.Cache.NoAbsoluteExpiration,
+                //                  TimeSpan.FromMinutes(5));
 
                 return canCreateProject;
 
@@ -114,17 +147,15 @@ namespace ASC.Web.CRM.Classes
 
         }
 
-        public static bool CanDownloadInvoices
+        public bool CanDownloadInvoices
         {
             get
             {
-                var canDownloadFiles = false;
+                var value = Configuration["crm:invoice:download:enable"];
 
-                var value = WebConfigurationManager.AppSettings["crm.invoice.download.enable"];
                 if (string.IsNullOrEmpty(value)) return false;
 
-                canDownloadFiles = Convert.ToBoolean(value);
-
+                bool canDownloadFiles = Convert.ToBoolean(value);
                 if (canDownloadFiles && string.IsNullOrEmpty(FilesLinkUtility.DocServiceConverterUrl))
                 {
                     canDownloadFiles = false;
@@ -134,7 +165,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static bool CanCreateReports
+        public bool CanCreateReports
         {
             get
             {
@@ -142,20 +173,14 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        #region CRM Settings
-
-        public static void SaveDefaultCurrencySettings(CurrencyInfo currency)
+        public void SaveDefaultCurrencySettings(CurrencyInfo currency)
         {
-            var tenantSettings = TenantSettings;
-            tenantSettings.DefaultCurrency = currency;
-            tenantSettings.Save();
+            var tenantSettings = SettingsManager.Load<CRMSettings>();
+            tenantSettings.DefaultCurrency = currency;            
+            SettingsManager.Save<CRMSettings>(tenantSettings);
         }
-
-        #endregion
-
-        #region Invoice PDF
-
-        public static ASC.Files.Core.File GetInvoicePdfExistingOrCreate(ASC.CRM.Core.Entities.Invoice invoice, DaoFactory factory)
+               
+        public ASC.Files.Core.File GetInvoicePdfExistingOrCreate(ASC.CRM.Core.Entities.Invoice invoice, DaoFactory factory)
         {
             var existingFile = invoice.GetInvoiceFile(factory);
             if (existingFile != null)
@@ -171,8 +196,6 @@ namespace ASC.Web.CRM.Classes
                 return newFile;
             }
         }
-
-        #endregion
 
         //Code snippet
 
@@ -271,9 +294,7 @@ namespace ASC.Web.CRM.Classes
             br.Close();
             return br.ToArray();
         }
-
-        #region CRM Images download
-
+                
         public static string GetImgFormatName(ImageFormat format)
         {
             if (format.Equals(ImageFormat.Bmp)) return "bmp";
@@ -294,11 +315,7 @@ namespace ASC.Web.CRM.Classes
         {
             return CommonPhotoManager.SaveToBytes(img, GetImgFormatName(img.RawFormat));
         }
-
-        #endregion
-
-        #region Parse JOjbect with ApiDateTime
-
+                
         private static readonly string[] Formats = new[]
                                                        {
                                                            "o",
@@ -328,8 +345,6 @@ namespace ASC.Web.CRM.Classes
                           );
             reader.DateParseHandling = DateParseHandling.None;
             return JObject.Load(reader);
-        }
-
-        #endregion
+        }               
     }
 }

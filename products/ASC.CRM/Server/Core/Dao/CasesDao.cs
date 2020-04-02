@@ -43,6 +43,8 @@ using System.Text.RegularExpressions;
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 using Microsoft.EntityFrameworkCore;
 using SortedByType = ASC.CRM.Core.Enums.SortedByType;
+using Microsoft.Extensions.Options;
+using ASC.Common.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -57,6 +59,7 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
+            IOptionsMonitor<ILog> logger,
             IHttpContextAccessor httpContextAccessor)
             :
                  base(dbContextManager,
@@ -65,7 +68,8 @@ namespace ASC.CRM.Core.Dao
                  cRMSecurity,
                  tenantUtil,
                  filesIntegration,
-                 authorizationManager)
+                 authorizationManager,
+                 logger)
 
         {
             _casesCache = new HttpRequestDictionary<Cases>(httpContextAccessor?.HttpContext, "crm_cases");
@@ -111,11 +115,13 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity cRMSecurity,
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
-            AuthorizationManager authorizationManager
+            AuthorizationManager authorizationManager,
+            IOptionsMonitor<ILog> logger
             ) :
                  base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
@@ -302,7 +308,7 @@ namespace ASC.CRM.Core.Dao
         public virtual List<Cases> DeleteBatchCases(List<Cases> caseses)
         {
             caseses = caseses.FindAll(CRMSecurity.CanDelete).ToList();
-            
+
             if (!caseses.Any()) return caseses;
 
             // Delete relative  keys
@@ -318,7 +324,7 @@ namespace ASC.CRM.Core.Dao
             if (casesID == null || !casesID.Any()) return null;
 
             var cases = GetCases(casesID).FindAll(CRMSecurity.CanDelete).ToList();
-            
+
             if (!cases.Any()) return cases;
 
             // Delete relative  keys
@@ -338,7 +344,7 @@ namespace ASC.CRM.Core.Dao
             var tagNames = Query(CRMDbContext.RelationshipEvent)
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
-            
+
             var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
 
             using var tx = CRMDbContext.Database.BeginTransaction();
@@ -356,7 +362,7 @@ namespace ASC.CRM.Core.Dao
 
             CRMDbContext.Cases.RemoveRange(caseses.ConvertAll(x => new DbCase
             {
-                 Id = x.ID
+                Id = x.ID
             }));
 
             CRMDbContext.SaveChanges();
@@ -425,23 +431,22 @@ namespace ASC.CRM.Core.Dao
             if (withParams)
             {
                 var dbCasesQuery = GetDbCasesByFilters(exceptIDs, searchText, contactID, isClosed, tags);
-                                               
+
                 result = dbCasesQuery != null ? dbCasesQuery.Count() : 0;
-            
+
             }
             else
             {
 
                 var countWithoutPrivate = Query(CRMDbContext.Cases).Count();
-                
+
                 var privateCount = exceptIDs.Count;
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _log.ErrorFormat(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    Logger.ErrorFormat(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
                                                             SecurityContext.CurrentAccount.ID);
-
                     privateCount = 0;
                 }
 
@@ -455,7 +460,7 @@ namespace ASC.CRM.Core.Dao
             }
 
             return result;
-        
+
         }
 
 
@@ -482,8 +487,8 @@ namespace ASC.CRM.Core.Dao
                 {
                     if (!BundleSearch.TrySelectCase(searchText, out ids))
                     {
-                        foreach(var k in keywords)
-                        { 
+                        foreach (var k in keywords)
+                        {
                             result = result.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k));
                         }
                     }
@@ -498,12 +503,12 @@ namespace ASC.CRM.Core.Dao
             {
                 var sqlQuery = CRMDbContext.EntityContact
                     .Where(x => x.ContactId == contactID && x.EntityType == EntityType.Case);
-                
+
                 if (ids.Count > 0)
                     sqlQuery = sqlQuery.Where(x => ids.Contains(x.EntityId));
 
                 ids = sqlQuery.Select(x => x.EntityId).ToList();
-                
+
                 if (ids.Count == 0) return null;
             }
 
@@ -565,24 +570,26 @@ namespace ASC.CRM.Core.Dao
 
             if (dbCasesQuery == null) return new List<Cases>();
 
-            if (0 < from && from < int.MaxValue) dbCasesQuery.Skip(from);
-            if (0 < count && count < int.MaxValue) dbCasesQuery.Take(count);
+            if (0 < from && from < int.MaxValue) dbCasesQuery = dbCasesQuery.Skip(from);
+            if (0 < count && count < int.MaxValue) dbCasesQuery = dbCasesQuery.Take(count);
 
-            dbCasesQuery = dbCasesQuery.OrderBy(x => x.IsClosed);
+            dbCasesQuery = dbCasesQuery.OrderBy("IsClosed", orderBy.IsAsc);
 
             if (orderBy != null && Enum.IsDefined(typeof(Enums.SortedByType), orderBy.SortedBy))
+            {
                 switch ((SortedByType)orderBy.SortedBy)
                 {
                     case SortedByType.Title:
-                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.Title);
+                        dbCasesQuery = dbCasesQuery.OrderBy("Title", orderBy.IsAsc);
                         break;
                     case SortedByType.CreateBy:
-                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.CreateBy);
+                        dbCasesQuery = dbCasesQuery.OrderBy("CreateBy", orderBy.IsAsc);
                         break;
                     case SortedByType.DateAndTime:
-                        dbCasesQuery = dbCasesQuery.OrderBy(x => x.CreateOn);
+                        dbCasesQuery = dbCasesQuery.OrderBy("CreateOn", orderBy.IsAsc);
                         break;
                 }
+            }
 
 
             return dbCasesQuery.ToList().ConvertAll(ToCases);
@@ -597,8 +604,8 @@ namespace ASC.CRM.Core.Dao
 
             var keywords = prefix.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToArray();
 
-            var q = Query(CRMDbContext.Cases); 
-          
+            var q = Query(CRMDbContext.Cases);
+
             if (keywords.Length == 1)
             {
                 q = q.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, keywords[0]));
@@ -610,12 +617,12 @@ namespace ASC.CRM.Core.Dao
                     q = q.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k));
                 }
             }
-            
+
             if (0 < from && from < int.MaxValue) q = q.Skip(from);
             if (0 < count && count < int.MaxValue) q = q.Take(count);
 
             q = q.OrderBy(x => x.Title);
-                       
+
             return q.ToList().ConvertAll(ToCases).FindAll(CRMSecurity.CanAccessTo);
         }
 

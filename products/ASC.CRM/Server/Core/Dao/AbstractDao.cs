@@ -35,25 +35,30 @@ using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
     public class AbstractDao
     {
         protected readonly List<EntityType> _supportedEntityType = new List<EntityType>();
-        protected readonly ILog _log = LogManager.GetLogger("ASC.CRM");
-
+    
         public CRMDbContext CRMDbContext { get; }
         public SecurityContext SecurityContext { get; }
 
         protected readonly ICache _cache;
+        public ILog Logger { get; }
 
         public AbstractDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger
             )
         {
+
+            Logger = logger.Get("ASC.CRM");
+
             _cache = AscCache.Memory;
             CRMDbContext = dbContextManager.Get(CRMConstants.DatabaseId);
             TenantID = tenantManager.GetCurrentTenant().TenantId;

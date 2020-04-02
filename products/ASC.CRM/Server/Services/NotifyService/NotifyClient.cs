@@ -41,6 +41,8 @@ using ASC.Notify.Patterns;
 using ASC.Notify.Recipients;
 using ASC.Web.CRM.Core;
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,54 +58,20 @@ namespace ASC.Web.CRM.Services.NotifyService
 {
     public class NotifyClient
     {
-        public NotifyClient(PathProvider pathProvider,
-                            SecurityContext securityContext,
-                            PaymentManager paymentManager,
-                            TenantManager tenantManager,
-                            TenantUtil tenantUtil,
-                            UserManager userManager, 
-                            DaoFactory daoFactory)
+        public NotifyClient(IServiceProvider serviceProvider)
         {
-            PathProvider = pathProvider;
-            SecurityContext = securityContext;
-            PaymentManager = paymentManager;
-            TenantManager = tenantManager;
-            TenantUtil = tenantUtil;
-            UserManager = userManager;
-            DaoFactory = daoFactory;
-        }
-        
-        public DaoFactory DaoFactory { get; }
-
-        public UserManager UserManager { get; }
-        public TenantUtil TenantUtil { get; }
-        public TenantManager TenantManager { get;}
-        public PaymentManager PaymentManager { get; }
-        public SecurityContext SecurityContext { get; }
-        public PathProvider PathProvider { get; }
-
-        private static NotifyClient instance;
-        private readonly INotifyClient client;
-        private readonly INotifySource source;
-        
-        public static NotifyClient Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (typeof(NotifyClient))
-                    {
-                        if (instance == null) instance = new NotifyClient(WorkContext.NotifyContext.NotifyService.RegisterClient(NotifySource.Instance), NotifySource.Instance);
-                    }
-                }
-                return instance;
-            }
+            ServiceProvider = serviceProvider;
         }
 
+        public IServiceProvider ServiceProvider { get; }
+                       
         public void SendAboutCreateNewContact(List<Guid> recipientID, int contactID, String contactTitle, NameValueCollection fields)
         {
             if ((recipientID.Count == 0) || String.IsNullOrEmpty(contactTitle)) return;
+
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             client.SendNoticeToAsync(
                 NotifyConstants.Event_CreateNewContact,
@@ -120,6 +88,10 @@ namespace ASC.Web.CRM.Services.NotifyService
         public void SendAboutSetAccess(EntityType entityType, int entityID, DaoFactory daoFactory, params Guid[] userID)
         {
             if (userID.Length == 0) return;
+
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             var baseData = ExtractBaseDataFrom(entityType, entityID, daoFactory);
 
@@ -182,6 +154,11 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             if (userID.Length == 0) return;
 
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
+            
+
             NameValueCollection baseEntityData;
 
             if (entity.EntityID != 0)
@@ -242,7 +219,7 @@ namespace ASC.Web.CRM.Services.NotifyService
 
             var recipient = ToRecipient(recipientID);
 
-            client.SendNoticeToAsync(CoreContext.Configuration.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
+            client.SendNoticeToAsync(CoreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
                null,
                new[] { recipient },
                true,
@@ -282,7 +259,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             }
 
             client.SendNoticeToAsync(
-                CoreContext.Configuration.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
+                CoreBaseSettings.CustomMode ? NotifyConstants.Event_ImportCompletedCustomMode : NotifyConstants.Event_ImportCompleted,
                 null,
                 new[] { recipient },
                 true,
@@ -376,8 +353,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                     }
                     catch (Exception ex)
                     {
-                        LogManager.GetLogger("ASC.CRM.Tasks")
-                            .Error("SendAutoReminderAboutTask, tenant: " + tenant.TenantDomain, ex);
+                        Logger.Error("SendAutoReminderAboutTask, tenant: " + tenant.TenantDomain, ex);
                     }
                 }
 
@@ -448,7 +424,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             );
         }
 
-        public void SendAboutResponsibleByTask(Task task, String taskCategoryTitle, Contact taskContact, ASC.CRM.Core.Entities.Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal, Hashtable fileListInfoHashtable)
+        public void SendAboutResponsibleByTask(Task task, String taskCategoryTitle, Contact taskContact, Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal, Hashtable fileListInfoHashtable)
         {
             var recipient = ToRecipient(task.ResponsibleID);
 
@@ -518,6 +494,11 @@ namespace ASC.Web.CRM.Services.NotifyService
             var recipient = ToRecipient(deal.ResponsibleID);
 
             if (recipient == null) return;
+
+            using var scope = ServiceProvider.CreateScope();
+            var notifySource = scope.ServiceProvider.GetService<NotifySource>();
+            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+            var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
             client.SendNoticeToAsync(
             NotifyConstants.Event_ResponsibleForOpportunity,

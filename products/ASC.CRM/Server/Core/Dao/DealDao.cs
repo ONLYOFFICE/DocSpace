@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -37,6 +38,7 @@ using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,13 +58,15 @@ namespace ASC.CRM.Core.Dao
                        CRMSecurity cRMSecurity,
                        FactoryIndexer<DealsWrapper> factoryIndexer,
                        FilesIntegration filesIntegration,
-                       IHttpContextAccessor httpContextAccessor)
+                       IHttpContextAccessor httpContextAccessor,
+                       IOptionsMonitor<ILog> logger)
             : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  cRMSecurity,
                  factoryIndexer,
-                 filesIntegration)
+                 filesIntegration,
+                 logger)
         {
             _dealCache = new HttpRequestDictionary<Deal>(httpContextAccessor?.HttpContext, "crm_deal");
         }
@@ -109,10 +113,12 @@ namespace ASC.CRM.Core.Dao
                        SecurityContext securityContext,
                        CRMSecurity cRMSecurity,
                        FactoryIndexer<DealsWrapper> factoryIndexer,
-                       FilesIntegration filesIntegration) :
+                       FilesIntegration filesIntegration,
+                       IOptionsMonitor<ILog> logger) :
             base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             CRMSecurity = cRMSecurity;
             FactoryIndexer = factoryIndexer;
@@ -485,7 +491,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _log.Error("Private deals count more than all deals");
+                    Logger.Error("Private deals count more than all deals");
 
                     privateCount = 0;
                 }
@@ -620,9 +626,10 @@ namespace ASC.CRM.Core.Dao
             if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
             {
 
+
                 sqlQuery.Having(Exp.Between("close_date", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)));
             }
-            else if (withParams && whereConditional == null)
+            else if (withParams && sqlQuery == null)
             {
                 return new List<Deal>();
             }
@@ -642,23 +649,23 @@ namespace ASC.CRM.Core.Dao
                 {
                     case DealSortedByType.Title:
                         {
-                            sqlQuery = sqlQuery.OrderBy(x => x.Title);
+                            sqlQuery = sqlQuery.OrderBy("Title", orderBy.IsAsc);
 
                             break;
                         }
                     case DealSortedByType.BidValue:
                         {
-                            sqlQuery = sqlQuery.OrderBy(x => x.BidValue);
+                            sqlQuery = sqlQuery.OrderBy("BidValue", orderBy.IsAsc);
                         
                             break;
                         }
                     case DealSortedByType.Responsible:
                         {
                             sqlQuery = sqlQuery.OrderBy(x => x.ResponsibleId)
-                                                .OrderBy(x => x.ContactId)
-                                                .OrderBy(x => x.ActualCloseDate)
-                                                .OrderBy(x => x.ExpectedCloseDate)
-                                                .OrderBy(x => x.Title);
+                                                .ThenBy(x => x.ContactId)
+                                                .ThenByDescending(x => x.ActualCloseDate)
+                                                .ThenBy(x => x.ExpectedCloseDate)
+                                                .ThenBy(x => x.Title);
 
                             throw new NotImplementedException();
                             //sqlQuery.OrderBy("tblDeal.responsible_id", orderBy.IsAsc)
@@ -674,15 +681,15 @@ namespace ASC.CRM.Core.Dao
                         {
                             sqlQuery = sqlQuery
                                                 .OrderBy(x => x.ContactId)
-                                                .OrderBy(x => x.ActualCloseDate)
-                                                .OrderBy(x => x.ExpectedCloseDate)
-                                                .OrderBy(x => x.Title);
+                                                .ThenByDescending(x => x.ActualCloseDate)
+                                                .ThenBy(x => x.ExpectedCloseDate)
+                                                .ThenBy(x => x.Title);
 
                             sqlQuery.OrderBy("tblDM.sort_order", orderBy.IsAsc)
-                                .OrderBy("tblDeal.contact_id", true)
-                                .OrderBy("tblDeal.actual_close_date", false)
-                                .OrderBy("tblDeal.expected_close_date", true)
-                                .OrderBy("tblDeal.title", true);
+                                .ThenBy("tblDeal.contact_id", true)
+                                .ThenBy("tblDeal.actual_close_date", false)
+                                .ThenBy("tblDeal.expected_close_date", true)
+                                .ThenBy("tblDeal.title", true);
                         
                             break;
                         
@@ -702,7 +709,7 @@ namespace ASC.CRM.Core.Dao
             {
 
                 sqlQuery = sqlQuery.OrderBy(x => x.ContactId)
-                                    .OrderBy(x => x.Title);
+                                    .ThenBy(x => x.Title);
 
                 //sqlQuery.OrderBy("tblDM.sort_order", true)
                 //    .OrderBy("tblDeal.contact_id", true)

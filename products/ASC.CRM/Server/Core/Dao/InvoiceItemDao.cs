@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
@@ -32,6 +33,8 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Classes;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,20 +44,24 @@ namespace ASC.CRM.Core.Dao
 {
     public class CachedInvoiceItemDao : InvoiceItemDao
     {
-        private readonly HttpRequestDictionary<InvoiceItem> _invoiceItemCache = new HttpRequestDictionary<InvoiceItem>("crm_invoice_item");
+        private readonly HttpRequestDictionary<InvoiceItem> _invoiceItemCache;
 
         public CachedInvoiceItemDao(DbContextManager<CRMDbContext> dbContextManager,
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 TenantUtil tenantUtil,
-                CRMSecurity cRMSecurity
+                CRMSecurity cRMSecurity,
+                IHttpContextAccessor httpContextAccessor,
+                IOptionsMonitor<ILog> logger
             ) : base(dbContextManager,
                  tenantManager,
-                 securityContext, 
+                 securityContext,
                  tenantUtil,
-                 cRMSecurity)
+                 cRMSecurity,
+                 logger)
 
         {
+            _invoiceItemCache = new HttpRequestDictionary<InvoiceItem>(httpContextAccessor?.HttpContext, "crm_invoice_item");
         }
 
         public override InvoiceItem GetByID(int invoiceItemID)
@@ -95,10 +102,12 @@ namespace ASC.CRM.Core.Dao
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 TenantUtil tenantUtil,
-                CRMSecurity cRMSecurity
+                CRMSecurity cRMSecurity,
+                IOptionsMonitor<ILog> logger
             ) : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
             TenantUtil = tenantUtil;
             CRMSecurity = cRMSecurity;
@@ -168,7 +177,7 @@ namespace ASC.CRM.Core.Dao
 
 
             var whereConditional = WhereConditional(new List<int>(), searchText, status, inventoryStock);
-                // WhereConditional(CRMSecurity.GetPrivateItems(typeof(Invoice)).ToList(), searchText);
+            // WhereConditional(CRMSecurity.GetPrivateItems(typeof(Invoice)).ToList(), searchText);
 
             if (withParams && whereConditional == null)
                 return new List<InvoiceItem>();
@@ -248,10 +257,10 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _log.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}", 
-                                                            TenantID, 
+                    _log.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                                                            TenantID,
                                                             SecurityContext.CurrentAccount.ID);
-                 
+
                     privateCount = 0;
                 }
 
@@ -283,7 +292,8 @@ namespace ASC.CRM.Core.Dao
 
             if (!CRMSecurity.IsAdmin) CRMSecurity.CreateSecurityException();
 
-            if (String.IsNullOrEmpty(invoiceItem.Description)) {
+            if (String.IsNullOrEmpty(invoiceItem.Description))
+            {
                 invoiceItem.Description = String.Empty;
             }
             if (String.IsNullOrEmpty(invoiceItem.StockKeepingUnit))
@@ -311,7 +321,7 @@ namespace ASC.CRM.Core.Dao
                               .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
                               .Identity(1, 0, true));
 
-                invoiceItem.CreateOn =  DateTime.UtcNow;
+                invoiceItem.CreateOn = DateTime.UtcNow;
                 invoiceItem.LastModifedOn = invoiceItem.CreateOn;
                 invoiceItem.CreateBy = SecurityContext.CurrentAccount.ID;
                 invoiceItem.LastModifedBy = invoiceItem.CreateBy;
@@ -354,10 +364,13 @@ namespace ASC.CRM.Core.Dao
 
             CRMSecurity.DemandDelete(invoiceItem);
 
+            CRMDbContext.Remove(new DbInvoiceItem
+            {
+                Id = invoiceItemID,
+                TenantId = TenantID
+            });
 
-            
-
-//            Db.ExecuteNonQuery(Delete("crm_invoice_item").Where("id", invoiceItemID));
+            CRMDbContext.SaveChanges();
 
             /*_cache.Remove(_invoiceItemCacheKey);
             _cache.Insert(_invoiceItemCacheKey, String.Empty);*/
@@ -370,6 +383,7 @@ namespace ASC.CRM.Core.Dao
             if (invoiceItemIDs == null || !invoiceItemIDs.Any()) return null;
 
             var items = GetInvoiceItems(invoiceItemIDs).Where(CRMSecurity.CanDelete).ToList();
+
             if (!items.Any()) return items;
 
             // Delete relative  keys
@@ -383,18 +397,18 @@ namespace ASC.CRM.Core.Dao
 
         private void DeleteBatchItemsExecute(List<InvoiceItem> items)
         {
-            var ids = items.Select(x => x.ID).ToArray();
+            CRMDbContext.RemoveRange(items.ConvertAll(x => new DbInvoiceItem
+                                        {
+                                            Id = x.ID,
+                                            TenantId = TenantID
+                                        }));
 
-            //using (var tx = db.BeginTransaction(true))
-            ///{
-                Db.ExecuteNonQuery(Delete("crm_invoice_item").Where(Exp.In("id", ids)));
-            //    tx.Commit();
-            //}
+            CRMDbContext.SaveChanges();
         }
 
         private InvoiceItem ToInvoiceItem(DbInvoiceItem dbInvoiceItem)
         {
-            return new InvoiceItem
+            var result = new InvoiceItem
             {
                 ID = dbInvoiceItem.Id,
                 Title = dbInvoiceItem.Title,
@@ -408,57 +422,42 @@ namespace ASC.CRM.Core.Dao
                 Currency = dbInvoiceItem.Currency,
                 CreateOn = TenantUtil.DateTimeFromUtc(dbInvoiceItem.CreateOn),
                 CreateBy = dbInvoiceItem.CreateBy,
-                LastModifedOn = TenantUtil.DateTimeFromUtc(dbInvoiceItem.LastModifedOn),
                 LastModifedBy = dbInvoiceItem.LastModifedBy
             };
 
+            if (result.LastModifedOn.HasValue)
+                result.LastModifedOn = TenantUtil.DateTimeFromUtc(dbInvoiceItem.LastModifedOn.Value);
 
+            return result;
 
-            //return new InvoiceItem
-            //    {
-            //        ID = Convert.ToInt32(row[0]),
-            //        Title = Convert.ToString(row[1]),
-            //        Description = Convert.ToString(row[2]),
-            //        StockKeepingUnit = Convert.ToString(row[3]),
-            //        Price = Convert.ToDecimal(row[4]),
-            //        StockQuantity = Convert.ToDecimal(row[5]),
-            //        TrackInventory = Convert.ToBoolean(row[6]),
-            //        InvoiceTax1ID = Convert.ToInt32(row[7]),
-            //        InvoiceTax2ID = Convert.ToInt32(row[8]),
-            //        Currency = Convert.ToString(row[9]),
-            //        CreateOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[10].ToString())),
-            //        CreateBy = ToGuid(row[11]),
-            //        LastModifedOn = TenantUtil.DateTimeFromUtc(DateTime.Parse(row[12].ToString())),
-            //        LastModifedBy = ToGuid(row[13])
-            //    };
         }
 
-        private SqlQuery GetInvoiceItemSqlQuery(Exp where)
-        {
-            var sqlQuery = Query("crm_invoice_item")
-                .Select(
-                    "id",
-                    "title",
-                    "description",
-                    "stock_keeping_unit",
-                    "price",
-                    "stock_quantity",
-                    "track_inventory",
-                    "invoice_tax1_id",
-                    "invoice_tax2_id",
-                    "currency",
-                    "create_on",
-                    "create_by",
-                    "last_modifed_on",
-                    "last_modifed_by");
+        //private SqlQuery GetInvoiceItemSqlQuery(Exp where)
+        //{
+        //    var sqlQuery = Query("crm_invoice_item")
+        //        .Select(
+        //            "id",
+        //            "title",
+        //            "description",
+        //            "stock_keeping_unit",
+        //            "price",
+        //            "stock_quantity",
+        //            "track_inventory",
+        //            "invoice_tax1_id",
+        //            "invoice_tax2_id",
+        //            "currency",
+        //            "create_on",
+        //            "create_by",
+        //            "last_modifed_on",
+        //            "last_modifed_by");
 
-            if (where != null)
-            {
-                sqlQuery.Where(where);
-            }
+        //    if (where != null)
+        //    {
+        //        sqlQuery.Where(where);
+        //    }
 
-            return sqlQuery;
-        }
+        //    return sqlQuery;
+        //}
 
         private Exp WhereConditional(
                                 ICollection<int> exceptIDs,
@@ -491,7 +490,7 @@ namespace ASC.CRM.Core.Dao
                     //    if (ids.Count == 0) return null;
                     //}
                     //else
-                    conditions.Add(BuildLike(new[] {"title", "description", "stock_keeping_unit" }, keywords));
+                    conditions.Add(BuildLike(new[] { "title", "description", "stock_keeping_unit" }, keywords));
             }
 
             if (exceptIDs.Count > 0)
@@ -500,7 +499,8 @@ namespace ASC.CRM.Core.Dao
             }
 
 
-            if (inventoryStock.HasValue) {
+            if (inventoryStock.HasValue)
+            {
                 conditions.Add(Exp.Eq("track_inventory", inventoryStock.Value));
             }
 

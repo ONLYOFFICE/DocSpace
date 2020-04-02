@@ -24,22 +24,21 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.VoipService;
 using ASC.VoipService.Dao;
 using ASC.Web.CRM.Core;
-using ASC.Web.CRM.Core.Enums;
-using ASC.Web.CRM.Resources;
 using Autofac;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -53,6 +52,7 @@ namespace ASC.Web.CRM.Classes
         {
             this.daoFactory = daoFactory;
         }
+
         public VoipCall SaveOrUpdateCall(VoipCall callHistory)
         {
             var dao = daoFactory.VoipDao;

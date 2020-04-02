@@ -38,6 +38,17 @@ namespace ASC.CRM.Core
 {
     public class FileSecurity : IFileSecurity
     {
+        public FileSecurity(FilesIntegration filesIntegration,
+                            CRMSecurity cRMSecurity)
+        {
+            FilesIntegration = filesIntegration;
+            CRMSecurity = cRMSecurity;
+        }
+
+        public FilesIntegration FilesIntegration { get; }
+
+        public CRMSecurity CRMSecurity { get; }
+
         public bool CanCreate(FileEntry entry, Guid userId)
         {
             return true;
@@ -85,18 +96,18 @@ namespace ASC.CRM.Core
                 if (reportFile != null)
                     return true;
 
-                using (var tagDao = FilesIntegration.GetTagDao())
-                {
-                    var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
-                        .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
-                        .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
-                        .ToList();
+                var tagDao = FilesIntegration.TagDao();
 
-                    if (!eventIds.Any()) return false;
+                var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
+                    .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
+                    .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
+                    .ToList();
 
-                    var eventItem = daoFactory.RelationshipEventDao.GetByID(eventIds.First());
-                    return CRMSecurity.CanAccessTo(eventItem, userId);
-                }
+                if (!eventIds.Any()) return false;
+
+                var eventItem = daoFactory.RelationshipEventDao.GetByID(eventIds.First());
+
+                return CRMSecurity.CanAccessTo(eventItem, userId);
             }
         }
 
@@ -108,14 +119,24 @@ namespace ASC.CRM.Core
 
     public class FileSecurityProvider : IFileSecurityProvider
     {
+        public FileSecurityProvider(FilesIntegration filesIntegration,
+                            CRMSecurity cRMSecurity)
+        {
+            FilesIntegration = filesIntegration;
+            CRMSecurity = cRMSecurity;
+        }
+
+        public FilesIntegration FilesIntegration { get; }
+        public CRMSecurity CRMSecurity { get; }
+
         public IFileSecurity GetFileSecurity(string data)
         {
-            return new FileSecurity();
+            return new FileSecurity(FilesIntegration, CRMSecurity);
         }
 
         public Dictionary<object, IFileSecurity> GetFileSecurity(Dictionary<string, string> data)
         {
-            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity());
+            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity(FilesIntegration, CRMSecurity));
         }
     }
 }

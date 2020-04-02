@@ -33,6 +33,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using ASC.Files.Core;
+using ASC.Files.Core.Security;
 using ASC.Web.Core;
 using ASC.Web.Core.Users;
 using ASC.Web.CRM.Classes;
@@ -50,32 +51,31 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.CRM.Core
 {
     public class CRMSecurity
-    {
-        #region Members
-
+    {       
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);
-
-        #endregion
-
-        #region Constructor
+        
         public CRMSecurity(SecurityContext securityContext,
                             AuthorizationManager authorizationManager,
                             UserManager userManager,
                             DisplayUserSettingsHelper displayUserSettingsHelper,
-                            DaoFactory daoFactory)
+                            DaoFactory daoFactory,
+                            WebItemSecurity webItemSecurity,
+                            PermissionContext permissionContext)
         {
             SecurityContext = securityContext;
             AuthorizationManager = authorizationManager;
             UserManager = userManager;
             DisplayUserSettingsHelper = displayUserSettingsHelper;
             DaoFactory = daoFactory;
+            WebItemSecurity = webItemSecurity;
+            PermissionContext = permissionContext;
         }
+        
+        public PermissionContext PermissionContext { get; }
 
-        #endregion
+        public WebItemSecurity WebItemSecurity { get; }
 
-        #region Property
-
-       public DaoFactory DaoFactory { get; }
+        public DaoFactory DaoFactory { get; }
 
         public SecurityContext SecurityContext { get; }
 
@@ -84,10 +84,7 @@ namespace ASC.CRM.Core
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public UserManager UserManager { get; }
-        #endregion
-
-        #region Check Permissions
-
+    
         private ISecurityObjectProvider GetCRMSecurityProvider()
         {
             return new CRMSecurityObjectProvider();
@@ -105,7 +102,7 @@ namespace ASC.CRM.Core
 
         public bool CanAccessTo(ISecurityObjectId entity, Guid userId)
         {
-            return IsAdministrator(userId) || SecurityContext.CheckPermissions(entity, GetCRMSecurityProvider(), _actionRead);
+            return IsAdministrator(userId) || PermissionContext.CheckPermissions(entity, GetCRMSecurityProvider(), _actionRead);
         }
 
         public void MakePublic(ISecurityObjectId entity)
@@ -118,7 +115,6 @@ namespace ASC.CRM.Core
             if (IsAdmin) return new List<int>();
 
             return GetPrivateItems(objectType, Guid.Empty, true);
-
         }
 
         private IEnumerable<int> GetPrivateItems(Type objectType, Guid userId, bool withoutUser)
@@ -230,10 +226,6 @@ namespace ASC.CRM.Core
             AuthorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity));
         }
 
-        #endregion
-
-        #region SetAccessTo
-
         public void SetAccessTo(File file)
         {
             if (IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID)
@@ -257,11 +249,6 @@ namespace ASC.CRM.Core
                 SetAccessTo((ISecurityObjectId)cases, subjectID);
             }
         }
-
-        #endregion
-
-        #region CanAccessTo
-
 
         public bool CanAccessTo(RelationshipEvent relationshipEvent)
         {
@@ -400,10 +387,6 @@ namespace ASC.CRM.Core
             return false;
         }
 
-        #endregion
-
-        #region CanEdit
-
         public bool CanEdit(File file)
         {
             if (!(IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID))
@@ -499,9 +482,6 @@ namespace ASC.CRM.Core
             return IsAdmin;
         }
 
-        #endregion
-
-        #region CanDelete
 
         public bool CanDelete(Contact contact)
         {
@@ -547,19 +527,10 @@ namespace ASC.CRM.Core
             return CanEdit(relationshipEvent);
         }
 
-        #endregion
-
-        #region IsPrivate
-
         public bool IsPrivate(Contact contact)
         {
             return contact.ShareType == ShareType.None;
         }
-
-        #endregion
-
-
-        #region DemandAccessTo
 
         public void DemandAccessTo(File file)
         {
@@ -600,10 +571,6 @@ namespace ASC.CRM.Core
         {
             if (!CanAccessTo(invoiceTax)) throw CreateSecurityException();
         }
-
-        #endregion
-
-        #region DemandEdit
 
         public void DemandEdit(File file)
         {
@@ -650,10 +617,6 @@ namespace ASC.CRM.Core
             if (!CanEdit(invoiceItem)) throw CreateSecurityException();
         }
 
-        #endregion
-
-        #region DemandDelete
-
         public void DemandDelete(File file)
         {
             if (!CanEdit(file)) throw CreateSecurityException();
@@ -694,10 +657,6 @@ namespace ASC.CRM.Core
         {
            if (!CanDelete(relationshipEvent)) throw CreateSecurityException();
         }
-
-        #endregion
-
-        #region DemandCreateOrUpdate
 
         public void DemandCreateOrUpdate(RelationshipEvent relationshipEvent)
         {
@@ -812,8 +771,6 @@ namespace ASC.CRM.Core
                 throw new ArgumentException();
             }
         }
-
-        #endregion
 
         public Exception CreateSecurityException()
         {

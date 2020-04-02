@@ -27,6 +27,7 @@
 #region Import
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
@@ -34,6 +35,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,10 +51,12 @@ namespace ASC.CRM.Core.Dao
         public CachedDealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
-                                IHttpContextAccessor httpContextAccessor)
+                                IHttpContextAccessor httpContextAccessor,
+                                IOptionsMonitor<ILog> logger) 
             : base(dbContextManager,
                   tenantManager,
-                  securityContext)
+                  securityContext,
+                  logger)
         {
 
             _dealMilestoneCache = new HttpRequestDictionary<DealMilestone>(httpContextAccessor?.HttpContext, "crm_deal_milestone");
@@ -110,10 +114,12 @@ namespace ASC.CRM.Core.Dao
 
         public DealMilestoneDao(DbContextManager<CRMDbContext> dbContextManager,
                                 TenantManager tenantManager,
-                                SecurityContext securityContext) :
+                                SecurityContext securityContext,
+                                IOptionsMonitor<ILog> logger) :
                                                                     base(dbContextManager,
                                                                          tenantManager,
-                                                                         securityContext)
+                                                                         securityContext,
+                                                                         logger)
         {
 
 

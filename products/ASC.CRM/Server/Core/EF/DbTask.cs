@@ -61,6 +61,6 @@ namespace ASC.CRM.Core.EF
         public int AlertValue { get; set; }
 
         [Column("exec_alert", TypeName = "int(10)")]
-        public bool ExecAlert { get; set; }
+        public int ExecAlert { get; set; }
     }
 }

@@ -23,12 +23,14 @@
  *
 */
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +42,13 @@ namespace ASC.CRM.Core.Dao
         public TaskTemplateContainerDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger
+            )
             : base(dbContextManager,
                   tenantManager,
-                  securityContext)
+                  securityContext,
+                  logger)
         {
 
         }
@@ -131,10 +136,12 @@ namespace ASC.CRM.Core.Dao
     {
         public TaskTemplateDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger)
             : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext, 
+                 logger)
         {
 
         }
