@@ -40,8 +40,6 @@ using ASC.Web.Core.Files;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Core.Search
 {
     public sealed class FilesWrapper : WrapperWithDoc
@@ -93,12 +91,12 @@ namespace ASC.Web.Files.Core.Search
             DaoFactory = daoFactory;
         }
 
-        public static FilesWrapper GetFilesWrapper(IServiceProvider serviceProvider, File d, List<int> parentFolders = null)
+        public static FilesWrapper GetFilesWrapper<T>(IServiceProvider serviceProvider, File<T> d, List<int> parentFolders = null)
         {
             var wrapper = serviceProvider.GetService<FilesWrapper>();
             var tenantManager = serviceProvider.GetService<TenantManager>();
 
-            wrapper.Id = (int)d.ID;
+            wrapper.Id = Convert.ToInt32(d.ID);
             wrapper.Title = d.Title;
             wrapper.Version = d.Version;
             wrapper.Encrypted = d.Encrypted;
@@ -120,8 +118,8 @@ namespace ASC.Web.Files.Core.Search
             if (Encrypted) return null;
             if (!FileUtility.CanIndex(Title)) return null;
 
-            var fileDao = DaoFactory.FileDao;
-            var file = ServiceProvider.GetService<File>();
+            var fileDao = DaoFactory.GetFileDao<int>();
+            var file = ServiceProvider.GetService<File<int>>();
             file.ID = Id;
             file.Title = Title;
             file.Version = Version;

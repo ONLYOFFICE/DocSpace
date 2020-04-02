@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using ASC.Common;
-using ASC.Data.Storage;
 using ASC.Files.Core;
 using ASC.Files.Core.Data;
 using ASC.Files.Core.Security;
@@ -52,22 +51,24 @@ namespace ASC.Web.Files.Api
             GlobalStore = globalStore;
         }
 
-        public object RegisterBunch(string module, string bunch, string data)
+        public T RegisterBunch<T>(string module, string bunch, string data)
         {
-            var folderDao = GetFolderDao();
+            var folderDao = DaoFactory.GetFolderDao<T>();
             return folderDao.GetFolderID(module, bunch, data, true);
         }
 
-        public IEnumerable<object> RegisterBunchFolders(string module, string bunch, IEnumerable<string> data)
+        public IEnumerable<T> RegisterBunchFolders<T>(string module, string bunch, IEnumerable<string> data)
         {
             if (data == null)
                 throw new ArgumentNullException("data");
 
             data = data.ToList();
             if (!data.Any())
-                return new List<object>();
+            {
+                return new List<T>();
+            }
 
-            var folderDao = GetFolderDao();
+            var folderDao = DaoFactory.GetFolderDao<T>();
             return folderDao.GetFolderIDs(module, bunch, data, true);
         }
 
@@ -87,27 +88,6 @@ namespace ASC.Web.Files.Api
                 providers[module + bunch] = securityProvider;
             }
         }
-
-        public IFileDao GetFileDao()
-        {
-            return DaoFactory.FileDao;
-        }
-
-        public IFolderDao GetFolderDao()
-        {
-            return DaoFactory.FolderDao;
-        }
-
-        public ITagDao TagDao()
-        {
-            return DaoFactory.TagDao;
-        }
-
-        public IDataStore GetStore()
-        {
-            return GlobalStore.GetStore();
-        }
-
 
         internal static IFileSecurity GetFileSecurity(string path)
         {

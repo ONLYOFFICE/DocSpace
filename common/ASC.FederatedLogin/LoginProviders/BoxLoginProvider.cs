@@ -37,14 +37,6 @@ namespace ASC.FederatedLogin.LoginProviders
 {
     public class BoxLoginProvider : Consumer, IOAuthProvider
     {
-        public BoxLoginProvider Instance
-        {
-            get
-            {
-                return ConsumerFactory.Get<BoxLoginProvider>();
-            }
-        }
-
         public string Scopes { get { return ""; } }
         public string CodeUrl { get { return "https://app.box.com/api/oauth2/authorize"; } }
         public string AccessTokenUrl { get { return "https://app.box.com/api/oauth2/token"; } }
@@ -68,11 +60,10 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
         }
     }

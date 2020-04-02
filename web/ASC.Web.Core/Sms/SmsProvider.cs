@@ -144,12 +144,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
             Log = options.CurrentValue;
         }
@@ -206,12 +205,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -343,12 +341,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
     }
@@ -363,12 +360,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
         }
     }
@@ -432,12 +428,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, props, additional)
         {
         }
 
@@ -481,12 +476,11 @@ namespace ASC.Web.Core.Sms
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             IOptionsMonitor<ILog> options,
             string name, int order, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, options, name, order, null, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, options, name, order, null, additional)
         {
         }
     }

@@ -72,13 +72,12 @@ namespace ASC.FederatedLogin.LoginProviders
         public GoogleLoginProvider(TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             Signature signature,
             InstanceCrypto instanceCrypto,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, signature, instanceCrypto, name, order, props, additional) { }
 
         public override LoginProfile GetLoginProfile(string accessToken)
         {

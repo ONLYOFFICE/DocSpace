@@ -41,11 +41,6 @@ namespace ASC.Api.Documents
     {
         /// <summary>
         /// </summary>
-        [DataMember]
-        public object Id { get; set; }
-
-        /// <summary>
-        /// </summary>
         [DataMember(IsRequired = true)]
         public string Title { get; set; }
 
@@ -115,7 +110,6 @@ namespace ASC.Api.Documents
         /// <param name="entry"></param>
         protected FileEntryWrapper(FileEntry entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
         {
-            Id = entry.ID;
             Title = entry.Title;
             Access = entry.Access;
             Shared = entry.Shared;
@@ -127,6 +121,36 @@ namespace ASC.Api.Documents
             ProviderItem = entry.ProviderEntry;
             ProviderKey = entry.ProviderKey;
             ProviderId = entry.ProviderId;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected FileEntryWrapper()
+        {
+
+        }
+    }
+
+    /// <summary>
+    /// </summary>
+    [DataContract(Namespace = "")]
+    public abstract class FileEntryWrapper<T> : FileEntryWrapper
+    {
+        /// <summary>
+        /// </summary>
+        [DataMember]
+        public T Id { get; set; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="entry"></param>
+        protected FileEntryWrapper(FileEntry<T> entry, EmployeeWraperHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+            : base(entry, employeeWraperHelper, apiDateTimeHelper)
+        {
+            Id = entry.ID;
         }
 
         /// <summary>
@@ -152,7 +176,7 @@ namespace ASC.Api.Documents
             EmployeeWraperHelper = employeeWraperHelper;
         }
 
-        protected internal T Get<T>(FileEntry entry) where T : FileEntryWrapper, new()
+        protected internal T Get<T, TId>(FileEntry<TId> entry) where T : FileEntryWrapper<TId>, new()
         {
             return new T
             {

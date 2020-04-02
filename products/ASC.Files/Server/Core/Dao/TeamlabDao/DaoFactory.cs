@@ -24,25 +24,45 @@
 */
 
 
+using System;
+
 using ASC.Common;
 using ASC.Files.Core.Security;
+using ASC.Files.Thirdparty;
+using ASC.Files.Thirdparty.ProviderDao;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Files.Core.Data
 {
     public class DaoFactory : IDaoFactory
     {
-        public IFileDao FileDao { get; }
-        public IFolderDao FolderDao { get; }
-        public ITagDao TagDao { get; }
-        public ISecurityDao SecurityDao { get; }
+        public IServiceProvider ServiceProvider { get; }
         public IProviderDao ProviderDao { get; }
 
-        public DaoFactory(IFileDao fileDao, IFolderDao folderDao, ITagDao tagDao, ISecurityDao securityDao)
+        public DaoFactory(IServiceProvider serviceProvider, IProviderDao providerDao)
         {
-            FileDao = fileDao;
-            FolderDao = folderDao;
-            TagDao = tagDao;
-            SecurityDao = securityDao;
+            ServiceProvider = serviceProvider;
+            ProviderDao = providerDao;
+        }
+
+        public IFileDao<T> GetFileDao<T>()
+        {
+            return ServiceProvider.GetService<IFileDao<T>>();
+        }
+
+        public IFolderDao<T> GetFolderDao<T>()
+        {
+            return ServiceProvider.GetService<IFolderDao<T>>();
+        }
+        public ITagDao<T> GetTagDao<T>()
+        {
+            return ServiceProvider.GetService<ITagDao<T>>();
+        }
+
+        public ISecurityDao<T> GetSecurityDao<T>()
+        {
+            return ServiceProvider.GetService<ISecurityDao<T>>();
         }
     }
 
@@ -56,6 +76,11 @@ namespace ASC.Files.Core.Data
                 .AddFolderDaoService()
                 .AddTagDaoService()
                 .AddSecurityDaoService()
+                .AddCachedProviderAccountDaoService()
+                .AddProviderTagDaoService()
+                .AddProviderSecurityDaoService()
+                .AddProviderFileDaoService()
+                .AddProviderFolderDaoService()
                 ;
         }
     }

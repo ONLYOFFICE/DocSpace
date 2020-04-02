@@ -45,13 +45,13 @@ namespace ASC.Web.Files.Core.Search
 
         protected override string Table { get { return "files_folder"; } }
 
-        public static FoldersWrapper GetFolderWrapper(IServiceProvider serviceProvider, Folder d)
+        public static FoldersWrapper GetFolderWrapper<T>(IServiceProvider serviceProvider, Folder<T> d)
         {
             var tenantManager = serviceProvider.GetService<TenantManager>();
 
             return new FoldersWrapper
             {
-                Id = (int)d.ID,
+                Id = Convert.ToInt32(d.ID),
                 Title = d.Title,
                 TenantId = tenantManager.GetCurrentTenant().TenantId
             };

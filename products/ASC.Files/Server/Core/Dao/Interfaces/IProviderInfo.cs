@@ -28,7 +28,7 @@ using System;
 
 namespace ASC.Files.Core
 {
-    public interface IProviderInfo
+    public interface IProviderInfo : IDisposable
     {
         int ID { get; set; }
         string ProviderKey { get; }
@@ -37,9 +37,10 @@ namespace ASC.Files.Core
         DateTime CreateOn { get; }
         string CustomerTitle { get; }
 
-        object RootFolderId { get; }
+        string RootFolderId { get; }
 
         bool CheckAccess();
         void InvalidateStorage();
+        void UpdateTitle(string newtitle);
     }
 }

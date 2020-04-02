@@ -45,22 +45,17 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         private string BitlyClientId
         {
-            get { return Instance["bitlyClientId"]; }
+            get { return this["bitlyClientId"]; }
         }
 
         private string BitlyClientSecret
         {
-            get { return Instance["bitlyClientSecret"]; }
+            get { return this["bitlyClientSecret"]; }
         }
 
         private string BitlyUrl
         {
-            get { return Instance["bitlyUrl"]; }
-        }
-
-        private BitlyLoginProvider Instance
-        {
-            get { return ConsumerFactory.Get<BitlyLoginProvider>(); }
+            get { return this["bitlyUrl"]; }
         }
 
         public BitlyLoginProvider() { }
@@ -69,11 +64,10 @@ namespace ASC.FederatedLogin.LoginProviders
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional = null)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
         }
 
