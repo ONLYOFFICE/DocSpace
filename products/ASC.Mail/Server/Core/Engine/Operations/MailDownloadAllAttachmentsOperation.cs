@@ -33,13 +33,11 @@ using System.Threading;
 using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Resources;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Data.Storage;
 using ASC.Web.Core.Files;
-using ASC.Web.Files.Classes;
 using ASC.Files.Core;
 using ASC.Data.Storage;
 
@@ -53,6 +51,7 @@ namespace ASC.Mail.Core.Engine.Operations
 {
     public class MailDownloadAllAttachmentsOperation : MailOperation
     {
+        public AttachmentEngine AttachmentEngine { get; }
         public int MessageId { get; set; }
 
         public ILog Log { get; set; }
@@ -65,14 +64,15 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailDownloadAllAttachmentsOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
-            DaoFactory daoFactory,
+            DaoFactory daoFactory, 
+            AttachmentEngine attachmentEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             int messageId)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            AttachmentEngine = attachmentEngine;
             MessageId = messageId;
         }
 
@@ -97,7 +97,7 @@ namespace ASC.Mail.Core.Engine.Operations
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.GetAttachments);
 
                 var attachments =
-                    EngineFactory.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
+                    AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
                         CurrentTenant.TenantId, CurrentUser.ID.ToString()));
 
                 if (!attachments.Any())

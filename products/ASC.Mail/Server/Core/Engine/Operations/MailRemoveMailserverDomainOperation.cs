@@ -47,17 +47,26 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RemoveDomain; }
         }
 
+        public MailboxEngine MailboxEngine { get; }
+        public CacheEngine CacheEngine { get; }
+        public IndexEngine IndexEngine { get; }
+
         public MailRemoveMailserverDomainOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MailboxEngine mailboxEngine,
+            CacheEngine cacheEngine,
+            IndexEngine indexEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             ServerDomainData domain)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            MailboxEngine = mailboxEngine;
+            CacheEngine = cacheEngine;
+            IndexEngine = indexEngine;
             _domain = domain;
 
             SetSource(_domain.Id.ToString());
@@ -107,7 +116,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     foreach (var serverMailboxAddress in serverMailboxAddresses)
                     {
                         var mailbox =
-                            EngineFactory.MailboxEngine.GetMailboxData(
+                            MailboxEngine.GetMailboxData(
                                 new ConcreteTenantServerMailboxExp(serverMailboxAddress.MailboxId, tenant, false));
 
                         if (mailbox == null)
@@ -115,7 +124,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                         mailboxes.Add(mailbox);
 
-                        EngineFactory.MailboxEngine.RemoveMailBox(mailbox, false);
+                        MailboxEngine.RemoveMailBox(mailbox, false);
                     }
 
                     DaoFactory.ServerAddressDao.Delete(serverAddresses.Select(a => a.Id).ToList());
@@ -133,13 +142,13 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?)MailOperationRemoveDomainProgress.ClearCache, "Clear accounts cache");
 
-                EngineFactory.CacheEngine.ClearAll();
+                CacheEngine.ClearAll();
 
                 SetProgress((int?)MailOperationRemoveDomainProgress.RemoveIndex, "Remove Elastic Search index by messages");
 
                 foreach (var mailbox in mailboxes)
                 {
-                    EngineFactory.IndexEngine.Remove(mailbox);
+                    IndexEngine.Remove(mailbox);
                 }
             }
             catch (Exception e)

@@ -47,11 +47,10 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
 
         public MailBoxSettingEngine(
-            DbContextManager<MailDbContext> dbContext,
             DaoFactory daoFactory,
             IOptionsMonitor<ILog> option)
         {
-            MailDb = dbContext.Get("mail");
+            MailDb = daoFactory.MailDb;
 
             DaoFactory = daoFactory;
 

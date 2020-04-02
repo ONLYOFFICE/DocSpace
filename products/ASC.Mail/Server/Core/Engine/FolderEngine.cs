@@ -79,13 +79,11 @@ namespace ASC.Mail.Core.Engine
         public FolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            Factory = engineFactory;
             DaoFactory = daoFactory;
 
             Log = option.Get("ASC.Mail.FolderEngine");

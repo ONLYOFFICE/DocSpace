@@ -55,8 +55,11 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public UserManager UserManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public ServerMailboxEngine MailboxEngine1 { get; }
+        public MailboxEngine MailboxEngine { get; }
+        public ServerMailboxEngine ServerMailboxEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
         public ApiHelper ApiHelper { get; }
         public StorageFactory StorageFactory { get; }
         private static MailGarbageEraserConfig Config { get; set; }
@@ -74,8 +77,10 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             UserManager userManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MailboxEngine mailboxEngine,
+            ServerMailboxEngine serverMailboxEngine,
+            UserFolderEngine userFolderEngine,
             ApiHelper apiHelper,
             StorageFactory storageFactory,
             MailGarbageEraserConfig config,
@@ -84,8 +89,10 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             UserManager = userManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            MailboxEngine = mailboxEngine;
+            ServerMailboxEngine = serverMailboxEngine;
+            UserFolderEngine = userFolderEngine;
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
             Config = config;
@@ -109,7 +116,7 @@ namespace ASC.Mail.Core.Engine
 
             var tasks = new List<Task>();
 
-            var mailboxIterator = new MailboxIterator(EngineFactory.MailboxEngine, isRemoved: null, log: Log);
+            var mailboxIterator = new MailboxIterator(MailboxEngine, isRemoved: null, log: Log);
 
             var mailbox = mailboxIterator.First();
 
@@ -161,7 +168,7 @@ namespace ASC.Mail.Core.Engine
 
             var user = userId.ToString();
 
-            RemoveUserFolders(tenant, user, Log);
+            RemoveUserFolders(Log);
 
             RemoveUserMailboxes(tenant, user, Log);
 
@@ -308,7 +315,7 @@ namespace ASC.Mail.Core.Engine
 
                     log.Info("SetMailboxRemoved()");
 
-                    EngineFactory.MailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
+                    MailboxEngine.RemoveMailBox(mailbox, needRecalculateFolders);
 
                     mailbox.IsRemoved = true;
                 }
@@ -537,7 +544,7 @@ namespace ASC.Mail.Core.Engine
 
             try
             {
-                EngineFactory.ServerMailboxEngine.RemoveMailbox(mailbox);
+                ServerMailboxEngine.RemoveMailbox(mailbox);
             }
             catch (Exception ex)
             {
@@ -546,16 +553,16 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        private void RemoveUserFolders(int tenant, string userId, ILog log)
+        private void RemoveUserFolders(ILog log)
         {
             try
             {
-                var folders = EngineFactory.UserFolderEngine
+                var folders = UserFolderEngine
                     .GetList(parentId: 0);
 
                 foreach (var folder in folders)
                 {
-                    EngineFactory.UserFolderEngine
+                    UserFolderEngine
                         .Delete(folder.Id);
                 }
 
@@ -568,7 +575,7 @@ namespace ASC.Mail.Core.Engine
 
         private void RemoveUserMailboxes(int tenant, string user, ILog log)
         {
-            var mailboxIterator = new MailboxIterator(EngineFactory.MailboxEngine, tenant, user);
+            var mailboxIterator = new MailboxIterator(MailboxEngine, tenant, user);
 
             var mailbox = mailboxIterator.First();
 

@@ -57,14 +57,14 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public ApiHelper ApiHelper { get; }
-        public EngineFactory EngineFactory { get; }
+        public AttachmentEngine AttachmentEngine { get; }
         public StorageFactory StorageFactory { get; }
 
         public DocumentsEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             ApiHelper apiHelper,
-            EngineFactory engineFactory,
+            AttachmentEngine attachmentEngine,
             StorageFactory storageFactory)
         {
             if (SecurityContext.IsAuthenticated) return;
@@ -74,7 +74,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             ApiHelper = apiHelper;
-            EngineFactory = engineFactory;
+            AttachmentEngine = attachmentEngine;
             StorageFactory = storageFactory;
         }
 
@@ -91,7 +91,7 @@ namespace ASC.Mail.Core.Engine
         public List<object> StoreAttachmentsToDocuments(int messageId, string folderId)
         {
             var attachments =
-                EngineFactory.AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
+                AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
 
             return
                 attachments.Select(attachment => StoreAttachmentToDocuments(attachment, folderId))
@@ -101,7 +101,7 @@ namespace ASC.Mail.Core.Engine
 
         public object StoreAttachmentToDocuments(int attachmentId, string folderId)
         {
-            var attachment = EngineFactory.AttachmentEngine.GetAttachment(
+            var attachment = AttachmentEngine.GetAttachment(
                 new ConcreteUserAttachmentExp(attachmentId, Tenant, User));
 
             if (attachment == null)

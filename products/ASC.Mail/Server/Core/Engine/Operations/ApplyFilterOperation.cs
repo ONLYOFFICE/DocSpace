@@ -38,8 +38,6 @@ namespace ASC.Mail.Core.Engine.Operations
 {
     public class ApplyFilterOperation : MailOperation
     {
-        public EngineFactory Factory { get; private set; }
-
         public MailSieveFilterData Filter { get; set; }
 
         public override MailOperationType OperationType
@@ -47,25 +45,28 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.ApplyFilter; }
         }
 
-        public DaoFactory DaoFactory { get; }
+        public FilterEngine FilterEngine { get; }
+        public MessageEngine MessageEngine { get; }
 
         public ApplyFilterOperation(
             TenantManager tenantManager, 
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            FilterEngine filterEngine,
+            MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor, 
             int filterId)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
-            var filter = Factory.FilterEngine.Get(filterId);
+            FilterEngine = filterEngine;
+            MessageEngine = messageEngine;
+            var filter = FilterEngine.Get(filterId);
 
             Filter = filter ?? throw new ArgumentException("Filter not found");
 
             SetSource(filter.Id.ToString());
-            DaoFactory = daoFactory;
         }
 
         protected override void Do()
@@ -83,7 +84,7 @@ namespace ASC.Mail.Core.Engine.Operations
                 const int size = 100;
                 var page = 0;
 
-                var messages = Factory.MessageEngine.GetFilteredMessages(Filter, page, size, out long total);
+                var messages = MessageEngine.GetFilteredMessages(Filter, page, size, out long total);
 
                 while (messages.Any())
                 {
@@ -93,7 +94,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                     foreach (var action in Filter.Actions)
                     {
-                        Factory.FilterEngine.ApplyAction(ids, action);
+                        FilterEngine.ApplyAction(ids, action);
                     }
 
                     if(messages.Count < size)
@@ -104,7 +105,7 @@ namespace ASC.Mail.Core.Engine.Operations
                         page++;
                     }
 
-                    messages = Factory.MessageEngine.GetFilteredMessages(Filter, page, size, out total);
+                    messages = MessageEngine.GetFilteredMessages(Filter, page, size, out total);
                 }
 
                 SetProgress((int?) MailOperationApplyFilterProgress.Finished);

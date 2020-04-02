@@ -49,14 +49,13 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailCheckMailserverDomainsDnsOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             string domainName, 
             ServerDns dns)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
             _domainName = domainName;
             _dns = dns;

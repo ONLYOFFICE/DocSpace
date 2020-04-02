@@ -70,7 +70,6 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public SignatureEngine(
-            DbContextManager<MailDbContext> dbContext,
             ApiContext apiContext,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
@@ -80,12 +79,13 @@ namespace ASC.Mail.Core.Engine
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
-            Log = option.Get("ASC.Mail.SignatureEngine");
 
-            MailDb = dbContext.Get("mail");
             DaoFactory = daoFactory;
+            MailDb = DaoFactory.MailDb;
             CacheEngine = cacheEngine;
             StorageManager = storageManager;
+
+            Log = option.Get("ASC.Mail.SignatureEngine");
         }
 
         public MailSignatureData GetSignature(int mailboxId)

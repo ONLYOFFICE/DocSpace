@@ -26,34 +26,25 @@
 
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Notify.Signalr;
 using ASC.Data.Storage;
-using ASC.Mail.Clients;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
-using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
-using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Models.Base;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 
 namespace ASC.Mail.Core.Engine
@@ -66,11 +57,32 @@ namespace ASC.Mail.Core.Engine
         public readonly bool _sslCertificatePermit;
         public const string EMPTY_HTML_BODY = "<div dir=\"ltr\"><br></div>"; // GMail style
 
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
-        public EngineFactory EngineFactory { get; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+
+        public string User
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
+        public AccountEngine AccountEngine { get; }
+        public MailboxEngine MailboxEngine { get; }
+        public MessageEngine MessageEngine { get; }
+        public AttachmentEngine AttachmentEngine { get; }
+        public ChainEngine ChainEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public IndexEngine IndexEngine { get; }
+        public FolderEngine FolderEngine { get; }
         public DaoFactory DaoFactory { get; }
         public StorageManager StorageManager { get; }
+        public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public CoreSettings CoreSettings { get; }
         public StorageFactory StorageFactory { get; }
@@ -131,10 +143,18 @@ namespace ASC.Mail.Core.Engine
 
         public DeliveryFailureMessageTranslates DaemonLabels { get; internal set; }
 
-        public ComposeEngineBase(int tenant, string user, 
-            EngineFactory engineFactory,
+        public ComposeEngineBase(
+            AccountEngine accountEngine,
+            MailboxEngine mailboxEngine,
+            MessageEngine messageEngine,
+            AttachmentEngine attachmentEngine,
+            ChainEngine chainEngine,
+            QuotaEngine quotaEngine,
+            IndexEngine indexEngine,
+            FolderEngine folderEngine,
             DaoFactory daoFactory,
             StorageManager storageManager,
+            SecurityContext securityContext,
             TenantManager tenantManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
@@ -142,11 +162,17 @@ namespace ASC.Mail.Core.Engine
             IOptionsMonitor<ILog> option,
             DeliveryFailureMessageTranslates daemonLabels = null)
         {
-            Tenant = tenant;
-            User = user;
-            EngineFactory = engineFactory;
+            AccountEngine = accountEngine;
+            MailboxEngine = mailboxEngine;
+            MessageEngine = messageEngine;
+            AttachmentEngine = attachmentEngine;
+            ChainEngine = chainEngine;
+            QuotaEngine = quotaEngine;
+            IndexEngine = indexEngine;
+            FolderEngine = folderEngine;
             DaoFactory = daoFactory;
             StorageManager = storageManager;
+            SecurityContext = securityContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             StorageFactory = storageFactory;
@@ -180,7 +206,7 @@ namespace ASC.Mail.Core.Engine
         {
             var mailAddress = new MailAddress(from);
 
-            var accounts = EngineFactory.AccountEngine.GetAccountInfoList().ToAccountData();
+            var accounts = AccountEngine.GetAccountInfoList().ToAccountData();
 
             var account = accounts.FirstOrDefault(a => a.Email.ToLower().Equals(mailAddress.Address));
 
@@ -190,7 +216,7 @@ namespace ASC.Mail.Core.Engine
             if (account.IsGroup)
                 throw new InvalidOperationException("Saving emails from a group address is forbidden");
 
-            var mbox = EngineFactory.MailboxEngine.GetMailboxData(
+            var mbox = MailboxEngine.GetMailboxData(
                 new СoncreteUserMailboxExp(account.MailboxId, Tenant, User));
 
             if (mbox == null)
@@ -202,7 +228,7 @@ namespace ASC.Mail.Core.Engine
 
             if (id > 0)
             {
-                var message = EngineFactory.MessageEngine.GetMessage(id, new MailMessageData.Options
+                var message = MessageEngine.GetMessage(id, new MailMessageData.Options
                 {
                     LoadImages = false,
                     LoadBody = true,
@@ -260,24 +286,24 @@ namespace ASC.Mail.Core.Engine
             {
                 message.Attachments.ForEach(
                     attachment =>
-                        EngineFactory.AttachmentEngine.StoreAttachmentCopy(compose.Mailbox.TenantId, compose.Mailbox.UserId,
+                        AttachmentEngine.StoreAttachmentCopy(compose.Mailbox.TenantId, compose.Mailbox.UserId,
                             attachment, compose.StreamId));
             }
 
-            EngineFactory.MessageEngine.StoreMailBody(compose.Mailbox, message, Log);
+            MessageEngine.StoreMailBody(compose.Mailbox, message, Log);
 
             long usedQuota;
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                compose.Id = EngineFactory.MessageEngine.MailSave(compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
+                compose.Id = MessageEngine.MailSave(compose.Mailbox, message, compose.Id, message.Folder, message.Folder, null,
                     string.Empty, string.Empty, false, out usedQuota);
 
                 message.Id = compose.Id;
 
                 if (compose.AccountChanged)
                 {
-                    EngineFactory.ChainEngine.UpdateChain(message.ChainId, message.Folder, null, compose.PreviousMailboxId,
+                    ChainEngine.UpdateChain(message.ChainId, message.Folder, null, compose.PreviousMailboxId,
                         compose.Mailbox.TenantId, compose.Mailbox.UserId);
                 }
 
@@ -336,7 +362,7 @@ namespace ASC.Mail.Core.Engine
                     }
                 }
 
-                EngineFactory.ChainEngine
+                ChainEngine
                     .UpdateChain(message.ChainId, message.Folder, null, 
                     compose.Mailbox.MailBoxId, compose.Mailbox.TenantId, compose.Mailbox.UserId);
 
@@ -352,16 +378,16 @@ namespace ASC.Mail.Core.Engine
 
             if (usedQuota > 0)
             {
-                EngineFactory.QuotaEngine.QuotaUsedDelete(usedQuota);
+                QuotaEngine.QuotaUsedDelete(usedQuota);
             }
 
             if (addIndex)
             {
-                EngineFactory.IndexEngine.Add(message.ToMailWrapper(compose.Mailbox.TenantId, new Guid(compose.Mailbox.UserId)));
+                IndexEngine.Add(message.ToMailWrapper(compose.Mailbox.TenantId, new Guid(compose.Mailbox.UserId)));
             }
             else
             {
-                EngineFactory.IndexEngine.Update(new List<MailWrapper>
+                IndexEngine.Update(new List<MailWrapper>
                 {
                     message.ToMailWrapper(compose.Mailbox.TenantId,
                         new Guid(compose.Mailbox.UserId))
@@ -444,7 +470,7 @@ namespace ASC.Mail.Core.Engine
                     };
 
                     var savedAttachment =
-                        EngineFactory.AttachmentEngine.GetAttachment(
+                        AttachmentEngine.GetAttachment(
                             new ConcreteContentAttachmentExp(compose.Id, attach.contentId));
 
                     var savedAttachmentId = savedAttachment == null ? 0 : savedAttachment.fileId;
@@ -464,7 +490,7 @@ namespace ASC.Mail.Core.Engine
 
                     if (attachmentWasSaved)
                     {
-                        attach = EngineFactory.AttachmentEngine.GetAttachment(
+                        attach = AttachmentEngine.GetAttachment(
                             new ConcreteUserAttachmentExp(savedAttachmentId, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
                         var path = MailStoragePathCombiner.GerStoredFilePath(attach);

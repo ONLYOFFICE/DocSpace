@@ -42,18 +42,21 @@ namespace ASC.Mail.Core.Engine
     public class EmailInEngine
     {
         public ILog Log { get; private set; }
-        public EngineFactory EngineFactory { get; }
+        public AccountEngine AccountEngine { get; }
+        public AlertEngine AlertEngine { get; }
         public StorageFactory StorageFactory { get; }
         public ApiHelper ApiHelper { get; }
 
         public EmailInEngine(
-            EngineFactory engineFactory,
+            AccountEngine accountEngine,
+            AlertEngine alertEngine,
             StorageFactory storageFactory,
             ApiHelper apiHelper,
             IOptionsMonitor<ILog> option
             )
         {
-            EngineFactory = engineFactory;
+            AccountEngine = accountEngine;
+            AlertEngine = alertEngine;
             StorageFactory = storageFactory;
             ApiHelper = apiHelper;
 
@@ -124,11 +127,11 @@ namespace ASC.Mail.Core.Engine
                         "EmailInEngine->UploadToDocuments() EMailIN folder '{0}' is unreachable. Try to unlink EMailIN...",
                         mailbox.EMailInFolder);
 
-                    EngineFactory.AccountEngine.SetAccountEmailInFolder(mailbox.MailBoxId, null);
+                    AccountEngine.SetAccountEmailInFolder(mailbox.MailBoxId, null);
 
                     mailbox.EMailInFolder = null;
 
-                    EngineFactory.AlertEngine.CreateUploadToDocumentsFailureAlert(mailbox.TenantId, mailbox.UserId,
+                    AlertEngine.CreateUploadToDocumentsFailureAlert(mailbox.TenantId, mailbox.UserId,
                         mailbox.MailBoxId,
                         ex.StatusCode == HttpStatusCode.NotFound
                             ? UploadToDocumentsErrorType

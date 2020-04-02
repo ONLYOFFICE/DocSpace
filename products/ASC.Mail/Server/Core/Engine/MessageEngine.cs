@@ -87,7 +87,6 @@ namespace ASC.Mail.Core.Engine
         public EngineFactory Factory { get; private set; }
 
         public MessageEngine(
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -112,8 +111,6 @@ namespace ASC.Mail.Core.Engine
             Storage = StorageFactory.GetMailStorage(Tenant);
 
             Log = option.Get("ASC.Mail.MessageEngine");
-
-            Factory = engineFactory;
         }
 
         public MailMessageData GetMessage(int messageId, MailMessageData.Options options)

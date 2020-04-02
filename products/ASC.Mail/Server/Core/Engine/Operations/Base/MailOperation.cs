@@ -75,7 +75,6 @@ namespace ASC.Mail.Core.Engine.Operations.Base
         public abstract MailOperationType OperationType { get; }
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
@@ -83,7 +82,6 @@ namespace ASC.Mail.Core.Engine.Operations.Base
         protected MailOperation(
             TenantManager tenantManager, 
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             CoreSettings coreSettings,
             StorageManager storageManager,
@@ -103,7 +101,6 @@ namespace ASC.Mail.Core.Engine.Operations.Base
             TaskInfo = new DistributedTask();
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             CoreSettings = coreSettings;
             StorageManager = storageManager;

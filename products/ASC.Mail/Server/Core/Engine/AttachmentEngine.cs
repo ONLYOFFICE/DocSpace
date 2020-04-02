@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using ASC.Common;
@@ -52,7 +51,10 @@ namespace ASC.Mail.Core.Engine
 {
     public class AttachmentEngine
     {
-        public EngineFactory EngineFactory { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public ChainEngine ChainEngine { get; }
+        public IndexEngine IndexEngine { get; }
+        public MessageEngine MessageEngine { get; }
         public DaoFactory DaoFactory { get; }
         public StorageFactory StorageFactory { get; }
         public StorageManager StorageManager { get; }
@@ -62,7 +64,10 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; }
 
         public AttachmentEngine(
-            EngineFactory engineFactory,
+            QuotaEngine quotaEngine,
+            ChainEngine chainEngine,
+            IndexEngine indexEngine,
+            MessageEngine messageEngine,
             DaoFactory daoFactory,
             StorageFactory storageFactory,
             StorageManager storageManager,
@@ -71,7 +76,10 @@ namespace ASC.Mail.Core.Engine
             FileConverter fileConverter,
             IOptionsMonitor<ILog> option)
         {
-            EngineFactory = engineFactory;
+            QuotaEngine = quotaEngine;
+            ChainEngine = chainEngine;
+            IndexEngine = indexEngine;
+            MessageEngine = messageEngine;
             DaoFactory = daoFactory;
             StorageFactory = storageFactory;
             StorageManager = storageManager;
@@ -224,7 +232,7 @@ namespace ASC.Mail.Core.Engine
                     "Total size of all files exceeds limit!");
 
             var fileNumber =
-                EngineFactory.AttachmentEngine.GetAttachmentNextFileNumber(new ConcreteMessageAttachmentsExp(messageId, tenant,
+                GetAttachmentNextFileNumber(new ConcreteMessageAttachmentsExp(messageId, tenant,
                     user));
 
             var attachment = new MailAttachmentData
@@ -241,7 +249,7 @@ namespace ASC.Mail.Core.Engine
                 mailboxId = message.MailboxId
             };
 
-            EngineFactory.QuotaEngine.QuotaUsedAdd(contentLength);
+            QuotaEngine.QuotaUsedAdd(contentLength);
 
             try
             {
@@ -249,7 +257,7 @@ namespace ASC.Mail.Core.Engine
             }
             catch
             {
-                EngineFactory.QuotaEngine.QuotaUsedDelete(contentLength);
+                QuotaEngine.QuotaUsedDelete(contentLength);
                 throw;
             }
 
@@ -271,7 +279,7 @@ namespace ASC.Mail.Core.Engine
                         "AttachCount",
                         attachCount);
 
-                    EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
+                    ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
 
                     tx.Commit();
                 }
@@ -283,7 +291,7 @@ namespace ASC.Mail.Core.Engine
                         HasAttachments = true
                     };
 
-                    EngineFactory.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+                    IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
                 }
             }
 
@@ -305,7 +313,7 @@ namespace ASC.Mail.Core.Engine
             if (contentLength == 0)
                 throw new AttachmentsException(AttachmentsException.Types.EmptyFile, "Empty files not supported.");
 
-            var message = EngineFactory.MessageEngine.GetMessage(messageId, new MailMessageData.Options());
+            var message = MessageEngine.GetMessage(messageId, new MailMessageData.Options());
 
             if (message.Folder != FolderType.Draft && message.Folder != FolderType.Templates && message.Folder != FolderType.Sending)
                 throw new AttachmentsException(AttachmentsException.Types.BadParams, "Message is not a draft or templates.");
@@ -388,7 +396,7 @@ namespace ASC.Mail.Core.Engine
                     "AttachCount",
                     attachCount);
 
-                EngineFactory.ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
+                ChainEngine.UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
 
                 tx.Commit();
             }
@@ -400,13 +408,13 @@ namespace ASC.Mail.Core.Engine
                     HasAttachments = false
                 };
 
-                EngineFactory.IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+                IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
             }
 
             if (usedQuota <= 0)
                 return;
 
-            EngineFactory.QuotaEngine.QuotaUsedDelete(usedQuota);
+            QuotaEngine.QuotaUsedDelete(usedQuota);
         }
 
         public void StoreAttachments(MailBoxData mailBoxData, List<MailAttachmentData> attachments, string streamId)
@@ -436,7 +444,7 @@ namespace ASC.Mail.Core.Engine
                     StorageManager.StoreAttachmentWithoutQuota(attachment);
                 }
 
-                EngineFactory.QuotaEngine.QuotaUsedAdd(quotaAddSize);
+                QuotaEngine.QuotaUsedAdd(quotaAddSize);
             }
             catch
             {

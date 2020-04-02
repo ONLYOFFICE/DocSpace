@@ -32,17 +32,14 @@ using System.Linq;
 using System.Net.Mail;
 using System.Security;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Common.Web;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.Core.Users;
 using ASC.Mail.Authorization;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
 using ASC.Mail.Models;
 using ASC.Mail.Server.Core.Entities;
 using ASC.Mail.Server.Utils;
@@ -75,8 +72,12 @@ namespace ASC.Mail.Core.Engine
         }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public AccountEngine AccountEngine { get; }
+        public CacheEngine CacheEngine { get; }
+        public ServerDomainEngine ServerDomainEngine { get; }
+        public MailboxEngine MailboxEngine { get; }
+        public OperationEngine OperationEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public SettingsManager SettingsManager { get; }
@@ -99,8 +100,13 @@ namespace ASC.Mail.Core.Engine
         public ServerMailboxEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            AccountEngine accountEngine,
+            CacheEngine cacheEngine,
+            ServerDomainEngine serverDomainEngine,
+            MailboxEngine mailboxEngine,
+            OperationEngine operationEngine,
+
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
@@ -113,8 +119,12 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            AccountEngine = accountEngine;
+            CacheEngine = cacheEngine;
+            ServerDomainEngine = serverDomainEngine;
+            MailboxEngine = mailboxEngine;
+            OperationEngine = operationEngine;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             SettingsManager = settingsManager;
@@ -277,7 +287,7 @@ namespace ASC.Mail.Core.Engine
 
             if (Defines.ServerDomainMailboxPerUserLimit > 0)
             {
-                var accounts = EngineFactory.AccountEngine.GetAccountInfoList();
+                var accounts = AccountEngine.GetAccountInfoList();
 
                 var countDomainMailboxes =
                     accounts.Count(a =>
@@ -385,7 +395,7 @@ namespace ASC.Mail.Core.Engine
 
                 tx.Commit();
 
-                EngineFactory.CacheEngine.Clear(userId);
+                CacheEngine.Clear(userId);
 
                 mailboxData = ToMailboxData(mailbox, ToServerDomainAddressData(address, login),
                     new List<ServerDomainAddressData>());
@@ -402,7 +412,7 @@ namespace ASC.Mail.Core.Engine
                 throw new Exception("Common domain is not available");
             }
 
-            var domain = EngineFactory.ServerDomainEngine.GetCommonDomain();
+            var domain = ServerDomainEngine.GetCommonDomain();
 
             if (domain == null)
                 throw new SecurityException("Domain not found.");
@@ -452,7 +462,7 @@ namespace ASC.Mail.Core.Engine
 
             DaoFactory.MailboxDao.SaveMailBox(serverMailbox);
 
-            EngineFactory.CacheEngine.Clear(serverMailbox.User);
+            CacheEngine.Clear(serverMailbox.User);
 
             var address = ToServerDomainAddressData(serverMailboxAddress, serverDomain);
 
@@ -548,7 +558,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            EngineFactory.CacheEngine.Clear(mailbox.User);
+            CacheEngine.Clear(mailbox.User);
 
             return new ServerDomainAddressData
             {
@@ -599,7 +609,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            EngineFactory.CacheEngine.Clear(mailbox.User);
+            CacheEngine.Clear(mailbox.User);
         }
 
         public void RemoveMailbox(MailBoxData mailBox)
@@ -675,7 +685,7 @@ namespace ASC.Mail.Core.Engine
                     serverEngine.RemoveAlias(string.Format("{0}@{1}", mailboxAddress.AddressName, serverDomain.Name));
                 }
 
-                EngineFactory.MailboxEngine.RemoveMailBox(mailBox, false);
+                MailboxEngine.RemoveMailBox(mailBox, false);
 
                 serverEngine.RemoveMailbox(string.Format("{0}@{1}", serverMailboxAddress.AddressName,
                     serverDomain.Name));
@@ -689,7 +699,7 @@ namespace ASC.Mail.Core.Engine
             if (id < 0)
                 throw new ArgumentException(@"Invalid server mailbox id.", "id");
 
-            var mailbox = EngineFactory.MailboxEngine.GetMailboxData(new ConcreteTenantServerMailboxExp(id, Tenant, false));
+            var mailbox = MailboxEngine.GetMailboxData(new ConcreteTenantServerMailboxExp(id, Tenant, false));
 
             if (mailbox == null)
                 throw new ItemNotFoundException("Mailbox not found.");
@@ -707,7 +717,7 @@ namespace ASC.Mail.Core.Engine
                     "Removing of a shared mailbox is allowed only for the current account if user is not admin.");
             }
 
-            return EngineFactory.OperationEngine.RemoveServerMailbox(mailbox);
+            return OperationEngine.RemoveServerMailbox(mailbox);
         }
 
         public void ChangePassword(int mailboxId, string password)

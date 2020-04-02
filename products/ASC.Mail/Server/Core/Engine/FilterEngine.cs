@@ -64,23 +64,29 @@ namespace ASC.Mail.Core.Engine
             }
         }
         public ILog Log { get; private set; }
-
-        public EngineFactory Factory { get; private set; }
+        public MessageEngine MessageEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
+        public TagEngine TagEngine { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
 
         public FilterEngine(
+            MessageEngine messageEngine,
+            UserFolderEngine userFolderEngine,
+            TagEngine tagEngine,
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             IOptionsMonitor<ILog> option)
         {
+            MessageEngine = messageEngine;
+            UserFolderEngine = userFolderEngine;
+            TagEngine = tagEngine;
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
+
             DaoFactory = daoFactory;
 
             Log = option.Get("ASC.Mail.FilterEngine");
@@ -448,7 +454,8 @@ namespace ASC.Mail.Core.Engine
                         Log.DebugFormat("Disable filter with id={0}", filter.Id);
 
                         filter.Enabled = false;
-                        Factory.FilterEngine.Update(filter);
+
+                        Update(filter);
 
                         break;
                     }
@@ -466,10 +473,10 @@ namespace ASC.Mail.Core.Engine
             switch (action.Action)
             {
                 case ActionType.DeleteForever:
-                    Factory.MessageEngine.SetRemoved(ids);
+                    MessageEngine.SetRemoved(ids);
                     break;
                 case ActionType.MarkAsRead:
-                    Factory.MessageEngine.SetUnread(ids, false);
+                    MessageEngine.SetUnread(ids, false);
                     break;
                 case ActionType.MoveTo:
                     var dataJson = JObject.Parse(action.Data);
@@ -488,7 +495,7 @@ namespace ASC.Mail.Core.Engine
                     {
                         var userFolderId = uint.Parse(dataJson["userFolderId"].ToString());
 
-                        var userFolder = Factory.UserFolderEngine.Get(userFolderId);
+                        var userFolder = UserFolderEngine.Get(userFolderId);
                         if (userFolder == null)
                         {
                             throw new NotFoundFilterDataException(string.Format("User folder with id={0} not found",
@@ -502,23 +509,23 @@ namespace ASC.Mail.Core.Engine
                         folderId = (uint) folderType;
                     }
 
-                    Factory.MessageEngine.SetFolder(ids, folderType,
+                    MessageEngine.SetFolder(ids, folderType,
                         folderType == FolderType.UserFolder ? folderId : (uint?) null);
                     break;
                 case ActionType.MarkTag:
                     var tagId = Convert.ToInt32(action.Data);
 
-                    var tag = Factory.TagEngine.GetTag(tagId);
+                    var tag = TagEngine.GetTag(tagId);
 
                     if (tag == null)
                     {
                         throw new NotFoundFilterDataException(string.Format("Tag with id={0} not found", tagId));
                     }
 
-                    Factory.TagEngine.SetMessagesTag(ids, tagId);
+                    TagEngine.SetMessagesTag(ids, tagId);
                     break;
                 case ActionType.MarkAsImportant:
-                    Factory.MessageEngine.SetImportant(ids, true);
+                    MessageEngine.SetImportant(ids, true);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

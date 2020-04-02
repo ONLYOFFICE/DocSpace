@@ -38,7 +38,6 @@ using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
-using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,8 +49,13 @@ namespace ASC.Mail.Core.Engine
     {
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public MessageEngine MessageEngine { get; }
+        public FolderEngine FolderEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
+        public IndexEngine IndexEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public OperationEngine OperationEngine { get; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -80,8 +84,13 @@ namespace ASC.Mail.Core.Engine
         public ChainEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MessageEngine messageEngine,
+            FolderEngine folderEngine,
+            UserFolderEngine userFolderEngine,
+            IndexEngine indexEngine,
+            QuotaEngine quotaEngine,
+            OperationEngine operationEngine,
             FactoryIndexer<MailWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
@@ -89,8 +98,13 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            MessageEngine = messageEngine;
+            FolderEngine = folderEngine;
+            UserFolderEngine = userFolderEngine;
+            IndexEngine = indexEngine;
+            QuotaEngine = quotaEngine;
+            OperationEngine = operationEngine;
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
@@ -187,7 +201,7 @@ namespace ASC.Mail.Core.Engine
 
             var messages =
                 ids.ConvertAll<MailMessageData>(id => {
-                    return EngineFactory.MessageEngine.GetMessage(id,
+                    return MessageEngine.GetMessage(id,
                         new MailMessageData.Options
                         {
                             LoadImages = false,
@@ -244,7 +258,7 @@ namespace ASC.Mail.Core.Engine
 
                     var unreadMessDiff = keyPair.Value != 0 ? keyPair.Value * (-1) : (int?)null;
 
-                    EngineFactory.FolderEngine.ChangeFolderCounters(folderType, userFolder,
+                    FolderEngine.ChangeFolderCounters(folderType, userFolder,
                             unreadMessDiff, unreadConvDiff: -1);
 
                     DaoFactory.ChainDao.SetFieldValue(
@@ -264,7 +278,7 @@ namespace ASC.Mail.Core.Engine
                         .Distinct()
                         .ToList();
 
-                    EngineFactory.UserFolderEngine.RecalculateCounters(DaoFactory, userFoldersIds);
+                    UserFolderEngine.RecalculateCounters(DaoFactory, userFoldersIds);
                 }
 
                 tx.Commit();
@@ -275,7 +289,7 @@ namespace ASC.Mail.Core.Engine
                 Unread = false
             };
 
-            EngineFactory.IndexEngine.Update(data, s => s.In(m => m.Id, ids2Update.ToArray()), wrapper => wrapper.Unread);
+            IndexEngine.Update(data, s => s.In(m => m.Id, ids2Update.ToArray()), wrapper => wrapper.Unread);
 
             return messages;
         }
@@ -339,13 +353,13 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                EngineFactory.MessageEngine.SetFolder(DaoFactory, listObjects, folder, userFolderId);
+                MessageEngine.SetFolder(DaoFactory, listObjects, folder, userFolderId);
                 tx.Commit();
             }
 
 
             if (folder == FolderType.Inbox || folder == FolderType.Sent || folder == FolderType.Spam)
-                EngineFactory.OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
+                OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
 
             var t = ServiceProvider.GetService<MailWrapper>();
             if (!FactoryIndexerHelper.Support(t))
@@ -368,9 +382,9 @@ namespace ASC.Mail.Core.Engine
             Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> exp =
                 s => s.In(m => m.Id, listObjects.Select(o => o.Id).ToArray());
 
-            EngineFactory.IndexEngine.Update(data, exp, w => w.Folder);
+            IndexEngine.Update(data, exp, w => w.Folder);
 
-            EngineFactory.IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders);
+            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders);
         }
 
         public void RestoreConversations(int tenant, string user, List<int> ids)
@@ -387,7 +401,7 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                EngineFactory.MessageEngine.Restore(DaoFactory, listObjects);
+                MessageEngine.Restore(DaoFactory, listObjects);
                 tx.Commit();
             }
 
@@ -398,7 +412,7 @@ namespace ASC.Mail.Core.Engine
                         m.FolderRestore == FolderType.Spam).Select(m => m.Id).ToList();
 
             if (filterApplyIds.Any())
-                EngineFactory.OperationEngine.ApplyFilters(filterApplyIds);
+                OperationEngine.ApplyFilters(filterApplyIds);
 
             var t = ServiceProvider.GetService<MailWrapper>();
             if (!FactoryIndexerHelper.Support(t))
@@ -410,7 +424,7 @@ namespace ASC.Mail.Core.Engine
                 Folder = (byte)m.FolderRestore
             });
 
-            EngineFactory.IndexEngine.Update(mails, wrapper => wrapper.Folder);
+            IndexEngine.Update(mails, wrapper => wrapper.Folder);
         }
 
         public void DeleteConversations(int tenant, string user, List<int> ids)
@@ -429,17 +443,17 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                usedQuota = EngineFactory.MessageEngine.SetRemoved(DaoFactory, listObjects);
+                usedQuota = MessageEngine.SetRemoved(DaoFactory, listObjects);
                 tx.Commit();
             }
 
-            EngineFactory.QuotaEngine.QuotaUsedDelete(usedQuota);
+            QuotaEngine.QuotaUsedDelete(usedQuota);
 
             var t = ServiceProvider.GetService<MailWrapper>();
             if (!FactoryIndexerHelper.Support(t))
                 return;
 
-            EngineFactory.IndexEngine.Remove(listObjects.Select(info => info.Id).ToList(), Tenant, new Guid(User));
+            IndexEngine.Remove(listObjects.Select(info => info.Id).ToList(), Tenant, new Guid(User));
         }
 
         private const string MM_ALIAS = "mm";
@@ -501,7 +515,7 @@ namespace ASC.Mail.Core.Engine
                 Importance = important
             };
 
-            EngineFactory.IndexEngine.Update(data, s => s.In(m => m.Id, mailInfos.Select(o => o.Id).ToArray()),
+            IndexEngine.Update(data, s => s.In(m => m.Id, mailInfos.Select(o => o.Id).ToArray()),
                     wrapper => wrapper.Importance);
         }
 
@@ -627,7 +641,7 @@ namespace ASC.Mail.Core.Engine
 
                 var unreadConvDiff = chainUnreadFlag ? -1 : (int?) null;
 
-                EngineFactory.FolderEngine.ChangeFolderCounters(folder, userFolderId,
+                FolderEngine.ChangeFolderCounters(folder, userFolderId,
                     unreadConvDiff: unreadConvDiff, totalConvDiff: -1);
             }
             else
@@ -683,7 +697,7 @@ namespace ASC.Mail.Core.Engine
                     }
                 }
 
-                EngineFactory.FolderEngine.ChangeFolderCounters(folder, userFolderId,
+                FolderEngine.ChangeFolderCounters(folder, userFolderId,
                     unreadConvDiff: unreadConvDiff, totalConvDiff: totalConvDiff);
             }
         }
@@ -782,7 +796,7 @@ namespace ASC.Mail.Core.Engine
                 chunkIndex++;
 
                 var listMessages = DaoFactory.MailInfoDao.GetMailInfoList(exp, true)
-                    .ConvertAll(m => EngineFactory.MessageEngine.ToMailMessage(m, tenantInfo, utcNow));
+                    .ConvertAll(m => MessageEngine.ToMailMessage(m, tenantInfo, utcNow));
 
                 if (0 == listMessages.Count)
                     break;

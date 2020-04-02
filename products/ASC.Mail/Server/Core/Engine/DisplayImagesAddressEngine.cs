@@ -30,8 +30,6 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 

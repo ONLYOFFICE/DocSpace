@@ -67,7 +67,6 @@ namespace ASC.Mail.Core.Engine
         public IndexEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
@@ -75,7 +74,6 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;

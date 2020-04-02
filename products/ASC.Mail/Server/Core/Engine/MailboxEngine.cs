@@ -79,26 +79,38 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public DaoFactory DaoFactory { get; }
-        public EngineFactory EngineFactory { get; }
+        public AlertEngine AlertEngine { get; }
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public CacheEngine CacheEngine { get; }
+        public OperationEngine OperationEngine { get; }
+        public IndexEngine IndexEngine { get; }
 
-        public MailboxEngine(DbContextManager<MailDbContext> dbContext,
+        public MailboxEngine(
             ApiContext apiContext,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option,
             DaoFactory daoFactory,
-            EngineFactory engineFactory,
-            MailBoxSettingEngine mailBoxSettingEngine)
+            AlertEngine alertEngine,
+            MailBoxSettingEngine mailBoxSettingEngine,
+            QuotaEngine quotaEngine,
+            CacheEngine cacheEngine,
+            OperationEngine operationEngine,
+            IndexEngine indexEngine,
+            IOptionsMonitor<ILog> option)
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AccountEngine");
 
-            MailDb = dbContext.Get("mail");
+            MailDb = daoFactory.MailDb;
 
             DaoFactory = daoFactory;
-            EngineFactory = engineFactory;
+            AlertEngine = alertEngine;
             MailBoxSettingEngine = mailBoxSettingEngine;
+            QuotaEngine = quotaEngine;
+            CacheEngine = cacheEngine;
+            OperationEngine = operationEngine;
+            IndexEngine = indexEngine;
         }
 
         public MailBoxData GetMailboxData(IMailboxExp exp)
@@ -521,12 +533,12 @@ namespace ASC.Mail.Core.Engine
                 {
                     disableMailbox = true;
 
-                    EngineFactory.AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
+                    AlertEngine.CreateAuthErrorDisableAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
                 else if (difference > tasksConfig.AuthErrorWarningTimeout)
                 {
-                    EngineFactory.AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
+                    AlertEngine.CreateAuthErrorWarningAlert(account.TenantId, account.UserId,
                         account.MailBoxId);
                 }
             }
@@ -535,11 +547,11 @@ namespace ASC.Mail.Core.Engine
             {
                 if (account.QuotaError)
                 {
-                    EngineFactory.AlertEngine.CreateQuotaErrorWarningAlert(account.TenantId, account.UserId);
+                    AlertEngine.CreateQuotaErrorWarningAlert(account.TenantId, account.UserId);
                 }
                 else
                 {
-                    EngineFactory.AlertEngine.DeleteAlert(MailAlertTypes.QuotaError);
+                    AlertEngine.DeleteAlert(MailAlertTypes.QuotaError);
                 }
             }
 
@@ -642,26 +654,26 @@ namespace ASC.Mail.Core.Engine
 
                 freedQuotaSize = RemoveMailBoxInfo(mailbox);
 
-                EngineFactory.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+                QuotaEngine.QuotaUsedDelete(freedQuotaSize);
 
                 if (!needRecalculateFolders)
                     return;
 
-                EngineFactory.OperationEngine.RecalculateFolders();
+                OperationEngine.RecalculateFolders();
 
                 tx.Commit();
             }
 
-            EngineFactory.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+            QuotaEngine.QuotaUsedDelete(freedQuotaSize);
 
-            EngineFactory.CacheEngine.Clear(mailbox.UserId);
+            CacheEngine.Clear(mailbox.UserId);
 
-            EngineFactory.IndexEngine.Remove(mailbox);
+            IndexEngine.Remove(mailbox);
 
             if (!needRecalculateFolders)
                 return;
 
-            EngineFactory.OperationEngine.RecalculateFolders();
+            OperationEngine.RecalculateFolders();
         }
 
         /// <summary>

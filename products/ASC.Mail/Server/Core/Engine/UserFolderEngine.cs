@@ -49,8 +49,9 @@ namespace ASC.Mail.Core.Engine
 
         public ILog Log { get; private set; }
 
-        public EngineFactory Factory { get; private set; }
         public DaoFactory DaoFactory { get; }
+        public MessageEngine MessageEngine { get; }
+        public IndexEngine IndexEngine { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
         public SecurityContext SecurityContext { get; }
@@ -59,16 +60,18 @@ namespace ASC.Mail.Core.Engine
         public UserFolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MessageEngine messageEngine,
+            IndexEngine indexEngine,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            Factory = engineFactory;
             DaoFactory = daoFactory;
+            MessageEngine = messageEngine;
+            IndexEngine = indexEngine;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Mail.UserFolderEngine");
@@ -302,7 +305,7 @@ namespace ASC.Mail.Core.Engine
                     affectedIds.AddRange(listMailIds);
 
                     //Move mails to trash
-                    Factory.MessageEngine.SetFolder(DaoFactory, listMailIds, FolderType.Trash);
+                    MessageEngine.SetFolder(DaoFactory, listMailIds, FolderType.Trash);
 
                     //Remove listMailIds from 'mail_user_folder_x_mail'
                     DaoFactory.UserFolderXMailDao.Remove(listMailIds);
@@ -322,7 +325,7 @@ namespace ASC.Mail.Core.Engine
                 Folder = (byte)FolderType.Trash
             };
 
-            Factory.IndexEngine.Update(data, s => s.In(m => m.Id, affectedIds.ToArray()), wrapper => wrapper.Unread);
+            IndexEngine.Update(data, s => s.In(m => m.Id, affectedIds.ToArray()), wrapper => wrapper.Unread);
         }
 
         public void SetFolderMessages(uint userFolderId, List<int> ids)

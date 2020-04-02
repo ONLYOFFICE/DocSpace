@@ -40,9 +40,10 @@ namespace ASC.Mail.Core.Engine.Operations
 {
     public class ApplyFiltersOperation : MailOperation
     {
+        public FilterEngine FilterEngine { get; }
+        public MessageEngine MessageEngine { get; }
+        public MailboxEngine MailboxEngine { get; }
         public List<int> Ids { get; private set; }
-
-        public EngineFactory Factory { get; private set; }
 
         public override MailOperationType OperationType
         {
@@ -52,14 +53,19 @@ namespace ASC.Mail.Core.Engine.Operations
         public ApplyFiltersOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            FilterEngine filterEngine,
+            MessageEngine messageEngine,
+            MailboxEngine mailboxEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor, 
             List<int> ids)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            FilterEngine = filterEngine;
+            MessageEngine = messageEngine;
+            MailboxEngine = mailboxEngine;
             Ids = ids;
 
             if (ids == null || !ids.Any())
@@ -78,7 +84,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?)MailOperationApplyFilterProgress.Filtering, "Filtering");
 
-                var filters = Factory.FilterEngine.GetList();
+                var filters = FilterEngine.GetList();
 
                 if (!filters.Any())
                 {
@@ -102,7 +108,7 @@ namespace ASC.Mail.Core.Engine.Operations
                     {
                         SetSource(progressState);
 
-                        var message = Factory.MessageEngine.GetMessage(id, new MailMessageData.Options());
+                        var message = MessageEngine.GetMessage(id, new MailMessageData.Options());
 
                         if (message.Folder != FolderType.Spam && message.Folder != FolderType.Sent && message.Folder != FolderType.Inbox)
                             continue;
@@ -112,7 +118,7 @@ namespace ASC.Mail.Core.Engine.Operations
                         if (mailbox == null)
                         {
                             mailbox =
-                                Factory.MailboxEngine.GetMailboxData(new ConcreteSimpleMailboxExp(message.MailboxId));
+                                MailboxEngine.GetMailboxData(new ConcreteSimpleMailboxExp(message.MailboxId));
 
                             if (mailbox == null)
                                 continue;
@@ -120,7 +126,7 @@ namespace ASC.Mail.Core.Engine.Operations
                             mailboxes.Add(mailbox);
                         }
 
-                        Factory.FilterEngine.ApplyFilters(message, mailbox, new MailFolder(message.Folder, ""), filters);
+                        FilterEngine.ApplyFilters(message, mailbox, new MailFolder(message.Folder, ""), filters);
 
                     }
                     catch (Exception ex)

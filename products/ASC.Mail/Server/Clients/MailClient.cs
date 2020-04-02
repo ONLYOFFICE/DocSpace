@@ -48,13 +48,14 @@ using AuthenticationException = MailKit.Security.AuthenticationException;
 using MailFolder = ASC.Mail.Models.MailFolder;
 using Pop3Client = MailKit.Net.Pop3.Pop3Client;
 using SmtpClient = MailKit.Net.Smtp.SmtpClient;
+using ASC.Mail.Core.Engine;
 
 namespace ASC.Mail.Clients
 {
     public class MailClient : IDisposable
     {
         public MailBoxData Account { get; private set; }
-        public EngineFactory EngineFactory { get; }
+        public FolderEngine FolderEngine { get; }
         public ILog Log { get; set; }
 
         public ImapClient Imap { get; private set; }
@@ -123,7 +124,7 @@ namespace ASC.Mail.Clients
 
         public MailClient(MailBoxData mailbox, 
             CancellationToken cancelToken,
-            EngineFactory engineFactory,
+            FolderEngine folderEngine,
             int tcpTimeout = 30000,
             bool certificatePermit = false, string protocolLogPath = "",
             ILog log = null, bool skipSmtp = false, bool enableDsn = false)
@@ -134,7 +135,7 @@ namespace ASC.Mail.Clients
                 : new NullProtocolLogger();
 
             Account = mailbox;
-            EngineFactory = engineFactory;
+            FolderEngine = folderEngine;
             Log = log ?? new NullLog();
 
             StopTokenSource = new CancellationTokenSource();
@@ -938,7 +939,7 @@ namespace ASC.Mail.Clients
             if (sendFolder != null)
                 return sendFolder;
 
-            var specialDomainFolders = EngineFactory.FolderEngine.GetSpecialDomainFolders();
+            var specialDomainFolders = FolderEngine.GetSpecialDomainFolders();
 
             if (!specialDomainFolders.Any() || !specialDomainFolders.ContainsKey(Account.Server))
                 return null;

@@ -26,9 +26,7 @@
 
 using System;
 using ASC.Common.Logging;
-using ASC.Common.Security.Authentication;
 using ASC.Core;
-using ASC.Core.Tenants;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Data.Storage;
 using Microsoft.Extensions.Options;
@@ -42,15 +40,18 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RecalculateFolders; }
         }
 
+        public FolderEngine FolderEngine { get; }
+
         public MailRecalculateFoldersOperation(TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            FolderEngine folderEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            FolderEngine = folderEngine;
         }
 
         protected override void Do()
@@ -63,7 +64,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SecurityContext.AuthenticateMe(CurrentUser);
 
-                EngineFactory.FolderEngine.RecalculateFolders(progress =>
+                FolderEngine.RecalculateFolders(progress =>
                 {
                     SetProgress((int?)progress);
                 });

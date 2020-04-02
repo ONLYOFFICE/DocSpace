@@ -28,6 +28,7 @@ using System;
 using System.Linq;
 using ASC.Common.Utils;
 using ASC.Mail.Core;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
 
@@ -128,7 +129,7 @@ namespace ASC.Mail.Extensions
             return true;
         }
 
-        public static bool UpdateRecords(this ServerDns dns, EngineFactory engineFactory, string domain, bool force = false)
+        public static bool UpdateRecords(this ServerDns dns, OperationEngine operationEngine, string domain, bool force = false)
         {
             if (string.IsNullOrEmpty(domain) || dns == null)
                 return false;
@@ -161,7 +162,7 @@ namespace ASC.Mail.Extensions
                     dns.DkimDateChecked.HasValue && dns.DkimDateChecked.Value.AddSeconds(dns.DkimTtl) >= utcNow)
                     return hasChanges;
 
-                engineFactory.OperationEngine.CheckDomainDns(domain, dns);
+                operationEngine.CheckDomainDns(domain, dns);
             }
 
             return hasChanges;

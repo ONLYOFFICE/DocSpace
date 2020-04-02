@@ -64,7 +64,7 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public DaoFactory DaoFactory { get; }
-        public EngineFactory EngineFactory { get; }
+        public ServerEngine ServerEngine { get; }
         public ApiHelper ApiHelper { get; }
         public StorageManager StorageManager { get; }
         public ILog Log { get; }
@@ -75,7 +75,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            EngineFactory engineFactory,
+            ServerEngine serverEngine,
             ApiHelper apiHelper,
             StorageManager storageManager,
             IOptionsMonitor<ILog> option)
@@ -83,7 +83,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
-            EngineFactory = engineFactory;
+            ServerEngine = serverEngine;
             ApiHelper = apiHelper;
             StorageManager = storageManager;
             Log = option.Get("ASC.Mail.AutoreplyEngine");
@@ -337,7 +337,7 @@ namespace ASC.Mail.Core.Engine
 
             if (account.Groups == null)
             {
-                account.Groups = EngineFactory.ServerEngine.GetGroups(account.MailBoxId);
+                account.Groups = ServerEngine.GetGroups(account.MailBoxId);
             }
 
             foreach (var group in account.Groups)
@@ -380,7 +380,7 @@ namespace ASC.Mail.Core.Engine
 
             if (account.Aliases == null)
             {
-                account.Aliases = EngineFactory.ServerEngine.GetAliases(account.MailBoxId);
+                account.Aliases = ServerEngine.GetAliases(account.MailBoxId);
             }
 
             var result = (from address in list
@@ -402,7 +402,7 @@ namespace ASC.Mail.Core.Engine
 
             if (account.Aliases == null)
             {
-                account.Aliases = EngineFactory.ServerEngine.GetAliases(account.MailBoxId);
+                account.Aliases = ServerEngine.GetAliases(account.MailBoxId);
             }
 
             return

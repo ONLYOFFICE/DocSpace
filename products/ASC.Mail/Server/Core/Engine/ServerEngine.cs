@@ -66,8 +66,8 @@ namespace ASC.Mail.Core.Engine
 
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public ServerDomainEngine ServerDomainEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public SettingsManager SettingsManager { get; }
@@ -87,8 +87,8 @@ namespace ASC.Mail.Core.Engine
         public ServerEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            ServerDomainEngine serverDomainEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
@@ -98,8 +98,8 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            ServerDomainEngine = serverDomainEngine;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             SettingsManager = settingsManager;
@@ -522,7 +522,7 @@ namespace ASC.Mail.Core.Engine
 
             var server = GetMailServer();
 
-            var domains = EngineFactory.ServerDomainEngine.GetDomains();
+            var domains = ServerDomainEngine.GetDomains();
 
             var mailboxes = DaoFactory.MailboxDao.GetMailBoxes(new TenantServerMailboxesExp(Tenant));
 

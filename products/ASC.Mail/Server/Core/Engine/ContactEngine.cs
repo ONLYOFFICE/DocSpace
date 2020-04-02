@@ -65,8 +65,9 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; private set; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public IndexEngine IndexEngine { get; }
+        public AccountEngine AccountEngine { get; }
         public ApiHelper ApiHelper { get; }
         public FactoryIndexer<MailContactWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
@@ -76,8 +77,9 @@ namespace ASC.Mail.Core.Engine
         public ContactEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            IndexEngine indexEngine,
+            AccountEngine accountEngine,
             ApiHelper apiHelper,
             FactoryIndexer<MailContactWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
@@ -87,8 +89,9 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            IndexEngine = indexEngine;
+            AccountEngine = accountEngine;
             ApiHelper = apiHelper;
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
@@ -146,7 +149,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("IndexEngine->SaveContactCard()");
 
-            EngineFactory.IndexEngine.Add(contactCard.ToMailContactWrapper());
+            IndexEngine.Add(contactCard.ToMailContactWrapper());
 
             return contactCard;
         }
@@ -210,7 +213,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("IndexEngine->UpdateContactCard()");
 
-            EngineFactory.IndexEngine.Update(new List<MailContactWrapper> { contactCard.ToMailContactWrapper() });
+            IndexEngine.Update(new List<MailContactWrapper> { contactCard.ToMailContactWrapper() });
 
             return contactCard;
         }
@@ -231,7 +234,7 @@ namespace ASC.Mail.Core.Engine
 
             Log.Debug("IndexEngine->RemoveContacts()");
 
-            EngineFactory.IndexEngine.RemoveContacts(ids, Tenant, new Guid(User));
+            IndexEngine.RemoveContacts(ids, Tenant, new Guid(User));
         }
 
         /// <summary>
@@ -264,7 +267,7 @@ namespace ASC.Mail.Core.Engine
                     var exp = new FullFilterContactsExp(tenant, userName, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
                         term, infoType: ContactInfoType.Email, orderAsc: true, limit: maxCountPerSystem);
 
-                    var contactCards = EngineFactory.ContactEngine.GetContactCards(exp);
+                    var contactCards = GetContactCards(exp);
 
                     return (from contactCard in contactCards
                         from contactItem in contactCard.ContactItems
@@ -280,7 +283,7 @@ namespace ASC.Mail.Core.Engine
                     TenantManager.SetCurrentTenant(tenant);
                     SecurityContext.AuthenticateMe(userGuid);
 
-                    return EngineFactory.AccountEngine.SearchAccountEmails(term);
+                    return AccountEngine.SearchAccountEmails(term);
                 }),
 
                 Task.Run(() =>

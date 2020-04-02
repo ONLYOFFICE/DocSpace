@@ -69,8 +69,8 @@ namespace ASC.Mail.Core.Engine
 
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public CacheEngine CacheEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -80,8 +80,8 @@ namespace ASC.Mail.Core.Engine
         public ServerMailgroupEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            CacheEngine cacheEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
             IServiceProvider serviceProvider,
@@ -89,8 +89,9 @@ namespace ASC.Mail.Core.Engine
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
+
             DaoFactory = daoFactory;
+            CacheEngine = cacheEngine;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             ServiceProvider = serviceProvider;
@@ -223,7 +224,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            EngineFactory.CacheEngine.ClearAll();
+            CacheEngine.ClearAll();
 
             return ToServerDomainGroupData(group.Id, groupAddressData, newGroupMemberDataList);
         }
@@ -303,7 +304,7 @@ namespace ASC.Mail.Core.Engine
 
             var groupAddressData = ServerMailboxEngine.ToServerDomainAddressData(groupAddress, groupEmail);
 
-            EngineFactory.CacheEngine.ClearAll();
+            CacheEngine.ClearAll();
 
             return ToServerDomainGroupData(group.Id, groupAddressData, newGroupMemberDataList);
         }
@@ -373,7 +374,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            EngineFactory.CacheEngine.ClearAll();
+            CacheEngine.ClearAll();
         }
 
         public void RemoveMailGroup(int id)
@@ -406,7 +407,7 @@ namespace ASC.Mail.Core.Engine
                 tx.Commit();
             }
 
-            EngineFactory.CacheEngine.ClearAll();
+            CacheEngine.ClearAll();
         }
 
         public static ServerDomainGroupData ToServerDomainGroupData(int groupId, ServerDomainAddressData address, List<ServerDomainAddressData> addresses)

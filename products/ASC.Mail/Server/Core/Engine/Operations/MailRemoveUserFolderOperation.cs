@@ -36,26 +36,26 @@ namespace ASC.Mail.Core.Engine.Operations
     public class MailRemoveUserFolderOperation : MailOperation
     {
         private readonly uint _userFolderId;
-        private readonly EngineFactory _engineFactory;
-
-        public ILog Log { get; set; }
 
         public override MailOperationType OperationType
         {
             get { return MailOperationType.RemoveUserFolder; }
         }
 
+        public UserFolderEngine UserFolderEngine { get; }
+
         public MailRemoveUserFolderOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            UserFolderEngine userFolderEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             uint userFolderId)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            UserFolderEngine = userFolderEngine;
             _userFolderId = userFolderId;
 
             SetSource(userFolderId.ToString());
@@ -73,7 +73,7 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?) MailOperationRemoveUserFolderProgress.DeleteFolders, "Delete folders");
 
-                _engineFactory.UserFolderEngine.Delete(_userFolderId);
+                UserFolderEngine.Delete(_userFolderId);
 
                 SetProgress((int?) MailOperationRemoveUserFolderProgress.Finished);
             }

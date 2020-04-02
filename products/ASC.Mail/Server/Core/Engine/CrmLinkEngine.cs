@@ -54,24 +54,24 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public ApiHelper ApiHelper { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public MessageEngine MessageEngine { get; }
         public StorageFactory StorageFactory { get; }
 
         public CrmLinkEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             ApiHelper apiHelper,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MessageEngine messageEngine,
             StorageFactory storageFactory,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             ApiHelper = apiHelper;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            MessageEngine = messageEngine;
             StorageFactory = storageFactory;
             Log = option.Get("ASC.Mail.CrmLinkEngine");
         }
@@ -123,7 +123,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var chainedMessage in chainedMessages)
             {
-                var message = EngineFactory.MessageEngine.GetMessage(chainedMessage.Id,
+                var message = MessageEngine.GetMessage(chainedMessage.Id,
                     new MailMessageData.Options
                     {
                         LoadImages = true,
@@ -186,7 +186,7 @@ namespace ASC.Mail.Core.Engine
             if (crmContactIds == null)
                 throw new ArgumentException(@"Invalid contact ids list", "crmContactIds");
 
-            var messageItem = EngineFactory.MessageEngine.GetMessage(messageId, new MailMessageData.Options
+            var messageItem = MessageEngine.GetMessage(messageId, new MailMessageData.Options
             {
                 LoadImages = true,
                 LoadBody = true,

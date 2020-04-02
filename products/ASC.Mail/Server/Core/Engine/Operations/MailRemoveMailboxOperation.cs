@@ -45,17 +45,32 @@ namespace ASC.Mail.Core.Engine.Operations
             get { return MailOperationType.RemoveMailbox; }
         }
 
+        public MailboxEngine MailboxEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public FolderEngine FolderEngine { get; }
+        public CacheEngine CacheEngine { get; }
+        public IndexEngine IndexEngine { get; }
+
         public MailRemoveMailboxOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
+            MailboxEngine mailboxEngine,
+            QuotaEngine quotaEngine,
+            FolderEngine folderEngine,
+            CacheEngine cacheEngine,
+            IndexEngine indexEngine,
             DaoFactory daoFactory,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             MailBoxData mailBoxData)
-            : base(tenantManager, securityContext, engineFactory, daoFactory, coreSettings, storageManager, optionsMonitor)
+            : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
+            MailboxEngine = mailboxEngine;
+            QuotaEngine = quotaEngine;
+            FolderEngine = folderEngine;
+            CacheEngine = cacheEngine;
+            IndexEngine = indexEngine;
             _mailBoxData = mailBoxData;
 
             SetSource(_mailBoxData.MailBoxId.ToString());
@@ -73,23 +88,23 @@ namespace ASC.Mail.Core.Engine.Operations
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RemoveFromDb, "Remove mailbox from Db");
 
-                var freedQuotaSize = EngineFactory.MailboxEngine.RemoveMailBoxInfo(_mailBoxData);
+                var freedQuotaSize = MailboxEngine.RemoveMailBoxInfo(_mailBoxData);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.FreeQuota, "Decrease newly freed quota space");
 
-                EngineFactory.QuotaEngine.QuotaUsedDelete(freedQuotaSize);
+                QuotaEngine.QuotaUsedDelete(freedQuotaSize);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RecalculateFolder, "Recalculate folders counters");
 
-                EngineFactory.FolderEngine.RecalculateFolders();
+                FolderEngine.RecalculateFolders();
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.ClearCache, "Clear accounts cache");
 
-                EngineFactory.CacheEngine.Clear(_mailBoxData.UserId);
+                CacheEngine.Clear(_mailBoxData.UserId);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.RemoveIndex, "Remove Elastic Search index by messages");
 
-                EngineFactory.IndexEngine.Remove(_mailBoxData);
+                IndexEngine.Remove(_mailBoxData);
 
                 SetProgress((int?)MailOperationRemoveMailboxProgress.Finished);
             }

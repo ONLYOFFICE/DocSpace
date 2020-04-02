@@ -58,8 +58,17 @@ namespace ASC.Mail.Core.Engine
         public DistributedTaskCacheNotify DistributedTaskCacheNotify { get; }
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public MailboxEngine MailboxEngine { get; }
+        public QuotaEngine QuotaEngine { get; }
+        public FolderEngine FolderEngine { get; }
+        public CacheEngine CacheEngine { get; }
+        public IndexEngine IndexEngine { get; }
+        public AttachmentEngine AttachmentEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
+        public FilterEngine FilterEngine { get; }
+        public MessageEngine MessageEngine { get; }
+        public ServerMailboxEngine ServerMailboxEngine { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
         public IOptionsMonitor<ILog> Option { get; }
@@ -68,8 +77,17 @@ namespace ASC.Mail.Core.Engine
             DistributedTaskCacheNotify distributedTaskCacheNotify,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            MailboxEngine mailboxEngine,
+            QuotaEngine quotaEngine,
+            FolderEngine folderEngine,
+            CacheEngine cacheEngine,
+            IndexEngine indexEngine,
+            AttachmentEngine attachmentEngine,
+            UserFolderEngine userFolderEngine,
+            FilterEngine filterEngine,
+            MessageEngine messageEngine,
+            ServerMailboxEngine serverMailboxEngine, 
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> option)
@@ -80,8 +98,17 @@ namespace ASC.Mail.Core.Engine
             DistributedTaskCacheNotify = distributedTaskCacheNotify;
             TenantManager = tenantManager;
             SecurityContext = securityContext;
-            EngineFactory = engineFactory;
             DaoFactory = daoFactory;
+            MailboxEngine = mailboxEngine;
+            QuotaEngine = quotaEngine;
+            FolderEngine = folderEngine;
+            CacheEngine = cacheEngine;
+            IndexEngine = indexEngine;
+            AttachmentEngine = attachmentEngine;
+            UserFolderEngine = userFolderEngine;
+            FilterEngine = filterEngine;
+            MessageEngine = messageEngine;
+            ServerMailboxEngine = serverMailboxEngine;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
             Option = option;
@@ -124,7 +151,11 @@ namespace ASC.Mail.Core.Engine
             var op = new MailRemoveMailboxOperation(
                 TenantManager, 
                 SecurityContext, 
-                EngineFactory, 
+                MailboxEngine, 
+                QuotaEngine, 
+                FolderEngine, 
+                CacheEngine, 
+                IndexEngine,
                 DaoFactory, 
                 CoreSettings, 
                 StorageManager, 
@@ -171,8 +202,8 @@ namespace ASC.Mail.Core.Engine
             var op = new MailDownloadAllAttachmentsOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
                 DaoFactory,
+                AttachmentEngine,
                 CoreSettings,
                 StorageManager,
                 Option,
@@ -205,8 +236,8 @@ namespace ASC.Mail.Core.Engine
             var op = new MailRecalculateFoldersOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
                 DaoFactory,
+                FolderEngine,
                 CoreSettings,
                 StorageManager,
                 Option);
@@ -241,7 +272,6 @@ namespace ASC.Mail.Core.Engine
             var op = new MailCheckMailserverDomainsDnsOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
                 DaoFactory,
                 CoreSettings,
                 StorageManager,
@@ -289,8 +319,8 @@ namespace ASC.Mail.Core.Engine
             var op = new MailRemoveUserFolderOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
                 DaoFactory,
+                UserFolderEngine,
                 CoreSettings,
                 StorageManager,
                 Option,
@@ -336,8 +366,9 @@ namespace ASC.Mail.Core.Engine
             var op = new ApplyFilterOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
-                DaoFactory,
+                DaoFactory, 
+                FilterEngine, 
+                MessageEngine,
                 CoreSettings,
                 StorageManager,
                 Option,
@@ -355,8 +386,10 @@ namespace ASC.Mail.Core.Engine
             var op = new ApplyFiltersOperation(
                 TenantManager,
                 SecurityContext,
-                EngineFactory,
                 DaoFactory,
+                FilterEngine, 
+                MessageEngine, 
+                MailboxEngine,
                 CoreSettings,
                 StorageManager,
                 Option,
@@ -400,7 +433,7 @@ namespace ASC.Mail.Core.Engine
 
             var op = new MailRemoveMailserverDomainOperation(
                 TenantManager, SecurityContext, 
-                EngineFactory, DaoFactory, 
+                DaoFactory, MailboxEngine, CacheEngine, IndexEngine,
                 CoreSettings, StorageManager, 
                 Option, domain);
 
@@ -442,7 +475,7 @@ namespace ASC.Mail.Core.Engine
 
             var op = new MailRemoveMailserverMailboxOperation(
                 TenantManager, SecurityContext,
-                EngineFactory, DaoFactory,
+                DaoFactory, ServerMailboxEngine, this, CacheEngine, IndexEngine,
                 CoreSettings, StorageManager,
                 Option, mailbox);
 

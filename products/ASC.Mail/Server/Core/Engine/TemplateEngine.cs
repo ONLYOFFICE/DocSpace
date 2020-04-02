@@ -45,8 +45,17 @@ namespace ASC.Mail.Core.Engine
 {
     public class TemplateEngine : ComposeEngineBase
     {
-        public TemplateEngine(int tenant, string user, EngineFactory engineFactory,
+        public TemplateEngine(
+            AccountEngine accountEngine,
+            MailboxEngine mailboxEngine,
+            MessageEngine messageEngine,
+            AttachmentEngine attachmentEngine,
+            ChainEngine chainEngine,
+            QuotaEngine quotaEngine,
+            IndexEngine indexEngine,
+            FolderEngine folderEngine,
             DaoFactory daoFactory,
+            SecurityContext securityContext,
             StorageManager storageManager,
             TenantManager tenantManager,
             CoreSettings coreSettings,
@@ -54,10 +63,18 @@ namespace ASC.Mail.Core.Engine
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IOptionsMonitor<ILog> option, 
             DeliveryFailureMessageTranslates daemonLabels = null)
-            : base(tenant, user,
-            engineFactory,
+            : base(
+            accountEngine,
+            mailboxEngine,
+            messageEngine,
+            attachmentEngine,
+            chainEngine,
+            quotaEngine,
+            indexEngine,
+            folderEngine,
             daoFactory,
             storageManager,
+            securityContext,
             tenantManager,
             coreSettings,
             storageFactory,
@@ -74,7 +91,7 @@ namespace ASC.Mail.Core.Engine
         {
             var mailAddress = new MailAddress(from);
 
-            var accounts = EngineFactory.AccountEngine.GetAccountInfoList().ToAccountData();
+            var accounts = AccountEngine.GetAccountInfoList().ToAccountData();
 
             var account = accounts.FirstOrDefault(a => a.Email.ToLower().Equals(mailAddress.Address));
 
@@ -84,7 +101,7 @@ namespace ASC.Mail.Core.Engine
             if (account.IsGroup)
                 throw new InvalidOperationException("Saving emails from a group address is forbidden");
 
-            var mbox = EngineFactory.MailboxEngine.GetMailboxData(
+            var mbox = MailboxEngine.GetMailboxData(
                 new СoncreteUserMailboxExp(account.MailboxId, Tenant, User));
 
             if (mbox == null)
@@ -96,7 +113,7 @@ namespace ASC.Mail.Core.Engine
 
             if (id > 0)
             {
-                var message = EngineFactory.MessageEngine.GetMessage(id, new MailMessage.Options
+                var message = MessageEngine.GetMessage(id, new MailMessage.Options
                 {
                     LoadImages = false,
                     LoadBody = true,

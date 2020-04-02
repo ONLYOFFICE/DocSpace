@@ -26,15 +26,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security;
 using ASC.Common.Logging;
-using ASC.Common.Threading;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Mail.Core.Engine.Operations;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
@@ -75,7 +72,8 @@ namespace ASC.Mail.Core.Engine
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
-        public EngineFactory EngineFactory { get; }
+        public ServerEngine ServerEngine { get; }
+        public OperationEngine OperationEngine { get; }
         public DaoFactory DaoFactory { get; }
 
         public ILog Log { get; private set; }
@@ -85,7 +83,8 @@ namespace ASC.Mail.Core.Engine
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
-            EngineFactory engineFactory,
+            ServerEngine serverEngine,
+            OperationEngine operationEngine,
             DaoFactory daoFactory,
             IOptionsMonitor<ILog> option)
         {
@@ -93,7 +92,8 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
-            EngineFactory = engineFactory;
+            ServerEngine = serverEngine;
+            OperationEngine = operationEngine;
             DaoFactory = daoFactory;
 
             Log = option.Get("ASC.Mail.ServerDomainEngine");
@@ -205,7 +205,7 @@ namespace ASC.Mail.Core.Engine
 
                 var server = DaoFactory.ServerDao.Get(Tenant);
 
-                var freeDns = EngineFactory.ServerEngine.GetOrCreateUnusedDnsData(server);
+                var freeDns = ServerEngine.GetOrCreateUnusedDnsData(server);
 
                 if (freeDns.Id != dnsId)
                     throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
@@ -285,14 +285,14 @@ namespace ASC.Mail.Core.Engine
             if (domain.IsSharedDomain)
                 throw new SecurityException("Can not remove shared domain.");
 
-            return EngineFactory.OperationEngine.RemoveServerDomain(domain);
+            return OperationEngine.RemoveServerDomain(domain);
         }
 
         private ServerDomainDnsData UpdateDnsStatus(ServerDomain domain, bool force = false)
         {
             var serverDns = DaoFactory.ServerDnsDao.Get(domain.Id);
 
-            if (serverDns.UpdateRecords(EngineFactory, domain.Name, force))
+            if (serverDns.UpdateRecords(OperationEngine, domain.Name, force))
             {
                 DaoFactory.ServerDnsDao.Save(serverDns);
             }

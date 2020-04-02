@@ -48,16 +48,16 @@ namespace ASC.Mail.Core.Engine
         public StorageFactory StorageFactory { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
+        public ChainEngine ChainEngine { get; }
         public ApiHelper ApiHelper { get; }
         public ILog Log { get; private set; }
 
         public SpamEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
+            ChainEngine chainEngine,
             ApiHelper apiHelper,
             IOptionsMonitor<ILog> option)
         {
@@ -65,8 +65,9 @@ namespace ASC.Mail.Core.Engine
             Log = option.Get("ASC.Mail.SpamEngine");
             SecurityContext = securityContext;
             TenantManager = tenantManager;
-            EngineFactory = engineFactory;
+
             DaoFactory = daoFactory;
+            ChainEngine = chainEngine;
             ApiHelper = apiHelper;
         }
 
@@ -107,7 +108,7 @@ namespace ASC.Mail.Core.Engine
             if (!tlMailboxesIds.Any())
                 return streamList;
 
-            streamList = EngineFactory.ChainEngine.GetChainedMessagesInfo(ids)
+            streamList = ChainEngine.GetChainedMessagesInfo(ids)
                 .Where(r => r.FolderRestore != FolderType.Sent)
                 .Where(r => tlMailboxesIds.Contains(r.MailboxId))
                 .ToDictionary(r => r.Id, r => r.Stream);

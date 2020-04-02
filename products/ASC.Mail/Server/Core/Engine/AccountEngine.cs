@@ -66,13 +66,12 @@ namespace ASC.Mail.Core.Engine
         }
 
         public SecurityContext SecurityContext { get; }
-
+        public FolderEngine FolderEngine { get; }
         public ApiContext ApiContext { get; }
 
         public ILog Log { get; }
 
         public MailboxEngine MailboxEngine { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
         public CacheEngine CacheEngine { get; }
         public ConsumerFactory ConsumerFactory { get; }
@@ -84,8 +83,8 @@ namespace ASC.Mail.Core.Engine
         public AccountEngine(
             ApiContext apiContext,
             SecurityContext securityContext,
+            FolderEngine folderEngine,
             MailboxEngine mailboxEngine,
-            EngineFactory engineFactory,
             DaoFactory daoFactory,
             CacheEngine cacheEngine,
             ConsumerFactory consumerFactory,
@@ -95,10 +94,11 @@ namespace ASC.Mail.Core.Engine
         {
             ApiContext = apiContext;
             SecurityContext = securityContext;
+            FolderEngine = folderEngine;
             Log = option.Get("ASC.Mail.AccountEngine");
 
             MailboxEngine = mailboxEngine;
-            EngineFactory = engineFactory;
+
             DaoFactory = daoFactory;
             CacheEngine = cacheEngine;
             ConsumerFactory = consumerFactory;
@@ -215,7 +215,7 @@ namespace ASC.Mail.Core.Engine
                 Enabled = true
             };
 
-            using (var client = new MailClient(mbox, CancellationToken.None, EngineFactory,
+            using (var client = new MailClient(mbox, CancellationToken.None, FolderEngine,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -242,7 +242,7 @@ namespace ASC.Mail.Core.Engine
             if (mbox == null)
                 throw new NullReferenceException("mbox");
 
-            using (var client = new MailClient(mbox, CancellationToken.None, EngineFactory,
+            using (var client = new MailClient(mbox, CancellationToken.None, FolderEngine,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -285,7 +285,7 @@ namespace ASC.Mail.Core.Engine
             {
                 LoginResult loginResult;
 
-                using (var client = new MailClient(mb, CancellationToken.None, EngineFactory, 
+                using (var client = new MailClient(mb, CancellationToken.None, FolderEngine, 
                     Defines.TcpTimeout, Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
@@ -340,11 +340,11 @@ namespace ASC.Mail.Core.Engine
             if (!MailboxEngine.SaveMailBox(mboxImap, (AuthorizationServiceType)type))
                 throw new Exception(string.Format("SaveMailBox {0} failed", email));
 
-            EngineFactory.CacheEngine.Clear(UserId);
+            CacheEngine.Clear(UserId);
 
             if (Defines.IsSignalRAvailable)
             {
-                EngineFactory.AccountEngine.SetAccountsActivity();
+                SetAccountsActivity();
             }
 
             var account = new AccountInfo(mboxImap.MailBoxId, mboxImap.EMailView, mboxImap.Name, mboxImap.Enabled,
@@ -470,11 +470,11 @@ namespace ASC.Mail.Core.Engine
 
             mbox.Id = result;
 
-            EngineFactory.CacheEngine.Clear(UserId);
+            CacheEngine.Clear(UserId);
 
             if (Defines.IsSignalRAvailable)
             {
-                EngineFactory.AccountEngine.SetAccountsActivity();
+                SetAccountsActivity();
             }
 
             var accountInfo = new AccountInfo(mbox.Id, mbox.Address, mbox.Name, mbox.Enabled, mbox.QuotaError,
@@ -499,7 +499,7 @@ namespace ASC.Mail.Core.Engine
             if (enabled)
             {
                 // Check account connection setting on activation
-                using (var client = new MailClient(tuple.Item1, CancellationToken.None, EngineFactory,
+                using (var client = new MailClient(tuple.Item1, CancellationToken.None, FolderEngine,
                         certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();

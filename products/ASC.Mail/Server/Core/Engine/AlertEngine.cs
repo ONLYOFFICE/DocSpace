@@ -58,7 +58,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -70,9 +70,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
 
         public ILog Log { get; }
 
@@ -82,12 +81,12 @@ namespace ASC.Mail.Core.Engine
 
         public AlertEngine(
             DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
             IOptionsMonitor<ILog> option,
             DaoFactory daoFactory)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AlertEngine");
 
