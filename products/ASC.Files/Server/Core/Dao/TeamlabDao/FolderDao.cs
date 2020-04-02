@@ -406,9 +406,10 @@ namespace ASC.Files.Core.Data
 
                 var treeToDelete = FilesDbContext.Tree.Where(r => subfolders.Any(a => r.FolderId == a));
                 FilesDbContext.Tree.RemoveRange(treeToDelete);
-
+                
+                var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
                 var linkToDelete = Query(FilesDbContext.TagLink)
-                    .Where(r => subfolders.Any(a => r.EntryId == a))
+                    .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                     .Where(r => r.EntryType == FileEntryType.Folder);
                 FilesDbContext.TagLink.RemoveRange(linkToDelete);
 
@@ -418,7 +419,7 @@ namespace ASC.Files.Core.Data
                 FilesDbContext.Tag.RemoveRange(tagsToRemove);
 
                 var securityToDelete = Query(FilesDbContext.Security)
-                        .Where(r => subfolders.Any(a => r.EntryId == a))
+                        .Where(r => subfoldersStrings.Any(a => r.EntryId == a))
                         .Where(r => r.EntryType == FileEntryType.Folder);
 
                 FilesDbContext.Security.RemoveRange(securityToDelete);
