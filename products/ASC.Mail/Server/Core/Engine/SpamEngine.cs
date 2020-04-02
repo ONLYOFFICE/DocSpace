@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
@@ -195,6 +196,16 @@ namespace ASC.Mail.Core.Engine
             }
 
             return "";
+        }
+    }
+
+    public static class SpamEngineExtension
+    {
+        public static DIHelper AddSpamEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<SpamEngine>();
+
+            return services;
         }
     }
 }

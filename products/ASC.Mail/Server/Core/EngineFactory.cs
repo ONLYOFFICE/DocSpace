@@ -154,7 +154,26 @@ namespace ASC.Mail.Core
                 .AddTagEngineService()
                 .AddAttachmentEngineService()
                 .AddCalendarEngineService()
-                .AddQuotaEngineService();
+                .AddQuotaEngineService()
+                .AddChainEngineService()
+                .AddContactEngineService()
+                .AddCrmLinkEngineService()
+                .AddDraftEngineService()
+                .AddEmailInEngineService()
+                .AddFilterEngineService()
+                .AddFolderEngineService()
+                .AddIndexEngineService()
+                .AddMailBoxSettingEngineService()
+                .AddMailGarbageEngineService()
+                .AddMessageEngineService()
+                .AddOperationEngineService()
+                .AddServerEngineService()
+                .AddServerMailboxEngineService()
+                .AddServerMailgroupEngineService()
+                .AddSpamEngineService()
+                .AddTemplateEngineService()
+                .AddTestEngineService()
+                .AddUserFolderEngineService();
         }
     }
 }

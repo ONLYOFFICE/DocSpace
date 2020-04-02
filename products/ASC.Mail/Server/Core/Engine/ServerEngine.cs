@@ -43,6 +43,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
 using ASC.Core.Common.Settings;
 using ASC.Web.Core.Users;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -598,6 +599,16 @@ namespace ASC.Mail.Core.Engine
             var engine = new Server.Core.ServerEngine(server.Id, server.ConnectionString);
             var version = engine.GetVersion();
             return version;
+        }
+    }
+
+    public static class ServerEngineExtension
+    {
+        public static DIHelper AddServerEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ServerEngine>();
+
+            return services;
         }
     }
 }

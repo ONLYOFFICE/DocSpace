@@ -40,6 +40,7 @@ using ASC.Mail.Utils;
 using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -355,6 +356,16 @@ namespace ASC.Mail.Core.Engine
             };
 
             return dnsData;
+        }
+    }
+
+    public static class ServerDomainEngineExtension
+    {
+        public static DIHelper AddServerDomainEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ServerDomainEngine>();
+
+            return services;
         }
     }
 }

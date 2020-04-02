@@ -35,6 +35,7 @@ using ASC.ElasticSearch;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -287,6 +288,16 @@ namespace ASC.Mail.Core.Engine
             {
                 Log.ErrorFormat("IndexEngine->RemoveContacts(count = {0}) error: {1}", ids == null ? 0 : ids.Count, ex.ToString());
             }
+        }
+    }
+
+    public static class IndexEngineExtension
+    {
+        public static DIHelper AddIndexEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<IndexEngine>();
+
+            return services;
         }
     }
 }

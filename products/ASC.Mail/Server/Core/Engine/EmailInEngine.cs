@@ -28,6 +28,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
 using ASC.Mail.Data.Storage;
@@ -145,6 +146,16 @@ namespace ASC.Mail.Core.Engine
                 log.ErrorFormat("EmailInEngine->UploadToDocuments(fileName: '{0}', folderId: {1}) Exception:\r\n{2}\r\n",
                                       fileName, mailbox.EMailInFolder, ex.ToString());
             }
+        }
+    }
+
+    public static class EmailInEngineExtension
+    {
+        public static DIHelper AddEmailInEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<EmailInEngine>();
+
+            return services;
         }
     }
 }

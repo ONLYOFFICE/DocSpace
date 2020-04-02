@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Security;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Entities;
@@ -420,6 +421,16 @@ namespace ASC.Mail.Core.Engine
             };
 
             return group;
+        }
+    }
+
+    public static class ServerMailgroupEngineExtension
+    {
+        public static DIHelper AddServerMailgroupEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ServerMailgroupEngine>();
+
+            return services;
         }
     }
 }

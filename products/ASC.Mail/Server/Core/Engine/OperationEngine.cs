@@ -39,6 +39,7 @@ using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
 using ASC.Mail.Data.Storage;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -574,6 +575,16 @@ namespace ASC.Mail.Core.Engine
             };
 
             return result;
+        }
+    }
+
+    public static class OperationEngineExtension
+    {
+        public static DIHelper AddOperationEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<OperationEngine>();
+
+            return services;
         }
     }
 }

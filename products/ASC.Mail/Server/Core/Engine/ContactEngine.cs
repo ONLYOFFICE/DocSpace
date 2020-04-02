@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.ElasticSearch;
@@ -367,6 +368,16 @@ namespace ASC.Mail.Core.Engine
                 var strParts = str.Split('<');
                 return strParts.Last().Replace(">", "").GetHashCode();
             }
+        }
+    }
+
+    public static class ContactEngineExtension
+    {
+        public static DIHelper AddContactEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ContactEngine>();
+
+            return services;
         }
     }
 }

@@ -28,23 +28,14 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-
 using ASC.Common.Logging;
-
-using ASC.Api.Core;
-
 using ASC.Core;
 using ASC.Core.Common.EF;
-
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 using ASC.Mail.Models;
 using ASC.Mail.Core.Dao;
-using ASC.Mail.Core.Dao.Entities;
-
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Core.Entities;
 using ASC.Common;
 

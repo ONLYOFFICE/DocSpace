@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Conversation;
@@ -396,5 +397,15 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+    }
+
+    public static class FolderEngineExtension
+    {
+        public static DIHelper AddFolderEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<FolderEngine>();
+
+            return services;
+        }
     }
 }

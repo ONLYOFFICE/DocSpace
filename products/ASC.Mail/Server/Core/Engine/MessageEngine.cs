@@ -50,7 +50,7 @@ using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Microsoft.Extensions.DependencyInjection;
-using ASC.Mail.Core.Engine;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -1811,6 +1811,16 @@ namespace ASC.Mail.Core.Engine
             item.Attachments = attachments.ConvertAll(AttachmentEngine.ToAttachmentData);
 
             return item;
+        }
+    }
+
+    public static class MessageEngineExtension
+    {
+        public static DIHelper AddMessageEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<MessageEngine>();
+
+            return services;
         }
     }
 }

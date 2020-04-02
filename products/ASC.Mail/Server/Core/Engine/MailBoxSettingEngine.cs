@@ -28,9 +28,9 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
-using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Models;
@@ -326,6 +326,16 @@ namespace ASC.Mail.Core.Engine
             }
 
             return settingsFromDb;
+        }
+    }
+
+    public static class MailBoxSettingEngineExtension
+    {
+        public static DIHelper AddMailBoxSettingEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<MailBoxSettingEngine>();
+
+            return services;
         }
     }
 }

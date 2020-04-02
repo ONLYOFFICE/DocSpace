@@ -42,6 +42,7 @@ using ASC.Core;
 using Microsoft.Extensions.Options;
 using ASC.Data.Storage;
 using ASC.Mail.Data.Storage;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -377,6 +378,16 @@ namespace ASC.Mail.Core.Engine
             IndexEngine.Add(message.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId)));
 
             return message.Id;
+        }
+    }
+
+    public static class TestEngineExtension
+    {
+        public static DIHelper AddTestEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<TestEngine>();
+
+            return services;
         }
     }
 }

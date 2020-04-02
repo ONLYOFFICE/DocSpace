@@ -58,6 +58,7 @@ using MailMessage = ASC.Mail.Models.MailMessageData;
 using HttpContext = Microsoft.AspNetCore.Http.HttpContext;
 using ASC.ElasticSearch;
 using ASC.Web.Files.Services.WCFService;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -654,5 +655,15 @@ namespace ASC.Mail.Core.Engine
         }
 
         #endregion
+    }
+
+    public static class DraftEngineExtension
+    {
+        public static DIHelper AddDraftEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<DraftEngine>();
+
+            return services;
+        }
     }
 }

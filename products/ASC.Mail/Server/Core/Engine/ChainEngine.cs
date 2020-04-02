@@ -42,6 +42,7 @@ using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Mail.Core.Dao.Expressions;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -851,6 +852,16 @@ namespace ASC.Mail.Core.Engine
             }
 
             return conversations;
+        }
+    }
+
+    public static class ChainEngineExtension
+    {
+        public static DIHelper AddChainEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ChainEngine>();
+
+            return services;
         }
     }
 }

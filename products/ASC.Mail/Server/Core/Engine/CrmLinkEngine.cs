@@ -26,9 +26,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
@@ -39,7 +39,6 @@ using ASC.Mail.Exceptions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 //using ASC.Web.CRM.Core;
-using Autofac;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -278,6 +277,16 @@ namespace ASC.Mail.Core.Engine
                     "CrmLinkEngine->AddRelationshipEvents(): message with id = {0} has been linked successfully to contact with id = {1}",
                     message.Id, contactEntity.Id);
             }
+        }
+    }
+
+    public static class CrmLinkEngineExtension
+    {
+        public static DIHelper AddCrmLinkEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<CrmLinkEngine>();
+
+            return services;
         }
     }
 }

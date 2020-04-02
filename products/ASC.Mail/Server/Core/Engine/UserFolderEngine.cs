@@ -39,6 +39,7 @@ using ASC.Mail.Exceptions;
 using ASC.Core;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -486,6 +487,16 @@ namespace ASC.Mail.Core.Engine
             };
 
             return userFolderData;
+        }
+    }
+
+    public static class UserFolderEngineExtension
+    {
+        public static DIHelper AddUserFolderEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<UserFolderEngine>();
+
+            return services;
         }
     }
 }

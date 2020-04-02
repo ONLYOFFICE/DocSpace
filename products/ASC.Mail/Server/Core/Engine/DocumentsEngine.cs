@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
@@ -124,6 +125,16 @@ namespace ASC.Mail.Core.Engine
 
                 return uploadedFileId;
             }
+        }
+    }
+
+    public static class DocumentsEngineEngineExtension
+    {
+        public static DIHelper AddDocumentsEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<DocumentsEngine>();
+
+            return services;
         }
     }
 }

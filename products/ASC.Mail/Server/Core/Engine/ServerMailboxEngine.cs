@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Security;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Web;
 using ASC.Core;
@@ -815,6 +816,16 @@ namespace ASC.Mail.Core.Engine
             };
 
             return result;
+        }
+    }
+
+    public static class ServerMailboxEngineExtension
+    {
+        public static DIHelper AddServerMailboxEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<ServerMailboxEngine>();
+
+            return services;
         }
     }
 }

@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Entities;
@@ -547,6 +548,16 @@ namespace ASC.Mail.Core.Engine
             res.Position = filter.Position;
 
             return res;
+        }
+    }
+
+    public static class FilterEngineExtension
+    {
+        public static DIHelper AddFilterEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<FilterEngine>();
+
+            return services;
         }
     }
 

@@ -40,6 +40,7 @@ using ASC.Mail.Utils;
 using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Data.Storage;
 using Microsoft.Extensions.Options;
+using ASC.Common;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -161,6 +162,16 @@ namespace ASC.Mail.Core.Engine
             DaemonLabels = translates ?? DeliveryFailureMessageTranslates.Defauilt;
 
             return Save(template);
+        }
+    }
+
+    public static class TemplateEngineExtension
+    {
+        public static DIHelper AddTemplateEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<TemplateEngine>();
+
+            return services;
         }
     }
 }

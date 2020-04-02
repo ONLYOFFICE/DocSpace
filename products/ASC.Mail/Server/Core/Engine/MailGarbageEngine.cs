@@ -32,6 +32,7 @@ using System.Linq;
 using System.Runtime.Caching;
 using System.Threading;
 using System.Threading.Tasks;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Threading;
 using ASC.Core;
@@ -615,6 +616,16 @@ namespace ASC.Mail.Core.Engine
             {
                 TenantMemCache.Dispose();
             }
+        }
+    }
+
+    public static class MailGarbageEngineExtension
+    {
+        public static DIHelper AddMailGarbageEngineService(this DIHelper services)
+        {
+            services.TryAddScoped<MailGarbageEngine>();
+
+            return services;
         }
     }
 }
