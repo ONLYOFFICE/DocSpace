@@ -159,7 +159,7 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         private OAuth20Token DecryptToken(string token)
         {
-            return string.IsNullOrEmpty(token) ? null : Token.FromJson(InstanceCrypto.Decrypt(token));
+            return string.IsNullOrEmpty(token) ? null : OAuth20Token.FromJson(InstanceCrypto.Decrypt(token));
         }
     }
 

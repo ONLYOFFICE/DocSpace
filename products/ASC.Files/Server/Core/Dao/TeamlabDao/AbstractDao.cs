@@ -169,6 +169,10 @@ namespace ASC.Files.Core.Data
             return result;
         }
 
+        protected int MappingID(int id)
+        {
+            return id;
+        }
         protected object MappingID(object id)
         {
             return MappingID(id, false);

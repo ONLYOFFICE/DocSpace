@@ -48,8 +48,6 @@ using ASC.Web.Studio.Utility;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using File = ASC.Files.Core.File;
-
 namespace ASC.Web.Files.Utils
 {
     public class FileUploader
@@ -113,19 +111,19 @@ namespace ASC.Web.Files.Utils
             ChunkedUploadSessionHolder = chunkedUploadSessionHolder;
         }
 
-        public File Exec(string folderId, string title, long contentLength, Stream data)
+        public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data)
         {
             return Exec(folderId, title, contentLength, data, !FilesSettingsHelper.UpdateIfExist);
         }
 
-        public File Exec(string folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
+        public File<T> Exec<T>(T folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)
         {
             if (contentLength <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
 
             var file = VerifyFileUpload(folderId, title, contentLength, !createNewIfExist);
 
-            var dao = DaoFactory.FileDao;
+            var dao = DaoFactory.GetFileDao<T>();
             file = dao.SaveFile(file, data);
 
             FileMarker.MarkAsNew(file);
@@ -136,7 +134,7 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public File VerifyFileUpload(string folderId, string fileName, bool updateIfExists, string relativePath = null)
+        public File<T> VerifyFileUpload<T>(T folderId, string fileName, bool updateIfExists, string relativePath = null)
         {
             fileName = Global.ReplaceInvalidCharsAndTruncate(fileName);
 
@@ -145,7 +143,7 @@ namespace ASC.Web.Files.Utils
 
             folderId = GetFolderId(folderId, string.IsNullOrEmpty(relativePath) ? null : relativePath.Split('/').ToList());
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             var file = fileDao.GetFile(folderId, fileName);
 
             if (updateIfExists && CanEdit(file))
@@ -160,13 +158,13 @@ namespace ASC.Web.Files.Utils
                 return file;
             }
 
-            var newFile = ServiceProvider.GetService<File>();
+            var newFile = ServiceProvider.GetService<File<T>>();
             newFile.FolderID = folderId;
             newFile.Title = fileName;
             return newFile;
         }
 
-        public File VerifyFileUpload(string folderId, string fileName, long fileSize, bool updateIfExists)
+        public File<T> VerifyFileUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists)
         {
             if (fileSize <= 0)
                 throw new Exception(FilesCommonResource.ErrorMassage_EmptyFile);
@@ -181,7 +179,7 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        private bool CanEdit(File file)
+        private bool CanEdit<T>(File<T> file)
         {
             return file != null
                    && FileSecurity.CanEdit(file)
@@ -192,9 +190,9 @@ namespace ASC.Web.Files.Utils
                    && !file.Encrypted;
         }
 
-        private string GetFolderId(object folderId, IList<string> relativePath)
+        private T GetFolderId<T>(T folderId, IList<string> relativePath)
         {
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<T>();
             var folder = folderDao.GetFolder(folderId);
 
             if (folder == null)
@@ -213,7 +211,7 @@ namespace ASC.Web.Files.Utils
 
                     if (folder == null)
                     {
-                        var newFolder = ServiceProvider.GetService<Folder>();
+                        var newFolder = ServiceProvider.GetService<Folder<T>>();
                         newFolder.Title = subFolderTitle;
                         newFolder.ParentFolderID = folderId;
 
@@ -230,12 +228,12 @@ namespace ASC.Web.Files.Utils
                 }
             }
 
-            return folderId.ToString();
+            return folderId;
         }
 
         #region chunked upload
 
-        public File VerifyChunkedUpload(string folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+        public File<T> VerifyChunkedUpload<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
         {
             var maxUploadSize = GetMaxFileSize(folderId, true);
 
@@ -248,21 +246,15 @@ namespace ASC.Web.Files.Utils
             return file;
         }
 
-        public ChunkedUploadSession InitiateUpload(string folderId, string fileId, string fileName, long contentLength, bool encrypted)
+        public ChunkedUploadSession<T> InitiateUpload<T>(T folderId, T fileId, string fileName, long contentLength, bool encrypted)
         {
-            if (string.IsNullOrEmpty(folderId))
-                folderId = null;
-
-            if (string.IsNullOrEmpty(fileId))
-                fileId = null;
-
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.ID = fileId;
             file.FolderID = folderId;
             file.Title = fileName;
             file.ContentLength = contentLength;
 
-            var dao = DaoFactory.FileDao;
+            var dao = DaoFactory.GetFileDao<T>();
             var uploadSession = dao.CreateUploadSession(file, contentLength);
 
             uploadSession.Expired = uploadSession.Created + ChunkedUploadSessionHolder.SlidingExpiration;
@@ -278,9 +270,9 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public ChunkedUploadSession UploadChunk(string uploadId, Stream stream, long chunkLength)
+        public ChunkedUploadSession<T> UploadChunk<T>(string uploadId, Stream stream, long chunkLength)
         {
-            var uploadSession = ChunkedUploadSessionHolder.GetSession(uploadId);
+            var uploadSession = ChunkedUploadSessionHolder.GetSession<T>(uploadId);
             uploadSession.Expired = DateTime.UtcNow + ChunkedUploadSessionHolder.SlidingExpiration;
 
             if (chunkLength <= 0)
@@ -301,7 +293,7 @@ namespace ASC.Web.Files.Utils
                 throw FileSizeComment.GetFileSizeException(maxUploadSize);
             }
 
-            var dao = DaoFactory.FileDao;
+            var dao = DaoFactory.GetFileDao<T>();
             dao.UploadChunk(uploadSession, stream, chunkLength);
 
             if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
@@ -317,21 +309,21 @@ namespace ASC.Web.Files.Utils
             return uploadSession;
         }
 
-        public void AbortUpload(string uploadId)
+        public void AbortUpload<T>(string uploadId)
         {
-            AbortUpload(ChunkedUploadSessionHolder.GetSession(uploadId));
+            AbortUpload(ChunkedUploadSessionHolder.GetSession<T>(uploadId));
         }
 
-        private void AbortUpload(ChunkedUploadSession uploadSession)
+        private void AbortUpload<T>(ChunkedUploadSession<T> uploadSession)
         {
-            DaoFactory.FileDao.AbortUploadSession(uploadSession);
+            DaoFactory.GetFileDao<T>().AbortUploadSession(uploadSession);
 
             ChunkedUploadSessionHolder.RemoveSession(uploadSession);
         }
 
-        private long GetMaxFileSize(object folderId, bool chunkedUpload = false)
+        private long GetMaxFileSize<T>(T folderId, bool chunkedUpload = false)
         {
-            var folderDao = DaoFactory.FolderDao;
+            var folderDao = DaoFactory.GetFolderDao<T>();
             return folderDao.GetMaxUploadSize(folderId, chunkedUpload);
         }
 

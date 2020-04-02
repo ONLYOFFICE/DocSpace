@@ -27,9 +27,9 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-using Microsoft.AspNetCore.Http;
+using ASC.Files.Core;
 
-using File = ASC.Files.Core.File;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.Files.ThirdPartyApp
 {
@@ -39,9 +39,9 @@ namespace ASC.Web.Files.ThirdPartyApp
 
         string GetRefreshUrl();
 
-        File GetFile(string fileId, out bool editable);
+        File<string> GetFile(string fileId, out bool editable);
 
-        string GetFileStreamUrl(File file);
+        string GetFileStreamUrl(File<string> file);
 
         void SaveFile(string fileId, string fileType, string downloadUrl, Stream stream);
     }

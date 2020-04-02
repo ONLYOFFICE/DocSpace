@@ -43,9 +43,9 @@ namespace ASC.Web.Files.Services.WCFService
 
         static FileEntrySerializer()
         {
-            serializers[typeof(File)] = new DataContractSerializer(typeof(File));
-            serializers[typeof(ItemList<FileEntry>)] = new DataContractSerializer(typeof(ItemList<FileEntry>));
-            serializers[typeof(DataWrapper)] = new DataContractSerializer(typeof(DataWrapper));
+            serializers[typeof(File<>)] = new DataContractSerializer(typeof(File<>));
+            //serializers[typeof(ItemList<FileEntry<>>)] = new DataContractSerializer(typeof(ItemList<FileEntry<>>));
+            serializers[typeof(DataWrapper<>)] = new DataContractSerializer(typeof(DataWrapper<>));
 
             //if (WorkContext.IsMono && !string.IsNullOrEmpty(WorkContext.MonoVersion))
             //{
@@ -85,7 +85,7 @@ namespace ASC.Web.Files.Services.WCFService
                 //remove incorrect ns
                 foreach (XmlNode entry in xml.SelectNodes("//entry"))
                 {
-                    var nsattr = entry.Attributes.Cast<XmlAttribute>().FirstOrDefault(a => a.Value == typeof(FileEntry).Name);
+                    var nsattr = entry.Attributes.Cast<XmlAttribute>().FirstOrDefault(a => a.Value == typeof(FileEntry<>).Name);
                     if (nsattr != null)
                     {
                         foreach (XmlAttribute a in entry.Attributes)
@@ -128,7 +128,7 @@ namespace ASC.Web.Files.Services.WCFService
                 typeName = XmlDictionaryString.Empty;
                 typeNamespace = XmlDictionaryString.Empty;
 
-                if (declaredType == typeof(FileEntry))
+                if (declaredType == typeof(FileEntry<>))
                 {
                     typeName = new XmlDictionaryString(XmlDictionary.Empty, type.Name.ToLower(), 0);
                     typeNamespace = new XmlDictionaryString(XmlDictionary.Empty, declaredType.Name, 0);
