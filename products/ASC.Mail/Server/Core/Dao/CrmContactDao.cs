@@ -37,10 +37,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class CrmContactDao : BaseDao, ICrmContactDao
     {
-        public CrmContactDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public CrmContactDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

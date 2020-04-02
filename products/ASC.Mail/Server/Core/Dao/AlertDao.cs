@@ -27,7 +27,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
@@ -41,10 +40,10 @@ namespace ASC.Mail.Core.Dao
     public class AlertDao : BaseDao, IAlertDao
     {
         public AlertDao(
-            DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
-            SecurityContext securityContext)
-            : base(apiContext, securityContext, dbContext)
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

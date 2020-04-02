@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -38,10 +37,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class ServerDnsDao : BaseDao, IServerDnsDao
     {
-        public ServerDnsDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public ServerDnsDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

@@ -27,13 +27,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using ASC.Api.Core;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using ASC.Mail.Models;
 using ASC.Common;
 
@@ -41,10 +38,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class AccountDao : BaseDao, IAccountDao
     {
-         public AccountDao(DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
-            SecurityContext securityContext)
-            :base(apiContext, securityContext, dbContext)
+         public AccountDao(
+             TenantManager tenantManager, 
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

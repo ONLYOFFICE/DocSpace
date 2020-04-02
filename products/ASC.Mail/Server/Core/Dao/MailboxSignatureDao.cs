@@ -40,10 +40,10 @@ namespace ASC.Mail.Core.Dao
     public class MailboxSignatureDao : BaseDao, IMailboxSignatureDao
     {
         public MailboxSignatureDao(
-            DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
-            SecurityContext securityContext)
-            : base(apiContext, securityContext, dbContext)
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

@@ -42,10 +42,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class MailDao : BaseDao, IMailDao
     {
-        public MailDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext) :
-            base(apiContext, securityContext, dbContext)
+        public MailDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

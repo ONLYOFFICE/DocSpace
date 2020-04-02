@@ -24,88 +24,24 @@
 */
 
 
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao
 {
     public class MailGarbageDao: BaseDao
     {
-        public DaoFactory DaoFactory { get; }
-
-        public MailGarbageDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext,
-            DaoFactory daoFactory) :
-            base(apiContext, securityContext, dbContext)
+        public MailGarbageDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
-            DaoFactory = daoFactory;
-        }
-
-        public void CleanupMailboxData(MailBoxData mailbox, bool totalRemove)
-        {
-            if(!mailbox.IsRemoved)
-                throw new Exception("Mailbox is not removed.");
-
-            using (var tx = MailDb.Database.BeginTransaction())
-            {
-                var exp = new СoncreteUserMailboxExp(
-                    mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, true);
-
-                var mb = DaoFactory.MailboxDao.GetMailBox(exp);
-
-                var deleteMailboxMessagesQuery = MailDb.MailMail
-                    .Where(m => m.IdMailbox == mb.Id && m.Tenant == mb.Tenant && m.IdUser == mb.User);
-
-                MailDb.MailMail.RemoveRange(deleteMailboxMessagesQuery);
-
-                MailDb.SaveChanges();
-
-                var deleteMailboxAttachmentsQuery = MailDb.MailAttachment
-                    .Where(a => a.IdMailbox == mb.Id && a.Tenant == mb.Tenant);
-
-                MailDb.MailAttachment.RemoveRange(deleteMailboxAttachmentsQuery);
-
-                MailDb.SaveChanges();
-
-                DaoFactory.MailboxDao.RemoveMailbox(mb);
-
-                if (totalRemove)
-                {
-                    DaoFactory.FolderDao.Delete();
-
-                    var deleteContactInfoQuery = MailDb.MailContactInfo
-                        .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
-
-                    MailDb.MailContactInfo.RemoveRange(deleteContactInfoQuery);
-
-                    MailDb.SaveChanges();
-
-                    var deleteContactsQuery = MailDb.MailContacts
-                        .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
-
-                    MailDb.MailContacts.RemoveRange(deleteContactsQuery);
-
-                    MailDb.SaveChanges();
-
-                    var deleteDisplayImagesQuery = MailDb.MailDisplayImages
-                       .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
-
-                    MailDb.MailDisplayImages.RemoveRange(deleteDisplayImagesQuery);
-
-                    MailDb.SaveChanges();
-                }
-
-                tx.Commit();
-            }
         }
 
         public int GetMailboxAttachsCount(MailBoxData mailBoxData)

@@ -26,7 +26,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -37,10 +36,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class TagAddressDao: BaseDao, ITagAddressDao
     {
-        public TagAddressDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public TagAddressDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -42,10 +41,12 @@ namespace ASC.Mail.Core.Dao
 {
     public class MailInfoDao : BaseDao, IMailInfoDao
     {
-        public MailInfoDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext) { 
+        public MailInfoDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
+        { 
         }
 
         public List<MailInfo> GetMailInfoList(IMessagesExp exp, bool skipSelectTags = false)

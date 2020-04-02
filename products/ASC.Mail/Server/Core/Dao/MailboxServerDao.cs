@@ -40,10 +40,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class MailboxServerDao : BaseDao, IMailboxServerDao
     {
-        public MailboxServerDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext) 
-            : base(apiContext, securityContext, dbContext)
+        public MailboxServerDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

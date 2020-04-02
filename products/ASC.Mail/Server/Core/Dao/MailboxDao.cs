@@ -43,11 +43,12 @@ namespace ASC.Mail.Core.Dao
     public class MailboxDao : BaseDao, IMailboxDao
     {
         public InstanceCrypto InstanceCrypto { get; }
-        public MailboxDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext,
-            InstanceCrypto instanceCrypto) : 
-            base(apiContext, securityContext, dbContext)
+        public MailboxDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext,
+             InstanceCrypto instanceCrypto)
+            : base(tenantManager, securityContext, dbContext)
         {
             InstanceCrypto = instanceCrypto;
         }

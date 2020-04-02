@@ -37,6 +37,7 @@ using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
+using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Extensions;
 using ASC.Mail.Iterators;
@@ -405,7 +406,7 @@ namespace ASC.Mail.Core.Engine
 
                 log.Debug("ClearMailboxData()");
 
-                DaoFactory.MailGarbageDao.CleanupMailboxData(mailbox, totalMailRemove);
+                CleanupMailboxData(mailbox, totalMailRemove);
 
                 log.DebugFormat("Garbage mailbox '{0}' was totaly removed.", mailbox.EMail.Address);
             }
@@ -414,6 +415,66 @@ namespace ASC.Mail.Core.Engine
                 log.ErrorFormat("RemoveMailboxData(mailboxId = {0}) Failure\r\nException: {1}", mailbox.MailBoxId, ex.ToString());
 
                 throw;
+            }
+        }
+
+        public void CleanupMailboxData(MailBoxData mailbox, bool totalRemove)
+        {
+            if (!mailbox.IsRemoved)
+                throw new Exception("Mailbox is not removed.");
+
+            var MailDb = DaoFactory.MailDb;
+
+            using (var tx = MailDb.Database.BeginTransaction())
+            {
+                var exp = new СoncreteUserMailboxExp(
+                    mailbox.MailBoxId, mailbox.TenantId, mailbox.UserId, true);
+
+                var mb = DaoFactory.MailboxDao.GetMailBox(exp);
+
+                var deleteMailboxMessagesQuery = MailDb.MailMail
+                    .Where(m => m.IdMailbox == mb.Id && m.Tenant == mb.Tenant && m.IdUser == mb.User);
+
+                MailDb.MailMail.RemoveRange(deleteMailboxMessagesQuery);
+
+                MailDb.SaveChanges();
+
+                var deleteMailboxAttachmentsQuery = MailDb.MailAttachment
+                    .Where(a => a.IdMailbox == mb.Id && a.Tenant == mb.Tenant);
+
+                MailDb.MailAttachment.RemoveRange(deleteMailboxAttachmentsQuery);
+
+                MailDb.SaveChanges();
+
+                DaoFactory.MailboxDao.RemoveMailbox(mb);
+
+                if (totalRemove)
+                {
+                    DaoFactory.FolderDao.Delete();
+
+                    var deleteContactInfoQuery = MailDb.MailContactInfo
+                        .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
+
+                    MailDb.MailContactInfo.RemoveRange(deleteContactInfoQuery);
+
+                    MailDb.SaveChanges();
+
+                    var deleteContactsQuery = MailDb.MailContacts
+                        .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
+
+                    MailDb.MailContacts.RemoveRange(deleteContactsQuery);
+
+                    MailDb.SaveChanges();
+
+                    var deleteDisplayImagesQuery = MailDb.MailDisplayImages
+                       .Where(c => c.IdUser == mb.User && c.Tenant == mb.Tenant);
+
+                    MailDb.MailDisplayImages.RemoveRange(deleteDisplayImagesQuery);
+
+                    MailDb.SaveChanges();
+                }
+
+                tx.Commit();
             }
         }
 

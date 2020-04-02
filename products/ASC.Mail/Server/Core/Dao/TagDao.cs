@@ -24,18 +24,12 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,10 +37,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class TagDao : BaseDao, ITagDao
     {
-        public TagDao(DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
-            SecurityContext securityContext)
-            : base(apiContext, securityContext, dbContext)
+        public TagDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

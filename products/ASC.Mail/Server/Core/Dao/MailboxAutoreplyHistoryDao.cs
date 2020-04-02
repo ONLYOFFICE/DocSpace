@@ -39,10 +39,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class MailboxAutoreplyHistoryDao : BaseDao, IMailboxAutoreplyHistoryDao
     {
-        public MailboxAutoreplyHistoryDao(DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
-            SecurityContext securityContext)
-            : base(apiContext, securityContext, dbContext)
+        public MailboxAutoreplyHistoryDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

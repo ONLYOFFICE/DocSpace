@@ -38,10 +38,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class ContactDao : BaseDao, IContactDao
     {
-        public ContactDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public ContactDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

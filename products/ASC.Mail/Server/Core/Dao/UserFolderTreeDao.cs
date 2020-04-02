@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -40,10 +39,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class UserFolderTreeDao : BaseDao, IUserFolderTreeDao
     {
-        public UserFolderTreeDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public UserFolderTreeDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 

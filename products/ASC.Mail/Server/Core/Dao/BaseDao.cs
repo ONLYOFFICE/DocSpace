@@ -36,7 +36,7 @@ namespace ASC.Mail.Core.Dao
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -48,16 +48,18 @@ namespace ASC.Mail.Core.Dao
             }
         }
 
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
 
         public ApiContext ApiContext { get; }
         public MailDbContext MailDb { get; }
 
-        protected BaseDao(ApiContext apiContext,
+        protected BaseDao(
+            TenantManager tenantManager,
             SecurityContext securityContext,
             DbContextManager<MailDbContext> dbContext)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
             MailDb = dbContext.Get("mail");
         }

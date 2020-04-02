@@ -38,10 +38,11 @@ namespace ASC.Mail.Core.Dao
 {
     public class ImapFlagsDao : BaseDao, IImapFlagsDao
     {
-        public ImapFlagsDao(ApiContext apiContext,
-            SecurityContext securityContext,
-            DbContextManager<MailDbContext> dbContext)
-            : base(apiContext, securityContext, dbContext)
+        public ImapFlagsDao(
+             TenantManager tenantManager,
+             SecurityContext securityContext,
+             DbContextManager<MailDbContext> dbContext)
+            : base(tenantManager, securityContext, dbContext)
         {
         }
 
