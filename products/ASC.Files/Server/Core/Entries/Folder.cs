@@ -52,11 +52,11 @@ namespace ASC.Files.Core
 
     [DataContract(Name = "folder", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID})")]
-    public class Folder : FileEntry
+    public class Folder<T> : FileEntry<T>
     {
         public FolderType FolderType { get; set; }
 
-        public object ParentFolderID { get; set; }
+        public T ParentFolderID { get; set; }
 
         [DataMember(Name = "total_files")]
         public int TotalFiles { get; set; }
@@ -77,6 +77,20 @@ namespace ASC.Files.Core
         {
             get { return Convert.ToBoolean(NewForMe); }
             set { NewForMe = Convert.ToInt32(value); }
+        }
+
+        private T _folderIdDisplay;
+
+        [DataMember(Name = "folder_id")]
+        public override T FolderIdDisplay
+        {
+            get
+            {
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return ParentFolderID;
+            }
+            set { _folderIdDisplay = value; }
         }
 
         public Folder(Global global)

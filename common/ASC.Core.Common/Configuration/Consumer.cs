@@ -82,7 +82,7 @@ namespace ASC.Core.Common.Configuration
         public TenantManager TenantManager { get; set; }
         public CoreBaseSettings CoreBaseSettings { get; set; }
         public CoreSettings CoreSettings { get; set; }
-        public ConsumerFactory ConsumerFactory { get; }
+        public ConsumerFactory ConsumerFactory { get; set; }
         public IConfiguration Configuration { get; }
         public ICacheNotify<ConsumerCacheItem> Cache { get; }
 
@@ -106,14 +106,12 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache) : this()
         {
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             CoreSettings = coreSettings;
-            ConsumerFactory = consumerFactory;
             Configuration = configuration;
             Cache = cache;
             OnlyDefault = configuration["core:default-consumers"] == "true";
@@ -125,11 +123,10 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -141,11 +138,10 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : this(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
+            : this(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
             Name = name;
             Order = order;
@@ -303,10 +299,9 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache)
         {
 
         }
@@ -315,11 +310,10 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, additional)
         {
             Init(additional);
         }
@@ -328,11 +322,10 @@ namespace ASC.Core.Common.Configuration
             TenantManager tenantManager,
             CoreBaseSettings coreBaseSettings,
             CoreSettings coreSettings,
-            ConsumerFactory consumerFactory,
             IConfiguration configuration,
             ICacheNotify<ConsumerCacheItem> cache,
             string name, int order, Dictionary<string, string> props, Dictionary<string, string> additional)
-            : base(tenantManager, coreBaseSettings, coreSettings, consumerFactory, configuration, cache, name, order, props, additional)
+            : base(tenantManager, coreBaseSettings, coreSettings, configuration, cache, name, order, props, additional)
         {
             Init(additional);
         }
@@ -368,12 +361,12 @@ namespace ASC.Core.Common.Configuration
             var additional = fromConfig.AdditionalKeys.ToDictionary(prop => prop, prop => fromConfig[prop]);
             additional.Add(HandlerTypeKey, HandlerType.AssemblyQualifiedName);
 
-            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.ConsumerFactory, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
+            return new DataStoreConsumer(fromConfig.TenantManager, fromConfig.CoreBaseSettings, fromConfig.CoreSettings, fromConfig.Configuration, fromConfig.Cache, fromConfig.Name, fromConfig.Order, props, additional);
         }
 
         public object Clone()
         {
-            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, ConsumerFactory, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
+            return new DataStoreConsumer(TenantManager, CoreBaseSettings, CoreSettings, Configuration, Cache, Name, Order, Props.ToDictionary(r => r.Key, r => r.Value), Additional.ToDictionary(r => r.Key, r => r.Value));
         }
     }
 

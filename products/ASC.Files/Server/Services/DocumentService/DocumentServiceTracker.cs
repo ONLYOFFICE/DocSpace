@@ -62,7 +62,6 @@ using Microsoft.Extensions.Options;
 using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracker;
 
 using CommandMethod = ASC.Web.Core.Files.DocumentService.CommandMethod;
-using File = ASC.Files.Core.File;
 
 namespace ASC.Web.Files.Services.DocumentService
 {
@@ -279,9 +278,9 @@ namespace ASC.Web.Files.Services.DocumentService
             return null;
         }
 
-        private void ProcessEdit(string fileId, TrackerData fileData)
+        private void ProcessEdit<T>(T fileId, TrackerData fileData)
         {
-            if (ThirdPartySelector.GetAppByFileId(fileId) != null)
+            if (ThirdPartySelector.GetAppByFileId(fileId.ToString()) != null)
             {
                 return;
             }
@@ -290,11 +289,11 @@ namespace ASC.Web.Files.Services.DocumentService
             var usersDrop = new List<string>();
 
             string docKey;
-            var app = ThirdPartySelector.GetAppByFileId(fileId);
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
-                File fileStable;
-                fileStable = DaoFactory.FileDao.GetFileStable(fileId);
+                File<T> fileStable;
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
                 docKey = DocumentServiceHelper.GetDocKey(fileStable);
             }
@@ -347,7 +346,7 @@ namespace ASC.Web.Files.Services.DocumentService
             SocketManager.FilesChangeEditors(fileId);
         }
 
-        private TrackResponse ProcessSave(string fileId, TrackerData fileData)
+        private TrackResponse ProcessSave<T>(T fileId, TrackerData fileData)
         {
             var comments = new List<string>();
             if (fileData.Status == TrackerStatus.Corrupted
@@ -361,11 +360,11 @@ namespace ASC.Web.Files.Services.DocumentService
                 userId = FileTracker.GetEditingBy(fileId).FirstOrDefault();
             }
 
-            var app = ThirdPartySelector.GetAppByFileId(fileId);
+            var app = ThirdPartySelector.GetAppByFileId(fileId.ToString());
             if (app == null)
             {
-                File fileStable;
-                fileStable = DaoFactory.FileDao.GetFileStable(fileId);
+                File<T> fileStable;
+                fileStable = DaoFactory.GetFileDao<T>().GetFileStable(fileId);
 
                 var docKey = DocumentServiceHelper.GetDocKey(fileStable);
                 if (!fileData.Key.Equals(docKey))
@@ -396,7 +395,7 @@ namespace ASC.Web.Files.Services.DocumentService
                 }
             }
 
-            File file = null;
+            File<T> file = null;
             var saveMessage = "Not saved";
 
             if (string.IsNullOrEmpty(fileData.Url))
@@ -407,7 +406,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
                     file = EntryManager.CompleteVersionFile(fileId, 0, false, false);
 
-                    DaoFactory.FileDao.UpdateComment(file.ID, file.Version, string.Join("; ", comments));
+                    DaoFactory.GetFileDao<T>().UpdateComment(file.ID, file.Version, string.Join("; ", comments));
 
                     file = null;
                     Logger.ErrorFormat("DocService save error. Empty url. File id: '{0}'. UserId: {1}. DocKey '{2}'", fileId, userId, fileData.Key);
@@ -602,7 +601,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        private void StoringFileAfterError(string fileId, string userId, string downloadUri)
+        private void StoringFileAfterError<T>(T fileId, string userId, string downloadUri)
         {
             try
             {
@@ -633,7 +632,7 @@ namespace ASC.Web.Files.Services.DocumentService
             }
         }
 
-        private void SaveHistory(File file, string changes, string differenceUrl)
+        private void SaveHistory<T>(File<T> file, string changes, string differenceUrl)
         {
             if (file == null) return;
             if (file.ProviderEntry) return;
@@ -641,7 +640,7 @@ namespace ASC.Web.Files.Services.DocumentService
 
             try
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 var req = (HttpWebRequest)WebRequest.Create(differenceUrl);
 
                 // hack. http://ubuntuforums.org/showthread.php?t=1841740

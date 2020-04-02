@@ -40,23 +40,23 @@ namespace ASC.Files.Core
 {
     [DebuggerDisplay("{Id} into {FolderId}")]
     [Serializable]
-    public class ChunkedUploadSession : CommonChunkedUploadSession
+    public class ChunkedUploadSession<T> : CommonChunkedUploadSession
     {
-        public string FolderId { get; set; }
+        public T FolderId { get; set; }
 
-        public File File { get; set; }
+        public File<T> File { get; set; }
 
         public bool Encrypted { get; set; }
 
-        public ChunkedUploadSession(File file, long bytesTotal) : base(bytesTotal)
+        public ChunkedUploadSession(File<T> file, long bytesTotal) : base(bytesTotal)
         {
             File = file;
         }
 
         public override object Clone()
         {
-            var clone = (ChunkedUploadSession)MemberwiseClone();
-            clone.File = (File)File.Clone();
+            var clone = (ChunkedUploadSession<T>)MemberwiseClone();
+            clone.File = (File<T>)File.Clone();
             return clone;
         }
     }
@@ -73,7 +73,7 @@ namespace ASC.Files.Core
         }
 
 
-        public object ToResponseObject(ChunkedUploadSession session, bool appendBreadCrumbs = false)
+        public object ToResponseObject<T>(ChunkedUploadSession<T> session, bool appendBreadCrumbs = false)
         {
             var pathFolder = appendBreadCrumbs
                                  ? EntryManager.GetBreadCrumbs(session.FolderId).Select(f =>
@@ -82,11 +82,11 @@ namespace ASC.Files.Core
                                      if (f == null)
                                      {
                                          Logger.ErrorFormat("GetBreadCrumbs {0} with null", session.FolderId);
-                                         return string.Empty;
+                                         return default;
                                      }
                                      return f.ID;
                                  })
-                                 : new List<object> { session.FolderId };
+                                 : new List<T> { session.FolderId };
 
             return new
             {

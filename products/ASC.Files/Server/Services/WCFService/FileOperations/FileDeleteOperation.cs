@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 using ASC.Core.Tenants;
 using ASC.Files.Core;
@@ -39,13 +40,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations
 {
-    internal class FileDeleteOperationData : FileOperationData
+    internal class FileDeleteOperationData<T> : FileOperationData<T>
     {
         public bool IgnoreException { get; }
         public bool Immediately { get; }
         public Dictionary<string, string> Headers { get; }
 
-        public FileDeleteOperationData(List<object> folders, List<object> files, Tenant tenant,
+        public FileDeleteOperationData(IEnumerable<object> folders, IEnumerable<object> files, Tenant tenant,
+            bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
+            : this(folders.OfType<T>(), files.OfType<T>(), tenant, holdResult, ignoreException, immediately, headers)
+        {
+        }
+
+        public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
             bool holdResult = true, bool ignoreException = false, bool immediately = false, Dictionary<string, string> headers = null)
             : base(folders, files, tenant, holdResult)
         {
@@ -55,9 +62,22 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
     }
 
-    class FileDeleteOperation : FileOperation<FileDeleteOperationData>
+    class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>, FileDeleteOperationData<int>>
     {
-        private object _trashId;
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
+            : base(serviceProvider, f1, f2)
+        {
+        }
+
+        public override FileOperationType OperationType
+        {
+            get { return FileOperationType.Delete; }
+        }
+    }
+
+    class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
+    {
+        private int _trashId;
         private readonly bool _ignoreException;
         private readonly bool _immediately;
         private readonly Dictionary<string, string> _headers;
@@ -68,7 +88,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
         }
 
 
-        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData fileOperationData)
+        public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData)
             : base(serviceProvider, fileOperationData)
         {
             _ignoreException = fileOperationData.IgnoreException;
@@ -79,9 +99,10 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
 
         protected override void Do(IServiceScope scope)
         {
-            _trashId = FolderDao.GetFolderIDTrash(true);
+            var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
+            _trashId = folderDao.GetFolderIDTrash(true);
 
-            Folder root = null;
+            Folder<T> root = null;
             if (0 < Folders.Count)
             {
                 root = FolderDao.GetRootFolder(Folders[0]);
@@ -92,14 +113,14 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
             if (root != null)
             {
-                Status += string.Format("folder_{0}{1}", root.ID, FileOperation.SPLIT_CHAR);
+                Status += string.Format("folder_{0}{1}", root.ID, SPLIT_CHAR);
             }
 
             DeleteFiles(Files, scope);
             DeleteFolders(Folders, scope);
         }
 
-        private void DeleteFolders(IEnumerable<object> folderIds, IServiceScope scope)
+        private void DeleteFolders(IEnumerable<T> folderIds, IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
@@ -109,7 +130,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 CancellationToken.ThrowIfCancellationRequested();
 
                 var folder = FolderDao.GetFolder(folderId);
-                object canCalculate = null;
+                T canCalculate = default;
                 if (folder == null)
                 {
                     Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -120,13 +141,13 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                 }
                 else if (!_ignoreException && !FilesSecurity.CanDelete(folder))
                 {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? null : folderId;
+                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                     Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
                 }
                 else
                 {
-                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? null : folderId;
+                    canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                     fileMarker.RemoveMarkAsNewForAll(folder);
                     if (folder.ProviderEntry && folder.ID.Equals(folder.RootFolderId))
@@ -142,7 +163,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     else
                     {
                         var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
-                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, null))
+                        if (immediately && FolderDao.UseRecursiveOperation(folder.ID, default(T)))
                         {
                             DeleteFiles(FileDao.GetFiles(folder.ID), scope);
                             DeleteFolders(FolderDao.GetFolders(folder.ID).Select(f => f.ID).ToList(), scope);
@@ -184,7 +205,7 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
             }
         }
 
-        private void DeleteFiles(IEnumerable<object> fileIds, IServiceScope scope)
+        private void DeleteFiles(IEnumerable<T> fileIds, IServiceScope scope)
         {
             var fileMarker = scope.ServiceProvider.GetService<FileMarker>();
             var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
@@ -225,11 +246,11 @@ namespace ASC.Web.Files.Services.WCFService.FileOperations
                     }
                     ProcessedFile(fileId);
                 }
-                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? null : fileId);
+                ProgressStep(fileId: FolderDao.CanCalculateSubitems(fileId) ? default : fileId);
             }
         }
 
-        private bool WithError(IServiceScope scope, IEnumerable<File> files, bool folder, out string error)
+        private bool WithError(IServiceScope scope, IEnumerable<File<T>> files, bool folder, out string error)
         {
             var entryManager = scope.ServiceProvider.GetService<EntryManager>();
 
