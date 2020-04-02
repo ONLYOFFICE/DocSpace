@@ -1,26 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  Backdrop,
-  Heading,
-  Aside,
-  IconButton,
-  toastr
-} from "asc-web-components";
-import { GroupSelector } from "asc-web-common";
-import { getUsersOfGroups } from "../../store/files/actions";
+import { Backdrop, Heading, Aside, IconButton } from "asc-web-components";
+import { PeopleSelector, utils } from "asc-web-common";
+import { withTranslation } from "react-i18next";
+import i18n from "./i18n";
 import {
   StyledPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
-} from "./StyledPanels";
+} from "../StyledPanels";
 
-class AddGroupPanel extends React.Component {
+const { changeLanguage } = utils;
+
+class AddUsersPanelComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { showActionPanel: false };
+    changeLanguage(i18n);
+
+    this.state = {
+      showActionPanel: false
+    };
   }
 
   onPlusClick = () =>
@@ -35,18 +36,23 @@ class AddGroupPanel extends React.Component {
     this.props.onSharingPanelClose();
   };
 
-  onSelectGroups = groups => {
-    const groupIds = [];
-    for (let item of groups) {
-      groupIds.push(item.key);
+  onPeopleSelect = users => {
+    const { accessRight, shareData, setShareData, onClose } = this.props;
+    const items = shareData;
+    for (let item of users) {
+      if (item.key) {
+        item.id = item.key;
+        delete item.key;
+      }
+      const currentItem = shareData.find(x => x.id === item.id);
+      if (!currentItem) {
+        item.rights = accessRight;
+        items.push(item);
+      }
     }
 
-    getUsersOfGroups(groupIds)
-      .then(res => {
-        this.props.onSetSelectedUsers(res);
-        this.props.onClose();
-      })
-      .catch(err => toastr.error(err));
+    setShareData(items);
+    onClose();
   };
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -69,12 +75,11 @@ class AddGroupPanel extends React.Component {
   }
 
   render() {
-    const { visible, embeddedComponent } = this.props;
+    const { visible, embeddedComponent, t } = this.props;
 
-    const headerText = "Add group";
     const zIndex = 310;
 
-    //console.log("AddGroupPanel render");
+    //console.log("AddUsersPanel render");
     return (
       <StyledPanel visible={visible}>
         <Backdrop
@@ -95,7 +100,7 @@ class AddGroupPanel extends React.Component {
                 size="medium"
                 truncate
               >
-                {headerText}
+                {t("LinkText")}
               </Heading>
               <IconButton
                 size="16"
@@ -106,14 +111,17 @@ class AddGroupPanel extends React.Component {
             </StyledHeaderContent>
 
             <StyledBody>
-              <GroupSelector
-                isOpen={visible}
-                isMultiSelect
+              <PeopleSelector
                 displayType="aside"
                 withoutAside
-                onSelect={this.onSelectGroups}
+                isOpen={visible}
+                isMultiSelect
+                onSelect={this.onPeopleSelect}
                 embeddedComponent={embeddedComponent}
-                //onCancel={onCloseGroupSelector}
+
+                //onCancel={this.onCancelSelector}
+                //groupsCaption={groupsCaption}
+                //defaultOptionLabel={t("MeLabel")}
               />
             </StyledBody>
           </StyledContent>
@@ -123,11 +131,18 @@ class AddGroupPanel extends React.Component {
   }
 }
 
-AddGroupPanel.propTypes = {
+AddUsersPanelComponent.propTypes = {
   visible: PropTypes.bool,
   onSharingPanelClose: PropTypes.func,
-  onClose: PropTypes.func,
-  onSetSelectedUsers: PropTypes.func
+  onClose: PropTypes.func
 };
 
-export default AddGroupPanel;
+const AddUsersPanelContainerTranslated = withTranslation()(
+  AddUsersPanelComponent
+);
+
+const AddUsersPanel = props => (
+  <AddUsersPanelContainerTranslated i18n={i18n} {...props} />
+);
+
+export default AddUsersPanel;

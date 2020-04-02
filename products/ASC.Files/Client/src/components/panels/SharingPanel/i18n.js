@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === "production") {
         useSuspense: true
       },
       backend: {
-        loadPath: `${config.homepage}/locales/DeleteDialog/{{lng}}/{{ns}}.json`
+        loadPath: `${config.homepage}/locales/SharingPanel/{{lng}}/{{ns}}.json`
       }
     });
 } else if (process.env.NODE_ENV === "development") {

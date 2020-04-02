@@ -130,3 +130,20 @@ export const isCanBeDeleted = (selectedFolder, user) => {
       return false;
   }
 };
+
+//TODO: Get the whole list of extensions
+export const getAccessOption = selection => {
+  const isFolder = selection.find(x => x.fileExst === undefined);
+  const isMedia = selection.find(
+    x => x.fileExst === ".mp3" || x.fileExst === ".mp4"
+  );
+  const isPresentationOrTable = selection.find(x => x.fileExst === ".pptx" || x.fileExst === ".xlsx");
+
+  if (isFolder || isMedia) {
+    return ["FullAccess", "ReadOnly", "DenyAccess"];
+  } else if (isPresentationOrTable) {
+    return ["FullAccess", "ReadOnly", "DenyAccess", "Comment"];
+  } else {
+    return ["FullAccess", "ReadOnly", "DenyAccess", "Comment", "Review", "FormFilling"];
+  }
+};
