@@ -257,7 +257,7 @@ namespace ASC.Api.Documents
         /// <param name="userIdOrGroupId" optional="true">User or group ID</param>
         /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
         /// <returns>Folder contents</returns>
-        [Read("{folderId}", order: int.MaxValue)]
+        [Read("{folderId}", order: int.MaxValue, DisableFormat = true)]
         public FolderContentWrapper<string> GetFolder(string folderId, Guid userIdOrGroupId, FilterType filterType, bool withsubfolders)
         {
             return FilesControllerHelperString.GetFolder(folderId, userIdOrGroupId, filterType, withsubfolders).NotFoundIfNull();
@@ -342,7 +342,7 @@ namespace ASC.Api.Documents
         /// <param name="storeOriginalFileFlag" visible="false">If True, upload documents in original formats as well</param>
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <returns>Uploaded file</returns>
-        [Create("{folderId}/upload")]
+        [Create("{folderId}/upload", DisableFormat = true)]
         public List<FileWrapper<string>> UploadFile(string folderId, UploadModel uploadModel)
         {
             return FilesControllerHelperString.UploadFile(folderId, uploadModel);
@@ -394,7 +394,7 @@ namespace ASC.Api.Documents
         /// <param name="keepConvertStatus" visible="false">Keep status conversation after finishing</param>
         /// <category>Uploads</category>
         /// <returns></returns>
-        [Create("{folderId}/insert")]
+        [Create("{folderId}/insert", DisableFormat = true)]
         public FileWrapper<string> InsertFile(string folderId, Stream file, string title, bool? createNewIfExist, bool keepConvertStatus = false)
         {
             return FilesControllerHelperString.InsertFile(folderId, file, title, createNewIfExist, keepConvertStatus);
@@ -414,7 +414,7 @@ namespace ASC.Api.Documents
         /// <param name="encrypted"></param>
         /// <returns></returns>
         /// <visible>false</visible>
-        [Update("{fileId}/update")]
+        [Update("{fileId}/update", DisableFormat = true)]
         public FileWrapper<string> UpdateFileStream(Stream file, string fileId, bool encrypted = false)
         {
             return FilesControllerHelperString.UpdateFileStream(file, fileId, encrypted);
@@ -438,7 +438,7 @@ namespace ASC.Api.Documents
         /// <param name="forcesave"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Update("file/{fileId}/saveediting")]
+        [Update("file/{fileId}/saveediting", DisableFormat = true)]
         public FileWrapper<string> SaveEditing(string fileId, string fileExtension, string downloadUri, Stream stream, string doc, bool forcesave)
         {
             return FilesControllerHelperString.SaveEditing(fileId, fileExtension, downloadUri, stream, doc, forcesave);
@@ -458,7 +458,7 @@ namespace ASC.Api.Documents
         /// <param name="doc"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Create("file/{fileId}/startedit")]
+        [Create("file/{fileId}/startedit", DisableFormat = true)]
         public string StartEdit(string fileId, bool editingAlone, string doc)
         {
             return FilesControllerHelperString.StartEdit(fileId, editingAlone, doc);
@@ -480,7 +480,7 @@ namespace ASC.Api.Documents
         /// <param name="isFinish"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Read("file/{fileId}/trackeditfile")]
+        [Read("file/{fileId}/trackeditfile", DisableFormat = true)]
         public KeyValuePair<bool, string> TrackEditFile(string fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
         {
             return FilesControllerHelperString.TrackEditFile(fileId, tabId, docKeyForTrack, doc, isFinish);
@@ -500,7 +500,7 @@ namespace ASC.Api.Documents
         /// <param name="doc"></param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Read("file/{fileId}/openedit")]
+        [Read("file/{fileId}/openedit", DisableFormat = true)]
         public Configuration<string> OpenEdit(string fileId, int version, string doc)
         {
             return FilesControllerHelperString.OpenEdit(fileId, version, doc);
@@ -545,7 +545,7 @@ namespace ASC.Api.Documents
         /// </ul>
         /// ]]>
         /// </returns>
-        [Create("{folderId}/upload/create_session")]
+        [Create("{folderId}/upload/create_session", DisableFormat = true)]
         public object CreateUploadSession(string folderId, string fileName, long fileSize, string relativePath, bool encrypted)
         {
             return FilesControllerHelperString.CreateUploadSession(folderId, fileName, fileSize, relativePath, encrypted);
@@ -594,7 +594,7 @@ namespace ASC.Api.Documents
         /// <param name="title">File title</param>
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
-        [Create("{folderId}/text")]
+        [Create("{folderId}/text", DisableFormat = true)]
         public FileWrapper<string> CreateTextFile(string folderId, string title, string content)
         {
             return FilesControllerHelperString.CreateTextFile(folderId, title, content);
@@ -615,7 +615,7 @@ namespace ASC.Api.Documents
         /// <param name="title">File title</param>
         /// <param name="content">File contents</param>
         /// <returns>Folder contents</returns>
-        [Create("{folderId}/html")]
+        [Create("{folderId}/html", DisableFormat = true)]
         public FileWrapper<string> CreateHtmlFile(string folderId, string title, string content)
         {
             return FilesControllerHelperString.CreateHtmlFile(folderId, title, content);
@@ -667,7 +667,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Parent folder ID</param>
         /// <param name="title">Title of new folder</param>
         /// <returns>New folder contents</returns>
-        [Create("folder/{folderId}")]
+        [Create("folder/{folderId}", DisableFormat = true)]
         public FolderWrapper<string> CreateFolder(string folderId, string title)
         {
             return FilesControllerHelperString.CreateFolder(folderId, title);
@@ -703,7 +703,7 @@ namespace ASC.Api.Documents
         /// <param name="title" remark="Allowed values: the file must have one of the following extensions: DOCX, XLSX, PPTX">File title</param>
         /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
         /// <returns>New file info</returns>
-        [Create("{folderId}/file")]
+        [Create("{folderId}/file", DisableFormat = true)]
         public FileWrapper<string> CreateFile(string folderId, string title)
         {
             return FilesControllerHelperString.CreateFile(folderId, title);
@@ -725,7 +725,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Folder ID</param>
         /// <param name="title">New title</param>
         /// <returns>Folder contents</returns>
-        [Update("folder/{folderId}")]
+        [Update("folder/{folderId}", DisableFormat = true)]
         public FolderWrapper<string> RenameFolder(string folderId, string title)
         {
             return FilesControllerHelperString.RenameFolder(folderId, title);
@@ -743,7 +743,7 @@ namespace ASC.Api.Documents
         /// <short>Folder information</short>
         /// <category>Folders</category>
         /// <returns>Folder info</returns>
-        [Read("folder/{folderId}")]
+        [Read("folder/{folderId}", DisableFormat = true)]
         public FolderWrapper<string> GetFolderInfo(string folderId)
         {
             return FilesControllerHelperString.GetFolderInfo(folderId);
@@ -761,7 +761,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId"></param>
         /// <category>Folders</category>
         /// <returns>Parent folders</returns>
-        [Read("folder/{folderId}/path")]
+        [Read("folder/{folderId}/path", DisableFormat = true)]
         public IEnumerable<FolderWrapper<string>> GetFolderPath(string folderId)
         {
             return FilesControllerHelperString.GetFolderPath(folderId);
@@ -800,7 +800,7 @@ namespace ASC.Api.Documents
         /// <param name="title">New title</param>
         /// <param name="lastVersion">File last version number</param>
         /// <returns>File info</returns>
-        [Update("file/{fileId}")]
+        [Update("file/{fileId}", DisableFormat = true)]
         public FileWrapper<string> UpdateFile(string fileId, string title, int lastVersion)
         {
             return FilesControllerHelperString.UpdateFile(fileId, title, lastVersion);
@@ -821,7 +821,7 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
-        [Delete("file/{fileId}")]
+        [Delete("file/{fileId}", DisableFormat = true)]
         public IEnumerable<FileOperationWraper> DeleteFile(string fileId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFile(fileId, deleteAfter, immediately);
@@ -840,7 +840,7 @@ namespace ASC.Api.Documents
         /// <category>File operations</category>
         /// <param name="fileId"></param>
         /// <returns>Operation result</returns>
-        [Update("file/{fileId}/checkconversion")]
+        [Update("file/{fileId}/checkconversion", DisableFormat = true)]
         public IEnumerable<ConversationResult<string>> StartConversion(string fileId)
         {
             return FilesControllerHelperString.StartConversion(fileId);
@@ -860,7 +860,7 @@ namespace ASC.Api.Documents
         /// <param name="fileId"></param>
         /// <param name="start"></param>
         /// <returns>Operation result</returns>
-        [Read("file/{fileId}/checkconversion")]
+        [Read("file/{fileId}/checkconversion", DisableFormat = true)]
         public IEnumerable<ConversationResult<string>> CheckConversion(string fileId, bool start)
         {
             return FilesControllerHelperString.CheckConversion(fileId, start);
@@ -881,7 +881,7 @@ namespace ASC.Api.Documents
         /// <param name="deleteAfter">Delete after finished</param>
         /// <param name="immediately">Don't move to the Recycle Bin</param>
         /// <returns>Operation result</returns>
-        [Delete("folder/{folderId}")]
+        [Delete("folder/{folderId}", DisableFormat = true)]
         public IEnumerable<FileOperationWraper> DeleteFolder(string folderId, bool deleteAfter, bool immediately)
         {
             return FilesControllerHelperString.DeleteFolder(folderId, deleteAfter, immediately);
@@ -1029,7 +1029,7 @@ namespace ASC.Api.Documents
         /// <category>Files</category>
         /// <param name="fileId">File ID</param>
         /// <returns>File information</returns>
-        [Read("file/{fileId}/history")]
+        [Read("file/{fileId}/history", DisableFormat = true)]
         public IEnumerable<FileWrapper<string>> GetFileVersionInfo(string fileId)
         {
             return FilesControllerHelperString.GetFileVersionInfo(fileId);
@@ -1049,7 +1049,7 @@ namespace ASC.Api.Documents
         /// <param name="continueVersion">Mark as version or revision</param>
         /// <category>Files</category>
         /// <returns></returns>
-        [Update("file/{fileId}/history")]
+        [Update("file/{fileId}/history", DisableFormat = true)]
         public IEnumerable<FileWrapper<string>> ChangeHistory(string fileId, int version, bool continueVersion)
         {
             return FilesControllerHelperString.ChangeHistory(fileId, version, continueVersion);
@@ -1067,7 +1067,7 @@ namespace ASC.Api.Documents
         /// <category>Sharing</category>
         /// <param name="fileId">File ID</param>
         /// <returns>Shared file information</returns>
-        [Read("file/{fileId}/share")]
+        [Read("file/{fileId}/share", DisableFormat = true)]
         public IEnumerable<FileShareWrapper> GetFileSecurityInfo(string fileId)
         {
             return FilesControllerHelperString.GetFileSecurityInfo(fileId);
@@ -1086,7 +1086,7 @@ namespace ASC.Api.Documents
         /// <param name="folderId">Folder ID</param>
         /// <category>Sharing</category>
         /// <returns>Shared folder information</returns>
-        [Read("folder/{folderId}/share")]
+        [Read("folder/{folderId}/share", DisableFormat = true)]
         public IEnumerable<FileShareWrapper> GetFolderSecurityInfo(string folderId)
         {
             return FilesControllerHelperString.GetFolderSecurityInfo(folderId);
@@ -1111,7 +1111,7 @@ namespace ASC.Api.Documents
         /// Each of the FileShareParams must contain two parameters: 'ShareTo' - ID of the user with whom we want to share and 'Access' - access type which we want to grant to the user (Read, ReadWrite, etc) 
         /// </remarks>
         /// <returns>Shared file information</returns>
-        [Update("file/{fileId}/share")]
+        [Update("file/{fileId}/share", DisableFormat = true)]
         public IEnumerable<FileShareWrapper> SetFileSecurityInfo(string fileId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
             return FilesControllerHelperString.SetFileSecurityInfo(fileId, share, notify, sharingMessage);
@@ -1136,7 +1136,7 @@ namespace ASC.Api.Documents
         /// </remarks>
         /// <category>Sharing</category>
         /// <returns>Shared folder information</returns>
-        [Update("folder/{folderId}/share")]
+        [Update("folder/{folderId}/share", DisableFormat = true)]
         public IEnumerable<FileShareWrapper> SetFolderSecurityInfo(string folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
         {
             return FilesControllerHelperString.SetFolderSecurityInfo(folderId, share, notify, sharingMessage);
@@ -1178,7 +1178,7 @@ namespace ASC.Api.Documents
         /// <param name="share">Access right</param>
         /// <category>Files</category>
         /// <returns>Shared file link</returns>
-        [Update("{fileId}/sharedlink")]
+        [Update("{fileId}/sharedlink", DisableFormat = true)]
         public string GenerateSharedLink(string fileId, FileShare share)
         {
             return FilesControllerHelperString.GenerateSharedLink(fileId, share);
