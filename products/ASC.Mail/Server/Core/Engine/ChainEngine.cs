@@ -293,51 +293,6 @@ namespace ASC.Mail.Core.Engine
             return messages;
         }
 
-        public List<MailInfo> GetChainedMessagesInfo(List<int> ids)
-        {
-            var chainsInfo = DaoFactory.MailInfoDao.GetMailInfoList(
-                SimpleMessagesExp.CreateBuilder(Tenant, User)
-                    .SetMessageIds(ids)
-                    .Build());
-
-            var chainArray = chainsInfo.Select(r => r.ChainId).Distinct().ToArray();
-
-            const int max_query_count = 25;
-            var i = 0;
-            var unsortedMessages = new List<MailInfo>();
-
-            do
-            {
-                var partChains = chainArray.Skip(i).Take(max_query_count).ToList();
-
-                if (!partChains.Any())
-                    break;
-
-                var exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
-                        .SetChainIds(partChains)
-                        .Build();
-
-                var selectedMessages = DaoFactory.MailInfoDao
-                    .GetMailInfoList(exp);
-
-                unsortedMessages.AddRange(selectedMessages);
-
-                i += max_query_count;
-
-            } while (true);
-
-            var result = unsortedMessages
-                .Where(r => chainsInfo.FirstOrDefault(c =>
-                    c.ChainId == r.ChainId &&
-                    c.MailboxId == r.MailboxId &&
-                    ((r.Folder == FolderType.Inbox || r.Folder == FolderType.Sent)
-                        ? c.Folder == FolderType.Inbox || c.Folder == FolderType.Sent
-                        : c.Folder == r.Folder)) != null)
-                .ToList();
-
-            return result;
-        }
-
         public void SetConversationsFolder(List<int> ids, FolderType folder, uint? userFolderId = null)
         {
             if (!ids.Any())
@@ -345,7 +300,7 @@ namespace ASC.Mail.Core.Engine
 
             List<MailInfo> listObjects;
 
-            listObjects = GetChainedMessagesInfo(ids);
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
             if (!listObjects.Any())
                 return;
@@ -395,7 +350,7 @@ namespace ASC.Mail.Core.Engine
 
             List<MailInfo> listObjects;
 
-            listObjects = GetChainedMessagesInfo(ids);
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
             if (!listObjects.Any())
                 return;
@@ -439,7 +394,7 @@ namespace ASC.Mail.Core.Engine
 
             List<MailInfo> listObjects;
 
-            listObjects = GetChainedMessagesInfo(ids);
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
             if (!listObjects.Any())
                 return;
@@ -465,7 +420,7 @@ namespace ASC.Mail.Core.Engine
         {
             List<MailInfo> mailInfos;
 
-            mailInfos = GetChainedMessagesInfo(ids);
+            mailInfos = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
             var chainsInfo = mailInfos
                 .Select(m => new
@@ -659,7 +614,7 @@ namespace ASC.Mail.Core.Engine
                     "ChainDate",
                     chainInfo.date);
 
-                var tags = GetChainTags(chainId, folder, mailboxId, tenant, user);
+                var tags = DaoFactory.TagMailDao.GetChainTags(chainId, folder, mailboxId);
 
                 var chain = new Chain
                 {
@@ -703,40 +658,6 @@ namespace ASC.Mail.Core.Engine
                 FolderEngine.ChangeFolderCounters(folder, userFolderId,
                     unreadConvDiff: unreadConvDiff, totalConvDiff: totalConvDiff);
             }
-        }
-
-        public void UpdateChainTags(IDaoFactory daoFactory, string chainId, FolderType folder, int mailboxId, int tenant, string user)
-        {
-            var tags = GetChainTags(chainId, folder, mailboxId, tenant, user);
-
-            var updateQuery = SimpleConversationsExp.CreateBuilder(tenant, user)
-                    .SetChainId(chainId)
-                    .SetMailboxId(mailboxId)
-                    .SetFolder((int)folder)
-                    .Build();
-
-            DaoFactory.ChainDao.SetFieldValue(
-                updateQuery,
-                "Tags",
-                tags);
-        }
-
-        private string GetChainTags(string chainId, FolderType folder, int mailboxId, int tenant, string user)
-        {
-            var tags = DaoFactory.MailDb.MailTagMail.Join(DaoFactory.MailDb.MailMail, t => t.IdMail, m => m.Id,
-                (t, m) => new
-                {
-                    Tag = t,
-                    Mail = m
-                })
-                .Where(g => g.Mail.ChainId == chainId && g.Mail.IsRemoved == false && g.Mail.Folder == (int)folder && g.Mail.IdMailbox == mailboxId)
-                .Where(g => g.Tag.Tenant == Tenant && g.Tag.IdUser == User)
-                .OrderBy(g => g.Tag.TimeCreated)
-                .GroupBy(g => g.Tag.IdTag)
-                .Select(g => g.Key)
-                .ToList();
-
-            return string.Join(",", tags);
         }
 
         private List<MailMessageData> GetFilteredConversations(MailSearchFilterData filter, out bool hasMore)

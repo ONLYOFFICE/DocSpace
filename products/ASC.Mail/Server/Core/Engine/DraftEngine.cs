@@ -396,7 +396,7 @@ namespace ASC.Mail.Core.Engine
                 ChainEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                     draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
-                var listObjects = ChainEngine.GetChainedMessagesInfo(new List<int> { draft.Id });
+                var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
 
                 if (!listObjects.Any())
                     return;
@@ -418,7 +418,7 @@ namespace ASC.Mail.Core.Engine
         {
             using (var tx = DaoFactory.BeginTransaction())
             {
-                var listObjects = ChainEngine.GetChainedMessagesInfo(new List<int> { draft.Id });
+                var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
 
                 if (!listObjects.Any())
                     return;

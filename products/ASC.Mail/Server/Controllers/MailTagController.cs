@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ASC.Mail.Controllers
 {
-    /*public partial class MailController : ControllerBase
+    public partial class MailController : ControllerBase
     {
         /// <summary>
         ///    Returns list of the tags used in Mail
@@ -149,5 +149,5 @@ namespace ASC.Mail.Controllers
 
             return id;
         }
-    }*/
+    }
 }

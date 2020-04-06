@@ -109,7 +109,7 @@ namespace ASC.Mail.Core.Engine
             if (!tlMailboxesIds.Any())
                 return streamList;
 
-            streamList = ChainEngine.GetChainedMessagesInfo(ids)
+            streamList = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids)
                 .Where(r => r.FolderRestore != FolderType.Sent)
                 .Where(r => tlMailboxesIds.Contains(r.MailboxId))
                 .ToDictionary(r => r.Id, r => r.Stream);

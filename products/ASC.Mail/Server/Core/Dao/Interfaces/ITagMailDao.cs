@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Mail.Enums;
 using System.Collections.Generic;
 
 namespace ASC.Mail.Core.Dao.Interfaces
@@ -44,6 +45,8 @@ namespace ASC.Mail.Core.Dao.Interfaces
         List<int> GetTagIds(List<int> mailIds);
 
         List<int> GetTagIds(int mailboxId);
+
+        string GetChainTags(string chainId, FolderType folder, int mailboxId);
 
         int Delete(int tagId, List<int> mailIds);
 

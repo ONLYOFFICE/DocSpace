@@ -30,6 +30,7 @@ using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -199,7 +200,6 @@ namespace ASC.Mail.Core.Dao
             //return Db.ExecuteList(query)
             //    .ConvertAll(ToCrmTag);
         }
-
         public int SaveTag(Tag tag)
         {
             var dbTag = new MailTag()

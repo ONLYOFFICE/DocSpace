@@ -346,7 +346,7 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                chainedMessages = ChainEngine.GetChainedMessagesInfo(ids);
+                chainedMessages = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
 
                 if (!chainedMessages.Any())
                     return true;

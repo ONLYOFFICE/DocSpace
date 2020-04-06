@@ -285,6 +285,50 @@ namespace ASC.Mail.Core.Dao
             return result;
         }
 
+        public List<MailInfo> GetChainedMessagesInfo(List<int> ids)
+        {
+            var chainsInfo = GetMailInfoList(
+                SimpleMessagesExp.CreateBuilder(Tenant, UserId)
+                    .SetMessageIds(ids)
+                    .Build());
+
+            var chainArray = chainsInfo.Select(r => r.ChainId).Distinct().ToArray();
+
+            const int max_query_count = 25;
+            var i = 0;
+            var unsortedMessages = new List<MailInfo>();
+
+            do
+            {
+                var partChains = chainArray.Skip(i).Take(max_query_count).ToList();
+
+                if (!partChains.Any())
+                    break;
+
+                var exp = SimpleMessagesExp.CreateBuilder(Tenant, UserId)
+                        .SetChainIds(partChains)
+                        .Build();
+
+                var selectedMessages = GetMailInfoList(exp);
+
+                unsortedMessages.AddRange(selectedMessages);
+
+                i += max_query_count;
+
+            } while (true);
+
+            var result = unsortedMessages
+                .Where(r => chainsInfo.FirstOrDefault(c =>
+                    c.ChainId == r.ChainId &&
+                    c.MailboxId == r.MailboxId &&
+                    ((r.Folder == FolderType.Inbox || r.Folder == FolderType.Sent)
+                        ? c.Folder == FolderType.Inbox || c.Folder == FolderType.Sent
+                        : c.Folder == r.Folder)) != null)
+                .ToList();
+
+            return result;
+        }
+
         protected MailInfo ToMailInfo(MailMail r, string labelsString)
         {
             var mailInfo = new MailInfo

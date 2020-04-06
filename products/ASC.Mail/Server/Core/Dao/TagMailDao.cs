@@ -31,6 +31,7 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao.Entities;
 using ASC.Mail.Core.Dao.Interfaces;
+using ASC.Mail.Enums;
 
 namespace ASC.Mail.Core.Dao
 {
@@ -120,6 +121,24 @@ namespace ASC.Mail.Core.Dao
                 .ToList();
 
             return tagIds;
+        }
+
+        public string GetChainTags(string chainId, FolderType folder, int mailboxId)
+        {
+            var tags = MailDb.MailTagMail.Join(MailDb.MailMail, t => t.IdMail, m => m.Id,
+                (t, m) => new
+                {
+                    Tag = t,
+                    Mail = m
+                })
+                .Where(g => g.Mail.ChainId == chainId && g.Mail.IsRemoved == false && g.Mail.Folder == (int)folder && g.Mail.IdMailbox == mailboxId)
+                .Where(g => g.Tag.Tenant == Tenant && g.Tag.IdUser == UserId)
+                .OrderBy(g => g.Tag.TimeCreated)
+                .GroupBy(g => g.Tag.IdTag)
+                .Select(g => g.Key)
+                .ToList();
+
+            return string.Join(",", tags);
         }
 
         public int Delete(int tagId, List<int> mailIds)

@@ -31,9 +31,11 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao;
+using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
+using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Web.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,7 +71,6 @@ namespace ASC.Mail.Core.Engine
         public ApiContext ApiContext { get; }
         public ILog Log { get; }
         public DaoFactory DaoFactory { get; }
-        public ChainEngine ChainEngine { get; }
         public IndexEngine IndexEngine { get; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
@@ -80,7 +81,6 @@ namespace ASC.Mail.Core.Engine
             TenantManager tenantManager,
             SecurityContext securityContext,
             DaoFactory daoFactory,
-            ChainEngine chainEngine,
             IndexEngine indexEngine,
             WebItemSecurity webItemSecurity,
             FactoryIndexer<MailWrapper> factoryIndexer,
@@ -92,9 +92,9 @@ namespace ASC.Mail.Core.Engine
             SecurityContext = securityContext;
 
             DaoFactory = daoFactory;
-            ChainEngine = chainEngine;
-            IndexEngine = indexEngine;
             MailDb = DaoFactory.MailDb;
+
+            IndexEngine = indexEngine;
 
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
@@ -374,7 +374,7 @@ namespace ASC.Mail.Core.Engine
             
             foreach (var chain in chains)
             {
-                ChainEngine.UpdateChainTags(daoFactory, chain.Id, chain.Folder, chain.MailboxId, Tenant, UserId);
+                UpdateChainTags(chain.Id, chain.Folder, chain.MailboxId);
             }
 
             // Change time_modified for index
@@ -383,10 +383,25 @@ namespace ASC.Mail.Core.Engine
             return true;
         }
 
+        public void UpdateChainTags(string chainId, FolderType folder, int mailboxId)
+        {
+            var tags = DaoFactory.TagMailDao.GetChainTags(chainId, folder, mailboxId);
+
+            var updateQuery = SimpleConversationsExp.CreateBuilder(Tenant, UserId)
+                    .SetChainId(chainId)
+                    .SetMailboxId(mailboxId)
+                    .SetFolder((int)folder)
+                    .Build();
+
+            DaoFactory.ChainDao.SetFieldValue(
+                updateQuery,
+                "Tags",
+                tags);
+        }
+
         public void UnsetMessagesTag(List<int> messageIds, int tagId)
         {
             List<int> validIds;
-
 
             using (var tx = DaoFactory.BeginTransaction())
             {
@@ -401,8 +416,7 @@ namespace ASC.Mail.Core.Engine
 
                 foreach (var chain in chains)
                 {
-                    ChainEngine.UpdateChainTags(DaoFactory, chain.Id, chain.Folder, chain.MailboxId, Tenant,
-                        UserId);
+                    UpdateChainTags(chain.Id, chain.Folder, chain.MailboxId);
                 }
 
                 // Change time_modified for index
@@ -432,7 +446,7 @@ namespace ASC.Mail.Core.Engine
                     return;
                 }
 
-                var foundedChains = ChainEngine.GetChainedMessagesInfo(messagesIds.ToList());
+                var foundedChains = DaoFactory.MailInfoDao.GetChainedMessagesInfo(messagesIds.ToList());
 
                 if (!foundedChains.Any())
                 {
@@ -458,8 +472,7 @@ namespace ASC.Mail.Core.Engine
 
                 foreach (var chain in chains)
                 {
-                    ChainEngine.UpdateChainTags(DaoFactory, chain.Id, chain.Folder, chain.MailboxId, Tenant,
-                        UserId);
+                    UpdateChainTags(chain.Id, chain.Folder, chain.MailboxId);
                 }
 
                 // Change time_modified for index
@@ -481,7 +494,7 @@ namespace ASC.Mail.Core.Engine
 
             using (var tx = DaoFactory.BeginTransaction())
             {
-                var foundedChains = ChainEngine.GetChainedMessagesInfo(messagesIds.ToList());
+                var foundedChains = DaoFactory.MailInfoDao.GetChainedMessagesInfo(messagesIds.ToList());
 
                 if (!foundedChains.Any())
                 {
@@ -511,8 +524,7 @@ namespace ASC.Mail.Core.Engine
 
                 foreach (var chain in chains)
                 {
-                    ChainEngine.UpdateChainTags(DaoFactory, chain.Id, chain.Folder, chain.MailboxId, Tenant,
-                        UserId);
+                    UpdateChainTags(chain.Id, chain.Folder, chain.MailboxId);
                 }
 
                 // Change time_modified for index
@@ -592,7 +604,6 @@ namespace ASC.Mail.Core.Engine
             services.AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddDaoFactoryService()
-                .AddChainEngineService()
                 .AddIndexEngineService()
                 .AddWebItemSecurity()
                 .AddFactoryIndexerService<MailWrapper>()
