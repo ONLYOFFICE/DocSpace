@@ -35,7 +35,7 @@ class AddGroupsPanelComponent extends React.Component {
   };
 
   onSelectGroups = groups => {
-    const { accessRight, shareData, setShareData, onClose } = this.props;
+    const { accessRight, shareData, setShareDataItems, onClose } = this.props;
     const items = shareData;
 
     for (let item of groups) {
@@ -50,7 +50,7 @@ class AddGroupsPanelComponent extends React.Component {
       }
     }
 
-    setShareData(items);
+    setShareDataItems(items);
     onClose();
   };
 

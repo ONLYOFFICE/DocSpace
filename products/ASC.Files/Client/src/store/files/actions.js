@@ -29,6 +29,7 @@ export const SET_FILTER = "SET_FILTER";
 export const SELECT_FILE = "SELECT_FILE";
 export const DESELECT_FILE = "DESELECT_FILE";
 export const SET_ACTION = "SET_ACTION";
+export const SET_SHARE_DATA_ITEMS = "SET_SHARE_DATA_ITEMS";
 export const SET_SHARE_DATA = "SET_SHARE_DATA";
 
 export function setFile(file) {
@@ -77,6 +78,13 @@ export function setAction(fileAction) {
   return {
     type: SET_ACTION,
     fileAction
+  };
+}
+
+export function setShareDataItems(shareDataItems) {
+  return {
+    type: SET_SHARE_DATA_ITEMS,
+    shareDataItems
   };
 }
 

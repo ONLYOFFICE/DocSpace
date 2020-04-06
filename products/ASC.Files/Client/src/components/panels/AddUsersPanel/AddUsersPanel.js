@@ -37,7 +37,7 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   onPeopleSelect = users => {
-    const { accessRight, shareData, setShareData, onClose } = this.props;
+    const { accessRight, shareData, setShareDataItems, onClose } = this.props;
     const items = shareData;
     for (let item of users) {
       if (item.key) {
@@ -51,7 +51,7 @@ class AddUsersPanelComponent extends React.Component {
       }
     }
 
-    setShareData(items);
+    setShareDataItems(items);
     onClose();
   };
 

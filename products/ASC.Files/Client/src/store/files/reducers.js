@@ -12,7 +12,8 @@ import {
   SET_SELECTION,
   SELECT_FILE,
   DESELECT_FILE,
-  SET_SHARE_DATA
+  SET_SHARE_DATA,
+  SET_SHARE_DATA_ITEMS
 } from "./actions";
 import { api } from "asc-web-common";
 import { isFileSelected, skipFile, getFilesBySelected } from "./selectors";
@@ -29,7 +30,8 @@ const initialState = {
   selected: "none",
   selectedFolder: null,
   selection: [],
-  shareData: []
+  shareData: [],
+  shareDataItems: []
 };
 
 const filesReducer = (state = initialState, action) => {
@@ -79,6 +81,10 @@ const filesReducer = (state = initialState, action) => {
       return Object.assign({}, state, {
         filter: action.filter
       });
+    case SET_SHARE_DATA_ITEMS:
+      return Object.assign({}, state, {
+        shareDataItems: action.shareDataItems
+      })
     case SET_SHARE_DATA:
       return Object.assign({}, state, {
         shareData: action.shareData

@@ -25,7 +25,7 @@ import {
   isCanBeDeleted,
   getAccessOption
 } from "../../../../../store/files/selectors";
-import { setShareData } from "../../../../../store/files/actions";
+import { setShareDataItems } from "../../../../../store/files/actions";
 
 const { isAdmin } = store.auth.selectors;
 const { FilterType, FileAction } = constants;
@@ -326,8 +326,8 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       accessOptions,
-      setShareData,
-      shareData
+      setShareDataItems,
+      shareDataItems
     } = this.props;
     const {
       accessRight,
@@ -373,7 +373,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: !isItemsSelected || shareData.length === 0,
+        disabled: !isItemsSelected || shareDataItems.length === 0,
         onClick: this.onOpenSharingPanel
       },
       {
@@ -580,9 +580,9 @@ class SectionHeaderContent extends React.Component {
           onClose={this.onShowUsersPanel}
           visible={showAddUsersPanel}
           embeddedComponent={accessOptionsComboBox}
-          setShareData={setShareData}
+          setShareDataItems={setShareDataItems}
           accessRight={accessRight}
-          shareData={shareData}
+          shareDataItems={shareDataItems}
         />
 
         <AddGroupsPanel
@@ -590,9 +590,9 @@ class SectionHeaderContent extends React.Component {
           onClose={this.onShowGroupsPanel}
           visible={showAddGroupsPanel}
           embeddedComponent={accessOptionsComboBox}
-          setShareData={setShareData}
+          setShareDataItems={setShareDataItems}
           accessRight={accessRight}
-          shareData={shareData}
+          shareDataItems={shareDataItems}
         />
       </StyledContainer>
     );
@@ -605,7 +605,7 @@ const mapStateToProps = state => {
     selection,
     treeFolders,
     filter,
-    shareData
+    shareDataItems
   } = state.files;
   const { parentId, title, id } = selectedFolder;
   const { user } = state.auth;
@@ -625,10 +625,10 @@ const mapStateToProps = state => {
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
     currentUser,
     accessOptions: getAccessOption(selection),
-    shareData
+    shareDataItems
   };
 };
 
-export default connect(mapStateToProps, { setAction, setShareData })(
+export default connect(mapStateToProps, { setAction, setShareDataItems })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

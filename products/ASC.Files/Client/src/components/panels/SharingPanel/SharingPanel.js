@@ -13,7 +13,8 @@ import {
   Row,
   Text,
   Icons,
-  utils
+  utils,
+  toastr
 } from "asc-web-components";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
@@ -22,6 +23,7 @@ import { utils as commonUtils } from "asc-web-common";
 import i18n from "./i18n";
 import {
   getShareUsersAndGroups,
+  setShareDataItems,
   setShareData
 } from "../../../store/files/actions";
 import {
@@ -43,7 +45,7 @@ class SharingPanelComponent extends React.Component {
     this.state = {
       showActionPanel: false,
       isNotifyUsers: false,
-      shareData: props.shareData,
+      shareDataItems: props.shareDataItems,
       baseShareData: null
     };
 
@@ -61,7 +63,7 @@ class SharingPanelComponent extends React.Component {
   onKeyClick = () => console.log("onKeyClick");
 
   onSaveClick = () => {
-    console.log("onSaveClick");
+    toastr.success("onSaveClick");
     this.props.onClose();
   };
 
@@ -77,76 +79,76 @@ class SharingPanelComponent extends React.Component {
   };
 
   onFullAccessClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "FullAccess") {
       newUsers[elementIndex].rights = {
         icon: "AccessEditIcon",
         rights: "FullAccess"
       };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
   onReadOnlyClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "ReadOnly") {
       newUsers[elementIndex].rights = { icon: "EyeIcon", rights: "ReadOnly" };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
   onReviewClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "Review") {
       newUsers[elementIndex].rights = {
         icon: "AccessReviewIcon",
         rights: "Review"
       };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
   onCommentClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "Comment") {
       newUsers[elementIndex].rights = {
         icon: "AccessCommentIcon",
         rights: "Comment"
       };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
   onFormFillingClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "FormFilling") {
       newUsers[elementIndex].rights = {
         icon: "AccessFormIcon",
         rights: "FormFilling"
       };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
   onDenyAccessClick = item => {
-    const newUsers = this.state.shareData;
+    const newUsers = this.state.shareDataItems;
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "DenyAccess") {
       newUsers[elementIndex].rights = {
         icon: "AccessNoneIcon",
         rights: "DenyAccess"
       };
-      this.setState({ shareData: newUsers });
+      this.setState({ shareDataItems: newUsers });
     }
   };
 
   onRemoveUserClick = item => {
-    const shareData = this.state.shareData.slice(0);
+    const shareDataItems = this.state.shareDataItems.slice(0);
 
-    const index = shareData.findIndex(x => x.id === item.id);
+    const index = shareDataItems.findIndex(x => x.id === item.id);
     if (index !== -1) {
-      shareData.splice(index, 1);
-      this.props.setShareData(shareData.slice(0));
+      shareDataItems.splice(index, 1);
+      this.props.setShareDataItems(shareDataItems.slice(0));
     }
   };
 
@@ -173,10 +175,31 @@ class SharingPanelComponent extends React.Component {
     }
   };
 
-  getShareDataItems = arrayItems => {
+  getShareDataItems = (arrayItems, foldersIds, filesIds) => {
     const listOwners = [];
-    const shareData = [];
+    const shareDataItems = [];
+
+    let foldersIndex = 0;
+    let filesIndex = 0;
+    let shareIndex = 0;
+    const storeShareData = [];
+
     for (let array of arrayItems) {
+      if (foldersIds.length > foldersIndex) {
+        storeShareData.push({
+          folderId: foldersIds[foldersIndex],
+          shareDataItems: []
+        });
+        foldersIndex++;
+      } else {
+        storeShareData.push({
+          fileId: filesIds[filesIndex],
+          shareDataItems: []
+        });
+        filesIndex++;
+      }
+
+      let arrayItems = [];
       for (let item of array) {
         if (item.isOwner) {
           listOwners.push(item.sharedTo.id);
@@ -185,24 +208,30 @@ class SharingPanelComponent extends React.Component {
 
         if (rights) {
           item.sharedTo = { ...item.sharedTo, ...{ rights } };
-          shareData.push(item.sharedTo);
+          shareDataItems.push(item.sharedTo);
+          arrayItems.push(item.sharedTo);
         }
       }
+      storeShareData[shareIndex].shareDataItems = arrayItems;
+      arrayItems = [];
+      shareIndex++;
+
+      this.props.setShareData([...storeShareData, ...this.props.shareData]);
     }
-    return [shareData, listOwners];
+    return [shareDataItems, listOwners];
   };
 
-  removeDuplicateShareData = shareData => {
+  removeDuplicateShareData = shareDataItems => {
     let obj = {};
-    return shareData.filter(x => {
+    return shareDataItems.filter(x => {
       if (obj[x.id]) return false;
       obj[x.id] = true;
       return true;
     });
   };
 
-  setDuplicateItemsRights = (shareData, rights) => {
-    const array = shareData.slice(0);
+  setDuplicateItemsRights = (shareDataItems, rights) => {
+    const array = shareDataItems.slice(0);
 
     let i = 0;
     while (array.length !== 0) {
@@ -211,46 +240,66 @@ class SharingPanelComponent extends React.Component {
       const duplicateItem = array.find(x => x.id === item.id);
       if (duplicateItem) {
         if (item.rights.rights !== duplicateItem.rights.rights) {
-          const shareIndex = shareData.findIndex(
+          const shareIndex = shareDataItems.findIndex(
             x => x.id === duplicateItem.id
           );
-          shareData[shareIndex].rights = rights;
+          shareDataItems[shareIndex].rights = rights;
         }
       }
     }
-    return shareData;
+    return shareDataItems;
   };
 
-  setOwnersRights = (listOwners, shareData, rights) => {
+  setOwnersRights = (listOwners, shareDataItems, rights) => {
     if (listOwners.length > 1) {
       while (listOwners.length !== 0) {
-        const index = shareData.findIndex(x => x.id === listOwners[0]);
-        shareData[index].rights = rights;
+        const index = shareDataItems.findIndex(x => x.id === listOwners[0]);
+        shareDataItems[index].rights = rights;
         listOwners.splice(0, 1);
       }
     }
-    return shareData;
+    return shareDataItems;
   };
 
   getShareData() {
+    const { selection, shareData } = this.props;
+
     const foldersIds = [];
     const filesIds = [];
 
-    for (let item of this.props.selection) {
+    let shareDataItems = [];
+    let listOwners = [];
+
+    for (let item of selection) {
       if (item.fileExst) {
-        filesIds.push(item.id);
+        const itemShareData = shareData.find(x => x.fileId === item.id);
+
+        if (itemShareData) {
+          shareDataItems.push(item.shareDataItems);
+        } else {
+          filesIds.push(item.id);
+        }
       } else {
-        foldersIds.push(item.id);
+        const itemShareData = shareData.find(x => x.folderId === item.id);
+        if (itemShareData) {
+          shareDataItems.push(item.shareDataItems);
+        } else {
+          foldersIds.push(item.id);
+        }
       }
     }
-    let shareData = [];
-    let listOwners = [];
+
     getShareUsersAndGroups(foldersIds, filesIds)
       .then(res => {
         //console.log("Response", res);
 
-        shareData = this.getShareDataItems(res)[0];
-        listOwners = this.getShareDataItems(res)[1];
+        const shareDataResult = this.getShareDataItems(
+          res,
+          foldersIds,
+          filesIds
+        );
+        shareDataItems = [...shareDataResult[0], ...shareDataItems];
+        listOwners = shareDataResult[1];
       })
       .then(() => {
         const rights = {
@@ -259,18 +308,22 @@ class SharingPanelComponent extends React.Component {
           isOwner: false
         };
 
-        shareData = this.setDuplicateItemsRights(shareData, rights);
-        shareData = this.removeDuplicateShareData(shareData);
-        shareData = this.setOwnersRights(listOwners, shareData, rights);
+        shareDataItems = shareDataItems.filter(x => x !== undefined);
+        shareDataItems = this.setDuplicateItemsRights(shareDataItems, rights);
+        shareDataItems = this.removeDuplicateShareData(shareDataItems);
+        shareDataItems = this.setOwnersRights(
+          listOwners,
+          shareDataItems,
+          rights
+        );
 
-        this.props.setShareData(shareData.slice(0));
-        //this.setState({ shareData: shareData.slice(0) });
-        this.setState({ baseShareData: shareData.slice(0) });
-      }).catch(() => console.log("HELLO"));
+        this.props.setShareDataItems(shareDataItems.slice(0));
+        this.setState({ baseShareData: shareDataItems.slice(0) });
+      });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { selection, shareData } = this.props;
+    const { selection, shareDataItems } = this.props;
 
     if (selection.length !== 0) {
       if (
@@ -282,21 +335,21 @@ class SharingPanelComponent extends React.Component {
     }
 
     if (
-      !utils.array.isArrayEqual(this.state.shareData, shareData) ||
-      this.state.shareData.length !== shareData.length
+      !utils.array.isArrayEqual(this.state.shareDataItems, shareDataItems) ||
+      this.state.shareDataItems.length !== shareDataItems.length
     ) {
-      this.setState({ shareData });
+      this.setState({ shareDataItems });
     }
   }
 
   onClose = () => {
-    this.props.setShareData(this.state.baseShareData.slice(0));
+    this.props.setShareDataItems(this.state.baseShareData.slice(0));
     this.props.onClose();
   };
 
   render() {
     const { visible, t, accessOptions, isMe } = this.props;
-    const { showActionPanel, isNotifyUsers, shareData } = this.state;
+    const { showActionPanel, isNotifyUsers, shareDataItems } = this.state;
 
     const zIndex = 310;
 
@@ -346,7 +399,7 @@ class SharingPanelComponent extends React.Component {
               </div>
             </StyledSharingHeaderContent>
             <StyledSharingBody>
-              {shareData.map((item, index) => {
+              {shareDataItems.map((item, index) => {
                 const advancedOptions = (
                   <>
                     {accessOptions.includes("FullAccess") && (
@@ -503,11 +556,11 @@ const SharingPanel = props => (
 );
 
 const mapStateToProps = state => {
-  const { shareData, selection } = state.files;
+  const { shareDataItems, shareData, selection } = state.files;
 
-  return { shareData, selection, isMe: state.auth.user.id };
+  return { shareDataItems, shareData, selection, isMe: state.auth.user.id };
 };
 
-export default connect(mapStateToProps, { setShareData })(
+export default connect(mapStateToProps, { setShareDataItems, setShareData })(
   withRouter(SharingPanel)
 );
