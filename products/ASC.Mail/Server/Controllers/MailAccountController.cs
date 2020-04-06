@@ -182,6 +182,78 @@ namespace ASC.Mail.Controllers
             throw new Exception(errorText ?? MailApiResource.AttachmentsUnknownError);
         }
 
+        /// <summary>
+        ///    Updates the existing account.
+        /// </summary>
+        /// <param name="model">instance of AccountModel</param>
+        /// <returns>Updated account</returns>
+        /// <exception cref="Exception">Exception contains text description of happened error.</exception>
+        /// <short>Update account</short> 
+        /// <category>Accounts</category>
+        [Update(@"accounts")]
+        public MailAccountData UpdateAccount(AccountModel accountModel)
+        {
+            if (accountModel == null || string.IsNullOrEmpty(accountModel.Email))
+                throw new ArgumentException();
+
+            string errorText = null;
+            var mbox = new MailBoxData
+            {
+                Name = accountModel.Name,
+                EMail = new MailAddress(accountModel.Email),
+                Account = accountModel.Login,
+                Password = accountModel.Password,
+                Port = accountModel.Port,
+                Server = accountModel.Server,
+                SmtpAccount = accountModel.SmtpLogin,
+                SmtpPassword = accountModel.SmtpPassword,
+                SmtpPort = accountModel.SmtpPort,
+                SmtpServer = accountModel.SmtpServer,
+                TenantId = TenantId,
+                UserId = UserId,
+                BeginDate = accountModel.Restrict
+                    ? DateTime.Now.Subtract(new TimeSpan(MailBoxData.DefaultMailLimitedTimeDelta))
+                    : new DateTime(MailBoxData.DefaultMailBeginTimestamp),
+                Encryption = accountModel.IncomingEncryptionType,
+                SmtpEncryption = accountModel.OutcomingEncryptionType,
+                Authentication = accountModel.IncomingAuthenticationType,
+                SmtpAuthentication = accountModel.SmtpAuth ? accountModel.OutcomingAuthenticationType : SaslMechanism.None
+            };
+
+            try
+            {
+                var accountInfo = AccountEngine.UpdateAccount(mbox, out LoginResult loginResult);
+
+                if (accountInfo != null)
+                {
+                    return accountInfo.ToAccountData().FirstOrDefault();
+                }
+
+                if (!loginResult.IngoingSuccess)
+                {
+                    errorText = GetFormattedTextError(loginResult.IngoingException,
+                        mbox.Imap ? ServerType.Imap : ServerType.Pop3, false);
+                    // exImap is ImapConnectionTimeoutException
+                }
+
+                if (!loginResult.OutgoingSuccess)
+                {
+                    if (!string.IsNullOrEmpty(errorText))
+                        errorText += "\r\n";
+
+                    errorText += GetFormattedTextError(loginResult.OutgoingException, ServerType.Smtp, false);
+                    // exSmtp is SmtpConnectionTimeoutException);
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: change AttachmentsUnknownError to common unknown error text
+                errorText = GetFormattedTextError(ex, MailApiResource.AttachmentsUnknownError);
+            }
+
+            throw new Exception(errorText ?? MailApiResource.AttachmentsUnknownError);
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;
