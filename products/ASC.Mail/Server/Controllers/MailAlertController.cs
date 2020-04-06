@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ASC.Mail.Controllers
 {
-    /*public partial class MailController : ControllerBase
+    public partial class MailController : ControllerBase
     {
         /// <summary>
         ///    Returns the list of alerts for the authenticated user
@@ -41,5 +41,5 @@ namespace ASC.Mail.Controllers
 
             return id;
         }
-    }*/
+    }
 }

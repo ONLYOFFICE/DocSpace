@@ -29,7 +29,7 @@ namespace ASC.Mail.Controllers
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
         //public AccountEngine AccountEngine { get; }
-        //public AlertEngine AlertEngine { get; }
+        public AlertEngine AlertEngine { get; }
         public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
         //public SignatureEngine SignatureEngine { get; }
         //public TagEngine TagEngine { get; }
@@ -40,7 +40,7 @@ namespace ASC.Mail.Controllers
             TenantManager tenantManager,
             SecurityContext securityContext,
             //AccountEngine accountEngine,
-            //AlertEngine alertEngine,
+            AlertEngine alertEngine,
             DisplayImagesAddressEngine displayImagesAddressEngine,
             //SignatureEngine signatureEngine,
             //TagEngine tagEngine,
@@ -49,7 +49,7 @@ namespace ASC.Mail.Controllers
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             //AccountEngine = accountEngine;
-            //AlertEngine = alertEngine;
+            AlertEngine = alertEngine;
             DisplayImagesAddressEngine = displayImagesAddressEngine;
             //SignatureEngine = signatureEngine;
             //TagEngine = tagEngine;
@@ -74,7 +74,7 @@ namespace ASC.Mail.Controllers
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 //.AddAccountEngineService()
-                //.AddAlertEngineService()
+                .AddAlertEngineService()
                 .AddDisplayImagesAddressEngineService()
                 //.AddSignatureEngineService()
                 //.AddTagEngineService()
