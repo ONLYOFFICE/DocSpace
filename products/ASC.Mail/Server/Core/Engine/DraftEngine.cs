@@ -65,6 +65,7 @@ namespace ASC.Mail.Core.Engine
     public class DraftEngine : ComposeEngineBase
     {
         public HttpContext HttpContext { get; set; }
+        public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
 
         public DraftEngine(
             SecurityContext securityContext,
@@ -126,6 +127,8 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             HttpContext = httpContextAccessor?.HttpContext;
+
+            ServerFolderAccessInfos = DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
 
             Log = option.Get("ASC.Mail.DraftEngine");
         }
@@ -286,7 +289,7 @@ namespace ASC.Mail.Core.Engine
 
                     var mimeMessage = draft.ToMimeMessage(StorageManager);
 
-                    using (var mc = new MailClient(draft.Mailbox, CancellationToken.None, FolderEngine,
+                    using (var mc = new MailClient(draft.Mailbox, CancellationToken.None, ServerFolderAccessInfos,
                         certificatePermit: draft.Mailbox.IsTeamlab || _sslCertificatePermit, log: Log,
                         enableDsn: draft.RequestReceipt))
                     {

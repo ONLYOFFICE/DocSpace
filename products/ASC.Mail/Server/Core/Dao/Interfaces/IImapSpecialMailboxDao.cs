@@ -25,15 +25,15 @@
 
 
 using System.Collections.Generic;
-using ASC.Mail.Core.Entities;
+using ASC.Mail.Models;
 
 namespace ASC.Mail.Core.Dao.Interfaces
 {
     public interface IImapSpecialMailboxDao
     {
         /// <summary>
-        ///     Get a list of defined IMAP special mailboxes.
+        ///     Get a list of defined IMAP special folders.
         /// </summary>
-        List<ImapSpecialMailbox> GetImapSpecialMailboxes();
+        List<ServerFolderAccessInfo> GetServerFolderAccessInfoList();
     }
 }

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ASC.Mail.Controllers
 {
-    /*public partial class MailController : ControllerBase
+    public partial class MailController : ControllerBase
     {
         /// <summary>
         ///    Returns lists of all mailboxes, aliases and groups for user.
@@ -43,5 +43,5 @@ namespace ASC.Mail.Controllers
 
             return accountInfo.ToAccountData().FirstOrDefault();
         }
-    }*/
+    }
 }

@@ -32,7 +32,6 @@ using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using ASC.Common.Logging;
-using ASC.Mail.Core;
 using ASC.Mail.Models;
 using ASC.Mail.Data.Imap;
 using ASC.Mail.Enums;
@@ -55,6 +54,7 @@ namespace ASC.Mail.Clients
     public class MailClient : IDisposable
     {
         public MailBoxData Account { get; private set; }
+        public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; }
         public FolderEngine FolderEngine { get; }
         public ILog Log { get; set; }
 
@@ -124,7 +124,7 @@ namespace ASC.Mail.Clients
 
         public MailClient(MailBoxData mailbox, 
             CancellationToken cancelToken,
-            FolderEngine folderEngine,
+            List<ServerFolderAccessInfo> serverFolderAccessInfos,
             int tcpTimeout = 30000,
             bool certificatePermit = false, string protocolLogPath = "",
             ILog log = null, bool skipSmtp = false, bool enableDsn = false)
@@ -135,7 +135,8 @@ namespace ASC.Mail.Clients
                 : new NullProtocolLogger();
 
             Account = mailbox;
-            FolderEngine = folderEngine;
+            ServerFolderAccessInfos = serverFolderAccessInfos;
+
             Log = log ?? new NullLog();
 
             StopTokenSource = new CancellationTokenSource();
@@ -939,32 +940,25 @@ namespace ASC.Mail.Clients
             if (sendFolder != null)
                 return sendFolder;
 
-            var specialDomainFolders = FolderEngine.GetSpecialDomainFolders();
-
-            if (!specialDomainFolders.Any() || !specialDomainFolders.ContainsKey(Account.Server))
+            if (ServerFolderAccessInfos == null || !ServerFolderAccessInfos.Any() || !ServerFolderAccessInfos.Any(f => f.Server == Account.Server))
                 return null;
 
             foreach (var folder in folders)
             {
                 var folderName = folder.Name;
 
-                var domainSpecialFolders = specialDomainFolders[Account.Server];
+                var serverInfo = ServerFolderAccessInfos.FirstOrDefault(f => f.Server == Account.Server);
 
-                if(domainSpecialFolders == null)
+                if(serverInfo == null)
                     continue;
 
-                var foundKey = domainSpecialFolders.Keys.FirstOrDefault(
-                    k => k.Equals(folderName, StringComparison.InvariantCultureIgnoreCase));
-
-                if(foundKey == null)
+                if(!serverInfo.FolderAccessList.TryGetValue(folderName, out ServerFolderAccessInfo.FolderInfo folderInfo))
                     continue;
 
-                var info = domainSpecialFolders[foundKey];
-
-                if(info.skip)
+                if(folderInfo.skip)
                     continue;
 
-                if (info.folder_id != FolderType.Sent) 
+                if (folderInfo.folder_id != FolderType.Sent) 
                     continue;
 
                 sendFolder = folder;

@@ -357,38 +357,7 @@ namespace ASC.Mail.Core.Engine
             tx.Commit();
         }
 
-        public Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>> GetSpecialDomainFolders()
-        {
-            var specialDomainFolders = new Dictionary<string, Dictionary<string, MailBoxData.MailboxInfo>>();
-
-            try
-            {
-                var imapSpecialMailboxes =
-                    DaoFactory.ImapSpecialMailboxDao.GetImapSpecialMailboxes();
-
-                    imapSpecialMailboxes.ForEach(r =>
-                    {
-                        var mb = new MailBoxData.MailboxInfo
-                        {
-                            folder_id = r.FolderId,
-                            skip = r.Skip
-                        };
-                        if (specialDomainFolders.Keys.Contains(r.Server))
-                            specialDomainFolders[r.Server][r.MailboxName] = mb;
-                        else
-                            specialDomainFolders[r.Server] = new Dictionary<string, MailBoxData.MailboxInfo>
-                            {
-                                {r.MailboxName, mb}
-                            };
-                    });
-            }
-            catch (Exception ex)
-            {
-                Log.ErrorFormat("GetSpecialDomainFolders() Exception: {0}", ex.ToString());
-            }
-
-            return specialDomainFolders;
-        }
+        
 
         public static List<FolderType> DefaultFolders
         {

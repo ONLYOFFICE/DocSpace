@@ -428,7 +428,7 @@ namespace ASC.Mail.Models
         public bool Equals(MailBoxData other)
         {
             if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
 
             return
                 TenantId == other.TenantId &&

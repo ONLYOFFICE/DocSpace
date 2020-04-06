@@ -65,7 +65,6 @@ namespace ASC.Mail.Core.Engine
         }
 
         public SecurityContext SecurityContext { get; }
-        public FolderEngine FolderEngine { get; }
         public ILog Log { get; }
         public MailboxEngine MailboxEngine { get; }
         public DaoFactory DaoFactory { get; }
@@ -76,12 +75,12 @@ namespace ASC.Mail.Core.Engine
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
         public MailDbContext MailDb { get; }
 
+        public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
 
         public AccountEngine(
             TenantManager tenantManager,
             SecurityContext securityContext,
             DaoFactory daoFactory,
-            FolderEngine folderEngine,
             MailboxEngine mailboxEngine,
             CacheEngine cacheEngine,
             ConsumerFactory consumerFactory,
@@ -90,8 +89,6 @@ namespace ASC.Mail.Core.Engine
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
-            FolderEngine = folderEngine;
-            Log = option.Get("ASC.Mail.AccountEngine");
 
             MailboxEngine = mailboxEngine;
 
@@ -101,6 +98,10 @@ namespace ASC.Mail.Core.Engine
             ConsumerFactory = consumerFactory;
             GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
+
+            ServerFolderAccessInfos = DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
+
+            Log = option.Get("ASC.Mail.AccountEngine");
         }
 
         public List<AccountInfo> GetAccountInfoList()
@@ -108,6 +109,8 @@ namespace ASC.Mail.Core.Engine
             var accountInfoList = CacheEngine.Get(UserId);
             if (accountInfoList != null)
                 return accountInfoList;
+
+            accountInfoList = new List<AccountInfo>();
 
             var accounts = DaoFactory.AccountDao.GetAccounts();
 
@@ -212,7 +215,7 @@ namespace ASC.Mail.Core.Engine
                 Enabled = true
             };
 
-            using (var client = new MailClient(mbox, CancellationToken.None, FolderEngine,
+            using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -239,7 +242,7 @@ namespace ASC.Mail.Core.Engine
             if (mbox == null)
                 throw new NullReferenceException("mbox");
 
-            using (var client = new MailClient(mbox, CancellationToken.None, FolderEngine,
+            using (var client = new MailClient(mbox, CancellationToken.None, ServerFolderAccessInfos,
                     certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
             {
                 loginResult = client.TestLogin();
@@ -282,7 +285,7 @@ namespace ASC.Mail.Core.Engine
             {
                 LoginResult loginResult;
 
-                using (var client = new MailClient(mb, CancellationToken.None, FolderEngine, 
+                using (var client = new MailClient(mb, CancellationToken.None, ServerFolderAccessInfos, 
                     Defines.TcpTimeout, Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
@@ -496,7 +499,7 @@ namespace ASC.Mail.Core.Engine
             if (enabled)
             {
                 // Check account connection setting on activation
-                using (var client = new MailClient(tuple.Item1, CancellationToken.None, FolderEngine,
+                using (var client = new MailClient(tuple.Item1, CancellationToken.None, ServerFolderAccessInfos,
                         certificatePermit: Defines.SslCertificatesErrorPermit, log: Log))
                 {
                     loginResult = client.TestLogin();
@@ -595,7 +598,6 @@ namespace ASC.Mail.Core.Engine
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddDaoFactoryService()
-                .AddFolderEngineService()
                 .AddMailboxEngineService()
                 .AddMailBoxSettingEngineService()
                 .AddCacheEngineService()

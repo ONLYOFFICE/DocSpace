@@ -25,8 +25,9 @@
 
 
 using System.Collections.Generic;
+using System;
 using System.Linq;
-using ASC.Api.Core;
+using ASC.Mail.Models;
 using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -47,26 +48,41 @@ namespace ASC.Mail.Core.Dao
         {
         }
 
-        public List<ImapSpecialMailbox> GetImapSpecialMailboxes()
+        public List<ServerFolderAccessInfo> GetServerFolderAccessInfoList()
         {
-            var list = MailDb.MailImapSpecialMailbox
-                .Select(ToImapSpecialMailbox)
+            var serverFolderAccessInfoList = new List<ServerFolderAccessInfo>();
+
+            var imapSpecialMailboxes = MailDb.MailImapSpecialMailbox
                 .ToList();
 
-            return list;
-        }
-
-        protected ImapSpecialMailbox ToImapSpecialMailbox(MailImapSpecialMailbox r)
-        {
-            var obj = new ImapSpecialMailbox
+            imapSpecialMailboxes.ForEach(r =>
             {
-                Server = r.Server,
-                MailboxName = r.Name,
-                FolderId = (FolderType) r.FolderId,
-                Skip = r.Skip
-            };
+                var fi = new ServerFolderAccessInfo.FolderInfo
+                {
+                    folder_id = (FolderType)r.FolderId,
+                    skip = r.Skip
+                };
 
-            return obj;
+                var existItem = serverFolderAccessInfoList.FirstOrDefault(x => x.Server == r.Server);
+
+                if (existItem != null)
+                {
+                    existItem.FolderAccessList.TryAdd(r.Name, fi);  //[r.Server][r.MailboxName] = mb;
+                }
+                else
+                {
+                    serverFolderAccessInfoList.Add(new ServerFolderAccessInfo
+                    {
+                        Server = r.Server,
+                        FolderAccessList = new Dictionary<string, ServerFolderAccessInfo.FolderInfo>
+                        {
+                            [r.Name] = fi
+                        }
+                    });
+                }
+            });
+
+            return serverFolderAccessInfoList;
         }
     }
 
