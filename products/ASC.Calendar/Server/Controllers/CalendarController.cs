@@ -4184,7 +4184,7 @@ namespace ASC.Calendar.Controllers
                     var calendars = DDayICalParser.DeserializeCalendar(ics);
                     var _calendar = calendars == null ? null : calendars.FirstOrDefault();
                     var eventObj = _calendar == null || _calendar.Events == null ? null : _calendar.Events.FirstOrDefault();
-                    if (eventObj != null)
+                    if (eventObj != null && existCalendar.IsTodo == 0)
                     {
                         var name = eventObj.Summary;
                         var description = eventObj.Description ?? " ";
@@ -4306,7 +4306,7 @@ namespace ASC.Calendar.Controllers
                         }
                     }
                     var todoObj = _calendar == null || _calendar.Todos == null ? null : _calendar.Todos.FirstOrDefault();
-                    if (todoObj != null)
+                    if (todoObj != null && existCalendar.IsTodo == 1)
                     {
                         var todoName = todoObj.Summary;
                         var todoDescription = todoObj.Description ?? " ";
