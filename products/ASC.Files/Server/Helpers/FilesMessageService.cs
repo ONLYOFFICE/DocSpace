@@ -69,7 +69,7 @@ namespace ASC.Web.Files.Helpers
             SendHeadersMessage(headers, action, null);
         }
 
-        public void Send(FileEntry entry, Dictionary<string, string> headers, MessageAction action, params string[] description)
+        public void Send<T>(FileEntry<T> entry, Dictionary<string, string> headers, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
@@ -77,12 +77,12 @@ namespace ASC.Web.Files.Helpers
             SendHeadersMessage(headers, action, MessageTarget.Create(entry.ID), description);
         }
 
-        public void Send(FileEntry entry1, FileEntry entry2, Dictionary<string, string> headers, MessageAction action, params string[] description)
+        public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, Dictionary<string, string> headers, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry1 == null || entry2 == null || entry1.RootFolderType == FolderType.USER || entry2.RootFolderType == FolderType.USER) return;
 
-            SendHeadersMessage(headers, action, MessageTarget.Create(new[] { entry1.ID, entry2.ID }), description);
+            SendHeadersMessage(headers, action, MessageTarget.Create(new[] { entry1.ID.ToString(), entry2.ID.ToString() }), description);
         }
 
         private void SendHeadersMessage(Dictionary<string, string> headers, MessageAction action, MessageTarget target, params string[] description)
@@ -97,7 +97,7 @@ namespace ASC.Web.Files.Helpers
         }
 
 
-        public void Send(FileEntry entry, MessageAction action, params string[] description)
+        public void Send<T>(FileEntry<T> entry, MessageAction action, params string[] description)
         {
             // do not log actions in users folder
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
@@ -112,7 +112,7 @@ namespace ASC.Web.Files.Helpers
         }
 
 
-        public void Send(FileEntry entry, MessageInitiator initiator, MessageAction action, params string[] description)
+        public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
         {
             if (entry == null || entry.RootFolderType == FolderType.USER) return;
 

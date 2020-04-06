@@ -34,7 +34,6 @@ using ASC.Files.Core.Security;
 using ASC.Web.Core.Files;
 using ASC.Web.Files.Classes;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Utils
@@ -61,7 +60,7 @@ namespace ASC.Web.Files.Utils
             FileSecurity = fileSecurity;
         }
 
-        public string GetLink(File file, bool withHash = true)
+        public string GetLink<T>(File<T> file, bool withHash = true)
         {
             var url = file.DownloadUrl;
 
@@ -70,14 +69,14 @@ namespace ASC.Web.Files.Utils
 
             if (withHash)
             {
-                var linkParams = CreateKey(file.ID.ToString());
+                var linkParams = CreateKey(file.ID);
                 url += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(linkParams);
             }
 
             return BaseCommonLinkUtility.GetFullAbsolutePath(url);
         }
 
-        public string CreateKey(string fileId)
+        public string CreateKey<T>(T fileId)
         {
             return Signature.Create(fileId, Global.GetDocDbKey());
         }
@@ -86,19 +85,23 @@ namespace ASC.Web.Files.Utils
         {
             return Signature.Read<string>(doc ?? string.Empty, Global.GetDocDbKey());
         }
+        public T Parse<T>(string doc)
+        {
+            return Signature.Read<T>(doc ?? string.Empty, Global.GetDocDbKey());
+        }
 
-        public bool Check(string doc, bool checkRead, IFileDao fileDao, out File file)
+        public bool Check<T>(string doc, bool checkRead, IFileDao<T> fileDao, out File<T> file)
         {
             var fileShare = Check(doc, fileDao, out file);
             return (!checkRead && (fileShare == FileShare.ReadWrite || fileShare == FileShare.Review || fileShare == FileShare.FillForms || fileShare == FileShare.Comment))
                 || (checkRead && fileShare != FileShare.Restrict);
         }
 
-        public FileShare Check(string doc, IFileDao fileDao, out File file)
+        public FileShare Check<T>(string doc, IFileDao<T> fileDao, out File<T> file)
         {
             file = null;
             if (string.IsNullOrEmpty(doc)) return FileShare.Restrict;
-            var fileId = Parse(doc);
+            var fileId = Parse<T>(doc);
             file = fileDao.GetFile(fileId);
             if (file == null) return FileShare.Restrict;
 

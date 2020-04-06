@@ -1,17 +1,19 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ASC.Core.Common.EF;
+
 namespace ASC.Files.Core.EF
 {
     [Table("files_thirdparty_account")]
-    public class DbFilesThirdpartyAccount : IDbFile
+    public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     {
         public int Id { get; set; }
 
         public string Provider { get; set; }
 
         [Column("customer_title")]
-        public string CustomerTitle { get; set; }
+        public string Title { get; set; }
 
         [Column("user_name")]
         public string UserName { get; set; }
@@ -33,5 +35,7 @@ namespace ASC.Files.Core.EF
 
         [Column("tenant_id")]
         public int TenantId { get; set; }
-    }
+
+        public override object[] GetKeys() => new object[] { Id };
+    };
 }

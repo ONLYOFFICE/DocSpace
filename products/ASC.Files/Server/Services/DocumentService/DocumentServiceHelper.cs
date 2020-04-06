@@ -45,7 +45,6 @@ using ASC.Web.Studio.Core;
 
 using JWT;
 
-using File = ASC.Files.Core.File;
 using FileShare = ASC.Files.Core.Security.FileShare;
 
 namespace ASC.Web.Files.Services.DocumentService
@@ -93,12 +92,12 @@ namespace ASC.Web.Files.Services.DocumentService
             ServiceProvider = serviceProvider;
         }
 
-        public File GetParams(object fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        public File<T> GetParams<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
         {
             var lastVersion = true;
             FileShare linkRight;
 
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
 
             linkRight = FileShareLink.Check(doc, fileDao, out var file);
 
@@ -120,7 +119,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return GetParams(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth, out configuration);
         }
 
-        public File GetParams(File file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration configuration)
+        public File<T> GetParams<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth, out Configuration<T> configuration)
         {
             if (file == null) throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!string.IsNullOrEmpty(file.Error)) throw new Exception(file.Error);
@@ -252,14 +251,14 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (lastVersion && file.Forcesave != ForcesaveType.None && tryEdit)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
             var docKey = GetDocKey(fileStable);
             var modeWrite = (editPossible || reviewPossible || fillFormsPossible || commentPossible) && tryEdit;
 
-            configuration = new Configuration(file, ServiceProvider)
+            configuration = new Configuration<T>(file, ServiceProvider)
             {
                 Document =
                         {
@@ -299,12 +298,12 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public string GetDocKey(File file)
+        public string GetDocKey<T>(File<T> file)
         {
             return GetDocKey(file.ID, file.Version, file.ProviderEntry ? file.ModifiedOn : file.CreateOn);
         }
 
-        public string GetDocKey(object fileId, int fileVersion, DateTime modified)
+        public string GetDocKey<T>(T fileId, int fileVersion, DateTime modified)
         {
             var str = string.Format("teamlab_{0}_{1}_{2}_{3}",
                                     fileId,
@@ -321,7 +320,7 @@ namespace ASC.Web.Files.Services.DocumentService
         }
 
 
-        public void CheckUsersForDrop(File file)
+        public void CheckUsersForDrop<T>(File<T> file)
         {
             var fileSecurity = FileSecurity;
             var sharedLink =
@@ -346,7 +345,7 @@ namespace ASC.Web.Files.Services.DocumentService
             var fileStable = file;
             if (file.Forcesave != ForcesaveType.None)
             {
-                var fileDao = DaoFactory.FileDao;
+                var fileDao = DaoFactory.GetFileDao<T>();
                 fileStable = fileDao.GetFileStable(file.ID, file.Version);
             }
 
@@ -359,7 +358,7 @@ namespace ASC.Web.Files.Services.DocumentService
             return DocumentServiceConnector.Command(Web.Core.Files.DocumentService.CommandMethod.Drop, docKeyForTrack, fileId, null, users);
         }
 
-        public bool RenameFile(File file, IFileDao fileDao)
+        public bool RenameFile<T>(File<T> file, IFileDao<T> fileDao)
         {
             if (!FileUtility.CanWebView(file.Title)
                 && !FileUtility.CanWebEdit(file.Title)

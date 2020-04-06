@@ -35,6 +35,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common;
+using ASC.Core.Common.Configuration;
 using ASC.Core.Users;
 using ASC.FederatedLogin;
 using ASC.FederatedLogin.Helpers;
@@ -62,9 +63,6 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-using File = ASC.Files.Core.File;
-using Folder = ASC.Files.Core.Folder;
-
 namespace ASC.Web.Files.Helpers
 {
     public class DocuSignToken
@@ -75,17 +73,18 @@ namespace ASC.Web.Files.Helpers
 
         public TokenHelper TokenHelper { get; }
         public AuthContext AuthContext { get; }
+        public ConsumerFactory ConsumerFactory { get; }
         public DocuSignLoginProvider DocuSignLoginProvider { get; }
 
         public DocuSignToken(
             TokenHelper tokenHelper,
             IOptionsMonitor<ILog> options,
             AuthContext authContext,
-            DocuSignLoginProvider docuSignLoginProvider)
+            ConsumerFactory consumerFactory)
         {
             TokenHelper = tokenHelper;
             AuthContext = authContext;
-            DocuSignLoginProvider = docuSignLoginProvider;
+            ConsumerFactory = consumerFactory;
             Log = options.CurrentValue;
         }
 
@@ -114,7 +113,7 @@ namespace ASC.Web.Files.Helpers
                 {
                     Log.Info("DocuSign refresh token for user " + AuthContext.CurrentAccount.ID);
 
-                    var refreshed = DocuSignLoginProvider.Instance.RefreshToken(token.RefreshToken);
+                    var refreshed = ConsumerFactory.Get<DocuSignLoginProvider>().RefreshToken(token.RefreshToken);
 
                     if (refreshed != null)
                     {
@@ -167,6 +166,7 @@ namespace ASC.Web.Files.Helpers
         public FilesMessageService FilesMessageService { get; }
         public FilesLinkUtility FilesLinkUtility { get; }
         public IServiceProvider ServiceProvider { get; }
+        public ConsumerFactory ConsumerFactory { get; }
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
@@ -182,7 +182,8 @@ namespace ASC.Web.Files.Helpers
             GlobalFolderHelper globalFolderHelper,
             FilesMessageService filesMessageService,
             FilesLinkUtility filesLinkUtility,
-            IServiceProvider serviceProvider)
+            IServiceProvider serviceProvider,
+            ConsumerFactory consumerFactory)
         {
             DocuSignToken = docuSignToken;
             DocuSignLoginProvider = docuSignLoginProvider;
@@ -197,6 +198,7 @@ namespace ASC.Web.Files.Helpers
             FilesMessageService = filesMessageService;
             FilesLinkUtility = filesLinkUtility;
             ServiceProvider = serviceProvider;
+            ConsumerFactory = consumerFactory;
             Log = options.CurrentValue;
         }
 
@@ -206,7 +208,7 @@ namespace ASC.Web.Files.Helpers
             return true;
         }
 
-        public string SendDocuSign(object fileId, DocuSignData docuSignData, Dictionary<string, string> requestHeaders)
+        public string SendDocuSign<T>(T fileId, DocuSignData docuSignData, Dictionary<string, string> requestHeaders)
         {
             if (docuSignData == null) throw new ArgumentNullException("docuSignData");
             var token = DocuSignToken.GetToken();
@@ -226,7 +228,7 @@ namespace ASC.Web.Files.Helpers
         {
             if (token == null) throw new ArgumentNullException("token");
 
-            var userInfoString = RequestHelper.PerformRequest(DocuSignLoginProvider.Instance.DocuSignHost + "/oauth/userinfo",
+            var userInfoString = RequestHelper.PerformRequest(ConsumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
                                                               headers: new Dictionary<string, string> { { "Authorization", "Bearer " + DocuSignToken.GetRefreshedToken(token) } });
 
             Log.Debug("DocuSing userInfo: " + userInfoString);
@@ -252,9 +254,9 @@ namespace ASC.Web.Files.Helpers
             return configuration;
         }
 
-        private Document CreateDocument(object fileId, string documentName, string folderId, out File file)
+        private Document CreateDocument<T>(T fileId, string documentName, string folderId, out File<T> file)
         {
-            var fileDao = DaoFactory.FileDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
             file = fileDao.GetFile(fileId);
             if (file == null) throw new Exception(FilesCommonResource.ErrorMassage_FileNotFound);
             if (!FileSecurity.CanRead(file)) throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
@@ -376,7 +378,7 @@ namespace ASC.Web.Files.Helpers
             return url.Url;
         }
 
-        public File SaveDocument(string envelopeId, string documentId, string documentName, object folderId)
+        public File<T> SaveDocument<T>(string envelopeId, string documentId, string documentName, T folderId)
         {
             if (string.IsNullOrEmpty(envelopeId)) throw new ArgumentNullException("envelopeId");
             if (string.IsNullOrEmpty(documentId)) throw new ArgumentNullException("documentId");
@@ -385,22 +387,22 @@ namespace ASC.Web.Files.Helpers
             var account = GetDocuSignAccount(token);
             var configuration = GetConfiguration(account, token);
 
-            var fileDao = DaoFactory.FileDao;
-            var folderDao = DaoFactory.FolderDao;
+            var fileDao = DaoFactory.GetFileDao<T>();
+            var folderDao = DaoFactory.GetFolderDao<T>();
             if (string.IsNullOrEmpty(documentName))
             {
                 documentName = "new.pdf";
             }
 
-            Folder folder;
+            Folder<T> folder;
             if (folderId == null
                 || (folder = folderDao.GetFolder(folderId)) == null
                 || folder.RootFolderType == FolderType.TRASH
                 || !FileSecurity.CanCreate(folder))
             {
-                if (GlobalFolderHelper.FolderMy != null)
+                if (GlobalFolderHelper.FolderMy != 0)
                 {
-                    folderId = GlobalFolderHelper.FolderMy;
+                    folderId = GlobalFolderHelper.GetFolderMy<T>();
                 }
                 else
                 {
@@ -408,7 +410,7 @@ namespace ASC.Web.Files.Helpers
                 }
             }
 
-            var file = ServiceProvider.GetService<File>();
+            var file = ServiceProvider.GetService<File<T>>();
             file.FolderID = folderId;
             file.Comment = FilesCommonResource.CommentCreateByDocuSign;
             file.Title = FileUtility.ReplaceFileExtension(documentName, ".pdf");

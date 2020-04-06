@@ -16,7 +16,11 @@ class FilesRowContent extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    const titleWithoutExt = getTitleWithoutExst(props.item);
+    let titleWithoutExt = getTitleWithoutExst(props.item);
+
+    if (props.fileAction.id === -1) {
+      titleWithoutExt = this.getDefaultName(props.fileAction.extension);
+    }
 
     this.state = {
       itemTitle: titleWithoutExt,
@@ -138,6 +142,21 @@ class FilesRowContent extends React.PureComponent {
     const dateLabel = new Date(date).toLocaleString(culture);
 
     return `${title}: ${dateLabel}`;
+  };
+
+  getDefaultName = (format) => {
+    const { t } = this.props;
+
+    switch (format) {
+      case 'docx':
+        return t("NewDocument");
+      case 'xlsx':
+        return t("NewSpreadsheet");
+      case 'pptx':
+        return t("NewPresentation");
+      default:
+        return t("NewFolder");
+    }
   };
 
   render() {

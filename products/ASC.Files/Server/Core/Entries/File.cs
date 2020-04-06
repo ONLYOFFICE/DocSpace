@@ -57,7 +57,7 @@ namespace ASC.Files.Core
     [Serializable]
     [DataContract(Name = "file", Namespace = "")]
     [DebuggerDisplay("{Title} ({ID} v{Version})")]
-    public class File : FileEntry
+    public class File<T> : FileEntry<T>
     {
         private FileStatus _status;
 
@@ -75,7 +75,7 @@ namespace ASC.Files.Core
             FileConverter = fileConverter;
         }
 
-        public object FolderID { get; set; }
+        public T FolderID { get; set; }
 
         [DataMember(Name = "version")]
         public int Version { get; set; }
@@ -219,7 +219,21 @@ namespace ASC.Files.Core
         public FileUtility FileUtility { get; }
         public FileConverter FileConverter { get; }
 
-        public static string Serialize(File file)
+        private T _folderIdDisplay;
+
+        [DataMember(Name = "folder_id")]
+        public override T FolderIdDisplay
+        {
+            get
+            {
+                if (_folderIdDisplay != null) return _folderIdDisplay;
+
+                return FolderID;
+            }
+            set { _folderIdDisplay = value; }
+        }
+
+        public static string Serialize(File<T> file)
         {
             using (var ms = new FileEntrySerializer().ToXml(file))
             {
