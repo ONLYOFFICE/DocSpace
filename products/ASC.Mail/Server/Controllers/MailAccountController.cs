@@ -149,6 +149,39 @@ namespace ASC.Mail.Controllers
             }
         }
 
+        /// <summary>
+        ///    Update Mail account with OAuth authentication. Only Google OAuth supported.
+        /// </summary>
+        /// <param name="code">Oauth code</param>
+        /// <param name="type">Type of OAuth service. 0- Unknown, 1 - Google.</param>
+        /// <param name="mailboxId">Mailbox ID to update</param>
+        /// <exception cref="Exception">Exception contains text description of happened error.</exception>
+        /// <returns>Updated OAuth account</returns>
+        /// <short>Update OAuth account</short> 
+        /// <category>Accounts</category>
+        [Update(@"accounts/oauth")]
+        public MailAccountData UpdateAccountOAuth(string code, byte type, int mailboxId)
+        {
+            string errorText = null;
+
+            try
+            {
+                var accountInfo = AccountEngine.UpdateAccountOAuth(mailboxId, code, type);
+
+                if (accountInfo != null)
+                {
+                    return accountInfo.ToAccountData().FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                //TODO: change AttachmentsUnknownError to common unknown error text
+                errorText = GetFormattedTextError(ex, MailApiResource.AttachmentsUnknownError);
+            }
+
+            throw new Exception(errorText ?? MailApiResource.AttachmentsUnknownError);
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;
