@@ -31,7 +31,7 @@ namespace ASC.Mail.Controllers
         public AccountEngine AccountEngine { get; }
         public AlertEngine AlertEngine { get; }
         public DisplayImagesAddressEngine DisplayImagesAddressEngine { get; }
-        //public SignatureEngine SignatureEngine { get; }
+        public SignatureEngine SignatureEngine { get; }
         //public TagEngine TagEngine { get; }
 
         public ILog Log { get; }
@@ -42,7 +42,7 @@ namespace ASC.Mail.Controllers
             AccountEngine accountEngine,
             AlertEngine alertEngine,
             DisplayImagesAddressEngine displayImagesAddressEngine,
-            //SignatureEngine signatureEngine,
+            SignatureEngine signatureEngine,
             //TagEngine tagEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -51,7 +51,7 @@ namespace ASC.Mail.Controllers
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
             DisplayImagesAddressEngine = displayImagesAddressEngine;
-            //SignatureEngine = signatureEngine;
+            SignatureEngine = signatureEngine;
             //TagEngine = tagEngine;
 
             Log = option.Get("ASC.Api");
@@ -76,7 +76,7 @@ namespace ASC.Mail.Controllers
                 .AddAccountEngineService()
                 .AddAlertEngineService()
                 .AddDisplayImagesAddressEngineService()
-                //.AddSignatureEngineService()
+                .AddSignatureEngineService()
                 //.AddTagEngineService()
                 ;
         }

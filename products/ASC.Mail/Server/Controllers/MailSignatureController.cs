@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ASC.Mail.Controllers
 {
-    /*public partial class MailController : ControllerBase
+    public partial class MailController : ControllerBase
     {
         /// <summary>
         /// This method needed for getting mailbox signature.
@@ -44,5 +44,5 @@ namespace ASC.Mail.Controllers
 
             return SignatureEngine.SaveSignature(mailbox_id, html, is_active);
         }
-    }*/
+    }
 }
