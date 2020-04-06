@@ -315,18 +315,21 @@ export function deleteFolder(folderId, deleteAfter, immediately) {
 }
 
 export function getShareUsersAndGroups(foldersIds, filesIds) {
-  const getFoldersRequests = foldersIds.map(id => files.getShareFolders(id));
-  const getFilesRequests = filesIds.map(id => files.getShareFiles(id));
-
-  return axios.all(getFoldersRequests, getFilesRequests).then(
-    axios.spread((folders, files) => {
-      if (!folders) {
-        return files;
-      } else if (!files) {
-        return folders;
-      } else return [...folders, ...files];
+  const getFoldersRequests = foldersIds.map(id =>
+    files.getShareFolders(id).catch(() => {
+      return [];
     })
   );
+  const getFilesRequests = filesIds.map(id =>
+    files.getShareFiles(id).catch(() => {
+      return [];
+    })
+  );
+  const requests = [...getFoldersRequests, ...getFilesRequests];
+
+  return axios.all(requests).then(res => {
+    return res;
+  });
 }
 
 /*export function deleteGroup(id) {

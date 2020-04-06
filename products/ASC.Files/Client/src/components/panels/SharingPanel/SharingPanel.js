@@ -43,7 +43,8 @@ class SharingPanelComponent extends React.Component {
     this.state = {
       showActionPanel: false,
       isNotifyUsers: false,
-      shareData: props.shareData
+      shareData: props.shareData,
+      baseShareData: null
     };
 
     this.ref = React.createRef();
@@ -70,6 +71,7 @@ class SharingPanelComponent extends React.Component {
   showAddUserPanel = () => {
     this.props.onShowUsersPanel();
   };
+
   showAddGroupPanel = () => {
     this.props.onShowGroupsPanel();
   };
@@ -82,7 +84,7 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessEditIcon",
         rights: "FullAccess"
       };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
   onReadOnlyClick = item => {
@@ -90,7 +92,7 @@ class SharingPanelComponent extends React.Component {
     const elementIndex = newUsers.findIndex(x => x.id === item.id);
     if (newUsers[elementIndex].rights.rights !== "ReadOnly") {
       newUsers[elementIndex].rights = { icon: "EyeIcon", rights: "ReadOnly" };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
   onReviewClick = item => {
@@ -101,7 +103,7 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessReviewIcon",
         rights: "Review"
       };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
   onCommentClick = item => {
@@ -112,7 +114,7 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessCommentIcon",
         rights: "Comment"
       };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
   onFormFillingClick = item => {
@@ -123,7 +125,7 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessFormIcon",
         rights: "FormFilling"
       };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
   onDenyAccessClick = item => {
@@ -134,21 +136,100 @@ class SharingPanelComponent extends React.Component {
         icon: "AccessNoneIcon",
         rights: "DenyAccess"
       };
-      this.props.onSetUsers(newUsers);
+      this.setState({ shareData: newUsers });
     }
   };
 
   onRemoveUserClick = item => {
-    const shareData = this.state.shareData;
+    const shareData = this.state.shareData.slice(0);
 
     const index = shareData.findIndex(x => x.id === item.id);
     if (index !== -1) {
       shareData.splice(index, 1);
-
-      this.setState({ shareData });
-      this.props.setShareData(shareData);
-      this.forceUpdate();
+      this.props.setShareData(shareData.slice(0));
     }
+  };
+
+  getItemAccess = item => {
+    switch (item.access) {
+      case 1:
+        return {
+          icon: "AccessEditIcon",
+          rights: "FullAccess",
+          isOwner: item.isOwner
+        };
+      case 2:
+        return {
+          icon: "EyeIcon",
+          rights: "ReadOnly",
+          isOwner: false
+        };
+      case 3: {
+        //console.log("Share link", item.sharedTo.shareLink);
+        return;
+      }
+      default:
+        return;
+    }
+  };
+
+  getShareDataItems = arrayItems => {
+    const listOwners = [];
+    const shareData = [];
+    for (let array of arrayItems) {
+      for (let item of array) {
+        if (item.isOwner) {
+          listOwners.push(item.sharedTo.id);
+        }
+        const rights = this.getItemAccess(item);
+
+        if (rights) {
+          item.sharedTo = { ...item.sharedTo, ...{ rights } };
+          shareData.push(item.sharedTo);
+        }
+      }
+    }
+    return [shareData, listOwners];
+  };
+
+  removeDuplicateShareData = shareData => {
+    let obj = {};
+    return shareData.filter(x => {
+      if (obj[x.id]) return false;
+      obj[x.id] = true;
+      return true;
+    });
+  };
+
+  setDuplicateItemsRights = (shareData, rights) => {
+    const array = shareData.slice(0);
+
+    let i = 0;
+    while (array.length !== 0) {
+      const item = array[i];
+      array.splice(i, 1);
+      const duplicateItem = array.find(x => x.id === item.id);
+      if (duplicateItem) {
+        if (item.rights.rights !== duplicateItem.rights.rights) {
+          const shareIndex = shareData.findIndex(
+            x => x.id === duplicateItem.id
+          );
+          shareData[shareIndex].rights = rights;
+        }
+      }
+    }
+    return shareData;
+  };
+
+  setOwnersRights = (listOwners, shareData, rights) => {
+    if (listOwners.length > 1) {
+      while (listOwners.length !== 0) {
+        const index = shareData.findIndex(x => x.id === listOwners[0]);
+        shareData[index].rights = rights;
+        listOwners.splice(0, 1);
+      }
+    }
+    return shareData;
   };
 
   getShareData() {
@@ -162,31 +243,30 @@ class SharingPanelComponent extends React.Component {
         foldersIds.push(item.id);
       }
     }
-    const shareData = [];
+    let shareData = [];
+    let listOwners = [];
     getShareUsersAndGroups(foldersIds, filesIds)
       .then(res => {
-        for (let item of res) {
-          if (item.isOwner) {
-            const rights = {
-              icon: "AccessEditIcon",
-              rights: "FullAccess",
-              isOwner: true
-            };
-            item.sharedTo = { ...item.sharedTo, ...{ rights } };
-          } else {
-            //TODO: item.access
-            const rights = {
-              icon: "EyeIcon",
-              rights: "ReadOnly",
-              isOwner: false
-            };
-            item.sharedTo = { ...item.sharedTo, ...{ rights } };
-          }
-          shareData.push(item.sharedTo);
-          this.props.setShareData([item.sharedTo]);
-        }
+        //console.log("Response", res);
+
+        shareData = this.getShareDataItems(res)[0];
+        listOwners = this.getShareDataItems(res)[1];
       })
-      .then(() => this.setState({ shareData }));
+      .then(() => {
+        const rights = {
+          icon: "CatalogQuestionIcon",
+          rights: "Varies",
+          isOwner: false
+        };
+
+        shareData = this.setDuplicateItemsRights(shareData, rights);
+        shareData = this.removeDuplicateShareData(shareData);
+        shareData = this.setOwnersRights(listOwners, shareData, rights);
+
+        this.props.setShareData(shareData.slice(0));
+        //this.setState({ shareData: shareData.slice(0) });
+        this.setState({ baseShareData: shareData.slice(0) });
+      }).catch(() => console.log("HELLO"));
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -209,48 +289,13 @@ class SharingPanelComponent extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { showActionPanel, isNotifyUsers } = this.state;
-    const { visible, accessOptions, shareData } = this.props;
-
-    if (showActionPanel !== nextState.showActionPanel) {
-      return true;
-    }
-
-    if (isNotifyUsers !== nextState.isNotifyUsers) {
-      return true;
-    }
-
-    if (
-      !utils.array.isArrayEqual(nextProps.accessOptions, accessOptions) ||
-      accessOptions.length !== nextProps.accessOptions.length
-    ) {
-      return true;
-    }
-
-    if (
-      !utils.array.isArrayEqual(this.state.shareData, shareData) ||
-      this.state.shareData.length !== shareData.length
-    ) {
-      return true;
-    }
-
-    if (
-      !utils.array.isArrayEqual(this.state.shareData, nextState.shareData) ||
-      this.state.shareData.length !== nextState.shareData.length
-    ) {
-      return true;
-    }
-
-    if (visible !== nextProps.visible) {
-      return true;
-    }
-
-    return false;
-  }
+  onClose = () => {
+    this.props.setShareData(this.state.baseShareData.slice(0));
+    this.props.onClose();
+  };
 
   render() {
-    const { onClose, visible, t, accessOptions } = this.props;
+    const { visible, t, accessOptions, isMe } = this.props;
     const { showActionPanel, isNotifyUsers, shareData } = this.state;
 
     const zIndex = 310;
@@ -259,7 +304,7 @@ class SharingPanelComponent extends React.Component {
 
     return (
       <StyledPanel visible={visible}>
-        <Backdrop onClick={onClose} visible={visible} zIndex={zIndex} />
+        <Backdrop onClick={this.onClose} visible={visible} zIndex={zIndex} />
         <Aside className="header_aside-panel" visible={visible}>
           <StyledContent>
             <StyledSharingHeaderContent>
@@ -375,7 +420,7 @@ class SharingPanelComponent extends React.Component {
                   <Row
                     key={index}
                     element={
-                      item.isOwner ? (
+                      item.rights.isOwner || item.id === isMe ? (
                         <Icons.AccessEditIcon
                           size="medium"
                           className="sharing_panel-owner-icon"
@@ -386,28 +431,37 @@ class SharingPanelComponent extends React.Component {
                     }
                     contextButtonSpacerWidth="0px"
                   >
-                    <Text truncate>
-                      {item.label
-                        ? item.label
-                        : item.name
-                        ? item.name
-                        : item.displayName}
-                    </Text>
-                    {item.isOwner ? (
-                      <Text
-                        className="sharing_panel-remove-icon"
-                        //color="#A3A9AE"
-                      >
-                        {t("Owner")}
+                    <>
+                      <Text truncate>
+                        {item.label
+                          ? item.label
+                          : item.name
+                          ? item.name
+                          : item.displayName}
                       </Text>
-                    ) : (
-                      <IconButton
-                        iconName="RemoveIcon"
-                        onClick={this.onRemoveUserClick.bind(this, item)}
-                        className="sharing_panel-remove-icon"
-                        size="medium"
-                      />
-                    )}
+                      {item.rights.isOwner ? (
+                        <Text
+                          className="sharing_panel-remove-icon"
+                          //color="#A3A9AE"
+                        >
+                          {t("Owner")}
+                        </Text>
+                      ) : item.id === isMe ? (
+                        <Text
+                          className="sharing_panel-remove-icon"
+                          //color="#A3A9AE"
+                        >
+                          {t("AccessRightsFullAccess")}
+                        </Text>
+                      ) : (
+                        <IconButton
+                          iconName="RemoveIcon"
+                          onClick={this.onRemoveUserClick.bind(this, item)}
+                          className="sharing_panel-remove-icon"
+                          size="medium"
+                        />
+                      )}
+                    </>
                   </Row>
                 );
               })}
@@ -451,7 +505,7 @@ const SharingPanel = props => (
 const mapStateToProps = state => {
   const { shareData, selection } = state.files;
 
-  return { shareData, selection };
+  return { shareData, selection, isMe: state.auth.user.id };
 };
 
 export default connect(mapStateToProps, { setShareData })(

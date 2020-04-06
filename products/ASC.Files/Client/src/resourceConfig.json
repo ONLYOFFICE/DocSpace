@@ -37,7 +37,8 @@
       "Resource": [
         "Owner",
         "SharingSettingsTitle",
-        "AddGroupsForSharingButton"
+        "AddGroupsForSharingButton",
+        "AccessRightsFullAccess"
       ],
       "UserControlsCommonResource" : [
         "LinkText"

@@ -185,12 +185,7 @@ class SectionHeaderContent extends React.Component {
   renameAction = () => toastr.info("renameAction click");
 
   onOpenSharingPanel = () => {
-    this.setState({ showSharingPanel: !this.state.showSharingPanel }, () => {
-      if (!this.state.showSharingPanel) {
-        const shareData = this.props.shareData[0];
-        this.props.setShareData([shareData]);
-      }
-    });
+    this.setState({ showSharingPanel: !this.state.showSharingPanel });
   };
 
   onDeleteAction = () =>
@@ -378,7 +373,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         label: t("Share"),
-        disabled: !isItemsSelected,
+        disabled: !isItemsSelected || shareData.length === 0,
         onClick: this.onOpenSharingPanel
       },
       {
