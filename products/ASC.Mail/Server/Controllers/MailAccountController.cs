@@ -1,4 +1,5 @@
-﻿using ASC.Mail.Exceptions;
+﻿using ASC.Mail.Core.Dao.Expressions.Mailbox;
+using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 
 namespace ASC.Mail.Controllers
 {
@@ -23,6 +25,23 @@ namespace ASC.Mail.Controllers
         {
             var accounts = AccountEngine.GetAccountInfoList();
             return accounts.ToAccountData();
+        }
+
+        /// <summary>
+        ///    Returns the information about the account.
+        /// </summary>
+        /// <param name="email">Account email address</param>
+        /// <returns>Account with specified email</returns>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <exception cref="NullReferenceException">Exception happens when mailbox wasn't found by email.</exception>
+        /// <short>Get account by email</short> 
+        /// <category>Accounts</category>
+        [Read(@"accounts/single")]
+        public MailBoxData GetAccount(string email)
+        {
+            var account = AccountEngine.GetAccount(email);
+
+            return account;
         }
 
         /// <summary>

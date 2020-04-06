@@ -247,7 +247,7 @@ namespace ASC.Mail.Core.Engine
 
             var linkedServer = GetOrCreate();
 
-            var dns = GetOrCreateUnusedDnsData(linkedServer);
+            var dns = ServerDomainEngine.GetOrCreateUnusedDnsData(linkedServer);
 
             var inServer = DaoFactory.MailboxServerDao.GetServer(linkedServer.ImapSettingsId);
             var outServer = DaoFactory.MailboxServerDao.GetServer(linkedServer.SmtpSettingsId);
@@ -271,80 +271,7 @@ namespace ASC.Mail.Core.Engine
                 throw new SecurityException("Need admin privileges.");
 
             var server = GetOrCreate();
-            return GetOrCreateUnusedDnsData(server);
-        }
-
-        public ServerDomainDnsData GetOrCreateUnusedDnsData(Entities.Server server)
-        {
-            var dnsSettings = DaoFactory.ServerDnsDao.GetFree();
-
-            if (dnsSettings == null)
-            {
-                string privateKey, publicKey;
-                CryptoUtil.GenerateDkimKeys(out privateKey, out publicKey);
-
-                var domainCheckValue = PasswordGenerator.GenerateNewPassword(16);
-                var domainCheck = Defines.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
-
-                var serverDns = new ServerDns
-                {
-                    Id = 0,
-                    Tenant = Tenant,
-                    User = User,
-                    DomainId = Defines.UNUSED_DNS_SETTING_DOMAIN_ID,
-                    DomainCheck = domainCheck,
-                    DkimSelector = Defines.ServerDnsDkimSelector,
-                    DkimPrivateKey = privateKey,
-                    DkimPublicKey = publicKey,
-                    DkimTtl = Defines.ServerDnsDefaultTtl,
-                    DkimVerified = false,
-                    DkimDateChecked = null,
-                    Spf = Defines.ServerDnsSpfRecordValue,
-                    SpfTtl = Defines.ServerDnsDefaultTtl,
-                    SpfVerified = false,
-                    SpfDateChecked = null,
-                    Mx = server.MxRecord,
-                    MxTtl = Defines.ServerDnsDefaultTtl,
-                    MxVerified = false,
-                    MxDateChecked = null,
-                    TimeModified = DateTime.UtcNow
-                };
-
-                serverDns.Id = DaoFactory.ServerDnsDao.Save(serverDns);
-
-                dnsSettings = serverDns;
-            }
-
-            var dnsData = new ServerDomainDnsData
-            {
-                Id = dnsSettings.Id,
-                MxRecord = new ServerDomainMxRecordData
-                {
-                    Host = dnsSettings.Mx,
-                    IsVerified = false,
-                    Priority = Defines.ServerDnsMxRecordPriority
-                },
-                DkimRecord = new ServerDomainDkimRecordData
-                {
-                    Selector = dnsSettings.DkimSelector,
-                    IsVerified = false,
-                    PublicKey = dnsSettings.DkimPublicKey
-                },
-                DomainCheckRecord = new ServerDomainDnsRecordData
-                {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
-                    IsVerified = false,
-                    Value = dnsSettings.DomainCheck
-                },
-                SpfRecord = new ServerDomainDnsRecordData
-                {
-                    Name = Defines.DNS_DEFAULT_ORIGIN,
-                    IsVerified = false,
-                    Value = dnsSettings.Spf
-                }
-            };
-
-            return dnsData;
+            return ServerDomainEngine.GetOrCreateUnusedDnsData(server);
         }
 
         public bool CheckDomainOwnership(string domain)

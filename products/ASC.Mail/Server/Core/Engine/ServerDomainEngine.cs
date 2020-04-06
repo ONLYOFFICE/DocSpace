@@ -41,6 +41,7 @@ using ASC.Web.Core;
 using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
 using ASC.Common;
+using ASC.Mail.Server.Utils;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -73,7 +74,6 @@ namespace ASC.Mail.Core.Engine
         public TenantManager TenantManager { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
-        public ServerEngine ServerEngine { get; }
         // public OperationEngine OperationEngine { get; }
         public DaoFactory DaoFactory { get; }
 
@@ -83,7 +83,6 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            ServerEngine serverEngine,
             // OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
@@ -93,7 +92,6 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
-            ServerEngine = serverEngine;
             // OperationEngine = operationEngine;
             DaoFactory = daoFactory;
 
@@ -186,6 +184,79 @@ namespace ASC.Mail.Core.Engine
             return DaoFactory.ServerDomainDao.IsDomainExists(domainName);
         }
 
+        public ServerDomainDnsData GetOrCreateUnusedDnsData(Entities.Server server)
+        {
+            var dnsSettings = DaoFactory.ServerDnsDao.GetFree();
+
+            if (dnsSettings == null)
+            {
+                string privateKey, publicKey;
+                CryptoUtil.GenerateDkimKeys(out privateKey, out publicKey);
+
+                var domainCheckValue = PasswordGenerator.GenerateNewPassword(16);
+                var domainCheck = Defines.ServerDnsDomainCheckPrefix + ": " + domainCheckValue;
+
+                var serverDns = new ServerDns
+                {
+                    Id = 0,
+                    Tenant = Tenant,
+                    User = User,
+                    DomainId = Defines.UNUSED_DNS_SETTING_DOMAIN_ID,
+                    DomainCheck = domainCheck,
+                    DkimSelector = Defines.ServerDnsDkimSelector,
+                    DkimPrivateKey = privateKey,
+                    DkimPublicKey = publicKey,
+                    DkimTtl = Defines.ServerDnsDefaultTtl,
+                    DkimVerified = false,
+                    DkimDateChecked = null,
+                    Spf = Defines.ServerDnsSpfRecordValue,
+                    SpfTtl = Defines.ServerDnsDefaultTtl,
+                    SpfVerified = false,
+                    SpfDateChecked = null,
+                    Mx = server.MxRecord,
+                    MxTtl = Defines.ServerDnsDefaultTtl,
+                    MxVerified = false,
+                    MxDateChecked = null,
+                    TimeModified = DateTime.UtcNow
+                };
+
+                serverDns.Id = DaoFactory.ServerDnsDao.Save(serverDns);
+
+                dnsSettings = serverDns;
+            }
+
+            var dnsData = new ServerDomainDnsData
+            {
+                Id = dnsSettings.Id,
+                MxRecord = new ServerDomainMxRecordData
+                {
+                    Host = dnsSettings.Mx,
+                    IsVerified = false,
+                    Priority = Defines.ServerDnsMxRecordPriority
+                },
+                DkimRecord = new ServerDomainDkimRecordData
+                {
+                    Selector = dnsSettings.DkimSelector,
+                    IsVerified = false,
+                    PublicKey = dnsSettings.DkimPublicKey
+                },
+                DomainCheckRecord = new ServerDomainDnsRecordData
+                {
+                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    IsVerified = false,
+                    Value = dnsSettings.DomainCheck
+                },
+                SpfRecord = new ServerDomainDnsRecordData
+                {
+                    Name = Defines.DNS_DEFAULT_ORIGIN,
+                    IsVerified = false,
+                    Value = dnsSettings.Spf
+                }
+            };
+
+            return dnsData;
+        }
+
         public ServerDomainData AddDomain(string domain, int dnsId)
         {
             if (!IsAdmin)
@@ -206,7 +277,7 @@ namespace ASC.Mail.Core.Engine
 
                 var server = DaoFactory.ServerDao.Get(Tenant);
 
-                var freeDns = ServerEngine.GetOrCreateUnusedDnsData(server);
+                var freeDns = GetOrCreateUnusedDnsData(server);
 
                 if (freeDns.Id != dnsId)
                     throw new InvalidDataException("This dkim public key is already in use. Please reopen wizard again.");
@@ -371,7 +442,6 @@ namespace ASC.Mail.Core.Engine
             services.AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddDaoFactoryService()
-                .AddServerEngineService()
                 //TODO: Fix .AddOperationEngineService()
                 .AddCoreBaseSettingsService()
                 .AddWebItemSecurity();

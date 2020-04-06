@@ -70,9 +70,11 @@ namespace ASC.Mail.Core.Engine
         public DaoFactory DaoFactory { get; }
         public TenantManager TenantManager { get; }
         public CacheEngine CacheEngine { get; }
+        public ServerEngine ServerEngine { get; }
         public ConsumerFactory ConsumerFactory { get; }
         public GoogleLoginProvider GoogleLoginProvider { get; }
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
+        public CoreBaseSettings CoreBaseSettings { get; }
         public MailDbContext MailDb { get; }
 
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
@@ -83,9 +85,11 @@ namespace ASC.Mail.Core.Engine
             DaoFactory daoFactory,
             MailboxEngine mailboxEngine,
             CacheEngine cacheEngine,
+            ServerEngine serverEngine,
             ConsumerFactory consumerFactory,
             GoogleLoginProvider googleLoginProvider,
             MailBoxSettingEngine mailBoxSettingEngine,
+            CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -95,10 +99,11 @@ namespace ASC.Mail.Core.Engine
             DaoFactory = daoFactory;
             TenantManager = tenantManager;
             CacheEngine = cacheEngine;
+            ServerEngine = serverEngine;
             ConsumerFactory = consumerFactory;
             GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
-
+            CoreBaseSettings = coreBaseSettings;
             ServerFolderAccessInfos = DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
 
             Log = option.Get("ASC.Mail.AccountEngine");
@@ -183,6 +188,47 @@ namespace ASC.Mail.Core.Engine
             CacheEngine.Set(UserId, accountInfoList);
 
             return accountInfoList;
+        }
+
+        public MailBoxData GetAccount(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentException(@"Email empty", "email");
+
+            var mailbox =
+                MailboxEngine.GetMailboxData(new СoncreteUserMailboxExp(new MailAddress(email), Tenant,
+                    UserId));
+
+            if (mailbox == null)
+                throw new NullReferenceException(string.Format("Account wasn't found by email: {0}", email));
+
+            if (mailbox.IsTeamlab)
+            {
+                if (!CoreBaseSettings.Standalone)
+                    throw new ArgumentException("Access to this account restricted");
+
+                string mxHost = null;
+
+                try
+                {
+                    mxHost = ServerEngine.GetMailServerMxDomain();
+                }
+                catch (Exception ex)
+                {
+                    Log.ErrorFormat("GetMailServerMxDomain() failed. Exception: {0}", ex.ToString());
+                }
+
+                if (!string.IsNullOrEmpty(mxHost))
+                {
+                    mailbox.Server = mxHost;
+                    mailbox.SmtpServer = mxHost;
+                }
+            }
+
+            mailbox.Password = "";
+            mailbox.SmtpPassword = "";
+
+            return mailbox;
         }
 
         public AccountInfo TryCreateAccount(AccountModel accountModel, out LoginResult loginResult)
@@ -601,7 +647,9 @@ namespace ASC.Mail.Core.Engine
                 .AddMailboxEngineService()
                 .AddMailBoxSettingEngineService()
                 .AddCacheEngineService()
+                .AddServerEngineService()
                 .AddConsumerFactoryService()
+                .AddCoreBaseSettingsService()
                 .AddGoogleLoginProviderService();
 
             return services;
