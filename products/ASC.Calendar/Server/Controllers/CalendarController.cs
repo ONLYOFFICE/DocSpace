@@ -3982,7 +3982,7 @@ namespace ASC.Calendar.Controllers
                         }
 
                         var requestUrl = calDavServerUrl + "/" + HttpUtility.UrlEncode(currentUserName) + "/" + guid + (isSrared ? "-shared" : "") +
-                                            "/" + uid + ".ics";
+                                            "/" + HttpUtility.UrlEncode(uid) + ".ics";
                         if (calendarTimeZone != null && calendarVTimeZone != null)
                         {
                             var icsCalendars = DDayICalParser.DeserializeCalendar(ics);
@@ -4013,6 +4013,7 @@ namespace ASC.Calendar.Controllers
                             }
                             if (icsEvent != null)
                             {
+                                icsEvent.Created = null;
                                 if (!isDelete)
                                 {
                                     icsEvent.ExceptionDates.Clear();
