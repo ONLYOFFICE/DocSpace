@@ -122,6 +122,33 @@ namespace ASC.Mail.Controllers
             throw new Exception(errorText);
         }
 
+        /// <summary>
+        ///    Creates Mail account with OAuth authentication. Only Google OAuth supported.
+        /// </summary>
+        /// <param name="code">Oauth code</param>
+        /// <param name="type">Type of OAuth service. 0- Unknown, 1 - Google.</param>
+        /// <exception cref="Exception">Exception contains text description of happened error.</exception>
+        /// <returns>Created account</returns>
+        /// <short>Create OAuth account</short> 
+        /// <category>Accounts</category>
+        [Create(@"accounts/oauth")]
+        public MailAccountData CreateAccountOAuth(string code, byte type)
+        {
+            if (string.IsNullOrEmpty(code))
+                throw new ArgumentException(@"Empty oauth code", "code");
+
+            try
+            {
+                var account = AccountEngine.CreateAccountOAuth(code, type);
+                return account.ToAccountData().FirstOrDefault();
+            }
+            catch (Exception imapException)
+            {
+                throw new Exception(GetFormattedTextError(imapException, ServerType.ImapOAuth,
+                    imapException is ImapConnectionTimeoutException));
+            }
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;
