@@ -74,7 +74,7 @@ namespace ASC.Mail.Core.Engine
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public ServerEngine ServerEngine { get; }
-        public OperationEngine OperationEngine { get; }
+        // public OperationEngine OperationEngine { get; }
         public DaoFactory DaoFactory { get; }
 
         public ILog Log { get; private set; }
@@ -82,11 +82,11 @@ namespace ASC.Mail.Core.Engine
         public ServerDomainEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
+            DaoFactory daoFactory,
+            ServerEngine serverEngine,
+            // OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
-            ServerEngine serverEngine,
-            OperationEngine operationEngine,
-            DaoFactory daoFactory,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -94,7 +94,7 @@ namespace ASC.Mail.Core.Engine
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             ServerEngine = serverEngine;
-            OperationEngine = operationEngine;
+            // OperationEngine = operationEngine;
             DaoFactory = daoFactory;
 
             Log = option.Get("ASC.Mail.ServerDomainEngine");
@@ -286,17 +286,20 @@ namespace ASC.Mail.Core.Engine
             if (domain.IsSharedDomain)
                 throw new SecurityException("Can not remove shared domain.");
 
-            return OperationEngine.RemoveServerDomain(domain);
+            //TODO: Fix return OperationEngine.RemoveServerDomain(domain);
+
+            throw new NotImplementedException();
         }
 
         private ServerDomainDnsData UpdateDnsStatus(ServerDomain domain, bool force = false)
         {
             var serverDns = DaoFactory.ServerDnsDao.Get(domain.Id);
 
-            if (serverDns.UpdateRecords(OperationEngine, domain.Name, force))
+            //TODO fix
+            /*if (serverDns.UpdateRecords(OperationEngine, domain.Name, force))
             {
                 DaoFactory.ServerDnsDao.Save(serverDns);
-            }
+            }*/
 
             var dnsData = ToServerDomainDnsData(serverDns);
 
@@ -364,6 +367,14 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddServerDomainEngineService(this DIHelper services)
         {
             services.TryAddScoped<ServerDomainEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddServerEngineService()
+                //TODO: Fix .AddOperationEngineService()
+                .AddCoreBaseSettingsService()
+                .AddWebItemSecurity();
 
             return services;
         }

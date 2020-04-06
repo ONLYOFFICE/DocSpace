@@ -56,7 +56,7 @@ namespace ASC.Mail.Core.Engine
         public UserFolderEngine UserFolderEngine { get; }
         public IndexEngine IndexEngine { get; }
         public QuotaEngine QuotaEngine { get; }
-        public OperationEngine OperationEngine { get; }
+        //public OperationEngine OperationEngine { get; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -78,8 +78,6 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        public EngineFactory Factory { get; private set; }
-
         private const int CHUNK_SIZE = 3;
 
         public ChainEngine(
@@ -91,7 +89,7 @@ namespace ASC.Mail.Core.Engine
             UserFolderEngine userFolderEngine,
             IndexEngine indexEngine,
             QuotaEngine quotaEngine,
-            OperationEngine operationEngine,
+            // OperationEngine operationEngine,
             FactoryIndexer<MailWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
@@ -105,7 +103,7 @@ namespace ASC.Mail.Core.Engine
             UserFolderEngine = userFolderEngine;
             IndexEngine = indexEngine;
             QuotaEngine = quotaEngine;
-            OperationEngine = operationEngine;
+            // OperationEngine = operationEngine;
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
@@ -134,7 +132,7 @@ namespace ASC.Mail.Core.Engine
 
             var filter = (MailSearchFilterData)filterData.Clone();
 
-            if (filter.UserFolderId.HasValue && Factory.UserFolderEngine.Get((uint)filter.UserFolderId.Value) == null)
+            if (filter.UserFolderId.HasValue && UserFolderEngine.Get((uint)filter.UserFolderId.Value) == null)
                 throw new ArgumentException("Folder not found");
 
             var filteredConversations = GetFilteredConversations(filter, out hasMore);
@@ -360,7 +358,9 @@ namespace ASC.Mail.Core.Engine
 
 
             if (folder == FolderType.Inbox || folder == FolderType.Sent || folder == FolderType.Spam)
-                OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
+            {
+               //TODO: fix OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
+            }
 
             var t = ServiceProvider.GetService<MailWrapper>();
             if (!FactoryIndexerHelper.Support(t))
@@ -413,7 +413,9 @@ namespace ASC.Mail.Core.Engine
                         m.FolderRestore == FolderType.Spam).Select(m => m.Id).ToList();
 
             if (filterApplyIds.Any())
-                OperationEngine.ApplyFilters(filterApplyIds);
+            {
+               //TODO: fix OperationEngine.ApplyFilters(filterApplyIds);
+            }
 
             var t = ServiceProvider.GetService<MailWrapper>();
             if (!FactoryIndexerHelper.Support(t))
@@ -860,6 +862,18 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddChainEngineService(this DIHelper services)
         {
             services.TryAddScoped<ChainEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddMessageEngineService()
+                .AddFolderEngineService()
+                .AddUserFolderEngineService()
+                .AddIndexEngineService()
+                .AddQuotaEngineService()
+                //TODO: fix .AddOperationEngineService()
+                .AddFactoryIndexerService<MailWrapper>()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

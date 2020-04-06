@@ -86,7 +86,7 @@ namespace ASC.Mail.Core.Engine
 
     public static class CacheEngineExtension
     {
-        public static DIHelper AddCacheEngine(this DIHelper services)
+        public static DIHelper AddCacheEngineService(this DIHelper services)
         {
             services.TryAddSingleton<CacheEngine>();
             services.TryAddSingleton(typeof(ICacheNotify<>), typeof(KafkaCache<>));

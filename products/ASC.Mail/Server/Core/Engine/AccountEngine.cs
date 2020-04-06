@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -53,7 +52,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -67,12 +66,10 @@ namespace ASC.Mail.Core.Engine
 
         public SecurityContext SecurityContext { get; }
         public FolderEngine FolderEngine { get; }
-        public ApiContext ApiContext { get; }
-
         public ILog Log { get; }
-
         public MailboxEngine MailboxEngine { get; }
         public DaoFactory DaoFactory { get; }
+        public TenantManager TenantManager { get; }
         public CacheEngine CacheEngine { get; }
         public ConsumerFactory ConsumerFactory { get; }
         public GoogleLoginProvider GoogleLoginProvider { get; }
@@ -81,18 +78,17 @@ namespace ASC.Mail.Core.Engine
 
 
         public AccountEngine(
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
+            DaoFactory daoFactory,
             FolderEngine folderEngine,
             MailboxEngine mailboxEngine,
-            DaoFactory daoFactory,
             CacheEngine cacheEngine,
             ConsumerFactory consumerFactory,
             GoogleLoginProvider googleLoginProvider,
             MailBoxSettingEngine mailBoxSettingEngine,
             IOptionsMonitor<ILog> option)
         {
-            ApiContext = apiContext;
             SecurityContext = securityContext;
             FolderEngine = folderEngine;
             Log = option.Get("ASC.Mail.AccountEngine");
@@ -100,6 +96,7 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine = mailboxEngine;
 
             DaoFactory = daoFactory;
+            TenantManager = tenantManager;
             CacheEngine = cacheEngine;
             ConsumerFactory = consumerFactory;
             GoogleLoginProvider = googleLoginProvider;
@@ -593,6 +590,17 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddAccountEngineService(this DIHelper services)
         {
             services.TryAddScoped<AccountEngine>();
+
+            services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddFolderEngineService()
+                .AddMailboxEngineService()
+                .AddMailBoxSettingEngineService()
+                .AddCacheEngineService()
+                .AddConsumerFactoryService()
+                .AddGoogleLoginProviderService();
 
             return services;
         }

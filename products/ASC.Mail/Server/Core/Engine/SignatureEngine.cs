@@ -46,7 +46,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -58,6 +58,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
 
         public ApiContext ApiContext { get; }
@@ -70,14 +71,14 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public SignatureEngine(
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option,
             DaoFactory daoFactory,
             CacheEngine cacheEngine,
-            StorageManager storageManager)
+            StorageManager storageManager,
+            IOptionsMonitor<ILog> option)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
 
             DaoFactory = daoFactory;
@@ -130,7 +131,12 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<SignatureEngine>();
 
-            services.AddStorageManagerService();
+            services
+                .AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddCacheEngineService()
+                .AddStorageManagerService();
 
             return services;
         }

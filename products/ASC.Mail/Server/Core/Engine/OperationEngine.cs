@@ -582,7 +582,24 @@ namespace ASC.Mail.Core.Engine
     {
         public static DIHelper AddOperationEngineService(this DIHelper services)
         {
+            services.TryAddSingleton<DistributedTaskCacheNotify>();
             services.TryAddScoped<OperationEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddMailboxEngineService()
+                .AddQuotaEngineService()
+                .AddFolderEngineService()
+                .AddCacheEngineService()
+                .AddIndexEngineService()
+                .AddAttachmentEngineService()
+                .AddUserFolderEngineService()
+                .AddFilterEngineService()
+                .AddMessageEngineService()
+                .AddServerMailboxEngineService()
+                .AddCoreSettingsService()
+                .AddStorageManagerService();
 
             return services;
         }

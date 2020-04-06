@@ -1,19 +1,11 @@
 
-using System;
-
 using ASC.Api.Core.Auth;
 using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
-using ASC.Common.Threading.Progress;
-using ASC.Common.Threading.Workers;
 using ASC.Mail.Controllers;
-// using ASC.Data.Reassigns;
-// using ASC.Employee.Core.Controllers;
-using ASC.Web.Core.Users;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;

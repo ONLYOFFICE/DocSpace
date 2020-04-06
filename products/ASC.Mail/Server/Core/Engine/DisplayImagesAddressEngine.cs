@@ -24,7 +24,6 @@
 */
 
 
-using ASC.Api.Core;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
@@ -43,7 +42,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -55,10 +54,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
-
         public ILog Log { get; }
 
         public DaoFactory DaoFactory { get; }
@@ -66,18 +63,18 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public DisplayImagesAddressEngine(
-            DbContextManager<MailDbContext> dbContext,
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option,
-            DaoFactory daoFactory)
+            DaoFactory daoFactory,
+            IOptionsMonitor<ILog> option)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
-            Log = option.Get("ASC.Mail.DisplayImagesAddressEngine");
 
-            MailDb = dbContext.Get("mail");
             DaoFactory = daoFactory;
+            MailDb = DaoFactory.MailDb;
+
+            Log = option.Get("ASC.Mail.DisplayImagesAddressEngine");
         }
 
         public IEnumerable<string> Get()
@@ -102,6 +99,10 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddDisplayImagesAddressEngineService(this DIHelper services)
         {
             services.TryAddScoped<DisplayImagesAddressEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService();
 
             return services;
         }

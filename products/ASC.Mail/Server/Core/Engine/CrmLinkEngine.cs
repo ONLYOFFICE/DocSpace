@@ -36,6 +36,7 @@ using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Exceptions;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 //using ASC.Web.CRM.Core;
@@ -46,9 +47,7 @@ namespace ASC.Mail.Core.Engine
     public class CrmLinkEngine
     {
         public int Tenant { get; private set; }
-
         public string User { get; private set; }
-
         public ILog Log { get; private set; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
@@ -285,6 +284,13 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddCrmLinkEngineService(this DIHelper services)
         {
             services.TryAddScoped<CrmLinkEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddApiHelperService()
+                .AddDaoFactoryService()
+                .AddMessageEngineService()
+                .AddStorageFactoryService();
 
             return services;
         }

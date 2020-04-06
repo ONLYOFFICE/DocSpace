@@ -53,7 +53,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
         public string UserId
@@ -63,6 +63,8 @@ namespace ASC.Mail.Core.Engine
                 return SecurityContext.CurrentAccount.ID.ToString();
             }
         }
+
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
         public ApiContext ApiContext { get; }
         public ILog Log { get; }
@@ -75,18 +77,18 @@ namespace ASC.Mail.Core.Engine
         public WebItemSecurity WebItemSecurity { get; }
         public MailDbContext MailDb { get; }
         public TagEngine(
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option,
             DaoFactory daoFactory,
             ChainEngine chainEngine,
             IndexEngine indexEngine,
+            WebItemSecurity webItemSecurity,
             FactoryIndexer<MailWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
-            WebItemSecurity webItemSecurity)
+            IOptionsMonitor<ILog> option)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
 
             DaoFactory = daoFactory;
@@ -586,6 +588,15 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddTagEngineService(this DIHelper services)
         {
             services.TryAddScoped<TagEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddChainEngineService()
+                .AddIndexEngineService()
+                .AddWebItemSecurity()
+                .AddFactoryIndexerService<MailWrapper>()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

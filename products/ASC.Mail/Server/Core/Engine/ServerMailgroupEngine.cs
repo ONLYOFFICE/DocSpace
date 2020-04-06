@@ -430,6 +430,13 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<ServerMailgroupEngine>();
 
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddCacheEngineService()
+                .AddCoreBaseSettingsService()
+                .AddWebItemSecurity();
+
             return services;
         }
     }

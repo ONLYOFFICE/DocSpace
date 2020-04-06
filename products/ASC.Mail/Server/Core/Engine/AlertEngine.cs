@@ -71,18 +71,17 @@ namespace ASC.Mail.Core.Engine
         public MailDbContext MailDb { get; }
 
         public AlertEngine(
-            DbContextManager<MailDbContext> dbContext,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> option,
-            DaoFactory daoFactory)
+            DaoFactory daoFactory,
+            IOptionsMonitor<ILog> option)
         {
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             Log = option.Get("ASC.Mail.AlertEngine");
 
-            MailDb = dbContext.Get("mail");
             DaoFactory = daoFactory;
+            MailDb = DaoFactory.MailDb;
         }
 
         public List<MailAlertData> GetAlerts(/*int mailboxId = -1, MailAlertTypes type = MailAlertTypes.Empty*/)
@@ -351,6 +350,10 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddAlertEngineService(this DIHelper services)
         {
             services.TryAddScoped<AlertEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService();
 
             return services;
         }

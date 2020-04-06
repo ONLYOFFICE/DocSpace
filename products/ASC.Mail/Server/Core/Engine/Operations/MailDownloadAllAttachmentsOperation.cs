@@ -45,6 +45,7 @@ using Ionic.Zip;
 using Ionic.Zlib;
 using Microsoft.Extensions.Options;
 using ASC.Web.Core.PublicResources;
+using ASC.Mail.Extensions;
 //using Resources;
 
 namespace ASC.Mail.Core.Engine.Operations

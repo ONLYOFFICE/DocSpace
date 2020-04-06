@@ -425,6 +425,8 @@ namespace ASC.Mail.Core.Engine
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddDaoFactoryService()
+                .AddStorageManagerService()
+                .AddApiHelperService()
                 .AddStorageManagerService();
 
             return services;

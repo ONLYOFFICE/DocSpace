@@ -205,6 +205,12 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<SpamEngine>();
 
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddChainEngineService()
+                .AddApiHelperService();
+
             return services;
         }
     }

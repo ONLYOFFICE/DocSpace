@@ -94,8 +94,8 @@ namespace ASC.Mail.Core.Engine
         public TestEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
-            CoreSettings coreSettings,
             DaoFactory daoFactory,
+            CoreSettings coreSettings,
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
@@ -386,6 +386,17 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddTestEngineService(this DIHelper services)
         {
             services.TryAddScoped<TestEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddCoreSettingsService()
+                .AddAccountEngineService()
+                .AddMailboxEngineService()
+                .AddMessageEngineService()
+                .AddIndexEngineService()
+                .AddAttachmentEngineService()
+                .AddStorageFactoryService();
 
             return services;
         }

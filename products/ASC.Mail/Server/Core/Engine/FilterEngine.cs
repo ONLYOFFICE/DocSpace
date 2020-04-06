@@ -70,16 +70,15 @@ namespace ASC.Mail.Core.Engine
         public TagEngine TagEngine { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
 
         public FilterEngine(
-            MessageEngine messageEngine,
-            UserFolderEngine userFolderEngine,
-            TagEngine tagEngine,
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
+            MessageEngine messageEngine,
+            UserFolderEngine userFolderEngine,
+            TagEngine tagEngine,
             IOptionsMonitor<ILog> option)
         {
             MessageEngine = messageEngine;
@@ -556,6 +555,13 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddFilterEngineService(this DIHelper services)
         {
             services.TryAddScoped<FilterEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddMessageEngineService()
+                .AddUserFolderEngineService()
+                .AddTagEngineService();
 
             return services;
         }

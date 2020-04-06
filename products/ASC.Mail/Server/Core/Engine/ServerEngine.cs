@@ -608,6 +608,15 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<ServerEngine>();
 
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddServerDomainEngineService()
+                .AddCoreBaseSettingsService()
+                .AddWebItemSecurity()
+                .AddSettingsManagerService()
+                .AddUserManagerWrapperService();
+
             return services;
         }
     }

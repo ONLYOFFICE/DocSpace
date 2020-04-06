@@ -59,7 +59,6 @@ namespace ASC.Mail.Core.Engine
 
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
-        public EngineFactory EngineFactory { get; }
         public DaoFactory DaoFactory { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -296,6 +295,11 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddIndexEngineService(this DIHelper services)
         {
             services.TryAddScoped<IndexEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

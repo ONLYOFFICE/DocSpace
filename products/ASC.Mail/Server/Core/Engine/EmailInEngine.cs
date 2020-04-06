@@ -34,6 +34,7 @@ using ASC.Data.Storage;
 using ASC.Mail.Data.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;
@@ -154,6 +155,11 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddEmailInEngineService(this DIHelper services)
         {
             services.TryAddScoped<EmailInEngine>();
+
+            services.AddAccountEngineService()
+                .AddAlertEngineService()
+                .AddStorageFactoryService()
+                .AddApiHelperService();
 
             return services;
         }

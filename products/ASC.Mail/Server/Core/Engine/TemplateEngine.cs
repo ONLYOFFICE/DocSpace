@@ -47,6 +47,9 @@ namespace ASC.Mail.Core.Engine
     public class TemplateEngine : ComposeEngineBase
     {
         public TemplateEngine(
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            DaoFactory daoFactory,
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
@@ -55,10 +58,7 @@ namespace ASC.Mail.Core.Engine
             QuotaEngine quotaEngine,
             IndexEngine indexEngine,
             FolderEngine folderEngine,
-            DaoFactory daoFactory,
-            SecurityContext securityContext,
             StorageManager storageManager,
-            TenantManager tenantManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
@@ -170,6 +170,21 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddTemplateEngineService(this DIHelper services)
         {
             services.TryAddScoped<TemplateEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddAccountEngineService()
+                .AddMailboxEngineService()
+                .AddMessageEngineService()
+                .AddAttachmentEngineService()
+                .AddChainEngineService()
+                .AddQuotaEngineService()
+                .AddIndexEngineService()
+                .AddFolderEngineService()
+                .AddStorageManagerService()
+                .AddCoreSettingsService()
+                .AddStorageFactoryService();
 
             return services;
         }

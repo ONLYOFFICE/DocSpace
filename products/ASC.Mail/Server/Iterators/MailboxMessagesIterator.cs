@@ -26,6 +26,7 @@
 
 using ASC.Mail.Core;
 using ASC.Mail.Core.Dao.Expressions.Message;
+using ASC.Mail.Core.Engine;
 using ASC.Mail.Models;
 
 namespace ASC.Mail.Iterators
@@ -46,17 +47,14 @@ namespace ASC.Mail.Iterators
     /// </summary>
     public class MailboxMessagesIterator : IMailboxMessagesIterator
     {
-        private EngineFactory MailEngine { get; set; }
         private readonly int _minMessageId;
         private readonly int _maxMessageId;
 
         // Constructor
-        public MailboxMessagesIterator(EngineFactory engineFactory, MailBoxData mailBoxData)
+        public MailboxMessagesIterator(MessageEngine messageEngine, MailBoxData mailBoxData)
         {
-            MailEngine = engineFactory;
 
-            var range = MailEngine
-                .MessageEngine
+            var range = MessageEngine
                 .GetRangeMessages(
                     SimpleMessagesExp.CreateBuilder(mailBoxData.TenantId)
                         .SetMailboxId(mailBoxData.MailBoxId)
@@ -64,12 +62,13 @@ namespace ASC.Mail.Iterators
 
             _minMessageId = range.Item1;
             _maxMessageId = range.Item2;
+            MessageEngine = messageEngine;
         }
 
         // Gets first item
         public MailMessageData First(bool onlyUnremoved = false)
         {
-            Current = MailEngine.MessageEngine.GetMessage(_minMessageId,
+            Current = MessageEngine.GetMessage(_minMessageId,
                 new MailMessageData.Options
                 {
                     LoadImages = false,
@@ -87,7 +86,7 @@ namespace ASC.Mail.Iterators
             if (IsDone) 
                 return null;
 
-            Current = MailEngine.MessageEngine.GetNextMessage(Current.Id,
+            Current = MessageEngine.GetNextMessage(Current.Id,
                 new MailMessageData.Options
                 {
                     LoadImages = false,
@@ -108,5 +107,6 @@ namespace ASC.Mail.Iterators
             get { return _minMessageId == 0 || _maxMessageId < _minMessageId || Current == null || Current.Id > _maxMessageId; }
         }
 
+        public MessageEngine MessageEngine { get; }
     }
 }

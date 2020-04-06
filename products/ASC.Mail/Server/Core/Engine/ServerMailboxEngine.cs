@@ -78,7 +78,7 @@ namespace ASC.Mail.Core.Engine
         public CacheEngine CacheEngine { get; }
         public ServerDomainEngine ServerDomainEngine { get; }
         public MailboxEngine MailboxEngine { get; }
-        public OperationEngine OperationEngine { get; }
+        //public OperationEngine OperationEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public WebItemSecurity WebItemSecurity { get; }
         public SettingsManager SettingsManager { get; }
@@ -106,8 +106,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine cacheEngine,
             ServerDomainEngine serverDomainEngine,
             MailboxEngine mailboxEngine,
-            OperationEngine operationEngine,
-
+            //OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
             WebItemSecurity webItemSecurity,
             SettingsManager settingsManager,
@@ -125,7 +124,7 @@ namespace ASC.Mail.Core.Engine
             CacheEngine = cacheEngine;
             ServerDomainEngine = serverDomainEngine;
             MailboxEngine = mailboxEngine;
-            OperationEngine = operationEngine;
+            //OperationEngine = operationEngine;
             CoreBaseSettings = coreBaseSettings;
             WebItemSecurity = webItemSecurity;
             SettingsManager = settingsManager;
@@ -718,7 +717,9 @@ namespace ASC.Mail.Core.Engine
                     "Removing of a shared mailbox is allowed only for the current account if user is not admin.");
             }
 
-            return OperationEngine.RemoveServerMailbox(mailbox);
+            //TODO fix return OperationEngine.RemoveServerMailbox(mailbox);
+
+            throw new NotImplementedException();
         }
 
         public void ChangePassword(int mailboxId, string password)
@@ -824,6 +825,22 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddServerMailboxEngineService(this DIHelper services)
         {
             services.TryAddScoped<ServerMailboxEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddAccountEngineService()
+                .AddCacheEngineService()
+                .AddServerDomainEngineService()
+                .AddMailboxEngineService()
+                //.AddOperationEngineService()
+                .AddCoreBaseSettingsService()
+                .AddWebItemSecurity()
+                .AddSettingsManagerService()
+                .AddUserManagerWrapperService()
+                .AddAuthManager()
+                .AddUserManagerService()
+                .AddDisplayUserSettingsService();
 
             return services;
         }

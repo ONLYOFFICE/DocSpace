@@ -496,8 +496,16 @@ namespace ASC.Mail.Core.Engine
             services.TryAddScoped<AttachmentEngine>();
 
             services
+                .AddQuotaEngineService()
+                .AddChainEngineService()
+                .AddIndexEngineService()
+                .AddMessageEngineService()
+                .AddDaoFactoryService()
                 .AddStorageFactoryService()
-                .AddStorageManagerService();
+                .AddStorageManagerService()
+                .AddFilesIntegrationService()
+                .AddFileSecurityService()
+                .AddFileConverterService();
 
             return services;
         }

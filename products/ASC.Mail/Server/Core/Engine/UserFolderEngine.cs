@@ -47,7 +47,6 @@ namespace ASC.Mail.Core.Engine
     {
         public int Tenant { get; private set; }
         public string User { get; private set; }
-
         public ILog Log { get; private set; }
 
         public DaoFactory DaoFactory { get; }
@@ -495,6 +494,13 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddUserFolderEngineService(this DIHelper services)
         {
             services.TryAddScoped<UserFolderEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddMessageEngineService()
+                .AddIndexEngineService()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

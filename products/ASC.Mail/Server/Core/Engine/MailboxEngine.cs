@@ -56,7 +56,7 @@ namespace ASC.Mail.Core.Engine
         {
             get
             {
-                return ApiContext.Tenant.TenantId;
+                return TenantManager.GetCurrentTenant().TenantId;
             }
         }
 
@@ -68,10 +68,8 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
-
-        public ApiContext ApiContext { get; }
-
         public ILog Log { get; }
 
         public MailDbContext MailDb { get; }
@@ -81,34 +79,35 @@ namespace ASC.Mail.Core.Engine
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
         public QuotaEngine QuotaEngine { get; }
         public CacheEngine CacheEngine { get; }
-        public OperationEngine OperationEngine { get; }
+        //public OperationEngine OperationEngine { get; }
         public IndexEngine IndexEngine { get; }
 
         public MailboxEngine(
-            ApiContext apiContext,
+            TenantManager tenantManager,
             SecurityContext securityContext,
             DaoFactory daoFactory,
             AlertEngine alertEngine,
             MailBoxSettingEngine mailBoxSettingEngine,
             QuotaEngine quotaEngine,
             CacheEngine cacheEngine,
-            OperationEngine operationEngine,
+            //OperationEngine operationEngine,
             IndexEngine indexEngine,
             IOptionsMonitor<ILog> option)
         {
-            ApiContext = apiContext;
+            TenantManager = tenantManager;
             SecurityContext = securityContext;
-            Log = option.Get("ASC.Mail.AccountEngine");
-
-            MailDb = daoFactory.MailDb;
-
             DaoFactory = daoFactory;
+
+            MailDb = DaoFactory.MailDb;
+
             AlertEngine = alertEngine;
             MailBoxSettingEngine = mailBoxSettingEngine;
             QuotaEngine = quotaEngine;
             CacheEngine = cacheEngine;
-            OperationEngine = operationEngine;
+            //OperationEngine = operationEngine;
             IndexEngine = indexEngine;
+
+            Log = option.Get("ASC.Mail.AccountEngine");
         }
 
         public MailBoxData GetMailboxData(IMailboxExp exp)
@@ -657,7 +656,7 @@ namespace ASC.Mail.Core.Engine
                 if (!needRecalculateFolders)
                     return;
 
-                OperationEngine.RecalculateFolders();
+                //TODO: Fix OperationEngine.RecalculateFolders();
 
                 tx.Commit();
             }
@@ -671,7 +670,7 @@ namespace ASC.Mail.Core.Engine
             if (!needRecalculateFolders)
                 return;
 
-            OperationEngine.RecalculateFolders();
+            //TODO: Fix OperationEngine.RecalculateFolders();
         }
 
         /// <summary>
@@ -950,6 +949,16 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddMailboxEngineService(this DIHelper services)
         {
             services.TryAddScoped<MailboxEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddAlertEngineService()
+                .AddMailBoxSettingEngineService()
+                .AddQuotaEngineService()
+                .AddCacheEngineService()
+                //TODO: fix .AddOperationEngineService()
+                .AddIndexEngineService();
 
             return services;
         }

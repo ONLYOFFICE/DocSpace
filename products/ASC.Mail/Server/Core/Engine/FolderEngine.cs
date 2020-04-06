@@ -63,6 +63,8 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public DaoFactory DaoFactory { get; }
+        // public OperationEngine OperationEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
         public ILog Log { get; private set; }
 
         public class MailFolderInfo
@@ -75,18 +77,19 @@ namespace ASC.Mail.Core.Engine
             public int totalMessages;
         }
 
-        public EngineFactory Factory { get; private set; }
-
         public FolderEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
+            // OperationEngine operationEngine,
+            UserFolderEngine userFolderEngine,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
-
+            // OperationEngine = operationEngine;
+            UserFolderEngine = userFolderEngine;
             Log = option.Get("ASC.Mail.FolderEngine");
         }
 
@@ -136,7 +139,7 @@ namespace ASC.Mail.Core.Engine
             if (!needRecalculation)
                 return folders;
 
-            Factory.OperationEngine.RecalculateFolders();
+            //TODO: Fix OperationEngine.RecalculateFolders();
 
             return folders;
         }
@@ -198,13 +201,13 @@ namespace ASC.Mail.Core.Engine
             catch (Exception ex)
             {
                 Log.ErrorFormat("ChangeFolderCounters() Exception: {0}", ex.ToString());
-                Factory.OperationEngine.RecalculateFolders();
+                //TODO: Fix OperationEngine.RecalculateFolders();
             }
 
             if (!userFolder.HasValue)
                 return;
 
-            Factory.UserFolderEngine.ChangeFolderCounters(userFolder.Value, unreadMessDiff, totalMessDiff, unreadConvDiff, totalConvDiff);
+            UserFolderEngine.ChangeFolderCounters(userFolder.Value, unreadMessDiff, totalMessDiff, unreadConvDiff, totalConvDiff);
         }
 
         public void RecalculateFolders(Action<MailOperationRecalculateMailboxProgress> callback = null)
@@ -404,6 +407,12 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddFolderEngineService(this DIHelper services)
         {
             services.TryAddScoped<FolderEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                //TODO: fix .AddOperationEngineService()
+                .AddUserFolderEngineService();
 
             return services;
         }

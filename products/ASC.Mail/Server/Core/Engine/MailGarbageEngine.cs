@@ -625,6 +625,16 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<MailGarbageEngine>();
 
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddUserManagerService()
+                .AddDaoFactoryService()
+                .AddMailboxEngineService()
+                .AddServerMailboxEngineService()
+                .AddUserFolderEngineService()
+                .AddApiHelperService()
+                .AddStorageFactoryService();
+
             return services;
         }
     }

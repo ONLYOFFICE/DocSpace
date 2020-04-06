@@ -35,6 +35,8 @@ using ASC.Mail.Enums;
 //using ASC.Web.Studio.Utility;
 using ContactInfo = ASC.Mail.Models.ContactInfo;
 using ASC.Web.Studio.Utility;
+using ASC.Mail.Data.Storage;
+using ASC.Data.Storage;
 
 namespace ASC.Mail.Extensions
 {
@@ -292,6 +294,21 @@ namespace ASC.Mail.Extensions
             };
 
             return attachment;
+        }
+
+        public static AttachmentStream ToAttachmentStream(this MailAttachmentData mailAttachmentData, IDataStore storage, int offset = 0)
+        {
+            if (mailAttachmentData == null)
+                throw new InvalidOperationException("Attachment not found");
+
+            var attachmentPath = MailStoragePathCombiner.GerStoredFilePath(mailAttachmentData);
+            var result = new AttachmentStream
+            {
+                FileStream = storage.GetReadStream("", attachmentPath, offset),
+                FileName = mailAttachmentData.fileName,
+                FileSize = mailAttachmentData.size
+            };
+            return result;
         }
     }
 }

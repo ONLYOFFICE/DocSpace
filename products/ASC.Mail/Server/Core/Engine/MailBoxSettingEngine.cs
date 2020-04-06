@@ -335,6 +335,8 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<MailBoxSettingEngine>();
 
+            services.AddDaoFactoryService();
+
             return services;
         }
     }

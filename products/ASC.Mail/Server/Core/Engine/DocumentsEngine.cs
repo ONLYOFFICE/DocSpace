@@ -31,6 +31,7 @@ using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Data.Storage;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 
@@ -118,13 +119,12 @@ namespace ASC.Mail.Core.Engine
 
             var dataStore = StorageFactory.GetMailStorage(Tenant);
 
-            using (var file = mailAttachmentData.ToAttachmentStream(dataStore))
-            {
-                var uploadedFileId = ApiHelper.UploadToDocuments(file.FileStream, file.FileName,
-                    mailAttachmentData.contentType, folderId, true);
+            using var file = mailAttachmentData.ToAttachmentStream(dataStore);
 
-                return uploadedFileId;
-            }
+            var uploadedFileId = ApiHelper.UploadToDocuments(file.FileStream, file.FileName, 
+                mailAttachmentData.contentType, folderId, true);
+
+            return uploadedFileId;
         }
     }
 
@@ -133,6 +133,12 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddDocumentsEngineService(this DIHelper services)
         {
             services.TryAddScoped<DocumentsEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddApiHelperService()
+                .AddAttachmentEngineService()
+                .AddStorageFactoryConfigService();
 
             return services;
         }

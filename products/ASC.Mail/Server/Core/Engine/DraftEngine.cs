@@ -67,7 +67,9 @@ namespace ASC.Mail.Core.Engine
         public HttpContext HttpContext { get; set; }
 
         public DraftEngine(
-            IHttpContextAccessor httpContextAccessor,
+            SecurityContext securityContext,
+            TenantManager tenantManager,
+            DaoFactory daoFactory,
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
@@ -82,15 +84,13 @@ namespace ASC.Mail.Core.Engine
             AutoreplyEngine autoreplyEngine,
             AlertEngine alertEngine,
             ContactEngine contactEngine,
-            DaoFactory daoFactory,
             StorageManager storageManager,
-            SecurityContext securityContext,
-            TenantManager tenantManager,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
             FileStorageService fileStorageService,
             FactoryIndexer<MailContactWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
+            IHttpContextAccessor httpContextAccessor,
             IServiceProvider serviceProvider,
             IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
             IOptionsMonitor<ILog> option,
@@ -114,7 +114,6 @@ namespace ASC.Mail.Core.Engine
             option,
             daemonLabels)
         {
-            Log = option.Get("ASC.Mail.DraftEngine");
             CrmLinkEngine = crmLinkEngine;
             EmailInEngine = emailInEngine;
             FilterEngine = filterEngine;
@@ -127,6 +126,8 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             HttpContext = httpContextAccessor?.HttpContext;
+
+            Log = option.Get("ASC.Mail.DraftEngine");
         }
 
         #region .Public
@@ -662,6 +663,30 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddDraftEngineService(this DIHelper services)
         {
             services.TryAddScoped<DraftEngine>();
+
+            services.AddTenantManagerService()
+                .AddSecurityContextService()
+                .AddDaoFactoryService()
+                .AddAccountEngineService()
+                .AddMailboxEngineService()
+                .AddMessageEngineService()
+                .AddAttachmentEngineService()
+                .AddChainEngineService()
+                .AddQuotaEngineService()
+                .AddIndexEngineService()
+                .AddFolderEngineService()
+                .AddCrmLinkEngineService()
+                .AddEmailInEngineService()
+                .AddFilterEngineService()
+                .AddAutoreplyEngineService()
+                .AddAlertEngineService()
+                .AddContactEngineService()
+                .AddStorageManagerService()
+                .AddCoreSettingsService()
+                .AddStorageFactoryService()
+                .AddFileStorageService()
+                .AddFactoryIndexerService<MailContactWrapper>()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

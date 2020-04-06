@@ -84,8 +84,8 @@ namespace ASC.Mail.Core.Engine
             ApiHelper apiHelper,
             FactoryIndexer<MailContactWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
-            IServiceProvider serviceProvider,
             WebItemSecurity webItemSecurity,
+            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -376,6 +376,16 @@ namespace ASC.Mail.Core.Engine
         public static DIHelper AddContactEngineService(this DIHelper services)
         {
             services.TryAddScoped<ContactEngine>();
+
+            services.AddSecurityContextService()
+                .AddTenantManagerService()
+                .AddDaoFactoryService()
+                .AddIndexEngineService()
+                .AddAccountEngineService()
+                .AddApiHelperService()
+                .AddFactoryIndexerService<MailContactWrapper>()
+                .AddFactoryIndexerHelperService()
+                .AddWebItemSecurity();
 
             return services;
         }
