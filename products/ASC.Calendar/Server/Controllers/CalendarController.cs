@@ -3175,6 +3175,25 @@ namespace ASC.Calendar.Controllers
             var userTimeZone = TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone);
 
             result.AddRange(calendars.ConvertAll(c => CalendarWrapperHelper.Get(c)));
+
+            foreach (var calendarWrapper in result.ToList())
+            {
+                if (calendarWrapper.Owner.Id != SecurityContext.CurrentAccount.ID)
+                {
+
+                    var ownerViewSettings = DataProvider.GetUserViewSettings(calendarWrapper.Owner.Id, new List<string>() { calendarWrapper.Id });
+
+                    var userViewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, new List<string>() { calendarWrapper.Id });
+
+                    userViewSettings.FirstOrDefault().TimeZone = ownerViewSettings.FirstOrDefault().TimeZone;
+
+                    var newCal = CalendarWrapperHelper.Get(calendarWrapper.UserCalendar, userViewSettings.FirstOrDefault());
+
+                    result.Remove(calendarWrapper);
+                    result.Add(newCal);
+                }
+            }
+
             if (!result.Exists(c => !c.IsSubscription))
             {
                 //create first calendar
