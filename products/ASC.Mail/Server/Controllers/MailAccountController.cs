@@ -390,6 +390,17 @@ namespace ASC.Mail.Controllers
             AccountEngine.SetAccountEmailInFolder(mailbox_id, email_in_folder);
         }
 
+        /// <summary>
+        /// UpdateUserActivity
+        /// </summary>
+        /// <param name="userOnline"></param>
+        /// <category>Accounts</category>
+        [Update(@"accounts/updateuseractivity")]
+        public void UpdateUserActivity(bool userOnline)
+        {
+            AccountEngine.SetAccountsActivity(userOnline);
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;
