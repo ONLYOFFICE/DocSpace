@@ -37,6 +37,8 @@ namespace ASC.Mail.Controllers
         public SignatureEngine SignatureEngine { get; }
         public TagEngine TagEngine { get; }
         public MailboxEngine MailboxEngine { get; }
+        public DocumentsEngine DocumentsEngine { get; }
+
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
 
@@ -49,6 +51,7 @@ namespace ASC.Mail.Controllers
             SignatureEngine signatureEngine,
             TagEngine tagEngine,
             MailboxEngine mailboxEngine,
+            DocumentsEngine documentsEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -60,6 +63,7 @@ namespace ASC.Mail.Controllers
             SignatureEngine = signatureEngine;
             TagEngine = tagEngine;
             MailboxEngine = mailboxEngine;
+            DocumentsEngine = documentsEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
