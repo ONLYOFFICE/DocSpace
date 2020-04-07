@@ -293,3 +293,15 @@ export function getShareFiles(fileId) {
     url: `/files/file/${fileId}/share`
   });
 }
+
+export function setShareFolder(folderId, shareTo, access, notify, sharingMessage) {
+  const share = [shareTo, access];
+  const data = { share, notify, sharingMessage };
+  return request({ method: "put", url: `/files/folder/${folderId}/share`, data });
+}
+
+export function setShareFiles(fileId, shareTo, access, notify, sharingMessage) {
+  const share = [shareTo, access];
+  const data = { share, notify, sharingMessage };
+  return request({ method: "put", url: `/files/file/${fileId}/share`, data });
+}
