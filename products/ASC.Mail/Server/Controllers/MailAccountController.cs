@@ -284,6 +284,54 @@ namespace ASC.Mail.Controllers
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        ///    Sets the state for the account specified in the request
+        /// </summary>
+        /// <param name="email">Email of the account</param>
+        /// <param name="state">Account activity state. Value: true or false. True - enabled, False - disabled.</param>
+        /// <returns>Account mailbox id</returns>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <exception cref="Exception">Exception happens when update operation failed.</exception>
+        /// <short>Set account state</short> 
+        /// <category>Accounts</category>
+        [Update(@"accounts/state")]
+        public int SetAccountEnable(string email, bool state)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentNullException("email");
+
+            string errorText = null;
+
+            var mailboxId = AccountEngine.SetAccountEnable(new MailAddress(email), state, out LoginResult loginResult);
+
+            if (loginResult != null)
+            {
+                if (!loginResult.IngoingSuccess)
+                {
+                    errorText = GetFormattedTextError(loginResult.IngoingException,
+                        loginResult.Imap ? ServerType.Imap : ServerType.Pop3, false);
+                    // exImap is ImapConnectionTimeoutException
+                }
+
+                if (!loginResult.OutgoingSuccess)
+                {
+                    if (!string.IsNullOrEmpty(errorText))
+                        errorText += "\r\n";
+
+                    errorText += GetFormattedTextError(loginResult.OutgoingException, ServerType.Smtp, false);
+                    // exSmtp is SmtpConnectionTimeoutException);
+                }
+
+                if (!string.IsNullOrEmpty(errorText))
+                    throw new Exception(errorText);
+            }
+
+            if (mailboxId < 0)
+                throw new Exception("EnableMaibox failed.");
+
+            return mailboxId;
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;
