@@ -327,7 +327,7 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k) || Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k));
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") || Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
                         }
                     }
                     else if (ids.Count == 0) return null;
@@ -819,7 +819,7 @@ namespace ASC.CRM.Core.Dao
             var dealID = deals.Select(x => x.ID).ToArray();
             object[] filesIDs;
 
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tagNames = Query(CRMDbContext.RelationshipEvent)
                                 .Where(x => x.HaveFiles && dealID.Contains(x.EntityId) && x.EntityType == EntityType.Opportunity)
@@ -849,11 +849,11 @@ namespace ASC.CRM.Core.Dao
 
             deals.ForEach(deal => AuthorizationManager.RemoveAllAces(deal));
 
-            var filedao = FilesIntegration.GetFileDao();
+            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var filesID in filesIDs)
             {
-                filedao.DeleteFile(filesID);
+                filedao.DeleteFile(Convert.ToInt32(filesID));
             }
 
         }

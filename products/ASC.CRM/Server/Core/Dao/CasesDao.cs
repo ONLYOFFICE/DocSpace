@@ -489,7 +489,7 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            result = result.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k));
+                            result = result.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%"));
                         }
                     }
                     else if (!ids.Any())

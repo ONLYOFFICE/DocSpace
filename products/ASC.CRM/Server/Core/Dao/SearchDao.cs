@@ -24,37 +24,71 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using ASC.Common.Data.Sql;
-using ASC.Common.Data.Sql.Expressions;
+using ASC.Common.Logging;
 using ASC.Common.Utils;
+using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Classes;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Web.Core.ModuleManagement.Common;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM;
-using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core.Search;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ASC.CRM.Core.Dao
 {
     public class SearchDao : AbstractDao
-    {     
+    {
         private Dictionary<EntityType, IEnumerable<int>> _findedIDs;
         private bool _fullTextSearchEnable;
         private DaoFactory DaoFactory { get; set; }
-                   
-        public SearchDao(int tenantID, DaoFactory daoFactory)
-            : base(tenantID)
+
+
+        public SearchDao(DbContextManager<CRMDbContext> dbContextManager,
+                      TenantManager tenantManager,
+                      SecurityContext securityContext,
+                      CRMSecurity cRMSecurity,
+                      TenantUtil tenantUtil,
+                      PathProvider pathProvider,
+                      FactoryIndexer<TasksWrapper> tasksWrapperIndexer,
+                      FactoryIndexer<InvoicesWrapper> invoicesWrapperIndexer,
+                      IOptionsMonitor<ILog> logger,
+                      WebImageSupplier webImageSupplier,
+                      BundleSearch bundleSearch
+                      ) :
+           base(dbContextManager,
+                tenantManager,
+                securityContext,
+                logger)
         {
-            DaoFactory = daoFactory;
+            TasksWrapperIndexer = tasksWrapperIndexer;
+            InvoicesWrapperIndexer = invoicesWrapperIndexer;
+            CRMSecurity = cRMSecurity;
+            TenantUtil = tenantUtil;
+            PathProvider = pathProvider;
+            WebImageSupplier = webImageSupplier;
+            BundleSearch = bundleSearch;
         }
+
+        public BundleSearch BundleSearch { get; }
+
+        public WebImageSupplier WebImageSupplier { get; }
+
+        public TenantUtil TenantUtil { get; }
+        public PathProvider PathProvider { get; }
+        public FactoryIndexer<TasksWrapper> TasksWrapperIndexer { get; }
+        public FactoryIndexer<InvoicesWrapper> InvoicesWrapperIndexer { get; }
+        public CRMSecurity CRMSecurity { get; }
 
         public SearchResultItem[] Search(String searchText)
         {
@@ -68,7 +102,7 @@ namespace ASC.CRM.Core.Dao
                                     && BundleSearch.Support(EntityType.Opportunity)
                                     && BundleSearch.Support(EntityType.Task)
                                     && BundleSearch.Support(EntityType.Invoice);
-                            
+
             if (_fullTextSearchEnable)
             {
                 _findedIDs = new Dictionary<EntityType, IEnumerable<int>>();
@@ -92,13 +126,15 @@ namespace ASC.CRM.Core.Dao
                 }
 
                 List<int> tasksId;
-                if (FactoryIndexer<TasksWrapper>.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
+
+                if (TasksWrapperIndexer.TrySelectIds(r => r.MatchAll(searchText), out tasksId))
                 {
                     _findedIDs.Add(EntityType.Task, tasksId);
                 }
 
                 List<int> invoicesId;
-                if (FactoryIndexer<InvoicesWrapper>.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
+
+                if (InvoicesWrapperIndexer.TrySelectIds(r => r.MatchAll(searchText), out invoicesId))
                 {
                     _findedIDs.Add(EntityType.Invoice, invoicesId);
                 }
@@ -112,285 +148,293 @@ namespace ASC.CRM.Core.Dao
                                      .ToDictionary(group => group.Key, group => group.First());
             }
 
-
-            var searchQuery = GetSearchQuery(keywords);
-
-            if (searchQuery == null) return new SearchResultItem[0];
-
-            return ToSearchResultItem(Db.ExecuteList(searchQuery));
+            return GetSearchResultItems(keywords);
         }
-            
+
         private Dictionary<EntityType, IEnumerable<int>> SearchByRelationshipEvent(String[] keywords)
         {
-            var historyQuery = Query("crm_relationship_event")
-                        .Select(
-                                "contact_id",
-                                "entity_id",
-                                "entity_type")
-                         .Distinct()
-                        .Where(BuildLike(new[] { "content" }, keywords));
+            var sqlQuery = Query(CRMDbContext.RelationshipEvent);
 
-            return Db.ExecuteList(historyQuery).ConvertAll(row =>
+            if (keywords.Length > 0)
+            {
+                foreach (var k in keywords)
                 {
-                    var entityID = Convert.ToInt32(row[1]);
+                    sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, k + "%"));
+                }
+            }
 
-                    if (entityID > 0)
-                        return new[] { row[1], row[2] };
-
-                    return new[] { row[0], (int)EntityType.Contact };
-
-                }).GroupBy(row => row[1])
-                    .ToDictionary(x => (EntityType)x.Key, x => x.SelectMany(item => item).Select(Convert.ToInt32));
+            return sqlQuery.GroupBy(x => x.EntityType)
+                            .ToDictionary(x => x.Key, x => x.Select(y => y.EntityId > 0 ? y.EntityId : y.ContactId));
         }
 
         private Dictionary<EntityType, IEnumerable<int>> SearchByCustomFields(String[] keywords)
         {
+            var sqlQuery = Query(CRMDbContext.FieldValue);
 
-            var customFieldQuery = Query("crm_field_value")
-              .Select("entity_id",
-                      "entity_type")
-              .Distinct()
-              .Where(BuildLike(new[] { "value" }, keywords));
+            if (keywords.Length > 0)
+            {
+                foreach (var k in keywords)
+                {
+                    sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Value, k + "%"));
+                }
+            }
 
-            return Db.ExecuteList(customFieldQuery)
-                    .GroupBy(row => row[1])
-                    .ToDictionary(x => (EntityType)x.Key, x => x.SelectMany(item => item).Select(Convert.ToInt32));
+            return sqlQuery.GroupBy(x => x.EntityType)
+                           .ToDictionary(x => x.Key, x => x.Select(x => x.EntityId));
         }
 
         private Dictionary<EntityType, IEnumerable<int>> SearchByContactInfos(String[] keywords)
         {
-            var sqlResult = Db.ExecuteList(Query("crm_contact_info").Distinct()
-                                            .Select("contact_id")
-                                            .Where(BuildLike(new[] { "data" }, keywords))).Select(item => Convert.ToInt32(item[0]));
+            var sqlQuery = Query(CRMDbContext.ContactsInfo);
 
-
-            return new Dictionary<EntityType, IEnumerable<int>> { { EntityType.Contact, sqlResult } };
-        }
-
-        private String ToColumn(EntityType entityType)
-        {
-            return String.Format("{0} as container_type", (int)entityType);
-        }
-
-
-        private Exp BuildWhereExp(EntityType entityType, String[] keywords)
-        {
-            Exp where = Exp.Empty;
-
-            if (_findedIDs.ContainsKey(entityType))
-                where = Exp.In("id", _findedIDs[entityType].ToArray());
-
-            if (BundleSearch.Support(entityType)) return where;
-
-            Exp byField;
-
-            switch (entityType)
+            if (keywords.Length > 0)
             {
-                case EntityType.Contact:
-                    byField = BuildLike(new[]
-                                          {
-                                              "first_name",
-                                              "last_name",
-                                              "company_name",
-                                              "title",
-                                              "notes"
-                                          }, keywords);
-                    break;
-                case EntityType.Opportunity:
-                    byField = BuildLike(new[]
-                                          {
-                                              "title", 
-                                              "description"
-                                          }, keywords);
-                    break;
-                case EntityType.Task:
-                    byField = BuildLike(new[]
-                                          {
-                                              "title", 
-                                              "description"
-                                          }, keywords);
-                    break;
-                case EntityType.Case:
-                    byField = BuildLike(new[]
-                                          {
-                                              "title"
-                                          }, keywords);
-                    break;
-                 case EntityType.Invoice:
-                        byField = BuildLike(new[]
-                                          {
-                                              "number",
-                                              "description"
-                                          }, keywords);
-                    break;
-                default:
-                    throw new ArgumentException();
-
+                foreach (var k in keywords)
+                {
+                    sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Data, k + "%"));
+                }
             }
 
-            if (where != Exp.Empty)
-                where &= byField;
-            else
-                where = byField;
-
-            return where;
+            return new Dictionary<EntityType, IEnumerable<int>> { { EntityType.Contact, sqlQuery.Select(x => x.ContactId).Distinct() } };
         }
-
+          
         private bool IncludeToSearch(EntityType entityType)
         {
-            return !BundleSearch.Support(entityType)  || _findedIDs.ContainsKey(entityType);
+            return !BundleSearch.Support(entityType) || _findedIDs.ContainsKey(entityType);
         }
 
-        private SqlQuery GetSearchQuery(String[] keywords)
-        {
-            var queries = new List<SqlQuery>();
-
-            if (IncludeToSearch(EntityType.Task))
-                queries.Add(Query("crm_task")
-                     .Select(ToColumn(EntityType.Task), "id", "title", "description", "contact_id", "entity_id",
-                             "entity_type", "create_on")
-                     .Where(BuildWhereExp(EntityType.Task, keywords)));
-
-            if (IncludeToSearch(EntityType.Opportunity))
-                queries.Add(Query("crm_deal")
-                           .Select(ToColumn(EntityType.Opportunity), "id", "title", "description", "contact_id", "0 as entity_id", "0 as entity_type", "create_on")
-                           .Where(BuildWhereExp(EntityType.Opportunity, keywords)));
-
-            if (IncludeToSearch(EntityType.Contact))
-                queries.Add(Query("crm_contact")
-                            .Select(ToColumn(EntityType.Contact),
-                                    "id",
-                                      String.Format(@"case is_company
-	                                  when 0 then
-	                                  concat(first_name, ' ', last_name)
-	                                  else
-	                                   company_name
-	                                  end as title"),
-                                     "notes as description", "0 as contact_id", "0 as entity_id", "0 as entity_type", "create_on")
-                            .Where(BuildWhereExp(EntityType.Contact, keywords)));
-
-
-            if (IncludeToSearch(EntityType.Case))
-                queries.Add(Query("crm_case")
-                            .Select(ToColumn(EntityType.Case), "id", "title", "'' as description", "0 as contact_id", "0 as entity_id", "0 as entity_type", "create_on")
-                            .Where(BuildWhereExp(EntityType.Case, keywords)));
-
-            if (IncludeToSearch(EntityType.Invoice))
-                queries.Add(Query("crm_invoice")
-                            .Select(ToColumn(EntityType.Invoice), "id", "number as title", "description", "contact_id", "entity_id", "entity_type", "create_on")
-                            .Where(BuildWhereExp(EntityType.Invoice, keywords)));
-
-
-            if (queries.Count == 0) return null;
-            if (queries.Count == 1) return queries[0];
-            return queries[0].UnionAll(queries.Skip(1).ToArray());
-        }
-
-        private SearchResultItem[] ToSearchResultItem(IEnumerable<object[]> rows)
+        private SearchResultItem[] GetSearchResultItems(String[] keywords)
         {
             var result = new List<SearchResultItem>();
 
-            foreach (var row in rows)
+            if (IncludeToSearch(EntityType.Task))
             {
-                var containerType = ((EntityType)Convert.ToInt32(row[0]));
-                var id = row[1];
-                string imageRef;
-                String url;
+                var sqlQuery = Query(CRMDbContext.Tasks);
 
-                switch (containerType)
+                if (_findedIDs.ContainsKey(EntityType.Task))
                 {
-                    case EntityType.Contact:
+                    sqlQuery = sqlQuery.Where(x => _findedIDs[EntityType.Task].Contains(x.Id));
+                }
+                else
+                {
+                    if (keywords.Length > 0)
+                    {
+                        foreach (var k in keywords)
                         {
-
-                            var contact = DaoFactory.ContactDao.GetByID(Convert.ToInt32(id));
-
-                            if (contact == null || !CRMSecurity.CanAccessTo(contact)) continue;
-
-                            url = String.Format("default.aspx?id={0}", id);
-
-                            if (contact is Company)
-                                imageRef = WebImageSupplier.GetAbsoluteWebPath("companies_widget.png",
-                                                                         ProductEntryPoint.ID);
-                            else
-                                imageRef = WebImageSupplier.GetAbsoluteWebPath("people_widget.png",
-                                                  ProductEntryPoint.ID);
-
-                            break;
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") ||
+                                                Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
                         }
-                    case EntityType.Opportunity:
-                        {
-
-                            var deal = DaoFactory.DealDao.GetByID(Convert.ToInt32(id));
-
-                            if (deal == null || !CRMSecurity.CanAccessTo(deal)) continue;
-
-                            url = String.Format("deals.aspx?id={0}", id);
-
-                            imageRef = WebImageSupplier.GetAbsoluteWebPath("deal_widget.png",
-                                                                           ProductEntryPoint.ID);
-                            break;
-                        }
-                    case EntityType.Case:
-                        {
-                            var cases = DaoFactory.CasesDao.GetByID(Convert.ToInt32(id));
-
-                            if (cases == null || !CRMSecurity.CanAccessTo(cases)) continue;
-
-                            url = String.Format("cases.aspx?id={0}", id);
-
-                            imageRef = WebImageSupplier.GetAbsoluteWebPath("cases_widget.png",
-                                                                           ProductEntryPoint.ID);
-
-                            break;
-                        }
-                    case EntityType.Task:
-                        {
-                            var task = DaoFactory.TaskDao.GetByID(Convert.ToInt32(id));
-
-                            if (task == null || !CRMSecurity.CanAccessTo(task)) continue;
-
-                            url = "";
-
-                            imageRef = WebImageSupplier.GetAbsoluteWebPath("tasks_widget.png",
-                                                                         ProductEntryPoint.ID);
-                            break;
-                        }
-                    case EntityType.Invoice:
-                        {
-                            var invoice = DaoFactory.InvoiceDao.GetByID(Convert.ToInt32(id));
-
-                            if (invoice == null || !CRMSecurity.CanAccessTo(invoice)) continue;
-
-                            url = String.Format("invoices.aspx?id={0}", id);
-
-                            imageRef = WebImageSupplier.GetAbsoluteWebPath("invoices_widget.png",
-                                             ProductEntryPoint.ID);
-
-                            break;
-                        }
-                    default:
-                        throw new ArgumentException();
+                    }
                 }
 
-                result.Add(new SearchResultItem
+                sqlQuery.ToList().ForEach(x =>
                 {
-                    Name = Convert.ToString(row[2]),
-                    Description = HtmlUtil.GetText(Convert.ToString(row[3]), 120),
-                    URL = !string.IsNullOrEmpty(url) ? String.Concat(PathProvider.BaseAbsolutePath, url) : string.Empty,
-                    Date = TenantUtil.DateTimeFromUtc(DateTime.Parse(Convert.ToString(row[7]))),
-                    Additional = new Dictionary<String, Object> 
-                                        { { "imageRef", imageRef },
-                                          {"relativeInfo", GetPath(
-                                              Convert.ToInt32(row[4]),
-                                              Convert.ToInt32(row[5]), 
-                                              (EntityType)Convert.ToInt32(row[6]))},
-                                          {"typeInfo", containerType.ToLocalizedString()}
-                                        }
+                    if (!CRMSecurity.CanAccessTo(new Task { ID = x.Id })) return;
+
+                    result.Add(new SearchResultItem
+                    {
+                        Name = x.Title,
+                        Description = HtmlUtil.GetText(x.Description, 120),
+                        URL = PathProvider.BaseAbsolutePath,
+                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        Additional = new Dictionary<String, Object>
+                                            { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("tasks_widget.png", ProductEntryPoint.ID) },
+                                                {"relativeInfo", GetPath(
+                                                    x.ContactId,
+                                                    x.EntityId,
+                                                    x.EntityType)},
+                                                {"typeInfo", EntityType.Task.ToLocalizedString()}
+                                            }
+                    });
+                });
+            }
+
+            if (IncludeToSearch(EntityType.Opportunity))
+            {
+                var sqlQuery = Query(CRMDbContext.Deals);
+
+                if (_findedIDs.ContainsKey(EntityType.Opportunity))
+                {
+                    sqlQuery = sqlQuery.Where(x => _findedIDs[EntityType.Opportunity].Contains(x.Id));
+                }
+                else
+                {
+                    if (keywords.Length > 0)
+                    {
+                        foreach (var k in keywords)
+                        {
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") ||
+                                                Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
+                        }
+                    }
+                }
+
+
+                sqlQuery.ToList().ForEach(x =>
+                {
+                    if (!CRMSecurity.CanAccessTo(new Deal { ID = x.Id })) return;
+
+                    result.Add(new SearchResultItem
+                    {
+                        Name = x.Title,
+                        Description = HtmlUtil.GetText(x.Description, 120),
+                        URL = string.Concat(PathProvider.BaseAbsolutePath, string.Format("deals.aspx?id={0}", x.Id)),
+                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        Additional = new Dictionary<string, object>
+                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("deal_widget.png", ProductEntryPoint.ID) },
+                                                              {"relativeInfo", GetPath(
+                                                                  x.ContactId,
+                                                                  0,
+                                                                  0)},
+                                                              {"typeInfo", EntityType.Opportunity.ToLocalizedString()}
+                                                     }
+                    });
+
+                });
+            }
+
+
+            if (IncludeToSearch(EntityType.Contact))
+            {
+                var sqlQuery = Query(CRMDbContext.Contacts);
+
+                if (_findedIDs.ContainsKey(EntityType.Contact))
+                {
+                    sqlQuery = sqlQuery.Where(x => _findedIDs[EntityType.Contact].Contains(x.Id));
+                }
+                else
+                {
+                    if (keywords.Length > 0)
+                    {
+                        foreach (var k in keywords)
+                        {
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.FirstName, k + "%") ||
+                                                            Microsoft.EntityFrameworkCore.EF.Functions.Like(x.LastName, k + "%") ||
+                                                            Microsoft.EntityFrameworkCore.EF.Functions.Like(x.CompanyName, k + "%") ||
+                                                            Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") ||
+                                                            Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Notes, k + "%")
+                                                        );
+                        }
+                    }
+                }
+
+                sqlQuery.ToList().ForEach(x =>
+                {
+                    if (x.IsCompany)
+                    {
+                        if (!CRMSecurity.CanAccessTo(new Company { ID = x.Id })) return;
+                    }
+                    else
+                    {
+                        if (!CRMSecurity.CanAccessTo(new Person { ID = x.Id })) return;
+                    }
+
+                    result.Add(new SearchResultItem
+                    {
+                        Name = x.IsCompany ? x.CompanyName : String.Format("{0} {1}", x.FirstName, x.LastName),
+                        Description = HtmlUtil.GetText(x.Notes, 120),
+                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("default.aspx?id={0}", x.Id)),
+                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        Additional = new Dictionary<String, Object>
+                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath(x.IsCompany ? "companies_widget.png" : "people_widget.png", ProductEntryPoint.ID) },
+                                                              {"relativeInfo", GetPath(
+                                                                  0,
+                                                                  0,
+                                                                  0)},
+                                                              {"typeInfo", EntityType.Contact.ToLocalizedString()}
+                                                     }
+                    });
+                });
+            }
+
+            if (IncludeToSearch(EntityType.Case))
+            {
+                var sqlQuery = Query(CRMDbContext.Cases);
+
+                if (_findedIDs.ContainsKey(EntityType.Case))
+                {
+                    sqlQuery = sqlQuery.Where(x => _findedIDs[EntityType.Case].Contains(x.Id));
+                }
+                else
+                {
+                    if (keywords.Length > 0)
+                    {
+                        foreach (var k in keywords)
+                        {
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%"));
+                        }
+                    }
+                }
+
+                sqlQuery.ToList().ForEach(x =>
+                {
+                    if (!CRMSecurity.CanAccessTo(new Cases { ID = x.Id })) return;
+
+                    result.Add(new SearchResultItem
+                    {
+                        Name = x.Title,
+                        Description = String.Empty,
+                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("cases.aspx?id={0}", x.Id)),
+                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        Additional = new Dictionary<String, Object>
+                                                     { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("cases_widget.png", ProductEntryPoint.ID) },
+                                                              {"relativeInfo", GetPath(
+                                                                  0,
+                                                                  0,
+                                                                  0)},
+                                                              {"typeInfo", EntityType.Case.ToLocalizedString()}
+                                                     }
+                    });
+
+                });
+
+            }
+
+
+            if (IncludeToSearch(EntityType.Invoice))
+            {
+                var sqlQuery = Query(CRMDbContext.Invoices);
+
+                if (_findedIDs.ContainsKey(EntityType.Invoice))
+                {
+                    sqlQuery = sqlQuery.Where(x => _findedIDs[EntityType.Invoice].Contains(x.Id));
+                }
+                else
+                {
+                    if (keywords.Length > 0)
+                    {
+                        foreach (var k in keywords)
+                        {
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Number, k + "%") ||
+                                                           Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
+                        }
+                    }
+                }
+
+                sqlQuery.ToList().ForEach(x =>
+                {
+                    if (!CRMSecurity.CanAccessTo(new Invoice { ID = x.Id })) return;
+
+                    result.Add(new SearchResultItem
+                    {
+                        Name = x.Number,
+                        Description = String.Empty,
+                        URL = String.Concat(PathProvider.BaseAbsolutePath, String.Format("invoices.aspx?id={0}", x.Id)),
+                        Date = TenantUtil.DateTimeFromUtc(x.CreateOn),
+                        Additional = new Dictionary<String, Object>
+                                                         { { "imageRef",  WebImageSupplier.GetAbsoluteWebPath("invoices_widget.png", ProductEntryPoint.ID) },
+                                                              {"relativeInfo", GetPath(
+                                                                  x.ContactId,
+                                                                  x.EntityId,
+                                                                  x.EntityType)},
+                                                              {"typeInfo", EntityType.Invoice.ToLocalizedString()}
+                                                         }
+                    });
+
                 });
             }
 
             return result.ToArray();
-
         }
 
         private String GetPath(int contactID, int entityID, EntityType entityType)

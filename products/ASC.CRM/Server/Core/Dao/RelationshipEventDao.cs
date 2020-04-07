@@ -24,39 +24,32 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
-
 using ASC.Collections;
+using ASC.Common.Logging;
+using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
+using ASC.CRM.Classes;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
 using ASC.Files.Core;
-
 using ASC.Web.CRM;
-using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Core.Search;
 using ASC.Web.Files.Api;
 using ASC.Web.Studio.Core;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using OrderBy = ASC.CRM.Core.Entities.OrderBy;
-using File = ASC.Files.Core.File;
-using ASC.CRM.Core.Enums;
-using ASC.Core.Common.EF;
-using ASC.CRM.Core.EF;
-using ASC.Core;
-using ASC.CRM.Classes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -73,7 +66,9 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
             PathProvider pathProvider,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> logger
+
             ) :
                         base(dbContextManager,
                             tenantManager,
@@ -82,7 +77,8 @@ namespace ASC.CRM.Core.Dao
                             cRMSecurity,
                             tenantUtil,
                             setupInfo,
-                            pathProvider)
+                            pathProvider,
+                            logger)
         {
             _contactCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
         }
@@ -113,11 +109,13 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity cRMSecurity,
             TenantUtil tenantUtil,
             SetupInfo setupInfo,
-            PathProvider pathProvider
+            PathProvider pathProvider,
+            IOptionsMonitor<ILog> logger
             ) :
                                             base(dbContextManager,
                                                  tenantManager,
-                                                 securityContext)
+                                                 securityContext,
+                                                 logger)
         {
             FilesIntegration = filesIntegration;
             TenantUtil = tenantUtil;
@@ -164,7 +162,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (fileIDs.Length == 0) return;
 
-            var dao = FilesIntegration.TagDao();
+            var dao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = fileIDs.ToList().ConvertAll(fileID => new Tag("RelationshipEvent_" + eventID, TagType.System, Guid.Empty) { EntryType = FileEntryType.File, EntryId = fileID });
 
@@ -190,7 +188,7 @@ namespace ASC.CRM.Core.Dao
             return GetFilesIDs(contactID, entityType, entityID).Length;
         }
 
-        private object[] GetFilesIDs(int[] contactID, EntityType entityType, int entityID)
+        private int[] GetFilesIDs(int[] contactID, EntityType entityType, int entityID)
         {
             if (entityID > 0 && entityType != EntityType.Opportunity && entityType != EntityType.Case)
                 throw new ArgumentException();
@@ -206,42 +204,42 @@ namespace ASC.CRM.Core.Dao
             sqlQuery = sqlQuery.Where(x => x.HaveFiles);
 
             var tagNames = sqlQuery.Select(x => String.Format("RelationshipEvent_{0}", x.Id));
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             return tagdao.GetTags(tagNames.ToArray(), TagType.System)
                .Where(t => t.EntryType == FileEntryType.File)
-               .Select(t => t.EntryId).ToArray();
-
+               .Select(t => Convert.ToInt32(t.EntryId)).ToArray();
+             
         }
 
-        public List<File> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
+        public List<File<int>> GetAllFiles(int[] contactID, EntityType entityType, int entityID)
         {
-            var filedao = FilesIntegration.GetFileDao();
+            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             var ids = GetFilesIDs(contactID, entityType, entityID);
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File>();
+            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
 
             files.ForEach(CRMSecurity.SetAccessTo);
 
             return files.ToList();
         }
 
-        public Dictionary<int, List<File>> GetFiles(int[] eventID)
+        public Dictionary<int, List<File<int>>> GetFiles(int[] eventID)
         {
             if (eventID == null || eventID.Length == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.TagDao();
-            var filedao = FilesIntegration.GetFileDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             var findedTags = tagdao.GetTags(eventID.Select(item => String.Concat("RelationshipEvent_", item)).ToArray(),
                 TagType.System).Where(t => t.EntryType == FileEntryType.File);
 
-            var filesID = findedTags.Select(t => t.EntryId).ToArray();
+            var filesID = findedTags.Select(t => Convert.ToInt32(t.EntryId)).ToArray();
 
-            var files = 0 < filesID.Length ? filedao.GetFiles(filesID) : new List<File>();
+            var files = 0 < filesID.Length ? filedao.GetFiles(filesID) : new List<File<int>>();
 
-            var filesTemp = new Dictionary<object, File>();
+            var filesTemp = new Dictionary<object, File<int>>();
 
             files.ForEach(item =>
                               {
@@ -253,16 +251,16 @@ namespace ASC.CRM.Core.Dao
                                                               x => x.Select(item => filesTemp[item.EntryId]).ToList());
         }
 
-        public List<File> GetFiles(int eventID)
+        public List<File<int>> GetFiles(int eventID)
         {
             if (eventID == 0)
                 throw new ArgumentException("eventID");
 
-            var tagdao = FilesIntegration.TagDao();
-            var filedao = FilesIntegration.GetFileDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
-            var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
-            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File>();
+            var ids = tagdao.GetTags(String.Concat("RelationshipEvent_", eventID), TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
+            var files = 0 < ids.Length ? filedao.GetFiles(ids) : new List<File<int>>();
 
             files.ForEach(CRMSecurity.SetAccessTo);
 
@@ -278,7 +276,7 @@ namespace ASC.CRM.Core.Dao
 
             var files = GetAllFiles(contactID, entityType, entityID);
 
-            var dao = FilesIntegration.GetFileDao();
+            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var file in files)
             {
@@ -286,19 +284,19 @@ namespace ASC.CRM.Core.Dao
             }
         }
 
-        public List<int> RemoveFile(File file)
+        public List<int> RemoveFile(File<int> file)
         {
             CRMSecurity.DemandDelete(file);
 
             List<int> eventIDs;
 
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tags = tagdao.GetTags(file.ID, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
 
             eventIDs = tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();
 
-            var dao = FilesIntegration.GetFileDao();
+            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             dao.DeleteFile(file.ID);
 
@@ -372,51 +370,51 @@ namespace ASC.CRM.Core.Dao
 //                if (msg == null)
                     throw new ArgumentException("Mail message cannot be found");
 
-                var msgResponseWrapper = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
-                var msgRequestObj = msgResponseWrapper.Value<JObject>("response");
-                string messageUrl;
+                //var msgResponseWrapper = JObject.Parse(Encoding.UTF8.GetString(Convert.FromBase64String(msg)));
+                //var msgRequestObj = msgResponseWrapper.Value<JObject>("response");
+                //string messageUrl;
 
-                htmlBody = msgRequestObj.Value<String>("htmlBody");
+                //htmlBody = msgRequestObj.Value<String>("htmlBody");
 
-                using (var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(htmlBody)))
-                {
-                    var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
+                //using (var fileStream = new MemoryStream(Encoding.UTF8.GetBytes(htmlBody)))
+                //{
+                //    var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
 
-                    Global.GetStore().Save("mail_messages", filePath, fileStream);
+                //    Global.GetStore().Save("mail_messages", filePath, fileStream);
 
-                    messageUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=mailmessage&message_id={1}", PathProvider.BaseAbsolutePath, messageId).ToLower();
+                //    messageUrl = String.Format("{0}HttpHandlers/filehandler.ashx?action=mailmessage&message_id={1}", PathProvider.BaseAbsolutePath, messageId).ToLower();
 
-                }
+                //}
 
-                var msg_date_created = msgRequestObj.Value<String>("date");
-                var message_id = msgRequestObj.Value<Int32>("id");
-                item.Content = JsonConvert.SerializeObject(new
-                {
-                    @from = msgRequestObj.Value<String>("from"),
-                    to = msgRequestObj.Value<String>("to"),
-                    cc = msgRequestObj.Value<String>("cc"),
-                    bcc = msgRequestObj.Value<String>("bcc"),
-                    subject = msgRequestObj.Value<String>("subject"),
-                    important = msgRequestObj.Value<Boolean>("important"),
-                    chain_id = msgRequestObj.Value<String>("chainId"),
-                    is_sended = msgRequestObj.Value<Int32>("folder") != 1,
-                    date_created = msg_date_created,
-                    introduction = msgRequestObj.Value<String>("introduction"),
-                    message_id = message_id,
-                    message_url = messageUrl
-                });
+                //var msg_date_created = msgRequestObj.Value<String>("date");
+                //var message_id = msgRequestObj.Value<Int32>("id");
+                //item.Content = JsonConvert.SerializeObject(new
+                //{
+                //    @from = msgRequestObj.Value<String>("from"),
+                //    to = msgRequestObj.Value<String>("to"),
+                //    cc = msgRequestObj.Value<String>("cc"),
+                //    bcc = msgRequestObj.Value<String>("bcc"),
+                //    subject = msgRequestObj.Value<String>("subject"),
+                //    important = msgRequestObj.Value<Boolean>("important"),
+                //    chain_id = msgRequestObj.Value<String>("chainId"),
+                //    is_sended = msgRequestObj.Value<Int32>("folder") != 1,
+                //    date_created = msg_date_created,
+                //    introduction = msgRequestObj.Value<String>("introduction"),
+                //    message_id = message_id,
+                //    message_url = messageUrl
+                //});
 
-                item.CreateOn = DateTime.Parse(msg_date_created, CultureInfo.InvariantCulture);
+                //item.CreateOn = DateTime.Parse(msg_date_created, CultureInfo.InvariantCulture);
 
-                var sqlQueryFindMailsAlready = Query(CRMDbContext.RelationshipEvent)
-                                                    .Where(x => x.ContactId == item.ContactID)
-                                                    .Where(x => x.EntityType == item.EntityType)
-                                                    .Where(x => x.EntityId == item.EntityID)
-                                                    .Where(x => x.CategoryId == item.CategoryID)
-                                                    .Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, String.Format("\"message_id\":{0},", message_id)));
+                //var sqlQueryFindMailsAlready = Query(CRMDbContext.RelationshipEvent)
+                //                                    .Where(x => x.ContactId == item.ContactID)
+                //                                    .Where(x => x.EntityType == item.EntityType)
+                //                                    .Where(x => x.EntityId == item.EntityID)
+                //                                    .Where(x => x.CategoryId == item.CategoryID)
+                //                                    .Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, String.Format("\"message_id\":{0},", message_id)));
 
-                if (sqlQueryFindMailsAlready.Count() > 0)
-                    throw new Exception("Already exists");
+                //if (sqlQueryFindMailsAlready.Count() > 0)
+                //    throw new Exception("Already exists");
             }
 
             var itemToInsert = new DbRelationshipEvent
@@ -560,7 +558,7 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, k));
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Content, k + "%"));
                         }
                     }
                 }
@@ -710,7 +708,7 @@ namespace ASC.CRM.Core.Dao
 
             var serializer = new DataContractJsonSerializer(typeof(CrmHistoryContent));
 
-            using (var stream = new MemoryStream())
+            using (var stream = new System.IO.MemoryStream())
             {
                 serializer.WriteObject(stream, content_struct);
                 return Encoding.UTF8.GetString(stream.ToArray());

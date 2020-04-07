@@ -24,12 +24,14 @@
 */
 
 
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -41,10 +43,12 @@ namespace ASC.CRM.Core.Dao
     {
         public TagDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext) :
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger) :
                                             base(dbContextManager,
                                                  tenantManager,
-                                                 securityContext)
+                                                 securityContext,
+                                                 logger)
         {
 
         }

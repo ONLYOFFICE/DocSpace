@@ -24,13 +24,10 @@
 */
 
 
-#region Usings
-
 using System;
 using System.Runtime.Serialization;
 using ASC.Common.Security;
-
-#endregion
+using ASC.CRM.Core.Enums;
 
 namespace ASC.CRM.Core.Entities
 {
@@ -80,30 +77,30 @@ namespace ASC.CRM.Core.Entities
 
         public DateTime ActualCloseDate { get; set; }
 
-        [DataMember(Name = "actual_close_date")]
-        private String ActualCloseDateStr
-        {
-            get
-            {
-                return ActualCloseDate.Date == DateTime.MinValue.Date
-                           ? string.Empty : ActualCloseDate.ToString(DateTimeExtension.DateFormatPattern);
-            }
-            set { ; }
-        }
+        //[DataMember(Name = "actual_close_date")]
+        //private String ActualCloseDateStr
+        //{
+        //    get
+        //    {
+        //        return ActualCloseDate.Date == DateTime.MinValue.Date
+        //                   ? string.Empty : ActualCloseDate.ToString(DateTimeExtension.DateFormatPattern);
+        //    }
+        //    set { ; }
+        //}
 
         
         public DateTime ExpectedCloseDate { get; set; }
 
         [DataMember(Name = "expected_close_date")]
-        private String ExpectedCloseDateStr
-        {
-            get
-            {
-                return ExpectedCloseDate.Date == DateTime.MinValue.Date
-                           ? string.Empty : ExpectedCloseDate.ToString(DateTimeExtension.DateFormatPattern);
-            }
-            set { ; }
-        }
+        //private String ExpectedCloseDateStr
+        //{
+        //    get
+        //    {
+        //        return ExpectedCloseDate.Date == DateTime.MinValue.Date
+        //                   ? string.Empty : ExpectedCloseDate.ToString(DateTimeExtension.DateFormatPattern);
+        //    }
+        //    set { ; }
+        //}
         
         public object SecurityId
         {

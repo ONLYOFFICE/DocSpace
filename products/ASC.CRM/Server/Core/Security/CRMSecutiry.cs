@@ -226,7 +226,7 @@ namespace ASC.CRM.Core
             AuthorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity));
         }
 
-        public void SetAccessTo(File file)
+        public void SetAccessTo(File<int> file)
         {
             if (IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID)
                 file.Access = FileShare.None;
@@ -387,7 +387,7 @@ namespace ASC.CRM.Core
             return false;
         }
 
-        public bool CanEdit(File file)
+        public bool CanEdit(File<int> file)
         {
             if (!(IsAdmin || file.CreateBy == SecurityContext.CurrentAccount.ID || file.ModifiedBy == SecurityContext.CurrentAccount.ID))
                 return false;
@@ -532,7 +532,7 @@ namespace ASC.CRM.Core
             return contact.ShareType == ShareType.None;
         }
 
-        public void DemandAccessTo(File file)
+        public void DemandAccessTo(File<int> file)
         {
             //   if (!CanAccessTo((File)file)) CreateSecurityException();
         }
@@ -572,7 +572,7 @@ namespace ASC.CRM.Core
             if (!CanAccessTo(invoiceTax)) throw CreateSecurityException();
         }
 
-        public void DemandEdit(File file)
+        public void DemandEdit(File<int> file)
         {
             if (!CanEdit(file)) throw CreateSecurityException();
         }
@@ -617,7 +617,7 @@ namespace ASC.CRM.Core
             if (!CanEdit(invoiceItem)) throw CreateSecurityException();
         }
 
-        public void DemandDelete(File file)
+        public void DemandDelete(File<int> file)
         {
             if (!CanEdit(file)) throw CreateSecurityException();
         }

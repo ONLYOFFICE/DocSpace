@@ -873,8 +873,8 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Number, k) ||
-                                                             Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k));
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Number, k + "%") ||
+                                                             Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
                         }
                     }
                     else

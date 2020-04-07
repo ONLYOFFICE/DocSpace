@@ -24,6 +24,7 @@
 */
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Classes;
@@ -31,7 +32,9 @@ using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -42,18 +45,20 @@ namespace ASC.CRM.Core.Dao
 
     public class CachedListItem : ListItemDao
     {
-        private readonly HttpRequestDictionary<ListItem> _listItemCache = new HttpRequestDictionary<ListItem>("crm_list_item");
+        private readonly HttpRequestDictionary<ListItem> _listItemCache;
 
         public CachedListItem(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> logger)
             : base(dbContextManager,
                   tenantManager,
-                  securityContext)
+                  securityContext,
+                  logger)
         {
-
-
+            _listItemCache = new HttpRequestDictionary<ListItem>(httpContextAccessor?.HttpContext, "crm_list_item");
         }
 
         public override void ChangeColor(int id, string newColor)
@@ -112,10 +117,12 @@ namespace ASC.CRM.Core.Dao
         public ListItemDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger)
             : base(dbContextManager,
                   tenantManager,
-                  securityContext)
+                  securityContext,
+                  logger)
         {
 
 
@@ -274,7 +281,7 @@ namespace ASC.CRM.Core.Dao
         public int GetRelativeItemsCount(ListType listType, int id)
         {
             int result;
-            
+
             switch (listType)
             {
                 case ListType.ContactStatus:
@@ -300,48 +307,66 @@ namespace ASC.CRM.Core.Dao
         public Dictionary<int, int> GetRelativeItemsCount(ListType listType)
         {
 
-
-                        
-            var sqlQuery = Query("crm_list_item tbl_list_item")
-              .Where(Exp.Eq("tbl_list_item.list_type", (int)listType))
-              .Select("tbl_list_item.id")
-              .OrderBy("tbl_list_item.sort_order", true)
-              .GroupBy("tbl_list_item.id");
+            Dictionary<int, int> result;
 
             switch (listType)
             {
                 case ListType.ContactStatus:
-                    sqlQuery.LeftOuterJoin("crm_contact tbl_crm_contact",
-                                            Exp.EqColumns("tbl_list_item.id", "tbl_crm_contact.status_id")
-                                             & Exp.EqColumns("tbl_list_item.tenant_id", "tbl_crm_contact.tenant_id"))
-                                          .Select("count(tbl_crm_contact.status_id)");
-                    break;
-                case ListType.ContactType:
-                    sqlQuery.LeftOuterJoin("crm_contact tbl_crm_contact",
-                                            Exp.EqColumns("tbl_list_item.id", "tbl_crm_contact.contact_type_id")
-                                             & Exp.EqColumns("tbl_list_item.tenant_id", "tbl_crm_contact.tenant_id"))
-                                          .Select("count(tbl_crm_contact.contact_type_id)");
-                    break;
-                case ListType.TaskCategory:
-                    sqlQuery.LeftOuterJoin("crm_task tbl_crm_task",
-                                            Exp.EqColumns("tbl_list_item.id", "tbl_crm_task.category_id")
-                                              & Exp.EqColumns("tbl_list_item.tenant_id", "tbl_crm_task.tenant_id"))
-                                           .Select("count(tbl_crm_task.category_id)");
-                    break;
-                case ListType.HistoryCategory:
-                    sqlQuery.LeftOuterJoin("crm_relationship_event tbl_crm_relationship_event",
-                                            Exp.EqColumns("tbl_list_item.id", "tbl_crm_relationship_event.category_id")
-                                              & Exp.EqColumns("tbl_list_item.tenant_id", "tbl_crm_relationship_event.tenant_id"))
-                                           .Select("count(tbl_crm_relationship_event.category_id)");
+                    {
+                        result = Query(CRMDbContext.ListItem)
+                                .GroupJoin(Query(CRMDbContext.Contacts),
+                                           x => x.Id,
+                                           y => y.StatusId,
+                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
+                                .Where(x => x.Column1.ListType == listType)
+                                .OrderBy(x => x.Column1.SortOrder)
+                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
 
-                    break;
+                        break;
+                    }
+                case ListType.ContactType:
+                    {
+                        result = Query(CRMDbContext.ListItem)
+                                .GroupJoin(Query(CRMDbContext.Contacts),
+                                           x => x.Id,
+                                           y => y.ContactTypeId,
+                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
+                                .Where(x => x.Column1.ListType == listType)
+                                .OrderBy(x => x.Column1.SortOrder)
+                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
+                        break;
+                    }
+                case ListType.TaskCategory:
+                    {
+                        result = Query(CRMDbContext.ListItem)
+                                .GroupJoin(Query(CRMDbContext.Tasks),
+                                           x => x.Id,
+                                           y => y.CategoryId,
+                                           (x, y) => new { Column1 = x, Column2 = y.Count() })
+                                .Where(x => x.Column1.ListType == listType)
+                                .OrderBy(x => x.Column1.SortOrder)
+                                .ToDictionary(x => x.Column1.Id, x => x.Column2);
+
+                        break;
+                    }
+                case ListType.HistoryCategory:
+                    {
+                        result = Query(CRMDbContext.ListItem)
+                            .GroupJoin(Query(CRMDbContext.RelationshipEvent),
+                                       x => x.Id,
+                                       y => y.CategoryId,
+                                       (x, y) => new { Column1 = x, Column2 = y.Count() })
+                            .Where(x => x.Column1.ListType == listType)
+                            .OrderBy(x => x.Column1.SortOrder)
+                            .ToDictionary(x => x.Column1.Id, x => x.Column2);
+
+                        break;
+                    }
                 default:
                     throw new ArgumentException();
             }
 
-            var queryResult = Db.ExecuteList(sqlQuery);
-
-            return queryResult.ToDictionary(x => Convert.ToInt32(x[0]), y => Convert.ToInt32(y[1]));
+            return result;
         }
 
         public virtual int CreateItem(ListType listType, ListItem enumItem)
@@ -412,7 +437,7 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.Title = enumItem.Title;
             itemToUpdate.AdditionalParams = enumItem.AdditionalParams;
             itemToUpdate.Color = enumItem.Color;
-            
+
             CRMDbContext.SaveChanges();
         }
 
@@ -476,18 +501,18 @@ namespace ASC.CRM.Core.Dao
                 case ListType.ContactType:
                     {
                         var itemToUpdate = Query(CRMDbContext.Contacts).Single(x => x.ContactTypeId == fromItemID);
-                     
+
                         itemToUpdate.ContactTypeId = toItemID;
-                                               
+
                         CRMDbContext.Update(itemToUpdate);
                     }
                     break;
                 case ListType.TaskCategory:
-                    { 
+                    {
                         var itemToUpdate = Query(CRMDbContext.Tasks).Single(x => x.CategoryId == fromItemID);
                         itemToUpdate.CategoryId = toItemID;
 
-                        CRMDbContext.Update(itemToUpdate);                                               
+                        CRMDbContext.Update(itemToUpdate);
                     }
                     break;
                 case ListType.HistoryCategory:

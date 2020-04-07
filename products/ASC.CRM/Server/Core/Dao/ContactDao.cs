@@ -202,11 +202,10 @@ namespace ASC.CRM.Core.Dao
                 var idsFromAcl = CoreDbContext.Acl.Where(x => x.Tenant == TenantID &&
                                                      x.Action == CRMSecurity._actionRead.ID &&
                                                      x.Subject == SecurityContext.CurrentAccount.ID &&
-                                                     Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName. ))
+                                                     (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||
+                                                     Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Person).FullName + "%")))
                                        .Select(x => Convert.ToInt32(x.Object.Split('|', StringSplitOptions.None)[1]))
                                        .ToList();
-
-                objectId.ObjectType.FullName
 
                 // oldContacts || publicContact || contact is private, but user is ManagerContact
                 sqlQuery = sqlQuery.Where(x => x.IsShared == null || x.IsShared > 0 || idsFromAcl.Contains(x.Id));
@@ -700,7 +699,7 @@ namespace ASC.CRM.Core.Dao
 
                     foreach (var k in keywords)
                     {
-                        sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.DisplayName, k));
+                        sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.DisplayName, k + "%"));
                     }
                 }
                 else
@@ -1639,11 +1638,11 @@ namespace ASC.CRM.Core.Dao
             }
 
             var contactID = newContactID.ToArray();
-            var filesIDs = new object[0];
+            int[] filesIDs = new int[0];
 
             var tx = CRMDbContext.Database.BeginTransaction();
 
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tagNames = Query(CRMDbContext.RelationshipEvent).Where(x => contactID.Contains(x.ContactId) && x.HaveFiles)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
@@ -1652,7 +1651,7 @@ namespace ASC.CRM.Core.Dao
             {
                 filesIDs = tagdao.GetTags(tagNames, TagType.System)
                                  .Where(t => t.EntryType == FileEntryType.File)
-                                 .Select(t => t.EntryId)
+                                 .Select(t => Convert.ToInt32(t.EntryId))
                                  .ToArray();
             }
 
@@ -1705,7 +1704,7 @@ namespace ASC.CRM.Core.Dao
 
             contacts.ForEach(contact => AuthorizationManager.RemoveAllAces(contact));
 
-            var filedao = FilesIntegration.GetFileDao();
+            var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             foreach (var filesID in filesIDs)
             {

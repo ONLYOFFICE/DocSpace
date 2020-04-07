@@ -115,8 +115,7 @@ namespace ASC.CRM.Core.Dao
                        CRMSecurity cRMSecurity,
                        TenantUtil tenantUtil,
                        FactoryIndexer<TasksWrapper> factoryIndexer,
-                       IOptionsMonitor<ILog> logger,
-                       DbContextManager<CoreDbContext> coreDbContext                       
+                       IOptionsMonitor<ILog> logger
                        ) :
             base(dbContextManager,
                  tenantManager,
@@ -126,11 +125,8 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             FactoryIndexer = factoryIndexer;
-            CoreDbContext = coreDbContext.Value;
-
+ 
         }
-
-        public CoreDbContext CoreDbContext { get; }
 
         public FactoryIndexer<TasksWrapper> FactoryIndexer { get; }
 
@@ -339,8 +335,8 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k) ||
-                                                             Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k));
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") ||
+                                                             Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
                         }
                     }
                     else
