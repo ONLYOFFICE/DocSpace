@@ -28,7 +28,7 @@ import {
 import { setShareDataItems } from "../../../../../store/files/actions";
 
 const { isAdmin } = store.auth.selectors;
-const { FilterType, FileAction } = constants;
+const { FilterType, FileAction, ShareAccessRights } = constants;
 
 const StyledContainer = styled.div`
   @media (min-width: 1024px) {
@@ -115,7 +115,7 @@ class SectionHeaderContent extends React.Component {
       showEmptyTrashDialog: false,
       showAddUsersPanel: false,
       showAddGroupsPanel: false,
-      accessRight: { icon: "EyeIcon", rights: "ReadOnly", accessNumber: 2 }
+      accessRight: { icon: "EyeIcon", rights: "ReadOnly", accessNumber: ShareAccessRights.ReadOnly }
     };
   }
 
@@ -258,7 +258,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessEditIcon",
         rights: "FullAccess",
-        accessNumber: 1,
+        accessNumber: ShareAccessRights.FullAccess,
         isOwner: false
       }
     });
@@ -269,7 +269,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "EyeIcon",
         rights: "ReadOnly",
-        accessNumber: 2,
+        accessNumber: ShareAccessRights.ReadOnly,
         isOwner: false
       }
     });
@@ -280,7 +280,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessReviewIcon",
         rights: "Review",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.Review,
         isOwner: false
       }
     });
@@ -291,7 +291,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessCommentIcon",
         rights: "Comment",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.Comment,
         isOwner: false
       }
     });
@@ -302,7 +302,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessFormIcon",
         rights: "FormFilling",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.FormFilling,
         isOwner: false
       }
     });
@@ -313,7 +313,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessNoneIcon",
         rights: "DenyAccess",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.DenyAccess,
         isOwner: false
       }
     });

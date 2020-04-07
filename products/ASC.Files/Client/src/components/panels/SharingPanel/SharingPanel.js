@@ -19,7 +19,7 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import { utils as commonUtils } from "asc-web-common";
+import { utils as commonUtils, constants } from "asc-web-common";
 import i18n from "./i18n";
 import {
   getShareUsersAndGroups,
@@ -37,6 +37,7 @@ import {
 } from "../StyledPanels";
 
 const { changeLanguage } = commonUtils;
+const { ShareAccessRights } = constants;
 
 class SharingPanelComponent extends React.Component {
   constructor(props) {
@@ -97,10 +98,10 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
-    /*folderIds.length > 0 &&
+    folderIds.length > 0 &&
       setSharedFolders(folderIds, shareTo, access, notify, sharingMessage);
     fileIds.length > 0 &&
-      setSharedFiles(fileIds, shareTo, access, notify, sharingMessage);*/
+      setSharedFiles(fileIds, shareTo, access, notify, sharingMessage);
 
     this.props.onClose();
   };
@@ -123,7 +124,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "AccessEditIcon",
         rights: "FullAccess",
-        accessNumber: 1,
+        accessNumber: ShareAccessRights.FullAccess
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -135,7 +136,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "EyeIcon",
         rights: "ReadOnly",
-        accessNumber: 2,
+        accessNumber: ShareAccessRights.ReadOnly,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -147,7 +148,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "AccessReviewIcon",
         rights: "Review",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.Review,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -159,7 +160,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "AccessCommentIcon",
         rights: "Comment",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.Comment,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -171,7 +172,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "AccessFormIcon",
         rights: "FormFilling",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.FormFilling,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -183,7 +184,7 @@ class SharingPanelComponent extends React.Component {
       newUsers[elementIndex].rights = {
         icon: "AccessNoneIcon",
         rights: "DenyAccess",
-        accessNumber: 999,
+        accessNumber: ShareAccessRights.DenyAccess,
       };
       this.setState({ shareDataItems: newUsers });
     }
@@ -205,14 +206,14 @@ class SharingPanelComponent extends React.Component {
         return {
           icon: "AccessEditIcon",
           rights: "FullAccess",
-          accessNumber: 1,
+          accessNumber: ShareAccessRights.FullAccess,
           isOwner: item.isOwner,
         };
       case 2:
         return {
           icon: "EyeIcon",
           rights: "ReadOnly",
-          accessNumber: 2,
+          accessNumber: ShareAccessRights.ReadOnly,
           isOwner: false,
         };
       case 3: {
