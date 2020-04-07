@@ -248,7 +248,7 @@ namespace ASC.Mail.Core.Engine
         /// <param name="timeout">Timeout in milliseconds</param>
         /// <param name="httpContextScheme"></param>
         /// <returns></returns>
-        public List<string> SearchEmails(int tenant, string userName, string term, int maxCountPerSystem, string httpContextScheme, int timeout = -1)
+        public List<string> SearchEmails(int tenant, string userName, string term, int maxCountPerSystem, int timeout = -1)
         {
             var equality = new ContactEqualityComparer();
             var contacts = new List<string>();

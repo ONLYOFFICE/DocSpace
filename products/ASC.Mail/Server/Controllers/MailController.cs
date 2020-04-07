@@ -10,6 +10,7 @@ using ASC.Mail.Core.Engine;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Web.Mail.Resources;
 using ASC.Common.Threading;
+using System.Configuration;
 
 namespace ASC.Mail.Controllers
 {
@@ -40,6 +41,7 @@ namespace ASC.Mail.Controllers
         public DocumentsEngine DocumentsEngine { get; }
         public AttachmentEngine AttachmentEngine { get; }
         public AutoreplyEngine AutoreplyEngine { get; }
+        public ContactEngine ContactEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
@@ -56,6 +58,7 @@ namespace ASC.Mail.Controllers
             DocumentsEngine documentsEngine,
             AttachmentEngine attachmentEngine,
             AutoreplyEngine autoreplyEngine,
+            ContactEngine contactEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -70,6 +73,7 @@ namespace ASC.Mail.Controllers
             DocumentsEngine = documentsEngine;
             AttachmentEngine = attachmentEngine;
             AutoreplyEngine = autoreplyEngine;
+            ContactEngine = contactEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
@@ -190,6 +194,38 @@ namespace ASC.Mail.Controllers
                     }
                 default:
                     return status;
+            }
+        }
+
+        /// <summary>
+        /// Limit result per Contact System
+        /// </summary>
+        private static int MailAutocompleteMaxCountPerSystem
+        {
+            get
+            {
+                var count = 20;
+                if (ConfigurationManager.AppSettings["mail.autocomplete-max-count"] == null)
+                    return count;
+
+                int.TryParse(ConfigurationManager.AppSettings["mail.autocomplete-max-count"], out count);
+                return count;
+            }
+        }
+
+        /// <summary>
+        /// Timeout in milliseconds
+        /// </summary>
+        private static int MailAutocompleteTimeout
+        {
+            get
+            {
+                var count = 3000;
+                if (ConfigurationManager.AppSettings["mail.autocomplete-timeout"] == null)
+                    return count;
+
+                int.TryParse(ConfigurationManager.AppSettings["mail.autocomplete-timeout"], out count);
+                return count;
             }
         }
     }

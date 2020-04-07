@@ -309,8 +309,7 @@ namespace ASC.Mail.Core.Engine
 
                         EmailInEngine.SaveEmailInData(draft.Mailbox, message, scheme);
 
-                        SaveFrequentlyContactedAddress(draft.Mailbox.TenantId, draft.Mailbox.UserId, mimeMessage,
-                            scheme);
+                        SaveFrequentlyContactedAddress(draft.Mailbox.TenantId, draft.Mailbox.UserId, mimeMessage);
 
                         var filters = FilterEngine.GetList();
 
@@ -522,8 +521,7 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
-        private void SaveFrequentlyContactedAddress(int tenant, string user, MimeMessage mimeMessage,
-            string scheme)
+        private void SaveFrequentlyContactedAddress(int tenant, string user, MimeMessage mimeMessage)
         {
             var recipients = new List<MailboxAddress>();
             recipients.AddRange(mimeMessage.To.Mailboxes);
@@ -544,7 +542,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (!contacts.Any())
                 {
-                    var emails = ContactEngine.SearchEmails(tenant, user, email, 1, scheme);
+                    var emails = ContactEngine.SearchEmails(tenant, user, email, 1);
                     if (!emails.Any())
                     {
                         var contactCard = new ContactCard(0, tenant, user, recipient.Name, "",
