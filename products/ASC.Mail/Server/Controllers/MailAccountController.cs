@@ -332,6 +332,24 @@ namespace ASC.Mail.Controllers
             return mailboxId;
         }
 
+        /// <summary>
+        ///    Sets the default account specified in the request
+        /// </summary>
+        /// <param name="email">Email of the account</param>
+        /// <param name="isDefault">Set or reset account as default</param>
+        /// <returns>Account email address</returns>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <exception cref="Exception">Exception happens when update operation failed.</exception>
+        /// <short>Set default account</short> 
+        /// <category>Accounts</category>
+        [Update(@"accounts/default")]
+        public string SetDefaultAccount(string email, bool isDefault)
+        {
+            var result = AccountEngine.SetDefaultAccount(email, isDefault);
+
+            return result;
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;

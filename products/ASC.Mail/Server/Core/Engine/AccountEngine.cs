@@ -33,6 +33,7 @@ using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.Configuration;
+using ASC.Core.Common.Settings;
 using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Mail.Authorization;
@@ -75,6 +76,7 @@ namespace ASC.Mail.Core.Engine
         public GoogleLoginProvider GoogleLoginProvider { get; }
         public MailBoxSettingEngine MailBoxSettingEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public SettingsManager SettingsManager { get; }
         public MailDbContext MailDb { get; }
 
         public List<ServerFolderAccessInfo> ServerFolderAccessInfos { get; set; }
@@ -90,6 +92,7 @@ namespace ASC.Mail.Core.Engine
             GoogleLoginProvider googleLoginProvider,
             MailBoxSettingEngine mailBoxSettingEngine,
             CoreBaseSettings coreBaseSettings,
+            SettingsManager settingsManager,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -104,6 +107,7 @@ namespace ASC.Mail.Core.Engine
             GoogleLoginProvider = googleLoginProvider;
             MailBoxSettingEngine = mailBoxSettingEngine;
             CoreBaseSettings = coreBaseSettings;
+            SettingsManager = settingsManager;
             ServerFolderAccessInfos = DaoFactory.ImapSpecialMailboxDao.GetServerFolderAccessInfoList();
 
             Log = option.Get("ASC.Mail.AccountEngine");
@@ -632,6 +636,43 @@ namespace ASC.Mail.Core.Engine
 
             return emails.Where(e => e.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) > -1).ToList();
         }
+
+        public string SetDefaultAccount(string email, bool isDefault)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentNullException("email");
+
+            email = email.ToLowerInvariant();
+
+            if (isDefault)
+            {
+                var accounts = GetAccountInfoList();
+
+                var emailExist = false;
+
+                foreach (var account in accounts)
+                {
+                    if (account.Email == email)
+                    {
+                        emailExist = true;
+                        break;
+                    }
+                    if (account.Aliases.Any(address => address.Email == email))
+                    {
+                        emailExist = true;
+                    }
+                }
+
+                if (!emailExist)
+                    throw new ArgumentException("Account not found");
+            }
+
+            var settings = new MailBoxAccountSettings { DefaultEmail = isDefault ? email : string.Empty };
+
+            SettingsManager.SaveForCurrentUser(settings);
+
+            return email;
+        }
     }
 
     public static class AccountEngineExtension
@@ -650,7 +691,8 @@ namespace ASC.Mail.Core.Engine
                 .AddServerEngineService()
                 .AddConsumerFactoryService()
                 .AddCoreBaseSettingsService()
-                .AddGoogleLoginProviderService();
+                .AddGoogleLoginProviderService()
+                .AddSettingsManagerService();
 
             return services;
         }
