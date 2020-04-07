@@ -350,6 +350,46 @@ namespace ASC.Mail.Controllers
             return result;
         }
 
+        /// <summary>
+        ///    Gets the default settings for the account based on the email domain.
+        /// </summary>
+        /// <param name="email">Account email address</param>
+        /// <param name="action">This string parameter specifies action for default settings. Values:
+        /// "get_imap_pop_settings" - get imap or pop settings, imap settings are prior.
+        /// "get_imap_server" | "get_imap_server_full" - get imap settings
+        /// "get_pop_server" | "get_pop_server_full" - get pop settings
+        /// By default returns default imap settings.
+        /// </param>
+        /// <returns>Account with default settings</returns>
+        /// <short>Get default account settings</short> 
+        /// <category>Accounts</category>
+        [Read(@"accounts/setups")]
+        public MailBoxData GetAccountDefaults(string email, string action)
+        {
+            var result = AccountEngine.GetAccountDefaults(email, action);
+
+            return result;
+        }
+
+        /// <summary>
+        ///    Sets the state for the account specified in the request
+        /// </summary>
+        /// <param name="mailbox_id">Id of the account</param>
+        /// <param name="email_in_folder">Document's folder Id</param>
+        /// <returns>Account email address</returns>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        /// <exception cref="Exception">Exception happens when update operation failed.</exception>
+        /// <short>Set account state</short> 
+        /// <category>Accounts</category>
+        [Update(@"accounts/emailinfolder")]
+        public void SetAccountEMailInFolder(int mailbox_id, string email_in_folder)
+        {
+            if (mailbox_id < 0)
+                throw new ArgumentNullException("mailbox_id");
+
+            AccountEngine.SetAccountEmailInFolder(mailbox_id, email_in_folder);
+        }
+
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
         {
             var headerText = string.Empty;

@@ -235,6 +235,30 @@ namespace ASC.Mail.Core.Engine
             return mailbox;
         }
 
+        public MailBoxData GetAccountDefaults(string email, string action)
+        {
+            switch (action)
+            {
+                case Defines.GET_IMAP_POP_SETTINGS:
+                    return
+                        MailboxEngine.GetDefaultMailboxData(email, "",
+                            AuthorizationServiceType.None, true, true) ??
+                        MailboxEngine.GetDefaultMailboxData(email, "",
+                            AuthorizationServiceType.None, false, false);
+                case Defines.GET_IMAP_SERVER:
+                case Defines.GET_IMAP_SERVER_FULL:
+                    return MailboxEngine.GetDefaultMailboxData(email, "",
+                        AuthorizationServiceType.None, true, false);
+                case Defines.GET_POP_SERVER:
+                case Defines.GET_POP_SERVER_FULL:
+                    return MailboxEngine.GetDefaultMailboxData(email, "",
+                        AuthorizationServiceType.None, false, false);
+            }
+
+            return MailboxEngine.GetDefaultMailboxData(email, "",
+                AuthorizationServiceType.None, null, false);
+        }
+
         public AccountInfo TryCreateAccount(AccountModel accountModel, out LoginResult loginResult)
         {
             if (accountModel == null)
