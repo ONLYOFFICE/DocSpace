@@ -38,6 +38,7 @@ namespace ASC.Mail.Controllers
         public TagEngine TagEngine { get; }
         public MailboxEngine MailboxEngine { get; }
         public DocumentsEngine DocumentsEngine { get; }
+        public AttachmentEngine AttachmentEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
@@ -52,6 +53,7 @@ namespace ASC.Mail.Controllers
             TagEngine tagEngine,
             MailboxEngine mailboxEngine,
             DocumentsEngine documentsEngine,
+            AttachmentEngine attachmentEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -64,6 +66,7 @@ namespace ASC.Mail.Controllers
             TagEngine = tagEngine;
             MailboxEngine = mailboxEngine;
             DocumentsEngine = documentsEngine;
+            AttachmentEngine = attachmentEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
