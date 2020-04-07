@@ -98,10 +98,10 @@ class SharingPanelComponent extends React.Component {
       }
     }
 
-    folderIds.length > 0 &&
+    /*folderIds.length > 0 &&
       setSharedFolders(folderIds, shareTo, access, notify, sharingMessage);
     fileIds.length > 0 &&
-      setSharedFiles(fileIds, shareTo, access, notify, sharingMessage);
+      setSharedFiles(fileIds, shareTo, access, notify, sharingMessage);*/
 
     this.props.onClose();
   };
@@ -214,12 +214,37 @@ class SharingPanelComponent extends React.Component {
           icon: "EyeIcon",
           rights: "ReadOnly",
           accessNumber: ShareAccessRights.ReadOnly,
-          isOwner: false,
+          isOwner: false
         };
-      case 3: {
+      case 3: 
+        return !item.sharedTo.shareLink && {
+          icon: "AccessNoneIcon",
+          rights: "DenyAccess",
+          accessNumber: ShareAccessRights.DenyAccess,
+          isOwner: false
+        }
         //console.log("Share link", item.sharedTo.shareLink);
-        return;
-      }
+      case 5: 
+        return {
+          icon: "AccessReviewIcon",
+          rights: "Review",
+          accessNumber: ShareAccessRights.Review,
+          isOwner: false
+        };
+      case 6: 
+        return {
+          icon: "AccessCommentIcon",
+          rights: "Comment",
+          accessNumber: ShareAccessRights.Comment,
+          isOwner: false
+        };
+      case 7: 
+        return {
+          icon: "AccessFormIcon",
+          rights: "FormFilling",
+          accessNumber: ShareAccessRights.FormFilling,
+          isOwner: false
+        };
       default:
         return;
     }
