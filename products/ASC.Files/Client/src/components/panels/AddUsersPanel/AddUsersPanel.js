@@ -37,14 +37,14 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   onPeopleSelect = users => {
-    const { accessRight, shareData, setShareDataItems, onClose } = this.props;
-    const items = shareData;
+    const { accessRight, shareDataItems, setShareDataItems, onClose } = this.props;
+    const items = shareDataItems;
     for (let item of users) {
       if (item.key) {
         item.id = item.key;
         delete item.key;
       }
-      const currentItem = shareData.find(x => x.id === item.id);
+      const currentItem = shareDataItems.find(x => x.id === item.id);
       if (!currentItem) {
         item.rights = accessRight;
         items.push(item);

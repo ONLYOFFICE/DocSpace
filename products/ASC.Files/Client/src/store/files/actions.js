@@ -329,15 +329,27 @@ export function getShareUsersAndGroups(foldersIds, filesIds) {
     })
   );
   const getFilesRequests = filesIds.map(id =>
-    files.getShareFiles(id).catch(() => {
-      return [];
-    })
+    files.getShareFiles(id).catch(() => [])
   );
   const requests = [...getFoldersRequests, ...getFilesRequests];
 
-  return axios.all(requests).then(res => {
-    return res;
-  });
+  return axios.all(requests).then(res => res);
+}
+
+export function setSharedFolders(folderIds, shareTo, access, notify, sharingMessage) {
+  const requests = folderIds.map((id) =>
+    files.setShareFolder(id, shareTo, access, notify, sharingMessage)
+  );
+
+  return axios.all(requests).then((res) => res);
+}
+
+export function setSharedFiles(fileId, shareTo, access, notify, sharingMessage) {
+  const requests = fileId.map((id) =>
+    files.setShareFiles(id, shareTo, access, notify, sharingMessage)
+  );
+
+  return axios.all(requests).then((res) => res);
 }
 
 /*export function deleteGroup(id) {

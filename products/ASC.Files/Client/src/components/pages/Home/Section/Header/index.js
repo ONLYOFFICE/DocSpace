@@ -115,7 +115,7 @@ class SectionHeaderContent extends React.Component {
       showEmptyTrashDialog: false,
       showAddUsersPanel: false,
       showAddGroupsPanel: false,
-      accessRight: { icon: "EyeIcon", rights: "ReadOnly" }
+      accessRight: { icon: "EyeIcon", rights: "ReadOnly", accessNumber: 2 }
     };
   }
 
@@ -258,6 +258,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessEditIcon",
         rights: "FullAccess",
+        accessNumber: 1,
         isOwner: false
       }
     });
@@ -265,7 +266,12 @@ class SectionHeaderContent extends React.Component {
 
   onReadOnlyClick = () => {
     this.setState({
-      accessRight: { icon: "EyeIcon", rights: "ReadOnly", isOwner: false }
+      accessRight: {
+        icon: "EyeIcon",
+        rights: "ReadOnly",
+        accessNumber: 2,
+        isOwner: false
+      }
     });
   };
 
@@ -274,6 +280,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessReviewIcon",
         rights: "Review",
+        accessNumber: 999,
         isOwner: false
       }
     });
@@ -284,6 +291,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessCommentIcon",
         rights: "Comment",
+        accessNumber: 999,
         isOwner: false
       }
     });
@@ -294,6 +302,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessFormIcon",
         rights: "FormFilling",
+        accessNumber: 999,
         isOwner: false
       }
     });
@@ -304,6 +313,7 @@ class SectionHeaderContent extends React.Component {
       accessRight: {
         icon: "AccessNoneIcon",
         rights: "DenyAccess",
+        accessNumber: 999,
         isOwner: false
       }
     });
