@@ -1,4 +1,5 @@
 ﻿using ASC.Mail.Core.Dao.Expressions.Mailbox;
+using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
@@ -252,6 +253,35 @@ namespace ASC.Mail.Controllers
             }
 
             throw new Exception(errorText ?? MailApiResource.AttachmentsUnknownError);
+        }
+
+        /// <summary>
+        ///    Deletes account by email.
+        /// </summary>
+        /// <param name="email">Email the account to delete</param>
+        /// <returns>MailOperationResult object</returns>
+        /// <exception cref="ArgumentException">Exception happens when some parameters are invalid. Text description contains parameter name and text description.</exception>
+        /// <exception cref="NullReferenceException">Exception happens when mailbox wasn't found.</exception>
+        /// <short>Delete account</short> 
+        /// <category>Accounts</category>
+        [Delete(@"accounts")]
+        public MailOperationStatus DeleteAccount(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new ArgumentException(@"Email empty", "email");
+
+            var mailbox =
+                MailboxEngine.GetMailboxData(new СoncreteUserMailboxExp(new MailAddress(email), TenantId,
+                    UserId));
+
+            if (mailbox == null)
+                throw new NullReferenceException(string.Format("Account wasn't found by email: {0}", email));
+
+            if (mailbox.IsTeamlab)
+                throw new ArgumentException("Mailbox with specified email can't be deleted");
+
+            //TODO: Fix return OperationEngine.RemoveMailbox(mailbox, TranslateMailOperationStatus);
+            throw new NotImplementedException();
         }
 
         private static string GetFormattedTextError(Exception ex, ServerType mailServerType, bool timeoutFlag = true)
