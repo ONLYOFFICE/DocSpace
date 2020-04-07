@@ -65,6 +65,7 @@ namespace ASC.Mail.Core.Engine
         public TenantManager TenantManager { get; }
         public DaoFactory DaoFactory { get; }
         public ServerEngine ServerEngine { get; }
+        public CacheEngine CacheEngine { get; }
         public ApiHelper ApiHelper { get; }
         public StorageManager StorageManager { get; }
         public ILog Log { get; }
@@ -76,6 +77,7 @@ namespace ASC.Mail.Core.Engine
             TenantManager tenantManager,
             DaoFactory daoFactory,
             ServerEngine serverEngine,
+            CacheEngine cacheEngine,
             ApiHelper apiHelper,
             StorageManager storageManager,
             IOptionsMonitor<ILog> option)
@@ -84,6 +86,7 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
             ServerEngine = serverEngine;
+            CacheEngine = cacheEngine;
             ApiHelper = apiHelper;
             StorageManager = storageManager;
             Log = option.Get("ASC.Mail.AutoreplyEngine");
@@ -131,6 +134,8 @@ namespace ASC.Mail.Core.Engine
 
             if (result <= 0)
                 throw new InvalidOperationException();
+
+            CacheEngine.Clear(UserId);
 
             var resp = new MailAutoreplyData(autoreply.MailboxId, autoreply.Tenant, autoreply.TurnOn, autoreply.OnlyContacts,
                 autoreply.TurnOnToDate, autoreply.FromDate, autoreply.ToDate, autoreply.Subject, autoreply.Html);
