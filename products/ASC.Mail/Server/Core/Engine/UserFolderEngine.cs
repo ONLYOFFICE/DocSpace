@@ -45,8 +45,20 @@ namespace ASC.Mail.Core.Engine
 {
     public class UserFolderEngine
     {
-        public int Tenant { get; private set; }
-        public string User { get; private set; }
+        public int Tenant
+        {
+            get
+            {
+                return TenantManager.GetCurrentTenant().TenantId;
+            }
+        }
+        public string UserId
+        {
+            get
+            {
+                return SecurityContext.CurrentAccount.ID.ToString();
+            }
+        }
         public ILog Log { get; private set; }
 
         public DaoFactory DaoFactory { get; }
@@ -93,7 +105,7 @@ namespace ASC.Mail.Core.Engine
 
         public List<MailUserFolderData> GetList(List<uint> ids = null, uint? parentId = null)
         {
-            var builder = SimpleUserFoldersExp.CreateBuilder(Tenant, User);
+            var builder = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId);
 
             if (ids != null && ids.Any())
             {
@@ -125,7 +137,7 @@ namespace ASC.Mail.Core.Engine
                 Id = 0,
                 ParentId = parentId,
                 Name = name,
-                User = User,
+                User = UserId,
                 Tenant = Tenant,
                 TimeModified = utsNow
             };
@@ -193,7 +205,7 @@ namespace ASC.Mail.Core.Engine
                 Id = id,
                 ParentId = parentId ?? oldUserFolder.ParentId,
                 Name = name,
-                User = User,
+                User = UserId,
                 Tenant = Tenant,
                 FolderCount = oldUserFolder.FolderCount,
                 UnreadCount = oldUserFolder.UnreadCount,
@@ -282,7 +294,7 @@ namespace ASC.Mail.Core.Engine
                     removeFolderIds.Add(folderId);
 
                 //Remove folder with subfolders
-                var expFolders = SimpleUserFoldersExp.CreateBuilder(Tenant, User)
+                var expFolders = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId)
                     .SetIds(removeFolderIds)
                     .Build();
 
@@ -419,7 +431,7 @@ namespace ASC.Mail.Core.Engine
         private bool IsFolderNameAlreadyExists(UserFolder newUserFolder)
         {
             //Find folder sub-folders
-            var exp = SimpleUserFoldersExp.CreateBuilder(Tenant, User)
+            var exp = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId)
                 .SetParent(newUserFolder.ParentId)
                 .Build();
 
@@ -432,7 +444,7 @@ namespace ASC.Mail.Core.Engine
         private bool CanMoveFolderTo(UserFolder newUserFolder)
         {
             //Find folder sub-folders
-            var exp = SimpleUserFoldersExp.CreateBuilder(Tenant, User)
+            var exp = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId)
                 .SetParent(newUserFolder.Id)
                 .SetIds(new List<uint> { newUserFolder.ParentId})
                 .Build();
