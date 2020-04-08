@@ -11,6 +11,7 @@ using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Web.Mail.Resources;
 using ASC.Common.Threading;
 using System.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Mail.Controllers
 {
@@ -18,6 +19,8 @@ namespace ASC.Mail.Controllers
     [ApiController]
     public partial class MailController : ControllerBase
     {
+        public HttpContext HttpContext { get; set; }
+
         public int TenantId { 
             get { 
                 return TenantManager.GetCurrentTenant().TenantId; 
@@ -45,11 +48,13 @@ namespace ASC.Mail.Controllers
         public MessageEngine MessageEngine { get; }
 
         public CrmLinkEngine CrmLinkEngine { get; }
+        public SpamEngine SpamEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
 
         public MailController(
+            HttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             SecurityContext securityContext,
             ApiContext apiContext,
@@ -64,9 +69,12 @@ namespace ASC.Mail.Controllers
             ContactEngine contactEngine,
             MessageEngine messageEngine,
             CrmLinkEngine crmLinkEngine,
+            SpamEngine spamEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
+            HttpContext = httpContextAccessor?.HttpContext;
+
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             ApiContext = apiContext;
@@ -81,6 +89,7 @@ namespace ASC.Mail.Controllers
             ContactEngine = contactEngine;
             MessageEngine = messageEngine;
             CrmLinkEngine = crmLinkEngine;
+            SpamEngine = spamEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
@@ -254,7 +263,8 @@ namespace ASC.Mail.Controllers
                 .AddDocumentsEngineService()
                 .AddAutoreplyEngineService()
                 .AddContactEngineService()
-                .AddCrmLinkEngineService();
+                .AddCrmLinkEngineService()
+                .AddSpamEngineService();
         }
     }
 }

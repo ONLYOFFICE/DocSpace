@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Web;
 
 namespace ASC.Mail.Controllers
 {
@@ -182,6 +184,39 @@ namespace ASC.Mail.Controllers
             };
 
             return MessageEngine.GetNextConversationId(id, filter);
+        }
+
+        /// <summary>
+        ///    Moves conversation specified in ids to the folder.
+        /// </summary>
+        /// <param name="ids">List of mesasges ids from conversations.</param>
+        /// <param name="folder">Folder ID - integer. 1 - inbox, 2 - sent, 3 - drafts, 4 - trash, 5 - spam.</param>
+        /// <param optional="true" name="userFolderId">User Folder Id</param>
+        /// <returns>List of mesasges ids from conversations.</returns>
+        /// <short>Move conversations to folder</short>
+        /// <category>Conversations</category>
+        [Update(@"conversations/move")]
+        public IEnumerable<int> MoveConversations(List<int> ids, int folder, uint? userFolderId = null)
+        {
+            if (!ids.Any())
+                throw new ArgumentException(@"Empty ids collection", "ids");
+
+            var toFolder = (FolderType)folder;
+
+            if (!MailFolder.IsIdOk(toFolder))
+                throw new ArgumentException(@"Invalid folder id", "folder");
+
+            MessageEngine.SetConversationsFolder(ids, toFolder, userFolderId);
+
+            if (toFolder != FolderType.Spam)
+                return ids;
+
+            //TODO: Try to move message (IMAP only) to spam folder on original server (need new separated operation)
+
+            var scheme = HttpContext == null ? Uri.UriSchemeHttp : HttpContext.Request.GetUrlRewriter().Scheme;
+            SpamEngine.SendConversationsToSpamTrainer(TenantId, UserId, ids, true, scheme);
+
+            return ids;
         }
     }
 }
