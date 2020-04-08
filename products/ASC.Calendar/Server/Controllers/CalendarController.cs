@@ -6,24 +6,15 @@ using ASC.Api.Core;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
-using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
-using ASC.Data.Reassigns;
-using ASC.FederatedLogin;
-using ASC.MessagingSystem;
 using ASC.Calendar.Models;
 using ASC.Security.Cryptography;
 using ASC.Web.Api.Routing;
-using ASC.Web.Core;
 using ASC.Web.Core.Users;
-using ASC.Web.Studio.Core;
-using ASC.Web.Studio.Core.Notify;
-using ASC.Web.Studio.UserControls.Statistics;
 using ASC.Web.Studio.Utility;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 using SecurityContext = ASC.Core.SecurityContext;
@@ -49,12 +40,12 @@ using System.Threading;
 using System.Text;
 using ASC.Common.Web;
 using System.Net.Mime;
-using ASC.Common.Caching;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Security;
 using Ical.Net.CalendarComponents;
+
+using System.Threading.Tasks;
 
 namespace ASC.Calendar.Controllers
 {
@@ -401,35 +392,35 @@ namespace ASC.Calendar.Controllers
             var result = LoadInternalCalendars();
 
             //external
-           
-                var extCalendars = CalendarManager.Instance.GetCalendarsForUser(SecurityContext.CurrentAccount.ID, UserManager);
-                var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, extCalendars.ConvertAll(c => c.Id));
 
-                var extCalendarsWrappers = extCalendars.ConvertAll(c =>
-                                          CalendarWrapperHelper.Get(c, viewSettings.Find(o => o.CalendarId.Equals(c.Id, StringComparison.InvariantCultureIgnoreCase)))
-                                        )
-                                        .FindAll(c => c.IsAcceptedSubscription);
+            var extCalendars = CalendarManager.Instance.GetCalendarsForUser(SecurityContext.CurrentAccount.ID, UserManager);
+            var viewSettings = DataProvider.GetUserViewSettings(SecurityContext.CurrentAccount.ID, extCalendars.ConvertAll(c => c.Id));
+
+            var extCalendarsWrappers = extCalendars.ConvertAll(c =>
+                                      CalendarWrapperHelper.Get(c, viewSettings.Find(o => o.CalendarId.Equals(c.Id, StringComparison.InvariantCultureIgnoreCase)))
+                                    )
+                                    .FindAll(c => c.IsAcceptedSubscription);
 
 
-                extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
+            extCalendarsWrappers.ForEach(c => c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper));
 
-                var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
-                if (sharedEvents != null)
-                    result.ForEach(c =>
-                    {
-                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
-                        c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
-                        c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
-                    });
-                else
-                    result.ForEach(c =>
-                    {
-                        c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
-                        c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
-                    });
+            var sharedEvents = extCalendarsWrappers.Find(c => String.Equals(c.Id, SharedEventsCalendar.CalendarId, StringComparison.InvariantCultureIgnoreCase));
+            if (sharedEvents != null)
+                result.ForEach(c =>
+                {
+                    c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
+                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                    c.Events.RemoveAll(e => sharedEvents.Events.Exists(sEv => string.Equals(sEv.Id, e.Id, StringComparison.InvariantCultureIgnoreCase)));
+                });
+            else
+                result.ForEach(c =>
+                {
+                    c.Events = c.UserCalendar.GetEventWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate, EventWrapperHelper);
+                    c.Todos = c.UserCalendar.GetTodoWrappers(SecurityContext.CurrentAccount.ID, startDate, endDate);
+                });
 
-                result.AddRange(extCalendarsWrappers);
-           
+            result.AddRange(extCalendarsWrappers);
+
             //TODO For personal
             /*
                 //remove all subscription except ical streams
@@ -653,10 +644,9 @@ namespace ASC.Calendar.Controllers
                         {
                             var calendarIcs = GetCalendariCalString(calendarId, true);
 
-                            //TODO Caldav
-                            //var tenant = TenantManager.GetCurrentTenant();
-                            //var caldavTask = new Task(() => CreateCaldavSharedEvents(calendarId, calendarIcs, myUri, currentUserEmail, currentUserPaswd, sharedCalendar.UserCalendar, SecurityContext.CurrentAccount, tenant.TenantId));
-                            //caldavTask.Start();
+                            var tenant = TenantManager.GetCurrentTenant();
+                            var caldavTask = new Task(() => CreateCaldavSharedEvents(calendarId, calendarIcs, myUri, currentUserEmail, currentUserPaswd, sharedCalendar.UserCalendar, SecurityContext.CurrentAccount, tenant.TenantId));
+                            caldavTask.Start();
 
                             return sharedCalUrl;
                         }
@@ -717,10 +707,9 @@ namespace ASC.Calendar.Controllers
 
             if (change != null && portalName != null)
             {
-                //TODO Caldav
-                //var calDavUrl = new Uri(urlRewriter.Scheme + "://" + portalName);
-                //var caldavTask = new Task(() => UpdateCalDavEvent(change, calDavUrl));
-                //caldavTask.Start();
+                var calDavUrl = new Uri(urlRewriter.Scheme + "://" + portalName);
+                var caldavTask = new Task(() => UpdateCalDavEvent(change, calDavUrl));
+                caldavTask.Start();
             }
         }
 
@@ -940,16 +929,15 @@ namespace ASC.Calendar.Controllers
                 var calEvent = eventInfo.Split('/')[2].Replace("_write", "");
                 var eventGuid = calEvent.Split('.')[0];
 
-                //TODO Caldav
-                //var updateEventGuid = updatedEvents.Find((x) => x == eventGuid);
-                //if (updateEventGuid == null)
-                //{
-                //    Task.Run(() => DeleteCalDavEvent(eventInfo, myUri));
-                //}
-                //else
-                //{
-                //    updatedEvents.Remove(updateEventGuid);
-                //}
+                var updateEventGuid = updatedEvents.Find((x) => x == eventGuid);
+                if (updateEventGuid == null)
+                {
+                    Task.Run(() => DeleteCalDavEvent(eventInfo, myUri));
+                }
+                else
+                {
+                    updatedEvents.Remove(updateEventGuid);
+                }
             }
         }
         private string SyncCaldavCalendar(string calendarId,
@@ -993,11 +981,9 @@ namespace ASC.Calendar.Controllers
 
             var calendarIcs = GetCalendariCalString(icalendar.Id, true);
 
-            //TODO Caldav
-            
-            //var tenant = TenantManager.GetCurrentTenant();
-            //var caldavTask = isShared ? new Task(() => CreateCaldavSharedEvents(calDavGuid.ToString(), calendarIcs, myUri, email, currentAccountPaswd, icalendar, SecurityContext.CurrentAccount, tenant.TenantId)): new Task(() => CreateCaldavEvents(calDavGuid.ToString(), myUri, email, currentAccountPaswd, icalendar, calendarIcs));
-            //caldavTask.Start();
+            var tenant = TenantManager.GetCurrentTenant();
+            var caldavTask = isShared ? new Task(() => CreateCaldavSharedEvents(calDavGuid.ToString(), calendarIcs, myUri, email, currentAccountPaswd, icalendar, SecurityContext.CurrentAccount, tenant.TenantId)): new Task(() => CreateCaldavEvents(calDavGuid.ToString(), myUri, email, currentAccountPaswd, icalendar, calendarIcs));
+            caldavTask.Start();
 
             return calendarUrl;
         }
@@ -1114,22 +1100,28 @@ namespace ASC.Calendar.Controllers
             try
             {
                 //do not use compression
-               
                 var acceptEncoding = HttpContext.Request.Headers["Accept-Encoding"];
                 if (acceptEncoding.Count > 0)
                 {
-                    /*var encodings = acceptEncoding.Split(',');
+                    var encodings = acceptEncoding.FirstOrDefault().Split(',');
                     if (encodings.Contains("gzip"))
                     {
                         encodings = (from x in encodings where x != "gzip" select x).ToArray();
 
                         Type t = HttpContext.Request.Headers.GetType();
-                        PropertyInfo propertyInfo = t.GetProperty("IsReadOnly", BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
-                        propertyInfo.SetValue(HttpContext.Request.Headers, false, null);
 
-                        HttpContext.Request.Headers.Set("Accept-Encoding", string.Join(",", encodings));
+                        System.Reflection.PropertyInfo propertyInfo = t.GetProperty("IsReadOnly", System.Reflection.BindingFlags.IgnoreCase |
+                                                                                               System.Reflection.BindingFlags.Instance |
+                                                                                               System.Reflection.BindingFlags.NonPublic |
+                                                                                               System.Reflection.BindingFlags.FlattenHierarchy);
+                        if (propertyInfo != null)
+                        {
+                            propertyInfo.SetValue(HttpContext.Request.Headers, false, null);
+                        }
 
-                    }*/
+                        HttpContext.Request.Headers.Remove("Accept-Encoding");
+                        HttpContext.Request.Headers.Add("Accept-Encoding", string.Join(",", encodings));
+                    }
                 }
             }
             catch (Exception ex)
