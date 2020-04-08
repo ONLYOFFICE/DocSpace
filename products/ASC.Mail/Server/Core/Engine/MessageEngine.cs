@@ -2223,6 +2223,39 @@ namespace ASC.Mail.Core.Engine
             }
         }
 
+        public List<MailMessageData> GetConversation(int id, bool? loadAll, bool? markRead, bool? needSanitize)
+        {
+            if (id <= 0)
+                throw new ArgumentException(@"id must be positive integer", "id");
+#if DEBUG
+            var watch = new Stopwatch();
+            watch.Start();
+#endif
+            var list = GetConversationMessages(Tenant, User, id,
+                loadAll.GetValueOrDefault(false),
+                Defines.NeedProxyHttp,
+                needSanitize.GetValueOrDefault(false),
+                markRead.GetValueOrDefault(false));
+#if DEBUG
+            watch.Stop();
+            Log.DebugFormat("Mail->GetConversation(id={0})->Elapsed {1}ms (NeedProxyHttp={2}, NeedSanitizer={3})", id,
+                watch.Elapsed.TotalMilliseconds, Defines.NeedProxyHttp, needSanitize.GetValueOrDefault(false));
+#endif
+            var item = list.FirstOrDefault(m => m.Id == id);
+
+            if (item == null || item.Folder != FolderType.UserFolder)
+                return list;
+
+            var userFolder = UserFolderEngine.GetByMail((uint)item.Id);
+
+            if (userFolder != null)
+            {
+                list.ForEach(m => m.UserFolderId = userFolder.Id);
+            }
+
+            return list;
+        }
+
         private List<MailMessageData> GetFilteredConversations(MailSearchFilterData filter, out bool hasMore)
         {
 

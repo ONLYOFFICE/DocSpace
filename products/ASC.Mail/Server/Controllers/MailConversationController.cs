@@ -3,7 +3,9 @@ using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace ASC.Mail.Controllers
 {
@@ -92,6 +94,24 @@ namespace ASC.Mail.Controllers
             }
 
             return conversations;
+        }
+
+        /// <summary>
+        /// Get list of messages linked into one chain (conversation)
+        /// </summary>
+        /// <param name="id">ID of any message in the chain</param>
+        /// <param name="loadAll">Load content of all messages</param>
+        /// <param optional="true" name="markRead">Mark conversation as read</param>
+        /// <param optional="true" name="needSanitize">Flag specifies is needed to prepare html for FCKeditor</param>
+        /// <returns>List messages linked in one chain</returns>
+        /// <category>Conversations</category>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Read(@"conversation/{id}")]
+        public IEnumerable<MailMessageData> GetConversation(int id, bool? loadAll, bool? markRead, bool? needSanitize)
+        {
+            var list = MessageEngine.GetConversation(id, loadAll, markRead, needSanitize);
+
+            return list;
         }
     }
 }
