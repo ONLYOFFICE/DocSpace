@@ -73,7 +73,6 @@ namespace ASC.Mail.Core.Engine
         public MailboxEngine MailboxEngine { get; }
         public MessageEngine MessageEngine { get; }
         public IndexEngine IndexEngine { get; }
-        public AttachmentEngine AttachmentEngine { get; }
         public StorageFactory StorageFactory { get; }
 
         private const string SAMPLE_UIDL = "api sample";
@@ -100,7 +99,6 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
             IndexEngine indexEngine,
-            AttachmentEngine attachmentEngine,
             StorageFactory storageFactory,
             IOptionsMonitor<ILog> option)
         {
@@ -112,7 +110,6 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine = mailboxEngine;
             MessageEngine = messageEngine;
             IndexEngine = indexEngine;
-            AttachmentEngine = attachmentEngine;
             StorageFactory = storageFactory;
 
             Log = option.Get("ASC.Mail.TestEngine");
@@ -328,7 +325,7 @@ namespace ASC.Mail.Core.Engine
 
             contentType = string.IsNullOrEmpty(contentType) ? MimeMapping.GetMimeMapping(filename) : contentType;
 
-            return AttachmentEngine.AttachFile(Tenant, User, message, filename, stream, stream.Length, contentType);
+            return MessageEngine.AttachFile(Tenant, User, message, filename, stream, stream.Length, contentType);
         }
 
         public int LoadSampleMessage(
@@ -395,7 +392,6 @@ namespace ASC.Mail.Core.Engine
                 .AddMailboxEngineService()
                 .AddMessageEngineService()
                 .AddIndexEngineService()
-                .AddAttachmentEngineService()
                 .AddStorageFactoryService();
 
             return services;

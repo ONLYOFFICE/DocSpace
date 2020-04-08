@@ -53,8 +53,6 @@ namespace ASC.Mail.Core.Engine
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
-            AttachmentEngine attachmentEngine,
-            ChainEngine chainEngine,
             QuotaEngine quotaEngine,
             IndexEngine indexEngine,
             FolderEngine folderEngine,
@@ -68,8 +66,6 @@ namespace ASC.Mail.Core.Engine
             accountEngine,
             mailboxEngine,
             messageEngine,
-            attachmentEngine,
-            chainEngine,
             quotaEngine,
             indexEngine,
             folderEngine,
@@ -177,8 +173,6 @@ namespace ASC.Mail.Core.Engine
                 .AddAccountEngineService()
                 .AddMailboxEngineService()
                 .AddMessageEngineService()
-                .AddAttachmentEngineService()
-                .AddChainEngineService()
                 .AddQuotaEngineService()
                 .AddIndexEngineService()
                 .AddFolderEngineService()

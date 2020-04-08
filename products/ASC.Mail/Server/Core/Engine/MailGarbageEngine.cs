@@ -61,6 +61,7 @@ namespace ASC.Mail.Core.Engine
         public MailboxEngine MailboxEngine { get; }
         public ServerMailboxEngine ServerMailboxEngine { get; }
         public UserFolderEngine UserFolderEngine { get; }
+        public OperationEngine OperationEngine { get; }
         public ApiHelper ApiHelper { get; }
         public StorageFactory StorageFactory { get; }
         private static MailGarbageEraserConfig Config { get; set; }
@@ -82,6 +83,7 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine mailboxEngine,
             ServerMailboxEngine serverMailboxEngine,
             UserFolderEngine userFolderEngine,
+            OperationEngine operationEngine,
             ApiHelper apiHelper,
             StorageFactory storageFactory,
             MailGarbageEraserConfig config,
@@ -94,6 +96,7 @@ namespace ASC.Mail.Core.Engine
             MailboxEngine = mailboxEngine;
             ServerMailboxEngine = serverMailboxEngine;
             UserFolderEngine = userFolderEngine;
+            OperationEngine = operationEngine;
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
             Config = config;
@@ -563,8 +566,8 @@ namespace ASC.Mail.Core.Engine
 
                 foreach (var folder in folders)
                 {
-                    UserFolderEngine
-                        .Delete(folder.Id);
+                    OperationEngine
+                        .RemoveUserFolder(folder.Id);
                 }
 
             }
@@ -629,6 +632,7 @@ namespace ASC.Mail.Core.Engine
                 .AddTenantManagerService()
                 .AddUserManagerService()
                 .AddDaoFactoryService()
+                .AddOperationEngineService()
                 .AddMailboxEngineService()
                 .AddServerMailboxEngineService()
                 .AddUserFolderEngineService()

@@ -51,6 +51,13 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using Microsoft.Extensions.DependencyInjection;
 using ASC.Common;
+using ASC.Mail.Core.Dao.Expressions;
+using ASC.Web.Files.Api;
+using ASC.Files.Core.Security;
+using ASC.Web.Files.Utils;
+using ASC.Common.Web;
+using ASC.Mail.Exceptions;
+using ASC.Web.Core.Files;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -60,18 +67,20 @@ namespace ASC.Mail.Core.Engine
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
         public UserFolderEngine UserFolderEngine { get; }
-        public ChainEngine ChainEngine { get; }
         public FolderEngine FolderEngine { get; }
         public IndexEngine IndexEngine { get; }
         public QuotaEngine QuotaEngine { get; }
         public TagEngine TagEngine { get; }
-        public AttachmentEngine AttachmentEngine { get; }
         public TenantUtil TenantUtil { get; }
         public CoreSettings CoreSettings { get; }
         public FactoryIndexer<MailWrapper> FactoryIndexer { get; }
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
         public StorageFactory StorageFactory { get; }
+        public StorageManager StorageManager { get; }
+        public FilesIntegration FilesIntegration { get; }
+        public FileSecurity FilesSeurity { get; }
+        public FileConverter FileConverter { get; }
         public ILog Log { get; private set; }
         public int Tenant
         {
@@ -91,20 +100,24 @@ namespace ASC.Mail.Core.Engine
 
         public IDataStore Storage { get; set; }
 
+        private const int CHUNK_SIZE = 3;
+
         public MessageEngine(
             TenantManager tenantManager,
             SecurityContext securityContext,
             DaoFactory daoFactory,
             UserFolderEngine userFolderEngine,
-            ChainEngine chainEngine,
             FolderEngine folderEngine,
             IndexEngine indexEngine,
             QuotaEngine quotaEngine,
             TagEngine tagEngine,
-            AttachmentEngine attachmentEngine,
             TenantUtil tenantUtil,
             CoreSettings coreSettings,
             StorageFactory storageFactory,
+            StorageManager storageManager,
+            FilesIntegration filesIntegration,
+            FileSecurity filesSeurity,
+            FileConverter fileConverter,
             FactoryIndexer<MailWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
@@ -114,19 +127,20 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             UserFolderEngine = userFolderEngine;
-            ChainEngine = chainEngine;
             FolderEngine = folderEngine;
             IndexEngine = indexEngine;
             QuotaEngine = quotaEngine;
             TagEngine = tagEngine;
-            AttachmentEngine = attachmentEngine;
             TenantUtil = tenantUtil;
             CoreSettings = coreSettings;
             FactoryIndexer = factoryIndexer;
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             StorageFactory = storageFactory;
-
+            StorageManager = storageManager;
+            FilesIntegration = filesIntegration;
+            FilesSeurity = filesSeurity;
+            FileConverter = fileConverter;
             Storage = StorageFactory.GetMailStorage(Tenant);
 
             Log = option.Get("ASC.Mail.MessageEngine");
@@ -436,7 +450,7 @@ namespace ASC.Mail.Core.Engine
                 }
 
                 foreach (var id in ids2Update)
-                    ChainEngine.UpdateMessageChainUnreadFlag(Tenant, User, id);
+                    UpdateMessageChainUnreadFlag(Tenant, User, id);
 
                 if (userFolder.HasValue)
                 {
@@ -474,7 +488,7 @@ namespace ASC.Mail.Core.Engine
                 DaoFactory.MailInfoDao.SetFieldValue(exp, "Importance", importance);
 
                 foreach (var messageId in ids)
-                    ChainEngine.UpdateMessageChainImportanceFlag(Tenant, User, messageId);
+                    UpdateMessageChainImportanceFlag(Tenant, User, messageId);
 
                 tx.Commit();
             }
@@ -555,7 +569,7 @@ namespace ASC.Mail.Core.Engine
 
             // Update chains in old folder
             foreach (var info in uniqueChainInfo)
-                ChainEngine.UpdateChain(info.chain_id, info.folder, null, info.id_mailbox, Tenant, User);
+                UpdateChain(info.chain_id, info.folder, null, info.id_mailbox, Tenant, User);
 
             var unreadMessagesCountCollection = new Dictionary<FolderType, int>();
             var totalMessagesCountCollection = new Dictionary<FolderType, int>();
@@ -575,7 +589,7 @@ namespace ASC.Mail.Core.Engine
             }
 
             // Update chains in new restored folder
-            ChainEngine.UpdateChainFields(Tenant, User, ids);
+            UpdateChainFields(Tenant, User, ids);
 
             var prevTotalUnreadCount = 0;
             var prevTotalCount = 0;
@@ -744,7 +758,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var info in uniqueChainInfo)
             {
-                ChainEngine.UpdateChain(
+                UpdateChain(
                     info.chain_id,
                     info.folder,
                     info.userFolderId,
@@ -760,7 +774,7 @@ namespace ASC.Mail.Core.Engine
                 .Select(group => new {group.Key, Count = group.Count()})
                 .ToList();
 
-            ChainEngine.UpdateChainFields(Tenant, User, ids);
+            UpdateChainFields(Tenant, User, ids);
 
             var movedTotalUnreadCount = 0;
             var movedTotalCount = 0;
@@ -911,7 +925,7 @@ namespace ASC.Mail.Core.Engine
                     unreadMessDiff, totalMessDiff);
             }
 
-            ChainEngine.UpdateChainFields(Tenant, User,
+            UpdateChainFields(Tenant, User,
                 messageFieldsInfo.Select(m => Convert.ToInt32(m.id)).ToList());
 
             return usedQuota;
@@ -1446,7 +1460,7 @@ namespace ASC.Mail.Core.Engine
 
             foreach (var c in chainsForUpdate.Distinct())
             {
-                ChainEngine.UpdateChain(c.id, c.folder, userFolderId, mailbox.MailBoxId,
+                UpdateChain(c.id, c.folder, userFolderId, mailbox.MailBoxId,
                     mailbox.TenantId, mailbox.UserId);
             }
         }
@@ -1509,7 +1523,7 @@ namespace ASC.Mail.Core.Engine
                         att.mailboxId = mailbox.MailBoxId;
                     });
 
-                    AttachmentEngine.StoreAttachments(mailbox, message.Attachments, message.StreamId);
+                    StoreAttachments(mailbox, message.Attachments, message.StreamId);
 
                     log.Debug("MailMessage.ReplaceEmbeddedImages()");
                     message.ReplaceEmbeddedImages(log);
@@ -1657,6 +1671,1050 @@ namespace ASC.Mail.Core.Engine
                 log.InfoFormat("Message already exists: mailId={0}. Full clone", fullClone.Id);
                 return true;
 
+        }
+
+        public long GetNextConversationId(int id, MailSearchFilterData filter)
+        {
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(id, Tenant, User));
+
+            if (mail == null)
+                return 0;
+
+            filter.FromDate = mail.ChainDate;
+            filter.FromMessage = id;
+            filter.PageSize = 1;
+
+            var messages = GetFilteredConversations(filter, out bool hasMore);
+            return messages.Any() ? messages.First().Id : 0;
+        }
+
+        public List<MailMessageData> GetConversations(MailSearchFilterData filterData, out bool hasMore)
+        {
+            if (filterData == null)
+                throw new ArgumentNullException("filterData");
+
+            var filter = (MailSearchFilterData)filterData.Clone();
+
+            if (filter.UserFolderId.HasValue && UserFolderEngine.Get((uint)filter.UserFolderId.Value) == null)
+                throw new ArgumentException("Folder not found");
+
+            var filteredConversations = GetFilteredConversations(filter, out hasMore);
+
+            if (!filteredConversations.Any())
+                return filteredConversations;
+
+            var chainIds = new List<string>();
+            filteredConversations.ForEach(x => chainIds.Add(x.ChainId));
+
+            var exp = SimpleConversationsExp.CreateBuilder(Tenant, User)
+                .SetChainIds(chainIds)
+                .SetFoldersIds(
+                    filter.PrimaryFolder == FolderType.Inbox ||
+                    filter.PrimaryFolder == FolderType.Sent
+                        ? new List<int> { (int)FolderType.Inbox, (int)FolderType.Sent }
+                        : new List<int> { (int)filter.PrimaryFolder })
+                .Build();
+
+            var extendedInfo = DaoFactory.ChainDao.GetChains(exp);
+
+            foreach (var chain in filteredConversations)
+            {
+                var chainMessages = extendedInfo.FindAll(x => x.MailboxId == chain.MailboxId && x.Id == chain.ChainId);
+                if (!chainMessages.Any()) continue;
+                chain.IsNew = chainMessages.Any(x => x.Unread);
+                chain.HasAttachments = chainMessages.Any(x => x.HasAttachments);
+                chain.Important = chainMessages.Any(x => x.Importance);
+                chain.ChainLength = chainMessages.Sum(x => x.Length);
+                var firstOrDefault = chainMessages.FirstOrDefault(x => !string.IsNullOrEmpty(x.Tags));
+                chain.LabelsString = firstOrDefault != null ? firstOrDefault.Tags : "";
+            }
+
+            return filteredConversations;
+        }
+
+        public List<MailMessageData> GetConversationMessages(int tenant, string user, int messageId,
+            bool loadAllContent, bool needProxyHttp, bool needMailSanitazer, bool markRead = false)
+        {
+            var messageInfo = DaoFactory.MailInfoDao.GetMailInfoList(
+                SimpleMessagesExp.CreateBuilder(tenant, user)
+                    .SetMessageId(messageId)
+                    .Build())
+                .SingleOrDefault();
+
+            if (messageInfo == null)
+                throw new ArgumentException("Message Id not found");
+
+            var searchFolders = new List<int>();
+
+            if (messageInfo.Folder == FolderType.Inbox || messageInfo.Folder == FolderType.Sent)
+                searchFolders.AddRange(new[] { (int)FolderType.Inbox, (int)FolderType.Sent });
+            else
+                searchFolders.Add((int)messageInfo.Folder);
+
+            var exp = SimpleMessagesExp.CreateBuilder(tenant, user)
+                .SetMailboxId(messageInfo.MailboxId)
+                .SetChainId(messageInfo.ChainId)
+                .SetFoldersIds(searchFolders)
+                .Build();
+
+            var mailInfoList = DaoFactory.MailInfoDao.GetMailInfoList(exp);
+
+            var ids = mailInfoList.Select(m => m.Id).ToList();
+
+            var messages =
+                ids.ConvertAll<MailMessageData>(id => {
+                    return GetMessage(id,
+                        new MailMessageData.Options
+                        {
+                            LoadImages = false,
+                            LoadBody = loadAllContent || (id == messageId),
+                            NeedProxyHttp = needProxyHttp,
+                            NeedSanitizer = needMailSanitazer
+                        });
+                })
+                    .Where(mailInfo => mailInfo != null)
+                    .OrderBy(m => m.Date)
+                    .ToList();
+
+            if (!markRead)
+                return messages;
+
+            var unreadMessages = messages.Where(message => message.WasNew).ToList();
+            if (!unreadMessages.Any())
+                return messages;
+
+            var unreadMessagesCountByFolder = new Dictionary<FolderType, int>();
+
+            foreach (var message in unreadMessages)
+            {
+                if (unreadMessagesCountByFolder.ContainsKey(message.Folder))
+                    unreadMessagesCountByFolder[message.Folder] += 1;
+                else
+                    unreadMessagesCountByFolder.Add(message.Folder, 1);
+            }
+
+            uint? userFolder = null;
+
+            if (unreadMessagesCountByFolder.Keys.Any(k => k == FolderType.UserFolder))
+            {
+                var item = DaoFactory.UserFolderXMailDao.Get(ids.First());
+                userFolder = item == null ? (uint?)null : item.FolderId;
+            }
+
+            List<int> ids2Update;
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                ids2Update = unreadMessages.Select(x => x.Id).ToList();
+
+                DaoFactory.MailInfoDao.SetFieldValue(
+                    SimpleMessagesExp.CreateBuilder(tenant, user)
+                        .SetMessageIds(ids2Update)
+                        .Build(),
+                    "Unread",
+                    false);
+
+                foreach (var keyPair in unreadMessagesCountByFolder)
+                {
+                    var folderType = keyPair.Key;
+
+                    var unreadMessDiff = keyPair.Value != 0 ? keyPair.Value * (-1) : (int?)null;
+
+                    FolderEngine.ChangeFolderCounters(folderType, userFolder,
+                            unreadMessDiff, unreadConvDiff: -1);
+
+                    DaoFactory.ChainDao.SetFieldValue(
+                        SimpleConversationsExp.CreateBuilder(tenant, user)
+                            .SetChainId(messageInfo.ChainId)
+                            .SetMailboxId(messageInfo.MailboxId)
+                            .SetFolder((int)keyPair.Key)
+                            .Build(),
+                        "Unread",
+                        false);
+                }
+
+                if (userFolder.HasValue)
+                {
+                    var userFoldersIds = DaoFactory.UserFolderXMailDao.GetList(mailIds: ids)
+                        .Select(ufxm => (int)ufxm.FolderId)
+                        .Distinct()
+                        .ToList();
+
+                    UserFolderEngine.RecalculateCounters(DaoFactory, userFoldersIds);
+                }
+
+                tx.Commit();
+            }
+
+            var data = new MailWrapper
+            {
+                Unread = false
+            };
+
+            IndexEngine.Update(data, s => s.In(m => m.Id, ids2Update.ToArray()), wrapper => wrapper.Unread);
+
+            return messages;
+        }
+
+        public void SetConversationsFolder(List<int> ids, FolderType folder, uint? userFolderId = null)
+        {
+            if (!ids.Any())
+                throw new ArgumentNullException("ids");
+
+            List<MailInfo> listObjects;
+
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
+
+            if (!listObjects.Any())
+                return;
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                SetFolder(DaoFactory, listObjects, folder, userFolderId);
+                tx.Commit();
+            }
+
+
+            if (folder == FolderType.Inbox || folder == FolderType.Sent || folder == FolderType.Spam)
+            {
+                //TODO: fix OperationEngine.ApplyFilters(listObjects.Select(o => o.Id).ToList());
+            }
+
+            var t = ServiceProvider.GetService<MailWrapper>();
+            if (!FactoryIndexerHelper.Support(t))
+                return;
+
+            var data = new MailWrapper
+            {
+                Folder = (byte)folder,
+                UserFolders = userFolderId.HasValue
+                    ? new List<UserFolderWrapper>
+                    {
+                        new UserFolderWrapper
+                        {
+                            Id = (int) userFolderId.Value
+                        }
+                    }
+                    : new List<UserFolderWrapper>()
+            };
+
+            Expression<Func<Selector<MailWrapper>, Selector<MailWrapper>>> exp =
+                s => s.In(m => m.Id, listObjects.Select(o => o.Id).ToArray());
+
+            IndexEngine.Update(data, exp, w => w.Folder);
+
+            IndexEngine.Update(data, exp, UpdateAction.Replace, w => w.UserFolders);
+        }
+
+        public void RestoreConversations(int tenant, string user, List<int> ids)
+        {
+            if (!ids.Any())
+                throw new ArgumentNullException("ids");
+
+            List<MailInfo> listObjects;
+
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
+
+            if (!listObjects.Any())
+                return;
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                Restore(DaoFactory, listObjects);
+                tx.Commit();
+            }
+
+            var filterApplyIds =
+                listObjects.Where(
+                    m =>
+                        m.FolderRestore == FolderType.Inbox || m.FolderRestore == FolderType.Sent ||
+                        m.FolderRestore == FolderType.Spam).Select(m => m.Id).ToList();
+
+            if (filterApplyIds.Any())
+            {
+                //TODO: fix OperationEngine.ApplyFilters(filterApplyIds);
+            }
+
+            var t = ServiceProvider.GetService<MailWrapper>();
+            if (!FactoryIndexerHelper.Support(t))
+                return;
+
+            var mails = listObjects.ConvertAll(m => new MailWrapper
+            {
+                Id = m.Id,
+                Folder = (byte)m.FolderRestore
+            });
+
+            IndexEngine.Update(mails, wrapper => wrapper.Folder);
+        }
+
+        public void DeleteConversations(int tenant, string user, List<int> ids)
+        {
+            if (!ids.Any())
+                throw new ArgumentNullException("ids");
+
+            long usedQuota;
+
+            List<MailInfo> listObjects;
+
+            listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
+
+            if (!listObjects.Any())
+                return;
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                usedQuota = SetRemoved(DaoFactory, listObjects);
+                tx.Commit();
+            }
+
+            QuotaEngine.QuotaUsedDelete(usedQuota);
+
+            var t = ServiceProvider.GetService<MailWrapper>();
+            if (!FactoryIndexerHelper.Support(t))
+                return;
+
+            IndexEngine.Remove(listObjects.Select(info => info.Id).ToList(), Tenant, new Guid(User));
+        }
+
+        private const string MM_ALIAS = "mm";
+
+        public void SetConversationsImportanceFlags(int tenant, string user, bool important, List<int> ids)
+        {
+            List<MailInfo> mailInfos;
+
+            mailInfos = DaoFactory.MailInfoDao.GetChainedMessagesInfo(ids);
+
+            var chainsInfo = mailInfos
+                .Select(m => new
+                {
+                    m.ChainId,
+                    m.MailboxId,
+                    m.Folder
+                })
+                .Distinct().ToList();
+
+            if (!chainsInfo.Any())
+                throw new Exception("no chain messages belong to current user");
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                Expression<Func<Dao.Entities.MailMail, bool>> exp = t => true;
+                foreach (var chain in chainsInfo)
+                {
+                    Expression<Func<Dao.Entities.MailMail, bool>> innerWhere = m => m.ChainId == chain.ChainId && m.IdMailbox == chain.MailboxId;
+
+                    if (chain.Folder == FolderType.Inbox || chain.Folder == FolderType.Sent)
+                    {
+                        innerWhere = innerWhere.And(m => m.Folder == (int)FolderType.Inbox || m.Folder == (int)FolderType.Sent);
+                    }
+                    else
+                    {
+                        innerWhere = innerWhere.And(m => m.Folder == (int)chain.Folder);
+                    }
+
+                    exp = exp.Or(innerWhere);
+                }
+
+                DaoFactory.MailInfoDao.SetFieldValue(
+                    SimpleMessagesExp.CreateBuilder(tenant, user)
+                        .SetExp(exp)
+                        .Build(),
+                    "Importance",
+                    important);
+
+                foreach (var message in ids)
+                {
+                    UpdateMessageChainImportanceFlag(tenant, user, message);
+                }
+
+                tx.Commit();
+            }
+
+            var data = new MailWrapper
+            {
+                Importance = important
+            };
+
+            IndexEngine.Update(data, s => s.In(m => m.Id, mailInfos.Select(o => o.Id).ToArray()),
+                    wrapper => wrapper.Importance);
+        }
+
+        public void UpdateMessageChainAttachmentsFlag(int tenant, string user, int messageId)
+        {
+            UpdateMessageChainFlag(tenant, user, messageId, "AttachCount", "HasAttachments");
+        }
+
+        public void UpdateMessageChainUnreadFlag(int tenant, string user, int messageId)
+        {
+            UpdateMessageChainFlag(tenant, user, messageId, "Unread", "Unread");
+        }
+
+        public void UpdateMessageChainImportanceFlag(int tenant, string user, int messageId)
+        {
+            UpdateMessageChainFlag(tenant, user, messageId, "Importance", "Importance");
+        }
+
+        private void UpdateMessageChainFlag(int tenant, string user, int messageId, string fieldFrom, string fieldTo)
+        {
+            var mail = DaoFactory.MailDao.GetMail(new ConcreteUserMessageExp(messageId, tenant, user));
+
+            if (mail == null)
+                return;
+
+            var maxValue = DaoFactory.MailInfoDao.GetFieldMaxValue<bool>(
+                SimpleMessagesExp.CreateBuilder(tenant, user)
+                    .SetChainId(mail.ChainId)
+                    .SetMailboxId(mail.MailboxId)
+                    .SetFolder((int)mail.Folder)
+                    .Build(),
+                fieldFrom);
+
+            DaoFactory.ChainDao.SetFieldValue(
+                SimpleConversationsExp.CreateBuilder(tenant, user)
+                    .SetChainId(mail.ChainId)
+                    .SetMailboxId(mail.MailboxId)
+                    .SetFolder((int)mail.Folder)
+                    .Build(),
+                fieldTo,
+                maxValue);
+        }
+
+        public void UpdateChainFields(int tenant, string user, List<int> ids)
+        {
+            var mailInfoList = DaoFactory.MailInfoDao.GetMailInfoList(
+                SimpleMessagesExp.CreateBuilder(tenant, user, null)
+                    .SetMessageIds(ids)
+                    .Build())
+                .ConvertAll(x => new
+                {
+                    id_mailbox = x.MailboxId,
+                    chain_id = x.ChainId,
+                    folder = x.Folder
+                });
+
+            if (!mailInfoList.Any()) return;
+
+            foreach (var info in mailInfoList.GroupBy(t => new { t.id_mailbox, t.chain_id, t.folder }))
+            {
+                uint? userFolder = null;
+
+                if (info.Key.folder == FolderType.UserFolder)
+                {
+                    var item = DaoFactory.UserFolderXMailDao.Get(ids.First());
+                    userFolder = item == null ? (uint?)null : item.FolderId;
+                }
+
+                UpdateChain(info.Key.chain_id, info.Key.folder, userFolder, info.Key.id_mailbox, tenant, user);
+            }
+        }
+
+        // Method for updating chain flags, date and length.
+        public void UpdateChain(string chainId, FolderType folder, uint? userFolderId, int mailboxId,
+            int tenant, string user)
+        {
+            if (string.IsNullOrEmpty(chainId)) return;
+
+            var chainInfo = DaoFactory.MailDb.MailMail
+                .Where(m => m.Tenant == Tenant
+                    && m.IdUser == User
+                    && m.IsRemoved == false
+                    && m.ChainId == chainId
+                    && m.IdMailbox == mailboxId
+                    && m.Folder == (int)folder)
+                .GroupBy(m => m.Id)
+                .Select(g => new
+                {
+                    length = g.Count(),
+                    date = g.Max(m => m.DateSent),
+                    unread = g.Max(m => m.Unread),
+                    attach_count = g.Max(m => m.AttachmentsCount),
+                    importance = g.Max(m => m.Importance)
+                })
+                .FirstOrDefault();
+
+            if (chainInfo == null)
+                throw new InvalidDataException("Conversation is absent in MAIL_MAIL");
+
+            var query = SimpleConversationsExp.CreateBuilder(tenant, user)
+                .SetMailboxId(mailboxId)
+                .SetChainId(chainId)
+                .SetFolder((int)folder)
+                .Build();
+
+            var storedChainInfo = DaoFactory.ChainDao.GetChains(query);
+
+            var chainUnreadFlag = storedChainInfo.Any(c => c.Unread);
+
+            if (0 == chainInfo.length)
+            {
+                var deletQuery = SimpleConversationsExp.CreateBuilder(tenant, user)
+                    .SetFolder((int)folder)
+                    .SetMailboxId(mailboxId)
+                    .SetChainId(chainId)
+                    .Build();
+
+                var result = DaoFactory.ChainDao.Delete(deletQuery);
+
+                Log.DebugFormat(
+                    "UpdateChain() row deleted from chain table tenant='{0}', user_id='{1}', id_mailbox='{2}', folder='{3}', chain_id='{4}' result={5}",
+                    tenant, user, mailboxId, folder, chainId, result);
+
+                var unreadConvDiff = chainUnreadFlag ? -1 : (int?)null;
+
+                FolderEngine.ChangeFolderCounters(folder, userFolderId,
+                    unreadConvDiff: unreadConvDiff, totalConvDiff: -1);
+            }
+            else
+            {
+                var updateQuery = SimpleMessagesExp.CreateBuilder(tenant, user)
+                        .SetChainId(chainId)
+                        .SetMailboxId(mailboxId)
+                        .SetFolder((int)folder)
+                        .Build();
+
+                DaoFactory.MailInfoDao.SetFieldValue(updateQuery,
+                    "ChainDate",
+                    chainInfo.date);
+
+                var tags = DaoFactory.TagMailDao.GetChainTags(chainId, folder, mailboxId);
+
+                var chain = new Chain
+                {
+                    Id = chainId,
+                    Tenant = tenant,
+                    User = user,
+                    MailboxId = mailboxId,
+                    Folder = folder,
+                    Length = chainInfo.length,
+                    Unread = chainInfo.unread,
+                    HasAttachments = chainInfo.attach_count > 0,
+                    Importance = chainInfo.importance,
+                    Tags = tags
+                };
+
+                var result = DaoFactory.ChainDao.SaveChain(chain);
+
+                if (result <= 0)
+                    throw new InvalidOperationException("Invalid insert into mail_chain");
+
+                Log.DebugFormat(
+                    "UpdateChain() row inserted to chain table tenant='{0}', user_id='{1}', id_mailbox='{2}', folder='{3}', chain_id='{4}'",
+                    tenant, user, mailboxId, folder, chainId);
+
+                var unreadConvDiff = (int?)null;
+                var totalConvDiff = (int?)null;
+
+                if (!storedChainInfo.Any())
+                {
+                    totalConvDiff = 1;
+                    unreadConvDiff = chainInfo.unread ? 1 : (int?)null;
+                }
+                else
+                {
+                    if (chainUnreadFlag != chainInfo.unread)
+                    {
+                        unreadConvDiff = chainInfo.unread ? 1 : -1;
+                    }
+                }
+
+                FolderEngine.ChangeFolderCounters(folder, userFolderId,
+                    unreadConvDiff: unreadConvDiff, totalConvDiff: totalConvDiff);
+            }
+        }
+
+        private List<MailMessageData> GetFilteredConversations(MailSearchFilterData filter, out bool hasMore)
+        {
+
+            var conversations = new List<MailMessageData>();
+            var skipFlag = false;
+            var chunkIndex = 0;
+
+            if (filter.FromDate.HasValue && filter.FromMessage.HasValue && filter.FromMessage.Value > 0)
+            {
+                skipFlag = true;
+            }
+
+            // Invert sort order for back paging
+            if (filter.PrevFlag.GetValueOrDefault(false))
+            {
+                filter.SortOrder = filter.SortOrder == Defines.ASCENDING
+                    ? Defines.DESCENDING
+                    : Defines.ASCENDING;
+            }
+
+            var tenantInfo = TenantManager.GetTenant(Tenant);
+            var utcNow = DateTime.UtcNow;
+            var pageSize = filter.PageSize.GetValueOrDefault(25);
+
+            while (conversations.Count < pageSize + 1)
+            {
+                filter.PageSize = CHUNK_SIZE * pageSize;
+
+                IMessagesExp exp = null;
+
+                var t = ServiceProvider.GetService<MailWrapper>();
+                if (!filter.IsDefault() && FactoryIndexerHelper.Support(t) && FactoryIndexer.FactoryIndexerCommon.CheckState(false))
+                {
+                    filter.Page = chunkIndex * CHUNK_SIZE * pageSize; // Elastic Limit from {index of last message} to {count of messages}
+
+                    if (FilterChainMessagesExp.TryGetFullTextSearchChains(FactoryIndexer, FactoryIndexerHelper, ServiceProvider,
+                        filter, User, out List<MailWrapper> mailWrappers))
+                    {
+                        if (!mailWrappers.Any())
+                            break;
+
+                        var ids = mailWrappers.Select(c => c.Id).ToList();
+
+                        exp = SimpleMessagesExp.CreateBuilder(Tenant, User)
+                            .SetMessageIds(ids)
+                            .SetOrderBy(filter.Sort)
+                            .SetOrderAsc(filter.SortOrder == Defines.ASCENDING)
+                            .Build();
+                    }
+                }
+                else
+                {
+                    filter.Page = chunkIndex; // MySQL Limit from {page by size} to {size}
+
+                    exp = new FilterChainMessagesExp(filter, Tenant, User);
+                }
+
+                chunkIndex++;
+
+                var listMessages = DaoFactory.MailInfoDao.GetMailInfoList(exp, true)
+                    .ConvertAll(m => ToMailMessage(m, tenantInfo, utcNow));
+
+                if (0 == listMessages.Count)
+                    break;
+
+                if (skipFlag && filter.FromMessage.HasValue)
+                {
+                    var messageData = listMessages.FirstOrDefault(m => m.Id == filter.FromMessage.Value);
+
+                    if (messageData != null)
+                    {
+                        // Skip chain messages by FromMessage.
+                        listMessages =
+                            listMessages.Where(
+                                m => !(m.ChainId.Equals(messageData.ChainId) && m.MailboxId == messageData.MailboxId))
+                                .ToList();
+                    }
+
+                    skipFlag = false;
+                }
+
+                foreach (var messageData in listMessages)
+                {
+                    var existingChainIndex =
+                        conversations.FindIndex(
+                            c => c.ChainId == messageData.ChainId && c.MailboxId == messageData.MailboxId);
+
+                    if (existingChainIndex > -1)
+                    {
+                        if (conversations[existingChainIndex].Date < messageData.Date)
+                            conversations[existingChainIndex] = messageData;
+                    }
+                    else
+                    {
+                        conversations.Add(messageData);
+                    }
+                }
+
+                if (conversations.Count > pageSize)
+                    break;
+            }
+
+            hasMore = conversations.Count > pageSize;
+
+            if (hasMore)
+            {
+                conversations = conversations.Take(pageSize).ToList();
+            }
+
+            if (filter.PrevFlag.GetValueOrDefault(false))
+            {
+                conversations.Reverse();
+            }
+
+            return conversations;
+        }
+
+        public MailAttachmentData GetAttachment(IAttachmentExp exp)
+        {
+            var attachment = DaoFactory.AttachmentDao.GetAttachment(exp);
+
+            return ToAttachmentData(attachment);
+        }
+
+        public List<MailAttachmentData> GetAttachments(IAttachmentsExp exp)
+        {
+            var attachments = DaoFactory.AttachmentDao.GetAttachments(exp);
+
+            return attachments.ConvertAll(ToAttachmentData);
+        }
+
+        public long GetAttachmentsSize(IAttachmentsExp exp)
+        {
+            var size = DaoFactory.AttachmentDao.GetAttachmentsSize(exp);
+
+            return size;
+        }
+
+        public int GetAttachmentNextFileNumber(IAttachmentsExp exp)
+        {
+            var number = DaoFactory.AttachmentDao.GetAttachmentsMaxFileNumber(exp);
+
+            number++;
+
+            return number;
+        }
+
+        public MailAttachmentData AttachFileFromDocuments(int tenant, string user, int messageId, string fileId, string version, bool needSaveToTemp = false)
+        {
+            MailAttachmentData result;
+
+            var fileDao = FilesIntegration.GetFileDao();
+
+            var file = string.IsNullOrEmpty(version)
+                           ? fileDao.GetFile(fileId)
+                           : fileDao.GetFile(fileId, Convert.ToInt32(version));
+
+            if (file == null)
+                throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound, "File not found.");
+
+            if (!FilesSeurity.CanRead(file))
+                throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied,
+                                               "Access denied.");
+
+            if (!fileDao.IsExistOnStorage(file))
+            {
+                throw new AttachmentsException(AttachmentsException.Types.DocumentNotFound,
+                                               "File not exists on storage.");
+            }
+
+            Log.InfoFormat("Original file id: {0}", file.ID);
+            Log.InfoFormat("Original file name: {0}", file.Title);
+            var fileExt = FileUtility.GetFileExtension(file.Title);
+            var curFileType = FileUtility.GetFileTypeByFileName(file.Title);
+            Log.InfoFormat("File converted type: {0}", file.ConvertedType);
+
+            if (file.ConvertedType != null)
+            {
+                switch (curFileType)
+                {
+                    case FileType.Image:
+                        fileExt = file.ConvertedType == ".zip" ? ".pptt" : file.ConvertedType;
+                        break;
+                    case FileType.Spreadsheet:
+                        fileExt = file.ConvertedType != ".xlsx" ? ".xlst" : file.ConvertedType;
+                        break;
+                    default:
+                        if (file.ConvertedType == ".doct" || file.ConvertedType == ".xlst" || file.ConvertedType == ".pptt")
+                            fileExt = file.ConvertedType;
+                        break;
+                }
+            }
+
+            var convertToExt = string.Empty;
+            switch (curFileType)
+            {
+                case FileType.Document:
+                    if (fileExt == ".doct")
+                        convertToExt = ".docx";
+                    break;
+                case FileType.Spreadsheet:
+                    if (fileExt == ".xlst")
+                        convertToExt = ".xlsx";
+                    break;
+                case FileType.Presentation:
+                    if (fileExt == ".pptt")
+                        convertToExt = ".pptx";
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(convertToExt) && fileExt != convertToExt)
+            {
+                var fileName = Path.ChangeExtension(file.Title, convertToExt);
+                Log.InfoFormat("Changed file name - {0} for file {1}:", fileName, file.ID);
+
+                using var readStream = FileConverter.Exec(file, convertToExt);
+
+                if (readStream == null)
+                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
+
+                using var memStream = new MemoryStream();
+
+                readStream.StreamCopyTo(memStream);
+                result = AttachFileToDraft(tenant, user, messageId, fileName, memStream, memStream.Length, null, needSaveToTemp);
+                Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
+            }
+            else
+            {
+                using var readStream = fileDao.GetFileStream(file);
+
+                if (readStream == null)
+                    throw new AttachmentsException(AttachmentsException.Types.DocumentAccessDenied, "Access denied.");
+
+                result = AttachFileToDraft(tenant, user, messageId, file.Title, readStream, readStream.CanSeek ? readStream.Length : file.ContentLength, null, needSaveToTemp);
+                Log.InfoFormat("Attached attachment: ID - {0}, Name - {1}, StoredUrl - {2}", result.fileName, result.fileName, result.storedFileUrl);
+            }
+
+            return result;
+        }
+
+        public MailAttachmentData AttachFile(int tenant, string user, MailMessageData message,
+            string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
+        {
+            if (message == null)
+                throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "Message not found.");
+
+            if (string.IsNullOrEmpty(message.StreamId))
+                throw new AttachmentsException(AttachmentsException.Types.MessageNotFound, "StreamId is empty.");
+
+            var messageId = message.Id;
+
+            var totalSize = GetAttachmentsSize(new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+
+            totalSize += contentLength;
+
+            if (totalSize > Defines.ATTACHMENTS_TOTAL_SIZE_LIMIT)
+                throw new AttachmentsException(AttachmentsException.Types.TotalSizeExceeded,
+                    "Total size of all files exceeds limit!");
+
+            var fileNumber =
+                GetAttachmentNextFileNumber(new ConcreteMessageAttachmentsExp(messageId, tenant,
+                    user));
+
+            var attachment = new MailAttachmentData
+            {
+                fileName = name,
+                contentType = string.IsNullOrEmpty(contentType) ? MimeMapping.GetMimeMapping(name) : contentType,
+                needSaveToTemp = needSaveToTemp,
+                fileNumber = fileNumber,
+                size = contentLength,
+                data = inputStream.ReadToEnd(),
+                streamId = message.StreamId,
+                tenant = tenant,
+                user = user,
+                mailboxId = message.MailboxId
+            };
+
+            QuotaEngine.QuotaUsedAdd(contentLength);
+
+            try
+            {
+                StorageManager.StoreAttachmentWithoutQuota(attachment);
+            }
+            catch
+            {
+                QuotaEngine.QuotaUsedDelete(contentLength);
+                throw;
+            }
+
+            if (!needSaveToTemp)
+            {
+                int attachCount;
+
+                using (var tx = DaoFactory.BeginTransaction())
+                {
+                    attachment.fileId = DaoFactory.AttachmentDao.SaveAttachment(attachment.ToAttachmnet(messageId));
+
+                    attachCount = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                        new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+
+                    DaoFactory.MailInfoDao.SetFieldValue(
+                        SimpleMessagesExp.CreateBuilder(tenant, user)
+                            .SetMessageId(messageId)
+                            .Build(),
+                        "AttachCount",
+                        attachCount);
+
+                    UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
+
+                    tx.Commit();
+                }
+
+                if (attachCount == 1)
+                {
+                    var data = new MailWrapper
+                    {
+                        HasAttachments = true
+                    };
+
+                    IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+                }
+            }
+
+            return attachment;
+        }
+
+        public MailAttachmentData AttachFileToDraft(int tenant, string user, int messageId,
+            string name, Stream inputStream, long contentLength, string contentType = null, bool needSaveToTemp = false)
+        {
+            if (messageId < 1)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_message' must have non-negative value.");
+
+            if (tenant < 0)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_tenant' must have non-negative value.");
+
+            if (String.IsNullOrEmpty(user))
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Field 'id_user' is empty.");
+
+            if (contentLength == 0)
+                throw new AttachmentsException(AttachmentsException.Types.EmptyFile, "Empty files not supported.");
+
+            var message = GetMessage(messageId, new MailMessageData.Options());
+
+            if (message.Folder != FolderType.Draft && message.Folder != FolderType.Templates && message.Folder != FolderType.Sending)
+                throw new AttachmentsException(AttachmentsException.Types.BadParams, "Message is not a draft or templates.");
+
+            return AttachFile(tenant, user, message, name, inputStream, contentLength, contentType, needSaveToTemp);
+        }
+
+        public void StoreAttachmentCopy(int tenant, string user, MailAttachmentData attachment, string streamId)
+        {
+            try
+            {
+                if (attachment.streamId.Equals(streamId) && !attachment.isTemp) return;
+
+                string s3Key;
+
+                var dataClient = StorageFactory.GetMailStorage(tenant);
+
+                if (attachment.needSaveToTemp || attachment.isTemp)
+                {
+                    s3Key = MailStoragePathCombiner.GetTempStoredFilePath(attachment);
+                }
+                else
+                {
+                    s3Key = MailStoragePathCombiner.GerStoredFilePath(attachment);
+                }
+
+                if (!dataClient.IsFile(s3Key)) return;
+
+                attachment.fileNumber =
+                    !string.IsNullOrEmpty(attachment.contentId) //Upload hack: embedded attachment have to be saved in 0 folder
+                        ? 0
+                        : attachment.fileNumber;
+
+                var newS3Key = MailStoragePathCombiner.GetFileKey(user, streamId, attachment.fileNumber,
+                                                                    attachment.storedName);
+
+                var copyS3Url = dataClient.Copy(s3Key, string.Empty, newS3Key);
+
+                attachment.storedFileUrl = MailStoragePathCombiner.GetStoredUrl(copyS3Url);
+
+                attachment.streamId = streamId;
+
+                attachment.tempStoredUrl = null;
+
+                Log.DebugFormat("StoreAttachmentCopy() tenant='{0}', user_id='{1}', stream_id='{2}', new_s3_key='{3}', copy_s3_url='{4}', storedFileUrl='{5}',  filename='{6}'",
+                    tenant, user, streamId, newS3Key, copyS3Url, attachment.storedFileUrl, attachment.fileName);
+            }
+            catch (Exception ex)
+            {
+                Log.ErrorFormat("CopyAttachment(). filename='{0}', ctype='{1}' Exception:\r\n{2}\r\n",
+                           attachment.fileName,
+                           attachment.contentType,
+                    ex.ToString());
+
+                throw;
+            }
+        }
+
+        public void DeleteMessageAttachments(int tenant, string user, int messageId, List<int> attachmentIds)
+        {
+            long usedQuota;
+            int attachCount;
+
+            using (var tx = DaoFactory.BeginTransaction())
+            {
+                var exp = new ConcreteMessageAttachmentsExp(messageId, tenant, user, attachmentIds,
+                    onlyEmbedded: null);
+
+                usedQuota = DaoFactory.AttachmentDao.GetAttachmentsSize(exp);
+
+                DaoFactory.AttachmentDao.SetAttachmnetsRemoved(exp);
+
+                attachCount = DaoFactory.AttachmentDao.GetAttachmentsCount(
+                    new ConcreteMessageAttachmentsExp(messageId, tenant, user));
+
+                DaoFactory.MailInfoDao.SetFieldValue(
+                    SimpleMessagesExp.CreateBuilder(tenant, user)
+                        .SetMessageId(messageId)
+                        .Build(),
+                    "AttachCount",
+                    attachCount);
+
+                UpdateMessageChainAttachmentsFlag(tenant, user, messageId);
+
+                tx.Commit();
+            }
+
+            if (attachCount == 0)
+            {
+                var data = new MailWrapper
+                {
+                    HasAttachments = false
+                };
+
+                IndexEngine.Update(data, s => s.Where(m => m.Id, messageId), wrapper => wrapper.HasAttachments);
+            }
+
+            if (usedQuota <= 0)
+                return;
+
+            QuotaEngine.QuotaUsedDelete(usedQuota);
+        }
+
+        public void StoreAttachments(MailBoxData mailBoxData, List<MailAttachmentData> attachments, string streamId)
+        {
+            if (!attachments.Any() || string.IsNullOrEmpty(streamId)) return;
+
+            try
+            {
+                var quotaAddSize = attachments.Sum(a => a.data != null ? a.data.LongLength : a.dataStream.Length);
+
+                foreach (var attachment in attachments)
+                {
+                    var isAttachmentNameHasBadName = string.IsNullOrEmpty(attachment.fileName)
+                                                         || attachment.fileName.IndexOfAny(Path.GetInvalidPathChars()) != -1
+                                                         || attachment.fileName.IndexOfAny(Path.GetInvalidFileNameChars()) != -1;
+                    if (isAttachmentNameHasBadName)
+                    {
+                        attachment.fileName = string.Format("attacment{0}{1}", attachment.fileNumber,
+                                                                               MimeMapping.GetExtention(attachment.contentType));
+                    }
+
+                    attachment.streamId = streamId;
+                    attachment.tenant = mailBoxData.TenantId;
+                    attachment.user = mailBoxData.UserId;
+
+                    //TODO: Check TenantId and UserId in StorageManager
+                    StorageManager.StoreAttachmentWithoutQuota(attachment);
+                }
+
+                QuotaEngine.QuotaUsedAdd(quotaAddSize);
+            }
+            catch
+            {
+                var storedAttachmentsKeys = attachments
+                                            .Where(a => !string.IsNullOrEmpty(a.storedFileUrl))
+                                            .Select(MailStoragePathCombiner.GerStoredFilePath)
+                                            .ToList();
+
+                if (storedAttachmentsKeys.Any())
+                {
+                    var storage = StorageFactory.GetMailStorage(mailBoxData.TenantId);
+
+                    storedAttachmentsKeys.ForEach(key => storage.Delete(string.Empty, key));
+                }
+
+                Log.InfoFormat("[Failed] StoreAttachments(mailboxId={0}). All message attachments were deleted.", mailBoxData.MailBoxId);
+
+                throw;
+            }
         }
 
         public MailMessageData ToMailMessage(MailInfo mailInfo, Tenant tenantInfo, DateTime utcNow)
@@ -1825,9 +2883,31 @@ namespace ASC.Mail.Core.Engine
                 item.HtmlBody = htmlBody;
             }
 
-            item.Attachments = attachments.ConvertAll(AttachmentEngine.ToAttachmentData);
+            item.Attachments = attachments.ConvertAll(ToAttachmentData);
 
             return item;
+        }
+
+        public static MailAttachmentData ToAttachmentData(Attachment attachment)
+        {
+            if (attachment == null) return null;
+
+            var a = new MailAttachmentData
+            {
+                fileId = attachment.Id,
+                fileName = attachment.Name,
+                storedName = attachment.StoredName,
+                contentType = attachment.Type,
+                size = attachment.Size,
+                fileNumber = attachment.FileNumber,
+                streamId = attachment.Stream,
+                tenant = attachment.Tenant,
+                user = attachment.User,
+                contentId = attachment.ContentId,
+                mailboxId = attachment.MailboxId
+            };
+
+            return a;
         }
     }
 
@@ -1841,17 +2921,19 @@ namespace ASC.Mail.Core.Engine
                 .AddSecurityContextService()
                 .AddDaoFactoryService()
                 .AddUserFolderEngineService()
-                .AddChainEngineService()
                 .AddFolderEngineService()
                 .AddIndexEngineService()
                 .AddQuotaEngineService()
                 .AddTagEngineService()
-                .AddAttachmentEngineService()
                 .AddTenantUtilService()
                 .AddCoreSettingsService()
                 .AddStorageFactoryService()
                 .AddFactoryIndexerService<MailWrapper>()
-                .AddFactoryIndexerHelperService();
+                .AddFactoryIndexerHelperService()
+                .AddStorageManagerService()
+                .AddFilesIntegrationService()
+                .AddFileSecurityService()
+                .AddFileConverterService();
 
             return services;
         }

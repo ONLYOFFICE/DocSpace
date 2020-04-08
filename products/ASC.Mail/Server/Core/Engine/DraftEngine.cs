@@ -74,8 +74,6 @@ namespace ASC.Mail.Core.Engine
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
-            AttachmentEngine attachmentEngine,
-            ChainEngine chainEngine,
             QuotaEngine quotaEngine,
             IndexEngine indexEngine,
             FolderEngine folderEngine,
@@ -100,8 +98,6 @@ namespace ASC.Mail.Core.Engine
             accountEngine,
             mailboxEngine,
             messageEngine,
-            attachmentEngine,
-            chainEngine,
             quotaEngine,
             indexEngine,
             folderEngine,
@@ -359,7 +355,7 @@ namespace ASC.Mail.Core.Engine
 
         private void SetDraftSending(MailDraftData draft)
         {
-            ChainEngine.SetConversationsFolder(new List<int> { draft.Id }, FolderType.Sending);
+            MessageEngine.SetConversationsFolder(new List<int> { draft.Id }, FolderType.Sending);
         }
 
         private void ReleaseSendingDraftOnSuccess(MailDraftData draft, MailMessage message)
@@ -386,13 +382,13 @@ namespace ASC.Mail.Core.Engine
                         "ChainId",
                         message.ChainId);
 
-                    ChainEngine.UpdateChain(draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                    MessageEngine.UpdateChain(draftChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                         draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
                     DaoFactory.CrmLinkDao.UpdateCrmLinkedChainId(draftChainId, draft.Mailbox.MailBoxId, message.ChainId);
                 }
 
-                ChainEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
+                MessageEngine.UpdateChain(message.ChainId, FolderType.Sending, null, draft.Mailbox.MailBoxId,
                     draft.Mailbox.TenantId, draft.Mailbox.UserId);
 
                 var listObjects = DaoFactory.MailInfoDao.GetChainedMessagesInfo(new List<int> { draft.Id });
@@ -443,7 +439,7 @@ namespace ASC.Mail.Core.Engine
 
                 using (var memStream = new MemoryStream(Encoding.UTF8.GetBytes(draft.CalendarIcs)))
                 {
-                    AttachmentEngine
+                    MessageEngine
                         .AttachFileToDraft(draft.Mailbox.TenantId, draft.Mailbox.UserId, draft.Id,
                             icsAttachment.ContentType.Name, memStream, memStream.Length);
                 }
@@ -671,8 +667,6 @@ namespace ASC.Mail.Core.Engine
                 .AddAccountEngineService()
                 .AddMailboxEngineService()
                 .AddMessageEngineService()
-                .AddAttachmentEngineService()
-                .AddChainEngineService()
                 .AddQuotaEngineService()
                 .AddIndexEngineService()
                 .AddFolderEngineService()

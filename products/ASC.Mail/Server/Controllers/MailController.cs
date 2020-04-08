@@ -40,9 +40,11 @@ namespace ASC.Mail.Controllers
         public TagEngine TagEngine { get; }
         public MailboxEngine MailboxEngine { get; }
         public DocumentsEngine DocumentsEngine { get; }
-        public AttachmentEngine AttachmentEngine { get; }
         public AutoreplyEngine AutoreplyEngine { get; }
         public ContactEngine ContactEngine { get; }
+        public MessageEngine MessageEngine { get; }
+
+        //public CrmLinkEngine CrmLinkEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
@@ -58,9 +60,10 @@ namespace ASC.Mail.Controllers
             TagEngine tagEngine,
             MailboxEngine mailboxEngine,
             DocumentsEngine documentsEngine,
-            AttachmentEngine attachmentEngine,
             AutoreplyEngine autoreplyEngine,
             ContactEngine contactEngine,
+            MessageEngine messageEngine,
+            //CrmLinkEngine crmLinkEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -74,9 +77,10 @@ namespace ASC.Mail.Controllers
             TagEngine = tagEngine;
             MailboxEngine = mailboxEngine;
             DocumentsEngine = documentsEngine;
-            AttachmentEngine = attachmentEngine;
             AutoreplyEngine = autoreplyEngine;
             ContactEngine = contactEngine;
+            MessageEngine = messageEngine;
+            //CrmLinkEngine = crmLinkEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
@@ -246,7 +250,11 @@ namespace ASC.Mail.Controllers
                 .AddDisplayImagesAddressEngineService()
                 .AddSignatureEngineService()
                 .AddTagEngineService()
-                .AddMailboxEngineService();
+                .AddMailboxEngineService()
+                .AddDocumentsEngineService()
+                .AddAutoreplyEngineService()
+                .AddContactEngineService()
+                .AddCrmLinkEngineService();
         }
     }
 }

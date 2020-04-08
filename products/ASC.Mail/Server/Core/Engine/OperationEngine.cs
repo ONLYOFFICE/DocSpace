@@ -40,6 +40,7 @@ using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
 using ASC.Mail.Data.Storage;
 using ASC.Common;
+using ASC.ElasticSearch;
 
 namespace ASC.Mail.Core.Engine
 {
@@ -65,13 +66,14 @@ namespace ASC.Mail.Core.Engine
         public FolderEngine FolderEngine { get; }
         public CacheEngine CacheEngine { get; }
         public IndexEngine IndexEngine { get; }
-        public AttachmentEngine AttachmentEngine { get; }
         public UserFolderEngine UserFolderEngine { get; }
         public FilterEngine FilterEngine { get; }
         public MessageEngine MessageEngine { get; }
         public ServerMailboxEngine ServerMailboxEngine { get; }
         public CoreSettings CoreSettings { get; }
         public StorageManager StorageManager { get; }
+        public FactoryIndexerHelper FactoryIndexerHelper { get; }
+        public IServiceProvider ServiceProvider { get; }
         public IOptionsMonitor<ILog> Option { get; }
 
         public OperationEngine(
@@ -84,13 +86,14 @@ namespace ASC.Mail.Core.Engine
             FolderEngine folderEngine,
             CacheEngine cacheEngine,
             IndexEngine indexEngine,
-            AttachmentEngine attachmentEngine,
             UserFolderEngine userFolderEngine,
             FilterEngine filterEngine,
             MessageEngine messageEngine,
             ServerMailboxEngine serverMailboxEngine, 
             CoreSettings coreSettings,
             StorageManager storageManager,
+            FactoryIndexerHelper factoryIndexerHelper,
+            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             MailOperations = new DistributedTaskQueue(distributedTaskCacheNotify, 
@@ -105,13 +108,14 @@ namespace ASC.Mail.Core.Engine
             FolderEngine = folderEngine;
             CacheEngine = cacheEngine;
             IndexEngine = indexEngine;
-            AttachmentEngine = attachmentEngine;
             UserFolderEngine = userFolderEngine;
             FilterEngine = filterEngine;
             MessageEngine = messageEngine;
             ServerMailboxEngine = serverMailboxEngine;
             CoreSettings = coreSettings;
             StorageManager = storageManager;
+            FactoryIndexerHelper = factoryIndexerHelper;
+            ServiceProvider = serviceProvider;
             Option = option;
         }
 
@@ -204,7 +208,7 @@ namespace ASC.Mail.Core.Engine
                 TenantManager,
                 SecurityContext,
                 DaoFactory,
-                AttachmentEngine,
+                MessageEngine,
                 CoreSettings,
                 StorageManager,
                 Option,
@@ -321,9 +325,13 @@ namespace ASC.Mail.Core.Engine
                 TenantManager,
                 SecurityContext,
                 DaoFactory,
-                UserFolderEngine,
+                UserFolderEngine, 
+                MessageEngine, 
+                IndexEngine,
                 CoreSettings,
-                StorageManager,
+                StorageManager, 
+                FactoryIndexerHelper, 
+                ServiceProvider,
                 Option,
                 userFolderId);
 
@@ -593,13 +601,13 @@ namespace ASC.Mail.Core.Engine
                 .AddFolderEngineService()
                 .AddCacheEngineService()
                 .AddIndexEngineService()
-                .AddAttachmentEngineService()
                 .AddUserFolderEngineService()
                 .AddFilterEngineService()
                 .AddMessageEngineService()
                 .AddServerMailboxEngineService()
                 .AddCoreSettingsService()
-                .AddStorageManagerService();
+                .AddStorageManagerService()
+                .AddFactoryIndexerHelperService();
 
             return services;
         }

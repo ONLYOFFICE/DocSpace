@@ -62,9 +62,6 @@ namespace ASC.Mail.Core.Engine
         public ILog Log { get; private set; }
 
         public DaoFactory DaoFactory { get; }
-        public MessageEngine MessageEngine { get; }
-        public IndexEngine IndexEngine { get; }
-        public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
@@ -73,18 +70,12 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            MessageEngine messageEngine,
-            IndexEngine indexEngine,
-            FactoryIndexerHelper factoryIndexerHelper,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             DaoFactory = daoFactory;
-            MessageEngine = messageEngine;
-            IndexEngine = indexEngine;
-            FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Mail.UserFolderEngine");
         }
@@ -269,76 +260,7 @@ namespace ASC.Mail.Core.Engine
             return ToMailUserFolderData(newUserFolder);
         }
 
-        public void Delete(uint folderId)
-        {
-            var affectedIds = new List<int>();
-
-            //TODO: Check or increase timeout for DB connection
-            //using (var db = new DbManager(Defines.CONNECTION_STRING_NAME, Defines.RecalculateFoldersTimeout))
-
-            var folder = DaoFactory.UserFolderDao.Get(folderId);
-            if (folder == null)
-                return;
-
-            using (var tx = DaoFactory.BeginTransaction())
-            {
-                //Find folder sub-folders
-                var expTree = SimpleUserFoldersTreeExp.CreateBuilder()
-                    .SetParent(folder.Id)
-                    .Build();
-
-                var removeFolderIds = DaoFactory.UserFolderTreeDao.Get(expTree)
-                    .ConvertAll(f => f.FolderId);
-
-                if (!removeFolderIds.Contains(folderId))
-                    removeFolderIds.Add(folderId);
-
-                //Remove folder with subfolders
-                var expFolders = SimpleUserFoldersExp.CreateBuilder(Tenant, UserId)
-                    .SetIds(removeFolderIds)
-                    .Build();
-
-                DaoFactory.UserFolderDao.Remove(expFolders);
-
-                //Remove folder tree info
-                expTree = SimpleUserFoldersTreeExp.CreateBuilder()
-                    .SetIds(removeFolderIds)
-                    .Build();
-
-                DaoFactory.UserFolderTreeDao.Remove(expTree);
-
-                //Move mails to trash
-                foreach (var id in removeFolderIds)
-                {
-                    var listMailIds = DaoFactory.UserFolderXMailDao.GetMailIds(id);
-
-                    if (!listMailIds.Any()) continue;
-
-                    affectedIds.AddRange(listMailIds);
-
-                    //Move mails to trash
-                    MessageEngine.SetFolder(DaoFactory, listMailIds, FolderType.Trash);
-
-                    //Remove listMailIds from 'mail_user_folder_x_mail'
-                    DaoFactory.UserFolderXMailDao.Remove(listMailIds);
-                }
-
-                tx.Commit();
-            }
-
-            DaoFactory.UserFolderDao.RecalculateFoldersCount(folder.ParentId);
-
-            var t = ServiceProvider.GetService<MailWrapper>();
-            if (!FactoryIndexerHelper.Support(t) || !affectedIds.Any())
-                return;
-
-            var data = new MailWrapper
-            {
-                Folder = (byte)FolderType.Trash
-            };
-
-            IndexEngine.Update(data, s => s.In(m => m.Id, affectedIds.ToArray()), wrapper => wrapper.Unread);
-        }
+        
 
         public void SetFolderMessages(uint userFolderId, List<int> ids)
         {
@@ -509,10 +431,7 @@ namespace ASC.Mail.Core.Engine
 
             services.AddSecurityContextService()
                 .AddTenantManagerService()
-                .AddDaoFactoryService()
-                .AddMessageEngineService()
-                .AddIndexEngineService()
-                .AddFactoryIndexerHelperService();
+                .AddDaoFactoryService();
 
             return services;
         }

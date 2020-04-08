@@ -52,7 +52,7 @@ namespace ASC.Mail.Core.Engine.Operations
 {
     public class MailDownloadAllAttachmentsOperation : MailOperation
     {
-        public AttachmentEngine AttachmentEngine { get; }
+        public MessageEngine MessageEngine { get; }
         public int MessageId { get; set; }
 
         public ILog Log { get; set; }
@@ -65,15 +65,15 @@ namespace ASC.Mail.Core.Engine.Operations
         public MailDownloadAllAttachmentsOperation(
             TenantManager tenantManager,
             SecurityContext securityContext,
-            DaoFactory daoFactory, 
-            AttachmentEngine attachmentEngine,
+            DaoFactory daoFactory,
+            MessageEngine messageEngine,
             CoreSettings coreSettings,
             StorageManager storageManager,
             IOptionsMonitor<ILog> optionsMonitor,
             int messageId)
             : base(tenantManager, securityContext, daoFactory, coreSettings, storageManager, optionsMonitor)
         {
-            AttachmentEngine = attachmentEngine;
+            MessageEngine = messageEngine;
             MessageId = messageId;
         }
 
@@ -98,7 +98,7 @@ namespace ASC.Mail.Core.Engine.Operations
                 SetProgress((int?) MailOperationDownloadAllAttachmentsProgress.GetAttachments);
 
                 var attachments =
-                    AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
+                    MessageEngine.GetAttachments(new ConcreteMessageAttachmentsExp(MessageId,
                         CurrentTenant.TenantId, CurrentUser.ID.ToString()));
 
                 if (!attachments.Any())

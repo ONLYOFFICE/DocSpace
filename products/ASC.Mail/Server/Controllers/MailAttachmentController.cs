@@ -65,7 +65,7 @@ namespace ASC.Mail.Controllers
         [Create(@"messages/attachment/add")]
         public MailAttachmentData AddAttachment(int id_message, string name, Stream file, string content_type)
         {
-            var attachment = AttachmentEngine
+            var attachment = MessageEngine
                 .AttachFileToDraft(TenantId, UserId, id_message, name, file, file.Length, content_type);
 
             return attachment;
@@ -96,7 +96,7 @@ namespace ASC.Mail.Controllers
             writer.Flush();
             ms.Position = 0;
 
-            var attachment = AttachmentEngine
+            var attachment = MessageEngine
                 .AttachFileToDraft(TenantId, UserId, id_message, calendar.Method.ToLowerInvariant() + ".ics",
                     ms, ms.Length, "text/calendar");
 

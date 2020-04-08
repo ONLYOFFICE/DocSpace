@@ -117,5 +117,23 @@ namespace ASC.Mail.Controllers
 
             return contact;
         }
+
+        /// <summary>
+        ///    Returns list of crm entities linked with chain. Entity: contact, case or opportunity.
+        /// </summary>
+        /// <param name="messageId">Id of message included in the chain. It may be id any of messages included in the chain.</param>
+        /// <returns>List of structures: {entity_id, entity_type, avatar_link, title}</returns>
+        /// <short>Get crm linked entities</short> 
+        /// <category>Contacts</category>
+        ///<exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Read(@"crm/linked/entities")]
+        public IEnumerable<CrmContactData> GetLinkedCrmEntitiesInfo(int messageId)
+        {
+            if (messageId < 0)
+                throw new ArgumentException(@"meesage_id must be positive integer", "message_id");
+
+            //TODO: fix return CrmLinkEngine.GetLinkedCrmEntitiesId(messageId);
+            throw new NotImplementedException();
+        }
     }
 }

@@ -59,25 +59,25 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public ApiHelper ApiHelper { get; }
-        public AttachmentEngine AttachmentEngine { get; }
+        public MessageEngine MessageEngine { get; }
         public StorageFactory StorageFactory { get; }
 
         public DocumentsEngine(
             SecurityContext securityContext,
             TenantManager tenantManager,
             ApiHelper apiHelper,
-            AttachmentEngine attachmentEngine,
+            MessageEngine messageEngine,
             StorageFactory storageFactory)
         {
-            if (SecurityContext.IsAuthenticated) return;
-
-            //TenantManager.SetCurrentTenant(Tenant);
-            //SecurityContext.AuthenticateMe(new Guid(_userId));
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             ApiHelper = apiHelper;
-            AttachmentEngine = attachmentEngine;
+            MessageEngine = messageEngine;
             StorageFactory = storageFactory;
+
+            //TenantManager.SetCurrentTenant(Tenant);
+            //SecurityContext.AuthenticateMe(new Guid(_userId));
+            //if (SecurityContext.IsAuthenticated) return;
         }
 
         public List<object> StoreAttachmentsToMyDocuments(int messageId)
@@ -93,7 +93,7 @@ namespace ASC.Mail.Core.Engine
         public List<object> StoreAttachmentsToDocuments(int messageId, string folderId)
         {
             var attachments =
-                AttachmentEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
+                MessageEngine.GetAttachments(new ConcreteMessageAttachmentsExp(messageId, Tenant, User));
 
             return
                 attachments.Select(attachment => StoreAttachmentToDocuments(attachment, folderId))
@@ -103,7 +103,7 @@ namespace ASC.Mail.Core.Engine
 
         public object StoreAttachmentToDocuments(int attachmentId, string folderId)
         {
-            var attachment = AttachmentEngine.GetAttachment(
+            var attachment = MessageEngine.GetAttachment(
                 new ConcreteUserAttachmentExp(attachmentId, Tenant, User));
 
             if (attachment == null)
@@ -134,10 +134,11 @@ namespace ASC.Mail.Core.Engine
         {
             services.TryAddScoped<DocumentsEngine>();
 
-            services.AddSecurityContextService()
+            services
+                .AddSecurityContextService()
                 .AddTenantManagerService()
                 .AddApiHelperService()
-                .AddAttachmentEngineService()
+                .AddMessageEngineService()
                 .AddStorageFactoryConfigService();
 
             return services;

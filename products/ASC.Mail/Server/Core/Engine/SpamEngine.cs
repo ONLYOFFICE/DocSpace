@@ -50,7 +50,7 @@ namespace ASC.Mail.Core.Engine
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
         public DaoFactory DaoFactory { get; }
-        public ChainEngine ChainEngine { get; }
+        public MessageEngine MessageEngine { get; }
         public ApiHelper ApiHelper { get; }
         public ILog Log { get; private set; }
 
@@ -58,7 +58,7 @@ namespace ASC.Mail.Core.Engine
             SecurityContext securityContext,
             TenantManager tenantManager,
             DaoFactory daoFactory,
-            ChainEngine chainEngine,
+            MessageEngine messageEngine,
             ApiHelper apiHelper,
             IOptionsMonitor<ILog> option)
         {
@@ -68,7 +68,7 @@ namespace ASC.Mail.Core.Engine
             TenantManager = tenantManager;
 
             DaoFactory = daoFactory;
-            ChainEngine = chainEngine;
+            MessageEngine = messageEngine;
             ApiHelper = apiHelper;
         }
 
@@ -208,7 +208,7 @@ namespace ASC.Mail.Core.Engine
             services.AddSecurityContextService()
                 .AddTenantManagerService()
                 .AddDaoFactoryService()
-                .AddChainEngineService()
+                .AddMessageEngineService()
                 .AddApiHelperService();
 
             return services;

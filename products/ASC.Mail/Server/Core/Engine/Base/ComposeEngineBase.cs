@@ -75,8 +75,6 @@ namespace ASC.Mail.Core.Engine
         public AccountEngine AccountEngine { get; }
         public MailboxEngine MailboxEngine { get; }
         public MessageEngine MessageEngine { get; }
-        public AttachmentEngine AttachmentEngine { get; }
-        public ChainEngine ChainEngine { get; }
         public QuotaEngine QuotaEngine { get; }
         public IndexEngine IndexEngine { get; }
         public FolderEngine FolderEngine { get; }
@@ -147,8 +145,6 @@ namespace ASC.Mail.Core.Engine
             AccountEngine accountEngine,
             MailboxEngine mailboxEngine,
             MessageEngine messageEngine,
-            AttachmentEngine attachmentEngine,
-            ChainEngine chainEngine,
             QuotaEngine quotaEngine,
             IndexEngine indexEngine,
             FolderEngine folderEngine,
@@ -165,8 +161,6 @@ namespace ASC.Mail.Core.Engine
             AccountEngine = accountEngine;
             MailboxEngine = mailboxEngine;
             MessageEngine = messageEngine;
-            AttachmentEngine = attachmentEngine;
-            ChainEngine = chainEngine;
             QuotaEngine = quotaEngine;
             IndexEngine = indexEngine;
             FolderEngine = folderEngine;
@@ -286,7 +280,7 @@ namespace ASC.Mail.Core.Engine
             {
                 message.Attachments.ForEach(
                     attachment =>
-                        AttachmentEngine.StoreAttachmentCopy(compose.Mailbox.TenantId, compose.Mailbox.UserId,
+                        MessageEngine.StoreAttachmentCopy(compose.Mailbox.TenantId, compose.Mailbox.UserId,
                             attachment, compose.StreamId));
             }
 
@@ -303,7 +297,7 @@ namespace ASC.Mail.Core.Engine
 
                 if (compose.AccountChanged)
                 {
-                    ChainEngine.UpdateChain(message.ChainId, message.Folder, null, compose.PreviousMailboxId,
+                    MessageEngine.UpdateChain(message.ChainId, message.Folder, null, compose.PreviousMailboxId,
                         compose.Mailbox.TenantId, compose.Mailbox.UserId);
                 }
 
@@ -362,7 +356,7 @@ namespace ASC.Mail.Core.Engine
                     }
                 }
 
-                ChainEngine
+                MessageEngine
                     .UpdateChain(message.ChainId, message.Folder, null, 
                     compose.Mailbox.MailBoxId, compose.Mailbox.TenantId, compose.Mailbox.UserId);
 
@@ -470,7 +464,7 @@ namespace ASC.Mail.Core.Engine
                     };
 
                     var savedAttachment =
-                        AttachmentEngine.GetAttachment(
+                        MessageEngine.GetAttachment(
                             new ConcreteContentAttachmentExp(compose.Id, attach.contentId));
 
                     var savedAttachmentId = savedAttachment == null ? 0 : savedAttachment.fileId;
@@ -490,7 +484,7 @@ namespace ASC.Mail.Core.Engine
 
                     if (attachmentWasSaved)
                     {
-                        attach = AttachmentEngine.GetAttachment(
+                        attach = MessageEngine.GetAttachment(
                             new ConcreteUserAttachmentExp(savedAttachmentId, compose.Mailbox.TenantId, compose.Mailbox.UserId));
 
                         var path = MailStoragePathCombiner.GerStoredFilePath(attach);
