@@ -139,6 +139,19 @@ namespace ASC.Mail.Core.Engine
             return contacts.ToMailContactDataList(CommonLinkUtility);
         }
 
+        public MailContactData CreateContact(ContactModel model)
+        {
+            if (model.Emails == null || !model.Emails.Any())
+                throw new ArgumentException(@"Invalid list of emails.", "emails");
+
+            var contactCard = new ContactCard(0, Tenant, User, model.Name, model.Description, ContactType.Personal, model.Emails,
+                model.PhoneNumbers);
+
+            var newContact = SaveContactCard(contactCard);
+
+            return newContact.ToMailContactData(CommonLinkUtility);
+        }
+
         public List<ContactCard> GetContactCards(IContactsExp exp)
         {
             if (exp == null)
@@ -260,7 +273,7 @@ namespace ASC.Mail.Core.Engine
         public void RemoveContacts(List<int> ids)
         {
             if (!ids.Any())
-                throw new ArgumentNullException("ids");
+                throw new ArgumentException(@"Empty ids collection", "ids");
 
             using (var tx = DaoFactory.BeginTransaction())
             {

@@ -68,5 +68,35 @@ namespace ASC.Mail.Controllers
 
             return contacts;
         }
+
+        /// <summary>
+        ///    Create mail contact
+        /// </summary>
+        /// <param name="model">instance of ContactModel</param>
+        /// <returns>Information about created contact </returns>
+        /// <short>Create mail contact</short>
+        /// <category>Contacts</category>
+        [Create(@"contact/add")]
+        public MailContactData CreateContact(ContactModel model)
+        {
+            var newContact = ContactEngine.CreateContact(model);
+
+            return newContact;
+        }
+
+        /// <summary>
+        ///    Removes selected mail contacts
+        /// </summary>
+        /// <param name="ids">List of mail contact ids</param>
+        /// <returns>List of removed mail contact ids </returns>
+        /// <short>Remove mail contact </short> 
+        /// <category>Contacts</category>
+        [Update(@"contacts/remove")]
+        public IEnumerable<int> RemoveContacts(List<int> ids)
+        {
+            ContactEngine.RemoveContacts(ids);
+
+            return ids;
+        }
     }
 }
