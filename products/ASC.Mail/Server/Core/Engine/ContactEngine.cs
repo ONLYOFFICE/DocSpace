@@ -206,6 +206,22 @@ namespace ASC.Mail.Core.Engine
             return contactCard;
         }
 
+        public MailContactData UpdateContact(ContactModel model)
+        {
+            if (model.Id < 0)
+                throw new ArgumentException(@"Invalid contact id.", "id");
+
+            if (model.Emails == null || !model.Emails.Any())
+                throw new ArgumentException(@"Invalid list of emails.", "emails");
+
+            var contactCard = new ContactCard(model.Id, Tenant, User, model.Name, model.Description, 
+                ContactType.Personal, model.Emails, model.PhoneNumbers);
+
+            var contact = UpdateContactCard(contactCard);
+
+            return contact.ToMailContactData(CommonLinkUtility);
+        }
+
         public ContactCard UpdateContactCard(ContactCard newContactCard)
         {
             var contactId = newContactCard.ContactInfo.Id;

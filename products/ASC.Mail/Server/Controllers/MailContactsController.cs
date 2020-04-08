@@ -98,5 +98,24 @@ namespace ASC.Mail.Controllers
 
             return ids;
         }
+
+        /// <summary>
+        ///    Updates the existing mail contact
+        /// </summary>
+        /// <param name="id">id of mail contact</param>
+        /// <param name="name">Contact's name</param>
+        /// <param name="description">Description of contact</param>
+        /// <param name="emails">List of emails</param>
+        /// <param name="phoneNumbers">List of phone numbers</param>
+        /// <returns>Information about updated contact </returns>
+        /// <short>Update mail contact</short>
+        /// <category>Contacts</category>
+        [Update(@"contact/update")]
+        public MailContactData UpdateContact(ContactModel model)
+        {
+            var contact = ContactEngine.UpdateContact(model);
+
+            return contact;
+        }
     }
 }
