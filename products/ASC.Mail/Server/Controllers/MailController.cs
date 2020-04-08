@@ -50,6 +50,8 @@ namespace ASC.Mail.Controllers
         public CrmLinkEngine CrmLinkEngine { get; }
         public SpamEngine SpamEngine { get; }
         public FilterEngine FilterEngine { get; }
+        public UserFolderEngine UserFolderEngine { get; }
+        public FolderEngine FolderEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
@@ -72,6 +74,8 @@ namespace ASC.Mail.Controllers
             CrmLinkEngine crmLinkEngine,
             SpamEngine spamEngine,
             FilterEngine filterEngine,
+            UserFolderEngine userFolderEngine,
+            FolderEngine folderEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -93,6 +97,8 @@ namespace ASC.Mail.Controllers
             CrmLinkEngine = crmLinkEngine;
             SpamEngine = spamEngine;
             FilterEngine = filterEngine;
+            UserFolderEngine = userFolderEngine;
+            FolderEngine = folderEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
@@ -268,7 +274,9 @@ namespace ASC.Mail.Controllers
                 .AddContactEngineService()
                 .AddCrmLinkEngineService()
                 .AddSpamEngineService()
-                .AddFilterEngineService();
+                .AddFilterEngineService()
+                .AddUserFolderEngineService()
+                .AddFolderEngineService();
         }
     }
 }
