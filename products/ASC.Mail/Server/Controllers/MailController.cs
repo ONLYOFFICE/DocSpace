@@ -44,7 +44,7 @@ namespace ASC.Mail.Controllers
         public ContactEngine ContactEngine { get; }
         public MessageEngine MessageEngine { get; }
 
-        //public CrmLinkEngine CrmLinkEngine { get; }
+        public CrmLinkEngine CrmLinkEngine { get; }
 
         //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
@@ -63,7 +63,7 @@ namespace ASC.Mail.Controllers
             AutoreplyEngine autoreplyEngine,
             ContactEngine contactEngine,
             MessageEngine messageEngine,
-            //CrmLinkEngine crmLinkEngine,
+            CrmLinkEngine crmLinkEngine,
             //OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -80,7 +80,7 @@ namespace ASC.Mail.Controllers
             AutoreplyEngine = autoreplyEngine;
             ContactEngine = contactEngine;
             MessageEngine = messageEngine;
-            //CrmLinkEngine = crmLinkEngine;
+            CrmLinkEngine = crmLinkEngine;
             //OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");

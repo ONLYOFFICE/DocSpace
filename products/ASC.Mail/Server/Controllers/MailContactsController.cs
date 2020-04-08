@@ -132,8 +132,7 @@ namespace ASC.Mail.Controllers
             if (messageId < 0)
                 throw new ArgumentException(@"meesage_id must be positive integer", "message_id");
 
-            //TODO: fix return CrmLinkEngine.GetLinkedCrmEntitiesId(messageId);
-            throw new NotImplementedException();
+            return CrmLinkEngine.GetLinkedCrmEntitiesId(messageId);
         }
     }
 }
