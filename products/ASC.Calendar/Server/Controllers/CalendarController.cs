@@ -479,7 +479,7 @@ namespace ASC.Calendar.Controllers
         [Read("{calendarId}/icalurl")]
         public object GetCalendariCalUrl(string calendarId)
         {
-            var sig = Signature.Create(AuthContext.CurrentAccount.ID);
+            var sig = Signature.Create(AuthContext.CurrentAccount.ID, calendarId);
 
             // var path = UrlPath.ResolveUrl(() => new CalendarApi().GetCalendariCalStream(calendarId, sig));
 
@@ -1139,7 +1139,7 @@ namespace ASC.Calendar.Controllers
 
 
             iCalApiContentResponse resp = null;
-            var userId = Signature.Read<Guid>(signature);
+            var userId = Signature.Read<Guid>(signature, calendarId);
             if (UserManager.GetUsers(userId).ID != Constants.LostUser.ID)
             {
                 var currentUserId = Guid.Empty;
