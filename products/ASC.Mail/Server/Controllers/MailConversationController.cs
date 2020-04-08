@@ -218,5 +218,210 @@ namespace ASC.Mail.Controllers
 
             return ids;
         }
+
+        /// <summary>
+        ///    Restores all the conversations previously moved to specific folders to their original folders.
+        /// </summary>
+        /// <param name="ids">List of conversation ids for restore.</param>
+        /// <param optional="true" name="learnSpamTrainer">send messages tp spam training</param>
+        /// <returns>List of restored conversations ids</returns>
+        /// <short>Restore conversations to original folders</short>
+        /// <category>Conversations</category>
+        [Update(@"conversations/restore")]
+        public IEnumerable<int> RestoreConversations(List<int> ids, bool learnSpamTrainer = false)
+        {
+            if (!ids.Any())
+                throw new ArgumentException(@"Empty ids collection", "ids");
+
+            MessageEngine.RestoreConversations(TenantId, UserId, ids);
+
+            if (learnSpamTrainer)
+            {
+                var scheme = HttpContext == null ? Uri.UriSchemeHttp : HttpContext.Request.GetUrlRewriter().Scheme;
+                SpamEngine.SendConversationsToSpamTrainer(TenantId, UserId, ids, false, scheme);
+            }
+
+            return ids;
+        }
+
+        /// <summary>
+        ///    Removes conversations from folders
+        /// </summary>
+        /// <param name="ids">List of conversation ids for remove.</param>
+        /// <returns>List of removed conversation ids</returns>
+        /// <short>Remove conversations</short>
+        /// <category>Conversations</category>
+        [Update(@"conversations/remove")]
+        public IEnumerable<int> RemoveConversations(List<int> ids)
+        {
+            if (!ids.Any())
+                throw new ArgumentException(@"Empty ids collection", "ids");
+
+            MessageEngine.DeleteConversations(TenantId, UserId, ids);
+
+            return ids;
+        }
+
+        /// <summary>
+        ///    Sets the status for the conversations specified by ids.
+        /// </summary>
+        /// <param name="ids">List of conversation ids for status changing.</param>
+        /// <param name="status">String parameter specifies status for changing. Values: "read", "unread", "important" and "normal"</param>
+        /// <returns>List of status changed conversations.</returns>
+        /// <short>Set conversations status</short>
+        /// <category>Conversations</category>
+        [Update(@"conversations/mark")]
+        public IEnumerable<int> MarkConversations(List<int> ids, string status)
+        {
+            if (!ids.Any())
+                throw new ArgumentException(@"Empty ids collection", "ids");
+
+            switch (status)
+            {
+                case "read":
+                    MessageEngine.SetUnread(ids, false, true);
+                    break;
+
+                case "unread":
+                    MessageEngine.SetUnread(ids, true, true);
+                    break;
+
+                case "important":
+                    MessageEngine.SetConversationsImportanceFlags(TenantId, UserId, true, ids);
+                    break;
+
+                case "normal":
+                    MessageEngine.SetConversationsImportanceFlags(TenantId, UserId, false, ids);
+                    break;
+            }
+            return ids;
+        }
+
+        /// <summary>
+        ///    Add the specified tag to conversations.
+        /// </summary>
+        /// <param name="tag_id">Tag id for adding.</param>
+        /// <param name="messages">List of conversation ids for tag adding.</param>
+        /// <returns>Added tag_id</returns>
+        /// <short>Add tag to conversations</short> 
+        /// <category>Conversations</category>
+        ///<exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Update(@"conversations/tag/{tag_id}/set")]
+        public int SetConversationsTag(int tag_id, List<int> messages)
+        {
+            if (!messages.Any())
+                throw new ArgumentException(@"Message ids are empty", "messages");
+
+            TagEngine.SetConversationsTag(messages, tag_id);
+
+            return tag_id;
+        }
+
+        /// <summary>
+        ///    Removes the specified tag from conversations.
+        /// </summary>
+        /// <param name="tag_id">Tag id to removing.</param>
+        /// <param name="messages">List of conversation ids for tag removing.</param>
+        /// <returns>Removed tag_id</returns>
+        /// <short>Remove tag from conversations</short> 
+        /// <category>Conversations</category>
+        ///<exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Update(@"conversations/tag/{tag_id}/unset")]
+        public int UnsetConversationsTag(int tag_id, List<int> messages)
+        {
+            if (!messages.Any())
+                throw new ArgumentException(@"Message ids are empty", "messages");
+
+            TagEngine.UnsetConversationsTag(messages, tag_id);
+
+            return tag_id;
+        }
+
+        /// <summary>
+        /// Marks conversation as CRM linked. All new mail will be added to CRM history.
+        /// </summary>
+        /// <param name="id_message">Id of any messages from the chain</param>
+        /// <param name="crm_contact_ids">List of CrmContactEntity. List item format: {entity_id: 0, entity_type: 0}.
+        /// Entity types: 1 - Contact, 2 - Case, 3 - Opportunity.
+        /// </param>
+        /// <returns>none</returns>
+        /// <category>Conversations</category>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Update(@"conversations/crm/link")]
+        public void LinkConversationToCrm(int id_message, IEnumerable<CrmContactData> crm_contact_ids)
+        {
+            if (id_message < 0)
+                throw new ArgumentException(@"Invalid message id", "id_message");
+            if (crm_contact_ids == null)
+                throw new ArgumentException(@"Invalid contact ids list", "crm_contact_ids");
+
+            var scheme = HttpContext == null
+                ? Uri.UriSchemeHttp
+                : HttpContext.Request.GetUrlRewriter().Scheme;
+
+            CrmLinkEngine.LinkChainToCrm(id_message, crm_contact_ids.ToList(), scheme);
+        }
+
+        /// <summary>
+        /// Marks conversation as CRM linked. All new mail will be added to CRM history.
+        /// </summary>
+        /// <param name="id_message">Id of any messages from the chain</param>
+        /// <param name="crm_contact_ids">List of CrmContactEntity. List item format: {entity_id: 0, entity_type: 0}.
+        /// Entity types: 1 - Contact, 2 - Case, 3 - Opportunity.
+        /// </param>
+        /// <returns>none</returns>
+        /// <category>Conversations</category>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Update(@"conversations/crm/mark")]
+        public void MarkConversationAsCrmLinked(int id_message, IEnumerable<CrmContactData> crm_contact_ids)
+        {
+            if (id_message < 0)
+                throw new ArgumentException(@"Invalid message id", "id_message");
+            if (crm_contact_ids == null)
+                throw new ArgumentException(@"Invalid contact ids list", "crm_contact_ids");
+
+            CrmLinkEngine.MarkChainAsCrmLinked(id_message, crm_contact_ids.ToList());
+        }
+
+        /// <summary>
+        /// Method tears conversation link with crm.
+        /// </summary>
+        /// <param name="id_message">Id of any messages from the chain</param>
+        /// <param name="crm_contact_ids">List of CrmContactEntity. List item format: {entity_id: 0, entity_type: 0}.
+        /// Entity types: 1 - Contact, 2 - Case, 3 - Opportunity.
+        /// </param>
+        /// <returns>none</returns>
+        /// <category>Conversations</category>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Update(@"conversations/crm/unmark")]
+        public void UnmarkConversationAsCrmLinked(int id_message, IEnumerable<CrmContactData> crm_contact_ids)
+        {
+            if (id_message < 0)
+                throw new ArgumentException(@"Invalid message id", "id_message");
+            if (crm_contact_ids == null)
+                throw new ArgumentException(@"Invalid contact ids list", "crm_contact_ids");
+
+            CrmLinkEngine.UnmarkChainAsCrmLinked(id_message, crm_contact_ids);
+        }
+
+        /// <summary>
+        /// Method checks is chain crm linked by message_id.
+        /// </summary>
+        /// <param name="message_id">Id of any messages from the chain</param>
+        /// <returns>MailCrmStatus</returns>
+        /// <category>Conversations</category>
+        /// <exception cref="ArgumentException">Exception happens when in parameters is invalid. Text description contains parameter name and text description.</exception>
+        [Read(@"conversations/link/crm/status")]
+        public MailCrmStatus IsConversationLinkedWithCrm(int message_id)
+        {
+            if (message_id < 0)
+                throw new ArgumentException(@"Invalid message id", "message_id");
+
+            var entities = GetLinkedCrmEntitiesInfo(message_id);
+
+            var result = new MailCrmStatus(message_id, entities.Any());
+
+            return result;
+        }
     }
 }
