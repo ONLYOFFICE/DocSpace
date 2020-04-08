@@ -1,4 +1,5 @@
 ﻿using ASC.Mail.Core.Dao.Expressions.Contact;
+using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
@@ -47,6 +48,23 @@ namespace ASC.Mail.Controllers
                 .GetContacts(search, contactType, pageSize, fromIndex, sortorder, out int totalCount);
 
             ApiContext.SetTotalCount(totalCount);
+
+            return contacts;
+        }
+
+        /// <summary>
+        ///   Returns lists of mail contacts with contact information
+        /// </summary>
+        /// <param optional="false" name="infoType">infoType</param>
+        /// <param optional="false" name="data">data</param>
+        /// <param optional="true" name="isPrimary">isPrimary</param>
+        /// <returns>List of filtered contacts</returns>
+        /// <short>Gets filtered contacts</short> 
+        /// <category>Contacts</category>
+        [Read(@"contacts/bycontactinfo")]
+        public IEnumerable<MailContactData> GetContactsByContactInfo(ContactInfoType infoType, string data, bool? isPrimary)
+        {
+            var contacts = ContactEngine.GetContactsByContactInfo(infoType, data, isPrimary);
 
             return contacts;
         }

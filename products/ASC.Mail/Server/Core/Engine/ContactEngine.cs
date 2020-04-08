@@ -129,6 +129,16 @@ namespace ASC.Mail.Core.Engine
             return contacts.ToMailContactDataList(CommonLinkUtility);
         }
 
+        public List<MailContactData> GetContactsByContactInfo(ContactInfoType infoType, string data, bool? isPrimary)
+        {
+            var exp = new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, 
+                data, infoType: infoType, isPrimary: isPrimary);
+
+            var contacts = GetContactCards(exp);
+
+            return contacts.ToMailContactDataList(CommonLinkUtility);
+        }
+
         public List<ContactCard> GetContactCards(IContactsExp exp)
         {
             if (exp == null)
