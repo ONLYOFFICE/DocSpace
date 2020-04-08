@@ -38,9 +38,11 @@ using ASC.ElasticSearch;
 using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Entities;
 using ASC.Mail.Enums;
+using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using ASC.Web.Core;
+using ASC.Web.Studio.Utility;
 using Microsoft.Extensions.Options;
 
 namespace ASC.Mail.Core.Engine
@@ -74,6 +76,7 @@ namespace ASC.Mail.Core.Engine
         public FactoryIndexerHelper FactoryIndexerHelper { get; }
         public IServiceProvider ServiceProvider { get; }
         public WebItemSecurity WebItemSecurity { get; }
+        public CommonLinkUtility CommonLinkUtility { get; }
 
         public ContactEngine(
             SecurityContext securityContext,
@@ -85,6 +88,7 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexer<MailContactWrapper> factoryIndexer,
             FactoryIndexerHelper factoryIndexerHelper,
             WebItemSecurity webItemSecurity,
+            CommonLinkUtility commonLinkUtility,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
@@ -98,7 +102,31 @@ namespace ASC.Mail.Core.Engine
             FactoryIndexerHelper = factoryIndexerHelper;
             ServiceProvider = serviceProvider;
             WebItemSecurity = webItemSecurity;
+            CommonLinkUtility = commonLinkUtility;
             Log = option.Get("ASC.Mail.ContactEngine");
+        }
+
+        public List<MailContactData> GetContacts(string search, int? contactType, int? pageSize, int fromIndex,
+            string sortorder, out int totalCount)
+        {
+            var exp = string.IsNullOrEmpty(search) && !contactType.HasValue
+                ? new SimpleFilterContactsExp(Tenant, User, sortorder == Defines.ASCENDING, fromIndex, pageSize)
+                : new FullFilterContactsExp(Tenant, User, DaoFactory.MailDb, FactoryIndexer, FactoryIndexerHelper, ServiceProvider, search, contactType,
+                    orderAsc: sortorder == Defines.ASCENDING,
+                    startIndex: fromIndex, limit: pageSize);
+
+            var contacts = GetContactCards(exp);
+
+            if (contacts.Any() && contacts.Count() < pageSize)
+            {
+                totalCount = fromIndex + contacts.Count;
+            }
+            else
+            {
+                totalCount = GetContactCardsCount(exp);
+            }
+
+            return contacts.ToMailContactDataList(CommonLinkUtility);
         }
 
         public List<ContactCard> GetContactCards(IContactsExp exp)
@@ -385,6 +413,7 @@ namespace ASC.Mail.Core.Engine
                 .AddApiHelperService()
                 .AddFactoryIndexerService<MailContactWrapper>()
                 .AddFactoryIndexerHelperService()
+                .AddCommonLinkUtilityService()
                 .AddWebItemSecurity();
 
             return services;

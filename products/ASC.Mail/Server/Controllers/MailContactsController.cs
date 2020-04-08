@@ -1,4 +1,6 @@
-﻿using ASC.Mail.Models;
+﻿using ASC.Mail.Core.Dao.Expressions.Contact;
+using ASC.Mail.Extensions;
+using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +26,29 @@ namespace ASC.Mail.Controllers
 
             return ContactEngine.SearchEmails(TenantId, UserId, term, 
                 MailAutocompleteMaxCountPerSystem, MailAutocompleteTimeout);
+        }
+
+        /// <summary>
+        ///    Returns lists of mail contacts.
+        /// </summary>
+        /// <param optional="true" name="search">Text to search in contacts name or emails.</param>
+        /// <param optional="true" name="contactType">Type of contacts</param>
+        /// <param optional="true" name="pageSize">Count of contacts on page</param>
+        /// <param optional="true" name="fromIndex">Page number</param> 
+        /// <param name="sortorder">Sort order by name. String parameter: "ascending" - ascended, "descending" - descended.</param> 
+        /// <returns>List of filtered contacts</returns>
+        /// <short>Gets filtered contacts</short> 
+        /// <category>Contacts</category>
+        [Read(@"contacts")]
+        public IEnumerable<MailContactData> GetContacts(string search, int? contactType, int? pageSize, int fromIndex,
+            string sortorder)
+        {
+            var contacts = ContactEngine
+                .GetContacts(search, contactType, pageSize, fromIndex, sortorder, out int totalCount);
+
+            ApiContext.SetTotalCount(totalCount);
+
+            return contacts;
         }
     }
 }
