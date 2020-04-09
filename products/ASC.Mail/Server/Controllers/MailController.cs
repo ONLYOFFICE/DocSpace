@@ -54,6 +54,7 @@ namespace ASC.Mail.Controllers
         public FolderEngine FolderEngine { get; }
         public DraftEngine DraftEngine { get; }
         public TemplateEngine TemplateEngine { get; }
+        public SettingEngine SettingEngine { get; }
         public OperationEngine OperationEngine { get; }
 
         public ILog Log { get; }
@@ -80,6 +81,7 @@ namespace ASC.Mail.Controllers
             FolderEngine folderEngine,
             DraftEngine draftEngine,
             TemplateEngine templateEngine,
+            SettingEngine settingEngine,
             OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
@@ -105,6 +107,7 @@ namespace ASC.Mail.Controllers
             FolderEngine = folderEngine;
             DraftEngine = draftEngine;
             TemplateEngine = templateEngine;
+            SettingEngine = settingEngine;
             OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
@@ -285,7 +288,8 @@ namespace ASC.Mail.Controllers
                 .AddFolderEngineService()
                 .AddDraftEngineService()
                 .AddTemplateEngineService()
-                .AddOperationEngineService();
+                .AddOperationEngineService()
+                .AddSettingEngineService();
         }
     }
 }
