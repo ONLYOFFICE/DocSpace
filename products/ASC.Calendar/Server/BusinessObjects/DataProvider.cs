@@ -58,14 +58,6 @@ namespace ASC.Calendar.BusinessObjects
 {
     public class DataProvider
     {
-        /* private IDbManager db;
-         private const string DBId = "calendar";
-         private const string _calendarTable = "calendar_calendars cal";
-         private const string _calendarItemTable = "calendar_calendar_item cal_itm";
-         private const string _calendarUserTable = "calendar_calendar_user cal_usr";
-         private const string _eventTable = "calendar_events evt";
-         private const string _todoTable = "calendar_todos td";
-         private const string _eventItemTable = "calendar_event_item evt_itm";*/
 
         public CalendarDbContext CalendarDb { get; }
         public int Tenant
@@ -590,7 +582,6 @@ namespace ASC.Calendar.BusinessObjects
             }
 
             //update notifications
-
             var eventsData = CalendarDb.CalendarEvents
               .Where(p => p.CalendarId == calendarId && p.Tenant == TenantManager.GetCurrentTenant().TenantId)
               .Select(s => new
@@ -756,10 +747,8 @@ namespace ASC.Calendar.BusinessObjects
                     string currentAccountPaswd = Authentication.GetUserPasswordHash(TenantManager.GetCurrentTenant().TenantId, UserManager.GetUserByEmail(_email).ID);
                     var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(UserManager.GetUsers(SecurityContext.CurrentAccount.ID).Email.ToLower() + ":" + currentAccountPaswd));
 
-                    //TODO Caldav
-                    /*var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
-                    caldavTask.Start();*/
-
+                    var caldavTask = new Task(() => RemoveCaldavCalendar(currentUserName, _email, currentAccountPaswd, encoded, caldavGuid.ToString(), myUri));
+                    caldavTask.Start();
                 }
             }
             catch (Exception ex)
@@ -1065,122 +1054,7 @@ namespace ASC.Calendar.BusinessObjects
 
             return GetEventsByIds(evIds.ToArray(), userId, tenantId);
         }
-        /*
-        public Event GetEventById(int eventId)
-        {
-            var events = GetEventsByIds(new object[] { eventId }, AuthContext.CurrentAccount.ID);
-            if (events.Count > 0)
-                return events[0];
 
-            return null;
-        }
-
-        public List<Event> GetEventsByIds(object[] evtIds, Guid userId, int tenantId = -1)
-        {
-            var cc = new ColumnCollection();
-            var eId = cc.RegistryColumn("evt.id");
-            var eName = cc.RegistryColumn("evt.name");
-            var eDescription = cc.RegistryColumn("evt.description");
-            var eTenant = cc.RegistryColumn("evt.tenant");
-            var eCalId = cc.RegistryColumn("evt.calendar_id");
-            var eStartDate = cc.RegistryColumn("evt.start_date");
-            var eEndDate = cc.RegistryColumn("evt.end_date");
-            var eUpdateDate = cc.RegistryColumn("evt.update_date");
-            var eIsAllDay = cc.RegistryColumn("evt.all_day_long");
-            var eRRule = cc.RegistryColumn("evt.rrule");
-            var eOwner = cc.RegistryColumn("evt.owner_id");
-            var usrAlertType = cc.RegistryColumn("evt_usr.alert_type");
-            var eAlertType = cc.RegistryColumn("evt.alert_type");
-            var eUid = cc.RegistryColumn("evt.uid");
-            var eStatus = cc.RegistryColumn("evt.status");
-
-            var data = new List<Object[]>();
-
-            if (evtIds.Length > 0)
-            {
-                if (tenantId != -1)
-                {
-                    data = db.ExecuteList(new SqlQuery(_eventTable)
-                                              .LeftOuterJoin("calendar_event_user evt_usr",
-                                                             Exp.EqColumns(eId.Name, "evt_usr.event_id") &
-                                                             Exp.Eq("evt_usr.user_id", userId))
-                                              .Select(cc.SelectQuery)
-                                              .Where(Exp.In(eId.Name, evtIds))
-                                              .Where("tenant", tenantId));
-                }
-                else
-                {
-                    data = db.ExecuteList(new SqlQuery(_eventTable)
-                                                .LeftOuterJoin("calendar_event_user evt_usr",
-                                                               Exp.EqColumns(eId.Name, "evt_usr.event_id") &
-                                                               Exp.Eq("evt_usr.user_id", userId))
-                                                .Select(cc.SelectQuery)
-                                                .Where(Exp.In(eId.Name, evtIds)));
-                    
-                }
-                
-            }
-
-            var cc1 = new ColumnCollection();
-            var evId = cc1.RegistryColumn("evt_itm.event_id");
-            var itemId = cc1.RegistryColumn("evt_itm.item_id");
-            var itemIsGroup = cc1.RegistryColumn("evt_itm.is_group");
-
-            var sharingData = new List<Object[]>();
-
-            if (evtIds.Length > 0)
-            {
-                sharingData = db.ExecuteList(new SqlQuery(_eventItemTable).Select(cc1.SelectQuery)
-                                                                                   .Where(Exp.In(evId.Name, evtIds)));
-            }
-
-            //parsing           
-            var events = new List<Event>();
-
-            foreach (var r in data)
-            {
-                var ev =
-                    events.Find(
-                        e => String.Equals(e.Id, eId.Parse<string>(r), StringComparison.InvariantCultureIgnoreCase));
-                if (ev == null)
-                {
-                    ev = new Event
-                        {
-                            Id = eId.Parse<string>(r),
-                            Name = eName.Parse<string>(r),
-                            Description = eDescription.Parse<string>(r),
-                            TenantId = eTenant.Parse<int>(r),
-                            CalendarId = eCalId.Parse<string>(r),
-                            UtcStartDate = eStartDate.Parse<DateTime>(r),
-                            UtcEndDate = eEndDate.Parse<DateTime>(r),
-                            UtcUpdateDate = eUpdateDate.Parse<DateTime>(r),
-                            AllDayLong = eIsAllDay.Parse<bool>(r),
-                            OwnerId = eOwner.Parse<Guid>(r),
-                            AlertType =
-                                (usrAlertType.IsNull(r))
-                                    ? (EventAlertType) eAlertType.Parse<int>(r)
-                                    : (EventAlertType) usrAlertType.Parse<int>(r),
-                            RecurrenceRule = eRRule.Parse<RecurrenceRule>(r),
-                            Uid = eUid.Parse<string>(r),
-                            Status = (EventStatus) eStatus.Parse<int>(r)
-                        };
-                    events.Add(ev);
-                }
-
-                foreach (var row in sharingData)
-                {
-                    if (String.Equals(evId.Parse<string>(row), ev.Id, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        ev.SharingOptions.PublicItems.Add(new SharingOptions.PublicItem
-                            {
-                                Id = itemId.Parse<Guid>(row),
-                                IsGroup = itemIsGroup.Parse<bool>(row)
-                            });
-                    }
-                }
-            }
-            return events;
-        }*/
         public Event GetEventByUid(string eventUid)
         {
             var data = from events in CalendarDb.CalendarEvents
@@ -1568,72 +1442,9 @@ namespace ASC.Calendar.BusinessObjects
                 CalendarDb.CalendarEventItem.Add(calEvtItem);
             }
 
-
-
             CalendarDb.SaveChanges();
             tx.Commit();
-            /*using (var tr = db.BeginTransaction())
-            {
-                var query = new SqlUpdate("calendar_events")
-                    .Set("name", name)
-                    .Set("description", description)
-                    .Set("calendar_id", calendarId)
-                    .Set("owner_id", ownerId)
-                    .Set("start_date", utcStartDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                    .Set("end_date", utcEndDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                    .Set("update_date", createDate.ToString("yyyy-MM-dd HH:mm:ss"))
-                    .Set("all_day_long", isAllDayLong)
-                    .Set("rrule", rrule.ToString())
-                    .Set("status", (int) status)
-                    .Where(Exp.Eq("id", eventId));
-
-                if (ownerId.Equals(AuthContext.CurrentAccount.ID))
-                    query = query.Set("alert_type", (int) alertType);
-                else
-                    db.ExecuteNonQuery(new SqlInsert("calendar_event_user", true)
-                                                    .InColumnValue("event_id", eventId)
-                                                    .InColumnValue("user_id", AuthContext.CurrentAccount.ID)
-                                                    .InColumnValue("alert_type", alertType));
-
-
-                db.ExecuteNonQuery(query);
-
-                var userIds = db.ExecuteList(new SqlQuery("calendar_event_user")
-                                                        .Select("user_id")
-                                                        .Where("event_id", eventId))
-                                        .Select(r => new Guid(Convert.ToString(r[0])));
-
-                foreach (var usrId in userIds)
-                {
-                    if (!publicItems.Exists(i => (i.IsGroup && UserManager.IsUserInGroup(usrId, i.Id))
-                                                    || (!i.IsGroup && i.Id.Equals(usrId))))
-                    {
-                        db.ExecuteNonQuery(new SqlDelete("calendar_event_user")
-                                                        .Where(Exp.Eq("user_id", usrId) & Exp.Eq("event_id", eventId)));
-                    }
-                }
-
-                db.ExecuteNonQuery(new SqlDelete("calendar_event_item").Where("event_id", eventId));
-                foreach (var item in publicItems)
-                {
-                    db.ExecuteNonQuery(new SqlInsert("calendar_event_item")
-                                                    .InColumnValue("event_id", eventId)
-                                                    .InColumnValue("item_id", item.Id)
-                                                    .InColumnValue("is_group", item.IsGroup));
-
-
-                }
-
-                //update notifications
-                var baseAlertType =
-                    db.ExecuteList(new SqlQuery("calendar_events").Select("alert_type").Where("id", eventId))
-                                .Select(r => (EventAlertType) Convert.ToInt32(r[0])).First();
-                UpdateEventNotifications(eventId, calendarId, utcStartDate, baseAlertType, rrule, publicItems, null, isAllDayLong);
-
-
-                tr.Commit();
-            }*/
-
+           
             return GetEventById(eventId);
         }
 
@@ -1786,14 +1597,7 @@ namespace ASC.Calendar.BusinessObjects
             CalendarDb.SaveChanges();
             tx.Commit();
         }
-        /*
-        private static EventHistory ToEventHistory(object[] row)
-        {
-            return new EventHistory(Convert.ToInt32(row[0]),
-                                    Convert.ToString(row[1]),
-                                    Convert.ToInt32(row[2]),
-                                    Convert.ToString(row[3]));
-        }*/
+      
         public static string GetEventUid(string uid, string id = null)
         {
             if (!string.IsNullOrEmpty(uid))
