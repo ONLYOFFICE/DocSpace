@@ -9,26 +9,19 @@ import {
   DropDownItem,
   GroupButtonsMenu,
   IconButton,
-  toastr,
-  ComboBox,
-  Icons
+  toastr
 } from "asc-web-components";
 import { fetchFiles, setAction } from "../../../../../store/files/actions";
 import { default as filesStore } from "../../../../../store/store";
 import { EmptyTrashDialog, DeleteDialog } from "../../../../dialogs";
-import {
-  SharingPanel,
-  AddGroupsPanel,
-  AddUsersPanel
-} from "../../../../panels";
+import { SharingPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
   getAccessOption
 } from "../../../../../store/files/selectors";
-import { setShareDataItems } from "../../../../../store/files/actions";
 
 const { isAdmin } = store.auth.selectors;
-const { FilterType, FileAction, ShareAccessRights } = constants;
+const { FilterType, FileAction } = constants;
 
 const StyledContainer = styled.div`
   @media (min-width: 1024px) {
@@ -112,10 +105,7 @@ class SectionHeaderContent extends React.Component {
     this.state = {
       showSharingPanel: false,
       showDeleteDialog: false,
-      showEmptyTrashDialog: false,
-      showAddUsersPanel: false,
-      showAddGroupsPanel: false,
-      accessRight: { icon: "EyeIcon", rights: "ReadOnly", accessNumber: ShareAccessRights.ReadOnly }
+      showEmptyTrashDialog: false
     };
   }
 
@@ -184,21 +174,14 @@ class SectionHeaderContent extends React.Component {
 
   renameAction = () => toastr.info("renameAction click");
 
-  onOpenSharingPanel = () => {
+  onOpenSharingPanel = () => 
     this.setState({ showSharingPanel: !this.state.showSharingPanel });
-  };
 
   onDeleteAction = () =>
     this.setState({ showDeleteDialog: !this.state.showDeleteDialog });
 
   onEmptyTrashAction = () =>
     this.setState({ showEmptyTrashDialog: !this.state.showEmptyTrashDialog });
-
-  onShowUsersPanel = () =>
-    this.setState({ showAddUsersPanel: !this.state.showAddUsersPanel });
-
-  onShowGroupsPanel = () =>
-    this.setState({ showAddGroupsPanel: !this.state.showAddGroupsPanel });
 
   getContextOptionsFolder = () => {
     const { t } = this.props;
@@ -253,71 +236,7 @@ class SectionHeaderContent extends React.Component {
     fetchFiles(this.props.parentId, this.props.filter, filesStore.dispatch);
   };
 
-  onFullAccessClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "AccessEditIcon",
-        rights: "FullAccess",
-        accessNumber: ShareAccessRights.FullAccess,
-        isOwner: false
-      }
-    });
-  };
-
-  onReadOnlyClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "EyeIcon",
-        rights: "ReadOnly",
-        accessNumber: ShareAccessRights.ReadOnly,
-        isOwner: false
-      }
-    });
-  };
-
-  onReviewClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "AccessReviewIcon",
-        rights: "Review",
-        accessNumber: ShareAccessRights.Review,
-        isOwner: false
-      }
-    });
-  };
-
-  onCommentClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "AccessCommentIcon",
-        rights: "Comment",
-        accessNumber: ShareAccessRights.Comment,
-        isOwner: false
-      }
-    });
-  };
-
-  onFormFillingClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "AccessFormIcon",
-        rights: "FormFilling",
-        accessNumber: ShareAccessRights.FormFilling,
-        isOwner: false
-      }
-    });
-  };
-
-  onDenyAccessClick = () => {
-    this.setState({
-      accessRight: {
-        icon: "AccessNoneIcon",
-        rights: "DenyAccess",
-        accessNumber: ShareAccessRights.DenyAccess,
-        isOwner: false
-      }
-    });
-  };
+  
 
   render() {
     //console.log("Body header render");
@@ -336,13 +255,9 @@ class SectionHeaderContent extends React.Component {
       onCheck,
       title,
       accessOptions,
-      setShareDataItems,
       shareDataItems
     } = this.props;
     const {
-      accessRight,
-      showAddGroupsPanel,
-      showAddUsersPanel,
       showDeleteDialog,
       showSharingPanel,
       showEmptyTrashDialog
@@ -418,76 +333,6 @@ class SectionHeaderContent extends React.Component {
         label: t("EmptyRecycleBin"),
         onClick: this.onEmptyTrashAction
       });
-
-    const advancedOptions = (
-      <>
-        {accessOptions.includes("FullAccess") && (
-          <DropDownItem
-            label="Full access"
-            icon="AccessEditIcon"
-            onClick={this.onFullAccessClick}
-          />
-        )}
-
-        {accessOptions.includes("ReadOnly") && (
-          <DropDownItem
-            label="Read only"
-            icon="EyeIcon"
-            onClick={this.onReadOnlyClick}
-          />
-        )}
-
-        {accessOptions.includes("Review") && (
-          <DropDownItem
-            label="Review"
-            icon="AccessReviewIcon"
-            onClick={this.onReviewClick}
-          />
-        )}
-
-        {accessOptions.includes("Comment") && (
-          <DropDownItem
-            label="Comment"
-            icon="AccessCommentIcon"
-            onClick={this.onCommentClick}
-          />
-        )}
-
-        {accessOptions.includes("FormFilling") && (
-          <DropDownItem
-            label="Form filling"
-            icon="AccessFormIcon"
-            onClick={this.onFormFillingClick}
-          />
-        )}
-        {accessOptions.includes("DenyAccess") && (
-          <DropDownItem
-            label="Deny access"
-            icon="AccessNoneIcon"
-            onClick={this.onDenyAccessClick}
-          />
-        )}
-      </>
-    );
-
-    const accessOptionsComboBox = (
-      <ComboBox
-        advancedOptions={advancedOptions}
-        options={[]}
-        selectedOption={{ key: 0 }}
-        size="content"
-        className="panel_combo-box"
-        scaled={false}
-        directionX="right"
-        //isDisabled={isDisabled}
-      >
-        {React.createElement(Icons[accessRight.icon], {
-          size: "medium"
-          //color: this.state.currentIconColor,
-          //isfill: isFill
-        })}
-      </ComboBox>
-    );
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
@@ -579,30 +424,7 @@ class SectionHeaderContent extends React.Component {
         <SharingPanel
           onClose={this.onOpenSharingPanel}
           visible={showSharingPanel}
-          onShowUsersPanel={this.onShowUsersPanel}
-          onShowGroupsPanel={this.onShowGroupsPanel}
-          accessRight={accessRight}
           accessOptions={accessOptions}
-        />
-
-        <AddUsersPanel
-          onSharingPanelClose={this.onOpenSharingPanel}
-          onClose={this.onShowUsersPanel}
-          visible={showAddUsersPanel}
-          embeddedComponent={accessOptionsComboBox}
-          setShareDataItems={setShareDataItems}
-          accessRight={accessRight}
-          shareDataItems={shareDataItems}
-        />
-
-        <AddGroupsPanel
-          onSharingPanelClose={this.onOpenSharingPanel}
-          onClose={this.onShowGroupsPanel}
-          visible={showAddGroupsPanel}
-          embeddedComponent={accessOptionsComboBox}
-          setShareDataItems={setShareDataItems}
-          accessRight={accessRight}
-          shareDataItems={shareDataItems}
         />
       </StyledContainer>
     );
@@ -621,7 +443,6 @@ const mapStateToProps = state => {
   const { user } = state.auth;
 
   const indexOfTrash = 3;
-  const currentUser = user;
   user.rights = { icon: "AccessEditIcon", rights: "FullAccess" };
 
   return {
@@ -633,12 +454,11 @@ const mapStateToProps = state => {
     title,
     filter,
     deleteDialogVisible: isCanBeDeleted(selectedFolder, user),
-    currentUser,
     accessOptions: getAccessOption(selection),
     shareDataItems
   };
 };
 
-export default connect(mapStateToProps, { setAction, setShareDataItems })(
+export default connect(mapStateToProps, { setAction })(
   withTranslation()(withRouter(SectionHeaderContent))
 );

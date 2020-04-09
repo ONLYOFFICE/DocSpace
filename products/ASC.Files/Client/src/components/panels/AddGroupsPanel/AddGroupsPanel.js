@@ -5,7 +5,7 @@ import { GroupSelector, utils } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import {
-  StyledPanel,
+  StyledAddGroupsPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
@@ -24,8 +24,6 @@ class AddGroupsPanelComponent extends React.Component {
 
   onPlusClick = () =>
     this.setState({ showActionPanel: !this.state.showActionPanel });
-
-  onKeyClick = () => console.log("onKeyClick");
 
   onArrowClick = () => this.props.onClose();
 
@@ -80,7 +78,7 @@ class AddGroupsPanelComponent extends React.Component {
 
     //console.log("AddGroupsPanel render");
     return (
-      <StyledPanel visible={visible}>
+      <StyledAddGroupsPanel visible={visible}>
         <Backdrop
           onClick={this.onClosePanels}
           visible={visible}
@@ -121,7 +119,7 @@ class AddGroupsPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-      </StyledPanel>
+      </StyledAddGroupsPanel>
     );
   }
 }

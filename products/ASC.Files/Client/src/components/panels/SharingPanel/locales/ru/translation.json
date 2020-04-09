@@ -5,6 +5,13 @@
   "AddGroupsForSharingButton": "Добавить группы",
   "AddButton": "Сохранить",
   "AccessRightsFullAccess": "Полный доступ",
+  "AddShareMessage": "Добавить сообщение",
+  "LinkCopySuccess": "Ссылка скопирована в буфер обмена",
 
-  "Notify users": "Уведомить пользователей"
+  "Notify users": "Уведомить пользователей",
+  "CopyExternalLink": "Скопировать внешнюю ссылку",
+  "ShareVia": "Отправить по",  
+  "Embedding": "Встраивание",
+  "ExternalLink": "Внешняя ссылка",
+  "InternalLink": "Внутренняя ссылка"
 }

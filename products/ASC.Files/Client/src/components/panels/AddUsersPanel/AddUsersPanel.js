@@ -5,7 +5,7 @@ import { PeopleSelector, utils } from "asc-web-common";
 import { withTranslation } from "react-i18next";
 import i18n from "./i18n";
 import {
-  StyledPanel,
+  StyledAddUsersPanelPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody
@@ -26,8 +26,6 @@ class AddUsersPanelComponent extends React.Component {
 
   onPlusClick = () =>
     this.setState({ showActionPanel: !this.state.showActionPanel });
-
-  onKeyClick = () => console.log("onKeyClick");
 
   onArrowClick = () => this.props.onClose();
 
@@ -81,7 +79,7 @@ class AddUsersPanelComponent extends React.Component {
 
     //console.log("AddUsersPanel render");
     return (
-      <StyledPanel visible={visible}>
+      <StyledAddUsersPanelPanel visible={visible}>
         <Backdrop
           onClick={this.onClosePanels}
           visible={visible}
@@ -126,7 +124,7 @@ class AddUsersPanelComponent extends React.Component {
             </StyledBody>
           </StyledContent>
         </Aside>
-      </StyledPanel>
+      </StyledAddUsersPanelPanel>
     );
   }
 }

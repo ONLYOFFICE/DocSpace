@@ -1,16 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
-const StyledPanel = styled.div`
-  .header_aside-panel {
-    transform: translateX(${props => (props.visible ? "0" : "500px")});
-    width: 500px;
-
-    @media (max-width: 550px) {
-      width: 320px;
-      transform: translateX(${props => (props.visible ? "0" : "320px")});
-    }
-  }
-
+const PanelStyles = css`
   .panel_combo-box {
     margin-left: 8px;
 
@@ -22,6 +12,58 @@ const StyledPanel = styled.div`
       margin: 0;
     }
   }
+`;
+
+const StyledSharingPanel = styled.div`
+  .header_aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+  ${PanelStyles}
+`;
+
+const StyledAddUsersPanelPanel = styled.div`
+  .header_aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+  ${PanelStyles}
+`;
+
+const StyledAddGroupsPanel = styled.div`
+  .header_aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+  ${PanelStyles}
+`;
+
+const StyledEmbeddingPanel = styled.div`
+  .header_aside-panel {
+    transform: translateX(${(props) => (props.visible ? "0" : "500px")});
+    width: 500px;
+
+    @media (max-width: 550px) {
+      width: 320px;
+      transform: translateX(${(props) => (props.visible ? "0" : "320px")});
+    }
+  }
+  ${PanelStyles}
 `;
 
 const StyledContent = styled.div`
@@ -72,6 +114,37 @@ const StyledBody = styled.div`
       }
     }
   }
+
+  .embedding-panel_links-container {
+    display: flex;
+    .embedding-panel_link {
+      margin-right: 8px;
+      height: 32px;
+      background-color: #eceef1;
+      line-height: 30px;
+      padding: 0px 8px;
+    }
+  }
+
+  .embedding-panel_inputs-container {
+    display: flex;
+
+    .embedding-panel_input {
+      margin-right: 8px;
+      width: 94px;
+    }
+  }
+
+  .embedding-panel_text {
+    padding: 8px 0 4px 0;
+  }
+
+  .embedding-panel_copy-icon {
+    position: absolute;
+    z-index: 1;
+    margin: 8px;
+    right: 16px;
+  }
 `;
 
 const StyledSharingHeaderContent = styled.div`
@@ -100,6 +173,31 @@ const StyledSharingBody = styled.div`
   position: relative;
   padding: 16px 0;
 
+  .sharing_panel-text {
+    line-height: 24px;
+  }
+
+  .sharing_panel-link {
+    a {
+      text-decoration: none !important;
+    }
+  }
+
+  .sharing_panel-link-combo-box {
+    margin-left: auto;
+    .combo-button {
+      height: 24px;
+      width: 94px;
+
+      svg {
+        bottom: 6px;
+        position: absolute;
+        height: 8px;
+        width: 8px;
+      }
+    }
+  }
+
   .sharing-access-combo-box-icon {
     path {
       fill: #a3a9ae;
@@ -112,6 +210,11 @@ const StyledSharingBody = styled.div`
 
   .sharing_panel-remove-icon {
     margin-left: auto;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .panel_combo-box {
@@ -127,6 +230,12 @@ const StyledSharingBody = styled.div`
     .combo-button-label {
       margin: 0;
     }
+  }
+
+  .sharing_panel-text-area {
+    position: fixed;
+    bottom: 70px;
+    width: 94%;
   }
 `;
 
@@ -148,11 +257,14 @@ const StyledFooter = styled.div`
 `;
 
 export {
-  StyledPanel,
+  StyledSharingPanel,
+  StyledAddGroupsPanel,
+  StyledAddUsersPanelPanel,
+  StyledEmbeddingPanel,
   StyledContent,
   StyledHeaderContent,
   StyledBody,
   StyledSharingHeaderContent,
   StyledSharingBody,
-  StyledFooter
+  StyledFooter,
 };
