@@ -52,8 +52,10 @@ namespace ASC.Mail.Controllers
         public FilterEngine FilterEngine { get; }
         public UserFolderEngine UserFolderEngine { get; }
         public FolderEngine FolderEngine { get; }
+        public DraftEngine DraftEngine { get; }
+        public TemplateEngine TemplateEngine { get; }
+        public OperationEngine OperationEngine { get; }
 
-        //public OperationEngine OperationEngine { get; }
         public ILog Log { get; }
 
         public MailController(
@@ -76,7 +78,9 @@ namespace ASC.Mail.Controllers
             FilterEngine filterEngine,
             UserFolderEngine userFolderEngine,
             FolderEngine folderEngine,
-            //OperationEngine operationEngine,
+            DraftEngine draftEngine,
+            TemplateEngine templateEngine,
+            OperationEngine operationEngine,
             IOptionsMonitor<ILog> option)
         {
             HttpContext = httpContextAccessor?.HttpContext;
@@ -99,7 +103,9 @@ namespace ASC.Mail.Controllers
             FilterEngine = filterEngine;
             UserFolderEngine = userFolderEngine;
             FolderEngine = folderEngine;
-            //OperationEngine = operationEngine;
+            DraftEngine = draftEngine;
+            TemplateEngine = templateEngine;
+            OperationEngine = operationEngine;
 
             Log = option.Get("ASC.Api.Mail");
         }
@@ -276,7 +282,10 @@ namespace ASC.Mail.Controllers
                 .AddSpamEngineService()
                 .AddFilterEngineService()
                 .AddUserFolderEngineService()
-                .AddFolderEngineService();
+                .AddFolderEngineService()
+                .AddDraftEngineService()
+                .AddTemplateEngineService()
+                .AddOperationEngineService();
         }
     }
 }

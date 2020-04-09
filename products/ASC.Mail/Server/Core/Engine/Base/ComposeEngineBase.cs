@@ -183,22 +183,9 @@ namespace ASC.Mail.Core.Engine
 
         #region .Public
 
-        public virtual MailMessage Save(
-            int id,
-            string from,
-            List<string> to,
-            List<string> cc,
-            List<string> bcc,
-            string mimeReplyToId,
-            bool importance,
-            string subject,
-            List<int> tags,
-            string body,
-            List<MailAttachmentData> attachments,
-            string calendarIcs,
-            DeliveryFailureMessageTranslates translates = null)
+        public virtual MailMessage Save(MessageModel model, DeliveryFailureMessageTranslates translates = null)
         {
-            var mailAddress = new MailAddress(from);
+            var mailAddress = new MailAddress(model.From);
 
             var accounts = AccountEngine.GetAccountInfoList().ToAccountData();
 
@@ -220,9 +207,9 @@ namespace ASC.Mail.Core.Engine
 
             var previousMailboxId = mbox.MailBoxId;
 
-            if (id > 0)
+            if (model.Id > 0)
             {
-                var message = MessageEngine.GetMessage(id, new MailMessageData.Options
+                var message = MessageEngine.GetMessage(model.Id, new MailMessageData.Options
                 {
                     LoadImages = false,
                     LoadBody = true,
@@ -254,8 +241,11 @@ namespace ASC.Mail.Core.Engine
 
             var fromAddress = MailUtil.CreateFullEmail(mbox.Name, mbox.EMail.Address);
 
-            var compose = new MailDraftData(id, mbox, fromAddress, to, cc, bcc, subject, mimeMessageId, mimeReplyToId, importance,
-                    tags, body, streamId, attachments, calendarIcs) { PreviousMailboxId = previousMailboxId };
+            var compose = new MailDraftData(model.Id, mbox, fromAddress, model.To, model.Cc, model.Bcc, model.Subject, mimeMessageId, 
+                    model.MimeReplyToId, model.Importance, model.Tags, model.Body, streamId, model.Attachments, model.CalendarIcs) 
+            { 
+                PreviousMailboxId = previousMailboxId 
+            };
 
             DaemonLabels = translates ?? DeliveryFailureMessageTranslates.Defauilt;
 
