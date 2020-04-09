@@ -288,14 +288,12 @@ class SharingPanelComponent extends React.Component {
           isOwner: false,
         };
       case 3:
-        return (
-          !item.sharedTo.shareLink && {
-            icon: "AccessNoneIcon",
-            rights: "DenyAccess",
-            accessNumber: ShareAccessRights.DenyAccess,
-            isOwner: false,
-          }
-        );
+        return {
+          icon: "AccessNoneIcon",
+          rights: "DenyAccess",
+          accessNumber: ShareAccessRights.DenyAccess,
+          isOwner: false,
+        };
       case 5:
         return {
           icon: "AccessReviewIcon",
