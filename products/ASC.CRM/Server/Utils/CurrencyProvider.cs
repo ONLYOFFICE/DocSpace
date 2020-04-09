@@ -24,6 +24,11 @@
 */
 
 
+using ASC.Common.Logging;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.Web.CRM.Core;
+using Autofac;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -31,33 +36,19 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Web.Configuration;
-using ASC.CRM.Core;
-using ASC.Common.Logging;
-using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Core;
-using Autofac;
 
 namespace ASC.Web.CRM.Classes
 {
-
-    public static class CurrencyProvider
+    public class CurrencyProvider
     {
-
-        #region Members
-
-        private static readonly ILog _log = LogManager.GetLogger("ASC");
-        private static readonly object _syncRoot = new object();
-        private static readonly Dictionary<String, CurrencyInfo> _currencies;
-        private static Dictionary<String, Decimal> _exchangeRates;
-        private static DateTime _publisherDate;
+        private readonly ILog _log = LogManager.GetLogger("ASC");
+        private readonly object _syncRoot = new object();
+        private readonly Dictionary<String, CurrencyInfo> _currencies;
+        private Dictionary<String, Decimal> _exchangeRates;
+        private DateTime _publisherDate;
         private const String _formatDate = "yyyy-MM-ddTHH:mm:ss.fffffffK";
-
-        #endregion
-
-        #region Constructor
-
-        static CurrencyProvider()
+             
+        CurrencyProvider()
         {
             using (var scope = DIHelper.Resolve())
             {
@@ -76,22 +67,14 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        #endregion
-
-        #region Property
-
-        public static DateTime GetPublisherDate
+        public DateTime GetPublisherDate
         {
             get {
                 TryToReadPublisherDate(GetExchangesTempPath());
                 return _publisherDate; }
         }
 
-        #endregion
-
-        #region Public Methods
-
-        public static CurrencyInfo Get(string currencyAbbreviation)
+        public CurrencyInfo Get(string currencyAbbreviation)
         {
             if (!_currencies.ContainsKey(currencyAbbreviation))
                 return null;
@@ -99,22 +82,22 @@ namespace ASC.Web.CRM.Classes
             return _currencies[currencyAbbreviation];
         }
 
-        public static List<CurrencyInfo> GetAll()
+        public List<CurrencyInfo> GetAll()
         {
             return _currencies.Values.OrderBy(v => v.Abbreviation).ToList();
         }
 
-        public static List<CurrencyInfo> GetBasic()
+        public List<CurrencyInfo> GetBasic()
         {
             return _currencies.Values.Where(c => c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
-        public static List<CurrencyInfo> GetOther()
+        public List<CurrencyInfo> GetOther()
         {
             return _currencies.Values.Where(c => !c.IsBasic).OrderBy(v => v.Abbreviation).ToList();
         }
 
-        public static Dictionary<CurrencyInfo, Decimal> MoneyConvert(CurrencyInfo baseCurrency)
+        public Dictionary<CurrencyInfo, Decimal> MoneyConvert(CurrencyInfo baseCurrency)
         {
             if (baseCurrency == null) throw new ArgumentNullException("baseCurrency");
             if (!_currencies.ContainsKey(baseCurrency.Abbreviation)) throw new ArgumentOutOfRangeException("baseCurrency", "Not found.");
@@ -142,7 +125,7 @@ namespace ASC.Web.CRM.Classes
         }
 
 
-        public static bool IsConvertable(String abbreviation)
+        public bool IsConvertable(String abbreviation)
         {
             var findedItem = _currencies.Keys.ToList().Find(item => String.Compare(abbreviation, item) == 0);
 
@@ -152,7 +135,7 @@ namespace ASC.Web.CRM.Classes
             return _currencies[findedItem].IsConvertable;
         }
 
-        public static Decimal MoneyConvert(decimal amount, string from, string to)
+        public Decimal MoneyConvert(decimal amount, string from, string to)
         {
             if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.Compare(from, to, true) == 0) return amount;
 
@@ -165,27 +148,23 @@ namespace ASC.Web.CRM.Classes
             return Math.Round(rates[key] * amount, 4, MidpointRounding.AwayFromZero);
         }
 
-        public static Decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
+        public Decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
         {
             return MoneyConvert(amount, from, Global.TenantSettings.DefaultCurrency.Abbreviation);
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private static bool ObsoleteData()
+        private bool ObsoleteData()
         {
             return _exchangeRates == null || (DateTime.UtcNow.Date.Subtract(_publisherDate.Date).Days > 0);
         }
 
-        private static string GetExchangesTempPath() {
+        private string GetExchangesTempPath() {
             return Path.Combine(Path.GetTempPath(), Path.Combine("onlyoffice", "exchanges"));
         }
 
-        private static Regex CurRateRegex = new Regex("<td id=\"(?<Currency>[a-zA-Z]{3})\">(?<Rate>[\\d\\.]+)</td>");
+        private Regex CurRateRegex = new Regex("<td id=\"(?<Currency>[a-zA-Z]{3})\">(?<Rate>[\\d\\.]+)</td>");
 
-        private static Dictionary<String, Decimal> GetExchangeRates()
+        private Dictionary<String, Decimal> GetExchangeRates()
         {
             if (ObsoleteData())
             {
@@ -252,7 +231,7 @@ namespace ASC.Web.CRM.Classes
             return _exchangeRates;
         }
 
-        private static bool TryGetRatesFromFile(string filepath, CurrencyInfo curCI)
+        private bool TryGetRatesFromFile(string filepath, CurrencyInfo curCI)
         {
             var success = false;
             var currencyLines = File.ReadAllLines(filepath);
@@ -282,7 +261,7 @@ namespace ASC.Web.CRM.Classes
         }
 
 
-        private static void TryToReadPublisherDate(string tmppath)
+        private void TryToReadPublisherDate(string tmppath)
         {
             if (_publisherDate == default(DateTime))
             {
@@ -302,7 +281,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static void WritePublisherDate(string tmppath)
+        private void WritePublisherDate(string tmppath)
         {
             try
             {
@@ -315,7 +294,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static void DownloadCurrencyPage(string currency, string filepath)
+        private void DownloadCurrencyPage(string currency, string filepath)
         {
 
             try
@@ -351,6 +330,5 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        #endregion
     }
 }

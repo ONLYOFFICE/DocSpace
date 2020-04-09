@@ -25,19 +25,31 @@
 
 
 using ASC.CRM.Core;
+using ASC.CRM.Resources;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
-using ASC.Web.CRM.Resources;
-using ASC.Web.Studio.Controls.FileUploader;
 using ASC.Web.Studio.Core;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Web;
 
 
 namespace ASC.Web.CRM.Classes
 {
     public class OrganisationLogoHandler : IFileUploadHandler
     {
+        public OrganisationLogoHandler(CRMSecurity cRMSecurity,
+            SetupInfo setupInfo,
+            FileSizeComment fileSizeComment)
+        {
+            CRMSecurity = cRMSecurity;
+            SetupInfo = setupInfo;
+            FileSizeComment = fileSizeComment;
+        }
+
+        public FileSizeComment FileSizeComment { get; }
+        public SetupInfo SetupInfo { get; }
+        public CRMSecurity CRMSecurity { get; }
+
         public FileUploadResult ProcessUpload(HttpContext context)
         {
             if (!CRMSecurity.IsAdmin)

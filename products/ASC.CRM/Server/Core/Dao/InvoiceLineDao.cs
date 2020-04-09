@@ -25,10 +25,13 @@
 
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -40,15 +43,17 @@ namespace ASC.CRM.Core.Dao
 {
     public class CachedInvoiceLineDao : InvoiceLineDao
     {
-        private readonly HttpRequestDictionary<InvoiceLine> _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>("crm_invoice_line");
+        private readonly HttpRequestDictionary<InvoiceLine> _invoiceLineCache;
 
         public CachedInvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IHttpContextAccessor httpContextAccessor)
               : base(dbContextManager,
                  tenantManager,
                  securityContext)
         {
+            _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>(httpContextAccessor?.HttpContext, "crm_invoice_line");
         }
 
         public override InvoiceLine GetByID(int invoiceLineID)
@@ -86,10 +91,12 @@ namespace ASC.CRM.Core.Dao
     {
         public InvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext)
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger)
               : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
 
         }

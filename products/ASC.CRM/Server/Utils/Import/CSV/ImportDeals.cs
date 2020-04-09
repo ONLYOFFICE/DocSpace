@@ -26,19 +26,17 @@
 
 #region Import
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
 using ASC.Core.Users;
-using ASC.Web.CRM.Resources;
-using ASC.Web.Studio.Core.Users;
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using LumenWorks.Framework.IO.Csv;
 using Newtonsoft.Json.Linq;
-using ASC.Common.Threading.Progress;
-using ASC.CRM.Core.Dao;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 

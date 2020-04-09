@@ -24,92 +24,103 @@
 */
 
 
-using System.Globalization;
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.Core.Users;
+using ASC.CRM.Classes;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core.Files;
-using ASC.Web.CRM.Resources;
+using ASC.Web.CRM.Core;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Utility;
+using Autofac;
 using Ionic.Zip;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ASC.Common.Logging;
-using ASC.Web.CRM.Core;
-using Autofac;
-using ASC.CRM.Resources;
 
 namespace ASC.Web.CRM.Classes
 {
-    class ExportDataCache
+    public class ExportDataCache
     {
-        public static readonly ICache Cache = AscCache.Default;
+        public readonly ICache Cache = AscCache.Memory;
 
-        public static String GetStateCacheKey(string key)
+        public String GetStateCacheKey(string key)
         {
             return String.Format("{0}:crm:queue:exporttocsv", key);
         }
 
-        public static String GetCancelCacheKey(string key)
+        public String GetCancelCacheKey(string key)
         {
             return String.Format("{0}:crm:queue:exporttocsv:cancel", key);
         }
 
-        public static ExportDataOperation Get(string key)
+        public ExportDataOperation Get(string key)
         {
             return Cache.Get<ExportDataOperation>(GetStateCacheKey(key));
         }
 
-        public static void Insert(string key, ExportDataOperation data)
+        public void Insert(string key, ExportDataOperation data)
         {
             Cache.Insert(GetStateCacheKey(key), data, TimeSpan.FromMinutes(1));
         }
 
-        public static bool CheckCancelFlag(string key)
+        public bool CheckCancelFlag(string key)
         {
             var fromCache = Cache.Get<String>(GetCancelCacheKey(key));
 
             return !String.IsNullOrEmpty(fromCache);
         }
 
-        public static void SetCancelFlag(string key)
+        public void SetCancelFlag(string key)
         {
             Cache.Insert(GetCancelCacheKey(key), "true", TimeSpan.FromMinutes(1));
         }
 
-        public static void ResetAll(string key)
+        public void ResetAll(string key)
         {
             Cache.Remove(GetStateCacheKey(key));
             Cache.Remove(GetCancelCacheKey(key));
         }
     }
 
-    class ExportDataOperation : IProgressItem
+    public class ExportDataOperation : IProgressItem
     {
-        #region Constructor
-
-        public ExportDataOperation(FilterObject filterObject, string fileName)
+        public ExportDataOperation(UserManager userManager,
+                                   FileUtility fileUtility,
+                                   SecurityContext securityContext,
+                                   IOptionsMonitor<ILog> logger,
+                                   TenantManager tenantManager,
+                                   Global global,
+                                   ExportDataCache exportDataCache)
         {
-            _tenantId = TenantProvider.CurrentTenantID;
-            _author = SecurityContext.CurrentAccount;
-            _dataStore = Global.GetStore();
+            UserManager = userManager;
+            FileUtility = fileUtility;
+
+            _tenantId = tenantManager.GetCurrentTenant().TenantId;
+
+            _author = securityContext.CurrentAccount;
+            _dataStore = global.GetStore();
             _notifyClient = NotifyClient.Instance;
             _filterObject = filterObject;
-            _log = LogManager.GetLogger("ASC.CRM");
+            
+            _log = logger.Get("ASC.CRM");
 
             Id = ExportToCsv.GetKey(filterObject != null);
             Status = ProgressStatus.Queued;
@@ -118,16 +129,18 @@ namespace ASC.Web.CRM.Classes
             IsCompleted = false;
             FileName = fileName ?? CRMSettingResource.Export + (filterObject == null ? ".zip" : ".csv");
             FileUrl = null;
+
+            ExportDataCache = exportDataCache;
+            SecurityContext = securityContext;
         }
+        
+        public SecurityContext SecurityContext { get; }
 
-        public ExportDataOperation()
-            : this(null, null)
-        {
-        }
+        public ExportDataCache ExportDataCache { get; }
 
-        #endregion
+        public UserManager UserManager { get; }
 
-        #region Members
+        public FileUtility FileUtility { get; }
 
         private readonly int _tenantId;
 
@@ -142,9 +155,7 @@ namespace ASC.Web.CRM.Classes
         private readonly ILog _log;
 
         private int _totalCount;
-
-        #endregion
-
+                
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
@@ -176,9 +187,7 @@ namespace ASC.Web.CRM.Classes
 
             return cloneObj;
         }
-
-        #region Property
-
+              
         public object Id { get; set; }
 
         public object Status { get; set; }
@@ -192,17 +201,13 @@ namespace ASC.Web.CRM.Classes
         public string FileName { get; set; }
 
         public string FileUrl { get; set; }
-
-        #endregion
-
-        #region Private Methods
-
-        private static String WrapDoubleQuote(String value)
+                
+        private String WrapDoubleQuote(String value)
         {
             return "\"" + value.Trim().Replace("\"", "\"\"") + "\"";
         }
 
-        private static String DataTableToCsv(DataTable dataTable)
+        private String DataTableToCsv(DataTable dataTable)
         {
             var result = new StringBuilder();
 
@@ -235,8 +240,6 @@ namespace ASC.Web.CRM.Classes
 
             return result.ToString();
         }
-
-        #endregion
 
         public void RunJob()
         {
@@ -879,7 +882,7 @@ namespace ASC.Web.CRM.Classes
                         deal.PerPeriodValue == 0 ? "" : deal.PerPeriodValue.ToString(CultureInfo.InvariantCulture),
                         deal.ExpectedCloseDate.Date == DateTime.MinValue.Date ? "" : deal.ExpectedCloseDate.ToString(DateTimeExtension.DateFormatPattern),
                         deal.ActualCloseDate.Date == DateTime.MinValue.Date ? "" : deal.ActualCloseDate.ToString(DateTimeExtension.DateFormatPattern),
-                        CoreContext.UserManager.GetUsers(deal.ResponsibleID).DisplayUserName(false),
+                        UserManager.GetUsers(deal.ResponsibleID).DisplayUserName(false),
                         currentDealMilestone.Title,
                         currentDealMilestoneStatus,
                         deal.DealMilestoneProbability.ToString(CultureInfo.InvariantCulture),
@@ -1082,7 +1085,7 @@ namespace ASC.Web.CRM.Classes
                         categoryTitle,
                         contactTitle,
                         entityTitle,
-                        CoreContext.UserManager.GetUsers(item.CreateBy).DisplayUserName(false),
+                        UserManager.GetUsers(item.CreateBy).DisplayUserName(false),
                         item.CreateOn.ToShortString()
                     });
             }
@@ -1315,7 +1318,7 @@ namespace ASC.Web.CRM.Classes
             return DataTableToCsv(dataTable);
         }
 
-        private static String SaveCsvFileInMyDocument(String title, String data)
+        private String SaveCsvFileInMyDocument(String title, String data)
         {
             string fileUrl;
 
@@ -1342,24 +1345,34 @@ namespace ASC.Web.CRM.Classes
 
     public class ExportToCsv
     {
-        #region Members
+        private readonly object Locker = new object();
 
-        private static readonly object Locker = new object();
+        private readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromSeconds(60), true);
+        
+        public ExportToCsv(SecurityContext securityContext,
+                           ExportDataCache exportDataCache,
+                           TenantManager tenantManager)
+        {
+            SecurityContext = securityContext;            
+            ExportDataCache = exportDataCache;
+            TenantID = tenantManager.GetCurrentTenant().TenantId;
+        }
 
-        private static readonly ProgressQueue Queue = new ProgressQueue(1, TimeSpan.FromSeconds(60), true);
+        protected int TenantID { get; private set; }
 
-        #endregion
+        public ExportDataCache ExportDataCache { get; }
 
-        #region Public Methods
+        public SecurityContext SecurityContext { get; }
 
-        public static IProgressItem GetStatus(bool partialDataExport)
+
+        public IProgressItem GetStatus(bool partialDataExport)
         {
             var key = GetKey(partialDataExport);
 
             return Queue.GetStatus(key) ?? ExportDataCache.Get(key);
         }
 
-        public static IProgressItem Start(FilterObject filterObject, string fileName)
+        public IProgressItem Start(FilterObject filterObject, string fileName)
         {
             lock (Locker)
             {
@@ -1389,7 +1402,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static void Cancel(bool partialDataExport)
+        public void Cancel(bool partialDataExport)
         {
             lock (Locker)
             {
@@ -1406,13 +1419,13 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static string GetKey(bool partialDataExport)
+        public string GetKey(bool partialDataExport)
         {
-            return string.Format("{0}_{1}", TenantProvider.CurrentTenantID,
+            return string.Format("{0}_{1}", TenantID,
                                  partialDataExport ? SecurityContext.CurrentAccount.ID : Guid.Empty);
         }
 
-        public static String ExportItems(FilterObject filterObject, string fileName)
+        public String ExportItems(FilterObject filterObject, string fileName)
         {
             var operation = new ExportDataOperation(filterObject, fileName);
 
@@ -1420,7 +1433,5 @@ namespace ASC.Web.CRM.Classes
 
             return operation.FileUrl;
         }
-
-        #endregion
     }
 }

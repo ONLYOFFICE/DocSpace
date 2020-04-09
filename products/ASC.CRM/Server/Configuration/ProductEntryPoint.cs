@@ -166,7 +166,9 @@ namespace ASC.Web.CRM.Configuration
 
         public void ConfigurePortal()
         {
-            if (!Global.TenantSettings.IsConfiguredPortal)
+            var tenantSettings = SettingsManager.Load<CRMSettings>(); 
+
+            if (!tenantSettings.IsConfiguredPortal)
             {
                 using (var scope = DIHelper.Resolve())
                 {
@@ -289,9 +291,7 @@ namespace ASC.Web.CRM.Configuration
                     daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Customer, true);
                     daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Supplier, true);
                     daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Staff, true);
-
-                    var tenantSettings = Global.TenantSettings;
-                    
+                                        
                     tenantSettings.WebFormKey = Guid.NewGuid();
                     tenantSettings.IsConfiguredPortal = true;
 
@@ -302,7 +302,7 @@ namespace ASC.Web.CRM.Configuration
                 }
             }
 
-            if (!Global.TenantSettings.IsConfiguredSmtp)
+            if (!tenantSettings.IsConfiguredSmtp)
             {
                 var smtp = SettingsManager.Load<CRMSettings>().SMTPServerSettingOld;
               
@@ -331,7 +331,7 @@ namespace ASC.Web.CRM.Configuration
                     }
                 }
 
-                var tenantSettings = Global.TenantSettings;
+                
                 tenantSettings.IsConfiguredSmtp = true;
 
                 if (!SettingsManager.Save<CRMSettings>(tenantSettings))

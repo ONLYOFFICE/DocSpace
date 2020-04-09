@@ -34,6 +34,7 @@ using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Web.CRM.Classes;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -113,6 +114,7 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity = cRMSecurity;
         }
 
+
         public CRMSecurity CRMSecurity { get; }
 
         public TenantUtil TenantUtil { get; }
@@ -138,28 +140,30 @@ namespace ASC.CRM.Core.Dao
         }
         public virtual List<InvoiceItem> GetAllInDb()
         {
-            return Db.ExecuteList(GetInvoiceItemSqlQuery(null)).ConvertAll(ToInvoiceItem);
+            return Query(CRMDbContext.InvoiceItem).ToList().ConvertAll(ToInvoiceItem);
         }
 
         public virtual List<InvoiceItem> GetByID(int[] ids)
         {
-            return Db.ExecuteList(GetInvoiceItemSqlQuery(Exp.In("id", ids))).ConvertAll(ToInvoiceItem);
+            return Query(CRMDbContext.InvoiceItem)
+                        .Where(x => ids.Contains(x.Id))
+                        .ToList()
+                        .ConvertAll(ToInvoiceItem);
         }
 
         public virtual InvoiceItem GetByID(int id)
         {
-            var invoiceItems = Db.ExecuteList(GetInvoiceItemSqlQuery(Exp.Eq("id", id))).ConvertAll(ToInvoiceItem);
-
-            return invoiceItems.Count > 0 ? invoiceItems[0] : null;
+            return ToInvoiceItem(Query(CRMDbContext.InvoiceItem).FirstOrDefault(x => x.Id == id));
         }
 
         public List<InvoiceItem> GetInvoiceItems(IEnumerable<int> ids)
         {
             if (ids == null || !ids.Any()) return new List<InvoiceItem>();
 
-            var sqlQuery = GetInvoiceItemSqlQuery(Exp.In("id", ids.ToArray()));
-
-            return Db.ExecuteList(sqlQuery).ConvertAll(ToInvoiceItem);
+            return Query(CRMDbContext.InvoiceItem)
+                            .Where(x => ids.Contains(x.Id))
+                            .ToList()
+                            .ConvertAll(ToInvoiceItem);
         }
 
         public List<InvoiceItem> GetInvoiceItems(
@@ -171,52 +175,49 @@ namespace ASC.CRM.Core.Dao
                                 OrderBy orderBy)
         {
 
-            var sqlQuery = GetInvoiceItemSqlQuery(null);
+            var sqlQuery = GetDbInvoiceItemByFilters(new List<int>(), searchText, status, inventoryStock);
 
             var withParams = !(String.IsNullOrEmpty(searchText) || status != 0 || inventoryStock.HasValue);
 
-
-            var whereConditional = WhereConditional(new List<int>(), searchText, status, inventoryStock);
-            // WhereConditional(CRMSecurity.GetPrivateItems(typeof(Invoice)).ToList(), searchText);
-
-            if (withParams && whereConditional == null)
+            if (withParams && sqlQuery == null)
                 return new List<InvoiceItem>();
 
-            sqlQuery.Where(whereConditional);
-
-            if (0 < from && from < int.MaxValue) sqlQuery.SetFirstResult(from);
-            if (0 < count && count < int.MaxValue) sqlQuery.SetMaxResults(count);
+            if (0 < from && from < int.MaxValue) sqlQuery = sqlQuery.Skip(from);
+            if (0 < count && count < int.MaxValue) sqlQuery = sqlQuery.Take(count);
 
             if (orderBy != null && Enum.IsDefined(typeof(InvoiceItemSortedByType), orderBy.SortedBy))
             {
                 switch ((InvoiceItemSortedByType)orderBy.SortedBy)
                 {
                     case InvoiceItemSortedByType.Name:
-                        sqlQuery.OrderBy("title", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy("Title", orderBy.IsAsc);
                         break;
                     case InvoiceItemSortedByType.SKU:
-                        sqlQuery.OrderBy("stock_keeping_unit", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy("StockKeepingUnit", orderBy.IsAsc);
                         break;
                     case InvoiceItemSortedByType.Price:
-                        sqlQuery.OrderBy("price", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy("Price", orderBy.IsAsc);
                         break;
                     case InvoiceItemSortedByType.Quantity:
-                        sqlQuery.OrderBy("stock_quantity", orderBy.IsAsc).OrderBy("title", true);
-                        break;
+                        {
+                            sqlQuery = sqlQuery.OrderBy("StockQuantity", orderBy.IsAsc)
+                                               .OrderBy("Title", true);
+                            break;
+                        }
                     case InvoiceItemSortedByType.Created:
-                        sqlQuery.OrderBy("create_on", orderBy.IsAsc);
+                        sqlQuery = sqlQuery.OrderBy("CreateOn", orderBy.IsAsc);
                         break;
                     default:
-                        sqlQuery.OrderBy("title", true);
+                        sqlQuery = sqlQuery.OrderBy("Title", true);
                         break;
                 }
             }
             else
             {
-                sqlQuery.OrderBy("title", true);
+                sqlQuery = sqlQuery.OrderBy("Title", true);
             }
 
-            return Db.ExecuteList(sqlQuery).ConvertAll(ToInvoiceItem);
+            return sqlQuery.ToList().ConvertAll(ToInvoiceItem);
         }
 
 
@@ -239,25 +240,25 @@ namespace ASC.CRM.Core.Dao
 
             if (fromCache != null) return Convert.ToInt32(fromCache);
 
-            var withParams = !(String.IsNullOrEmpty(searchText) || status != 0 || inventoryStock.HasValue);
-
             var exceptIDs = CRMSecurity.GetPrivateItems(typeof(InvoiceItem)).ToList();
-
+            
             int result;
+
+            var withParams = !(String.IsNullOrEmpty(searchText) || status != 0 || inventoryStock.HasValue);
 
             if (withParams)
             {
-                var whereConditional = WhereConditional(exceptIDs, searchText, status, inventoryStock);
-                result = whereConditional != null ? Db.ExecuteScalar<int>(Query("crm_invoice_item").Where(whereConditional).SelectCount()) : 0;
+                result = GetDbInvoiceItemByFilters(exceptIDs, searchText, status, inventoryStock).Count();
             }
             else
             {
-                var countWithoutPrivate = Db.ExecuteScalar<int>(Query("crm_invoice_item").SelectCount());
+                var countWithoutPrivate = Query(CRMDbContext.InvoiceItem).Count();
+
                 var privateCount = exceptIDs.Count;
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _log.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    Logger.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
                                                             SecurityContext.CurrentAccount.ID);
 
@@ -303,55 +304,57 @@ namespace ASC.CRM.Core.Dao
 
             if (!IsExistInDb(invoiceItem.ID))
             {
-                invoiceItem.ID = Db.ExecuteScalar<int>(
-                               Insert("crm_invoice_item")
-                              .InColumnValue("id", 0)
-                              .InColumnValue("title", invoiceItem.Title)
-                              .InColumnValue("description", invoiceItem.Description)
-                              .InColumnValue("stock_keeping_unit", invoiceItem.StockKeepingUnit)
-                              .InColumnValue("price", invoiceItem.Price)
-                              .InColumnValue("stock_quantity", invoiceItem.StockQuantity)
-                              .InColumnValue("track_inventory", invoiceItem.TrackInventory)
-                              .InColumnValue("invoice_tax1_id", invoiceItem.InvoiceTax1ID)
-                              .InColumnValue("invoice_tax2_id", invoiceItem.InvoiceTax2ID)
-                              .InColumnValue("currency", String.Empty)
-                              .InColumnValue("create_on", DateTime.UtcNow)
-                              .InColumnValue("create_by", SecurityContext.CurrentAccount.ID)
-                              .InColumnValue("last_modifed_on", DateTime.UtcNow)
-                              .InColumnValue("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                              .Identity(1, 0, true));
+                var itemToInsert = new DbInvoiceItem
+                {
+                    Title = invoiceItem.Title,
+                    Description = invoiceItem.Description,
+                    StockKeepingUnit = invoiceItem.StockKeepingUnit,
+                    Price = invoiceItem.Price,
+                    StockQuantity = invoiceItem.StockQuantity,
+                    TrackInventory = invoiceItem.TrackInventory,
+                    InvoiceTax1Id = invoiceItem.InvoiceTax1ID,
+                    InvoiceTax2Id = invoiceItem.InvoiceTax2ID,
+                    Currency = String.Empty,
+                    CreateOn = DateTime.UtcNow,
+                    CreateBy = SecurityContext.CurrentAccount.ID,
+                    LastModifedOn = DateTime.Now,
+                    LastModifedBy = SecurityContext.CurrentAccount.ID,
+                    TenantId = TenantID
+                };
 
-                invoiceItem.CreateOn = DateTime.UtcNow;
-                invoiceItem.LastModifedOn = invoiceItem.CreateOn;
-                invoiceItem.CreateBy = SecurityContext.CurrentAccount.ID;
-                invoiceItem.LastModifedBy = invoiceItem.CreateBy;
+                CRMDbContext.Add(itemToInsert);
+                CRMDbContext.SaveChanges();
+
+                invoiceItem.ID = itemToInsert.Id;
+
+
+
             }
             else
             {
 
-                var oldInvoiceItem = Db.ExecuteList(GetInvoiceItemSqlQuery(Exp.Eq("id", invoiceItem.ID)))
-                    .ConvertAll(ToInvoiceItem)
-                    .FirstOrDefault();
+                var itemToUpdate = Query(CRMDbContext.InvoiceItem).Single(x => x.Id == invoiceItem.ID);
+                var oldInvoiceItem = ToInvoiceItem(itemToUpdate);
 
                 CRMSecurity.DemandEdit(oldInvoiceItem);
 
-                Db.ExecuteNonQuery(
-                    Update("crm_invoice_item")
-                        .Set("title", invoiceItem.Title)
-                        .Set("description", invoiceItem.Description)
-                        .Set("stock_keeping_unit", invoiceItem.StockKeepingUnit)
-                        .Set("price", invoiceItem.Price)
-                        .Set("stock_quantity", invoiceItem.StockQuantity)
-                        .Set("track_inventory", invoiceItem.TrackInventory)
-                        .Set("invoice_tax1_id", invoiceItem.InvoiceTax1ID)
-                        .Set("invoice_tax2_id", invoiceItem.InvoiceTax2ID)
-                        .Set("currency", String.Empty)
-                        .Set("last_modifed_on", DateTime.UtcNow)
-                        .Set("last_modifed_by", SecurityContext.CurrentAccount.ID)
-                        .Where(Exp.Eq("id", invoiceItem.ID)));
+                itemToUpdate.Title = invoiceItem.Title;
+                itemToUpdate.Description = invoiceItem.Description;
+                itemToUpdate.StockKeepingUnit = invoiceItem.StockKeepingUnit;
+                itemToUpdate.Price = invoiceItem.Price;
+                itemToUpdate.StockQuantity = invoiceItem.StockQuantity;
+                itemToUpdate.TrackInventory = invoiceItem.TrackInventory;
+                itemToUpdate.InvoiceTax1Id = invoiceItem.InvoiceTax1ID;
+                itemToUpdate.InvoiceTax2Id = invoiceItem.InvoiceTax2ID;
 
-                invoiceItem.LastModifedOn = DateTime.UtcNow;
-                invoiceItem.LastModifedBy = SecurityContext.CurrentAccount.ID;
+                itemToUpdate.Currency = invoiceItem.Currency;
+                itemToUpdate.LastModifedOn = invoiceItem.LastModifedOn;
+                itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
+
+                CRMDbContext.Add(itemToUpdate);
+                CRMDbContext.SaveChanges();
+
+
             }
 
             return invoiceItem;
@@ -398,16 +401,18 @@ namespace ASC.CRM.Core.Dao
         private void DeleteBatchItemsExecute(List<InvoiceItem> items)
         {
             CRMDbContext.RemoveRange(items.ConvertAll(x => new DbInvoiceItem
-                                        {
-                                            Id = x.ID,
-                                            TenantId = TenantID
-                                        }));
+            {
+                Id = x.ID,
+                TenantId = TenantID
+            }));
 
             CRMDbContext.SaveChanges();
         }
 
         private InvoiceItem ToInvoiceItem(DbInvoiceItem dbInvoiceItem)
         {
+            if (dbInvoiceItem == null) return null;
+
             var result = new InvoiceItem
             {
                 ID = dbInvoiceItem.Id,
@@ -432,46 +437,20 @@ namespace ASC.CRM.Core.Dao
 
         }
 
-        //private SqlQuery GetInvoiceItemSqlQuery(Exp where)
-        //{
-        //    var sqlQuery = Query("crm_invoice_item")
-        //        .Select(
-        //            "id",
-        //            "title",
-        //            "description",
-        //            "stock_keeping_unit",
-        //            "price",
-        //            "stock_quantity",
-        //            "track_inventory",
-        //            "invoice_tax1_id",
-        //            "invoice_tax2_id",
-        //            "currency",
-        //            "create_on",
-        //            "create_by",
-        //            "last_modifed_on",
-        //            "last_modifed_by");
-
-        //    if (where != null)
-        //    {
-        //        sqlQuery.Where(where);
-        //    }
-
-        //    return sqlQuery;
-        //}
-
-        private Exp WhereConditional(
+        private IQueryable<DbInvoiceItem> GetDbInvoiceItemByFilters(
                                 ICollection<int> exceptIDs,
                                 String searchText,
                                 int status,
                                 bool? inventoryStock)
         {
-            var conditions = new List<Exp>();
 
-            //if (status != null)
+            var sqlQuery = Query(CRMDbContext.InvoiceItem);
+
+            //if (status > 0)
             //{
+            //    sqlQuery = sqlQuery.Where(x => x.);
             //    conditions.Add(Exp.Eq("status", (int)status.Value));
             //}
-
 
             if (!String.IsNullOrEmpty(searchText))
             {
@@ -481,33 +460,29 @@ namespace ASC.CRM.Core.Dao
                    .ToArray();
 
                 if (keywords.Length > 0)
-                    //if (FullTextSearch.SupportModule(FullTextSearch.CRMInvoiceItemModule))
-                    //{
-                    //    ids = FullTextSearch.Search(searchText, FullTextSearch.CRMInvoiceItemModule)
-                    //        .GetIdentifiers()
-                    //        .Select(item => Convert.ToInt32(item.Split('_')[1])).Distinct().ToList();
-
-                    //    if (ids.Count == 0) return null;
-                    //}
-                    //else
-                    conditions.Add(BuildLike(new[] { "title", "description", "stock_keeping_unit" }, keywords));
+                {
+                    foreach (var k in keywords)
+                    {
+                        sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") ||
+                                                       Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%") ||
+                                                       Microsoft.EntityFrameworkCore.EF.Functions.Like(x.StockKeepingUnit, k + "%")
+                                                       );
+                    }
+                }
             }
 
             if (exceptIDs.Count > 0)
             {
-                conditions.Add(!Exp.In("id", exceptIDs.ToArray()));
+                sqlQuery = sqlQuery.Where(x => !exceptIDs.Contains(x.Id));
             }
 
 
             if (inventoryStock.HasValue)
             {
-                conditions.Add(Exp.Eq("track_inventory", inventoryStock.Value));
+                sqlQuery = sqlQuery.Where(x => x.TrackInventory == inventoryStock.Value);
             }
 
-            if (conditions.Count == 0) return null;
-
-            return conditions.Count == 1 ? conditions[0] : conditions.Aggregate((i, j) => i & j);
+            return sqlQuery;
         }
-
     }
 }

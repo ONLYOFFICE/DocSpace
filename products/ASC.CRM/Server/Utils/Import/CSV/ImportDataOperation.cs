@@ -24,61 +24,68 @@
 */
 
 
-using System;
-using System.Linq;
-using System.Globalization;
-
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
 using ASC.Data.Storage;
-using ASC.Web.CRM.Resources;
-using ASC.Web.CRM.Services.NotifyService;
-using ASC.Web.Studio.Utility;
-using ASC.Common.Logging;
 using ASC.Web.CRM.Core;
+using ASC.Web.CRM.Services.NotifyService;
 using Autofac;
+using Microsoft.Extensions.Options;
+using System;
+using System.Globalization;
+using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
-    class ImportDataCache
+    public  class ImportDataCache
     {
-        public static readonly ICache Cache = AscCache.Default;
+        public ImportDataCache(TenantManager tenantManager)
+        {
+            TenantID = tenantManager.CurrentTenant.TenantId;
+        }
 
-        public static String GetStateCacheKey(EntityType entityType, int tenantId = -1)
+        public int TenantID { get; }
+
+        public readonly ICache Cache = AscCache.Memory;
+
+        public String GetStateCacheKey(EntityType entityType, int tenantId = -1)
         {
             if (tenantId == -1)
             {
-                tenantId = TenantProvider.CurrentTenantID;
+                tenantId = TenantID;
             }
 
             return String.Format("{0}:crm:queue:importtocsv:{1}", tenantId.ToString(CultureInfo.InvariantCulture), entityType.ToString());
         }
 
-        public static String GetCancelCacheKey(EntityType entityType, int tenantId = -1)
+        public String GetCancelCacheKey(EntityType entityType, int tenantId = -1)
         {
             if (tenantId == -1)
             {
-                tenantId = TenantProvider.CurrentTenantID;
+                tenantId = TenantID;
             }
 
             return String.Format("{0}:crm:queue:importtocsv:{1}:cancel", tenantId.ToString(CultureInfo.InvariantCulture), entityType.ToString());
         }
 
-        public static ImportDataOperation Get(EntityType entityType)
+        public ImportDataOperation Get(EntityType entityType)
         {
             return Cache.Get<ImportDataOperation>(GetStateCacheKey(entityType));
         }
 
-        public static void Insert(EntityType entityType,ImportDataOperation data)
+        public void Insert(EntityType entityType,ImportDataOperation data)
         {
             Cache.Insert(GetStateCacheKey(entityType), data, TimeSpan.FromMinutes(1));
         }
 
-        public static bool CheckCancelFlag(EntityType entityType)
+        public bool CheckCancelFlag(EntityType entityType)
         {
             var fromCache = Cache.Get<String>(GetCancelCacheKey(entityType));
 
@@ -89,12 +96,12 @@ namespace ASC.Web.CRM.Classes
 
         }
 
-        public static void SetCancelFlag(EntityType entityType)
+        public void SetCancelFlag(EntityType entityType)
         {
             Cache.Insert(GetCancelCacheKey(entityType), true, TimeSpan.FromMinutes(1));
         }
 
-        public static void ResetAll(EntityType entityType, int tenantId = -1)
+        public void ResetAll(EntityType entityType, int tenantId = -1)
         {
             Cache.Remove(GetStateCacheKey(entityType, tenantId));
             Cache.Remove(GetCancelCacheKey(entityType, tenantId));
@@ -103,34 +110,52 @@ namespace ASC.Web.CRM.Classes
 
     public partial class ImportDataOperation : IProgressItem
     {
-        #region Constructor
-
-        public ImportDataOperation()
-            : this(EntityType.Contact, String.Empty, String.Empty)
+        public ImportDataOperation(EntityType entityType,
+                                   string CSVFileURI, 
+                                   string importSettingsJSON,
+                                   SecurityContext securityContext,
+                                   Global global,
+                                   TenantManager tenantManager,
+                                   IOptionsMonitor<ILog> logger,
+                                   UserManager userManager,
+                                   ImportDataCache importDataCache,
+                                   CRMSecurity cRMSecurity)
         {
-        }
+            ImportDataCache = importDataCache;
 
-        public ImportDataOperation(EntityType entityType, String CSVFileURI, String importSettingsJSON)
-        {
-            _CSVFileURI = CSVFileURI;
-            _dataStore = Global.GetStore();
-            _tenantID = TenantProvider.CurrentTenantID;
             _entityType = entityType;
-            _author = SecurityContext.CurrentAccount;
-
-            _notifyClient = NotifyClient.Instance;
-
-            Id = String.Format("{0}_{1}", TenantProvider.CurrentTenantID, (int)_entityType);
-
-            _log = LogManager.GetLogger("ASC.CRM");
+            _CSVFileURI = CSVFileURI;
+            UserManager = userManager;
 
             if (!String.IsNullOrEmpty(importSettingsJSON))
                 _importSettings = new ImportCSVSettings(importSettingsJSON);
+
+            SecurityContext = securityContext;
+            _dataStore = global.GetStore();
+            
+            _tenantID = tenantManager.CurrentTenant.TenantId;
+            _author = SecurityContext.CurrentAccount;
+           
+            _notifyClient = NotifyClient.Instance;
+
+            Id = String.Format("{0}_{1}", _tenantID, (int)_entityType);
+
+            _log = logger.Get("ASC.CRM");
+
+            CRMSecurity = cRMSecurity;
         }
 
-        #endregion
+        public CRMSecurity CRMSecurity { get; }
 
-        #region Members
+        public ImportDataCache ImportDataCache { get; }
+
+        public TenantManager TenantManager { get; }
+
+        public SecurityContext SecurityContext { get; }
+
+        public UserManager UserManager { get; }
+
+        public ILog LogManager { get; }
 
         private readonly ILog _log;
 
@@ -142,15 +167,13 @@ namespace ASC.Web.CRM.Classes
 
         private readonly int _tenantID;
 
-        private readonly String _CSVFileURI;
+        private readonly string _CSVFileURI;
 
         private readonly ImportCSVSettings _importSettings;
 
         private readonly EntityType _entityType;
 
-        private String[] _columns;
-
-        #endregion
+        private string[] _columns;
 
         public override bool Equals(object obj)
         {
@@ -171,7 +194,7 @@ namespace ASC.Web.CRM.Classes
 
         public object Clone()
         {
-            var cloneObj = new ImportDataOperation
+            var cloneObj = new ImportDataOperation()
             {
                 Error = Error,
                 Id = Id,
@@ -183,8 +206,6 @@ namespace ASC.Web.CRM.Classes
             return cloneObj;
         }
 
-        #region Property
-
         public object Id { get; set; }
 
         public object Status { get; set; }
@@ -194,9 +215,7 @@ namespace ASC.Web.CRM.Classes
         public double Percentage { get; set; }
 
         public bool IsCompleted { get; set; }
-
-        #endregion
-
+              
         private String GetPropertyValue(String propertyName)
         {
             if (_importSettings.ColumnMapping[propertyName] == null) return String.Empty;
@@ -226,13 +245,13 @@ namespace ASC.Web.CRM.Classes
         {
             try
             {
-                CoreContext.TenantManager.SetCurrentTenant(_tenantID);
+                TenantManager.SetCurrentTenant(_tenantID);
                 SecurityContext.AuthenticateMe(_author);
 
                 using (var scope = DIHelper.Resolve())
                 {
                     var daoFactory = scope.Resolve<DaoFactory>();
-                    var userCulture = CoreContext.UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
+                    var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
 
                     System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
                     System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;

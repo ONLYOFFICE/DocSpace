@@ -26,9 +26,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.CRM.Core.EF;
+using Microsoft.Extensions.Options;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -37,10 +39,12 @@ namespace ASC.CRM.Core.Dao
         public CurrencyRateDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext) :
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger) :
               base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
 
         }

@@ -24,32 +24,31 @@
 */
 
 
-using System;
-using System.Collections.Specialized;
-using System.Text;
-using System.Web;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
 using ASC.Core;
-using ASC.MessagingSystem;
-using ASC.Web.CRM.Classes;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
-using ASC.Common.Logging;
+using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Services.NotifyService;
-using Newtonsoft.Json.Linq;
-using ASC.Web.CRM.Resources;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using ASC.MessagingSystem;
 using ASC.Web.Core;
+using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core;
-using ASC.Web.CRM.Core.Enums;
+using ASC.Web.CRM.Services.NotifyService;
 using Autofac;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
+using System.Web;
 
 namespace ASC.Web.CRM.HttpHandlers
 {
-    public class WebToLeadFromHandler : IHttpHandler
+    public class WebToLeadFromHandler   // : IHttpHandler
     {
         private HttpContext _context;
 

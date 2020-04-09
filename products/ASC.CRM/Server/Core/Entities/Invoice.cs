@@ -27,6 +27,7 @@
 using ASC.Common.Security;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
+using ASC.Files.Core;
 using System;
 using System.Collections.Generic;
 
@@ -96,7 +97,7 @@ namespace ASC.CRM.Core.Entities
             return daoFactory.InvoiceLineDao.GetInvoiceLines(ID);
         }
 
-        public File GetInvoiceFile(DaoFactory daoFactory)
+        public File<int> GetInvoiceFile(DaoFactory daoFactory)
         {
             return daoFactory.FileDao.GetFile(FileID, 0);
         }

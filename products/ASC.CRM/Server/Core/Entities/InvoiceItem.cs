@@ -61,7 +61,6 @@ namespace ASC.CRM.Core.Entities
         [DataMember(Name = "currency")]
         public string Currency { get; set; }
 
-
         [DataMember(Name = "createOn")]
         public DateTime CreateOn { get; set; }
 

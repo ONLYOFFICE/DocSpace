@@ -25,26 +25,44 @@
 
 
 using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Resources;
 using ASC.MessagingSystem;
-using ASC.Web.CRM.Configuration;
 using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Core.Utility;
-using ASC.Web.CRM.Resources;
-using ASC.Web.Studio.Controls.FileUploader;
-using ASC.Web.Studio.Core;
-using System;
-using System.Web;
-using ASC.CRM.Core.Dao;
+using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core;
+using ASC.Web.Studio.Core;
 using Autofac;
+using Microsoft.AspNetCore.Http;
+using System;
 
 
 namespace ASC.Web.CRM.Classes
 {
     public class ContactPhotoHandler : IFileUploadHandler
     {
+        public ContactPhotoHandler(SetupInfo setupInfo,
+                                   CRMSecurity cRMSecurity,
+                                   FileSizeComment fileSizeComment,
+                                   WebItemSecurity webItemSecurity,
+                                   MessageTarget messageTarget)
+        {
+            SetupInfo = setupInfo;
+            FileSizeComment = fileSizeComment;
+            CRMSecurity = cRMSecurity;
+            WebItemSecurity = webItemSecurity;
+            MessageTarget = messageTarget;
+        }
+
+        public MessageTarget MessageTarget { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+        public FileSizeComment FileSizeComment { get; }
+        public CRMSecurity CRMSecurity { get; }
+        public SetupInfo SetupInfo { get; }
+
         public FileUploadResult ProcessUpload(HttpContext context)
         {
             if (!WebItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))

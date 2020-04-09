@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Remove="Classes\BasePage.cs" />
+    <Compile Remove="Classes\TwilioController.cs" />
     <Compile Remove="Core\Dao\ReportDao.cs" />
   </ItemGroup>
 

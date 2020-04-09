@@ -31,6 +31,7 @@ using ASC.CRM.Core;
 using ASC.Common.Threading.Progress;
 using ASC.Common.Web;
 using ASC.Core;
+using Microsoft.AspNetCore.Http;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -96,7 +97,10 @@ namespace ASC.Web.CRM.Classes
         public double Percentage { get; set; }
         public bool IsCompleted { get; set; }
 
-        public PdfProgressItem(HttpContext context, int tenantId, Guid userId, int invoiceId)
+        public PdfProgressItem(IHttpContextAccessor httpContextAccessor, 
+                               int tenantId, 
+                               Guid userId, 
+                               int invoiceId)
         {
             _contextUrl = context != null ? context.Request.GetUrlRewriter().ToString() : null;
             _tenantId = tenantId;

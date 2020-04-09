@@ -54,9 +54,9 @@ namespace ASC.CRM.Core.Dao
 
         public FilesIntegration FilesIntegration { get; }
 
-        public File GetFile(int id, int version)
+        public File<int> GetFile(int id, int version)
         {
-            var dao = FilesIntegration.GetFileDao();
+            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             var file = 0 < version ? dao.GetFile(id, version) : dao.GetFile(id);
 
@@ -65,31 +65,32 @@ namespace ASC.CRM.Core.Dao
 
         public void DeleteFile(int id)
         {
-            var dao = FilesIntegration.GetFileDao();
+            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             dao.DeleteFile(id);
         }
 
-        public object GetRoot()
+        public int GetRoot()
         {
-            return FilesIntegration.RegisterBunch("crm", "crm_common", "");
+            return FilesIntegration.RegisterBunch<int>("crm", "crm_common", "");
         }
 
-        public object GetMy()
+        public int GetMy()
         {
-            return FilesIntegration.RegisterBunch("files", "my", SecurityContext.CurrentAccount.ID.ToString());
+            return FilesIntegration.RegisterBunch<int>("files", "my", SecurityContext.CurrentAccount.ID.ToString());
         }
 
-        public File SaveFile(File file, System.IO.Stream stream)
+        public File<int> SaveFile(File<int> file, System.IO.Stream stream)
         {
-            var dao = FilesIntegration.GetFileDao();
+            var dao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
             return dao.SaveFile(file, stream);
         }
 
         public List<int> GetEventsByFile(int id)
         {
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
+
             var tags = tagdao.GetTags(id, FileEntryType.File, TagType.System).ToList().FindAll(tag => tag.TagName.StartsWith("RelationshipEvent_"));
             
             return tags.Select(item => Convert.ToInt32(item.TagName.Split(new[] { '_' })[1])).ToList();

@@ -109,10 +109,10 @@ namespace ASC.CRM.Core.Dao
             get { return Container.Resolve<TaskTemplateDao>(tenant); }
         }
 
-        public ReportDao ReportDao
-        {
-            get { return Container.Resolve<ReportDao>(tenant); }
-        }
+        //public ReportDao ReportDao
+        //{
+        //    get { return Container.Resolve<ReportDao>(tenant); }
+        //}
 
         public CurrencyRateDao CurrencyRateDao
         {

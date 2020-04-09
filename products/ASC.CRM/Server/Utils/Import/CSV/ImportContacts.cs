@@ -26,16 +26,15 @@
 
 #region Import
 
+using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
+using LumenWorks.Framework.IO.Csv;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
-using ASC.Web.CRM.Core.Enums;
-using LumenWorks.Framework.IO.Csv;
-using Newtonsoft.Json.Linq;
-using ASC.CRM.Core.Dao;
-using ASC.Common.Threading.Progress;
 
 #endregion
 
@@ -44,6 +43,9 @@ namespace ASC.Web.CRM.Classes
     public partial class ImportDataOperation
     {
         private Int32 DaoIterationStep = 200;
+
+
+        
 
         private void ImportContactsData(DaoFactory _daoFactory)
         {
@@ -63,8 +65,9 @@ namespace ASC.Web.CRM.Classes
 
             #region Read csv
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
-            using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
+                CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings);
+
                 int currentIndex = 0;
 
                 while (csv.ReadNextRecord())
@@ -131,7 +134,7 @@ namespace ASC.Web.CRM.Classes
                 throw new OperationCanceledException();
             }
 
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone()); 
+            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
             #endregion
 
             #region Processing duplicate rule
@@ -140,7 +143,8 @@ namespace ASC.Web.CRM.Classes
 
             _log.Info("ImportContactsData. _DuplicateRecordRuleProcess. End");
 
-            if (IsCompleted) {
+            if (IsCompleted)
+            {
                 return;
             }
 
@@ -156,7 +160,7 @@ namespace ASC.Web.CRM.Classes
                 throw new OperationCanceledException();
             }
 
-            ImportDataCache.Insert(EntityType.Contact,(ImportDataOperation)Clone());
+            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
             #endregion
 
             #region Manipulation for saving Companies for persons + CRMSecurity
@@ -181,11 +185,11 @@ namespace ASC.Web.CRM.Classes
                         .ToDictionary(item => item.Key, item => item.Value);
 
 
-            #region CRMSecurity set -by every item-
+                    #region CRMSecurity set -by every item-
 
                     portion.ForEach(ct => CRMSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
 
-            #endregion
+                    #endregion
 
 
                     index += DaoIterationStep;
@@ -220,7 +224,7 @@ namespace ASC.Web.CRM.Classes
                     if (findedCompany == null)
                     {
                         #region create COMPANY for person in csv
-                            
+
                         findedCompany = new Company
                         {
                             CompanyName = item.Value,
@@ -262,11 +266,11 @@ namespace ASC.Web.CRM.Classes
                         contactDao.SaveContactList(portion))
                         .ToDictionary(item => item.Key, item => item.Value);
 
-                #region CRMSecurity set -by every item-
+                    #region CRMSecurity set -by every item-
 
                     portion.ForEach(ct => CRMSecurity.SetAccessTo(ct, _importSettings.ContactManagers));
 
-                #endregion
+                    #endregion
 
 
                     index += DaoIterationStep;
@@ -289,7 +293,7 @@ namespace ASC.Web.CRM.Classes
                 throw new OperationCanceledException();
             }
 
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());  
+            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
             #endregion
 
             #region Save contact infos -by portions-
@@ -333,7 +337,7 @@ namespace ASC.Web.CRM.Classes
             if (findedCustomField.Count != 0)
             {
                 findedCustomField.ForEach(item => item.EntityID = fakeRealContactIdHash[item.EntityID]);
-                
+
                 index = 0;
                 while (index < findedCustomField.Count)
                 {
@@ -361,7 +365,7 @@ namespace ASC.Web.CRM.Classes
                 throw new OperationCanceledException();
             }
 
-            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone()); 
+            ImportDataCache.Insert(EntityType.Contact, (ImportDataOperation)Clone());
             #endregion
 
             #region Save tags
@@ -452,7 +456,8 @@ namespace ASC.Web.CRM.Classes
                 }
                 else
                 {
-                    contact.StatusID = listItemDao.CreateItem(ListType.ContactStatus, new ListItem(){
+                    contact.StatusID = listItemDao.CreateItem(ListType.ContactStatus, new ListItem()
+                    {
                         Title = contactStageName,
                         Color = "#77cf9a",
                         Description = ""
@@ -469,7 +474,8 @@ namespace ASC.Web.CRM.Classes
                 }
                 else
                 {
-                    contact.ContactTypeID = listItemDao.CreateItem(ListType.ContactType, new ListItem(){
+                    contact.ContactTypeID = listItemDao.CreateItem(ListType.ContactType, new ListItem()
+                    {
                         Title = contactTypeName,
                         Description = ""
                     });
@@ -524,10 +530,10 @@ namespace ASC.Web.CRM.Classes
             if (contactInfoType == ContactInfoType.Email)
             {
                 var validEmails = propertyValue
-                    .Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)
+                    .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
                     .Where(email => email.TestEmailRegex()).ToArray();
 
-                if(!validEmails.Any())
+                if (!validEmails.Any())
                     return;
 
                 propertyValue = string.Join(",", validEmails);
@@ -580,23 +586,23 @@ namespace ASC.Web.CRM.Classes
                 return;
             }
 
-            var items = propertyValue.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+            var items = propertyValue.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var item in items)
             {
                 findedContactInfos.Add(new ContactInfo
-                    {
-                        Category = category,
-                        InfoType = contactInfoType,
-                        Data = item,
-                        ContactID = contact.ID,
-                        IsPrimary = isPrimary
-                    });
+                {
+                    Category = category,
+                    InfoType = contactInfoType,
+                    Data = item,
+                    ContactID = contact.ID,
+                    IsPrimary = isPrimary
+                });
 
                 isPrimary = false;
             }
         }
-        
+
         #endregion
 
         private void _DuplicateRecordRuleProcess(DaoFactory _daoFactory,
@@ -693,6 +699,6 @@ namespace ASC.Web.CRM.Classes
                     break;
             }
         }
-    
+
     }
 }

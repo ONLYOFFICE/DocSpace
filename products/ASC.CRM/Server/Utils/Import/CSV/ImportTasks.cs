@@ -26,16 +26,15 @@
 
 #region Import
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.CRM.Core;
-using ASC.CRM.Core.Entities;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.Entities;
+using ASC.CRM.Resources;
 using LumenWorks.Framework.IO.Csv;
-using ASC.Web.CRM.Resources;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 #endregion
 

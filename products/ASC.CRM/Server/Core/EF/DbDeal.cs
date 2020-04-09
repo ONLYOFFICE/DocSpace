@@ -23,6 +23,7 @@
  *
 */
 
+using ASC.CRM.Core.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -64,7 +65,7 @@ namespace ASC.CRM.Core.EF
         public decimal BidValue { get; set; }
         
         [Column("bid_type", TypeName = "int(11)")]
-        public int BidType { get; set; }
+        public BidType BidType { get; set; }
         
         [Column("deal_milestone_id", TypeName = "int(11)")]
         public int DealMilestoneId { get; set; }

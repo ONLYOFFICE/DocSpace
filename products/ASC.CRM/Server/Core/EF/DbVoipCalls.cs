@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace ASC.CRM.Core.EF
 {
     [Table("crm_voip_calls")]
-    public partial class DbVoipCalls
+    public partial class DbVoipCalls : IDbCrm
     {
         [Key]
         [Column("id", TypeName = "varchar(50)")]
@@ -25,7 +25,7 @@ namespace ASC.CRM.Core.EF
         public int? Status { get; set; }
         [Required]
         [Column("answered_by", TypeName = "varchar(50)")]
-        public string AnsweredBy { get; set; }
+        public Guid AnsweredBy { get; set; }
         [Column("dial_date", TypeName = "datetime")]
         public DateTime? DialDate { get; set; }
         [Column("dial_duration", TypeName = "int(11)")]

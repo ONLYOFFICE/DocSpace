@@ -24,19 +24,17 @@
 */
 
 
-using ASC.CRM.Core;
+using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
-using ASC.Web.CRM.Resources;
+using ASC.CRM.Core.Enums;
+using ASC.CRM.Resources;
+using ASC.Web.CRM.Core;
+using Autofac;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Web;
-using ASC.CRM.Core.Dao;
-using ASC.Web.CRM.Core;
-using Autofac;
 
 namespace ASC.Web.CRM.Classes
 {

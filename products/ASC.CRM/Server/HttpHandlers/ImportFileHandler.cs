@@ -24,20 +24,32 @@
 */
 
 
-using ASC.Core;
 using ASC.CRM.Core;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility;
 using ASC.Web.CRM.Configuration;
-using ASC.Web.Studio.Controls.FileUploader;
+using Microsoft.AspNetCore.Http;
 using System;
-using System.Web;
 
 
 namespace ASC.Web.CRM.Classes
 {
     public class ImportFileHandler : IFileUploadHandler
     {
+        public ImportFileHandler(WebItemSecurity webItemSecurity,
+                                CRMSecurity cRMSecurity,
+                                Global global)
+        {
+            CRMSecurity = cRMSecurity;
+            WebItemSecurity = webItemSecurity;
+            Global = global;
+
+        }
+
+        public Global Global { get; }
+        public CRMSecurity CRMSecurity { get; }
+        public WebItemSecurity WebItemSecurity { get; }
+
         public FileUploadResult ProcessUpload(HttpContext context)
         {
             if (!WebItemSecurity.IsAvailableForMe(ProductEntryPoint.ID))

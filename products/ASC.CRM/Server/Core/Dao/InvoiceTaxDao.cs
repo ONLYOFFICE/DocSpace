@@ -25,12 +25,14 @@
 
 
 using ASC.Collections;
+using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -91,11 +93,13 @@ namespace ASC.CRM.Core.Dao
         public InvoiceTaxDao(
             DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
-            SecurityContext securityContext
+            SecurityContext securityContext,
+            IOptionsMonitor<ILog> logger
             )
             : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
         {
 
         }

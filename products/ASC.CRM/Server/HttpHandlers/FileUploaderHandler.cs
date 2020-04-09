@@ -35,11 +35,20 @@ using ASC.Web.Studio.Core;
 using ASC.CRM.Core.Dao;
 using ASC.Web.CRM.Core;
 using Autofac;
+using Microsoft.AspNetCore.Http;
+using ASC.CRM.Resources;
 
 namespace ASC.Web.CRM.Classes
 {
     public class FileUploaderHandler : FileUploadHandler
     {
+        public FileUploaderHandler(SetupInfo setupInfo)
+        {
+            SetupInfo = setupInfo;
+        }
+
+        public SetupInfo SetupInfo { get; }
+
         public override FileUploadResult ProcessUpload(HttpContext context)
         {
             var fileUploadResult = new FileUploadResult();

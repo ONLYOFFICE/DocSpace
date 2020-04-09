@@ -49,39 +49,39 @@ namespace ASC.CRM.Core
 
         public CRMSecurity CRMSecurity { get; }
 
-        public bool CanCreate(FileEntry entry, Guid userId)
+        public bool CanCreate<T>(FileEntry<T> entry, Guid userId)
         {
             return true;
         }
 
-        public bool CanComment(FileEntry entry, Guid userId)
+        public bool CanComment<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
         }
 
-        public bool CanFillForms(FileEntry entry, Guid userId)
+        public bool CanFillForms<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
         }
 
-        public bool CanReview(FileEntry entry, Guid userId)
+        public bool CanReview<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
         }
 
-        public bool CanDelete(FileEntry entry, Guid userId)
+        public bool CanDelete<T>(FileEntry<T> entry, Guid userId)
         {
             return CanEdit(entry, userId);
         }
 
-        public bool CanEdit(FileEntry entry, Guid userId)
+        public bool CanEdit<T>(FileEntry<T> entry, Guid userId)
         {
             return
                 CanRead(entry, userId) &&
                 entry.CreateBy == userId || entry.ModifiedBy == userId || CRMSecurity.IsAdministrator(userId);
         }
 
-        public bool CanRead(FileEntry entry, Guid userId)
+        public bool CanRead<T>(FileEntry<T> entry, Guid userId)
         {
             if (entry.FileEntryType == FileEntryType.Folder) return false;
 
@@ -93,10 +93,11 @@ namespace ASC.CRM.Core
                     return CRMSecurity.CanAccessTo(invoice, userId);
 
                 var reportFile = daoFactory.ReportDao.GetFile(Convert.ToInt32(entry.ID), userId);
+               
                 if (reportFile != null)
                     return true;
 
-                var tagDao = FilesIntegration.TagDao();
+                var tagDao = FilesIntegration.DaoFactory.GetTagDao<T>();
 
                 var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
                     .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
@@ -111,7 +112,7 @@ namespace ASC.CRM.Core
             }
         }
 
-        public IEnumerable<Guid> WhoCanRead(FileEntry entry)
+        public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
         {
             throw new NotImplementedException();
         }

@@ -59,14 +59,16 @@ namespace ASC.CRM.Core.Dao
                        FactoryIndexer<DealsWrapper> factoryIndexer,
                        FilesIntegration filesIntegration,
                        IHttpContextAccessor httpContextAccessor,
-                       IOptionsMonitor<ILog> logger)
+                       IOptionsMonitor<ILog> logger,
+                       BundleSearch bundleSearch)
             : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  cRMSecurity,
                  factoryIndexer,
                  filesIntegration,
-                 logger)
+                 logger,
+                 bundleSearch)
         {
             _dealCache = new HttpRequestDictionary<Deal>(httpContextAccessor?.HttpContext, "crm_deal");
         }
@@ -114,7 +116,8 @@ namespace ASC.CRM.Core.Dao
                        CRMSecurity cRMSecurity,
                        FactoryIndexer<DealsWrapper> factoryIndexer,
                        FilesIntegration filesIntegration,
-                       IOptionsMonitor<ILog> logger) :
+                       IOptionsMonitor<ILog> logger,
+                       BundleSearch bundleSearch) :
             base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -123,11 +126,14 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity = cRMSecurity;
             FactoryIndexer = factoryIndexer;
             FilesIntegration = filesIntegration;
+            BundleSearch = bundleSearch;
         }
 
-        FilesIntegration FilesIntegration { get; }
+        public BundleSearch BundleSearch { get; }
 
-        FactoryIndexer<DealsWrapper> FactoryIndexer { get; }
+        public FilesIntegration FilesIntegration { get; }
+
+        public FactoryIndexer<DealsWrapper> FactoryIndexer { get; }
 
         public TenantUtil TenantUtil { get; }
         public CRMSecurity CRMSecurity { get; }
@@ -275,6 +281,9 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.LastModifedOn = TenantUtil.DateTimeToUtc(TenantUtil.DateTimeNow());
             itemToUpdate.LastModifedBy = SecurityContext.CurrentAccount.ID;
 
+            CRMDbContext.Update(itemToUpdate);
+            CRMDbContext.SaveChanges();
+
             FactoryIndexer.IndexAsync(deal);
         }
 
@@ -308,10 +317,17 @@ namespace ASC.CRM.Core.Dao
                                   IEnumerable<String> tags,
                                   int contactID,
                                   DealMilestoneStatus? stageType,
-                                  bool? contactAlsoIsParticipant)
+                                  bool? contactAlsoIsParticipant,
+                                  DateTime fromDate,
+                                  DateTime toDate,
+                                  OrderBy orderBy)
         {
 
-            var sqlQuery = Query(CRMDbContext.Deals);
+            var sqlQuery = Query(CRMDbContext.Deals).Join(CRMDbContext.DealMilestones,
+                                            x => x.DealMilestoneId,
+                                            y => y.Id,
+                                            (x, y) => new { x, y }
+                                        );
 
             var ids = new List<int>();
 
@@ -327,7 +343,7 @@ namespace ASC.CRM.Core.Dao
                     {
                         foreach (var k in keywords)
                         {
-                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Title, k + "%") || Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Description, k + "%"));
+                            sqlQuery = sqlQuery.Where(x => Microsoft.EntityFrameworkCore.EF.Functions.Like(x.x.Title, k + "%") || Microsoft.EntityFrameworkCore.EF.Functions.Like(x.x.Description, k + "%"));
                         }
                     }
                     else if (ids.Count == 0) return null;
@@ -349,7 +365,7 @@ namespace ASC.CRM.Core.Dao
 
                     if (relativeContactsID.Count == 0)
                     {
-                        sqlQuery = sqlQuery.Where(x => x.ContactId == contactID);
+                        sqlQuery = sqlQuery.Where(x => x.x.ContactId == contactID);
                     }
                     else
                     {
@@ -367,32 +383,21 @@ namespace ASC.CRM.Core.Dao
                 }
                 else
                 {
-                    sqlQuery = sqlQuery.Where(x => x.ContactId == contactID);
+                    sqlQuery = sqlQuery.Where(x => x.x.ContactId == contactID);
                 }
             }
 
             if (0 < milestoneID && milestoneID < int.MaxValue)
             {
-                sqlQuery = sqlQuery.Where(x => x.DealMilestoneId == milestoneID);
+                sqlQuery = sqlQuery.Where(x => x.x.DealMilestoneId == milestoneID);
             }
 
             if (responsibleID != Guid.Empty)
             {
-                sqlQuery = sqlQuery.Where(x => x.ResponsibleId == responsibleID);
+                sqlQuery = sqlQuery.Where(x => x.x.ResponsibleId == responsibleID);
             }
 
-            if (stageType != null)
-            {
-                sqlQuery = sqlQuery.Join(CRMDbContext.DealMilestones,
-                                            x => x.DealMilestoneId,
-                                            y => y.Id,
-                                            (x,y) => new { x,y }
-                                        )
-                                    .Where(x => x.y.Status == stageType.Value);
-
-                conditions.Add(Exp.Eq("tblDM.status", (int)stageType.Value));
-            }
-
+  
             if (ids.Count > 0)
             {
                 if (exceptIDs.Count > 0)
@@ -401,14 +406,105 @@ namespace ASC.CRM.Core.Dao
                     if (ids.Count == 0) return null;
                 }
 
-                sqlQuery = sqlQuery.Where(x => ids.Contains(x.Id));
+                sqlQuery = sqlQuery.Where(x => ids.Contains(x.x.Id));
             }
             else if (exceptIDs.Count > 0)
             {
-                sqlQuery = sqlQuery.Where(x => !exceptIDs.Contains(x.Id));
+                sqlQuery = sqlQuery.Where(x => !exceptIDs.Contains(x.x.Id));
             }
 
-            return sqlQuery;
+            if ((stageType != null) || (fromDate != DateTime.MinValue && toDate != DateTime.MinValue))
+            {                
+                if (stageType != null)
+                    sqlQuery = sqlQuery.Where(x => x.y.Status == stageType.Value);
+
+                if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
+                    sqlQuery = sqlQuery.Where(x => x.y.Status == 0 ? x.x.ExpectedCloseDate >= TenantUtil.DateTimeToUtc(fromDate) && x.x.ExpectedCloseDate <= TenantUtil.DateTimeToUtc(toDate)
+                                                                         : x.x.ActualCloseDate >= TenantUtil.DateTimeToUtc(fromDate) && x.x.ActualCloseDate <= TenantUtil.DateTimeToUtc(toDate));
+
+            }
+
+
+            if (orderBy != null && Enum.IsDefined(typeof(DealSortedByType), orderBy.SortedBy))
+                switch ((DealSortedByType)orderBy.SortedBy)
+                {
+                    case DealSortedByType.Title:
+                        {
+                            sqlQuery = sqlQuery.OrderBy("x.x.Title", orderBy.IsAsc);
+
+                            break;
+                        }
+                    case DealSortedByType.BidValue:
+                        {
+                            sqlQuery = sqlQuery.OrderBy("x.x.BidValue", orderBy.IsAsc);
+
+                            break;
+                        }
+                    case DealSortedByType.Responsible:
+                        {
+                            if (orderBy.IsAsc)
+                            {
+                                sqlQuery = sqlQuery.OrderBy(x => x.x.ResponsibleId)
+                                                         .ThenBy(x => x.y.SortOrder)
+                                                         .ThenBy(x => x.x.ContactId)
+                                                         .ThenByDescending(x => x.x.ActualCloseDate)
+                                                         .ThenBy(x => x.x.ExpectedCloseDate)
+                                                         .ThenBy(x => x.x.Title);
+                            }
+                            else
+                            {
+                                sqlQuery = sqlQuery.OrderByDescending(x => x.x.ResponsibleId)
+                                                    .OrderByDescending(x => x.y.SortOrder)
+                                                    .ThenBy(x => x.x.ContactId)
+                                                    .ThenByDescending(x => x.x.ActualCloseDate)
+                                                    .ThenBy(x => x.x.ExpectedCloseDate)
+                                                    .ThenBy(x => x.x.Title);
+
+                            }
+
+                            break;
+                        }
+                    case DealSortedByType.Stage:
+                        {
+                            if (orderBy.IsAsc)
+                            {
+                                sqlQuery = sqlQuery.OrderBy(x => x.y.SortOrder)
+                                                   .ThenBy(x => x.x.ContactId)
+                                                   .ThenByDescending(x => x.x.ActualCloseDate)
+                                                   .ThenBy(x => x.x.ExpectedCloseDate)
+                                                   .ThenBy(x => x.x.Title);
+                            }
+                            else
+                            {
+                                sqlQuery = sqlQuery.OrderByDescending(x => x.y.SortOrder)
+                                                   .ThenBy(x => x.x.ContactId)
+                                                   .ThenByDescending(x => x.x.ActualCloseDate)
+                                                   .ThenBy(x => x.x.ExpectedCloseDate)
+                                                   .ThenBy(x => x.x.Title);
+
+                            }
+                            
+                            break;
+
+                        }
+                    case DealSortedByType.DateAndTime:
+                        {
+                            sqlQuery.OrderBy("x.x.close_date", orderBy.IsAsc);
+
+                            break;
+
+                        }
+                    default:
+                        throw new ArgumentException();
+                }
+            else
+            {
+                sqlQuery = sqlQuery.OrderBy(x => x.y.SortOrder)
+                                   .ThenBy(x => x.x.ContactId)
+                                   .ThenBy(x => x.x.Title);
+            }
+
+            return sqlQuery.Select(x => x.x);
         }
 
         public int GetDealsCount(String searchText,
@@ -465,19 +561,14 @@ namespace ASC.CRM.Core.Dao
             if (withParams)
             {
                 var sqlQuery = GetDbDealByFilters(exceptIDs, searchText, responsibleID, milestoneID, tags,
-                                                        contactID, stageType, contactAlsoIsParticipant);
+                                                        contactID, stageType, contactAlsoIsParticipant,
+                                                        fromDate,
+                                                        toDate, null);
 
-                if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
-                {
-                    sqlQuery.Having(Exp.Between("close_date", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)));
-
-                    result = sqlQuery.Count();
-
-                }
-                else if (sqlQuery == null)
+                if (sqlQuery == null)
                 {
                     result = 0;
-                }
+                }               
                 else
                 {
                     result = sqlQuery.Count();
@@ -619,17 +710,12 @@ namespace ASC.CRM.Core.Dao
                                                     tags,
                                                     contactID,
                                                     stageType,
-                                                    contactAlsoIsParticipant);
+                                                    contactAlsoIsParticipant,
+                                                    fromDate,
+                                                    toDate,
+                                                    orderBy);
 
-
-
-            if (fromDate != DateTime.MinValue && toDate != DateTime.MinValue)
-            {
-
-
-                sqlQuery.Having(Exp.Between("close_date", TenantUtil.DateTimeToUtc(fromDate), TenantUtil.DateTimeToUtc(toDate)));
-            }
-            else if (withParams && sqlQuery == null)
+            if (withParams && sqlQuery == null)
             {
                 return new List<Deal>();
             }
@@ -644,78 +730,6 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Take(count);
             }
 
-            if (orderBy != null && Enum.IsDefined(typeof(DealSortedByType), orderBy.SortedBy))
-                switch ((DealSortedByType)orderBy.SortedBy)
-                {
-                    case DealSortedByType.Title:
-                        {
-                            sqlQuery = sqlQuery.OrderBy("Title", orderBy.IsAsc);
-
-                            break;
-                        }
-                    case DealSortedByType.BidValue:
-                        {
-                            sqlQuery = sqlQuery.OrderBy("BidValue", orderBy.IsAsc);
-                        
-                            break;
-                        }
-                    case DealSortedByType.Responsible:
-                        {
-                            sqlQuery = sqlQuery.OrderBy(x => x.ResponsibleId)
-                                                .ThenBy(x => x.ContactId)
-                                                .ThenByDescending(x => x.ActualCloseDate)
-                                                .ThenBy(x => x.ExpectedCloseDate)
-                                                .ThenBy(x => x.Title);
-
-                            throw new NotImplementedException();
-                            //sqlQuery.OrderBy("tblDeal.responsible_id", orderBy.IsAsc)
-                            //        .OrderBy("tblDM.sort_order", orderBy.IsAsc)
-                            //        .OrderBy("tblDeal.contact_id", true)
-                            //        .OrderBy("tblDeal.actual_close_date", false)
-                            //        .OrderBy("tblDeal.expected_close_date", true)
-                            //        .OrderBy("tblDeal.title", true);
-
-                            break;
-                        }
-                    case DealSortedByType.Stage:
-                        {
-                            sqlQuery = sqlQuery
-                                                .OrderBy(x => x.ContactId)
-                                                .ThenByDescending(x => x.ActualCloseDate)
-                                                .ThenBy(x => x.ExpectedCloseDate)
-                                                .ThenBy(x => x.Title);
-
-                            sqlQuery.OrderBy("tblDM.sort_order", orderBy.IsAsc)
-                                .ThenBy("tblDeal.contact_id", true)
-                                .ThenBy("tblDeal.actual_close_date", false)
-                                .ThenBy("tblDeal.expected_close_date", true)
-                                .ThenBy("tblDeal.title", true);
-                        
-                            break;
-                        
-                        }
-                    case DealSortedByType.DateAndTime:
-                        {
-
-                            sqlQuery.OrderBy("close_date", orderBy.IsAsc);
-                         
-                            break;
-                        
-                        }
-                    default:
-                        throw new ArgumentException();
-                }
-            else
-            {
-
-                sqlQuery = sqlQuery.OrderBy(x => x.ContactId)
-                                    .ThenBy(x => x.Title);
-
-                //sqlQuery.OrderBy("tblDM.sort_order", true)
-                //    .OrderBy("tblDeal.contact_id", true)
-                //    .OrderBy("tblDeal.title", true);
-
-            }
 
             return sqlQuery.ToList().ConvertAll(ToDeal);
         }
@@ -881,8 +895,6 @@ namespace ASC.CRM.Core.Dao
                 ActualCloseDate = Convert.ToDateTime(dbDeal.ActualCloseDate) == DateTime.MinValue ? DateTime.MinValue : TenantUtil.DateTimeFromUtc(Convert.ToDateTime(dbDeal.ActualCloseDate))
             };
         }
-
-
 
         public void ReassignDealsResponsible(Guid fromUserId, Guid toUserId)
         {
