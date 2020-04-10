@@ -55,8 +55,9 @@ namespace ASC.Mail.Controllers
         public DraftEngine DraftEngine { get; }
         public TemplateEngine TemplateEngine { get; }
         public SettingEngine SettingEngine { get; }
+        public ServerEngine ServerEngine { get; }
         public OperationEngine OperationEngine { get; }
-
+        public CoreBaseSettings CoreBaseSettings { get; }
         public ILog Log { get; }
 
         public MailController(
@@ -82,7 +83,9 @@ namespace ASC.Mail.Controllers
             DraftEngine draftEngine,
             TemplateEngine templateEngine,
             SettingEngine settingEngine,
+            ServerEngine serverEngine,
             OperationEngine operationEngine,
+            CoreBaseSettings coreBaseSettings,
             IOptionsMonitor<ILog> option)
         {
             HttpContext = httpContextAccessor?.HttpContext;
@@ -108,8 +111,9 @@ namespace ASC.Mail.Controllers
             DraftEngine = draftEngine;
             TemplateEngine = templateEngine;
             SettingEngine = settingEngine;
+            ServerEngine = serverEngine;
             OperationEngine = operationEngine;
-
+            CoreBaseSettings = coreBaseSettings;
             Log = option.Get("ASC.Api.Mail");
         }
 
@@ -272,6 +276,7 @@ namespace ASC.Mail.Controllers
                 .AddTenantManagerService()
                 .AddSecurityContextService()
                 .AddApiContextService()
+                .AddCoreBaseSettingsService()
                 .AddAccountEngineService()
                 .AddAlertEngineService()
                 .AddDisplayImagesAddressEngineService()
@@ -289,7 +294,8 @@ namespace ASC.Mail.Controllers
                 .AddDraftEngineService()
                 .AddTemplateEngineService()
                 .AddOperationEngineService()
-                .AddSettingEngineService();
+                .AddSettingEngineService()
+                .AddServerEngineService();
         }
     }
 }

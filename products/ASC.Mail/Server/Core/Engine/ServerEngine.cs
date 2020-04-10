@@ -240,7 +240,7 @@ namespace ASC.Mail.Core.Engine
             return server.Dns.MxRecord.Host;
         }
 
-        private ServerData GetMailServer()
+        public ServerData GetMailServer()
         {
             if (!IsAdmin)
                 throw new SecurityException("Need admin privileges.");
