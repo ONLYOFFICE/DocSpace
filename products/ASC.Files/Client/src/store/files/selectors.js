@@ -1,4 +1,4 @@
-import { find, filter } from "lodash";
+import { find, filter } from 'lodash';
 import { constants, store } from 'asc-web-common';
 
 const { FileType, FilterType, FolderType } = constants;
@@ -10,27 +10,47 @@ const presentInArray = (array, search) => {
 }
 
 export const canWebEdit = extension => {
-  const formats = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv', '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
+  const formats = ['.pptx', '.pptm', '.ppt', '.ppsx', '.ppsm', '.pps',
+    '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsx', '.xlsm',
+    '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.csv',
+    '.docx', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt',
+    '.ott', '.txt', '.rtf', '.mht', '.html', '.htm'];
   return presentInArray(formats, extension);
 }
 
 export const canConvert = extension => {
-  const formats = ['.pptm', '.ppt', '.ppsm', '.pps', '.potx', '.potm', '.pot', '.odp', '.fodp', '.otp', '.xlsm', '.xls', '.xltx', '.xltm', '.xlt', '.ods', '.fods', '.ots', '.docm', '.doc', '.dotx', '.dotm', '.dot', '.odt', '.fodt', '.ott', '.rtf'];
+  const formats = ['.pptm', '.ppt', '.ppsm', '.pps', '.potx', '.potm',
+    '.pot', '.odp', '.fodp', '.otp', '.xlsm', '.xls', '.xltx', '.xltm',
+    '.xlt', '.ods', '.fods', '.ots', '.docm', '.doc', '.dotx', '.dotm',
+    '.dot', '.odt', '.fodt', '.ott', '.rtf'];
   return presentInArray(formats, extension);
 }
 
 export const isArchive = extension => {
-  const formats = ['.zip', '.rar', '.ace', '.arc', '.arj', '.cab', '.enc', '.jar', '.lha', '.lzh', '.pak', '.pk3', '.tar', '.tgz', '.uue', '.xxe', '.zoo', '.bh', '.gz', '.ha'];
+  const formats = ['.zip', '.rar', '.ace', '.arc', '.arj', '.bh', '.cab',
+    '.enc', '.gz', '.ha', '.jar', '.lha', '.lzh', '.pak', '.pk3', '.tar',
+    '.tgz', '.gz', '.uu', '.uue', '.xxe', '.z', '.zoo'];
   return presentInArray(formats, extension);
 }
 
 export const isImage = extension => {
-  const formats = ['.bmp', '.cod', '.gif', '.ief', '.jpe', '.jpg', '.tif', '.cmx', '.ico', '.pnm', '.pbm', '.ppm', '.psd', '.rgb', '.xbm', '.xpm', '.xwd', '.png', '.ai', '.jpeg'];
+  const formats = ['.bmp', '.cod', '.gif', '.ief', '.jpe', '.jpg', '.tif',
+    '.cmx', '.ico', '.pnm', '.pbm', '.ppm', '.psd', '.rgb', '.xbm', '.xpm',
+    '.xwd', '.png', '.ai', '.jpeg'];
   return presentInArray(formats, extension);
 }
 
 export const isSound = extension => {
-  const formats = ['.mp3', '.wav', '.pcm', '.3gp', '.fla', '.cda', '.ogg', '.aiff', '.flac'];
+  const formats = ['.aac', '.ac3', '.aiff', '.amr', '.ape', '.cda', '.flac',
+    '.m4a', '.mid', '.mka', '.mp3', '.mpc', '.oga', '.ogg', '.pcm', '.ra',
+    '.raw', '.wav', '.wma'];
+  return presentInArray(formats, extension);
+}
+
+export const isVideo = extension => {
+  const formats = ['.3gp', '.asf', '.avi', '.f4v', '.fla', '.flv', '.m2ts',
+    '.m4v', '.mkv', '.mov', '.mp4', '.mpeg', '.mpg', '.mts', '.ogv', '.svi',
+    '.vob', '.webm', '.wmv'];
   return presentInArray(formats, extension);
 }
 
@@ -41,6 +61,25 @@ export const isHtml = extension => {
 
 export const isEbook = extension => {
   const formats = ['.fb2', '.ibk', '.prc', '.epub'];
+  return presentInArray(formats, extension);
+}
+
+export const isDocument = extension => {
+  const formats = ['.doc', '.docx', '.docm', '.dot', '.dotx', '.dotm', '.odt',
+    '.fodt', '.ott', '.rtf', '.txt', '.html', '.htm', '.mht', '.pdf', '.djvu',
+    '.fb2', '.epub', '.xps', '.doct', '.docy', '.gdoc'];
+  return presentInArray(formats, extension);
+}
+
+export const isPresentation = extension => {
+  const formats = ['.pps', '.ppsx', '.ppsm', '.ppt', '.pptx', '.pptm', '.pot',
+    '.potx', '.potm', '.odp', '.fodp', '.otp', '.pptt', '.ppty', '.gslides'];
+  return presentInArray(formats, extension);
+}
+
+export const isSpreadsheet = extension => {
+  const formats = ['.xls', '.xlsx', '.xlsm', '.xlt', '.xltx', '.xltm', '.ods',
+    '.fods', '.ots', '.csv', '.xlst', '.xlsy', '.xlsb', '.gsheet'];
   return presentInArray(formats, extension);
 }
 
@@ -75,7 +114,7 @@ export function getFilesBySelected(files, selected) {
 const getFilesChecked = (file, selected) => {
   const type = file.fileType;
   switch (selected) {
-    case "all":
+    case 'all':
       return true;
     case FilterType.FoldersOnly.toString():
       return file.parentId;
@@ -162,17 +201,19 @@ export const isCanBeDeleted = (selectedFolder, user) => {
 //TODO: Get the whole list of extensions
 export const getAccessOption = selection => {
   const isFolder = selection.find(x => x.fileExst === undefined);
-  const isMedia = selection.find(
-    x => x.fileExst === ".mp3" || x.fileExst === ".mp4"
+  const isMedia = selection.find(x =>
+    isSound(x.fileExst) || isVideo(x.fileExst)
   );
-  const isPresentationOrTable = selection.find(x => x.fileExst === ".pptx" || x.fileExst === ".xlsx");
+  const isPresentationOrTable = selection.find(x =>
+    isSpreadsheet(x.fileExst) || isPresentation(x.fileExst)
+  );
 
   if (isFolder || isMedia) {
-    return ["FullAccess", "ReadOnly", "DenyAccess"];
+    return ['FullAccess', 'ReadOnly', 'DenyAccess'];
   } else if (isPresentationOrTable) {
-    return ["FullAccess", "ReadOnly", "DenyAccess", "Comment"];
+    return ['FullAccess', 'ReadOnly', 'DenyAccess', 'Comment'];
   } else {
-    return ["FullAccess", "ReadOnly", "DenyAccess", "Comment", "Review", "FormFilling"];
+    return ['FullAccess', 'ReadOnly', 'DenyAccess', 'Comment', 'Review', 'FormFilling'];
   }
 };
 
@@ -192,7 +233,7 @@ export const getFolderIcon = (providerKey, size = 32) => {
     case 'OneDrive':
       return `${folderPath}/folder/onedrive.svg`;
     case 'SharePoint':
-        return `${folderPath}/folder/sharepoint.svg`;
+      return `${folderPath}/folder/sharepoint.svg`;
     case 'Yandex':
       return `${folderPath}/Folder/yandex.svg`;
     default:
