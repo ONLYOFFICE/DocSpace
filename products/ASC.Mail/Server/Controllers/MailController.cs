@@ -12,6 +12,8 @@ using ASC.Web.Mail.Resources;
 using ASC.Common.Threading;
 using System.Configuration;
 using Microsoft.AspNetCore.Http;
+using ASC.Web.Core.Users;
+using System;
 
 namespace ASC.Mail.Controllers
 {
@@ -35,6 +37,8 @@ namespace ASC.Mail.Controllers
 
         public TenantManager TenantManager { get; }
         public SecurityContext SecurityContext { get; }
+        public UserManager UserManager { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
         public ApiContext ApiContext { get; }
         public AccountEngine AccountEngine { get; }
         public AlertEngine AlertEngine { get; }
@@ -57,14 +61,18 @@ namespace ASC.Mail.Controllers
         public SettingEngine SettingEngine { get; }
         public ServerEngine ServerEngine { get; }
         public ServerDomainEngine ServerDomainEngine { get; }
+        public ServerMailboxEngine ServerMailboxEngine { get; }
         public OperationEngine OperationEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
+        public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
 
         public MailController(
             HttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             SecurityContext securityContext,
+            UserManager userManager,
+            DisplayUserSettingsHelper displayUserSettingsHelper,
             ApiContext apiContext,
             AccountEngine accountEngine,
             AlertEngine alertEngine,
@@ -86,14 +94,18 @@ namespace ASC.Mail.Controllers
             SettingEngine settingEngine,
             ServerEngine serverEngine,
             ServerDomainEngine serverDomainEngine,
+            ServerMailboxEngine serverMailboxEngine,
             OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
+            IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
             HttpContext = httpContextAccessor?.HttpContext;
 
             TenantManager = tenantManager;
             SecurityContext = securityContext;
+            UserManager = userManager;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
             ApiContext = apiContext;
             AccountEngine = accountEngine;
             AlertEngine = alertEngine;
@@ -115,8 +127,10 @@ namespace ASC.Mail.Controllers
             SettingEngine = settingEngine;
             ServerEngine = serverEngine;
             ServerDomainEngine = serverDomainEngine;
+            ServerMailboxEngine = serverMailboxEngine;
             OperationEngine = operationEngine;
             CoreBaseSettings = coreBaseSettings;
+            ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Api.Mail");
         }
 
@@ -278,6 +292,8 @@ namespace ASC.Mail.Controllers
             return services
                 .AddTenantManagerService()
                 .AddSecurityContextService()
+                .AddUserManagerService()
+                .AddDisplayUserSettingsService()
                 .AddApiContextService()
                 .AddCoreBaseSettingsService()
                 .AddAccountEngineService()
@@ -299,7 +315,8 @@ namespace ASC.Mail.Controllers
                 .AddOperationEngineService()
                 .AddSettingEngineService()
                 .AddServerEngineService()
-                .AddServerDomainEngineService();
+                .AddServerDomainEngineService()
+                .AddServerMailboxEngineService();
         }
     }
 }
