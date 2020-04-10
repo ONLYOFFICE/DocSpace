@@ -1,6 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router";
 import { connect } from "react-redux";
+import { ReactSVG } from 'react-svg'
 import { withTranslation } from "react-i18next";
 import isEqual from "lodash/isEqual";
 import styled from "styled-components";
@@ -24,7 +25,7 @@ import {
   setAction,
   setTreeFolders
 } from '../../../../../store/files/actions';
-import { isFileSelected } from '../../../../../store/files/selectors';
+import { isFileSelected, getFileIcon, getFolderIcon } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
 //import { getFilterByLocation } from "../../../../../helpers/converters";
 //import config from "../../../../../../package.json";
@@ -83,7 +84,7 @@ class SectionBodyContent extends React.PureComponent {
     if (fileAction.type === FileAction.Create || fileAction.type === FileAction.Rename) {
       onLoading(true);
       fetchFiles(folderId, filter, store.dispatch).then(data => {
-        if(!item.fileExst) {
+        if (!item.fileExst) {
           const path = data.selectedFolder.pathParts;
           const newTreeFolders = treeFolders;
           const folders = data.selectedFolder.folders;
@@ -216,22 +217,19 @@ class SectionBodyContent extends React.PureComponent {
     }
   };
 
-  getItemIcon = (extension, isEdit) => {
-    const setEditIconStyle = isEdit ? { style: { marginLeft: '24px' } } : {};
+  getItemIcon = (item, isEdit) => {
+    const extension = item.fileExst;
+    const icon = extension
+      ? getFileIcon(extension, 24)
+      : getFolderIcon(item.providerKey, 24);
 
-    return extension
-      ? <Icons.ActionsDocumentsIcon
-        {...setEditIconStyle}
-        size='big'
-        isfill={true}
-        color="#A3A9AE"
-      />
-      : <Icons.CatalogFolderIcon
-        {...setEditIconStyle}
-        size='big'
-        isfill={true}
-        color="#A3A9AE"
-      />
+    return <ReactSVG
+      beforeInjection={svg => {
+        svg.setAttribute('style', 'margin-top: 4px');
+        isEdit && svg.setAttribute('style', 'margin-left: 24px');
+      }}
+      src={icon}
+    />;
   };
 
   render() {
@@ -267,7 +265,7 @@ class SectionBodyContent extends React.PureComponent {
             : { contextOptions };
           const checked = isFileSelected(selection, item.id, item.parentId);
           const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-          const element = this.getItemIcon(item.fileExst, isEdit);
+          const element = this.getItemIcon(item, isEdit);
 
           return (
             <SimpleFilesRow
@@ -286,7 +284,7 @@ class SectionBodyContent extends React.PureComponent {
         })}
       </RowContainer>
     ) : parentId !== 0 ? (
-      <EmptyFolderContainer parentId={parentId} filter={filter} setAction={this.props.setAction}/>
+      <EmptyFolderContainer parentId={parentId} filter={filter} setAction={this.props.setAction} />
     ) : <p>RootFolderContainer</p>;
   }
 }
