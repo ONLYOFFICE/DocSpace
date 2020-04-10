@@ -62,6 +62,7 @@ namespace ASC.Mail.Controllers
         public ServerEngine ServerEngine { get; }
         public ServerDomainEngine ServerDomainEngine { get; }
         public ServerMailboxEngine ServerMailboxEngine { get; }
+        public ServerMailgroupEngine ServerMailgroupEngine { get; }
         public OperationEngine OperationEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IServiceProvider ServiceProvider { get; }
@@ -95,6 +96,7 @@ namespace ASC.Mail.Controllers
             ServerEngine serverEngine,
             ServerDomainEngine serverDomainEngine,
             ServerMailboxEngine serverMailboxEngine,
+            ServerMailgroupEngine serverMailgroupEngine,
             OperationEngine operationEngine,
             CoreBaseSettings coreBaseSettings,
             IServiceProvider serviceProvider,
@@ -128,6 +130,7 @@ namespace ASC.Mail.Controllers
             ServerEngine = serverEngine;
             ServerDomainEngine = serverDomainEngine;
             ServerMailboxEngine = serverMailboxEngine;
+            ServerMailgroupEngine = serverMailgroupEngine;
             OperationEngine = operationEngine;
             CoreBaseSettings = coreBaseSettings;
             ServiceProvider = serviceProvider;
@@ -316,7 +319,8 @@ namespace ASC.Mail.Controllers
                 .AddSettingEngineService()
                 .AddServerEngineService()
                 .AddServerDomainEngineService()
-                .AddServerMailboxEngineService();
+                .AddServerMailboxEngineService()
+                .AddServerMailgroupEngineService();
         }
     }
 }
