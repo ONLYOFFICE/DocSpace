@@ -402,6 +402,33 @@ namespace ASC.Mail.Controllers
             return id;
         }
 
+        /// <summary>
+        ///    Create address for tenant notifications
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="password"></param>
+        /// <param name="domain_id"></param>
+        /// <returns>NotificationAddressData associated with tenant</returns>
+        /// <short>Create notification address</short> 
+        /// <category>Notifications</category>
+        [Create(@"notification/address/add")]
+        public ServerNotificationAddressData CreateNotificationAddress(string name, string password, int domain_id)
+        {
+            var notifyAddress = ServerEngine.CreateNotificationAddress(name, password, domain_id);
+            return notifyAddress;
+        }
+
+        /// <summary>
+        ///    Deletes address for notification 
+        /// </summary>
+        /// <short>Remove mailbox from mail server</short> 
+        /// <category>Notifications</category>
+        [Delete(@"notification/address/remove")]
+        public void RemoveNotificationAddress(string address)
+        {
+            ServerEngine.RemoveNotificationAddress(address);
+        }
+
         private void SendMailboxCreated(ServerMailboxData serverMailbox, bool toMailboxUser, bool toUserProfile)
         {
             try
