@@ -64,6 +64,7 @@ namespace ASC.Mail.Controllers
         public ServerMailboxEngine ServerMailboxEngine { get; }
         public ServerMailgroupEngine ServerMailgroupEngine { get; }
         public OperationEngine OperationEngine { get; }
+        public TestEngine TestEngine { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
         public IServiceProvider ServiceProvider { get; }
         public ILog Log { get; }
@@ -98,6 +99,7 @@ namespace ASC.Mail.Controllers
             ServerMailboxEngine serverMailboxEngine,
             ServerMailgroupEngine serverMailgroupEngine,
             OperationEngine operationEngine,
+            TestEngine testEngine,
             CoreBaseSettings coreBaseSettings,
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
@@ -132,6 +134,7 @@ namespace ASC.Mail.Controllers
             ServerMailboxEngine = serverMailboxEngine;
             ServerMailgroupEngine = serverMailgroupEngine;
             OperationEngine = operationEngine;
+            TestEngine = testEngine;
             CoreBaseSettings = coreBaseSettings;
             ServiceProvider = serviceProvider;
             Log = option.Get("ASC.Api.Mail");

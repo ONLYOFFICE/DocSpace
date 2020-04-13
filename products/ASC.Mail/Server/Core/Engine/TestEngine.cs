@@ -115,36 +115,20 @@ namespace ASC.Mail.Core.Engine
             Log = option.Get("ASC.Mail.TestEngine");
         }
 
-        public int CreateSampleMessage(
-            int? folderId,
-            int? mailboxId,
-            List<string> to,
-            List<string> cc,
-            List<string> bcc,
-            bool importance,
-            bool unread,
-            string subject,
-            string body,
-            string calendarUid = null,
-            DateTime? date = null,
-            List<int> tagIds = null,
-            string fromAddress = null,
-            bool add2Index = false,
-            string mimeMessageId = null,
-            uint? userFolderId = null)
+        public int CreateSampleMessage(TestMessageModel model, bool add2Index = false)
         {
-            var folder = folderId.HasValue ? (FolderType)folderId.Value : FolderType.Inbox;
+            var folder = model.FolderId.HasValue ? (FolderType)model.FolderId.Value : FolderType.Inbox;
 
             if (!MailFolder.IsIdOk(folder))
                 throw new ArgumentException(@"Invalid folder id", "folderId");
 
-            if (!mailboxId.HasValue)
+            if (!model.MailboxId.HasValue)
                 throw new ArgumentException(@"Invalid mailbox id", "mailboxId");
 
             var accounts = AccountEngine.GetAccountInfoList().ToAccountData().ToList();
 
-            var account = mailboxId.HasValue
-                ? accounts.FirstOrDefault(a => a.MailboxId == mailboxId)
+            var account = model.MailboxId.HasValue
+                ? accounts.FirstOrDefault(a => a.MailboxId == model.MailboxId)
                 : accounts.FirstOrDefault(a => a.IsDefault) ?? accounts.FirstOrDefault();
 
             if (account == null)
@@ -156,9 +140,9 @@ namespace ASC.Mail.Core.Engine
             if (mbox == null)
                 throw new ArgumentException("no such mailbox");
 
-            var internalId = string.IsNullOrEmpty(mimeMessageId)
+            var internalId = string.IsNullOrEmpty(model.MimeMessageId)
                 ? MailUtil.CreateMessageId(TenantManager, CoreSettings, Log)
-                : mimeMessageId;
+                : model.MimeMessageId;
 
             var restoreFolder = folder == FolderType.Spam || folder == FolderType.Trash
                 ? FolderType.Inbox
@@ -167,15 +151,15 @@ namespace ASC.Mail.Core.Engine
             string sampleBody;
             string sampleIntro;
 
-            if (!to.Any())
+            if (!model.To.Any())
             {
-                to = new List<string> { mbox.EMail.Address };
+                model.To = new List<string> { mbox.EMail.Address };
             }
 
-            if (!string.IsNullOrEmpty(body))
+            if (!string.IsNullOrEmpty(model.Body))
             {
-                sampleBody = body;
-                sampleIntro = MailUtil.GetIntroduction(body);
+                sampleBody = model.Body;
+                sampleIntro = MailUtil.GetIntroduction(model.Body);
             }
             else
             {
@@ -185,16 +169,16 @@ namespace ASC.Mail.Core.Engine
 
             var sampleMessage = new MailMessage
             {
-                Date = date ?? DateTime.UtcNow,
+                Date = model.Date ?? DateTime.UtcNow,
                 MimeMessageId = internalId,
                 MimeReplyToId = null,
                 ChainId = internalId,
                 ReplyTo = "",
-                To = string.Join(", ", to.ToArray()),
-                Cc = cc.Any() ? string.Join(", ", cc.ToArray()) : "",
-                Bcc = bcc.Any() ? string.Join(", ", bcc.ToArray()) : "",
-                Subject = string.IsNullOrEmpty(subject) ? LOREM_IPSUM_SUBJECT : subject,
-                Important = importance,
+                To = string.Join(", ", model.To.ToArray()),
+                Cc = model.Cc.Any() ? string.Join(", ", model.Cc.ToArray()) : "",
+                Bcc = model.Bcc.Any() ? string.Join(", ", model.Bcc.ToArray()) : "",
+                Subject = string.IsNullOrEmpty(model.Subject) ? LOREM_IPSUM_SUBJECT : model.Subject,
+                Important = model.Importance,
                 TextBodyOnly = false,
                 Attachments = new List<MailAttachmentData>(),
                 Size = sampleBody.Length,
@@ -203,14 +187,14 @@ namespace ASC.Mail.Core.Engine
                 Introduction = sampleIntro,
                 Folder = folder,
                 RestoreFolderId = restoreFolder,
-                IsNew = unread,
+                IsNew = model.Unread,
                 StreamId = MailUtil.CreateStreamId(),
-                CalendarUid = calendarUid
+                CalendarUid = model.CalendarUid
             };
 
-            if (!string.IsNullOrEmpty(fromAddress))
+            if (!string.IsNullOrEmpty(model.FromAddress))
             {
-                var from = Parser.ParseAddress(fromAddress);
+                var from = Parser.ParseAddress(model.FromAddress);
 
                 sampleMessage.From = from.ToString();
                 sampleMessage.FromEmail = from.Email;
@@ -221,14 +205,14 @@ namespace ASC.Mail.Core.Engine
                 sampleMessage.FromEmail = mbox.EMail.Address;
             }
 
-            if (tagIds != null && tagIds.Any())
+            if (model.TagIds != null && model.TagIds.Any())
             {
-                sampleMessage.TagIds = tagIds;
+                sampleMessage.TagIds = model.TagIds;
             }
 
             MessageEngine.StoreMailBody(mbox, sampleMessage, Log);
 
-            var id = MessageEngine.MailSave(mbox, sampleMessage, 0, folder, restoreFolder, userFolderId,
+            var id = MessageEngine.MailSave(mbox, sampleMessage, 0, folder, restoreFolder, model.UserFolderId,
                 SAMPLE_UIDL, "", false);
 
             if (!add2Index)
@@ -236,7 +220,7 @@ namespace ASC.Mail.Core.Engine
 
             var message = MessageEngine.GetMessage(id, new MailMessageData.Options());
 
-            message.IsNew = unread;
+            message.IsNew = model.Unread;
 
             var wrapper = message.ToMailWrapper(mbox.TenantId, new Guid(mbox.UserId));
 
@@ -303,8 +287,7 @@ namespace ASC.Mail.Core.Engine
             return replyId;
         }
 
-        public MailAttachmentData AppendAttachmentsToSampleMessage(
-            int? messageId, string filename, Stream stream, string contentType)
+        public MailAttachmentData AppendAttachmentsToSampleMessage(int? messageId, TestAttachmentModel model)
         {
             if (!messageId.HasValue || messageId.Value <= 0)
                 throw new ArgumentException(@"Invalid message id", "messageId");
@@ -317,37 +300,34 @@ namespace ASC.Mail.Core.Engine
             if (!message.Uidl.Equals(SAMPLE_UIDL))
                 throw new Exception("Message is not api sample.");
 
-            if (string.IsNullOrEmpty(filename))
+            if (string.IsNullOrEmpty(model.Filename))
                 throw new Exception("File name is empty.");
 
-            if (stream == null)
+            if (model.Stream == null)
                 throw new Exception("File stream is empty.");
 
-            contentType = string.IsNullOrEmpty(contentType) ? MimeMapping.GetMimeMapping(filename) : contentType;
+            model.ContentType = string.IsNullOrEmpty(model.ContentType) ? MimeMapping.GetMimeMapping(model.Filename) : model.ContentType;
 
-            return MessageEngine.AttachFile(Tenant, User, message, filename, stream, stream.Length, contentType);
+            return MessageEngine.AttachFile(Tenant, User, message, model.Filename, model.Stream, model.Stream.Length, model.ContentType);
         }
 
-        public int LoadSampleMessage(
-            int? folderId,
-            uint? userFolderId,
-            int? mailboxId,
-            bool unread,
-            Stream emlStream,
-            bool add2Index = false)
+        public int LoadSampleMessage(TestMessageModel model, bool add2Index = false)
         {
-            var folder = folderId.HasValue ? (FolderType)folderId.Value : FolderType.Inbox;
+            var folder = model.FolderId.HasValue ? (FolderType)model.FolderId.Value : FolderType.Inbox;
 
             if (!MailFolder.IsIdOk(folder))
                 throw new ArgumentException(@"Invalid folder id", "folderId");
 
-            if (!mailboxId.HasValue)
+            if (!model.MailboxId.HasValue)
                 throw new ArgumentException(@"Invalid mailbox id", "mailboxId");
+
+            if(model.EmlStream == null)
+                throw new ArgumentException(@"Invalid eml stream", "emlStream");
 
             var accounts = AccountEngine.GetAccountInfoList().ToAccountData().ToList();
 
-            var account = mailboxId.HasValue
-                ? accounts.FirstOrDefault(a => a.MailboxId == mailboxId)
+            var account = model.MailboxId.HasValue
+                ? accounts.FirstOrDefault(a => a.MailboxId == model.MailboxId)
                 : accounts.FirstOrDefault(a => a.IsDefault) ?? accounts.FirstOrDefault();
 
             if (account == null)
@@ -359,12 +339,12 @@ namespace ASC.Mail.Core.Engine
             if (mbox == null)
                 throw new ArgumentException("no such mailbox");
 
-            var mimeMessage = MailClient.ParseMimeMessage(emlStream);
+            var mimeMessage = MailClient.ParseMimeMessage(model.EmlStream);
 
             var storage = StorageFactory.GetMailStorage(mbox.TenantId);
 
             var message = MessageEngine.Save(mbox, mimeMessage, SAMPLE_UIDL,
-                new MailFolder(folder, ""), userFolderId, unread, Log);
+                new MailFolder(folder, ""), model.UserFolderId, model.Unread, Log);
 
             if (message == null)
                 return -1;
