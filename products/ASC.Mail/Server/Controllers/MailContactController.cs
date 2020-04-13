@@ -1,6 +1,4 @@
-﻿using ASC.Mail.Core.Dao.Expressions.Contact;
-using ASC.Mail.Enums;
-using ASC.Mail.Extensions;
+﻿using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Web.Api.Routing;
 using Microsoft.AspNetCore.Mvc;
