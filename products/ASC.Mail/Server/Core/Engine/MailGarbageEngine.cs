@@ -39,7 +39,7 @@ using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
 using ASC.Mail.Iterators;
 using ASC.Mail.Models;

@@ -41,7 +41,7 @@ using ASC.Web.Core.Files;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Options;
 
-namespace ASC.Mail.Data.Storage
+namespace ASC.Mail.Storage
 {
     public class StorageManager
     {

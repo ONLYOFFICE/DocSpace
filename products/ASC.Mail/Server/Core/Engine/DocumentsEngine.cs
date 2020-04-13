@@ -30,7 +30,7 @@ using ASC.Common;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;

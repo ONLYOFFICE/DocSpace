@@ -51,7 +51,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using HtmlAgilityPack;
 
 namespace ASC.Mail.Utils

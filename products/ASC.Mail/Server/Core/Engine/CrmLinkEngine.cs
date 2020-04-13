@@ -34,7 +34,7 @@ using ASC.Core;
 using ASC.Data.Storage;
 //using ASC.CRM.Core;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;

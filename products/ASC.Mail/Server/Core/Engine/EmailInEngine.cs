@@ -31,7 +31,7 @@ using System.Net;
 using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Data.Storage;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;

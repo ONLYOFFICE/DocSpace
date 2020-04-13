@@ -36,7 +36,7 @@ using ASC.Security.Cryptography;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Utility;
 
-namespace ASC.Mail.Data.Storage
+namespace ASC.Mail.Storage
 {
     public static class MailStoragePathCombiner
     {

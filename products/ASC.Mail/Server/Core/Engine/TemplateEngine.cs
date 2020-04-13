@@ -33,7 +33,7 @@ using ASC.Core;
 using ASC.Core.Notify.Signalr;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Models;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Utils;

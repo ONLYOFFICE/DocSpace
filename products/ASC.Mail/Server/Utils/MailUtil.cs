@@ -37,7 +37,7 @@ using System.Web;
 using System.Xml;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Mail.Data.Imap;
+using ASC.Mail.Clients.Imap;
 using ASC.Mail.Models;
 using ASC.Security.Cryptography;
 using HtmlAgilityPack;

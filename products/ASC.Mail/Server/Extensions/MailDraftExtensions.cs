@@ -34,7 +34,7 @@ using ASC.Common.Logging;
 using ASC.Files.Core;
 using ASC.Mail.Models;
 using ASC.Mail.Models.Base;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Utils;
 using ASC.Web.Files.Services.WCFService;

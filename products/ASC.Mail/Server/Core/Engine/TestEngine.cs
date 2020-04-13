@@ -41,7 +41,7 @@ using MailMessage = ASC.Mail.Models.MailMessageData;
 using ASC.Core;
 using Microsoft.Extensions.Options;
 using ASC.Data.Storage;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Common;
 
 namespace ASC.Mail.Core.Engine

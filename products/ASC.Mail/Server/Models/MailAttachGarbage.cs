@@ -1,4 +1,4 @@
-﻿using ASC.Mail.Data.Storage;
+﻿using ASC.Mail.Storage;
 using ASC.Mail.Models.Base;
 using System;
 using System.Collections.Generic;

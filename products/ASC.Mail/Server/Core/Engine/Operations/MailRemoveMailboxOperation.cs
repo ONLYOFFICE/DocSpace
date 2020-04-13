@@ -28,7 +28,7 @@ using System;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 

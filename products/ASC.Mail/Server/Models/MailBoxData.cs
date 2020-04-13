@@ -35,7 +35,7 @@ using ASC.FederatedLogin.Helpers;
 using ASC.FederatedLogin.LoginProviders;
 using ASC.Mail.Authorization;
 //using ASC.Mail.Authorization;
-using ASC.Mail.Data.Imap;
+using ASC.Mail.Clients.Imap;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 using Newtonsoft.Json;

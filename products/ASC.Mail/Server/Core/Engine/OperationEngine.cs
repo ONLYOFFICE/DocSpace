@@ -38,7 +38,7 @@ using ASC.Mail.Models;
 using SecurityContext = ASC.Core.SecurityContext;
 using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Common;
 using ASC.ElasticSearch;
 

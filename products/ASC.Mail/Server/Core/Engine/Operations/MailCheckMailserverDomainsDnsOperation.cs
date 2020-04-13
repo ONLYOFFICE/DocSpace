@@ -30,7 +30,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Extensions;
 using Microsoft.Extensions.Options;
 

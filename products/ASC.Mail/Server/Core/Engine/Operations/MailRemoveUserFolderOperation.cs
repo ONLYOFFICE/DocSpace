@@ -31,7 +31,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.UserFolder;
 using ASC.Mail.Core.Engine.Operations.Base;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;

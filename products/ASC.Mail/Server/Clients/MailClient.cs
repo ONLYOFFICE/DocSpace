@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading;
 using ASC.Common.Logging;
 using ASC.Mail.Models;
-using ASC.Mail.Data.Imap;
+using ASC.Mail.Clients.Imap;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using MailKit;

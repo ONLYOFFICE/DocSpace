@@ -35,7 +35,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Models;
 using ASC.Mail.Utils;

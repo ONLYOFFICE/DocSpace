@@ -35,7 +35,7 @@ using ASC.Common.Security.Authorizing;
 using ASC.Common.Threading;
 using ASC.Core;
 using ASC.Core.Tenants;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using Microsoft.Extensions.Options;
 using SecurityContext = ASC.Core.SecurityContext;
 

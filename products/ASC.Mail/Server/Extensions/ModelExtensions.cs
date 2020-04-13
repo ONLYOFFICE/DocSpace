@@ -35,7 +35,7 @@ using ASC.Mail.Enums;
 //using ASC.Web.Studio.Utility;
 using ContactInfo = ASC.Mail.Models.ContactInfo;
 using ASC.Web.Studio.Utility;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Data.Storage;
 
 namespace ASC.Mail.Extensions

@@ -31,7 +31,7 @@ using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.Files.Classes;
 
-namespace ASC.Mail.Data.Storage
+namespace ASC.Mail.Storage
 {
     public static class ContactPhotoManager
     {

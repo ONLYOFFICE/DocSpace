@@ -42,7 +42,7 @@ using ASC.Mail.Core.Dao.Expressions.Conversation;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Dao.Interfaces;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;

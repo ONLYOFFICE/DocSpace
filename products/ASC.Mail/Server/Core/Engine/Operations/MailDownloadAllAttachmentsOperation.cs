@@ -36,7 +36,7 @@ using ASC.Core;
 using ASC.Mail.Resources;
 using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Web.Core.Files;
 using ASC.Files.Core;
 using ASC.Data.Storage;

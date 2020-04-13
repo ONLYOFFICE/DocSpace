@@ -34,7 +34,7 @@ using ASC.Mail.Core.Engine.Operations.Base;
 using ASC.Mail.Models;
 using ASC.Mail.Enums;
 using Microsoft.Extensions.Options;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 
 namespace ASC.Mail.Core.Engine.Operations
 {

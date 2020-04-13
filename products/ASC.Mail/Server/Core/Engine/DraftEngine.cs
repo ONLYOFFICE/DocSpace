@@ -44,7 +44,7 @@ using ASC.Mail.Core.Dao.Expressions.Contact;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Exceptions;
 using ASC.Mail.Extensions;

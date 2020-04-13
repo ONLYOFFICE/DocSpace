@@ -26,7 +26,7 @@
 
 using System;
 
-namespace ASC.Mail.Data.Imap
+namespace ASC.Mail.Clients.Imap
 {
     public class UidInterval
     {

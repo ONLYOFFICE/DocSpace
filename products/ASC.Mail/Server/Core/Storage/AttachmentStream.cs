@@ -27,7 +27,7 @@
 using System;
 using System.IO;
 
-namespace ASC.Mail.Data.Storage
+namespace ASC.Mail.Storage
 {
     public class AttachmentStream : IDisposable
     {

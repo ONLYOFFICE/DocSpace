@@ -33,7 +33,7 @@ using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Utils;
 using Microsoft.Extensions.Options;

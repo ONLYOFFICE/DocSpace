@@ -27,7 +27,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASC.Mail.Data.Imap
+namespace ASC.Mail.Clients.Imap
 {
     public class ImapFolderUids
     {

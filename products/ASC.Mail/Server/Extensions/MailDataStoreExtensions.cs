@@ -27,7 +27,7 @@
 using System.Globalization;
 using ASC.Data.Storage;
 
-namespace ASC.Mail.Data.Storage
+namespace ASC.Mail.Storage
 {
     public static class MailDataStoreExtensions
     {

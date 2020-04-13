@@ -38,7 +38,7 @@ using ASC.Data.Storage;
 using ASC.Mail.Core.Dao.Expressions.Attachment;
 using ASC.Mail.Core.Dao.Expressions.Mailbox;
 using ASC.Mail.Core.Dao.Expressions.Message;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Enums;
 using ASC.Mail.Extensions;
 using ASC.Mail.Models;

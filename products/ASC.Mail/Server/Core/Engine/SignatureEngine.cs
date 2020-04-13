@@ -31,7 +31,7 @@ using ASC.Core;
 using ASC.Core.Common.EF;
 using ASC.Mail.Core.Dao;
 using ASC.Mail.Core.Entities;
-using ASC.Mail.Data.Storage;
+using ASC.Mail.Storage;
 using ASC.Mail.Models;
 using Microsoft.Extensions.Options;
 using System;
