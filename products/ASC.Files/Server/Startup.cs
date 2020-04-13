@@ -8,6 +8,7 @@ using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Common.DependencyInjection;
 using ASC.Common.Logging;
+using ASC.Web.Files;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -81,7 +82,8 @@ namespace ASC.Files
 
             diHelper
                 .AddDocumentsControllerService()
-                .AddEncryptionControllerService();
+                .AddEncryptionControllerService()
+                .AddFileHandlerService();
 
             services.AddAutofac(Configuration, HostEnvironment.ContentRootPath);
         }
@@ -119,6 +121,13 @@ namespace ASC.Files
                 endpoints.MapControllers();
                 endpoints.MapCustom();
             });
+
+            app.MapWhen(
+                context => context.Request.Path.ToString().EndsWith("httphandlers/filehandler.ashx"),
+                appBranch =>
+                {
+                    appBranch.UseFileHandler();
+                });
 
             app.UseStaticFiles();
         }
