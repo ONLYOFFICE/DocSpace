@@ -117,7 +117,7 @@ class FilesRowContent extends React.PureComponent {
           toastr.error("Something went wrong", err);
           onLoading(false);
         })
-        .finally(() => onLoading(false));
+        //.finally(() => onLoading(false));
     }
   };
 

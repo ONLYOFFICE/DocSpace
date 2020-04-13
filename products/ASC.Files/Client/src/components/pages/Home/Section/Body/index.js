@@ -284,7 +284,7 @@ class SectionBodyContent extends React.PureComponent {
         })}
       </RowContainer>
     ) : parentId !== 0 ? (
-      <EmptyFolderContainer parentId={parentId} filter={filter} setAction={this.props.setAction} />
+      <EmptyFolderContainer parentId={parentId} filter={filter} setAction={this.props.setAction} onLoading={onLoading} />
     ) : <p>RootFolderContainer</p>;
   }
 }

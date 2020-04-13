@@ -51,8 +51,10 @@ const EmptyFolderContainer = props => {
   }
 
   const onBackToParentFolder = () => {
-    const newFilter = props.filter.clone();
-    fetchFiles(props.parentId, newFilter, store.dispatch);
+    const { filter, parentId, onLoading } = props;
+    const newFilter = filter.clone();
+    onLoading(true);
+    fetchFiles(parentId, newFilter, store.dispatch).finally(() => onLoading(false));
   };
 
   return (

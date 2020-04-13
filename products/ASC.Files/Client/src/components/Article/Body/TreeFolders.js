@@ -58,10 +58,11 @@ class TreeFolders extends React.Component {
 
   onSelect = data => {
     if (this.props.selectedKeys[0] !== data[0]) {
+      this.props.onLoading(true);
       const newFilter = this.props.filter.clone();
       fetchFiles(data[0], newFilter, store.dispatch).catch(err =>
         toastr.error("Something went wrong", err)
-      );
+      ).finally(() => this.props.onLoading(false));
     }
 
     //this.props.selectFolder(data && data.length === 1 && data[0] !== "root" ? data[0] : null);
@@ -171,13 +172,13 @@ class TreeFolders extends React.Component {
   };
 
   componentDidUpdate(prevProps) {
-    const { expandedKeys, data } = this.props;
+    const { expandedKeys, data, onLoading } = this.props;
     if (this.state.expandedKeys.length !== expandedKeys.length) {
-      this.setState({ expandedKeys });
+      this.setState({ expandedKeys }, () => onLoading(false));
     }
 
     if (!utils.array.isArrayEqual(prevProps.data, data)) {
-      this.setState({ treeData: data });
+      this.setState({ treeData: data }, () => onLoading(false));
     }
   }
 
