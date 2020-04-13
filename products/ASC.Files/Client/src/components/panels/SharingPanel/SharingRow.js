@@ -221,7 +221,7 @@ const SharingRow = (props) => {
         >
           {t(linkText)}
         </LinkWithDropdown>
-        {
+        {/*
           <ComboBox
             className="sharing_panel-link-combo-box"
             options={options}
@@ -234,6 +234,7 @@ const SharingRow = (props) => {
             size="content"
             onSelect={(option) => console.log("selected", option)}
           />
+          */
         }
       </>
     </Row>

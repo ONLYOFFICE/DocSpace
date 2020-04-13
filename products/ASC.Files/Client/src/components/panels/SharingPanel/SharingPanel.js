@@ -75,7 +75,7 @@ class SharingPanelComponent extends React.Component {
     this.setState({ showActionPanel: !this.state.showActionPanel });
   };
 
-  onKeyClick = () => console.log("onKeyClick");
+  //onKeyClick = () => console.log("onKeyClick");
 
   onSaveClick = () => {
     toastr.success("onSaveClick");
@@ -656,11 +656,11 @@ class SharingPanelComponent extends React.Component {
                   </DropDown>
                 </div>
 
-                <IconButton
+                {/*<IconButton
                   size="16"
                   iconName="KeyIcon"
                   onClick={this.onKeyClick}
-                />
+                />*/}
               </div>
             </StyledSharingHeaderContent>
             <StyledSharingBody>
