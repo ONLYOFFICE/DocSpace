@@ -25,7 +25,7 @@
 
 
 using System;
-using ASC.Mail.Data.Contracts;
+using ASC.Mail.Models;
 using ASC.Mail.Utils;
 using NUnit.Framework;
 

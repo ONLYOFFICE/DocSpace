@@ -26,7 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using ASC.Mail.Data.Imap;
+using ASC.Mail.Clients.Imap;
 using ASC.Mail.Utils;
 using NUnit.Framework;
 

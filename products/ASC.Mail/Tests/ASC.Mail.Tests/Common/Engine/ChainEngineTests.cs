@@ -1,892 +1,1070 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using ASC.Core;
-using ASC.Core.Users;
-using ASC.ElasticSearch;
-using ASC.Mail.Aggregator.Tests.Common.Utils;
-using ASC.Mail.Aggregator.Tests.Utils;
-using ASC.Mail.Core;
-using ASC.Mail.Data.Contracts;
-using ASC.Mail.Data.Search;
-using ASC.Mail.Enums;
-using ASC.Mail.Utils;
-using ASC.Specific;
-using NUnit.Framework;
-
-namespace ASC.Mail.Aggregator.Tests.Common.Engine
-{
-    [TestFixture]
-    internal class ChainEngineTests
-    {
-        private const int CURRENT_TENANT = 0;
-        public const string PASSWORD = "123456";
-        public const string DOMAIN = "gmail.com";
-
-        private static readonly string TestFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-           @"..\..\Data\");
-        private const string EML1_FILE_NAME = @"bad_encoding.eml";
-        private static readonly string Eml1Path = TestFolderPath + EML1_FILE_NAME;
-
-        public UserInfo TestUser { get; private set; }
-        private EngineFactory _engineFactory;
-        private MailBoxData _testMailbox;
-        private int _mailId;
-
-        [SetUp]
-        public void SetUp()
-        {
-            CoreContext.TenantManager.SetCurrentTenant(CURRENT_TENANT);
-            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-
-            TestUser = TestHelper.CreateNewRandomEmployee();
-
-            _engineFactory = new EngineFactory(CURRENT_TENANT, TestUser.ID.ToString());
-
-            var mailboxSettings = _engineFactory.MailBoxSettingEngine.GetMailBoxSettings(DOMAIN);
-
-            var testMailboxes = mailboxSettings.ToMailboxList(TestUser.Email, PASSWORD, CURRENT_TENANT, TestUser.ID.ToString());
-
-            _testMailbox = testMailboxes.FirstOrDefault();
-
-            if (_testMailbox == null || !_engineFactory.MailboxEngine.SaveMailBox(_testMailbox))
-            {
-                throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
-            }
-        }
-
-        [TearDown]
-        public void CleanUp()
-        {
-            if (TestUser == null || TestUser.ID == Guid.Empty)
-                return;
-
-            CoreContext.TenantManager.SetCurrentTenant(CURRENT_TENANT);
-
-            SecurityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
-
-            CoreContext.UserManager.DeleteUser(TestUser.ID);
-
-            FactoryIndexer<MailWrapper>.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
-
-            // Clear TestUser1 mail data
-            var eraser = _engineFactory.MailGarbageEngine;
-
-            eraser.ClearUserMail(TestUser.ID, CoreContext.TenantManager.GetCurrentTenant());
-        }
+///*
+// *
+// * (c) Copyright Ascensio System Limited 2010-2020
+// *
+// * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
+// * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
+// * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
+// * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
+// *
+// * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
+// * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
+// *
+// * You can contact Ascensio System SIA by email at sales@onlyoffice.com
+// *
+// * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
+// * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
+// *
+// * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
+// * relevant author attributions when distributing the software. If the display of the logo in its graphic 
+// * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
+// * in every copy of the program you distribute. 
+// * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
+// *
+//*/
+
+
+//using System;
+//using System.Collections.Generic;
+//using System.IO;
+//using System.Linq;
+//using ASC.Core;
+//using ASC.Core.Users;
+//using ASC.ElasticSearch;
+//using ASC.Mail.Aggregator.Tests.Common.Utils;
+//using ASC.Mail.Aggregator.Tests.Utils;
+//using ASC.Mail.Models;
+//using ASC.Mail.Enums;
+//using ASC.Mail.Utils;
+//using NUnit.Framework;
+//using Microsoft.Extensions.DependencyInjection;
+//using ASC.Mail.Core.Engine;
+
+//namespace ASC.Mail.Aggregator.Tests.Common.Engine
+//{
+//    [TestFixture]
+//    internal class ChainEngineTests
+//    {
+//        private const int CURRENT_TENANT = 0;
+//        public const string PASSWORD = "123456";
+//        public const string DOMAIN = "gmail.com";
+
+//        private static readonly string TestFolderPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+//           @"..\..\Data\");
+//        private const string EML1_FILE_NAME = @"bad_encoding.eml";
+//        private static readonly string Eml1Path = TestFolderPath + EML1_FILE_NAME;
+
+//        public UserInfo TestUser { get; private set; }
+//        private MailBoxData _testMailbox;
+//        private int _mailId;
+
+//        IServiceProvider ServiceProvider { get; set; }
+
+//        [SetUp]
+//        public void SetUp()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+//            var mailBoxSettingEngine = scope.ServiceProvider.GetService<MailBoxSettingEngine>();
+//            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+
+//            tenantManager.SetCurrentTenant(CURRENT_TENANT);
+//            securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
+
+//            TestUser = TestHelper.CreateNewRandomEmployee();
+
+//            var mailboxSettings = mailBoxSettingEngine.GetMailBoxSettings(DOMAIN);
+
+//            var testMailboxes = mailboxSettings.ToMailboxList(TestUser.Email, PASSWORD, CURRENT_TENANT, TestUser.ID.ToString());
+
+//            _testMailbox = testMailboxes.FirstOrDefault();
+
+//            if (_testMailbox == null || !mailboxEngine.SaveMailBox(_testMailbox))
+//            {
+//                throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
+//            }
+//        }
+
+//        [TearDown]
+//        public void CleanUp()
+//        {
+//            if (TestUser == null || TestUser.ID == Guid.Empty)
+//                return;
+
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+//            var factoryIndexer = scope.ServiceProvider.GetService<FactoryIndexer<MailWrapper>>();
+//            var mailGarbageEngine = scope.ServiceProvider.GetService<MailGarbageEngine>();
 
-        [Test]
-        public void RemoveConversationTest()
-        {
-            var folders = _engineFactory.FolderEngine.GetFolders();
+//            tenantManager.SetCurrentTenant(CURRENT_TENANT);
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+//            securityContext.AuthenticateMe(ASC.Core.Configuration.Constants.CoreSystem);
 
-            using (var fs = new FileStream(Eml1Path, FileMode.Open, FileAccess.Read))
-            {
-                _mailId = _engineFactory.TestEngine.LoadSampleMessage((int)FolderType.Inbox, null, _testMailbox.MailBoxId, true, fs, true);
-            }
+//            userManager.DeleteUser(TestUser.ID);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            factoryIndexer.DeleteAsync(s => s.Where(m => m.UserId, TestUser.ID)).Wait();
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 1 && f.unreadMessages == 1 && f.total == 1 && f.unread == 1));
+//            // Clear TestUser1 mail data
 
-            _engineFactory.MessageEngine.SetRemoved(new List<int> { _mailId });
+//            mailGarbageEngine.ClearUserMail(TestUser.ID, tenantManager.GetCurrentTenant());
+//        }
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//        [Test]
+//        public void RemoveConversationTest()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
-        }
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>(); 
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-        [Test]
-        public void ReadUnreadConvarsationsTest()
-        {
-            // Bug 34937
-            var folders = _engineFactory.FolderEngine.GetFolders();
+//            var folders = folderEngine.GetFolders();
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
 
-            var id1 = _engineFactory.TestEngine.CreateSampleMessage((int?)FolderType.Inbox, _testMailbox.MailBoxId,
-                new List<string> { _testMailbox.EMailView }, new List<string>(), new List<string>(), false, true, "Test subject",
-                "Test body", add2Index: true);
+//            using (var fs = new FileStream(Eml1Path, FileMode.Open, FileAccess.Read))
+//            {
+//                var model = new TestMessageModel
+//                {
+//                   FolderId = (int)FolderType.Inbox,
+//                   UserFolderId = null,
+//                   MailboxId = _testMailbox.MailBoxId,
+//                   Unread = true,
+//                   EmlStream = fs
+//                };
 
-            Assert.Greater(id1, 0);
+//                _mailId = testEngine.LoadSampleMessage(model, true);
+//            }
 
-            var id2 = _engineFactory.TestEngine.CreateReplyToSampleMessage(id1, "Test Reply body", true);
+//            folders = folderEngine.GetFolders();
 
-            Assert.Greater(id2, 0);
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 1 && f.unreadMessages == 1 && f.total == 1 && f.unread == 1));
 
-            var chainMessages = _engineFactory.ChainEngine.GetConversationMessages(_testMailbox.TenantId, _testMailbox.UserId, id1, false,
-                false, false);
+//            messageEngine.SetRemoved(new List<int> { _mailId });
 
-            Assert.AreEqual(2, chainMessages.Count);
-            Assert.Contains(id1, chainMessages.Select(m => m.Id).ToArray());
-            Assert.Contains(id2, chainMessages.Select(m => m.Id).ToArray());
+//            folders = folderEngine.GetFolders();
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+//        }
 
-            var inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
+//        [Test]
+//        public void ReadUnreadConvarsationsTest()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            Assert.IsNotNull(inbox);
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(1, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(1, inbox.unread);
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            var sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
+//            // Bug 34937
+//            var folders = folderEngine.GetFolders();
 
-            Assert.IsNotNull(sent);
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
 
-            //5) make all letters read in the inbox
-            _engineFactory.MessageEngine.SetUnread(new List<int> { id1 }, false, true);
+//            var model = new TestMessageModel
+//            {
+//                FolderId = (int)FolderType.Inbox,
+//                UserFolderId = null,
+//                MailboxId = _testMailbox.MailBoxId,
+//                Unread = true,
+//                To = new List<string> { _testMailbox.EMailView },
+//                Cc = new List<string>(),
+//                Bcc = new List<string>(),
+//                Subject = "Test subject",
+//                Body = "Test body"
+//            };
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            var id1 = testEngine.CreateSampleMessage(model, add2Index: true);
 
-            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
+//            Assert.Greater(id1, 0);
 
-            Assert.IsNotNull(inbox);
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            var id2 = testEngine.CreateReplyToSampleMessage(id1, "Test Reply body", true);
 
-            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
+//            Assert.Greater(id2, 0);
 
-            Assert.IsNotNull(sent);
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            var chainMessages = messageEngine.GetConversationMessages(_testMailbox.TenantId, _testMailbox.UserId, id1, false,
+//                false, false);
 
-            //7) make all letters read in Sent
-            _engineFactory.MessageEngine.SetUnread(new List<int> { id2 }, false, true);
+//            Assert.AreEqual(2, chainMessages.Count);
+//            Assert.Contains(id1, chainMessages.Select(m => m.Id).ToArray());
+//            Assert.Contains(id2, chainMessages.Select(m => m.Id).ToArray());
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            folders = folderEngine.GetFolders();
 
-            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
+//            var inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
 
-            Assert.IsNotNull(inbox);
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            Assert.IsNotNull(inbox);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(1, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(1, inbox.unread);
 
-            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
+//            var sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
 
-            Assert.IsNotNull(sent);
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            Assert.IsNotNull(sent);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
 
-            //8) make an unread letter in any chain (in Sent)
-            _engineFactory.MessageEngine.SetUnread(new List<int> { id2 }, true);
+//            //5) make all letters read in the inbox
+//            messageEngine.SetUnread(new List<int> { id1 }, false, true);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            folders = folderEngine.GetFolders();
 
-            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
+//            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
 
-            Assert.IsNotNull(inbox);
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            Assert.IsNotNull(inbox);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
 
-            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
+//            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
 
-            Assert.IsNotNull(sent);
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(1, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(1, sent.unread);
+//            Assert.IsNotNull(sent);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
 
-            //10) click on the unread letter in the Inbox
-            chainMessages = _engineFactory.ChainEngine.GetConversationMessages(_testMailbox.TenantId, _testMailbox.UserId, id1, false,
-                false, false, true); // last param is markRead = true - equals to open unread conversation
+//            //7) make all letters read in Sent
+//            messageEngine.SetUnread(new List<int> { id2 }, false, true);
 
-            Assert.IsNotEmpty(chainMessages);
+//            folders = folderEngine.GetFolders();
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
 
-            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
+//            Assert.IsNotNull(inbox);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
 
-            Assert.IsNotNull(inbox);
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
 
-            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
+//            Assert.IsNotNull(sent);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
 
-            Assert.IsNotNull(sent);
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
-        }
+//            //8) make an unread letter in any chain (in Sent)
+//            messageEngine.SetUnread(new List<int> { id2 }, true);
 
-        private void CreateFakeMails(int count, bool unread = false)
-        {
-            for (var i = 0; i < count; i++)
-            {
-                var text = string.Format("[TEST MAIL {0}]", i);
+//            folders = folderEngine.GetFolders();
 
-                var toAddress = string.Format("to{0}@to.com", i);
+//            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
 
-                var date = i == 0 ? DateTime.Now : DateTime.Now.AddMinutes(-i);
+//            Assert.IsNotNull(inbox);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
 
-                var id = _engineFactory.TestEngine.CreateSampleMessage((int)FolderType.Inbox, _testMailbox.MailBoxId,
-                    new List<string> { toAddress }, new List<string>(), new List<string>(), false, unread,
-                    text, text, date: date, add2Index: true);
+//            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
 
-                Assert.Greater(id, 0);
-            }
+//            Assert.IsNotNull(sent);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(1, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(1, sent.unread);
 
-            // Wait for some time to index all new messages
-            // Thread.Sleep(TimeSpan.FromSeconds(count));
-        }
+//            //10) click on the unread letter in the Inbox
+//            chainMessages = messageEngine.GetConversationMessages(_testMailbox.TenantId, _testMailbox.UserId, id1, false,
+//                false, false, true); // last param is markRead = true - equals to open unread conversation
 
-        [Test]
-        public void Paging25Total28Test()
-        {
-            const int page_size = 25;
-            const int last_page_count = 3;
+//            Assert.IsNotEmpty(chainMessages);
 
-            const int n = page_size + last_page_count;
+//            folders = folderEngine.GetFolders();
 
-            CreateFakeMails(n);
+//            inbox = folders.FirstOrDefault(f => f.id == FolderType.Inbox);
 
-            // Go to Inbox
+//            Assert.IsNotNull(inbox);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING,
-                FromMessage = 0
-            };
+//            sent = folders.FirstOrDefault(f => f.id == FolderType.Sent);
 
-            bool hasMore;
+//            Assert.IsNotNull(sent);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
+//        }
 
-            var chains0 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//        private void CreateFakeMails(int count, bool unread = false)
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            Assert.IsNotEmpty(chains0);
-            Assert.AreEqual(page_size, chains0.Count);
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
 
-            // Go to next page
 
-            var last = chains0.Last();
+//            for (var i = 0; i < count; i++)
+//            {
+//                var text = string.Format("[TEST MAIL {0}]", i);
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//                var toAddress = string.Format("to{0}@to.com", i);
 
-            var chainsNext = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//                var date = i == 0 ? DateTime.Now : DateTime.Now.AddMinutes(-i);
 
-            Assert.IsNotEmpty(chainsNext);
-            Assert.AreEqual(last_page_count, chainsNext.Count);
+//                var model = new TestMessageModel
+//                {
+//                    FolderId = (int)FolderType.Inbox,
+//                    MailboxId = _testMailbox.MailBoxId,
+//                    Unread = unread,
+//                    To = new List<string> { toAddress },
+//                    Cc = new List<string>(),
+//                    Bcc = new List<string>(),
+//                    Subject = text,
+//                    Body = text,
+//                    Date = date
+//                };
 
-            var first = chainsNext.First();
+//                var id = testEngine.CreateSampleMessage(model, add2Index: true);
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//                Assert.Greater(id, 0);
+//            }
 
-            var chainsPrev = _engineFactory.ChainEngine.GetConversations(
-                filter,
-                out hasMore);
+//            // Wait for some time to index all new messages
+//            // Thread.Sleep(TimeSpan.FromSeconds(count));
+//        }
 
-            Assert.IsNotEmpty(chainsPrev);
-            Assert.AreEqual(page_size, chainsPrev.Count);
-            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
-            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
-        }
+//        [Test]
+//        public void Paging25Total28Test()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-        [Test]
-        public void Paging50Total57Test()
-        {
-            const int page_size = 50;
-            const int last_page_count = 7;
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            const int n = page_size + last_page_count;
+//            const int page_size = 25;
+//            const int last_page_count = 3;
 
-            CreateFakeMails(n);
+//            const int n = page_size + last_page_count;
 
-            // Go to Inbox
+//            CreateFakeMails(n);
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING,
-                FromMessage = 0
-            };
+//            // Go to Inbox
 
-            bool hasMore;
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING,
+//                FromMessage = 0
+//            };
 
-            var chains0 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            bool hasMore;
 
-            Assert.IsNotEmpty(chains0);
-            Assert.AreEqual(page_size, chains0.Count);
+//            var chains0 = messageEngine.GetConversations(filter, out hasMore);
 
-            // Go to next page
+//            Assert.IsNotEmpty(chains0);
+//            Assert.AreEqual(page_size, chains0.Count);
 
-            var last = chains0.Last();
+//            // Go to next page
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//            var last = chains0.Last();
 
-            var chainsNext = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            Assert.IsNotEmpty(chainsNext);
-            Assert.AreEqual(last_page_count, chainsNext.Count);
+//            var chainsNext = messageEngine.GetConversations(filter, out hasMore);
 
-            var first = chainsNext.First();
+//            Assert.IsNotEmpty(chainsNext);
+//            Assert.AreEqual(last_page_count, chainsNext.Count);
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            var first = chainsNext.First();
 
-            var chainsPrev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            Assert.IsNotEmpty(chainsPrev);
-            Assert.AreEqual(page_size, chainsPrev.Count);
-            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
-            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
-        }
+//            var chainsPrev = messageEngine.GetConversations(
+//                filter,
+//                out hasMore);
 
-        [Test]
-        public void Paging75Total80Test()
-        {
-            const int page_size = 75;
-            const int last_page_count = 5;
+//            Assert.IsNotEmpty(chainsPrev);
+//            Assert.AreEqual(page_size, chainsPrev.Count);
+//            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
+//            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
+//        }
 
-            const int n = page_size + last_page_count;
+//        [Test]
+//        public void Paging50Total57Test()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            CreateFakeMails(n);
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            // Go to Inbox
+//            const int page_size = 50;
+//            const int last_page_count = 7;
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING,
-                FromMessage = 0
-            };
+//            const int n = page_size + last_page_count;
 
-            bool hasMore;
+//            CreateFakeMails(n);
 
-            var chains0 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            // Go to Inbox
 
-            Assert.IsNotEmpty(chains0);
-            Assert.AreEqual(page_size, chains0.Count);
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING,
+//                FromMessage = 0
+//            };
 
-            // Go to next page
 
-            var last = chains0.Last();
+//            var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//            Assert.IsNotEmpty(chains0);
+//            Assert.AreEqual(page_size, chains0.Count);
 
-            var chainsNext = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            // Go to next page
 
-            Assert.IsNotEmpty(chainsNext);
-            Assert.AreEqual(last_page_count, chainsNext.Count);
+//            var last = chains0.Last();
 
-            var first = chainsNext.First();
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            var chainsNext = messageEngine.GetConversations(filter, out hasMore);
 
-            var chainsPrev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            Assert.IsNotEmpty(chainsNext);
+//            Assert.AreEqual(last_page_count, chainsNext.Count);
 
-            Assert.IsNotEmpty(chainsPrev);
-            Assert.AreEqual(page_size, chainsPrev.Count);
-            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
-            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
-        }
+//            var first = chainsNext.First();
 
-        [Test]
-        public void Paging100Total113Test()
-        {
-            const int page_size = 100;
-            const int last_page_count = 13;
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            const int n = page_size + last_page_count;
+//            var chainsPrev = messageEngine.GetConversations(filter, out hasMore);
 
-            CreateFakeMails(n);
+//            Assert.IsNotEmpty(chainsPrev);
+//            Assert.AreEqual(page_size, chainsPrev.Count);
+//            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
+//            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
+//        }
 
-            // Go to Inbox
+//        [Test]
+//        public void Paging75Total80Test()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING,
-                FromMessage = 0
-            };
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            bool hasMore;
+//            const int page_size = 75;
+//            const int last_page_count = 5;
 
-            var chains0 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            const int n = page_size + last_page_count;
 
-            Assert.IsNotEmpty(chains0);
-            Assert.AreEqual(page_size, chains0.Count);
+//            CreateFakeMails(n);
 
-            // Go to next page
+//            // Go to Inbox
 
-            var last = chains0.Last();
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING,
+//                FromMessage = 0
+//            };
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
 
-            var chainsNext = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
-            Assert.IsNotEmpty(chainsNext);
-            Assert.AreEqual(last_page_count, chainsNext.Count);
+//            Assert.IsNotEmpty(chains0);
+//            Assert.AreEqual(page_size, chains0.Count);
 
-            var first = chainsNext.First();
+//            // Go to next page
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            var last = chains0.Last();
 
-            var chainsPrev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            filter.FromDate =last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            Assert.IsNotEmpty(chainsPrev);
-            Assert.AreEqual(page_size, chainsPrev.Count);
-            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
-            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
-        }
+//            var chainsNext = messageEngine.GetConversations(filter, out hasMore);
 
-        [Test]
-        public void Paging25Total74Test()
-        {
-            const int page_size = 25;
-            const int last_page_count = 8;
+//            Assert.IsNotEmpty(chainsNext);
+//            Assert.AreEqual(last_page_count, chainsNext.Count);
 
-            const int n = page_size * 2 + last_page_count;
+//            var first = chainsNext.First();
 
-            CreateFakeMails(n);
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            // Go to 1 page
+//            var chainsPrev = messageEngine.GetConversations(filter, out hasMore);
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING
-            };
+//            Assert.IsNotEmpty(chainsPrev);
+//            Assert.AreEqual(page_size, chainsPrev.Count);
+//            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
+//            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
+//        }
 
-            bool hasMore;
+//        [Test]
+//        public void Paging100Total113Test()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            var chains1 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            Assert.IsNotEmpty(chains1);
-            Assert.AreEqual(page_size, chains1.Count);
+//            const int page_size = 100;
+//            const int last_page_count = 13;
 
-            // Go to 2 page
+//            const int n = page_size + last_page_count;
 
-            var last = chains1.Last();
+//            CreateFakeMails(n);
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//            // Go to Inbox
 
-            var chains2 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING,
+//                FromMessage = 0
+//            };
 
-            Assert.IsNotEmpty(chains2);
-            Assert.AreEqual(page_size, chains2.Count);
+//            bool hasMore;
 
-            // Go to 3 page
+//            var chains0 = messageEngine.GetConversations(filter, out hasMore);
 
-            last = chains2.Last();
+//            Assert.IsNotEmpty(chains0);
+//            Assert.AreEqual(page_size, chains0.Count);
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//            // Go to next page
 
-            var chains3 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var last = chains0.Last();
 
-            Assert.IsNotEmpty(chains3);
-            Assert.AreEqual(last_page_count, chains3.Count);
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            // Go back to 2 page
+//            var chainsNext = messageEngine.GetConversations(filter, out hasMore);
 
-            var first = chains3.First();
+//            Assert.IsNotEmpty(chainsNext);
+//            Assert.AreEqual(last_page_count, chainsNext.Count);
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            var first = chainsNext.First();
 
-            var chains2Prev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            Assert.IsNotEmpty(chains2Prev);
-            Assert.AreEqual(page_size, chains2Prev.Count);
+//            var chainsPrev = messageEngine.GetConversations(filter, out hasMore);
 
-            Assert.AreEqual(chains2.First().Id, chains2Prev.First().Id);
-            Assert.AreEqual(chains2.Last().Id, chains2Prev.Last().Id);
+//            Assert.IsNotEmpty(chainsPrev);
+//            Assert.AreEqual(page_size, chainsPrev.Count);
+//            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
+//            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
+//        }
 
-            // Go back to 1 page
+//        [Test]
+//        public void Paging25Total74Test()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            first = chains2Prev.First();
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            const int page_size = 25;
+//            const int last_page_count = 8;
 
-            var chains1Prev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            const int n = page_size * 2 + last_page_count;
 
-            Assert.IsNotEmpty(chains1Prev);
-            Assert.AreEqual(page_size, chains1Prev.Count);
+//            CreateFakeMails(n);
 
-            Assert.AreEqual(chains1.First().Id, chains1Prev.First().Id);
-            Assert.AreEqual(chains1.Last().Id, chains1Prev.Last().Id);
-        }
+//            // Go to 1 page
 
-        [Test, IgnoreIfFullTextSearch(enabled: false)]
-        public void Paging25Total28UnreadTest()
-        {
-            const int page_size = 25;
-            const int last_page_count = 3;
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING
+//            };
 
-            const int n = page_size + last_page_count;
+//            var chains1 = messageEngine.GetConversations(filter, out bool hasMore);
 
-            CreateFakeMails(n, true);
+//            Assert.IsNotEmpty(chains1);
+//            Assert.AreEqual(page_size, chains1.Count);
 
-            // Go to 1 page
+//            // Go to 2 page
 
-            var filter = new MailSearchFilterData
-            {
-                PrimaryFolder = FolderType.Inbox,
-                PageSize = page_size,
-                Sort = Defines.ORDER_BY_DATE_CHAIN,
-                SortOrder = Defines.DESCENDING,
-                Unread = true
-            };
+//            var last = chains1.Last();
 
-            bool hasMore;
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            var chains0 = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var chains2 = messageEngine.GetConversations(filter, out hasMore);
 
-            Assert.IsNotEmpty(chains0);
-            Assert.AreEqual(page_size, chains0.Count);
+//            Assert.IsNotEmpty(chains2);
+//            Assert.AreEqual(page_size, chains2.Count);
 
-            // Go to 2 page
+//            // Go to 3 page
 
-            var last = chains0.Last();
+//            last = chains2.Last();
 
-            filter.FromDate = new ApiDateTime(last.ChainDate);
-            filter.FromMessage = last.Id;
-            filter.PrevFlag = false;
-            filter.PageSize = page_size;
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            var chainsNext = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var chains3 = messageEngine.GetConversations(filter, out hasMore);
 
-            Assert.IsNotEmpty(chainsNext);
-            Assert.AreEqual(last_page_count, chainsNext.Count);
+//            Assert.IsNotEmpty(chains3);
+//            Assert.AreEqual(last_page_count, chains3.Count);
 
-            // Go to back to 1 page
+//            // Go back to 2 page
 
-            var first = chainsNext.First();
+//            var first = chains3.First();
 
-            filter.FromDate = new ApiDateTime(first.ChainDate);
-            filter.FromMessage = first.Id;
-            filter.PrevFlag = true;
-            filter.PageSize = page_size;
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            var chainsPrev = _engineFactory.ChainEngine.GetConversations(filter, out hasMore);
+//            var chains2Prev = messageEngine.GetConversations(filter, out hasMore);
 
-            Assert.IsNotEmpty(chainsPrev);
-            Assert.AreEqual(page_size, chainsPrev.Count);
-            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
-            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
-        }
+//            Assert.IsNotEmpty(chains2Prev);
+//            Assert.AreEqual(page_size, chains2Prev.Count);
 
-        [Test, IgnoreIfFullTextSearch(enabled: false)]
-        public void ReadUnreadSameChainInDifferentMailboxesTest()
-        {
-            var mailboxSettings = _engineFactory.MailBoxSettingEngine.GetMailBoxSettings(DOMAIN);
+//            Assert.AreEqual(chains2.First().Id, chains2Prev.First().Id);
+//            Assert.AreEqual(chains2.Last().Id, chains2Prev.Last().Id);
 
-            var testMailboxes = mailboxSettings.ToMailboxList("example@example.com", PASSWORD, CURRENT_TENANT, TestUser.ID.ToString());
+//            // Go back to 1 page
 
-            var testMailbox2 = testMailboxes.FirstOrDefault();
+//            first = chains2Prev.First();
 
-            if (testMailbox2 == null || !_engineFactory.MailboxEngine.SaveMailBox(testMailbox2))
-            {
-                throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
-            }
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            var folders = _engineFactory.FolderEngine.GetFolders();
+//            var chains1Prev = messageEngine.GetConversations(filter, out hasMore);
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+//            Assert.IsNotEmpty(chains1Prev);
+//            Assert.AreEqual(page_size, chains1Prev.Count);
 
-            var date = DateTime.Now;
-            var mimeMessageId = MailUtil.CreateMessageId();
+//            Assert.AreEqual(chains1.First().Id, chains1Prev.First().Id);
+//            Assert.AreEqual(chains1.Last().Id, chains1Prev.Last().Id);
+//        }
 
-            var id1 = _engineFactory.TestEngine.CreateSampleMessage((int)FolderType.Inbox, _testMailbox.MailBoxId,
-                new List<string> { _testMailbox.EMail.Address }, new List<string>(), new List<string>(), false, true,
-                "SOME TEXT", "SOME TEXT", date: date, mimeMessageId: mimeMessageId);
+//        [Test, IgnoreIfFullTextSearch(enabled: false)]
+//        public void Paging25Total28UnreadTest()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
-            Assert.Greater(id1, 0);
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            var id2 = _engineFactory.TestEngine.CreateSampleMessage((int)FolderType.Inbox, testMailbox2.MailBoxId,
-                new List<string> { testMailbox2.EMail.Address }, new List<string>(), new List<string>(), false, true,
-                "SOME TEXT", "SOME TEXT", date: date, mimeMessageId: mimeMessageId);
+//            const int page_size = 25;
+//            const int last_page_count = 3;
 
-            Assert.Greater(id2, 0);
+//            const int n = page_size + last_page_count;
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            CreateFakeMails(n, true);
 
-            var inbox = folders.First(f => f.id == FolderType.Inbox);
+//            // Go to 1 page
 
-            Assert.AreEqual(true,
-                inbox.totalMessages == 2 && inbox.unreadMessages == 2 && inbox.total == 2 && inbox.unread == 2);
+//            var filter = new MailSearchFilterData
+//            {
+//                PrimaryFolder = FolderType.Inbox,
+//                PageSize = page_size,
+//                Sort = Defines.ORDER_BY_DATE_CHAIN,
+//                SortOrder = Defines.DESCENDING,
+//                Unread = true
+//            };
 
-            var ids = new List<int> { id1, id2 };
+//            var chains0 = messageEngine.GetConversations(filter, out bool hasMore);
 
-            _engineFactory.MessageEngine.SetUnread(ids, false, true);
+//            Assert.IsNotEmpty(chains0);
+//            Assert.AreEqual(page_size, chains0.Count);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            // Go to 2 page
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            var last = chains0.Last();
 
-            Assert.AreEqual(2, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(2, inbox.total); 
-            Assert.AreEqual(0, inbox.unread);
+//            filter.FromDate = last.ChainDate;
+//            filter.FromMessage = last.Id;
+//            filter.PrevFlag = false;
+//            filter.PageSize = page_size;
 
-            _engineFactory.MessageEngine.SetUnread(new List<int> { id1 }, true, true);
+//            var chainsNext = messageEngine.GetConversations(filter, out hasMore);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            Assert.IsNotEmpty(chainsNext);
+//            Assert.AreEqual(last_page_count, chainsNext.Count);
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            // Go to back to 1 page
 
-            Assert.AreEqual(2, inbox.totalMessages);
-            Assert.AreEqual(1, inbox.unreadMessages);
-            Assert.AreEqual(2, inbox.total);
-            Assert.AreEqual(1, inbox.unread);
+//            var first = chainsNext.First();
 
-            _engineFactory.MessageEngine.SetUnread(new List<int> { id2 }, true, true);
+//            filter.FromDate = first.ChainDate;
+//            filter.FromMessage = first.Id;
+//            filter.PrevFlag = true;
+//            filter.PageSize = page_size;
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            var chainsPrev = messageEngine.GetConversations(filter, out hasMore);
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            Assert.IsNotEmpty(chainsPrev);
+//            Assert.AreEqual(page_size, chainsPrev.Count);
+//            Assert.AreEqual(chains0.First().Id, chainsPrev.First().Id);
+//            Assert.AreEqual(chains0.Last().Id, chainsPrev.Last().Id);
+//        }
 
-            Assert.AreEqual(2, inbox.totalMessages);
-            Assert.AreEqual(2, inbox.unreadMessages);
-            Assert.AreEqual(2, inbox.total);
-            Assert.AreEqual(2, inbox.unread);
+//        [Test, IgnoreIfFullTextSearch(enabled: false)]
+//        public void ReadUnreadSameChainInDifferentMailboxesTest()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+//            var mailBoxSettingEngine = scope.ServiceProvider.GetService<MailBoxSettingEngine>();
+//            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
 
-            _engineFactory.MessageEngine.SetUnread(ids, true, true);
+//            var mailboxSettings = mailBoxSettingEngine.GetMailBoxSettings(DOMAIN);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            var testMailboxes = mailboxSettings.ToMailboxList("example@example.com", PASSWORD, CURRENT_TENANT, TestUser.ID.ToString());
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            var testMailbox2 = testMailboxes.FirstOrDefault();
 
-            Assert.AreEqual(2, inbox.totalMessages);
-            Assert.AreEqual(2, inbox.unreadMessages);
-            Assert.AreEqual(2, inbox.total);
-            Assert.AreEqual(2, inbox.unread);
-        }
+//            if (testMailbox2 == null || !mailboxEngine.SaveMailBox(testMailbox2))
+//            {
+//                throw new Exception(string.Format("Can't create mailbox with email: {0}", TestUser.Email));
+//            }
 
+//            var folders = folderEngine.GetFolders();
 
-        [Test]
-        public void MoveMessagesFromSameChainIntoDifferentUserFoldersTest()
-        {
-            var folders = _engineFactory.FolderEngine.GetFolders();
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
 
-            Assert.AreEqual(true,
-                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
+//            var date = DateTime.Now;
+//            var mimeMessageId = MailUtil.CreateMessageId(tenantManager, coreSettings);
 
-            var date = DateTime.Now;
-            var mimeMessageId = MailUtil.CreateMessageId();
+//            var model1 = new TestMessageModel
+//            {
+//                FolderId = (int)FolderType.Inbox,
+//                UserFolderId = null,
+//                MailboxId = _testMailbox.MailBoxId,
+//                Unread = true,
+//                To = new List<string> { _testMailbox.EMail.Address },
+//                Cc = new List<string>(),
+//                Bcc = new List<string>(),
+//                Subject = "SOME TEXT",
+//                Body = "SOME TEXT",
+//                MimeMessageId = mimeMessageId,
+//                Date = date
+//            };
 
-            var id1 = _engineFactory.TestEngine.CreateSampleMessage((int)FolderType.Inbox, _testMailbox.MailBoxId,
-                new List<string> { _testMailbox.EMail.Address }, new List<string>(), new List<string>(), false, true,
-                "SOME TEXT", "SOME TEXT", date: date, mimeMessageId: mimeMessageId);
+//            var id1 = testEngine.CreateSampleMessage(model1);
 
-            Assert.Greater(id1, 0);
+//            Assert.Greater(id1, 0);
 
-            var id2 = _engineFactory.TestEngine.CreateReplyToSampleMessage(id1, "REPLY BODT TEST");
+//            var model2 = new TestMessageModel
+//            {
+//                FolderId = (int)FolderType.Inbox,
+//                UserFolderId = null,
+//                MailboxId = _testMailbox.MailBoxId,
+//                Unread = true,
+//                To = new List<string> { testMailbox2.EMail.Address },
+//                Cc = new List<string>(),
+//                Bcc = new List<string>(),
+//                Subject = "SOME TEXT",
+//                Body = "SOME TEXT",
+//                MimeMessageId = mimeMessageId,
+//                Date = date
+//            };
 
-            Assert.Greater(id2, 0);
+//            var id2 = testEngine.CreateSampleMessage(model2);
 
-            Assert.AreNotEqual(id1, id2);
+//            Assert.Greater(id2, 0);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            folders = folderEngine.GetFolders();
 
-            var inbox = folders.First(f => f.id == FolderType.Inbox);
+//            var inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            Assert.AreEqual(1, inbox.totalMessages);
-            Assert.AreEqual(1, inbox.unreadMessages);
-            Assert.AreEqual(1, inbox.total);
-            Assert.AreEqual(1, inbox.unread);
+//            Assert.AreEqual(true,
+//                inbox.totalMessages == 2 && inbox.unreadMessages == 2 && inbox.total == 2 && inbox.unread == 2);
 
-            var sent = folders.First(f => f.id == FolderType.Sent);
+//            var ids = new List<int> { id1, id2 };
 
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            messageEngine.SetUnread(ids, false, true);
 
-            var userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
+//            folders = folderEngine.GetFolders();
 
-            Assert.AreEqual(null, userFolder);
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            var listUserFolders = _engineFactory.UserFolderEngine.GetList();
+//            Assert.AreEqual(2, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(2, inbox.total); 
+//            Assert.AreEqual(0, inbox.unread);
 
-            Assert.IsEmpty(listUserFolders);
+//            messageEngine.SetUnread(new List<int> { id1 }, true, true);
 
-            #region --> Create new UserFolder and move inbox message into it
+//            folders = folderEngine.GetFolders();
 
-            var uf1 = _engineFactory.UserFolderEngine.Create("Folder 1");
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            Assert.Greater(uf1.Id, 0);
+//            Assert.AreEqual(2, inbox.totalMessages);
+//            Assert.AreEqual(1, inbox.unreadMessages);
+//            Assert.AreEqual(2, inbox.total);
+//            Assert.AreEqual(1, inbox.unread);
 
-            _engineFactory.MessageEngine.SetFolder(new List<int> { id1 }, FolderType.UserFolder, uf1.Id);
+//            messageEngine.SetUnread(new List<int> { id2 }, true, true);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            folders = folderEngine.GetFolders();
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            Assert.AreEqual(0, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(0, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            Assert.AreEqual(2, inbox.totalMessages);
+//            Assert.AreEqual(2, inbox.unreadMessages);
+//            Assert.AreEqual(2, inbox.total);
+//            Assert.AreEqual(2, inbox.unread);
 
-            sent = folders.First(f => f.id == FolderType.Sent);
+//            messageEngine.SetUnread(ids, true, true);
 
-            Assert.AreEqual(1, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(1, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            folders = folderEngine.GetFolders();
 
-            userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            Assert.AreNotEqual(null, userFolder);
+//            Assert.AreEqual(2, inbox.totalMessages);
+//            Assert.AreEqual(2, inbox.unreadMessages);
+//            Assert.AreEqual(2, inbox.total);
+//            Assert.AreEqual(2, inbox.unread);
+//        }
 
-            Assert.AreEqual(1, userFolder.totalMessages);
-            Assert.AreEqual(1, userFolder.unreadMessages);
-            Assert.AreEqual(1, userFolder.total);
-            Assert.AreEqual(1, userFolder.unread);
 
-            listUserFolders = _engineFactory.UserFolderEngine.GetList();
+//        [Test]
+//        public void MoveMessagesFromSameChainIntoDifferentUserFoldersTest()
+//        {
+//            using var scope = ServiceProvider.CreateScope();
+//            var userManager = scope.ServiceProvider.GetService<UserManager>();
+//            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
+//            var coreSettings = scope.ServiceProvider.GetService<CoreSettings>();
+//            var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
+//            var mailBoxSettingEngine = scope.ServiceProvider.GetService<MailBoxSettingEngine>();
+//            var mailboxEngine = scope.ServiceProvider.GetService<MailboxEngine>();
+//            var folderEngine = scope.ServiceProvider.GetService<FolderEngine>();
+//            var testEngine = scope.ServiceProvider.GetService<TestEngine>();
+//            var messageEngine = scope.ServiceProvider.GetService<MessageEngine>();
+//            var userFolderEngine = scope.ServiceProvider.GetService<UserFolderEngine>();
 
-            Assert.IsNotEmpty(listUserFolders);
+//            var folders = folderEngine.GetFolders();
 
-            var UFfolder1 = listUserFolders.Where(uf => uf.Id == uf1.Id).FirstOrDefault();
+//            Assert.AreEqual(true,
+//                folders.Any(f => f.totalMessages == 0 && f.unreadMessages == 0 && f.total == 0 && f.unread == 0));
 
-            Assert.AreEqual(1, UFfolder1.TotalCount);
-            Assert.AreEqual(1, UFfolder1.UnreadCount);
-            Assert.AreEqual(1, UFfolder1.TotalChainCount);
-            Assert.AreEqual(1, UFfolder1.UnreadChainCount);
+//            var date = DateTime.Now;
+//            var mimeMessageId = MailUtil.CreateMessageId(tenantManager, coreSettings);
 
-            #endregion
+//            var model = new TestMessageModel
+//            {
+//                FolderId = (int)FolderType.Inbox,
+//                UserFolderId = null,
+//                MailboxId = _testMailbox.MailBoxId,
+//                Unread = true,
+//                To = new List<string> { _testMailbox.EMail.Address },
+//                Cc = new List<string>(),
+//                Bcc = new List<string>(),
+//                Subject = "SOME TEXT",
+//                Body = "SOME TEXT",
+//                MimeMessageId = mimeMessageId,
+//                Date = date
+//            };
 
-            #region --> Create new UserFolder and move sent message into it
+//            var id1 = testEngine.CreateSampleMessage(model);
 
-            var uf2 = _engineFactory.UserFolderEngine.Create("Folder 2");
+//            Assert.Greater(id1, 0);
 
-            Assert.Greater(uf2.Id, 0);
+//            var id2 = testEngine.CreateReplyToSampleMessage(id1, "REPLY BODT TEST");
 
-            _engineFactory.MessageEngine.SetFolder(new List<int> { id2 }, FolderType.UserFolder, uf2.Id);
+//            Assert.Greater(id2, 0);
 
-            folders = _engineFactory.FolderEngine.GetFolders();
+//            Assert.AreNotEqual(id1, id2);
 
-            inbox = folders.First(f => f.id == FolderType.Inbox);
+//            folders = folderEngine.GetFolders();
 
-            Assert.AreEqual(0, inbox.totalMessages);
-            Assert.AreEqual(0, inbox.unreadMessages);
-            Assert.AreEqual(0, inbox.total);
-            Assert.AreEqual(0, inbox.unread);
+//            var inbox = folders.First(f => f.id == FolderType.Inbox);
 
-            sent = folders.First(f => f.id == FolderType.Sent);
+//            Assert.AreEqual(1, inbox.totalMessages);
+//            Assert.AreEqual(1, inbox.unreadMessages);
+//            Assert.AreEqual(1, inbox.total);
+//            Assert.AreEqual(1, inbox.unread);
 
-            Assert.AreEqual(0, sent.totalMessages);
-            Assert.AreEqual(0, sent.unreadMessages);
-            Assert.AreEqual(0, sent.total);
-            Assert.AreEqual(0, sent.unread);
+//            var sent = folders.First(f => f.id == FolderType.Sent);
 
-            userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
 
-            Assert.AreNotEqual(null, userFolder);
+//            var userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
 
-            Assert.AreEqual(2, userFolder.totalMessages);
-            Assert.AreEqual(1, userFolder.unreadMessages);
-            Assert.AreEqual(1, userFolder.total);
-            Assert.AreEqual(1, userFolder.unread);
+//            Assert.AreEqual(null, userFolder);
 
-            listUserFolders = _engineFactory.UserFolderEngine.GetList();
+//            var listUserFolders = userFolderEngine.GetList();
 
-            Assert.IsNotEmpty(listUserFolders);
+//            Assert.IsEmpty(listUserFolders);
 
-            var UFfolder2 = listUserFolders.Where(uf => uf.Id == uf2.Id).FirstOrDefault();
+//            #region --> Create new UserFolder and move inbox message into it
 
-            Assert.AreEqual(1, UFfolder2.TotalCount);
-            Assert.AreEqual(0, UFfolder2.UnreadCount);
-            Assert.AreEqual(1, UFfolder2.TotalChainCount);
-            Assert.AreEqual(0, UFfolder2.UnreadChainCount);
+//            var uf1 = userFolderEngine.Create("Folder 1");
 
-            #endregion
-        }
-    }
-}
+//            Assert.Greater(uf1.Id, 0);
+
+//            messageEngine.SetFolder(new List<int> { id1 }, FolderType.UserFolder, uf1.Id);
+
+//            folders = folderEngine.GetFolders();
+
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
+
+//            Assert.AreEqual(0, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(0, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
+
+//            sent = folders.First(f => f.id == FolderType.Sent);
+
+//            Assert.AreEqual(1, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(1, sent.total);
+//            Assert.AreEqual(0, sent.unread);
+
+//            userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
+
+//            Assert.AreNotEqual(null, userFolder);
+
+//            Assert.AreEqual(1, userFolder.totalMessages);
+//            Assert.AreEqual(1, userFolder.unreadMessages);
+//            Assert.AreEqual(1, userFolder.total);
+//            Assert.AreEqual(1, userFolder.unread);
+
+//            listUserFolders = userFolderEngine.GetList();
+
+//            Assert.IsNotEmpty(listUserFolders);
+
+//            var UFfolder1 = listUserFolders.Where(uf => uf.Id == uf1.Id).FirstOrDefault();
+
+//            Assert.AreEqual(1, UFfolder1.TotalCount);
+//            Assert.AreEqual(1, UFfolder1.UnreadCount);
+//            Assert.AreEqual(1, UFfolder1.TotalChainCount);
+//            Assert.AreEqual(1, UFfolder1.UnreadChainCount);
+
+//            #endregion
+
+//            #region --> Create new UserFolder and move sent message into it
+
+//            var uf2 = userFolderEngine.Create("Folder 2");
+
+//            Assert.Greater(uf2.Id, 0);
+
+//            messageEngine.SetFolder(new List<int> { id2 }, FolderType.UserFolder, uf2.Id);
+
+//            folders = folderEngine.GetFolders();
+
+//            inbox = folders.First(f => f.id == FolderType.Inbox);
+
+//            Assert.AreEqual(0, inbox.totalMessages);
+//            Assert.AreEqual(0, inbox.unreadMessages);
+//            Assert.AreEqual(0, inbox.total);
+//            Assert.AreEqual(0, inbox.unread);
+
+//            sent = folders.First(f => f.id == FolderType.Sent);
+
+//            Assert.AreEqual(0, sent.totalMessages);
+//            Assert.AreEqual(0, sent.unreadMessages);
+//            Assert.AreEqual(0, sent.total);
+//            Assert.AreEqual(0, sent.unread);
+
+//            userFolder = folders.FirstOrDefault(f => f.id == FolderType.UserFolder);
+
+//            Assert.AreNotEqual(null, userFolder);
+
+//            Assert.AreEqual(2, userFolder.totalMessages);
+//            Assert.AreEqual(1, userFolder.unreadMessages);
+//            Assert.AreEqual(1, userFolder.total);
+//            Assert.AreEqual(1, userFolder.unread);
+
+//            listUserFolders = userFolderEngine.GetList();
+
+//            Assert.IsNotEmpty(listUserFolders);
+
+//            var UFfolder2 = listUserFolders.Where(uf => uf.Id == uf2.Id).FirstOrDefault();
+
+//            Assert.AreEqual(1, UFfolder2.TotalCount);
+//            Assert.AreEqual(0, UFfolder2.UnreadCount);
+//            Assert.AreEqual(1, UFfolder2.TotalChainCount);
+//            Assert.AreEqual(0, UFfolder2.UnreadChainCount);
+
+//            #endregion
+//        }
+//    }
+//}

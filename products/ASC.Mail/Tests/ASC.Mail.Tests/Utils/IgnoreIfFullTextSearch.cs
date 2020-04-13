@@ -26,7 +26,7 @@
 
 using System;
 using ASC.ElasticSearch;
-using ASC.Mail.Data.Search;
+using ASC.Mail.Models;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
@@ -40,7 +40,7 @@ namespace ASC.Mail.Aggregator.Tests.Utils
         public IgnoreIfFullTextSearch(bool enabled)
         {
             Enabled = enabled;
-            Ignore = FactoryIndexer<MailWrapper>.Support != Enabled;
+            Ignore = !enabled; //TODO fix FactoryIndexer<MailWrapper>.Support != Enabled;
         }
 
         public void BeforeTest(ITest test)
