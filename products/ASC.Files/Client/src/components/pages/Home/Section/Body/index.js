@@ -157,7 +157,13 @@ class SectionBodyContent extends React.PureComponent {
     return fetchFolder(folderId, store.dispatch);
   }
 
+  onClickDownload = (item) => {
+    return window.open(item.webUrl, "_blank");
+  }
+
   getFilesContextOptions = (item, viewer) => {
+    const isFile = !!item.fileExst;
+    
     return [
       {
         key: "sharing-settings",
@@ -165,6 +171,14 @@ class SectionBodyContent extends React.PureComponent {
         onClick: () => { },
         disabled: true
       },
+      isFile
+        ? {
+          key: "send-by-email",
+          label: "Send by e-mail",
+          onClick: () => { },
+          disabled: true
+        }
+        : null,
       {
         key: "link-for-portal-users",
         label: "Link for portal users",
@@ -175,12 +189,22 @@ class SectionBodyContent extends React.PureComponent {
         key: "sep",
         isSeparator: true
       },
-      {
-        key: "download",
-        label: "Download",
-        onClick: () => { },
-        disabled: true
-      },
+      isFile
+        ? {
+          key: "edit",
+          label: "Edit",
+          onClick: () => { },
+          disabled: true
+        }
+        : null,
+      isFile
+        ? {
+          key: "download",
+          label: "Download",
+          onClick: this.onClickDownload.bind(this, item),
+          disabled: false
+        }
+        : null,
       {
         key: "rename",
         label: "Rename",
@@ -461,7 +485,7 @@ class SectionBodyContent extends React.PureComponent {
         </Link>
       </div>
     );
-    
+
     return (
       <EmptyFolderContainer
         headerText={t("Filter")}
@@ -469,7 +493,7 @@ class SectionBodyContent extends React.PureComponent {
         descriptionText={descriptionText}
         imageSrc="images/empty_screen_filter.png"
         buttons={buttons}
-    />
+      />
     )
   }
 
@@ -513,50 +537,50 @@ class SectionBodyContent extends React.PureComponent {
       parentId === 0 ? (
         this.renderEmptyRootFolderContainer()
       ) : (
-        this.renderEmptyFolderContainer()
-      )
+          this.renderEmptyFolderContainer()
+        )
     ) : items.length === 0 ? (
       this.renderEmptyFilterContainer()
     ) : (
-      <RowContainer useReactWindow={false}>
-        {items.map((item) => {
-          const isEdit =
-            fileAction.type &&
-            (editingId === item.id || item.id === -1) &&
-            item.fileExst === fileAction.extension;
-          const contextOptions = this.getFilesContextOptions(
-            item,
-            viewer
-          ).filter((o) => o);
-          const contextOptionsProps =
-            !contextOptions.length || isEdit ? {} : { contextOptions };
-          const checked = isFileSelected(selection, item.id, item.parentId);
-          const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
-          const element = this.getItemIcon(item, isEdit);
+          <RowContainer useReactWindow={false}>
+            {items.map((item) => {
+              const isEdit =
+                fileAction.type &&
+                (editingId === item.id || item.id === -1) &&
+                item.fileExst === fileAction.extension;
+              const contextOptions = this.getFilesContextOptions(
+                item,
+                viewer
+              ).filter((o) => o);
+              const contextOptionsProps =
+                !contextOptions.length || isEdit ? {} : { contextOptions };
+              const checked = isFileSelected(selection, item.id, item.parentId);
+              const checkedProps = /* isAdmin(viewer) */ isEdit ? {} : { checked };
+              const element = this.getItemIcon(item, isEdit);
 
-          return (
-            <SimpleFilesRow
-              key={item.id}
-              data={item}
-              element={element}
-              onSelect={this.onContentRowSelect}
-              editing={editingId}
-              {...checkedProps}
-              {...contextOptionsProps}
-              needForUpdate={this.needForUpdate}
-            >
-              <FilesRowContent
-                item={item}
-                viewer={viewer}
-                culture={settings.culture}
-                onEditComplete={this.onEditComplete.bind(this, item)}
-                onLoading={onLoading}
-              />
-            </SimpleFilesRow>
-          );
-        })}
-      </RowContainer>
-    );
+              return (
+                <SimpleFilesRow
+                  key={item.id}
+                  data={item}
+                  element={element}
+                  onSelect={this.onContentRowSelect}
+                  editing={editingId}
+                  {...checkedProps}
+                  {...contextOptionsProps}
+                  needForUpdate={this.needForUpdate}
+                >
+                  <FilesRowContent
+                    item={item}
+                    viewer={viewer}
+                    culture={settings.culture}
+                    onEditComplete={this.onEditComplete.bind(this, item)}
+                    onLoading={onLoading}
+                  />
+                </SimpleFilesRow>
+              );
+            })}
+          </RowContainer>
+        );
   }
 }
 
