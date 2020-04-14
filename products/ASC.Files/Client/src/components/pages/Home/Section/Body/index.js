@@ -244,8 +244,6 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   onResetFilter = () => {
-    //ClearButton
-    //const newFilter = filter.clone(true);
     const { selectedFolderId, onLoading } = this.props;
     onLoading(true);
     const newFilter = FilesFilter.getDefault();
@@ -273,17 +271,12 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   renderEmptyRootFolderContainer = () => {
-    const { currentFolderType, title } = this.props;
-    const subheadingText = "No files to be displayed in this section";
-
-    const myDescription =
-      "The documents and image files you create or upload to the portal are kept here in 'My Documents' section. You can open and edit them using the ONLYOFFICE™ portal editor, share them with friends or colleagues, organize into folders. Drag-and-drop the files from your computer here to upload them to your portal even more easily.";
-
-    const shareDescription =
-      "The 'Shared with Me' section is used to show the files which your friends or colleagues gave you access to. In case you haven't seen the latest changes in the documents they are marked 'new'. You can remove the files from the list clicking the appropriate button.";
-
-    const commonDescription =
-      "The 'Common Documents' section shows all the documents shared by portal administrator for common access. Only portal administrator can create folders in this section, but with the access granted the portal users can also upload their files here. Drag-and-drop the files from your computer here to upload them to your portal even more easily.";
+    const { currentFolderType, title, t } = this.props;
+    const subheadingText = t("SubheadingEmptyText");
+    const myDescription = t("MyEmptyContainerDescription");
+    const shareDescription = t("SharedEmptyContainerDescription");
+    const commonDescription = t("CommonEmptyContainerDescription");
+    const trashDescription = t("TrashEmptyContainerDescription");
 
     const commonButtons = (
       <>
@@ -299,13 +292,13 @@ class SectionBodyContent extends React.PureComponent {
             +
           </Link>
           <Link onClick={this.onCreate.bind(this, "docx")} {...linkStyles}>
-            Документ,
+            {t("Document")},
           </Link>
           <Link onClick={this.onCreate.bind(this, "xlsx")} {...linkStyles}>
-            Таблица,
+            {t("Spreadsheet")},
           </Link>
           <Link onClick={this.onCreate.bind(this, "pptx")} {...linkStyles}>
-            Презентация
+            {t("Presentation")}
           </Link>
         </div>
         <div className="empty-folder_container-links">
@@ -320,14 +313,12 @@ class SectionBodyContent extends React.PureComponent {
             +
           </Link>
           <Link {...linkStyles} onClick={this.onCreate.bind(this, null)}>
-            Папка
+            {t("Folder")}
           </Link>
         </div>
       </>
     );
 
-    const trashDescription =
-      "The 'Recycle Bin' section is where all the deleted files are moved. You can either restore them in case they are deleted by mistake or delete them permanently. Please note, that when you delete the files from the 'Recycle Bin' they cannot be restored any longer.";
     const trashButtons = (
       <div className="empty-folder_container-links">
         <img
@@ -337,7 +328,7 @@ class SectionBodyContent extends React.PureComponent {
           onClick={this.onGoToMyDocuments}
         />
         <Link onClick={this.onGoToMyDocuments} {...linkStyles}>
-          Go to My Documents
+          {t("GoToMyButton")}
         </Link>
       </div>
     );
@@ -388,6 +379,7 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   renderEmptyFolderContainer = () => {
+    const { t } = this.props;
     const buttons = (
       <>
         <div className="empty-folder_container-links">
@@ -402,13 +394,13 @@ class SectionBodyContent extends React.PureComponent {
             +
           </Link>
           <Link onClick={this.onCreate.bind(this, "docx")} {...linkStyles}>
-            Документ,
+            {t("Document")},
           </Link>
           <Link onClick={this.onCreate.bind(this, "xlsx")} {...linkStyles}>
-            Таблица,
+            {t("Spreadsheet")},
           </Link>
           <Link onClick={this.onCreate.bind(this, "pptx")} {...linkStyles}>
-            Презентация
+            {t("Presentation")}
           </Link>
         </div>
         <div className="empty-folder_container-links">
@@ -423,7 +415,7 @@ class SectionBodyContent extends React.PureComponent {
             +
           </Link>
           <Link {...linkStyles} onClick={this.onCreate.bind(this, null)}>
-            Папка
+            {t("Folder")}
           </Link>
         </div>
         <div className="empty-folder_container-links">
@@ -434,7 +426,7 @@ class SectionBodyContent extends React.PureComponent {
             alt=""
           />
           <Link onClick={this.onBackToParentFolder} {...linkStyles}>
-            Вернутся в папку на уровень выше
+            {t("BackToParentFolderButton")}
           </Link>
         </div>
       </>
@@ -442,7 +434,7 @@ class SectionBodyContent extends React.PureComponent {
 
     return (
       <EmptyFolderContainer
-        headerText="В этой папке нет файлов"
+        headerText={t("EmptyFolderHeader")}
         imageSrc="images/empty_screen.png"
         buttons={buttons}
       />
@@ -450,8 +442,9 @@ class SectionBodyContent extends React.PureComponent {
   };
 
   renderEmptyFilterContainer = () => {
-    const subheadingText = "No files to be displayed for this filter here";
-    const descriptionText = "No files or folders matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the files in this section. You can also look for the file you need in other sections.";
+    const { t } = this.props;
+    const subheadingText = t("EmptyFilterSubheadingText");
+    const descriptionText = t("EmptyFilterDescriptionText");
 
     const buttons = (
       <div className="empty-folder_container-links">
@@ -464,14 +457,14 @@ class SectionBodyContent extends React.PureComponent {
           color="A3A9AE"
         />
         <Link onClick={this.onResetFilter} {...linkStyles}>
-          Clear Filter
+          {this.props.t("ClearButton")}
         </Link>
       </div>
     );
     
     return (
       <EmptyFolderContainer
-        headerText="Filter"
+        headerText={t("Filter")}
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         imageSrc="images/empty_screen_filter.png"
