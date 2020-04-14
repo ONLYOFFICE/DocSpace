@@ -45,6 +45,7 @@ using Microsoft.EntityFrameworkCore;
 using SortedByType = ASC.CRM.Core.Enums.SortedByType;
 using Microsoft.Extensions.Options;
 using ASC.Common.Logging;
+using ASC.Common;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -681,6 +682,23 @@ namespace ASC.CRM.Core.Dao
 
                 CRMSecurity.SetAccessTo(item, responsibles.Distinct().ToList());
             }
+        }
+    }
+
+    public static class CasesDaoExtention
+    {
+        public static DIHelper AddCasesDaoService(this DIHelper services)
+        {            
+            services.TryAddScoped<CasesDao>();
+                     
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddCRMSecurityService()
+                           .AddTenantUtilService()
+                           .AddFilesIntegrationService()
+                           .AddAuthorizationManagerService()
+                           .AddBundleSearchService();
         }
     }
 }

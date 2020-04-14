@@ -26,6 +26,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using ASC.VoipService.Dao;
 using System;
+using ASC.Common;
+using ASC.Core.Common.Settings;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -153,6 +155,16 @@ namespace ASC.CRM.Core.Dao
         public VoipDao GetVoipDao()
         {
             return ServiceProvider.GetService<VoipDao>();
+        }
+    }
+
+    public static class DaoFactoryExtention
+    {
+        public static DIHelper AddDaoFactoryService(this DIHelper services)
+        {
+            services.TryAddScoped<DaoFactory>();
+
+            return services;
         }
     }
 }

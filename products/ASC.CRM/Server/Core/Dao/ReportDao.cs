@@ -47,6 +47,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using ASC.Common;
 
 
 #endregion
@@ -2219,5 +2220,22 @@ namespace ASC.CRM.Core.Dao
         //}
 
         //#endregion
+    }
+
+    public static class ReportDaoExtention
+    {
+        public static DIHelper AddReportDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ReportDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddFilesIntegrationService()
+                           .AddTenantUtilService()
+                           .AddSettingsManagerService()
+                           .AddGlobalService()
+                           .AddUserManagerService();
+        }
     }
 }

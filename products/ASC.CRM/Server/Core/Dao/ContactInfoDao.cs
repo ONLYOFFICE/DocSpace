@@ -24,6 +24,7 @@
 */
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -119,8 +120,7 @@ namespace ASC.CRM.Core.Dao
              IOptionsMonitor<ILog> logger,
              FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
              FactoryIndexer<InfoWrapper> factoryIndexerInfoWrapper,
-             IServiceProvider serviceProvider
-        )
+             IServiceProvider serviceProvider)
            : base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -377,6 +377,23 @@ namespace ASC.CRM.Core.Dao
                              InfoType = dbContactInfo.Type,
                              IsPrimary = dbContactInfo.IsPrimary                              
                        };
+        }
+    }
+
+
+
+    public static class ContactInfoDaoExtention
+    {
+        public static DIHelper AddContactInfoDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ContactDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddTenantUtilService()
+                           .AddFactoryIndexerService<EmailWrapper>()
+                           .AddFactoryIndexerService<InfoWrapper>();
         }
     }
 }

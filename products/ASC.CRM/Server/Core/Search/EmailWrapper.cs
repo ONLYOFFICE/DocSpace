@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -114,6 +115,28 @@ namespace ASC.Web.CRM.Core.Search
                 Type = (int)cf.InfoType,
                 TenantId = tenantId
             };
+        }
+    }
+
+    public static class EmailWrapperExtention
+    {
+        public static DIHelper AddEmailWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<EmailWrapper>();
+
+            return services
+                .AddFactoryIndexerService<EmailWrapper>();
+        }
+    }
+
+    public static class EmailInfoWrapperExtention
+    {
+        public static DIHelper AddEmailInfoWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<EmailInfoWrapper>();
+
+            return services
+                .AddFactoryIndexerService<EmailInfoWrapper>();
         }
     }
 }

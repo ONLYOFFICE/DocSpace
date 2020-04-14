@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -36,8 +37,7 @@ using Microsoft.Extensions.Options;
 namespace ASC.CRM.Core.Dao
 {
     public class CurrencyInfoDao : AbstractDao
-    {
-               
+    {               
         public CurrencyInfoDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
@@ -88,6 +88,18 @@ namespace ASC.CRM.Core.Dao
                     dbCurrencyInfo.IsConvertable,
                     dbCurrencyInfo.IsBasic               
                 );
+        }
+    }
+
+    public static class CurrencyInfoDaoExtention
+    {
+        public static DIHelper AddCurrencyInfoDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<CurrencyInfoDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
         }
     }
 }

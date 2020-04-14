@@ -1,4 +1,5 @@
 ﻿using System;
+using ASC.Common;
 using ASC.Core.Common.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -678,5 +679,14 @@ namespace ASC.CRM.Core.EF
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+
+
+    public static class CRMDbContextExtention
+    {
+        public static DIHelper AddCRMDbContextService(this DIHelper services)
+        {
+            return services.AddDbContextManagerService<CRMDbContext>();
+        }
     }
 }

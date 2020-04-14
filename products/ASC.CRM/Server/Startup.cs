@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ASC.Api.Core.Auth;
+using ASC.Api.Core.Middleware;
+using ASC.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +29,17 @@ namespace ASC.CRM
         {
             services.AddHttpContextAccessor();
             services.AddControllers();
+
+            var diHelper = new DIHelper(services);
+            
+            diHelper
+                .AddCookieAuthHandler()
+                .AddCultureMiddleware()
+                .AddIpSecurityFilter()
+                .AddPaymentFilter()
+                .AddProductSecurityFilter()
+                .AddTenantStatusFilter();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,6 +49,8 @@ namespace ASC.CRM
             {
                 app.UseDeveloperExceptionPage();
             }
+
+
 
             app.UseRouting();
 

@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -981,6 +982,22 @@ namespace ASC.CRM.Core.Dao
 
             // Delete relative  keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "invoice.*"));
+        }
+    }
+
+    public static class InvoiceDaoExtention
+    {
+        public static DIHelper AddFileDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceDao>();
+            
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddFactoryIndexerService<InvoicesWrapper>()
+                           .AddSettingsManagerService()
+                           .AddInvoiceFormattedDataService()
+                           .AddInvoiceSettingService();                           
         }
     }
 }

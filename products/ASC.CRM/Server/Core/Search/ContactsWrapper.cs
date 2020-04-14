@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -95,4 +96,17 @@ namespace ASC.Web.CRM.Core.Search
             };
         }
     }
+
+    public static class ContactsWrapperExtention
+    {
+        public static DIHelper AddContactsWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<ContactsWrapper>();
+
+            return services
+                .AddFactoryIndexerService<ContactsWrapper>();
+        }
+    }
+
+  
 }

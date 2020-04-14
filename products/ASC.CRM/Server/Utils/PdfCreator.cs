@@ -45,7 +45,8 @@ using System.Text;
 using System.Xml;
 
 using Microsoft.Extensions.DependencyInjection;
-
+using ASC.Common;
+using ASC.Web.Files.Classes;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -761,4 +762,19 @@ namespace ASC.Web.CRM.Classes
         public int InvoiceId { get; set; }
         public int FileId { get; set; }
     }
-}
+
+
+    public static class PdfCreatorExtention
+    {
+        public static DIHelper AddPdfCreatorService(this DIHelper services)
+        {
+            services.TryAddScoped<PdfCreator>();
+
+            return services.AddPathProviderService()
+                           .AddDocumentServiceConnectorService()
+                           .AddOrganisationLogoManagerService()
+                           .AddDaoFactoryService()
+                           .AddInvoiceFormattedDataService();
+        }
+    }
+}    

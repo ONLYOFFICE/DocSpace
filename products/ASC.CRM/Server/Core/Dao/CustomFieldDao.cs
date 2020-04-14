@@ -23,6 +23,7 @@
  *
 */
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -581,4 +582,16 @@ namespace ASC.CRM.Core.Dao
         }
     }
 
+    public static class CustomFieldDaoExtention
+    {
+        public static DIHelper AddCustomFieldDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<CustomFieldDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddTenantUtilService();
+        }
+    }
 }

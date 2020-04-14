@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -64,6 +65,17 @@ namespace ASC.Web.CRM.Core.Search
                 Content = relationshipEvent.Content,
                 TenantId = tenantId
             };
+        }
+    }
+
+    public static class EventsWrapperExtention
+    {
+        public static DIHelper AddEventsWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<EventsWrapper>();
+
+            return services
+                .AddFactoryIndexerService<EventsWrapper>();
         }
     }
 }

@@ -24,11 +24,13 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Security;
 using ASC.Common.Security.Authorizing;
 using ASC.Core;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -856,7 +858,23 @@ namespace ASC.CRM.Core
         {
             return IsAdmin || task.ResponsibleID == SecurityContext.CurrentAccount.ID || task.CreateBy == SecurityContext.CurrentAccount.ID;
         }
+    }
 
-
+    public static class CRMSecurityExtention
+    {        
+        public static DIHelper AddCRMSecurityService(this DIHelper services)
+        {
+            services.TryAddScoped<CRMSecurity>();
+            
+            return services.AddSecurityContextService()
+                           .AddAuthorizationManagerService()
+                           .AddUserManagerService()
+                           .AddDisplayUserSettingsService()
+                           .AddDaoFactoryService()
+                           .AddWebItemSecurity()
+                           .AddPermissionContextService()
+                           .AddCurrencyProviderService()
+                           ;
+        }
     }
 }

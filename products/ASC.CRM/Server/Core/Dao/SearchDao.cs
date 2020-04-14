@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
@@ -461,6 +462,25 @@ namespace ASC.CRM.Core.Dao
                 default:
                     throw new ArgumentException();
             }
+        }
+    }
+
+    public static class SearchDaoExtention
+    {
+        public static DIHelper AddSearchDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<SearchDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddCRMSecurityService()
+                           .AddTenantUtilService()
+                           .AddCRMPathProviderService()
+                           .AddFactoryIndexerService<TasksWrapper>()
+                           .AddFactoryIndexerService<InvoicesWrapper>()
+                           .AddWebImageSupplierService()
+                           .AddBundleSearchService();
         }
     }
 }

@@ -27,6 +27,7 @@
 #region Import
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -52,7 +53,7 @@ namespace ASC.CRM.Core.Dao
                                 TenantManager tenantManager,
                                 SecurityContext securityContext,
                                 IHttpContextAccessor httpContextAccessor,
-                                IOptionsMonitor<ILog> logger) 
+                                IOptionsMonitor<ILog> logger)
             : base(dbContextManager,
                   tenantManager,
                   securityContext,
@@ -137,11 +138,11 @@ namespace ASC.CRM.Core.Dao
 
                 itemToUpdate.SortOrder = index;
 
-                CRMDbContext.Update(itemToUpdate);                
+                CRMDbContext.Update(itemToUpdate);
             }
 
             CRMDbContext.SaveChanges();
-            
+
             tx.Commit();
         }
 
@@ -158,7 +159,7 @@ namespace ASC.CRM.Core.Dao
                                  x => x.DealMilestoneId,
                                  (x, y) => new { x = x, count = y.Count() })
                             .OrderBy(x => x.x.SortOrder)
-                            .ToDictionary(x => x.x.Id, y => y.count);                         
+                            .ToDictionary(x => x.x.Id, y => y.count);
         }
 
         public int GetRelativeItemsCount(int id)
@@ -179,7 +180,7 @@ namespace ASC.CRM.Core.Dao
 
             if (item.SortOrder == 0)
                 item.SortOrder = Query(CRMDbContext.DealMilestones).Select(x => x.SortOrder).Max() + 1;
-                                    
+
             var itemToAdd = new DbDealMilestone
             {
                 Title = item.Title,
@@ -190,14 +191,14 @@ namespace ASC.CRM.Core.Dao
                 SortOrder = item.SortOrder,
                 TenantId = TenantID
             };
-            
+
             CRMDbContext.DealMilestones.Add(itemToAdd);
             CRMDbContext.SaveChanges();
-            
+
             id = itemToAdd.Id;
 
             tx.Commit();
-            
+
             return id;
         }
 
@@ -219,7 +220,7 @@ namespace ASC.CRM.Core.Dao
         {
             if (HaveContactLink(item.ID))
                 throw new ArgumentException(String.Format("{0}. {1}.", CRMErrorsResource.BasicCannotBeEdited, CRMErrorsResource.DealMilestoneHasRelatedDeals));
-            
+
             var itemToUpdate = Query(CRMDbContext.DealMilestones)
                 .FirstOrDefault(x => x.Id == item.ID);
 
@@ -230,7 +231,7 @@ namespace ASC.CRM.Core.Dao
             itemToUpdate.Status = item.Status;
 
             CRMDbContext.DealMilestones.Update(itemToUpdate);
-            
+
             CRMDbContext.SaveChanges();
         }
 
@@ -250,7 +251,7 @@ namespace ASC.CRM.Core.Dao
                 Id = id,
                 TenantId = TenantID
             };
-            
+
             CRMDbContext.DealMilestones.Remove(dbDealMilestones);
 
             CRMDbContext.SaveChanges();
@@ -281,19 +282,31 @@ namespace ASC.CRM.Core.Dao
                     .ToList()
                     .ConvertAll(ToDealMilestone);
         }
-               
+
         private static DealMilestone ToDealMilestone(DbDealMilestone dbDealMilestone)
         {
             return new DealMilestone
             {
-                 ID = dbDealMilestone.Id,
-                 Title = dbDealMilestone.Title,
-                 Color = dbDealMilestone.Color,
-                 Status = dbDealMilestone.Status,
-                 Description = dbDealMilestone.Description,
-                 Probability = dbDealMilestone.Probability,
-                 SortOrder = dbDealMilestone.SortOrder                 
+                ID = dbDealMilestone.Id,
+                Title = dbDealMilestone.Title,
+                Color = dbDealMilestone.Color,
+                Status = dbDealMilestone.Status,
+                Description = dbDealMilestone.Description,
+                Probability = dbDealMilestone.Probability,
+                SortOrder = dbDealMilestone.SortOrder
             };
+        }
+    }
+
+    public static class DealMilestoneDaoExtention
+    {
+        public static DIHelper AddDealMilestoneDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<DealMilestoneDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
         }
     }
 }

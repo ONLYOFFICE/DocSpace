@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
@@ -344,5 +345,16 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
+    }
+
+    public static class CurrencyProviderExtention
+    {
+        public static DIHelper AddCurrencyProviderService(this DIHelper services)
+        {
+            services.TryAddScoped<CRMSecurity>();
+
+            return services.AddSettingsManagerService()
+                           .AddDaoFactoryService();
+        }
     }
 }

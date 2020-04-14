@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
@@ -70,7 +71,7 @@ namespace ASC.Web.CRM.Core.Search
             TasksWrapper = tasksWrapper;
             CasesWrapper = casesWrapper;
             InvoicesWrapper = invoicesWrapper;
-            
+
         }
 
         public ContactsWrapper ContactsWrapper { get; }
@@ -91,7 +92,7 @@ namespace ASC.Web.CRM.Core.Search
         public FactoryIndexer<TasksWrapper> TasksWrapperFactoryIndexer { get; }
         public FactoryIndexer<CasesWrapper> CasesWrapperFactoryIndexer { get; }
         public FactoryIndexer<InvoicesWrapper> InvoicesWrapperFactoryIndexer { get; }
-              
+
         public bool Support(EntityType entityType)
         {
             switch (entityType)
@@ -174,7 +175,7 @@ namespace ASC.Web.CRM.Core.Search
 
             IReadOnlyCollection<FieldsWrapper> personCustom;
 
-            if (FieldsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] {0, 4, 5}), out personCustom))
+            if (FieldsWrapperFactoryIndexer.TrySelect(s => s.MatchAll(text).In(r => r.EntityType, new[] { 0, 4, 5 }), out personCustom))
             {
                 result.AddRange(personCustom.Select(r => r.EntityId).ToList());
                 success = true;
@@ -218,6 +219,30 @@ namespace ASC.Web.CRM.Core.Search
             }
 
             return success;
+        }
+    }
+
+    public static class BundleSearchExtention
+    {
+        public static DIHelper AddBundleSearchService(this DIHelper services)
+        {                       
+            return services.AddFactoryIndexerService<ContactsWrapper>()
+                           .AddFactoryIndexerService<InfoWrapper>()
+                           .AddFactoryIndexerService<FieldsWrapper>()
+                           .AddFactoryIndexerService<EventsWrapper>()
+                           .AddFactoryIndexerService<DealsWrapper>()
+                           .AddFactoryIndexerService<TasksWrapper>()
+                           .AddFactoryIndexerService<CasesWrapper>()
+                           .AddFactoryIndexerService<InvoicesWrapper>()
+                           .AddFactoryIndexerHelperService()
+                           .AddContactsWrapperService()
+                           .AddInfoWrapperService()
+                           .AddFieldsWrapperService()
+                           .AddEventsWrapperService()
+                           .AddDealsWrapperService()
+                           .AddTasksWrapperService()
+                           .AddCasesWrapperService()
+                           .AddInvoicesWrapperService();
         }
     }
 }

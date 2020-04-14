@@ -35,6 +35,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
+using ASC.Common;
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -110,6 +111,17 @@ namespace ASC.Web.CRM.Core.Search
                 Type = (int)cf.InfoType,
                 TenantId = tenantManager.GetCurrentTenant().TenantId
             };
+        }
+    }
+
+    public static class InfoWrapperExtention
+    {
+        public static DIHelper AddInfoWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<InfoWrapper>();
+
+            return services
+                .AddFactoryIndexerService<InfoWrapper>();
         }
     }
 }

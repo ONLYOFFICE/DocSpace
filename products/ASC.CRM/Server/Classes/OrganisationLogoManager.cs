@@ -28,6 +28,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.CRM.Core.Dao;
 using ASC.Data.Storage;
@@ -192,6 +193,19 @@ namespace ASC.Web.CRM.Classes
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
 
             return ExecResizeImage(imageData, OrganisationLogoSize, Global.GetStore(), photoPath);
+        }
+    }
+
+    public static class OrganisationLogoManagerExtention
+    {
+        public static DIHelper AddOrganisationLogoManagerService(this DIHelper services)
+        {
+            services.TryAddScoped<OrganisationLogoManager>();
+
+            return services.AddWebImageSupplierService()
+                           .AddGlobalService()
+                           .AddDaoFactoryService();
+
         }
     }
 }

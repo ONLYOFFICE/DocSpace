@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -2080,6 +2081,25 @@ namespace ASC.CRM.Core.Dao
 
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "contacts.*"));
+        }
+    }
+
+    public static class ContactDaoExtention
+    {
+        public static DIHelper AddContactDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<ContactDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddCRMSecurityService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddTenantUtilService()
+                           .AddAuthorizationManagerService()
+                           .AddFilesIntegrationService()
+                           .AddFactoryIndexerService<ContactsWrapper>()
+                           .AddFactoryIndexerService<EmailWrapper>()
+                           .AddBundleSearchService();
         }
     }
 }

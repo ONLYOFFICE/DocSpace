@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -171,6 +172,18 @@ namespace ASC.CRM.Core.Dao
                 LastModifedBy = dbCurrencyRate.LastModifedBy,
                 LastModifedOn = dbCurrencyRate.LastModifedOn
             };
+        }
+    }
+
+    public static class CurrencyRateDaoExtention
+    {
+        public static DIHelper AddCurrencyRateDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<CurrencyRateDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
         }
     }
 }

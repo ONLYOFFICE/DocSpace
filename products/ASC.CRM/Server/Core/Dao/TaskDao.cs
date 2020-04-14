@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -1173,6 +1174,24 @@ namespace ASC.CRM.Core.Dao
                 Title = dbTask.Title
             };
 
+        }
+    }
+
+
+    public static class TaskDaoExtention
+    {
+        public static DIHelper AddTaskDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<TaskDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddCRMSecurityService()
+                           .AddTenantUtilService()
+                           .AddFactoryIndexerService<TasksWrapper>()
+                           .AddUserDbContextService()
+                           .AddCoreDbContextService();
         }
     }
 }

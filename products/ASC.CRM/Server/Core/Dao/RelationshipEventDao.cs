@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -715,4 +716,22 @@ namespace ASC.CRM.Core.Dao
             }
         }
     }
-}
+
+    public static class RelationshipEventDaoExtention
+    {
+        public static DIHelper AddListItemDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<RelationshipEventDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddFilesIntegrationService()
+                           .AddCRMSecurityService()
+                           .AddTenantUtilService()
+                           .AddSetupInfo()
+                           .AddCRMPathProviderService();
+        }
+    }
+
+}   

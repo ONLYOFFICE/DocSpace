@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -679,5 +680,17 @@ namespace ASC.Web.CRM.Classes
             return data;
         }
 
+    }
+
+
+    public static class InvoiceFormattedDataExtention
+    {
+        public static DIHelper AddInvoiceFormattedDataService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceFormattedData>();
+
+            return services.AddOrganisationLogoManagerService()
+                           .AddDaoFactoryService();
+        }
     }
 }

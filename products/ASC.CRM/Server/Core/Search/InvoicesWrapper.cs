@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -64,6 +65,17 @@ namespace ASC.Web.CRM.Core.Search
                 PurchaseOrderNumber = invoice.PurchaseOrderNumber,
                 TenantId = tenantId
             };
+        }
+    }
+
+    public static class InvoicesWrapperExtention
+    {
+        public static DIHelper AddInvoicesWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<InvoicesWrapper>();
+
+            return services
+                .AddFactoryIndexerService<InvoicesWrapper>();
         }
     }
 }

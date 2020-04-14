@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -485,4 +486,18 @@ namespace ASC.CRM.Core.Dao
             return sqlQuery;
         }
     }
-}
+
+    public static class InvoiceItemDaoExtention
+    {
+        public static DIHelper AddInvoiceItemDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceItemDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddTenantUtilService()
+                           .AddCRMSecurityService();
+        }
+    }
+}        

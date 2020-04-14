@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -281,6 +282,18 @@ namespace ASC.CRM.Core.Dao
                 Price = dbInvoiceLine.Price,
                 Discount = dbInvoiceLine.Discount
             };
+        }
+    }
+
+    public static class InvoiceLineDaoExtention
+    {
+        public static DIHelper AddInvoiceLineDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceLineDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
         }
     }
 }

@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -971,6 +972,22 @@ namespace ASC.CRM.Core.Dao
             // Delete relative keys
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "deals.*"));
 
+        }
+    }
+
+    public static class DealDaoExtention
+    {
+        public static DIHelper AddDealDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<DealDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService()
+                           .AddCRMSecurityService()
+                           .AddFactoryIndexerService<DealsWrapper>()
+                           .AddFilesIntegrationService()
+                           .AddBundleSearchService();
         }
     }
 }

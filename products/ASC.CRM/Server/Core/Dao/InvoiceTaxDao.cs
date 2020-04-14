@@ -25,6 +25,7 @@
 
 
 using ASC.Collections;
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -261,6 +262,18 @@ namespace ASC.CRM.Core.Dao
                 result.LastModifedOn = TenantUtil.DateTimeFromUtc(result.LastModifedOn.Value);
 
             return result;
+        }
+    }
+
+    public static class InvoiceTaxDaoExtention
+    {
+        public static DIHelper AddInvoiceTaxDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceLineDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
         }
     }
 }

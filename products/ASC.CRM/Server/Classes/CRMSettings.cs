@@ -32,7 +32,7 @@ using System;
 using System.Runtime.Serialization;
 
 using Microsoft.Extensions.DependencyInjection;
-
+using ASC.Common;
 
 namespace ASC.Web.CRM.Classes
 {
@@ -40,7 +40,6 @@ namespace ASC.Web.CRM.Classes
     [DataContract]
     public class SMTPServerSetting
     {
-
         public SMTPServerSetting()
         {
             Host = String.Empty;
@@ -101,6 +100,7 @@ namespace ASC.Web.CRM.Classes
             Prefix = String.Empty;
             Number = String.Empty;
             Terms = String.Empty;
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -258,4 +258,18 @@ namespace ASC.Web.CRM.Classes
             return new CRMReportSampleSettings { NeedToGenerate = true };
         }
     }
+
+    public static class InvoiceSettingExtention
+    {
+        public static DIHelper AddInvoiceSettingService(this DIHelper services)
+        {
+            services.TryAddScoped<InvoiceSetting>();
+
+            return services;
+
+        }
+    }
+
+    
+
 }

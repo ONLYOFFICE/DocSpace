@@ -28,6 +28,7 @@
 
 using System;
 using System.Web;
+using ASC.Common;
 using ASC.Common.Web;
 using ASC.Data.Storage;
 using ASC.Web.Studio.Utility;
@@ -105,4 +106,15 @@ namespace ASC.Web.CRM
         //}
 
     }
+
+    public static class PathProviderExtention
+    {
+        public static DIHelper AddCRMPathProviderService(this DIHelper services)
+        {
+            services.TryAddScoped<PathProvider>();
+
+            return services.AddCommonLinkUtilityService();
+        }
+    }
+
 }

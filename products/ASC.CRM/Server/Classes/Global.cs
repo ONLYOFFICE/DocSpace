@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
@@ -349,5 +350,22 @@ namespace ASC.Web.CRM.Classes
             reader.DateParseHandling = DateParseHandling.None;
             return JObject.Load(reader);
         }               
+    }
+
+    public static class GlobalExtention
+    {
+        public static DIHelper AddGlobalService(this DIHelper services)
+        {            
+            services.TryAddScoped<Global>();
+
+            return services.AddStorageFactoryService()
+                           .AddSecurityContextService()
+                           .AddSetupInfo()
+                           .AddFilesLinkUtilityService()
+                           .AddCRMSecurityService()
+                           .AddTenantManagerService()
+                           .AddSettingsManagerService()
+                           .AddPdfCreatorService();
+        }
     }
 }

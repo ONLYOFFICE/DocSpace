@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -64,6 +65,17 @@ namespace ASC.Web.CRM.Core.Search
                 Value = cf.Value,
                 TenantId = tenantManager.GetCurrentTenant().TenantId
             };
+        }
+    }
+
+    public static class FieldsWrapperExtention
+    {
+        public static DIHelper AddFieldsWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<FieldsWrapper>();
+
+            return services
+                .AddFactoryIndexerService<FieldsWrapper>();
         }
     }
 }

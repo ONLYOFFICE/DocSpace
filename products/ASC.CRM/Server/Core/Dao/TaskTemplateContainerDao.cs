@@ -23,6 +23,7 @@
  *
 */
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
@@ -278,5 +279,18 @@ namespace ASC.CRM.Core.Dao
                 CreateBy = dbTaskTemplate.CreateBy
             };
         }     
+    }
+
+
+    public static class TaskTemplateDaoExtention
+    {
+        public static DIHelper AddTaskTemplateDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<TaskTemplateDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
+        }
     }
 }

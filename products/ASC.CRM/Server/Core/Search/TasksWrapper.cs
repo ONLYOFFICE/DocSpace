@@ -25,6 +25,7 @@
 
 
 using System;
+using ASC.Common;
 using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
@@ -58,4 +59,16 @@ namespace ASC.Web.CRM.Core.Search
             };        
         }
     }
+
+    public static class TasksWrapperExtention
+    {
+        public static DIHelper AddTasksWrapperService(this DIHelper services)
+        {
+            services.TryAddTransient<TasksWrapper>();
+
+            return services
+                .AddFactoryIndexerService<TasksWrapper>();
+        }
+    }
+
 }
