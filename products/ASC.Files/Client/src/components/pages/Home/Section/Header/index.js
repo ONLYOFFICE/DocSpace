@@ -17,7 +17,8 @@ import { EmptyTrashDialog, DeleteDialog } from "../../../../dialogs";
 import { SharingPanel } from "../../../../panels";
 import {
   isCanBeDeleted,
-  getAccessOption
+  getAccessOption,
+  checkFolderType
 } from "../../../../../store/files/selectors";
 
 const { isAdmin } = store.auth.selectors;
@@ -448,7 +449,7 @@ const mapStateToProps = state => {
   return {
     folder: parentId !== 0,
     isAdmin: isAdmin(user),
-    isRecycleBinFolder: treeFolders[indexOfTrash].id === id,
+    isRecycleBinFolder: checkFolderType(id, indexOfTrash, treeFolders),
     parentId,
     selection,
     title,

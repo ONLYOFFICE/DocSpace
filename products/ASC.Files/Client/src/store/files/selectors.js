@@ -319,3 +319,20 @@ export const getFileIcon = (extension, size = 32) => {
       return `${folderPath}/file.svg`;
   }
 }
+
+export const checkFolderType = (id, index, treeFolders) => {
+  return treeFolders[index].id === id;
+}
+
+export const getFolderType = (id, treeFolders) => {
+  
+  const indexOfMy = 0;
+  const indexOfShare = 1;
+  const indexOfCommon = 2;
+  const indexOfTrash = 3;
+
+  if(checkFolderType(id, indexOfMy, treeFolders)) { return "My"; }
+  else if(checkFolderType(id, indexOfShare, treeFolders)) { return "Share"; }
+  else if(checkFolderType(id, indexOfCommon, treeFolders)) { return "Common"; }
+  else if(checkFolderType(id, indexOfTrash, treeFolders)) { return "Trash"; }
+}

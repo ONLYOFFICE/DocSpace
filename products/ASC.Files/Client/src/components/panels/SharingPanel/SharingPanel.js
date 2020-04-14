@@ -27,6 +27,7 @@ import {
   setSharedFiles,
   setShareData,
 } from "../../../store/files/actions";
+import { checkFolderType } from "../../../store/files/selectors";
 import {
   StyledSharingPanel,
   StyledContent,
@@ -449,6 +450,10 @@ class SharingPanelComponent extends React.Component {
     const folderId = returnValue[1];
     const fileId = returnValue[2];
 
+    if (this.props.isRecycleBinFolder) {
+      return;
+    }
+
     if (folderId.length !== 0) {
       files
         .getShareFolders(folderId)
@@ -755,9 +760,26 @@ const SharingPanel = (props) => (
 );
 
 const mapStateToProps = (state) => {
-  const { shareDataItems, shareData, selection } = state.files;
+  const {
+    shareDataItems,
+    shareData,
+    selection,
+    selectedFolder,
+    treeFolders,
+  } = state.files;
+  const indexOfTrash = 3;
 
-  return { shareDataItems, shareData, selection, isMyId: state.auth.user.id };
+  return {
+    shareDataItems,
+    shareData,
+    selection,
+    isMyId: state.auth.user.id,
+    isRecycleBinFolder: checkFolderType(
+      selectedFolder.id,
+      indexOfTrash,
+      treeFolders
+    ),
+  };
 };
 
 export default connect(mapStateToProps, { setShareDataItems, setShareData })(
