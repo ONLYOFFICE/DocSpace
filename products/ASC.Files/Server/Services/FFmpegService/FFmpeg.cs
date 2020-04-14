@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ASC.Common;
 using ASC.Common.Logging;
 using ASC.Core;
 
@@ -167,6 +168,14 @@ namespace ASC.Web.Files.Services.FFmpegService
             {
                 logger.Info(line);
             }
+        }
+    }
+    public static class FFmpegServiceExtensions
+    {
+        public static DIHelper AddFFmpegServiceService(this DIHelper services)
+        {
+            services.TryAddSingleton<FFmpegService>();
+            return services;
         }
     }
 }
