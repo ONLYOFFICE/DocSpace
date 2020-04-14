@@ -55,7 +55,9 @@ namespace ASC.Web.CRM.Classes
                           Files.Classes.PathProvider filesPathProvider,
                           DocumentServiceConnector documentServiceConnector,
                           IServiceProvider serviceProvider,
-                          OrganisationLogoManager organisationLogoManager)
+                          OrganisationLogoManager organisationLogoManager,
+                          DaoFactory daoFactory,
+                          InvoiceFormattedData invoiceFormattedData)
         {
             FilesPathProvider = filesPathProvider;
             
@@ -64,8 +66,13 @@ namespace ASC.Web.CRM.Classes
             DocumentServiceConnector = documentServiceConnector;
             ServiceProvider = serviceProvider;
             OrganisationLogoManager = organisationLogoManager;
-
+            DaoFactory = daoFactory;
+            InvoiceFormattedData = invoiceFormattedData;
         }
+
+        public InvoiceFormattedData InvoiceFormattedData { get; }
+        
+        public DaoFactory DaoFactory { get; }
 
         private Stream Template
         {
@@ -94,11 +101,7 @@ namespace ASC.Web.CRM.Classes
             
             try
             {
-                using (var scope = DIHelper.Resolve())
-                {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-
-                    var invoice = daoFactory.GetInvoiceDao().GetByID(invoiceId);
+                    var invoice = DaoFactory.GetInvoiceDao().GetByID(invoiceId);
 
                     if (invoice == null)
                     {
@@ -122,7 +125,7 @@ namespace ASC.Web.CRM.Classes
                     var file = ServiceProvider.GetService<File<int>>();
 
                     file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
-                    file.FolderID = daoFactory.GetFileDao().GetRoot();
+                    file.FolderID = DaoFactory.GetFileDao().GetRoot();
 
                     var request = WebRequest.Create(urlToFile);
 
@@ -132,7 +135,7 @@ namespace ASC.Web.CRM.Classes
                         file.ContentLength = response.ContentLength;
 
                         Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
-                        file = daoFactory.GetFileDao().SaveFile(file, stream);
+                        file = DaoFactory.GetFileDao().SaveFile(file, stream);
                     }
 
                     if (file == null)
@@ -144,13 +147,11 @@ namespace ASC.Web.CRM.Classes
 
                     Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
 
-                    daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+                    DaoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
 
                     Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
                     
-                    daoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] {invoice.FileID});
-                
-                }
+                    DaoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] {invoice.FileID});
             }
             catch (Exception e)
             {
@@ -236,7 +237,7 @@ namespace ASC.Web.CRM.Classes
                 return null;
             }
 
-            var invoice = daoFactory.GetInvoiceDao().GetByID(data.InvoiceId);
+            var invoice = DaoFactory.GetInvoiceDao().GetByID(data.InvoiceId);
 
             return SaveFile(invoice, urlToFile, daoFactory);
         }
@@ -256,7 +257,7 @@ namespace ASC.Web.CRM.Classes
                         var document = ServiceProvider.GetService<File<int>>();
 
                         document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
-                        document.FolderID = daoFactory.GetFileDao().GetRoot();
+                        document.FolderID = DaoFactory.GetFileDao().GetRoot();
                         document.ContentLength = response.ContentLength;
 
                         if (data.GetInvoiceFile(daoFactory) != null)
@@ -264,7 +265,7 @@ namespace ASC.Web.CRM.Classes
                             document.ID = data.FileID;
                         }
 
-                        file = daoFactory.GetFileDao().SaveFile(document, stream);
+                        file = DaoFactory.GetFileDao().SaveFile(document, stream);
                     }
                 }
             }

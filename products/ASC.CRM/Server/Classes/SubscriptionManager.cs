@@ -49,11 +49,12 @@ namespace ASC.Web.CRM
         private readonly Guid _importCompleted = new Guid("{6A717AAD-16AE-4713-A782-B887766BEB9F}");
         private readonly Guid _createNewContact = new Guid("{ADAC1E70-4163-41c1-8968-67A44E4D24E7}");
 
-        public ProductSubscriptionManager(CoreBaseSettings coreBaseSettings)
+        public ProductSubscriptionManager(CoreBaseSettings coreBaseSettings, NotifySource notifySource)
         {
             CoreBaseSettings = coreBaseSettings;
         }
 
+        public NotifySource NotifySource { get; }
         public CoreBaseSettings CoreBaseSettings { get; }
 
         public List<SubscriptionObject> GetSubscriptionObjects(Guid subItem)
@@ -126,7 +127,7 @@ namespace ASC.Web.CRM
 
         public ISubscriptionProvider SubscriptionProvider
         {
-            get { return NotifySource.Instance.GetSubscriptionProvider(); }
+            get { return NotifySource.GetSubscriptionProvider(); }
         }
 
         public GroupByType GroupByType

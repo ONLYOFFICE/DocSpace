@@ -39,11 +39,15 @@ namespace ASC.CRM.Core
     public class FileSecurity : IFileSecurity
     {
         public FileSecurity(FilesIntegration filesIntegration,
-                            CRMSecurity cRMSecurity)
+                            CRMSecurity cRMSecurity,
+                            DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
             CRMSecurity = cRMSecurity;
+            DaoFactory = daoFactory;
         }
+
+        public DaoFactory DaoFactory { get; }
 
         public FilesIntegration FilesIntegration { get; }
 
@@ -85,31 +89,28 @@ namespace ASC.CRM.Core
         {
             if (entry.FileEntryType == FileEntryType.Folder) return false;
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                var invoice = daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
-                if (invoice != null)
-                    return CRMSecurity.CanAccessTo(invoice, userId);
+            var invoice = DaoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
+            if (invoice != null)
+                return CRMSecurity.CanAccessTo(invoice, userId);
 
-                var reportFile = daoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
-               
-                if (reportFile != null)
-                    return true;
+            var reportFile = DaoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
 
-                var tagDao = FilesIntegration.DaoFactory.GetTagDao<T>();
+            if (reportFile != null)
+                return true;
 
-                var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
-                    .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
-                    .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
-                    .ToList();
+            var tagDao = FilesIntegration.DaoFactory.GetTagDao<T>();
 
-                if (!eventIds.Any()) return false;
+            var eventIds = tagDao.GetTags(entry.ID, FileEntryType.File, TagType.System)
+                .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
+                .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
+                .ToList();
 
-                var eventItem = daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
+            if (!eventIds.Any()) return false;
 
-                return CRMSecurity.CanAccessTo(eventItem, userId);
-            }
+            var eventItem = DaoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
+
+            return CRMSecurity.CanAccessTo(eventItem, userId);
+
         }
 
         public IEnumerable<Guid> WhoCanRead<T>(FileEntry<T> entry)
@@ -121,23 +122,26 @@ namespace ASC.CRM.Core
     public class FileSecurityProvider : IFileSecurityProvider
     {
         public FileSecurityProvider(FilesIntegration filesIntegration,
-                            CRMSecurity cRMSecurity)
+                                    CRMSecurity cRMSecurity,
+                                    DaoFactory daoFactory)
         {
             FilesIntegration = filesIntegration;
             CRMSecurity = cRMSecurity;
+            DaoFactory = daoFactory;
         }
 
+        public DaoFactory DaoFactory { get; }
         public FilesIntegration FilesIntegration { get; }
         public CRMSecurity CRMSecurity { get; }
 
         public IFileSecurity GetFileSecurity(string data)
         {
-            return new FileSecurity(FilesIntegration, CRMSecurity);
+            return new FileSecurity(FilesIntegration, CRMSecurity, DaoFactory);
         }
 
         public Dictionary<object, IFileSecurity> GetFileSecurity(Dictionary<string, string> data)
         {
-            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity(FilesIntegration, CRMSecurity));
+            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity(FilesIntegration, CRMSecurity, DaoFactory));
         }
     }
 }

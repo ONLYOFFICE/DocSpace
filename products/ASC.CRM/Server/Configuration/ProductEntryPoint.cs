@@ -53,10 +53,9 @@ namespace ASC.Web.CRM.Configuration
                                  DaoFactory daoFactory,
                                  FilesIntegration filesIntegration,
                                  IOptionsMonitor<ILog> logger,
-                                 CRMSecurity cRMSecurity,
                                  SettingsManager settingsManager,
                                  CoreConfiguration coreConfiguration,
-                                 Global global)
+                                 FileSecurityProvider fileSecurityProvider)
         {
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -64,10 +63,9 @@ namespace ASC.Web.CRM.Configuration
             DaoFactory = daoFactory;
             FilesIntegration = filesIntegration;
             Logger = logger.Get("ASC");
-            CRMSecurity = cRMSecurity;
             SettingsManager = settingsManager;
             CoreConfiguration = coreConfiguration;
-            Global = global;
+            FileSecurityProvider = fileSecurityProvider;
         }
         
         public static readonly Guid ID = WebItemManager.CRMProductID;
@@ -77,7 +75,8 @@ namespace ASC.Web.CRM.Configuration
         private static readonly object Locker = new object();
         private static bool registered;
         
-        public Global Global { get; }
+        public FileSecurityProvider FileSecurityProvider { get; }
+
 
         public CoreConfiguration CoreConfiguration { get; }
 
@@ -85,8 +84,7 @@ namespace ASC.Web.CRM.Configuration
 
         public SettingsManager SettingsManager { get; }
 
-        public CRMSecurity CRMSecurity { get; }
-
+ 
         public FilesIntegration FilesIntegration { get;  }
 
         public DaoFactory DaoFactory { get; }
@@ -145,11 +143,11 @@ namespace ASC.Web.CRM.Configuration
 
             if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "crm_common"))
             {
-                FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", new FileSecurityProvider(FilesIntegration, CRMSecurity));
+                FilesIntegration.RegisterFileSecurityProvider("crm", "crm_common", FileSecurityProvider);
             }
             if (!FilesIntegration.IsRegisteredFileSecurityProvider("crm", "opportunity"))
             {
-                FilesIntegration.RegisterFileSecurityProvider("crm", "opportunity", new FileSecurityProvider(FilesIntegration, CRMSecurity));
+                FilesIntegration.RegisterFileSecurityProvider("crm", "opportunity", FileSecurityProvider);
             }
 
 //            SearchHandlerManager.Registry(new SearchHandler());
@@ -160,7 +158,6 @@ namespace ASC.Web.CRM.Configuration
             //    defaults: new {controller = "Twilio", action = "index" });
 
 //            ClientScriptLocalization = new ClientLocalizationResources();
-            DIHelper.Register();
         }
 
 
@@ -170,11 +167,8 @@ namespace ASC.Web.CRM.Configuration
 
             if (!tenantSettings.IsConfiguredPortal)
             {
-                using (var scope = DIHelper.Resolve())
-                {
-                    var daoFactory = scope.Resolve<DaoFactory>();
                     // Task Category
-                    var listItemDao = daoFactory.GetListItemDao();
+                    var listItemDao = DaoFactory.GetListItemDao();
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Call, "task_category_call.png"));
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Deal, "task_category_deal.png"));
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Demo, "task_category_demo.png"));
@@ -189,7 +183,7 @@ namespace ASC.Web.CRM.Configuration
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_ThankYou, "task_category_thank_you.png"));
 
                     // Deal Milestone New
-                    var milestoneDao = daoFactory.GetDealMilestoneDao();
+                    var milestoneDao = DaoFactory.GetDealMilestoneDao();
                     
                     milestoneDao.Create(new DealMilestone
                     {
@@ -287,10 +281,10 @@ namespace ASC.Web.CRM.Configuration
                     listItemDao.CreateItem(ListType.HistoryCategory, new ListItem(CRMCommonResource.HistoryCategory_Call, "event_category_call.png"));
                     listItemDao.CreateItem(ListType.HistoryCategory, new ListItem(CRMCommonResource.HistoryCategory_Meeting, "event_category_meeting.png"));
                     // Tags
-                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Lead, true);
-                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Customer, true);
-                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Supplier, true);
-                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Staff, true);
+                    DaoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Lead, true);
+                    DaoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Customer, true);
+                    DaoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Supplier, true);
+                    DaoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Staff, true);
                                         
                     tenantSettings.WebFormKey = Guid.NewGuid();
                     tenantSettings.IsConfiguredPortal = true;
@@ -299,7 +293,6 @@ namespace ASC.Web.CRM.Configuration
                     {
                         throw new Exception("not save CRMSettings");
                     }
-                }
             }
 
             if (!tenantSettings.IsConfiguredSmtp)

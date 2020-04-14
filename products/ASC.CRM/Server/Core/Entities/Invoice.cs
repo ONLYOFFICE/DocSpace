@@ -94,12 +94,12 @@ namespace ASC.CRM.Core.Entities
 
         public List<InvoiceLine> GetInvoiceLines(DaoFactory daoFactory)
         {
-            return daoFactory.InvoiceLineDao.GetInvoiceLines(ID);
+            return daoFactory.GetInvoiceLineDao().GetInvoiceLines(ID);
         }
 
         public File<int> GetInvoiceFile(DaoFactory daoFactory)
         {
-            return daoFactory.GetFileDao.GetFile(FileID, 0);
+            return daoFactory.GetFileDao().GetFile(FileID, 0);
         }
 
         public decimal GetInvoiceCost(DaoFactory daoFactory)

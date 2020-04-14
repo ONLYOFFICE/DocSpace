@@ -194,8 +194,8 @@ namespace ASC.Web.CRM.Classes
             {
                 var newFile = PdfCreator.CreateFile(invoice, factory);
                 invoice.FileID = Int32.Parse(newFile.ID.ToString());
-                factory..GetInvoiceDao()..UpdateInvoiceFileID(invoice.ID, invoice.FileID);
-                factory.GetRelationshipEventDao.AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
+                factory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+                factory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
                 return newFile;
             }
         }

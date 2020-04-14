@@ -81,21 +81,21 @@ namespace ASC.CRM.Core.Entities
             return String.Format("{0} {1}", people.FirstName, people.LastName);
         }
 
-        public static String RenderLinkForCard(this Contact contact)
-        {
-            var isCompany = contact is Company;
-            var popupID = Guid.NewGuid();
+        //public static String RenderLinkForCard(this Contact contact)
+        //{
+        //    var isCompany = contact is Company;
+        //    var popupID = Guid.NewGuid();
 
-            return !CRMSecurity.CanAccessTo(contact) ?
-                    String.Format(@"<span class='noAccessToContact'>{0}</span>", GetTitle(contact).HtmlEncode()) :
-                    String.Format(@"<a class='linkMedium {0}' id='{5}' data-id='{2}' href='default.aspx?{1}={2}{3}'>
-                                         {4}
-                                    </a>",
-                                     isCompany ? "crm-companyInfoCardLink" : "crm-peopleInfoCardLink",
-                                     UrlConstant.ID, contact != null ? contact.ID : 0,
-                                     isCompany ? String.Empty : String.Format("&{0}=people", UrlConstant.Type),
-                                     GetTitle(contact).HtmlEncode(), popupID);
-        }
+        //    return !CRMSecurity.CanAccessTo(contact) ?
+        //            String.Format(@"<span class='noAccessToContact'>{0}</span>", GetTitle(contact).HtmlEncode()) :
+        //            String.Format(@"<a class='linkMedium {0}' id='{5}' data-id='{2}' href='default.aspx?{1}={2}{3}'>
+        //                                 {4}
+        //                            </a>",
+        //                             isCompany ? "crm-companyInfoCardLink" : "crm-peopleInfoCardLink",
+        //                             UrlConstant.ID, contact != null ? contact.ID : 0,
+        //                             isCompany ? String.Empty : String.Format("&{0}=people", UrlConstant.Type),
+        //                             GetTitle(contact).HtmlEncode(), popupID);
+        //}
     }
 
     [Serializable]

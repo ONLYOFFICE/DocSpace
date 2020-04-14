@@ -34,37 +34,39 @@ namespace ASC.Web.CRM.Classes
     public class SignalRHelper
     {
         private readonly string numberId;
-        private readonly SignalrServiceClient signalrServiceClient;
 
-        public SignalRHelper(string numberId)
+        public SignalrServiceClient SignalrServiceClient { get; }
+
+        public SignalRHelper(string numberId,
+            SignalrServiceClient signalrServiceClient)
         {
-            signalrServiceClient = new SignalrServiceClient("voip");
-            this.numberId = numberId.TrimStart('+');
+            SignalrServiceClient = signalrServiceClient;
+            this.numberId = numberId.TrimStart('+');        
         }
-
+       
         public void Enqueue(string call, string agent)
         {
-            signalrServiceClient.EnqueueCall(numberId, call, agent);
+            SignalrServiceClient.EnqueueCall(numberId, call, agent);
         }
 
         public void Incoming(string call, string agent)
         {
-            signalrServiceClient.IncomingCall(call, agent);
+            SignalrServiceClient.IncomingCall(call, agent);
         }
 
         public void MissCall(string call, string agent)
         {
-            signalrServiceClient.MissCall(numberId, call, agent);
+            SignalrServiceClient.MissCall(numberId, call, agent);
         }
 
         public void Reload(string agentId = null)
         {
-            signalrServiceClient.Reload(numberId, agentId);
+            SignalrServiceClient.Reload(numberId, agentId);
         }
 
         public Tuple<Agent, bool> GetAgent(List<Guid> contactsResponsibles)
         {
-            return signalrServiceClient.GetAgent<Tuple<Agent, bool>>(numberId, contactsResponsibles);
+            return SignalrServiceClient.GetAgent<Tuple<Agent, bool>>(numberId, contactsResponsibles);
         }
     }
 }

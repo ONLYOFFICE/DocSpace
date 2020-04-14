@@ -31,6 +31,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Runtime.Serialization;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Classes
 {
     [Serializable]
@@ -146,11 +149,14 @@ namespace ASC.Web.CRM.Classes
     [DataContract]
     public class CRMSettings : ISettings
     {
-        public CRMSettings(CoreConfiguration coreConfiguration)
+        public CRMSettings(CoreConfiguration coreConfiguration,
+                          CurrencyProvider currencyProvider)
         {
+            CurrencyProvider = currencyProvider;
             CoreConfiguration = coreConfiguration;
         }
 
+        public CurrencyProvider CurrencyProvider { get; }
         public CoreConfiguration CoreConfiguration { get; }
 
         [DataMember(Name = "DefaultCurrency")]
@@ -219,8 +225,9 @@ namespace ASC.Web.CRM.Classes
             var languageName = System.Threading.Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
 
             var findedCurrency = CurrencyProvider.GetAll().Find(item => String.Compare(item.CultureName, languageName, true) == 0);
-
-            return new CRMSettings(CoreConfiguration)
+            
+            return new CRMSettings(serviceProvider.GetService<CoreConfiguration>(),
+                                   serviceProvider.GetService<CurrencyProvider>())
                         {
                             defaultCurrency = findedCurrency != null ? findedCurrency.Abbreviation : "USD",
                             IsConfiguredPortal = false,

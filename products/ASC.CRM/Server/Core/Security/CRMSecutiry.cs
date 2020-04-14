@@ -51,9 +51,9 @@ using SecurityContext = ASC.Core.SecurityContext;
 namespace ASC.CRM.Core
 {
     public class CRMSecurity
-    {       
+    {
         public readonly IAction _actionRead = new Action(new Guid("{6F05C382-8BCA-4469-9424-C807A98C40D7}"), "", true, false);
-        
+
         public CRMSecurity(SecurityContext securityContext,
                             AuthorizationManager authorizationManager,
                             UserManager userManager,
@@ -73,6 +73,7 @@ namespace ASC.CRM.Core
             CurrencyProvider = currencyProvider;
         }
 
+
         public CurrencyProvider CurrencyProvider { get; }
 
         public PermissionContext PermissionContext { get; }
@@ -88,7 +89,7 @@ namespace ASC.CRM.Core
         public DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
 
         public UserManager UserManager { get; }
-    
+
         private ISecurityObjectProvider GetCRMSecurityProvider()
         {
             return new CRMSecurityObjectProvider();
@@ -201,7 +202,7 @@ namespace ASC.CRM.Core
 
         public void SetAccessTo(ISecurityObjectId entity, List<Guid> subjectID)
         {
-            
+
             if (subjectID.Count == 0)
             {
                 AuthorizationManager.RemoveAllAces(entity);
@@ -264,30 +265,25 @@ namespace ASC.CRM.Core
             if (IsAdministrator(userId))
                 return true;
 
-            using (var scope = DIHelper.Resolve())
+            if (relationshipEvent.ContactID > 0)
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-
-                if (relationshipEvent.ContactID > 0)
-                {
-                    var contactObj = daoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
-                    if (contactObj != null) return CanAccessTo(contactObj, userId);
-                }
-
-                if (relationshipEvent.EntityType == EntityType.Case)
-                {
-                    var caseObj = daoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
-                    if (caseObj != null) return CanAccessTo(caseObj, userId);
-                }
-
-                if (relationshipEvent.EntityType == EntityType.Opportunity)
-                {
-                    var dealObj = daoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
-                    if (dealObj != null) return CanAccessTo(dealObj, userId);
-                }
-
-                return false;
+                var contactObj = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
+                if (contactObj != null) return CanAccessTo(contactObj, userId);
             }
+
+            if (relationshipEvent.EntityType == EntityType.Case)
+            {
+                var caseObj = DaoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
+                if (caseObj != null) return CanAccessTo(caseObj, userId);
+            }
+
+            if (relationshipEvent.EntityType == EntityType.Opportunity)
+            {
+                var dealObj = DaoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
+                if (dealObj != null) return CanAccessTo(dealObj, userId);
+            }
+
+            return false;
         }
 
         public bool CanAccessTo(Contact contact)
@@ -309,7 +305,8 @@ namespace ASC.CRM.Core
             {
                 return true;
             }
-            if (entityType == EntityType.Company){
+            if (entityType == EntityType.Company)
+            {
                 var fakeContact = new Company() { ID = contactID };
                 return GetAccessSubjectTo(fakeContact).ContainsKey(SecurityContext.CurrentAccount.ID);
             }
@@ -332,29 +329,26 @@ namespace ASC.CRM.Core
                 (task.ContactID == 0 && task.EntityID == 0) || task.CreateBy == userId)
                 return true;
 
-            using (var scope = DIHelper.Resolve())
+            if (task.ContactID > 0)
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                if (task.ContactID > 0)
-                {
-                    var contactObj = daoFactory.GetContactDao().GetByID(task.ContactID);
-                    if (contactObj != null) return CanAccessTo(contactObj, userId);
-                }
-
-                if (task.EntityType == EntityType.Case)
-                {
-                    var caseObj = daoFactory.GetCasesDao().GetByID(task.EntityID);
-                    if (caseObj != null) return CanAccessTo(caseObj, userId);
-                }
-
-                if (task.EntityType == EntityType.Opportunity)
-                {
-                    var dealObj = daoFactory.GetDealDao().GetByID(task.EntityID);
-                    if (dealObj != null) return CanAccessTo(dealObj, userId);
-                }
-
-                return false;
+                var contactObj = DaoFactory.GetContactDao().GetByID(task.ContactID);
+                if (contactObj != null) return CanAccessTo(contactObj, userId);
             }
+
+            if (task.EntityType == EntityType.Case)
+            {
+                var caseObj = DaoFactory.GetCasesDao().GetByID(task.EntityID);
+                if (caseObj != null) return CanAccessTo(caseObj, userId);
+            }
+
+            if (task.EntityType == EntityType.Opportunity)
+            {
+                var dealObj = DaoFactory.GetDealDao().GetByID(task.EntityID);
+                if (dealObj != null) return CanAccessTo(dealObj, userId);
+            }
+
+            return false;
+
         }
 
         public bool CanAccessTo(Invoice invoice)
@@ -366,17 +360,14 @@ namespace ASC.CRM.Core
         {
             if (IsAdministrator(userId) || invoice.CreateBy == userId) return true;
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                if (invoice.ContactID > 0)
-                    return CanAccessTo(daoFactory.GetContactDao().GetByID(invoice.ContactID), userId);
+            if (invoice.ContactID > 0)
+                return CanAccessTo(DaoFactory.GetContactDao().GetByID(invoice.ContactID), userId);
 
-                if (invoice.EntityType == EntityType.Opportunity)
-                    return CanAccessTo(daoFactory.GetDealDao().GetByID(invoice.EntityID), userId);
+            if (invoice.EntityType == EntityType.Opportunity)
+                return CanAccessTo(DaoFactory.GetDealDao().GetByID(invoice.EntityID), userId);
 
-                return false;
-            }
+            return false;
+
         }
 
         public bool CanAccessTo(InvoiceTax invoiceTax)
@@ -414,45 +405,41 @@ namespace ASC.CRM.Core
 
             if (IsAdmin) return true;
 
-            using (var scope = DIHelper.Resolve())
+
+            if (relationshipEvent.ContactID > 0)
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-
-                if (relationshipEvent.ContactID > 0)
+                var contactObj = DaoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
+                if (contactObj != null)
                 {
-                    var contactObj = daoFactory.GetContactDao().GetByID(relationshipEvent.ContactID);
-                    if (contactObj != null)
-                    {
-                        if(CanEdit(contactObj)) return true;
+                    if (CanEdit(contactObj)) return true;
 
-                        return CanAccessTo(contactObj, userId) && relationshipEvent.CreateBy == userId;
-                    }
+                    return CanAccessTo(contactObj, userId) && relationshipEvent.CreateBy == userId;
                 }
-
-                if (relationshipEvent.EntityType == EntityType.Case)
-                {
-                    var caseObj = daoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
-                    if (caseObj != null)
-                    {
-                        if (CanEdit(caseObj)) return true;
-
-                        return CanAccessTo(caseObj, userId) && relationshipEvent.CreateBy == userId;
-                    }
-                }
-
-                if (relationshipEvent.EntityType == EntityType.Opportunity)
-                {
-                    var dealObj = daoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
-                    if (dealObj != null)
-                    {
-                        if (CanEdit(dealObj)) return true;
-
-                        return CanAccessTo(dealObj, userId) && relationshipEvent.CreateBy == userId;
-                    }
-                }
-
-                return false;
             }
+
+            if (relationshipEvent.EntityType == EntityType.Case)
+            {
+                var caseObj = DaoFactory.GetCasesDao().GetByID(relationshipEvent.EntityID);
+                if (caseObj != null)
+                {
+                    if (CanEdit(caseObj)) return true;
+
+                    return CanAccessTo(caseObj, userId) && relationshipEvent.CreateBy == userId;
+                }
+            }
+
+            if (relationshipEvent.EntityType == EntityType.Opportunity)
+            {
+                var dealObj = DaoFactory.GetDealDao().GetByID(relationshipEvent.EntityID);
+                if (dealObj != null)
+                {
+                    if (CanEdit(dealObj)) return true;
+
+                    return CanAccessTo(dealObj, userId) && relationshipEvent.CreateBy == userId;
+                }
+            }
+
+            return false;
         }
 
         public bool CanEdit(Contact contact)
@@ -489,10 +476,8 @@ namespace ASC.CRM.Core
 
         public bool CanDelete(Contact contact)
         {
-            using (var scope = DIHelper.Resolve())
-            {
-                return CanEdit(contact) && scope.Resolve<DaoFactory>().GetContactDao().CanDelete(contact.ID);
-            }
+            return CanEdit(contact) && DaoFactory.GetContactDao().CanDelete(contact.ID);
+
         }
 
         public bool CanDelete(Invoice invoice)
@@ -502,18 +487,13 @@ namespace ASC.CRM.Core
 
         public bool CanDelete(InvoiceItem invoiceItem)
         {
-            using (var scope = DIHelper.Resolve())
-            {
-                return CanEdit(invoiceItem) && scope.Resolve<DaoFactory>().GetInvoiceItemDao().CanDelete(invoiceItem.ID);
-            }
+            return CanEdit(invoiceItem) && DaoFactory.GetInvoiceItemDao().CanDelete(invoiceItem.ID);
         }
 
         public bool CanDelete(InvoiceTax invoiceTax)
         {
-            using (var scope = DIHelper.Resolve())
-            {
-                return CanEdit(invoiceTax) && scope.Resolve<DaoFactory>().GetInvoiceTaxDao().CanDelete(invoiceTax.ID);
-            }
+            return CanEdit(invoiceTax) && DaoFactory.GetInvoiceTaxDao().CanDelete(invoiceTax.ID);
+
         }
 
         public bool CanDelete(Deal deal)
@@ -659,7 +639,7 @@ namespace ASC.CRM.Core
 
         public void DemandDelete(RelationshipEvent relationshipEvent)
         {
-           if (!CanDelete(relationshipEvent)) throw CreateSecurityException();
+            if (!CanDelete(relationshipEvent)) throw CreateSecurityException();
         }
 
         public void DemandCreateOrUpdate(RelationshipEvent relationshipEvent)
@@ -682,20 +662,15 @@ namespace ASC.CRM.Core
                 deal.DealMilestoneID <= 0 || string.IsNullOrEmpty(deal.BidCurrency))
                 throw new ArgumentException();
 
+            var listItem = DaoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
+            if (listItem == null) throw new ArgumentException(CRMErrorsResource.DealMilestoneNotFound);
 
-            using (var scope = DIHelper.Resolve())
+            if (deal.ContactID != 0)
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                var listItem = daoFactory.GetDealMilestoneDao().GetByID(deal.DealMilestoneID);
-                if (listItem == null) throw new ArgumentException(CRMErrorsResource.DealMilestoneNotFound);
+                var contact = DaoFactory.GetContactDao().GetByID(deal.ContactID);
+                if (contact == null) throw new ArgumentException();
 
-                if (deal.ContactID != 0)
-                {
-                    var contact = daoFactory.GetContactDao().GetByID(deal.ContactID);
-                    if (contact == null) throw new ArgumentException();
-
-                    if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
-                }
+                if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
             }
             if (string.IsNullOrEmpty(deal.BidCurrency))
             {
@@ -720,18 +695,15 @@ namespace ASC.CRM.Core
             if (targetInvoice == null || targetInvoice.ID != line.InvoiceID) throw new ArgumentException();
             if (!CanEdit(targetInvoice)) throw CreateSecurityException();
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                if (!daoFactory.GetInvoiceItemDao().IsExist(line.InvoiceItemID))
-                    throw new ArgumentException();
+            if (!DaoFactory.GetInvoiceItemDao().IsExist(line.InvoiceItemID))
+                throw new ArgumentException();
 
-                if (line.InvoiceTax1ID > 0 && !daoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax1ID))
-                    throw new ArgumentException();
+            if (line.InvoiceTax1ID > 0 && !DaoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax1ID))
+                throw new ArgumentException();
 
-                if (line.InvoiceTax2ID > 0 && !daoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax2ID))
-                    throw new ArgumentException();
-            }
+            if (line.InvoiceTax2ID > 0 && !DaoFactory.GetInvoiceTaxDao().IsExist(line.InvoiceTax2ID))
+                throw new ArgumentException();
+
         }
 
         public void DemandCreateOrUpdate(Invoice invoice)
@@ -742,32 +714,28 @@ namespace ASC.CRM.Core
                 String.IsNullOrEmpty(invoice.Currency) ||
                 invoice.ExchangeRate <= 0 ||
                 String.IsNullOrEmpty(invoice.Terms))
-                    throw new ArgumentException();
+                throw new ArgumentException();
 
-            using (var scope = DIHelper.Resolve())
+            var contact = DaoFactory.GetContactDao().GetByID(invoice.ContactID);
+            if (contact == null) throw new ArgumentException();
+            if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
+
+            if (invoice.ConsigneeID != 0 && invoice.ConsigneeID != invoice.ContactID)
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                var contact = daoFactory.GetContactDao().GetByID(invoice.ContactID);
-                if (contact == null) throw new ArgumentException();
-                if (!CanAccessTo(contact)) throw new SecurityException(CRMErrorsResource.AccessDenied);
+                var consignee = DaoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
+                if (consignee == null) throw new ArgumentException();
+                if (!CanAccessTo(consignee)) throw new SecurityException(CRMErrorsResource.AccessDenied);
+            }
 
-                if (invoice.ConsigneeID != 0 && invoice.ConsigneeID != invoice.ContactID)
-                {
-                    var consignee = daoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
-                    if (consignee == null) throw new ArgumentException();
-                    if (!CanAccessTo(consignee)) throw new SecurityException(CRMErrorsResource.AccessDenied);
-                }
+            if (invoice.EntityID != 0)
+            {
+                var deal = DaoFactory.GetDealDao().GetByID(invoice.EntityID);
+                if (deal == null) throw new ArgumentException();
+                if (!CanAccessTo(deal)) throw new SecurityException(CRMErrorsResource.AccessDenied);
 
-                if (invoice.EntityID != 0)
-                {
-                    var deal = daoFactory.GetDealDao().GetByID(invoice.EntityID);
-                    if (deal == null) throw new ArgumentException();
-                    if (!CanAccessTo(deal)) throw new SecurityException(CRMErrorsResource.AccessDenied);
-
-                    var dealMembers = daoFactory.GetDealDao().GetMembers(invoice.EntityID);
-                    if (!dealMembers.Contains(invoice.ContactID))
-                        throw new ArgumentException();
-                }
+                var dealMembers = DaoFactory.GetDealDao().GetMembers(invoice.EntityID);
+                if (!dealMembers.Contains(invoice.ContactID))
+                    throw new ArgumentException();
             }
 
             if (CurrencyProvider.Get(invoice.Currency.ToUpper()) == null)
@@ -807,12 +775,9 @@ namespace ASC.CRM.Core
                 .Distinct()
                 .ToList();
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
                 if (contactIDs.Any())
                 {
-                    contactIDs = daoFactory.GetContactDao()
+                    contactIDs = DaoFactory.GetContactDao()
                         .GetContacts(contactIDs.ToArray())
                         .Select(x => x.ID)
                         .ToList();
@@ -829,7 +794,7 @@ namespace ASC.CRM.Core
 
                 if (casesIds.Any())
                 {
-                    casesIds = daoFactory.GetCasesDao()
+                    casesIds = DaoFactory.GetCasesDao()
                         .GetCases(casesIds.ToArray())
                         .Select(x => x.ID)
                         .ToList();
@@ -846,7 +811,7 @@ namespace ASC.CRM.Core
 
                 if (dealsIds.Any())
                 {
-                    dealsIds = daoFactory.GetDealDao()
+                    dealsIds = DaoFactory.GetDealDao()
                         .GetDeals(dealsIds.ToArray())
                         .Select(x => x.ID)
                         .ToList();
@@ -859,7 +824,7 @@ namespace ASC.CRM.Core
                 }
 
                 return result;
-            }
+            
 
         }
 
@@ -872,20 +837,16 @@ namespace ASC.CRM.Core
             var result = invoices.ToList();
             var contactIDs = result.Select(x => x.ContactID).Distinct().ToList();
 
-            using (var scope = DIHelper.Resolve())
+            if (contactIDs.Any())
             {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                if (contactIDs.Any())
-                {
-                    contactIDs = daoFactory.GetContactDao()
-                        .GetContacts(contactIDs.ToArray())
-                        .Select(x => x.ID)
-                        .ToList();
+                contactIDs = DaoFactory.GetContactDao()
+                    .GetContacts(contactIDs.ToArray())
+                    .Select(x => x.ID)
+                    .ToList();
 
-                    result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID)).ToList();
+                result = result.Where(x => x.ContactID == 0 || contactIDs.Contains(x.ContactID)).ToList();
 
-                    if (!result.Any()) return Enumerable.Empty<Invoice>();
-                }
+                if (!result.Any()) return Enumerable.Empty<Invoice>();
             }
 
             return result;

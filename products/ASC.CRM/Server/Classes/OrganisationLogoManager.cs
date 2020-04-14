@@ -44,13 +44,16 @@ namespace ASC.Web.CRM.Classes
     {
         public OrganisationLogoManager(WebImageSupplier webImageSupplier,
                                        Global global,
-                                       IOptionsMonitor<ILog> logger)
+                                       IOptionsMonitor<ILog> logger,
+                                       DaoFactory daoFactory)
         {
             WebImageSupplier = webImageSupplier;
             Global = global;
             Logger = logger.Get("ASC.CRM");
+            DaoFactory = daoFactory;
         }
 
+        public DaoFactory DaoFactory { get; }
         public ILog Logger { get; }
 
         public Global Global { get; }
@@ -110,7 +113,7 @@ namespace ASC.Web.CRM.Classes
                 }
             }
         }
-              
+
         #endregion
 
         public String GetDefaultLogoUrl()
@@ -121,10 +124,10 @@ namespace ASC.Web.CRM.Classes
         public String GetOrganisationLogoBase64(int logoID)
         {
             if (logoID <= 0) { return ""; }
-            using (var scope = DIHelper.Resolve())
-            {
-                return scope.Resolve<DaoFactory>().GetInvoiceDao().GetOrganisationLogoBase64(logoID);
-            }
+
+            return DaoFactory.GetInvoiceDao().GetOrganisationLogoBase64(logoID);
+
+
         }
 
         public String GetOrganisationLogoSrc(int logoID)
@@ -187,7 +190,7 @@ namespace ASC.Web.CRM.Classes
         public String UploadLogo(byte[] imageData, ImageFormat imageFormat)
         {
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
-        
+
             return ExecResizeImage(imageData, OrganisationLogoSize, Global.GetStore(), photoPath);
         }
     }

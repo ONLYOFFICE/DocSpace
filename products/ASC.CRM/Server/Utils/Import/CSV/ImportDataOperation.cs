@@ -45,7 +45,7 @@ using System.Linq;
 
 namespace ASC.Web.CRM.Classes
 {
-    public  class ImportDataCache
+    public class ImportDataCache
     {
         public ImportDataCache(TenantManager tenantManager)
         {
@@ -81,7 +81,7 @@ namespace ASC.Web.CRM.Classes
             return Cache.Get<ImportDataOperation>(GetStateCacheKey(entityType));
         }
 
-        public void Insert(EntityType entityType,ImportDataOperation data)
+        public void Insert(EntityType entityType, ImportDataOperation data)
         {
             Cache.Insert(GetStateCacheKey(entityType), data, TimeSpan.FromMinutes(1));
         }
@@ -112,7 +112,7 @@ namespace ASC.Web.CRM.Classes
     public partial class ImportDataOperation : IProgressItem
     {
         public ImportDataOperation(EntityType entityType,
-                                   string CSVFileURI, 
+                                   string CSVFileURI,
                                    string importSettingsJSON,
                                    SecurityContext securityContext,
                                    Global global,
@@ -124,7 +124,7 @@ namespace ASC.Web.CRM.Classes
                                    NotifyClient notifyClient,
                                    SettingsManager settingsManager,
                                    CurrencyProvider currencyProvider,
-                                   IServiceProvider serviceProvider
+                                   DaoFactory daoFactory
                                    )
         {
             ImportDataCache = importDataCache;
@@ -138,7 +138,7 @@ namespace ASC.Web.CRM.Classes
 
             SecurityContext = securityContext;
             _dataStore = global.GetStore();
-            
+
             _tenantID = tenantManager.CurrentTenant.TenantId;
             _author = SecurityContext.CurrentAccount;
 
@@ -151,6 +151,7 @@ namespace ASC.Web.CRM.Classes
             CRMSecurity = cRMSecurity;
             SettingsManager = settingsManager;
             CurrencyProvider = currencyProvider;
+            DaoFactory = daoFactory;
         }
 
         public CurrencyProvider CurrencyProvider { get; }
@@ -169,6 +170,8 @@ namespace ASC.Web.CRM.Classes
 
         public UserManager UserManager { get; }
 
+        public DaoFactory DaoFactory { get; }
+
         public ILog LogManager { get; }
 
         private readonly ILog _log;
@@ -176,7 +179,7 @@ namespace ASC.Web.CRM.Classes
         private readonly IDataStore _dataStore;
 
         private readonly IAccount _author;
-                
+
         private readonly int _tenantID;
 
         private readonly string _CSVFileURI;
@@ -206,7 +209,7 @@ namespace ASC.Web.CRM.Classes
 
         public object Clone()
         {
-            return MemberwiseClone();                     
+            return MemberwiseClone();
         }
 
         public object Id { get; set; }
@@ -218,7 +221,7 @@ namespace ASC.Web.CRM.Classes
         public double Percentage { get; set; }
 
         public bool IsCompleted { get; set; }
-              
+
         private String GetPropertyValue(String propertyName)
         {
             if (_importSettings.ColumnMapping[propertyName] == null) return String.Empty;
@@ -240,7 +243,7 @@ namespace ASC.Web.CRM.Classes
             _log.Debug("Import is completed");
 
             NotifyClient.SendAboutImportCompleted(_author.ID, _entityType);
-                       
+
             ImportDataCache.Insert(_entityType, (ImportDataOperation)Clone());
         }
 
@@ -250,35 +253,32 @@ namespace ASC.Web.CRM.Classes
             {
                 TenantManager.SetCurrentTenant(_tenantID);
                 SecurityContext.AuthenticateMe(_author);
+                
+                var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
 
-                using (var scope = DIHelper.Resolve())
+                System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
+                System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
+
+                ImportDataCache.Insert(_entityType, (ImportDataOperation)Clone());
+
+                switch (_entityType)
                 {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var userCulture = UserManager.GetUsers(SecurityContext.CurrentAccount.ID).GetCulture();
-
-                    System.Threading.Thread.CurrentThread.CurrentCulture = userCulture;
-                    System.Threading.Thread.CurrentThread.CurrentUICulture = userCulture;
-
-                    ImportDataCache.Insert(_entityType, (ImportDataOperation) Clone());
-
-                    switch (_entityType)
-                    {
-                        case EntityType.Contact:
-                            ImportContactsData(daoFactory);
-                            break;
-                        case EntityType.Opportunity:
-                            ImportOpportunityData(daoFactory);
-                            break;
-                        case EntityType.Case:
-                            ImportCaseData(daoFactory);
-                            break;
-                        case EntityType.Task:
-                            ImportTaskData(daoFactory);
-                            break;
-                        default:
-                            throw new ArgumentException(CRMErrorsResource.EntityTypeUnknown);
-                    }
+                    case EntityType.Contact:
+                        ImportContactsData(DaoFactory);
+                        break;
+                    case EntityType.Opportunity:
+                        ImportOpportunityData(DaoFactory);
+                        break;
+                    case EntityType.Case:
+                        ImportCaseData(DaoFactory);
+                        break;
+                    case EntityType.Task:
+                        ImportTaskData(DaoFactory);
+                        break;
+                    default:
+                        throw new ArgumentException(CRMErrorsResource.EntityTypeUnknown);
                 }
+
             }
             catch (OperationCanceledException)
             {

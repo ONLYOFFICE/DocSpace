@@ -177,7 +177,6 @@
 
   <ItemGroup>
     <Folder Include="Classes\SocialMedia\" />
-    <Folder Include="Controllers\" />
     <Folder Include="HttpHandlers\" />
   </ItemGroup>
 

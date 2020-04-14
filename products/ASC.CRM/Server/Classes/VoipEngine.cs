@@ -46,9 +46,8 @@ namespace ASC.Web.CRM.Classes
 {
     public class VoipEngine
     {
-        private readonly WorkerQueue<QueueItem> Queue = new WorkerQueue<QueueItem>(1, TimeSpan.FromMinutes(30));
+        private readonly WorkerQueue<QueueItem> Queue = new WorkerQueue<QueueItem>();
         private readonly object Locker = new object();
-        private readonly DaoFactory daoFactory;
 
         public VoipEngine(DaoFactory daoFactory,
                          CRMSecurity cRMSecurity,
@@ -58,14 +57,16 @@ namespace ASC.Web.CRM.Classes
                          TenantManager tenantManager,
                          VoipDao voipDao)
         {
-            this.daoFactory = daoFactory;
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             SecurityContext = securityContext;
             Logger = logger.Get("ASC.CRM");
             TenantManager = tenantManager;
             VoipDao = voipDao;
+            DaoFactory = daoFactory;
         }
+
+        public DaoFactory DaoFactory { get; }
 
         public VoipDao VoipDao { get; }
 
@@ -83,7 +84,7 @@ namespace ASC.Web.CRM.Classes
 
         public VoipCall SaveOrUpdateCall(VoipCall callHistory)
         {
-            var dao = daoFactory.GetVoipDao();
+            var dao = DaoFactory.GetVoipDao();
             var call = dao.GetCall(callHistory.Id) ?? callHistory;
 
             if (string.IsNullOrEmpty(call.ParentID))
@@ -193,13 +194,13 @@ namespace ASC.Web.CRM.Classes
 
             var contactPhone = call.Status == VoipCallStatus.Incoming || call.Status == VoipCallStatus.Answered ? call.From : call.To;
 
-            var newContactIds = daoFactory.GetContactDao().GetContactIDsByContactInfo(ContactInfoType.Phone, contactPhone.TrimStart('+'), null, true);
+            var newContactIds = DaoFactory.GetContactDao().GetContactIDsByContactInfo(ContactInfoType.Phone, contactPhone.TrimStart('+'), null, true);
 
             foreach (var newContactId in newContactIds)
             {
                 if (newContactId != 0)
                 {
-                    var existContact = daoFactory.GetContactDao().GetByID(newContactId);
+                    var existContact = DaoFactory.GetContactDao().GetByID(newContactId);
                     if (CRMSecurity.CanAccessTo(existContact))
                     {
                         call.ContactId = newContactId;
@@ -227,7 +228,7 @@ namespace ASC.Web.CRM.Classes
                     Queue.Start(SaveAdditionalInfoAction);
                 }
 
-                Queue.Add(new QueueItem {CallID = callId, TenantID = TenantId });
+                Queue.Add(new QueueItem { CallID = callId, TenantID = TenantId });
             }
         }
 
@@ -237,36 +238,40 @@ namespace ASC.Web.CRM.Classes
             {
                 TenantManager.SetCurrentTenant(queueItem.TenantID);
 
-                using (var scope = DIHelper.Resolve())
+                var voipEngine = new VoipEngine(DaoFactory,
+                                                CRMSecurity,
+                                                TenantUtil, 
+                                                SecurityContext, 
+                                                null, 
+                                                TenantManager,
+                                                VoipDao);
+
+                var dao = DaoFactory.GetVoipDao();
+
+                var call = dao.GetCall(queueItem.CallID);
+
+                GetPriceAndDuration(call);
+
+                if (call.ChildCalls.Any())
                 {
-                    var daoFactory = scope.Resolve<DaoFactory>();
-                    var voipEngine = new VoipEngine(daoFactory);
-                    var dao = daoFactory.GetVoipDao();
-
-                    var call = dao.GetCall(queueItem.CallID);
-
-                    GetPriceAndDuration(call);
-
-                    if (call.ChildCalls.Any())
+                    call.ChildCalls.ForEach(r =>
                     {
-                        call.ChildCalls.ForEach(r =>
-                        {
-                            GetPriceAndDuration(r);
-                            voipEngine.SaveOrUpdateCall(r);
-                        });
-                    }
-
-                    call = voipEngine.SaveOrUpdateCall(call);
-
-                    if (!string.IsNullOrEmpty(call.VoipRecord.Id))
-                    {
-                        call.VoipRecord = VoipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Id);
-                        voipEngine.SaveOrUpdateCall(call);
-                    }
-
-                    SecurityContext.AuthenticateMe(call.AnsweredBy);
-                    AddHistoryToCallContact(call, daoFactory);
+                        GetPriceAndDuration(r);
+                        voipEngine.SaveOrUpdateCall(r);
+                    });
                 }
+
+                call = voipEngine.SaveOrUpdateCall(call);
+
+                if (!string.IsNullOrEmpty(call.VoipRecord.Id))
+                {
+                    call.VoipRecord = VoipDao.GetProvider().GetRecord((string)call.Id, (string)call.VoipRecord.Id);
+                    voipEngine.SaveOrUpdateCall(call);
+                }
+
+                SecurityContext.AuthenticateMe(call.AnsweredBy);
+                AddHistoryToCallContact(call, DaoFactory);
+
             }
             catch (Exception ex)
             {
@@ -286,7 +291,7 @@ namespace ASC.Web.CRM.Classes
         {
             call.AnsweredBy = SecurityContext.CurrentAccount.ID;
             call.Status = VoipCallStatus.Answered;
-            daoFactory.GetVoipDao().SaveOrUpdateCall(call);
+            DaoFactory.GetVoipDao().SaveOrUpdateCall(call);
         }
 
         public Contact CreateContact(string contactPhone)
@@ -300,9 +305,9 @@ namespace ASC.Web.CRM.Classes
                 CreateOn = DateTime.UtcNow
             };
 
-            contact.ID = daoFactory.GetContactDao().SaveContact(contact);
+            contact.ID = DaoFactory.GetContactDao().SaveContact(contact);
 
-            daoFactory.GetContactInfoDao()
+            DaoFactory.GetContactInfoDao()
                 .Save(new ContactInfo
                 {
                     ContactID = contact.ID,
@@ -311,7 +316,7 @@ namespace ASC.Web.CRM.Classes
                     Data = contactPhone
                 });
 
-            CRMSecurity.SetAccessTo(contact, new List<Guid> {SecurityContext.CurrentAccount.ID});
+            CRMSecurity.SetAccessTo(contact, new List<Guid> { SecurityContext.CurrentAccount.ID });
 
             return contact;
         }

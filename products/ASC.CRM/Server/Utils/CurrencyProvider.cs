@@ -53,27 +53,25 @@ namespace ASC.Web.CRM.Classes
 
         public CurrencyProvider(IOptionsMonitor<ILog> logger,
                                 IConfiguration configuration,
-                                SettingsManager settingsManager)
+                                SettingsManager settingsManager,
+                                DaoFactory daoFactory)
         {
             _log = logger.Get("ASC");
             Configuration = configuration;
             SettingsManager = settingsManager;
 
-            using (var scope = DIHelper.Resolve())
-            {
-                var daoFactory = scope.Resolve<DaoFactory>();
-                var currencies = daoFactory.CurrencyInfoDao.GetAll();
+            var currencies = daoFactory.GetCurrencyInfoDao().GetAll();
 
-                if (currencies == null || currencies.Count == 0)
-                {
-                    currencies = new List<CurrencyInfo>
+            if (currencies == null || currencies.Count == 0)
+            {
+                currencies = new List<CurrencyInfo>
                     {
                         new CurrencyInfo("Currency_UnitedStatesDollar", "USD", "$", "US", true, true)
                     };
-                }
-
-                _currencies = currencies.ToDictionary(c => c.Abbreviation);
             }
+
+            _currencies = currencies.ToDictionary(c => c.Abbreviation);
+
         }
 
         public IConfiguration Configuration { get; }
@@ -195,7 +193,7 @@ namespace ASC.Web.CRM.Classes
 
                             TryToReadPublisherDate(tmppath);
 
-                            
+
 
                             var updateEnable = Configuration["crm:update:currency:info:enable"] != "false";
                             var ratesUpdatedFlag = false;

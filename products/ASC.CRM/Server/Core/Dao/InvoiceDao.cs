@@ -61,14 +61,16 @@ namespace ASC.CRM.Core.Dao
             IHttpContextAccessor httpContextAccessor,
             IOptionsMonitor<ILog> logger,
             SettingsManager settingsManager,
-            InvoiceSetting invoiceSetting)
+            InvoiceSetting invoiceSetting,
+            InvoiceFormattedData invoiceFormattedData)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
                  factoryIndexer,
                  logger,
                  settingsManager,
-                 invoiceSetting
+                 invoiceSetting,
+                 invoiceFormattedData
                  )
         {
             _invoiceCache = new HttpRequestDictionary<Invoice>(httpContextAccessor?.HttpContext, "crm_invoice");
@@ -123,7 +125,8 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer<InvoicesWrapper> factoryIndexer,
             IOptionsMonitor<ILog> logger,
             SettingsManager settingsManager,
-            InvoiceSetting invoiceSetting)
+            InvoiceSetting invoiceSetting,
+            InvoiceFormattedData invoiceFormattedData)
               : base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -132,10 +135,12 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer = factoryIndexer;
             SettingsManager = settingsManager;
             InvoiceSetting = invoiceSetting;
+            InvoiceFormattedData = invoiceFormattedData;
         }
 
         public InvoiceSetting InvoiceSetting { get; }
 
+        public InvoiceFormattedData InvoiceFormattedData { get; }
         public  SettingsManager SettingsManager { get; }
 
         public FactoryIndexer<InvoicesWrapper> FactoryIndexer { get; }
