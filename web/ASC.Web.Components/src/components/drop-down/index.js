@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import CustomScrollbarsVirtualList from '../scrollbar/custom-scrollbars-virtual-list'
 import DropDownItem from '../drop-down-item'
 import Backdrop from '../backdrop'
-import { FixedSizeList } from "react-window"
+import { VariableSizeList } from "react-window"
 import onClickOutside from "react-onclickoutside";
 
 const StyledDropdown = styled.div`
@@ -43,12 +43,14 @@ const StyledDropdown = styled.div`
 // eslint-disable-next-line react/display-name, react/prop-types
 const Row = memo(({ data, index, style }) => {
   const option = data[index];
+  const separator = option.props.isSeparator ? { width: `calc(100% - 32px)`, height: `1px` } : {}
+  const newStyle = {...style, ...separator};
 
   return (
     <DropDownItem
       // eslint-disable-next-line react/prop-types
       {...option.props}
-      style={style} />
+      style={newStyle} />
   );
 });
 
@@ -115,12 +117,21 @@ class DropDown extends React.PureComponent {
     });
   }
 
+  getItemHeight = (item) => {
+    const isTablet = window.innerWidth < 1024; //TODO: Make some better
+
+    if (item && item.props.isSeparator)
+      return isTablet ? 16 : 12;
+
+    return isTablet ? 36 : 32;
+  }
+
   render() {
     const { maxHeight, children } = this.props;
     const { directionX, directionY, width } = this.state;
-    const isTablet = window.innerWidth < 1024; //TODO: Make some better
-    const itemHeight = isTablet ? 36 : 32;
-    const fullHeight = children && children.length * itemHeight;
+    const rowHeights = React.Children.map(children, child => this.getItemHeight(child));
+    const getItemSize = index => rowHeights[index];
+    const fullHeight = children && rowHeights.reduce((a, b) => a + b, 0);
     const calculatedHeight = ((fullHeight > 0) && (fullHeight < maxHeight)) ? fullHeight : maxHeight;
     const dropDownMaxHeightProp = maxHeight ? { height: calculatedHeight + 'px' } : {};
     //console.log("DropDown render", this.props);
@@ -133,16 +144,16 @@ class DropDown extends React.PureComponent {
         {...dropDownMaxHeightProp}
       >
         {maxHeight
-          ? <FixedSizeList
+          ? <VariableSizeList
             height={calculatedHeight}
             width={width}
-            itemSize={itemHeight}
+            itemSize={getItemSize}
             itemCount={children.length}
             itemData={children}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}
-          </FixedSizeList>
+          </VariableSizeList>
           : children}
       </StyledDropdown>
     );
