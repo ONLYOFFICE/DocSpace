@@ -101,7 +101,7 @@ namespace ASC.Web.CRM.Classes
 
                 #region Seller, LogoBase64, LogoSrcFormat
 
-                var invoiceSettings = daoFactory.InvoiceDao.GetSettings();
+                var invoiceSettings = daoFactory.GetInvoiceDao().GetSettings();
 
                 if (!string.IsNullOrEmpty(invoiceSettings.CompanyName))
                 {
@@ -184,7 +184,7 @@ namespace ASC.Web.CRM.Classes
 
                 #region Customer
 
-                var customer = daoFactory.ContactDao.GetByID(invoice.ContactID);
+                var customer = daoFactory.GetContactDao().GetByID(invoice.ContactID);
 
                 if (customer != null)
                 {
@@ -261,12 +261,12 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var line in invoiceLines)
                 {
-                    var item = daoFactory.InvoiceItemDao.GetByID(line.InvoiceItemID);
+                    var item = daoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
                     var tax1 = line.InvoiceTax1ID > 0
-                        ? daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax1ID)
+                        ? daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
                         : null;
                     var tax2 = line.InvoiceTax2ID > 0
-                        ? daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax2ID)
+                        ? daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
                         : null;
 
                     var subtotalValue = Math.Round(line.Quantity*line.Price, 2);
@@ -326,7 +326,7 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var invoiceTax in invoiceTaxes)
                 {
-                    var iTax = daoFactory.InvoiceTaxDao.GetByID(invoiceTax.Key);
+                    var iTax = daoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
                     data.TableFooterRows.Add(new Tuple<string, string>(
                         string.Format("{0} ({1}%)", iTax.Name, iTax.Rate),
                         invoiceTax.Value.ToString(CultureInfo.InvariantCulture)));
@@ -367,7 +367,7 @@ namespace ASC.Web.CRM.Classes
 
                 #region Consignee
 
-                var consignee = daoFactory.ContactDao.GetByID(invoice.ConsigneeID);
+                var consignee = daoFactory.GetContactDao().GetByID(invoice.ConsigneeID);
 
                 if (consignee != null)
                 {
@@ -376,7 +376,7 @@ namespace ASC.Web.CRM.Classes
                     sb.Append(consignee.GetTitle());
 
                     var deliveryAddress = deliveryAddressID != 0
-                        ? daoFactory.ContactInfoDao.GetByID(deliveryAddressID)
+                        ? daoFactory.GetContactInfoDao().GetByID(deliveryAddressID)
                         : null;
                     if (deliveryAddress != null && deliveryAddress.InfoType == ContactInfoType.Address &&
                         deliveryAddress.Category == (int) AddressCategory.Postal)
@@ -596,12 +596,12 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var line in invoiceLines)
                 {
-                    var item = daoFactory.InvoiceItemDao.GetByID(line.InvoiceItemID);
+                    var item = daoFactory.GetInvoiceItemDao().GetByID(line.InvoiceItemID);
                     var tax1 = line.InvoiceTax1ID > 0
-                        ? daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax1ID)
+                        ? daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID)
                         : null;
                     var tax2 = line.InvoiceTax2ID > 0
-                        ? daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax2ID)
+                        ? daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID)
                         : null;
 
                     var subtotalValue = Math.Round(line.Quantity*line.Price, 2);
@@ -661,7 +661,7 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var invoiceTax in invoiceTaxes)
                 {
-                    var iTax = daoFactory.InvoiceTaxDao.GetByID(invoiceTax.Key);
+                    var iTax = daoFactory.GetInvoiceTaxDao().GetByID(invoiceTax.Key);
                     data.TableFooterRows.Add(new Tuple<string, string>(
                         string.Format("{0} ({1}%)", iTax.Name, iTax.Rate),
                         invoiceTax.Value.ToString(CultureInfo.InvariantCulture)));

@@ -26,7 +26,10 @@
 
 using System;
 using ASC.Core;
+using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -49,15 +52,17 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_field_value"; } }
 
-        public static implicit operator FieldsWrapper(ASC.CRM.Core.Entities.CustomField cf)
+        public static FieldsWrapper GetEventsWrapper(IServiceProvider serviceProvider, CustomField cf)
         {
+            var tenantManager = serviceProvider.GetService<TenantManager>();
+
             return new FieldsWrapper
             {
                 Id = cf.ID,
                 EntityId = cf.EntityID,
                 EntityType = (int)cf.EntityType,
                 Value = cf.Value,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantManager.GetCurrentTenant().TenantId
             };
         }
     }

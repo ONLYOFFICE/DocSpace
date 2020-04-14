@@ -24,6 +24,7 @@
 */
 
 
+using ASC.Core.Common.Settings;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
@@ -36,6 +37,8 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace ASC.Web.CRM.Classes
 {
@@ -43,16 +46,23 @@ namespace ASC.Web.CRM.Classes
     {
         public ReportHelper(TenantUtil tenantUtil,
                             Global global,
-                            DocbuilderReportsUtility docbuilderReportsUtility)
+                            DocbuilderReportsUtility docbuilderReportsUtility,
+                            SettingsManager settingsManager,
+                            IServiceProvider serviceProvider
+                          )
         {
             TenantUtil = tenantUtil;
             Global = global;
             DocbuilderReportsUtility = docbuilderReportsUtility;
+            SettingsManager = settingsManager;
+            ServiceProvider = serviceProvider;
         }
+
+        public IServiceProvider ServiceProvider { get; }
 
         public DocbuilderReportsUtility DocbuilderReportsUtility { get; }
         public Global Global { get; }
-
+        public SettingsManager SettingsManager { get; }
         public TenantUtil TenantUtil { get; }
 
         private string GetFileName(ReportType reportType)
@@ -104,35 +114,36 @@ namespace ASC.Web.CRM.Classes
 
         public bool CheckReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
+            throw new NotImplementedException();
             using (var scope = DIHelper.Resolve())
             {
-                var reportDao = scope.Resolve<DaoFactory>().ReportDao;
+                var reportDao = scope.Resolve<DaoFactory>().GetReportDao();
 
-                switch (reportType)
-                {
-                    case ReportType.SalesByManagers:
-                        return reportDao.CheckSalesByManagersReportData(timePeriod, managers);
-                    case ReportType.SalesForecast:
-                        return reportDao.CheckSalesForecastReportData(timePeriod, managers);
-                    case ReportType.SalesFunnel:
-                        return reportDao.CheckSalesFunnelReportData(timePeriod, managers);
-                    case ReportType.WorkloadByContacts:
-                        return reportDao.CheckWorkloadByContactsReportData(timePeriod, managers);
-                    case ReportType.WorkloadByTasks:
-                        return reportDao.CheckWorkloadByTasksReportData(timePeriod, managers);
-                    case ReportType.WorkloadByDeals:
-                        return reportDao.CheckWorkloadByDealsReportData(timePeriod, managers);
-                    case ReportType.WorkloadByInvoices:
-                        return reportDao.CheckWorkloadByInvoicesReportData(timePeriod, managers);
-                    case ReportType.WorkloadByVoip:
-                        return reportDao.CheckWorkloadByViopReportData(timePeriod, managers);
-                    case ReportType.SummaryForThePeriod:
-                        return reportDao.CheckSummaryForThePeriodReportData(timePeriod, managers);
-                    case ReportType.SummaryAtThisMoment:
-                        return reportDao.CheckSummaryAtThisMomentReportData(timePeriod, managers);
-                    default:
-                        return false;
-                }
+                //switch (reportType)
+                //{
+                //    case ReportType.SalesByManagers:
+                //        return reportDao.CheckSalesByManagersReportData(timePeriod, managers);
+                //    case ReportType.SalesForecast:
+                //        return reportDao.CheckSalesForecastReportData(timePeriod, managers);
+                //    case ReportType.SalesFunnel:
+                //        return reportDao.CheckSalesFunnelReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByContacts:
+                //        return reportDao.CheckWorkloadByContactsReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByTasks:
+                //        return reportDao.CheckWorkloadByTasksReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByDeals:
+                //        return reportDao.CheckWorkloadByDealsReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByInvoices:
+                //        return reportDao.CheckWorkloadByInvoicesReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByVoip:
+                //        return reportDao.CheckWorkloadByViopReportData(timePeriod, managers);
+                //    case ReportType.SummaryForThePeriod:
+                //        return reportDao.CheckSummaryForThePeriodReportData(timePeriod, managers);
+                //    case ReportType.SummaryAtThisMoment:
+                //        return reportDao.CheckSummaryAtThisMomentReportData(timePeriod, managers);
+                //    default:
+                //        return false;
+                //}
             }
         }
 
@@ -140,47 +151,48 @@ namespace ASC.Web.CRM.Classes
         {
             using (var scope = DIHelper.Resolve())
             {
-                var reportDao = scope.Resolve<DaoFactory>().ReportDao;
+                var reportDao = scope.Resolve<DaoFactory>().GetReportDao();
                 if (reportType == ReportType.WorkloadByTasks || reportType == ReportType.WorkloadByInvoices ||
                     reportType == ReportType.WorkloadByContacts || reportType == ReportType.WorkloadByVoip) return null;
 
-                return reportDao.GetMissingRates(Global.TenantSettings.DefaultCurrency.Abbreviation);
+                return reportDao.GetMissingRates(SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation);
             }
         }
 
         private object GetReportData(ReportType reportType, ReportTimePeriod timePeriod, Guid[] managers)
         {
+            throw new NotImplementedException();
             using (var scope = DIHelper.Resolve())
             {
-                var reportDao = scope.Resolve<DaoFactory>().ReportDao;
+                var reportDao = scope.Resolve<DaoFactory>().GetReportDao();
 
-                var defaultCurrency = Global.TenantSettings.DefaultCurrency.Abbreviation;
+                var defaultCurrency = SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation;
 
-                switch (reportType)
-                {
-                    case ReportType.SalesByManagers:
-                        return reportDao.GetSalesByManagersReportData(timePeriod, managers, defaultCurrency);
-                    case ReportType.SalesForecast:
-                        return reportDao.GetSalesForecastReportData(timePeriod, managers, defaultCurrency);
-                    case ReportType.SalesFunnel:
-                        return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
-                    case ReportType.WorkloadByContacts:
-                        return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
-                    case ReportType.WorkloadByTasks:
-                        return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
-                    case ReportType.WorkloadByDeals:
-                        return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
-                    case ReportType.WorkloadByInvoices:
-                        return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
-                    case ReportType.WorkloadByVoip:
-                        return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
-                    case ReportType.SummaryForThePeriod:
-                        return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
-                    case ReportType.SummaryAtThisMoment:
-                        return reportDao.GetSummaryAtThisMomentReportData(timePeriod, managers, defaultCurrency);
-                    default:
-                        return null;
-                }
+                //switch (reportType)
+                //{
+                //    case ReportType.SalesByManagers:
+                //        return reportDao.GetSalesByManagersReportData(timePeriod, managers, defaultCurrency);
+                //    case ReportType.SalesForecast:
+                //        return reportDao.GetSalesForecastReportData(timePeriod, managers, defaultCurrency);
+                //    case ReportType.SalesFunnel:
+                //        return reportDao.GetSalesFunnelReportData(timePeriod, managers, defaultCurrency);
+                //    case ReportType.WorkloadByContacts:
+                //        return reportDao.GetWorkloadByContactsReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByTasks:
+                //        return reportDao.GetWorkloadByTasksReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByDeals:
+                //        return reportDao.GetWorkloadByDealsReportData(timePeriod, managers, defaultCurrency);
+                //    case ReportType.WorkloadByInvoices:
+                //        return reportDao.GetWorkloadByInvoicesReportData(timePeriod, managers);
+                //    case ReportType.WorkloadByVoip:
+                //        return reportDao.GetWorkloadByViopReportData(timePeriod, managers);
+                //    case ReportType.SummaryForThePeriod:
+                //        return reportDao.GetSummaryForThePeriodReportData(timePeriod, managers, defaultCurrency);
+                //    case ReportType.SummaryAtThisMoment:
+                //        return reportDao.GetSummaryAtThisMomentReportData(timePeriod, managers, defaultCurrency);
+                //    default:
+                //        return null;
+                //}
             }
         }
 
@@ -205,16 +217,17 @@ namespace ASC.Web.CRM.Classes
 
                 using (var stream = new System.IO.MemoryStream(data))
                 {
-                    var document = new File
-                        {
-                            Title = state.FileName,
-                            FolderID = daoFactory.FileDao.GetRoot(),
-                            ContentLength = stream.Length
-                        };
 
-                    var file = daoFactory.FileDao.SaveFile(document, stream);
+                    var document = ServiceProvider.GetService<File<int>>();
 
-                    daoFactory.ReportDao.SaveFile((int)file.ID, state.ReportType);
+                    document.Title = state.FileName;
+                    document.FolderID = daoFactory.GetFileDao().GetRoot();
+                    document.ContentLength = stream.Length;
+                                     
+                    var file = daoFactory.GetFileDao().SaveFile(document, stream);
+
+                    daoFactory.GetReportDao().SaveFile((int)file.ID, (ReportType)state.ReportType);
+
                     state.FileId = (int)file.ID;
                 }
             }
@@ -232,7 +245,9 @@ namespace ASC.Web.CRM.Classes
             if (string.IsNullOrEmpty(script))
                 throw new Exception(CRMReportResource.ErrorNullReportScript);
 
-            var state = new ReportState(GetFileName(reportType), tmpFileName,  script, (int)reportType, ReportOrigin.CRM, SaveReportFile, null);
+         //   ServiceProvider.GetService<ReportState>()
+
+            var state = new ReportState(GetFileName(reportType), tmpFileName, script, (int)reportType, ReportOrigin.CRM, SaveReportFile, null);
 
             DocbuilderReportsUtility.Enqueue(state);
 

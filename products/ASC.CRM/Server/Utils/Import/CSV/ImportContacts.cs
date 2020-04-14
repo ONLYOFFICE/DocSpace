@@ -53,10 +53,10 @@ namespace ASC.Web.CRM.Classes
 
             var personFakeIdCompanyNameHash = new Dictionary<int, String>();
 
-            var contactDao = _daoFactory.ContactDao;
-            var contactInfoDao = _daoFactory.ContactInfoDao;
-            var customFieldDao = _daoFactory.CustomFieldDao;
-            var tagDao = _daoFactory.TagDao;
+            var contactDao = _daoFactory.GetContactDao();
+            var contactInfoDao = _daoFactory.GetContactInfoDao();
+            var customFieldDao = _daoFactory.GetCustomFieldDao();
+            var tagDao = _daoFactory.GetTagDao();
 
             var findedContacts = new Dictionary<int, Contact>();
             var findedTags = new Dictionary<int, List<String>>();
@@ -414,7 +414,7 @@ namespace ASC.Web.CRM.Classes
 
             Percentage += 1.0 * 100 / (ImportFromCSV.MaxRoxCount * 3);
 
-            var listItemDao = _daoFactory.ListItemDao;
+            var listItemDao = _daoFactory.GetListItemDao();
 
 
             if (!String.IsNullOrEmpty(firstName) || !String.IsNullOrEmpty(lastName))
@@ -612,7 +612,7 @@ namespace ASC.Web.CRM.Classes
             ref List<CustomField> findedCustomField,
             ref Dictionary<int, List<String>> findedTags)
         {
-            var contactDao = _daoFactory.ContactDao;
+            var contactDao = _daoFactory.GetContactDao();
 
             _log.Info("_DuplicateRecordRuleProcess. Start");
 

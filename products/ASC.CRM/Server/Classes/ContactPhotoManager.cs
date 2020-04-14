@@ -25,12 +25,14 @@
 
 
 using ASC.Common.Caching;
+using ASC.Common.Logging;
 using ASC.Common.Threading.Workers;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.Core;
 using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -70,33 +72,49 @@ namespace ASC.Web.CRM.Classes
         }
     }
 
-    public static class ContactPhotoManager
+    public class ContactPhotoManager
     {
+        public ContactPhotoManager(Global global,
+                                   WebImageSupplier webImageSupplier,
+                                   IOptionsMonitor<ILog> logger)
+        {
+            Global = global;
+            WebImageSupplier = webImageSupplier;
+
+            Logger = logger.Get("ASC.CRM");
+        }
+
+        public ILog Logger { get; }
+
+        public Global Global { get; }
+        
+        public WebImageSupplier WebImageSupplier { get; }
+
         #region Members
 
         private const string PhotosBaseDirName = "photos";
         private const string PhotosDefaultTmpDirName = "temp";
 
-        private static readonly Dictionary<int, IDictionary<Size, string>> _photoCache = new Dictionary<int, IDictionary<Size, string>>();
+        private readonly Dictionary<int, IDictionary<Size, string>> _photoCache = new Dictionary<int, IDictionary<Size, string>>();
 
-        private static readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>(2, TimeSpan.FromSeconds(30), 1, true);
-        private static readonly ICacheNotify cachyNotify; 
+        private readonly WorkerQueue<ResizeWorkerItem> ResizeQueue = new WorkerQueue<ResizeWorkerItem>(2, TimeSpan.FromSeconds(30), 1, true);
+        private readonly ICacheNotify cachyNotify; 
 
-        private static readonly Size _oldBigSize = new Size(145, 145);
+        private readonly Size _oldBigSize = new Size(145, 145);
 
-        private static readonly Size _bigSize = new Size(200, 200);
-        private static readonly Size _mediumSize = new Size(82, 82);
-        private static readonly Size _smallSize = new Size(40, 40);
+        private readonly Size _bigSize = new Size(200, 200);
+        private readonly Size _mediumSize = new Size(82, 82);
+        private readonly Size _smallSize = new Size(40, 40);
 
-        private static readonly object locker = new object();
+        private readonly object locker = new object();
 
         #endregion
 
         #region Cache and DataStore Methods
 
-        static ContactPhotoManager()
+        ContactPhotoManager()
         {
-            cachyNotify = AscCache.Notify;
+            cachyNotify = AscCache.Memory;
             cachyNotify.Subscribe<KeyValuePair<int, KeyValuePair<Size, string>>>(
                 (item, action) =>
                 {
@@ -115,7 +133,7 @@ namespace ASC.Web.CRM.Classes
                 });
         }
 
-        private static String FromCache(int contactID, Size photoSize)
+        private String FromCache(int contactID, Size photoSize)
         {
             lock (locker)
             {
@@ -134,12 +152,12 @@ namespace ASC.Web.CRM.Classes
             return String.Empty;
         }
 
-        private static void RemoveFromCache(int contactID)
+        private void RemoveFromCache(int contactID)
         {
             cachyNotify.Publish(CreateCacheItem(contactID, "", Size.Empty), CacheNotifyAction.Remove);
         }
 
-        private static void RemoveFromPrivateCache(int contactID)
+        private void RemoveFromPrivateCache(int contactID)
         {
             lock (locker)
             {
@@ -147,12 +165,12 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static void ToCache(int contactID, String photoUri, Size photoSize)
+        private void ToCache(int contactID, String photoUri, Size photoSize)
         {
             cachyNotify.Publish(CreateCacheItem(contactID, photoUri, photoSize), CacheNotifyAction.InsertOrUpdate);
         }
 
-        private static void ToPrivateCache(int contactID, String photoUri, Size photoSize)
+        private void ToPrivateCache(int contactID, String photoUri, Size photoSize)
         {
             lock (locker)
             {
@@ -166,18 +184,18 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static KeyValuePair<int, KeyValuePair<Size, string>> CreateCacheItem(int contactID, String photoUri, Size photoSize)
+        private KeyValuePair<int, KeyValuePair<Size, string>> CreateCacheItem(int contactID, String photoUri, Size photoSize)
         {
             var sizeUriPair = new KeyValuePair<Size, string>(photoSize, photoUri);
             return new KeyValuePair<int, KeyValuePair<Size, string>>(contactID, sizeUriPair);
         }
 
-        private static String FromDataStore(int contactID, Size photoSize)
+        private String FromDataStore(int contactID, Size photoSize)
         {
             return FromDataStore(contactID, photoSize, false, null);
         }
 
-        private static String FromDataStore(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
+        private String FromDataStore(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
         {
             var directoryPath = !isTmpDir
                                     ? BuildFileDirectory(contactID)
@@ -198,7 +216,7 @@ namespace ASC.Web.CRM.Classes
             return filesURI[0].ToString();
         }
 
-        private static String FromDataStoreRelative(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
+        private String FromDataStoreRelative(int contactID, Size photoSize, Boolean isTmpDir, String tmpDirName)
         {
             var directoryPath = !isTmpDir
                                     ? BuildFileDirectory(contactID)
@@ -219,7 +237,7 @@ namespace ASC.Web.CRM.Classes
             return Path.Combine(directoryPath, filesPaths[0]);
         }
 
-        private static PhotoData FromDataStore(Size photoSize, String tmpDirName)
+        private PhotoData FromDataStore(Size photoSize, String tmpDirName)
         {
             var directoryPath = BuildFileTmpDirectory(tmpDirName);
 
@@ -237,7 +255,7 @@ namespace ASC.Web.CRM.Classes
 
         #region Private Methods
 
-        private static String GetPhotoUri(int contactID, bool isCompany, Size photoSize)
+        private String GetPhotoUri(int contactID, bool isCompany, Size photoSize)
         {
             var photoUri = FromCache(contactID, photoSize);
 
@@ -253,7 +271,7 @@ namespace ASC.Web.CRM.Classes
             return photoUri;
         }
 
-        private static String BuildFileDirectory(int contactID)
+        private String BuildFileDirectory(int contactID)
         {
             var s = contactID.ToString("000000");
 
@@ -262,22 +280,22 @@ namespace ASC.Web.CRM.Classes
                                  s.Substring(4), "/");
         }
 
-        private static String BuildFileTmpDirectory(int contactID)
+        private String BuildFileTmpDirectory(int contactID)
         {
             return String.Concat(BuildFileDirectory(contactID), PhotosDefaultTmpDirName, "/");
         }
 
-        private static String BuildFileTmpDirectory(string tmpDirName)
+        private String BuildFileTmpDirectory(string tmpDirName)
         {
             return String.Concat(PhotosBaseDirName, "/", tmpDirName.TrimEnd('/'), "/");
         }
 
-        private static String BuildFileName(int contactID, Size photoSize)
+        private String BuildFileName(int contactID, Size photoSize)
         {
             return String.Format("contact_{0}_{1}_{2}", contactID, photoSize.Width, photoSize.Height);
         }
 
-        private static String BuildFilePath(int contactID, Size photoSize, String imageExtension)
+        private String BuildFilePath(int contactID, Size photoSize, String imageExtension)
         {
             if (photoSize.IsEmpty || contactID == 0)
                 throw new ArgumentException();
@@ -285,7 +303,7 @@ namespace ASC.Web.CRM.Classes
             return String.Concat(BuildFileDirectory(contactID), BuildFileName(contactID, photoSize), imageExtension);
         }
 
-        private static String BuildFileTmpPath(int contactID, Size photoSize, String imageExtension, String tmpDirName)
+        private String BuildFileTmpPath(int contactID, Size photoSize, String imageExtension, String tmpDirName)
         {
             if (photoSize.IsEmpty || (contactID == 0 && String.IsNullOrEmpty(tmpDirName)))
                 throw new ArgumentException();
@@ -297,7 +315,7 @@ namespace ASC.Web.CRM.Classes
                 BuildFileName(contactID, photoSize), imageExtension);
         }
 
-        private static void ExecResizeImage(ResizeWorkerItem resizeWorkerItem)
+        private void ExecResizeImage(ResizeWorkerItem resizeWorkerItem)
         {
             foreach (var fotoSize in resizeWorkerItem.RequireFotoSize)
             {
@@ -338,7 +356,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static String GetDefaultPhoto(bool isCompany, Size photoSize)
+        private String GetDefaultPhoto(bool isCompany, Size photoSize)
         {
             int contactID;
 
@@ -365,12 +383,12 @@ namespace ASC.Web.CRM.Classes
 
         #region Delete Methods
 
-        public static void DeletePhoto(int contactID)
+        public void DeletePhoto(int contactID)
         {
             DeletePhoto(contactID, false, null, true);
         }
 
-        public static void DeletePhoto(int contactID, bool isTmpDir, string tmpDirName, bool recursive)
+        public void DeletePhoto(int contactID, bool isTmpDir, string tmpDirName, bool recursive)
         {
             if (contactID == 0)
                 throw new ArgumentException();
@@ -405,7 +423,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static void DeletePhoto(string tmpDirName)
+        public void DeletePhoto(string tmpDirName)
         {
             lock (locker)
             {
@@ -422,7 +440,7 @@ namespace ASC.Web.CRM.Classes
 
         #endregion
 
-        public static void TryUploadPhotoFromTmp(int contactID, bool isNewContact, string tmpDirName)
+        public void TryUploadPhotoFromTmp(int contactID, bool isNewContact, string tmpDirName)
         {
             var directoryPath = BuildFileDirectory(contactID);
             var dataStore = Global.GetStore();
@@ -458,14 +476,15 @@ namespace ASC.Web.CRM.Classes
             }
             catch(Exception ex)
             {
-                LogManager.GetLogger("ASC.CRM").ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
+                Logger.ErrorFormat("TryUploadPhotoFromTmp for contactID={0} failed witth error: {1}", contactID, ex);
+                
                 return;
             }
         }
 
         #region Get Photo Methods
 
-        public static String GetSmallSizePhoto(int contactID, bool isCompany)
+        public String GetSmallSizePhoto(int contactID, bool isCompany)
         {
             if (contactID <= 0)
                 return GetDefaultPhoto(isCompany, _smallSize);
@@ -473,7 +492,7 @@ namespace ASC.Web.CRM.Classes
             return GetPhotoUri(contactID, isCompany, _smallSize);
         }
 
-        public static String GetMediumSizePhoto(int contactID, bool isCompany)
+        public String GetMediumSizePhoto(int contactID, bool isCompany)
         {
             if (contactID <= 0)
                 return GetDefaultPhoto(isCompany, _mediumSize);
@@ -481,7 +500,7 @@ namespace ASC.Web.CRM.Classes
             return GetPhotoUri(contactID, isCompany, _mediumSize);
         }
 
-        public static String GetBigSizePhoto(int contactID, bool isCompany)
+        public String GetBigSizePhoto(int contactID, bool isCompany)
         {
             if (contactID <= 0)
                 return GetDefaultPhoto(isCompany, _bigSize);
@@ -491,12 +510,12 @@ namespace ASC.Web.CRM.Classes
 
         #endregion
 
-        private static PhotoData ResizeToBigSize(byte[] imageData, string tmpDirName)
+        private PhotoData ResizeToBigSize(byte[] imageData, string tmpDirName)
         {
             return ResizeToBigSize(imageData, 0, true, tmpDirName);
         }
 
-        private static PhotoData ResizeToBigSize(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
+        private PhotoData ResizeToBigSize(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
         {
             var resizeWorkerItem = new ResizeWorkerItem
                 {
@@ -524,18 +543,18 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        private static void ExecGenerateThumbnail(byte[] imageData, int contactID, bool uploadOnly)
+        private void ExecGenerateThumbnail(byte[] imageData, int contactID, bool uploadOnly)
         {
             ExecGenerateThumbnail(imageData, contactID, uploadOnly, null);
         }
 
-        private static void ExecGenerateThumbnail(byte[] imageData, string tmpDirName)
+        private void ExecGenerateThumbnail(byte[] imageData, string tmpDirName)
         {
             ExecGenerateThumbnail(imageData, 0, true, tmpDirName);
         }
 
 
-        private static void ExecGenerateThumbnail(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
+        private void ExecGenerateThumbnail(byte[] imageData, int contactID, bool uploadOnly, string tmpDirName)
         {
             var resizeWorkerItem = new ResizeWorkerItem
                 {
@@ -553,7 +572,7 @@ namespace ASC.Web.CRM.Classes
             if (!ResizeQueue.IsStarted) ResizeQueue.Start(ExecResizeImage);
         }
 
-        private static byte[] ToByteArray(Stream inputStream, int streamLength)
+        private byte[] ToByteArray(Stream inputStream, int streamLength)
         {
             using (var br = new BinaryReader(inputStream))
             {
@@ -563,7 +582,7 @@ namespace ASC.Web.CRM.Classes
 
         #region UploadPhoto Methods
 
-        public static PhotoData UploadPhoto(String imageUrl, int contactID, bool uploadOnly, bool checkFormat = true)
+        public PhotoData UploadPhoto(String imageUrl, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             var request = (HttpWebRequest)WebRequest.Create(imageUrl);
             using (var response = request.GetResponse())
@@ -576,13 +595,13 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static PhotoData UploadPhoto(Stream inputStream, int contactID, bool uploadOnly, bool checkFormat = true)
+        public PhotoData UploadPhoto(Stream inputStream, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             var imageData = Global.ToByteArray(inputStream);
             return UploadPhoto(imageData, contactID, uploadOnly, checkFormat);
         }
 
-        public static PhotoData UploadPhoto(byte[] imageData, int contactID, bool uploadOnly, bool checkFormat = true)
+        public PhotoData UploadPhoto(byte[] imageData, int contactID, bool uploadOnly, bool checkFormat = true)
         {
             if (contactID == 0)
                 throw new ArgumentException();
@@ -598,7 +617,7 @@ namespace ASC.Web.CRM.Classes
         }
 
 
-        public static PhotoData UploadPhotoToTemp(String imageUrl, String tmpDirName, bool checkFormat = true)
+        public PhotoData UploadPhotoToTemp(String imageUrl, String tmpDirName, bool checkFormat = true)
         {
             var request = (HttpWebRequest)WebRequest.Create(imageUrl);
             using (var response = request.GetResponse())
@@ -615,13 +634,13 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static PhotoData UploadPhotoToTemp(Stream inputStream, String tmpDirName, bool checkFormat = true)
+        public PhotoData UploadPhotoToTemp(Stream inputStream, String tmpDirName, bool checkFormat = true)
         {
             var imageData = Global.ToByteArray(inputStream);
             return UploadPhotoToTemp(imageData, tmpDirName, checkFormat);
         }
 
-        public static PhotoData UploadPhotoToTemp(byte[] imageData, String tmpDirName, bool checkFormat = true)
+        public PhotoData UploadPhotoToTemp(byte[] imageData, String tmpDirName, bool checkFormat = true)
         {
             if (checkFormat)
                 CheckImgFormat(imageData);
@@ -633,7 +652,7 @@ namespace ASC.Web.CRM.Classes
             return ResizeToBigSize(imageData, tmpDirName);
         }
 
-        public static ImageFormat CheckImgFormat(byte[] imageData)
+        public ImageFormat CheckImgFormat(byte[] imageData)
         {
             using (var stream = new MemoryStream(imageData))
             using (var img = new Bitmap(stream))

@@ -47,11 +47,13 @@ namespace ASC.CRM.Core.Dao
         public CachedInvoiceTaxDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> logger
             )
             : base(dbContextManager,
                  tenantManager,
-                 securityContext)
+                 securityContext,
+                 logger)
 
         {
             _invoiceTaxCache = new HttpRequestDictionary<InvoiceTax>(httpContextAccessor?.HttpContext, "crm_invoice_tax");

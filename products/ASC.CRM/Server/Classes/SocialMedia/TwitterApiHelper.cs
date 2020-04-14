@@ -23,10 +23,6 @@
  *
 */
 
-
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Thrdparty.Twitter;
-
 namespace ASC.Web.CRM.Classes.SocialMedia
 {
     public static class TwitterApiHelper

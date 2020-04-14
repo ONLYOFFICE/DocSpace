@@ -24,22 +24,26 @@
 */
 
 
-#region Import
-
 using ASC.CRM.Resources;
 using ASC.Web.CRM.Classes;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.IO;
 
-#endregion
-
 namespace ASC.Web.CRM.HttpHandlers
 {
-    public class FileHandler : IHttpHandler
+    public class FileHandler 
     {
+        public FileHandler(Global global)
+        {
+            Global = global;
+        }
+
+        public Global Global { get; }
+
         public void ProcessRequest(HttpContext context)
         {
-            var action = context.Request["action"];
+            var action = context.Request.Query["action"];
 
             switch (action)
             {
@@ -56,9 +60,9 @@ namespace ASC.Web.CRM.HttpHandlers
 
         private void ResponceContactPhotoUrl(HttpContext context)
         {
-            var contactId = Convert.ToInt32(context.Request["cid"]);
-            var isCompany = Convert.ToBoolean(context.Request["isc"]);
-            var photoSize = Convert.ToInt32(context.Request["ps"]);
+            var contactId = Convert.ToInt32(context.Request.Query["cid"]);
+            var isCompany = Convert.ToBoolean(context.Request.Query["isc"]);
+            var photoSize = Convert.ToInt32(context.Request.Query["ps"]);
 
             String photoUrl = String.Empty;
 
@@ -94,7 +98,7 @@ namespace ASC.Web.CRM.HttpHandlers
 
         private void ResponceMailMessageContent(HttpContext context)
         {
-            var messageId = Convert.ToInt32(context.Request["message_id"]);
+            var messageId = Convert.ToInt32(context.Request.Query["message_id"]);
 
             var filePath = String.Format("folder_{0}/message_{1}.html", (messageId / 1000 + 1) * 1000, messageId);
 
@@ -105,9 +109,9 @@ namespace ASC.Web.CRM.HttpHandlers
                 messageContent = streamReader.ReadToEnd();
             }
 
-
             context.Response.Clear();
             context.Response.Write(messageContent);
+
             try
             {
                 context.Response.Flush();
@@ -119,7 +123,6 @@ namespace ASC.Web.CRM.HttpHandlers
                 LogManager.GetLogger("ASC").Error("ResponceMailMessageContent", ex);
             }
         }
-
 
         public bool IsReusable
         {

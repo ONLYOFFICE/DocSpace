@@ -43,12 +43,24 @@ namespace ASC.Web.CRM.Classes
 {
     public class ImportFromCSVManager
     {
+        public ImportFromCSVManager(Global global,
+                                    ImportFromCSV importFromCSV,
+                                    MessageService messageService)
+        {
+            Global = global;
+            ImportFromCSV = importFromCSV;
+            MessageService = messageService;
+        }
+
+        public MessageService MessageService { get; }
+        public ImportFromCSV ImportFromCSV { get; }
+        public Global Global { get; }
+
         public void StartImport(EntityType entityType, String CSVFileURI, String importSettingsJSON)
         {
             ImportFromCSV.Start(entityType, CSVFileURI, importSettingsJSON);
-
-            var action = GetMessageAction(entityType);
-            MessageService.Send(HttpContext.Current.Request, action);
+                       
+            MessageService.Send(GetMessageAction(entityType));
         }
 
         public FileUploadResult ProcessUploadFake(string fileTemp, string importSettingsJSON)

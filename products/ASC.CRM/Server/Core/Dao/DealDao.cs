@@ -190,7 +190,7 @@ namespace ASC.CRM.Core.Dao
 
             deal.ID = result;
 
-            FactoryIndexer.IndexAsync(deal);
+            FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
 
             return result;
         }
@@ -243,9 +243,9 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            foreach (var item in items)
+            foreach (var deal in items)
             {
-                FactoryIndexer.IndexAsync(item);
+                FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
             }
 
             return result;
@@ -284,7 +284,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.Update(itemToUpdate);
             CRMDbContext.SaveChanges();
 
-            FactoryIndexer.IndexAsync(deal);
+            FactoryIndexer.IndexAsync(DealsWrapper.FromDeal(TenantID, deal));
         }
 
 
@@ -397,7 +397,7 @@ namespace ASC.CRM.Core.Dao
                 sqlQuery = sqlQuery.Where(x => x.x.ResponsibleId == responsibleID);
             }
 
-  
+
             if (ids.Count > 0)
             {
                 if (exceptIDs.Count > 0)
@@ -414,7 +414,7 @@ namespace ASC.CRM.Core.Dao
             }
 
             if ((stageType != null) || (fromDate != DateTime.MinValue && toDate != DateTime.MinValue))
-            {                
+            {
                 if (stageType != null)
                     sqlQuery = sqlQuery.Where(x => x.y.Status == stageType.Value);
 
@@ -483,7 +483,7 @@ namespace ASC.CRM.Core.Dao
                                                    .ThenBy(x => x.x.Title);
 
                             }
-                            
+
                             break;
 
                         }
@@ -568,7 +568,7 @@ namespace ASC.CRM.Core.Dao
                 if (sqlQuery == null)
                 {
                     result = 0;
-                }               
+                }
                 else
                 {
                     result = sqlQuery.Count();
@@ -797,7 +797,7 @@ namespace ASC.CRM.Core.Dao
 
             DeleteBatchDealsExecute(new List<Deal>() { deal });
 
-            FactoryIndexer.DeleteAsync(deal);
+            FactoryIndexer.DeleteAsync(DealsWrapper.FromDeal(TenantID, deal));
 
             return deal;
         }

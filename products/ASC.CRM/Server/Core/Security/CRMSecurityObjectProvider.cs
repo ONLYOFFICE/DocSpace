@@ -78,7 +78,7 @@ namespace ASC.CRM.Core
                     CompanyName = "fakeCompany"
                 };
                 
-                //   return _daoFactory.ContactDao.GetByID(contactId);
+                //   return _daoFactory.GetContactDao().GetByID(contactId);
 
             switch (entityType)
             {
@@ -89,14 +89,14 @@ namespace ASC.CRM.Core
                             ID = entityId,
                             Title = "fakeDeal"
                         };
-                   // return _daoFactory.DealDao.GetByID(entityId);
+                   // return _daoFactory.GetDealDao().GetByID(entityId);
                 case EntityType.Case:
                     return new Cases
                         {
                             ID = entityId, 
                             Title = "fakeCases"
                         };
-                  //  return _daoFactory.CasesDao.GetByID(entityId);
+                  //  return _daoFactory.GetCasesDao().GetByID(entityId);
             }
 
             return null;

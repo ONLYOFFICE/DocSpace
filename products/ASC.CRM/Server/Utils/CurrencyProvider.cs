@@ -25,10 +25,13 @@
 
 
 using ASC.Common.Logging;
+using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.Web.CRM.Core;
 using Autofac;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,15 +44,21 @@ namespace ASC.Web.CRM.Classes
 {
     public class CurrencyProvider
     {
-        private readonly ILog _log = LogManager.GetLogger("ASC");
+        private readonly ILog _log;
         private readonly object _syncRoot = new object();
         private readonly Dictionary<String, CurrencyInfo> _currencies;
-        private Dictionary<String, Decimal> _exchangeRates;
+        private Dictionary<string, decimal> _exchangeRates;
         private DateTime _publisherDate;
         private const String _formatDate = "yyyy-MM-ddTHH:mm:ss.fffffffK";
-             
-        CurrencyProvider()
+
+        public CurrencyProvider(IOptionsMonitor<ILog> logger,
+                                IConfiguration configuration,
+                                SettingsManager settingsManager)
         {
+            _log = logger.Get("ASC");
+            Configuration = configuration;
+            SettingsManager = settingsManager;
+
             using (var scope = DIHelper.Resolve())
             {
                 var daoFactory = scope.Resolve<DaoFactory>();
@@ -67,11 +76,16 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
+        public IConfiguration Configuration { get; }
+        public SettingsManager SettingsManager { get; }
+
         public DateTime GetPublisherDate
         {
-            get {
+            get
+            {
                 TryToReadPublisherDate(GetExchangesTempPath());
-                return _publisherDate; }
+                return _publisherDate;
+            }
         }
 
         public CurrencyInfo Get(string currencyAbbreviation)
@@ -148,9 +162,9 @@ namespace ASC.Web.CRM.Classes
             return Math.Round(rates[key] * amount, 4, MidpointRounding.AwayFromZero);
         }
 
-        public Decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
+        public decimal MoneyConvertToDefaultCurrency(decimal amount, string from)
         {
-            return MoneyConvert(amount, from, Global.TenantSettings.DefaultCurrency.Abbreviation);
+            return MoneyConvert(amount, from, SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation);
         }
 
         private bool ObsoleteData()
@@ -158,7 +172,8 @@ namespace ASC.Web.CRM.Classes
             return _exchangeRates == null || (DateTime.UtcNow.Date.Subtract(_publisherDate.Date).Days > 0);
         }
 
-        private string GetExchangesTempPath() {
+        private string GetExchangesTempPath()
+        {
             return Path.Combine(Path.GetTempPath(), Path.Combine("onlyoffice", "exchanges"));
         }
 
@@ -180,8 +195,9 @@ namespace ASC.Web.CRM.Classes
 
                             TryToReadPublisherDate(tmppath);
 
+                            
 
-                            var updateEnable = WebConfigurationManager.AppSettings["crm.update.currency.info.enable"] != "false";
+                            var updateEnable = Configuration["crm:update:currency:info:enable"] != "false";
                             var ratesUpdatedFlag = false;
 
                             foreach (var ci in _currencies.Values.Where(c => c.IsConvertable))
@@ -221,7 +237,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            LogManager.GetLogger("ASC.CRM").Error(error);
+                            _log.Error(error);
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -276,7 +292,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    LogManager.GetLogger("ASC.CRM").Error(err);
+                    _log.Error(err);
                 }
             }
         }
@@ -290,7 +306,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                LogManager.GetLogger("ASC.CRM").Error(err);
+                _log.Error(err);
             }
         }
 

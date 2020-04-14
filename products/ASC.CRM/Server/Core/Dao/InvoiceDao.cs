@@ -131,6 +131,7 @@ namespace ASC.CRM.Core.Dao
         {
             FactoryIndexer = factoryIndexer;
             SettingsManager = settingsManager;
+            InvoiceSetting = invoiceSetting;
         }
 
         public InvoiceSetting InvoiceSetting { get; }
@@ -519,7 +520,7 @@ namespace ASC.CRM.Core.Dao
 
             var result = SaveOrUpdateInvoiceInDb(invoice);
 
-            FactoryIndexer.IndexAsync(invoice);
+            FactoryIndexer.IndexAsync(InvoicesWrapper.FromInvoice(TenantID, invoice));
 
             return result;
         }
@@ -781,7 +782,7 @@ namespace ASC.CRM.Core.Dao
 
             tx.Commit();
 
-            invoices.ForEach(invoice => FactoryIndexer.DeleteAsync(invoice));
+            invoices.ForEach(invoice => FactoryIndexer.DeleteAsync(InvoicesWrapper.FromInvoice(TenantID, invoice)));
 
         }
 

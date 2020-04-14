@@ -26,11 +26,14 @@
 
 #region Import
 
+using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Core.Users;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
+using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
+using ASC.Web.Core.Users;
 using LumenWorks.Framework.IO.Csv;
 using System;
 using System.Collections.Generic;
@@ -42,6 +45,19 @@ namespace ASC.Web.CRM.Classes
 {
     public partial class ImportDataOperation
     {
+        public ImportDataOperation(TenantUtil tenantUtil, 
+                                   ImportFromCSV importFromCSV, 
+                                   DisplayUserSettingsHelper displayUserSettingsHelper)
+        {
+            TenantUtil = tenantUtil;
+            ImportFromCSV = importFromCSV;
+            DisplayUserSettingsHelper = displayUserSettingsHelper;
+        }
+
+        public ImportFromCSV ImportFromCSV { get; }
+        public TenantUtil TenantUtil { get; }
+        public DisplayUserSettingsHelper DisplayUserSettingsHelper { get;}
+
         private void ImportTaskData(DaoFactory _daoFactory)
         {
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
@@ -49,14 +65,14 @@ namespace ASC.Web.CRM.Classes
             {
                 int currentIndex = 0;
 
-                var contactDao = _daoFactory.ContactDao;
-                var listItemDao = _daoFactory.ListItemDao;
-                var taskDao = _daoFactory.TaskDao;
+                var contactDao = _daoFactory.GetContactDao();
+                var listItemDao = _daoFactory.GetListItemDao();
+                var taskDao = _daoFactory.GetTaskDao();
 
                 var findedTasks = new List<Task>();
                 var taskCategories = listItemDao.GetItems(ListType.TaskCategory);
 
-                var allUsers = ASC.Core.CoreContext.UserManager.GetUsers(EmployeeStatus.All).ToList();
+                var allUsers = UserManager.GetUsers(EmployeeStatus.All).ToList();
 
                 while (csv.ReadNextRecord())
                 {
@@ -80,7 +96,7 @@ namespace ASC.Web.CRM.Classes
                         obj.DeadLine = TenantUtil.DateTimeNow();
 
                     var csvResponsibleValue = GetPropertyValue("responsible");
-                    var responsible = allUsers.Where(n => n.DisplayUserName().Equals(csvResponsibleValue)).FirstOrDefault();
+                    var responsible = allUsers.Where(n => n.DisplayUserName(DisplayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
 
                     if (responsible != null)
                         obj.ResponsibleID = responsible.ID;

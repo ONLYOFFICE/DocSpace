@@ -119,7 +119,7 @@ namespace ASC.CRM.Core.Entities
                 sortBy = SortedByType.Title;
             }
 
-            return daofactory.CasesDao.GetCases(
+            return daofactory.GetCasesDao().GetCases(
                 FilterValue,
                 0,
                 IsClosed,
@@ -222,7 +222,7 @@ namespace ASC.CRM.Core.Entities
                 sortBy = TaskSortedByType.DeadLine;
             }
 
-            return daofactory.TaskDao.GetTasks(
+            return daofactory.GetTaskDao().GetTasks(
                 FilterValue,
                 ResponsibleId,
                 CategoryId,
@@ -346,7 +346,7 @@ namespace ASC.CRM.Core.Entities
                 stageType = stage;
             }
 
-            return daofactory.DealDao.GetDeals(
+            return daofactory.GetDealDao().GetDeals(
                 FilterValue,
                 ResponsibleId,
                 OpportunityStageId,
@@ -474,7 +474,7 @@ namespace ASC.CRM.Core.Entities
             ContactListViewType contactListViewType;
             EnumExtension.TryParse(ContactListView, true, out contactListViewType);
 
-            return daofactory.ContactDao.GetContacts(
+            return daofactory.GetContactDao().GetContacts(
                 FilterValue,
                 Tags,
                 ContactStage,
@@ -544,7 +544,7 @@ namespace ASC.CRM.Core.Entities
             InvoiceItemSortedByType sortBy;
             EnumExtension.TryParse(SortBy, true, out sortBy);
 
-            return daofactory.InvoiceItemDao.GetInvoiceItems(
+            return daofactory.GetInvoiceItemDao().GetInvoiceItems(
                 FilterValue,
                 0,
                 InventoryStock,

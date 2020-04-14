@@ -24,13 +24,13 @@
 */
 
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using ASC.Core;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -47,7 +47,9 @@ namespace ASC.Web.CRM.Core.Search
             }
         }
 
-        public static EmailWrapper ToEmailWrapper(Contact contact, List<ContactInfo> contactInfo)
+        public static EmailWrapper GetEmailWrapper(int tenantId, 
+                                                    Contact contact, 
+                                                    List<ContactInfo> contactInfo)
         {
             var result = new EmailWrapper();
 
@@ -62,10 +64,12 @@ namespace ASC.Web.CRM.Core.Search
                     LastName = person.LastName,
                     Industry = person.Industry,
                     Notes = person.About,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                    TenantId = tenantId
                 };
             }
+
             var company = contact as Company;
+            
             if (company != null)
             {
                 result = new EmailWrapper
@@ -74,17 +78,17 @@ namespace ASC.Web.CRM.Core.Search
                     CompanyName = company.CompanyName,
                     Industry = company.Industry,
                     Notes = company.About,
-                    TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                    TenantId = tenantId
                 };
             }
 
-            result.EmailInfoWrapper = contactInfo.Select(r => (EmailInfoWrapper)r).ToList();
+            result.EmailInfoWrapper = contactInfo.Select(r => ASC.Web.CRM.Core.Search.EmailInfoWrapper.FromContactInfo(tenantId, r)).ToList();
 
             return result;
         }
     }
 
-    public class EmailInfoWrapper: Wrapper
+    public class EmailInfoWrapper : Wrapper
     {
         [ColumnLastModified("last_modifed_on")]
         public override DateTime LastModifiedOn { get; set; }
@@ -100,7 +104,7 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_contact_info"; } }
 
-        public static implicit operator EmailInfoWrapper(ContactInfo cf)
+        public static EmailInfoWrapper FromContactInfo(int tenantId, ContactInfo cf)
         {
             return new EmailInfoWrapper
             {
@@ -108,7 +112,7 @@ namespace ASC.Web.CRM.Core.Search
                 ContactId = cf.ContactID,
                 Data = cf.Data,
                 Type = (int)cf.InfoType,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantId
             };
         }
     }

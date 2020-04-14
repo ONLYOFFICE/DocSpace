@@ -29,6 +29,9 @@ using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Core.Search
 {
     public class ContactsWrapper : Wrapper
@@ -66,7 +69,19 @@ namespace ASC.Web.CRM.Core.Search
             return d as Company;
         }
 
-        public static implicit operator ContactsWrapper(Person d)
+        public static ContactsWrapper FromCompany(int tenantId, Company d)
+        {           
+            return new ContactsWrapper
+            {
+                Id = d.ID,
+                CompanyName = d.CompanyName,
+                Industry = d.Industry,
+                Notes = d.About,
+                TenantId = tenantId
+            };
+        }
+
+        public static ContactsWrapper FromPerson(int tenantId, Person d)
         {
             return new ContactsWrapper
             {
@@ -76,19 +91,7 @@ namespace ASC.Web.CRM.Core.Search
                 LastName = d.LastName,
                 Industry = d.Industry,
                 Notes = d.About,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
-            };
-        }
-
-        public static implicit operator ContactsWrapper(Company d)
-        {
-            return new ContactsWrapper
-            {
-                Id = d.ID,
-                CompanyName = d.CompanyName,
-                Industry = d.Industry,
-                Notes = d.About,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantId
             };
         }
     }

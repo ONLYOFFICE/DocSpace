@@ -57,7 +57,9 @@ namespace ASC.CRM.Core.Dao
                       TenantUtil tenantUtil,
                       FactoryIndexer<TasksWrapper> factoryIndexer,
                       IOptionsMonitor<ILog> logger,
-                      IHttpContextAccessor httpContextAccessor
+                      IHttpContextAccessor httpContextAccessor,
+                      DbContextManager<UserDbContext> userDbContext,
+                      DbContextManager<CoreDbContext> coreDbContext
                       ) :
            base(dbContextManager,
                 tenantManager,
@@ -65,7 +67,10 @@ namespace ASC.CRM.Core.Dao
                 cRMSecurity,
                 tenantUtil,
                 factoryIndexer,
-                logger)
+                logger,
+                userDbContext,
+                coreDbContext
+                )
         {
             _contactCache = new HttpRequestDictionary<Task>(httpContextAccessor?.HttpContext, "crm_task");
         }
@@ -115,7 +120,9 @@ namespace ASC.CRM.Core.Dao
                        CRMSecurity cRMSecurity,
                        TenantUtil tenantUtil,
                        FactoryIndexer<TasksWrapper> factoryIndexer,
-                       IOptionsMonitor<ILog> logger
+                       IOptionsMonitor<ILog> logger,
+                       DbContextManager<UserDbContext> userDbContext,
+                       DbContextManager<CoreDbContext> coreDbContext
                        ) :
             base(dbContextManager,
                  tenantManager,
@@ -125,8 +132,13 @@ namespace ASC.CRM.Core.Dao
             CRMSecurity = cRMSecurity;
             TenantUtil = tenantUtil;
             FactoryIndexer = factoryIndexer;
- 
+            UserDbContext = userDbContext.Value;
+            CoreDbContext = coreDbContext.Value;
         }
+
+        public CoreDbContext CoreDbContext { get; }
+
+        public UserDbContext UserDbContext { get; }
 
         public FactoryIndexer<TasksWrapper> FactoryIndexer { get; }
 
@@ -428,157 +440,121 @@ namespace ASC.CRM.Core.Dao
                 }
                 else
                 {
-                    var taskIds = new List<int>();
+                    throw new NotImplementedException();
+                    //var taskIds = new List<int>();
 
-                    // count tasks without entityId and only open contacts
-                    taskIds = GetDbTaskByFilters(responsibleId,
-                                                categoryId,
-                                                isClosed,
-                                                fromDate,
-                                                toDate,
-                                                entityType,
-                                                entityId,
-                                                0,
-                                                0,
-                                                null).GroupJoin(CRMDbContext.Contacts,
-                                        x => x.ContactId,
-                                        y => y.Id,
-                                        (x, y) => new { x, y })
-                                        .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
-                                        .Where(x => x.y == null ||
-                                                    x.y.IsShared == null ||
-                                                    x.y.IsShared.Value == ShareType.Read ||
-                                                    x.y.IsShared.Value == ShareType.ReadWrite)
-                                        .Select(x => x.x.Id)
-                                        .ToList();
-
-                    Logger.DebugFormat("End GetTasksCount: {0}. count tasks without entityId and only open contacts", DateTime.Now.ToString());
-
-                    taskIds = GetDbTaskByFilters(responsibleId,
-                                               categoryId,
-                                               isClosed,
-                                               fromDate,
-                                               toDate,
-                                               entityType,
-                                               entityId,
-                                               0,
-                                               0,
-                                               null).GroupJoin(CRMDbContext.Contacts,
-                                       x => x.ContactId,
-                                       y => y.Id,
-                                       (x, y) => new { x, y })
-                                       .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
-                                       .Where(x => x.y != null ||
-                                                   x.y.IsShared == null ||
-                                                   x.y.IsShared.Value == ShareType.Read ||
-                                                   x.y.IsShared.Value == ShareType.ReadWrite)
-                                       .Select(x => x.x.Id)
-                                       .ToList();
-
-                    sqlQuery = Query("crm_task tbl_tsk")
-                                .Select("tbl_tsk.id")
-                                .InnerJoin("crm_contact tbl_ctc", Exp.EqColumns("tbl_tsk.contact_id", "tbl_ctc.id"))
-                                .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_ctc.tenant_id", "tbl_cl.tenant") &
-                                Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
-                                Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
-                                Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Company|', tbl_ctc.id)"))
-                                .Where(Exp.Eq("tbl_ctc.is_shared", 0))
-                                .Where(Exp.Eq("tbl_ctc.is_company", 1));
-
-                    sqlQuery = GetDbTaskByFilters(responsibleId,
-                                                categoryId,
-                                                isClosed,
-                                                fromDate,
-                                                toDate,
-                                                entityType,
-                                                entityId,
-                                                0,
-                                                0,
-                                                null);
-
-                    // count tasks with entityId and only close contacts
-                    taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
-
-                    Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and only close contacts", DateTime.Now.ToString());
-
-                    sqlQuery = Query("crm_task tbl_tsk")
-                              .Select("tbl_tsk.id")
-                              .InnerJoin("crm_contact tbl_ctc", Exp.EqColumns("tbl_tsk.contact_id", "tbl_ctc.id"))
-                              .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_ctc.tenant_id", "tbl_cl.tenant") &
-                              Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
-                              Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
-                              Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Person|', tbl_ctc.id)"))
-                              .Where(Exp.Eq("tbl_ctc.is_shared", 0))
-                              .Where(Exp.Eq("tbl_ctc.is_company", 0));
-
-                    sqlQuery = GetDbTaskByFilters(responsibleId,
-                                                categoryId,
-                                                isClosed,
-                                                fromDate,
-                                                toDate,
-                                                entityType,
-                                                entityId,
-                                                0,
-                                                0,
-                                                null);
-
-                    // count tasks with entityId and only close contacts
-                    taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
-
-                    Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and only close contacts", DateTime.Now.ToString());
+                    //// PrivateTask
 
 
-                    sqlQuery = Query("crm_task tbl_tsk")
-                                .Select("tbl_tsk.id")
-                                .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_tsk.tenant_id", "tbl_cl.tenant") &
-                                Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
-                                Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
-                                Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Deal|', tbl_tsk.entity_id)"))
-                                .Where(!Exp.Eq("tbl_tsk.entity_id", 0) & Exp.Eq("tbl_tsk.entity_type", (int)EntityType.Opportunity) & Exp.Eq("tbl_tsk.contact_id", 0));
+                    //// count tasks without entityId and only open contacts
+                    //taskIds = GetDbTaskByFilters(responsibleId,
+                    //                            categoryId,
+                    //                            isClosed,
+                    //                            fromDate,
+                    //                            toDate,
+                    //                            entityType,
+                    //                            entityId,
+                    //                            0,
+                    //                            0,
+                    //                            null).GroupJoin(Query(CRMDbContext.Contacts),
+                    //                    x => x.ContactId,
+                    //                    y => y.Id,
+                    //                    (x, y) => new { x, y })
+                    //                    .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
+                    //                    .Where(x => 
+                                                    
+                    //                                x.y == null ||
+                    //                                x.y.IsShared == null ||
+                    //                                x.y.IsShared.Value == ShareType.Read ||
+                    //                                x.y.IsShared.Value == ShareType.ReadWrite)
+                    //                    .Select(x => x.x.Id)
+                    //                    .ToList();
 
-                    sqlQuery = GetDbTaskByFilters(responsibleId,
-                                                categoryId,
-                                                isClosed,
-                                                fromDate,
-                                                toDate,
-                                                entityType,
-                                                entityId,
-                                                0,
-                                                0,
-                                                null);
+                    //Logger.DebugFormat("End GetTasksCount: {0}. count tasks without entityId and only open contacts", DateTime.Now.ToString());
 
-                    // count tasks with entityId and without contact
-                    taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
+                    //var idsFromAcl = CoreDbContext.Acl.Where(x => x.Tenant == TenantID &&
+                    //                                                x.Action == CRMSecurity._actionRead.ID &&
+                    //                                                x.Subject == SecurityContext.CurrentAccount.ID &&
+                    //                                                (Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Company).FullName + "%") ||
+                    //                                                Microsoft.EntityFrameworkCore.EF.Functions.Like(x.Object, typeof(Person).FullName + "%")))
+                    //                                    .Select(x => Convert.ToInt32(x.Object.Split('|', StringSplitOptions.None)[1]))
+                    //                                    .ToList();
 
-                    Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and without contact", DateTime.Now.ToString());
+                    //Query(CRMDbContext.Contacts).GroupBy(x => x.Id).Select(x => x.)
+                    //taskIds.AddRange(GetDbTaskByFilters(responsibleId,
+                    //                           categoryId,
+                    //                           isClosed,
+                    //                           fromDate,
+                    //                           toDate,
+                    //                           entityType,
+                    //                           entityId,
+                    //                           0,
+                    //                           0,
+                    //                           null).GroupJoin(CRMDbContext.Contacts,
+                    //                   x => x.ContactId,
+                    //                   y => y.Id,
+                    //                   (x, y) => new { x, y })
+                    //                   .SelectMany(x => x.y.DefaultIfEmpty(), (x, y) => new { x.x, y })
+                    //                   .Where(x => x.y != null && 
+                    //                               x.y.IsShared == 0 &&
+                    //                               idsFromAcl.Contains(x.y.Id))
+                    //                   .Select(x => x.x.Id)
+                    //                   .ToList());
+                                  
+                    //Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and only close contacts", DateTime.Now.ToString());
 
-                    sqlQuery = Query("crm_task tbl_tsk")
-                                .Select("tbl_tsk.id")
-                                .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_tsk.tenant_id", "tbl_cl.tenant") &
-                                Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
-                                Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
-                                Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Cases|', tbl_tsk.entity_id)"))
-                                .Where(!Exp.Eq("tbl_tsk.entity_id", 0) & Exp.Eq("tbl_tsk.entity_type", (int)EntityType.Case) & Exp.Eq("tbl_tsk.contact_id", 0));
 
-                    sqlQuery = GetDbTaskByFilters(responsibleId,
-                                                categoryId,
-                                                isClosed,
-                                                fromDate,
-                                                toDate,
-                                                entityType,
-                                                entityId,
-                                                0,
-                                                0,
-                                                null);
+                    //sqlQuery = Query("crm_task tbl_tsk")
+                    //            .Select("tbl_tsk.id")
+                    //            .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_tsk.tenant_id", "tbl_cl.tenant") &
+                    //            Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
+                    //            Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
+                    //            Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Deal|', tbl_tsk.entity_id)"))
+                    //            .Where(!Exp.Eq("tbl_tsk.entity_id", 0) & Exp.Eq("tbl_tsk.entity_type", (int)EntityType.Opportunity) & Exp.Eq("tbl_tsk.contact_id", 0));
 
-                    // count tasks with entityId and without contact
-                    taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
+                    //sqlQuery = GetDbTaskByFilters(responsibleId,
+                    //                            categoryId,
+                    //                            isClosed,
+                    //                            fromDate,
+                    //                            toDate,
+                    //                            entityType,
+                    //                            entityId,
+                    //                            0,
+                    //                            0,
+                    //                            null);
 
-                    result = taskIds.Distinct().Count();
+                    //// count tasks with entityId and without contact
+                    //taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
 
-                    Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and without contact", DateTime.Now.ToString());
+                    //Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and without contact", DateTime.Now.ToString());
 
-                    Logger.Debug("Finish");
+                    //sqlQuery = Query("crm_task tbl_tsk")
+                    //            .Select("tbl_tsk.id")
+                    //            .InnerJoin("core_acl tbl_cl", Exp.EqColumns("tbl_tsk.tenant_id", "tbl_cl.tenant") &
+                    //            Exp.Eq("tbl_cl.subject", SecurityContext.CurrentAccount.ID.ToString()) &
+                    //            Exp.Eq("tbl_cl.action", CRMSecurity._actionRead.ID.ToString()) &
+                    //            Exp.EqColumns("tbl_cl.object", "CONCAT('ASC.CRM.Core.Entities.Cases|', tbl_tsk.entity_id)"))
+                    //            .Where(!Exp.Eq("tbl_tsk.entity_id", 0) & Exp.Eq("tbl_tsk.entity_type", (int)EntityType.Case) & Exp.Eq("tbl_tsk.contact_id", 0));
+
+                    //sqlQuery = GetDbTaskByFilters(responsibleId,
+                    //                            categoryId,
+                    //                            isClosed,
+                    //                            fromDate,
+                    //                            toDate,
+                    //                            entityType,
+                    //                            entityId,
+                    //                            0,
+                    //                            0,
+                    //                            null);
+
+                    //// count tasks with entityId and without contact
+                    //taskIds.AddRange(Db.ExecuteList(sqlQuery).Select(item => Convert.ToInt32(item[0])).ToList());
+
+                    //result = taskIds.Distinct().Count();
+
+                    //Logger.DebugFormat("End GetTasksCount: {0}. count tasks with entityId and without contact", DateTime.Now.ToString());
+
+                    //Logger.Debug("Finish");
 
                 }
             }
@@ -717,15 +693,17 @@ namespace ASC.CRM.Core.Dao
                         break;
                     case TaskSortedByType.ContactManager:
                         {
-
-                            
-
-
-                            sqlQuery.LeftOuterJoin("core_user u", Exp.EqColumns(aliasPrefix + "responsible_id", "u.id"))
-                                    .OrderBy("case when u.lastname is null or u.lastname = '' then 1 else 0 end, u.lastname", orderBy.IsAsc)
-                                    .OrderBy("case when u.firstname is null or u.firstname = '' then 1 else 0 end, u.firstname", orderBy.IsAsc)
-                                    .OrderBy(aliasPrefix + "deadline", true)
-                                    .OrderBy(aliasPrefix + "title", true);
+                            sqlQuery =  sqlQuery.GroupJoin(UserDbContext.Users.Where(x => x.Tenant == TenantID),
+                                  x => x.ResponsibleId,
+                                  y => y.Id,
+                                  (x, y) => new { x, y }
+                                )
+                             .SelectMany(x => x.y.DefaultIfEmpty(), (x,y) => new { x.x,y })
+                             .OrderBy("x.y.LastName", orderBy.IsAsc)
+                             .OrderBy("x.y.FirstName", orderBy.IsAsc)
+                             .OrderBy(x => x.x.Deadline)
+                             .OrderBy(x => x.x.Title)
+                             .Select(x => x.x);
                         }
 
                         break;
@@ -913,7 +891,9 @@ namespace ASC.CRM.Core.Dao
 
             }
 
-            FactoryIndexer.IndexAsync(newTask);
+           
+
+            FactoryIndexer.IndexAsync(TasksWrapper.FromTask(TenantID, newTask));
 
             return newTask;
         }
@@ -955,7 +935,7 @@ namespace ASC.CRM.Core.Dao
 
             newTask.ID = dbTask.Id;
 
-            FactoryIndexer.IndexAsync(newTask);
+            FactoryIndexer.IndexAsync(TasksWrapper.FromTask(TenantID, newTask));
 
             return newTask.ID;
         }
@@ -992,7 +972,7 @@ namespace ASC.CRM.Core.Dao
 
             _cache.Remove(new Regex(TenantID.ToString(CultureInfo.InvariantCulture) + "tasks.*"));
 
-            FactoryIndexer.DeleteAsync(task);
+            FactoryIndexer.DeleteAsync(TasksWrapper.FromTask(TenantID, task));
         }
 
         public List<Task> CreateByTemplate(List<TaskTemplate> templateItems, EntityType entityType, int entityID)

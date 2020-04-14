@@ -443,20 +443,20 @@ namespace ASC.CRM.Core.Dao
             if (contactID == 0) return String.Empty;
 
             if (entityID == 0)
-                return DaoFactory.ContactDao.GetByID(contactID).GetTitle();
+                return DaoFactory.GetContactDao().GetByID(contactID).GetTitle();
 
             switch (entityType)
             {
                 case EntityType.Company:
                 case EntityType.Person:
                 case EntityType.Contact:
-                    var contact = DaoFactory.ContactDao.GetByID(contactID);
+                    var contact = DaoFactory.GetContactDao().GetByID(contactID);
                     return contact == null ? string.Empty : contact.GetTitle();
                 case EntityType.Opportunity:
-                    var opportunity = DaoFactory.DealDao.GetByID(entityID);
+                    var opportunity = DaoFactory.GetDealDao().GetByID(entityID);
                     return opportunity == null ? string.Empty : opportunity.Title;
                 case EntityType.Case:
-                    var @case = DaoFactory.CasesDao.GetByID(entityID);
+                    var @case = DaoFactory.GetCasesDao().GetByID(entityID);
                     return @case == null ? string.Empty : @case.Title;
                 default:
                     throw new ArgumentException();

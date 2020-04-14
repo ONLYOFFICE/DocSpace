@@ -56,7 +56,7 @@ namespace ASC.CRM.Core.Dao
 
     public class CachedRelationshipEventDao : RelationshipEventDao
     {
-        private readonly HttpRequestDictionary<RelationshipEvent> _contactCache;
+        private readonly HttpRequestDictionary<RelationshipEvent> _relationshipEventCache;
 
         public CachedRelationshipEventDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
@@ -80,12 +80,12 @@ namespace ASC.CRM.Core.Dao
                             pathProvider,
                             logger)
         {
-            _contactCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
+            _relationshipEventCache = new HttpRequestDictionary<RelationshipEvent>(httpContextAccessor?.HttpContext, "crm_relationshipEvent");
         }
 
         public override RelationshipEvent GetByID(int eventID)
         {
-            return _contactCache.Get(eventID.ToString(), () => GetByIDBase(eventID));
+            return _relationshipEventCache.Get(eventID.ToString(), () => GetByIDBase(eventID));
         }
 
         private RelationshipEvent GetByIDBase(int eventID)
@@ -95,7 +95,7 @@ namespace ASC.CRM.Core.Dao
 
         private void ResetCache(int dealID)
         {
-            _contactCache.Reset(dealID.ToString());
+            _relationshipEventCache.Reset(dealID.ToString());
         }
     }
 
@@ -440,7 +440,7 @@ namespace ASC.CRM.Core.Dao
             if (item.CreateOn.Kind == DateTimeKind.Utc)
                 item.CreateOn = TenantUtil.DateTimeFromUtc(item.CreateOn);
 
-            FactoryIndexer.IndexAsync(item);
+            FactoryIndexer.IndexAsync(EventsWrapper.FromEvent(TenantID, item));
 
             return item;
         }
@@ -648,7 +648,7 @@ namespace ASC.CRM.Core.Dao
             CRMDbContext.RelationshipEvent.Remove(itemToDelete);
             CRMDbContext.SaveChanges();
 
-            FactoryIndexer.DeleteAsync(item);
+            FactoryIndexer.DeleteAsync(EventsWrapper.FromEvent(TenantID, item));
         }
 
         [DataContract]

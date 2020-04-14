@@ -88,11 +88,11 @@ namespace ASC.CRM.Core
             using (var scope = DIHelper.Resolve())
             {
                 var daoFactory = scope.Resolve<DaoFactory>();
-                var invoice = daoFactory.InvoiceDao.GetByFileId(Convert.ToInt32(entry.ID));
+                var invoice = daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
                 if (invoice != null)
                     return CRMSecurity.CanAccessTo(invoice, userId);
 
-                var reportFile = daoFactory.ReportDao.GetFile(Convert.ToInt32(entry.ID), userId);
+                var reportFile = daoFactory.GetReportDao().GetFile(Convert.ToInt32(entry.ID), userId);
                
                 if (reportFile != null)
                     return true;
@@ -106,7 +106,7 @@ namespace ASC.CRM.Core
 
                 if (!eventIds.Any()) return false;
 
-                var eventItem = daoFactory.RelationshipEventDao.GetByID(eventIds.First());
+                var eventItem = daoFactory.GetRelationshipEventDao().GetByID(eventIds.First());
 
                 return CRMSecurity.CanAccessTo(eventItem, userId);
             }

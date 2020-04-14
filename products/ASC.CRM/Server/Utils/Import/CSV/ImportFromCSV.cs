@@ -25,6 +25,7 @@
 
 
 using ASC.Common.Threading.Progress;
+using ASC.Core;
 using ASC.CRM.Core.Enums;
 using LumenWorks.Framework.IO.Csv;
 using Newtonsoft.Json.Linq;
@@ -37,73 +38,82 @@ namespace ASC.Web.CRM.Classes
 
     public class ImportFromCSV
     {
-        #region Members
+        public ImportFromCSV(TenantManager tenantProvider,
+                             ImportDataCache importDataCache)
+        {
+            TenantId = tenantProvider.CurrentTenant.TenantId;
+            ImportDataCache = importDataCache;
+        }
 
-        private static readonly Object _syncObj = new Object();
+        public ImportDataCache ImportDataCache { get; }
 
-        private static readonly ProgressQueue _importQueue = new ProgressQueue(3, TimeSpan.FromSeconds(15), true);
+        public int TenantId { get; }
 
-        public static readonly int MaxRoxCount = 10000;
+        private readonly object _syncObj = new object();
 
-        #endregion
+        private readonly ProgressQueue<ImportDataOperation> _importQueue = new ProgressQueue<ImportDataOperation>();
+           // 3, TimeSpan.FromSeconds(15), true);
 
-        public static int GetQuotas()
+        public readonly int MaxRoxCount = 10000;
+
+        public int GetQuotas()
         {
             return MaxRoxCount;
         }
 
-        public static CsvReader CreateCsvReaderInstance(Stream CSVFileStream, ImportCSVSettings importCsvSettings)
+        public CsvReader CreateCsvReaderInstance(Stream CSVFileStream, ImportCSVSettings importCsvSettings)
         {
             var result = new CsvReader(
                 new StreamReader(CSVFileStream, importCsvSettings.Encoding, true),
-                importCsvSettings.HasHeader, importCsvSettings.DelimiterCharacter, importCsvSettings.QuoteType, '"', '#', ValueTrimmingOptions.UnquotedOnly) { SkipEmptyLines = true, SupportsMultiline = true, DefaultParseErrorAction = ParseErrorAction.AdvanceToNextLine, MissingFieldAction = MissingFieldAction.ReplaceByEmpty };
+                importCsvSettings.HasHeader, importCsvSettings.DelimiterCharacter, importCsvSettings.QuoteType, '"', '#', ValueTrimmingOptions.UnquotedOnly)
+            { SkipEmptyLines = true, SupportsMultiline = true, DefaultParseErrorAction = ParseErrorAction.AdvanceToNextLine, MissingFieldAction = MissingFieldAction.ReplaceByEmpty };
 
             return result;
         }
 
-        public static String GetRow(Stream CSVFileStream, int index, String jsonSettings)
+        public String GetRow(Stream CSVFileStream, int index, String jsonSettings)
         {
             var importCSVSettings = new ImportCSVSettings(jsonSettings);
 
-            using (CsvReader csv = CreateCsvReaderInstance(CSVFileStream, importCSVSettings))
-            {
-                int countRows = 0;
+            CsvReader csv = CreateCsvReaderInstance(CSVFileStream, importCSVSettings);
 
-                index++;
+            int countRows = 0;
 
-                while (countRows++ != index && csv.ReadNextRecord()) ;
+            index++;
 
-                return new JObject(new JProperty("data", new JArray(csv.GetCurrentRowFields(false).ToArray())),
-                                   new JProperty("isMaxIndex", csv.EndOfStream)).ToString();
-            }
+            while (countRows++ != index && csv.ReadNextRecord()) ;
+
+            return new JObject(new JProperty("data", new JArray(csv.GetCurrentRowFields(false).ToArray())),
+                               new JProperty("isMaxIndex", csv.EndOfStream)).ToString();
+
         }
 
-        public static JObject GetInfo(Stream CSVFileStream, String jsonSettings)
+        public JObject GetInfo(Stream CSVFileStream, String jsonSettings)
         {
             var importCSVSettings = new ImportCSVSettings(jsonSettings);
 
-            using (CsvReader csv = CreateCsvReaderInstance(CSVFileStream, importCSVSettings))
-            {
-                csv.ReadNextRecord();
+            CsvReader csv = CreateCsvReaderInstance(CSVFileStream, importCSVSettings);
 
-                var firstRowFields = csv.GetCurrentRowFields(false);
+            csv.ReadNextRecord();
 
-                String[] headerRowFields = csv.GetFieldHeaders().ToArray();
+            var firstRowFields = csv.GetCurrentRowFields(false);
 
-                if (!importCSVSettings.HasHeader)
-                    headerRowFields = firstRowFields;
+            String[] headerRowFields = csv.GetFieldHeaders().ToArray();
 
-                return new JObject(
-                    new JProperty("headerColumns", new JArray(headerRowFields)),
-                    new JProperty("firstContactFields", new JArray(firstRowFields)),
-                    new JProperty("isMaxIndex", csv.EndOfStream)
-                    );
-            }
+            if (!importCSVSettings.HasHeader)
+                headerRowFields = firstRowFields;
+
+            return new JObject(
+                new JProperty("headerColumns", new JArray(headerRowFields)),
+                new JProperty("firstContactFields", new JArray(firstRowFields)),
+                new JProperty("isMaxIndex", csv.EndOfStream)
+                );
+
         }
 
-        public static IProgressItem GetStatus(EntityType entityType)
+        public IProgressItem GetStatus(EntityType entityType)
         {
-            var result = _importQueue.GetStatus(String.Format("{0}_{1}", TenantProvider.CurrentTenantID, (int)entityType));
+            var result = _importQueue.GetStatus(String.Format("{0}_{1}", TenantId, (int)entityType));
 
             if (result == null)
             {
@@ -113,7 +123,7 @@ namespace ASC.Web.CRM.Classes
             return result;
         }
 
-        public static IProgressItem Start(EntityType entityType, String CSVFileURI, String importSettingsJSON)
+        public IProgressItem Start(EntityType entityType, String CSVFileURI, String importSettingsJSON)
         {
             lock (_syncObj)
             {
@@ -126,9 +136,9 @@ namespace ASC.Web.CRM.Classes
                     if (fromCache != null)
                         return fromCache;
 
-                    operation = new ImportDataOperation(entityType, CSVFileURI, importSettingsJSON);
+                  //   operation = new ImportDataOperation(entityType, CSVFileURI, importSettingsJSON);
 
-                    _importQueue.Add(operation);
+                 //   _importQueue.Add(operation);
                 }
 
                 if (!_importQueue.IsStarted)

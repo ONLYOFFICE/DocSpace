@@ -44,21 +44,20 @@ namespace ASC.Web.CRM.Classes
 {
     public partial class ImportDataOperation
     {
-
         private void ImportOpportunityData(DaoFactory _daoFactory)
         {
-            var allUsers = ASC.Core.CoreContext.UserManager.GetUsers(EmployeeStatus.All).ToList();
+            var allUsers = UserManager.GetUsers(EmployeeStatus.All).ToList();
 
             using (var CSVFileStream = _dataStore.GetReadStream("temp", _CSVFileURI))
             using (CsvReader csv = ImportFromCSV.CreateCsvReaderInstance(CSVFileStream, _importSettings))
             {
                 int currentIndex = 0;
 
-                var customFieldDao = _daoFactory.CustomFieldDao;
-                var contactDao = _daoFactory.ContactDao;
-                var tagDao = _daoFactory.TagDao;
-                var dealDao = _daoFactory.DealDao;
-                var dealMilestoneDao = _daoFactory.DealMilestoneDao;
+                var customFieldDao = _daoFactory.GetCustomFieldDao();
+                var contactDao = _daoFactory.GetContactDao();
+                var tagDao = _daoFactory.GetTagDao();
+                var dealDao = _daoFactory.GetDealDao();
+                var dealMilestoneDao = _daoFactory.GetDealMilestoneDao();
 
                 var findedTags = new Dictionary<int, List<String>>();
                 var findedCustomField = new List<CustomField>();
@@ -82,7 +81,7 @@ namespace ASC.Web.CRM.Classes
                     obj.Description = GetPropertyValue("description");
 
                     var csvResponsibleValue = GetPropertyValue("responsible");
-                    var responsible = allUsers.Where(n => n.DisplayUserName().Equals(csvResponsibleValue)).FirstOrDefault();
+                    var responsible = allUsers.Where(n => n.DisplayUserName(DisplayUserSettingsHelper).Equals(csvResponsibleValue)).FirstOrDefault();
 
                     if (responsible != null)
                         obj.ResponsibleID = responsible.ID;
@@ -104,7 +103,7 @@ namespace ASC.Web.CRM.Classes
                     if (currency != null)
                         obj.BidCurrency = currency.Abbreviation;
                     else
-                        obj.BidCurrency = Global.TenantSettings.DefaultCurrency.Abbreviation;
+                        obj.BidCurrency = SettingsManager.Load<CRMSettings>().DefaultCurrency.Abbreviation;
 
                     decimal bidValue;
 
@@ -120,7 +119,7 @@ namespace ASC.Web.CRM.Classes
 
                     BidType bidType = BidType.FixedBid;
 
-                    if (!String.IsNullOrEmpty(bidTypeStr))
+                    if (!string.IsNullOrEmpty(bidTypeStr))
                     {
                         if (String.Compare(CRMDealResource.BidType_FixedBid, bidTypeStr, true) == 0)
                             bidType = BidType.FixedBid;
@@ -203,8 +202,6 @@ namespace ASC.Web.CRM.Classes
                                 localMembersDeal.Add(obj.ContactID);
                             }
                         }
-
-
                     }
 
                     var members = GetPropertyValue("member");
@@ -223,7 +220,7 @@ namespace ASC.Web.CRM.Classes
                             }
                             else
                             {
-                                findedMember = _daoFactory.ContactDao.GetContactsByName(item, false);
+                                findedMember = _daoFactory.GetContactDao().GetContactsByName(item, false);
                                 if (findedMember.Count > 0)
                                 {
                                     localMembersDeal.Add(findedMember[0].ID);
@@ -268,9 +265,7 @@ namespace ASC.Web.CRM.Classes
                         throw new OperationCanceledException();
                     }
 
-                    ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());               
-
-
+                    ImportDataCache.Insert(EntityType.Opportunity, (ImportDataOperation)Clone());  
 
                     findedDeals.Add(obj);
 
@@ -279,7 +274,6 @@ namespace ASC.Web.CRM.Classes
                     currentIndex++;
 
                 }
-
 
                 Percentage = 50;
 

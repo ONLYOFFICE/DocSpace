@@ -24,19 +24,13 @@
 */
 
 
-using System;
-using System.Web;
-
-using ASC.Files.Core;
-using ASC.Web.CRM.Resources;
-using ASC.Web.Studio.Controls.FileUploader;
-using ASC.Web.Studio.Controls.FileUploader.HttpModule;
-using ASC.Web.Studio.Core;
 using ASC.CRM.Core.Dao;
+using ASC.CRM.Resources;
 using ASC.Web.CRM.Core;
+using ASC.Web.Studio.Core;
 using Autofac;
 using Microsoft.AspNetCore.Http;
-using ASC.CRM.Resources;
+using System;
 
 namespace ASC.Web.CRM.Classes
 {

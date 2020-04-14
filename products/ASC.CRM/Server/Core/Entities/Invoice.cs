@@ -99,7 +99,7 @@ namespace ASC.CRM.Core.Entities
 
         public File<int> GetInvoiceFile(DaoFactory daoFactory)
         {
-            return daoFactory.FileDao.GetFile(FileID, 0);
+            return daoFactory.GetFileDao.GetFile(FileID, 0);
         }
 
         public decimal GetInvoiceCost(DaoFactory daoFactory)
@@ -116,7 +116,7 @@ namespace ASC.CRM.Core.Entities
                 decimal lineTax1 = 0;
                 if (line.InvoiceTax1ID > 0)
                 {
-                    var tax1 = daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax1ID);
+                    var tax1 = daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax1ID);
                     if (tax1 != null)
                     {
                         lineTax1 = Math.Round(linePrice * tax1.Rate / 100, 2);
@@ -126,7 +126,7 @@ namespace ASC.CRM.Core.Entities
                 decimal lineTax2 = 0;
                 if (line.InvoiceTax2ID > 0)
                 {
-                    var tax2 = daoFactory.InvoiceTaxDao.GetByID(line.InvoiceTax2ID);
+                    var tax2 = daoFactory.GetInvoiceTaxDao().GetByID(line.InvoiceTax2ID);
                     if (tax2 != null)
                     {
                         lineTax2 = Math.Round(linePrice * tax2.Rate / 100, 2);

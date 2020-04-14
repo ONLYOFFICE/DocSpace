@@ -25,8 +25,13 @@
 
 
 using ASC.Common.Web;
+using ASC.Core;
+using ASC.Core.Common.EF;
 using ASC.CRM.Resources;
+using ASC.Files.Core;
+using ASC.Files.Core.EF;
 using ASC.Web.Core;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,30 +39,45 @@ using System.Linq;
 namespace ASC.Web.CRM.Configuration
 {
     public class CRMSpaceUsageStatManager : SpaceUsageStatManager
-    {        
+    {
+        public CRMSpaceUsageStatManager(DbContextManager<FilesDbContext> filesDbContext,
+                                        PathProvider pathProvider,
+                                        TenantManager tenantManager)
+        {
+            PathProvider = pathProvider;
+            FilesDbContext = filesDbContext.Value;
+            TenantId = tenantManager.CurrentTenant.TenantId;
+        }
+
+        public int TenantId { get; }
+        public FilesDbContext FilesDbContext { get; }
+        public PathProvider PathProvider { get; }
+
         public override List<UsageSpaceStatItem> GetStatData()
         {
-            using (var filedb = new DbManager(FileConstant.DatabaseId))
-            {
-                var q = new SqlQuery("files_file f")
-                    .Select("b.right_node")
-                    .SelectSum("f.content_length")
-                    .InnerJoin("files_folder_tree t", Exp.EqColumns("f.folder_id", "t.folder_id"))
-                    .InnerJoin("files_bunch_objects b", Exp.EqColumns("t.parent_id", "b.left_node"))
-                    .Where("b.tenant_id", TenantProvider.CurrentTenantID)
-                    .Where(Exp.Like("b.right_node", "crm/crm_common/", SqlLike.StartWith))
-                    .GroupBy(1);
+            var spaceUsage = FilesDbContext.Files.Join(FilesDbContext.Tree,
+                                     x => x.FolderId,
+                                     y => y.FolderId,
+                                     (x, y) => new { x, y }
+                                   )
+                              .Join(FilesDbContext.BunchObjects,
+                                     x => x.y.ParentId,
+                                     y => Convert.ToInt32(y.LeftNode),
+                                     (x, y) => new { x, y })
+                              .Where(x => x.y.TenantId == TenantId &&
+                                          Microsoft.EntityFrameworkCore.EF.Functions.Like(x.y.RightNode, "crm/crm_common/%"))
+                              .Sum(x => x.x.x.ContentLength);
 
-                return filedb.ExecuteList(q)
-                    .Select(r => new UsageSpaceStatItem
-                        {
+            return new List<UsageSpaceStatItem>
+            {new UsageSpaceStatItem
+                {
 
-                            Name = CRMCommonResource.WholeCRMModule,
-                            SpaceUsage = Convert.ToInt64(r[1]),
-                            Url = VirtualPathUtility.ToAbsolute(PathProvider.StartURL())
-                        })
-                    .ToList();
-            }        
+                    Name = CRMCommonResource.WholeCRMModule,
+                    SpaceUsage = spaceUsage,
+                    Url = VirtualPathUtility.ToAbsolute(PathProvider.StartURL())
+                }
+
+            };
         }
     }
 }

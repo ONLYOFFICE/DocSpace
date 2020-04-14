@@ -26,7 +26,11 @@
 
 using System;
 using ASC.Core;
+using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
+
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -49,8 +53,8 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_invoice"; } }
 
-        public static implicit operator InvoicesWrapper(ASC.CRM.Core.Entities.Invoice invoice)
-        {
+        public static InvoicesWrapper FromInvoice(int tenantId, Invoice invoice)
+        {          
             return new InvoicesWrapper
             {
                 Id = invoice.ID,
@@ -58,7 +62,7 @@ namespace ASC.Web.CRM.Core.Search
                 Terms = invoice.Terms,
                 Description = invoice.Description,
                 PurchaseOrderNumber = invoice.PurchaseOrderNumber,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantId
             };
         }
     }

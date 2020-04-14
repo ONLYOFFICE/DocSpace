@@ -137,8 +137,8 @@ namespace ASC.Web.CRM.Configuration
                 IconFileName = "product_logo.png",
                 LargeIconFileName = "product_logolarge.svg",
                 DefaultSortOrder = 30,
-                SubscriptionManager = new ProductSubscriptionManager(),
-                SpaceUsageStatManager = new CRMSpaceUsageStatManager(),
+              //  SubscriptionManager = new ProductSubscriptionManager(),
+              //  SpaceUsageStatManager = new CRMSpaceUsageStatManager(),
                 AdminOpportunities = () => CRMCommonResource.ProductAdminOpportunities.Split('|').ToList(),
                 UserOpportunities = () => CRMCommonResource.ProductUserOpportunities.Split('|').ToList(),
             };
@@ -174,7 +174,7 @@ namespace ASC.Web.CRM.Configuration
                 {
                     var daoFactory = scope.Resolve<DaoFactory>();
                     // Task Category
-                    var listItemDao = daoFactory.ListItemDao;
+                    var listItemDao = daoFactory.GetListItemDao();
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Call, "task_category_call.png"));
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Deal, "task_category_deal.png"));
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_Demo, "task_category_demo.png"));
@@ -189,7 +189,7 @@ namespace ASC.Web.CRM.Configuration
                     listItemDao.CreateItem(ListType.TaskCategory, new ListItem(CRMTaskResource.TaskCategory_ThankYou, "task_category_thank_you.png"));
 
                     // Deal Milestone New
-                    var milestoneDao = daoFactory.DealMilestoneDao;
+                    var milestoneDao = daoFactory.GetDealMilestoneDao();
                     
                     milestoneDao.Create(new DealMilestone
                     {
@@ -287,10 +287,10 @@ namespace ASC.Web.CRM.Configuration
                     listItemDao.CreateItem(ListType.HistoryCategory, new ListItem(CRMCommonResource.HistoryCategory_Call, "event_category_call.png"));
                     listItemDao.CreateItem(ListType.HistoryCategory, new ListItem(CRMCommonResource.HistoryCategory_Meeting, "event_category_meeting.png"));
                     // Tags
-                    daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Lead, true);
-                    daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Customer, true);
-                    daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Supplier, true);
-                    daoFactory.TagDao.AddTag(EntityType.Contact, CRMContactResource.Staff, true);
+                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Lead, true);
+                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Customer, true);
+                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Supplier, true);
+                    daoFactory.GetTagDao().AddTag(EntityType.Contact, CRMContactResource.Staff, true);
                                         
                     tenantSettings.WebFormKey = Guid.NewGuid();
                     tenantSettings.IsConfiguredPortal = true;
@@ -342,27 +342,27 @@ namespace ASC.Web.CRM.Configuration
             }
         }
 
-        public override void Shutdown()
-        {
-            if (registered)
-            {
-                NotifyClient.Instance.Client.UnregisterSendMethod(NotifyClient.SendAutoReminderAboutTask);
+        //public override void Shutdown()
+        //{
+        //    if (registered)
+        //    {
+        //        NotifyClient.Instance.Client.UnregisterSendMethod(NotifyClient.SendAutoReminderAboutTask);
               
-            }
-        }
+        //    }
+        //}
 
-        public static void RegisterSendMethods()
-        {
-            lock (Locker)
-            {
-                if (!registered)
-                {
-                    registered = true;
+        //public static void RegisterSendMethods()
+        //{
+        //    lock (Locker)
+        //    {
+        //        if (!registered)
+        //        {
+        //            registered = true;
 
-                    NotifyClient.Instance.Client.RegisterSendMethod(NotifyClient.SendAutoReminderAboutTask, "0 * * ? * *");
+        //            NotifyClient.Instance.Client.RegisterSendMethod(NotifyClient.SendAutoReminderAboutTask, "0 * * ? * *");
 
-                }
-            }
-        }
+        //        }
+        //    }
+        //}
     }
 }

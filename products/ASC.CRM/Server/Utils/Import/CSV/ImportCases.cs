@@ -49,9 +49,9 @@ namespace ASC.Web.CRM.Classes
             {
                 int currentIndex = 0;
 
-                var casesDao = _daoFactory.CasesDao;
-                var customFieldDao = _daoFactory.CustomFieldDao;
-                var tagDao = _daoFactory.TagDao;
+                var casesDao = _daoFactory.GetCasesDao();
+                var customFieldDao = _daoFactory.GetCustomFieldDao();
+                var tagDao = _daoFactory.GetTagDao();
 
                 var findedTags = new Dictionary<int, List<String>>();
                 var findedCustomField = new List<CustomField>();
@@ -119,7 +119,7 @@ namespace ASC.Web.CRM.Classes
 
                         foreach (var item in membersList)
                         {
-                            var findedMember = _daoFactory.ContactDao.GetContactsByName(item, true);
+                            var findedMember = _daoFactory.GetContactDao().GetContactsByName(item, true);
 
                             if (findedMember.Count > 0)
                             {
@@ -127,7 +127,7 @@ namespace ASC.Web.CRM.Classes
                             }
                             else
                             {
-                                findedMember = _daoFactory.ContactDao.GetContactsByName(item, false);
+                                findedMember = _daoFactory.GetContactDao().GetContactsByName(item, false);
                                 if (findedMember.Count > 0)
                                 {
                                     localMembersCases.Add(findedMember[0].ID);
@@ -180,7 +180,7 @@ namespace ASC.Web.CRM.Classes
 
                 foreach (var findedCasesMemberKey in findedCasesMembers.Keys)
                 {
-                    _daoFactory.DealDao.SetMembers(newIDs[findedCasesMemberKey], findedCasesMembers[findedCasesMemberKey].ToArray());
+                    _daoFactory.GetDealDao().SetMembers(newIDs[findedCasesMemberKey], findedCasesMembers[findedCasesMemberKey].ToArray());
                 }
 
                 Percentage += 12.5;

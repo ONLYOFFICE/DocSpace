@@ -60,7 +60,8 @@ namespace ASC.CRM.Core.Dao
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
             IOptionsMonitor<ILog> logger,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            BundleSearch bundleSearch)
             :
                  base(dbContextManager,
                  tenantManager,
@@ -69,7 +70,8 @@ namespace ASC.CRM.Core.Dao
                  tenantUtil,
                  filesIntegration,
                  authorizationManager,
-                 logger)
+                 logger,
+                 bundleSearch)
 
         {
             _casesCache = new HttpRequestDictionary<Cases>(httpContextAccessor?.HttpContext, "crm_cases");
@@ -116,7 +118,8 @@ namespace ASC.CRM.Core.Dao
             TenantUtil tenantUtil,
             FilesIntegration filesIntegration,
             AuthorizationManager authorizationManager,
-            IOptionsMonitor<ILog> logger
+            IOptionsMonitor<ILog> logger,
+            BundleSearch bundleSearch
             ) :
                  base(dbContextManager,
                  tenantManager,
@@ -127,7 +130,10 @@ namespace ASC.CRM.Core.Dao
             TenantUtil = tenantUtil;
             FilesIntegration = filesIntegration;
             AuthorizationManager = authorizationManager;
+            BundleSearch = bundleSearch;
         }
+
+        public BundleSearch BundleSearch { get; }
 
         public AuthorizationManager AuthorizationManager { get; }
 
@@ -339,13 +345,13 @@ namespace ASC.CRM.Core.Dao
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
-            var tagdao = FilesIntegration.TagDao();
+            var tagdao = FilesIntegration.DaoFactory.GetTagDao<int>();
 
             var tagNames = Query(CRMDbContext.RelationshipEvent)
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
                             .Select(x => String.Format("RelationshipEvent_{0}", x.Id)).ToArray();
 
-            var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => t.EntryId).ToArray();
+            var filesIDs = tagdao.GetTags(tagNames, TagType.System).Where(t => t.EntryType == FileEntryType.File).Select(t => Convert.ToInt32(t.EntryId)).ToArray();
 
             using var tx = CRMDbContext.Database.BeginTransaction();
 
@@ -373,7 +379,7 @@ namespace ASC.CRM.Core.Dao
 
             if (0 < tagNames.Length)
             {
-                var filedao = FilesIntegration.GetFileDao();
+                var filedao = FilesIntegration.DaoFactory.GetFileDao<int>();
 
                 foreach (var filesID in filesIDs)
                 {

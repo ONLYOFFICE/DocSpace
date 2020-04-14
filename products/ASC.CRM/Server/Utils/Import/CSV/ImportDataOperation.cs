@@ -29,6 +29,7 @@ using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading.Progress;
 using ASC.Core;
+using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Enums;
@@ -119,7 +120,12 @@ namespace ASC.Web.CRM.Classes
                                    IOptionsMonitor<ILog> logger,
                                    UserManager userManager,
                                    ImportDataCache importDataCache,
-                                   CRMSecurity cRMSecurity)
+                                   CRMSecurity cRMSecurity,
+                                   NotifyClient notifyClient,
+                                   SettingsManager settingsManager,
+                                   CurrencyProvider currencyProvider,
+                                   IServiceProvider serviceProvider
+                                   )
         {
             ImportDataCache = importDataCache;
 
@@ -135,15 +141,23 @@ namespace ASC.Web.CRM.Classes
             
             _tenantID = tenantManager.CurrentTenant.TenantId;
             _author = SecurityContext.CurrentAccount;
-           
-            _notifyClient = NotifyClient.Instance;
+
+            NotifyClient = notifyClient;
 
             Id = String.Format("{0}_{1}", _tenantID, (int)_entityType);
 
             _log = logger.Get("ASC.CRM");
 
             CRMSecurity = cRMSecurity;
+            SettingsManager = settingsManager;
+            CurrencyProvider = currencyProvider;
         }
+
+        public CurrencyProvider CurrencyProvider { get; }
+
+        public NotifyClient NotifyClient { get; }
+
+        public SettingsManager SettingsManager { get; }
 
         public CRMSecurity CRMSecurity { get; }
 
@@ -162,9 +176,7 @@ namespace ASC.Web.CRM.Classes
         private readonly IDataStore _dataStore;
 
         private readonly IAccount _author;
-
-        private readonly NotifyClient _notifyClient;
-
+                
         private readonly int _tenantID;
 
         private readonly string _CSVFileURI;
@@ -194,16 +206,7 @@ namespace ASC.Web.CRM.Classes
 
         public object Clone()
         {
-            var cloneObj = new ImportDataOperation()
-            {
-                Error = Error,
-                Id = Id,
-                IsCompleted = IsCompleted,
-                Percentage = Percentage,
-                Status = Status
-            };
-
-            return cloneObj;
+            return MemberwiseClone();                     
         }
 
         public object Id { get; set; }
@@ -236,7 +239,7 @@ namespace ASC.Web.CRM.Classes
 
             _log.Debug("Import is completed");
 
-            _notifyClient.SendAboutImportCompleted(_author.ID, _entityType);
+            NotifyClient.SendAboutImportCompleted(_author.ID, _entityType);
                        
             ImportDataCache.Insert(_entityType, (ImportDataOperation)Clone());
         }

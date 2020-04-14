@@ -26,7 +26,10 @@
 
 using System;
 using ASC.Core;
+using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -40,13 +43,15 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_case"; } }
 
-        public static implicit operator CasesWrapper(ASC.CRM.Core.Entities.Cases d)
+        public static CasesWrapper GetTasksWrapper(IServiceProvider serviceProvider, Cases item)
         {
+            var tenantManager = serviceProvider.GetService<TenantManager>();
+
             return new CasesWrapper
             {
-                Id = d.ID,
-                Title = d.Title,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                Id = item.ID,
+                Title = item.Title,
+                TenantId = tenantManager.CurrentTenant.TenantId
             };
         }
     }

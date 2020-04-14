@@ -29,6 +29,9 @@ using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Core.Search
 {
     public sealed class TasksWrapper : Wrapper
@@ -44,15 +47,15 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_task"; } }
 
-        public static implicit operator TasksWrapper(Task task)
-        {
+        public static TasksWrapper FromTask(int tenantId, Task task)
+        {           
             return new TasksWrapper
             {
                 Id = task.ID,
-                Title = task.Title,
+                Title = task.Description,
                 Description = task.Description,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
-            };
+                TenantId = tenantId
+            };        
         }
     }
 }

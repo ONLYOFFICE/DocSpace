@@ -27,7 +27,6 @@
 using ASC.Collections;
 using ASC.Common.Logging;
 using ASC.Core;
-using ASC.Core.Caching;
 using ASC.Core.Common.EF;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
@@ -44,7 +43,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 
@@ -66,7 +64,8 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
             FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
             IOptionsMonitor<ILog> logger,
-            DbContextManager<CoreDbContext> coreDbContext) :
+            DbContextManager<CoreDbContext> coreDbContext,
+            BundleSearch bundleSearch) :
                  base(dbContextManager,
                  tenantManager,
                  securityContext,
@@ -77,7 +76,8 @@ namespace ASC.CRM.Core.Dao
                  factoryIndexerContactsWrapper,
                  factoryIndexerEmailWrapper,
                  logger,
-                 coreDbContext)
+                 coreDbContext,
+                 bundleSearch)
         {
             _contactCache = new HttpRequestDictionary<Contact>(httpContextAccessor?.HttpContext, "crm_contact");
         }
@@ -138,7 +138,8 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexer<ContactsWrapper> factoryIndexerContactsWrapper,
             FactoryIndexer<EmailWrapper> factoryIndexerEmailWrapper,
             IOptionsMonitor<ILog> logger,
-            DbContextManager<CoreDbContext> coreDbContext
+            DbContextManager<CoreDbContext> coreDbContext,
+            BundleSearch bundleSearch
             ) :
                  base(dbContextManager,
                  tenantManager,
@@ -152,10 +153,11 @@ namespace ASC.CRM.Core.Dao
             FactoryIndexerContactsWrapper = factoryIndexerContactsWrapper;
             FactoryIndexerEmailWrapper = factoryIndexerEmailWrapper;
             CoreDbContext = coreDbContext.Value;
+            BundleSearch = bundleSearch;
         }
 
+        public BundleSearch BundleSearch { get; }
         public CoreDbContext CoreDbContext { get; }
-
         public FactoryIndexer<EmailWrapper> FactoryIndexerEmailWrapper { get; }
         public FactoryIndexer<ContactsWrapper> FactoryIndexerContactsWrapper { get; }
         public FilesIntegration FilesIntegration { get; }
@@ -471,7 +473,7 @@ namespace ASC.CRM.Core.Dao
         }
 
         public List<Contact> GetContacts(String searchText,
-                                        IEnumerable<String> tags,
+                                        IEnumerable<string> tags,
                                         int contactStage,
                                         int contactType,
                                         ContactListViewType contactListView,

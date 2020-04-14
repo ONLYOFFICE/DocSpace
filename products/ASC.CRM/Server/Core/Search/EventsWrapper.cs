@@ -29,6 +29,9 @@ using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Core.Search
 {
     public sealed class EventsWrapper : Wrapper
@@ -50,8 +53,8 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_relationship_event"; } }
 
-        public static implicit operator EventsWrapper(RelationshipEvent relationshipEvent)
-        {
+        public static EventsWrapper FromEvent(int tenantId, RelationshipEvent relationshipEvent)
+        {           
             return new EventsWrapper
             {
                 Id = relationshipEvent.ID,
@@ -59,7 +62,7 @@ namespace ASC.Web.CRM.Core.Search
                 EntityId = relationshipEvent.EntityID,
                 EntityType = (int)relationshipEvent.EntityType,
                 Content = relationshipEvent.Content,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantId
             };
         }
     }

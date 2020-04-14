@@ -36,38 +36,54 @@ using ASC.Web.Core.Utility.Skins;
 using ASC.Web.CRM.Configuration;
 using ASC.Web.CRM.Core;
 using Autofac;
+using Microsoft.Extensions.Options;
 
 namespace ASC.Web.CRM.Classes
 {
-    public static class OrganisationLogoManager
+    public class OrganisationLogoManager
     {
+        public OrganisationLogoManager(WebImageSupplier webImageSupplier,
+                                       Global global,
+                                       IOptionsMonitor<ILog> logger)
+        {
+            WebImageSupplier = webImageSupplier;
+            Global = global;
+            Logger = logger.Get("ASC.CRM");
+        }
+
+        public ILog Logger { get; }
+
+        public Global Global { get; }
+
+        public WebImageSupplier WebImageSupplier { get; }
+
         #region Members
 
-        public static readonly String OrganisationLogoBaseDirName = "organisationlogo";
-        public static readonly String OrganisationLogoImgName = "logo";
+        public readonly String OrganisationLogoBaseDirName = "organisationlogo";
 
-        public static readonly String OrganisationLogoSrcFormat = "data:image/jpeg;base64,{0}";
+        public readonly String OrganisationLogoImgName = "logo";
 
-        public static readonly Size OrganisationLogoSize = new Size(200, 150);
+        public readonly String OrganisationLogoSrcFormat = "data:image/jpeg;base64,{0}";
 
-        private static readonly Object _synchronizedObj = new Object();
+        public readonly Size OrganisationLogoSize = new Size(200, 150);
+
+        private readonly Object _synchronizedObj = new Object();
 
         #endregion
 
         #region Private Methods
 
-        private static String BuildFileDirectory()
+        private String BuildFileDirectory()
         {
             return String.Concat(OrganisationLogoBaseDirName, "/");
         }
 
-        private static String BuildFilePath(String imageExtension)
+        private String BuildFilePath(String imageExtension)
         {
             return String.Concat(BuildFileDirectory(), OrganisationLogoImgName, imageExtension);
         }
 
-
-        private static String ExecResizeImage(byte[] imageData, Size fotoSize, IDataStore dataStore, String photoPath)
+        private String ExecResizeImage(byte[] imageData, Size fotoSize, IDataStore dataStore, String photoPath)
         {
             var data = imageData;
             using (var stream = new MemoryStream(data))
@@ -94,32 +110,30 @@ namespace ASC.Web.CRM.Classes
                 }
             }
         }
-
-      
-
+              
         #endregion
 
-        public static String GetDefaultLogoUrl()
+        public String GetDefaultLogoUrl()
         {
             return WebImageSupplier.GetAbsoluteWebPath("org_logo_default.png", ProductEntryPoint.ID);
         }
 
-        public static String GetOrganisationLogoBase64(int logoID)
+        public String GetOrganisationLogoBase64(int logoID)
         {
             if (logoID <= 0) { return ""; }
             using (var scope = DIHelper.Resolve())
             {
-                return scope.Resolve<DaoFactory>().InvoiceDao.GetOrganisationLogoBase64(logoID);
+                return scope.Resolve<DaoFactory>().GetInvoiceDao().GetOrganisationLogoBase64(logoID);
             }
         }
 
-        public static String GetOrganisationLogoSrc(int logoID)
+        public String GetOrganisationLogoSrc(int logoID)
         {
             var bytestring = GetOrganisationLogoBase64(logoID);
             return String.IsNullOrEmpty(bytestring) ? "" : String.Format(OrganisationLogoSrcFormat, bytestring);
         }
 
-        public static void DeletePhoto(bool recursive)
+        public void DeletePhoto(bool recursive)
         {
             var photoDirectory = BuildFileDirectory();
             var store = Global.GetStore();
@@ -137,7 +151,7 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
-        public static int TryUploadOrganisationLogoFromTmp(DaoFactory factory)
+        public int TryUploadOrganisationLogoFromTmp(DaoFactory factory)
         {
             var directoryPath = BuildFileDirectory();
             var dataStore = Global.GetStore();
@@ -157,21 +171,23 @@ namespace ASC.Web.CRM.Classes
                     bytes = Global.ToByteArray(photoTmpStream);
                 }
 
-                var logoID = factory.InvoiceDao.SaveOrganisationLogo(bytes);
+                var logoID = factory.GetInvoiceDao().SaveOrganisationLogo(bytes);
                 dataStore.DeleteFiles(directoryPath, "*", false);
                 return logoID;
             }
 
             catch (Exception ex)
             {
-                LogManager.GetLogger("ASC.CRM").ErrorFormat("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex);
+                Logger.ErrorFormat("TryUploadOrganisationLogoFromTmp failed with error: {0}", ex);
+
                 return 0;
             }
         }
 
-        public static String UploadLogo(byte[] imageData, ImageFormat imageFormat)
+        public String UploadLogo(byte[] imageData, ImageFormat imageFormat)
         {
             var photoPath = BuildFilePath("." + Global.GetImgFormatName(imageFormat));
+        
             return ExecResizeImage(imageData, OrganisationLogoSize, Global.GetStore(), photoPath);
         }
     }

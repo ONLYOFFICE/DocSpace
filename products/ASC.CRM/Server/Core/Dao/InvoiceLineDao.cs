@@ -48,10 +48,12 @@ namespace ASC.CRM.Core.Dao
         public CachedInvoiceLineDao(DbContextManager<CRMDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IOptionsMonitor<ILog> logger)
               : base(dbContextManager,
-                 tenantManager,
-                 securityContext)
+                    tenantManager,
+                    securityContext,
+                    logger)
         {
             _invoiceLineCache = new HttpRequestDictionary<InvoiceLine>(httpContextAccessor?.HttpContext, "crm_invoice_line");
         }
@@ -172,40 +174,50 @@ namespace ASC.CRM.Core.Dao
             {
                 invoiceLine.Description = String.Empty;
             }
-                        
 
-            if (Db.ExecuteScalar<int>(Query("crm_invoice_line").SelectCount().Where(Exp.Eq("id", invoiceLine.ID))) == 0)
+            if (Query(CRMDbContext.InvoiceLine).Where(x => x.Id == invoiceLine.ID).Any())
             {
-                invoiceLine.ID = Db.ExecuteScalar<int>(
-                               Insert("crm_invoice_line")
-                              .InColumnValue("id", 0)
-                              .InColumnValue("invoice_id", invoiceLine.InvoiceID)
-                              .InColumnValue("invoice_item_id", invoiceLine.InvoiceItemID)
-                              .InColumnValue("invoice_tax1_id", invoiceLine.InvoiceTax1ID)
-                              .InColumnValue("invoice_tax2_id", invoiceLine.InvoiceTax2ID)
-                              .InColumnValue("sort_order", invoiceLine.SortOrder)
-                              .InColumnValue("description", invoiceLine.Description)
-                              .InColumnValue("quantity", invoiceLine.Quantity)
-                              .InColumnValue("price", invoiceLine.Price)
-                              .InColumnValue("discount", invoiceLine.Discount)
-                              .Identity(1, 0, true));
+
+                var itemToInsert = new DbInvoiceLine
+                {
+                    InvoiceId = invoiceLine.InvoiceItemID,
+                    InvoiceItemId = invoiceLine.InvoiceItemID,
+                    InvoiceTax1Id = invoiceLine.InvoiceTax1ID,
+                    InvoiceTax2Id = invoiceLine.InvoiceTax2ID,
+                    SortOrder = invoiceLine.SortOrder,
+                    Description = invoiceLine.Description,
+                    Quantity = invoiceLine.Quantity,
+                    Price = invoiceLine.Price,
+                    Discount = invoiceLine.Discount,
+                    TenantId = TenantID
+                };
+
+                CRMDbContext.Add(itemToInsert);
+                CRMDbContext.SaveChanges();
+
+                invoiceLine.ID = itemToInsert.Id;
             }
             else
             {
+                var itemToUpdate = Query(CRMDbContext.InvoiceLine).Single(x => x.Id == invoiceLine.ID);
 
-                Db.ExecuteNonQuery(
-                    Update("crm_invoice_line")
-                        .Set("invoice_id", invoiceLine.InvoiceID)
-                        .Set("invoice_item_id", invoiceLine.InvoiceItemID)
-                        .Set("invoice_tax1_id", invoiceLine.InvoiceTax1ID)
-                        .Set("invoice_tax2_id", invoiceLine.InvoiceTax2ID)
-                        .Set("sort_order", invoiceLine.SortOrder)
-                        .Set("description", invoiceLine.Description)
-                        .Set("quantity", invoiceLine.Quantity)
-                        .Set("price", invoiceLine.Price)
-                        .Set("discount", invoiceLine.Discount)
-                        .Where(Exp.Eq("id", invoiceLine.ID)));
+                itemToUpdate.InvoiceId = invoiceLine.InvoiceID;
+                itemToUpdate.InvoiceItemId = invoiceLine.InvoiceItemID;
+                itemToUpdate.InvoiceTax1Id = invoiceLine.InvoiceTax1ID;
+                itemToUpdate.InvoiceTax2Id = invoiceLine.InvoiceTax2ID;
+                itemToUpdate.SortOrder = invoiceLine.SortOrder;
+                itemToUpdate.Description = invoiceLine.Description;
+                itemToUpdate.Quantity = invoiceLine.Quantity;
+                itemToUpdate.Price = invoiceLine.Price;
+                itemToUpdate.Discount = invoiceLine.Discount;
+
+                CRMDbContext.Update(itemToUpdate);
+
+                CRMDbContext.SaveChanges();
+
+
             }
+
             return invoiceLine.ID;
         }
                 

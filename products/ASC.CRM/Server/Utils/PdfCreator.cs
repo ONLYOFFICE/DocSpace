@@ -44,6 +44,9 @@ using System.Net;
 using System.Text;
 using System.Xml;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Classes
 {
     public class PdfCreator
@@ -51,16 +54,17 @@ namespace ASC.Web.CRM.Classes
         public PdfCreator(IOptionsMonitor<ILog> logger,
                           Files.Classes.PathProvider filesPathProvider,
                           DocumentServiceConnector documentServiceConnector,
-                          ASC.Web.Files.Classes.Global filesGlobal,
-                          FilesLinkUtility filesLinkUtility,
-                          FileUtility fileUtility,
-                          FileConverter fileConverter)
+                          IServiceProvider serviceProvider,
+                          OrganisationLogoManager organisationLogoManager)
         {
             FilesPathProvider = filesPathProvider;
             
             Logger = logger.Get("ASC.CRM");
 
             DocumentServiceConnector = documentServiceConnector;
+            ServiceProvider = serviceProvider;
+            OrganisationLogoManager = organisationLogoManager;
+
         }
 
         private Stream Template
@@ -72,8 +76,9 @@ namespace ASC.Web.CRM.Classes
             }
         }
 
+        public IServiceProvider ServiceProvider { get; }
         public DocumentServiceConnector DocumentServiceConnector { get; }
-
+        public OrganisationLogoManager OrganisationLogoManager { get; }
         public Files.Classes.PathProvider FilesPathProvider { get; }
 
         public ILog Logger { get; }
@@ -93,7 +98,8 @@ namespace ASC.Web.CRM.Classes
                 {
                     var daoFactory = scope.Resolve<DaoFactory>();
 
-                    var invoice = daoFactory.InvoiceDao.GetByID(invoiceId);
+                    var invoice = daoFactory.GetInvoiceDao().GetByID(invoiceId);
+
                     if (invoice == null)
                     {
                         Logger.Warn(CRMErrorsResource.InvoiceNotFound + ". Invoice ID = " + invoiceId);
@@ -113,20 +119,20 @@ namespace ASC.Web.CRM.Classes
                     Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UrlToFile = {1}", invoiceId,
                         urlToFile);
 
-                    var file = new File<int>
-                    {
-                        Title = string.Format("{0}{1}", invoice.Number, FormatPdf),
-                        FolderID = daoFactory.FileDao.GetRoot()
-                    };
+                    var file = ServiceProvider.GetService<File<int>>();
+
+                    file.Title = string.Format("{0}{1}", invoice.Number, FormatPdf);
+                    file.FolderID = daoFactory.GetFileDao().GetRoot();
 
                     var request = WebRequest.Create(urlToFile);
+
                     using (var response = request.GetResponse())
                     using (var stream = response.GetResponseStream())
                     {
                         file.ContentLength = response.ContentLength;
 
                         Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
-                        file = daoFactory.FileDao.SaveFile(file, stream);
+                        file = daoFactory.GetFileDao().SaveFile(file, stream);
                     }
 
                     if (file == null)
@@ -138,11 +144,11 @@ namespace ASC.Web.CRM.Classes
 
                     Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
 
-                    daoFactory.InvoiceDao.UpdateInvoiceFileID(invoice.ID, invoice.FileID);
+                    daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
 
                     Logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
                     
-                    daoFactory.RelationshipEventDao.AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] {invoice.FileID});
+                    daoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] {invoice.FileID});
                 
                 }
             }
@@ -230,7 +236,7 @@ namespace ASC.Web.CRM.Classes
                 return null;
             }
 
-            var invoice = daoFactory.InvoiceDao.GetByID(data.InvoiceId);
+            var invoice = daoFactory.GetInvoiceDao().GetByID(data.InvoiceId);
 
             return SaveFile(invoice, urlToFile, daoFactory);
         }
@@ -247,19 +253,18 @@ namespace ASC.Web.CRM.Classes
                 {
                     if (stream != null)
                     {
-                        var document = new File<int>
-                        {
-                            Title = string.Format("{0}{1}", data.Number, FormatPdf),
-                            FolderID = daoFactory.FileDao.GetRoot(),
-                            ContentLength = response.ContentLength
-                        };
+                        var document = ServiceProvider.GetService<File<int>>();
+
+                        document.Title = string.Format("{0}{1}", data.Number, FormatPdf);
+                        document.FolderID = daoFactory.GetFileDao().GetRoot();
+                        document.ContentLength = response.ContentLength;
 
                         if (data.GetInvoiceFile(daoFactory) != null)
                         {
                             document.ID = data.FileID;
                         }
 
-                        file = daoFactory.FileDao.SaveFile(document, stream);
+                        file = daoFactory.GetFileDao().SaveFile(document, stream);
                     }
                 }
             }

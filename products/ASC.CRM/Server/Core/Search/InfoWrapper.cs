@@ -29,13 +29,24 @@ using System.Text;
 using ASC.Common.Logging;
 using ASC.Core;
 using ASC.CRM.Core;
+using ASC.CRM.Core.Enums;
 using ASC.ElasticSearch;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ASC.Web.CRM.Core.Search
 {
     public class InfoWrapper : Wrapper
     {
+        public InfoWrapper(IOptionsMonitor<ILog> logger)
+        {
+            Logger = logger.Get("ASC");
+        }
+
+        public ILog Logger { get; }
+
         [ColumnLastModified("last_modifed_on")]
         public override DateTime LastModifiedOn { get; set; }
 
@@ -46,7 +57,7 @@ namespace ASC.Web.CRM.Core.Search
         public int Type { get; set; }
 
         [Column("data", 3)]
-        public string Data 
+        public string Data
         {
             get
             {
@@ -59,7 +70,7 @@ namespace ASC.Web.CRM.Core.Search
                         foreach (var o in obj.Values())
                         {
                             var val = o.ToString();
-                            if(!string.IsNullOrEmpty(val))
+                            if (!string.IsNullOrEmpty(val))
                             {
                                 result.AppendFormat("{0} ", val);
                             }
@@ -68,7 +79,7 @@ namespace ASC.Web.CRM.Core.Search
                     }
                     catch (Exception e)
                     {
-                        LogManager.GetLogger("ASC").Error("Index Contact Adrress Parse", e);
+                        Logger.Error("Index Contact Adrress Parse", e);
                     }
 
                     return "";
@@ -79,22 +90,25 @@ namespace ASC.Web.CRM.Core.Search
             set
             {
                 data = value;
-            } 
+            }
         }
 
         protected override string Table { get { return "crm_contact_info"; } }
 
         private string data;
 
-        public static implicit operator InfoWrapper(ContactInfo cf)
+        public static InfoWrapper FromCompany(IServiceProvider serviceProvider, ContactInfo cf)
         {
-            return new InfoWrapper
+            var logger = serviceProvider.GetService<IOptionsMonitor<ILog>>();
+            var tenantManager = serviceProvider.GetService<TenantManager>();
+
+            return new InfoWrapper(logger)
             {
                 Id = cf.ID,
                 ContactId = cf.ContactID,
                 Data = cf.Data,
                 Type = (int)cf.InfoType,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantManager.GetCurrentTenant().TenantId
             };
         }
     }

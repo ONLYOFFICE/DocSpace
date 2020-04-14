@@ -29,6 +29,9 @@ using ASC.Core;
 using ASC.CRM.Core.Entities;
 using ASC.ElasticSearch;
 
+using Microsoft.Extensions.DependencyInjection;
+
+
 namespace ASC.Web.CRM.Core.Search
 {
     public sealed class DealsWrapper : Wrapper
@@ -44,14 +47,14 @@ namespace ASC.Web.CRM.Core.Search
 
         protected override string Table { get { return "crm_deal"; } }
 
-        public static implicit operator DealsWrapper(Deal deal)
-        {
+        public static DealsWrapper FromDeal(int tenantId, Deal deal)
+        {            
             return new DealsWrapper
             {
                 Id = deal.ID,
                 Title = deal.Title,
                 Description = deal.Description,
-                TenantId = CoreContext.TenantManager.GetCurrentTenant().TenantId
+                TenantId = tenantId
             };
         }
     }

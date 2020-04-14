@@ -23,141 +23,136 @@
  *
 */
 
-
+using Microsoft.Extensions.DependencyInjection;
 using ASC.VoipService.Dao;
-using Autofac;
+using System;
 
 namespace ASC.CRM.Core.Dao
 {
     public class DaoFactory
     {
-        private readonly TypedParameter tenant;
-        public ILifetimeScope Container { get; set; }
-
-        public DaoFactory(int tenantID)
+        public DaoFactory(IServiceProvider serviceProvider)
         {
-            tenant = GetParameter(tenantID);
+            ServiceProvider = serviceProvider;
         }
 
-        public TaskDao TaskDao
+        public IServiceProvider ServiceProvider { get; }
+
+        public TaskDao GetTaskDao()
         {
-            get { return Container.Resolve<TaskDao>(tenant); }
+            return ServiceProvider.GetService<TaskDao>();
         }
 
-        public ListItemDao CachedListItem
+        public ListItemDao GetCachedListItem()
         {
-            get { return Container.Resolve<ListItemDao>(tenant); }
+            return ServiceProvider.GetService<ListItemDao>();
         }
 
-        public ContactDao ContactDao
+        public ContactDao GetContactDao()
         {
-            get { return Container.Resolve<ContactDao>(tenant); }
+            return ServiceProvider.GetService<ContactDao>();
         }
 
-        public CustomFieldDao CustomFieldDao
+        public CustomFieldDao GetCustomFieldDao()
         {
-            get { return Container.Resolve<CustomFieldDao>(tenant); }
+            return ServiceProvider.GetService<CustomFieldDao>();
         }
 
-        public DealDao DealDao
+        public DealDao GetDealDao()
         {
-            get { return Container.Resolve<DealDao>(tenant); }
+            return ServiceProvider.GetService<DealDao>();
         }
 
-        public DealMilestoneDao DealMilestoneDao
+        public DealMilestoneDao GetDealMilestoneDao()
         {
-            get { return Container.Resolve<DealMilestoneDao>(tenant); }
+            return ServiceProvider.GetService<DealMilestoneDao>();
+
         }
 
-        public ListItemDao ListItemDao
+        public ListItemDao GetListItemDao()
         {
-            get { return Container.Resolve<ListItemDao>(tenant); }
+            return ServiceProvider.GetService<ListItemDao>();
         }
 
-        public TagDao TagDao
+        public TagDao GetTagDao()
         {
-            get { return Container.Resolve<TagDao>(tenant); }
+            return ServiceProvider.GetService<TagDao>();
         }
 
-        public SearchDao SearchDao
+        public SearchDao GetSearchDao()
         {
-            get { return Container.Resolve<SearchDao>(tenant, GetParameter(this)); }
+            return ServiceProvider.GetService<SearchDao>();
         }
 
-        public RelationshipEventDao RelationshipEventDao
+        public RelationshipEventDao GetRelationshipEventDao()
         {
-            get { return Container.Resolve<RelationshipEventDao>(tenant); }
+            return ServiceProvider.GetService<RelationshipEventDao>();
         }
 
-        public FileDao FileDao
+        public FileDao GetFileDao()
         {
-            get { return Container.Resolve<FileDao>(tenant); }
+            return ServiceProvider.GetService<FileDao>();
         }
 
-        public CasesDao CasesDao
+        public CasesDao GetCasesDao()
         {
-            get { return Container.Resolve<CasesDao>(tenant); }
+            return ServiceProvider.GetService<CasesDao>();
         }
 
-        public TaskTemplateContainerDao TaskTemplateContainerDao
+        public TaskTemplateContainerDao GetTaskTemplateContainerDao()
         {
-            get { return Container.Resolve<TaskTemplateContainerDao>(tenant); }
+            return ServiceProvider.GetService<TaskTemplateContainerDao>();
         }
 
-        public TaskTemplateDao TaskTemplateDao
+        public TaskTemplateDao GetTaskTemplateDao()
         {
-            get { return Container.Resolve<TaskTemplateDao>(tenant); }
+            return ServiceProvider.GetService<TaskTemplateDao>();
         }
 
-        //public ReportDao ReportDao
-        //{
-        //    get { return Container.Resolve<ReportDao>(tenant); }
-        //}
-
-        public CurrencyRateDao CurrencyRateDao
+        public ReportDao GetReportDao()
         {
-            get { return Container.Resolve<CurrencyRateDao>(tenant); }
+            return ServiceProvider.GetService<ReportDao>();
         }
 
-        public CurrencyInfoDao CurrencyInfoDao
+        public CurrencyRateDao GetCurrencyRateDao()
         {
-            get { return Container.Resolve<CurrencyInfoDao>(tenant); }
+            return ServiceProvider.GetService<CurrencyRateDao>();
         }
 
-        public ContactInfoDao ContactInfoDao
+        public CurrencyInfoDao GetCurrencyInfoDao()
         {
-            get { return Container.Resolve<ContactInfoDao>(tenant); }
+            return ServiceProvider.GetService<CurrencyInfoDao>();
+
         }
 
-        public InvoiceDao InvoiceDao
+        public ContactInfoDao GetContactInfoDao()
         {
-            get { return Container.Resolve<InvoiceDao>(tenant); }
+            return ServiceProvider.GetService<ContactInfoDao>();
         }
 
-        public InvoiceItemDao InvoiceItemDao
+        public InvoiceDao GetInvoiceDao()
         {
-            get { return Container.Resolve<InvoiceItemDao>(tenant); }
+            return ServiceProvider.GetService<InvoiceDao>();
         }
 
-        public InvoiceTaxDao InvoiceTaxDao
+        public InvoiceItemDao GetInvoiceItemDao()
         {
-            get { return Container.Resolve<InvoiceTaxDao>(tenant); }
+            return ServiceProvider.GetService<InvoiceItemDao>();
         }
 
-        public InvoiceLineDao InvoiceLineDao
+        public InvoiceTaxDao GetInvoiceTaxDao()
         {
-            get { return Container.Resolve<InvoiceLineDao>(tenant); }
+            return ServiceProvider.GetService<InvoiceTaxDao>();
         }
 
-        public VoipDao VoipDao
+        public InvoiceLineDao GetInvoiceLineDao()
         {
-            get { return Container.Resolve<VoipDao>(tenant); }
+            return ServiceProvider.GetService<InvoiceLineDao>();
         }
 
-        private TypedParameter GetParameter<T>(T data)
+        public VoipDao GetVoipDao()
         {
-            return new TypedParameter(typeof(T), data);
+            return ServiceProvider.GetService<VoipDao>();
         }
-
     }
 }
