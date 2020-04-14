@@ -19,6 +19,10 @@ storiesOf("Components| EmptyScreenContainer", module)
         "headerText",
         "No results matching your search could be found"
       )}
+      subheadingText={text(
+        "subheaderText",
+        "No files to be displayed in this section"
+      )}
       descriptionText={text(
         "descriptionText",
         "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section."
