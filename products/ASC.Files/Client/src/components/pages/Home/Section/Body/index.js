@@ -153,22 +153,30 @@ class SectionBodyContent extends React.PureComponent {
       .finally(() => onLoading(false));
   }
 
-  onClickLinkForPortal = (folderId) => {
-    return fetchFolder(folderId, store.dispatch);
+  onClickShare = item => {
+    return false;
   }
 
-  onClickDownload = (item) => {
+  onClickLinkForPortal = item => {
+    return fetchFolder(item.folderId, store.dispatch);
+  }
+
+  onClickDownload = item => {
     return window.open(item.webUrl, "_blank");
+  }
+
+  onClickLinkEdit = item => {
+    return false;
   }
 
   getFilesContextOptions = (item, viewer) => {
     const isFile = !!item.fileExst;
-    
-    return [
+
+    const menu = [
       {
         key: "sharing-settings",
         label: "Sharing settings",
-        onClick: () => { },
+        onClick: this.onClickShare.bind(this, item),
         disabled: true
       },
       isFile
@@ -182,7 +190,7 @@ class SectionBodyContent extends React.PureComponent {
       {
         key: "link-for-portal-users",
         label: "Link for portal users",
-        onClick: this.onClickLinkForPortal.bind(this, item.folderId),
+        onClick: this.onClickLinkForPortal.bind(this, item),
         disabled: true
       },
       {
@@ -193,7 +201,7 @@ class SectionBodyContent extends React.PureComponent {
         ? {
           key: "edit",
           label: "Edit",
-          onClick: () => { },
+          onClick: this.onClickLinkEdit.bind(this, item),
           disabled: true
         }
         : null,
@@ -217,7 +225,9 @@ class SectionBodyContent extends React.PureComponent {
         onClick: this.onClickDelete.bind(this, item),
         disabled: false
       },
-    ]
+    ];
+
+    return menu;
   };
 
   needForUpdate = (currentProps, nextProps) => {
