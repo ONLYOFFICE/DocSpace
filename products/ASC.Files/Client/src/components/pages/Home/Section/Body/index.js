@@ -259,6 +259,7 @@ class SectionBodyContent extends React.PureComponent {
     const icon = extension
       ? getFileIcon(extension, 24)
       : getFolderIcon(item.providerKey, 24);
+    const loader = <div style={{width: '24px'}}></div> 
 
     return <ReactSVG
       beforeInjection={svg => {
@@ -266,6 +267,7 @@ class SectionBodyContent extends React.PureComponent {
         isEdit && svg.setAttribute('style', 'margin-left: 24px');
       }}
       src={icon}
+      loading={() => loader}
     />;
   };
 
