@@ -50,8 +50,6 @@ namespace ASC.Mail.Core.Engine
 {
     public class MailGarbageEngine : IDisposable
     {
-        public ILog Log { get; private set; }
-
         private static MemoryCache TenantMemCache { get; set; }
         public SecurityContext SecurityContext { get; }
         public TenantManager TenantManager { get; }
@@ -65,10 +63,9 @@ namespace ASC.Mail.Core.Engine
         public ApiHelper ApiHelper { get; }
         public StorageFactory StorageFactory { get; }
         private static MailGarbageEraserConfig Config { get; set; }
-
         private static TaskFactory TaskFactory { get; set; }
-
         private static object Locker { get; set; }
+        public ILog Log { get; private set; }
 
         //public MailGarbageEngine(ILog log = null)
         //    : this(MailGarbageEraserConfig.FromConfig(), log)
@@ -86,7 +83,7 @@ namespace ASC.Mail.Core.Engine
             OperationEngine operationEngine,
             ApiHelper apiHelper,
             StorageFactory storageFactory,
-            MailGarbageEraserConfig config,
+            //MailGarbageEraserConfig config, //TODO: think about setup config
             IOptionsMonitor<ILog> option)
         {
             SecurityContext = securityContext;
@@ -99,7 +96,8 @@ namespace ASC.Mail.Core.Engine
             OperationEngine = operationEngine;
             ApiHelper = apiHelper;
             StorageFactory = storageFactory;
-            Config = config;
+
+            Config = MailGarbageEraserConfig.FromConfig();
 
             Log = option.Get("ASC.Mail.GarbageEngine");
 

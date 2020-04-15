@@ -46,6 +46,7 @@ using ASC.Mail.Models;
 using ASC.Web.Core;
 using DotNetOpenAuth.Messaging;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -59,6 +60,7 @@ namespace ASC.Mail.Utils
         private const string ERR_MESSAGE = "Error retrieving response. Check inner details for more info.";
         //private Cookie _cookie;
 
+        public IConfiguration Configuration { get; }
         private ILog Log { get; set; }
 
         public SecurityContext SecurityContext { get; }
@@ -86,6 +88,7 @@ namespace ASC.Mail.Utils
             TenantManager tenantManager,
             CoreSettings coreSettings,
             ApiDateTimeHelper apiDateTimeHelper,
+            IConfiguration configuration,
             IOptionsMonitor<ILog> option)
         {
             if (httpContextAccessor != null || httpContextAccessor.HttpContext != null)
@@ -96,12 +99,13 @@ namespace ASC.Mail.Utils
             /*if (!scheme.Equals(Uri.UriSchemeHttps) && !scheme.Equals(Uri.UriSchemeHttp))
                 throw new ApiHelperException("ApiHelper: url scheme not setup", HttpStatusCode.InternalServerError, "");*/
 
+            Configuration = configuration;
             Log = option.Get("ASC.Mail.ApiHelper");
             SecurityContext = securityContext;
             TenantManager = tenantManager;
             CoreSettings = coreSettings;
             ApiDateTimeHelper = apiDateTimeHelper;
-            Scheme = ConfigurationManager.AppSettings["mail.default-api-scheme"] ?? Uri.UriSchemeHttp;
+            Scheme = Configuration["mail:default-api-scheme"] ?? Uri.UriSchemeHttp;
 
             if (!Scheme.Equals(Uri.UriSchemeHttps) || !Defines.SslCertificatesErrorPermit)
                 return;
@@ -125,7 +129,6 @@ namespace ASC.Mail.Utils
             if (!user.IsAuthenticated)
                 throw new AuthenticationException("User not authenticated");
 
-            var tempUrl = (ConfigurationManager.AppSettings["api.url"] ?? "").Trim('~', '/');
 
             var ubBase = new UriBuilder
             {
@@ -133,20 +136,22 @@ namespace ASC.Mail.Utils
                 Host = Tenant.GetTenantDomain(CoreSettings, false)
             };
 
-            var virtualDir = ConfigurationManager.AppSettings["api.virtual-dir"];
+            //var virtualDir = Configuration["web:api:virtual-dir"];
 
-            if (!string.IsNullOrEmpty(virtualDir))
-                tempUrl = string.Format("{0}/{1}", virtualDir.Trim('/'), tempUrl);
+            //if (!string.IsNullOrEmpty(virtualDir))
+            //    tempUrl = string.Format("{0}/{1}", virtualDir.Trim('/'), tempUrl);
 
-            var host = ConfigurationManager.AppSettings["api.host"];
+            //var host = Configuration["web:api.host"];
 
-            if (!string.IsNullOrEmpty(host))
-                ubBase.Host = host;
+            //if (!string.IsNullOrEmpty(host))
+            //    ubBase.Host = host;
 
-            var port = ConfigurationManager.AppSettings["api.port"];
+            //var port = ConfigurationManager.AppSettings["api.port"];
 
-            if (!string.IsNullOrEmpty(port))
-                ubBase.Port = int.Parse(port);
+            //if (!string.IsNullOrEmpty(port))
+            //    ubBase.Port = int.Parse(port);
+
+            var tempUrl = (Configuration["web:api"] ?? "").Trim('~', '/');
 
             ubBase.Path = tempUrl;
 
