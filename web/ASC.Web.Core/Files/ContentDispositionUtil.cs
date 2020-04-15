@@ -38,9 +38,10 @@ namespace ASC.Web.Core.Files
             // to RFC 2231 (with clarifications from RFC 5987)
             if (fileName.Any(c => (int)c > 127))
             {
+                //.netcore
                 var str = withoutBase
                     ? "{0}; filename*=UTF-8''{2}"
-                    : "{0}; filename=\"{1}\"; filename*=UTF-8''{2}";
+                    : "{0}; filename=\"{2}\"; filename*=UTF-8''{2}";
 
                 return string.Format(str,
                                      inline ? "inline" : "attachment",
