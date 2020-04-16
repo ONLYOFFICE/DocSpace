@@ -61,7 +61,8 @@ namespace ASC.Web.CRM.Classes
             Configuration = configuration;
             SettingsManager = settingsManager;
 
-            var currencies = daoFactory.GetCurrencyInfoDao().GetAll();
+            var daocur = daoFactory.GetCurrencyInfoDao();
+            var currencies = daocur.GetAll();
 
             if (currencies == null || currencies.Count == 0)
             {
@@ -351,10 +352,10 @@ namespace ASC.Web.CRM.Classes
     {
         public static DIHelper AddCurrencyProviderService(this DIHelper services)
         {
-            services.TryAddScoped<CRMSecurity>();
+            services.TryAddScoped<CurrencyProvider>();
 
-            return services.AddSettingsManagerService()
-                           .AddDaoFactoryService();
+            return services.AddSettingsManagerService();
+                        //   .AddDaoFactoryService();
         }
     }
 }

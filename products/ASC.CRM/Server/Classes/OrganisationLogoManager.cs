@@ -202,9 +202,8 @@ namespace ASC.Web.CRM.Classes
         {
             services.TryAddScoped<OrganisationLogoManager>();
 
-            return services.AddWebImageSupplierService()
-                           .AddGlobalService()
-                           .AddDaoFactoryService();
+            return services.AddWebImageSupplierService();
+                        
 
         }
     }

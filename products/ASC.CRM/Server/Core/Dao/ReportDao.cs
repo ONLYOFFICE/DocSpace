@@ -2234,7 +2234,7 @@ namespace ASC.CRM.Core.Dao
                            .AddFilesIntegrationService()
                            .AddTenantUtilService()
                            .AddSettingsManagerService()
-                           .AddGlobalService()
+                          // .AddGlobalService()
                            .AddUserManagerService();
         }
     }

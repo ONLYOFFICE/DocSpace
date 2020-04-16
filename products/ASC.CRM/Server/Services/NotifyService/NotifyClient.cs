@@ -23,6 +23,7 @@
  *
 */
 
+using ASC.Common;
 using ASC.Core;
 using ASC.Core.Billing;
 using ASC.Core.Tenants;
@@ -54,11 +55,11 @@ namespace ASC.Web.CRM.Services.NotifyService
         {
             ServiceProvider = serviceProvider;
         }
-        
+
         public IServiceProvider ServiceProvider { get; }
 
-        public void SendAboutCreateNewContact(List<Guid> recipientID, 
-                                              int contactID, 
+        public void SendAboutCreateNewContact(List<Guid> recipientID,
+                                              int contactID,
                                               string contactTitle, NameValueCollection fields)
         {
             if ((recipientID.Count == 0) || String.IsNullOrEmpty(contactTitle)) return;
@@ -114,26 +115,26 @@ namespace ASC.Web.CRM.Services.NotifyService
                 case EntityType.Person:
                 case EntityType.Company:
                 case EntityType.Contact:
-                {
-                    var contact = daoFactory.GetContactDao().GetByID(entityID);
-                    title = contact != null ? contact.GetTitle() : string.Empty;
-                    relativeURL = "default.aspx?id=" + entityID;
-                    break;
-                }
+                    {
+                        var contact = daoFactory.GetContactDao().GetByID(entityID);
+                        title = contact != null ? contact.GetTitle() : string.Empty;
+                        relativeURL = "default.aspx?id=" + entityID;
+                        break;
+                    }
                 case EntityType.Opportunity:
-                {
-                    var deal = daoFactory.GetDealDao().GetByID(entityID);
-                    title = deal != null ? deal.Title : string.Empty;
-                    relativeURL = "deals.aspx?id=" + entityID;
-                    break;
-                }
+                    {
+                        var deal = daoFactory.GetDealDao().GetByID(entityID);
+                        title = deal != null ? deal.Title : string.Empty;
+                        relativeURL = "deals.aspx?id=" + entityID;
+                        break;
+                    }
                 case EntityType.Case:
-                {
-                    var cases = daoFactory.GetCasesDao().GetByID(entityID);
-                    title = cases != null ? cases.Title : string.Empty;
-                    relativeURL = "cases.aspx?id=" + entityID;
-                    break;
-                }
+                    {
+                        var cases = daoFactory.GetCasesDao().GetByID(entityID);
+                        title = cases != null ? cases.Title : string.Empty;
+                        relativeURL = "cases.aspx?id=" + entityID;
+                        break;
+                    }
 
                 default:
                     throw new ArgumentException();
@@ -156,7 +157,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
 
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
-                        
+
             NameValueCollection baseEntityData;
 
             if (entity.EntityID != 0)
@@ -197,7 +198,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                       new TagValue(NotifyConstants.Tag_EntityID, baseEntityData["id"]),
                       new TagValue(NotifyConstants.Tag_EntityRelativeURL, baseEntityData["entityRelativeURL"]),
                       new TagValue(NotifyConstants.Tag_AdditionalData,
-                      new Hashtable { 
+                      new Hashtable {
                       { "Files", fileListInfoHashtable },
                       {"EventContent", entity.Content}}));
 
@@ -220,7 +221,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString()); 
+            var recipient = notifySource.GetRecipientsProvider().GetRecipient(recipientID.ToString());
 
             client.SendNoticeToAsync(coreBaseSettings.CustomMode ? NotifyConstants.Event_ExportCompletedCustomMode : NotifyConstants.Event_ExportCompleted,
                null,
@@ -353,9 +354,9 @@ namespace ASC.Web.CRM.Services.NotifyService
         //                        }
         //                    }
 
-        //                    var listItem = dao.ListItemDao.GetByID(task.CategoryID);
+        //                    var listItem = dao.GetListItemDao().GetByID(task.CategoryID);
 
-        //                    NotifyClient.Instance.SendTaskReminder(task,
+        //                    NotifyClient.SendTaskReminder(task,
         //                        listItem != null ? listItem.Title : string.Empty,
         //                        taskContact, taskCase, taskDeal);
         //                }
@@ -371,11 +372,11 @@ namespace ASC.Web.CRM.Services.NotifyService
         //}
 
         public void SendTaskReminder(Task task, String taskCategoryTitle, Contact taskContact, ASC.CRM.Core.Entities.Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal)
-        {          
+        {
             using var scope = ServiceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
-                   
+
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
 
             if (recipient == null) return;
@@ -420,7 +421,7 @@ namespace ASC.Web.CRM.Services.NotifyService
               true,
               new TagValue(NotifyConstants.Tag_EntityTitle, task.Title),
               new TagValue(NotifyConstants.Tag_AdditionalData,
-                 new Hashtable { 
+                 new Hashtable {
                       { "TaskDescription", HttpUtility.HtmlEncode(task.Description) },
                       { "TaskCategory", taskCategoryTitle },
 
@@ -439,13 +440,13 @@ namespace ASC.Web.CRM.Services.NotifyService
         }
 
         public void SendAboutResponsibleByTask(Task task, String taskCategoryTitle, Contact taskContact, Cases taskCase, ASC.CRM.Core.Entities.Deal taskDeal, Hashtable fileListInfoHashtable)
-        {            
+        {
             using var scope = ServiceProvider.CreateScope();
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
             var tenantUtil = scope.ServiceProvider.GetService<TenantUtil>();
 
-            var recipient = notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString()); 
+            var recipient = notifySource.GetRecipientsProvider().GetRecipient(task.ResponsibleID.ToString());
 
             if (recipient == null) return;
 
@@ -482,7 +483,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                 taskDealRelativeUrl = String.Format("products/crm/deals.aspx?id={0}", taskDeal.ID);
                 taskDealTitle = taskDeal.Title.HtmlEncode();
             }
-           
+
             client.SendNoticeToAsync(
                NotifyConstants.Event_ResponsibleForTask,
                null,
@@ -490,7 +491,7 @@ namespace ASC.Web.CRM.Services.NotifyService
                true,
                new TagValue(NotifyConstants.Tag_EntityTitle, task.Title),
                new TagValue(NotifyConstants.Tag_AdditionalData,
-                 new Hashtable { 
+                 new Hashtable {
                       { "TaskDescription", HttpUtility.HtmlEncode(task.Description) },
                       { "Files", fileListInfoHashtable },
                       { "TaskCategory", taskCategoryTitle },
@@ -515,7 +516,7 @@ namespace ASC.Web.CRM.Services.NotifyService
             var notifySource = scope.ServiceProvider.GetService<NotifySource>();
             var securityContext = scope.ServiceProvider.GetService<SecurityContext>();
             var client = WorkContext.NotifyContext.NotifyService.RegisterClient(notifySource, scope);
-            
+
             var recipient = notifySource.GetRecipientsProvider().GetRecipient(deal.ResponsibleID.ToString());
 
             if (recipient == null) return;
@@ -528,22 +529,22 @@ namespace ASC.Web.CRM.Services.NotifyService
             new TagValue(NotifyConstants.Tag_EntityTitle, deal.Title),
             new TagValue(NotifyConstants.Tag_EntityID, deal.ID),
             new TagValue(NotifyConstants.Tag_AdditionalData,
-            new Hashtable { 
+            new Hashtable {
                       { "OpportunityDescription", HttpUtility.HtmlEncode(deal.Description) }
                  })
             );
         }
+    }
 
-        //public INotifyClient Client
-        //{
-        //    get { return client; }
-        //}
 
-        //private NotifyClient(INotifyClient client, INotifySource source)
-        //{
-        //    this.client = client;
-        //    this.source = source;
-        //}
+    public static class NotifyClientExtention
+    {
+        public static DIHelper AddNotifyClientService(this DIHelper services)
+        {
+            services.TryAddScoped<NotifyClient>();
 
+            return services;
+
+        }
     }
 }

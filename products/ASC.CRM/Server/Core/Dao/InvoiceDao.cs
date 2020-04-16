@@ -987,7 +987,7 @@ namespace ASC.CRM.Core.Dao
 
     public static class InvoiceDaoExtention
     {
-        public static DIHelper AddFileDaoService(this DIHelper services)
+        public static DIHelper AddInvoiceDaoService(this DIHelper services)
         {
             services.TryAddScoped<InvoiceDao>();
             

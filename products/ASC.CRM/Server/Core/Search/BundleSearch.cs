@@ -225,7 +225,10 @@ namespace ASC.Web.CRM.Core.Search
     public static class BundleSearchExtention
     {
         public static DIHelper AddBundleSearchService(this DIHelper services)
-        {                       
+        {
+            services.TryAddScoped<BundleSearch>();
+
+
             return services.AddFactoryIndexerService<ContactsWrapper>()
                            .AddFactoryIndexerService<InfoWrapper>()
                            .AddFactoryIndexerService<FieldsWrapper>()

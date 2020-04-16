@@ -293,4 +293,17 @@ namespace ASC.CRM.Core.Dao
                            .AddSecurityContextService();
         }
     }
+
+    public static class TaskTemplateContainerDaoExtention
+    {
+        public static DIHelper AddTaskTemplateContainerDaoService(this DIHelper services)
+        {
+            services.TryAddScoped<TaskTemplateContainerDao>();
+
+            return services.AddCRMDbContextService()
+                           .AddTenantManagerService()
+                           .AddSecurityContextService();
+        }
+    }   
+
 }

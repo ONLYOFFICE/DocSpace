@@ -689,8 +689,8 @@ namespace ASC.Web.CRM.Classes
         {
             services.TryAddScoped<InvoiceFormattedData>();
 
-            return services.AddOrganisationLogoManagerService()
-                           .AddDaoFactoryService();
+            return services.AddOrganisationLogoManagerService();
+        //                   .AddDaoFactoryService();
         }
     }
 }

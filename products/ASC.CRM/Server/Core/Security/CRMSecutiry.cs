@@ -870,7 +870,7 @@ namespace ASC.CRM.Core
                            .AddAuthorizationManagerService()
                            .AddUserManagerService()
                            .AddDisplayUserSettingsService()
-                           .AddDaoFactoryService()
+       //                    .AddDaoFactoryService()
                            .AddWebItemSecurity()
                            .AddPermissionContextService()
                            .AddCurrencyProviderService()

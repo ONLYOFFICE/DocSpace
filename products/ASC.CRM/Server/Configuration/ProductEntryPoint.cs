@@ -339,7 +339,7 @@ namespace ASC.Web.CRM.Configuration
         //{
         //    if (registered)
         //    {
-        //        NotifyClient.Instance.Client.UnregisterSendMethod(NotifyClient.SendAutoReminderAboutTask);
+        //        NotifyClient.Client.UnregisterSendMethod(NotifyClient.SendAutoReminderAboutTask);
               
         //    }
         //}
@@ -352,7 +352,7 @@ namespace ASC.Web.CRM.Configuration
         //        {
         //            registered = true;
 
-        //            NotifyClient.Instance.Client.RegisterSendMethod(NotifyClient.SendAutoReminderAboutTask, "0 * * ? * *");
+        //            NotifyClient.Client.RegisterSendMethod(NotifyClient.SendAutoReminderAboutTask, "0 * * ? * *");
 
         //        }
         //    }

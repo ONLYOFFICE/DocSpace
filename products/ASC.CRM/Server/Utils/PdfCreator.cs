@@ -773,7 +773,7 @@ namespace ASC.Web.CRM.Classes
             return services.AddPathProviderService()
                            .AddDocumentServiceConnectorService()
                            .AddOrganisationLogoManagerService()
-                           .AddDaoFactoryService()
+                         //  .AddDaoFactoryService()
                            .AddInvoiceFormattedDataService();
         }
     }

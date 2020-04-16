@@ -719,7 +719,7 @@ namespace ASC.CRM.Core.Dao
 
     public static class RelationshipEventDaoExtention
     {
-        public static DIHelper AddListItemDaoService(this DIHelper services)
+        public static DIHelper AddRelationshipEventDaoService(this DIHelper services)
         {
             services.TryAddScoped<RelationshipEventDao>();
 

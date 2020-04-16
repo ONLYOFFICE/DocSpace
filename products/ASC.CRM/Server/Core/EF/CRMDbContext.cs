@@ -36,13 +36,6 @@ namespace ASC.CRM.Core.EF
         public virtual DbSet<DbVoipCalls> VoipCalls { get; set; }
         public virtual DbSet<DbVoipNumber> VoipNumber { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DbCase>(entity =>

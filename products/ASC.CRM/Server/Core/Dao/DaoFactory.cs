@@ -164,7 +164,56 @@ namespace ASC.CRM.Core.Dao
         {
             services.TryAddScoped<DaoFactory>();
 
-            return services;
+            //    return services;
+            return services.AddTaskDaoService()
+                           .AddListItemDaoService()
+                           .AddContactDaoService()
+                           .AddCustomFieldDaoService()
+                           .AddDealDaoService()
+                           .AddDealMilestoneDaoService()
+                           .AddTagDaoService()
+                           .AddSearchDaoService()
+                           .AddRelationshipEventDaoService()
+                           .AddFileDaoService()
+                           .AddCasesDaoService()
+                           .AddTaskTemplateDaoService()
+                           .AddTaskTemplateContainerDaoService()
+                         //  .AddReportDaoService()
+                           .AddCurrencyRateDaoService()
+                           .AddCurrencyInfoDaoService()
+                           .AddContactInfoDaoService()
+                           .AddInvoiceDaoService()
+                           .AddInvoiceLineDaoService()
+                           .AddInvoiceTaxDaoService()
+                           .AddInvoiceLineDaoService();
         }
     }
 }
+
+//TaskDao
+//ListItemDao
+//ContactDao
+//CustomFieldDao
+//DealDao
+//DealMilestoneDao
+
+//TagDao
+//SearchDao
+//RelationshipEventDao
+//FileDao
+//CasesDao
+//TaskTemplateContainerDao
+//TaskTemplateDao
+
+
+//ReportDao
+//CurrencyRateDao
+//CurrencyInfoDao
+//ContactInfoDao
+
+
+//InvoiceDao
+//InvoiceItemDao
+//InvoiceTaxDao
+//InvoiceLineDao
+//VoipDao
