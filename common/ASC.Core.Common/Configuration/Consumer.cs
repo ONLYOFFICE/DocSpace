@@ -370,19 +370,13 @@ namespace ASC.Core.Common.Configuration
         }
     }
 
-    public class ConsumerFactory
+    public class ConsumerFactory : IDisposable
     {
         public ILifetimeScope Builder { get; set; }
 
         public ConsumerFactory(IContainer builder)
         {
-            Builder = builder;
-        }
-
-
-        public ConsumerFactory(ILifetimeScope builder)
-        {
-            Builder = builder;
+            Builder = builder.BeginLifetimeScope();
         }
 
         public Consumer GetByKey(string key)
@@ -418,6 +412,11 @@ namespace ASC.Core.Common.Configuration
         public IEnumerable<T> GetAll<T>() where T : Consumer, new()
         {
             return Builder.Resolve<IEnumerable<T>>();
+        }
+
+        public void Dispose()
+        {
+            Builder.Dispose();
         }
     }
 
