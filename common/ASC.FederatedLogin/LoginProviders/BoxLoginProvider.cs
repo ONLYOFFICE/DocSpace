@@ -72,7 +72,7 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         public static DIHelper AddBoxLoginProviderService(this DIHelper services)
         {
-            services.TryAddScoped<BoxLoginProvider>();
+            //services.TryAddScoped<BoxLoginProvider>();
             return services
                 .AddConsumerFactoryService()
                 .AddKafkaService()

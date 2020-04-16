@@ -75,7 +75,7 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         public static DIHelper AddOneDriveLoginProviderService(this DIHelper services)
         {
-            services.TryAddScoped<OneDriveLoginProvider>();
+            //services.TryAddScoped<OneDriveLoginProvider>();
             return services
                 .AddConsumerFactoryService()
                 .AddKafkaService()
