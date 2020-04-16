@@ -162,7 +162,7 @@ class SectionBodyContent extends React.PureComponent {
   }
 
   onClickDownload = item => {
-    return window.open(item.webUrl, "_blank");
+    return window.open(item.viewUrl, "_blank");
   }
 
   onClickLinkEdit = item => {
