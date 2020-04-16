@@ -65,6 +65,7 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json.Linq;
 
+using static ASC.Web.Core.Files.DocumentService;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 using MimeMapping = ASC.Common.Web.MimeMapping;
@@ -625,9 +626,8 @@ namespace ASC.Web.Files
                             {
                                 throw new Exception("Invalid header " + header);
                             }
-                            header = header.Substring("Bearer ".Length);
 
-                            JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
+                            header = header.Substring("Bearer ".Length);
 
                             var stringPayload = JsonWebToken.Decode(header, FileUtility.SignatureSecret);
 
@@ -734,9 +734,8 @@ namespace ASC.Web.Files
                         {
                             throw new Exception("Invalid header " + header);
                         }
-                        header = header.Substring("Bearer ".Length);
 
-                        JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
+                        header = header.Substring("Bearer ".Length);
 
                         var stringPayload = JsonWebToken.Decode(header, FileUtility.SignatureSecret);
 
@@ -1196,7 +1195,6 @@ namespace ASC.Web.Files
 
             if (!string.IsNullOrEmpty(FileUtility.SignatureSecret))
             {
-                JsonWebToken.JsonSerializer = new DocumentService.JwtSerializer();
                 if (!string.IsNullOrEmpty(fileData.Token))
                 {
                     try

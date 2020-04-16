@@ -35,13 +35,12 @@ using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using ASC.Common.Web;
 using ASC.Core;
-using JWT;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ASC.Web.Core.Files
 {
@@ -145,12 +144,11 @@ namespace ASC.Web.Core.Files
                     {
                         { "payload", body }
                     };
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
@@ -252,15 +250,15 @@ namespace ASC.Web.Core.Files
             if (!string.IsNullOrEmpty(signatureSecret))
             {
                 var payload = new Dictionary<string, object>
-                    {
-                        { "payload", body }
-                    };
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                {
+                    { "payload", body }
+                };
+
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
@@ -336,12 +334,11 @@ namespace ASC.Web.Core.Files
                         { "payload", body }
                     };
 
-                JsonWebToken.JsonSerializer = new JwtSerializer();
-                var token = JsonWebToken.Encode(payload, signatureSecret, JwtHashAlgorithm.HS256);
+                var token = JsonWebToken.Encode(payload, signatureSecret);
                 //todo: remove old scheme
                 request.Headers.Add(fileUtility.SignatureHeader, "Bearer " + token);
 
-                token = JsonWebToken.Encode(body, signatureSecret, JwtHashAlgorithm.HS256);
+                token = JsonWebToken.Encode(body, signatureSecret);
                 body.Token = token;
             }
 
@@ -624,44 +621,6 @@ namespace ASC.Web.Core.Files
             }
 
             return resultPercent;
-        }
-
-
-        public class JwtSerializer : IJsonSerializer
-        {
-            private class CamelCaseExceptDictionaryKeysResolver : CamelCasePropertyNamesContractResolver
-            {
-                protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
-                {
-                    var contract = base.CreateDictionaryContract(objectType);
-
-                    contract.DictionaryKeyResolver = propertyName => propertyName;
-
-                    return contract;
-                }
-            }
-
-            public string Serialize(object obj)
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                    NullValueHandling = NullValueHandling.Ignore,
-                };
-
-                return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
-            }
-
-            public T Deserialize<T>(string json)
-            {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-                    NullValueHandling = NullValueHandling.Ignore,
-                };
-
-                return JsonConvert.DeserializeObject<T>(json, settings);
-            }
         }
     }
 }
