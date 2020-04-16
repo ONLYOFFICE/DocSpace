@@ -43,7 +43,7 @@ using ASC.Web.Files.Classes;
 using ASC.Web.Files.Utils;
 using ASC.Web.Studio.Core;
 
-using JWT;
+using static ASC.Web.Core.Files.DocumentService;
 
 using FileShare = ASC.Files.Core.Security.FileShare;
 
@@ -293,8 +293,7 @@ namespace ASC.Web.Files.Services.DocumentService
         {
             if (string.IsNullOrEmpty(FileUtility.SignatureSecret)) return null;
 
-            JsonWebToken.JsonSerializer = new Web.Core.Files.DocumentService.JwtSerializer();
-            return JsonWebToken.Encode(payload, FileUtility.SignatureSecret, JwtHashAlgorithm.HS256);
+            return JsonWebToken.Encode(payload, FileUtility.SignatureSecret);
         }
 
 
