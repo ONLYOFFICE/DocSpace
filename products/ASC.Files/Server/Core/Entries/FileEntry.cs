@@ -32,6 +32,8 @@ using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core
 {
+    [DataContract(Name = "entry", Namespace = "")]
+    [Serializable]
     public abstract class FileEntry : ICloneable
     {
         public FileEntry(Global global)
@@ -107,7 +109,8 @@ namespace ASC.Files.Core
 
         public FileEntryType FileEntryType;
 
-        public Global Global { get; }
+        [NonSerialized]
+        protected Global Global;
 
         private string _modifiedByString;
         private string _createByString;
