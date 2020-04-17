@@ -25,14 +25,14 @@ class FilesRowContent extends React.PureComponent {
 
     this.state = {
       itemTitle: titleWithoutExt,
-      editingId: props.fileAction.id,
-      loading: false
+      editingId: props.fileAction.id
+      //loading: false
     };
   }
 
   completeAction = () => {
-    this.setState({ loading: false }, () =>
-      this.props.onEditComplete());
+    //this.setState({ loading: false }, () =>)
+      this.props.onEditComplete();
   }
 
   updateItem = () => {
@@ -40,7 +40,7 @@ class FilesRowContent extends React.PureComponent {
     const { itemTitle } = this.state;
     const originalTitle = getTitleWithoutExst(item);
 
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
 
     if (originalTitle === itemTitle)
       return this.completeAction();
@@ -56,7 +56,7 @@ class FilesRowContent extends React.PureComponent {
     const { createFile, createFolder, item } = this.props;
     const { itemTitle } = this.state;
 
-    this.setState({ loading: true });
+    //this.setState({ loading: true });
 
     if (itemTitle.trim() === '')
       return this.completeAction();
@@ -82,7 +82,7 @@ class FilesRowContent extends React.PureComponent {
   }
 
   cancelUpdateItem = () => {
-    this.setState({ loading: false });
+    //this.setState({ loading: false });
     this.completeAction();
   }
 
@@ -162,7 +162,7 @@ class FilesRowContent extends React.PureComponent {
 
   render() {
     const { t, item, fileAction } = this.props;
-    const { itemTitle, editingId, loading } = this.state;
+    const { itemTitle, editingId/*, loading*/ } = this.state;
     const {
       contentLength,
       updated,
@@ -219,8 +219,8 @@ class FilesRowContent extends React.PureComponent {
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
 
     return isEdit
-      ? <EditingWrapperComponent 
-          loading={loading}
+      ? <EditingWrapperComponent
+          //loading={loading}
           itemTitle={itemTitle}
           okIcon={okIcon}
           cancelIcon={cancelIcon}
