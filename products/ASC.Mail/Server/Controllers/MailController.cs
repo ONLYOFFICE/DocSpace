@@ -21,8 +21,6 @@ namespace ASC.Mail.Controllers
     [ApiController]
     public partial class MailController : ControllerBase
     {
-        public HttpContext HttpContext { get; set; }
-
         public int TenantId { 
             get { 
                 return TenantManager.GetCurrentTenant().TenantId; 
@@ -50,7 +48,6 @@ namespace ASC.Mail.Controllers
         public AutoreplyEngine AutoreplyEngine { get; }
         public ContactEngine ContactEngine { get; }
         public MessageEngine MessageEngine { get; }
-
         public CrmLinkEngine CrmLinkEngine { get; }
         public SpamEngine SpamEngine { get; }
         public FilterEngine FilterEngine { get; }
@@ -70,7 +67,6 @@ namespace ASC.Mail.Controllers
         public ILog Log { get; }
 
         public MailController(
-            HttpContextAccessor httpContextAccessor,
             TenantManager tenantManager,
             SecurityContext securityContext,
             UserManager userManager,
@@ -104,8 +100,6 @@ namespace ASC.Mail.Controllers
             IServiceProvider serviceProvider,
             IOptionsMonitor<ILog> option)
         {
-            HttpContext = httpContextAccessor?.HttpContext;
-
             TenantManager = tenantManager;
             SecurityContext = securityContext;
             UserManager = userManager;
@@ -301,7 +295,6 @@ namespace ASC.Mail.Controllers
                 .AddUserManagerService()
                 .AddDisplayUserSettingsService()
                 .AddApiContextService()
-                .AddCoreBaseSettingsService()
                 .AddAccountEngineService()
                 .AddAlertEngineService()
                 .AddDisplayImagesAddressEngineService()
@@ -311,6 +304,7 @@ namespace ASC.Mail.Controllers
                 .AddDocumentsEngineService()
                 .AddAutoreplyEngineService()
                 .AddContactEngineService()
+                .AddMessageEngineService()
                 .AddCrmLinkEngineService()
                 .AddSpamEngineService()
                 .AddFilterEngineService()
@@ -318,12 +312,14 @@ namespace ASC.Mail.Controllers
                 .AddFolderEngineService()
                 .AddDraftEngineService()
                 .AddTemplateEngineService()
-                .AddOperationEngineService()
                 .AddSettingEngineService()
                 .AddServerEngineService()
                 .AddServerDomainEngineService()
                 .AddServerMailboxEngineService()
-                .AddServerMailgroupEngineService();
+                .AddServerMailgroupEngineService()
+                .AddOperationEngineService()
+                .AddTestEngineService()
+                .AddCoreBaseSettingsService();
         }
     }
 }

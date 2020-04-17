@@ -249,7 +249,7 @@ namespace ASC.Mail.Controllers
         /// <returns>Previous or next message id</returns>
         /// <short>Get previous or next message id</short> 
         /// <category>Messages</category>
-        [Read(@"messages/{id}/{direction:(next|prev)}")]
+        [Read(@"messages/{id}/{direction}")]
         public long GetPrevNextMessageId(int id,
             string direction,
             int? folder,

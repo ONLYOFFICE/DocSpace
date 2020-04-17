@@ -138,7 +138,7 @@ namespace ASC.Mail.Controllers
         /// <param optional="true" name="user_folder_id">id of user's folder</param>
         /// <returns>Head message id of previous or next conversation.</returns>
         /// <category>Conversations</category>
-        [Read(@"conversation/{id}/{direction:(next|prev)}")]
+        [Read(@"conversation/{id}/{direction}")]
         public long GetPrevNextConversationId(int id,
             string direction,
             int? folder,

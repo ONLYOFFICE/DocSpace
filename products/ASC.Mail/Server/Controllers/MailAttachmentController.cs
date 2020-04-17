@@ -117,8 +117,7 @@ namespace ASC.Mail.Controllers
             //Thread.CurrentThread.CurrentCulture = CurrentCulture;
             //Thread.CurrentThread.CurrentUICulture = CurrentCulture;
 
-            //TODO: fix return OperationEngine.DownloadAllAttachments(messageId, TranslateMailOperationStatus);
-            throw new NotImplementedException();
+            return OperationEngine.DownloadAllAttachments(messageId, TranslateMailOperationStatus);
         }
     }
 }
