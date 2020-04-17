@@ -50,7 +50,7 @@ namespace ASC.Mail.Core.Dao
         public Folder GetFolder(FolderType folderType)
         {
             var folder = MailDb.MailFolderCounters
-                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == (int)folderType)
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == folderType)
                 .Select(ToFolder)
                 .SingleOrDefault();
 
@@ -73,7 +73,7 @@ namespace ASC.Mail.Core.Dao
             {
                 Tenant = folder.Tenant,
                 IdUser = folder.UserId,
-                Folder = (ushort)folder.FolderType,
+                Folder = folder.FolderType,
                 UnreadMessagesCount = (uint)folder.UnreadCount,
                 UnreadConversationsCount = (uint)folder.UnreadChainCount,
                 TotalMessagesCount = (uint)folder.TotalCount,
@@ -103,7 +103,7 @@ namespace ASC.Mail.Core.Dao
             }
 
             var mailFolder = MailDb.MailFolderCounters
-                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == (int)folder)
+                .Where(f => f.Tenant == Tenant && f.IdUser == UserId && f.Folder == folder)
                 .SingleOrDefault();
 
             if (mailFolder == null)
