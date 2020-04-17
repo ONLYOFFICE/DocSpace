@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
-import { RowContent, Link, Text, Icons, Badge, TextInput, Button, toastr } from "asc-web-components";
+import { RowContent, Link, Text, Icons, Badge, toastr } from "asc-web-components";
 import { constants } from 'asc-web-common';
 import { createFile, createFolder, renameFolder, updateFile, setFilter, fetchFiles } from '../../../../../store/files/actions';
 import { canWebEdit, canConvert, getTitleWithoutExst } from '../../../../../store/files/selectors';
 import store from "../../../../../store/store";
+import EditingWrapperComponent from "./EditingWrapperComponent";
 
 const { FileAction } = constants;
 
@@ -195,42 +196,6 @@ class FilesRowContent extends React.PureComponent {
     }
     `;
 
-    const EditingWrapper = styled.div`
-      width: 100%;
-      display: inline-flex;
-      align-items: center;
-
-      @media (max-width: 1024px) {
-      height: 56px;
-    }
-      .edit-text {
-        height: 30px;
-        font-size: 15px;
-        outline: 0 !important;
-        font-weight: bold;
-        margin: 0;
-        font-family: 'Open Sans',sans-serif,Arial;
-        text-align: left;
-        color: #333333;
-      }
-      .edit-button {
-        margin-left: 8px;
-        height: 30px;
-      }
-
-      .edit-ok-icon {
-        margin-top: -6px;
-        width: 16px;
-        height: 16px;
-      }
-
-      .edit-cancel-icon {
-        margin-top: -6px;
-        width: 14px;
-        height: 14px;
-      }
-    `;
-
     const titleWithoutExt = getTitleWithoutExst(item);
     const fileOwner = createdBy && ((this.props.viewer.id === createdBy.id && t("AuthorMe")) || createdBy.displayName);
     const updatedDate = updated && this.getStatusByDate();
@@ -254,33 +219,16 @@ class FilesRowContent extends React.PureComponent {
     const isEdit = (id === editingId) && (fileExst === fileAction.extension);
 
     return isEdit
-      ? (<EditingWrapper>
-        <TextInput
-          className='edit-text'
-          name='title'
-          scale={true}
-          value={itemTitle}
-          tabIndex={1}
-          isAutoFocussed={true}
-          onChange={this.renameTitle}
-          onKeyUp={this.onKeyUpUpdateItem}
-          isDisabled={loading}
+      ? <EditingWrapperComponent 
+          loading={loading}
+          itemTitle={itemTitle}
+          okIcon={okIcon}
+          cancelIcon={cancelIcon}
+          renameTitle={this.renameTitle}
+          onKeyUpUpdateItem={this.onKeyUpUpdateItem}
+          onClickUpdateItem={this.onClickUpdateItem}
+          cancelUpdateItem={this.cancelUpdateItem}
         />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={this.onClickUpdateItem}
-          icon={okIcon}
-        />
-        <Button
-          className='edit-button'
-          size='medium'
-          isDisabled={loading}
-          onClick={this.cancelUpdateItem}
-          icon={cancelIcon}
-        />
-      </EditingWrapper>)
       : (
         <SimpleFilesRowContent
           sideColor="#333"
