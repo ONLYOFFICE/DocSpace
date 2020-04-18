@@ -54,7 +54,7 @@ namespace ASC.Web.Files.Services.FFmpegService
         public FFmpegService(IOptionsMonitor<ILog> optionsMonitor, IConfiguration configuration)
         {
             logger = optionsMonitor.CurrentValue;
-            FFmpegPath = configuration["files:ffmpeg"];
+            FFmpegPath = configuration["files:ffmpeg:value"];
             FFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
 
             var exts = configuration["files:ffmpeg:exts"];

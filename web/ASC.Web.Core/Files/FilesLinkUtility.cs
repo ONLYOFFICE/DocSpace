@@ -65,7 +65,7 @@ namespace ASC.Web.Core.Files
             CoreSettings = coreSettings;
             Configuration = configuration;
             InstanceCrypto = instanceCrypto;
-            FilesUploaderURL = Configuration["files.uploader.url"] ?? "~";
+            FilesUploaderURL = Configuration["files:uploader:url"] ?? "~";
         }
 
         public string FilesBaseAbsolutePath
@@ -409,7 +409,7 @@ namespace ASC.Web.Core.Files
             }
             if (string.IsNullOrEmpty(value))
             {
-                value = Configuration["files.docservice.url." + (appSettingsKey ?? key)];
+                value = Configuration["files:docservice:url:" + (appSettingsKey ?? key)];
             }
             return value;
         }

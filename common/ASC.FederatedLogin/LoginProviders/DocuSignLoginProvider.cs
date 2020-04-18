@@ -132,7 +132,7 @@ namespace ASC.FederatedLogin.LoginProviders
     {
         public static DIHelper AddDocuSignLoginProviderService(this DIHelper services)
         {
-            services.TryAddScoped<DocuSignLoginProvider>();
+            //services.TryAddScoped<DocuSignLoginProvider>();
             return services
                 .AddConsumerFactoryService()
                 .AddKafkaService()

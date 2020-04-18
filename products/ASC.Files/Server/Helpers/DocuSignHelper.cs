@@ -74,7 +74,6 @@ namespace ASC.Web.Files.Helpers
         public TokenHelper TokenHelper { get; }
         public AuthContext AuthContext { get; }
         public ConsumerFactory ConsumerFactory { get; }
-        public DocuSignLoginProvider DocuSignLoginProvider { get; }
 
         public DocuSignToken(
             TokenHelper tokenHelper,
@@ -154,7 +153,6 @@ namespace ASC.Web.Files.Helpers
         public static int MaxEmailLength = 10000;
 
         public DocuSignToken DocuSignToken { get; }
-        public DocuSignLoginProvider DocuSignLoginProvider { get; }
         public FileSecurity FileSecurity { get; }
         public IDaoFactory DaoFactory { get; }
         public BaseCommonLinkUtility BaseCommonLinkUtility { get; }
@@ -170,7 +168,6 @@ namespace ASC.Web.Files.Helpers
 
         public DocuSignHelper(
             DocuSignToken docuSignToken,
-            DocuSignLoginProvider docuSignLoginProvider,
             FileSecurity fileSecurity,
             IDaoFactory daoFactory,
             IOptionsMonitor<ILog> options,
@@ -186,7 +183,6 @@ namespace ASC.Web.Files.Helpers
             ConsumerFactory consumerFactory)
         {
             DocuSignToken = docuSignToken;
-            DocuSignLoginProvider = docuSignLoginProvider;
             FileSecurity = fileSecurity;
             DaoFactory = daoFactory;
             BaseCommonLinkUtility = baseCommonLinkUtility;

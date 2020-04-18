@@ -64,7 +64,7 @@ namespace ASC.Web.Files.Helpers
 
         public IEnumerable<string> ThirdPartyProviders
         {
-            get { return (Configuration["files:thirdparty:enable"] ?? "").Split(new char[] { '|', ',' }, StringSplitOptions.RemoveEmptyEntries); }
+            get { return (Configuration.GetSection("files:thirdparty:enable").Get<string[]>() ?? new string[] { }).ToList(); }
         }
 
         public bool SupportInclusion
